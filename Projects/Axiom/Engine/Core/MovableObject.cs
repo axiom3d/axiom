@@ -60,31 +60,31 @@ namespace Axiom.Core
     /// </remarks>
     public abstract class MovableObject : ShadowCaster, IAnimableObject
     {
-    	public delegate void ObjectDelegate(MovableObject obj);
-    	public delegate bool ObjectRenderingDelegate(MovableObject obj,Camera camera);
-    	public delegate LightList ObjectQueryLightsDelegate(MovableObject obj);
-    	
-    	// Define all events Handler
+        public delegate void ObjectDelegate( MovableObject obj );
+        public delegate bool ObjectRenderingDelegate( MovableObject obj, Camera camera );
+        public delegate LightList ObjectQueryLightsDelegate( MovableObject obj );
+
+        // Define all events Handler
         public event ObjectDelegate ObjectDestroyed;
         public event ObjectDelegate ObjectAttached;
         public event ObjectDelegate ObjectDetached;
         public event ObjectDelegate ObjectMoved;
-        
+
         public event ObjectRenderingDelegate ObjectRendering;
         public event ObjectQueryLightsDelegate ObjectQueryLights;
-        
+
         #region Fields
 
-		
+
         /// <summary>
         ///		Does this object cast shadows?
         /// </summary>
         protected bool castShadows;
 
         protected ShadowRenderableList dummyList = new ShadowRenderableList();
-		
-		protected static long nextUnnamedNodeExtNum = 1;
-		
+
+        protected static long nextUnnamedNodeExtNum = 1;
+
         /// <summary>
         ///    Is this object visible?
         /// </summary>
@@ -95,22 +95,22 @@ namespace Axiom.Core
         /// </summary>
         protected string name;
         /// Is debug display enabled?
-		protected bool debugDisplay;
-		/// Upper distance to still render
-		protected float upperDistance;
-		protected float squaredUpperDistance;
-		/// Hidden because of distance?
-		protected bool beyondFarDistance;
-		
-		/// Does rendering this object disabled by listener?
+        protected bool debugDisplay;
+        /// Upper distance to still render
+        protected float upperDistance;
+        protected float squaredUpperDistance;
+        /// Hidden because of distance?
+        protected bool beyondFarDistance;
+
+        /// Does rendering this object disabled by listener?
         protected bool renderingDisabled;
-        
+
         // List of lights for this object
         protected LightList lightList = new LightList();
-        
+
         /// The last frame that this light list was updated in
         protected ulong lightListUpdated;
-        
+
         /// <summary>
         ///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
         /// </summary>
@@ -163,7 +163,7 @@ namespace Axiom.Core
 
         #region Constructors
 
-        protected MovableObject(string name)
+        protected MovableObject( string name )
             : this()
         {
             this.name = name;
@@ -179,10 +179,10 @@ namespace Axiom.Core
             // set default RenderQueueGroupID for this movable object
             this.renderQueueID = RenderQueueGroupID.Main;
             this.queryFlags = DefaultQueryFlags;
-			this.visibilityFlags = DefaultVisibilityFlags;
+            this.visibilityFlags = DefaultVisibilityFlags;
             this.worldAABB = AxisAlignedBox.Null;
             this.castShadows = true;
-			this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
+            this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
         }
 
         #endregion Constructors
@@ -192,12 +192,18 @@ namespace Axiom.Core
         /// <summary>
         ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
         /// </summary>
-        public abstract AxisAlignedBox BoundingBox { get; }
+        public abstract AxisAlignedBox BoundingBox
+        {
+            get;
+        }
 
         /// <summary>
         ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
         /// </summary>
-        public abstract float BoundingRadius { get; }
+        public abstract float BoundingRadius
+        {
+            get;
+        }
 
         /// <summary>
         ///     Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
@@ -231,12 +237,12 @@ namespace Axiom.Core
             {
                 if ( this.parentIsTagPoint )
                 {
-                    TagPoint tp = (TagPoint) this.parentNode;
+                    TagPoint tp = (TagPoint)this.parentNode;
                     return tp.ParentEntity.ParentSceneNode;
                 }
                 else
                 {
-                    return (SceneNode) this.parentNode;
+                    return (SceneNode)this.parentNode;
                 }
             }
         }
@@ -244,7 +250,7 @@ namespace Axiom.Core
         /// <summary>
         ///		See if this object is attached to another node.
         /// </summary>
-        [Obsolete("This property has been superceded by the IsInScene property")]
+        [Obsolete( "This property has been superceded by the IsInScene property" )]
         public bool IsAttached
         {
             get
@@ -258,18 +264,18 @@ namespace Axiom.Core
         /// </summary>
         public virtual bool IsVisible
         {
-        	get
-			{
-        		if ( !isVisible || beyondFarDistance || renderingDisabled )
-		            return false;
-                
-		        SceneManager sm = Root.Instance.SceneManager;
+            get
+            {
+                if ( !isVisible || beyondFarDistance || renderingDisabled )
+                    return false;
+
+                SceneManager sm = Root.Instance.SceneManager;
                 return ( sm != null ) && ( ( visibilityFlags & sm.CombinedVisibilityMask ) != 0 );
-        	}
-			set
-			{
-				isVisible = value;
-			}
+            }
+            set
+            {
+                isVisible = value;
+            }
         }
 
         /// <summary>
@@ -342,11 +348,11 @@ namespace Axiom.Core
         {
             get
             {
-                return ( (SceneNode) this.parentNode ).ShowBoundingBox;
+                return ( (SceneNode)this.parentNode ).ShowBoundingBox;
             }
             set
             {
-                ( (SceneNode) this.parentNode ).ShowBoundingBox = value;
+                ( (SceneNode)this.parentNode ).ShowBoundingBox = value;
             }
         }
 
@@ -411,33 +417,33 @@ namespace Axiom.Core
         /// <param name="void"></param>
         public virtual void DetachFromParent()
         {
-        	if (IsAttached)
-			{
-				if (parentIsTagPoint)
-				{
-					TagPoint tp = ( TagPoint ) parentNode;
-					tp.ParentEntity.DetachObjectFromBone( this );
-					
-				}
-				else
-				{
-					SceneNode sn = (SceneNode) parentNode;
-					sn.DetachObject(this);
-				}
-			}
+            if ( IsAttached )
+            {
+                if ( parentIsTagPoint )
+                {
+                    TagPoint tp = (TagPoint)parentNode;
+                    tp.ParentEntity.DetachObjectFromBone( this );
+
+                }
+                else
+                {
+                    SceneNode sn = (SceneNode)parentNode;
+                    sn.DetachObject( this );
+                }
+            }
         }
-        
+
         internal virtual void NotifyMoved()
         {
-        	// Mark light list being dirty, simply decrease
-	        // counter by one for minimise overhead
-	        --lightListUpdated;
-	
-	        // Notify listener if exists
-	        if (ObjectMoved != null)
-	        {
-	            ObjectMoved(this);
-	        }
+            // Mark light list being dirty, simply decrease
+            // counter by one for minimise overhead
+            --lightListUpdated;
+
+            // Notify listener if exists
+            if ( ObjectMoved != null )
+            {
+                ObjectMoved( this );
+            }
         }
 
         public virtual LightList QueryLights()
@@ -551,20 +557,20 @@ namespace Axiom.Core
         /// <summary>
         /// default query flags for all future MovableObject instances.
         /// </summary>
-        protected uint defaultQueryFlags = unchecked(0xFFFFFFFF);
+        protected uint defaultQueryFlags = unchecked( 0xFFFFFFFF );
 
         /// <summary>
         /// Gets/Sets default query flags for all future MovableObject instances.
         /// </summary>
         public uint DefaultQueryFlags
         {
-            get 
-            { 
-                return this.defaultQueryFlags; 
+            get
+            {
+                return this.defaultQueryFlags;
             }
-            set 
-            { 
-                this.defaultQueryFlags = value; 
+            set
+            {
+                this.defaultQueryFlags = value;
             }
         }
 
@@ -619,7 +625,7 @@ namespace Axiom.Core
         /// <summary>
         /// default visibility flags for all future MovableObject instances.
         /// </summary>
-        protected static uint defaultVisibilityFlags = unchecked(0xFFFFFFFF);
+        protected static uint defaultVisibilityFlags = unchecked( 0xFFFFFFFF );
 
         /// <summary>
         /// Gets/Sets default visibility flags for all future MovableObject instances.
@@ -695,22 +701,22 @@ namespace Axiom.Core
         /// Gets/Sets whether or not the debug display of this object is enabled.
         /// <remarks>
         /// Some objects aren't visible themselves but it can be useful to display
-		///	a debug representation of them. Or, objects may have an additional 
-		///	debug display on top of their regular display. This option enables / 
-		///	disables that debug display. Objects that are not visible never display
-		///	debug geometry regardless of this setting.
+        ///	a debug representation of them. Or, objects may have an additional 
+        ///	debug display on top of their regular display. This option enables / 
+        ///	disables that debug display. Objects that are not visible never display
+        ///	debug geometry regardless of this setting.
         /// </remarks>
         /// </summary>
         public bool DebugDisplayEnabled
         {
-        	get
-        	{
-        		return debugDisplay;
-        	}
-        	set
-        	{
-        		debugDisplay = value;
-        	}
+            get
+            {
+                return debugDisplay;
+            }
+            set
+            {
+                debugDisplay = value;
+            }
         }
 
         public override AxisAlignedBox GetLightCapBounds()
@@ -729,7 +735,7 @@ namespace Axiom.Core
         {
             // Extrude own light cap bounds
             // need a clone to avoid modifying the original bounding box
-            this.worldDarkCapBounds = (AxisAlignedBox) this.GetLightCapBounds().Clone();
+            this.worldDarkCapBounds = (AxisAlignedBox)this.GetLightCapBounds().Clone();
 
             this.ExtrudeBounds( this.worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance );
 
@@ -821,32 +827,32 @@ namespace Axiom.Core
         /// <param name="node">Scene node to notify.</param>
         internal virtual void NotifyAttached( Node node, bool isTagPoint )
         {
-			bool parentChanged = (node != this.parentNode);
+            bool parentChanged = ( node != this.parentNode );
             this.parentNode = node;
             this.parentIsTagPoint = isTagPoint;
             // Mark light list being dirty, simply decrease
-	        // counter by one for minimise overhead
-	        --lightListUpdated;
-	        
-	        if( parentChanged )
-	        {
-	            if ( this.parentNode != null )
-	            {
-	                if ( ObjectAttached != null )
-	                {
-	                    //Fire Event
-	                    ObjectAttached( this );
-	                }
-	            }
-	            else
-	            {
-	                if ( ObjectDetached != null )
-	                {
-	                    //Fire Event
-	                    ObjectDetached( this );
-	                }
-	            }
-	        }
+            // counter by one for minimise overhead
+            --lightListUpdated;
+
+            if ( parentChanged )
+            {
+                if ( this.parentNode != null )
+                {
+                    if ( ObjectAttached != null )
+                    {
+                        //Fire Event
+                        ObjectAttached( this );
+                    }
+                }
+                else
+                {
+                    if ( ObjectDetached != null )
+                    {
+                        //Fire Event
+                        ObjectDetached( this );
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -882,14 +888,14 @@ namespace Axiom.Core
                 }
             }
 
-            if( ObjectRendering != null )
-        	{
-        		renderingDisabled = ObjectRendering( this, camera );
-        	}
-			else 
-			{
-				renderingDisabled = false;
-			}
+            if ( ObjectRendering != null )
+            {
+                renderingDisabled = ObjectRendering( this, camera );
+            }
+            else
+            {
+                renderingDisabled = false;
+            }
         }
 
         /// <summary>
@@ -940,8 +946,14 @@ namespace Axiom.Core
         /// </summary>
         public virtual string MovableType
         {
-            get{ return movableType;}
-            set { movableType = value; }
+            get
+            {
+                return movableType;
+            }
+            set
+            {
+                movableType = value;
+            }
         }
 
         #endregion Factory methods and propertys
@@ -949,7 +961,7 @@ namespace Axiom.Core
 
     #region MovableObjectFactory
 
-    public abstract class MovableObjectFactory : AbstractFactory<MovableObject>
+    public abstract class MovableObjectFactory : IAbstractFactory<MovableObject>
     {
         public const string TypeName = "MovableObject";
         private string _type;

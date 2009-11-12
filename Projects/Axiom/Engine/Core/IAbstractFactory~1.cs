@@ -49,7 +49,7 @@ namespace Axiom
     /// <ogre name="FactoryObj">
     ///     <file name="OgreFactoryObj.h"   revision="1.10" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
-    public interface AbstractFactory<T> 
+    public interface IAbstractFactory<T> 
     {
         /// <summary>
         /// The factory type.
