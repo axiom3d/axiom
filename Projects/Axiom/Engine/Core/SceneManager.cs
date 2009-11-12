@@ -3758,6 +3758,15 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        /// Gets the proportional distance which a texture shadow which is generated from a
+        /// directional light will be offset into the camera view to make best use of texture space.
+        /// </summary>
+        public Real ShadowDirectionalLightTextureOffset
+        {
+            get { return this.shadowTextureOffset; }
+        }
+
+        /// <summary>
         ///		Sets the maximum distance away from the camera that shadows will be visible.
         /// </summary>
         /// <remarks>
