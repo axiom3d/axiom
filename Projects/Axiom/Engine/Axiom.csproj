@@ -742,6 +742,7 @@
     <Compile Include="Animating\Collections\BoneCollection.cs" />
     <Compile Include="Animating\Collections\Lists.cs" />
     <Compile Include="Collections\MultiMap.cs" />
+    <Compile Include="Core\AbstractFactory~1.cs" />
     <Compile Include="Core\ChainedEvent.cs" />
     <Compile Include="Core\Collections\CameraCollection.cs" />
     <Compile Include="Core\Collections\Lists.cs" />

@@ -1,4 +1,4 @@
-#region LGPL License
+﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
@@ -40,26 +40,30 @@ using System.Text;
 
 using Axiom.Collections;
 
+#endregion Namespace Declarations
+
 namespace Axiom.Core
 {
-
-    #endregion Namespace Declarations
-
     /// <summary>
-    /// Abstract factory class. Does nothing by itself, but derived classes can add functionality.
+    /// Abstract factory class implementation. Provides a basic Factory 
+    /// implementation that can be overriden by derivitives
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <ogre name="FactoryObj">
-    ///     <file name="OgreFactoryObj.h"   revision="1.10" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
-    public interface IAbstractFactory<T> 
+    /// <typeparam name="T">The Type to instantiate</typeparam>
+    public class AbstractFactory<T> : IAbstractFactory<T> where T : class
     {
+        static private readonly List<T> _instances = new List<T>();
+
+        #region Implementation of IAbstractFactory<T>
+
         /// <summary>
         /// The factory type.
         /// </summary>
-        string Type
+        public virtual string Type
         {
-            get;
+            get
+            {
+                return typeof( T ).Name;
+            }
         }
 
         /// <summary>
@@ -70,7 +74,10 @@ namespace Axiom.Core
         /// An object created by the factory. The type of the object depends on
         /// the factory.
         /// </returns>
-        T CreateInstance( string name );
+        public virtual T CreateInstance( string name )
+        {
+            return this.CreateInstance( name, new NameValuePairList() );
+        }
 
         /// <summary>
         /// Creates a new object.
@@ -81,12 +88,23 @@ namespace Axiom.Core
         /// An object created by the factory. The type of the object depends on
         /// the factory.
         /// </returns>
-        T CreateInstance( string name, NameValuePairList parms );  
+        public virtual T CreateInstance( string name, NameValuePairList parms )
+        {
+            ObjectCreator creator = new ObjectCreator( typeof( T ) );
+            T instance = creator.CreateInstance<T>();
+            _instances.Add( instance );
+            return instance;
+        }
 
         /// <summary>
         /// Destroys an object which was created by this factory.
         /// </summary>
         /// <param name="obj">the object to destroy</param>
-        void DestroyInstance( T obj);    
+        public virtual void DestroyInstance( T obj )
+        {
+            _instances.Remove( obj );
+        }
+
+        #endregion
     }
 }
