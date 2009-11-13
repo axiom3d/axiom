@@ -420,7 +420,8 @@ material Examples/Flare
 			lighting off
 			scene_blend add
 			depth_write off
-
+			fog_override true
+			
 			texture_unit
 			{
 				texture flare.png
