@@ -493,7 +493,7 @@ namespace Axiom.Core
         ///		this method that returns results through a listener is also available.
         /// </remarks>
         /// <returns></returns>
-        public virtual List<RaySceneQueryResultEntry> Execute()
+        public virtual IList<RaySceneQueryResultEntry> Execute()
         {
             ClearResults();
 
@@ -543,7 +543,7 @@ namespace Axiom.Core
             return true;
         }
 
-        bool Axiom.Core.IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
+        bool IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
         {
             // create an entry and add it to the cached result list
             RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
