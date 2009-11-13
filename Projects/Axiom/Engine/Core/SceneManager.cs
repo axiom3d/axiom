@@ -654,6 +654,9 @@ namespace Axiom.Core
             // no shadows by default
             this.shadowTechnique = ShadowTechnique.None;
 
+            // setup default shadow camera setup
+            this._defaultShadowCameraSetup = new DefaultShadowCameraSetup();
+
             this.illuminationStage = IlluminationRenderStage.None;
             this.renderingNoShadowQueue = false;
             this.renderingMainGroup = false;
@@ -3710,6 +3713,27 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        /// the default shadow camera setup used for all lights which don't have
+        /// their own shadow camera setup.
+        /// </summary>
+        private IShadowCameraSetup _defaultShadowCameraSetup;
+        /// <summary>
+        /// Get/Set the shadow camera setup in use for all lights which don't have
+        /// their own shadow camera setup.
+        /// </summary>
+        public IShadowCameraSetup ShadowCameraSetup
+        {
+            get
+            {
+                return _defaultShadowCameraSetup;
+            }    
+            set
+            {
+                _defaultShadowCameraSetup = value;
+            }
+        }
+
+        /// <summary>
         ///		Gets/Sets the color used to modulate areas in shadow.
         /// </summary>
         /// <remarks>
@@ -3802,6 +3826,7 @@ namespace Axiom.Core
                 return this.shadowFarDistance;
             }
         }
+
         /// <summary>
         ///		Sets the maximum size of the index buffer used to render shadow primitives.
         /// </summary>
@@ -5034,8 +5059,8 @@ namespace Axiom.Core
                 RenderTarget shadowRTT = shadowTex.GetBuffer().GetRenderTarget();
                 Viewport shadowView = shadowRTT.GetViewport( 0 );
                 Camera texCam = this.shadowTextureCameras[ sti ];
+
                 // rebind camera, incase another SM in use which has switched to its cam
-                // This seems pretty silly - - is there any reason to do it?
                 shadowView.Camera = texCam;
 
                 // Associate main view camera as LOD camera
@@ -5043,120 +5068,20 @@ namespace Axiom.Core
 
                 Vector3 pos, dir;
 
-                // Directional lights 
+                // set base
+                if ( light.Type == LightType.Point )
+                    texCam.Direction = light.DerivedDirection;
                 if ( light.Type == LightType.Directional )
+                    texCam.Position = light.DerivedPosition;
+
+                if ( light.CustomShadowCameraSetup == null )
                 {
-                    // set up the shadow texture
-                    // Set ortho projection
-                    texCam.ProjectionType = Projection.Orthographic;
-                    // set easy FOV and near dist so that texture covers far dist
-                    texCam.FieldOfView = Utility.DegreesToRadians( 90 );
-                    texCam.Near = shadowDist;
-                    // TODO: Ogre doesn't include this line
-                    texCam.Far = this.shadowDirLightExtrudeDist * 3;
-
-                    // Set size of projection
-
-                    // Calculate look at position
-                    // We want to look at a spot shadowOffset away from near plane
-                    // 0.5 is a litle too close for angles
-                    Vector3 target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
-
-                    // Calculate orientation
-                    dir = -light.DerivedDirection; // backwards since point down -z
-                    dir.Normalize();
-
-                    // Calculate position
-                    // We want to be in the -ve direction of the light direction
-                    // far enough to project for the dir light extrusion distance
-                    pos = target + dir * this.shadowDirLightExtrudeDist;
-
-                    // Round local x/y position based on a world-space texel; this helps to reduce
-                    // jittering caused by the projection moving with the camera
-                    // Viewport is 2 * near clip distance across (90 degree fov)
-                    float worldTexelSize = ( texCam.Near * 20f ) / this.shadowTextureSize;
-                    pos.x -= pos.x % worldTexelSize;
-                    pos.y -= pos.y % worldTexelSize;
-                    pos.z -= pos.z % worldTexelSize;
-
-                    //LogManager.Instance.Write("Light Camera Pos: {0}", pos.ToString());
-                    Vector3 nearPos = pos - shadowDist * dir;
-                    Vector3 farPos = pos - this.shadowDirLightExtrudeDist * 3 * dir;
-                    //LogManager.Instance.Write("Light Camera Near: {0}", nearPos.ToString());
-                    //LogManager.Instance.Write("Light Camera Far: {0}", farPos.ToString());
-                    //LogManager.Instance.Write("Light Camera Target: {0}", target.ToString());
+                    _defaultShadowCameraSetup.GetShadowCamera( this, camera, viewPort, light, texCam, sti );
                 }
-                    // Spotlight
-                else if ( light.Type == LightType.Spotlight )
-                {
-                    // Set perspective projection
-                    texCam.ProjectionType = Projection.Perspective;
-                    // set FOV slightly larger than the spotlight range to ensure coverage
-                    texCam.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle ) * 1.2f;
-                    // set near clip the same as main camera, since they are likely
-                    // to both reflect the nature of the scene
-                    texCam.Near = camera.Near;
-
-                    pos = light.DerivedPosition;
-                    dir = -light.DerivedDirection; // backwards since point down -z
-                    dir.Normalize();
-                }
-                    // Point light
                 else
                 {
-                    // Set perspective projection
-                    texCam.ProjectionType = Projection.Perspective;
-                    // Use 120 degree FOV for point light to ensure coverage more area
-                    texCam.FieldOfView = Utility.DegreesToRadians( 120 );
-                    // set near clip the same as main camera, since they are likely
-                    // to both reflect the nature of the scene
-                    texCam.Near = camera.Near;
-
-                    // Calculate look at position
-                    // We want to look at a spot shadowOffset away from near plane
-                    // 0.5 is a litle too close for angles
-                    Vector3 target = camera.DerivedPosition +
-                                     ( camera.DerivedDirection * shadowOffset );
-
-                    // Calculate position, which same as point light position
-                    pos = light.DerivedPosition;
-
-                    dir = ( pos - target ); // backwards since point down -z
-                    dir.Normalize();
+                    light.CustomShadowCameraSetup.GetShadowCamera( this, camera, viewPort, light, texCam, sti );
                 }
-
-                // Finally set position
-                texCam.Position = pos;
-
-                /*
-                // Next section (camera oriented shadow map) abandoned
-                // Always point in the same direction, if we don't do this then
-                // we get 'shadow swimming' as camera rotates
-                // As it is, we get swimming on moving but this is less noticeable
-
-                // calculate up vector, we want it aligned with cam direction
-                Vector3 up = cam->getDerivedDirection();
-                // Check it's not coincident with dir
-                if (up.dotProduct(dir) >= 1.0f)
-                {
-                // Use camera up
-                up = cam->getUp();
-                }
-                */
-                Vector3 up = Vector3.UnitY;
-                // Check it's not coincident with dir
-                if ( Utility.Abs( up.Dot( dir ) ) >= 1.0f )
-                {
-                    // Use camera up
-                    up = Vector3.UnitZ;
-                }
-                // cross twice to rederive, only direction is unaltered
-                Vector3 left = dir.Cross( up );
-                left.Normalize();
-                up = dir.Cross( left );
-                up.Normalize();
-                // Derive quaternion from axes
-                texCam.Orientation = Quaternion.FromAxes( left, up, dir );
 
                 shadowView.BackgroundColor = ColorEx.White;
 

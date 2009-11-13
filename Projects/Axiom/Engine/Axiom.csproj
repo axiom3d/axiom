@@ -753,12 +753,14 @@
     <Compile Include="Core\Collections\SceneQueryMovableObjectIntersectionList.cs" />
     <Compile Include="Core\Collections\SceneQueryMovableObjectWorldFragmentIntersectionList.cs" />
     <Compile Include="Core\Collections\ViewportCollection.cs" />
+    <Compile Include="Core\DefaultShadowCameraSetup.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\ILodListener.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\LodStrategy.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -848,7 +848,46 @@ namespace Axiom.Core
 
         #endregion
 
-        #region IAnimable methods
+        #region CustomShadowCameraSetup Implementation
+
+        /// <summary>
+        /// the custom shadow camera setup (null means use <see cref="SceneManager"/> global version).
+        /// </summary>
+        private IShadowCameraSetup _customShadowCameraSetup;
+
+        /// <summary>
+        /// this light's reference to the custom shadow camera to use when rendering texture shadows. 
+        /// (null means use <see cref="SceneManager"/> global version).
+        /// </summary>
+        /// <remarks>
+        /// This changes the shadow camera setup for just this light, you can set
+        /// the shadow camera setup globally using <see cref="SceneManager.ShadowCameraSetup"/>
+        /// </remarks>
+        public virtual IShadowCameraSetup CustomShadowCameraSetup
+        {
+            get
+            {
+                return _customShadowCameraSetup;
+            }
+
+            set
+            {
+                _customShadowCameraSetup = value;
+            }
+        }
+
+        /// <summary>
+        /// Reset the shadow camera setup to the default.
+        /// </summary>
+        /// <seealso cref="IShadowCameraSetup"/>
+        public virtual void ResetCustomShadowCameraSetup()
+        {
+            _customShadowCameraSetup = null;
+        }
+
+        #endregion CustomShadowCameraSetup Implementation
+
+        #region IAnimable Implementation
 
         public static string[] animableAttributes = {
                                                             "diffuseColour",
