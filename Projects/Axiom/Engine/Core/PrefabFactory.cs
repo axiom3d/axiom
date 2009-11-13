@@ -353,14 +353,14 @@ namespace Axiom.Core
 				// Generate the group of rings for the sphere
 				for ( int ring = 0; ring <= NUM_RINGS; ring++ )
 				{
-                    float r0 = SPHERE_RADIUS * Utility.Sin( (Radian)(ring * fDeltaRingAngle) );
-                    float y0 = SPHERE_RADIUS * Utility.Cos( (Radian)(ring * fDeltaRingAngle) );
+					float r0 = SPHERE_RADIUS * Utility.Sin( ring * fDeltaRingAngle );
+					float y0 = SPHERE_RADIUS * Utility.Cos( ring * fDeltaRingAngle );
 
 					// Generate the group of segments for the current ring
 					for ( int seg = 0; seg <= NUM_SEGMENTS; seg++ )
 					{
-                        float x0 = r0 * Utility.Sin( (Radian)(seg * fDeltaSegAngle ) );
-                        float z0 = r0 * Utility.Cos( (Radian)(seg * fDeltaSegAngle ) );
+						float x0 = r0 * Utility.Sin( seg * fDeltaSegAngle );
+						float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
 
 						// Add one vertex to the strip which makes up the sphere
 						*pVertex++ = x0;

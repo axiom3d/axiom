@@ -636,7 +636,7 @@ namespace Axiom.RenderSystems.DirectX9
         public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
             float thetaY = Utility.DegreesToRadians( fov / 2.0f );
-            float tanThetaY = Utility.Tan( (Radian)thetaY );
+            float tanThetaY = Utility.Tan( thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float halfW = tanThetaX * near;
@@ -703,7 +703,7 @@ namespace Axiom.RenderSystems.DirectX9
         public override Axiom.Math.Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
         {
             float theta = Utility.DegreesToRadians( fov * 0.5f );
-            float h = 1 / Utility.Tan( (Radian)theta );
+            float h = 1 / Utility.Tan( theta );
             float w = h / aspectRatio;
             float q = 0;
             float qn = 0;

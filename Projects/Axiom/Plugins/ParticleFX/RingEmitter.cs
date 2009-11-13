@@ -110,8 +110,8 @@ namespace Axiom.ParticleFX
             // ellipse and the outer circle (radius 1.0)
             // with alpha, and a and b we select a random point on this ellipse
             // and calculate it's coordinates
-            x = a * Utility.Sin( (Radian)alpha );
-            y = b * Utility.Cos( (Radian)alpha );
+            x = a * Utility.Sin( alpha );
+            y = b * Utility.Cos( alpha );
             // the height is simple running from 0 to 1
             z = Utility.UnitRandom();     // 0..1
 
