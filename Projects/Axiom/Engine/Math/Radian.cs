@@ -72,6 +72,7 @@ namespace Axiom.Math
 
         public static implicit operator Radian( Real value )   { return new Radian( value ); }
         public static implicit operator Radian( Degree value ) { return new Radian( value ); }
+        public static implicit operator Radian( Numeric value ) { return new Radian( (Real)value ); }
         public static explicit operator Radian( int value ) { return new Radian( (Real)value ); }
 
         public static implicit operator Real( Radian value )    { return new Real( value._value ); }

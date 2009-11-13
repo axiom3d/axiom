@@ -842,8 +842,8 @@ namespace Axiom.Core
             }
             else
             {
-                float cos_rot = Utility.Cos( (Radian)bb.rotationInRadians );
-                float sin_rot = Utility.Sin( (Radian)bb.rotationInRadians );
+                float cos_rot = Utility.Cos( bb.rotationInRadians );
+                float sin_rot = Utility.Sin( bb.rotationInRadians );
 
                 float width = ( r.Right - r.Left ) / 2;
                 float height = ( r.Bottom - r.Top ) / 2;
