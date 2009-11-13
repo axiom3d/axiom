@@ -262,6 +262,8 @@ namespace Axiom.SceneManagers.Octree
                     TerrainRenderable tile = new TerrainRenderable();
                     tile.Name = name;
 
+                    tile.RenderQueueGroup = this.WorldGeometryRenderQueueId;
+
                     tile.SetMaterial(terrainMaterial);
                     tile.Init(options);
 
