@@ -1325,18 +1325,21 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-        public RenderQueueGroupID WorldGeometryRenderQueue
+        public override RenderQueueGroupID WorldGeometryRenderQueueId
         {
             get
             {
-                if ( null != renderQueue )
+                return base.WorldGeometryRenderQueueId;
+            }
+            set
+            {
+                // notify zones of new value
+                foreach ( var pcZone in zones )
                 {
-                    return renderQueue.DefaultRenderGroup;
+                    pcZone.NotifyWorldGeometryRenderQueue( (int)value );
                 }
-                else
-                {
-                    return RenderQueueGroupID.Three;
-                }
+                // Call base version to set property
+                base.WorldGeometryRenderQueueId = value;
             }
         }
 

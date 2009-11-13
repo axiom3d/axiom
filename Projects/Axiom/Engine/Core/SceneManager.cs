@@ -266,7 +266,7 @@ namespace Axiom.Core
         }
 
         protected RenderQueueGroupID worldGeometryRenderQueueId = RenderQueueGroupID.WorldGeometryOne;
-        public RenderQueueGroupID WorldGeometryRenderQueueId
+        public virtual RenderQueueGroupID WorldGeometryRenderQueueId
         {
             get
             {

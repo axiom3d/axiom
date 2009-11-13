@@ -113,7 +113,7 @@ namespace OctreeZone
 
                     TerrainZoneRenderable tile = new TerrainZoneRenderable(name, mTerrainZone);
                     // set queue
-                    tile.RenderQueueGroup = mTerrainZone.mPCZSM.WorldGeometryRenderQueue;
+                    tile.RenderQueueGroup = mTerrainZone.mPCZSM.WorldGeometryRenderQueueId;
                     // Initialise the tile
                     tile.Material = pMaterial;
                     tile.Initialize(i, j, heightData);
