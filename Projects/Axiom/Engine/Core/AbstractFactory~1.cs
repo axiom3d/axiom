@@ -64,6 +64,10 @@ namespace Axiom.Core
             {
                 return typeof( T ).Name;
             }
+            protected set
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>

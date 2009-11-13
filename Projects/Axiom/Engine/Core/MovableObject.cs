@@ -961,7 +961,7 @@ namespace Axiom.Core
 
     #region MovableObjectFactory
 
-    public abstract class MovableObjectFactory : IAbstractFactory<MovableObject>
+    public abstract class MovableObjectFactory : AbstractFactory<MovableObject>
     {
         public const string TypeName = "MovableObject";
         private string _type;
@@ -1024,7 +1024,7 @@ namespace Axiom.Core
 
         #region AbstractFactory<MovableObject> Members
 
-        public MovableObject CreateInstance( string name )
+        public override MovableObject CreateInstance( string name )
         {
             return this.CreateInstance( name, null );
         }
@@ -1035,9 +1035,11 @@ namespace Axiom.Core
         /// <param name="obj">
         ///     The MovableObject to destroy.
         /// </param>
-        public abstract void DestroyInstance( MovableObject obj );
+        public override void DestroyInstance( MovableObject obj )
+        {
+        }
 
-        public string Type
+        public override string Type
         {
             get
             {

@@ -457,7 +457,7 @@ namespace Axiom.FileSystem
     /// <ogre name="ArchiveFactory">
     ///     <file name="OgreArchiveFactory.h"   revision="1.11" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
-    public interface ArchiveFactory : IAbstractFactory<Archive>
+    public class ArchiveFactory : AbstractFactory<Archive>
     {
     }
 
