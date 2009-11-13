@@ -140,7 +140,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     Factories for named renderer types (can be extended using plugins).
 		/// </summary>
-		private Dictionary<string, IParticleSystemRendererFactory> rendererFactoryList = new Dictionary<string, IParticleSystemRendererFactory>();
+		private Dictionary<string, ParticleSystemRendererFactory> rendererFactoryList = new Dictionary<string, ParticleSystemRendererFactory>();
 
 
 		/// <summary>
@@ -215,7 +215,7 @@ namespace Axiom.ParticleSystems
 		/// since it may have been allocted on a different heap in the case of plugins. The caller must
 		/// destroy the object later on, probably on plugin shutdown.
 		/// </remarks>
-		public void AddRendererFactory( IParticleSystemRendererFactory factory )
+		public void AddRendererFactory( ParticleSystemRendererFactory factory )
 		{
 			rendererFactoryList.Add( factory.Type, factory );
 
@@ -224,7 +224,7 @@ namespace Axiom.ParticleSystems
 
 		public ParticleSystemRenderer CreateRenderer( string rendererType )
 		{
-			IParticleSystemRendererFactory factory;
+			ParticleSystemRendererFactory factory;
 			if ( rendererFactoryList.TryGetValue( rendererType, out factory ) )
 				return factory.CreateInstance( rendererType );
 			throw new Exception( "Cannot find requested renderer type." );

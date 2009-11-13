@@ -241,7 +241,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Interface definition for factories that create instances of HighLevelGpuProgram.
 	/// </summary>
-	public abstract class HighLevelGpuProgramFactory : IAbstractFactory<HighLevelGpuProgram>
+	public abstract class HighLevelGpuProgramFactory : AbstractFactory<HighLevelGpuProgram>
 	{
 		#region Properties
 

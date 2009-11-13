@@ -307,7 +307,7 @@ namespace Axiom.FileSystem
 
 		#region ArchiveFactory Implementation
 
-		public string Type
+		public override string Type
 		{
 			get
 			{
@@ -315,12 +315,12 @@ namespace Axiom.FileSystem
 			}
 		}
 
-		public Archive CreateInstance( string name )
+		public override Archive CreateInstance( string name )
 		{
 			return new ZipArchive( name, _type );
 		}
 
-		public void DestroyInstance( Archive obj )
+		public override void DestroyInstance( Archive obj )
 		{
 			obj.Dispose();
 		}

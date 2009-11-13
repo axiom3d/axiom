@@ -449,13 +449,13 @@ namespace Axiom.ParticleSystems
 	}
 
 	/** Factory class for BillboardParticleRenderer */
-	public class BillboardParticleRendererFactory : IParticleSystemRendererFactory
+	public class BillboardParticleRendererFactory : ParticleSystemRendererFactory
 	{
 		private const string rendererTypeName = "billboard";
 
 		#region IParticleSystemRendererFactory Members
 
-		public string Type
+		public override string Type
 		{
 			get
 			{
@@ -464,13 +464,13 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// @copydoc FactoryObj::createInstance
-		public ParticleSystemRenderer CreateInstance( string name )
+		public override ParticleSystemRenderer CreateInstance( string name )
 		{
 			return new BillboardParticleRenderer();
 		}
 
 		/// @copydoc FactoryObj::destroyInstance
-		public void DestroyInstance( ParticleSystemRenderer inst )
+		public override void DestroyInstance( ParticleSystemRenderer inst )
 		{
 		}
 
