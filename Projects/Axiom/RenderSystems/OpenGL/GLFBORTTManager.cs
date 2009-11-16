@@ -396,7 +396,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// Try all formats, and report which ones work as target
 			int fb, tid;
+            int old_drawbuffer, old_readbuffer;
 			int target = Gl.GL_TEXTURE_2D;
+
+            Gl.glGetIntegerv( Gl.GL_DRAW_BUFFER, out old_drawbuffer );
+            Gl.glGetIntegerv( Gl.GL_READ_BUFFER, out old_readbuffer );
 
 			for ( int x = 0; x < (int)PixelFormat.Count; ++x )
 			{
@@ -483,7 +487,7 @@ namespace Axiom.RenderSystems.OpenGL
                         else
                         {
 							// Packed depth/stencil format
-
+#if false
                             // Only query packed depth/stencil formats for 32-bit
                             // non-floating point formats (ie not R32!) 
                             // Linux nVidia driver segfaults if you query others
@@ -493,7 +497,7 @@ namespace Axiom.RenderSystems.OpenGL
 							{
 								continue;
 							}
-
+#endif 
 							if ( _tryPackedFormat( _depthFormats[ depth ] ) )
 							{
 								/// Add mode to allowed modes
@@ -512,8 +516,18 @@ namespace Axiom.RenderSystems.OpenGL
 				// Delete texture and framebuffer
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
 				Gl.glDeleteFramebuffersEXT( 1, ref fb );
+
+                // Workaround for NVIDIA / Linux 169.21 driver problem
+                // see http://www.ogre3d.org/phpBB2/viewtopic.php?t=38037&start=25
+                Gl.glFinish();
+
 				Gl.glDeleteTextures( 1, ref tid );
 			}
+
+            // It seems a bug in nVidia driver: glBindFramebufferEXT should restore
+            // draw and read buffers, but in some unclear circumstances it won't.
+            Gl.glDrawBuffer( old_drawbuffer );
+            Gl.glReadBuffer( old_readbuffer );
 
 			string fmtstring = "";
 			for ( int x = 0; x < (int)PixelFormat.Count; ++x )
