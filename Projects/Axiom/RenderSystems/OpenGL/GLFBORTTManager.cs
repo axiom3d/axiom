@@ -413,7 +413,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// Buggy ATI cards *crash* on non-RGB(A) formats
 				int[] depths = PixelUtil.GetBitDepths( (PixelFormat)x );
-				if ( fmt != Gl.GL_NONE && _atiMode && ( depths[ 0 ] != 0 || depths[ 1 ] != 0 || depths[ 2 ] != 0 ) )
+				if ( fmt != Gl.GL_NONE && _atiMode && ( depths[ 0 ] == 0 || depths[ 1 ] == 0 || depths[ 2 ] == 0 ) )
 					continue;
 
                 // Buggy NVidia Drivers fail on 32Bit FP formats on Windows.
@@ -620,8 +620,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
-			throw new NotImplementedException();
-			//TODO: return new GLFBOMultiRenderTarget( this, name );
+			return new GLFBOMultiRenderTarget( this, name );
 		}
 
 		/// <summary>
