@@ -57,7 +57,7 @@ namespace Axiom.Graphics
     /// </remarks>
     public abstract class ShadowRenderable : IRenderable
     {
-        #region Fields
+        #region Fields and Properties
 
         protected Material material;
         /// <summary>
@@ -66,10 +66,6 @@ namespace Axiom.Graphics
         protected ShadowRenderable lightCap;
         protected LightList dummyLightList = new LightList();
         protected Hashtable customParams = new Hashtable();
-
-        #endregion Fields
-
-        #region Properties
 
         /// <summary>
         ///		Does this renderable require a separate light cap?
@@ -113,7 +109,18 @@ namespace Axiom.Graphics
             }
         }
 
-        #endregion Properties
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        protected ShadowRenderable()
+        {
+            this.renderOperation = new RenderOperation();
+            this.renderOperation.useIndices = true;
+            this.renderOperation.operationType = OperationType.TriangleList;
+        }
+
+        #endregion Construction and Destruction
 
         #region Methods
 
@@ -164,7 +171,7 @@ namespace Axiom.Graphics
             }
         }
 
-        protected RenderOperation renderOperation = new RenderOperation();
+        protected RenderOperation renderOperation;
         /// <summary>
         ///		Gets the render operation for this shadow renderable.
         /// </summary>

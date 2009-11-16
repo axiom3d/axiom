@@ -6907,7 +6907,7 @@ namespace Axiom.Core
                 foreach ( MovableObject movableObject in movableObjects )
                 {
                     // skip group if query type doesn't match
-                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) != 0 )
+                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
                     {
                         break;
                     }
@@ -6955,7 +6955,7 @@ namespace Axiom.Core
                 foreach ( MovableObject movableObject in movableObjects )
                 {
                     // skip group if query type doesn't match
-                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) != 0 )
+                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
                     {
                         break;
                     }
@@ -7002,7 +7002,7 @@ namespace Axiom.Core
                 foreach ( MovableObject movableObject in movableObjects )
                 {
                     // skip group if query type doesn't match
-                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) != 0 )
+                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
                     {
                         break;
                     }
@@ -7047,7 +7047,7 @@ namespace Axiom.Core
                 foreach ( MovableObject movableObject in movableObjects )
                 {
                     // skip group if query type doesn't match
-                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) != 0 )
+                    if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
                     {
                         break;
                     }
@@ -7099,7 +7099,7 @@ namespace Axiom.Core
                 {
                     MovableObject objectA = (MovableObject)enumA.Current;
                     // skip group if query type doesn't match
-                    if ( ( this.QueryTypeMask & objectA.TypeFlags ) != 0 )
+                    if ( ( this.QueryTypeMask & objectA.TypeFlags ) == 0 )
                     {
                         break;
                     }
