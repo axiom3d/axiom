@@ -1178,7 +1178,9 @@
     <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
 if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"
 if exist "Axiom.RenderSystems.DirectX9.dll.locked" del "Axiom.RenderSystems.DirectX9.dll.locked" 
-if not exist "Axiom.RenderSystems.DirectX9.dll.locked" if exist "Axiom.RenderSystems.DirectX9.dll" move "Axiom.RenderSystems.DirectX9.dll" "Axiom.RenderSystems.DirectX9.dll.locked"</PreBuildEvent>
+if not exist "Axiom.RenderSystems.DirectX9.dll.locked" if exist "Axiom.RenderSystems.DirectX9.dll" move "Axiom.RenderSystems.DirectX9.dll" "Axiom.RenderSystems.DirectX9.dll.locked"
+if exist "Axiom.RenderSystems.Xna.dll.locked" del "Axiom.RenderSystems.Xna.dll.locked" 
+if not exist "Axiom.RenderSystems.Xna.dll.locked" if exist "Axiom.RenderSystems.Xna.dll" move "Axiom.RenderSystems.Xna.dll" "Axiom.RenderSystems.Xna.dll.locked"</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 
+using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -88,14 +89,16 @@ namespace Axiom.RenderSystems.Xna
                 switch ( attribute.ToUpper() )
                 {
                     case "XNABACKBUFFER":
+                        XFG.RenderTarget2D[] surface = new XFG.RenderTarget2D[ Config.MaxMultipleRenderTargets ];
                         if ( this.FSAA > 0 )
                         {
-                            return ( (XnaHardwarePixelBuffer)pixelBuffer ).FSAASurface;
+                            surface[0] = ( (XnaHardwarePixelBuffer)pixelBuffer ).FSAASurface;
                         }
                         else
                         {
-                            return ((XnaHardwarePixelBuffer)pixelBuffer).RenderTarget;
+                            surface[0] = ((XnaHardwarePixelBuffer)pixelBuffer).RenderTarget;
                         }
+                        return surface;
                     case "HWND":
                         return null;
                     case "BUFFER":

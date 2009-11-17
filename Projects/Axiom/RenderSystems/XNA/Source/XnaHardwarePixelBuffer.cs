@@ -76,7 +76,7 @@ namespace Axiom.RenderSystems.Xna
         ///<summary>
         ///    FSAA Surface abstracted by this buffer
         ///</summary>
-        protected XFG.Texture2D fsaaSurface;
+        protected XFG.RenderTarget2D fsaaSurface;
         ///<summary>
         ///    Volume abstracted by this buffer
         ///</summary>
@@ -109,18 +109,20 @@ namespace Axiom.RenderSystems.Xna
 
         private byte[] _bufferBytes;
         BasicBox _lockedBox;
+
         XFG.RenderTarget2D renderTarget;
-        public XFG.RenderTarget RenderTarget
+        public XFG.RenderTarget2D RenderTarget
         {
             get
             {
                 return renderTarget;
             }
         }
+
         ///<summary>
-        ///    Accessor for surface
+        /// Accessor for surface
         ///</summary>
-        public XFG.Texture FSAASurface
+        public XFG.RenderTarget2D FSAASurface
         {
             get
             {
@@ -130,7 +132,7 @@ namespace Axiom.RenderSystems.Xna
 
 
         ///<summary>
-        ///    Accessor for surface
+        /// Accessor for surface
         ///</summary>
         public XFG.Texture Surface
         {
