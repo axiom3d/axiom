@@ -1670,12 +1670,9 @@ namespace Axiom.Core
                                                      ResourceGroupManager.InternalResourceGroupName );
                 this.shadowReceiverPass = matShadRec.GetTechnique( 0 ).GetPass( 0 );
                 this.shadowReceiverPass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
-                // No lighting, one texture unit 
-                // everything else will be bound as needed during the receiver pass
-                this.shadowReceiverPass.LightingEnabled = false;
+                // Don't set lighting and blending modes here, depends on additive / modulative
                 TextureUnitState t = this.shadowReceiverPass.CreateTextureUnitState();
                 t.TextureAddressing = TextureAddressing.Clamp;
-                this.shadowReceiverPass.SetDepthBias( 1 );
             }
             else
             {
@@ -1700,14 +1697,12 @@ namespace Axiom.Core
                 // reflectance, and we'll set the ambient colour to the shadow colour
                 this.shadowCasterPlainBlackPass.Ambient = ColorEx.White;
                 this.shadowCasterPlainBlackPass.Diffuse = ColorEx.Black;
-                this.shadowCasterPlainBlackPass.Emissive = ColorEx.Black;
+                this.shadowCasterPlainBlackPass.SelfIllumination = ColorEx.Black;
                 this.shadowCasterPlainBlackPass.Specular = ColorEx.Black;
                 // Override fog
                 this.shadowCasterPlainBlackPass.SetFog( true, FogMode.None );
                 // no textures or anything else, we will bind vertex programs
                 // every so often though
-
-                //shadowCasterPlainBlackPass.DepthCheck = false;
             }
             else
             {
@@ -1738,6 +1733,7 @@ namespace Axiom.Core
                     LayerBlendSource.Manual,
                     LayerBlendSource.Current,
                     this.shadowColor );
+                this.shadowModulativePass.CullingMode = CullingMode.None;
             }
             else
             {
@@ -1780,6 +1776,8 @@ namespace Axiom.Core
                     this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
                     this.infiniteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
                     this.infiniteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
+                    // Note ignored extra parameter - for compatibility with finite extrusion vertex program
+                    this.infiniteExtrusionParams.SetAutoConstant( 5, GpuProgramParameters.AutoConstantType.ShadowExtrusionDistance );
                 }
 
                 matDebug.Compile();
@@ -1787,6 +1785,10 @@ namespace Axiom.Core
             else
             {
                 this.shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
+                if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+                {
+                    this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
+                }
             }
         }
 
@@ -1819,21 +1821,15 @@ namespace Axiom.Core
                 // Nothing else, we don't use this like a 'real' pass anyway,
                 // it's more of a placeholder
             }
-
-            // Set up spot shadow fade texture (loaded from code data block)
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-            Texture spotShadowFadeTex = (Texture)TextureManager.Instance.GetByName( "spot_shadow_fade.png" );
-			if (spotShadowFadeTex == null)
+            else
             {
-				// Load the manual buffer into an image
-				System.IO.MemoryStream imgStream = new System.IO.MemoryStream(SpotShadowFadePng.SPOT_SHADOW_FADE_PNG);
-				Media.Image img = Media.Image.FromStream(imgStream, "png");
-				spotShadowFadeTex = TextureManager.Instance.LoadImage("spot_shadow_fade.png", ResourceGroupManager.InternalResourceGroupName, img);
+                this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
+                if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+                {
+                    this.finiteExtrusionParams = this.shadowStencilPass.VertexProgramParameters;
+                }
             }
-#else
-			Texture spotShadowFadeTex = TextureManager.Instance.Load("spot_shadow_fade.png");
-#endif
-            shadowMaterialInitDone = true;
+
         }
 
         /// <summary>
@@ -1853,18 +1849,75 @@ namespace Axiom.Core
         {
             if ( this.IsShadowTechniqueTextureBased )
             {
-                Pass retPass = ( this.shadowTextureCustomCasterPass != null
-                                     ? this.shadowTextureCustomCasterPass
-                                     : this.shadowCasterPlainBlackPass );
+                Pass retPass;
+                if ( pass.Parent.ShadowCasterMaterial != null )
+                {
+                    retPass = pass.Parent.ShadowCasterMaterial.GetBestTechnique().GetPass( 0 );
+                }
+                else
+                {
+                    retPass = ( this.shadowTextureCustomCasterPass != null ? this.shadowTextureCustomCasterPass : this.shadowCasterPlainBlackPass );
+                }
+
+                		// Special case alpha-blended passes
+                if ( ( pass.SourceBlendFactor == SceneBlendFactor.SourceAlpha &&
+                       pass.DestinationBlendFactor == SceneBlendFactor.OneMinusSourceAlpha )
+                    || pass.AlphaRejectFunction != CompareFunction.AlwaysPass )
+                {
+                    // Alpha blended passes must retain their transparency
+                    retPass.SetAlphaRejectSettings( pass.AlphaRejectFunction, pass.AlphaRejectValue );
+                    retPass.SetSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor );
+                    retPass.Parent.Parent.TransparencyCastsShadows = true;
+
+                    // So we allow the texture units, but override the color functions
+                    // Copy texture state, shift up one since 0 is shadow texture
+                    int origPassTUCount = pass.TextureUnitStageCount;
+                    for ( int t = 0; t < origPassTUCount; ++t )
+                    {
+                        TextureUnitState tex;
+                        if ( retPass.TextureUnitStageCount <= t )
+                        {
+                            tex = retPass.CreateTextureUnitState();
+                        }
+                        else
+                        {
+                            tex = retPass.GetTextureUnitState( t );
+                        }
+                        // copy base state
+                        pass.GetTextureUnitState( t ).CopyTo( tex );
+                        // override colour function
+                        tex.SetColorOperationEx( LayerBlendOperationEx.Source1, LayerBlendSource.Manual, LayerBlendSource.Current, this.IsShadowTechniqueAdditive ? ColorEx.Black : shadowColor );
+
+                    }
+                    // Remove any extras
+                    while ( retPass.TextureUnitStageCount > origPassTUCount )
+                    {
+                        retPass.RemoveTextureUnitState( origPassTUCount );
+                    }
+
+                }
+                else
+                {
+                    // reset
+                    retPass.SetSceneBlending( SceneBlendType.Replace );
+                    retPass.AlphaRejectFunction = CompareFunction.AlwaysPass;
+                    while ( retPass.TextureUnitStageCount > 0 )
+                    {
+                        retPass.RemoveTextureUnitState( 0 );
+                    }
+                }
+
+                // Propogate culling modes
                 retPass.CullingMode = pass.CullingMode;
                 retPass.ManualCullingMode = pass.ManualCullingMode;
+
                 // Does incoming pass have a custom shadow caster program?
                 if (pass.ShadowCasterVertexProgramName != "")
                 {
-                    retPass.SetVertexProgram(pass.ShadowCasterVertexProgramName);
+                    retPass.SetVertexProgram( pass.ShadowCasterVertexProgramName, false );
                     GpuProgram prg = retPass.VertexProgram;
                     // Load this program if not done already
-                    if (!prg.IsLoaded)
+                    if ( !prg.IsLoaded )
                     {
                         prg.Load();
                     }
@@ -1879,8 +1932,7 @@ namespace Axiom.Core
                     {
                         if ( retPass.VertexProgramName != this.shadowTextureCustomCasterVertexProgram )
                         {
-                            this.shadowTextureCustomCasterPass.SetVertexProgram(
-                                this.shadowTextureCustomCasterVertexProgram );
+                            this.shadowTextureCustomCasterPass.SetVertexProgram( this.shadowTextureCustomCasterVertexProgram );
                             if ( retPass.HasVertexProgram )
                             {
                                 retPass.VertexProgramParameters = this.shadowTextureCustomCasterVPParams;
@@ -1893,83 +1945,6 @@ namespace Axiom.Core
                         retPass.SetVertexProgram("");
                     }
                 }
-
-                int keepTUCount = 0;
-
-                // Material specifies a caster fragment program
-                if (pass.ShadowCasterFragmentProgramName != "")
-                {
-                    // If the material specifies a fragment program, then we need to copy the
-                    // TextureUnitStates from the original pass.
-                    int origPassTUCount = pass.TextureUnitStageCount;
-                    for (int t = 0; t < origPassTUCount; ++t)
-                    {
-                        TextureUnitState tex = ( retPass.TextureUnitStageCount <= t
-                                                     ?
-                                                         retPass.CreateTextureUnitState()
-                                                     :
-                                                         retPass.GetTextureUnitState( t ) );
-                        pass.GetTextureUnitState( t ).CopyTo( tex );
-                    }
-                    keepTUCount = origPassTUCount;
-
-                    // Have to merge the shadow caster vertex program in
-                    retPass.SetFragmentProgram(pass.ShadowCasterFragmentProgramName);
-                    GpuProgram prg = retPass.FragmentProgram;
-                    // Load this program if not done already
-                    if (!prg.IsLoaded)
-                    {
-                        prg.Load();
-                    }
-                    // Copy params
-                    retPass.FragmentProgramParameters = pass.ShadowCasterFragmentProgramParameters;
-                    // Did we bind a shadow vertex program?
-                    if (pass.HasVertexProgram && !retPass.HasVertexProgram)
-                    {
-                        // We didn't bind a caster-specific program, so bind the original
-                        retPass.SetVertexProgram(pass.VertexProgramName);
-                        prg = retPass.VertexProgram;
-                        // Load this program if required
-                        if (!prg.IsLoaded)
-                        {
-                            prg.Load();
-                        }
-                        // Copy params
-                        retPass.VertexProgramParameters = pass.VertexProgramParameters;
-                    }
-                }
-                else
-                {
-                    // Reset any merged fragment programs from last time
-                    if ( retPass == this.shadowTextureCustomCasterPass )
-                    {
-                        // reset fp?
-                        if ( retPass.FragmentProgramName != this.shadowTextureCustomCasterFragmentProgram )
-                        {
-                            retPass.SetFragmentProgram( this.shadowTextureCustomCasterFragmentProgram );
-                            if ( retPass.HasFragmentProgram )
-                            {
-                                retPass.FragmentProgramParameters = this.shadowTextureCustomCasterFPParams;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Standard shadow caster pass, reset to no fp
-                        retPass.SetFragmentProgram("");
-                    }
-                }
-
-                // Remove any extra texture units
-                while (retPass.TextureUnitStageCount > keepTUCount)
-                {
-                    retPass.RemoveTextureUnitState(keepTUCount);
-                }
-
-                // make sure we turn off alpha rejection
-                this.targetRenderSystem.SetAlphaRejectSettings( 0, CompareFunction.AlwaysPass, 0 );
-
-                retPass.Load();
 
                 return retPass;
             }
@@ -1995,10 +1970,16 @@ namespace Axiom.Core
         {
             if ( this.IsShadowTechniqueTextureBased )
             {
-                Pass retPass = ( this.shadowTextureCustomReceiverPass != null
-                                     ?
-                                         this.shadowTextureCustomReceiverPass
-                                     : this.shadowReceiverPass );
+                Pass retPass;
+                if ( pass.Parent.ShadowReceiverMaterial != null )
+                {
+                    retPass = pass.Parent.ShadowReceiverMaterial.GetBestTechnique().GetPass( 0 );
+                }
+                else
+                {
+                    retPass = ( this.shadowTextureCustomReceiverPass != null ? this.shadowTextureCustomReceiverPass : this.shadowReceiverPass );
+                }
+
                 // Does incoming pass have a custom shadow receiver program?
                 if (pass.ShadowReceiverVertexProgramName != "")
                 {
@@ -2017,11 +1998,9 @@ namespace Axiom.Core
                 {
                     if ( retPass == this.shadowTextureCustomReceiverPass )
                     {
-                        if ( this.shadowTextureCustomReceiverPass.VertexProgramName !=
-                             this.shadowTextureCustomReceiverVertexProgram )
+                        if ( this.shadowTextureCustomReceiverPass.VertexProgramName != this.shadowTextureCustomReceiverVertexProgram )
                         {
-                            this.shadowTextureCustomReceiverPass.SetVertexProgram(
-                                this.shadowTextureCustomReceiverVertexProgram );
+                            this.shadowTextureCustomReceiverPass.SetVertexProgram( this.shadowTextureCustomReceiverVertexProgram );
                             if ( retPass.HasVertexProgram )
                             {
                                 retPass.VertexProgramParameters = this.shadowTextureCustomReceiverVPParams;
@@ -2040,12 +2019,16 @@ namespace Axiom.Core
                     keepTUCount = 1;
                     retPass.LightingEnabled = true;
                     retPass.Ambient = pass.Ambient;
+                    retPass.SelfIllumination = pass.SelfIllumination;
                     retPass.Diffuse = pass.Diffuse;
                     retPass.Specular = pass.Specular;
                     retPass.Shininess = pass.Shininess;
                     retPass.SetRunOncePerLight( pass.IteratePerLight,
                                                 pass.RunOnlyOncePerLightType,
                                                 pass.OnlyLightType );
+                    // We need to keep alpha rejection settings
+                    retPass.SetAlphaRejectSettings( pass.AlphaRejectFunction, pass.AlphaRejectValue );
+                    // Copy texture state, shift up one since 0 is shadow texture
                     int origPassTUCount = pass.TextureUnitStageCount;
                     for ( int t = 0; t < origPassTUCount; ++t )
                     {
@@ -2056,63 +2039,68 @@ namespace Axiom.Core
                                                      :
                                                          retPass.GetTextureUnitState( targetIndex ) );
                         pass.GetTextureUnitState( t ).CopyTo( tex );
+                        // If programmable, have to adjust the texcoord sets too
+                        // D3D insists that texcoordsets match tex unit in programmable mode
+                        if ( retPass.HasVertexProgram )
+                            tex.TextureCoordSet = targetIndex;
                     }
                     keepTUCount = origPassTUCount + 1;
-                    // Will also need fragment programs since this is a complex light setup
-                    if ( pass.ShadowReceiverFragmentProgramName != "" )
+                }
+                else
+                {
+			        // need to keep spotlight fade etc
+                    keepTUCount = retPass.TextureUnitStageCount;                    
+                }
+
+                
+                // Will also need fragment programs since this is a complex light setup
+                if ( pass.ShadowReceiverFragmentProgramName != "" )
+                {
+                    // Have to merge the shadow receiver vertex program in
+                    retPass.SetFragmentProgram( pass.ShadowReceiverFragmentProgramName );
+                    GpuProgram prg = retPass.FragmentProgram;
+                    // Load this program if not done already
+                    if ( !prg.IsLoaded )
                     {
-                        // Have to merge the shadow receiver vertex program in
-                        retPass.SetFragmentProgram( pass.ShadowReceiverFragmentProgramName );
-                        GpuProgram prg = retPass.FragmentProgram;
-                        // Load this program if not done already
+                        prg.Load();
+                    }
+                    // Copy params
+                    retPass.FragmentProgramParameters = pass.ShadowReceiverFragmentProgramParameters;
+                    // Did we bind a shadow vertex program?
+                    if ( pass.HasVertexProgram && !retPass.HasVertexProgram )
+                    {
+                        // We didn't bind a receiver-specific program, so bind the original
+                        retPass.SetVertexProgram( pass.VertexProgramName );
+                        prg = retPass.VertexProgram;
+                        // Load this program if required
                         if ( !prg.IsLoaded )
                         {
                             prg.Load();
                         }
                         // Copy params
-                        retPass.FragmentProgramParameters = pass.ShadowReceiverFragmentProgramParameters;
-                        // Did we bind a shadow vertex program?
-                        if ( pass.HasVertexProgram && !retPass.HasVertexProgram )
+                        retPass.VertexProgramParameters = pass.VertexProgramParameters;
+                    }
+                }
+                else
+                {
+                    // Reset any merged fragment programs from last time
+                    if ( retPass == this.shadowTextureCustomReceiverPass )
+                    {
+                        // reset fp?
+                        if ( retPass.FragmentProgramName != this.shadowTextureCustomReceiverFragmentProgram )
                         {
-                            // We didn't bind a receiver-specific program, so bind the original
-                            retPass.SetVertexProgram( pass.VertexProgramName );
-                            prg = retPass.VertexProgram;
-                            // Load this program if required
-                            if ( !prg.IsLoaded )
+                            retPass.SetFragmentProgram( this.shadowTextureCustomReceiverFragmentProgram );
+                            if ( retPass.HasFragmentProgram )
                             {
-                                prg.Load();
+                                retPass.FragmentProgramParameters = this.shadowTextureCustomReceiverFPParams;
                             }
-                            // Copy params
-                            retPass.VertexProgramParameters = pass.VertexProgramParameters;
                         }
                     }
                     else
                     {
-                        // Reset any merged fragment programs from last time
-                        if ( retPass == this.shadowTextureCustomReceiverPass )
-                        {
-                            // reset fp?
-                            if ( retPass.FragmentProgramName != this.shadowTextureCustomReceiverFragmentProgram )
-                            {
-                                retPass.SetFragmentProgram( this.shadowTextureCustomReceiverFragmentProgram );
-                                if ( retPass.HasFragmentProgram )
-                                {
-                                    retPass.FragmentProgramParameters = this.shadowTextureCustomReceiverFPParams;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Standard shadow receiver pass, reset to no fp
-                            retPass.SetFragmentProgram( "" );
-                        }
+                        // Standard shadow receiver pass, reset to no fp
+                        retPass.SetFragmentProgram( "" );
                     }
-                }
-                    // additive lighting
-                else
-                {
-                    // need to keep spotlight fade etc
-                    keepTUCount = retPass.TextureUnitStageCount;
                 }
 
                 // Remove any extra texture units
