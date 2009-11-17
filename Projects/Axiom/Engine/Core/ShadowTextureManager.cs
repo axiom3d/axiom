@@ -68,13 +68,29 @@ namespace Axiom.Core
 		{
 			width = 512;
 			height = 512;
-			format = PixelFormat.A8R8G8B8;
-		}
+			format = PixelFormat.X8R8G8B8;
+        }
 
-		public bool Equal( ShadowTextureConfig other )
+        #region System.Object Implementation
+        
+        public bool Equals( ShadowTextureConfig other )
 		{
 			return width == other.width && height == other.height && format == other.format;
 		}
+
+        public override bool Equals( object obj )
+        {
+            if ( obj is ShadowTextureConfig )
+                return base.Equals( obj as ShadowTextureConfig );
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion  System.Object Implementation
 
 	}
 
@@ -90,7 +106,7 @@ namespace Axiom.Core
 	///     not be consistent - if it is, it is good to centrally manage the textures
 	///     so that creation and destruction responsibility is clear.
 	/// </remarks>
-	public class ShadowTextureManager
+	public class ShadowTextureManager : Singleton<ShadowTextureManager>
 	{
 		#region Fields
 
@@ -100,15 +116,13 @@ namespace Axiom.Core
 		protected List<WeakReference> textureList = new List<WeakReference>();
 		protected List<WeakReference> nullTextureList = new List<WeakReference>();
 		protected int count;
-		protected static ShadowTextureManager instance = null;
 
 		#endregion Fields
 
 		#region Constructor
 
-		public ShadowTextureManager()
+		private ShadowTextureManager()
 		{
-			count = 0;
 		}
 
 		#endregion Constructor
@@ -116,61 +130,59 @@ namespace Axiom.Core
 		#region Public Methods
 
 		/// <summary>
-		///     Populate an incoming list with shadow texture references as requested
-		///     in the configuration list.
+		/// Populate an incoming list with shadow texture references as requested
+		/// in the configuration list.
 		/// </summary>
-		public void GetShadowTextures( IList<ShadowTextureConfig> configList, IList<Texture> listToPopulate )
+        public void GetShadowTextures( IList<ShadowTextureConfig> configList, IList<Texture> listToPopulate )
 		{
-			listToPopulate.Clear();
+		    listToPopulate.Clear();
 
-			List<Texture> usedTextures = new List<Texture>();
+		    List<Texture> usedTextures = new List<Texture>();
 
-			foreach ( ShadowTextureConfig config in configList )
-			{
-				bool found = false;
-				foreach ( WeakReference wr in textureList )
-				{
-					if ( wr.IsAlive )
-					{
-						Texture tex = (Texture)wr.Target;
-						// Skip if already used this one
-					if ( usedTextures.Contains( tex ) )
-						continue;
-						if ( config.width == tex.Width && config.height == tex.Height && config.format == tex.Format )
-						{
-							// Ok, a match
-							listToPopulate.Add( tex );
-							usedTextures.Add( tex );
-							found = true;
-							break;
-						}
-					}
-				}
-				if ( !found )
-				{
-					// Create a new texture
-					string baseName = "Axiom/ShadowTexture";
-					string targName = baseName + count++;
-					Texture shadowTex = TextureManager.Instance.CreateManual(
-						targName, "",
-						TextureType.TwoD, config.width, config.height, 1, 0,
-						TextureUsage.RenderTarget );
-					// Ensure texture loaded
-					shadowTex.Load();
-					listToPopulate.Add( shadowTex );
-					usedTextures.Add( shadowTex );
-					textureList.Add( new WeakReference(shadowTex) );
-				}
-			}
-
+		    foreach ( ShadowTextureConfig config in configList )
+		    {
+		        bool found = false;
+		        foreach ( WeakReference wr in textureList )
+		        {
+		            if ( wr.IsAlive )
+		            {
+		                Texture tex = (Texture)wr.Target;
+		                // Skip if already used this one
+		                if ( usedTextures.Contains( tex ) )
+		                    continue;
+		                if ( config.width == tex.Width && config.height == tex.Height && config.format == tex.Format )
+		                {
+		                    // Ok, a match
+		                    listToPopulate.Add( tex );
+		                    usedTextures.Add( tex );
+		                    found = true;
+		                    break;
+		                }
+		            }
+		        }
+		        if ( !found )
+		        {
+		            // Create a new texture
+		            string baseName = "Axiom/ShadowTexture";
+		            string targName = baseName + count++;
+		            Texture shadowTex = TextureManager.Instance.CreateManual(
+		                targName, "",
+		                TextureType.TwoD, config.width, config.height, 1, 0,
+		                TextureUsage.RenderTarget );
+		            // Ensure texture loaded
+		            shadowTex.Load();
+		            listToPopulate.Add( shadowTex );
+		            usedTextures.Add( shadowTex );
+		            textureList.Add( new WeakReference( shadowTex ) );
+		        }
+		    }
 		}
 
-		/// <summary>
-		///     Get an appropriately defined 'null' texture, ie one which will always
-		///     result in no shadows.
+	    /// <summary>
+		/// Get an appropriately defined 'null' texture, ie one which will always result in no shadows.
 		/// </summary>
 		public Texture GetNullShadowTexture( PixelFormat format )
-		{
+		{            
 			foreach ( WeakReference wr in nullTextureList )
 			{
 				if ( wr.IsAlive )
@@ -186,24 +198,21 @@ namespace Axiom.Core
 			// A 1x1 texture of the correct format, not a render target
 			string baseName = "Axiom/ShadowTextureNull";
 			string targName = baseName + count++;
-			Texture shadowTex = TextureManager.Instance.CreateManual(
-				targName, "",
-				TextureType.TwoD, 1, 1, 1, 0, TextureUsage.Default );
+			Texture shadowTex = TextureManager.Instance.CreateManual( targName, "",
+				                                                      TextureType.TwoD, 
+                                                                      1, 1, 1, 0, 
+                                                                      TextureUsage.Default );
 			nullTextureList.Add( new WeakReference( shadowTex ) );
 
 			// Populate the texture based on format
-			int byteCount = PixelUtil.GetNumElemBytes( format );
-			unsafe
-			{
-				byte[] bytes = new byte[ byteCount ];
-				for ( int i = 0; i < byteCount; i++ )
-					bytes[ i ] = 0xff;
-				fixed ( byte* fixedBytes = &bytes[ 0 ] )
-				{
-					PixelBox bytesPixelBox = new PixelBox( 1, 1, 1, format, new IntPtr( fixedBytes ) );
-					shadowTex.GetBuffer().BlitFromMemory( bytesPixelBox );
-				}
-			}
+	        shadowTex.GetBuffer().Lock( BufferLocking.Discard );
+	        PixelBox box = shadowTex.GetBuffer().CurrentLock;
+
+            //set high values across all bytes of the format
+	        PixelConverter.PackColor( 1.0f, 1.0f, 1.0f, 1.0f, format, box.Data );
+
+	        shadowTex.GetBuffer().Unlock();
+
 			return shadowTex;
 		}
 
@@ -263,19 +272,6 @@ namespace Axiom.Core
 					TextureManager.Instance.Remove( (Resource)wr.Target );
 			}
 			textureList.Clear();
-		}
-
-		/// <summary>
-		///     Retrieve the instance, creating it if necessary
-		/// </summary>
-		public static ShadowTextureManager Instance
-		{
-			get
-			{
-				if ( instance == null )
-					instance = new ShadowTextureManager();
-				return instance;
-			}
 		}
 
 		#endregion Public Methods

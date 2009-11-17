@@ -751,12 +751,28 @@ namespace Axiom.Media
 		///<param name="dest">Destination memory location</param>
 		public static void PackColor( ColorEx color, PixelFormat format, IntPtr dest )
 		{
-
 			unsafe
 			{
 				PixelConverter.PackColor( color.r, color.g, color.b, color.a, format, (byte*)( dest.ToPointer() ) );
 			}
 		}
+
+        ///<summary>
+        ///    Pack a color value to memory
+        ///</summary>
+        ///<param name="r">the red component of the color</param>
+        ///<param name="g">the green component of the color</param>
+        ///<param name="b">the blue component of the color</param>
+        ///<param name="a">the alpha component of the color</param>
+        ///<param name="format">Pixel format in which to write the color</param>
+        ///<param name="dest">Destination memory location</param>
+        public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
+        {
+            unsafe
+            {
+                PixelConverter.PackColor( r, g, b, a, format, (byte*)( dest.ToPointer() ) );
+            }
+        }
 
 		///<summary>
 		///    Pack a color value to memory
