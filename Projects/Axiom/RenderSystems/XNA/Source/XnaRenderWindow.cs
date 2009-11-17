@@ -42,6 +42,8 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using Microsoft.Xna.Framework.Graphics;
+
 using RenderTarget=Axiom.Graphics.RenderTarget;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -67,11 +69,8 @@ namespace Axiom.RenderSystems.Xna
         private bool _isSwapChain;			// Is this a secondary window?
 
 		/// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-		private XFG.RenderTarget _backBuffer;
-        private XFG.RenderTarget _renderZBuffer;
-
+		private XFG.RenderTarget _renderSurface;
 		private XFG.DepthStencilBuffer _stencilBuffer;
-		private XFG.RenderTarget2D _swapChain;
 
         private XFG.MultiSampleType _fsaaType;
         private int _fsaaQuality;
@@ -150,12 +149,11 @@ namespace Axiom.RenderSystems.Xna
 
         #region RenderSurface Property
 
-        private XFG.RenderTarget _renderSurface;
-        public XFG.RenderTarget RenderSurface
+        public XFG.SurfaceFormat RenderSurfaceFormat
         {
             get
             {
-                return _renderSurface;
+                return _xnapp.BackBufferFormat;
             }
         }
 
@@ -637,14 +635,11 @@ namespace Axiom.RenderSystems.Xna
                             }
                         }
                     }
-
-                    //device.DeviceResizing += new System.ComponentModel.CancelEventHandler( OnDeviceResizing );
-
                 }
                 // update device in driver
                 Driver.XnaDevice = device;
                 // Store references to buffers for convenience
-                _renderSurface = device.GetRenderTarget( 0 );
+                _renderSurface = device.GetRenderTarget( 0 );                
                 _stencilBuffer = device.DepthStencilBuffer;
 
                 device.DeviceReset += new EventHandler( OnResetDevice );
@@ -673,7 +668,7 @@ namespace Axiom.RenderSystems.Xna
                         return this._stencilBuffer;
 
                     case "XNABACKBUFFER":
-                        return this._backBuffer;
+                        return this._renderSurface;
                     // if we're in windowed mode, we want to get our own backbuffer.
                     /*if ( isFullScreen )
                     {
@@ -701,9 +696,9 @@ namespace Axiom.RenderSystems.Xna
                 {
                     // Dispose managed resources.
                     // dispose of our back buffer if need be
-                    if ( this._backBuffer != null && !this._backBuffer.IsDisposed )
+                    if ( this._renderSurface != null && !this._renderSurface.IsDisposed )
                     {
-                        this._backBuffer.Dispose();
+                        this._renderSurface.Dispose();
                     }
 
                     // dispose of our stencil buffer if need be
@@ -772,7 +767,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="waitForVSync"></param>
 		public override void SwapBuffers( bool waitForVSync )
 		{
-            _driver.XnaDevice.Present();
+            _driver.XnaDevice.Present( );
         }
 
         public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )

@@ -2183,18 +2183,30 @@ namespace Axiom.RenderSystems.Xna
                 activeRenderTarget = viewport.Target;
 
                 // get the back buffer surface for this viewport
-                XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget[ "XNABACKBUFFER" ];
-                
-                _device.SetRenderTarget( 0, back );
+                XFG.RenderTarget2D[] back = (XFG.RenderTarget2D[])activeRenderTarget[ "XNABACKBUFFER" ];
+                if ( back == null )
+                    return;                
 
                 XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget["XNAZBUFFER"];
+                if ( depth == null )
+                {
+                    // No depth buffer provided, use our own
+                    // Request a depth stencil that is compatible with the format, multisample type and
+                    // dimensions of the render target.
+                    depth = _getDepthStencilFor( back[ 0 ].Format, back[ 0 ].MultiSampleType, back[ 0 ].Width, back[ 0 ].Height );
 
-                // set the render target and depth stencil for the surfaces belonging to the viewport
-
+                }
 
                 if(depth!=null)
                 //if(depth.Format==_device.DepthStencilBuffer.Format)
                     _device.DepthStencilBuffer = depth;
+
+                // Bind render targets
+                int count = back.Length;
+                for ( int i = 0; i < count && back[ i ] != null; ++i )
+                {
+                    _device.SetRenderTarget( i, back[ i ] );
+                }
 
                 // set the culling mode, to make adjustments required for viewports
                 // that may need inverted vertex winding or texture flipping
@@ -2218,6 +2230,100 @@ namespace Axiom.RenderSystems.Xna
                 // clear the updated flag
                 viewport.IsUpdated = false;
             }
+        }
+
+        public struct ZBufferFormat
+        {
+            public ZBufferFormat( XFG.DepthFormat f, XFG.MultiSampleType m )
+            {
+                this.format = f;
+                this.multisample = m;
+            }
+            public XFG.DepthFormat format;
+            public XFG.MultiSampleType multisample;
+        }
+        protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
+        protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
+
+        private static XFG.DepthFormat[] _preferredStencilFormats = {
+            XFG.DepthFormat.Depth24Stencil8Single,
+            XFG.DepthFormat.Depth24Stencil8,
+            XFG.DepthFormat.Depth24Stencil4,
+            XFG.DepthFormat.Depth24,
+            XFG.DepthFormat.Depth15Stencil1,
+            XFG.DepthFormat.Depth16,
+            XFG.DepthFormat.Depth32
+        };
+
+        private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt )
+        {
+            XFG.DepthFormat dsfmt;
+
+            // Check if result is cached
+            if ( depthStencilCache.TryGetValue( fmt, out dsfmt ) )
+                return dsfmt;
+
+            // If not, probe with CheckDepthStencilMatch
+            dsfmt = XFG.DepthFormat.Unknown;
+
+            // Get description of primary render target
+            XFG.SurfaceFormat targetFormat = _primaryWindow.RenderSurfaceFormat;
+
+            // Probe all depth stencil formats
+            // Break on first one that matches
+            foreach ( XFG.DepthFormat df in _preferredStencilFormats )
+            {
+                // Verify that the depth format exists
+                if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat( XFG.DeviceType.Hardware, targetFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, df ) )
+                    continue;
+
+                // Verify that the depth format is compatible
+                if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch( XFG.DeviceType.Hardware, targetFormat, fmt, df ) )
+                {
+                    dsfmt = df;
+                    break;
+                }
+            }
+
+            // Cache result
+            depthStencilCache[ fmt ] = dsfmt;
+            return dsfmt;
+        }
+
+        private XFG.DepthStencilBuffer _getDepthStencilFor( XFG.SurfaceFormat fmt, XFG.MultiSampleType multisample, int width, int height )
+        {
+            XFG.DepthStencilBuffer zbuffer = null;
+
+            XFG.DepthFormat dsfmt = _getDepthStencilFormatFor( fmt );
+            if ( dsfmt == XFG.DepthFormat.Unknown )
+                return null;
+
+            /// Check if result is cached
+            ZBufferFormat zbfmt = new ZBufferFormat( dsfmt, multisample );
+            XFG.DepthStencilBuffer cachedzBuffer;
+            if ( zBufferCache.TryGetValue( zbfmt, out cachedzBuffer ) )
+            {
+                /// Check if size is larger or equal
+                if ( cachedzBuffer.Width >= width &&
+                    cachedzBuffer.Height >= height )
+                {
+                    zbuffer = cachedzBuffer;
+                }
+                else
+                {
+                    zBufferCache.Remove( zbfmt );
+                    cachedzBuffer.Dispose();
+                }
+            }
+
+            if ( zbuffer == null )
+            {
+                /// If not, create the depthstencil surface
+                zbuffer = new XFG.DepthStencilBuffer( _device, width, height, dsfmt, multisample, 0 );
+                zBufferCache[ zbfmt ] = zbuffer;
+            }
+
+            return zbuffer;
         }
 
         public override void UnbindGpuProgram( GpuProgramType type )
