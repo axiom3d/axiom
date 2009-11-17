@@ -711,6 +711,7 @@ namespace Axiom.Graphics
 			}
 		}
 
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -1345,7 +1346,69 @@ namespace Axiom.Graphics
             protected set;
         }
 
-        #endregion
+	    #endregion
 
+        #region Shadow Materials
+
+        private Material _shadowCasterMaterial;
+        private string _shadowCasterMaterialName = string.Empty;
+        public Material ShadowCasterMaterial
+        {
+            get
+            {
+                return _shadowCasterMaterial;
+            }
+            set
+            {
+                if ( value != null )
+                {
+                    _shadowCasterMaterial = value;
+                    _shadowCasterMaterialName = _shadowCasterMaterial.Name;
+                }
+                else
+                {
+                    _shadowCasterMaterial = null;
+                    _shadowCasterMaterialName = String.Empty;
+                }
+            }
+        }
+
+        public void SetShadowCasterMaterial( string name )
+        {
+            _shadowCasterMaterialName = name;
+            _shadowCasterMaterial = (Material)MaterialManager.Instance[ name ];
+        }
+
+
+        private Material _shadowReceiverMaterial;
+        private string _shadowReceiverMaterialName = string.Empty;
+        public Material ShadowReceiverMaterial
+        {
+            get
+            {
+                return _shadowReceiverMaterial;
+            }
+            set
+            {
+                if ( value != null )
+                {
+                    _shadowReceiverMaterial = value;
+                    _shadowReceiverMaterialName = _shadowReceiverMaterial.Name;
+                }
+                else
+                {
+                    _shadowReceiverMaterial = null;
+                    _shadowReceiverMaterialName = String.Empty;
+                }
+            }
+        }
+
+        public void SetShadowReceiverMaterial( string name )
+        {
+            _shadowReceiverMaterialName = name;
+            _shadowReceiverMaterial = (Material)MaterialManager.Instance[ name ];
+        }
+
+        #endregion
     }
 }
