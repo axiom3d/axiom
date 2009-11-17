@@ -2116,7 +2116,10 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public static bool operator ==( LayerBlendModeEx left, LayerBlendModeEx right )
         {
-            if ( (object)left == null )
+            if ( (object)left == null && (object)right == null )
+                return true;
+
+            if ( (object)left == null || (object)right == null)
             {
                 return false;
             }
@@ -2144,6 +2147,14 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public static bool operator !=( LayerBlendModeEx left, LayerBlendModeEx right )
         {
+            if ( (object)left == null && (object)right == null )
+                return false;
+
+            if ( (object)left == null || (object)right == null )
+            {
+                return true;
+            }
+
             if ( left.blendType != right.blendType )
                 return false;
 

@@ -52,22 +52,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public TextureType TextureType;
 		public TexCoordCalcMethod TexCoordCalcMethod;
-        public LayerBlendModeEx LayerBlendModeEx;
+        public LayerBlendModeEx LayerBlendMode;
         public int CoordIndex;
+
 		#endregion Fields
-
-        public LayerBlendModeEx LayerBlendMode
-        {
-            get
-            {
-                return LayerBlendModeEx;
-            }
-            set
-            {
-                LayerBlendModeEx = value;
-
-            }
-        }
 
         #region Object Implementation
 
@@ -78,18 +66,25 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         public override int GetHashCode()
         {
-            return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ LayerBlendModeEx.GetHashCode() ^ CoordIndex.GetHashCode();
+            int layerBlendHash;
+            if ( LayerBlendMode == null )
+                layerBlendHash = 0;
+            else
+                layerBlendHash = LayerBlendMode.GetHashCode();
+
+            return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ layerBlendHash ^ CoordIndex.GetHashCode();
         }
 
         public override string ToString()
         {
             return ( new System.Text.StringBuilder() )
-                .AppendFormat( "[ TextureType: {0}; TexCoordCalcMethod : {1}; LayerBlendModeEx : {2}; CoordIndex : {3} ]",
+                .AppendFormat( "[ TextureType: {0}; TexCoordCalcMethod : {1}; LayerBlendMode : {2}; CoordIndex : {3} ]",
                                this.TextureType.ToString(),
                                this.TexCoordCalcMethod.ToString(),
-                               this.LayerBlendModeEx.ToString(),
+                               this.LayerBlendMode.ToString(),
                                this.CoordIndex.ToString() ).ToString();
         }
+
         #endregion Object Implementation
     }
 }
