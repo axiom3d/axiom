@@ -762,100 +762,103 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
                 #region blending
                 /*-----------------Blending----------------------------------------*/
-                LayerBlendModeEx  blend = curTextureLayerState.LayerBlendModeEx;
-                switch (blend.source1)
+                LayerBlendModeEx  blend = curTextureLayerState.LayerBlendMode;
+                if ( blend != null )
                 {
-                    case LayerBlendSource.Current:
-                        shaderSource += "\t\tfloat4 source1 = finalColor;\n";
-                        break;
-                    case LayerBlendSource.Texture:
-                        shaderSource += "\t\tfloat4 source1 = texColor;\n";
-                        break;
-                    case LayerBlendSource.Diffuse:
-                        shaderSource += "\t\tfloat4 source1 = input.Color;\n";
-                        break;
-                    case LayerBlendSource.Specular:
-                        shaderSource += "\t\tfloat4 source1 = input.ColorSpec;\n";
-                        break;
-                    case LayerBlendSource.Manual:
-                        shaderSource += "\t\tfloat4 Texture" + layerCounter + "_colourArg1=float4("+
-                                            blend.colorArg1.r.ToString()+","+
-                                            blend.colorArg1.g.ToString()+","+
-                                            blend.colorArg1.b.ToString()+","+
-                                            blend.colorArg1.a.ToString()+");\r\n";
-                        shaderSource += "\t\tfloat4 source1 = Texture" + layerCounter + "_colourArg1;\n";
-                        break;
-                }
-                switch (blend.source2)
-                {
-                    case LayerBlendSource.Current:
-                        shaderSource += "\t\tfloat4 source2 = finalColor;\n";
-                        break;
-                    case LayerBlendSource.Texture:
-                        shaderSource += "\t\tfloat4 source2 = texColor;\n";
-                        break;
-                    case LayerBlendSource.Diffuse:
-                        shaderSource += "\t\tfloat4 source2 = input.Color;\n";
-                        break;
-                    case LayerBlendSource.Specular:
-                        shaderSource += "\t\tfloat4 source2 = input.ColorSpec;\n";
-                        break;
-                    case LayerBlendSource.Manual:
-                        shaderSource += "\t\tfloat4 Texture" + layerCounter + "_colourArg2=float4(" +
-                                            blend.colorArg2.r.ToString() + "," +
-                                            blend.colorArg2.g.ToString() + "," +
-                                            blend.colorArg2.b.ToString() + "," +
-                                            blend.colorArg2.a.ToString() + ");\r\n";
-                        shaderSource += "\t\tfloat4 source2 = Texture" + layerCounter + "_colourArg2;\n";
-                        break;
-                }
+                    switch ( blend.source1 )
+                    {
+                        case LayerBlendSource.Current:
+                            shaderSource += "\t\tfloat4 source1 = finalColor;\n";
+                            break;
+                        case LayerBlendSource.Texture:
+                            shaderSource += "\t\tfloat4 source1 = texColor;\n";
+                            break;
+                        case LayerBlendSource.Diffuse:
+                            shaderSource += "\t\tfloat4 source1 = input.Color;\n";
+                            break;
+                        case LayerBlendSource.Specular:
+                            shaderSource += "\t\tfloat4 source1 = input.ColorSpec;\n";
+                            break;
+                        case LayerBlendSource.Manual:
+                            shaderSource += "\t\tfloat4 Texture" + layerCounter + "_colourArg1=float4(" +
+                                                blend.colorArg1.r.ToString() + "," +
+                                                blend.colorArg1.g.ToString() + "," +
+                                                blend.colorArg1.b.ToString() + "," +
+                                                blend.colorArg1.a.ToString() + ");\r\n";
+                            shaderSource += "\t\tfloat4 source1 = Texture" + layerCounter + "_colourArg1;\n";
+                            break;
+                    }
+                    switch ( blend.source2 )
+                    {
+                        case LayerBlendSource.Current:
+                            shaderSource += "\t\tfloat4 source2 = finalColor;\n";
+                            break;
+                        case LayerBlendSource.Texture:
+                            shaderSource += "\t\tfloat4 source2 = texColor;\n";
+                            break;
+                        case LayerBlendSource.Diffuse:
+                            shaderSource += "\t\tfloat4 source2 = input.Color;\n";
+                            break;
+                        case LayerBlendSource.Specular:
+                            shaderSource += "\t\tfloat4 source2 = input.ColorSpec;\n";
+                            break;
+                        case LayerBlendSource.Manual:
+                            shaderSource += "\t\tfloat4 Texture" + layerCounter + "_colourArg2=float4(" +
+                                                blend.colorArg2.r.ToString() + "," +
+                                                blend.colorArg2.g.ToString() + "," +
+                                                blend.colorArg2.b.ToString() + "," +
+                                                blend.colorArg2.a.ToString() + ");\r\n";
+                            shaderSource += "\t\tfloat4 source2 = Texture" + layerCounter + "_colourArg2;\n";
+                            break;
+                    }
 
-                switch (blend.operation)
-                {
-                    case LayerBlendOperationEx.Source1:
-                        shaderSource += "\t\tfinalColor = source1;\n";
-                        break;
-                    case LayerBlendOperationEx.Source2:
-                        shaderSource += "\t\tfinalColor = source2;\n";
-                        break;
-                    case LayerBlendOperationEx.Modulate:
-                        shaderSource += "\t\tfinalColor = source1 * source2;\n";
-                        break;
-                    case LayerBlendOperationEx.ModulateX2:
-                        shaderSource += "\t\tfinalColor = source1 * source2 * 2.0;\n";
-                        break;
-                    case LayerBlendOperationEx.ModulateX4:
-                        shaderSource += "\t\tfinalColor = source1 * source2 * 4.0;\n";
-                        break;
-                    case LayerBlendOperationEx.Add:
-                        shaderSource += "\t\tfinalColor = source1 + source2;\n";
-                        break;
-                    case LayerBlendOperationEx.AddSigned:
-                        shaderSource += "\t\tfinalColor = source1 + source2 - 0.5;\n";
-                        break;
-                    case LayerBlendOperationEx.AddSmooth:
-                        shaderSource += "\t\tfinalColor = source1 + source2 - (source1 * source2);\n";
-                        break;
-                    case LayerBlendOperationEx.Subtract:
-                        shaderSource += "\t\tfinalColor = source1 - source2;\n";
-                        break;
-                    case LayerBlendOperationEx.BlendDiffuseAlpha:
-                        shaderSource += "\t\tfinalColor = source1 * input.Color.w + source2 * (1.0 - input.Color.w);\n";
-                        break;
-                    case LayerBlendOperationEx.BlendTextureAlpha:
-                        shaderSource += "\t\tfinalColor = source1 * texColor.w + source2 * (1.0 - texColor.w);\n";
-                        break;
-                    case LayerBlendOperationEx.BlendCurrentAlpha:
-                        shaderSource += "\t\tfinalColor = source1 * finalColor.w + source2 * (1.0 - finalColor.w);\n";
-                        break;
-                    case LayerBlendOperationEx.BlendManual:
-                        shaderSource += "\t\tfinalColor = source1 * " + Convert.ToString(blend.blendFactor) +
-                                                        " + source2 * (1.0 - " + Convert.ToString(blend.blendFactor) + ");\n";
-                        break;
-                    case LayerBlendOperationEx.DotProduct:
-                        shaderSource += "\t\tfinalColor = product(source1,source2);\n";
-                        break;
-                    
+                    switch ( blend.operation )
+                    {
+                        case LayerBlendOperationEx.Source1:
+                            shaderSource += "\t\tfinalColor = source1;\n";
+                            break;
+                        case LayerBlendOperationEx.Source2:
+                            shaderSource += "\t\tfinalColor = source2;\n";
+                            break;
+                        case LayerBlendOperationEx.Modulate:
+                            shaderSource += "\t\tfinalColor = source1 * source2;\n";
+                            break;
+                        case LayerBlendOperationEx.ModulateX2:
+                            shaderSource += "\t\tfinalColor = source1 * source2 * 2.0;\n";
+                            break;
+                        case LayerBlendOperationEx.ModulateX4:
+                            shaderSource += "\t\tfinalColor = source1 * source2 * 4.0;\n";
+                            break;
+                        case LayerBlendOperationEx.Add:
+                            shaderSource += "\t\tfinalColor = source1 + source2;\n";
+                            break;
+                        case LayerBlendOperationEx.AddSigned:
+                            shaderSource += "\t\tfinalColor = source1 + source2 - 0.5;\n";
+                            break;
+                        case LayerBlendOperationEx.AddSmooth:
+                            shaderSource += "\t\tfinalColor = source1 + source2 - (source1 * source2);\n";
+                            break;
+                        case LayerBlendOperationEx.Subtract:
+                            shaderSource += "\t\tfinalColor = source1 - source2;\n";
+                            break;
+                        case LayerBlendOperationEx.BlendDiffuseAlpha:
+                            shaderSource += "\t\tfinalColor = source1 * input.Color.w + source2 * (1.0 - input.Color.w);\n";
+                            break;
+                        case LayerBlendOperationEx.BlendTextureAlpha:
+                            shaderSource += "\t\tfinalColor = source1 * texColor.w + source2 * (1.0 - texColor.w);\n";
+                            break;
+                        case LayerBlendOperationEx.BlendCurrentAlpha:
+                            shaderSource += "\t\tfinalColor = source1 * finalColor.w + source2 * (1.0 - finalColor.w);\n";
+                            break;
+                        case LayerBlendOperationEx.BlendManual:
+                            shaderSource += "\t\tfinalColor = source1 * " + Convert.ToString( blend.blendFactor ) +
+                                                            " + source2 * (1.0 - " + Convert.ToString( blend.blendFactor ) + ");\n";
+                            break;
+                        case LayerBlendOperationEx.DotProduct:
+                            shaderSource += "\t\tfinalColor = product(source1,source2);\n";
+                            break;
+
+                    }
                 }
                 shaderSource += "\t}\n";
             }
