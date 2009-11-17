@@ -468,7 +468,7 @@ namespace Axiom.Core
 
         /// <summary>
         ///	    The default implementation of texture shadows uses a fixed-function 
-        ///    	colour texture projection approach for maximum compatibility, and 
+        ///    	color texture projection approach for maximum compatibility, and 
         ///     as such cannot support self-shadowing. However, if you decide to 
         ///	    implement a more complex shadowing technique using 
         ///	    ShadowTextureCasterMaterial and ShadowTextureReceiverMaterial 
@@ -488,13 +488,19 @@ namespace Axiom.Core
         /// </summary>
         protected bool shadowUseInfiniteFarPlane;
 
-        /// <summary>Flag that specifies whether scene nodes will have their bounding boxes rendered as a wire frame.</summary>
-        protected bool showBoundingBoxes;
-
         /// <summary>
         ///		If true, shadow volumes will be visible in the scene.
         /// </summary>
         protected bool showDebugShadows;
+
+        protected bool shadowTextureConfigDirty;
+        protected List<ShadowTextureConfig> shadowTextureConfigList = new List<ShadowTextureConfig>();
+        protected Texture nullShadowTexture;
+        protected Dictionary<Camera, Light> shadowCameraLightMapping = new Dictionary<Camera, Light>();
+
+        /// <summary>Flag that specifies whether scene nodes will have their bounding boxes rendered as a wire frame.</summary>
+        protected bool showBoundingBoxes;
+
 
         protected Entity[] skyBoxEntities = new Entity[6];
         protected SceneNode skyBoxNode;
@@ -3626,6 +3632,80 @@ namespace Axiom.Core
             this.shadowTextureCount = count;
             this.shadowTextureSize = size;
             this.shadowTextureFormat = format;
+        }
+
+        protected virtual void EnsureShadowTexturesCreated()
+        {
+            if ( shadowTextureConfigDirty )
+            {
+                DestroyShadowTextures();
+                ShadowTextureManager.Instance.GetShadowTextures( shadowTextureConfigList, shadowTextures );
+
+                // clear shadow cam - light mapping
+                shadowCameraLightMapping.Clear();
+
+
+                // Recreate shadow textures
+                foreach ( Texture shadowTexture in shadowTextures )
+                {
+                    // Camera names are local to SM 
+                    String camName = shadowTexture.Name + "Cam";
+                    // Material names are global to SM, make specific
+                    String matName = shadowTexture.Name + "Mat" + this.Name;
+
+                    RenderTexture shadowRTT = shadowTexture.GetBuffer().GetRenderTarget();
+
+                    // Create camera for this texture, but note that we have to rebind
+                    // in PrepareShadowTextures to coexist with multiple SMs
+                    Camera cam = CreateCamera( camName );
+                    cam.AspectRatio = shadowTexture.Width / (Real)shadowTexture.Height;
+                    shadowTextureCameras.Add( cam );
+
+                    // Create a viewport, if not there already
+                    if ( shadowRTT.ViewportCount == 0 )
+                    {
+                        // Note camera assignment is transient when multiple SMs
+                        Viewport v = shadowRTT.AddViewport( cam );
+                        v.ClearEveryFrame = true;
+                        // remove overlays
+                        v.ShowOverlays = false;
+                    }
+
+                    // Don't update automatically - we'll do it when required
+                    shadowRTT.IsAutoUpdated = false;
+
+                    // Also create corresponding Material used for rendering this shadow
+                    Material mat = (Material)MaterialManager.Instance[ matName ];
+                    if ( mat == null )
+                    {
+                        mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
+                    }
+                    Pass p = mat.GetTechnique( 0 ).GetPass( 0 );
+                    if ( p.TextureUnitStageCount != 1 /* ||
+                         p.GetTextureUnitState( 0 ).GetTexture( 0 ) != shadowTexture */ )
+                    {
+                        mat.GetTechnique( 0 ).GetPass( 0 ).RemoveAllTextureUnitStates();
+                        // create texture unit referring to render target texture
+                        TextureUnitState texUnit = p.CreateTextureUnitState( shadowTexture.Name );
+                        // set projective based on camera
+                        texUnit.SetProjectiveTexturing( !p.HasVertexProgram, cam );
+                        // clamp to border colour
+                        texUnit.TextureAddressing = TextureAddressing.Border;
+                        texUnit.TextureBorderColor = ColorEx.White;
+                        mat.Touch();
+
+                    }
+
+                    // insert dummy camera-light combination
+                    shadowCameraLightMapping.Add( cam, null );
+
+                    // Get null shadow texture
+                    nullShadowTexture = shadowTextureConfigList.Count == 0 ?
+                                        null :
+                                        ShadowTextureManager.Instance.GetNullShadowTexture( shadowTextureConfigList[ 0 ].format );
+                }
+                shadowTextureConfigDirty = false;
+            }
         }
 
         #endregion
