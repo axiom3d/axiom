@@ -852,7 +852,12 @@ namespace Axiom.Graphics
 		///		Add the texture values to the existing scene content.
 		///	 </summary>
 		[ScriptEnum( "add" )]
-		Add
+		Add,
+        /// <summary>
+        /// The default blend mode where source replaces destination
+        /// </summary>
+        [ScriptEnum( "replace" )]
+        Replace,
 	}
 
 	/// <summary>
