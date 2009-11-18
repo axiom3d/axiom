@@ -5294,8 +5294,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             // we want the far intersection anyway
             localRay.Origin = localRay.GetPoint(-mWorldSize / mSize * 0.5f);
             IntersectResult res = new IntersectResult();
-            if (Utility.Intersects(localRay, AABB, ref dNear, ref dFar))
+            Tuple<bool, Real, Real> intersects = Utility.Intersect(localRay, AABB);
+            if (intersects.First)
             {
+                dNear = intersects.Second;
+                dFar = intersects.Third;
                 // discard out of range
                 if (dFar <= 0 || (distanceLimit != 0 && dFar > distanceLimit))
                     return null;

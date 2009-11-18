@@ -1172,16 +1172,14 @@ namespace Axiom.Math
         /// <param name="d1"></param>
         /// <param name="d2"></param>
         /// <returns></returns>
-        public static bool Intersects(Ray ray, AxisAlignedBox box, ref Real d1, ref Real d2)
+        public static Tuple<bool,Real,Real> Intersect(Ray ray, AxisAlignedBox box)
         {
             if (box.IsNull)
-                return false;
+                return new Tuple<bool, Real, Real>(false, Real.NaN, Real.NaN);
 
             if (box.IsInfinite)
             {
-                if (d1 != 0) d1 = 0;
-                if (d2 != 0) d2 = Real.PositiveInfinity;
-                return true;
+                return new Tuple<bool, Real, Real>(true, Real.NaN, Real.PositiveInfinity);
             }
 
             Vector3 min = box.Minimum;
@@ -1216,39 +1214,35 @@ namespace Axiom.Math
             // Check each axis in turn
 
             if (!CalcAxis(imax, rayDir, rayorig, min, max, ref end, ref start))
-                return false;
+                return new Tuple<bool, Real, Real>(false, Real.NaN, Real.NaN);
 
             if (absDir[imid] < Real.Epsilon)
             {
                 // Parallel with middle and minimise axis, check bounds only
                 if (rayorig[imid] < min[imid] || rayorig[imid] > max[imid] ||
                     rayorig[imin] < min[imin] || rayorig[imin] > max[imin])
-                    return false;
+                    return new Tuple<bool, Real, Real>(false, Real.NaN, Real.NaN);
             }
             else
             {
                 if (!CalcAxis(imid, rayDir, rayorig, min, max, ref end, ref start))
-                    return false;
+                    return new Tuple<bool, Real, Real>(false, Real.NaN, Real.NaN);
 
                 if (absDir[imin] < Real.Epsilon)
                 {
                     // Parallel with minimise axis, check bounds only
                     if (rayorig[imin] < min[imin] || rayorig[imin] > max[imin])
-                        return false;
+                        return new Tuple<bool, Real, Real>(false, Real.NaN, Real.NaN);
                 }
                 else
                 {
                     if (!CalcAxis(imin, rayDir, rayorig, min, max, ref end, ref start))
-                        return false;
+                        return new Tuple<bool, Real, Real>(false, Real.NaN, Real.NaN);
                 }
             }
-
-            if (d1 != 0) d1 = start;
-            if (d2 != 0) d2 = end;
-
-            return true;
+            return new Tuple<bool, Real, Real>(true, start, end);
         }
-        static bool CalcAxis(int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max
+        private static bool CalcAxis(int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max
             , ref Real end, ref Real start)
         {
             Real denom = 1 / raydir[i];
