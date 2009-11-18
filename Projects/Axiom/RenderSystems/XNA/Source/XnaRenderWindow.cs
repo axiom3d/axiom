@@ -47,6 +47,7 @@ using Microsoft.Xna.Framework.Graphics;
 using RenderTarget=Axiom.Graphics.RenderTarget;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Graphics.Collections;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
 using Axiom.Graphics.Collections;
@@ -63,8 +64,8 @@ namespace Axiom.RenderSystems.Xna
 	{
 		#region Fields and Properties
 
-        private SWF.Control _window;			// Win32 Window handle
-        private bool _isExternal;			// window not created by Ogre
+        private IntPtr _windowHandle;			// Win32 Window handle
+        private bool _isExternal;			// window not created by Axiom
         private bool _sizing;
         private bool _isSwapChain;			// Is this a secondary window?
 
@@ -95,20 +96,22 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                if ( _window != null )
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+                if ( _windowHandle != null )
                 {
+                    SWF.Control control = SWF.Control.FromHandle( _windowHandle );
                     if ( _isExternal )
                     {
-                        if ( _window is SWF.Form )
+                        if ( control is SWF.Form )
                         {
-                            if ( ( (SWF.Form)_window ).WindowState == SWF.FormWindowState.Minimized )
+                            if ( ( (SWF.Form)control ).WindowState == SWF.FormWindowState.Minimized )
                             {
                                 return false;
                             }
                         }
-                        else if ( _window is SWF.PictureBox )
+                        else if ( control is SWF.PictureBox )
                         {
-                            SWF.Control parent = _window.Parent;
+                            SWF.Control parent = control.Parent;
                             while ( !( parent is SWF.Form ) )
                                 parent = parent.Parent;
 
@@ -120,7 +123,7 @@ namespace Axiom.RenderSystems.Xna
                     }
                     else
                     {
-                        if ( ( (SWF.Form)_window ).WindowState == SWF.FormWindowState.Minimized )
+                        if ( ( (SWF.Form)control ).WindowState == SWF.FormWindowState.Minimized )
                         {
                             return false;
                         }
@@ -128,7 +131,7 @@ namespace Axiom.RenderSystems.Xna
                 }
                 else
                     return false;
-
+#endif
                 return true;
             }
         }
@@ -210,8 +213,8 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="miscParams"></param>
         public override void Create( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
         {
-            SWF.Control parentHWnd = null;
-            SWF.Control externalHWnd = null;
+            IntPtr parentHWnd = IntPtr.Zero;
+            IntPtr externalHWnd = IntPtr.Zero;
             String title = name;
             int colourDepth = 32;
             int left = -1; // Defaults to screen center
@@ -245,44 +248,35 @@ namespace Axiom.RenderSystems.Xna
                     title = (string)miscParams[ "title" ];
                 }
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 // parentWindowHandle		-> parentHWnd
                 if ( miscParams.ContainsKey( "parentWindowHandle" ) )
                 {
                     object handle = miscParams[ "parentWindowHandle" ];
-                    IntPtr ptr = IntPtr.Zero;
                     if ( handle.GetType() == typeof( IntPtr ) )
                     {
-                        ptr = (IntPtr)handle;
+                        parentHWnd = (IntPtr)handle;
                     }
                     else if ( handle.GetType() == typeof( System.Int32 ) )
                     {
-                        ptr = new IntPtr( (int)handle );
+                        parentHWnd = new IntPtr( (int)handle );
                     }
-                    parentHWnd = SWF.Control.FromHandle( ptr );
-                    //parentHWnd = (SWF.Control)miscParams[ "parentWindowHandle" ];
                 }
 
                 // externalWindowHandle		-> externalHWnd
                 if ( miscParams.ContainsKey( "externalWindowHandle" ) )
                 {
                     object handle = miscParams[ "externalWindowHandle" ];
-                    IntPtr ptr = IntPtr.Zero;
                     if ( handle.GetType() == typeof( IntPtr ) )
                     {
-                        ptr = (IntPtr)handle;
+                        externalHWnd = (IntPtr)handle;
                     }
                     else if ( handle.GetType() == typeof( System.Int32 ) )
                     {
-                        ptr = new IntPtr( (int)handle );
+                        externalHWnd = new IntPtr( (int)handle );
                     }
-                    externalHWnd = SWF.Control.FromHandle( ptr );
-                    //externalHWnd = (SWF.Control)miscParams["externalWindowHandle"];
-                    //if ( !( externalHWnd is SWF.Form ) && !( externalHWnd is SWF.PictureBox ) )
-                    //{
-                    //    throw new Exception( "externalWindowHandle must be either a Form or a PictureBox control." );
-                    //}
                 }
-
+#endif
                 // vsync	[parseBool]
                 if ( miscParams.ContainsKey( "vsync" ) )
                 {
@@ -338,11 +332,11 @@ namespace Axiom.RenderSystems.Xna
                 }
 
             }
-
-            if ( _window != null )
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+            if ( _windowHandle != null )
                 Dispose();
 
-            if ( externalHWnd == null )
+            if ( externalHWnd == IntPtr.Zero )
             {
                 Width = width;
                 Height = height;
@@ -360,9 +354,9 @@ namespace Axiom.RenderSystems.Xna
                 if ( !isFullScreen )
                 {
                     newWin.StartPosition = SWF.FormStartPosition.CenterScreen;
-                    if ( parentHWnd != null )
+                    if ( parentHWnd != IntPtr.Zero )
                     {
-                        newWin.Parent = parentHWnd;
+                        newWin.Parent = SWF.Control.FromHandle( parentHWnd );
                     }
                     else
                     {
@@ -405,15 +399,17 @@ namespace Axiom.RenderSystems.Xna
                 newWin.Left = left;
 
                 newWin.RenderWindow = this;
-                _window = newWin;
+                _windowHandle = newWin.Handle;
 
                 WindowEventMonitor.Instance.RegisterWindow( this );
+
             }
             else
             {
-                _window = externalHWnd;
+                _windowHandle = externalHWnd;
                 _isExternal = true;
             }
+#endif
 
             // set the params of the window
             this.Name = name;
@@ -427,7 +423,9 @@ namespace Axiom.RenderSystems.Xna
 
             CreateXnaResources();
 
-            _window.Show();
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+            (SWF.Control.FromHandle( _windowHandle )).Show();
+#endif
 
             IsActive = true;
             _isClosed = false;
@@ -463,7 +461,7 @@ namespace Axiom.RenderSystems.Xna
             this._xnapp.SwapEffect = XFG.SwapEffect.Discard;
             this._xnapp.BackBufferCount = _vSync ? 2 : 1;
             this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
-            this._xnapp.DeviceWindowHandle = _window.Handle;
+            this._xnapp.DeviceWindowHandle = _windowHandle;
             this._xnapp.BackBufferHeight = Height;
             this._xnapp.BackBufferWidth = Width;
             this._xnapp.FullScreenRefreshRateInHz = IsFullScreen ? _displayFrequency : 0;
@@ -603,7 +601,7 @@ namespace Axiom.RenderSystems.Xna
                     try
                     {
                         // hardware vertex processing
-                        device = new XFG.GraphicsDevice( adapterToUse, devType, _window.Handle, this._xnapp );
+                        device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
                     }
                     catch ( Exception )
                     {
@@ -611,14 +609,14 @@ namespace Axiom.RenderSystems.Xna
                         {
                             // Try a second time, may fail the first time due to back buffer count,
                             // which will be corrected down to 1 by the runtime
-                            device = new XFG.GraphicsDevice( adapterToUse, devType, _window.Handle, this._xnapp );
+                            device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
                         }
                         catch ( Exception )
                         {
                             try
                             {
                                 // doh, how bout mixed vertex processing
-                                device = new XFG.GraphicsDevice( adapterToUse, devType, _window.Handle,  this._xnapp );
+                                device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle,  this._xnapp );
                             }
                             catch ( Exception )
                             {
@@ -626,7 +624,7 @@ namespace Axiom.RenderSystems.Xna
                                 {
                                     // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
                                     // anything at all since they obviously don't have a video card installed
-                                    device = new XFG.GraphicsDevice( adapterToUse, devType, _window.Handle, this._xnapp );
+                                    device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
                                 }
                                 catch ( Exception ex )
                                 {
@@ -662,7 +660,7 @@ namespace Axiom.RenderSystems.Xna
                         return Driver.XnaDevice;
 
                     case "WINDOW":
-                        return this._window.Handle;
+                        return this._windowHandle;
 
                     case "XNAZBUFFER":
                         return this._stencilBuffer;
@@ -817,6 +815,7 @@ namespace Axiom.RenderSystems.Xna
                     }
 
                 }
+#if !( XBOX || XBOX360 )
                 else
                 {
                     Rectangle srcRect = new Rectangle();
@@ -828,7 +827,8 @@ namespace Axiom.RenderSystems.Xna
                     System.Drawing.Point point = new System.Drawing.Point();
                     point.X = (int)srcRect.Left;
                     point.Y = (int)srcRect.Top;
-                    point = _window.PointToScreen( point );
+                    SWF.Control control = SWF.Control.FromHandle( _windowHandle );
+                    point = control.PointToScreen( point );
                     srcRect.Top = point.Y;
                     srcRect.Left = point.X;
                     srcRect.Bottom += point.Y;
@@ -836,6 +836,7 @@ namespace Axiom.RenderSystems.Xna
 
                     surface.GetData<byte>( 0, XnaHelper.ToRectangle( srcRect ), data, 0, 255);
                 }
+#endif
             }
             else
             {

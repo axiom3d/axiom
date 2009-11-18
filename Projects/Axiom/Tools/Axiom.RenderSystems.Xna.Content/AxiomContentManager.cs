@@ -24,7 +24,7 @@ namespace Axiom.RenderSystems.Xna.Content
         {
             if ( System.IO.Path.GetExtension( assetName ) != "xnb" )
                 assetName = System.IO.Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
-            return TextureManager.Instance.FindResourceData( assetName );
+            return ResourceGroupManager.Instance.OpenResource( assetName );
         }
     }
 }

@@ -37,15 +37,15 @@ namespace Axiom.Demos.Browser.Xna
         private bool _configure()
         {
             // instantiate the Root singleton
-            engine = new Root( CONFIG_FILE, "AxiomDemos.log" );
+            engine = new Root( "AxiomDemos.log" );
 
 #if (XBOX || XBOX360 )
-            ( new Axiom.RenderSystems.Xna.Plugin() ).Start();
+            ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
 #endif
-            Root.Instance.RenderSystem = Root.Instance.RenderSystems[ 0 ];
+            Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "XNA" ];
             _setupResources();
 
-            engine.FrameStarted += new FrameEvent( engine_FrameStarted );
+            engine.FrameStarted += engine_FrameStarted;
 
             return true;
         }
@@ -53,7 +53,7 @@ namespace Axiom.Demos.Browser.Xna
         void engine_FrameStarted( object source, FrameEventArgs e )
         {
             Axiom.Overlays.OverlayManager.Instance.GetByName( "Core/XnaOverlay" ).Show();
-            engine.FrameStarted -= new FrameEvent( engine_FrameStarted );
+            engine.FrameStarted -= engine_FrameStarted;
         }
 
         /// <summary>
@@ -61,29 +61,29 @@ namespace Axiom.Demos.Browser.Xna
         /// </summary>
         private void _setupResources()
         {
-            ResourceManager.AddCommonArchive( "Content\\Fonts", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Fonts", "Folder" );
 #if !( XBOX || XBOX360 )
-            ResourceManager.AddCommonArchive( "Content\\Icons", "Folder" );
-            ResourceManager.AddCommonArchive( "Content\\BrowserImages", "Folder" );
-            ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\scripts", "Folder" );
-            ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\programs", "Folder" );
-            //ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\textures", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Icons", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\BrowserImages", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\scripts", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\programs", "Folder" );
+            //ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\textures", "Folder" );
 
-            ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\Fresnel.zip", "ZipFile" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\Fresnel.zip", "ZipFile" );
 #else
             //ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\XBox", "Folder" );
-            ResourceManager.AddCommonArchive("Content\\XNA.Materials\\XBox\\scripts", "Folder");
-            ResourceManager.AddCommonArchive("Content\\XNA.Materials\\XBox\\programs", "Folder");
-            ResourceManager.AddCommonArchive("Content\\XNA.Materials\\XBox\\Textures", "Folder");
+            ResourceGroupManager.Instance.AddResourceLocation("Content\\XNA.Materials\\XBox\\scripts", "Folder");
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\XBox\\programs", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\XBox\\Textures", "Folder" );
 #endif
-            ResourceManager.AddCommonArchive( "Content\\Meshes", "Folder" );
-            ResourceManager.AddCommonArchive( "Content\\Overlays", "Folder" );
-            ResourceManager.AddCommonArchive( "Content\\Skeletons", "Folder" );
-            ResourceManager.AddCommonArchive( "Content\\Textures", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Meshes", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Overlays", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Skeletons", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Textures", "Folder" );
 #if !( XBOX || XBOX360 )
-            ResourceManager.AddCommonArchive( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
-            ResourceManager.AddCommonArchive( "Content\\Archives\\chiropteraDM.zip", "ZipFile" );
-            ResourceManager.AddCommonArchive("Content\\Archives\\Water.zip", "ZipFile");
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
+            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Archives\\chiropteraDM.zip", "ZipFile" );
+            ResourceGroupManager.Instance.AddResourceLocation("Content\\Archives\\Water.zip", "ZipFile");
 #endif
 
         }

@@ -850,7 +850,7 @@ namespace Axiom.RenderSystems.Xna
 
 	    public static Rectangle ToRectangle( Core.Rectangle rectangle )
 	    {
-	        Rectangle retVal;
+	        Rectangle retVal = new Rectangle();
 	        retVal.X = (int)rectangle.Left;
 	        retVal.Y = (int)rectangle.Top;
 	        retVal.Width = (int)rectangle.Width;
@@ -860,7 +860,7 @@ namespace Axiom.RenderSystems.Xna
 
         public static Rectangle ToRectangle( BasicBox rectangle )
         {
-            Rectangle retVal;
+            Rectangle retVal = new Rectangle();
             retVal.X = (int)rectangle.Left;
             retVal.Y = (int)rectangle.Top;
             retVal.Width = (int)rectangle.Width;
