@@ -81,7 +81,7 @@ namespace Axiom.Plugins.DevILCodecs
             }
 
             // swap the color components
-            Ilu.iluSwapColours();
+            //Ilu.iluSwapColours();
 
             format = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
             bytesPerPixel = Il.ilGetInteger( Il.IL_IMAGE_BYTES_PER_PIXEL );
