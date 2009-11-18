@@ -65,7 +65,7 @@ namespace Axiom.Math
 	{
         private static readonly Real _radiansToDegrees = 180.0f / Utility.PI;
 
-        public static readonly Radian Zero = new Radian( Real.Zero );
+        public static readonly Radian Zero = (Radian)Real.Zero;
 
         private Real _value;
 
@@ -75,12 +75,12 @@ namespace Axiom.Math
 
         public Degree InDegrees { get { return _value * _radiansToDegrees; } }
 
-        public static implicit operator Radian( Real value )   { return new Radian( value ); }
-        public static implicit operator Radian( Degree value ) { return new Radian( value ); }
-        public static implicit operator Radian( Numeric value ) { return new Radian( (Real)value ); }
-        public static explicit operator Radian( int value ) { return new Radian( (Real)value ); }
+        public static implicit operator Radian( Real value )    { Radian retVal; retVal._value = value; return retVal; }
+        public static implicit operator Radian( Degree value )  { Radian retVal; retVal._value = value; return retVal; }
+        public static implicit operator Radian( Numeric value ) { Radian retVal; retVal._value = value; return retVal; }
+        public static explicit operator Radian( int value )     { Radian retVal; retVal._value = value; return retVal; }
 
-        public static implicit operator Real( Radian value )    { return new Real( value._value ); }
+        public static implicit operator Real( Radian value )    { return (Real)value._value; }
         public static explicit operator Numeric( Radian value ) { return (Numeric)value._value; }
 
         public static Radian operator + ( Radian left, Real right )    { return left._value + right; }
