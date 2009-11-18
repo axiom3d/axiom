@@ -294,7 +294,7 @@ namespace Axiom.Core
 
         /// <summary>Map of loading order (Real) to ScriptLoader, used to order script parsing</summary>
         //          typedef std::multimap<Real, ScriptLoader*> ScriptLoaderOrderMap;
-        public class ScriptLoaderOrderMap : SortedDictionary<float, List<IScriptLoader>>
+        public class ScriptLoaderOrderMap : AxiomSortedCollection<float, List<IScriptLoader>>
         {
         };
 

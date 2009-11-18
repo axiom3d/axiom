@@ -128,7 +128,7 @@ namespace Axiom.Scripting
         }
 
         /// <summary>
-        /// Looksup the script attibute for the enumeration value
+        /// Looks up the script attibute for the enumeration value
         /// </summary>
         /// <param name="enumValue">The enumeration value</param>
         /// <param name="type">The Enumeration</param>
@@ -143,7 +143,7 @@ namespace Axiom.Scripting
             {
                 FieldInfo field = fields[ i ];
                 if ( type == field.FieldType.UnderlyingSystemType && 
-                    (int)field.GetRawConstantValue() == enumValue )
+                    (int)field.GetValue(null) == enumValue )
                 {
                     // find custom attributes declared for this field
                     object[] atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );

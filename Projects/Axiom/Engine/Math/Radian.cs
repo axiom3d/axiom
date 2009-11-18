@@ -56,7 +56,12 @@ namespace Axiom.Math
     /// will be done automatically between them.
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
-	public struct Radian : ISerializable, IComparable< Radian>, IComparable< Degree >, IComparable< Real >
+#if !( XBOX || XBOX360 )
+    [Serializable]
+	public struct Radian : ISerializable, IComparable<Radian>, IComparable<Degree>, IComparable<Real>
+#else
+    public struct Radian : IComparable<Radian>, IComparable<Degree>, IComparable<Real>
+#endif
 	{
         private static readonly Real _radiansToDegrees = 180.0f / Utility.PI;
 
@@ -102,11 +107,14 @@ namespace Axiom.Math
         public override bool Equals(object obj) { return ( obj is Radian && this == (Radian)obj ); }
         public override int GetHashCode() { return _value.GetHashCode(); }
 
+#if !( XBOX || XBOX360 )
+        #region ISerializable Implementation
         private Radian( SerializationInfo info, StreamingContext context ) { _value = (Real)info.GetValue( "value", typeof( Real ) ); }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public void GetObjectData( SerializationInfo info, StreamingContext context ) { info.AddValue( "value", _value ); }
-
+        #endregion ISerializableImplementation
+#endif
 
         #region IComparable<T> Members
 

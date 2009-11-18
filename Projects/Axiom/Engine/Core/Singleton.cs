@@ -80,7 +80,7 @@ namespace Axiom.Core
 				{
 					return SingletonFactory.instance;
 				}
-				catch ( TypeInitializationException )
+				catch ( /*TypeInitialization*/Exception )
 				{
 					throw new Exception( string.Format( "Type {0} must implement a private parameterless constructor.", typeof( T ) ) );
 				}

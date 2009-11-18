@@ -56,8 +56,12 @@ namespace Axiom.Math
     /// will be done automatically between them.
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
+#if !( XBOX || XBOX360 )
     [Serializable]
     public struct Degree : ISerializable, IComparable<Degree>, IComparable<Radian>, IComparable<Real>
+#else
+    public struct Degree : IComparable<Degree>, IComparable<Radian>, IComparable<Real>
+#endif
 	{
         private static readonly Real _degreesToRadians = Utility.PI / 180.0f;
 
@@ -103,10 +107,14 @@ namespace Axiom.Math
         public override bool Equals(object obj) { return ( obj is Degree && this == (Degree)obj ); }
         public override int GetHashCode() { return _value.GetHashCode(); }
 
+#if !( XBOX || XBOX360 )
+        #region ISerializable Implementation
         private Degree( SerializationInfo info, StreamingContext context ) { _value = (Real)info.GetValue( "value", typeof( Real ) ); }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public void GetObjectData( SerializationInfo info, StreamingContext context ) { info.AddValue( "value", _value ); }
+        #endregion ISerializableImplementation
+#endif
 
         #region IComparable<T> Members
 

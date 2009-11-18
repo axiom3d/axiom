@@ -212,7 +212,7 @@ namespace Axiom.Graphics
 		OrganizationMode _organizationMode;
 
 		/// Grouped 
-		SortedDictionary<Pass, List<IRenderable>> _grouped = new SortedDictionary<Pass, List<IRenderable>>( new PassGroupComparer() );
+        AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
 
 		/// Sorted descending (can iterate backwards to get ascending)
 		List<RenderablePass> _sortedDescending = new List<RenderablePass>();

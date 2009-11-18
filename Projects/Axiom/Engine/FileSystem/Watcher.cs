@@ -46,15 +46,16 @@ namespace Axiom.FileSystem
     public class Watcher
     {
         #region Fields and Properties
-
+#if !( XBOX || XBOX360 )
         private readonly FileSystemWatcher _monitor;
-
+#endif
         #endregion Fields and Properties
 
         #region Construction and Destruction
 
         public Watcher(string path, bool recurse)
         {
+#if !( XBOX || XBOX360 )
             // Initialize FileSystemWatcher
             this._monitor = new FileSystemWatcher();
             this._monitor.Path = path;
@@ -72,13 +73,14 @@ namespace Axiom.FileSystem
 
             // Begin watching.
             this._monitor.EnableRaisingEvents = true;
-
+#endif
             LogManager.Instance.Write( "File monitor created for {0}.", path );
         }
 
         #endregion Construction and Destruction
 
         #region Methods
+#if !( XBOX || XBOX360 )
 
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
@@ -91,7 +93,7 @@ namespace Axiom.FileSystem
             // Specify what is done when a file is renamed.
             LogManager.Instance.Write( "File: {0} renamed to {1}", e.OldFullPath, e.FullPath );
         }
-
+#endif
         #endregion Methods
     }
 }

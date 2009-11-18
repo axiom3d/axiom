@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -63,10 +63,6 @@
     <Reference Include="System">
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-      <HintPath>\System.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.Xml</Name>
