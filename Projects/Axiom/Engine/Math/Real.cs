@@ -58,9 +58,13 @@ namespace Axiom.Math
     /// _REAL_AS_SINGLE to use a single-precision value.
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
+#if !( XBOX || XBOX360 )
     [Serializable]
     public struct Real : ISerializable, IComparable<Real>, IConvertible
-    {
+#else
+    public struct Real : IComparable<Real>, IConvertible
+#endif
+{
         #region Fields
         /// <summary>
         ///		Culture info to use for parsing numeric data.
@@ -646,6 +650,7 @@ namespace Axiom.Math
 
         #endregion System.Object Overrides
 
+#if !( XBOX || XBOX360 )
         #region ISerializable Implementation
 
         /// <summary>
@@ -670,6 +675,7 @@ namespace Axiom.Math
         }
 
         #endregion ISerializable Implementation
+#endif
 
         #region IComparable<Real> Members
 

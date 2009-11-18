@@ -92,8 +92,7 @@ namespace Axiom.Core
 
 		#region String.Split() replacements
 
-#if !XBOX360
-
+#if !( XBOX || XBOX360 )
 		public static string[] Split( string s, char[] separators )
 		{
 			return s.Split( separators, 0, StringSplitOptions.None );
@@ -103,8 +102,12 @@ namespace Axiom.Core
 		{
 			return s.Split( separators, count, StringSplitOptions.None );
 		}
-
 #else
+
+		public static string[] Split( string s, char[] separators, int count )
+		{
+			return Split(s, separators, count, StringSplitOptions.None );
+		}
 
 		public static string[] Split( string s, char[] separators )
 		{
@@ -231,7 +234,6 @@ namespace Axiom.Core
 				return results.ToArray();
 			}
 		}
-
 #endif
 		#endregion
 		/// <summary>

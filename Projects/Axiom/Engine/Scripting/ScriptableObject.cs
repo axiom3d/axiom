@@ -66,8 +66,23 @@ namespace Axiom.Scripting
                     if( attribute is CommandAttribute )
                     {
                         var pca = attribute as CommandAttribute;
+#if !( XBOX || XBOX360 || SILVERLIGHT )
                         if ( commandClass.GetInterface( typeof( IPropertyCommand ).Name ) != null )
                         {
+#else
+                        bool typeFound = false;
+                        for ( int i = 0; i < commandClass.GetInterfaces().GetLength( 0 ); i++ )
+                        {
+                            if ( type.GetInterfaces()[ i ] == typeof( IPropertyCommand ) )
+                            {
+                                typeFound = true;
+                                break;
+                            }
+                        }
+
+                        if ( typeFound )
+                        {
+#endif
                             object commandInstance = Activator.CreateInstance( commandClass );
                             var propertyCommand = commandInstance as IPropertyCommand;
                             commands.Add( pca.Name, propertyCommand );

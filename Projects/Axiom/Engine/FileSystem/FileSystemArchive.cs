@@ -95,11 +95,10 @@ namespace Axiom.FileSystem
         {
 			if ( pattern == "" )
 				pattern = "*";
-
-            SearchOption so;
-
             if ( currentDir == "") currentDir = _basePath;
 
+#if !( XBOX || XBOX360 )
+            SearchOption so;
             if ( recursive )
             {
                 so = SearchOption.AllDirectories;
@@ -110,6 +109,9 @@ namespace Axiom.FileSystem
             }
 
             foreach( string file in Directory.GetFiles( currentDir , pattern, so) )
+#else
+            foreach( string file in Directory.GetFiles( currentDir, pattern ) )
+#endif
             {
                 System.IO.FileInfo fi = new System.IO.FileInfo( file );
                 if ( simpleList != null )
@@ -194,7 +196,11 @@ namespace Axiom.FileSystem
             // check to see if it's writable
             try
             {
+#if !( XBOX || XBOX360 )
                 File.Create(_basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose);
+#else
+                File.Create(_basePath + @"__testWrite.Axiom", 1 );
+#endif
             }
             catch (Exception ex)
             {
@@ -224,7 +230,11 @@ namespace Axiom.FileSystem
             {
                 try
                 {
+#if !( XBOX || XBOX360 )
                     stream = File.Create( fullPath, 1, FileOptions.RandomAccess );
+#else
+                    stream = File.Create( fullPath, 1 );
+#endif
                 }
                 catch( Exception ex )
                 {

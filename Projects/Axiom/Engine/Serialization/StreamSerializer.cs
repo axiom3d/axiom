@@ -655,7 +655,7 @@ namespace Axiom.Serialization
             System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
             byte[] buffer = new byte[length];
             this.ReadData( buffer, buffer.Length, 1 );
-            data = encoding.GetString( buffer );
+            data = encoding.GetString( buffer, 0, buffer.Length );
         }
 
         /// <summary>

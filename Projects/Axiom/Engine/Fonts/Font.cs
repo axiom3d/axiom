@@ -35,12 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-
-using Axiom.FileSystem;
-
-using SDI = System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -48,6 +42,7 @@ using System.Text;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+using Axiom.FileSystem;
 
 using ResourceHandle = System.UInt64;
 using Real = System.Single;
@@ -494,6 +489,7 @@ namespace Axiom.Fonts
 
                 if (_fontType == FontType.TrueType)
                 {
+#if !( XBOX || XBOX360 )
                     // create the font bitmap on the fly
                     createTexture();
 
@@ -501,6 +497,7 @@ namespace Axiom.Fonts
                     unitState = _material.GetTechnique(0).GetPass(0).GetTextureUnitState(0);
 
                     blendByAlpha = true;
+#endif
                 }
                 else
                 {
@@ -560,6 +557,7 @@ namespace Axiom.Fonts
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
 
+#if !( XBOX || XBOX360 )
 			// create a new bitamp with the size defined
 			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap( BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
 
@@ -568,7 +566,7 @@ namespace Axiom.Fonts
 
 		    // load the font from file into a private collection to make sure
 		    // this works even if the font is not installed
-		    FontFamily fontFamily;
+		    System.Drawing.FontFamily fontFamily;
 		    string fontFile = String.Empty;
 		    IntPtr pData = IntPtr.Zero;
 		    byte[] data = null;
@@ -576,7 +574,7 @@ namespace Axiom.Fonts
 		    {
 		        using ( Stream fileStream = Singleton<ResourceGroupManager>.Instance.OpenResource( this.Source, Group ) )
 		        {
-		            using ( PrivateFontCollection fontCollection = new PrivateFontCollection() )
+		            using ( System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection() )
 		            {
 		                data = new byte[fileStream.Length];
 		                fileStream.Read( data, 0, data.Length );
@@ -593,7 +591,7 @@ namespace Axiom.Fonts
 		        string error = String.Format( "Error loading font file: {0}\n{1}. Setting font to GenericSansSerif", fontFile, e.Message );
 		        LogManager.Instance.Write( error );
 
-		        fontFamily = FontFamily.GenericSansSerif;
+		        fontFamily = System.Drawing.FontFamily.GenericSansSerif;
 		    }
 		    finally
 		    {
@@ -675,8 +673,8 @@ namespace Axiom.Fonts
 				// draw the last horizontal line
 				g.DrawLine( linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height );
 			}
-			
-			SDI.BitmapData bmd = bitmap.LockBits( new System.Drawing.Rectangle( 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT ), SDI.ImageLockMode.ReadOnly, SDI.PixelFormat.Format32bppArgb );
+
+            System.Drawing.Imaging.BitmapData bmd = bitmap.LockBits( new System.Drawing.Rectangle( 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT ), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
 
 			byte[] imgData = new byte[ PixelUtil.GetNumElemBytes( PixelFormat.A8R8G8B8 ) * BITMAP_WIDTH * BITMAP_HEIGHT ];
 
@@ -709,6 +707,7 @@ namespace Axiom.Fonts
 			//str.WriteLine( "}" );
 			//str.Close();
 			//file.Close();
+#endif
 		}
 
 		#endregion Implementation of IManualResourceLoader
