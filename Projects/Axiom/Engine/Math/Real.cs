@@ -215,7 +215,7 @@ namespace Axiom.Math
         /// <param name="value">a string representation of the value to convert</param>
         public Real( string value )
         {
-            this._value = Numeric.Parse( value );
+            Numeric.TryParse( value, out this._value );
         }
 
         #endregion Constructors
@@ -243,7 +243,9 @@ namespace Axiom.Math
         /// <returns></returns>
         static public implicit operator Real( int value )
         {
-            return new Real( value );
+            Real retval;
+            retval._value = value;
+            return retval;
         }
 
         /// <summary>
@@ -265,7 +267,9 @@ namespace Axiom.Math
         /// <returns></returns>
         static public implicit operator Real( long value )
         {
-            return new Real( value );
+            Real retval;
+            retval._value = value;
+            return retval;
         }
 
         /// <summary>
@@ -288,7 +292,9 @@ namespace Axiom.Math
         /// <returns></returns>
         static public implicit operator Real( float value )
         {
-            return new Real( value );
+            Real retval;
+            retval._value = value;
+            return retval;
         }
 
         /// <summary>
@@ -311,7 +317,9 @@ namespace Axiom.Math
         /// <returns></returns>
         static public implicit operator Real( double value )
         {
-            return new Real( value );
+            Real retval;
+            retval._value = (Numeric)value;
+            return retval;
         }
 
         /// <summary>
@@ -333,7 +341,9 @@ namespace Axiom.Math
         /// <returns></returns>
         static public implicit operator Real( decimal value )
         {
-            return new Real( value );
+            Real retval;
+            retval._value = (Numeric)value;
+            return retval;
         }
 
         /// <summary>
@@ -356,7 +366,9 @@ namespace Axiom.Math
         /// <returns></returns>
         static public implicit operator Real( string value )
         {
-            return new Real( value );
+            Real retval;
+            Numeric.TryParse( value, out retval._value );
+            return retval;
         }
 
         /// <summary>
@@ -461,7 +473,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Real operator +( Real left, Real right )
         {
-            return new Real( left._value + right._value );
+            return left._value + right._value;
         }
 
         /// <summary>
@@ -472,7 +484,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Real operator -( Real left, Real right )
         {
-            return new Real( left._value - right._value );
+            return left._value - right._value;
         }
 
         /// <summary>
@@ -483,7 +495,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Real operator *( Real left, Real right )
         {
-            return new Real( left._value * right._value );
+            return left._value * right._value;
         }
 
         /// <summary>
@@ -494,7 +506,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Real operator /( Real left, Real right )
         {
-            return new Real( left._value / right._value );
+            return left._value / right._value;
         }
 
         /// <summary>
@@ -504,7 +516,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Real operator -( Real left )
         {
-            return new Real( -left._value );
+            return -left._value;
         }
 
         #endregion Arithmatic Operators
@@ -580,7 +592,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public Real Floor()
         {
-            return new Real( System.Math.Floor( _value ) );
+            return System.Math.Floor( _value );
         }
 
         /// <summary>
@@ -589,7 +601,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public Real Ceiling()
         {
-            return new Real( System.Math.Ceiling( _value ) );
+            return System.Math.Ceiling( _value );
         }
 
         #endregion Methods
