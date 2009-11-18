@@ -36,22 +36,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
+using System.Data;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-using Axiom.Core;
-using Axiom.Math;
-using Axiom.Graphics;
 using Axiom.Collections;
+using Axiom.Core;
+using Axiom.Core.Collections;
+using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Math.Collections;
-using System.Collections.Generic;
+
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
 {
-    using System.Data;
-    using Axiom.Core.Collections;
-
     /// <summary>
     ///		Specialisation of the SceneManager class to deal with indoor scenes based on a BSP tree.
     ///	</summary>

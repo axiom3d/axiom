@@ -490,8 +490,8 @@ namespace Axiom.RenderSystems.Xna
 
 #if (XBOX || XBOX360 || SILVERLIGHT)
             Axiom.RenderSystems.Xna.Content.AxiomContentManager acm = new Axiom.RenderSystems.Xna.Content.AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            normTexture = acm.Load<XFG.Texture2D>( name );
-            texture = normTexture;
+            _normTexture = acm.Load<XFG.Texture2D>( Name );
+            _texture = _normTexture;
             internalResourcesCreated = true;
 #else
             Stream stream;
@@ -547,8 +547,8 @@ namespace Axiom.RenderSystems.Xna
 
 #if (XBOX || XBOX360 || SILVERLIGHT)
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            cubeTexture = acm.Load<XFG.TextureCube>( name );
-            texture = cubeTexture;
+            _cubeTexture = acm.Load<XFG.TextureCube>( Name );
+            _texture = _cubeTexture;
             internalResourcesCreated = true;
 #else
             if (Name.EndsWith(".dds"))
@@ -589,8 +589,8 @@ namespace Axiom.RenderSystems.Xna
             Debug.Assert(this.TextureType == TextureType.ThreeD);
 #if (XBOX || XBOX360 || SILVERLIGHT)
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            volumeTexture = acm.Load<XFG.Texture3D>( name );
-            texture = volumeTexture;
+            _volumeTexture = acm.Load<XFG.Texture3D>( Name );
+            _texture = _volumeTexture;
             internalResourcesCreated = true;
 #else
             Stream stream = ResourceGroupManager.Instance.OpenResource( Name );

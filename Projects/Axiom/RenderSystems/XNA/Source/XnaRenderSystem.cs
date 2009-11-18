@@ -1469,8 +1469,9 @@ namespace Axiom.RenderSystems.Xna
         {
             LogManager.Instance.Write( "[XNA] : Subsystem Initializing" );
 
+#if !( XBOX || XBOX360 )
             WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
-
+#endif
             _activeDriver = XnaHelper.GetDriverInfo()[ ConfigOptions[ "Rendering Device" ].Value ];
             if ( _activeDriver == null )
             {

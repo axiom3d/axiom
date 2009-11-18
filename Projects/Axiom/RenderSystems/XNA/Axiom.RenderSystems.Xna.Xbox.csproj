@@ -84,6 +84,7 @@
     <Compile Include="Source\XnaHardwareBufferManager.cs" />
     <Compile Include="Source\XnaHardwareIndexBuffer.cs" />
     <Compile Include="Source\XnaHardwareOcclusionQuery.cs" />
+    <Compile Include="Source\XnaHardwarePixelBuffer.cs" />
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaHelper.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />
