@@ -235,7 +235,7 @@ namespace OctreeZone
             if (!string.IsNullOrEmpty(val))
                 setLODMorphStart((float)Convert.ToDouble(val));
 
-            val = config.getSetting("CustomMaterialName");
+            val = config.getSetting("MaterialName");
             if (!string.IsNullOrEmpty(val))
                 setCustomMaterial(val);
 
