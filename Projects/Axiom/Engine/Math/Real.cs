@@ -215,7 +215,7 @@ namespace Axiom.Math
         /// <param name="value">a string representation of the value to convert</param>
         public Real( string value )
         {
-            Numeric.TryParse( value, out this._value );
+            this._value = Numeric.Parse( value );
         }
 
         #endregion Constructors
@@ -367,7 +367,7 @@ namespace Axiom.Math
         static public implicit operator Real( string value )
         {
             Real retval;
-            Numeric.TryParse( value, out retval._value );
+            retval._value = Numeric.Parse( value );
             return retval;
         }
 
