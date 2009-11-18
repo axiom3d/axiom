@@ -104,6 +104,10 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\Example_CelShading.hlsl">
+      <Link>Media\GpuPrograms\Example_CelShading.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -601,10 +605,6 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Glass.material">
       <Link>Media\Materials\Glass.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\hdr.material">
-      <Link>Media\Materials\hdr.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\HeatVision.material">

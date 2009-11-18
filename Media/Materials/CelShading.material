@@ -1,25 +1,49 @@
-vertex_program Ogre/CelShadingVP cg
+vertex_program Ogre/CelShadingCG_vp cg
 {
 	source Example_CelShading.cg
 	entry_point main_vp
 	profiles vs_1_1 arbvp1
-
-	default_params
-	{
-		param_named_auto lightPosition light_position_object_space 0
-		param_named_auto eyePosition camera_position_object_space
-		param_named_auto worldViewProj worldviewproj_matrix
-		param_named shininess float 10 
-	}
 }
 
-fragment_program Ogre/CelShadingFP cg
+fragment_program Ogre/CelShadingCG_fp cg
 {
 	source Example_CelShading.cg
 	entry_point main_fp
 	profiles ps_1_1 arbfp1 fp20
 }
 
+vertex_program Ogre/CelShadingHLSL_vp hlsl
+{
+	source Example_CelShading.hlsl
+	entry_point main_vp
+	target vs_1_1 arbvp1
+}
+
+fragment_program Ogre/CelShadingHLSL_fp hlsl
+{
+	source Example_CelShading.hlsl
+	entry_point main_fp
+	target ps_2_0
+}
+
+vertex_program Ogre/CelShadingVP unified
+{
+	delegate Ogre/CelShadingHLSL_vp
+	delegate Ogre/CelShadingCG_vp
+	default_params
+	{
+		param_named_auto lightPosition light_position_object_space 0
+		param_named_auto eyePosition camera_position_object_space
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named shininess float 10 
+	}	
+}
+
+fragment_program Ogre/CelShadingFP unified
+{
+	delegate Ogre/CelShadingHLSL_fp
+	delegate Ogre/CelShadingCG_fp
+}
 
 material Examples/CelShading
 {
@@ -60,6 +84,7 @@ material Examples/CelShading
 				tex_coord_set 2
 			}
 		}
+
 	}
 	
 }
