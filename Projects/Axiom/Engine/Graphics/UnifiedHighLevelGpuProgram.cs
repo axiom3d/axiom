@@ -71,14 +71,14 @@ namespace Axiom.Graphics
 
 		private List<String> _delegateNames = new List<string>();
 
-		private HighLevelGpuProgram _chosenDelgate;
+		private HighLevelGpuProgram _chosenDelegate;
 		public HighLevelGpuProgram Delegate
 		{
 			get
 			{
-				if ( _chosenDelgate == null )
+				if ( _chosenDelegate == null )
 					chooseDelegate();
-				return _chosenDelgate;
+				return _chosenDelegate;
 			}
 		}
 
@@ -103,15 +103,15 @@ namespace Axiom.Graphics
 		/// Choose the delegate to use
 		protected virtual void chooseDelegate()
 		{
-			_chosenDelgate = null;
+			_chosenDelegate = null;
 			foreach ( string delegateName in _delegateNames )
 			{
-				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
-				if ( program != null && program.IsSupported )
-				{
-					_chosenDelgate = program;
-					break;
-				}
+                HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
+                if ( program != null && program.IsSupported )
+                {
+                    _chosenDelegate = program;
+                    break;
+                }
 			}
 		}
 
@@ -130,7 +130,7 @@ namespace Axiom.Graphics
 		{
 			_delegateNames.Add( delegateName );
 			// Invalidate current selection
-			_chosenDelgate = null;
+			_chosenDelegate = null;
 		}
 
 		/// <summary>
@@ -140,7 +140,7 @@ namespace Axiom.Graphics
 		{
 			_delegateNames.Clear();
 			// Invalidate current selection
-			_chosenDelgate = null;
+			_chosenDelegate = null;
 		}
 
 		#endregion Methods
@@ -151,9 +151,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelgate != null )
+				if ( Delegate != null )
 				{
-					return _chosenDelgate.BindingDelegate;
+					return Delegate.BindingDelegate;
 				}
 
 				return null;
@@ -164,17 +164,17 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelgate != null )
+				if ( Delegate != null )
 				{
-					return _chosenDelgate.IsMorphAnimationIncluded;
+					return Delegate.IsMorphAnimationIncluded;
 				}
 
 				return false;
 			}
 			set
 			{
-				if ( _chosenDelgate != null )
-					_chosenDelgate.IsMorphAnimationIncluded = value;
+				if ( Delegate != null )
+					Delegate.IsMorphAnimationIncluded = value;
 			}
 		}
 
@@ -182,16 +182,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelgate != null )
+				if ( Delegate != null )
 				{
-					return _chosenDelgate.IsSkeletalAnimationIncluded;
+					return Delegate.IsSkeletalAnimationIncluded;
 				}
 				return false;
 			}
 			set
 			{
-				if ( _chosenDelgate != null )
-					_chosenDelgate.IsSkeletalAnimationIncluded = value;
+				if ( Delegate != null )
+					Delegate.IsSkeletalAnimationIncluded = value;
 			}
 		}
 
@@ -199,16 +199,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelgate != null )
+				if ( Delegate != null )
 				{
-					return _chosenDelgate.PoseAnimationCount;
+					return Delegate.PoseAnimationCount;
 				}
 				return 0;
 			}
 			set
 			{
-				if ( _chosenDelgate != null )
-					_chosenDelgate.PoseAnimationCount = value;
+				if ( Delegate != null )
+					Delegate.PoseAnimationCount = value;
 			}
 		}
 
@@ -216,7 +216,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _chosenDelgate != null;
+				return Delegate != null;
 			}
 		}
 
@@ -224,18 +224,42 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelgate != null )
+				if ( Delegate != null )
 				{
-					return _chosenDelgate.PassSurfaceAndLightStates;
+					return Delegate.PassSurfaceAndLightStates;
 				}
 				return false;
 			}
 			set
 			{
-				if ( _chosenDelgate != null )
-					_chosenDelgate.PassSurfaceAndLightStates = value;
+				if ( Delegate != null )
+					Delegate.PassSurfaceAndLightStates = value;
 			}
 		}
+
+        public override bool HasDefaultParameters
+        {
+            get
+            {
+                if ( Delegate != null )
+                {
+                    return Delegate.HasDefaultParameters;
+                }
+                return false;
+            }
+        }
+
+        public override GpuProgramParameters DefaultParameters
+        {
+            get
+            {
+                if ( Delegate != null )
+                {
+                    return Delegate.DefaultParameters;
+                }
+                return null;
+            }
+        }
 
 		public override GpuProgramParameters CreateParameters()
 		{
@@ -252,7 +276,25 @@ namespace Axiom.Graphics
 			}
 		}
 
-		protected override void CreateLowLevelImpl()
+        public override bool SetParam( string name, string val )
+        {
+            switch ( name )
+            {
+                case "delegate":
+                    AddDelegateProgram( val );
+                    return true;
+                    break;
+            }
+            return false;
+        }
+
+        public override void Load( bool background )
+        {
+            if ( Delegate != null )
+                Delegate.Load( background );
+        }
+
+        protected override void CreateLowLevelImpl()
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}
@@ -267,18 +309,6 @@ namespace Axiom.Graphics
 			throw new Exception( "The method or operation is not implemented." );
 		}
 
-		public override bool SetParam( string name, string val )
-		{
-			switch ( name )
-			{
-				case "delegate":
-					AddDelegateProgram( val );
-					return true;
-					break;
-			}
-			return false;
-		}
-
 		protected override void LoadFromSource()
 		{
 			throw new Exception( "The method or operation is not implemented." );
@@ -288,9 +318,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelgate != null )
+				if ( Delegate != null )
 				{
-					return _chosenDelgate.SamplerCount;
+					return Delegate.SamplerCount;
 				}
 				return 0;
 			}
