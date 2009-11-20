@@ -34,7 +34,7 @@ namespace Axiom.Demos
         public delegate InputReader ConfigureInput();
         public ConfigureInput SetupInput;
 
-        public TechDemo() { SetupInput += new ConfigureInput( _setupInput ); }
+        public TechDemo() { SetupInput = new ConfigureInput( _setupInput ); }
 
         #region Protected Fields
 
@@ -245,6 +245,7 @@ namespace Axiom.Demos
             ir = PlatformManager.Instance.CreateInputReader();
             ir.Initialize( window, true, true, false, false );
 #endif
+
 #if ( SIS )
             SharpInputSystem.ParameterList pl = new SharpInputSystem.ParameterList();
             pl.Add( new SharpInputSystem.Parameter( "WINDOW", this.window.Handle ) );
@@ -588,7 +589,6 @@ namespace Axiom.Demos
 
                 toggleDelay = .3f;
             }
-#endif
 #if DEBUG
 			if ( !input.IsMousePressed( MouseButtons.Left ) )
 			{
@@ -604,6 +604,8 @@ namespace Axiom.Demos
 				cameraVector.x += input.RelativeMouseX * 0.13f;
 			}
 #endif
+#endif
+
 #if ( SIS )
             // TODO: Move this into an event queueing mechanism that is processed every frame
             mouse.Capture();
@@ -782,8 +784,11 @@ namespace Axiom.Demos
                 debugTextDelay -= evt.TimeSinceLastFrame;
             }
 
-            OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
-            element.Text = debugText;
+            if ( debugText != String.Empty )
+            {
+                OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
+                element.Text = debugText;
+            }
         }
 
         DateTime averageStart = DateTime.Now;
@@ -794,13 +799,16 @@ namespace Axiom.Demos
         {
             // TODO: Replace with CEGUI
             OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/CurrFps" );
+            if ( element != null )
             element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
 
             element = OverlayManager.Instance.Elements.GetElement( "Core/BestFps" );
-            element.Text = string.Format( "Best FPS: {0:#.00}", Root.Instance.BestFPS );
+            if ( element != null )
+                element.Text = string.Format( "Best FPS: {0:#.00}", Root.Instance.BestFPS );
 
             element = OverlayManager.Instance.Elements.GetElement( "Core/WorstFps" );
-            element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
+            if ( element != null )
+                element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
 
             //element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
             //element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
@@ -809,13 +817,16 @@ namespace Axiom.Demos
             sum += Root.Instance.CurrentFPS;
             average = sum / elapsedFrames;
             elapsedFrames++;
-            element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", average, ( DateTime.Now - averageStart ).TotalSeconds );
+            if ( element != null )
+                element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", average, ( DateTime.Now - averageStart ).TotalSeconds );
 			
             element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
-            element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
+            if ( element != null )
+                element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
 
             element = OverlayManager.Instance.Elements.GetElement("Core/NumBatches");
-            element.Text = string.Format("Batch Count: {0}", scene.TargetRenderSystem.BatchesRendered);
+            if ( element != null )
+                element.Text = string.Format( "Batch Count: {0}", scene.TargetRenderSystem.BatchesRendered );
         }
 
         /// <summary>
