@@ -14,14 +14,14 @@ fragment_program Ogre/CelShadingCG_fp cg
 
 vertex_program Ogre/CelShadingHLSL_vp hlsl
 {
-	source Example_CelShading.hlsl
+	source CelShadingVS_1_1.hlsl
 	entry_point main_vp
 	target vs_1_1 arbvp1
 }
 
 fragment_program Ogre/CelShadingHLSL_fp hlsl
 {
-	source Example_CelShading.hlsl
+	source CelShadingPS_2_0.hlsl
 	entry_point main_fp
 	target ps_2_0
 }
@@ -29,7 +29,6 @@ fragment_program Ogre/CelShadingHLSL_fp hlsl
 vertex_program Ogre/CelShadingVP unified
 {
 	delegate Ogre/CelShadingHLSL_vp
-	delegate Ogre/CelShadingCG_vp
 	default_params
 	{
 		param_named_auto lightPosition light_position_object_space 0
@@ -42,7 +41,6 @@ vertex_program Ogre/CelShadingVP unified
 fragment_program Ogre/CelShadingFP unified
 {
 	delegate Ogre/CelShadingHLSL_fp
-	delegate Ogre/CelShadingCG_fp
 }
 
 material Examples/CelShading

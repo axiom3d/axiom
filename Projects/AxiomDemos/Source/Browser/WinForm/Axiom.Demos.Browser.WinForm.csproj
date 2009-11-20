@@ -104,8 +104,12 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Example_CelShading.hlsl">
-      <Link>Media\GpuPrograms\Example_CelShading.hlsl</Link>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\CelShadingPS_2_0.hlsl">
+      <Link>Media\GpuPrograms\CelShadingPS_2_0.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\CelShadingVS_1_1.hlsl">
+      <Link>Media\GpuPrograms\CelShadingVS_1_1.hlsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
