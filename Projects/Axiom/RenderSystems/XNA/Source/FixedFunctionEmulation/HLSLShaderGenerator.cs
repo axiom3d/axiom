@@ -444,7 +444,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource += "\t\toutput.Texcoord" + layerCounter + " = float2 (r.x / m + 0.5, r.y / m + 0.5);\n";
                         break;
                     case TexCoordCalcMethod.EnvironmentMapPlanar:
-                        break;
+                        //break;
                     case TexCoordCalcMethod.EnvironmentMapReflection:
                         shaderSource += "\t\tNormal = mul(float4(Normal, 0),World).xyz;\n";
 

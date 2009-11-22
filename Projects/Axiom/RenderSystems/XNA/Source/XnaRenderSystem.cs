@@ -1658,9 +1658,9 @@ namespace Axiom.RenderSystems.Xna
                     element.VertexElementType = op.vertexData.vertexDeclaration[ i ].Type;
 
                     //uncomment this to see the texture shadow
-                    //the problem is that texture states are not set and texture are set  in vertexdeclaration
+                    //the problem is that some texcoords are given but texture is not set
                     //
-                    /*if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
+                    if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
                         op.vertexData.vertexDeclaration[ i ].Semantic == VertexElementSemantic.TexCoords )
                     {
                         if ( !texStageDesc[ textureLayer ].Enabled )
@@ -1673,7 +1673,7 @@ namespace Axiom.RenderSystems.Xna
                             texStageDesc[ textureLayer ].layerBlendMode.source2 = LayerBlendSource.Current;
 
                             texStageDesc[ textureLayer ].Enabled = true;
-                            texStageDesc[ textureLayer ].autoTexCoordType = TexCoordCalcMethod.None;
+                            //texStageDesc[ textureLayer ].autoTexCoordType = TexCoordCalcMethod.ProjectiveTexture;
                             texStageDesc[ textureLayer ].coordIndex = textureLayer;
                             switch ( op.vertexData.vertexDeclaration[ i ].Type )
                             {
@@ -1690,8 +1690,8 @@ namespace Axiom.RenderSystems.Xna
                             //texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
                         }
                         textureLayer++;
-                    }*/
-
+                    }
+                    
                     lvbe.Add( element );
                 }
                 vbd.VertexBufferElements = lvbe;
@@ -1709,13 +1709,14 @@ namespace Axiom.RenderSystems.Xna
                         tls.CoordIndex = texStageDesc[ i ].coordIndex;
                         tls.LayerBlendMode = texStageDesc[ i ].layerBlendMode;
                         //TextureLayerStateList
+                        
                         _fixedFunctionState.TextureLayerStates.Add( tls );
                     }
                 }
 
                 FixedFunctionEmulation.GeneralFixedFunctionState gff;
                 gff = _fixedFunctionState.GeneralFixedFunctionState;
-
+                
                 gff.EnableLighting = _ffProgramParameters.LightingEnabled;
                 gff.FogMode = _ffProgramParameters.FogMode;
                 _fixedFunctionState.GeneralFixedFunctionState = gff;
@@ -1729,6 +1730,7 @@ namespace Axiom.RenderSystems.Xna
 
                 _fixedFunctionProgram.FragmentProgramUsage.Program.DefaultParameters.NamedParamCount.ToString();
 
+                
                 _fixedFunctionProgram.SetFixedFunctionProgramParameters( _ffProgramParameters );
 
                 //Bind Vertex Program
@@ -2118,14 +2120,82 @@ namespace Axiom.RenderSystems.Xna
         {
             if ( blendMode.blendType == LayerBlendType.Color )
             {
-                texStageDesc[ stage ].layerBlendMode = blendMode;
+                texStageDesc[stage].layerBlendMode = blendMode;
             }
+
+            /*if (blendMode.operation == LayerBlendOperationEx.BlendManual)
+            {
+                _device.RenderState.BlendFactor = new Microsoft.Xna.Framework.Graphics.Color(blendMode.blendFactor, 0, 0, 0);
+            }
+            if (blendMode.blendType == LayerBlendType.Color)
+            {
+                _device.RenderState.AlphaBlendEnable = false;
+            }
+            else if (blendMode.blendType == LayerBlendType.Alpha)
+            {
+                _device.RenderState.AlphaBlendEnable = true;
+            }
+
+            ColorEx manualD3D = ColorEx.White;//XnaHelper.Convert(_device.RenderState.BlendFactor);
+            if (blendMode.blendType == LayerBlendType.Color)
+            {
+                manualD3D = new ColorEx(blendMode.blendFactor, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b);
+            }
+            else if (blendMode.blendType == LayerBlendType.Alpha)
+            {
+                manualD3D = new ColorEx(blendMode.alphaArg1, blendMode.blendFactor, blendMode.blendFactor, blendMode.blendFactor);
+            }
+
+            LayerBlendSource blendSource = blendMode.source1;
+            for (int i = 0; i < 2; i++)
+            {
+                // set the texture blend factor if this is manual blending
+                if (blendSource == LayerBlendSource.Manual)
+                {
+                    _device.RenderState.BlendFactor =  XnaHelper.Convert(manualD3D);
+                }
+                // pick proper argument settings
+                if (blendMode.blendType == LayerBlendType.Color)
+                {
+                    if (i == 0)
+                    {
+                        texStageDesc[stage].layerBlendMode.colorArg1 = blendMode.colorArg1; 
+                    }
+                    else if (i == 1)
+                    {
+                        texStageDesc[stage].layerBlendMode.colorArg2 =  blendMode.colorArg2; 
+                    }
+                }
+                else if (blendMode.blendType == LayerBlendType.Alpha)
+                {
+                    if (i == 0)
+                    {
+                           texStageDesc[stage].layerBlendMode.alphaArg1 = blendMode.alphaArg1; 
+                    }
+                    else if (i == 1)
+                    {
+                        texStageDesc[stage].layerBlendMode.alphaArg2 = blendMode.alphaArg2; 
+                    }
+                }
+                // Source2
+                blendSource = blendMode.source2;
+                if (blendMode.blendType == LayerBlendType.Color)
+                {
+                    manualD3D = new ColorEx(manualD3D.a, blendMode.colorArg2.r, blendMode.colorArg2.g, blendMode.colorArg2.b);
+                }
+                else if (blendMode.blendType == LayerBlendType.Alpha)
+                {
+                    manualD3D = new ColorEx(blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b);
+                }
+            }*/
         }
 
         public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
         {
-            texStageDesc[ stage ].autoTexCoordType = method;
+            texStageDesc[stage].autoTexCoordType = method;
             texStageDesc[ stage ].frustum = frustum;
+            //texStageDesc[stage].Enabled = true;
+            //if (frustum != null) MessageBox.Show(texStageDesc[stage].Enabled.ToString());
         }
 
         public override void SetTextureCoordSet( int stage, int index )
@@ -2148,9 +2218,28 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
         {
+            if (texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture)
+            {
+                
+                //seems like we have to apply a specific transform when we have the frustum
+                //and a projective texture
+                //from directx rendersystem
+                
+                // Derive camera space to projector space transform
+                // To do this, we need to undo the camera view matrix, then 
+                // apply the projector view & projection matrices
+                
+               /* Matrix4 newMat =_viewMatrix.Inverse();
+                texStageDesc[stage].frustum.ViewMatrix = texStageDesc[stage].frustum.ViewMatrix.Transpose();
+                //texStageDesc[stage].frustum.ProjectionMatrix = texStageDesc[stage].frustum.ProjectionMatrix.Transpose();
+                newMat = texStageDesc[stage].frustum.ViewMatrix * newMat;
+                newMat = texStageDesc[stage].frustum.ProjectionMatrix * newMat;
+                newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
+                xform= xform * newMat;
+                */
+            }
 #if !(XBOX || XBOX360 || SILVERLIGHT )
             _ffProgramParameters.SetTextureMatrix( stage, xform.Transpose() );
-
 #endif
         }
 
@@ -2174,9 +2263,10 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        //XFG.DepthStencilBuffer oriDSB;
+        XFG.DepthStencilBuffer oriDSB;
         public override void SetViewport( Axiom.Core.Viewport viewport )
         {
+            if (oriDSB == null) oriDSB = _device.DepthStencilBuffer;
             if ( activeViewport != viewport || viewport.IsUpdated )
             {
                 // store this viewport and it's target
@@ -2185,8 +2275,19 @@ namespace Axiom.RenderSystems.Xna
 
                 // get the back buffer surface for this viewport
                 XFG.RenderTarget2D[] back = (XFG.RenderTarget2D[])activeRenderTarget[ "XNABACKBUFFER" ];
-                if ( back == null )
-                    return;                
+                if (back == null)
+                {
+                    _device.SetRenderTarget(0, null);
+                    //the back buffer is null so it's not a render to texture,
+                    //we render directly to the screen,
+                    //set the original depth stencil buffer
+                    _device.DepthStencilBuffer = oriDSB;
+                    return;
+                }
+                else
+                {
+                  
+                }
 
                 XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget["XNAZBUFFER"];
                 if ( depth == null )
@@ -2194,19 +2295,30 @@ namespace Axiom.RenderSystems.Xna
                     // No depth buffer provided, use our own
                     // Request a depth stencil that is compatible with the format, multisample type and
                     // dimensions of the render target.
+                    //it is probably a render to texture, so we create the first time a depth buffer
                     depth = _getDepthStencilFor( back[ 0 ].Format, back[ 0 ].MultiSampleType, back[ 0 ].Width, back[ 0 ].Height );
-
                 }
 
-                if(depth!=null)
-                //if(depth.Format==_device.DepthStencilBuffer.Format)
+                //if (depth.Format == _device.DepthStencilBuffer.Format)
+                {
+                    /*MessageBox.Show("same:\n" + 
+                                    depth.Width.ToString() + "-" + depth.Height.ToString() +"\n"+
+                                    _device.DepthStencilBuffer.Width.ToString() + "-" + _device.DepthStencilBuffer.Height.ToString() + "\n"+
+                                    depth.MultiSampleType.ToString() + " = "+_device.DepthStencilBuffer.MultiSampleType.ToString() + "\n" +
+                                    depth.MultiSampleQuality.ToString() + " = " + _device.DepthStencilBuffer.MultiSampleQuality.ToString()+"\n"+
+                                    depth.Format.ToString() + " = " + _device.DepthStencilBuffer.Format.ToString()
+                                    );
+                    */
                     _device.DepthStencilBuffer = depth;
+                }
+
+
 
                 // Bind render targets
                 int count = back.Length;
-                for ( int i = 0; i < count && back[ i ] != null; ++i )
+                for (int i = 0; i < count && back[i] != null; ++i)
                 {
-                    _device.SetRenderTarget( i, back[ i ] );
+                    _device.SetRenderTarget(i, back[i]);
                 }
 
                 // set the culling mode, to make adjustments required for viewports
@@ -2230,6 +2342,7 @@ namespace Axiom.RenderSystems.Xna
 
                 // clear the updated flag
                 viewport.IsUpdated = false;
+                
             }
         }
 
@@ -2319,7 +2432,7 @@ namespace Axiom.RenderSystems.Xna
 
             if ( zbuffer == null )
             {
-                /// If not, create the depthstencil surface
+                // If not, create the depthstencil surface
                 zbuffer = new XFG.DepthStencilBuffer( _device, width, height, dsfmt, multisample, 0 );
                 zBufferCache[ zbfmt ] = zbuffer;
             }
