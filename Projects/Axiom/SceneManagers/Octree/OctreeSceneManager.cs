@@ -203,6 +203,8 @@ namespace Axiom.SceneManagers.Octree
         public void Init( AxisAlignedBox box, int depth )
         {
             rootSceneNode = new OctreeNode( this, "SceneRoot" );
+            rootSceneNode.SetAsRootNode();
+            defaultRootNode = rootSceneNode;
 
             maxDepth = depth;
 
