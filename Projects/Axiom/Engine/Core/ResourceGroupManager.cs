@@ -2336,7 +2336,7 @@ namespace Axiom.Core
         }
 
         /// <summary>Create all the pre-declared resources.</summary>
-        /// <remarks>Called as part of initialiseResourceGroup</remarks>
+        /// <remarks>Called as part of initializeResourceGroup</remarks>
         private void _createDeclaredResources( ResourceGroup grp )
         {
             foreach ( ResourceDeclaration dcl in grp.ResourceDeclarations )
@@ -2347,7 +2347,7 @@ namespace Axiom.Core
                 Resource res = mgr.Create( dcl.ResourceName, grp.Name, dcl.Loader != null, dcl.Loader, dcl.Parameters );
                 // Add resource to load list
                 LoadUnloadResourceList loadList;
-                if ( grp.LoadResourceOrders.ContainsKey( mgr.LoadingOrder ) == true )
+                if ( grp.LoadResourceOrders.ContainsKey( mgr.LoadingOrder ) != true )
                 {
                     loadList = new LoadUnloadResourceList();
                     grp.LoadResourceOrders.Add( mgr.LoadingOrder, loadList );
