@@ -424,7 +424,7 @@ material Examples/Flare
 			
 			texture_unit
 			{
-				texture flare.png
+				texture Flare.png
 			}
 		}
 	}
