@@ -582,7 +582,44 @@ namespace Axiom.Core
 
 		#endregion FSAA Property
 
-		/// <summary>
+        #region HardwareGammaEnabled Property
+
+        private bool _hwGamma;
+
+        /// <summary>
+        /// Gets/Sets whether this texture will be set up so that on sampling it, hardware gamma correction is applied.
+        /// </summary>
+        /// <remarks>
+        /// 24-bit textures are often saved in gamma color space; this preserves
+        /// precision in the 'darks'. However, if you're performing blending on 
+        /// the sampled colors, you really want to be doing it in linear space. 
+        /// One way is to apply a gamma correction value on loading <see cref="Gamma" />,
+        /// but this means you lose precision in those dark colors. An alternative
+        /// is to get the hardware to do the gamma correction when reading the 
+        /// texture and converting it to a floating point value for the rest of
+        /// the pipeline. This option allows you to do that; it's only supported
+        /// in relatively recent hardware (others will ignore it) but can improve
+        /// the quality of color reproduction.
+        /// Note:
+        /// Must be called before any 'load' method since it may affect the
+        /// construction of the underlying hardware resources.
+        /// Also note this only useful on textures using 8-bit color channels.
+        /// </remarks>
+        public bool HardwareGammaEnabled
+        {
+            get
+            {
+                return _hwGamma;
+            }
+            set
+            {
+                _hwGamma = value;
+            }
+        }
+
+        #endregion HardwareGammaEnabledProperty
+
+        /// <summary>
         ///    Specifies whether this texture is 32 bits or not.
         /// </summary>
         /// <ogre name="enable32Bit" />
