@@ -35,11 +35,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
 using ResourceHandle = System.UInt64;
-
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -70,7 +69,10 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         ///     Holds information about shader constants.
         /// </summary>
         protected D3D.ConstantTable constantTable;
-
+        /// <summary>
+        /// preprocessor defines used to compile the program.
+        /// </summary>
+        protected string preprocessorDefines;
         #endregion Fields
 
         #region Construction and Destruction
@@ -78,6 +80,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         public HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
             : base( parent, name, handle, group, isManual, loader )
         {
+            preprocessorDefines = string.Empty;
         }
 
         protected override void dispose( bool disposeManagedResources )
@@ -130,17 +133,39 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             return parms;
         }
 
-
         /// <summary>
         ///     Compiles the high level shader source to low level microcode.
         /// </summary>
         protected override void LoadFromSource()
         {
+            // Populate preprocessor defines
+            string stringBuffer = string.Empty;
+            List<D3D.Macro> defines = new List<D3D.Macro>();
+            if ( preprocessorDefines != string.Empty )
+            {
+                stringBuffer = preprocessorDefines;
+
+                // Split preprocessor defines and build up macro array
+
+                if ( stringBuffer.Contains( "," ) )
+                {
+                    string[] definesArr = stringBuffer.Split( ',' );
+                    foreach ( string def in definesArr )
+                    {
+                        D3D.Macro macro = new D3D.Macro();
+                        macro.Definition = "1\0";
+                        macro.Name = def + "\0";
+                        defines.Add( macro );
+                    }
+                }
+            }
+
             string errors = null;
 
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
-            D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, D3D.ShaderFlags.PackMatrixRowMajor );
+            HLSLIncludeHandler include = new HLSLIncludeHandler( this );
+            D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), include, D3D.ShaderFlags.PackMatrixColumnMajor );
 
             try
             {
@@ -224,7 +249,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
         }
 
-
         #endregion GpuProgram Members
 
         #region Methods
@@ -301,6 +325,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         #endregion Methods
 
         #region Properties
+
         public override int SamplerCount
         {
             get
@@ -348,7 +373,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                 case "target":
                     target = val.Split( ' ' )[ 0 ];
                     break;
-
+                case "preprocessor_defines":
+                    preprocessorDefines = val;
+                    break;
                 default:
                     LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
                     handled = false;

@@ -354,7 +354,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 int numMips = this.RequestedMipmapCount + 1;
                 // check if mip map volume textures are supported
-                if ( ( _devCaps.TextureCaps & D3D.TextureCaps.MipCubeMap ) != D3D.TextureCaps.MipCubeMap )
+                if ( ( _devCaps.TextureCaps & D3D.TextureCaps.MipVolumeMap ) != D3D.TextureCaps.MipVolumeMap )
                 {
                     // no mip map support for this kind of textures :(
                     this.MipmapCount = 0;
@@ -366,7 +366,7 @@ namespace Axiom.RenderSystems.DirectX9
                 try
                 {
                     // load the cube texture from the image data stream directly
-                    _volumeTexture = D3D.VolumeTexture.FromStream( _device, stream, (int)stream.Length, 0, 0, 0, numMips, D3D.Usage.None, D3D.Format.Unknown, _d3dPool, D3D.Filter.None, D3D.Filter.None, 0 );
+                    _volumeTexture = D3D.VolumeTexture.FromStream( _device, stream, (int)stream.Length, -1, -1, -1, numMips, D3D.Usage.None, D3D.Format.Unknown, _d3dPool, D3D.Filter.None, D3D.Filter.None, 0 );
                 }
                 catch ( Exception ex )
                 {
@@ -539,7 +539,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void CreateVolumeTexture()
         {
-            Debug.Assert( SrcWidth > 0 && SrcHeight > 0 && SrcHeight > 0 );
+            Debug.Assert( Width > 0 && Height > 0 && Depth > 0 );
 
             if ( ( Usage & TextureUsage.RenderTarget ) != 0 )
             {
@@ -589,9 +589,9 @@ namespace Axiom.RenderSystems.DirectX9
 
             // create the texture
             _volumeTexture = new D3D.VolumeTexture( _device,
-                                                    SrcWidth,
-                                                    SrcHeight,
-                                                    SrcWidth,
+                                                    Width,
+                                                    Height,
+                                                    Depth,
                                                     numMips,
                                                     usage,
                                                     sdPF,
