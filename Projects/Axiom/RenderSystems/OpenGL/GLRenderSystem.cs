@@ -3228,19 +3228,18 @@ namespace Axiom.RenderSystems.OpenGL
 			// Bind frame buffer object
 			rttManager.Bind( target );
 
-			// TODO: Enable / disable sRGB states
-			//if ( target.IsHardwareGammaEnabled )
-			//{
-			//    Gl.glEnable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
+            if ( target.HardwareGammaEnabled )
+            {
+                Gl.glEnable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
 
-			//    // Note: could test GL_FRAMEBUFFER_SRGB_CAPABLE_EXT here before
-			//    // enabling, but GL spec says incapable surfaces ignore the setting
-			//    // anyway. We test the capability to enable isHardwareGammaEnabled.
-			//}
-			//else
-			//{
-			//    Gl.glDisable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
-			//}
+                // Note: could test GL_FRAMEBUFFER_SRGB_CAPABLE_EXT here before
+                // enabling, but GL spec says incapable surfaces ignore the setting
+                // anyway. We test the capability to enable isHardwareGammaEnabled.
+            }
+            else
+            {
+                Gl.glDisable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
+            }
 
 		}
 

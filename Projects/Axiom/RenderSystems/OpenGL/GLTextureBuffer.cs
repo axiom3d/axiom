@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLTextureBuffer( string baseName, int target, int id, int face, int level, BufferUsage usage, bool softwareMipmap, BaseGLSupport glSupport )
+        public GLTextureBuffer( string baseName, int target, int id, int face, int level, BufferUsage usage, bool softwareMipmap, BaseGLSupport glSupport, bool writeGamma, int fsaa )
 			: base( 0, 0, 0, PixelFormat.Unknown, usage )
 		{
 			int value;
@@ -135,7 +135,7 @@ namespace Axiom.RenderSystems.OpenGL
 					GLSurfaceDesc renderTarget;
 					renderTarget.Buffer = this;
 					renderTarget.ZOffset = zoffset;
-					RenderTexture trt = GLRTTManager.Instance.CreateRenderTexture( name, renderTarget );
+					RenderTexture trt = GLRTTManager.Instance.CreateRenderTexture( name, renderTarget, writeGamma, fsaa );
 					_sliceTRT.Add( trt );
 					Root.Instance.RenderSystem.AttachRenderTarget( _sliceTRT[ zoffset ] );
 				}

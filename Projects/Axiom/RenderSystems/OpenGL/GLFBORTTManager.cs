@@ -627,9 +627,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLRTTManager Implementation
 
-		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target )
+        public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 		{
-			return new GLFBORenderTexture( this, name, target );
+			return new GLFBORenderTexture( this, name, target, writeGamma, fsaa );
 		}
 
 		public override MultiRenderTarget CreateMultiRenderTarget( string name )

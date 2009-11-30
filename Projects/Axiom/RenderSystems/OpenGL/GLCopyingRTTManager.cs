@@ -59,9 +59,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLRTTManager Implementation
 
-		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target )
+		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 		{
-			return null; //new GLCopyingRenderTexture( name, target );
+            return new GLCopyingRenderTexture( this, name, target, writeGamma, fsaa );
 		}
 
 		public override bool CheckFormat( PixelFormat format )
@@ -77,11 +77,13 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Unbind( RenderTarget target )
 		{
 			// copy on unbind
-			GLSurfaceDesc surface;
-			surface.Buffer = null;
-			surface = (GLSurfaceDesc)target.GetCustomAttribute( "TARGET" );
-			//if ( surface.Buffer != null )
-			//	( (GLTextureBuffer)surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
+            object attr = target.GetCustomAttribute( "target" );
+            if ( attr != null )
+            {
+                GLSurfaceDesc surface = (GLSurfaceDesc)attr;
+                if ( surface.Buffer != null )
+                    ( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
+            }
 		}
 
 		#endregion GLRTTManager Implementation

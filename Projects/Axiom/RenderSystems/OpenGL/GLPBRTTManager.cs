@@ -85,9 +85,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLRTTManager Implementation
 
-		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target )
+        public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 		{
-			return new GLPBRenderTexture( this, name, target );
+			return new GLPBRenderTexture( this, name, target, writeGamma, fsaa );
 		}
 
 		public override bool CheckFormat( PixelFormat format )
@@ -103,13 +103,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Unbind( RenderTarget target )
 		{
-			// Copy on unbind
-			GLSurfaceDesc surface;
-			surface.Buffer = null;
-			surface = (GLSurfaceDesc)target.GetCustomAttribute( "TARGET" );
-			if ( surface.Buffer != null )
-				( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
-		}
+            // copy on unbind
+            object attr = target.GetCustomAttribute( "target" );
+            if ( attr != null )
+            {
+                GLSurfaceDesc surface = (GLSurfaceDesc)attr;
+                if ( surface.Buffer != null )
+                    ( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
+            }
+        }
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -138,7 +140,24 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="height"></param>
 		public void RequestPBuffer( PixelComponentType pcType, int width, int height )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+            // Check Size
+            GLPBuffer pBuffer = pBuffers[ (int)pcType ].PixelBuffer;
+            if ( pBuffer != null )
+            {
+                if ( pBuffer.Width < width || pBuffer.Height < height )
+                {
+                    // if the current buffer is too small destroy it and recreate it
+                    pBuffer = null;
+                    pBuffers[ (int)pcType ].PixelBuffer = null;
+                }
+            }
+            
+            if ( pBuffer == null )
+            {
+                // create pixelbuffer via rendersystem
+                pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
+            }
+            pBuffers[ (int)pcType ].InUseCount++;
 		}
 
 		/// <summary>
@@ -163,8 +182,16 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public GLContext GetContextFor( PixelComponentType pcType, int width, int height )
 		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+            // Faster to return main context if the RTT is smaller than the window size
+            // and pcType is PixelComponentType.Byte. This must be checked every time because the window might have been resized
+            if ( pcType == PixelComponentType.Byte )
+            {
+                if ( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
+                    return this._mainGLContext;
+            }
+            Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );
+            return pBuffers[ (int)pcType ].PixelBuffer.Context;
+        }
 
 		#endregion Methods
 

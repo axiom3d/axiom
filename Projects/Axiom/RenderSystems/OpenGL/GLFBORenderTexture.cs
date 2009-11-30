@@ -57,8 +57,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target )
-			: base( name, target )
+        public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
+			: base( name, target, writeGamma, fsaa )
 		{
 			_fbo = new GLFrameBufferObject( manager );
 
