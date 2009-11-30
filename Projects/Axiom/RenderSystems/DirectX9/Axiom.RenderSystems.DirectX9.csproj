@@ -88,6 +88,7 @@
     <Compile Include="D3DRenderSystem.cs" />
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="DriverCollection.cs" />
+    <Compile Include="hlsl\HLSLIncludeHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -152,7 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.csproj">
-      <Project>{6436E2A4-0520-40CF-9481-0EB77946120A}</Project>
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>
