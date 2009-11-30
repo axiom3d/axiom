@@ -127,6 +127,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public GpuProgramParameters()
 		{
+		    this.autoAddParamName = true;
 		}
 
 		#endregion
