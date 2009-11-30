@@ -45,6 +45,7 @@ using ResourceHandle = System.UInt64;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -65,6 +66,10 @@ namespace Axiom.RenderSystems.Xna.HLSL
         ///     Entry point to compile from the program.
         /// </summary>
         protected string entry;
+        /// <summary>
+        /// preprocessor defines used to compile the program.
+        /// </summary>
+        protected string preprocessorDefines;
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
@@ -89,6 +94,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         public HLSLProgram(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader)
             : base(parent, name, handle, group, isManual, loader)
         {
+            preprocessorDefines = string.Empty;
         }
 
         #endregion Constructor
@@ -127,6 +133,28 @@ namespace Axiom.RenderSystems.Xna.HLSL
         protected override void LoadFromSource()
         {
 #if !(XBOX || XBOX360)
+            // Populate preprocessor defines
+            string stringBuffer = string.Empty;
+            List<XFG.CompilerMacro> defines = new List<XFG.CompilerMacro>();
+            if ( preprocessorDefines != string.Empty )
+            {
+                stringBuffer = preprocessorDefines;
+
+                // Split preprocessor defines and build up macro array
+
+                if ( stringBuffer.Contains( "," ) )
+                {
+                    string[] definesArr = stringBuffer.Split( ',' );
+                    foreach ( string def in definesArr )
+                    {
+                        XFG.CompilerMacro macro = new XFG.CompilerMacro();
+                        macro.Definition = "1\0";
+                        macro.Name = def + "\0";
+                        defines.Add( macro );
+                    }
+                }
+            }
+
             string errors = null;
 
             switch ( type )
@@ -141,7 +169,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
-            microcode = XFG.ShaderCompiler.CompileFromSource( source, null, _includeHandler, XFG.CompilerOptions.PackMatrixRowMajor, entry, _convertTarget( target ), XNA.TargetPlatform.Windows );
+            microcode = XFG.ShaderCompiler.CompileFromSource( source, defines.ToArray(), _includeHandler, XFG.CompilerOptions.PackMatrixRowMajor, entry, _convertTarget( target ), XNA.TargetPlatform.Windows );
             if ( microcode.Success )
             {
                 constantTable = new XFG.ShaderConstantTable( microcode.GetShaderCode() );
@@ -384,6 +412,10 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
                 case "target":
                     target = val.Split( ' ' )[ 0 ];
+                    break;
+
+                case "preprocessor_defines":
+                    preprocessorDefines = val;
                     break;
 
                 default:
