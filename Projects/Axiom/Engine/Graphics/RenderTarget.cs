@@ -403,9 +403,31 @@ namespace Axiom.Graphics
 
 		#endregion isDepthBuffered Property
 
-		#region FSAA Property
+        #region HardwareGammaEnabled Property
 
-		/// <summary>
+        private bool _hwGamma;
+
+        /// <summary>
+        /// Indicates whether on rendering, linear color space is converted to 
+        /// sRGB gamma colour space. This is the exact opposite conversion of
+        /// what is indicated by <see cref="Texture.HardwareGammaEnabled" />, and can only
+        /// be enabled on creation of the render target. For render windows, it's
+        /// enabled through the 'gamma' creation misc parameter. For textures, 
+        /// it is enabled through the hwGamma parameter to the create call.
+        /// </summary>
+        public bool HardwareGammaEnabled
+        {
+            get
+            {
+                return _hwGamma;
+            }
+        }
+
+        #endregion HardwareGammaEnabled Property
+
+        #region FSAA Property
+
+        /// <summary>
 		///    Flag that states whether this target is FSAA.
 		/// </summary>
 		private int _fsaa = 0;
