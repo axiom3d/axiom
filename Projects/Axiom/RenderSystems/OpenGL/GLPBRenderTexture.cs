@@ -54,8 +54,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLPBRenderTexture( GLPBRTTManager manager, string name, GLSurfaceDesc target )
-			: base( name, target )
+        public GLPBRenderTexture( GLPBRTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
+			: base( name, target, writeGamma, fsaa )
 		{
 			this.manager = manager;
 

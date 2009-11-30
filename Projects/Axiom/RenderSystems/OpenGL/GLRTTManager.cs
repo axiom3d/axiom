@@ -104,7 +104,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="name"></param>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		public abstract RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target );
+        public abstract RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa );
 
 		/// <summary>
 		/// Check if a certain format is usable as rendertexture format

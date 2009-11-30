@@ -49,13 +49,22 @@ namespace Axiom.RenderSystems.OpenGL
 	/// Base class for GL Render Textures.
 	/// </summary>
 	internal class GLRenderTexture : RenderTexture
-	{
-		#region Construction and Destruction
+    {
+        #region Fields and Properties
 
-		public GLRenderTexture( string name, GLSurfaceDesc target )
+        protected bool HwGamma;
+        protected int Fsaa;
+
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        public GLRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 			: base( target.Buffer, target.ZOffset )
 		{
 			Name = name;
+            this.HwGamma = writeGamma;
+            this.Fsaa = fsaa;
 		}
 
 		#endregion Construction and Destruction

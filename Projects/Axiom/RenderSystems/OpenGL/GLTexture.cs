@@ -455,7 +455,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
-					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage, doSoftware && mip == 0, _glSupport );
+					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage, doSoftware && mip == 0, _glSupport, HardwareGammaEnabled, FSAA );
 					_surfaceList.Add( buf );
 
 					/// Check for error
