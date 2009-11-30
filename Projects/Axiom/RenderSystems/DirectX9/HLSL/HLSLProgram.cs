@@ -373,9 +373,11 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                 case "target":
                     target = val.Split( ' ' )[ 0 ];
                     break;
+
                 case "preprocessor_defines":
                     preprocessorDefines = val;
                     break;
+
                 default:
                     LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
                     handled = false;
