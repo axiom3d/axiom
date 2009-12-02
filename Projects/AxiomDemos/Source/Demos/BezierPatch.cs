@@ -152,9 +152,16 @@ namespace Axiom.Demos
             // Create entity based on patch
 
             patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
-
-			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
-            material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
+            Material material = null;
+            try
+            {
+                material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
+                material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
+            }
+            catch
+            {
+                material = (Material)MaterialManager.Instance[ "TextMat" ];
+            }
             patchEntity.MaterialName = "TextMat";
             patchPass = material.GetTechnique(0).GetPass(0);
 
