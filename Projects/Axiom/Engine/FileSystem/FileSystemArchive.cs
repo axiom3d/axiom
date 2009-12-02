@@ -144,8 +144,10 @@ namespace Axiom.FileSystem
         void pushDirectory(string dir) 
         {
             // get current directory and push it onto the stack
+#if !( XBOX || XBOX360 )
             string cwd = Directory.GetCurrentDirectory();
             _directoryStack.Push( cwd );
+#endif
             changeDirectory( dir );
         }
 
@@ -154,7 +156,11 @@ namespace Axiom.FileSystem
         {
             if ( _directoryStack.Count == 0)
             {
+#if !( XBOX || XBOX360 )
                 throw new AxiomException("No directories left in the stack.");
+#else
+                return;
+#endif
             }
             string cwd = _directoryStack.Pop();
             changeDirectory( cwd );

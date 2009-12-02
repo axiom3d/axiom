@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using Axiom.Input;
+using Microsoft.Xna.Framework.Storage;
 
 #endregion Namespace Declarations
 
@@ -26,23 +27,25 @@ namespace Axiom.Demos.Browser.Xna
     /// </remarks>
     public partial class Game : IDisposable
     {
-        protected const string CONFIG_FILE = @"EngineConfig.xml";
-
         private Root engine;
 
         string nextGame = "";
+        string titleLocation;
 
         partial void _setDefaultNextGame();
+        partial void _setupResources();
 
         private bool _configure()
         {
-            // instantiate the Root singleton
-            engine = new Root( "AxiomDemos.log" );
 
-#if (XBOX || XBOX360 )
+            // instantiate the Root singleton
+            engine = new Root( titleLocation + "AxiomDemos.log" );
+
             ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
-#endif
-            Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "XNA" ];
+
+            Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
+            Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
+
             _setupResources();
 
             engine.FrameStarted += engine_FrameStarted;
@@ -52,49 +55,24 @@ namespace Axiom.Demos.Browser.Xna
 
         void engine_FrameStarted( object source, FrameEventArgs e )
         {
-            Axiom.Overlays.OverlayManager.Instance.GetByName( "Core/XnaOverlay" ).Show();
+            //Axiom.Overlays.OverlayManager.Instance.GetByName( "Core/XnaOverlay" ).Show();
             engine.FrameStarted -= engine_FrameStarted;
         }
 
-        /// <summary>
-        ///		Loads default resource configuration if one exists.
-        /// </summary>
-        private void _setupResources()
-        {
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Fonts", "Folder" );
-#if !( XBOX || XBOX360 )
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Icons", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\BrowserImages", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\scripts", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\programs", "Folder" );
-            //ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\textures", "Folder" );
-
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\x86\\Fresnel.zip", "ZipFile" );
-#else
-            //ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\XBox", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation("Content\\XNA.Materials\\XBox\\scripts", "Folder");
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\XBox\\programs", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\XNA.Materials\\XBox\\Textures", "Folder" );
-#endif
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Meshes", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Overlays", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Skeletons", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Textures", "Folder" );
-#if !( XBOX || XBOX360 )
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Archives\\chiropteraDM.zip", "ZipFile" );
-            ResourceGroupManager.Instance.AddResourceLocation("Content\\Archives\\Water.zip", "ZipFile");
-#endif
-
-        }
 
         public void Run()
         {
+#if !( XBOX || XBOX360 )
+            titleLocation = String.Empty;
+#else
+            titleLocation = StorageContainer.TitleLocation + "\\";
+#endif
+
             try
             {
                 if ( _configure() )
                 {
-                    Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
+                    Assembly demos = Assembly.LoadFrom( titleLocation + "Axiom.Demos.dll" );
 
                     _setDefaultNextGame();
 
@@ -142,7 +120,7 @@ namespace Axiom.Demos.Browser.Xna
                     {
                         using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
                         {
-                            demo.SetupInput += new TechDemo.ConfigureInput( _setupInput );
+                            demo.SetupInput = new TechDemo.ConfigureInput( _setupInput );
                             demo.Start();//show and start rendering
                         }//dispose of it when done
                     }

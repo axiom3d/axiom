@@ -79,7 +79,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
-		private SkeletonManager()
+		public SkeletonManager()
 		{
 			LoadingOrder = 300.0f;
 			ResourceType = "Skeleton";

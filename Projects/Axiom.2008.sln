@@ -69,6 +69,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0BA7646B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Tests", "Tests\Axiom.Tests\Axiom.Tests.csproj", "{A836B773-8B22-4713-A9D4-D4E32BA73296}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.Content.x86", "Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj", "{6E5E6221-0235-49C9-9273-449F5F0E8EF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -680,6 +682,36 @@ Global
 		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release-Windows|Mixed Platforms.ActiveCfg = Release|x86
 		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release-Windows|Mixed Platforms.Build.0 = Release|x86
 		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release-Windows|x86.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|x86.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|x86.Build.0 = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Linux|Any CPU.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Linux|Mixed Platforms.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Linux|Mixed Platforms.Build.0 = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Linux|x86.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Linux|x86.Build.0 = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Windows|Any CPU.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Windows|Mixed Platforms.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Windows|Mixed Platforms.Build.0 = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Windows|x86.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug-Windows|x86.Build.0 = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|Any CPU.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|x86.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|x86.Build.0 = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Linux|Any CPU.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Linux|Mixed Platforms.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Linux|Mixed Platforms.Build.0 = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Linux|x86.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Linux|x86.Build.0 = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Windows|Any CPU.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Windows|Mixed Platforms.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Windows|Mixed Platforms.Build.0 = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Windows|x86.ActiveCfg = Release|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release-Windows|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -696,6 +728,7 @@ Global
 		{68DBB62F-F98D-47B5-A769-C20B461227AB} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
 		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
 		{161EA53F-8D78-4BD3-8217-442D94A593C1} = {E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}
 		{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF} = {E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}
 		{FF6735ED-CF54-4CF0-BE72-00C423EC07DD} = {E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}

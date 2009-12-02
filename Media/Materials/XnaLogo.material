@@ -9,6 +9,14 @@ material Core/XnaLogo
 			scene_blend alpha_blend
 			depth_check off
 
+			vertex_program_ref OverlayVP
+			{
+			}
+			
+			fragment_program_ref OverlayFP
+			{
+			}
+
 			texture_unit
 			{
 				texture xnalogo.jpg

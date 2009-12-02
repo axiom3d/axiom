@@ -181,7 +181,6 @@ namespace Axiom.Core
         /// <returns>A newly created Log object, opened and ready to go.</returns>
         public Log CreateLog( string name, bool isDefaultLog, bool debuggerOutput )
         {
-#if !(XBOX || XBOX360 || SILVERLIGHT)
             Log newLog = new Log( name, debuggerOutput );
 
             // set as the default log if need be
@@ -195,9 +194,6 @@ namespace Axiom.Core
             logList.Add( name, newLog );
 
             return newLog;
-#else
-			return null;
-#endif
         }
 
         /// <summary>
@@ -260,9 +256,7 @@ namespace Axiom.Core
         /// </param>
         public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
         {
-#if !(XBOX || XBOX360 || SILVERLIGHT)
             DefaultLog.Write( level, maskDebug, message, substitutions );
-#endif
         }
 
         public static string BuildExceptionString( Exception exception )

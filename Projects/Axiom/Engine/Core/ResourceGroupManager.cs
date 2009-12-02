@@ -610,7 +610,7 @@ namespace Axiom.Core
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        private ResourceGroupManager()
+        public ResourceGroupManager()
         {
 
             // Create the 'General' group

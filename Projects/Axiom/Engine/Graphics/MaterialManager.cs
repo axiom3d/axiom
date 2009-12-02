@@ -154,7 +154,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// private constructor.  This class cannot be instantiated externally.
         /// </summary>
-        private MaterialManager()
+        public MaterialManager()
             : base()
         {
             this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );

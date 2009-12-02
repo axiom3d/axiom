@@ -54,7 +54,7 @@ namespace Axiom.Core
     /// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
     /// </remarks>
     /// <typeparam name="T">a class</typeparam>
-    public abstract class Singleton<T> : IDisposable where T : class
+    public abstract class Singleton<T> : IDisposable where T : class, new()
     {
         public Singleton()
         {
@@ -94,9 +94,7 @@ namespace Axiom.Core
                 
             }
 
-            internal static T instance = (T)typeof( T ).InvokeMember( typeof( T ).Name,
-                                                                      BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.NonPublic,
-                                                                      null, null, null );
+            internal static T instance = new T();
         }
 
         public static void Destroy()

@@ -43,7 +43,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Axiom.RenderSystems.Xna.XML</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -137,6 +137,10 @@
     <ProjectReference Include="..\..\Engine\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj">
+      <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
+      <Name>Axiom.RenderSystems.Xna.Content.x86</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

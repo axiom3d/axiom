@@ -922,7 +922,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 else if ( result.IsFailure )
                 {
-                    throw new AxiomException( "[SDX] : Error presenting surfaces." );
+                    throw new AxiomException( "[D3D] : Error presenting surfaces." );
                 }
             }
         }

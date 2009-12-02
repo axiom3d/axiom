@@ -121,7 +121,7 @@ namespace Axiom.Core
 
 		#region Constructor
 
-		private ShadowTextureManager()
+		public ShadowTextureManager()
 		{
 		}
 

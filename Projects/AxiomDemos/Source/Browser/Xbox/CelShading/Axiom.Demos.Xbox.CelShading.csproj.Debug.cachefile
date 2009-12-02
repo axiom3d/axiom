@@ -1,0 +1,17 @@
+Content\Materials\Textures\AxiomLogo.xnb
+Content\Materials\Textures\Border.xnb
+Content\Materials\Textures\Border_Break.xnb
+Content\Materials\Textures\Border_Center.xnb
+Content\Fonts\BlueHighway.xnb
+Content\Materials\Programs\overlay_fp.xnb
+Content\Materials\Programs\overlay_vp.xnb
+Content\Materials\Scripts\Core.material
+Content\Fonts\BlueHighway.fontdef
+Content\Overlays\DebugPanel.overlay
+Content\Materials\Textures\cel_shading_diffuse.xnb
+Content\Materials\Textures\cel_shading_edge.xnb
+Content\Materials\Textures\cel_shading_specular.xnb
+Content\Materials\Programs\CelShadingPS_2_0.xnb
+Content\Materials\Programs\CelShadingVS_1_1.xnb
+Content\Materials\Scripts\CelShading.material
+Content\Models\ogrehead.mesh

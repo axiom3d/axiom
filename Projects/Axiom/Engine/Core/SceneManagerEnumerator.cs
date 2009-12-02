@@ -119,7 +119,7 @@ namespace Axiom.Core
     /// </remarks>
     public sealed class SceneManagerEnumerator : Singleton<SceneManagerEnumerator>
     {
-        private SceneManagerEnumerator()
+        public SceneManagerEnumerator()
         {
             _defaultFactory = new SceneManagerDefaultFactory();
             AddFactory( _defaultFactory );
