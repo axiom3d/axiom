@@ -9,4 +9,4 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 // It's also used by XNA
-[assembly: Guid( "54a1a618-93f5-4ee6-96f0-066b0957b7df" )]
+[assembly: Guid( "B9770DDF-DDF2-4250-80AF-03F75423DBAD" )]

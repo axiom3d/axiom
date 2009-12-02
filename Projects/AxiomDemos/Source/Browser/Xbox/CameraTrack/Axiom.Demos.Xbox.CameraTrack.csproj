@@ -7,13 +7,12 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.Demos.Browser.Xna</RootNamespace>
-    <AssemblyName>Axiom.Demos.Xbox.CameraTRack</AssemblyName>
+    <AssemblyName>Axiom.Demos.Xbox.CameraTrack</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
-    <ApplicationIcon>
-    </ApplicationIcon>
-    <Thumbnail>GameThumbnail.png</Thumbnail>
+    <ApplicationIcon>..\Common\Game.ico</ApplicationIcon>
+    <Thumbnail>..\Common\GameThumbnail.png</Thumbnail>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
