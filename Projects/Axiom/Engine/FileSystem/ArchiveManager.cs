@@ -68,7 +68,7 @@ namespace Axiom.FileSystem
         /// <summary>
         /// Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        private ArchiveManager()
+        public ArchiveManager()
         {
         }
 

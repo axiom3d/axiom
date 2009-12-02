@@ -141,10 +141,9 @@ namespace Axiom.Core
                 OverlayManager.Instance.Initialize();
                 new OverlayElementManager();
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
                 ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
                 ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
-#endif
+
                 new CodecManager();
 
                 new HighLevelGpuProgramManager();

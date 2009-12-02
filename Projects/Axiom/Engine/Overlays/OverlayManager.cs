@@ -153,7 +153,7 @@ namespace Axiom.Overlays
 
 		#region Construction and Destruction
 
-		private OverlayManager()
+		public OverlayManager()
 		{
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.overlay" );

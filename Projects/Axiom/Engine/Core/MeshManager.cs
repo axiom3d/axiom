@@ -156,7 +156,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
-		private MeshManager()
+		public MeshManager()
 		{
 			_boundsPaddingFactor = 0.01f;
 

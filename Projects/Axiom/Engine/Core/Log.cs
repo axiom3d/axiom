@@ -98,12 +98,17 @@ namespace Axiom.Core
 
 			if ( fileName != null )
 			{
-				// create the log file, or ope
-				log = File.Open( fileName, FileMode.Create );
+                try
+                {
+                    // create the log file, or open
+                    log = File.Open( fileName, FileMode.Create );
 
-				// get a stream writer using the file stream
-				writer = new StreamWriter( log );
-				writer.AutoFlush = true;	//always flush after write
+                    // get a stream writer using the file stream
+                    writer = new StreamWriter( log );
+                    writer.AutoFlush = true;	//always flush after write
+                }
+                catch
+                {}
 			}
 
 		}
@@ -202,7 +207,7 @@ namespace Axiom.Core
 				System.Diagnostics.Debug.WriteLine( message );
 			}
 
-			if ( writer.BaseStream != null )
+			if ( writer != null && writer.BaseStream != null )
 			{
 
 				// prepend the current time to the message

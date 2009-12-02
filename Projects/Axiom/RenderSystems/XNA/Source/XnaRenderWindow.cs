@@ -38,6 +38,7 @@ using System.IO;
 
 using Axiom.Collections;
 using Axiom.Configuration;
+using Axiom.Graphics.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -50,7 +51,6 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 using Axiom.Graphics.Collections;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
-using Axiom.Graphics.Collections;
 #endif
 
 #endregion Namespace Declarations

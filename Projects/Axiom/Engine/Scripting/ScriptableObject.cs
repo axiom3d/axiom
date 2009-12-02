@@ -73,7 +73,7 @@ namespace Axiom.Scripting
                         bool typeFound = false;
                         for ( int i = 0; i < commandClass.GetInterfaces().GetLength( 0 ); i++ )
                         {
-                            if ( type.GetInterfaces()[ i ] == typeof( IPropertyCommand ) )
+                            if ( commandClass.GetInterfaces()[ i ] == typeof( IPropertyCommand ) )
                             {
                                 typeFound = true;
                                 break;

@@ -137,7 +137,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
-		private CompositorManager()
+		public CompositorManager()
 		{
 			// OGRE initializes this manager here in the constructor. For consistency Axiom calls Initialize() directly
 			// in Root.ctor(), this does change the order in which things are intialized.

@@ -1,5 +1,4 @@
 //#define SIS
-//#define XBOX360
 
 #region Namespace Declarations
 
@@ -110,32 +109,6 @@ namespace Axiom.Demos
         {
             // gets a reference to the default overlay
             Overlay o = OverlayManager.Instance.GetByName( "Core/DebugOverlay" );
-
-            if ( o == null )
-            {
-                LogManager.Instance.Write( string.Format( "Could not find overlay named '{0}'.", "Core/DebugOverlay" ) );
-                return;
-            }
-
-            if ( show )
-            {
-                o.Show();
-            }
-            else
-            {
-                o.Hide();
-            }
-
-            if ( this.Engine.RenderSystem.Name.Contains( "Xna" ))
-            {
-                this.ShowXnaLogo( show );
-            }
-        }
-
-        protected void ShowXnaLogo( bool show )
-        {
-            // gets a reference to the default overlay
-            Overlay o = OverlayManager.Instance.GetByName( "Core/XnaOverlay" );
 
             if ( o == null )
             {
@@ -440,7 +413,7 @@ namespace Axiom.Demos
             // set the scaling of camera motion
             cameraScale = 100 * evt.TimeSinceLastFrame;
 
-#if  !( XBOX || XBOX360 ) && !( SIS )
+#if !( SIS )
             // TODO: Move this into an event queueing mechanism that is processed every frame
             input.Capture();
 
@@ -543,6 +516,7 @@ namespace Axiom.Demos
                 toggleDelay = .3f;
             }
 
+#if !( XBOX || XBOX360 )
             if ( input.IsKeyPressed( KeyCodes.P ) && toggleDelay < 0 )
             {
                 string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
@@ -555,6 +529,7 @@ namespace Axiom.Demos
 
                 toggleDelay = .3f;
             }
+#endif
 
             if ( input.IsKeyPressed( KeyCodes.B ) && toggleDelay < 0 )
             {

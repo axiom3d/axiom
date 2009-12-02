@@ -47,13 +47,11 @@ using ResourceHandle = System.UInt64;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+using Axiom.RenderSystems.Xna.Content;
 
 using BufferUsage=Axiom.Graphics.BufferUsage;
 using Texture=Axiom.Core.Texture;
 using TextureUsage=Axiom.Graphics.TextureUsage;
-#if (XBOX || XBOX360 || SILVERLIGHT)
-using Axiom.RenderSystems.Xna.Content;
-#endif
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -140,7 +138,7 @@ namespace Axiom.RenderSystems.Xna
         public XnaTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader,XFG.GraphicsDevice device )
             : base( parent, name, handle, group, isManual, loader )
         {
-            Debug.Assert( device != null, "Cannot create a texture without a valid D3D Device." );
+            Debug.Assert( device != null, "Cannot create a texture without a valid Xna Device." );
             this._device = device;
 
             InitDevice();
@@ -488,53 +486,58 @@ namespace Axiom.RenderSystems.Xna
         {
             Debug.Assert( TextureType == TextureType.OneD || TextureType == TextureType.TwoD );
 
-#if (XBOX || XBOX360 || SILVERLIGHT)
-            Axiom.RenderSystems.Xna.Content.AxiomContentManager acm = new Axiom.RenderSystems.Xna.Content.AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            _normTexture = acm.Load<XFG.Texture2D>( Name );
-            _texture = _normTexture;
-            internalResourcesCreated = true;
-#else
-            Stream stream;
-            if ( Name.EndsWith( ".dds" ) )
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" )
             {
-
-                stream = ResourceGroupManager.Instance.OpenResource( Name );
-
-                // use Xna to load the image directly from the stream
-                XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
-                tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
-                tcp.MipLevels = MipmapCount;
-
-                _normTexture = XFG.Texture2D.FromFile( _device, stream, tcp );
-                // store a ref for the base texture interface
+                Axiom.RenderSystems.Xna.Content.AxiomContentManager acm = new Axiom.RenderSystems.Xna.Content.AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
+                _normTexture = acm.Load<XFG.Texture2D>( Name );
                 _texture = _normTexture;
-
-                //reset stream position to read Texture information
-                stream.Position = 0;
-
-                // set the image data attributes
-                XFG.TextureInformation info = XFG.Texture2D.GetTextureInformation( stream );
-                SetSrcAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
-                SetFinalAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
-
                 internalResourcesCreated = true;
             }
+#if !( XBOX || XBOX360 )
             else
             {
-                // find & load resource data intro stream to allow resource group changes if required
-                stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
-                int pos = Name.LastIndexOf( "." );
-                String ext = Name.Substring( pos + 1 );
+                Stream stream;
+                if ( Name.EndsWith( ".dds" ) )
+                {
 
-                // Call internal LoadImages, not LoadImage since that's external and 
-                // will determine load status etc again
-                LoadImages( new Image[]
+                    stream = ResourceGroupManager.Instance.OpenResource( Name );
+
+                    // use Xna to load the image directly from the stream
+                    XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
+                    tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
+                    tcp.MipLevels = MipmapCount;
+
+                    _normTexture = XFG.Texture2D.FromFile( _device, stream, tcp );
+                    // store a ref for the base texture interface
+                    _texture = _normTexture;
+
+                    //reset stream position to read Texture information
+                    stream.Position = 0;
+
+                    // set the image data attributes
+                    XFG.TextureInformation info = XFG.Texture2D.GetTextureInformation( stream );
+                    SetSrcAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
+                    SetFinalAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
+
+                    internalResourcesCreated = true;
+                }
+                else
+                {
+                    // find & load resource data intro stream to allow resource group changes if required
+                    stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+                    int pos = Name.LastIndexOf( "." );
+                    String ext = Name.Substring( pos + 1 );
+
+                    // Call internal LoadImages, not LoadImage since that's external and 
+                    // will determine load status etc again
+                    LoadImages( new Image[]
                             {
                                 Image.FromStream( stream, ext )
                             } );
-            }
+                }
 
-            stream.Close();
+                stream.Close();
+            }
 #endif
         }
 
@@ -545,39 +548,44 @@ namespace Axiom.RenderSystems.Xna
         {
             Debug.Assert( this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap" );
 
-#if (XBOX || XBOX360 || SILVERLIGHT)
-            AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            _cubeTexture = acm.Load<XFG.TextureCube>( Name );
-            _texture = _cubeTexture;
-            internalResourcesCreated = true;
-#else
-            if (Name.EndsWith(".dds"))
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
             {
-                Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
-                _cubeTexture = XFG.TextureCube.FromFile(_device, stream);
-                stream.Close();
+                AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
+                _cubeTexture = acm.Load<XFG.TextureCube>( Name );
+                _texture = _cubeTexture;
+                internalResourcesCreated = true;
             }
+#if !( XBOX || XBOX360 )
             else
             {
-                this.ConstructCubeFaceNames( Name );
-                // Load from 6 separate files
-                // Use Axiom codecs
-                List<Image> images = new List<Image>();
-
-                int pos = Name.LastIndexOf( "." );
-                string ext = Name.Substring( pos + 1 );
-
-                for ( int i = 0; i < 6; i++ )
+                if ( Name.EndsWith( ".dds" ) )
                 {
-                    Stream strm = ResourceGroupManager.Instance.OpenResource( cubeFaceNames[ i ], Group, true, this );
-                    images.Add( Image.FromStream( strm, ext ) );
-                    strm.Close();
+                    Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
+                    _cubeTexture = XFG.TextureCube.FromFile( _device, stream );
+                    stream.Close();
                 }
+                else
+                {
+                    this.ConstructCubeFaceNames( Name );
+                    // Load from 6 separate files
+                    // Use Axiom codecs
+                    List<Image> images = new List<Image>();
 
-                LoadImages( images.ToArray() );
+                    int pos = Name.LastIndexOf( "." );
+                    string ext = Name.Substring( pos + 1 );
+
+                    for ( int i = 0; i < 6; i++ )
+                    {
+                        Stream strm = ResourceGroupManager.Instance.OpenResource( cubeFaceNames[ i ], Group, true, this );
+                        images.Add( Image.FromStream( strm, ext ) );
+                        strm.Close();
+                    }
+
+                    LoadImages( images.ToArray() );
+                }
+                _texture = _cubeTexture;
+                internalResourcesCreated = true;
             }
-            _texture = _cubeTexture;
-            internalResourcesCreated = true;
 #endif
         }
 
@@ -587,30 +595,35 @@ namespace Axiom.RenderSystems.Xna
         private void LoadVolumeTexture()
         {
             Debug.Assert(this.TextureType == TextureType.ThreeD);
-#if (XBOX || XBOX360 || SILVERLIGHT)
-            AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            _volumeTexture = acm.Load<XFG.Texture3D>( Name );
-            _texture = _volumeTexture;
-            internalResourcesCreated = true;
-#else
-            Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
-            XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
-            tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;//??
-            tcp.MipFilter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
-            tcp.MipLevels = MipmapCount;
-            // load the cube texture from the image data stream directly
-            _volumeTexture = XFG.Texture3D.FromFile( _device, stream );
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
+            {
+                AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
+                _volumeTexture = acm.Load<XFG.Texture3D>( Name );
+                _texture = _volumeTexture;
+                internalResourcesCreated = true;
+            }
+#if !( XBOX || XBOX360 )
+            else
+            {
+                Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
+                XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
+                tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;//??
+                tcp.MipFilter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
+                tcp.MipLevels = MipmapCount;
+                // load the cube texture from the image data stream directly
+                _volumeTexture = XFG.Texture3D.FromFile( _device, stream );
 
-            // store off a base reference
-            _texture = _volumeTexture;
+                // store off a base reference
+                _texture = _volumeTexture;
 
-            // set src and dest attributes to the same, we can't know
-            stream.Position = 0;
-            XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation( stream );
-            SetSrcAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
-            SetFinalAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
-            stream.Close();
-            internalResourcesCreated = true;
+                // set src and dest attributes to the same, we can't know
+                stream.Position = 0;
+                XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation( stream );
+                SetSrcAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
+                SetFinalAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
+                stream.Close();
+                internalResourcesCreated = true;
+            }
 #endif
         }
 

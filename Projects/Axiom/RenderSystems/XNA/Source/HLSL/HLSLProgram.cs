@@ -38,9 +38,8 @@ using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Graphics;
-#if (XBOX || XBOX360 || SILVERLIGHT)
 using Axiom.RenderSystems.Xna.Content;
-#endif
+
 using ResourceHandle = System.UInt64;
 
 using XNA = Microsoft.Xna.Framework;
@@ -73,11 +72,11 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-        protected XFG.CompiledShader microcode;
-#else
-		protected HlslCompiledShader compiledShader;
+#if !( XBOX || XBOX360 )        
+        protected XFG.CompiledShader microcode;		
 #endif
+        protected HlslCompiledShader compiledShader;
+
         /// <summary>
         ///     Holds information about shader constants.
         /// </summary>
@@ -111,11 +110,16 @@ namespace Axiom.RenderSystems.Xna.HLSL
             assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
 
             // set the microcode for this program
-#if !(XBOX || XBOX360)
-            ( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();
-#else
-			((XnaGpuProgram)assemblerProgram).ShaderCode = compiledShader.ShaderCode;
+#if !( XBOBX || XBOX360 )
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
+            {
+                ( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();
+            }
+            else
 #endif
+            {
+                ( (XnaGpuProgram)assemblerProgram ).ShaderCode = compiledShader.ShaderCode;
+            }
         }
 
         public override GpuProgramParameters CreateParameters()
@@ -187,28 +191,33 @@ namespace Axiom.RenderSystems.Xna.HLSL
 #endif
         }
 
-#if (XBOX || XBOX360 || SILVERLIGHT)
 		protected override void LoadHighLevelImpl()
 		{
-			if (!isHighLevelLoaded)
-			{
-				//get the CompiledShader from ContentManager
-				AxiomContentManager acm = new AxiomContentManager((XnaRenderSystem)Root.Instance.RenderSystem, "");
-				HlslCompiledShaders compiledShaders = acm.Load<HlslCompiledShaders>(fileName);
-				//find compiled shader with matching entry point
-				for (int i = 0; i < compiledShaders.Count; ++i)
-				{
-					if (compiledShaders[i].EntryPoint == entry)
-					{
-						compiledShader = compiledShaders[i];
-						break;
-					}
-				}
-                this.constantTable = new XFG.ShaderConstantTable( compiledShader.ShaderCode );
-				isHighLevelLoaded = true;
-			}
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" && !String.IsNullOrEmpty( fileName ) )
+            {
+                if ( !isHighLevelLoaded )
+                {
+                    //get the CompiledShader from ContentManager
+                    AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
+                    HlslCompiledShaders compiledShaders = acm.Load<HlslCompiledShaders>( fileName );
+                    //find compiled shader with matching entry point
+                    for ( int i = 0; i < compiledShaders.Count; ++i )
+                    {
+                        if ( compiledShaders[ i ].EntryPoint == entry )
+                        {
+                            compiledShader = compiledShaders[ i ];
+                            break;
+                        }
+                    }
+                    this.constantTable = new XFG.ShaderConstantTable( compiledShader.ShaderCode );
+                    isHighLevelLoaded = true;
+                }
+            }
+            else
+            {
+                base.LoadHighLevelImpl();
+            }
 		}
-#endif
 
         /// <summary>
         ///     Derives parameter names from the constant table.

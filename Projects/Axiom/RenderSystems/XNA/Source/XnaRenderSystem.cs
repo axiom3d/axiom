@@ -270,6 +270,7 @@ namespace Axiom.RenderSystems.Xna
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
             ConfigOption optNVPerfHUD = new ConfigOption( "Allow NVPerfHUD", "No", false );
             ConfigOption optSaveShaders = new ConfigOption( "Save Generated Shaders", "No", false );
+            ConfigOption optUseCP = new ConfigOption( "Use Content Pipeline", "No", false );
 
 
             optDevice.PossibleValues.Clear();
@@ -302,6 +303,9 @@ namespace Axiom.RenderSystems.Xna
             optSaveShaders.PossibleValues.Add( 0, "Yes" );
             optSaveShaders.PossibleValues.Add( 1, "No" );
 
+            optUseCP.PossibleValues.Add( 0, "Yes" );
+            optUseCP.PossibleValues.Add( 1, "No" );
+
             optFPUMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optAA.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optVSync.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
@@ -310,6 +314,7 @@ namespace Axiom.RenderSystems.Xna
             optDevice.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optNVPerfHUD.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optSaveShaders.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optUseCP.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
 
             ConfigOptions.Add( optDevice );
             ConfigOptions.Add( optVideoMode );
@@ -319,6 +324,7 @@ namespace Axiom.RenderSystems.Xna
             ConfigOptions.Add( optFPUMode );
             ConfigOptions.Add( optNVPerfHUD );
             ConfigOptions.Add( optSaveShaders );
+            ConfigOptions.Add( optUseCP );
 
             _refreshXnaSettings();
         }
@@ -1639,123 +1645,122 @@ namespace Axiom.RenderSystems.Xna
 
             /*---------------shaders generator part------*/
 #if !(XBOX || XBOX360 || SILVERLIGHT )
-
             bool needToUnmapVS = false;
             bool needToUnmapFS = false;
 
-            if ( _device.VertexShader == null || _device.PixelShader == null )
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
             {
-                FixedFunctionEmulation.VertexBufferDeclaration vbd = new FixedFunctionEmulation.VertexBufferDeclaration();
-                List<FixedFunctionEmulation.VertexBufferElement> lvbe = new List<FixedFunctionEmulation.VertexBufferElement>( op.vertexData.vertexDeclaration.ElementCount );
 
-                int textureLayer = 0;
-                for ( int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++ )
+                if ( _device.VertexShader == null || _device.PixelShader == null )
                 {
-                    FixedFunctionEmulation.VertexBufferElement element = new FixedFunctionEmulation.VertexBufferElement();
+                    FixedFunctionEmulation.VertexBufferDeclaration vbd = new FixedFunctionEmulation.VertexBufferDeclaration();
+                    List<FixedFunctionEmulation.VertexBufferElement> lvbe = new List<FixedFunctionEmulation.VertexBufferElement>( op.vertexData.vertexDeclaration.ElementCount );
 
-                    element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[ i ].Index;
-                    element.VertexElementSemantic = op.vertexData.vertexDeclaration[ i ].Semantic;
-                    element.VertexElementType = op.vertexData.vertexDeclaration[ i ].Type;
-
-                    //uncomment this to see the texture shadow
-                    //the problem is that some texcoords are given but texture is not set
-                    //
-                    if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
-                        op.vertexData.vertexDeclaration[ i ].Semantic == VertexElementSemantic.TexCoords )
+                    int textureLayer = 0;
+                    for ( int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++ )
                     {
-                        if ( !texStageDesc[ textureLayer ].Enabled )
+                        FixedFunctionEmulation.VertexBufferElement element = new FixedFunctionEmulation.VertexBufferElement();
+
+                        //uncomment this to see the texture shadow
+                        //the problem is that some texcoords are given but texture is not set
+                        //
+                        if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
+                            op.vertexData.vertexDeclaration[ i ].Semantic == VertexElementSemantic.TexCoords )
                         {
-
-                            texStageDesc[ textureLayer ].layerBlendMode = new LayerBlendModeEx();
-                            texStageDesc[ textureLayer ].layerBlendMode.blendType = LayerBlendType.Color;
-                            texStageDesc[ textureLayer ].layerBlendMode.operation = LayerBlendOperationEx.Modulate;
-                            texStageDesc[ textureLayer ].layerBlendMode.source1 = LayerBlendSource.Texture;
-                            texStageDesc[ textureLayer ].layerBlendMode.source2 = LayerBlendSource.Current;
-
-                            texStageDesc[ textureLayer ].Enabled = true;
-                            //texStageDesc[ textureLayer ].autoTexCoordType = TexCoordCalcMethod.ProjectiveTexture;
-                            texStageDesc[ textureLayer ].coordIndex = textureLayer;
-                            switch ( op.vertexData.vertexDeclaration[ i ].Type )
+                            if ( !texStageDesc[ textureLayer ].Enabled )
                             {
-                                case VertexElementType.Float1:
-                                    texStageDesc[ textureLayer ].texType = TextureType.OneD;
-                                    break;
-                                case VertexElementType.Float2:
-                                    texStageDesc[ textureLayer ].texType = TextureType.TwoD;
-                                    break;
-                                case VertexElementType.Float3:
-                                    texStageDesc[ textureLayer ].texType = TextureType.ThreeD;
-                                    break;
+
+                                texStageDesc[ textureLayer ].layerBlendMode = new LayerBlendModeEx();
+                                texStageDesc[ textureLayer ].layerBlendMode.blendType = LayerBlendType.Color;
+                                texStageDesc[ textureLayer ].layerBlendMode.operation = LayerBlendOperationEx.Modulate;
+                                texStageDesc[ textureLayer ].layerBlendMode.source1 = LayerBlendSource.Texture;
+                                texStageDesc[ textureLayer ].layerBlendMode.source2 = LayerBlendSource.Current;
+
+                                texStageDesc[ textureLayer ].Enabled = true;
+                                //texStageDesc[ textureLayer ].autoTexCoordType = TexCoordCalcMethod.ProjectiveTexture;
+                                texStageDesc[ textureLayer ].coordIndex = textureLayer;
+                                switch ( op.vertexData.vertexDeclaration[ i ].Type )
+                                {
+                                    case VertexElementType.Float1:
+                                        texStageDesc[ textureLayer ].texType = TextureType.OneD;
+                                        break;
+                                    case VertexElementType.Float2:
+                                        texStageDesc[ textureLayer ].texType = TextureType.TwoD;
+                                        break;
+                                    case VertexElementType.Float3:
+                                        texStageDesc[ textureLayer ].texType = TextureType.ThreeD;
+                                        break;
+                                }
+                                //texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
                             }
-                            //texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
+                            textureLayer++;
                         }
-                        textureLayer++;
+
+                        lvbe.Add( element );
                     }
-                    
-                    lvbe.Add( element );
-                }
-                vbd.VertexBufferElements = lvbe;
+                    vbd.VertexBufferElements = lvbe;
 
 
-                for ( int i = 0; i < Config.MaxTextureLayers; i++ )
-                {
-                    FixedFunctionEmulation.TextureLayerState tls = new FixedFunctionEmulation.TextureLayerState();
-
-                    if ( texStageDesc[ i ].Enabled )
-                    //if (texStageDesc[i].tex != null)
+                    for ( int i = 0; i < Config.MaxTextureLayers; i++ )
                     {
-                        tls.TextureType = texStageDesc[ i ].texType;
-                        tls.TexCoordCalcMethod = texStageDesc[ i ].autoTexCoordType;
-                        tls.CoordIndex = texStageDesc[ i ].coordIndex;
-                        tls.LayerBlendMode = texStageDesc[ i ].layerBlendMode;
-                        //TextureLayerStateList
-                        
-                        _fixedFunctionState.TextureLayerStates.Add( tls );
+                        FixedFunctionEmulation.TextureLayerState tls = new FixedFunctionEmulation.TextureLayerState();
+
+                        if ( texStageDesc[ i ].Enabled )
+                        //if (texStageDesc[i].tex != null)
+                        {
+                            tls.TextureType = texStageDesc[ i ].texType;
+                            tls.TexCoordCalcMethod = texStageDesc[ i ].autoTexCoordType;
+                            tls.CoordIndex = texStageDesc[ i ].coordIndex;
+                            tls.LayerBlendMode = texStageDesc[ i ].layerBlendMode;
+                            //TextureLayerStateList
+
+                            _fixedFunctionState.TextureLayerStates.Add( tls );
+                        }
+
+                        FixedFunctionEmulation.GeneralFixedFunctionState gff;
+                        gff = _fixedFunctionState.GeneralFixedFunctionState;
+
+                        gff.EnableLighting = _ffProgramParameters.LightingEnabled;
+                        gff.FogMode = _ffProgramParameters.FogMode;
+                        _fixedFunctionState.GeneralFixedFunctionState = gff;
+
+                        //lights
+                        foreach ( Light l in _ffProgramParameters.Lights )
+                            _fixedFunctionState.Lights.Add( l.Type );
+
+
+                        _fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)_shaderManager.GetShaderPrograms( "hlsl", vbd, _fixedFunctionState );
+
+                        _fixedFunctionProgram.FragmentProgramUsage.Program.DefaultParameters.NamedParamCount.ToString();
+
+
+                        _fixedFunctionProgram.SetFixedFunctionProgramParameters( _ffProgramParameters );
+
+                        //Bind Vertex Program
+                        if ( _device.VertexShader == null )
+                        {
+                            _device.VertexShader = ( (XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate ).VertexShader;
+                            BindGpuProgramParameters( GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params );
+                            needToUnmapVS = true;
+
+                        }
+                        // Bind Fragment Program 
+                        if ( _device.PixelShader == null )
+                        {
+                            _device.PixelShader = ( (XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate ).PixelShader;
+                            BindGpuProgramParameters( GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params );
+                            needToUnmapFS = true;
+                        }
+
+                        //clear parameters lists for next frame
+                        _fixedFunctionState.Lights.Clear();
+                        _fixedFunctionState.TextureLayerStates.Clear();
+                        //_fixedFunctionState.MaterialEnabled = false; 
+                        //_ffProgramParameters.FogMode = FogMode.None;
+
+
                     }
                 }
-
-                FixedFunctionEmulation.GeneralFixedFunctionState gff;
-                gff = _fixedFunctionState.GeneralFixedFunctionState;
-                
-                gff.EnableLighting = _ffProgramParameters.LightingEnabled;
-                gff.FogMode = _ffProgramParameters.FogMode;
-                _fixedFunctionState.GeneralFixedFunctionState = gff;
-
-                //lights
-                foreach ( Light l in _ffProgramParameters.Lights )
-                    _fixedFunctionState.Lights.Add( l.Type );
-
-
-                _fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)_shaderManager.GetShaderPrograms( "hlsl", vbd, _fixedFunctionState );
-
-                _fixedFunctionProgram.FragmentProgramUsage.Program.DefaultParameters.NamedParamCount.ToString();
-
-                
-                _fixedFunctionProgram.SetFixedFunctionProgramParameters( _ffProgramParameters );
-
-                //Bind Vertex Program
-                if ( _device.VertexShader == null )
-                {
-                    _device.VertexShader = ( (XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate ).VertexShader;
-                    BindGpuProgramParameters( GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params );
-                    needToUnmapVS = true;
-
-                }
-                // Bind Fragment Program 
-                if ( _device.PixelShader == null )
-                {
-                    _device.PixelShader = ( (XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate ).PixelShader;
-                    BindGpuProgramParameters( GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params );
-                    needToUnmapFS = true;
-                }
-
-                //clear parameters lists for next frame
-                _fixedFunctionState.Lights.Clear();
-                _fixedFunctionState.TextureLayerStates.Clear();
-                //_fixedFunctionState.MaterialEnabled = false; 
-                //_ffProgramParameters.FogMode = FogMode.None;
-
-
             }
             /*---------------------------------------------------------------------------------------------------------*/
 #endif
@@ -2480,9 +2485,17 @@ namespace Axiom.RenderSystems.Xna
         public object GetService( Type serviceType )
         {
             if ( serviceType == typeof( Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService ) )
-                return this.renderTargets.Values.GetEnumerator().Current;
-            else
-                return null;
+            {
+                foreach ( var item in this.renderTargets )
+                {
+                    var renderTarget = item.Value as RenderTarget;
+                    XFG.IGraphicsDeviceService service = renderTarget as XFG.IGraphicsDeviceService;
+                    if ( service != null )
+                        return service;                    
+                }
+            }
+
+            return null;
         }
 
         #endregion

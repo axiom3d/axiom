@@ -86,7 +86,7 @@ namespace Axiom.Fonts
 		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
-		internal FontManager()
+		public FontManager()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
