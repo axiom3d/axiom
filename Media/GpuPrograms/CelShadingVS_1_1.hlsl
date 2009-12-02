@@ -25,23 +25,23 @@ VS_OUTPUT main_vp(VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	// calculate output position
-	output.oPosition = mul(worldViewProj, input.position);
+	output.oPosition = mul( input.position, worldViewProj );
 
 	// calculate light vector
 	float3 N = normalize(input.normal);
 	float3 L = normalize(lightPosition - input.position.xyz);
 	
 	// Calculate diffuse component
-	output.diffuse = max(dot(N, L) , 0);
+	output.diffuse = max(dot(L, N) , 0);
 
 	// Calculate specular component
 	float3 E = normalize(eyePosition - input.position.xyz);
 	float3 H = normalize(L + E);
-	output.specular = pow(max(dot(N, H), 0), shininess);
+	output.specular = pow(max(dot(H, N), 0), shininess);
 	// Mask off specular if diffuse is 0
 	if (output.diffuse == 0) output.specular = 0;
 
 	// Edge detection, dot eye and normal vectors
-	output.edge = max(dot(N, E), 0);
+	output.edge = max(dot(E, N), 0);
 	return output;
 }
