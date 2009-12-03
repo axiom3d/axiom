@@ -16,17 +16,16 @@ struct VS_INPUT
 	float2 Texcoord0 : TEXCOORD0;
 };
 
-float4x4  World;
-float4x4  View;
-float4x4  Projection;
-float4x4  ViewIT;
-float4x4  WorldViewIT;
+float4x4  worldViewProj;
+float4x4  viewIT;
+float4x4  worldViewIT;
 shared float4x4  TextureMatrix0; //technique: None
 float4 BaseLightAmbient;
 float4 Light0_Ambient;
 float4 Light0_Diffuse;
 float4 Light0_Specular;
 float3 Light0_Direction;
+float3 eyePosition;
 float4 MaterialAmbient=float4(1,1,1,1);
 float4 MaterialDiffuse=float4(1,1,1,1);
 float4 MaterialSpecular=(float4)0;
@@ -42,40 +41,38 @@ struct VS_OUTPUT
 VS_OUTPUT main_vp( VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	float4 worldPos = mul( World, input.Position0);
-	float4 cameraPos = mul( View, worldPos );
-	output.Pos = mul( Projection, cameraPos );
-	ViewIT = transpose(ViewIT);
-	WorldViewIT = transpose(WorldViewIT);
+	output.Pos = mul( worldViewProj, input.Position0 );
+
 	float3 Normal = input.Normal0;
 	//debug info : texture stage 0 coordindex: 0
 	{
 		float4 texCordWithMatrix = float4(input.Texcoord0, 1, 1);
-		texCordWithMatrix = mul(texCordWithMatrix, TextureMatrix0 );
+		texCordWithMatrix = mul( texCordWithMatrix, TextureMatrix0 );
 		output.Texcoord0 = texCordWithMatrix.xy;
 	}
 	output.ColorSpec =MaterialSpecular;
 	output.Color +=BaseLightAmbient;
 	output.Color *=MaterialDiffuse;
-	float3 N = mul((float3x3)WorldViewIT, Normal);
-	float3 V = -normalize(cameraPos);
+
+	float3 N = mul( (float3x3)worldViewIT, Normal );
+	float3 V = -normalize(eyePosition);
 	#define fMaterialPower 16.f
-{
-  float3 L = mul((float3x3)ViewIT, -normalize(Light0_Direction));
-  float NdotL = dot(N, L);
-  float4 Color = Light0_Ambient;
-  float4 ColorSpec = 0;
-  if(NdotL > 0.f)
-  {
-    //compute diffuse color
-    Color += NdotL * Light0_Diffuse;
-    //add specular component
-    float3 H = normalize(L + V);   //half vector
-    ColorSpec = pow(max(0, dot(H, N)), fMaterialPower) * Light0_Specular;
-    output.Color += Color;
-    output.ColorSpec += ColorSpec;
-  }
-}
+	{
+	  float3 L = mul( (float3x3)viewIT, -normalize(Light0_Direction) );
+	  float NdotL = dot(N, L);
+	  float4 Color = Light0_Ambient;
+	  float4 ColorSpec = 0;
+	  if(NdotL > 0.f)
+	  {
+		//compute diffuse color
+		Color += NdotL * Light0_Diffuse;
+		//add specular component
+		float3 H = normalize(L + V);   //half vector
+		ColorSpec = pow(max(0, dot(H, N)), fMaterialPower) * Light0_Specular;
+		output.Color += Color;
+		output.ColorSpec += ColorSpec;
+	  }
+	}
 	return output;
 }
 

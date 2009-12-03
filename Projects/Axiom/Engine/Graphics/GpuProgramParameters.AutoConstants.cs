@@ -121,6 +121,11 @@ namespace Axiom.Graphics
             [ScriptEnum("ambient_light_colour")]
             AmbientLightColor,
             /// <summary>
+            ///    Light ambient color.  Index determined when setting up auto constants.
+            /// </summary>
+            [ScriptEnum( "light_ambient_colour" )]
+            LightAmbientColor,
+            /// <summary>
             ///    Light diffuse color.  Index determined when setting up auto constants.
             /// </summary>
             [ScriptEnum("light_diffuse_colour")]

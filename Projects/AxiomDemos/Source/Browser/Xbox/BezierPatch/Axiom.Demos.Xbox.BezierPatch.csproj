@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <XnaCrossPlatformGroupID>01a56499-67f2-49d7-8179-efab66ff2c6a</XnaCrossPlatformGroupID>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
     <OutputPath>bin\Xbox\</OutputPath>
@@ -152,6 +153,7 @@
     <Compile Include="..\Common\XnaInput.XBox.cs">
       <Link>XnaInput.XBox.cs</Link>
     </Compile>
+    <Compile Include="BezierPatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="..\Common\Content\Axiom.Content.Common.contentproj">

@@ -10,7 +10,7 @@ void main_vp
 	uniform float4x4 worldViewProj
 )
 {
-	oPosition = mul(iPosition, worldViewProj);
+	oPosition = mul( worldViewProj, iPosition );
 	
 	// Clean up inaccuracies
 	//iPosition.xy = sign(iPosition.xy);

@@ -9,7 +9,7 @@ Core/DebugOverlay
 		vert_align bottom
 		left 50 
 		top -132
-		width 220
+		width 300
 		height 102
 		material Core/StatsBlockCenter
         	border_size 1 1 1 1
@@ -28,7 +28,7 @@ Core/DebugOverlay
 			metrics_mode pixels
 			left 5 
 			top 22
-			width 210
+			width 290
 			height 1
 			material Core/StatsBreak
 		}
@@ -120,7 +120,7 @@ Core/DebugOverlay
 		element TextArea(Core/DebugText)
 		{
 			metrics_mode pixels
-			left 230
+			left 330
 			top 70
 			width 200
 			height 30
@@ -138,8 +138,8 @@ Core/DebugOverlay
 		horz_align right
 		vert_align bottom
 		top -100
-		left -200
-		width 150
+		left -300
+		width 250
 		height 75
 		material Core/AxiomLogo
 	}

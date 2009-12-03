@@ -43,7 +43,7 @@ float4 main_fp( VS_OUTPUT input ) : COLOR
 		texColor  = tex2D(Texture0, input.Texcoord0);
 		float4 source1 = texColor;
 		float4 source2 = finalColor;
-		finalColor = source1 * source2;
+		finalColor = source1 /* * source2 */;
 	}
 	return finalColor;
 }
