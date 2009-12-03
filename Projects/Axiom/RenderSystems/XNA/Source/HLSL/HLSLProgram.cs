@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
             assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
 
             // set the microcode for this program
-#if !( XBOBX || XBOX360 )
+#if !( XBOX || XBOX360 )
             if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
             {
                 ( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();

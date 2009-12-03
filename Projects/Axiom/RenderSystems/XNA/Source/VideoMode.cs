@@ -160,7 +160,7 @@ namespace Axiom.RenderSystems.Xna
         }
 
         /// <summary>
-        ///		Gets the Direct3D.DisplayMode object associated with this video mode.
+        ///		Gets the XNA.DisplayMode object associated with this video mode.
         /// </summary>
         public XFG.DisplayMode DisplayMode
         {
