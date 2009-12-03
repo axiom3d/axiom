@@ -27,6 +27,8 @@ namespace Axiom.RenderSystems.Xna.Content
     [ContentProcessor( DisplayName = "Axiom HLSL Processor" )]
     public class HlslProcessor : ContentProcessor<TInput, TOutput>
     {
+        private HlslIncludeHandler includeHandler = new HlslIncludeHandler();
+
         [DisplayName( "Shader Profile" )]
         [DefaultValue( ShaderProfile.PS_2_0 )]
         [Description( "The profile to compile this shader with." )]
@@ -59,10 +61,48 @@ namespace Axiom.RenderSystems.Xna.Content
         }
         private string entryPoint = "main";
 
+        [DisplayName( "Preprocessor Defines" )]
+        [DefaultValue( "" )]
+        [Description( "A comma separated list of names to define for the preprocessor." )]
+        public string PreprocessorDefines
+        {
+            get
+            {
+                return preprocessorDefines;
+            }
+            set
+            {
+                preprocessorDefines = value;
+            }
+        }
+        private string preprocessorDefines = String.Empty;
+
         public override TOutput Process( TInput input, ContentProcessorContext context )
         {
-            CompiledShader shader = ShaderCompiler.CompileFromSource( input, null, null,
-                                                                      CompilerOptions.None, 
+            // Populate preprocessor defines
+            string stringBuffer = string.Empty;
+            List<CompilerMacro> defines = new List<CompilerMacro>();
+            if ( preprocessorDefines != string.Empty )
+            {
+                stringBuffer = preprocessorDefines;
+
+                // Split preprocessor defines and build up macro array
+
+                if ( stringBuffer.Contains( "," ) )
+                {
+                    string[] definesArr = stringBuffer.Split( ',' );
+                    foreach ( string def in definesArr )
+                    {
+                        CompilerMacro macro = new CompilerMacro();
+                        macro.Definition = "1\0";
+                        macro.Name = def + "\0";
+                        defines.Add( macro );
+                    }
+                }
+            }
+
+            CompiledShader shader = ShaderCompiler.CompileFromSource( input, defines.ToArray(), includeHandler,
+                                                                      CompilerOptions.PackMatrixRowMajor, 
                                                                       entryPoint, shaderProfile, 
                                                                       context.TargetPlatform );
             if ( !shader.Success )

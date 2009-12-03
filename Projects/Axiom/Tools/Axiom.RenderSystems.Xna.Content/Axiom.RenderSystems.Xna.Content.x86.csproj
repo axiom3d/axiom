@@ -46,6 +46,8 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
@@ -56,6 +58,7 @@
     <Compile Include="HlslCompiledShaderReader.cs" />
     <Compile Include="HlslCompiledShaderWriter.cs" />
     <Compile Include="HlslImporter.cs" />
+    <Compile Include="HlslIncludeHandler.cs" />
     <Compile Include="HlslProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
