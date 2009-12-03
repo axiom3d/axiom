@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.Xna
 
         private void _configOptionChanged( string name, string value )
         {
-            LogManager.Instance.Write( "D3D9 : RenderSystem Option: {0} = {1}", name, value );
+            LogManager.Instance.Write( "XNA : RenderSystem Option: {0} = {1}", name, value );
 
             bool viewModeChanged = false;
 
@@ -203,7 +203,7 @@ namespace Axiom.RenderSystems.Xna
                 opt = ConfigOptions[ "Video Mode" ];
                 if ( opt.Value == "" )
                 {
-                    opt.Value = "800 x 600 @ 32-bit colour";
+                    opt.Value = "800 x 600 @ 32-bit color";
                     viewModeChanged = true;
                 }
             }
