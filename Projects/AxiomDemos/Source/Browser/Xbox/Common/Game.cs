@@ -45,6 +45,7 @@ namespace Axiom.Demos.Browser.Xna
 
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
+            Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
 
             _setupResources();
 
@@ -76,45 +77,14 @@ namespace Axiom.Demos.Browser.Xna
 
                     _setDefaultNextGame();
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-                    Type[] demoTypes = demos.GetTypes();
-                    Type techDemo = demos.GetType("Axiom.Demos.TechDemo");
-                    List<string> demoList=new List<string>();
-                    foreach (Type demoType in demoTypes)
-                    {
-                        if (demoType.IsSubclassOf(techDemo))
-                        {
-                            demoList.Add(demoType.Name);
-                        }
-                    }
-                    demoList.Sort();
+                    Type type;
 
-                    int i = 1;
-                    foreach (string typeName in demoList)
-                    {
-                        Console.WriteLine("{0}) {1}", i++, typeName);
-                    }
-                    Console.WriteLine("Enter the number of the demo that you want to run and press enter.");
+                    type = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos.Browser.Xna." + nextGame );
 
-                    while (true)
+                    if ( type == null )
                     {
-                        string line = Console.ReadLine();
-                        int number = -1;
-                        if (line != string.Empty)
-                        {
-                            number = int.Parse(line.Trim());
-                        }
-                        if (number < 1 || number > demoList.Count)
-                            Console.WriteLine("The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count);
-                        else
-                        {
-                            nextGame = (string)demoList[number - 1];
-                            break;
-                        }
+                        type = demos.GetType( "Axiom.Demos." + nextGame );
                     }
-#endif
-
-                    Type type = demos.GetType( "Axiom.Demos." + nextGame );
 
                     if ( type != null )
                     {

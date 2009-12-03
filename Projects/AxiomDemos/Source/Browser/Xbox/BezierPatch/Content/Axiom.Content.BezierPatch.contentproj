@@ -63,7 +63,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Materials\Scripts\BezierPatch.material">
+    <None Include="Materials\Scripts\BezierPatch.program">
       <Name>BezierPatch</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

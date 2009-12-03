@@ -25,7 +25,7 @@ VS_OUTPUT main_vp(VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	// calculate output position
-	output.oPosition = mul( input.position, worldViewProj );
+	output.oPosition = mul( worldViewProj, input.position );
 
 	// calculate light vector
 	float3 N = normalize(input.normal);

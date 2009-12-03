@@ -13,19 +13,17 @@ namespace Axiom.Demos
 {
     public class BezierPatch : TechDemo
     {
-        // --- Fields ---
-        #region Private Fields
-        private VertexDeclaration patchDeclaration;
-        private float timeLapse;
-        private float factor;
-        private bool isWireframe;
-        private PatchMesh patch;
-        private Entity patchEntity;
-        private Pass patchPass;
+        #region Protected Fields
 
-        private GCHandle _handle;
+        protected VertexDeclaration patchDeclaration;
+        protected float timeLapse;
+        protected float factor;
+        protected bool isWireframe;
+        protected PatchMesh patch;
+        protected Entity patchEntity;
+        protected Pass patchPass;
 
-        #endregion Private Fields
+        #endregion Protected Fields
 
         #region Private Structs
         private struct PatchVertex
@@ -146,22 +144,14 @@ namespace Axiom.Demos
 
             patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
-            // Start patch a 0 detail
+            // Start patch at 0 detail
             patch.Subdivision = 0;
 
             // Create entity based on patch
-
             patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
-            Material material = null;
-            try
-            {
-                material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
-                material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
-            }
-            catch
-            {
-                material = (Material)MaterialManager.Instance[ "TextMat" ];
-            }
+            Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
+            material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
+
             patchEntity.MaterialName = "TextMat";
             patchPass = material.GetTechnique(0).GetPass(0);
 
