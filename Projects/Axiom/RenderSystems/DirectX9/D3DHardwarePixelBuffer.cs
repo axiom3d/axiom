@@ -62,8 +62,6 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Fields
 
-        protected TimingMeter timingMeter = MeterManager.GetMeter( "BlitFromMemory", "D3DHardwarePixelBuffer" );
-
         ///<summary>
         ///    D3DDevice pointer
         ///</summary>
@@ -455,14 +453,6 @@ namespace Axiom.RenderSystems.DirectX9
         ///    Only call this function when both  buffers are unlocked. 
         ///</remarks>
         public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
-        {
-            using ( AutoTimer timer = new AutoTimer( timingMeter ) )
-            {
-                BlitFromMemoryImpl( src, dstBox );
-            }
-        }
-
-        protected void BlitFromMemoryImpl( PixelBox src, BasicBox dstBox )
         {
             // TODO: This currently does way too many copies.  We copy
             // from src to a converted buffer (if needed), then from 

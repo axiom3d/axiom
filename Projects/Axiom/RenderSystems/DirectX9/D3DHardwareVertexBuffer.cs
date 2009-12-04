@@ -56,8 +56,6 @@ namespace Axiom.RenderSystems.DirectX9
         protected D3D.VertexBuffer d3dBuffer;
         protected D3D.Pool d3dPool;
 
-        TimingMeter vbufferLockTimer = MeterManager.GetMeter( "Buffer Lock", "Axiom.RenderSystems.DirectX9" );
-
         #endregion
 
         #region Constructors
@@ -145,10 +143,8 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="discardWholeBuffer"></param>
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-            vbufferLockTimer.Enter();
             // lock the buffer real quick
             IntPtr dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
-            vbufferLockTimer.Exit();
             // copy that data in there
             Memory.Copy( src, dest, length );
 
