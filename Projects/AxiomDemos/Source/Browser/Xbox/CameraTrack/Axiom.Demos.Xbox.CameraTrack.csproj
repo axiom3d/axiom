@@ -11,6 +11,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
+    <XnaCrossPlatformGroupID>0BB792C7-B8BE-4f95-98C4-81767070654D</XnaCrossPlatformGroupID>
     <ApplicationIcon>..\Common\Game.ico</ApplicationIcon>
     <Thumbnail>..\Common\GameThumbnail.png</Thumbnail>
     <PublishUrl>publish\</PublishUrl>

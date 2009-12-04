@@ -543,14 +543,20 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( inverseViewMatrixDirty )
-				{
-					inverseViewMatrix = this.ViewMatrix.Inverse();
-					inverseViewMatrixDirty = false;
-				}
-				return inverseViewMatrix;
+                return this.ViewMatrix.Inverse();
 			}
 		}
+
+        /// <summary>
+        ///    Gets/Sets the inverse, transpose of current concatenated view matrices.
+        /// </summary>
+        public Matrix4 InverseTransposeViewMatrix
+        {
+            get
+            {
+                return this.InverseViewMatrix.Transpose();
+            }
+        }
 
         /// <summary>
         ///    Gets/Sets the inverse of current concatenated world and view matrices.

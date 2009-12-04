@@ -801,7 +801,11 @@ namespace Axiom.Graphics
                         SetConstant( entry.PhysicalIndex, source.InverseViewMatrix );
 						break;
 
-					case AutoConstantType.InverseWorldViewMatrix:
+                    case AutoConstantType.InverseTransposeViewMatrix:
+                        SetConstant( entry.PhysicalIndex, source.InverseTransposeViewMatrix );
+                        break;
+                    
+                    case AutoConstantType.InverseWorldViewMatrix:
                         SetConstant( entry.PhysicalIndex, source.InverseWorldViewMatrix );
 						break;
 

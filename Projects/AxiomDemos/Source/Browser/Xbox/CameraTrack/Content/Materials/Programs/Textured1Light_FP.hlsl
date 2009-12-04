@@ -18,7 +18,7 @@ struct VS_OUTPUT
 	float4 ColorSpec: COLOR1;
 };
 
-float4 main_fp( VS_OUTPUT input, uniform sampler2D Texture0 : register(s0) ) : COLOR
+float4 main( VS_OUTPUT input, uniform sampler2D Texture0 : register(s0) ) : COLOR
 {
 	float4 finalColor= input.Color + input.ColorSpec;
 	{

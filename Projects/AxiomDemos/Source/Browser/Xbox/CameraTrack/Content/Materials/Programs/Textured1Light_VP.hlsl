@@ -37,7 +37,7 @@ struct VS_OUTPUT
 	float4 ColorSpec: COLOR1;
 };
 
-VS_OUTPUT main_vp( VS_INPUT input )
+VS_OUTPUT main( VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.Pos = mul( worldViewProj, input.Position0 );
