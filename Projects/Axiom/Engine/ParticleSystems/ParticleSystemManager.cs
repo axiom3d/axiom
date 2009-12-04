@@ -342,7 +342,8 @@ namespace Axiom.ParticleSystems
 		{
 			if ( !systemTemplateList.ContainsKey( templateName ) )
 			{
-				throw new AxiomException( "Cannot create a particle system with template '{0}' because it does not exist.", templateName );
+				LogManager.Instance.Write( "Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.", templateName );
+                return CreateSystem( name, "NullParticleSystem" );
 			}
 
 			ParticleSystem templateSystem = systemTemplateList[ templateName ];
@@ -410,6 +411,8 @@ namespace Axiom.ParticleSystems
 			// Create Billboard renderer factory
 			billboardRendererFactory = new BillboardParticleRendererFactory();
 			AddRendererFactory( billboardRendererFactory );
+
+            CreateTemplate( "NullParticleSystem", ResourceGroupManager.DefaultResourceGroupName );
 
 		}
 
