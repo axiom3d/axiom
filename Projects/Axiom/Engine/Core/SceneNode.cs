@@ -633,11 +633,6 @@ namespace Axiom.Core
             FindVisibleObjects( camera, queue, includeChildren, displayNodes, false );
         }
 
-        private static TimingMeter objectListMeter = MeterManager.GetMeter( "Object List", "Find Visible" );
-        private static TimingMeter childListMeter = MeterManager.GetMeter( "Child List", "Find Visible" );
-        private static TimingMeter notifyCameraMeter = MeterManager.GetMeter( "Notify Camera", "Find Visible" );
-        private static TimingMeter updateQueueMeter = MeterManager.GetMeter( "Update Queue", "Find Visible" );
-
         /// <summary>
         ///		Internal method which locates any visible objects attached to this node and adds them to the passed in queue.
         /// </summary>

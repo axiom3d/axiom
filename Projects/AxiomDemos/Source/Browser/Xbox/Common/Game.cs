@@ -34,6 +34,7 @@ namespace Axiom.Demos.Browser.Xna
 
         partial void _setDefaultNextGame();
         partial void _setupResources();
+        partial void _loadPlugins();
 
         private bool _configure()
         {
@@ -46,6 +47,8 @@ namespace Axiom.Demos.Browser.Xna
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
             Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
+
+            _loadPlugins();
 
             _setupResources();
 

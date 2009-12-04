@@ -13,7 +13,14 @@ namespace Axiom.Demos.Browser.Xna
         {
             this.nextGame = "ParticleFX";
         }
-        
+
+        partial void _loadPlugins()
+        {
+#if ( XBOX || XBOX360 )
+            ( new Axiom.ParticleFX.ParticleFX() ).Initialize();
+#endif
+        }
+
         /// <summary>
         ///		Loads default resource configuration if one exists.
         /// </summary>

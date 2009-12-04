@@ -1816,21 +1816,12 @@ namespace Axiom.Core
             }
         }
 
-        private static TimingMeter billboardNotifyMeter = MeterManager.GetMeter( "Notify Camera", "BillboardSet" );
-        private static TimingMeter notSelfMeter = MeterManager.GetMeter( "Not Self", "BillboardSet" );
-        private static TimingMeter genVerticesMeter = MeterManager.GetMeter( "Gen Vertices", "BillboardSet" );
-        private static TimingMeter bufferGettingMeter = MeterManager.GetMeter( "Get Buffers", "BillboardSet" );
-        private static TimingMeter posBufferLockingMeter = MeterManager.GetMeter( "Lock Pos Buffer", "BillboardSet" );
-        private static TimingMeter colBufferLockingMeter = MeterManager.GetMeter( "Lock Col Buffer", "BillboardSet" );
-        private static TimingMeter texLockingMeter = MeterManager.GetMeter( "Lock Tex", "BillboardSet" );
-
         /// <summary>
         ///		Generate the vertices for all the billboards relative to the camera
         /// </summary>
         /// <param name="camera"></param>
         public override void NotifyCurrentCamera( Camera camera )
         {
-            billboardNotifyMeter.Enter();
             // base.NotifyCurrentCamera(camera);
             this.currentCamera = camera;
             this.camQ = camera.DerivedOrientation;
@@ -1846,130 +1837,6 @@ namespace Axiom.Core
             }
             // Camera direction points down -Z
             this.camDir = this.camQ * Vector3.NegativeUnitZ;
-#if NOT
-        // Take the reverse transform of the camera world axes into billboard space for efficiency
-
-        // parametrics offsets of the origin
-            float leftOffset, rightOffset, topOffset, bottomOffset;
-
-            // get offsets for the origin type
-            GetParametricOffsets(out leftOffset, out rightOffset, out topOffset, out bottomOffset);
-
-            // Boundary offsets based on origin and camera orientation
-            // Final vertex offsets, used where sizes all default to save calcs
-            Vector3[] vecOffsets = new Vector3[4];
-            Vector3 camX = new Vector3();
-            Vector3 camY = new Vector3();
-
-            // generates axes up front if not orient per-billboard
-            if((billboardType != BillboardType.OrientedSelf) && (billboardType != BillboardType.PerpendicularSelf)) {
-				notSelfMeter.Enter();
-                GenerateBillboardAxes(ref camX, ref camY);
-
-                //	if all billboards are the same size we can precalculare the
-                // offsets and just use + instead of * for each billboard, which should be faster.
-                GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, 
-                    defaultParticleWidth, defaultParticleHeight, ref camX, ref camY, vecOffsets);
-				notSelfMeter.Exit();
-            }
-
-            // reset counter
-            numVisibleBillboards = 0;
-
-            // get a reference to the vertex buffers to update
-            bufferGettingMeter.Enter();
-			HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer(POSITION);
-            HardwareVertexBuffer colBuffer = vertexData.vertexBufferBinding.GetBuffer(COLOR);
-			HardwareVertexBuffer texBuffer = vertexData.vertexBufferBinding.GetBuffer(TEXCOORD);
-            bufferGettingMeter.Exit();
-
-            // lock the buffers
-            posBufferLockingMeter.Enter();
-			IntPtr posPtr = posBuffer.Lock(BufferLocking.Discard);
-            posBufferLockingMeter.Exit();
-            colBufferLockingMeter.Enter();
-			IntPtr colPtr = colBuffer.Lock(BufferLocking.Discard);
-            colBufferLockingMeter.Exit();
-
-			IntPtr texPtr = IntPtr.Zero;
-
-			// do we need to update the tex coords?
-			if(!fixedTextureCoords) {
-				texLockingMeter.Enter();
-				texPtr = texBuffer.Lock(BufferLocking.Discard);
-				texLockingMeter.Exit();
-			}
-
-            // reset the global index counters
-            posIndex = 0;
-            colorIndex = 0;
-			texIndex = 0;
-
-            // if they are all the same size...
-            if(allDefaultSize) {
-				genVerticesMeter.Enter();
-				for(int i = 0; i < activeBillboards.Count; i++) {
-                    Billboard b = (Billboard)activeBillboards[i];
-                    // skip if not visible dammit
-
-					if(!IsBillboardVisible(camera, b))
-                        continue;
-
-                    if((billboardType == BillboardType.OrientedSelf) || (billboardType == BillboardType.PerpendicularSelf)) {
-                        // generate per billboard
-						GenerateBillboardAxes(ref camX, ref camY, b);
-                        GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset,
-                                              defaultParticleWidth, defaultParticleHeight, 
-                                              ref camX, ref camY, vecOffsets);
-            }
-
-                    // generate the billboard vertices
-					GenerateVertices(posPtr, colPtr, texPtr, vecOffsets, b);
-
-                    numVisibleBillboards++;
-                }
-				genVerticesMeter.Exit();
-                }
-            else {
-                // billboards aren't all default size
-				genVerticesMeter.Enter();
-                for(int i = 0; i < activeBillboards.Count; i++) {
-                    Billboard b = (Billboard)activeBillboards[i];
-                    // skip if not visible dammit
-                    if(!IsBillboardVisible(camera, b))
-                        continue;
-
-                    if((billboardType == BillboardType.OrientedSelf) || (billboardType == BillboardType.PerpendicularSelf)) {
-                        // generate per billboard
-                        GenerateBillboardAxes(ref camX, ref camY, b);
-            }
-
-                // if it has it's own dimensions. or self oriented, gen offsets
-                    if (b.HasOwnDimensions || billboardType == BillboardType.OrientedSelf || billboardType == BillboardType.PerpendicularSelf)
-                {
-                    // generate using it's own dimensions
-                        GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, b.Width,
-                            b.Height, ref camX, ref camY, vecOffsets);
-                }
-
-                    // generate the billboard vertices
-                    GenerateVertices(posPtr, colPtr, texPtr, vecOffsets, b);
-
-                    numVisibleBillboards++;
-                }
-				genVerticesMeter.Exit();
-            }
-
-            // unlock the buffers
-            posBuffer.Unlock();
-            colBuffer.Unlock();
-
-			// unlock this one only if it was updated
-			if(!fixedTextureCoords) {
-				texBuffer.Unlock();
-			}
-#endif
-            billboardNotifyMeter.Exit();
         }
 
         /// <summary>

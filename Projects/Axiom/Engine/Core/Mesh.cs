@@ -93,8 +93,6 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		protected TimingMeter meshLoadMeter = MeterManager.GetMeter( "Mesh Load", "Mesh" );
-
 		#region SharedVertexData Property
 
 		/// <summary>
@@ -2775,9 +2773,6 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void load()
 		{
-
-			meshLoadMeter.Enter();
-
 			// unload this first if it is already loaded
 			if ( IsLoaded )
 			{

@@ -97,8 +97,6 @@ namespace Axiom.Animating
 
 		#region Fields and Properties
 
-		protected TimingMeter skeletonLoadMeter = MeterManager.GetMeter( "Skeleton Load", "Skeleton" );
-
 		#region BlendMode Property
 
 		/// <summary>Mode of animation blending to use.</summary>
@@ -790,7 +788,6 @@ namespace Axiom.Animating
 				return;
 
 			LogManager.Instance.Write( "Skeleton: Loading '{0}'...", Name );
-			skeletonLoadMeter.Enter();
 
 			// load the skeleton file
 			Stream data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
@@ -810,7 +807,6 @@ namespace Axiom.Animating
 			//        i->skeletonName, mGroup);
 			//}
 
-			skeletonLoadMeter.Exit();
 		}
 
 		/// <summary>

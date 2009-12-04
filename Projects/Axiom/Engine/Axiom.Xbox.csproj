@@ -169,7 +169,6 @@
     <Compile Include="Core\Memory.cs" />
     <Compile Include="Core\Mesh.cs" />
     <Compile Include="Core\MeshManager.cs" />
-    <Compile Include="Core\Meters.cs" />
     <Compile Include="Core\MovableObject.cs" />
     <Compile Include="Core\MovableText.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />

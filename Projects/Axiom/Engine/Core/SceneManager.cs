@@ -4497,50 +4497,6 @@ namespace Axiom.Core
 
         #region Internal methods
 
-        private static TimingMeter animationsMeter = MeterManager.GetMeter( "Apply Animations", "Render Scene" );
-        private static TimingMeter findVisibleMeter = MeterManager.GetMeter( "Find Visible", "Render Scene" );
-        private static TimingMeter renderSceneMeter = MeterManager.GetMeter( "Render Scene", "Render Scene" );
-        private static TimingMeter renderVisibleMeter = MeterManager.GetMeter( "Render Objects", "Render Scene" );
-        private TimingMeter callRenderSingleMeter = MeterManager.GetMeter( "Call RenderSingle", "Render Single", true );
-        private TimingMeter doLightMeter = MeterManager.GetMeter( "Do Light", "Render Single", true );
-
-        private TimingMeter prepareShadowTexturesMeter = MeterManager.GetMeter( "Prepare Shadow Textures",
-                                                                                "Prepare Shadow Textures",
-                                                                                true );
-
-        private TimingMeter renderAdditiveGroupMeter = MeterManager.GetMeter( "Render Additive Group",
-                                                                              "Render Queue Group" );
-
-        private TimingMeter renderGroupMeter = MeterManager.GetMeter( "Render Group Objects", "Render Visible" );
-
-        private TimingMeter renderModulativeGroupMeter = MeterManager.GetMeter( "Render Modulative Group",
-                                                                                "Render Queue Group" );
-
-        private TimingMeter renderModulativeGroupsMeter = MeterManager.GetMeter( "Render Groups",
-                                                                                 "Render Modulative",
-                                                                                 true );
-
-        private TimingMeter renderModulativeLightsMeter = MeterManager.GetMeter( "Render Lights",
-                                                                                 "Render Modulative",
-                                                                                 true );
-
-        private TimingMeter renderOpMeter = MeterManager.GetMeter( "Render Op", "Render Single", true );
-        private TimingMeter renderQueueGroupMeter = MeterManager.GetMeter( "Render Queue Group", "Render Queue Group" );
-
-        private TimingMeter renderSolidObjectsMeter = MeterManager.GetMeter( "Render Solid Objects",
-                                                                             "Render Solid Objects",
-                                                                             true );
-
-        private TimingMeter renderTextureCasterGroupMeter = MeterManager.GetMeter( "Render Texture Caster Group",
-                                                                                   "Render Queue Group" );
-
-        private TimingMeter renderTextureShadowedGroupMeter = MeterManager.GetMeter( "Render Texture Shadowed Group",
-                                                                                     "Render Queue Group" );
-
-        private TimingMeter setGpuParmsMeter = MeterManager.GetMeter( "Set Gpu Parms", "Render Single", true );
-        private TimingMeter updateAutoParmsMeter = MeterManager.GetMeter( "Update Auto Parms", "Render Single", true );
-        private TimingMeter useLightsMeter = MeterManager.GetMeter( "Use Lights", "Render Single", true );
-
         /// <summary>
         ///		Prompts the class to send its contents to the renderer.
         /// </summary>
@@ -4557,8 +4513,6 @@ namespace Axiom.Core
         /// <param name="showOverlays">Whether or not any overlay objects should be rendered</param>
         protected internal void RenderScene( Camera camera, Viewport viewport, bool showOverlays )
         {
-            renderSceneMeter.Enter();
-
             // let the engine know this is the current scene manager
             Root.Instance.SceneManager = this;
 
@@ -4588,9 +4542,7 @@ namespace Axiom.Core
             if ( thisFrameNumber != this.lastFrameNumber )
             {
                 // Update animations
-                animationsMeter.Enter();
                 this.ApplySceneAnimations();
-                animationsMeter.Exit();
                 // Update controllers 
                 ControllerManager.Instance.UpdateAll();
                 this.lastFrameNumber = thisFrameNumber;
@@ -4692,7 +4644,6 @@ namespace Axiom.Core
             this.PrepareRenderQueue();
 
             // Parse the scene and tag visibles
-            findVisibleMeter.Enter();
             if ( this.findVisibleObjects )
             {
                 if (this.PreFindVisibleObjects != null )
@@ -4701,7 +4652,6 @@ namespace Axiom.Core
                 if ( this.PostFindVisibleObjects != null )
                     PostFindVisibleObjects( this, this.illuminationStage, viewport );
             }
-            findVisibleMeter.Exit();
 
             // Add overlays, if viewport deems it
             if ( viewport.ShowOverlays && this.illuminationStage != IlluminationRenderStage.RenderToTexture )
@@ -4737,9 +4687,7 @@ namespace Axiom.Core
             this.targetRenderSystem.ViewMatrix = camera.ViewMatrix;
 
             // render all visible objects
-            renderVisibleMeter.Enter();
             this.RenderVisibleObjects();
-            renderVisibleMeter.Exit();
 
             // end the current frame
             this.targetRenderSystem.EndFrame();
@@ -4750,7 +4698,6 @@ namespace Axiom.Core
             // Notify camera of the number of rendered batches
             camera.NotifyRenderedBatches( this.targetRenderSystem.BatchesRendered );
 
-            renderSceneMeter.Exit();
         }
 
         private void PrepareRenderQueue()
@@ -5060,7 +5007,6 @@ namespace Axiom.Core
         /// <param name="viewPort"></param>
         protected internal virtual void PrepareShadowTextures( Camera camera, Viewport viewPort )
         {
-            this.prepareShadowTexturesMeter.Enter();
             // Set the illumination stage, prevents recursive calls
             IlluminationRenderStage savedStage = this.illuminationStage;
             this.illuminationStage = IlluminationRenderStage.RenderToTexture;
@@ -5164,10 +5110,7 @@ namespace Axiom.Core
             // Set the illumination stage, prevents recursive calls
             this.illuminationStage = savedStage;
 
-            //fireShadowTexturesUpdated(
-            //	std::min(mLightsAffectingFrustum.size(), mShadowTextures.size()));
-
-            this.prepareShadowTexturesMeter.Exit();
+            //fireShadowTexturesUpdated( std::min(mLightsAffectingFrustum.size(), mShadowTextures.size()));
         }
 
         /// <summary>
@@ -5294,13 +5237,6 @@ namespace Axiom.Core
                     // Note that we may do this once per light, therefore it's in a loop
                     // and the light parameters are updated once per traversal through the
                     // loop
-                    this.doLightMeter.Enter();
-                    if ( MeterManager.Collecting )
-                    {
-                        MeterManager.AddInfoEvent( string.Format( "Rendering material '{0}'",
-                                                                  renderable.Material.Name ) );
-                    }
-
                     LightList rendLightList = renderable.Lights;
                     bool iteratePerLight = pass.IteratePerLight;
                     int numIterations = iteratePerLight ? rendLightList.Count : 1;
@@ -5333,48 +5269,31 @@ namespace Axiom.Core
                         {
                             // Update any automatic gpu params for lights
                             // Other bits of information will have to be looked up
-                            this.updateAutoParmsMeter.Enter();
                             this.autoParamDataSource.SetCurrentLightList( lightListToUse );
                             pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
-                            this.updateAutoParmsMeter.Exit();
 
                             // note: parameters must be bound after auto params are updated
-                            this.setGpuParmsMeter.Enter();
                             if ( pass.HasVertexProgram )
                             {
-                                if ( MeterManager.Collecting )
-                                {
-                                    MeterManager.AddInfoEvent( "Vertex Program " + pass.VertexProgramName );
-                                }
                                 this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex,
                                                                                   pass.VertexProgramParameters );
                             }
                             if ( pass.HasFragmentProgram )
                             {
-                                if ( MeterManager.Collecting )
-                                {
-                                    MeterManager.AddInfoEvent( "Fragment Program " + pass.FragmentProgramName );
-                                }
                                 this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment,
                                                                                   pass.FragmentProgramParameters );
                             }
-                            this.setGpuParmsMeter.Exit();
                         }
 
                         // Do we need to update light states? 
                         // Only do this if fixed-function vertex lighting applies
                         if ( pass.LightingEnabled && passSurfaceAndLightParams )
                         {
-                            this.useLightsMeter.Enter();
                             this.targetRenderSystem.UseLights( lightListToUse, pass.MaxSimultaneousLights );
-                            this.useLightsMeter.Exit();
                         }
                         // issue the render op		
-                        this.renderOpMeter.Enter();
                         this.targetRenderSystem.Render( op );
-                        this.renderOpMeter.Exit();
                     } // iterate per light
-                    this.doLightMeter.Exit();
                 }
                 else
                 {
@@ -5411,18 +5330,14 @@ namespace Axiom.Core
                     }
 
                     // issue the render op		
-                    this.renderOpMeter.Enter();
                     this.targetRenderSystem.Render( op );
-                    this.renderOpMeter.Exit();
                 }
             }
             else
             {
                 // suppressRenderStateChanges
                 // Just render
-                this.renderOpMeter.Enter();
                 this.targetRenderSystem.Render( op );
-                this.renderOpMeter.Exit();
             }
 
             // Reset view / projection changes if any
@@ -5471,15 +5386,7 @@ namespace Axiom.Core
                     }
 
                     // Render a single object, this will set up auto params if required
-                    this.callRenderSingleMeter.Enter();
-                    if ( MeterManager.Collecting )
-                    {
-                        MeterManager.AddInfoEvent( "RenderSingle material " + renderable.Material.Name +
-                                                   ", doLight " + doLightIteration + ", lightCnt "
-                                                   + ( manualLightList != null ? manualLightList.Count : 0 ) );
-                    }
                     this.RenderSingleObject( renderable, usedPass, doLightIteration, manualLightList );
-                    this.callRenderSingleMeter.Exit();
                 }
             }
         }
@@ -5713,7 +5620,6 @@ namespace Axiom.Core
             interleaved as in the normal rendering loop. 
             */
             // Iterate through priorities
-            this.renderModulativeGroupsMeter.Enter();
             foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
                 // Sort the queue first
@@ -5725,9 +5631,7 @@ namespace Axiom.Core
                 this.RenderSolidObjects( priorityGroup.solidPassesNoShadow, true );
                 this.renderingNoShadowQueue = false;
             }
-            this.renderModulativeGroupsMeter.Exit();
 
-            this.renderModulativeLightsMeter.Enter();
             // Iterate over lights, render received shadows
             // only perform this if we're in the 'normal' render stage, to avoid
             // doing it during the render to texture
@@ -5825,7 +5729,6 @@ namespace Axiom.Core
 
                 this.illuminationStage = IlluminationRenderStage.None;
             }
-            this.renderModulativeLightsMeter.Exit();
 
             // Iterate again
             foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
@@ -6009,18 +5912,13 @@ namespace Axiom.Core
             // Redirect to alternate versions if stencil shadows in use
             bool doShadows = group.ShadowsEnabled && this.currentViewport.ShowShadows &&
                              !this.suppressShadows && !this.suppressRenderStateChanges;
-            this.renderQueueGroupMeter.Enter();
             if ( doShadows && this.shadowTechnique == ShadowTechnique.StencilAdditive )
             {
-                this.renderAdditiveGroupMeter.Enter();
                 this.RenderAdditiveStencilShadowedQueueGroupObjects( group );
-                this.renderAdditiveGroupMeter.Exit();
             }
             else if ( doShadows && this.shadowTechnique == ShadowTechnique.StencilModulative )
             {
-                this.renderModulativeGroupMeter.Enter();
                 this.RenderModulativeStencilShadowedQueueGroupObjects( group );
-                this.renderModulativeGroupMeter.Exit();
             }
             else if ( this.IsShadowTechniqueTextureBased )
             {
@@ -6030,9 +5928,7 @@ namespace Axiom.Core
                     // Shadow caster pass
                     if ( this.currentViewport.ShowShadows && !this.suppressShadows && !this.suppressRenderStateChanges )
                     {
-                        this.renderTextureCasterGroupMeter.Enter();
                         this.RenderTextureShadowCasterQueueGroupObjects( group );
-                        this.renderTextureCasterGroupMeter.Exit();
                     }
                 }
                 else
@@ -6040,7 +5936,6 @@ namespace Axiom.Core
                     // Ordinary + receiver pass
                     if ( doShadows )
                     {
-                        this.renderTextureShadowedGroupMeter.Enter();
                         if ( this.IsShadowTechniqueAdditive )
                         {
                             this.RenderAdditiveTextureShadowedQueueGroupObjects( group );
@@ -6049,7 +5944,6 @@ namespace Axiom.Core
                         {
                             this.RenderModulativeTextureShadowedQueueGroupObjects( group );
                         }
-                        this.renderTextureShadowedGroupMeter.Exit();
                     }
                     else
                     {
@@ -6063,7 +5957,6 @@ namespace Axiom.Core
                 this.RenderBasicQueueGroupObjects( group );
             }
 
-            this.renderQueueGroupMeter.Exit();
         }
 
         /// <summary>
@@ -6147,9 +6040,7 @@ namespace Axiom.Core
                     if ( queueGroup.NumPriorityGroups > 0 )
                     {
                         // render objects in all groups
-                        this.renderGroupMeter.Enter();
                         this.RenderQueueGroupObjects( queueGroup );
-                        this.renderGroupMeter.Exit();
                     }
 
                     // true if someone requested that we repeat this queue
