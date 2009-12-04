@@ -41,7 +41,7 @@ namespace Axiom.Demos
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( greenyNimbus );
 
 			// Create some nice fireworks
-			ParticleSystem fireWorks = ParticleSystemManager.Instance.CreateSystem( "Fireworks", "Examples/Fireworks" );
+            ParticleSystem fireWorks = ParticleSystemManager.Instance.CreateSystem( "Fireworks", "ParticleSystems/Fireworks" );
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( fireWorks );
 
 			// shared node for the 2 fountains
@@ -70,7 +70,7 @@ namespace Axiom.Demos
 			rain.FastForward( 5.0f );
 
 			// Aureola around Ogre perpendicular to the ground
-			ParticleSystem aureola = ParticleSystemManager.Instance.CreateSystem( "Aureola", "Examples/Aureola" );
+            ParticleSystem aureola = ParticleSystemManager.Instance.CreateSystem( "Aureola", "ParticleSystems/Aureola" );
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( aureola );
 		}
 

@@ -97,12 +97,13 @@
     <Compile Include="CylinderEmitter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DrawEmitter.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="DeflectorPlaneAffector.cs" />
+    <Compile Include="DirectionRandomizerAffector.cs" />
     <Compile Include="EllipsoidEmitter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Factories\DeflectorPlaneFactory.cs" />
+    <Compile Include="Factories\DirectionRandomizerFactory.cs" />
     <Compile Include="HollowEllipsoidEmitter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -141,9 +142,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Factories\CylinderEmitterFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Factories\DrawEmitterFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Factories\EllipsoidEmitterFactory.cs">

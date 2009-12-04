@@ -116,9 +116,9 @@ ParticleSystems/Fountain
 }
 
 // Exudes aureola particles which around the model float upwards
-Examples/Aureola
+ParticleSystems/Aureola
 {
-    material        Examples/Aureola
+    material        Particles/Aureola
     particle_width  200
     particle_height 200
     cull_each       false
@@ -177,9 +177,9 @@ Examples/Aureola
     }
 }
 
-Examples/Fireworks
+ParticleSystems/Fireworks
 {
-    material Examples/Flare
+    material Particles/Flare
     point_rendering            false
     particle_width             10
     particle_height            10
