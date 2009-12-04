@@ -1,7 +1,8 @@
-﻿vertex_program BezierPatchVP hlsl
+
+vertex_program Textured1LightVP hlsl
 {
-	source BezierPatch_VP.hlsl
-	entry_point main_vp
+	source Textured1Light_VP.hlsl
+	entry_point main
 	target vs_2_0
 
 	default_params
@@ -17,9 +18,10 @@
 	}
 }
 
-fragment_program BezierPatchFP hlsl
+fragment_program Textured1LightFP hlsl
 {
-	source BezierPatch_FP.hlsl
-	entry_point main_fp
+	source Textured1Light_FP.hlsl
+	entry_point main
 	target ps_2_0
 }
+

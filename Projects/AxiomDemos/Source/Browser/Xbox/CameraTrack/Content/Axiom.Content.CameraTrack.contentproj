@@ -47,12 +47,102 @@
       <Name>ogrehead</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\Common\Content\Materials\Scripts\Color.program">
+      <Link>Materials\Scripts\Color.program</Link>
+      <Name>Color</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Common\Content\Materials\Scripts\OgreHead.material">
+      <Link>Materials\Scripts\OgreHead.material</Link>
+      <Name>OgreHead</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Common\Content\Materials\Scripts\RustySteel.material">
+      <Link>Materials\Scripts\RustySteel.material</Link>
+      <Name>RustySteel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Common\Content\Materials\Scripts\Skys.material">
+      <Link>Materials\Scripts\Skys.material</Link>
+      <Name>Skys</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Common\Content\Materials\Scripts\Textured1Light.program">
+      <Link>Materials\Scripts\Textured1Light.program</Link>
+      <Name>Textured1Light</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Materials\Programs\Textured1Light_FP.hlsl">
+      <Name>Textured1Light_FP</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+    </Compile>
+    <Compile Include="Materials\Programs\Textured1Light_VP.hlsl">
+      <Name>Textured1Light_VP</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="..\..\Common\Content\Materials\Programs\color_fp.hlsl">
+      <Link>Materials\Programs\color_fp.hlsl</Link>
+      <Name>color_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\Common\Content\Materials\Programs\color_vp.hlsl">
+      <Link>Materials\Programs\color_vp.hlsl</Link>
+      <Name>color_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <ProcessorParameters_Profile>VS_1_1</ProcessorParameters_Profile>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\..\Media\Textures\dirt01.jpg">
+      <Link>Materials\Textures\dirt01.jpg</Link>
+      <Name>dirt01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\..\Media\Textures\GreenSkin.jpg">
+      <Link>Materials\Textures\GreenSkin.jpg</Link>
+      <Name>GreenSkin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\..\Media\Textures\WeirdEye.png">
+      <Link>Materials\Textures\WeirdEye.png</Link>
+      <Name>WeirdEye</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\..\Media\Textures\spheremap.png">
+      <Link>Materials\Textures\spheremap.png</Link>
+      <Name>spheremap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\..\Media\Textures\RustySteel.jpg">
+      <Link>Materials\Textures\RustySteel.jpg</Link>
+      <Name>RustySteel</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\..\Media\Textures\clouds.jpg">
+      <Link>Materials\Textures\clouds.jpg</Link>
+      <Name>clouds</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Fonts\" />
-    <Folder Include="Materials\Programs\" />
-    <Folder Include="Materials\Scripts\" />
-    <Folder Include="Materials\Textures\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

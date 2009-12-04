@@ -106,6 +106,11 @@ namespace Axiom.Graphics
             [ScriptEnum("inverse_view_matrix")]
             InverseViewMatrix,
             /// <summary>
+            ///    Current view matrix, inverted, transposed.
+            /// </summary>
+            [ScriptEnum( "inverse_transpose_view_matrix" )]
+            InverseTransposeViewMatrix,
+            /// <summary>
             ///    Current world and view matrices concatenated, then inverted.
             /// </summary>
             [ScriptEnum("inverse_worldview_matrix")]
