@@ -52,3 +52,23 @@ material Particles/Rain
 		}
 	}
 }
+
+material Particles/Aureola
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+			cull_hardware none
+
+			texture_unit
+			{
+				texture aureola.png 2d
+				tex_address_mode clamp
+			}
+		}
+	}
+}
