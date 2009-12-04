@@ -851,13 +851,6 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		private static TimingMeter updateTargetMeter = MeterManager.GetMeter( "Update Target", "Update Target" );
-		private static TimingMeter beforeUpdateMeter = MeterManager.GetMeter( "Before Update", "Update Target" );
-		private static TimingMeter afterUpdateMeter = MeterManager.GetMeter( "After Update", "Update Target" );
-		private static TimingMeter beforeViewPortUpdateMeter = MeterManager.GetMeter( "Before Viewport Update", "Update Target" );
-		private static TimingMeter afterViewPortUpdateMeter = MeterManager.GetMeter( "After Viewport Update", "Update Target" );
-		private static TimingMeter viewPortUpdateMeter = MeterManager.GetMeter( "Viewport Update", "Update Target" );
-
 		/// <summary>
 		///		Tells the target to update it's contents.
 		/// </summary>
@@ -875,13 +868,8 @@ namespace Axiom.Graphics
 		///	</remarks>
 		public virtual void Update()
 		{
-			updateTargetMeter.Enter();
-
-
 			// notify event handlers that this RenderTarget is about to be updated
-			beforeUpdateMeter.Enter();
 			OnBeforeUpdate();
-			beforeUpdateMeter.Exit();
 
 			// Go through viewportList in Z-order
 			// Tell each to refresh
@@ -890,30 +878,19 @@ namespace Axiom.Graphics
                 Viewport viewport = _viewportList.Values[i];
 
 				// notify listeners (pre)
-				beforeViewPortUpdateMeter.Enter();
 				OnBeforeViewportUpdate( viewport );
-				beforeViewPortUpdateMeter.Exit();
 
-				viewPortUpdateMeter.Enter();
 				viewport.Update();
-				viewPortUpdateMeter.Exit();
 
 				_statistics.TriangleCount += viewport.Camera.RenderedFaceCount;
 				_statistics.BatchCount += viewport.Camera.RenderedBatchCount;
 
 				// notify event handlers the the viewport is updated
-				afterViewPortUpdateMeter.Enter();
 				OnAfterViewportUpdate( viewport );
-				afterViewPortUpdateMeter.Exit();
 			}
 
 			// notify event handlers that this target update is complete
-			afterUpdateMeter.Enter();
 			OnAfterUpdate();
-			afterUpdateMeter.Exit();
-
-			updateTargetMeter.Exit();
-
 
 			// Update statistics (always on top)
 			updateStatistics();

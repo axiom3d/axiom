@@ -624,16 +624,6 @@ namespace Axiom.Core
 
         #region Methods
 
-        private static TimingMeter blendedVertexMeter = MeterManager.GetMeter( "Blended Vertex", "Animation Update" );
-        private static TimingMeter boneGetBonesMeter = MeterManager.GetMeter( "Bone Get Bones", "Cache Bones" );
-        private static TimingMeter boneSetAnimStateMeter = MeterManager.GetMeter( "Bone Set Anim State", "Cache Bones" );
-        private static TimingMeter boneTransformMeter = MeterManager.GetMeter( "Bone Transform", "Cache Bones" );
-        private static TimingMeter copyBoneMeter = MeterManager.GetMeter( "Copy Bone", "Animation Update" );
-        private static TimingMeter entitySWBlendMeter = MeterManager.GetMeter( "Entity SW Blend", "Animation Update" );
-
-        private static TimingMeter subEntitySWBlendMeter = MeterManager.GetMeter( "SubEntity SW Blend",
-                                                                                  "Animation Update" );
-
         /// <summary>
         ///		Attaches another object to a certain bone of the skeleton which this entity uses.
         /// </summary>
@@ -893,13 +883,9 @@ namespace Axiom.Core
                 }
             }
 
-            boneSetAnimStateMeter.Enter();
             this.skeletonInstance.SetAnimationState( this.animationState );
-            boneSetAnimStateMeter.Exit();
 
-            boneGetBonesMeter.Enter();
             this.skeletonInstance.GetBoneMatrices( this.boneMatrices );
-            boneGetBonesMeter.Exit();
             this.frameBonesLastUpdated[ 0 ] = currentFrameCount;
 
             // TODO: Skeleton instance sharing
@@ -915,12 +901,10 @@ namespace Axiom.Core
             Matrix4 worldXform = this.ParentNodeFullTransform;
             this.numBoneMatrices = this.skeletonInstance.BoneCount;
 
-            boneTransformMeter.Enter();
             for ( int i = 0; i < this.numBoneMatrices; i++ )
             {
                 this.boneMatrices[ i ] = worldXform * this.boneMatrices[ i ];
             }
-            boneTransformMeter.Exit();
         }
 
         /// <summary>
@@ -1032,22 +1016,18 @@ namespace Axiom.Core
                 }
                 if ( this.HasSkeleton )
                 {
-                    copyBoneMeter.Enter();
                     this.CacheBoneMatrices();
-                    copyBoneMeter.Exit();
 
                     if ( swAnimation )
                     {
                         bool blendTangents = blendNormals;
                         bool blendBinormals = blendNormals;
-                        blendedVertexMeter.Enter();
                         if ( this.skelAnimVertexData != null )
                         {
                             // Blend shared geometry
                             // NB we suppress hardware upload while doing blend if we're
                             // hardware animation, because the only reason for doing this
                             // is for shadow, which need only be uploaded then
-                            entitySWBlendMeter.Enter();
                             this.tempSkelAnimInfo.CheckoutTempCopies( true, blendNormals, blendTangents, blendBinormals );
                             this.tempSkelAnimInfo.BindTempCopies( this.skelAnimVertexData, this.hardwareAnimation );
                             // Blend, taking source from either mesh data or morph data
@@ -1061,9 +1041,7 @@ namespace Axiom.Core
                                     blendNormals,
                                     blendTangents,
                                     blendBinormals );
-                            entitySWBlendMeter.Exit();
                         }
-                        blendedVertexMeter.Exit();
 
                         // Now check the per subentity vertex data to see if it needs to be
                         // using software blend
@@ -1072,7 +1050,6 @@ namespace Axiom.Core
                             // Blend dedicated geometry
                             if ( subEntity.IsVisible && subEntity.SkelAnimVertexData != null )
                             {
-                                subEntitySWBlendMeter.Enter();
                                 subEntity.TempSkelAnimInfo.CheckoutTempCopies( true,
                                                                                blendNormals,
                                                                                blendTangents,
@@ -1090,7 +1067,6 @@ namespace Axiom.Core
                                         blendNormals,
                                         blendTangents,
                                         blendBinormals );
-                                subEntitySWBlendMeter.Exit();
                             }
                         }
                     }
@@ -1618,10 +1594,6 @@ namespace Axiom.Core
 
         #region Implementation of MovableObject
 
-        private static TimingMeter copyAnimationMeter = MeterManager.GetMeter( "Copy Animation", "Entity Queue" );
-        private static TimingMeter updateAnimationMeter = MeterManager.GetMeter( "Update Animation", "Entity Queue" );
-        private static TimingMeter updateChildMeter = MeterManager.GetMeter( "Update Child", "Entity Queue" );
-
         public override EdgeData GetEdgeList( int lodIndex )
         {
             return this.mesh.GetEdgeList( lodIndex );
@@ -1744,9 +1716,7 @@ namespace Axiom.Core
                 {
                     // Copy the animation state set to lod entity, we assume the lod
                     // entity only has a subset animation states
-                    copyAnimationMeter.Enter();
                     this.CopyAnimationStateSubset( lodEnt.animationState, this.animationState );
-                    copyAnimationMeter.Exit();
                 }
 
                 lodEnt.UpdateRenderQueue( queue );
@@ -1766,24 +1736,14 @@ namespace Axiom.Core
             // update the animation
             if ( this.HasSkeleton || this.mesh.HasVertexAnimation )
             {
-                updateAnimationMeter.Enter();
-                if ( MeterManager.Collecting )
-                {
-                    MeterManager.AddInfoEvent( string.Format( "Updating animation for mesh {0}, skeleton {1}",
-                                                              this.mesh.Name,
-                                                              this.mesh.SkeletonName ) );
-                }
                 this.UpdateAnimation();
-                updateAnimationMeter.Exit();
 
                 // Update render queue with child objects (tag points)
                 foreach (MovableObject child in this.childObjectList.Values)
                 {
                     if ( child.IsVisible )
                     {
-                        updateChildMeter.Enter();
                         child.UpdateRenderQueue( queue );
-                        updateChildMeter.Exit();
                     }
                 }
             }
@@ -1812,9 +1772,7 @@ namespace Axiom.Core
                 {
                     // Copy the animation state set to lod entity, we assume the lod
                     // entity only has a subset animation states
-                    copyAnimationMeter.Enter();
                     this.CopyAnimationStateSubset( lodEnt.animationState, this.animationState );
-                    copyAnimationMeter.Exit();
                 }
 
                 return lodEnt.GetShadowVolumeRenderableEnumerator( technique,

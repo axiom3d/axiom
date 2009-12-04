@@ -99,7 +99,6 @@
     <Compile Include="Core\BillboardChain.cs" />
     <Compile Include="Core\BitConverterEx.cs" />
     <Compile Include="Core\ManualObject.cs" />
-    <Compile Include="Core\Meters.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PrefabFactory.cs" />

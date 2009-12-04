@@ -345,6 +345,8 @@ namespace Axiom.Core
 		/// <returns>A float representation of the string value.</returns>
 		public static float ParseFloat( string val )
 		{
+            if ( val == float.NaN.ToString() )
+                return float.NaN;
 			return float.Parse( val, englishCulture );
 		}
 

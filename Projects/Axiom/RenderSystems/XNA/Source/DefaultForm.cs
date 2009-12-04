@@ -56,36 +56,6 @@ namespace Axiom.RenderSystems.Xna
         public DefaultForm()
         {
             InitializeComponent();
-
-            this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
-            this.Activated += new System.EventHandler( this.DefaultForm_Activated );
-            this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Deactivate( object source, System.EventArgs e )
-        {
-            if ( renderWindow != null )
-            {
-                renderWindow.IsActive = false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Activated( object source, System.EventArgs e )
-        {
-            if ( renderWindow != null )
-            {
-                renderWindow.IsActive = true;
-            }
         }
 
         private void InitializeComponent()
@@ -103,27 +73,12 @@ namespace Axiom.RenderSystems.Xna
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
-        {
-            // set the window to inactive
-            renderWindow.IsActive = false;
-
-            // remove it from the list of render windows, which will halt the rendering loop
-            // since there should now be 0 windows left
-            Root.Instance.RenderSystem.DetachRenderTarget( renderWindow );
-        }
-
         private void DefaultForm_Load( object sender, System.EventArgs e )
         {
             System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" );
             if ( strm != null )
                 this.Icon = new System.Drawing.Icon( strm );
-            }
+        }
 
         /// <summary>
         ///		Get/Set the RenderWindow associated with this form.
