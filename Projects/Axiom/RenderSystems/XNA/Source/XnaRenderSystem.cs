@@ -1661,10 +1661,14 @@ namespace Axiom.RenderSystems.Xna
                     {
                         FixedFunctionEmulation.VertexBufferElement element = new FixedFunctionEmulation.VertexBufferElement();
 
+                        element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[ i ].Index;
+                        element.VertexElementSemantic = op.vertexData.vertexDeclaration[ i ].Semantic;
+                        element.VertexElementType = op.vertexData.vertexDeclaration[ i ].Type;
+
                         //uncomment this to see the texture shadow
                         //the problem is that some texcoords are given but texture is not set
                         //
-                        if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
+                        /*if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
                             op.vertexData.vertexDeclaration[ i ].Semantic == VertexElementSemantic.TexCoords )
                         {
                             if ( !texStageDesc[ textureLayer ].Enabled )
@@ -1694,7 +1698,7 @@ namespace Axiom.RenderSystems.Xna
                                 //texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
                             }
                             textureLayer++;
-                        }
+                        }*/
 
                         lvbe.Add( element );
                     }
