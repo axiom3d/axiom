@@ -868,6 +868,9 @@ namespace Axiom.Graphics
 		///	</remarks>
 		public virtual void Update()
 		{
+            // Clear per frame statistics
+            _statistics.BatchCount = _statistics.TriangleCount = 0;
+
 			// notify event handlers that this RenderTarget is about to be updated
 			OnBeforeUpdate();
 
@@ -889,11 +892,11 @@ namespace Axiom.Graphics
 				OnAfterViewportUpdate( viewport );
 			}
 
-			// notify event handlers that this target update is complete
-			OnAfterUpdate();
-
 			// Update statistics (always on top)
 			updateStatistics();
+
+			// notify event handlers that this target update is complete
+			OnAfterUpdate();
 
 		}
 
