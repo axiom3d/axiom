@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Utilities;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -127,15 +128,6 @@ namespace Axiom.Core
 
 		#region Methods
 
-		/// <summary>
-		///		Converts this instance to a <see cref="System.Drawing.Color"/> structure.
-		/// </summary>
-		/// <returns></returns>
-		//public System.Drawing.Color ToColor()
-		//{
-		//    return System.Drawing.Color.FromArgb( (int)( a * 255.0f ), (int)( r * 255.0f ), (int)( g * 255.0f ), (int)( b * 255.0f ) );
-		//}
-
 		public int ToRGBA()
 		{
 			int result = 0;
@@ -196,7 +188,32 @@ namespace Axiom.Core
 			vals[ 3 ] = a;
 		}
 
-		#endregion
+        /// <summary>
+        /// Clamps color value to the range [0, 1]
+        /// </summary>
+        public void Saturate()
+        {
+            r = Utility.Clamp( r, 1.0f, 0.0f );
+            g = Utility.Clamp( g, 1.0f, 0.0f );
+            b = Utility.Clamp( b, 1.0f, 0.0f );
+            a = Utility.Clamp( a, 1.0f, 0.0f );
+        }
+
+        /// <summary>
+        /// Clamps color value to the range [0, 1] in a copy
+        /// </summary>
+        public ColorEx SaturateCopy()
+        {
+            ColorEx saturated;
+            saturated.r = Utility.Clamp( r, 1.0f, 0.0f );
+            saturated.g = Utility.Clamp( g, 1.0f, 0.0f );
+            saturated.b = Utility.Clamp( b, 1.0f, 0.0f );
+            saturated.a = Utility.Clamp( a, 1.0f, 0.0f );
+
+            return saturated;
+        }
+
+        #endregion
 
 		#region Operators
 
@@ -2648,5 +2665,6 @@ namespace Axiom.Core
         }
 
         #endregion IClonable Implementation
+
     }
 }
