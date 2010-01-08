@@ -194,7 +194,7 @@ namespace Axiom.Core
                 foreach ( Type type in assemblyTypes )
                 {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                    if ( ( baseType.IsInterface && type.GetInterface( baseType.Name ) != null ) ||
+                    if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName ) != null ) ||
                          ( !baseType.IsInterface && type.BaseType == baseType ) )
                     {
                         types.Add( new ObjectCreator( assembly, type ) );
