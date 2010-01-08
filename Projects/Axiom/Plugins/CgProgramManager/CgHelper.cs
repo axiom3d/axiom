@@ -77,7 +77,7 @@ namespace Axiom.CgPrograms
                     sb.Append( Environment.NewLine );
                 }
 
-                throw new AxiomException( sb.ToString() );
+                LogManager.Instance.Write( sb.ToString() );
             }
         }
     }
