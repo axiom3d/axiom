@@ -740,6 +740,65 @@ namespace Axiom.RenderSystems.DirectX9
             return dest;
         }
 
+        /// <summary>
+        /// Builds a perspective projection matrix for the case when frustum is
+        /// not centered around camera.
+        /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <param name="top"></param>
+        /// <param name="nearPlane"></param>
+        /// <param name="farPlane"></param>
+        /// <param name="forGpuProgram"></param>
+        public override Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram )
+        {
+            // Correct position for off-axis projection matrix
+            if ( !forGpuProgram )
+            {
+                Real offsetX = left + right;
+                Real offsetY = top + bottom;
+
+                left -= offsetX;
+                right -= offsetX;
+                top -= offsetY;
+                bottom -= offsetY;
+            }
+
+            Real width = right - left;
+            Real height = top - bottom;
+            Real q, qn;
+            if ( farPlane == 0 )
+            {
+                q = 1 - Frustum.InfiniteFarPlaneAdjust;
+                qn = nearPlane * ( Frustum.InfiniteFarPlaneAdjust - 1 );
+            }
+            else
+            {
+                q = farPlane / ( farPlane - nearPlane );
+                qn = -q * nearPlane;
+            }
+            Matrix4 dest = Matrix4.Zero;
+            dest.m00 = 2 * nearPlane / width;
+            dest.m02 = ( right + left ) / width;
+            dest.m11 = 2 * nearPlane / height;
+            dest.m12 = ( top + bottom ) / height;
+            if ( forGpuProgram )
+            {
+                dest.m22 = -q;
+                dest.m32 = -1.0f;
+            }
+            else
+            {
+                dest.m22 = q;
+                dest.m32 = 1.0f;
+            }
+            dest.m23 = qn;
+
+            return dest;
+        }
+
         public override Real MinimumDepthInputValue
         {
             get

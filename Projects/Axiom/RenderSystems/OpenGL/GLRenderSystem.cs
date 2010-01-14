@@ -658,6 +658,46 @@ namespace Axiom.RenderSystems.OpenGL
 			return matrix;
 		}
 
+        /// <summary>
+        /// Builds a perspective projection matrix for the case when frustum is
+        /// not centered around camera.
+        /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <param name="top"></param>
+        /// <param name="nearPlane"></param>
+        /// <param name="farPlane"></param>
+        /// <param name="forGpuProgram"></param>
+        public override Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram )
+        {
+		    Real width = right - left;
+		    Real height = top - bottom;
+		    Real q, qn;
+		    if (farPlane == 0)
+		    {
+			    // Infinite far plane
+			    q = Frustum.InfiniteFarPlaneAdjust- 1;
+			    qn = nearPlane * (Frustum.InfiniteFarPlaneAdjust - 2);
+		    }
+		    else
+		    {
+			    q = -(farPlane + nearPlane) / (farPlane - nearPlane);
+			    qn = -2 * (farPlane * nearPlane) / (farPlane - nearPlane);
+		    }
+		    Matrix4 dest = Matrix4.Zero;
+		    dest.m00 = 2 * nearPlane / width;
+		    dest.m02 = (right+left) / width;
+		    dest.m11 = 2 * nearPlane / height;
+		    dest.m12 = (top+bottom) / height;
+		    dest.m22 = q;
+		    dest.m23 = qn;
+		    dest.m32 = -1;
+
+            return dest;
+        }
+
         public override void SetClipPlane( ushort index, float A, float B, float C, float D )
         {
             if ( _clipPlanes.Count < index + 1 )
@@ -2257,7 +2297,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glPopMatrix();
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// 
 		/// </summary>
 		/// <param name="color"></param>
