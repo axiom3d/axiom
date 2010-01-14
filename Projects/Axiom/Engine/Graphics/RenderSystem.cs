@@ -1207,11 +1207,11 @@ namespace Axiom.Graphics
         public abstract Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram );
 
         /// <summary>
-        /// 
+        ///  Sets the global alpha rejection approach for future renders.
         /// </summary>
-        /// <param name="stage"></param>
-        /// <param name="func"></param>
-        /// <param name="val"></param>
+        /// <param name="stage">The comparison function which must pass for a pixel to be written.</param>
+        /// <param name="func">The value to compare each pixels alpha value to (0-255)</param>
+        /// <param name="val">Whether to enable alpha to coverage, if supported</param>
         public abstract void SetAlphaRejectSettings( int stage, CompareFunction func, byte val );
 
         /// <summary>
@@ -1606,6 +1606,36 @@ namespace Axiom.Graphics
         {
             // create without consideration for Gpu programs by default
             return MakeProjectionMatrix( fov, aspectRatio, near, far, false );
+        }
+
+        /// <summary>
+        /// Builds a perspective projection matrix for the case when frustum is
+        /// not centered around camera.
+        /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <param name="top"></param>
+        /// <param name="nearPlane"></param>
+        /// <param name="farPlane"></param>
+        /// <param name="forGpuProgram"></param>
+        public abstract Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram );
+
+        /// <summary>
+        /// Builds a perspective projection matrix for the case when frustum is
+        /// not centered around camera.
+        /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <param name="top"></param>
+        /// <param name="nearPlane"></param>
+        /// <param name="farPlane"></param>
+        public Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane )
+        {
+            return MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, false );
         }
 
         /// <summary>
