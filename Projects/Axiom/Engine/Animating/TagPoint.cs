@@ -203,7 +203,7 @@ namespace Axiom.Animating
             }
         }
 
-        internal override void UpdateFromParent()
+        protected override void UpdateFromParent()
         {
             base.UpdateFromParent();
 
