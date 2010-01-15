@@ -132,7 +132,9 @@ namespace Axiom.Core
         /// <summary></summary>
         protected Vector3 scaleFromInitial;
         /// <summary></summary>
-        protected bool inheritsScale;
+        protected bool inheritScale;
+        /// <summary></summary>
+        protected bool inheritOrientation;
         /// <summary>Weight of applied animations so far, used for blending.</summary>
         protected float accumAnimWeight;
         /// <summary>Cached derived transform as a 4x4 matrix.</summary>
@@ -173,25 +175,8 @@ namespace Axiom.Core
         /// 
         /// </summary>
         public Node()
+        	: this( "Unnamed_" + nextUnnamedNodeExtNum++ )
         {
-            this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
-
-            parent = null;
-
-            // initialize objects
-            orientation = initialOrientation = derivedOrientation = Quaternion.Identity;
-            position = initialPosition = derivedPosition = Vector3.Zero;
-            scale = initialScale = derivedScale = Vector3.UnitScale;
-            cachedTransform = Matrix4.Identity;
-
-            inheritsScale = true;
-
-            accumAnimWeight = 0.0f;
-
-            childNodes = new NodeCollection();
-            childrenToUpdate = new NodeCollection();
-
-            NeedUpdate();
         }
 
         /// <summary>
@@ -208,7 +193,8 @@ namespace Axiom.Core
             scale = initialScale = derivedScale = Vector3.UnitScale;
             cachedTransform = Matrix4.Identity;
 
-            inheritsScale = true;
+            inheritOrientation = true;
+            inheritScale = true;
 
             accumAnimWeight = 0.0f;
 
@@ -218,10 +204,13 @@ namespace Axiom.Core
             NeedUpdate();
         }
 
-
         #endregion
 
         #region Public methods
+        
+        /// <summary>
+        ///    Removes the node from parent node if any
+        /// </summary>
         public void RemoveFromParent()
         {
             if ( parent != null )
@@ -267,11 +256,21 @@ namespace Axiom.Core
             Clear();
         }
 
+        /// <summary>
+        ///    Whether the specified node is a child of this node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
 		public bool HasChild( Node node )
 		{
-			return childNodes.ContainsValue( node );
+			return node.Parent == this;
 		}
 
+		/// <summary>
+        ///    Whether this node contains a child of the specified name
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public bool HasChild( string name )
 		{
 			return childNodes.ContainsKey( name );
@@ -528,6 +527,7 @@ namespace Axiom.Core
                     break;
             }
 
+            orientation.Normalize(); // avoid drift
             NeedUpdate();
         }
 
@@ -827,13 +827,13 @@ namespace Axiom.Core
             {
                 if ( parent != value )
                 {
-                    parent = value;
-                    
                     if ( parent != null )
                         parent.RemoveChild( this );
 
-                    if ( value != null )
-                        value.AddChild( this );
+                    parent = value;
+
+                    if ( parent != null )
+                        parent.AddChild( this );
                 }
             }
         }
@@ -857,6 +857,7 @@ namespace Axiom.Core
             set
             {
                 orientation = value;
+                orientation.Normalize(); // avoid drift
                 NeedUpdate();
             }
         }
@@ -909,9 +910,9 @@ namespace Axiom.Core
 		/// Tells the node whether it should inherit scaling factors from its parent node.
         /// </summary>
         /// <remarks>
-        ///	Scaling factors, unlike other transforms, are not always inherited by child nodes. 
+        ///	Scaling factors need not to be always inherited by child nodes. 
         ///	Whether or not scalings affect both the size and position of the child nodes depends on
-        ///	the setInheritScale option of the child. In some cases you want a scaling factor of a parent node
+        ///	the InheritScale option of the child. In some cases you want a scaling factor of a parent node
         ///	to apply to a child node (e.g. where the child node is a part of the same object, so you
         ///	want it to be the same relative size and position based on the parent's size), but
         ///	not in other cases (e.g. where the child node is just for positioning another object,
@@ -924,11 +925,27 @@ namespace Axiom.Core
         {
             get
             {
-                return inheritsScale;
+                return inheritScale;
             }
             set
             {
-                inheritsScale = value;
+                inheritScale = value;
+                NeedUpdate();
+            }
+        }
+
+        /// <summary>
+		/// Tells the node whether it should inherit the orientation from its parent node.
+        /// </summary>
+        public virtual bool InheritOrientation
+        {
+            get
+            {
+                return inheritOrientation;
+            }
+            set
+            {
+                inheritOrientation = value;
                 NeedUpdate();
             }
         }
@@ -958,6 +975,7 @@ namespace Axiom.Core
         #endregion
 
         #region Protected methods
+        
         /// <summary>
 		///	Triggers the node to update its combined transforms.
         ///
@@ -965,18 +983,26 @@ namespace Axiom.Core
 		///	to update its complete transformation based on its parents
         ///	derived transform.
         /// </summary>
-		// TODO: This was previously protected.  Was made internal to allow access to custom collections.
-        virtual internal void UpdateFromParent()
+        virtual protected void UpdateFromParent()
         {
             if ( parent != null )
             {
-                // combine local orientation with parents
+                // Update orientation
                 Quaternion parentOrientation = parent.DerivedOrientation;
-                derivedOrientation = parentOrientation * orientation;
+                if (inheritOrientation)
+                {
+                    // combine local orientation with parents
+                    derivedOrientation = parentOrientation * orientation;
+                }
+                else
+                {
+                    // no inheritance
+                    derivedOrientation = orientation;
+                }
 
                 // update scale
                 Vector3 parentScale = parent.DerivedScale;
-                if ( inheritsScale )
+                if ( inheritScale )
                 {
                     // set own scale, just combine as equivalent axes, no shearing
                     derivedScale = parentScale * scale;
@@ -1001,9 +1027,11 @@ namespace Axiom.Core
                 derivedScale = scale;
             }
 
+            needParentUpdate = false;
             needTransformUpdate = true;
             needRelativeTransformUpdate = true;
-			if ( suppressUpdateEvent == false )
+
+            if ( suppressUpdateEvent == false )
 			{
 				OnUpdatedFromParent();
 			}
@@ -1030,8 +1058,6 @@ namespace Axiom.Core
         /// <returns></returns>
         protected void MakeTransform( Vector3 position, Vector3 scale, Quaternion orientation, ref Matrix4 destMatrix )
         {
-            destMatrix = Matrix4.Identity;
-
             // Ordering:
             //    1. Scale
             //    2. Rotate
@@ -1064,8 +1090,6 @@ namespace Axiom.Core
         /// <returns></returns>
         protected void MakeInverseTransform( Vector3 position, Vector3 scale, Quaternion orientation, ref Matrix4 destMatrix )
         {
-            destMatrix = Matrix4.Identity;
-
             // Invert the parameters
             Vector3 invTranslate = -position;
             Vector3 invScale = Vector3.Zero;
@@ -1124,10 +1148,23 @@ namespace Axiom.Core
                 if ( needParentUpdate )
                 {
                     UpdateFromParent();
-                    needParentUpdate = false;
                 }
 
                 return derivedOrientation;
+            }
+            set
+            {
+                if ( inheritOrientation && parent != null)
+                {
+                    orientation = parent.DerivedOrientation.Inverse() * value;
+                }
+                else
+                {
+                    orientation = value;
+                }
+                
+                orientation.Normalize(); // avoid drift
+                NeedUpdate();
             }
         }
 
@@ -1141,10 +1178,22 @@ namespace Axiom.Core
                 if ( needParentUpdate )
                 {
                     UpdateFromParent();
-                    needParentUpdate = false;
                 }
 
                 return derivedPosition;
+            }
+            set
+            {
+                if (parent != null)
+                {
+                    position = parent.DerivedOrientation.Inverse() * (value - parent.DerivedPosition) / parent.DerivedScale;
+                }
+                else
+                {
+                    position = value;
+                }
+
+                NeedUpdate();
             }
         }
 
@@ -1155,7 +1204,25 @@ namespace Axiom.Core
         {
             get
             {
+                if (needParentUpdate)
+                {
+                    UpdateFromParent();
+                }
+
                 return derivedScale;
+            }
+            set
+            {
+                if (inheritScale & parent != null)
+                {
+                    scale = value / parent.DerivedScale;
+                }
+                else
+                {
+                    scale = value;
+                }
+
+                NeedUpdate();
             }
         }
 
@@ -1241,7 +1308,6 @@ namespace Axiom.Core
             {
                 // update transforms from parent
                 UpdateFromParent();
-                needParentUpdate = false;
 
 				if (NodeUpdated != null)
 				{
@@ -1353,7 +1419,7 @@ namespace Axiom.Core
         /// <summary>
 		/// 
 		/// </summary>
-		public Quaternion WorldOrientation
+		Quaternion IRenderable.WorldOrientation
 		{
 			get
 			{
@@ -1364,7 +1430,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// 
 		/// </summary>
-		public Vector3 WorldPosition
+		Vector3 IRenderable.WorldPosition
 		{
 			get
 			{
