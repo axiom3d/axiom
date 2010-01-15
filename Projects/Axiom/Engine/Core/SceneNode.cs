@@ -481,8 +481,14 @@ namespace Axiom.Core
         /// </remarks>
         public virtual void DetachAllObjects()
         {
+            // notify each object that it was removed (sending in null sets its parent scene node to null)
+            foreach ( MovableObject obj in objectList )
+            {
+                obj.NotifyAttached( null );
+            }
             objectList.Clear();
 
+            // Make sure bounds get updated (must go right to the top)
             NeedUpdate();
         }
 
