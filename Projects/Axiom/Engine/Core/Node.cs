@@ -510,6 +510,8 @@ namespace Axiom.Core
         /// </summary>
         public virtual void Rotate( Quaternion rotation, TransformSpace relativeTo )
         {
+            rotation.Normalize(); // avoid drift
+
             switch ( relativeTo )
             {
                 case TransformSpace.Parent:
@@ -527,7 +529,6 @@ namespace Axiom.Core
                     break;
             }
 
-            orientation.Normalize(); // avoid drift
             NeedUpdate();
         }
 
