@@ -1022,7 +1022,8 @@ namespace Axiom.Core
 
         public BillboardChainFactory()
         {
-            this.Type = BillboardChainFactory.TypeName;
+            base.Type = BillboardChainFactory.TypeName;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )

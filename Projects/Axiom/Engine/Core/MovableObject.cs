@@ -325,17 +325,7 @@ namespace Axiom.Core
         /// </remarks>
         public virtual uint TypeFlags
         {
-            get
-            {
-                if ( this.Creator != null )
-                {
-                    return this.Creator.TypeFlag;
-                }
-                else
-                {
-                    return 0xFFFFFFFF;
-                }
-            }
+            get; set;
         }
 
         /// <summary>
@@ -1075,6 +1065,7 @@ namespace Axiom.Core
             m.Creator = this;
             m.Manager = manager;
             m.MovableType = this.Type;
+            m.TypeFlags = this.TypeFlag; 
             return m;
         }
 

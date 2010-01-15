@@ -176,6 +176,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public PCZLightFactory()
         {
             base.Type = Factory_Type_Name;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Light;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList para )

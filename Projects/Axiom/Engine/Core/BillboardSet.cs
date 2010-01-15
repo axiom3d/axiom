@@ -1925,8 +1925,8 @@ namespace Axiom.Core
 
         public BillboardSetFactory()
         {
-            this.Type = BillboardSetFactory.TypeName;
-
+            base.Type = BillboardSetFactory.TypeName;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )
