@@ -1327,7 +1327,8 @@ namespace Axiom.Core
 
         public LightFactory()
         {
-            this.Type = LightFactory.TypeName;
+            base.Type = LightFactory.TypeName;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Light; 
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )

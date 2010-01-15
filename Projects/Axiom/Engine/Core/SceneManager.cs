@@ -5088,6 +5088,10 @@ namespace Axiom.Core
                 if ( light.Type == LightType.Directional )
                     texCam.Position = light.DerivedPosition;
 
+                // Use the material scheme of the main viewport 
+                // This is required to pick up the correct shadow_caster_material and similar properties.
+                shadowView.MaterialScheme = viewPort.MaterialScheme;
+
                 if ( light.CustomShadowCameraSetup == null )
                 {
                     _defaultShadowCameraSetup.GetShadowCamera( this, camera, viewPort, light, texCam, sti );
@@ -7064,7 +7068,7 @@ namespace Axiom.Core
                     }
 
                     // skip if unattached or filtered out by query flags
-                    if ( !objectA.IsInScene || !( ( objectA.QueryFlags & this.queryMask ) == 0 ) )
+                    if ( !objectA.IsInScene || ( objectA.QueryFlags & this.queryMask ) == 0 )
                     {
                         continue;
                     }
@@ -7074,7 +7078,7 @@ namespace Axiom.Core
                     while ( enumB.Current != null )
                     {
                         MovableObject objectB = (MovableObject)enumB.Current;
-                        if ( ( ( this.QueryMask & objectB.QueryFlags ) == 0 ) && objectB.IsInScene )
+                        if ( ( ( this.QueryMask & objectB.QueryFlags ) != 0 ) && objectB.IsInScene )
                         {
                             AxisAlignedBox box1 = objectA.GetWorldBoundingBox();
                             AxisAlignedBox box2 = objectB.GetWorldBoundingBox();
@@ -7099,12 +7103,12 @@ namespace Axiom.Core
                         {
                             MovableObject objectC = (MovableObject)enumC.Current;
                             // skip group if query type doesn't match
-                            if ( ( this.QueryTypeMask & objectC.TypeFlags ) != 0 )
+                            if ( ( this.QueryTypeMask & objectC.TypeFlags ) == 0 )
                             {
                                 break;
                             }
 
-                            if ( ( ( this.QueryMask & objectC.QueryFlags ) == 0 ) && objectC.IsInScene )
+                            if ( ( ( this.QueryMask & objectC.QueryFlags ) != 0 ) && objectC.IsInScene )
                             {
                                 AxisAlignedBox box1 = objectA.GetWorldBoundingBox();
                                 AxisAlignedBox box2 = objectC.GetWorldBoundingBox();

@@ -2449,7 +2449,8 @@ namespace Axiom.Core
 
         public EntityFactory()
         {
-            this.Type = EntityFactory.TypeName;
+            base.Type = EntityFactory.TypeName;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )

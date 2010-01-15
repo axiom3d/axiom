@@ -1780,7 +1780,8 @@ namespace Axiom.Core
 
         public ManualObjectFactory()
         {
-            this.Type = TypeName;
+            base.Type = TypeName;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Entity; 
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )

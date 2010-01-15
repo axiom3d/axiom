@@ -487,7 +487,8 @@ namespace Axiom.Graphics
 
         public RibbonTrailFactory()
         {
-            this.Type = TypeName;
+            base.Type = TypeName;
+            base.TypeFlag = (uint)SceneQueryTypeMask.Fx; 
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )
