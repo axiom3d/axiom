@@ -168,7 +168,6 @@ namespace Axiom.Animating
 				if ( loop )
 				{
 					// Wrap
-					//time = time%length;
 					time = (float)System.Math.IEEERemainder( time, length );
 					if ( time < 0 )
 						time += length;
@@ -272,13 +271,7 @@ namespace Axiom.Animating
 		/// <param name="offset">Offset from the current time position.</param>
 		public void AddTime( float offset )
 		{
-			// TODO: Add MathUtil function for this?
-			time = (float)System.Math.IEEERemainder( time + offset, length );
-
-			if ( time < 0 )
-			{
-				time += length;
-			}
+			Time += offset;
 		}
 
 		/// <summary>
