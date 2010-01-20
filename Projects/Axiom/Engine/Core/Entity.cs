@@ -469,7 +469,7 @@ namespace Axiom.Core
                 AxisAlignedBox box;
                 AxisAlignedBox fullBox = AxisAlignedBox.Null;
 
-                foreach (MovableObject child in childObjectList)
+                foreach (MovableObject child in childObjectList.Values)
                 {
                     box = child.BoundingBox;
                     TagPoint tagPoint = (TagPoint) child.ParentNode;
@@ -740,7 +740,7 @@ namespace Axiom.Core
         /// </remarks>
         public void DetachObjectFromBone( MovableObject obj )
         {
-            foreach (MovableObject child in this.childObjectList)
+            foreach (MovableObject child in this.childObjectList.Values)
             {
                 if ( child == obj )
                 {

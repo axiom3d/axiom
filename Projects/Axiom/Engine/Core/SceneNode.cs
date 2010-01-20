@@ -482,7 +482,7 @@ namespace Axiom.Core
         public virtual void DetachAllObjects()
         {
             // notify each object that it was removed (sending in null sets its parent scene node to null)
-            foreach ( MovableObject obj in objectList )
+            foreach ( MovableObject obj in objectList.Values )
             {
                 obj.NotifyAttached( null );
             }
@@ -521,7 +521,7 @@ namespace Axiom.Core
         /// <returns>MovableObject if found. Throws exception of not found.</returns>
         public MovableObject GetObject( string name )
         {
-            foreach ( MovableObject obj in this.objectList )
+            foreach ( MovableObject obj in this.objectList.Values )
             {
                 if ( obj.Name == name )
                     return obj;

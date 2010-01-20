@@ -1065,7 +1065,7 @@ namespace Axiom.Core
         internal void DestroySceneNode( SceneNode node, bool removeFromParent )
         {
             // Find any scene nodes which are tracking this node, and turn them off.
-            foreach ( SceneNode autoNode in this.autoTrackingSceneNodes)
+            foreach ( SceneNode autoNode in this.autoTrackingSceneNodes.Values )
             {
                 // Tracking this node
                 if ( autoNode.AutoTrackTarget == node )
@@ -1479,7 +1479,7 @@ namespace Axiom.Core
             // sphere to use for testing
             Sphere sphere = new Sphere();
 
-            foreach (Light light in lightList)
+            foreach (Light light in lightList.Values)
             {
                 if (light.IsVisible)
                 {
@@ -3198,7 +3198,7 @@ namespace Axiom.Core
             if ( this.cameraList != null )
             {
                 // notify the render system of each camera being removed
-                foreach (Camera cam in this.cameraList)
+                foreach (Camera cam in this.cameraList.Values)
                 {
                     this.targetRenderSystem.NotifyCameraRemoved( cam );
                 }
@@ -4552,7 +4552,7 @@ namespace Axiom.Core
             this.UpdateSceneGraph( camera );
 
             // Auto-track nodes
-            foreach (SceneNode sn in autoTrackingSceneNodes)
+            foreach (SceneNode sn in autoTrackingSceneNodes.Values)
             {
                 sn.AutoTrack();
             }
@@ -4889,7 +4889,7 @@ namespace Axiom.Core
         /// </summary>
         public void DestroyAllCameras()
         {
-            foreach ( Camera camera in this.cameraList )
+            foreach ( Camera camera in this.cameraList.Values )
             {
                 this.targetRenderSystem.NotifyCameraRemoved( camera );
             }
@@ -6143,7 +6143,7 @@ namespace Axiom.Core
             MovableObjectCollection lightList = this.GetMovableObjectCollection( LightFactory.TypeName );
 
             // loop through the scene lights an add ones in range
-            foreach ( Light light in lightList )
+            foreach ( Light light in lightList.Values )
             {
                 if ( light.IsVisible )
                 {
@@ -6733,7 +6733,7 @@ namespace Axiom.Core
 
             lock ( objectMap )
             {
-                foreach ( MovableObject movableObject in objectMap )
+                foreach ( MovableObject movableObject in objectMap.Values )
                 {
                     if ( movableObject.Manager == this )
                     {
@@ -6755,7 +6755,7 @@ namespace Axiom.Core
                     {
                         // Only destroy if we have a factory instance; otherwise must be injected
                         MovableObjectFactory factory = Root.Instance.GetMovableObjectFactory( col.Key );
-                        foreach ( MovableObject movableObject in coll )
+                        foreach ( MovableObject movableObject in coll.Values )
                         {
                             if ( movableObject.Manager == this )
                             {
@@ -6867,7 +6867,7 @@ namespace Axiom.Core
             foreach ( KeyValuePair<string, MovableObjectFactory> map in factories )
             {
                 MovableObjectCollection movableObjects = this.creator.GetMovableObjectCollection( map.Value.Type );
-                foreach ( MovableObject movableObject in movableObjects )
+                foreach ( MovableObject movableObject in movableObjects.Values )
                 {
                     // skip group if query type doesn't match
                     if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
@@ -6915,7 +6915,7 @@ namespace Axiom.Core
             foreach ( KeyValuePair<string, MovableObjectFactory> map in factories )
             {
                 MovableObjectCollection movableObjects = this.creator.GetMovableObjectCollection( map.Value.Type );
-                foreach ( MovableObject movableObject in movableObjects )
+                foreach ( MovableObject movableObject in movableObjects.Values )
                 {
                     // skip group if query type doesn't match
                     if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
@@ -6962,7 +6962,7 @@ namespace Axiom.Core
             foreach ( KeyValuePair<string, MovableObjectFactory> map in factories )
             {
                 MovableObjectCollection movableObjects = this.creator.GetMovableObjectCollection( map.Value.Type );
-                foreach ( MovableObject movableObject in movableObjects )
+                foreach ( MovableObject movableObject in movableObjects.Values )
                 {
                     // skip group if query type doesn't match
                     if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )
@@ -7007,7 +7007,7 @@ namespace Axiom.Core
             foreach ( KeyValuePair<string, MovableObjectFactory> map in factories )
             {
                 MovableObjectCollection movableObjects = this.creator.GetMovableObjectCollection( map.Value.Type );
-                foreach ( MovableObject movableObject in movableObjects )
+                foreach ( MovableObject movableObject in movableObjects.Values )
                 {
                     // skip group if query type doesn't match
                     if ( ( this.QueryTypeMask & movableObject.TypeFlags ) == 0 )

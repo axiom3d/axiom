@@ -444,7 +444,7 @@ namespace Axiom.SceneManagers.PortalConnected
         //*
         public void SaveNodePositions()
         {
-            foreach ( PCZSceneNode pczsn in sceneNodeList )
+            foreach ( PCZSceneNode pczsn in sceneNodeList.Values )
             {
                 pczsn.SavePrevPosition();
             }
@@ -477,7 +477,7 @@ namespace Axiom.SceneManagers.PortalConnected
         // Update all PCZSceneNodes. 
         public void UpdatePCZSceneNodes()
         {
-            foreach ( PCZSceneNode pczsn in sceneNodeList )
+            foreach ( PCZSceneNode pczsn in sceneNodeList.Values )
             {
                 if ( pczsn.Enabled )
                 {
@@ -493,7 +493,7 @@ namespace Axiom.SceneManagers.PortalConnected
             //HACK: i dont know if this is exactly the same...
             lock ( lightList )
             {
-                foreach ( PCZLight l in lightList )
+                foreach ( PCZLight l in lightList.Values )
                 {
                     if ( l.NeedsUpdate )
                     {
@@ -614,7 +614,7 @@ namespace Axiom.SceneManagers.PortalConnected
             MovableObjectCollection lightList = GetMovableObjectCollection( LightFactory.TypeName );
             lock ( lightList )
             {
-                foreach ( PCZLight l in lightList )
+                foreach ( PCZLight l in lightList.Values )
                 {
                     if ( l.NeedsUpdate )
                     {
@@ -625,7 +625,7 @@ namespace Axiom.SceneManagers.PortalConnected
             }
 
             // if not destroying scene nodes, then make sure any nodes who have
-            foreach ( PCZSceneNode pczsn in sceneNodeList )
+            foreach ( PCZSceneNode pczsn in sceneNodeList.Values )
             {
                 if ( !destroySceneNodes )
                 {
@@ -754,7 +754,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             if ( zone.RequiresZoneSpecificNodeData )
             {
-                foreach ( PCZSceneNode node in sceneNodeList )
+                foreach ( PCZSceneNode node in sceneNodeList.Values )
                 {
                     zone.CreateNodeZoneData( node );
                 }
@@ -832,7 +832,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
             lock ( lights )
             {
-                foreach ( PCZLight l in lights )
+                foreach ( PCZLight l in lights.Values )
                 {
                     if ( l.IsVisible /* && l.AffectsVisibleZone */ )
                     {
