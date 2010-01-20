@@ -47,6 +47,7 @@ using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
+using Axiom.SceneManagers.Bsp.Collections;
 
 #endregion Namespace Declarations
 
@@ -86,8 +87,7 @@ namespace Axiom.SceneManagers.Bsp
         protected bool showNodeAABs;
         protected RenderOperation aaBGeometry = new RenderOperation();
 
-        //protected MultiMap<Material, BspStaticFaceGroup> matFaceGroupMap = new MultiMap<Material, BspStaticFaceGroup>();
-		protected Dictionary<Material, List<BspStaticFaceGroup>> matFaceGroupMap = new Dictionary<Material, List<BspStaticFaceGroup>>();
+        protected MultiMap<Material, BspStaticFaceGroup> matFaceGroupMap = new MultiMap<Material, BspStaticFaceGroup>();
 		
         protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
 		protected BspGeometry bspGeometry;
@@ -1285,11 +1285,9 @@ namespace Axiom.SceneManagers.Bsp
 
         #region Fields
 
-        //MultiMap<MovableObject, MovableObject> objIntersections = new MultiMap<MovableObject, MovableObject>();
-		Dictionary<MovableObject, List<MovableObject>> objIntersections = new Dictionary<MovableObject, List<MovableObject>>();
+        MultiMap<MovableObject, MovableObject> objIntersections = new MultiMap<MovableObject, MovableObject>();
 			
-        //MultiMap<MovableObject, BspBrush> brushIntersections = new MultiMap<MovableObject, BspBrush>();
-		Dictionary<MovableObject, List<BspBrush>> brushIntersections = new Dictionary<MovableObject, List<BspBrush>>();
+        MultiMap<MovableObject, BspBrush> brushIntersections = new MultiMap<MovableObject, BspBrush>();
 
         List<MovableObject> objectsDone = new List<MovableObject>(100);
 
