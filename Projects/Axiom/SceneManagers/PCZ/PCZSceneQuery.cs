@@ -93,7 +93,7 @@ namespace Axiom.SceneManagers.PortalConnected
             foreach (Core.MovableObjectFactory factory in Root.Instance.MovableObjectFactories.Values)
             {
                 MovableObjectCollection col = creator.GetMovableObjectCollection(factory.Type);
-                foreach (MovableObject e in col)
+                foreach (MovableObject e in col.Values)
                 {
                     PCZone zone = ((PCZSceneNode)(e.ParentSceneNode)).HomeZone;
                     List<PCZSceneNode> list = new List<PCZSceneNode>();
