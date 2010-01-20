@@ -43,6 +43,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
+using Axiom.SceneManagers.Bsp.Collections;
 using Axiom.Scripting;
 
 using ResourceHandle = System.UInt64;
@@ -122,8 +123,7 @@ namespace Axiom.SceneManagers.Bsp
         protected BspBrush[] brushes;
         protected List<ViewPoint> playerStarts = new List<ViewPoint>();
         protected VisData visData;
-        //internal protected MultiMap<MovableObject, BspNode> objectToNodeMap;
-		internal protected Dictionary<MovableObject, List<BspNode>> objectToNodeMap;
+        internal protected MultiMap<MovableObject, BspNode> objectToNodeMap;
         protected BspOptions bspOptions = new BspOptions();
 
         #endregion
@@ -234,8 +234,7 @@ namespace Axiom.SceneManagers.Bsp
         public BspLevel(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams)
             : base(parent, name, handle, group, isManual, loader)
         {
-            //objectToNodeMap = new MultiMap<MovableObject, BspNode>();
-			objectToNodeMap = new Dictionary<MovableObject, List<BspNode>>();
+            objectToNodeMap = new MultiMap<MovableObject, BspNode>();
             this.createParam = createParams;
         }
         #endregion
