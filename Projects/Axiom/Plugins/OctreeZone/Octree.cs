@@ -96,7 +96,7 @@ namespace OctreeZone
                     this.wireBoundingBox = new WireBoundingBox();
                 }
 
-                this.wireBoundingBox.InitAABB( this.box );
+                this.wireBoundingBox.BoundingBox = this.box;
                 return this.wireBoundingBox;
             }
 
