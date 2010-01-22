@@ -470,7 +470,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// @copydoc FactoryObj::destroyInstance
-		public override void DestroyInstance( ParticleSystemRenderer inst )
+		public override void DestroyInstance( ref ParticleSystemRenderer inst )
 		{
 		}
 

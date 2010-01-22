@@ -2480,7 +2480,7 @@ namespace Axiom.Core
             return ent;
         }
 
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
             ( (Entity) obj ).Dispose();
             obj = null;

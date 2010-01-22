@@ -1426,7 +1426,7 @@ namespace Axiom.Core
             return light;
         }
 
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
             obj = null;
         }

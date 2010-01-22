@@ -104,9 +104,10 @@ namespace Axiom.Core
         /// Destroys an object which was created by this factory.
         /// </summary>
         /// <param name="obj">the object to destroy</param>
-        public virtual void DestroyInstance( T obj )
+        public virtual void DestroyInstance( ref T obj )
         {
             _instances.Remove( obj );
+            obj = null;
         }
 
         #endregion

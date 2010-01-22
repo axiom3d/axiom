@@ -1025,7 +1025,7 @@ namespace Axiom.Core
         /// <param name="obj">
         ///     The MovableObject to destroy.
         /// </param>
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
         }
 

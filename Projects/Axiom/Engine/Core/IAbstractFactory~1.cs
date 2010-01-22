@@ -87,6 +87,6 @@ namespace Axiom.Core
         /// Destroys an object which was created by this factory.
         /// </summary>
         /// <param name="obj">the object to destroy</param>
-        void DestroyInstance( T obj);    
+        void DestroyInstance( ref T obj);    
     }
 }

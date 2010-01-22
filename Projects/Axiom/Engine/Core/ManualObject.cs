@@ -1789,7 +1789,7 @@ namespace Axiom.Core
             return new ManualObject( name );
         }
 
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
             obj = null;
         }
