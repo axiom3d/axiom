@@ -1066,7 +1066,7 @@ namespace Axiom.Core
             return new BillboardChain( name, maxElements, numberOfChains, useTextureCoords, useVertexColors, isDynamic );
         }
 
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
             obj = null;
         }

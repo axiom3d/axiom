@@ -1965,7 +1965,7 @@ namespace Axiom.Core
             return bSet;
         }
 
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
             obj = null;
         }

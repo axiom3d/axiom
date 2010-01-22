@@ -352,7 +352,7 @@ namespace Axiom.FileSystem
 			return new FileSystemArchive( name, _type );
 		}
 
-		public override void DestroyInstance( Archive obj )
+		public override void DestroyInstance( ref Archive obj )
 		{
 			obj.Dispose();
 		}

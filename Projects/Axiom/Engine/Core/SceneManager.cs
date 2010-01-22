@@ -6714,8 +6714,8 @@ namespace Axiom.Core
             }
             MovableObjectFactory factory = Root.Instance.GetMovableObjectFactory( typeName );
             MovableObject item = objectMap[ name ];
-            factory.DestroyInstance( item );
             objectMap.Remove( item.Name );
+            factory.DestroyInstance( ref item );
         }
 
         public void DestroyAllMovableObjectsByType( string typeName )
@@ -6737,7 +6737,8 @@ namespace Axiom.Core
                 {
                     if ( movableObject.Manager == this )
                     {
-                        factory.DestroyInstance( ( movableObject ) );
+                        MovableObject tmp = movableObject;
+                        factory.DestroyInstance( ref tmp );
                     }
                 }
                 objectMap.Clear();
@@ -6759,7 +6760,8 @@ namespace Axiom.Core
                         {
                             if ( movableObject.Manager == this )
                             {
-                                factory.DestroyInstance( movableObject );
+                                MovableObject tmp = movableObject;
+                                factory.DestroyInstance( ref tmp );
                             }
                         }
                         coll.Clear();

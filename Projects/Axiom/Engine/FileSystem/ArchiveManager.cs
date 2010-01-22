@@ -141,8 +141,8 @@ namespace Axiom.FileSystem
                 ArchiveFactory fac = _factories[ arch.Type ];
                 if ( fac == null )
 					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Type );
-                fac.DestroyInstance( arch );
                 _archives.Remove( arch.Name );
+                fac.DestroyInstance( ref arch );
             }
         }
 
@@ -191,7 +191,8 @@ namespace Axiom.FileSystem
 							// Factory not found
 							throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Value.Type );
 						}
-						fac.DestroyInstance( arch.Value );
+					    Archive tmp = arch.Value;
+						fac.DestroyInstance( ref tmp );
 
 					}
 
