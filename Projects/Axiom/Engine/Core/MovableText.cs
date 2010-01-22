@@ -617,6 +617,22 @@ namespace Axiom.Core
                 return _radius;
             }
         }
+
+        public override RenderOperation RenderOperation
+        {
+            get
+            {
+                if ( this._needUpdate )
+                {
+                    this._setupGeometry();
+                }
+                if ( this._updateColor )
+                {
+                    this._updateColors();
+                }
+                return base.RenderOperation;
+            }
+        }
         #endregion Implementation of SimpleRenderable
     }
 }
