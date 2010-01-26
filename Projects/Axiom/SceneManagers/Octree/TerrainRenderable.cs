@@ -346,6 +346,8 @@ namespace Axiom.SceneManagers.Octree
 
             buffer.ReadData( offset, 4, ptr );
 
+            Memory.UnpinObject( vertex );
+
             return vertex[ 0 ];
 		}
 
