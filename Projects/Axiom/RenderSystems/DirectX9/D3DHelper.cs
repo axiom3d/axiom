@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static System.Drawing.Color ToColor( ColorEx color)
 		{
-			return System.Drawing.Color.FromArgb( (int)( color.a * 255.0f ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );
+		    return System.Drawing.Color.FromArgb( (int)( color.a < 1.0f ? color.a * 255.0f : color.a ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );
 		}
 
 		/// <summary>
