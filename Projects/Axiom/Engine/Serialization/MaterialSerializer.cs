@@ -1297,8 +1297,20 @@ namespace Axiom.Serialization
 		protected static bool ParseSpecular( string parameters, MaterialScriptContext context )
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
-
-			if ( values.Length == 4 || values.Length == 5 )
+            // Must be 2, 4 or 5 parameters
+            if ( values.Length == 2 )
+            {
+                if ( values[0] == "vertexcolour" )
+                {
+                    context.pass.VertexColorTracking |= TrackVertexColor.Specular;
+                    context.pass.Shininess = StringConverter.ParseFloat( values[ 1 ] );
+                }
+                else
+                {
+                    LogParseError( context, "Bad specular attribute, double parameter statement must be 'vertexcolour <shininess>'" );
+                }
+            }
+			else if ( values.Length == 4 || values.Length == 5 )
 			{
 				ColorEx specular = new ColorEx();
 				specular.r = StringConverter.ParseFloat( values[ 0 ] );
@@ -1306,13 +1318,14 @@ namespace Axiom.Serialization
 				specular.b = StringConverter.ParseFloat( values[ 2 ] );
 				specular.a = ( values.Length == 5 ) ? StringConverter.ParseFloat( values[ 3 ] ) : 1.0f;
 
-				context.pass.Specular = specular;
+                context.pass.Specular = specular;
 
+                context.pass.VertexColorTracking |= TrackVertexColor.Specular;
 				context.pass.Shininess = StringConverter.ParseFloat( values[ values.Length - 1 ] );
 			}
 			else
 			{
-				LogParseError( context, "Bad specular attribute, wrong number of parameters (expected 4 or 5)." );
+				LogParseError( context, "Bad specular attribute, wrong number of parameters (expected 2, 4 or 5)." );
 			}
 
 			return false;
