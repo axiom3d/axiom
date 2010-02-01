@@ -531,7 +531,7 @@ namespace Axiom.Graphics
             return new RibbonTrail( name, maxElements, numberOfChains, useTextureCoords, useVertexColors, isDynamic );
         }
 
-        public override void DestroyInstance( MovableObject obj )
+        public override void DestroyInstance( ref MovableObject obj )
         {
             obj = null;
         }
