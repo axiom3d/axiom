@@ -1,9 +1,4 @@
 [Projects]
  AxiomDemos https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/AxiomDemos
 [Projects/Axiom/Source]
- Engine https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Engine
- Platforms https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Platforms
- SceneManagers https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/SceneManagers
-[Projects/Axiom/Source/Plugins]
- CgProgramManager https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Plugins/CgProgramManager
- ParticleFX https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Plugins/ParticleFX
+ 
