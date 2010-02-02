@@ -64,6 +64,10 @@ namespace Axiom.Controllers.Canned
             this.texUnit = texUnit;
         }
 
+        public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU ) : this ( texUnit, scrollU, false )
+        {
+        }
+
         public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
         {
             this.texUnit = texUnit;

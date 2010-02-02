@@ -627,6 +627,7 @@ namespace Axiom.Graphics
 
 		private CompareFunction _alphaRejectFunction = CompareFunction.AlwaysPass;
 		private int _alphaRejectValue;
+	    private bool _alphaToCoverageEnabled;
 
 		/// <summary>
 		/// Sets the way the pass will have use alpha to totally reject pixels from the pipeline.
@@ -672,6 +673,21 @@ namespace Axiom.Graphics
 				_alphaRejectValue = value;
 			}
 		}
+
+        /// <summary>
+        /// Whether to use alpha to coverage (A2C) when blending alpha rejected values
+        /// </summary>
+        public bool IsAlphaToCoverageEnabled
+        {
+            get
+            {
+                return _alphaToCoverageEnabled;
+            }
+            set
+            {
+                _alphaToCoverageEnabled = value;
+            }
+        }
 
 		#endregion AlphaReject Properties
 
@@ -1784,7 +1800,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion Fields and Properties
+	    #endregion Fields and Properties
 
 		#region Construction and Destruction
 
