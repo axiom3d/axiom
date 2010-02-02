@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 
+using SlimDX.Direct3D9;
+
 using FogMode = Axiom.Graphics.FogMode;
 using LightType = Axiom.Graphics.LightType;
 using StencilOperation = Axiom.Graphics.StencilOperation;
@@ -49,6 +51,7 @@ using Axiom.Core.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
 
+using Capabilities = Axiom.Graphics.Capabilities;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -487,19 +490,56 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stage"></param>
-        /// <param name="func"></param>
-        /// <param name="val"></param>
-        public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
+        private bool lasta2c = false;
+        public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
         {
-            SetRenderState( D3D.RenderState.AlphaTestEnable, func != CompareFunction.AlwaysPass );
+            bool a2c = false;
+
+            if ( func != CompareFunction.AlwaysPass )
+            {
+                SetRenderState( D3D.RenderState.AlphaTestEnable, true );
+                a2c = alphaToCoverage;
+            }
+            else
+            {
+                SetRenderState( D3D.RenderState.AlphaTestEnable, false );                
+            }
+
             D3D.Compare newCompare = D3DHelper.ConvertEnum( func );
             if ( device.GetRenderState<D3D.Compare>( D3D.RenderState.AlphaFunc ) != newCompare )
                 device.SetRenderState( D3D.RenderState.AlphaFunc, newCompare );
             SetRenderState( D3D.RenderState.AlphaRef, val );
+
+            // Alpha to coverage
+            if ( this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
+            {
+                // Vendor-specific hacks on renderstate, gotta love 'em
+                if( this.HardwareCapabilities.VendorName.ToLower() == "nvidia" )
+                {
+                    if ( a2c)
+                    {
+                        SetRenderState( RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'O' ) << 16 | ( (int)'C' ) << 24 ) );
+                    }
+                    else
+                    {
+                        SetRenderState( RenderState.AdaptiveTessY,(int)D3D.Format.Unknown);
+                    }
+                }
+                else if ( this.HardwareCapabilities.VendorName.ToLower() == "ati" )
+                {
+                    if ( a2c )
+                    {
+                        SetRenderState( RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'M' ) << 16 | ( (int)'0' ) << 24 ) );
+                    }
+                    else
+                    {
+                        // discovered this through trial and error, seems to work
+                        SetRenderState( RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'M' ) << 16 | ( (int)'1' ) << 24 ) );
+                    }
+                }
+                // no hacks available for any other vendors?
+                lasta2c = a2c;                
+            }
         }
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
@@ -2703,6 +2743,31 @@ namespace Axiom.RenderSystems.DirectX9
 
             // Mutiple Render Targets
             _rsCapabilities.MultiRenderTargetCount = (int)Utility.Min( d3dCaps.SimultaneousRTCount, Config.MaxMultipleRenderTargets );
+
+            // TODO: Point sprites
+            // TODO: Vertex textures
+            // TODO: Mipmap LOD biasing
+            // TODO: per-stage src_manual constants?
+
+            // Check alpha to coverage support
+            // this varies per vendor! But at least SM3 is required
+            if ( gpuProgramMgr.IsSyntaxSupported( "ps_3_0" ) )
+            {
+                // NVIDIA needs a seperate check
+                if ( _rsCapabilities.VendorName.ToLower() == "nvidia" )
+                {
+                    if ( device.Direct3D.CheckDeviceFormat( 0, DeviceType.Hardware, Format.X8R8G8B8, 0, ResourceType.Surface, D3D.D3DX.MakeFourCC( (byte)'A', (byte)'T', (byte)'O', (byte)'C' ) ) )
+                    {
+                        _rsCapabilities.SetCapability( Capabilities.AlphaToCoverage );
+                    }
+                }
+                else if ( _rsCapabilities.VendorName.ToLower() == "nvidia" )
+                {
+                    // There is no check on ATI, we have to assume SM3 == support
+                    _rsCapabilities.SetCapability( Capabilities.AlphaToCoverage );
+                }
+                // no other cards have Dx9 hacks for alpha to coverage, as far as I know
+            }
 
             // write hardware capabilities to registered log listeners
             _rsCapabilities.Log();

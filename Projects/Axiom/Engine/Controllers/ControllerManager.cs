@@ -207,59 +207,97 @@ namespace Axiom.Controllers
         }
 
         /// <summary>
-        ///     Creates a basic time-based texture coordinate modifier designed for creating rotating textures.
+        ///     Creates a basic time-based texture uv coordinate modifier designed for creating scrolling textures.
         /// </summary>
         /// <remarks>
-        ///     This simple method allows you to easily create constant-speed scrolling textures. If you want more
-        ///     control, look up the ControllerManager.CreateTextureWaveTransformer for more complex wave-based
+        ///     This simple method allows you to easily create constant-speed scrolling textures. If you want to
+        ///     specify differnt speed values for horizontil and vertical scroll, use the specific methods
+        ///     <see cref="CreateTextureUScroller"/> and <see cref="CreateTextureVScroller"/>. If you want more
+        ///     control, look up the <see cref="CreateTextureWaveTransformer"/> for more complex wave-based
         ///     scrollers / stretchers / rotaters.
         /// </remarks>
         /// <param name="layer">The texture unit to animate.</param>
-        /// <param name="speedU">Horizontal speed, in wraps per second.</param>
-        /// <param name="speedV">Vertical speed, in wraps per second.</param>
+        /// <param name="speed">speed, in wraps per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureScroller( TextureUnitState layer, float speedU, float speedV )
+		public Controller<float> CreateTextureUVScroller( TextureUnitState layer, float speed )
         {
 			IControllerValue<float> val = null;
 			IControllerFunction<float> func = null;
 			Controller<float> controller = null;
 
             // if both u and v speeds are the same, we can use a single controller for it
-            if ( speedU != 0 && ( speedU == speedV ) )
+            if ( speed != 0  )
             {
                 // create the value and function
                 val = new TexCoordModifierControllerValue( layer, true, true );
-                func = new MultipyControllerFunction( -speedU, true );
+                func = new MultipyControllerFunction( -speed, true );
 
                 // create the controller (uses FrameTime for source by default)
                 controller = CreateController( val, func );
             }
-            else
+
+            return controller;
+        }
+
+        /// <summary>
+        ///     Creates a basic time-based texture u coordinate modifier designed for creating scrolling textures.
+        /// </summary>
+        /// <remarks>
+        ///     This simple method allows you to easily create constant-speed scrolling textures. If you want more
+        ///     control, look up the <see cref="CreateTextureWaveTransformer"/> for more complex wave-based
+        ///     scrollers / stretchers / rotaters.
+        /// </remarks>
+        /// <param name="layer">The texture unit to animate.</param>
+        /// <param name="speed">speed, in wraps per second.</param>
+        /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
+        public Controller<float> CreateTextureUScroller( TextureUnitState layer, float speed )
+        {
+            IControllerValue<float> val = null;
+            IControllerFunction<float> func = null;
+            Controller<float> controller = null;
+
+            // Don't create a controller if the speed is zero
+            if ( speed != 0 )
             {
-                // create seperate for U
-                if ( speedU != 0 )
-                {
-                    // create the value and function
-                    val = new TexCoordModifierControllerValue( layer, true, false );
-                    func = new MultipyControllerFunction( -speedU, true );
+                // create the value and function
+                val = new TexCoordModifierControllerValue( layer, true );
+                func = new MultipyControllerFunction( -speed, true );
 
-                    // create the controller (uses FrameTime for source by default)
-                    controller = CreateController( val, func );
-                }
-
-                // create seperate for V
-                if ( speedV != 0 )
-                {
-                    // create the value and function
-                    val = new TexCoordModifierControllerValue( layer, false, true );
-                    func = new MultipyControllerFunction( -speedV, true );
-
-                    // create the controller (uses FrameTime for source by default)
-                    controller = CreateController( val, func );
-                }
+                // create the controller (uses FrameTime for source by default)
+                controller = CreateController( val, func );
             }
 
-            // TODO: Revisit, since we can't return 2 controllers in the case of non equal U and V speeds
+            return controller;
+        }
+
+        /// <summary>
+        ///     Creates a basic time-based texture v coordinate modifier designed for creating scrolling textures.
+        /// </summary>
+        /// <remarks>
+        ///     This simple method allows you to easily create constant-speed scrolling textures. If you want more
+        ///     control, look up the <see cref="CreateTextureWaveTransformer"/> for more complex wave-based
+        ///     scrollers / stretchers / rotaters.
+        /// </remarks>
+        /// <param name="layer">The texture unit to animate.</param>
+        /// <param name="speed">speed, in wraps per second.</param>
+        /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
+        public Controller<float> CreateTextureVScroller( TextureUnitState layer, float speed )
+        {
+            IControllerValue<float> val = null;
+            IControllerFunction<float> func = null;
+            Controller<float> controller = null;
+
+            // if both u and v speeds are the same, we can use a single controller for it
+            if ( speed != 0 )
+            {
+                // create the value and function
+                val = new TexCoordModifierControllerValue( layer, false, true );
+                func = new MultipyControllerFunction( -speed, true );
+
+                // create the controller (uses FrameTime for source by default)
+                controller = CreateController( val, func );
+            }
+
             return controller;
         }
 

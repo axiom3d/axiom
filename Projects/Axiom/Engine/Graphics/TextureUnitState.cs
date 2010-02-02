@@ -319,28 +319,6 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Gets the alpha reject function. See <see cref="SetAlphaRejectSettings"/> for more information.
-        /// </summary>
-        public CompareFunction AlphaRejectFunction
-        {
-            get
-            {
-                return alphaRejectFunction;
-            }
-        }
-
-        /// <summary>
-        ///    Gets the alpha reject value. See <see cref="SetAlphaRejectSettings"/> for more information.
-        /// </summary>
-        public byte AlphaRejectValue
-        {
-            get
-            {
-                return alphaRejectValue;
-            }
-        }
-
-        /// <summary>
         ///    Gets/Sets the anisotropy level to be used for this texture stage.
         /// </summary>
         /// <remarks>
@@ -1349,20 +1327,6 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Sets the way the layer will have use alpha to totally reject pixels from the pipeline.
-        /// </summary>
-        /// <remarks>
-        ///    This option applies in both the fixed function and the programmable pipeline.
-        /// </remarks>
-        /// <param name="func">The comparison which must pass for the pixel to be written.</param>
-        /// <param name="val">1 byte value against which alpha values will be tested(0-255).</param>
-        public void SetAlphaRejectSettings( CompareFunction func, byte val )
-        {
-            alphaRejectFunction = func;
-            alphaRejectValue = val;
-        }
-
-        /// <summary>
         ///     Sets the names of the texture images for an animated texture.
         /// </summary>
         /// <remarks>
@@ -1500,13 +1464,42 @@ namespace Axiom.Graphics
         /// <param name="vSpeed">The number of vertical loops per second (+ve=moving up, -ve= moving down).</param>
         public void SetScrollAnimation( float uSpeed, float vSpeed )
         {
-            TextureEffect effect = new TextureEffect();
-            effect.type = TextureEffectType.Scroll;
-            effect.arg1 = uSpeed;
-            effect.arg2 = vSpeed;
+            RemoveEffect( TextureEffectType.UVScroll );
+            RemoveEffect( TextureEffectType.UScroll );
+            RemoveEffect( TextureEffectType.VScroll );
 
-            // add this effect to the list of effects for this texture stage.
-            AddEffect( effect );
+            // don't create an effect if both Speeds are 0
+            if ( uSpeed == 0 && vSpeed == 0)
+            {
+                return;
+            }
+
+            // Create new effect
+            TextureEffect effect;
+            if ( uSpeed == vSpeed)
+            {
+                effect = new TextureEffect();
+                effect.type = TextureEffectType.UVScroll;
+                effect.arg1 = uSpeed;
+                this.AddEffect( effect );
+            }
+            else
+            {
+                if ( uSpeed != 0 )
+                {
+                    effect = new TextureEffect();
+                    effect.type = TextureEffectType.UScroll;
+                    effect.arg1 = uSpeed;
+                    this.AddEffect( effect );
+                }
+                if ( vSpeed != 0 )
+                {
+                    effect = new TextureEffect();
+                    effect.type = TextureEffectType.VScroll;
+                    effect.arg1 = vSpeed;
+                    this.AddEffect( effect );
+                }
+            }
         }
 
         /// <summary>
@@ -1846,7 +1839,9 @@ namespace Axiom.Graphics
 
             // these effects must be unique, so remove any existing
             if ( effect.type == TextureEffectType.EnvironmentMap ||
-                 effect.type == TextureEffectType.Scroll ||
+                 effect.type == TextureEffectType.UVScroll ||
+                 effect.type == TextureEffectType.UScroll ||
+                 effect.type == TextureEffectType.VScroll ||
                  effect.type == TextureEffectType.Rotate ||
                  effect.type == TextureEffectType.ProjectiveTexture )
             {
@@ -1906,8 +1901,16 @@ namespace Axiom.Graphics
             // create an appropriate controller based on the specified animation
             switch ( effect.type )
             {
-                case TextureEffectType.Scroll:
-                    effect.controller = cMgr.CreateTextureScroller( this, effect.arg1, effect.arg2 );
+                case TextureEffectType.UVScroll:
+                    effect.controller = cMgr.CreateTextureUVScroller( this, effect.arg1 );
+                    break;
+
+                case TextureEffectType.UScroll:
+                    effect.controller = cMgr.CreateTextureUScroller( this, effect.arg1 );
+                    break;
+
+                case TextureEffectType.VScroll:
+                    effect.controller = cMgr.CreateTextureVScroller( this, effect.arg1 );
                     break;
 
                 case TextureEffectType.Rotate:

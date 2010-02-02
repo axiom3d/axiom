@@ -2686,6 +2686,9 @@ namespace Axiom.Core
                 this.targetRenderSystem.DepthFunction = pass.DepthFunction;
                 this.targetRenderSystem.DepthBias = pass.DepthBiasConstant;
 
+                // Aplha Reject Settings
+                this.targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, pass.AlphaRejectValue, pass.IsAlphaToCoverageEnabled );
+
                 // Color Write
                 // right now only using on/off, not per channel
                 bool colWrite = pass.ColorWriteEnabled;

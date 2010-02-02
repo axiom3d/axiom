@@ -1898,11 +1898,28 @@ namespace Axiom.RenderSystems.Xna
 #endif
         }
 
-        public override void SetAlphaRejectSettings( int stage, Axiom.Graphics.CompareFunction func, byte val )
+        private bool lasta2c = false;
+        public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
         {
-            _device.RenderState.AlphaTestEnable = ( func != Axiom.Graphics.CompareFunction.AlwaysPass );
+            bool a2c = false;
+            if ( func != Axiom.Graphics.CompareFunction.AlwaysPass )
+            {
+                _device.RenderState.AlphaTestEnable = true;
+                a2c = alphaToCoverage;
+            }
+            else
+            {
+                _device.RenderState.AlphaTestEnable = false;                
+            }
+
             _device.RenderState.AlphaFunction = XnaHelper.Convert( func );
             _device.RenderState.ReferenceAlpha = val;
+
+            // Alpha to coverage
+            if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
+            {
+                lasta2c = a2c;
+            }
         }
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )

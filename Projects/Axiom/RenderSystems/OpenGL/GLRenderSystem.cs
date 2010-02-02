@@ -1805,8 +1805,11 @@ namespace Axiom.RenderSystems.OpenGL
 		    activateGLTextureUnit( 0 );
 		}
 
-		public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
-		{
+        private bool lasta2c = false;
+        public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
+        {
+            bool a2c = false;
+
             if ( func != CompareFunction.AlwaysPass )
 			{
                 Gl.glEnable( Gl.GL_ALPHA_TEST );
@@ -1814,8 +1817,24 @@ namespace Axiom.RenderSystems.OpenGL
             else
             {
                 Gl.glDisable( Gl.GL_ALPHA_TEST );
+                a2c = alphaToCoverage;
             }
 			Gl.glAlphaFunc( GLHelper.ConvertEnum( func ), val / 255.0f );
+
+            // Alpha to coverage
+            if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
+            {
+                if ( a2c )
+                {
+                    Gl.glEnable( Gl.GL_SAMPLE_ALPHA_TO_COVERAGE );
+                }
+                else
+                {
+                    Gl.glDisable( Gl.GL_SAMPLE_ALPHA_TO_COVERAGE );
+                }
+                lasta2c = a2c;
+            }
+
 		}
 
 		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
@@ -3144,7 +3163,15 @@ namespace Axiom.RenderSystems.OpenGL
 				_rsCapabilities.SetCapability( Capabilities.MipmapLODBias );
 			}
 
-			// find out how many lights we have to play with, then create a light array to keep locally
+            // Alpha to coverage??
+            if ( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
+            {
+                // Alpha to coverage always 'supported' when MSAA is available
+                // although card may ignore it if it doesn't specifically support A2C
+                _rsCapabilities.SetCapability( Capabilities.AlphaToCoverage );
+            }
+
+		    // find out how many lights we have to play with, then create a light array to keep locally
 			int maxLights;
 			Gl.glGetIntegerv( Gl.GL_MAX_LIGHTS, out maxLights );
 			_rsCapabilities.MaxLights = maxLights;

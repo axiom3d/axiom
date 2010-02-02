@@ -558,15 +558,41 @@ namespace Axiom.Graphics
         /// <param name="layer">Reference to a TextureLayer object which defines all the settings.</param>
         public virtual void SetTextureUnit( int unit, TextureUnitState unitState, bool fixedFunction )
         {
+            // This method is only ever called to set a texture unit to valid details
+            // The method DisableTextureUnit is called to turn a unit off
 
-            // First do the stuff that is just sampler related.  This stuff needs to be done for
-            // both fixed function and shaders.
-
-            // set the texture if it is different from the current
-            if ( unitState.IsBlank )
-                SetTexture( unit, true, string.Empty );
+            Texture texture = (Texture)TextureManager.Instance.GetByName( unitState.TextureName );
+            // Vertex Texture Binding?
+            if (    this.HardwareCapabilities.HasCapability( Capabilities.VertexTextureFetch ) 
+                 && this.HardwareCapabilities.VertexTextureUnitsShared )
+            {
+                throw new NotImplementedException("Vertex Texture currently not implemented.");
+                /*
+                if ( unitState.BindingType = BindingType.Vertex )
+                {
+                    // Bind Vertex Texture
+                    SetVertexTexture( unit, texture );
+                    // bind nothing to fragment unit (hardware isn't shared but fragment
+                    // unit can't be using the same index
+                    this.SetTexture( unit, true, null );
+                }
+                else
+                {
+                    // vice versa
+                    SetVertexTexture( unit, null );
+                    this.SetTexture( unit, true, texture );
+                }
+                */
+            }
             else
-                SetTexture( unit, true, unitState.TextureName );
+            {
+                // Shared vertex / fragment textures or no vertex texture support
+                // Bind texture (may be blank)
+                this.SetTexture( unit, true, unitState.TextureName );
+            }
+
+            // Tex Coord Set
+            SetTextureCoordSet( unit, unitState.TextureCoordSet );
 
             // Texture layer filtering
             SetTextureUnitFiltering(
@@ -578,84 +604,79 @@ namespace Axiom.Graphics
             // Texture layer anistropy
             SetTextureLayerAnisotropy( unit, unitState.TextureAnisotropy );
 
+            // Set mipmap biasing
+            // TODO: implement SetTextureMipmapBias( unit, unitState.TextureMipmapBias );
+
+            // set the texture blending modes
+            // NOTE: Color before Alpha is important
+            SetTextureBlendMode( unit, unitState.ColorBlendMode );
+            SetTextureBlendMode( unit, unitState.AlphaBlendMode );
+
             // this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
             // output window when debugging with high verbosity), so there is no harm
+            // TODO: Implement UVWTextureAddressMode
+            /* UVWAdressingMode uvw = unitState.TextureAddressing; */
             SetTextureAddressingMode( unit, unitState.TextureAddressing );
-
-            // Set the texture border color.  Not sure if its worth making this conditional on the
-            // texture addressing mode.
-            SetTextureBorderColor( unit, unitState.TextureBorderColor );
-
-            // set alpha rejection
-            SetAlphaRejectSettings( unit, unitState.AlphaRejectFunction, unitState.AlphaRejectValue );
-
-
-            // This stuff only gets done for the fixed function pipeline.  It is not needed
-            // if we are using a pixel shader.
-            if ( fixedFunction )
+            // Set the texture border color only if needed.
+            /*
+            if (    uvw.u == TextureAddressing.Border
+                 || uvw.v == TextureAddressing.Border
+                 || uvw.w == TextureAddressing.Border )
+            */
             {
-                // Tex Coord Set
-                SetTextureCoordSet( unit, unitState.TextureCoordSet );
-
-                // set the texture blending mode
-                SetTextureBlendMode( unit, unitState.ColorBlendMode );
-
-                // set the texture blending mode
-                SetTextureBlendMode( unit, unitState.AlphaBlendMode );
-
-                bool anyCalcs = false;
-
-                for ( int i = 0; i < unitState.NumEffects; i++ )
-                {
-                    TextureEffect effect = unitState.GetEffect( i );
-
-                    switch ( effect.type )
-                    {
-                        case TextureEffectType.EnvironmentMap:
-                            if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Curved )
-                            {
-                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMap );
-                                anyCalcs = true;
-                            }
-                            else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Planar )
-                            {
-                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapPlanar );
-                                anyCalcs = true;
-                            }
-                            else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Reflection )
-                            {
-                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapReflection );
-                                anyCalcs = true;
-                            }
-                            else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Normal )
-                            {
-                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapNormal );
-                                anyCalcs = true;
-                            }
-                            break;
-
-                        case TextureEffectType.Scroll:
-                        case TextureEffectType.Rotate:
-                        case TextureEffectType.Transform:
-                            break;
-
-                        case TextureEffectType.ProjectiveTexture:
-                            SetTextureCoordCalculation( unit, TexCoordCalcMethod.ProjectiveTexture, effect.frustum );
-                            anyCalcs = true;
-                            break;
-                    } // switch
-                } // for
-
-                // Ensure any previous texcoord calc settings are reset if there are now none
-                if ( !anyCalcs )
-                {
-                    SetTextureCoordCalculation( unit, TexCoordCalcMethod.None );
-                    SetTextureCoordSet( unit, unitState.TextureCoordSet );
-                }
-
-                // set the texture matrix to that of the current layer for any transformations
-                SetTextureMatrix( unit, unitState.TextureMatrix );
+                SetTextureBorderColor( unit, unitState.TextureBorderColor );
             }
+
+            // Set texture Effects
+            bool anyCalcs = false;
+            // TODO: Change TextureUnitState Effects to use Enumeration
+            for ( int i = 0; i < unitState.NumEffects; i++ )
+            {
+                TextureEffect effect = unitState.GetEffect( i );
+
+                switch ( effect.type )
+                {
+                    case TextureEffectType.EnvironmentMap:
+                        switch ( (EnvironmentMap)effect.subtype )
+                        {
+                            case EnvironmentMap.Curved:
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMap );
+                                break;
+                            case EnvironmentMap.Planar:
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapPlanar );
+                                break;
+                            case EnvironmentMap.Reflection:
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapReflection );
+                                break;
+                            case EnvironmentMap.Normal:
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapNormal );
+                                break;
+                        }
+                        anyCalcs = true;
+                        break;
+
+                    case TextureEffectType.UVScroll:
+                    case TextureEffectType.UScroll:
+                    case TextureEffectType.VScroll:
+                    case TextureEffectType.Rotate:
+                    case TextureEffectType.Transform:
+                        break;
+
+                    case TextureEffectType.ProjectiveTexture:
+                        SetTextureCoordCalculation( unit, TexCoordCalcMethod.ProjectiveTexture, effect.frustum );
+                        anyCalcs = true;
+                        break;
+                } // switch
+            } // for
+
+            // Ensure any previous texcoord calc settings are reset if there are now none
+            if ( !anyCalcs )
+            {
+                SetTextureCoordCalculation( unit, TexCoordCalcMethod.None );
+            }
+
+            // set the texture matrix to that of the current layer for any transformations
+            SetTextureMatrix( unit, unitState.TextureMatrix );
         }
 
         /// <summary>
@@ -1209,10 +1230,10 @@ namespace Axiom.Graphics
         /// <summary>
         ///  Sets the global alpha rejection approach for future renders.
         /// </summary>
-        /// <param name="stage">The comparison function which must pass for a pixel to be written.</param>
-        /// <param name="func">The value to compare each pixels alpha value to (0-255)</param>
-        /// <param name="val">Whether to enable alpha to coverage, if supported</param>
-        public abstract void SetAlphaRejectSettings( int stage, CompareFunction func, byte val );
+        /// <param name="func">The comparison function which must pass for a pixel to be written.</param>
+        /// <param name="val">The value to compare each pixels alpha value to (0-255)</param>
+        /// <param name="alphaToCoverage">Whether to enable alpha to coverage, if supported</param>
+        public abstract void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage );
 
         /// <summary>
         ///   Used to confirm the settings (normally chosen by the user) in

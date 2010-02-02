@@ -244,7 +244,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Supports mipmap LOD biasing
 		/// </summary>
-		MipmapLODBias = 0x10000000 
+		MipmapLODBias = 0x10000000,
+        /// <summary>
+        ///     Supports Alpha to Coverage (A2C)
+        /// </summary>
+        AlphaToCoverage = 0x20000000
 	}
 
 	/// <summary>
@@ -1088,8 +1092,16 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Constant u/v scrolling effect.
 		///	 </summary>
-		Scroll,
-		/// <summary>
+		UVScroll,
+        /// <summary>
+        ///		Constant u scrolling effect.
+        ///	 </summary>
+        UScroll,
+        /// <summary>
+        ///		Constant v scrolling effect.
+        ///	 </summary>
+        VScroll,
+        /// <summary>
 		///		Constant rotation.
 		///	 </summary>
 		Rotate,
