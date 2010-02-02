@@ -294,6 +294,7 @@ namespace Axiom.Core
         RenderOperation = 0x10
     }
 
+    [Flags]
 	public enum TrackVertexColor
 	{
 		None = 0,
