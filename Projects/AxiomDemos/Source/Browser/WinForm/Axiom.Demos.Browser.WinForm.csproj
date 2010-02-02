@@ -53,6 +53,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86</OutputPath>
@@ -1184,7 +1185,9 @@ if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll
 if exist "Axiom.RenderSystems.DirectX9.dll.locked" del "Axiom.RenderSystems.DirectX9.dll.locked" 
 if not exist "Axiom.RenderSystems.DirectX9.dll.locked" if exist "Axiom.RenderSystems.DirectX9.dll" move "Axiom.RenderSystems.DirectX9.dll" "Axiom.RenderSystems.DirectX9.dll.locked"
 if exist "Axiom.RenderSystems.Xna.dll.locked" del "Axiom.RenderSystems.Xna.dll.locked" 
-if not exist "Axiom.RenderSystems.Xna.dll.locked" if exist "Axiom.RenderSystems.Xna.dll" move "Axiom.RenderSystems.Xna.dll" "Axiom.RenderSystems.Xna.dll.locked"</PreBuildEvent>
+if not exist "Axiom.RenderSystems.Xna.dll.locked" if exist "Axiom.RenderSystems.Xna.dll" move "Axiom.RenderSystems.Xna.dll" "Axiom.RenderSystems.Xna.dll.locked"
+if exist "Axiom.RenderSystems.OpenGL.Win32.dll.locked" del "Axiom.RenderSystems.OpenGL.Win32.dll.locked" 
+if not exist "Axiom.RenderSystems.OpenGL.Win32.dll.locked" if exist "Axiom.RenderSystems.OpenGl.Win32.dll" move "Axiom.RenderSystems.OpenGl.Win32.dll" "Axiom.RenderSystems.OpenGl.Win32.dll.locked"</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>

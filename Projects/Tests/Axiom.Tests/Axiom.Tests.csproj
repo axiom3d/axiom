@@ -66,6 +66,7 @@
     <Reference Include="Typemock.ArrangeActAssert, Version=5.4.3.0, Culture=neutral, PublicKeyToken=3dae460033b8d8e2, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\AddRemoveMovableObjectRegressionTests.cs" />
     <Compile Include="Core\LodStrategyTests.cs" />
     <Compile Include="Core\ResourceGroupManager.ManualResourceCreation.Test.cs" />
     <Compile Include="Core\SceneManagerRegressionTests.cs">
@@ -136,9 +137,6 @@
       <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
       <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collections\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

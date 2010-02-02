@@ -55,6 +55,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\OpenTK\</OutputPath>
@@ -1106,7 +1107,7 @@
     <Content Include="..\..\..\..\..\Media\Configuration\Terrain.xml">
       <Link>Media\Configuration\Terrain.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>    
+    </Content>
     <None Include="..\..\..\..\..\Lib\Native\Win32\DevIL.dll">
       <Link>DevIL.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
