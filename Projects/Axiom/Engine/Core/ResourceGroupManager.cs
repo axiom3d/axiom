@@ -2397,10 +2397,10 @@ namespace Axiom.Core
             // delete all the load list entries
             foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrders )
             {
-                LoadUnloadResourceList rl = pair.Value;
+                Resource[] rl = pair.Value.ToArray(); // avoid modification while enumerating
                 foreach ( Resource res in rl )
                 {
-                    res.Creator.Remove( res );
+                    res.Creator.Remove( res ); // will result in call to notifyResourceRemoved()
                 }
             }
             grp.LoadResourceOrders.Clear();
