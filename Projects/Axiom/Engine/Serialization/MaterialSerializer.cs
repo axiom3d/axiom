@@ -909,14 +909,27 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			// must be 3 or 4 parameters
-			if ( values.Length != 3 && values.Length != 4 )
+			// must be 1, 3 or 4 parameters
+            if ( values.Length == 1)
+            {
+                if ( values[ 0 ].ToLower() == "vertexcolour" ||
+                     values[ 0 ].ToLower() == "vertexcolor" )
+                {
+                    context.pass.VertexColorTracking |= TrackVertexColor.Ambient;
+                }
+                else
+                {
+                    LogParseError( context, "Bad ambient attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
+                }
+            }
+		    else if ( values.Length == 3 || values.Length == 4 )
 			{
-				LogParseError( context, "Bad ambient attribute, wrong number of parameters (expected 3 or 4)" );
+				context.pass.Ambient = StringConverter.ParseColor( values );
+			    context.pass.VertexColorTracking &= ~TrackVertexColor.Ambient;
 			}
 			else
 			{
-				context.pass.Ambient = StringConverter.ParseColor( values );
+				LogParseError( context, "Bad ambient attribute, wrong number of parameters (expected 1, 3 or 4)." );
 			}
 
 			return false;
@@ -1059,37 +1072,65 @@ namespace Axiom.Serialization
 
 		[MaterialAttributeParser( "diffuse", MaterialScriptSection.Pass )]
 		protected static bool ParseDiffuse( string parameters, MaterialScriptContext context )
-		{
-			string[] values = parameters.Split( new char[] { ' ', '\t' } );
+        {
+            string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			if ( values.Length != 3 && values.Length != 4 )
-			{
-				LogParseError( context, "Bad diffuse attribute, wrong numbe of parameters (expected 3 or 4)." );
-			}
-			else
-			{
-				context.pass.Diffuse = StringConverter.ParseColor( values );
-			}
+            // must be 1, 3 or 4 parameters
+            if ( values.Length == 1 )
+            {
+                if ( values[ 0 ].ToLower() == "vertexcolour" ||
+                     values[ 0 ].ToLower() == "vertexcolor" )
+                {
+                    context.pass.VertexColorTracking |= TrackVertexColor.Diffuse;
+                }
+                else
+                {
+                    LogParseError( context, "Bad diffuse attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
+                }
+            }
+            else if ( values.Length == 3 || values.Length == 4 )
+            {
+                context.pass.Diffuse = StringConverter.ParseColor( values );
+                context.pass.VertexColorTracking &= ~TrackVertexColor.Diffuse;
+            }
+            else
+            {
+                LogParseError( context, "Bad diffuse attribute, wrong number of parameters (expected 1, 3 or 4)." );
+            }
 
-			return false;
-		}
+            return false;
+        }
 
 		[MaterialAttributeParser( "emissive", MaterialScriptSection.Pass )]
 		protected static bool ParseEmissive( string parameters, MaterialScriptContext context )
-		{
-			string[] values = parameters.Split( new char[] { ' ', '\t' } );
+        {
+            string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			if ( values.Length != 3 && values.Length != 4 )
-			{
-				LogParseError( context, "Bad emissive attribute, wrong number of parameters (expected 4)." );
-			}
-			else
-			{
-				context.pass.Emissive = StringConverter.ParseColor( values );
-			}
+            // must be 1, 3 or 4 parameters
+            if ( values.Length == 1 )
+            {
+                if ( values[ 0 ].ToLower() == "vertexcolour" ||
+                     values[ 0 ].ToLower() == "vertexcolor" )
+                {
+                    context.pass.VertexColorTracking |= TrackVertexColor.Emissive;
+                }
+                else
+                {
+                    LogParseError( context, "Bad emissive attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
+                }
+            }
+            else if ( values.Length == 3 || values.Length == 4 )
+            {
+                context.pass.Emissive = StringConverter.ParseColor( values );
+                context.pass.VertexColorTracking &= ~TrackVertexColor.Emissive;
+            }
+            else
+            {
+                LogParseError( context, "Bad emissive attribute, wrong number of parameters (expected 1, 3 or 4)." );
+            }
 
-			return false;
-		}
+            return false;
+        }
 
 		[MaterialAttributeParser( "fog_override", MaterialScriptSection.Pass )]
 		protected static bool ParseFogOverride( string parameters, MaterialScriptContext context )
@@ -1300,27 +1341,22 @@ namespace Axiom.Serialization
             // Must be 2, 4 or 5 parameters
             if ( values.Length == 2 )
             {
-                if ( values[0] == "vertexcolour" )
+                if ( values[0].ToLower() == "vertexcolour" || 
+                     values[0].ToLower() == "vertexcolor")
                 {
                     context.pass.VertexColorTracking |= TrackVertexColor.Specular;
                     context.pass.Shininess = StringConverter.ParseFloat( values[ 1 ] );
                 }
                 else
                 {
-                    LogParseError( context, "Bad specular attribute, double parameter statement must be 'vertexcolour <shininess>'" );
+                    LogParseError( context, "Bad specular attribute, double parameter statement must be 'vertexcolour <shininess>' or 'vertexcolor <shininess>'." );
                 }
             }
 			else if ( values.Length == 4 || values.Length == 5 )
 			{
-				ColorEx specular = new ColorEx();
-				specular.r = StringConverter.ParseFloat( values[ 0 ] );
-				specular.g = StringConverter.ParseFloat( values[ 1 ] );
-				specular.b = StringConverter.ParseFloat( values[ 2 ] );
-				specular.a = ( values.Length == 5 ) ? StringConverter.ParseFloat( values[ 3 ] ) : 1.0f;
+			    context.pass.Specular = StringConverter.ParseColor( values );
 
-                context.pass.Specular = specular;
-
-                context.pass.VertexColorTracking |= TrackVertexColor.Specular;
+                context.pass.VertexColorTracking &= ~TrackVertexColor.Specular;
 				context.pass.Shininess = StringConverter.ParseFloat( values[ values.Length - 1 ] );
 			}
 			else
