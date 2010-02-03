@@ -110,12 +110,12 @@ namespace Axiom.Demos.DeferredShadingSystem
             program.SetParam( "entry_point", "main" );
             /// Set up default parameters
             GpuProgramParameters parameters = program.DefaultParameters;
-            parameters.SetNamedAutoConstant( "worldView", AutoConstants.WorldViewMatrix, 0 );
-            parameters.SetNamedAutoConstant( "lightDiffuseColor", AutoConstants.Custom, 1 );
+            parameters.SetNamedAutoConstant( "worldView", GpuProgramParameters.AutoConstantType.WorldViewMatrix, 0 );
+            parameters.SetNamedAutoConstant( "lightDiffuseColor", GpuProgramParameters.AutoConstantType.Custom, 1 );
             if ( isSpecular )
-                parameters.SetNamedAutoConstant( "lightSpecularColor", AutoConstants.Custom, 2 );
+                parameters.SetNamedAutoConstant( "lightSpecularColor", GpuProgramParameters.AutoConstantType.Custom, 2 );
             if ( isAttenuated )
-                parameters.SetNamedAutoConstant( "lightFalloff", AutoConstants.Custom, 3 );
+                parameters.SetNamedAutoConstant( "lightFalloff", GpuProgramParameters.AutoConstantType.Custom, 3 );
 
             return (GpuProgram)HighLevelGpuProgramManager.Instance.GetByName( program.Name );
         }

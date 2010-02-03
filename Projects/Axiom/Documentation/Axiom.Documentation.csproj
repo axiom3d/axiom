@@ -59,7 +59,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ExternalSources="" Sandcastle_PresentationName="Sandcastle Hana" Sandcastle_Version="2.4.10520.1" BuildEngineProviderName="Sandcastle" DocProjectVersion="1.11.0.0" IsDocProject="true" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" Sandcastle_DocumentationSetName="Axiom" Sandcastle_ShowEntireBuildComponentStack="True" />
+      <UserProperties Sandcastle_ShowEntireBuildComponentStack="True" Sandcastle_DocumentationSetName="Axiom" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" IsDocProject="true" DocProjectVersion="1.11.0.0" BuildEngineProviderName="Sandcastle" Sandcastle_Version="2.4.10520.1" Sandcastle_PresentationName="Sandcastle Hana" ExternalSources="" />
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
@@ -215,6 +215,7 @@
     <Content Include="Help\Settings\metadata.xml" />
     <Content Include="Help\Settings\Projects\help2x.xslt" />
     <Content Include="Help\Settings\tokens.xml" />
+    <Content Include="Help\Settings\topics.xml" />
     <Content Include="Help\Styles\Presentation.css" />
     <Content Include="Help\Styles\syntax.css" />
     <Content Include="Help\Styles\tabs.css" />
@@ -335,6 +336,10 @@
     </None>
     <None Include="Help\Settings\Projects\help1x.config" />
     <None Include="Help\Styles\.svn\entries" />
+    <None Include="Help\Topics\Getting Started.aml" />
+    <None Include="Help\Topics\Getting Started.cmp">
+      <DependentUpon>Getting Started.aml</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Axiom.csproj">
@@ -402,6 +407,5 @@
     <Folder Include="Help\Styles\.svn\tmp\prop-base\" />
     <Folder Include="Help\Styles\.svn\tmp\props\" />
     <Folder Include="Help\Styles\.svn\tmp\text-base\" />
-    <Folder Include="Help\Topics\" />
   </ItemGroup>
 </Project>
