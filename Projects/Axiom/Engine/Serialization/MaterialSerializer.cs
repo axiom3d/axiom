@@ -44,6 +44,7 @@ using System.Text;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 using Axiom.Scripting;
 using System.Collections.Generic;
 using Axiom.Core.Collections;
@@ -2097,32 +2098,68 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			if ( values.Length < 1 || values.Length > 2 )
-			{
-				LogParseError( context, "Bad texture attribute, wrong number of parameters (expected 1 or 2)." );
-				return false;
-			}
+            if ( values.Length > 5 )
+            {
+                LogParseError( context, "Invalid texture attribute - expecting 5 parameters or less." );
+                return false;
+            }
 
 			// use 2d as default if anything goes wrong
 			TextureType texType = TextureType.TwoD;
+            int mipmaps = (int)TextureMipmap.Default; // When passed to TextureManager::load, this means default to default number of mipmaps
+		    bool isAlpha = false;
+            bool hwGamma = false;
+		    PixelFormat desiredFormat = PixelFormat.Unknown;
 
-			if ( values.Length == 2 )
-			{
-				// check the transform type
-				object val = ScriptEnumAttribute.Lookup( values[ 1 ], typeof( TextureType ) );
+		    for ( int p = 0; p < values.Length; p++ )
+		    {
 
-				if ( val == null )
-				{
-					string legalValues = ScriptEnumAttribute.GetLegalValues( typeof( TextureType ) );
-					LogParseError( context, "Bad texture attribute, valid texture type values are {0}", legalValues );
-				}
-				else
-				{
-					texType = (TextureType)val;
-				}
-			}
+                switch ( values[ p ].ToLower() )
+                {
+                    case "1d":
+                        texType = TextureType.OneD;
+                        break;
+                    case "2d":
+                        texType = TextureType.TwoD;
+                        break;
+                    case "3d":
+                        texType = TextureType.ThreeD;
+                        break;
+                    case "cubic":
+                        texType = TextureType.CubeMap;
+                        break;
+                    case "unlimited":
+                        mipmaps = (int)TextureMipmap.Unlimited;
+                        break;
+                    case "alpha":
+                        isAlpha = true;
+                        break;
+                    case "gamma":
+                        hwGamma = true;
+                        break;
+                    default:
+                        int num;
+                        if ( int.TryParse( values[ p ], out num ) )
+                        {
+                            mipmaps = num;
+                        }
+                        else if ( ( desiredFormat = PixelUtil.GetFormatFromName( values[ p ], true, false ) ) != PixelFormat.Unknown )
+                        {
+                            // Nothing to do here.
+                        }
+                        else
+                        {
+                            LogParseError( context, "Invalid texture option - " + values[ p ] + "." );
+                        }
+                        break;
+                }
+		    }
 
-			context.textureUnit.SetTextureName( values[ 0 ], texType );
+            context.textureUnit.SetTextureName( values[ 0 ], texType );
+            context.textureUnit.MipmapCount = mipmaps;
+            context.textureUnit.IsAlpha = isAlpha;
+            context.textureUnit.DesiredFormat = desiredFormat;
+            context.textureUnit.IsHardwareGammaEnabled = hwGamma;
 
 			return false;
 		}

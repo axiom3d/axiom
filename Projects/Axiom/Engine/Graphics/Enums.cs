@@ -1201,6 +1201,17 @@ namespace Axiom.Graphics
 		CubeMap = 4
 	}
 
+    /// <summary>
+    /// Enum identifying special mipmap numbers
+    /// </summary>
+    public enum TextureMipmap
+    {
+        /// Generate mipmaps up to 1x1
+        Unlimited = 0x7FFFFFFF,
+        /// Use TextureManager default
+        Default = -1
+    }
+
 	/// <summary>
 	///		Specifies how a texture is to be used in the engine.
 	/// </summary>
