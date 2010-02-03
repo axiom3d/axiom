@@ -156,9 +156,38 @@ namespace Axiom.Media
 		{
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
+        /** 
+            @param  name            
+            @param  accessibleOnly  
+            @param  caseSensitive   
+            @returns                
+        */
 
+        /// <summary>
+        /// Gets the format from given name.
+        /// </summary>
+        /// <param name="name">The string of format name</param>
+        /// <param name="accessibleOnly">If true, non-accessible format will treat as invalid format, otherwise, all supported formats are valid.</param>
+        /// <param name="caseSensitive">Should be set true if string match should use case sensitivity.</param>
+        /// <returns>The format match the format name, or <see cref="PixelFormat.Unknown"/> if is invalid name.</returns>
+        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly, bool caseSensitive)
+        {
+            // We are storing upper-case format names.
+            String tmp = caseSensitive ? name : name.ToUpper();
 
-		public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
+            for ( int i = 0; i < (int)PixelFormat.Count; ++i )
+            {
+                PixelFormat pf = (PixelFormat)i;
+                if ( !accessibleOnly || IsAccessible( pf ) )
+                {
+                    if ( tmp == GetFormatName( pf ) )
+                        return pf;
+                }
+            }
+            return PixelFormat.Unknown;
+        }
+
+	    public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
 		{
 			switch ( integerBits )
 			{

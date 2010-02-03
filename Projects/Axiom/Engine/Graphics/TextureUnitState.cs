@@ -43,6 +43,7 @@ using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -187,8 +188,22 @@ namespace Axiom.Graphics
         ///    Type of texture this is.
         /// </summary>
         private TextureType textureType;
+        /// <summary>
+        /// the desired pixel format when load the texture
+        /// </summary>
+        private PixelFormat desiredFormat;
+        /// <summary>
+        /// how many mipmaps have been requested for the texture
+        /// </summary>
         private int textureSrcMipmaps;
+        /// <summary>
+        /// whether this texture is requested to be loaded as alpha if single channel
+        /// </summary>
         private bool isAlpha;
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool hwGamma;
         /// <summary>
         ///    Texture filtering - minification.
         /// </summary>
@@ -213,14 +228,6 @@ namespace Axiom.Graphics
         ///    Is anisotropy the default?
         /// </summary>
         private bool isDefaultAniso;
-        /// <summary>
-        ///    Function used to reject pixels based on alpha value.
-        /// </summary>
-        private CompareFunction alphaRejectFunction;
-        /// <summary>
-        ///    Value against which alpha values will be tested.
-        /// </summary>
-        private byte alphaRejectValue;
         /// <summary>
         ///     Reference to an animation controller for this texture unit.
         /// </summary>
@@ -291,11 +298,10 @@ namespace Axiom.Graphics
             rotate = 0;
             texMatrix = Matrix4.Identity;
             animDuration = 0;
-            alphaRejectFunction = CompareFunction.AlwaysPass;
-            alphaRejectValue = 0;
 
             textureType = TextureType.TwoD;
 
+            textureSrcMipmaps = (int)TextureMipmap.Default;
             // texture params
             SetTextureName( textureName );
             this.TextureCoordSet = texCoordSet;
@@ -573,21 +579,6 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///		Gets/Sets whether this layer is blank or not.
-        /// </summary>
-        public bool Blank
-        {
-            get
-            {
-                return isBlank;
-            }
-            set
-            {
-                isBlank = value;
-            }
-        }
-
-        /// <summary>
         ///		Gets/Sets the active frame in an animated or multi-image texture.
         /// </summary>
         /// <remarks>
@@ -829,6 +820,68 @@ namespace Axiom.Graphics
                 this.SetRotateAnimation( value );
             }
         }
+
+        /// <summary>
+        /// How many mipmaps have been requested for the texture.
+        /// </summary>
+        public int MipmapCount
+        {
+            get
+            {
+                return textureSrcMipmaps;
+            }
+            set
+            {
+                textureSrcMipmaps = value;
+            }
+        }
+
+        /// <summary>
+        /// The desired pixel format when load the texture.
+        /// </summary>
+        public PixelFormat DesiredFormat
+        {
+            get
+            {
+                return desiredFormat;
+            }
+            set
+            {
+                desiredFormat = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether this texture is requested to be loaded as alpha if single channel.
+        /// </summary>
+        public bool IsAlpha
+        {
+            get
+            {
+                return isAlpha;
+            }
+            set
+            {
+                isAlpha = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether this texture will be set up so that on sampling it, 
+        /// hardware gamma correction is applied.
+        /// </summary>
+        public bool IsHardwareGammaEnabled
+        {
+            get
+            {
+                return hwGamma;
+            }
+            set
+            {
+                hwGamma = value;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -1950,7 +2003,7 @@ namespace Axiom.Graphics
                     try
                     {
                         // ensure the texture is loaded
-                        TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType, textureSrcMipmaps, 1.0f, this.isAlpha );
+                        TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType, textureSrcMipmaps, 1.0f, this.isAlpha, desiredFormat /*, hwGamma */  );
 
                         isBlank = false;
                     }
