@@ -52,7 +52,7 @@ namespace Axiom.Demos
 			ShadowTechnique.None
 		};
 
-        int currentShadowTechnique = 1;
+        int currentShadowTechnique = 3;
 
         public override void CreateScene()
         {
@@ -60,7 +60,7 @@ namespace Axiom.Demos
             scene.AmbientLight = ColorEx.Black;
 
             // TODO: Check based on caps
-            int currentAtheneMaterial =1;
+            int currentAtheneMaterial = 1;
 
             // fixed light, dim
             sunLight = scene.CreateLight("SunLight");
@@ -219,9 +219,6 @@ namespace Axiom.Demos
 			{
 				ChangeShadowTechnique();
 
-				// show briefly on the screen
-				this.debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
-
 				// show for 2 seconds
 				debugTextDelay = 2.0f;
 
@@ -299,6 +296,10 @@ namespace Axiom.Demos
 
                     break;
             }
+
+            // show briefly on the screen
+            this.debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
+
         }
     }
 
