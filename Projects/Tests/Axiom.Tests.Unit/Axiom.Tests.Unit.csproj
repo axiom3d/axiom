@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\AddRemoveMovableObjectRegressionTests.cs" />
+    <Compile Include="Core\ChainedEventTests.cs" />
     <Compile Include="Core\LodStrategyTests.cs" />
     <Compile Include="Core\ResourceGroupManager.ManualResourceCreation.Test.cs" />
     <Compile Include="Core\SceneManagerRegressionTests.cs">

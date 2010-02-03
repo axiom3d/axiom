@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Documentation", "Axio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0BA7646B-43C2-4D85-B82E-162A71C98E06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Tests", "Tests\Axiom.Tests\Axiom.Tests.csproj", "{A836B773-8B22-4713-A9D4-D4E32BA73296}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Tests.Unit", "Tests\Axiom.Tests.Unit\Axiom.Tests.Unit.csproj", "{A836B773-8B22-4713-A9D4-D4E32BA73296}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.Content.x86", "Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj", "{6E5E6221-0235-49C9-9273-449F5F0E8EF6}"
 EndProject
