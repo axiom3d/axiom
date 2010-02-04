@@ -38,8 +38,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-using SlimDX.Direct3D9;
-
 using FogMode = Axiom.Graphics.FogMode;
 using LightType = Axiom.Graphics.LightType;
 using StencilOperation = Axiom.Graphics.StencilOperation;
@@ -518,23 +516,23 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     if ( a2c)
                     {
-                        SetRenderState( RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'O' ) << 16 | ( (int)'C' ) << 24 ) );
+                        SetRenderState( D3D.RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'O' ) << 16 | ( (int)'C' ) << 24 ) );
                     }
                     else
                     {
-                        SetRenderState( RenderState.AdaptiveTessY,(int)D3D.Format.Unknown);
+                        SetRenderState( D3D.RenderState.AdaptiveTessY, (int)D3D.Format.Unknown );
                     }
                 }
                 else if ( this.HardwareCapabilities.VendorName.ToLower() == "ati" )
                 {
                     if ( a2c )
                     {
-                        SetRenderState( RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'M' ) << 16 | ( (int)'0' ) << 24 ) );
+                        SetRenderState( D3D.RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'M' ) << 16 | ( (int)'0' ) << 24 ) );
                     }
                     else
                     {
                         // discovered this through trial and error, seems to work
-                        SetRenderState( RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'M' ) << 16 | ( (int)'1' ) << 24 ) );
+                        SetRenderState( D3D.RenderState.AdaptiveTessY, ( (int)'A' | ( (int)'T' ) << 8 | ( (int)'M' ) << 16 | ( (int)'1' ) << 24 ) );
                     }
                 }
                 // no hacks available for any other vendors?
@@ -2756,7 +2754,7 @@ namespace Axiom.RenderSystems.DirectX9
                 // NVIDIA needs a seperate check
                 if ( _rsCapabilities.VendorName.ToLower() == "nvidia" )
                 {
-                    if ( device.Direct3D.CheckDeviceFormat( 0, DeviceType.Hardware, Format.X8R8G8B8, 0, ResourceType.Surface, D3D.D3DX.MakeFourCC( (byte)'A', (byte)'T', (byte)'O', (byte)'C' ) ) )
+                    if ( device.Direct3D.CheckDeviceFormat( 0, D3D.DeviceType.Hardware, D3D.Format.X8R8G8B8, 0, D3D.ResourceType.Surface, D3D.D3DX.MakeFourCC( (byte)'A', (byte)'T', (byte)'O', (byte)'C' ) ) )
                     {
                         _rsCapabilities.SetCapability( Capabilities.AlphaToCoverage );
                     }
@@ -2853,11 +2851,13 @@ namespace Axiom.RenderSystems.DirectX9
             // Reset the device, using the primary window presentation params
             try
             {
-                device.Reset( _primaryWindow.PresentationParameters );
+                SlimDX.Result result = device.Reset( _primaryWindow.PresentationParameters );
+                if ( result.Code == D3D.ResultCode.DeviceLost.Code )
+                    return;
             }
             catch ( SlimDX.SlimDXException dlx )
             {
-                // Don't continue
+                LogManager.Instance.Write( LogManager.BuildExceptionString( dlx ) );
                 return;
             }
             catch ( Exception ex )
@@ -2869,7 +2869,6 @@ namespace Axiom.RenderSystems.DirectX9
             _basicStatesInitialized = false;
             vertexProgramBound = false;
             fragmentProgramBound = false;
-
 
             // recreate additional swap chains
             foreach ( D3DRenderWindow sw in _secondaryWindows )
