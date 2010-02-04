@@ -167,7 +167,7 @@ namespace Axiom.Demos
         #region bool OnFrameStarted(Object source, FrameEventArgs e)
 
         // Event handler to add ability to alter subdivision
-        protected override void OnFrameStarted( Object source, FrameEventArgs evt )
+        protected override void OnFrameRenderingQueued( Object source, FrameEventArgs evt )
         {
             timeLapse += evt.TimeSinceLastFrame;
 
