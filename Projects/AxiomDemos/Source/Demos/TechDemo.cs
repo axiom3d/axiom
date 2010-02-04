@@ -402,10 +402,6 @@ namespace Axiom.Demos
 
         protected virtual void OnFrameStarted( object source, FrameEventArgs evt )
         {
-        }
-
-        protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
-        {
             float scaleMove = 200 * evt.TimeSinceLastFrame;
 
             // reset acceleration zero
@@ -748,6 +744,10 @@ namespace Axiom.Demos
             {
                 camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
             }
+        }
+
+        protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
+        {
         }
 
         protected virtual void OnFrameEnded( object source, FrameEventArgs evt )

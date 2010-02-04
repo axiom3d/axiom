@@ -165,7 +165,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
             HLSLIncludeHandler include = new HLSLIncludeHandler( this );
-            D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), include, D3D.ShaderFlags.PackMatrixColumnMajor );
+
+            D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), include, D3D.ShaderFlags.PackMatrixRowMajor );
 
             try
             {
