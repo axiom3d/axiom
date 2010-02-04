@@ -44,6 +44,7 @@ using System.IO;
 
 using Axiom.Core;
 using Axiom.Configuration;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -56,6 +57,31 @@ namespace Axiom.Graphics
 	///</summary>
 	public class CompositionPass
 	{
+        /// Inputs (for material used for rendering the quad)
+		public class InputTexture
+		{
+			/// Name (local) of the input texture (empty == no input)
+			public string Name;
+			/// MRT surface index if applicable
+			public int MrtIndex;
+
+			public InputTexture()
+			{
+			    Name = String.Empty;
+			    MrtIndex = 0;
+			}
+
+            public InputTexture( String name )
+                : this( name, 0 )
+            {
+            }
+
+            public InputTexture( String name, int mrtIndex )
+            {
+                this.Name = name;
+                this.MrtIndex = mrtIndex;
+            }
+		}
 
 		#region Fields
 
@@ -103,7 +129,7 @@ namespace Axiom.Graphics
 		///    Inputs (for material used for rendering the quad)
 		///    An empty string signifies that no input is used
 		///</summary>
-		protected string[] inputs = new string[ Config.MaxTextureLayers ];
+        protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
 		///<summary>
 		///    Stencil operation parameters
 		///</summary>
@@ -383,7 +409,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public string[] Inputs
+		public InputTexture[] Inputs
 		{
 			get
 			{
@@ -404,14 +430,19 @@ namespace Axiom.Graphics
 		///<remarks>
 		///    Note applies when CompositorPassType is RenderQuad 
 		///</remarks>	
-		public void SetInput( int id, string input )
+        public void SetInput( int id, string name, int mrtIndex )
+        {
+            inputs[ id ] = new InputTexture( name, mrtIndex);
+        }
+
+        public void SetInput( int id, string name )
 		{
-			inputs[ id ] = input;
-		}
+            SetInput( id, name, 0 );
+        }
 
 		public void SetInput( int id )
 		{
-			SetInput( id, "" );
+			SetInput( id, null,0 );
 		}
 
 		///<summary>
@@ -421,7 +452,7 @@ namespace Axiom.Graphics
 		///<remarks>
 		///    Note applies when CompositorPassType is RenderQuad 
 		///</remarks>	
-		public string GetInput( int id )
+        public InputTexture GetInput( int id )
 		{
 			return inputs[ id ];
 		}
@@ -438,8 +469,8 @@ namespace Axiom.Graphics
 			int count = 0;
 			for ( int i = 0; i < inputs.Length; ++i )
 			{
-				string s = inputs[ i ];
-				if ( s != null && s != "" )
+                InputTexture s = inputs[ i ];
+				if ( s != null )
 					count = i + 1;
 			}
 			return count;
@@ -454,7 +485,7 @@ namespace Axiom.Graphics
 		public void ClearAllInputs()
 		{
 			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
-				inputs[ i ] = "";
+				inputs[ i ] = null;
 		}
 
 		#endregion Methods
