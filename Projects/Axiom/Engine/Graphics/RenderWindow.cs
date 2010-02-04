@@ -256,47 +256,6 @@ namespace Axiom.Graphics
 			left = _left;
 		}
 
-		/// <summary>
-		///		Updates the window contents.
-		/// </summary>
-		/// <remarks>
-		///		The window is updated by telling each camera which is supposed
-		///		to render into this window to render it's view, and then
-		///		the window buffers are swapped via SwapBuffers()
-		///	</remarks>
-		public override void Update()
-		{
-			Update( true );
-		}
-
-		/// <summary>
-		///		Updates the window contents.
-		/// </summary>
-		/// <remarks>
-		///		The window is updated by telling each camera which is supposed
-		///		to render into this window to render it's view, and then
-		///		the window buffers are swapped via SwapBuffers() if requested.
-		///	</remarks>
-		///	<param name="swapBuffers">
-		///	If set to true, the window will immediately
-		///	swap it's buffers after update. Otherwise, the buffers are
-		///	not swapped, and you have to call swapBuffers yourself sometime
-		///	later. You might want to do this on some rendersystems which 
-		///	pause for queued rendering commands to complete before accepting
-		///	swap buffers calls - so you could do other CPU tasks whilst the 
-		///	queued commands complete. Or, you might do this if you want custom
-		///	control over your windows, such as for externally created windows.
-		///	</param>
-		public virtual void Update( bool swapBuffers )
-		{			
-			// call base class Update method
-			base.Update();
-
-			if ( swapBuffers )
-			{
-				SwapBuffers( Root.Instance.RenderSystem.IsVSync );
-			}
-		}
 
         #endregion
 

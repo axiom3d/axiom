@@ -416,7 +416,13 @@ namespace Axiom.Graphics
         {
             for ( int i = texUnit; i < _rsCapabilities.TextureUnitCount; ++i )
             {
-                DisableTextureUnit( i );
+                try
+                {
+                    DisableTextureUnit( i );
+                }
+                catch( Exception )
+                {
+                }
             }
         }
 
@@ -566,7 +572,8 @@ namespace Axiom.Graphics
             if (    this.HardwareCapabilities.HasCapability( Capabilities.VertexTextureFetch ) 
                  && this.HardwareCapabilities.VertexTextureUnitsShared )
             {
-                throw new NotImplementedException("Vertex Texture currently not implemented.");
+                LogManager.Instance.Write( "Vertex Texture not implemented using fallback method." );
+                this.SetTexture( unit, true, unitState.TextureName );
                 /*
                 if ( unitState.BindingType = BindingType.Vertex )
                 {
@@ -757,9 +764,18 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Internal method for updating all render targets attached to this rendering system.
+        /// Internal method for updating all render targets attached to this rendering system.
         /// </summary>
         public virtual void UpdateAllRenderTargets()
+        {
+            this.UpdateAllRenderTargets( true );
+        }
+
+        /// <summary>
+        /// Internal method for updating all render targets attached to this rendering system.
+        /// </summary>
+        /// <param name="swapBuffers"></param>
+        public virtual void UpdateAllRenderTargets( bool swapBuffers )
         {
             // Update all in order of priority
             // This ensures render-to-texture targets get updated before render windows
@@ -768,7 +784,26 @@ namespace Axiom.Graphics
                 // only update if it is active
                 if ( target.IsActive && target.IsAutoUpdated )
                 {
-                    target.Update();
+                    target.Update( swapBuffers );
+                }
+            }
+        }
+
+        /// <summary>
+        /// Internal method for swapping all the buffers on all render targets,
+        /// if <see cref="UpdateAllRenderTargets"/> was called with a 'false' parameter.
+        /// </summary>
+        /// <param name="swapBuffers"></param>
+        public virtual void SwapAllRenderTargetBuffers( bool waitForVSync )
+        {
+            // Update all in order of priority
+            // This ensures render-to-texture targets get updated before render windows
+            foreach ( RenderTarget target in prioritizedRenderTargets )
+            {
+                // only update if it is active
+                if ( target.IsActive && target.IsAutoUpdated )
+                {
+                    target.SwapBuffers( waitForVSync );
                 }
             }
         }
