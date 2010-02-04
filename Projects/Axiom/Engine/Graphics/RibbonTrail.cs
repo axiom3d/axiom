@@ -102,7 +102,7 @@ namespace Axiom.Graphics
         #region Constructors
 
         public RibbonTrail( string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors, bool dynamic )
-                : base(  name, maxElements, 0, useTextureCoords, useColors, dynamic )
+            : base( name, maxElements, 0, useTextureCoords, useColors, dynamic )
         {
             this.fadeController = null;
             this.timeControllerValue = new TimeControllerValue( this );
@@ -115,27 +115,27 @@ namespace Axiom.Graphics
         }
 
         public RibbonTrail( string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors )
-                : this( name, maxElements, 0, useTextureCoords, useColors, true )
+            : this( name, maxElements, 0, useTextureCoords, useColors, true )
         {
         }
 
         public RibbonTrail( string name, int maxElements, int numberOfChains, bool useTextureCoords )
-                : this( name, maxElements, numberOfChains, useTextureCoords, true )
+            : this( name, maxElements, numberOfChains, useTextureCoords, true )
         {
         }
 
         public RibbonTrail( string name, int maxElements, int numberOfChains )
-                : this( name, maxElements, numberOfChains, true, true )
+            : this( name, maxElements, numberOfChains, true, true )
         {
         }
 
         public RibbonTrail( string name, int maxElements )
-                : this( name, maxElements, 1, true, true )
+            : this( name, maxElements, 1, true, true )
         {
         }
 
         public RibbonTrail( string name )
-                : this( name, 20, 1, true, true )
+            : this( name, 20, 1, true, true )
         {
         }
 
@@ -285,14 +285,14 @@ namespace Axiom.Graphics
                 ChainSegment segment = this.chainSegmentList[ s ];
                 if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
                 {
-                    for ( int e = segment.head + 1;; ++e )
+                    for ( int e = segment.head + 1; ; ++e )
                     {
                         e = e % this.maxElementsPerChain;
                         Element element = this.chainElementList[ segment.start + e ];
                         element.Width = element.Width - ( time * this.deltaWidth[ s ] );
                         element.Width = Utility.Max( 0.0f, element.Width );
                         element.Color = element.Color - ( this.deltaColor[ s ] * time );
-                        //element.Color.Saturate();
+                        element.Color.Saturate();
                         if ( e == segment.tail )
                         {
                             break;
@@ -326,88 +326,96 @@ namespace Axiom.Graphics
             }
             else if ( this.fadeController != null && !needController )
             {
-                // TODO: destroy controller
+                this.fadeController = null;
             }
         }
 
         protected virtual void UpdateTrail( int index, Node node )
         {
-            // Node has changed somehow, we're only interested in the derived position
-            ChainSegment segment = this.chainSegmentList[ index ];
-            Element headElement = this.chainElementList[ segment.start + segment.head ];
-            int nextElemIndex = segment.head + 1;
-            //wrap
-            if ( nextElemIndex == this.maxElementsPerChain )
+            bool done = false;
+            // Repeat this entire process if chain is stretched beyond its natural length
+            while ( !done )
             {
-                nextElemIndex = 0;
-            }
-            Element nextElement = this.chainElementList[ segment.start + nextElemIndex ];
-
-            // Vary the head elem, but bake new version if that exceeds element len
-            Vector3 newPos = node.DerivedPosition;
-            if ( this.ParentNode != null )
-            {
-                // Transform position to ourself space
-                newPos = this.ParentNode.DerivedOrientation.UnitInverse * ( newPos - this.ParentNode.DerivedPosition )
-                         / this.ParentNode.DerivedScale;
-            }
-            Vector3 diff = newPos - nextElement.Position;
-            float sqlen = diff.LengthSquared;
-            if ( sqlen >= this.squaredElementLength )
-            {
-                // Move existing head to elemLength
-                Vector3 scaledDiff = diff * (float) ( this.elementLength / Utility.Sqrt( sqlen ) );
-                headElement.Position = nextElement.Position + scaledDiff;
-                // Add a new element to be the new head
-                Element newElem = new Element( newPos, this.initialWidth[ index ], 0.0f, this.initialColor[ index ] );
-                this.AddChainElement( index, newElem );
-                // alter diff to represent new head size
-                diff = newPos - newElem.Position;
-            }
-            else
-            {
-                // extend existing head
-                headElement.Position = newPos;
-            }
-
-            // Is this segment full?
-            if ( ( segment.tail + 1 ) % this.maxElementsPerChain == segment.head )
-            {
-                // If so, shrink tail gradually to match head extension
-                Element tailElement = this.chainElementList[ segment.start + segment.tail ];
-                int preTailIndex;
-                if ( segment.tail == 0 )
+                // Node has changed somehow, we're only interested in the derived position
+                ChainSegment segment = this.chainSegmentList[ index ];
+                Element headElement = this.chainElementList[ segment.start + segment.head ];
+                int nextElemIndex = segment.head + 1;
+                //wrap
+                if ( nextElemIndex == this.maxElementsPerChain )
                 {
-                    preTailIndex = this.maxElementsPerChain - 1;
+                    nextElemIndex = 0;
+                }
+                Element nextElement = this.chainElementList[ segment.start + nextElemIndex ];
+
+                // Vary the head elem, but bake new version if that exceeds element len
+                Vector3 newPos = node.DerivedPosition;
+                if ( this.ParentNode != null )
+                {
+                    // Transform position to ourself space
+                    newPos = this.ParentNode.DerivedOrientation.UnitInverse * ( newPos - this.ParentNode.DerivedPosition )
+                             / this.ParentNode.DerivedScale;
+                }
+                Vector3 diff = newPos - nextElement.Position;
+                float sqlen = diff.LengthSquared;
+                if ( sqlen >= this.squaredElementLength )
+                {
+                    // Move existing head to elemLength
+                    Vector3 scaledDiff = diff * (float)( this.elementLength / Utility.Sqrt( sqlen ) );
+                    headElement.Position = nextElement.Position + scaledDiff;
+                    // Add a new element to be the new head
+                    Element newElem = new Element( newPos, this.initialWidth[ index ], 0.0f, this.initialColor[ index ] );
+                    this.AddChainElement( index, newElem );
+                    // alter diff to represent new head size
+                    diff = newPos - newElem.Position;
+                    // check whether another step is needed or not
+                    if ( diff.LengthSquared <= this.squaredElementLength )
+                        done = true;
                 }
                 else
                 {
-                    preTailIndex = segment.tail - 1;
+                    // extend existing head
+                    headElement.Position = newPos;
+                    done = true;
                 }
 
-                Element preTailElement = this.chainElementList[ segment.start + preTailIndex ];
-
-                // Measure tail diff from pretail to tail
-                Vector3 tailDiff = tailElement.Position - preTailElement.Position;
-                float tailLength = tailDiff.Length;
-
-                if ( tailLength > 1e-06 )
+                // Is this segment full?
+                if ( ( segment.tail + 1 ) % this.maxElementsPerChain == segment.head )
                 {
-                    float tailSize = this.elementLength - diff.Length;
-                    tailDiff *= tailSize / tailLength;
-                    tailElement.Position = preTailElement.Position + tailDiff;
+                    // If so, shrink tail gradually to match head extension
+                    Element tailElement = this.chainElementList[ segment.start + segment.tail ];
+                    int preTailIndex;
+                    if ( segment.tail == 0 )
+                    {
+                        preTailIndex = this.maxElementsPerChain - 1;
+                    }
+                    else
+                    {
+                        preTailIndex = segment.tail - 1;
+                    }
+
+                    Element preTailElement = this.chainElementList[ segment.start + preTailIndex ];
+
+                    // Measure tail diff from pretail to tail
+                    Vector3 tailDiff = tailElement.Position - preTailElement.Position;
+                    float tailLength = tailDiff.Length;
+
+                    if ( tailLength > 1e-06 )
+                    {
+                        float tailSize = this.elementLength - diff.Length;
+                        tailDiff *= tailSize / tailLength;
+                        tailElement.Position = preTailElement.Position + tailDiff;
+                    }
                 }
             }
 
             this.boundsDirty = true;
 
+            // Need to dirty the parent node, but can't do it using needUpdate() here 
+            // since we're in the middle of the scene graph update (node listener), 
+            // so re-entrant calls don't work. Queue.
             if ( this.parentNode != null )
             {
                 Node.QueueNeedUpdate( this.parentNode );
-                // Need to dirty the parent node, but can't do it using needUpdate() here 
-                // since we're in the middle of the scene graph update (node listener), 
-                // so re-entrant calls don't work. Queue.
-                // TODO: Port the code to do this
             }
         }
 
@@ -488,7 +496,7 @@ namespace Axiom.Graphics
         public RibbonTrailFactory()
         {
             base.Type = TypeName;
-            base.TypeFlag = (uint)SceneQueryTypeMask.Fx; 
+            base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )
