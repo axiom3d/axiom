@@ -311,11 +311,11 @@ namespace Axiom.Graphics
 							int numInputs = pass.GetNumInputs();
 							for ( int x = 0; x < numInputs; x++ )
 							{
-								string inp = pass.Inputs[ x ];
-								if ( inp != string.Empty )
+								CompositionPass.InputTexture inp = pass.Inputs[ x ];
+								if ( inp.Name != string.Empty )
 								{
 									if ( x < targetpass.TextureUnitStageCount )
-										targetpass.GetTextureUnitState( x ).SetTextureName( GetSourceForTex( inp ) );
+										targetpass.GetTextureUnitState( x ).SetTextureName( GetSourceForTex( inp.Name, inp.MrtIndex ) );
 									else
 									{
 										/// Texture unit not there
@@ -399,10 +399,11 @@ namespace Axiom.Graphics
 		///    same if you disable and renable the compositor instance.
 		///</remarks>
 		///<param name="name">The name of the texture in the original compositor definition</param>
+        /// <param name="mrtIndex">If name identifies a MRT, which texture attachment to retrieve</param>
 		///<returns>The instance name for the texture, corresponds to a real texture</returns>
-		public string GetTextureInstanceName( string name )
+		public string GetTextureInstanceName( string name, int mrtIndex )
 		{
-			return GetSourceForTex( name );
+			return GetSourceForTex( name, mrtIndex );
 		}
 
 		///<summary>
@@ -506,16 +507,25 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Get source texture name for a named local texture.
 		///</summary>
-		protected string GetSourceForTex( string name )
+		///<param name="name"></param>
+        /// <param name="mrtIndex">If name identifies a MRT, which texture attachment to retrieve</param>
+		protected string GetSourceForTex( string name, int mrtIndex )
 		{
 			Texture tex;
 			if ( localTextures.TryGetValue( name, out tex ) )
 				return tex.Name;
+            else if ( localTextures.TryGetValue( GetMrtTexLocalName(name, mrtIndex), out tex ))
+                return tex.Name;
 			else
 				throw new Exception( "Non-existent local texture name" + name );
 		}
 
-		///<summary>
+        private String GetMrtTexLocalName(String baseName, int attachment)
+	    {
+	        return baseName + "/" +  attachment;
+	    }
+
+	    ///<summary>
 		///    Queue a render system operation.
 		///</summary>
 		///<returns>destination pass</return>

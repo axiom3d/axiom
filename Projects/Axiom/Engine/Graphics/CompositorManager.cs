@@ -755,9 +755,12 @@ namespace Axiom.Graphics
 										context.pass.MaterialName = args[ 0 ].Trim();
 										break;
 									case "input":
-										if ( !OptionCount( context, token, 2, args.Length ) )
+										if ( !OptionCount( context, token, 3, args.Length ) )
 											break;
-										context.pass.SetInput( ParseInt( context, args[ 0 ] ), args[ 1 ].Trim() );
+								        int index = 0;
+                                        if ( args.Length == 3 )
+                                            index = ParseInt( context, args[ 2 ] );
+										context.pass.SetInput( ParseInt( context, args[ 0 ] ), args[ 1 ].Trim(), index );
 										break;
 									case "clear":
 										context.section = CompositorScriptSection.Clear;
