@@ -163,6 +163,7 @@ namespace Axiom.Demos
 
             // add event handlers for frame events
             engine.FrameStarted += OnFrameStarted;
+            engine.FrameRenderingQueued += OnFrameRenderingQueued;
             engine.FrameEnded +=OnFrameEnded;
 
             window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
@@ -399,11 +400,11 @@ namespace Axiom.Demos
 
         #endregion Public Methods
 
-        protected virtual void OnFrameEnded( Object source, FrameEventArgs e )
+        protected virtual void OnFrameStarted( object source, FrameEventArgs evt )
         {
         }
 
-        protected virtual void OnFrameStarted( Object source, FrameEventArgs evt )
+        protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
         {
             float scaleMove = 200 * evt.TimeSinceLastFrame;
 
@@ -564,20 +565,32 @@ namespace Axiom.Demos
 
                 toggleDelay = .3f;
             }
-#if DEBUG
-			if ( !input.IsMousePressed( MouseButtons.Left ) )
-			{
-				float cameraYaw = -input.RelativeMouseX * .13f;
-				float cameraPitch = -input.RelativeMouseY * .13f;
 
-				camera.Yaw( cameraYaw );
-				camera.Pitch( cameraPitch );
-			}
-			else
-			{
-				// TODO unused
-				cameraVector.x += input.RelativeMouseX * 0.13f;
-			}
+            // turn off debug text when delay ends
+            if ( debugTextDelay < 0.0f )
+            {
+                debugTextDelay = 0.0f;
+                debugText = "";
+            }
+            else if ( debugTextDelay > 0.0f )
+            {
+                debugTextDelay -= evt.TimeSinceLastFrame;
+            }
+
+#if DEBUG
+            if ( !input.IsMousePressed( MouseButtons.Left ) )
+            {
+                float cameraYaw = -input.RelativeMouseX * .13f;
+                float cameraPitch = -input.RelativeMouseY * .13f;
+
+                camera.Yaw( cameraYaw );
+                camera.Pitch( cameraPitch );
+            }
+            else
+            {
+                // TODO unused
+                cameraVector.x += input.RelativeMouseX * 0.13f;
+            }
 #endif
 #endif
 
@@ -735,36 +748,13 @@ namespace Axiom.Demos
             {
                 camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
             }
-
-
-            // update performance stats once per second
-            if ( statDelay < 0.0f && showDebugOverlay )
-            {
-                UpdateStats();
-                statDelay = 1.0f;
-            }
-            else
-            {
-                statDelay -= evt.TimeSinceLastFrame;
-            }
-
-            // turn off debug text when delay ends
-            if ( debugTextDelay < 0.0f )
-            {
-                debugTextDelay = 0.0f;
-                debugText = "";
-            }
-            else if ( debugTextDelay > 0.0f )
-            {
-                debugTextDelay -= evt.TimeSinceLastFrame;
-            }
-
-            if ( debugText != String.Empty )
-            {
-                OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
-                element.Text = debugText;
-            }
         }
+
+        protected virtual void OnFrameEnded( object source, FrameEventArgs evt )
+        {
+            UpdateStats();
+        }
+
 
         DateTime averageStart = DateTime.Now;
         float sum = 0;
@@ -775,7 +765,7 @@ namespace Axiom.Demos
             // TODO: Replace with CEGUI
             OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/CurrFps" );
             if ( element != null )
-            element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
+                element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
 
             element = OverlayManager.Instance.Elements.GetElement( "Core/BestFps" );
             if ( element != null )
@@ -787,22 +777,27 @@ namespace Axiom.Demos
 
             //element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
             //element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
-			element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
-			
+            element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
+
             sum += Root.Instance.CurrentFPS;
             average = sum / elapsedFrames;
             elapsedFrames++;
             if ( element != null )
                 element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", average, ( DateTime.Now - averageStart ).TotalSeconds );
-			
+
             element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
             if ( element != null )
                 element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
 
-            element = OverlayManager.Instance.Elements.GetElement("Core/NumBatches");
+            element = OverlayManager.Instance.Elements.GetElement( "Core/NumBatches" );
             if ( element != null )
                 element.Text = string.Format( "Batch Count: {0}", scene.TargetRenderSystem.BatchesRendered );
+
+            element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
+            if ( element != null )
+                element.Text = debugText;
         }
+
 
         /// <summary>
         /// Show a text message on screen for two seconds.
