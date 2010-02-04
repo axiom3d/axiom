@@ -2111,7 +2111,7 @@ namespace Axiom.Serialization
             bool hwGamma = false;
 		    PixelFormat desiredFormat = PixelFormat.Unknown;
 
-		    for ( int p = 0; p < values.Length; p++ )
+		    for ( int p = 1; p < values.Length; p++ )
 		    {
 
                 switch ( values[ p ].ToLower() )
