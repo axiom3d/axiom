@@ -354,6 +354,22 @@ namespace Axiom.Core
             }
         }
 
+        private readonly ChainedEvent<FrameEventArgs> _frameRenderingQueuedEvent = new ChainedEvent<FrameEventArgs>();
+        /// <summary>
+        /// Fired after a frame has completed rendering.
+        /// </summary>
+        public event EventHandler<FrameEventArgs> FrameRenderingQueued
+        {
+            add
+            {
+                _frameRenderingQueuedEvent.EventSinks += value;
+            }
+            remove
+            {
+                _frameRenderingQueuedEvent.EventSinks -= value;
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -918,8 +934,8 @@ namespace Axiom.Core
                 return false;
 
             // update all current render targets
-            /* if ( ! */ this.UpdateAllRenderTargets(); /* )
-               return false;*/
+            if ( ! this.UpdateAllRenderTargets() )
+               return false;
 
             // Stop rendering if frame callback says so
             return this.OnFrameEnded();
@@ -992,9 +1008,16 @@ namespace Axiom.Core
         ///     set to auto update (<see cref="RenderTarget.AutoUpdated"/>). You can also update
         ///     individual <see cref="RenderTarget"/> instances using their own Update() method.
         /// </remarks>
-        public void UpdateAllRenderTargets()
+        public bool UpdateAllRenderTargets()
         {
-            this.activeRenderSystem.UpdateAllRenderTargets();
+            // update all targets but don't swap buffers
+            this.activeRenderSystem.UpdateAllRenderTargets( false );
+            // give client app opportunity to use queued GPU time
+            bool ret = OnFrameRenderingQueued();
+            // block for final swap
+            this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.IsVSync );
+
+            return ret;
         }
 
         #region Implementation of IDisposable
@@ -1186,6 +1209,28 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        ///    Method for raising frame rendering queued events.
+        /// </summary>
+        /// <remarks>
+        ///    This method is only for internal use when you use the built-in rendering
+        ///    loop (Root.StartRendering). However, if you run your own rendering loop then
+        ///    you you may want to call this method too, although nothing in Axiom relies on this
+        ///    particular event. Really if you're running your own rendering loop at
+        ///    this level of detail then you can get the same effect as doing your
+        ///    updates in a OnFrameRenderingQueued event by just calling 
+        ///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false. 
+        /// </remarks>
+        public bool OnFrameRenderingQueued()
+        {
+            FrameEventArgs e = new FrameEventArgs();
+            long now = this.timer.Milliseconds;
+            e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
+
+            // if any event handler set this to true, that will signal the engine to shutdown
+            return this.OnFrameRenderingQueued( e );
+        }
+
+        /// <summary>
         ///    Method for raising frame ended events.
         /// </summary>
         /// <remarks>
@@ -1235,6 +1280,25 @@ namespace Axiom.Core
 
             // call the event, which automatically fires all registered handlers
             this._frameStartedEvent.Fire( this, e, ( args ) => args.StopRendering != true );
+            return !e.StopRendering;
+        }
+
+        /// <summary>
+        ///    Method for raising frame rendering queued events.
+        /// </summary>
+        /// <remarks>
+        ///    This method is only for internal use when you use the built-in rendering
+        ///    loop (Root.StartRendering). However, if you run your own rendering loop then
+        ///    you you may want to call this method too, although nothing in Axiom relies on this
+        ///    particular event. Really if you're running your own rendering loop at
+        ///    this level of detail then you can get the same effect as doing your
+        ///    updates in a OnFrameRenderingQueued event by just calling 
+        ///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false. 
+        /// </remarks>
+        public bool OnFrameRenderingQueued( FrameEventArgs e )
+        {
+            this._frameRenderingQueuedEvent.Fire( this, e, ( args ) => args.StopRendering != true );
+
             return !e.StopRendering;
         }
 
