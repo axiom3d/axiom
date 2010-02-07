@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +21,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public Vector3 position; // Sets to zero if directional light
 
         public static bool operator ==( LightInfo rhs, LightInfo b )
-        {
+        {			
             return b.light == rhs.light && b.type == rhs.type &&
                    b.range == rhs.range && b.position == rhs.position;
         }
@@ -30,6 +30,26 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             return !( b == rhs );
         }
+		
+		#region System.Object Implementation
+		
+		public override bool Equals (object obj)
+		{
+			if ( !(obj is LightInfo) )
+				return false;
+			
+			LightInfo rhs = (LightInfo)obj;
+            return this.light == rhs.light && this.type == rhs.type &&
+                   this.range == rhs.range && this.position == rhs.position;
+		}
+		
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode ();
+		}
+		
+		#endregion System.Object Implementation
+		
     } ;
 
     public class PCZSceneManager : SceneManager
@@ -784,19 +804,19 @@ namespace Axiom.SceneManagers.PortalConnected
         //-----------------------------------------------------------------------
         public override Light CreateLight( string name )
         {
-            return (Light)CreateMovableObject( name, PCZLightFactory.Factory_Type_Name, null );
+            return (Light)CreateMovableObject( name, PCZLightFactory.TypeName, null );
         }
 
         //-----------------------------------------------------------------------
         public override Light GetLight( string name )
         {
-            return (Light)( GetMovableObject( name, PCZLightFactory.Factory_Type_Name ) );
+            return (Light)( GetMovableObject( name, PCZLightFactory.TypeName ) );
         }
 
         //-----------------------------------------------------------------------
         public bool HasLight( string name )
         {
-            return HasMovableObject( name, PCZLightFactory.Factory_Type_Name );
+            return HasMovableObject( name, PCZLightFactory.TypeName );
         }
 
         public bool HasSceneNode( string name )
@@ -807,13 +827,13 @@ namespace Axiom.SceneManagers.PortalConnected
         //-----------------------------------------------------------------------
         public void DestroyLight( string name )
         {
-            DestroyMovableObject( name, PCZLightFactory.Factory_Type_Name );
+            DestroyMovableObject( name, PCZLightFactory.TypeName );
         }
 
         //-----------------------------------------------------------------------
         public void DestroyAllLights()
         {
-            DestroyAllMovableObjectsByType( PCZLightFactory.Factory_Type_Name );
+            DestroyAllMovableObjectsByType( PCZLightFactory.TypeName );
         }
 
         //---------------------------------------------------------------------
@@ -828,7 +848,7 @@ namespace Axiom.SceneManagers.PortalConnected
             // zone the camera is in, or affect zones which are visible to
             // the camera
 
-            MovableObjectCollection lights = GetMovableObjectCollection( PCZLightFactory.Factory_Type_Name );
+            MovableObjectCollection lights = GetMovableObjectCollection( PCZLightFactory.TypeName );
 
             lock ( lights )
             {
@@ -932,7 +952,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         //---------------------------------------------------------------------
-        public void EnsureShadowTexturesCreated()
+        protected override void EnsureShadowTexturesCreated()
         {
             bool createSceneNode = shadowTextureConfigDirty;
 
