@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
@@ -35,11 +35,6 @@ namespace Axiom.SceneManagers.PortalConnected
         ~PCZLight()
         {
             affectedZonesList.Clear();
-        }
-
-        public override string MovableType
-        {
-            get { return PCZLightFactory.Factory_Type_Name; }
         }
 
         //-----------------------------------------------------------------------
@@ -171,11 +166,9 @@ namespace Axiom.SceneManagers.PortalConnected
 
     public class PCZLightFactory : LightFactory
     {
-        new public static string Factory_Type_Name = "PCZLight";
 
         public PCZLightFactory()
         {
-            base.Type = Factory_Type_Name;
             base.TypeFlag = (uint)SceneQueryTypeMask.Light;
         }
 
