@@ -166,9 +166,11 @@ namespace Axiom.SceneManagers.PortalConnected
 
     public class PCZLightFactory : LightFactory
     {
+        public const string TypeName = "PCZLight";
 
         public PCZLightFactory()
         {
+            base.Type = PCZLightFactory.TypeName;
             base.TypeFlag = (uint)SceneQueryTypeMask.Light;
         }
 
