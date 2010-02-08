@@ -860,9 +860,9 @@ namespace Axiom.SceneManagers.Bsp
         {
         }
 
-        protected override bool OnRenderQueueEnded( RenderQueueGroupID group )
+        protected override bool OnRenderQueueEnded( RenderQueueGroupID group, string invocation )
         {
-            bool repeat = base.OnRenderQueueEnded( group );
+            bool repeat = base.OnRenderQueueEnded( group, invocation );
             if (group == RenderQueueGroupID.SkiesEarly)
                 this.RenderStaticGeometry();
             return repeat;
