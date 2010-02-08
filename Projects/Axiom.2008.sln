@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Browser.WinForm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Tests.Integration", "Tests\Axiom.Tests.Integration\Axiom.Tests.Integration.csproj", "{8124ACE3-BDDE-4545-95E2-2B705181258B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.SystemDrawingCodecs", "Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.csproj", "{7440613A-4487-46BE-998E-25F554ACE980}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -768,6 +770,36 @@ Global
 		{8124ACE3-BDDE-4545-95E2-2B705181258B}.Release-Windows|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8124ACE3-BDDE-4545-95E2-2B705181258B}.Release-Windows|Mixed Platforms.Build.0 = Release|Any CPU
 		{8124ACE3-BDDE-4545-95E2-2B705181258B}.Release-Windows|x86.ActiveCfg = Release|Any CPU
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|x86.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|x86.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Linux|Any CPU.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Linux|Mixed Platforms.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Linux|Mixed Platforms.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Linux|x86.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Linux|x86.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Windows|Any CPU.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Windows|Mixed Platforms.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Windows|Mixed Platforms.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Windows|x86.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug-Windows|x86.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|Any CPU.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|Mixed Platforms.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|x86.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|x86.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Linux|Any CPU.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Linux|Mixed Platforms.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Linux|Mixed Platforms.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Linux|x86.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Linux|x86.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Windows|Any CPU.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Windows|Mixed Platforms.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Windows|Mixed Platforms.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Windows|x86.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release-Windows|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -792,6 +824,7 @@ Global
 		{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C} = {DC26813F-4527-477E-8068-272E10CF5C37}
+		{7440613A-4487-46BE-998E-25F554ACE980} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{532782E4-FAF4-457F-8843-C6404CE82356} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{766F7401-E3A2-495F-BA07-E0DBFF228705} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{C7286349-8DBA-4A39-991C-3D848AB10CCE} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
