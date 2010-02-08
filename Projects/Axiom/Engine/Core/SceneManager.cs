@@ -621,11 +621,53 @@ namespace Axiom.Core
 
         #region Public events
 
-        /// <summary>An event that will fire when a render queue is starting to be rendered.</summary>
-        public event RenderQueueEvent QueueStarted;
+        public class RenderEventArgs : EventArgs
+        {
+            public RenderQueueGroupID RenderQueueId;
+            public string Invocation;
+        }
 
-        /// <summary>An event that will fire when a render queue is finished being rendered.</summary>
-        public event RenderQueueEvent QueueEnded;
+        public class BeginRenderQueueEventArgs : RenderEventArgs
+        {
+            public bool SkipInvocation;
+        }
+
+        public class EndRenderQueueEventArgs : RenderEventArgs
+        {
+            public bool RepeatInvocation;
+        }
+
+        private readonly ChainedEvent<BeginRenderQueueEventArgs> _queueStartedEvent = new ChainedEvent<BeginRenderQueueEventArgs>();
+        /// <summary>
+        /// Fired when a render queue is starting to be rendered.
+        /// </summary>
+        public event EventHandler<BeginRenderQueueEventArgs> QueueStarted
+        {
+            add
+            {
+                _queueStartedEvent.EventSinks += value;
+            }
+            remove
+            {
+                _queueStartedEvent.EventSinks -= value;
+            }
+        }
+
+        private readonly ChainedEvent<EndRenderQueueEventArgs> _queueEndedEvent = new ChainedEvent<EndRenderQueueEventArgs>();
+        /// <summary>
+        /// Fired when a render queue is finished being rendered.
+        /// </summary>
+        public event EventHandler<EndRenderQueueEventArgs> QueueEnded
+        {
+            add
+            {
+                _queueEndedEvent.EventSinks += value;
+            }
+            remove
+            {
+                _queueEndedEvent.EventSinks -= value;
+            }
+        }
 
         /// <summary>Will fire before FindVisibleObjects is called</summary>
         public event FindVisibleObjectsEvent PreFindVisibleObjects;
@@ -2924,14 +2966,19 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="group"></param>
         /// <returns>True if the queue should be skipped.</returns>
-        protected virtual bool OnRenderQueueStarted( RenderQueueGroupID group )
+        protected virtual bool OnRenderQueueStarted( RenderQueueGroupID group, string invocation )
         {
-            if ( this.QueueStarted != null )
-            {
-                return this.QueueStarted( group );
-            }
+            BeginRenderQueueEventArgs e = new BeginRenderQueueEventArgs();
+            e.RenderQueueId = group;
+            e.Invocation = invocation;
 
-            return false;
+            bool skip = false;
+            this._queueStartedEvent.Fire( this, e, ( args ) =>
+            {
+                skip |= args.SkipInvocation;
+                return true;
+            } );
+            return skip;
         }
 
         /// <summary>
@@ -2939,14 +2986,19 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="group"></param>
         /// <returns>True if the queue should be repeated.</returns>
-        protected virtual bool OnRenderQueueEnded( RenderQueueGroupID group )
+        protected virtual bool OnRenderQueueEnded( RenderQueueGroupID group, string invocation )
         {
-            if ( this.QueueEnded != null )
-            {
-                return this.QueueEnded( group );
-            }
+            EndRenderQueueEventArgs e = new EndRenderQueueEventArgs();
+            e.RenderQueueId = group;
+            e.Invocation = invocation;
 
-            return false;
+            bool repeat = false;
+            this._queueEndedEvent.Fire( this, e, ( args ) =>
+            {
+                repeat |= args.RepeatInvocation;
+                return true;
+            } );
+            return repeat;
         }
 
         #endregion
@@ -6038,7 +6090,9 @@ namespace Axiom.Core
                 // repeat
                 do
                 {
-                    if ( this.OnRenderQueueStarted( queueID ) )
+                    if ( this.OnRenderQueueStarted( queueID, illuminationStage == IlluminationRenderStage.RenderToTexture ? 
+                                                             String.Empty :
+                                                             String.Empty ) )
                     {
                         // someone requested we skip this queue
                         continue;
@@ -6051,7 +6105,9 @@ namespace Axiom.Core
                     }
 
                     // true if someone requested that we repeat this queue
-                    repeatQueue = this.OnRenderQueueEnded( queueID );
+                    repeatQueue = this.OnRenderQueueEnded( queueID , illuminationStage == IlluminationRenderStage.RenderToTexture ? 
+                                                                     String.Empty :
+                                                                     String.Empty ) ;
                 } while ( repeatQueue );
 
                 this.renderingMainGroup = false;

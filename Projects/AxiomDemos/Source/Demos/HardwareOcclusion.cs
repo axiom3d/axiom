@@ -32,8 +32,8 @@ namespace Axiom.Demos
         public override void CreateScene()
         {
             // set up queue event handlers to run the query
-            scene.QueueStarted += new RenderQueueEvent( scene_QueueStarted );
-            scene.QueueEnded += new RenderQueueEvent( scene_QueueEnded );
+            scene.QueueStarted += scene_QueueStarted;
+            scene.QueueEnded += scene_QueueEnded;
 
             scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
 
@@ -69,15 +69,15 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="priority"></param>
         /// <returns></returns>
-        private bool scene_QueueStarted( RenderQueueGroupID priority )
+        private void scene_QueueStarted( object sender, SceneManager.BeginRenderQueueEventArgs e )
         {
             // begin the occlusion query
-            if ( priority == RenderQueueGroupID.Six )
+            if ( e.RenderQueueId == RenderQueueGroupID.Six )
             {
                 query.Begin();
             }
 
-            return false;
+            return;
         }
 
         /// <summary>
@@ -85,10 +85,10 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="priority"></param>
         /// <returns></returns>
-        private bool scene_QueueEnded( RenderQueueGroupID priority )
+        private void scene_QueueEnded( object sender, SceneManager.EndRenderQueueEventArgs e )
         {
             // end our occlusion query
-            if ( priority == RenderQueueGroupID.Six )
+            if ( e.RenderQueueId == RenderQueueGroupID.Six )
             {
                 query.End();
             }
@@ -106,7 +106,7 @@ namespace Axiom.Demos
                 debugText = string.Format( "Visible fragments = {0}", count );
             }
 
-            return false;
+            return;
         }
     }
 }

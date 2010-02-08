@@ -107,24 +107,27 @@ namespace Axiom.Graphics
 			///<summary>
 			///    @copydoc RenderQueueListener::renderQueueStarted
 			///</summary>
-			public bool OnRenderQueueStarted( RenderQueueGroupID id )
+			public void OnRenderQueueStarted(object sender, SceneManager.BeginRenderQueueEventArgs e )
 			{
 				// Skip when not matching viewport
 				// shadows update is nested within main viewport update
 				if ( sceneManager.CurrentViewport != viewport )
-					return false;
+                {
+                    e.SkipInvocation = false;
+                    return;
+                }
 
-				FlushUpTo( id );
+				FlushUpTo( e.RenderQueueId );
 				/// If noone wants to render this queue, skip it
 				/// Don't skip the OVERLAY queue because that's handled seperately
-				if ( !operation.RenderQueueBitTest( id ) && id != RenderQueueGroupID.Overlay )
-					return true;
-				return false;
+                if ( !operation.RenderQueueBitTest( e.RenderQueueId ) && e.RenderQueueId != RenderQueueGroupID.Overlay )
+					e.SkipInvocation = true;
+				e.SkipInvocation = false;
 			}
 
-			public bool OnRenderQueueEnded( RenderQueueGroupID id )
+            public void OnRenderQueueEnded( object sender, SceneManager.EndRenderQueueEventArgs e )
 			{
-				return false;
+				e.RepeatInvocation = false;
 			}
 
 			///<summary>
