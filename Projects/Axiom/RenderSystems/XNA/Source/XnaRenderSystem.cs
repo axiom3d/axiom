@@ -47,6 +47,7 @@ using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
+using Microsoft.Xna.Framework.GamerServices;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 using Axiom.Collections;
@@ -1096,6 +1097,8 @@ namespace Axiom.RenderSystems.Xna
                 _device.RenderState.DepthBufferEnable = true;
                 _isFirstFrame = false;
             }
+
+            GamerServicesDispatcher.Update();
         }
 
         public override void BindGpuProgram( GpuProgram program )
@@ -1274,6 +1277,11 @@ namespace Axiom.RenderSystems.Xna
 
                 // Initialize the capabilities structures
                 this._checkHardwareCapabilities( _device );
+
+                GamerServicesDispatcher.WindowHandle = (IntPtr)window[ "WINDOW" ];
+
+                GamerServicesDispatcher.Initialize( this );
+
 
             }
             else
