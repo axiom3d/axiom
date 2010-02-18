@@ -46,8 +46,6 @@
       <Name>Core</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Materials\Textures\AxiomLogo.png">
       <Name>AxiomLogo</Name>
       <Importer>TextureImporter</Importer>
@@ -68,8 +66,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\..\..\..\..\..\Media\Fonts\BlueHighway.fontdef">
       <Link>Fonts\BlueHighway.fontdef</Link>
       <Name>BlueHighway</Name>
@@ -94,8 +90,6 @@
       <Name>DebugPanel</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\..\..\..\..\..\..\Media\Fonts\BlueHighway.png">
       <Link>Fonts\BlueHighway.png</Link>
       <Name>BlueHighway</Name>
