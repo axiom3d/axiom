@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using Axiom.Input;
+using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Storage;
 
 #endregion Namespace Declarations
@@ -31,6 +32,7 @@ namespace Axiom.Demos.Browser.Xna
 
         string nextGame = "";
         string titleLocation;
+        private InputReader _input;
 
         partial void _setDefaultNextGame();
         partial void _setupResources();
@@ -60,7 +62,11 @@ namespace Axiom.Demos.Browser.Xna
         void engine_FrameStarted( object source, FrameEventArgs e )
         {
             //Axiom.Overlays.OverlayManager.Instance.GetByName( "Core/XnaOverlay" ).Show();
-            engine.FrameStarted -= engine_FrameStarted;
+            //engine.FrameStarted -= engine_FrameStarted;            
+            if ( _input.IsKeyPressed(KeyCodes.G) && !Guide.IsVisible )
+            {
+                Guide.ShowSignIn(1,false);
+            }
         }
 
 
@@ -106,9 +112,10 @@ namespace Axiom.Demos.Browser.Xna
             }
         }
 
-        static InputReader _setupInput()
+        private InputReader _setupInput()
         {
-            return new XBoxInput();
+            _input = new XBoxInput();
+            return _input;
         }
 
         #region Main

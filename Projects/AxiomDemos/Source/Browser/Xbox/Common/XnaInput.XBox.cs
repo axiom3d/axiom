@@ -33,9 +33,20 @@ namespace Axiom.Demos.Browser.Xna
             if ( key == Axiom.Input.KeyCodes.Escape && ( _gpState.IsButtonDown( XInput.Buttons.Back ) || _gpState.IsButtonDown( XInput.Buttons.B ) ) )
                 isPressed = true;
 
-            //XFG.Input.Keys xnaKey = Convert( key );
+            XFG.Input.Keys xnaKey = Convert( key );
 
-            //isPressed = _keyboardState.IsKeyDown( xnaKey );
+            isPressed = _keyboardState.IsKeyDown( xnaKey );
+        }
+
+        private Microsoft.Xna.Framework.Input.Keys Convert( Axiom.Input.KeyCodes key )
+        {
+            switch ( key )
+            {
+                case Axiom.Input.KeyCodes.G:
+                    return Microsoft.Xna.Framework.Input.Keys.G;
+                default:
+                    return (Microsoft.Xna.Framework.Input.Keys) 0;
+            }
         }
 
         public override void CheckMouseButtonPressed( Axiom.Input.MouseButtons button, out bool isPressed )
