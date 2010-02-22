@@ -396,5 +396,20 @@ namespace Axiom.Core
         {
             return Quaternion.Identity;
         }
-    }
+
+	    public static bool ParseInt(string value, out int num)
+	    {
+	        bool retVal = true;
+            try
+            {
+                num = Int32.Parse( value );
+            }
+            catch ( Exception e )
+            {
+                num = 0;
+                retVal = false;
+            }
+	        return retVal;
+        }
+	}
 }
