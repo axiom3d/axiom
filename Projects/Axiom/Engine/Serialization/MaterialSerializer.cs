@@ -2139,7 +2139,8 @@ namespace Axiom.Serialization
                         break;
                     default:
                         int num;
-                        if ( int.TryParse( values[ p ], out num ) )
+
+                        if ( StringConverter.ParseInt( values[ p ], out num ) )
                         {
                             mipmaps = num;
                         }

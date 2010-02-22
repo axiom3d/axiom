@@ -108,7 +108,6 @@
     <Compile Include="Collections\Deque.cs" />
     <Compile Include="Collections\KeyFrameCollection.cs" />
     <Compile Include="Collections\MeshCollection.cs" />
-    <Compile Include="Collections\MultiMap.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\NameValuePairList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
