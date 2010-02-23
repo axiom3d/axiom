@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 
 #endregion Namespace Declarations
 
@@ -998,19 +999,21 @@ namespace Axiom.Math
 		/// <returns>A string representation of a Quaternion.</returns>
 		public override string ToString()
 		{
-			return string.Format( "Quaternion({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w );
+			return string.Format( CultureInfo.InvariantCulture, "Quaternion({0}, {1}, {2}, {3})", this.w, this.x, this.y, this.z );
 		}
 
 		public override int GetHashCode()
 		{
 			return (int)x ^ (int)y ^ (int)z ^ (int)w;
 		}
+		
 		public override bool Equals( object obj )
 		{
 			Quaternion quat = (Quaternion)obj;
 
 			return quat == this;
 		}
+		
 		public bool Equals( Quaternion rhs, float tolerance )
 		{
 			float fCos = Dot( rhs );
@@ -1019,7 +1022,25 @@ namespace Axiom.Math
 			return Utility.Abs( angle ) <= tolerance;
 		}
 
+		#endregion
 
+		#region Parse from string
+		
+		public Quaternion Parse(string quat)
+		{
+			// the format is "Quaternion(w, x, y, z)"
+			if (!quat.StartsWith("Quaternion("))
+				throw new FormatException();
+			
+			string[] values = quat.Substring(11).TrimEnd(')').Split(',');
+			
+			return new Quaternion(float.Parse(values[0], CultureInfo.InvariantCulture),
+			                      float.Parse(values[1], CultureInfo.InvariantCulture),
+			                      float.Parse(values[2], CultureInfo.InvariantCulture),
+			                      float.Parse(values[3], CultureInfo.InvariantCulture));
+			
+		}
+		
 		#endregion
 	}
 }
