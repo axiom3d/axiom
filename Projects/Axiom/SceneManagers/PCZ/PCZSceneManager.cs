@@ -907,7 +907,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 {
                     if ( IsShadowTechniqueTextureBased )
                     {
-                        i.light.TempSquaredDist = ( camera.DerivedPosition - i.light.DerivedPosition ).SquaredLength;
+                        i.light.TempSquaredDist = ( camera.DerivedPosition - i.light.DerivedPosition ).LengthSquared;
                     }
                 }
 

@@ -83,7 +83,7 @@ namespace Axiom.SceneManagers.PortalConnected
             float fA01 = -Direction.Dot(otherSegment.Direction);
             float fB0 = kDiff.Dot(Direction);
             float fB1 = -kDiff.Dot(otherSegment.Direction);
-            float fC = kDiff.SquaredLength;
+            float fC = kDiff.LengthSquared;
             float fDet = System.Math.Abs((float) 1.0 - fA01*fA01);
             float fS0, fS1, fSqrDist, fExtDet0, fExtDet1, fTmpS0, fTmpS1;
 

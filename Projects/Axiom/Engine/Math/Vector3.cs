@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 using Real = System.Single;
@@ -449,30 +450,20 @@ namespace Axiom.Math
             }
         }
 
-        /// <summary>
-        ///     Returns the square of the length(magnitude) of the vector.
-        /// <remarks>
-        ///     This  property is for efficiency - calculating the actual
-        ///     length of a vector requires a square root, which is expensive
-        ///     in terms of the operations required. This method returns the
-        ///     square of the length of the vector, i.e. the same as the
-        ///     length but before the square root is taken. Use this if you
-        ///     want to find the longest / shortest vector without incurring
-        ///     the square root.
-        /// </remarks>
-        public float SquaredLength
-        {
-            get
-            {
-                return x * x + y * y + z * z;
-            }
-        }
-
-
 		#endregion
 
         #region Public methods
 
+        /// <summary>
+        /// Returns the distance to another vector.
+        /// </summary>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public float Distance( Vector3 second )
+        {
+        	return ( this - second ).Length;
+        }
+        
         /// <summary>
         ///     Returns the square of the distance to another vector.
         /// <remarks>
@@ -485,13 +476,12 @@ namespace Axiom.Math
         ///     without incurring the square root.
         /// </remarks>
         /// </summary>
-        /// <param name="rhs"></param>
+        /// <param name="second"></param>
         /// <returns></returns>
-        public float SquaredDistance( Vector3 rhs )
+        public float DistanceSquared( Vector3 second )
         {
-            return ( this - rhs ).SquaredLength;
+            return ( this - second ).LengthSquared;
         }
-
 
         public object[] ToObjectArray()
         {
@@ -619,7 +609,6 @@ namespace Axiom.Math
                 );
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -708,7 +697,6 @@ namespace Axiom.Math
         {
             return Utility.Abs( x - other.x ) < limit && Utility.Abs( y - other.y ) < limit && Utility.Abs( z - other.z ) < limit;
         }
-
 
         /// <summary>
         ///		Gets the shortest arc quaternion to rotate this vector to the destination vector. 
@@ -874,6 +862,15 @@ namespace Axiom.Math
         /// <summary>
         ///    Returns the length (magnitude) of the vector squared.
         /// </summary>
+        /// <remarks>
+        ///     This  property is for efficiency - calculating the actual
+        ///     length of a vector requires a square root, which is expensive
+        ///     in terms of the operations required. This method returns the
+        ///     square of the length of the vector, i.e. the same as the
+        ///     length but before the square root is taken. Use this if you
+        ///     want to find the longest / shortest vector without incurring
+        ///     the square root.
+        /// </remarks>
         public float LengthSquared
         {
             get
@@ -985,7 +982,7 @@ namespace Axiom.Math
         /// <returns>A string representation of a vector3.</returns>
         public override string ToString()
         {
-            return string.Format( "Vector3({0}, {1}, {2})", this.x, this.y, this.z );
+            return string.Format( CultureInfo.InvariantCulture, "Vector3({0}, {1}, {2})", this.x, this.y, this.z );
         }
 
         /// <summary>
@@ -1021,16 +1018,22 @@ namespace Axiom.Math
         ///		Parses a string and returns Vector3.
         /// </summary>
         /// <param name="vector">
-        ///     A string representation of a vector3. ( as its returned from Vector3.ToString() )
+        ///     A string representation of a Vector3 as it's returned from Vector3.ToString()
         /// </param>
         /// <returns>
         ///     A new Vector3.
         /// </returns>
         public static Vector3 Parse( string vector )
         {
-            string[] vals = vector.TrimStart('<').TrimEnd('>').Split(',');
+        	// the format is "Vector3(x, y, z)"
+        	if (!vector.StartsWith("Vector3("))
+			    throw new FormatException();
 
-            return new Vector3( float.Parse( vals[ 0 ].Trim() ), float.Parse( vals[ 1 ].Trim() ), float.Parse( vals[ 2 ].Trim() ) );
+			string[] vals = vector.Substring(8).TrimEnd(')').Split(',');
+
+            return new Vector3( float.Parse( vals[ 0 ].Trim(), CultureInfo.InvariantCulture ), 
+        	                    float.Parse( vals[ 1 ].Trim(), CultureInfo.InvariantCulture ), 
+        	                    float.Parse( vals[ 2 ].Trim(), CultureInfo.InvariantCulture ) );
         }
 
         #endregion

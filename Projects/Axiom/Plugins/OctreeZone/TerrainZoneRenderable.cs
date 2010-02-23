@@ -673,7 +673,7 @@ namespace OctreeZone
             diff.Floor( cpos - aabb.Minimum );
             diff.Ceil( cpos - aabb.Maximum );
 
-            Real L = diff.SquaredLength;
+            Real L = diff.LengthSquared;
 
             mRenderLevel = -1;
 
@@ -1699,7 +1699,7 @@ namespace OctreeZone
         {
             Vector3 diff = mCenter - camera.DerivedPosition;
             // Use squared length to avoid square root
-            return diff.SquaredLength;
+            return diff.LengthSquared;
         }
 
         /// <summary>

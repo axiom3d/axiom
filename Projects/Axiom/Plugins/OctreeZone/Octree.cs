@@ -460,8 +460,8 @@ namespace OctreeZone
             Vector3 mndistance = ( twoMin - scenter );
             Vector3 mxdistance = ( twoMax - scenter );
 
-            if ( mndistance.SquaredLength < sradius &&
-                mxdistance.SquaredLength < sradius )
+            if ( mndistance.LengthSquared < sradius &&
+                mxdistance.LengthSquared < sradius )
             {
                 return Intersection.INSIDE;
             }

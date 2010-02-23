@@ -186,7 +186,8 @@ public void setTargetZone( PCZone z )
         /// <summary>
         ///     Gets/Sets the direction vector of the portal in local space
         /// </summary>
-        public Vector3 Direction        {
+        public Vector3 Direction
+        {
             get
             {
                 return mDirection;
@@ -868,7 +869,7 @@ public PortalIntersectResult intersects(PCZSceneNode pczsn)
 			// for spheres we check if the center point went from being inside to being outside
 			// the sphere surface (or vice versa) for crossing.  
 			//Real previousDistance2 = mPrevDerivedCP.squaredDistance(pczsn->getPrevPosition());
-			Real currentDistance2 = mDerivedCP.SquaredDistance(pczsn.DerivedPosition);
+			Real currentDistance2 = mDerivedCP.DistanceSquared(pczsn.DerivedPosition);
 			Real mRadius2 = mRadius * mRadius;
 			if (mDirection == Vector3.UnitZ)
 			{
@@ -973,7 +974,7 @@ public bool crossedPortal(Portal otherPortal)
 					// for spheres we check if the center point went from being inside to being outside
 					// the sphere surface (or vice versa) for crossing.  
 					//Real previousDistance2 = mPrevDerivedCP.squaredDistance(otherPortal->getPrevDerivedCP());
-					Real currentDistance2 = mDerivedCP.SquaredDistance(otherPortal.getDerivedCP());
+					Real currentDistance2 = mDerivedCP.DistanceSquared(otherPortal.getDerivedCP());
 					Real mRadius2 = System.Math.Sqrt(otherPortal.getRadius());
 					if (otherPortal.getDerivedDirection() == Vector3.UnitZ)
 					{
