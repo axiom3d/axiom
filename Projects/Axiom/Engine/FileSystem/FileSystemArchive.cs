@@ -123,7 +123,7 @@ namespace Axiom.FileSystem
                     FileInfo fileInfo;
                     fileInfo.Archive = this;
                     fileInfo.Filename = fi.FullName;
-                    fileInfo.Basename = fi.Name;
+                    fileInfo.Basename = fi.FullName.Substring(currentDir.Length);
                     fileInfo.Path = currentDir;
                     fileInfo.CompressedSize = fi.Length;
                     fileInfo.UncompressedSize = fi.Length;
