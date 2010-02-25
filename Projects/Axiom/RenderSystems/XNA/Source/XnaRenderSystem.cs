@@ -273,7 +273,6 @@ namespace Axiom.RenderSystems.Xna
             ConfigOption optSaveShaders = new ConfigOption( "Save Generated Shaders", "No", false );
             ConfigOption optUseCP = new ConfigOption( "Use Content Pipeline", "No", false );
 
-
             optDevice.PossibleValues.Clear();
 
             DriverCollection driverList = XnaHelper.GetDriverInfo();
@@ -1097,8 +1096,6 @@ namespace Axiom.RenderSystems.Xna
                 _device.RenderState.DepthBufferEnable = true;
                 _isFirstFrame = false;
             }
-
-            GamerServicesDispatcher.Update();
         }
 
         public override void BindGpuProgram( GpuProgram program )
@@ -1277,12 +1274,6 @@ namespace Axiom.RenderSystems.Xna
 
                 // Initialize the capabilities structures
                 this._checkHardwareCapabilities( _device );
-
-                GamerServicesDispatcher.WindowHandle = (IntPtr)window[ "WINDOW" ];
-
-                GamerServicesDispatcher.Initialize( this );
-
-
             }
             else
             {

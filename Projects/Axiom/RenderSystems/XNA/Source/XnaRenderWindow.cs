@@ -100,6 +100,11 @@ namespace Axiom.RenderSystems.Xna
                 if ( _windowHandle != null )
                 {
                     SWF.Control control = SWF.Control.FromHandle( _windowHandle );
+                    if(control == null)
+                    {
+                        return false;
+                    }
+
                     if ( _isExternal )
                     {
                         if ( control is SWF.Form )
