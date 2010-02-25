@@ -195,12 +195,10 @@ namespace Axiom.RenderSystems.Xna
                     break;
                 case WindowMessage.Move:
                     //log->logMessage("WM_MOVE");
-                    //win.WindowMovedOrResized();
                     WindowEventMonitor.Instance.WindowMoved( win );
                     break;
                 case WindowMessage.Size:
                     //log->logMessage("WM_SIZE");
-                    //win.WindowMovedOrResized();
                     WindowEventMonitor.Instance.WindowResized( win );
                     break;
                 case WindowMessage.GetMinMaxInfo:

@@ -92,6 +92,7 @@
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
     <Compile Include="Source\Win32MessageHandling.cs" />
+    <Compile Include="Source\XnaGamerServices.cs" />
     <Compile Include="Source\XnaGpuProgram.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -49,13 +49,19 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 namespace Axiom.RenderSystems.Xna
 {
 
-    public class DefaultForm : System.Windows.Forms.Form
+    public class DefaultForm : SWF.Form
     {
         private RenderWindow renderWindow;
 
         public DefaultForm()
         {
             InitializeComponent();
+        }
+
+        protected override void WndProc( ref SWF.Message m )
+        {
+            if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+                base.WndProc( ref m );
         }
 
         private void InitializeComponent()
