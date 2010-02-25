@@ -94,6 +94,7 @@
     <Compile Include="BspStaticFaceGroup.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Collections\MultiMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quake3Level.cs">
       <SubType>Code</SubType>
