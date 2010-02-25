@@ -303,7 +303,7 @@ namespace Axiom.Demos
             max = BoundingBox.Maximum;
             mid = ( ( min - max ) * 0.5f ) + min;
             dist = camera.DerivedPosition - mid;
-            return dist.SquaredLength;
+            return dist.LengthSquared;
         }
         public override void GetWorldTransforms( Axiom.Math.Matrix4[] matrices )
         {
@@ -324,7 +324,7 @@ namespace Axiom.Demos
             base.NotifyCurrentCamera( camera );
 
             Vector3 zVec = ParentNode.DerivedPosition - camera.DerivedPosition;
-            float sqdist = zVec.SquaredLength;
+            float sqdist = zVec.LengthSquared;
             zVec.Normalize();
             Vector3 fixedAxis = camera.DerivedOrientation * Vector3.UnitY;
             Vector3 xVec = fixedAxis.Cross( zVec );
