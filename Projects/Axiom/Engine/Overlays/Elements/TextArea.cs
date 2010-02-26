@@ -64,7 +64,7 @@ namespace Axiom.Overlays.Elements
         protected bool isTransparent;
         protected Font font;
         protected float charHeight;
-        protected int pixelCharHeight;
+        protected float pixelCharHeight;
         protected float spaceWidth;
         protected int pixelSpaceWidth;
         protected int allocSize;
@@ -464,7 +464,7 @@ namespace Axiom.Overlays.Elements
             {
                 if ( metricsMode != MetricsMode.Relative )
                 {
-                    pixelCharHeight = (int)value;
+                    pixelCharHeight = value;
                 }
                 else
                 {
