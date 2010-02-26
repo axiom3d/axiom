@@ -1398,7 +1398,7 @@ namespace Axiom.Core
             // Update final based on bind position + offsets
             orientation = initialOrientation * rotationFromInitial;
             position = initialPosition + translationFromInitial;
-            scale = initialScale * scaleFromInitial;
+            this.Scale = initialScale * scaleFromInitial;
 			if ( lookInMovementDirection )
 				orientation = -Vector3.UnitX.GetRotationTo( translate.ToNormalized() );
 
