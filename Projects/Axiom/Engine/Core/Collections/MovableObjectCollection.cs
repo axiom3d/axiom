@@ -53,6 +53,27 @@ namespace Axiom.Core.Collections
         {
             base.Add(item.Name, item);
         }
+
+        public new void Add( string key, MovableObject item )
+        {
+            base.Add( key, item );
+            item.ObjectRenamed += ObjectRenamed;
+        }
+
+        public new void Remove( string key )
+        {
+            this[key].ObjectRenamed -= ObjectRenamed;
+            base.Remove( key );
+        }
+
+        void ObjectRenamed( MovableObject obj, string oldName )
+        {
+            // do not use overridden Add methods otherwise
+            // the event handler will be attached again.
+            base.Remove( oldName );
+            base.Add( obj.Name, obj );
+        }
+
     }
 
     /// <summary>
