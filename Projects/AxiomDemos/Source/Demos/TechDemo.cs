@@ -384,8 +384,6 @@ namespace Axiom.Demos
                 // remove event handlers
                 engine.FrameStarted -= OnFrameStarted;
                 engine.FrameEnded -= OnFrameEnded;
-
-                //engine.Dispose();
             }
             if ( scene != null )
                 scene.RemoveAllCameras();
