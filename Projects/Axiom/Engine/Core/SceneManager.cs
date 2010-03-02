@@ -2742,6 +2742,9 @@ namespace Axiom.Core
                 // Shading mode
                 this.targetRenderSystem.ShadingMode = pass.ShadingMode;
 
+                // Polygon Mode
+                this.targetRenderSystem.PolygonMode = pass.PolygonMode;
+
                 // set pass number
                 this.autoParamDataSource.PassNumber = pass.Index;
             }

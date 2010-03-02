@@ -63,12 +63,14 @@ namespace Axiom.Core
         public delegate void ObjectDelegate( MovableObject obj );
         public delegate bool ObjectRenderingDelegate( MovableObject obj, Camera camera );
         public delegate LightList ObjectQueryLightsDelegate( MovableObject obj );
+        public delegate void ObjectRenamedDelegate(MovableObject obj, string oldName);
 
         // Define all events Handler
         public event ObjectDelegate ObjectDestroyed;
         public event ObjectDelegate ObjectAttached;
         public event ObjectDelegate ObjectDetached;
         public event ObjectDelegate ObjectMoved;
+        public event ObjectRenamedDelegate ObjectRenamed;
 
         public event ObjectRenderingDelegate ObjectRendering;
         public event ObjectQueryLightsDelegate ObjectQueryLights;
@@ -289,7 +291,9 @@ namespace Axiom.Core
             }
             set
             {
+                string oldName = name;
                 name = value;
+                ObjectRenamed(this, oldName);
             }
         }
 

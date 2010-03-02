@@ -370,7 +370,6 @@ namespace Axiom.Core
             this.creator.RekeySceneNode( oldName, this );
         }
 
-
         /// <summary>
         ///    Attaches a MovableObject to this scene node.
         /// </summary>
