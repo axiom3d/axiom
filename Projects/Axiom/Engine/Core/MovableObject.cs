@@ -293,7 +293,8 @@ namespace Axiom.Core
             {
                 string oldName = name;
                 name = value;
-                ObjectRenamed(this, oldName);
+                if ( ObjectRenamed != null )
+                    ObjectRenamed( this, oldName );
             }
         }
 
