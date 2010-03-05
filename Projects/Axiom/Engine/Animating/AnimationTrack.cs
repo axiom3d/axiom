@@ -704,7 +704,7 @@ namespace Axiom.Animating
 				//scaleVector = ((Vector3::UNIT_SCALE - kf.getScale()) * weight) + Vector3::UNIT_SCALE;
 				if ( scale != 1.0f && scaleVector != Vector3.UnitScale )
 					scaleVector = Vector3.UnitScale + ( scaleVector - Vector3.UnitScale ) * scale;
-				node.Scale = scaleVector;
+				node.ScaleBy( scaleVector );
 			}
 			else
 			{

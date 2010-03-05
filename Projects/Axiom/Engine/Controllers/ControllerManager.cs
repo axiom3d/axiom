@@ -359,12 +359,11 @@ namespace Axiom.Controllers
 			ulong thisFrameNumber = Root.Instance.CurrentFrameCount;
 			if ( thisFrameNumber != lastFrameNumber )
 			{
-            // loop through each controller and tell it to update
-            for ( int i = 0; i < controllers.Count; i++ )
-            {
-					Controller<float> controller = controllers[ i ];
-                controller.Update();
-            }
+                // loop through each controller and tell it to update
+                foreach ( Controller<float> controller in controllers )
+                {
+                    controller.Update();
+                }
 				lastFrameNumber = thisFrameNumber;
 			}
         }
