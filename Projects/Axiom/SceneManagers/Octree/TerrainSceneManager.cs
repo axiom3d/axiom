@@ -64,6 +64,13 @@ namespace Axiom.SceneManagers.Octree
         protected Material terrainMaterial;
         protected SceneNode terrainRoot;
         protected TerrainOptions options; //needed for get HeightAt
+        public TerrainOptions TerrainOptions
+        {
+            get
+            {
+                return options;
+            }
+        }
 
         #endregion Fields
 
