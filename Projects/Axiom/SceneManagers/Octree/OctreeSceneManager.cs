@@ -58,7 +58,6 @@ namespace Axiom.SceneManagers.Octree
         protected List<ColorEx> colorList = new List<ColorEx>();
         //NOTE: "visible" was a Nodelist...could be a custom collection
         protected List<OctreeNode> visible = new List<OctreeNode>();
-        public Dictionary<string, object> options = new Dictionary<string, object>();
         protected static long white = 0xFFFFFFFF;
         protected short[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
         protected long[] colors = { white, white, white, white, white, white, white, white };
