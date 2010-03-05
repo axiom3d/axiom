@@ -195,8 +195,6 @@ namespace Axiom.RenderSystems.OpenGL
 			stencilRef = 0;
 			stencilMask = unchecked( (int)0xffffffff );
 
-
-
 			minFilter = FilterOptions.Linear;
 			mipFilter = FilterOptions.Point;
 
@@ -274,9 +272,9 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Returns an OpenGL implementation of a hardware occlusion query.
 		/// </summary>
 		/// <returns></returns>
-		public override IHardwareOcclusionQuery CreateHardwareOcclusionQuery()
+		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
-			return new GLHardwareOcclusionQuery();
+			return new GLHardwareOcclusionQuery(this._glSupport);
 		}
 
 		/// <summary>
@@ -1691,8 +1689,6 @@ namespace Axiom.RenderSystems.OpenGL
 			WindowEventMonitor.Instance.MessagePump = WindowMessageHandling.MessagePump;
 
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
-
-			this.CullingMode = this.cullingMode;
 
 			base.Initialize( autoCreateWindow, windowTitle );
 

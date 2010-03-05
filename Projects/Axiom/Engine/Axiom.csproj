@@ -433,7 +433,7 @@
     <Compile Include="Graphics\IHardwareBufferLicensee.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Graphics\IHardwareOcclusionQuery.cs">
+    <Compile Include="Graphics\HardwareOcclusionQuery.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\IRenderable.cs">

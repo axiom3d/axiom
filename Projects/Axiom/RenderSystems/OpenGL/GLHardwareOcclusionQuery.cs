@@ -47,107 +47,101 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for GLHardwareOcclusionQuery.
 	/// </summary>
-	public class GLHardwareOcclusionQuery : IHardwareOcclusionQuery
+	public class GLHardwareOcclusionQuery : HardwareOcclusionQuery
 	{
+	    private const string GL_ARB_occlusion_query = "GL_ARB_occlusion_query";
+        private const string GL_NV_occlusion_query = "GL_NV_occlusion_query";
+	    private const string GL_Version_1_5 = "1.5";
+
+        private BaseGLSupport _glSupport;
 		/// <summary>
 		///		Number of fragments returned from the last query.
 		/// </summary>
 		private int lastFragmentCount;
 		/// <summary>
-		///		Flag that indicates whether hardware queries are supported
-		/// </summary>
-		private bool isSupported;
-		/// <summary>
-		///		Rate at which queries are skipped (in frames).
-		/// </summary>
-		private int skipRate;
-		/// <summary>
-		///		Current count of number of skipped frames since query last ran.
-		/// </summary>
-		private int skipCounter;
-		/// <summary>
 		///		Id of the GL query.
 		/// </summary>
-		private int id;
+		private int queryId;
 
-		public GLHardwareOcclusionQuery()
+	    private bool isSupportedARB;
+	    private bool isSupportedNV;
+
+		internal GLHardwareOcclusionQuery( BaseGLSupport glSupport)
 		{
-			isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
+		    this._glSupport = glSupport;
+		    isSupportedARB = _glSupport.CheckMinVersion( GL_Version_1_5 ) || _glSupport.CheckExtension( GL_ARB_occlusion_query );
+		    isSupportedNV = _glSupport.CheckExtension( GL_NV_occlusion_query );
 
-			if ( isSupported )
-			{
-				Gl.glGenOcclusionQueriesNV( 1, out id );
-			}
+            if ( isSupportedNV )
+            {
+                Gl.glGenOcclusionQueriesNV( 1, out this.queryId );
+            }
+            else if ( isSupportedARB )
+            {
+                Gl.glGenQueriesARB( 1, out this.queryId );
+            }
 		}
 
-		#region IHardwareOcclusionQuery Members
+	    #region HardwareOcclusionQuery Members
 
-		public void Begin()
+		public override void Begin()
 		{
-			// proceed if supported, or silently fail otherwise
-			if ( isSupported )
-			{
-				if ( skipCounter == skipRate )
-				{
-					skipCounter = 0;
-				}
-
-				if ( skipCounter == 0 )
-				{ // && lastFragmentCount != 0) {
-					Gl.glBeginOcclusionQueryNV( id );
-				}
-			}
+            if ( isSupportedNV )
+            {
+                Gl.glBeginOcclusionQueryNV( this.queryId );
+            }
+            else if ( isSupportedARB )
+            {
+                Gl.glBeginQueryARB( Gl.GL_SAMPLES_PASSED_ARB, this.queryId );
+            }
 		}
 
-		public int PullResults( bool flush )
+        public override void End()
+        {
+            if ( isSupportedNV )
+            {
+                Gl.glEndOcclusionQueryNV();
+            }
+            else if ( isSupportedARB )
+            {
+                Gl.glEndQueryARB( Gl.GL_SAMPLES_PASSED_ARB );
+            }
+        }
+
+		public override int PullResults()
 		{
 			// note: flush doesn't apply to GL
 
 			// default to returning a high count.  will be set otherwise if the query runs
 			lastFragmentCount = 100000;
 
-			if ( isSupported )
-			{
-				Gl.glGetOcclusionQueryivNV( id, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount );
-			}
+            if ( isSupportedNV )
+            {
+                Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount );
+            }
+            else if ( isSupportedARB )
+            {
+                Gl.glGetQueryivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out lastFragmentCount );
+            }
 
 			return lastFragmentCount;
 		}
 
-		public void End()
-		{
-			// proceed if supported, or silently fail otherwise
-			if ( isSupported )
-			{
-				if ( skipCounter == 0 )
-				{ // && lastFragmentCount != 0) {
-					Gl.glEndOcclusionQueryNV();
-				}
+        public override bool IsStillOutstanding()
+        {
+            int available = 0;
 
-				skipCounter++;
-			}
-		}
+            if ( isSupportedNV )
+            {
+                Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_AVAILABLE_NV, out available );
+            }
+            else if ( isSupportedARB )
+            {
+                Gl.glGetQueryivARB( this.queryId, Gl.GL_QUERY_RESULT_AVAILABLE_ARB, out available );
+            }
 
-		public int SkipRate
-		{
-			get
-			{
-				return skipRate;
-			}
-			set
-			{
-				skipRate = value;
-			}
-		}
-
-		public int LastFragmentCount
-		{
-			get
-			{
-				return lastFragmentCount;
-			}
-		}
-
-		#endregion
+            return available == 0;
+        }
+	    #endregion
 	}
 }

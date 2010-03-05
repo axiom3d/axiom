@@ -49,7 +49,7 @@ namespace Axiom.RenderSystems.DirectX9
     ///		Direct3D implementation of a hardware occlusion query.
     /// </summary>
     // Original Author: Lee Sandberg
-    public class D3DHardwareOcclusionQuery : IHardwareOcclusionQuery
+    public class D3DHardwareOcclusionQuery : HardwareOcclusionQuery
     {
         #region Fields
 
@@ -62,21 +62,11 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private D3D.Query query;
         /// <summary>
-        ///		Number of fragments returned from the last query.
-        /// </summary>
-        private int lastFragmentCount;
-        /// <summary>
         ///		Flag that indicates whether hardware queries are supported
         /// </summary>
         private bool isSupported;
-        /// <summary>
-        ///		Rate at which queries are skipped (in frames).
-        /// </summary>
-        private int skipRate;
-        /// <summary>
-        ///		Current count of number of skipped frames since query last ran.
-        /// </summary>
-        private int skipCounter;
+
+        private bool isQueryResultStillOutstanding;
 
         #endregion Fields
 
@@ -90,6 +80,8 @@ namespace Axiom.RenderSystems.DirectX9
         {
             this.device = device;
 
+            isQueryResultStillOutstanding = true;
+
             // check if queries are supported
             isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
 
@@ -102,78 +94,78 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion Constructor
 
-        #region IHardwareOcclusionQuery Members
+        #region HardwareOcclusionQuery Members
 
-        public void Begin()
+        /// <summary>
+        /// Starts the hardware occlusion query
+        /// </summary>
+        public override void Begin()
         {
             // proceed if supported, or silently fail otherwise
             if ( isSupported )
             {
-                if ( skipCounter == skipRate )
+                query.Issue( D3D.Issue.Begin );
+            }
+            isQueryResultStillOutstanding = true;
+        }
+
+        /// <summary>
+        /// Pulls the hardware occlusion query.
+        /// </summary>
+        /// <remarks>
+        /// Waits until the query result is available; use <see cref="HardwareOcclusionQuery.IsStillOutstanding"/>
+        /// if just want to test if the result is available.
+        /// </remarks>
+        /// <returns>the resulting number of fragments.</returns>
+        public override int PullResults()
+        {
+            if ( isQueryResultStillOutstanding )
+            {
+                // default to returning a high count.  will be set otherwise if the query runs
+                LastFragmentCount = 100000;
+
+                if ( isSupported )
                 {
-                    skipCounter = 0;
+                    LastFragmentCount = query.GetData<int>( true );
                 }
-
-                if ( skipCounter == 0 )
-                { // && lastFragmentCount != 0) {
-                    query.Issue( D3D.Issue.Begin );
-                }
+                isQueryResultStillOutstanding = false;
             }
+            return LastFragmentCount;
         }
 
-        public int PullResults( bool flush )
-        {
-            // default to returning a high count.  will be set otherwise if the query runs
-            lastFragmentCount = 100000;
-
-            if ( isSupported )
-            {
-                lastFragmentCount = (int)query.GetData<int>( flush );
-            }
-
-            return lastFragmentCount;
-        }
-
-        public void End()
+        /// <summary>
+        /// Ends the hardware occlusion test
+        /// </summary>
+        public override void End()
         {
             // proceed if supported, or silently fail otherwise
             if ( isSupported )
             {
-                if ( skipCounter == 0 )
-                { // && lastFragmentCount != 0) {
-                    query.Issue( D3D.Issue.End );
-                }
-
-                skipCounter++;
+                query.Issue( D3D.Issue.End );
             }
         }
 
         /// <summary>
-        ///		Rate (in frames) at which queries are skipped.
+        /// Lets you know when query is done, or still be processed by the Hardware
         /// </summary>
-        public int SkipRate
+        /// <returns>true if query isn't finished.</returns>
+        public override bool IsStillOutstanding()
         {
-            get
-            {
-                return skipRate;
-            }
-            set
-            {
-                skipRate = value;
-            }
+            if (!isQueryResultStillOutstanding)
+                return false;
+
+            return false;
         }
 
         /// <summary>
-        ///		Gets the number of fragments returned from the last execution of this query.
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public int LastFragmentCount
+        /// <filterpriority>2</filterpriority>
+        public override void Dispose()
         {
-            get
-            {
-                return lastFragmentCount;
-            }
+            query.Dispose();
+            base.Dispose();
         }
-
         #endregion
     }
 }

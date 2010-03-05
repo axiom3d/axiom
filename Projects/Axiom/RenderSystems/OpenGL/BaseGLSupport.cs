@@ -164,7 +164,6 @@ namespace Axiom.RenderSystems.OpenGL
 		public bool CheckMinVersion( string version )
 		{
 			return Utility.ParseReal( version ) <= Utility.ParseReal( _glVersion.Substring( 0, version.Length ) ); 
-			//return float.Parse( version ) <= float.Parse( _glVersion.Substring( 0, version.Length ) );
 		}
 
 		/// <summary>

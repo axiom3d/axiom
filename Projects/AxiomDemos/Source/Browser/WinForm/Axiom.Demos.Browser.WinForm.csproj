@@ -217,10 +217,6 @@
       <Link>Media\Materials\XnaLogo.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Media\Overlays\XnaLogo.overlay">
-      <Link>Media\Overlays\XnaLogo.overlay</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1051,13 +1047,13 @@
       <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
       <Name>Axiom.Platforms.Win32</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.csproj">
+      <Project>{7440613A-4487-46BE-998E-25F554ACE980}</Project>
+      <Name>Axiom.Plugins.SystemDrawingCodecs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
       <Name>Axiom.Plugins.CgProgramManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
-      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
@@ -1171,10 +1167,6 @@
     </Content>
     <Content Include="..\..\..\..\..\Media\Textures\ribbonband.png">
       <Link>Media\Textures\ribbonband.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\..\..\Media\Textures\XnaLogo.jpg">
-      <Link>Media\Textures\XnaLogo.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

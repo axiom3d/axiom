@@ -25,7 +25,7 @@ namespace Axiom.Demos
         /// <summary>
         ///		An instance of a hardware occlusion query.
         /// </summary>
-        private IHardwareOcclusionQuery query;
+        private HardwareOcclusionQuery query;
 
         #region Methods
 
@@ -59,9 +59,14 @@ namespace Axiom.Demos
 
             // create an occlusion query via the render system
             query = Root.Instance.RenderSystem.CreateHardwareOcclusionQuery();
-            query.SkipRate = 1;
         }
 
+        public override void Dispose()
+        {
+            if ( query != null )
+                query.Dispose();
+            base.Dispose();
+        }
         #endregion
 
         /// <summary>
@@ -80,6 +85,7 @@ namespace Axiom.Demos
             return;
         }
 
+        
         /// <summary>
         ///		When RenderQueue 6 is ending, we will end the query and poll for the results.
         /// </summary>
@@ -94,12 +100,12 @@ namespace Axiom.Demos
             }
 
             // get the fragment count from the query
-            int count = query.PullResults( true );
+            int count = query.PullResults();
 
             // report the results
-            if ( count == 0 )
+            if ( count <= 0 )
             {
-                debugText = "Object is occluded.";
+                debugText = "Object is occluded. ";
             }
             else
             {
