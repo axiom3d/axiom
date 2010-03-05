@@ -377,7 +377,7 @@ namespace Axiom.Demos
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if ( engine != null )
             {

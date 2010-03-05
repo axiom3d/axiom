@@ -45,7 +45,7 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     // Original Author: Lee Sandberg
 
-    public class XnaHardwareOcclusionQuery : IHardwareOcclusionQuery
+    public class XnaHardwareOcclusionQuery : HardwareOcclusionQuery
     {
         #region Fields
 
@@ -57,22 +57,6 @@ namespace Axiom.RenderSystems.Xna
         ///		Reference to the query object being used.
         /// </summary>
         private XFG.OcclusionQuery oQuery;
-        /// <summary>
-        ///		Number of fragments returned from the last query.
-        /// </summary>
-        private int lastFragmentCount;
-        /// <summary>
-        ///		Flag that indicates whether hardware queries are supported
-        /// </summary>
-        private bool isSupported;
-        /// <summary>
-        ///		Rate at which queries are skipped (in frames).
-        /// </summary>
-        private int skipRate;
-        /// <summary>
-        ///		Current count of number of skipped frames since query last ran.
-        /// </summary>
-        private int _skipCounter;
 
         #endregion Fields
 
@@ -86,85 +70,64 @@ namespace Axiom.RenderSystems.Xna
         {
             this.device = device;
             oQuery = new XFG.OcclusionQuery(device);
-            
         }
 
         #endregion Constructor
 
-        #region IHardwareOcclusionQuery Members
+        #region HardwareOcclusionQuery Members
 
-        public void Begin()
+        /// <summary>
+        /// Starts the hardware occlusion query
+        /// </summary>
+        public override void Begin()
         {
             // proceed if supported, or silently fail otherwise
             if ( oQuery.IsSupported)
             {
-                if ( _skipCounter == skipRate )
-                {
-                    _skipCounter = 0;
-                }
-
-                if ( _skipCounter == 0 )
-                {
-                    oQuery.Begin();
-                    // && lastFragmentCount != 0) {
-                    //   query.Issue( XFG.IssueFlags.Begin );
-                }
+                oQuery.Begin();
             }
         }
 
-        public int PullResults( bool flush )
+        /// <summary>
+        /// Pulls the hardware occlusion query.
+        /// </summary>
+        /// <remarks>
+        /// Waits until the query result is available; use <see cref="HardwareOcclusionQuery.IsStillOutstanding"/>
+        /// if just want to test if the result is available.
+        /// </remarks>
+        /// <returns>the resulting number of fragments.</returns>
+        public override int PullResults()
         {
             // default to returning a high count.  will be set otherwise if the query runs
-            lastFragmentCount = 100000;
+            LastFragmentCount = 100000;
 
             if ( oQuery.IsSupported && oQuery.IsComplete)
             {
-                lastFragmentCount = oQuery.PixelCount;
+                LastFragmentCount = oQuery.PixelCount;
             }
 
-            return lastFragmentCount;
+            return LastFragmentCount;
         }
 
-        public void End()
+        /// <summary>
+        /// Ends the hardware occlusion test
+        /// </summary>
+        public override void End()
         {
             // proceed if supported, or silently fail otherwise
             if ( oQuery.IsSupported )
             {
-                if ( _skipCounter == 0 )
-                {
-                    oQuery.End();
-                    // && lastFragmentCount != 0) {
-                    //   query.Issue( XFG.IssueFlags.End );
-                }
-
-                _skipCounter++;
+                oQuery.End();
             }
         }
 
         /// <summary>
-        ///		Rate (in frames) at which queries are skipped.
+        /// Lets you know when query is done, or still be processed by the Hardware
         /// </summary>
-        public int SkipRate
+        /// <returns>true if query isn't finished.</returns>
+        public override bool IsStillOutstanding()
         {
-            get
-            {
-                return skipRate;
-            }
-            set
-            {
-                skipRate = value;
-            }
-        }
-
-        /// <summary>
-        ///		Gets the number of fragments returned from the last execution of this query.
-        /// </summary>
-        public int LastFragmentCount
-        {
-            get
-            {
-                return lastFragmentCount;
-            }
+            return !oQuery.IsComplete;
         }
 
         #endregion

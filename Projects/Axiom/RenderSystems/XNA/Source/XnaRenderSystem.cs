@@ -1460,7 +1460,7 @@ namespace Axiom.RenderSystems.Xna
             return newDevice;
         }
 
-        public override IHardwareOcclusionQuery CreateHardwareOcclusionQuery()
+        public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
         {
             return new XnaHardwareOcclusionQuery( _device );
         }

@@ -1182,11 +1182,11 @@ namespace Axiom.Graphics
 
         /// <summary>
         ///		Requests an API implementation of a hardware occlusion query used to test for the number
-        ///		of fragments rendered between calls to <see cref="IHardwareOcclusionQuery.Begin"/> and 
-        ///		<see cref="IHardwareOcclusionQuery.End"/> that pass the depth buffer test.
+        ///		of fragments rendered between calls to <see cref="HardwareOcclusionQuery.Begin"/> and 
+        ///		<see cref="HardwareOcclusionQuery.End"/> that pass the depth buffer test.
         /// </summary>
         /// <returns>An API specific implementation of an occlusion query.</returns>
-        public abstract IHardwareOcclusionQuery CreateHardwareOcclusionQuery();
+        public abstract HardwareOcclusionQuery CreateHardwareOcclusionQuery();
 
         /// <summary>
         ///		Ends rendering of a frame to the current viewport.

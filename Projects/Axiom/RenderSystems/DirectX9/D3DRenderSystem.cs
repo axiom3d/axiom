@@ -329,7 +329,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///		Returns a Direct3D implementation of a hardware occlusion query.
         /// </summary>
         /// <returns></returns>
-        public override IHardwareOcclusionQuery CreateHardwareOcclusionQuery()
+        public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
         {
             return new D3DHardwareOcclusionQuery( device );
         }
