@@ -42,6 +42,7 @@ using FogMode = Axiom.Graphics.FogMode;
 using LightType = Axiom.Graphics.LightType;
 using StencilOperation = Axiom.Graphics.StencilOperation;
 using TextureFiltering = Axiom.Graphics.TextureFiltering;
+using Capabilities = Axiom.Graphics.Capabilities;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -49,7 +50,6 @@ using Axiom.Core.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
 
-using Capabilities = Axiom.Graphics.Capabilities;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -1107,7 +1107,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             D3D.PrimitiveType primType = 0;
             int vertexCount = op.vertexData.vertexCount;
-            int cnt = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
+            int cnt = op.useIndices && primType != D3D.PrimitiveType.PointList ? op.indexData.indexCount : op.vertexData.vertexCount;
 
             switch ( op.operationType )
             {
@@ -1143,7 +1143,7 @@ namespace Axiom.RenderSystems.DirectX9
             this.vertexCount += vertexCount;
 
             // are we gonna use indices?
-            if ( op.useIndices )
+            if ( op.useIndices && primType != D3D.PrimitiveType.PointList )
             {
                 D3DHardwareIndexBuffer idxBuffer = (D3DHardwareIndexBuffer)op.indexData.indexBuffer;
 
