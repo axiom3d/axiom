@@ -531,6 +531,18 @@ namespace Axiom.Core
         {
             get
             {
+                if ( String.IsNullOrEmpty(this.materialName))
+                {
+                    foreach ( SubEntity ent in this.subEntityList )
+                    {
+                        string defaultMaterial = ent.SubMesh.MaterialName;
+                        if ( !String.IsNullOrEmpty( defaultMaterial ) )
+                        {
+                            this.materialName = defaultMaterial;
+                            break;
+                        }
+                    }
+                }
                 return this.materialName;
             }
             set
