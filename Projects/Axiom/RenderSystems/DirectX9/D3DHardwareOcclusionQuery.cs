@@ -126,6 +126,8 @@ namespace Axiom.RenderSystems.DirectX9
 
                 if ( isSupported )
                 {
+                    while ( !query.CheckStatus( true ) )
+                        ;
                     LastFragmentCount = query.GetData<int>( true );
                 }
                 isQueryResultStillOutstanding = false;
@@ -154,7 +156,7 @@ namespace Axiom.RenderSystems.DirectX9
             if (!isQueryResultStillOutstanding)
                 return false;
 
-            return false;
+            return query.CheckStatus( true );
         }
 
         /// <summary>
