@@ -3047,8 +3047,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Check for hardware occlusion support
-			if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
-			{
+            if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) || _glSupport.CheckExtension( "GL_ARB_occlusion_query" ) )
+            {
 				_rsCapabilities.SetCapability( Capabilities.HardwareOcculusion );
 			}
 
