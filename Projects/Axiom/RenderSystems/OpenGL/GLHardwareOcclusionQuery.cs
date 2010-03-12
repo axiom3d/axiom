@@ -121,7 +121,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
             else if ( isSupportedARB )
             {
-                Gl.glGetQueryivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out lastFragmentCount );
+                Gl.glGetQueryObjectivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out lastFragmentCount );
             }
 
 			return lastFragmentCount;
@@ -142,6 +142,20 @@ namespace Axiom.RenderSystems.OpenGL
 
             return available == 0;
         }
+
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( isSupportedNV )
+            {
+                Gl.glDeleteOcclusionQueriesNV( 1, ref this.queryId );
+            }
+            else if ( isSupportedARB )
+            {
+                Gl.glDeleteQueriesARB( 1, ref this.queryId );
+            }
+            base.dispose( disposeManagedResources );
+        }
+
 	    #endregion
 	}
 }

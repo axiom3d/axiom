@@ -83,16 +83,78 @@ namespace Axiom.Graphics
         /// <returns>true if query isn't finished.</returns>
         public abstract bool IsStillOutstanding();
 
-        #region Implementation of IDisposable
+        #region IDisposable Implementation
 
+        ~HardwareOcclusionQuery()
+		{
+			dispose( false );
+		}
+
+        #region isDisposed Property
+
+        private bool _disposed = false;
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Determines if this instance has been disposed of already.
         /// </summary>
-        /// <filterpriority>2</filterpriority>
-        public virtual void Dispose()
+        protected bool isDisposed
         {
+            get
+            {
+                return _disposed;
+            }
+            set
+            {
+                _disposed = value;
+            }
         }
 
-        #endregion
+        #endregion isDisposed Property
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        /// 
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            dispose( true );
+            GC.SuppressFinalize( this );
+        }
+
+        #endregion IDisposable Implementation
     }
 }
