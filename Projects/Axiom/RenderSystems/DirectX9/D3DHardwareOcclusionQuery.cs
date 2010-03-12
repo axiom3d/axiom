@@ -163,10 +163,10 @@ namespace Axiom.RenderSystems.DirectX9
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
-        public override void Dispose()
+        protected override void dispose( bool disposeManagedResources )
         {
             query.Dispose();
-            base.Dispose();
+            base.dispose( disposeManagedResources );
         }
         #endregion
     }
