@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Threading;
 
 using Axiom.Animating;
 using Axiom.Collections;
@@ -188,6 +189,11 @@ namespace Axiom.Core
         ///		This entity's personal copy of a master skeleton.
         /// </summary>
         protected SkeletonInstance skeletonInstance;
+
+        /// <summary>
+        /// List of Entities that this entity shares it's skeleton with
+        /// </summary>
+        protected EntityList sharedSkeletonInstances;
 
         /// <summary>
         ///     Counter indicating number of requests for software blended normals.
@@ -1435,6 +1441,81 @@ namespace Axiom.Core
             else
             {
                 return VertexDataBindChoice.Original;
+            }
+        }
+
+        public void ShareSkeletonInstanceWith(Entity entity)
+        {
+            if ( entity.Mesh.Skeleton != this.Mesh.Skeleton)
+            {
+                throw new AxiomException("The supplied entity has a different skeleton.");
+            }
+            if ( this.skeletonInstance == null )
+            {
+                throw new AxiomException( "This entity has no skeleton." );
+            }
+            if ( this.sharedSkeletonInstances != null && entity.sharedSkeletonInstances != null )
+            {
+                throw new AxiomException( "Both entities already share their SkeletonInstances! At least one of the instances must not share it's instance." );
+            }
+
+            //check if we already share our skeletoninstance, we don't want to delete it if so
+            if ( this.sharedSkeletonInstances != null )
+            {
+                entity.ShareSkeletonInstanceWith( this );
+            }
+            else
+            {
+                // Clear current skeleton
+                this.skeletonInstance.Dispose();
+                this.skeletonInstance = null;
+                this.animationState = null;
+                this.frameBonesLastUpdated = null;
+
+                //copy Skeleton from sharer
+                this.skeletonInstance = entity.skeletonInstance;
+                this.animationState = entity.animationState;
+                this.frameBonesLastUpdated = entity.frameBonesLastUpdated;
+
+                // notify of shareing
+                if ( entity.sharedSkeletonInstances == null )
+                {
+                    entity.sharedSkeletonInstances = new EntityList();
+                    entity.sharedSkeletonInstances.Add( entity );
+                }
+                this.sharedSkeletonInstances = entity.sharedSkeletonInstances;
+                this.sharedSkeletonInstances.Add( this );
+            }
+        }
+
+        public void StopSharingSkeletonInstance()
+        {
+            if ( this.sharedSkeletonInstances == null )
+            {
+                throw new AxiomException( "This entity is not sharing it's skeletoninstance." );
+            }
+
+            // Are we the last to stop sharing?
+            if ( this.sharedSkeletonInstances.Count == 1)
+            {
+                this.sharedSkeletonInstances = null;
+            }
+            else
+            {
+                this.skeletonInstance = new SkeletonInstance( this.mesh.Skeleton );
+                this.skeletonInstance.Load();
+                this.animationState = new AnimationStateSet();
+                this.mesh.InitAnimationState( this.animationState );
+                this.frameBonesLastUpdated = new ulong[ulong.MaxValue];
+                this.numBoneMatrices = this.skeletonInstance.BoneCount;
+                this.boneMatrices = new Matrix4[ this.numBoneMatrices ];
+
+                this.sharedSkeletonInstances.Remove( this );
+                if ( this.sharedSkeletonInstances.Count == 1)
+                {
+                    this.sharedSkeletonInstances[0].StopSharingSkeletonInstance();
+                }
+                this.sharedSkeletonInstances = null;
             }
         }
 
