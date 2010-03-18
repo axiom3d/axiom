@@ -449,7 +449,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( opt != null )
 				{
 					miscParams.Add( "vsync", opt.Value );
-					//TODO : renderSystem.WaitForVerticalBlank = (bool)opt.Value;
+				    renderSystem.IsVSync = StringConverter.ParseBool( opt.Value );
 				}
 
 				opt = ConfigOptions[ "FSAA" ];

@@ -1,9 +1,41 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id:"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
+using System.Windows.Forms;
 using Axiom.Graphics;
-
 using OpenTK;
 using OpenTK.Graphics;
 
@@ -12,36 +44,23 @@ using OpenTK.Graphics;
 namespace Axiom.RenderSystems.OpenGL
 {
     using System.Collections.Generic;
-
     using Collections;
-
     using Core;
-
     using Media;
+
 
     /// <summary>
     /// Summary description for OpenTKWindow.
     /// </summary>
     public class OpenTKWindow : RenderWindow
     {
-        public class AxiomOTKGameWindow : GameWindow
-        {
-            public AxiomOTKGameWindow(int width, int height, GraphicsMode gm, string title) : base(width, height, gm, title) { }
-            public override void OnRenderFrame(RenderFrameEventArgs e)
-            {
-                if ( this.IsExiting == false )
-                    Exit();
-            }
-        }
-
         #region Fields
 
-        public AxiomOTKGameWindow OTKGameWindow;
+        private GameWindow OTKGameWindow;
+        private OpenTKGLContext glContext;
 
-        private bool destroyed;
         private bool fullScreen;
         private DisplayDevice displayDevice = null;
-        private bool lastVSyncModeSet = false;
 
         #endregion Fields
 
@@ -58,12 +77,9 @@ namespace Axiom.RenderSystems.OpenGL
                 switch (attribute.ToLower())
                 {
                     case "glcontext":
-                        return null; //	_glContext;
+                        return glContext;
                     case "window":
                         return OTKGameWindow;
-                    // Retrieve the Handle to the SDL Window
-                    //System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( sdlWindowHandle );
-                    //return ctrl;
                     default:
                         return null;
                 }
@@ -72,19 +88,14 @@ namespace Axiom.RenderSystems.OpenGL
 
         public void Destroy()
         {
-            if ( !destroyed )
+            if (OTKGameWindow != null)
             {
-                if ( fullScreen )
+                if (fullScreen)
                     displayDevice.RestoreResolution();
                 OTKGameWindow.Context.Dispose();
                 OTKGameWindow.Exit();
                 OTKGameWindow = null;
-                destroyed = true;
             }
-        }
-
-        public override void Reposition(int left, int right)
-        {
         }
 
         /// <summary>
@@ -93,11 +104,14 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
         public override bool IsClosed
         {
-            get { return false; }
+            get
+            {
+                return OTKGameWindow == null;
+            }
         }
 
         /// <summary>
-        ///		Creates & displays the new window.
+        ///		Creates &amp; displays the new window.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="width">The width of the window in pixels.</param>
@@ -108,7 +122,10 @@ namespace Axiom.RenderSystems.OpenGL
         public override void Create(string name, int width, int height, bool fullScreen, NamedParameterList miscParams)
         {
             string title = name;
-            int fsaa;
+            bool vsync = false;
+            int depthBuffer = GraphicsMode.Default.Depth;
+            float displayFrequency = 60f;
+            string border = "resizable";
 
             this.Name = name;
             this.Width = width;
@@ -119,93 +136,147 @@ namespace Axiom.RenderSystems.OpenGL
 
             #region Parameter Handling
 
-            if ( miscParams != null )
+            if (miscParams != null)
             {
-                foreach ( KeyValuePair<string, object> entry in miscParams )
+                foreach (KeyValuePair<string, object> entry in miscParams)
                 {
-                    switch ( entry.Key )
+                    switch (entry.Key)
                     {
                         case "title":
                             title = entry.Value.ToString();
                             break;
                         case "left":
-                            left = Int32.Parse( entry.Value.ToString() );
+                            left = Int32.Parse(entry.Value.ToString());
                             break;
                         case "top":
-                            top = Int32.Parse( entry.Value.ToString() );
+                            top = Int32.Parse(entry.Value.ToString());
                             break;
                         case "fsaa":
-                            fsaa = Int32.Parse( entry.Value.ToString() );
-                            if ( fsaa > 1 )
-                            {
-                                // If FSAA is enabled in the parameters, enable the MULTISAMPLEBUFFERS
-                                // and set the number of samples before the render window is created.
-                                //displayDevice.MultiSampleBuffers = 1;
-                                //SdlDevice.MultiSampleSamples = fsaa;
-                            }
+                            FSAA = Int32.Parse(entry.Value.ToString());
                             break;
                         case "colourDepth":
                         case "colorDepth":
-                            ColorDepth = Int32.Parse( entry.Value.ToString() );
+                            ColorDepth = Int32.Parse(entry.Value.ToString());
                             break;
+                        case "vsync":
+                            vsync = entry.Value.ToString() == "No" ? false : true;
+                            break;
+                        case "displayFrequency":
+                            displayFrequency = Int32.Parse(entry.Value.ToString());
+                            break;
+                        case "depthBuffer":
+                            depthBuffer = Int32.Parse(entry.Value.ToString());
+                            break;
+                        case "border":
+                            border = entry.Value.ToString().ToLower();
+                            break;
+
+                        case "externalWindowInfo":
+                            glContext = new OpenTKGLContext((OpenTK.Platform.IWindowInfo)entry.Value);
+                            break;
+
+                        case "externalWindowHandle":
+                            object handle = entry.Value;
+                            IntPtr ptr = IntPtr.Zero;
+                            if (handle.GetType() == typeof(IntPtr))
+                            {
+                                ptr = (IntPtr)handle;
+                            }
+                            else if (handle.GetType() == typeof(System.Int32))
+                            {
+                                ptr = new IntPtr((int)handle);
+                            }
+                            glContext = new OpenTKGLContext(Control.FromHandle(ptr), Control.FromHandle(ptr).Parent);
+
+                            WindowEventMonitor.Instance.RegisterWindow(this);
+                            fullScreen = false;
+                            IsActive = true;
+                            break;
+
+                        case "externalWindow":
+                            glContext = new OpenTKGLContext((Control)entry.Value, ((Control)entry.Value).Parent);
+                            WindowEventMonitor.Instance.RegisterWindow(this);
+                            fullScreen = false;
+                            IsActive = true;
+                            break;
+
                         default:
                             break;
                     }
                 }
             }
-
             #endregion Parameter Handling
 
-            // create window
-            OTKGameWindow = new AxiomOTKGameWindow( width, height, GraphicsMode.Default, name );
-
-            // full screen?
-            if ( fullScreen )
+            if (glContext == null)
             {
-                displayDevice.ChangeResolution( displayDevice.SelectResolution( width, height, ColorDepth, 60f ) );
-                OTKGameWindow.WindowState = WindowState.Fullscreen;
+                // create window
+                OTKGameWindow = new GameWindow(width, height, new GraphicsMode(GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA), name);
+
+                FileSystem.FileInfoList ico=ResourceGroupManager.Instance.FindResourceFileInfo(ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico");
+                if (ico.Count != 0)
+                {
+                    OTKGameWindow.Icon = System.Drawing.Icon.ExtractAssociatedIcon(ico[0].Filename);
+                }
+
+                // full screen?
+                if (fullScreen)
+                {
+                    displayDevice.ChangeResolution(width, height, ColorDepth, displayFrequency);
+                    OTKGameWindow.WindowState = WindowState.Fullscreen;
+                    isFullScreen = true;
+                }
+                else
+                {
+                    OTKGameWindow.WindowState = WindowState.Normal;
+
+                    if (border == "fixed")
+                        OTKGameWindow.WindowBorder = WindowBorder.Fixed;
+                    else if (border == "resizable")
+                        OTKGameWindow.WindowBorder = WindowBorder.Resizable;
+                    else if (border == "none")
+                        OTKGameWindow.WindowBorder = WindowBorder.Hidden;
+                }
+
+                OTKGameWindow.Title = title;
+
+                WindowEventMonitor.Instance.RegisterWindow(this);
+
+                // lets get active!
+                IsActive = true;
+                OTKGameWindow.VSync = (vsync == false ? VSyncMode.Off : VSyncMode.On);
+                OTKGameWindow.Visible = true;
             }
-            else
+        }
+
+        public override void Reposition(int left, int right)
+        {
+            if (OTKGameWindow != null && !IsFullScreen)
             {
-                OTKGameWindow.WindowState = WindowState.Normal;
-                OTKGameWindow.WindowBorder = WindowBorder.Fixed;
+                OTKGameWindow.Location = new System.Drawing.Point(left, right);
             }
-
-            OTKGameWindow.Title = title;
-
-            WindowEventMonitor.Instance.RegisterWindow( this );
-
-            // lets get active!
-            IsActive = true;
-
-            GL.Clear( ClearBufferMask.ColorBufferBit );
-            SwapBuffers( false );
         }
 
         public override void Resize(int width, int height)
         {
-            if ( destroyed )
-                return;
-
+            if (OTKGameWindow == null) return;
             OTKGameWindow.Width = width;
             OTKGameWindow.Height = height;
         }
 
+		public override void WindowMovedOrResized() 
+        {
+            // Update dimensions incase changed
+			foreach (Axiom.Core.Viewport entry in this.viewportList.Values) 
+            {
+				entry.UpdateDimensions();
+			}
+		}
+
         public void SaveToFile(string fileName)
         {
-
+            throw new NotImplementedException();
         }
-
-        public override void Update()
-        {
-            if ( destroyed )
-                return;
-
-            base.Update();
-            OTKGameWindow.ProcessEvents();
-        }
-
-        public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
+        public override void CopyContentsToMemory(PixelBox pb, FrameBuffer buffer)
         {
             throw new NotImplementedException();
         }
@@ -216,16 +287,17 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="waitForVSync"></param>
         public override void SwapBuffers(bool waitForVSync)
         {
-            if ( destroyed || OTKGameWindow.WindowState == WindowState.Minimized )
-                return;
-
-            if ( lastVSyncModeSet != waitForVSync )
+            if (glContext != null)
             {
-                OTKGameWindow.VSync = waitForVSync ? VSyncMode.On : VSyncMode.Off;
-                lastVSyncModeSet = waitForVSync;
+                glContext.SwapBuffers();
+                return;
             }
-
-            OTKGameWindow.SwapBuffers();
+            if (OTKGameWindow != null)
+            {
+                OTKGameWindow.ProcessEvents();
+                if (OTKGameWindow.WindowState == WindowState.Minimized || !OTKGameWindow.Focused) return;
+                OTKGameWindow.SwapBuffers();
+            }
         }
 
         #endregion RenderWindow Members

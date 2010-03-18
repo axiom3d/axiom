@@ -2,11 +2,9 @@
 
 using System.Threading;
 using System.Drawing;
-
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Utilities;
-
 using OpenTK.Input;
 using OpenTK;
 using Axiom.Graphics;
@@ -134,12 +132,15 @@ namespace Axiom.Platforms.OpenTK
         /// </summary>
         public override void Capture()
         {
+            if(mouse == null) return;
+
             GameWindow window = (GameWindow)parent["window"];
 
+            isVisible = window.WindowState != WindowState.Minimized && window.Focused;
+
             // if we aren't active, wait
-            if (mouse == null || window.IsExiting || !isVisible || window.WindowState == WindowState.Minimized)
+            if (window == null || !isVisible)
             {
-                // TODO
                 Thread.Sleep(100);
                 return;
             }
@@ -152,7 +153,6 @@ namespace Axiom.Platforms.OpenTK
                 mouseButtons = mouse[MouseButton.Right] == true ? MouseButtons.Right : 0;
                 mouseButtons = mouse[MouseButton.Middle] == true ? MouseButtons.Middle : 0;
             }
-
             if (ownMouse)
             {
                 int mx = System.Windows.Forms.Cursor.Position.X;
@@ -175,6 +175,7 @@ namespace Axiom.Platforms.OpenTK
                 oldX = mx;
                 oldY = my;
             }
+
         }
 
         /// <summary>
@@ -192,6 +193,8 @@ namespace Axiom.Platforms.OpenTK
             this.parent = parent;
 
             GameWindow window = (GameWindow)this.parent["window"];
+            if (window == null)
+                return;
 
             keyboard = window.Keyboard;
 
@@ -203,15 +206,24 @@ namespace Axiom.Platforms.OpenTK
                     this.ownMouse = true;
                     System.Windows.Forms.Cursor.Hide();
                 }
-
                 // mouse starts out in the center of the window
                 center.X = parent.Width / 2;
                 center.Y = parent.Height / 2;
-                center = window.PointToClient(center);
-                System.Windows.Forms.Cursor.Position = center;
-                mouseX = oldX = center.X;
-                mouseY = oldY = center.Y;
 
+                if (ownMouse)
+                {
+                    center = window.PointToScreen(center);
+                    System.Windows.Forms.Cursor.Position = center;
+                    mouseX = oldX = center.X;
+                    mouseY = oldY = center.Y;
+                }
+                else
+                {
+                    Point center2 = window.PointToScreen(center);
+                    System.Windows.Forms.Cursor.Position = center2;
+                    mouseX = oldX = center.X;
+                    mouseY = oldY = center.Y;
+                }
             }
         }
 
@@ -222,7 +234,8 @@ namespace Axiom.Platforms.OpenTK
         /// <returns>true if the key is down, false otherwise.</returns>
         public override bool IsKeyPressed(KeyCodes key)
         {
-            if (keyboard == null) return false;
+            if (keyboard == null)
+                return false;
             return keyboard[ConvertKeyEnum(key)] == true;
         }
 
@@ -499,18 +512,18 @@ namespace Axiom.Platforms.OpenTK
                 case KeyCodes.Space:
                     k = Key.Space;
                     break;
-                //                case KeyCodes.Tilde:
-                //                  k = Key. ?
-                //                break;
+                case KeyCodes.Tilde:
+                    k = Key.Tilde;
+                    break;
                 case KeyCodes.OpenBracket:
                     k = Key.BracketLeft;
                     break;
                 case KeyCodes.CloseBracket:
                     k = Key.BracketRight;
                     break;
-                //                case KeyCodes.Plus:
-                //                  k = Key. ?
-                //                break;
+                case KeyCodes.Plus:
+                    k = Key.Plus;
+                    break;
                 case KeyCodes.QuestionMark:
                     k = Key.Slash;
                     break;

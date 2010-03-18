@@ -184,7 +184,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( _extensionList == null )
 			{
-				GlExtensionLoader.LoadAllExtensions();
+                Gl.ReloadFunctions();
 
 				// get the OpenGL version string and vendor name
 				_glVersion = Gl.glGetString( Gl.GL_VERSION ); // TAO 2.0
