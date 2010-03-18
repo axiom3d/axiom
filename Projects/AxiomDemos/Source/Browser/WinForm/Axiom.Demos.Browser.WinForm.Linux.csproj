@@ -105,12 +105,8 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.dll.config">
+    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll.config">
       <Link>OpenTK.dll.config</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.Utilities.dll.config">
-      <Link>OpenTK.Utilities.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.Cg\Tao.Cg.dll.config">
@@ -225,14 +221,6 @@
       <Link>Media\PCZAppMedia\terrain2.cfg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="..\..\..\..\..\Media\Materials\XnaLogo.material">
-      <Link>Media\Materials\XnaLogo.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Overlays\XnaLogo.overlay">
-      <Link>Media\Overlays\XnaLogo.overlay</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1060,52 +1048,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj">
-      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
-      <Name>Axiom.Platforms.OpenTK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
-      <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
-      <Name>Axiom.Plugins.CgProgramManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
-      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
-      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>OctreeZone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
-      <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
-      <Name>Axiom.Plugins.ParticleFX</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj">
-      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.OpenTK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
-      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
-      <Name>Axiom.SceneManagers.Bsp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
-      <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
-      <Name>Axiom.Demos</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\cg.dll">
       <Link>cg.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1182,10 +1124,52 @@
       <Link>Media\Textures\ribbonband.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Media\Textures\XnaLogo.jpg">
-      <Link>Media\Textures\XnaLogo.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj">
+      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
+      <Name>Axiom.Platforms.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
+      <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
+      <Name>Axiom.Plugins.CgProgramManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
+      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
+      <Name>Axiom.Plugins.DevILCodecs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
+      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
+      <Name>OctreeZone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
+      <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
+      <Name>Axiom.Plugins.ParticleFX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj">
+      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
+      <Name>Axiom.RenderSystems.OpenGL.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
+      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
+      <Name>Axiom.SceneManagers.Bsp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
+      <Name>Axiom.SceneManagers.Octree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
+      <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
+      <Name>Axiom.Demos</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

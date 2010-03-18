@@ -72,17 +72,18 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=1.0.0.103, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.Utilities, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.103, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.Utilities.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -151,6 +152,7 @@
     <Compile Include="IOpenGLGpuProgramFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OpenTK\OpenTKGLContext.cs" />
     <Compile Include="OpenTK\OpenTKWindowMessageHandling.cs" />
     <Compile Include="Plugin.cs">
       <SubType>Code</SubType>

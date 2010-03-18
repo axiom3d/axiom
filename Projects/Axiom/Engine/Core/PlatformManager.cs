@@ -107,7 +107,7 @@ namespace Axiom.Core
                 else
                 {
                     bool isWindows = IsWindowsOS;
-                    string platform = IsWindowsOS ? "Win32" : "SDL";
+                    string platform = IsWindowsOS ? "Win32" : "OpenTK";
 
                     if ( files.Length == 1 )
                     {

@@ -87,6 +87,10 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         protected IntPtr winHandle;
         /// <summary>
+        /// System.Windows.Forms.Form control to retrieve input from
+        /// </summary>
+        protected SWF.Control control;
+        /// <summary>
         ///		Do we want exclusive use of the mouse?
         /// </summary>
         protected bool ownMouse;
@@ -305,7 +309,7 @@ namespace Axiom.Platforms.Win32
             winHandle = (IntPtr)window[ "WINDOW" ];
 
             // Keyboard and mouse capture must use Form's handle not child
-            SWF.Control control = SWF.Control.FromHandle( winHandle );
+            control = SWF.Control.FromHandle( winHandle );
             while ( control != null && control.Parent != null )
             {
                 control = control.Parent;
@@ -641,9 +645,10 @@ namespace Axiom.Platforms.Win32
             // capture the current mouse state
             mouseState = mouseDevice.GetCurrentState();
 
+            
             // store the updated absolute values
-            mouseAbsX += mouseState.X;
-            mouseAbsY += mouseState.Y;
+            mouseAbsX = control.PointToClient( SWF.Cursor.Position ).X;
+            mouseAbsY = control.PointToClient( SWF.Cursor.Position ).Y;
             mouseAbsZ += mouseState.Z;
 
             // calc relative deviance from center
