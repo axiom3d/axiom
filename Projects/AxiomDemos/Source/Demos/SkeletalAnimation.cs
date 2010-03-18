@@ -39,7 +39,7 @@ namespace Axiom.Demos
             {
                 string robotName = string.Format( "Robot{0}", i );
                 entity = scene.CreateEntity( robotName, "robot.mesh" );
-                var node = scene.RootSceneNode.CreateChildSceneNode(
+                SceneNode node = scene.RootSceneNode.CreateChildSceneNode(
                     new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
                 node.AttachObject( entity );
                 animState[ i ] = entity.GetAnimationState( "Walk" );

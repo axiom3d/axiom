@@ -1354,7 +1354,7 @@ namespace Axiom.SceneManagers.PortalConnected
             set
             {
                 // notify zones of new value
-                foreach ( var pcZone in zones )
+                foreach ( PCZone pcZone in zones )
                 {
                     pcZone.NotifyWorldGeometryRenderQueue( (int)value );
                 }
