@@ -1,9 +1,10 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EE5785DC-D49E-44DD-BFDA-DD776C012704}</ProjectGuid>
+    <ProjectGuid>{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
@@ -26,8 +27,6 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <PublishUrl>http://localhost/Axiom.Demos.Browser.WinForm/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -40,54 +39,15 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>True</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <Optimize>False</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <RemoveIntegerChecks>False</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>
-    </NoWarn>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>False</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <Optimize>True</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <RemoveIntegerChecks>False</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>
-    </NoWarn>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86</OutputPath>
+    <OutputPath>bin\linux\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -96,10 +56,11 @@
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86</OutputPath>
+    <OutputPath>bin\linux\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -149,6 +110,22 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll.config">
+      <Link>OpenTK.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.Cg\Tao.Cg.dll.config">
+      <Link>Tao.Cg.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.DevIl\Tao.DevIl.dll.config">
+      <Link>Tao.DevIl.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.OpenGl\Tao.OpenGl.dll.config">
+      <Link>Tao.OpenGl.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -249,13 +226,10 @@
       <Link>Media\PCZAppMedia\terrain2.cfg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="..\..\..\..\..\Media\Configuration\Terrain.xml">
-      <Link>Media\Configuration\Terrain.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>    
     <None Include="..\..\..\..\..\Media\Archives\AxiomCore.zip">
       <Link>Media\Archives\AxiomCore.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -642,10 +616,6 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Glass.material">
       <Link>Media\Materials\Glass.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\hdr.material">
-      <Link>Media\Materials\hdr.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\HeatVision.material">
@@ -1060,6 +1030,7 @@
       <Link>Media\Textures\WeirdEye.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Package1.pkgxml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -1075,11 +1046,6 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
@@ -1098,6 +1064,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Media\BrowserImages\bsp.jpg">
       <Link>Media\BrowserImages\bsp.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Configuration\Terrain.xml">
+      <Link>Media\Configuration\Terrain.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Media\PCZAppMedia\Carpet_Diamond_Olive.jpg">
@@ -1158,59 +1128,57 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Engine\Axiom.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010</Name>
+      <Name>Axiom</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Platforms\Win32\Axiom.Platforms.Win32.2010.csproj">
-      <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
-      <Name>Axiom.Platforms.Win32.2010</Name>
+    <ProjectReference Include="..\..\..\..\Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj">
+      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
+      <Name>Axiom.Platforms.OpenTK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
-      <Name>Axiom.Plugins.CgProgramManager.2010</Name>
+      <Name>Axiom.Plugins.CgProgramManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
       <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs.2010</Name>
+      <Name>Axiom.Plugins.DevILCodecs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>OctreeZone.2010</Name>
+      <Name>OctreeZone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
-      <Name>Axiom.Plugins.ParticleFX.2010</Name>
+      <Name>Axiom.Plugins.ParticleFX</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.2010.csproj">
-      <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
-      <Name>Axiom.RenderSystems.DirectX9.2010</Name>
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj">
+      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
+      <Name>Axiom.RenderSystems.OpenGL.OpenTK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.2010.csproj">
-      <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.Win32.2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
-      <Name>Axiom.SceneManagers.Bsp.2010</Name>
+      <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
       <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree.2010</Name>
+      <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
       <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected.2010</Name>
+      <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Demos\Axiom.Demos.2010.csproj">
+    <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
       <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
-      <Name>Axiom.Demos.2010</Name>
+      <Name>Axiom.Demos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
+if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"
+if exist "Axiom.RenderSystems.DirectX9.dll.locked" del "Axiom.RenderSystems.DirectX9.dll.locked" 
+if not exist "Axiom.RenderSystems.DirectX9.dll.locked" if exist "Axiom.RenderSystems.DirectX9.dll" move "Axiom.RenderSystems.DirectX9.dll" "Axiom.RenderSystems.DirectX9.dll.locked"</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
