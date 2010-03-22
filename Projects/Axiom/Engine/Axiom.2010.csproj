@@ -29,7 +29,7 @@
     <BuildVersion>5</BuildVersion>
     <Version>
     </Version>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>http://localhost/Axiom/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -44,6 +44,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -176,25 +177,51 @@
     <Compile Include="Animating\Animable.cs" />
     <Compile Include="Animating\AnimationStateSet.cs" />
     <Compile Include="Animating\AttachmentPoint.cs" />
+    <Compile Include="Animating\Collections\AnimationCollection.cs" />
+    <Compile Include="Animating\Collections\AnimationStateCollection.cs" />
+    <Compile Include="Animating\Collections\AnimationTrackCollection.cs" />
+    <Compile Include="Animating\Collections\BoneCollection.cs" />
+    <Compile Include="Animating\Collections\Lists.cs" />
     <Compile Include="Animating\Pose.cs" />
+    <Compile Include="Collections\Deque.cs" />
     <Compile Include="Collections\NamedCollection.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
-    <Compile Include="Collections\SceneManagerCollection.cs" />
     <Compile Include="Collections\TextureLayerCollection.cs" />
     <Compile Include="Collections\UnsortedCollection.cs" />
     <Compile Include="Controllers\Canned\PassthroughControllerFunction.cs" />
-    <Compile Include="Core\AbstractFactory.cs" />
+    <Compile Include="Core\AbstractFactory~1.cs" />
     <Compile Include="Core\BillboardChain.cs" />
+    <Compile Include="Core\BitConverterEx.cs" />
+    <Compile Include="Core\ChainedEvent.cs" />
+    <Compile Include="Core\Collections\CameraCollection.cs" />
+    <Compile Include="Core\Collections\Lists.cs" />
+    <Compile Include="Core\Collections\MovableObjectCollection.cs" />
+    <Compile Include="Core\Collections\NodeCollection.cs" />
+    <Compile Include="Core\Collections\SceneManagerCollection.cs" />
+    <Compile Include="Core\Collections\SceneNodeCollection.cs" />
+    <Compile Include="Core\Collections\SceneQueryMovableObjectIntersectionList.cs" />
+    <Compile Include="Core\Collections\SceneQueryMovableObjectWorldFragmentIntersectionList.cs" />
+    <Compile Include="Core\Collections\ViewportCollection.cs" />
+    <Compile Include="Core\DefaultShadowCameraSetup.cs" />
+    <Compile Include="Core\DistanceLodStrategy.cs" />
+    <Compile Include="Core\IAbstractFactory~1.cs" />
+    <Compile Include="Core\ILodListener.cs" />
     <Compile Include="Core\INamable.cs" />
+    <Compile Include="Core\IShadowCameraSetup.cs" />
+    <Compile Include="Core\LodStrategy.cs" />
+    <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\Meters.cs" />
+    <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Pair.cs" />
+    <Compile Include="Core\PixelCountStrategy.cs" />
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
     <Compile Include="Core\SceneManagerEnumerator.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
+    <Compile Include="Core\SpecialCaseRenderQueue.cs" />
     <Compile Include="Core\StaticGeometry\GeometryBucket.cs" />
     <Compile Include="Core\StaticGeometry\LODBucket.cs" />
     <Compile Include="Core\StaticGeometry\MaterialBucket.cs" />
@@ -205,6 +232,12 @@
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionCollection.cs" />
+    <Compile Include="Graphics\Collections\Lists.cs" />
+    <Compile Include="Graphics\Collections\RenderPriorityGroupList.cs" />
+    <Compile Include="Graphics\Collections\RenderSystemCollection.cs" />
+    <Compile Include="Graphics\Collections\RenderTargetCollection.cs" />
+    <Compile Include="Graphics\Collections\RenderWindowCollection.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />
     <Compile Include="Graphics\CompositionTargetPass.cs" />
     <Compile Include="Graphics\CompositionTechnique.cs" />
@@ -212,6 +245,12 @@
     <Compile Include="Graphics\CompositorChain.cs" />
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
+    <Compile Include="Graphics\HardwareOcclusionQuery.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
@@ -225,9 +264,12 @@
     <Compile Include="Math\Real.cs" />
     <Compile Include="Math\Spline.cs" />
     <Compile Include="Math\Tuple.cs" />
+    <Compile Include="Media\LinearResampler.Byte.cs" />
     <Compile Include="Media\LinearResampler.cs" />
+    <Compile Include="Media\LinearResampler.Float32.cs" />
     <Compile Include="Media\NearestResampler.cs" />
     <Compile Include="ParticleSystems\BillboardParticleRenderer.cs" />
+    <Compile Include="ParticleSystems\Collections\Lists.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -261,31 +303,10 @@
     <Compile Include="Animating\TagPoint.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Collections\AnimationCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\AnimationStateCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\AnimationTrackCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Collections\AxiomCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Collections\BillboardSetCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\BoneCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\CameraCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\ConfigOptionCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\EntityCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Collections\HashList.cs">
@@ -294,49 +315,16 @@
     <Compile Include="Collections\KeyFrameCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Collections\LightCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Collections\Lists.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\Map.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Collections\MeshCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Collections\MovableObjectCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Collections\NameValuePairList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Collections\NodeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\RenderSystemCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\RenderTargetCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\RenderWindowCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\SceneNodeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\SceneQueryMovableObjectIntersectionList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\SceneQueryMovableObjectWorldFragmentIntersectionList.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Collections\SubEntityCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Collections\ViewportCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration\Config.cs">
@@ -397,9 +385,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Camera.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Collections.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\ColorEx.cs">
@@ -535,9 +520,6 @@
     <Compile Include="Graphics\BufferStream.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Graphics\Collections.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Graphics\EdgeData.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -581,9 +563,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\IHardwareBufferLicensee.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Graphics\IHardwareOcclusionQuery.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\IRenderable.cs">
@@ -868,6 +847,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Serialization\StreamSerializer.cs" />
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />

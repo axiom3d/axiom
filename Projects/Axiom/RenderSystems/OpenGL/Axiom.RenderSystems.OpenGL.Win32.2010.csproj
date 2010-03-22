@@ -24,7 +24,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>http://localhost/Axiom.RenderSystems.OpenGL/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -39,6 +39,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -179,6 +180,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GLContext.cs" />
+    <Compile Include="GLCopyingRenderTexture.cs" />
     <Compile Include="GLCopyingRTTManager.cs" />
     <Compile Include="GLFBORenderTexture.cs" />
     <Compile Include="GLFBORTTManager.cs" />
