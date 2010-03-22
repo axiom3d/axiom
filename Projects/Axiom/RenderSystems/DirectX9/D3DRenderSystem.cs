@@ -1594,7 +1594,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 else
                 {
-                    device.SetRenderState( D3D.RenderState.ZEnable, D3D.ZBufferType.UseZBuffer );
+                    device.SetRenderState( D3D.RenderState.ZEnable, D3D.ZBufferType.DontUseZBuffer );
                 }
             }
         }
