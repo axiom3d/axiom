@@ -27,8 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
+using SDI = System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using Axiom.Media;
 #endregion Namespace Declarations
@@ -48,7 +49,51 @@ namespace Axiom.Plugins.SystemDrawingCodecs
         /// <param name="codecData">Extra data to use in order to describe the codec data.</param>
         public override void EncodeToFile( Stream input, string fileName, object codecData )
         {
-            throw new NotImplementedException();
+			ImageData data = (ImageData)codecData;
+		
+			// save the image to file
+            SDI.PixelFormat pf;
+            int bpp;
+
+            switch(data.format)
+            {
+                case Axiom.Media.PixelFormat.B8G8R8:
+                    pf=SDI.PixelFormat.Format24bppRgb;
+                    bpp=3;
+                    break;
+                case Axiom.Media.PixelFormat.A8B8G8R8:
+                    pf=SDI.PixelFormat.Format32bppRgb;
+                    bpp=4;
+                    break;
+
+                default:
+                    throw new ArgumentException("Unsupported Pixel Format " + data.format);
+
+            }
+            Bitmap image = new Bitmap(data.width, data.height, pf);
+
+            //Create a BitmapData and Lock all pixels to be written
+            SDI.BitmapData imagedta = image.LockBits(
+                                 new Rectangle(0, 0, image.Width, image.Height),
+                                 SDI.ImageLockMode.WriteOnly, image.PixelFormat);
+
+            byte[] buffer = new byte[input.Length];
+            input.Read(buffer, 0, buffer.Length);
+
+            for (int c = 0; c < buffer.Length-bpp; c+=bpp)
+            {
+                byte tmp = buffer[c];
+                buffer[c] = buffer[c+2];
+                buffer[c + 2] = tmp;
+            }
+
+            //Copy the data from the byte array into BitmapData.Scan0
+            Marshal.Copy(buffer, 0, imagedta.Scan0, buffer.Length);
+
+            //Unlock the pixels
+            image.UnlockBits(imagedta);
+
+            image.Save(fileName);
         }
 
         /// <summary>
@@ -67,7 +112,6 @@ namespace Axiom.Plugins.SystemDrawingCodecs
             ImageData data = new ImageData();
             Bitmap CurrentBitmap = null;
             int bytesPerPixel;
-            Axiom.Media.PixelFormat format;
             bool gray = false; // gray image is used by terrain's heightmap 
 
             try
@@ -80,13 +124,11 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 
                 switch ( CurrentBitmap.PixelFormat )
                 {
-                    case System.Drawing.Imaging.PixelFormat.Format24bppRgb:
-                        format = Axiom.Media.PixelFormat.B8G8R8;
+                    case SDI.PixelFormat.Format24bppRgb:
                         bytesPerPixel = 3;
                         break;
-                    case System.Drawing.Imaging.PixelFormat.Format32bppRgb:
-                    case System.Drawing.Imaging.PixelFormat.Format32bppArgb:
-                        format = Axiom.Media.PixelFormat.A8B8G8R8;
+                    case SDI.PixelFormat.Format32bppRgb:
+                    case SDI.PixelFormat.Format32bppArgb:
                         bytesPerPixel = 4;
                         break;
 
@@ -94,7 +136,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
                         throw new ArgumentException( "Unsupported Pixel Format " + CurrentBitmap.PixelFormat );
                 }
 
-                BitmapData Data = CurrentBitmap.LockBits( new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ), ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
+                SDI.BitmapData Data = CurrentBitmap.LockBits( new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ), SDI.ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
 
                 // populate the image data 
                 data.width = Data.Width;
