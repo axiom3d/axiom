@@ -38,6 +38,18 @@ using System.Windows.Forms;
 using Axiom.Graphics;
 using OpenTK;
 using OpenTK.Graphics;
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using SWF = System.Windows.Forms;
+
+using Axiom.Core;
+using Axiom.Collections;
+using Axiom.Graphics;
+using Axiom.Media;
+
+using Tao.OpenGl;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -85,17 +97,36 @@ namespace Axiom.RenderSystems.OpenGL
                 }
             }
         }
-
-        public void Destroy()
+        
+        protected override void dispose(bool disposeManagedResources)
         {
-            if (OTKGameWindow != null)
+            if (!isDisposed)
             {
-                if (fullScreen)
-                    displayDevice.RestoreResolution();
-                OTKGameWindow.Context.Dispose();
-                OTKGameWindow.Exit();
-                OTKGameWindow = null;
+                if (disposeManagedResources)
+                {
+                    if (glContext != null) // Do We Not Have A Rendering Context?
+                    {
+                        glContext.SetCurrent();
+                        glContext.Dispose();
+                        glContext = null;
+                    }
+
+                    if (OTKGameWindow != null)
+                    {
+                        if (fullScreen)
+                            displayDevice.RestoreResolution();
+                        OTKGameWindow.Context.Dispose();
+                        OTKGameWindow.Exit();
+                        OTKGameWindow = null;
+                    }
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
             }
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
         }
 
         /// <summary>
@@ -106,7 +137,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             get
             {
-                return OTKGameWindow == null;
+                return OTKGameWindow == null && glContext == null;
             }
         }
 
@@ -218,7 +249,6 @@ namespace Axiom.RenderSystems.OpenGL
                     OTKGameWindow.Icon = System.Drawing.Icon.ExtractAssociatedIcon(ico[0].Filename);
                 }
 
-                // full screen?
                 if (fullScreen)
                 {
                     displayDevice.ChangeResolution(width, height, ColorDepth, displayFrequency);
@@ -253,6 +283,7 @@ namespace Axiom.RenderSystems.OpenGL
             if (OTKGameWindow != null && !IsFullScreen)
             {
                 OTKGameWindow.Location = new System.Drawing.Point(left, right);
+                WindowEventMonitor.Instance.WindowMoved(this);
             }
         }
 
@@ -261,24 +292,79 @@ namespace Axiom.RenderSystems.OpenGL
             if (OTKGameWindow == null) return;
             OTKGameWindow.Width = width;
             OTKGameWindow.Height = height;
+            WindowEventMonitor.Instance.WindowResized(this);
         }
 
 		public override void WindowMovedOrResized() 
         {
             // Update dimensions incase changed
-			foreach (Axiom.Core.Viewport entry in this.viewportList.Values) 
+			foreach ( Viewport entry in this.viewportList.Values) 
             {
 				entry.UpdateDimensions();
 			}
 		}
 
-        public void SaveToFile(string fileName)
+        public override void CopyContentsToMemory(PixelBox dst, FrameBuffer buffer)
         {
-            throw new NotImplementedException();
-        }
-        public override void CopyContentsToMemory(PixelBox pb, FrameBuffer buffer)
-        {
-            throw new NotImplementedException();
+            if ((dst.Left < 0) || (dst.Right > Width) ||
+                (dst.Top < 0) || (dst.Bottom > Height) ||
+                (dst.Front != 0) || (dst.Back != 1))
+            {
+                throw new Exception("Invalid box.");
+            }
+            if (buffer == RenderTarget.FrameBuffer.Auto)
+            {
+                buffer = IsFullScreen ? RenderTarget.FrameBuffer.Front : RenderTarget.FrameBuffer.Back;
+            }
+
+            int format = GLPixelUtil.GetGLOriginFormat(dst.Format);
+            int type = GLPixelUtil.GetGLOriginDataType(dst.Format);
+
+            if ((format == Gl.GL_NONE) || (type == 0))
+            {
+                throw new Exception("Unsupported format.");
+            }
+
+
+            // Switch context if different from current one
+            RenderSystem rsys = Root.Instance.RenderSystem;
+            rsys.SetViewport(this.GetViewport(0));
+
+            // Must change the packing to ensure no overruns!
+            Gl.glPixelStorei(Gl.GL_PACK_ALIGNMENT, 1);
+
+            Gl.glReadBuffer((buffer == RenderTarget.FrameBuffer.Front) ? Gl.GL_FRONT : Gl.GL_BACK);
+            Gl.glReadPixels(dst.Left, dst.Top, dst.Width, dst.Height, format, type, dst.Data);
+
+            // restore default alignment
+            Gl.glPixelStorei(Gl.GL_PACK_ALIGNMENT, 4);
+
+            //vertical flip
+
+            {
+                int rowSpan = dst.Width * PixelUtil.GetNumElemBytes(dst.Format);
+                int height = dst.Height;
+                byte[] tmpData = new byte[rowSpan * height];
+                unsafe
+                {
+                    byte* dataPtr = (byte*)dst.Data.ToPointer();
+                    //int *srcRow = (uchar *)dst.data, *tmpRow = tmpData + (height - 1) * rowSpan;
+
+                    for (int row = height - 1, tmpRow = 0; row >= 0; row--, tmpRow++)
+                    {
+                        for (int col = 0; col < rowSpan; col++)
+                        {
+                            tmpData[tmpRow * rowSpan + col] = dataPtr[row * rowSpan + col];
+                        }
+
+                    }
+                }
+                IntPtr tmpDataHandle = Memory.PinObject( tmpData );                
+                Memory.Copy(tmpDataHandle, dst.Data, rowSpan * height);
+                Memory.UnpinObject( tmpData );
+
+            }
+
         }
 
         /// <summary>
@@ -295,6 +381,12 @@ namespace Axiom.RenderSystems.OpenGL
             if (OTKGameWindow != null)
             {
                 OTKGameWindow.ProcessEvents();
+                if (OTKGameWindow.Exists == false || OTKGameWindow.IsExiting == true)
+                {
+                    WindowEventMonitor.Instance.WindowClosed(this);
+                    return;
+                }
+                
                 if (OTKGameWindow.WindowState == WindowState.Minimized || !OTKGameWindow.Focused) return;
                 OTKGameWindow.SwapBuffers();
             }
