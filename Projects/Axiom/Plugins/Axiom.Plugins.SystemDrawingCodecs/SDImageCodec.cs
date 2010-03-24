@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+
 using SDI = System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -93,7 +95,35 @@ namespace Axiom.Plugins.SystemDrawingCodecs
             //Unlock the pixels
             image.UnlockBits(imagedta);
 
-            image.Save(fileName);
+            image.Save( fileName, ConvertImageFormat( fileName ) );
+        }
+
+        private ImageFormat ConvertImageFormat( string name )
+        {
+            if ( string.IsNullOrEmpty( name ) )
+                throw new ArgumentNullException("name");
+
+            if ( !Path.HasExtension( name ))
+                throw new ArgumentException("filename must have an extension.");
+
+            string ext = Path.GetExtension( name );
+
+            switch ( ext.ToLower() )
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return ImageFormat.Jpeg;
+                case ".bmp":
+                    return ImageFormat.Bmp;
+                case ".gif":
+                    return ImageFormat.Gif;
+                case ".png":
+                    return ImageFormat.Png;
+                case ".tiff":
+                    return ImageFormat.Tiff;
+                    
+            }
+            return ImageFormat.Png;
         }
 
         /// <summary>
