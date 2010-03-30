@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -49,7 +50,7 @@ namespace Axiom.Math
 	/// <summary>
 	///     2 dimensional vector.
 	/// </summary>
-	//[StructLayout(LayoutKind.Sequential)]
+	[StructLayout( LayoutKind.Sequential )]
 	public struct Vector2
 	{
 		#region Fields

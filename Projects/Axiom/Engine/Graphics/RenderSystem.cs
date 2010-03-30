@@ -540,15 +540,15 @@ namespace Axiom.Graphics
             --currentPassIterationCount;
 
             // TODO: Implement ActiveGpuProgramParameters
-            //if ( ActiveVertexGpuProgramParameters.isNull() )
+            //if ( ActiveVertexGpuProgramParameters != null )
             //{
-            //    mActiveVertexGpuProgramParameters->incPassIterationNumber();
-            //    bindGpuProgramPassIterationParameters(GPT_VERTEX_PROGRAM);
+            //    ActiveVertexGpuProgramParameters.IncrementPassIterationNumber();
+            //    bindGpuProgramPassIterationParameters( GpuProgramType.Vertex );
             //}
-            //if (!mActiveFragmentGpuProgramParameters.isNull())
+            //if ( ActiveFragmentGpuProgramParameters != null )
             //{
-            //    mActiveFragmentGpuProgramParameters->incPassIterationNumber();
-            //    bindGpuProgramPassIterationParameters(GPT_FRAGMENT_PROGRAM);
+            //    ActiveFragmentGpuProgramParameters.IncrementPassIterationNumber();
+            //    bindGpuProgramPassIterationParameters( GpuProgramType.Fragement );
             //}
             return true;
 

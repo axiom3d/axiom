@@ -346,7 +346,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isActive;
+				return _isActive && !isDisposed;
 			}
 			set
 			{
