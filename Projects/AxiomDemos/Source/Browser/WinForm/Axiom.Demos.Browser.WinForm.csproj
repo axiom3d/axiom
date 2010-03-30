@@ -213,10 +213,6 @@
       <Link>Media\PCZAppMedia\terrain2.cfg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="..\..\..\..\..\Media\Materials\XnaLogo.material">
-      <Link>Media\Materials\XnaLogo.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
