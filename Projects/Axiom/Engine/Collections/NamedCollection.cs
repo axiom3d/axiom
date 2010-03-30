@@ -217,10 +217,10 @@ namespace Axiom.Collections
 
         #region ICollection<T> Members
 
-        void ICollection<T>.Add( T item )
-        {
-            Add( item );
-        }
+        //void Add( T item )
+        //{
+        //    Add( item );
+        //}
 
         /// <summary>
         /// Clears all objects from the collection.
@@ -236,7 +236,7 @@ namespace Axiom.Collections
             return _dictionary.ContainsValue( item );
         }
 
-        void ICollection<T>.CopyTo( T[] array, int arrayIndex )
+        public void CopyTo( T[] array, int arrayIndex )
         {
             _dictionary.Values.CopyTo( array, arrayIndex );
         }
@@ -246,15 +246,15 @@ namespace Axiom.Collections
             get { return _dictionary.Count; }
         }
 
-        bool ICollection<T>.IsReadOnly
+        public bool IsReadOnly
         {
             get { return ( _dictionary as ICollection<T> ).IsReadOnly; }
         }
 
-        bool ICollection<T>.Remove( T item )
-        {
-            return Remove( item );
-        }
+        //bool Remove( T item )
+        //{
+        //    return Remove( item );
+        //}
 
         #endregion
 
@@ -278,22 +278,22 @@ namespace Axiom.Collections
 
         #region ICollection Members
 
-        void ICollection.CopyTo( Array array, int index )
+        public void CopyTo( Array array, int index )
         {
             _dictionary.Values.CopyTo( (T[])array, index );
         }
 
-        int ICollection.Count
-        {
-            get { return Count; }
-        }
+        //int ICollection.Count
+        //{
+        //    get { return Count; }
+        //}
 
-        bool ICollection.IsSynchronized
+        public bool IsSynchronized
         {
             get { return ( _dictionary.Values as ICollection ).IsSynchronized; }
         }
 
-        object ICollection.SyncRoot
+        public object SyncRoot
         {
             get { return ( _dictionary.Values as ICollection ).SyncRoot; }
         }

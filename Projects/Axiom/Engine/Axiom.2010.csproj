@@ -30,6 +30,7 @@
     <Version>
     </Version>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>http://localhost/Axiom/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -44,7 +45,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -125,6 +125,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\</OutputPath>
@@ -164,9 +165,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.DevIl, Version=1.6.7.0, Culture=neutral, PublicKeyToken=7ec4053013524957">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.DevIl.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
       <HintPath>..\..\..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -212,7 +210,6 @@
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\ManualObject.cs" />
-    <Compile Include="Core\Meters.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PixelCountStrategy.cs" />
@@ -853,6 +850,11 @@
     <Compile Include="Utilities\Proclaim.cs" />
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>

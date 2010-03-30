@@ -417,6 +417,15 @@ namespace Axiom.RenderSystems.DirectX9
         public override void Shutdown()
         {
 
+            if ( zBufferCache != null && zBufferCache.Count > 0 )
+            {
+                foreach ( D3D.Surface zBuffer in zBufferCache.Values )
+                {
+                    zBuffer.Dispose();
+                }
+                zBufferCache.Clear();
+            }
+
             _activeDriver = null;
             // dispose of the device
             if ( device != null && !device.Disposed )
