@@ -192,7 +192,7 @@ namespace Axiom.Core
     ///	loaded as part of a group.</li>
     ///	</ol>
     ///	<see>ResourceGroupManager.DeclareResource</see>
-    ///	<see>ResourceGroupManager.InitialiseResourceGroup</see>
+    ///	<see>ResourceGroupManager.InitializeResourceGroup</see>
     ///	<see>ResourceGroupManager.LoadResourceGroup</see>
     ///	<see>ResourceGroupManager.UnloadResourceGroup</see>
     ///	<see>ResourceGroupManager.ClearResourceGroup</see>

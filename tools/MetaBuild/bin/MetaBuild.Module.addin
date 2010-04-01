@@ -1,0 +1,8 @@
+<!--
+ ! Provides support for included and referenced modules defined by
+ ! MSBuild proejcts that import MetaBuild.Module.targets.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="MetaBuild.Module.shell.ext"
+          Condition="'$(MetaBuildProjectType)'=='Shell'" />
+</Project>

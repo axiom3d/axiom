@@ -1,0 +1,57 @@
+MetaBuild.Module AddIn
+======================
+
+The Module AddIn provides the ability to recursively include or reference
+modules to form complex hierarchies.
+
+An included module is one that is considered a subcomponent of its parent
+module.  It will be built in parallel with any other projects included
+by the module.
+
+A reference module is one that is considered a dependency of its parent
+module.  It will be built before other projects in the module.  If multiple
+modules are referenced, they are built in parallel with one another.
+
+
+Module and ModuleReference
+--------------------------
+
+This item provides support for including and referencing other modules.
+
+Item Synopsis
+
+  * Module
+    Represents an included module that should be built recursively as
+    a subcomponent of this module.
+
+  * ModuleReference
+    Represents a referenced module that should be built recursively prior
+    to building the other components of this module.
+
+Item Metadata
+
+  * Properties (OPTIONAL)
+    Specifies custom MSBuild properties for the module.
+
+  * Configuration (OPTIONAL)
+    Specifies the build configuration.
+    Default value: $(Configuration)
+
+  * Platform (OPTIONAL)
+    Specifies the build platform.
+    Default value: $(Platform)
+
+  Warning: The Properties, Configuration and Platform metadata must be set
+           identically each time a module is referenced.  Otherwise the
+	   module may end up being rebuilt multiple times.
+
+Item Syntax
+
+  <ItemGroup>
+    <Module Include="IncludedModule.module">
+      <Properties>...</Properties>
+      <Configuration>...</Configuration>
+      <Platform>...</Platform>
+    </Module>
+  </ItemGroup>
+

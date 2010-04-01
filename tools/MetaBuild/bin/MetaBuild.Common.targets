@@ -1,0 +1,33 @@
+<!--
+ ! Custom targets that may be injected into "Common" project files
+ ! derived from Microsoft.Common.targets such as CSharp, VisualBasic
+ ! and VisualJ projects.
+ !
+ ! This targets file enables MetaBuild to extend the standard project types
+ ! with additional behaviors.  Refer to the documentation for more details
+ ! including instructions on how to edit the project files to install
+ ! customizations.  
+ !
+ ! IMPORTANT NOTE: This file must remain compatible with MSBuild v2
+ !   so that it can work in the context of older Visual Studio 2005 projects.
+ !-->
+<Project InitialTargets="VerifyMetaBuildBinDir" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Detect case where the MetaBuild targets have been loaded twice since both
+       MetaBuild.Common.targets and Custom.After.Microsoft.Common.targets might be in play. -->
+  <PropertyGroup Condition="'$(MetaBuildProjectType)'==''">
+    <UsingMetaBuildCommonTargets>true</UsingMetaBuildCommonTargets>
+    
+    <MetaBuildProjectType>Common</MetaBuildProjectType>
+    <MetaBuildContribDir Condition="'$(MetaBuildContribDir)'==''">$(MetaBuildBinDir)\..\contrib</MetaBuildContribDir>
+    <MetaBuildConfigFile Condition="'$(MetaBuildConfigFile)'==''">$(MetaBuildBinDir)\MetaBuild.config</MetaBuildConfigFile>
+  </PropertyGroup>
+
+  <!-- Import the base MetaBuild targets to load the configuration file. -->
+  <Import Project="MetaBuild.targets"
+          Condition="'$(UsingMetaBuildCommonTargets)'=='true' and '$(MetaBuildBinDir)'!=''" />
+  
+  <Target Name="VerifyMetaBuildBinDir">
+    <Error Text="The MetaBuild.Common.targets file was imported into $(MSBuildProjectFullPath) but the MetaBuildBinDir property has not been defined in the project."
+           Condition="'$(MetaBuildBinDir)'==''" />
+  </Target>
+</Project>

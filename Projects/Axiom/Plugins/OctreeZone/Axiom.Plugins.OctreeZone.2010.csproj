@@ -95,6 +95,7 @@
     <Compile Include="TerrainZoneRenderable.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="axiom.plugin.octreezone.module" />
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>

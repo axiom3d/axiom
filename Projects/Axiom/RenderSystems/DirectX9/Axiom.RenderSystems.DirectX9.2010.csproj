@@ -255,6 +255,9 @@
       <Name>Axiom.2010</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="axiom.rendersystem.directx9.module" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
     <PreBuildEvent>

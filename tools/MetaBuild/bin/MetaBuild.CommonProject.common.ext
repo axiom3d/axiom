@@ -1,0 +1,161 @@
+<!--
+ ! Adds support for setting the assembly version of a CSharp or VisualBasic
+ ! assembly.  This file is not intended to be used directly.
+ !
+ ! Remarks:
+ !   This target file is injected into existing CSharp and VisaulBasic projects
+ !   by setting the CustomAfterMicrosoftCommonTargets to the MetaBuild
+ !   provided Custom.After.Microsoft.Common.targets which in the default
+ !   configuration will cause this file to be loaded.
+ !
+ !   The version is specified by the Version property.
+ !
+ ! Implementation Note:
+ !   This script avoids using MSBuild v3.5 features in case the containing
+ !   project does not have the ToolsVersion="3.5" attribute applied to it.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Default the ProjectAssemblyFileVersion and ProjectAssemblyVersion properties -->
+    <ProjectAssemblyFileVersion Condition="'$(ProjectAssemblyFileVersion)'==''">0.0.0.0</ProjectAssemblyFileVersion>
+    <ProjectAssemblyVersion Condition="'$(ProjectAssemblyVersion)'==''">0.0.0.0</ProjectAssemblyVersion>
+    <GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)'==''">true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Language)'=='C#'">
+    <AssemblyInfoExtension>.cs</AssemblyInfoExtension>
+    <AssemblyInfoContent>using System.Reflection%3B;[assembly: AssemblyFileVersion("$(ProjectAssemblyFileVersion)")];[assembly: AssemblyVersion("$(ProjectAssemblyVersion)")]</AssemblyInfoContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Language)'=='VB'">
+    <AssemblyInfoExtension>.vb</AssemblyInfoExtension>
+    <AssemblyInfoContent>Imports System.Reflection;%3CAssembly: AssemblyFileVersion("$(ProjectAssemblyFileVersion)")%3E;%3CAssembly: AssemblyVersion("$(ProjectAssemblyVersion)")%3E</AssemblyInfoContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Language)'=='VJ#'">
+    <AssemblyInfoExtension>.jsl</AssemblyInfoExtension>
+    <AssemblyInfoContent>import System.Reflection.*;%3B;/** @assembly AssemblyFileVersion("$(ProjectAssemblyFileVersion)") */;/** @assembly AssemblyVersion("$(ProjectAssemblyVersion)") */</AssemblyInfoContent>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyInfoFile></AssemblyInfoFile>
+    <AssemblyInfoFile Condition="'$(BuildingInsideVisualStudio)'!='true' and '$(AssemblyInfoExtension)'!=''">$(IntermediateOutputPath)AdditionalAssemblyInfo$(AssemblyInfoExtension)</AssemblyInfoFile>
+    <CoreCleanDependsOn>
+      CleanAdditionalAssemblyInfo;
+      $(CoreCleanDependsOn)
+    </CoreCleanDependsOn>
+    <CompileDependsOn>
+      GenerateAdditionalAssemblyInfo;
+      $(CompileDependsOn);
+    </CompileDependsOn>
+    <DefineConstants>$(DefineConstants);HAVE_ASSEMBLY_VERSION</DefineConstants>
+    
+    <ConventionalOwnerModuleCandidate>$(MSBuildProjectDirectory)\$(MSBuildProjectName).module</ConventionalOwnerModuleCandidate>
+    
+    <GetContentToCopyDependsOn>PopulateContentToCopyFromContentFiles</GetContentToCopyDependsOn>
+    <GetOutputToCopyDependsOn>PopulateOutputToCopyFromOutputFiles</GetOutputToCopyDependsOn>
+    <GetOwnerModuleDependsOn>PopulateOwnerModuleFromConventionalOwnerModuleCandidate</GetOwnerModuleDependsOn>
+    <GetModuleReferencesDependsOn>PopulateModuleReferencesRecursively</GetModuleReferencesDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanAdditionalAssemblyInfo">
+    <Delete Files="$(AssemblyInfoFile)" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Condition="'$(AssemblyInfoFile)'!='' and $(GenerateAssemblyInfo)=='true'"
+             Include="$(AssemblyInfoFile)" />
+  </ItemGroup>
+
+  <Target Name="GenerateAdditionalAssemblyInfo"
+          Condition="'$(AssemblyInfoFile)'!='' and $(GenerateAssemblyInfo)=='true'">
+    <WriteLinesToFile File="$(AssemblyInfoFile)"
+                      Lines="$(AssemblyInfoContent)"
+                      Overwrite="true">
+    </WriteLinesToFile>
+
+    <!-- Force the timestamp into the distant past so that this file
+         never appears to have been changed.  This is to avoid redundantly
+         recompiling the assembly because of the AssemblyInfo. -->
+    <Touch Files="$(AssemblyInfoFile)"
+           Time="1970/01/01" />
+
+    <CreateItem Include="$(AdditionalAssemblyInfo)">
+      <Output TaskParameter="Include" ItemName="FileWrites" />
+    </CreateItem>
+  </Target>
+
+  <!-- GetContentToCopy
+       Called by the common project module when the ImageContentPath metadata is specified
+       so that the project's content files can be copied.
+  -->
+  <Target Name="GetContentToCopy"
+          DependsOnTargets="$(GetContentToCopyDependsOn)"
+          Outputs="@(ContentToCopy)" />
+
+  <Target Name="PopulateContentToCopyFromContentFiles"
+          DependsOnTargets="ContentFilesProjectOutputGroup">
+    <CreateItem Include="@(ContentFilesProjectOutputGroupOutput)">
+      <Output TaskParameter="Include" ItemName="ContentToCopy" />
+    </CreateItem>
+  </Target>
+
+  <!-- GetContentToCopy
+       Called by the common project module when the ImageOutputPath metadata is specified
+       so that the project's content files can be copied.
+  -->
+  <Target Name="GetOutputToCopy"
+          DependsOnTargets="$(GetOutputToCopyDependsOn)"
+          Outputs="@(OutputToCopy)" />
+
+  <Target Name="PopulateOutputToCopyFromOutputFiles">
+    <CreateItem Include="$(OutputPath)\**\*">
+      <Output TaskParameter="Include" ItemName="OutputToCopyNoTargetPath" />
+    </CreateItem>
+
+    <CreateItem Include="@(OutputToCopyNoTargetPath->'%(FullPath)')"
+                Condition="'@(OutputToCopyNoTargetPath)'!=''"
+                AdditionalMetadata="TargetPath=%(RecursiveDir)%(Filename)%(Extension)">
+      <Output TaskParameter="Include" ItemName="OutputToCopy" />
+    </CreateItem>
+  </Target>
+  
+  <!-- GetOwnerModule
+       Determines the module that owns this project.  This is used to automatically
+       populate module references based on project dependencies.
+  -->
+  <Target Name="GetOwnerModule"
+          DependsOnTargets="$(GetOwnerModuleDependsOn)"
+          Outputs="@(OwnerModule)" />
+  
+  <Target Name="PopulateOwnerModuleFromConventionalOwnerModuleCandidate">
+    <CreateProperty Value="$(ConventionalOwnerModuleCandidate)"
+                    Condition="Exists('$(ConventionalOwnerModuleCandidate)')">
+      <Output TaskParameter="Value" ItemName="OwnerModule" />
+    </CreateProperty>
+  </Target>
+  
+  <!-- GetModuleReferences
+       Gets all modules referenced by this project using the ownership relations.
+  -->
+  <Target Name="GetModuleReferences"
+          Outputs="@(ModuleReference)"
+          DependsOnTargets="$(GetModuleReferencesDependsOn)" />
+  
+  <PropertyGroup>
+    <PopulateModuleReferencesRecursivelyDependsOn>SplitProjectReferencesByType;_SplitProjectReferencesByFileExistence</PopulateModuleReferencesRecursivelyDependsOn>
+    <PopulateModuleReferencesRecursivelyDependsOn Condition="'$(MSBuildToolsVersion)'=='4.0'">AssignProjectConfiguration;_SplitProjectReferencesByFileExistence</PopulateModuleReferencesRecursivelyDependsOn>
+  </PropertyGroup>
+
+  <Target Name="PopulateModuleReferencesRecursively"
+          DependsOnTargets="$(PopulateModuleReferencesRecursivelyDependsOn)">
+    <MSBuild
+            Projects="@(_MSBuildProjectReferenceExistent)"
+            Targets="GetOwnerModule;GetModuleReferences"
+            Condition="'@(_MSBuildProjectReferenceExistent)' != ''">
+      <Output TaskParameter="TargetOutputs" ItemName="_ModuleReference" />
+    </MSBuild>
+    
+    <RemoveDuplicates Inputs="@(_ModuleReference)">
+      <Output TaskParameter="Filtered" ItemName="ModuleReference"/>
+    </RemoveDuplicates>
+  </Target>
+</Project>
