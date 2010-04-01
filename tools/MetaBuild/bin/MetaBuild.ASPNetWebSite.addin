@@ -1,0 +1,9 @@
+<!--
+ ! Provides support for ASP.Net web site precompilation.
+ !
+ ! Refer to MetaBuild.ASPNet.txt for documentation.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="MetaBuild.ASPNetWebSite.shell.ext"
+          Condition="'$(MetaBuildProjectType)'=='Shell'" />
+</Project>

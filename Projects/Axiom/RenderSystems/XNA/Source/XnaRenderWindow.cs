@@ -43,12 +43,9 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-using Microsoft.Xna.Framework.Graphics;
-
 using RenderTarget=Axiom.Graphics.RenderTarget;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
-using Axiom.Graphics.Collections;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
 #endif

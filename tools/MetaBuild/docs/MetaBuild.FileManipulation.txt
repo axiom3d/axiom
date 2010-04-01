@@ -1,0 +1,87 @@
+MetaBuild.FileManipulation AddIn
+========================
+
+Provides support for copying files and folders and creating archives
+declaratively.  This is adequate for many simple purposes such as
+ensuring that compiled binaries are copied into the right locations.
+
+If your needs are more complex, you should instead override one of the
+standard build target extension points, such as the AfterBuild target
+and write your own sequence of MSBuild tasks within a module.
+
+eg. <Target Name="AfterBuild">
+      <!-- Do something interesting here... -->
+    </Target>
+
+
+File
+----
+
+Item Synopsis
+
+  * File
+    Specifies the path of one or more files to copy.
+    May use the ** wildcard to copy files recursively.
+    eg. foo\**\*.txt
+
+Item Metadata
+
+  * ImagePath (OPTIONAL)
+    Specifies the path relative to $(ImageDir) to which the files
+    and directories are to be copied during the Image pass.
+
+  * DistPath (OPTIONAL)
+    Specifies the path relative to $(DistDir) to which the files
+    and directories are to be copied during the Dist pass.
+
+  At least one of the above metadata items should be specified as otherwise
+  the item will have no effect.
+
+Item Syntax
+
+  <ItemGroup>
+    <File Include="docs\**\*.txt">
+      <ImagePath>Project\docs</ImagePath>
+    </File>
+  </ItemGroup>
+
+
+Zip
+---
+
+Item Synopsis
+
+  * Zip
+    Specifies the path of one or more files to archive into a ZIP file.
+    May use the ** wildcard to copy files recursively.
+
+Item Metadata
+
+  * ImagePath (OPTIONAL)
+    Specifies the path relative to $(ImageDir) of a ZIP file to create
+    during the Image pass.
+
+  * DistPath (OPTIONAL)
+    Specifies the path relative to $(DistDir) of a ZIP file to create
+    during the Dist pass.
+
+  At least one of the above metadata items should be specified as otherwise
+  the item will have no effect.
+
+  * BaseDir (OPTIONAL)
+    Specifies the base path for files that are to be added to the ZIP.
+    The paths of the files within the archive will be made relative to
+    the BaseDir.  So if the file path is "foo/bar/baz.txt" and BaseDir
+    is "foo" then the file will be stored as "bar/baz.txt" in the ZIP.
+
+    Default: $(ModuleDir)
+
+Item Syntax
+
+  <ItemGroup>
+    <Zip Include="docs\**\*.txt">
+      <ImagePath>Project\docs.zip</ImagePath>
+      <BaseDir>docs</BaseDir>
+    </Zip>
+  </ItemGroup>
+

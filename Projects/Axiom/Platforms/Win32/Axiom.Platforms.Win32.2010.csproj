@@ -194,6 +194,9 @@
       <Name>Axiom.2010</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="axiom.platform.win32.module" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
     <PreBuildEvent>

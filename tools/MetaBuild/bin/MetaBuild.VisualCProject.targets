@@ -1,0 +1,56 @@
+<!--
+ ! Custom targets for building Visual C++ projects.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <!-- Import the base MetaBuild targets. -->
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Shell.targets" />
+
+  <PropertyGroup>
+    <CoreCleanDependsOn>$(CoreCleanDependsOn);CleanVisualCProject</CoreCleanDependsOn>
+    <CoreBuildDependsOn>$(CoreBuildDependsOn);BuildVisualCProject</CoreBuildDependsOn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CompilerVersion)'=='8.0'">
+    <VCToolPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\8.0\Setup\VC\@ProductDir)\vcpackages\</VCToolPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CompilerVersion)'=='9.0'">
+    <VCToolPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\9.0\Setup\VC\@ProductDir)\vcpackages\</VCToolPath>
+  </PropertyGroup>
+
+  <Target Name="CleanVisualCProject">
+    <!-- Always use Win32 for the platform -->
+    <VCBuild UserEnvironment="" Projects="$(ProjectPath)"
+             Configuration="$(Configuration)"
+             ToolPath="$(VCToolPath)" 
+	     Platform="Win32"
+	     AdditionalOptions="$(AdditionalOptions)"
+	     UseEnvironment="false" 
+	     Clean="true" />
+  </Target>
+
+  <Target Name="BuildVisualCProject">
+    <Message Importance="low" Text="
+			 VCBuild...
+       %0AProjects='$(ProjectPath)'
+       %0AConfiguration='$(Configuration)'
+       %0AToolPath='$(VCToolPath)'
+	     %0APlatform='$(Platform)'
+	     %0AAdditionalOptions='$(AdditionalOptions)'
+	     %0AUseEnvironment='false'
+       %0A" />
+
+    <Error Condition="'$(Configuration)'==''" Text="Configuration not specified for VCBuild" />
+
+    <!-- Always use Win32 for the platform -->
+    <VCBuild Projects="$(ProjectPath)"
+             Configuration="$(Configuration)"
+             ToolPath="$(VCToolPath)" 
+	           Platform="Win32"
+	           AdditionalOptions="$(AdditionalOptions)"
+	           UseEnvironment="false" /> 
+
+    <Message Importance="High"
+             Text="Visual C++ $(CompilerVersion) project $(ProjectPath)." />
+  </Target>
+</Project>

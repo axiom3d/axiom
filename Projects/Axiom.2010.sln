@@ -28,6 +28,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5326DA77-945E-47D4-B9D8-D2AF047D5D63}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E8E2F297-B384-4311-B5C0-F6AB9354D91B}"
+	ProjectSection(SolutionItems) = preProject
+		Axiom\axiom.core.module = Axiom\axiom.core.module
+		Axiom.msbuild = Axiom.msbuild
+		AxiomDemos\axiom.samples.module = AxiomDemos\axiom.samples.module
+		axiom.sdk.module = axiom.sdk.module
+		Tests\axiom.tests.module = Tests\axiom.tests.module
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32.2010", "Axiom\Platforms\Win32\Axiom.Platforms.Win32.2010.csproj", "{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}"
 EndProject
@@ -64,6 +71,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.Content.x86.2010", "Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.2010.csproj", "{6E5E6221-0235-49C9-9273-449F5F0E8EF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Browser.WinForm.Linux.2010", "AxiomDemos\Source\Browser\WinForm\Axiom.Demos.Browser.WinForm.Linux.2010.csproj", "{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.SystemDrawingCodecs.2010", "Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.2010.csproj", "{7440613A-4487-46BE-998E-25F554ACE980}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -349,6 +358,18 @@ Global
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Release|Any CPU.ActiveCfg = Release|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Release|x86.ActiveCfg = Release|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Release|x86.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|x86.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Debug|x86.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Mono-Debug|Any CPU.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Mono-Debug|x86.ActiveCfg = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Mono-Debug|x86.Build.0 = Debug|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Mono-Release|Any CPU.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Mono-Release|x86.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Mono-Release|x86.Build.0 = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|Any CPU.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|x86.ActiveCfg = Release|x86
+		{7440613A-4487-46BE-998E-25F554ACE980}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -373,6 +394,7 @@ Global
 		{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7} = {DC26813F-4527-477E-8068-272E10CF5C37}
+		{7440613A-4487-46BE-998E-25F554ACE980} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{C7286349-8DBA-4A39-991C-3D848AB10CCE} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}

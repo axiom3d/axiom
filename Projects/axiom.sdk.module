@@ -1,0 +1,33 @@
+<Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup> 
+    <Module Include="Axiom\axiom.core.module">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </Module>
+	  <Module Include="Axiom\axiom.core.module">
+  		<Configuration>Release</Configuration>
+  		<Platform>x86</Platform>
+	  </Module>
+
+    <Module Include="Axiom\axiom.core.module">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox</Platform>
+    </Module>
+    <Module Include="Axiom\axiom.core.module">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox</Platform>
+    </Module>
+
+    <Module Include="AxiomDemos\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </Module>
+    <Module Include="Tests\axiom.tests.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </Module>
+  </ItemGroup>
+
+</Project>

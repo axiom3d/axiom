@@ -1,0 +1,65 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <ItemDefinitionGroup>
+    <ASPNetWebSite>
+      <ImagePath></ImagePath>
+      <VirtualPath>/</VirtualPath>
+      <Debug>false</Debug>
+      <Debug Condition="'$(Configuration)'=='' or '$(Configuration)'=='Debug'">true</Debug>
+      <Updateable>false</Updateable>
+      <Updateable Condition="'$(Configuration)'=='' or '$(Configuration)'=='Debug'">true</Updateable>
+      <Force>true</Force>
+      <Configuration>$(Configuration)</Configuration>
+      <Platform>$(Platform)</Platform>
+      <References></References>
+    </ASPNetWebSite>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup>
+    <LoadAddInsDependsOn>$(LoadAddInsDependsOn);LoadASPNetAddIn</LoadAddInsDependsOn>
+    <CoreCleanDependsOn>CreateTemporaryASPNetWebSiteProjects;$(CoreCleanDependsOn)</CoreCleanDependsOn>
+    <CoreBuildDependsOn>CreateTemporaryASPNetWebSiteProjects;$(CoreBuildDependsOn)</CoreBuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="LoadASPNetAddIn"
+          Condition="'@(ASPNetWebSite)'!=''">
+    <Error Text="ASP.Net website '%(ASPNetWebSite.Identity)' is missing the required ImagePath metadata."
+           Condition="'%(ASPNetWebSite.Identity)'!='' and '%(ASPNetWebSite.ImagePath)'==''" />
+
+    <ItemGroup>
+      <Project Include="@(ASPNetWebSite->'$(TempDir)\%(Filename).aspnetproj')">
+        <Configuration>%(Configuration)</Configuration>
+        <Platform>%(Platform)</Platform>
+        <SupportsCleanTarget>true</SupportsCleanTarget>
+        <SupportsBuildTarget>true</SupportsBuildTarget>
+        <SupportsImageTarget>true</SupportsImageTarget>
+        <SupportsTestTarget>true</SupportsTestTarget>
+        <SupportsDistTarget>true</SupportsDistTarget>
+        <SupportsDebugTarget>true</SupportsDebugTarget>
+        <Kind>ASPNetWebSite</Kind>
+      </Project>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CreateTemporaryASPNetWebSiteProjects"
+          Condition="'@(ASPNetWebSite)'!=''">
+    <WriteLinesToFile File="@(ASPNetWebSite->'$(TempDir)\%(Filename).aspnetproj')"
+                      Lines="
+      &lt;Project xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot; ToolsVersion=&quot;3.5&quot;&gt;;
+        &lt;PropertyGroup&gt;;
+          &lt;ModuleDir&gt;$(ModuleDir)&lt;/ModuleDir&gt;;
+          &lt;PhysicalPath&gt;%(FullPath)&lt;/PhysicalPath&gt;;
+          &lt;TargetPath&gt;$(ImageDir)\%(ImagePath)&lt;/TargetPath&gt;;
+          &lt;VirtualPath&gt;%(VirtualPath)&lt;/VirtualPath&gt;;
+          &lt;Debug&gt;%(Debug)&lt;/Debug&gt;;
+          &lt;Updateable&gt;%(Updateable)&lt;/Updateable&gt;;
+          &lt;Force&gt;%(Force)&lt;/Force&gt;;
+        &lt;/PropertyGroup&gt;;
+        &lt;ItemGroup&gt;;
+          %(References);
+        &lt;/ItemGroup&gt;;
+        &lt;Import Project=&quot;$(MetaBuildBinDir)\MetaBuild.ASPNetWebSite.targets&quot; /&gt;;
+      &lt;/Project&gt;"
+                      Overwrite="true" />
+  </Target>
+</Project>
+

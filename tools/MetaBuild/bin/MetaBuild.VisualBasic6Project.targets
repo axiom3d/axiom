@@ -1,0 +1,245 @@
+<!--
+ ! Custom targets for the building Visual Basic 6 projects.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <!-- Import the base MetaBuild targets. -->
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Shell.targets" />
+
+  <ItemGroup>
+    <VB6Project Include="$(ProjectPath)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <CoreBuildDependsOn>$(CoreBuildDependsOn);BuildVisualBasic6Project</CoreBuildDependsOn>
+
+    <VB6Dir Condition="'$(VB6Dir)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\6.0\Setup\Microsoft Visual Basic\@ProductDir)</VB6Dir>
+    <VB6Dir Condition="'$(VB6Dir)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\VisualStudio\6.0\Setup\Microsoft Visual Basic\@ProductDir)</VB6Dir>
+    <VB6Exe Condition="'$(VB6Exe)'=='' and '$(VB6Dir)'!='' and Exists('$(VB6Dir)\vb6.exe')">$(VB6Dir)\vb6.exe</VB6Exe>
+  </PropertyGroup>
+
+  <!-- 
+   ! Analyze the *.vbp file and parse out some of the contents
+   ! We are interested in the dll references, module references and class references
+   ! so that we can pass them as inputs to the CompileVisualBasic6Project target
+   ! and perform incremental builds correctly
+  -->
+  <Target Name="ParseVisualBasic6Project">
+    <PropertyGroup>
+      <TempProjectPath>%(VB6Project.RootDir)%(VB6Project.Directory)\%(VB6Project.Filename).tmp.vbp</TempProjectPath>
+      <TempProjectLog>$(TempDir)\%(VB6Project.Filename).log</TempProjectLog>
+      <OutputPath>%(VB6Project.RootDir)%(VB6Project.Directory)bin</OutputPath>
+      <SourcePath>%(VB6Project.RootDir)%(VB6Project.Directory)</SourcePath>
+    </PropertyGroup>
+
+    <ReadLinesFromFile File="$(ProjectPath)">
+      <Output TaskParameter="Lines" ItemName="VB6ProjectLine" />
+    </ReadLinesFromFile>
+
+    <!-- Patch version number -->
+    <RegexReplace Input="@(VB6ProjectLine)"
+                  Expression="^MajorVer=.*"
+                  Replacement="MajorVer=$(MajorVer)">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_1" />
+    </RegexReplace>
+
+    <RegexReplace Input="@(VB6ProjectLine_1)"
+                  Expression="^MinorVer=.*"
+                  Replacement="MinorVer=$(MinorVer)">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_2" />
+    </RegexReplace>
+
+    <RegexReplace Input="@(VB6ProjectLine_2)"
+                  Expression="^RevisionVer=.*"
+                  Replacement="RevisionVer=$(RevisionVer)">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_3" />
+    </RegexReplace>
+
+    <!-- Disable auto-incrementing version numbers since we specify it explicitly -->
+    <RegexReplace Input="@(VB6ProjectLine_3)"
+                  Expression="^AutoIncrementVer=.*"
+                  Replacement="AutoIncrementVer=0">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_4" />
+    </RegexReplace>
+
+    <!-- Disable debugging info -->
+    <RegexReplace Input="@(VB6ProjectLine_4)"
+                  Expression="^CodeViewDebugInfo=.*"
+                  Replacement="CodeViewDebugInfo=0">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_5" />
+    </RegexReplace>
+
+    <!-- Replace references to COM dlls and TLBs that contain GUIDs with their raw
+         location on disk to prevent accidentally pulling a different locally registered
+         copy. -->
+    <RegexReplace Input="@(VB6ProjectLine_5)"
+                  Expression="(?&lt;=^Reference=)[^#]*#[^#]*#[^#]*#">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_6" />
+    </RegexReplace>
+
+    <RegexReplace Input="@(VB6ProjectLine_6)"
+                  Expression="(?&lt;=^Reference=[^#]*)#.*">
+      <Output TaskParameter="Output" ItemName="VB6ProjectLine_Final" />
+    </RegexReplace>
+    
+    <!-- 
+     ! Parse the references. These occur in two different formats, e.g. 
+     ! Reference=..\..\Dependencies\dll\cdosys.DLL
+     ! Reference=*\G{CD000000-8B95-11D1-82DB-00C04FB1625D}#1.0#0#..\..\Dependencies\dll\cdosys.DLL#Microsoft CDO for Windows 2000 Library 
+     !
+     ! Also, some references end with \3, e.g. ...\dll\vbscript.dll\3
+     ! We need to strip that \3 (which is some kind of user option)
+    -->
+    
+    <!-- Match all lines that have no hashs in them -->
+    <RegexMatch Input="%(VB6ProjectLine.Identity)"
+                Expression="^Reference=[^#]*$">
+      <Output TaskParameter="Output" ItemName="VB6ReferenceLineFormat1" />
+    </RegexMatch>
+
+    <!-- Match all lines that have hashs in them -->
+    <RegexMatch Input="%(VB6ProjectLine.Identity)"
+                Expression="^Reference=.*#.*$">
+      <Output TaskParameter="Output" ItemName="VB6ReferenceLineFormat2" />
+    </RegexMatch>
+
+    <RegexReplace Input="%(VB6ReferenceLineFormat1.Identity)"
+                  Expression="^Reference=(.*)$"
+                  Replacement="$1">
+      <Output TaskParameter="Output" ItemName="VB6ProvisionalReference" />
+    </RegexReplace>
+
+    <!-- Pick out the 4th column defined by # characters -->
+    <RegexReplace Input="%(VB6ReferenceLineFormat2.Identity)"
+                  Expression="^Reference=(.*)#(.*)#(.*)#(.*)#(.*)$"
+                  Replacement="$4">
+      <Output TaskParameter="Output" ItemName="VB6ProvisionalReference" />
+    </RegexReplace>
+
+    <!-- Finally remove any \3 user options appended to the end of the references -->
+    <RegexReplace Input="%(VB6ProvisionalReference.Identity)"
+                  Expression="^(.*)\\3$"
+                  Replacement="$1">
+      <Output TaskParameter="Output" ItemName="VB6Reference" />
+    </RegexReplace>
+
+    <!-- Parse the module references: e.g. Module=Definitions; ..\..\Common\Definitions.bas -->
+    <RegexMatch Input="%(VB6ProjectLine.Identity)"
+                Expression="^Module=.*">
+      <Output TaskParameter="Output" ItemName="VB6ModuleReferenceLine" />
+    </RegexMatch>
+
+    <!-- %3B is the semicolon -->
+    <RegexReplace Input="%(VB6ModuleReferenceLine.Identity)"
+                  Expression="^Module=.*%3B\s+"
+                  Replacement="">
+      <Output TaskParameter="Output" ItemName="VB6ModuleReference" />
+    </RegexReplace>
+
+    <!-- Parse the class references: e.g. Class=CacheManager; CacheManager.cls -->
+    <RegexMatch Input="%(VB6ProjectLine.Identity)"
+                  Expression="^Class=.*">
+      <Output TaskParameter="Output" ItemName="VB6ClassReferenceLine" />
+    </RegexMatch>
+
+    <!-- %3B is the semicolon -->
+    <RegexReplace Input="%(VB6ClassReferenceLine.Identity)"
+                  Expression="^Class=.*%3B\s+"
+                  Replacement="">
+      <Output TaskParameter="Output" ItemName="VB6ClassReference" />
+    </RegexReplace>
+
+    <!-- Parse the output file name: e.g. ExeName32="KeenVB.dll" -->
+    <RegexMatch Input="%(VB6ProjectLine.Identity)"
+                  Expression="^ExeName32=.*">
+      <Output TaskParameter="Output" ItemName="VB6ExeNameLine" />
+    </RegexMatch>
+
+    <!-- %22 is the double quote -->
+    <RegexReplace Input="@(VB6ExeNameLine)"
+                  Expression="^ExeName32=%22(.*)%22"
+                  Replacement="$1">
+      <Output TaskParameter="Output" ItemName="VB6Exename" />
+    </RegexReplace>
+
+    <ItemGroup>
+      <VB6Inputs Include="
+          @(VB6Reference->'$(SourcePath)%(Identity)');
+          @(VB6ModuleReference->'$(SourcePath)%(Identity)');
+          @(VB6ClassReference->'$(SourcePath)%(Identity)')" />
+    </ItemGroup>
+
+    <!--
+    <Message Importance="Low" Text="  Inputs:%0A@(VB6Inputs, '%0A')"/>
+    <Message Importance="Low" Text="  Outputs:%0A@(VB6Exename->'$(OutputPath)\%(Identity)', '%0A')"/>
+    -->
+
+    <!-- If any of the inputs are missing then generate an error -->
+    <Error Condition="!Exists('%(VB6Inputs.Identity)')" Text="Missing input %(VB6Inputs.Identity)" />
+  </Target>
+
+  <Target Name="CompileVisualBasic6Project" 
+          Inputs="@(VB6Inputs)" 
+          Outputs="@(VB6Exename->'$(OutputPath)\%(Identity)')">
+    <Message Importance="High"
+             Text="Visual Basic project $(ProjectPath)." />
+
+    <Error Text="Visual Basic 6 compiler not found.  Perhaps it is not installed."
+           Condition="'$(VB6Exe)'==''" />
+
+    <!-- The vb6.exe compiler appears to fail if the bin folder does not already exist -->
+    <MakeDir Directories="$(OutputPath)" Condition="!Exists($(OutputPath))" />
+
+    <WriteLinesToFile File="$(TempProjectPath)"
+                      Lines="@(VB6ProjectLine_Final)"
+                      Overwrite="true" />
+
+    <Delete Files="$(TempProjectLog)"
+            Condition="Exists('$(TempProjectLog)')" />
+
+    <Exec Command="&quot;$(VB6Exe)&quot; /make &quot;$(TempProjectPath)&quot; /out &quot;$(TempProjectLog)&quot; /outdir &quot;$(OutputPath)&quot;"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+
+    <Delete Files="$(TempProjectPath)"
+            Condition="Exists('$(TempProjectPath)')" />
+            
+    <ReadLinesFromFile File="$(TempProjectLog)"
+                       Condition="Exists('$(TempProjectLog)')">
+      <Output TaskParameter="Lines" ItemName="VB6OutputLine" />
+    </ReadLinesFromFile>
+
+    <Message Text="@(VB6OutputLine, '%0A')"
+             Importance="High"
+             Condition="'@(VB6OutputLine)'!=''" />
+
+    <Error Text="Visual Basic 6 compiler exited with code $(ExitCode)."
+           Condition="'$(ExitCode)'!='0'" />
+  </Target>
+  
+  <Target Name="BuildVisualBasic6Project"
+          DependsOnTargets="PopulateVersion;ParseVisualBasic6Project;CompileVisualBasic6Project">
+  </Target>
+
+  <Target Name="PopulateVersion"
+          DependsOnTargets="ParseVersion">
+    <PropertyGroup>
+      <MajorVer Condition="'$(MajorVer)'==''">0</MajorVer>
+      <MinorVer Condition="'$(MinorVer)'==''">0</MinorVer>
+      <RevisionVer Condition="'$(RevisionVer)'==''">0</RevisionVer>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="ParseVersion"
+          Condition="'$(Version)'!=''">
+    <RegexReplace Input="$(Version)" Expression="\.[0-9]+\.[0-9]+\.[0-9]$">
+      <Output TaskParameter="Output" PropertyName="MajorVer" />
+    </RegexReplace>
+    <RegexReplace Input="$(Version)" Expression="(^[0-9]+\.)|(\.[0-9]+\.[0-9]$)">
+      <Output TaskParameter="Output" PropertyName="MinorVer" />
+    </RegexReplace>
+    <RegexReplace Input="$(Version)" Expression="^[0-9]+\.[0-9]+\.[0-9]\.">
+      <Output TaskParameter="Output" PropertyName="RevisionVer" />
+    </RegexReplace>
+  </Target>
+</Project>

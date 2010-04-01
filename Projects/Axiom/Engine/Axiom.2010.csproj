@@ -170,6 +170,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="axiom.module" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animating\Animable.cs" />

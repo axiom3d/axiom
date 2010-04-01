@@ -106,6 +106,9 @@
       <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="axiom.rendersystem.xna.xbox.module" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

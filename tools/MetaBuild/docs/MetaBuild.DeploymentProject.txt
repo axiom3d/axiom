@@ -1,0 +1,44 @@
+MetaBuild.DeploymentProject
+===========================
+
+Provides support for building Visual Studio setup/deployment projects.
+
+SetupProject
+------------
+
+Item Synopsis
+
+  * DeploymentProject
+    Provides the path of the project (*.vdproj) file in the source tree.
+
+Item Metadata
+
+  * VSVersion (OPTIONAL)
+    Specifies the version of Visual Studio required to build the project.
+
+    Valid values: "8.0" for Visual Studio 2005
+                  "9.0" for Visual Studio 2008
+
+    Default value: "9.0"
+
+  * References (OPTIONAL)
+    Specifies a series of items that describe references to other projects
+    that the project depends upon.  These references are specified
+    exactly as if they appeared within some other MetaBuild model.
+
+    You may use the property $(ModuleDir) to specify paths of references
+    relative to the module's directory.
+
+    Default value: (none)
+
+Item Syntax
+
+  <ItemGroup>
+    <DeploymentProject Include="MyInstaller.vdproj">
+      <VSVersion>8.0</VSVersion>
+      <References>
+        <CSharpProject Include="$(ModuleDir)\SomeReferencedProject\SomeReferencedProject.csproj" />
+      </References>
+    </DeploymentProject>
+  </ItemGroup>
+

@@ -1,0 +1,7 @@
+<!--
+ ! Provides support for Visual C++ compilation.
+ !-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="MetaBuild.VisualCProject.shell.ext"
+          Condition="'$(MetaBuildProjectType)'=='Shell'" />
+</Project>

@@ -1,0 +1,54 @@
+MetaBuild.VisualCProject
+========================
+
+Provides support for compilation of Visual C++ projects.
+
+VisualCProject
+--------------
+
+Item Synopsis
+
+  * VisualCProject
+    Provides the path of the VisualC++ project to build.
+
+Item Metadata
+
+  * Configuration (OPTIONAL)
+    Specifies the build configuration.
+    Default value: $(Configuration)
+
+  * Platform (OPTIONAL)
+    Specifies the build platform.
+    Default value: $(Platform)
+
+  * AdditionalOptions (OPTIONAL)
+    Specifies additional VisualC++ compiler options.
+
+  * References (OPTIONAL)
+    Specifies a series of items that describe references to other projects
+    that this project depends upon and that must be built beforehand.
+    These references are specified exactly as if they appeared within
+    some other MetaBuild model.
+
+    You may use the property $(ModuleDir) to specify paths of references
+    relative to the module's directory.
+
+    Default value: (none)
+
+  Warning: The Properties, Configuration and Platform metadata must be set
+           identically each time a project is referenced.  Otherwise the
+           project may end up being rebuilt multiple times.
+	   
+
+Item Syntax
+
+  <ItemGroup>
+    <VisualCProject Include="Project.vcproj">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+      <References>
+        <CSharpProject Include="$(ModuleDir)\SomeReferencedProject\SomeReferencedProject.csproj" />
+      </References>
+    </VisualCProject>
+  </ItemGroup>
+

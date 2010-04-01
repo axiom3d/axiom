@@ -155,19 +155,18 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenTK, Version=1.0.0.103, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.Compatibility">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.Compatibility.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.OpenGl.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.Platform.Windows, Version=1.0.0.5, Culture=neutral, PublicKeyToken=701104b2da67a104, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.Platform.Windows.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
@@ -319,6 +318,9 @@
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="axiom.rendersystem.opengl.win32.module" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
