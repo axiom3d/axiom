@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Xbox\</OutputPath>
+    <OutputPath>bin\Xbox\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,12 +25,13 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>true</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Xbox\Axiom.RenderSystems.Xna.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox\</OutputPath>
+    <OutputPath>bin\Xbox\Release\</OutputPath>
     <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,7 +39,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>true</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Xbox\Axiom.RenderSystems.Xna.xml</DocumentationFile>
+    <DocumentationFile>bin\Xbox\Release\Axiom.RenderSystems.Xna.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework">

@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -36,8 +36,9 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Xbox\</OutputPath>
-    <DocumentationFile>bin\Xbox\Axiom.SceneManagers.Octree.xml</DocumentationFile>
+    <OutputPath>bin\Xbox\Debug\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,8 +51,8 @@
     <BaseAddress>285212672</BaseAddress>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox\</OutputPath>
-    <DocumentationFile>bin\Xbox\Axiom.SceneManagers.Octree.xml</DocumentationFile>
+    <OutputPath>bin\Xbox\Release\</OutputPath>
+    <DocumentationFile>bin\Xbox\Release\Axiom.SceneManagers.Octree.XML</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

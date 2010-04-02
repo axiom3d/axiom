@@ -37,7 +37,9 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 using System.Data;
+#endif
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
@@ -235,6 +237,7 @@ namespace Axiom.SceneManagers.Bsp
 
             if ( Path.GetExtension( filename ).ToLower() == ".xml" )
             {
+ #if !(XBOX || XBOX360 || SILVERLIGHT)
                 DataSet optionData = new DataSet();
                 optionData.ReadXml( filename );
 
@@ -292,6 +295,7 @@ namespace Axiom.SceneManagers.Bsp
                 {
                     optionList[ "AmbientRatio" ] = StringConverter.ParseFloat( (string)row[ "AmbientRatio" ] );
                 }
+#endif
             }
             else
             {

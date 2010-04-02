@@ -51,8 +51,9 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <WarningLevel>4</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
@@ -66,7 +67,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\Axiom.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>

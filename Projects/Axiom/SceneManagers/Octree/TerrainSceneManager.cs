@@ -42,8 +42,9 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 using System.Data;
-
+#endif
 
 #endregion Namespace Declarations
 
@@ -99,6 +100,7 @@ namespace Axiom.SceneManagers.Octree
         {
             options = new TerrainOptions();
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             DataSet optionData = new DataSet();
             optionData.ReadXml( ResourceGroupManager.Instance.OpenResource( fileName ) );
             DataTable table = optionData.Tables[0];
@@ -169,6 +171,7 @@ namespace Axiom.SceneManagers.Octree
                 options.isLit = ((string)row["VertexNormals"]) == "yes" ? true : false;
             }
 
+#endif
             scale = new Vector3(options.scalex, options.scaley, options.scalez);
             tileSize = options.size;
             // load the heightmap
