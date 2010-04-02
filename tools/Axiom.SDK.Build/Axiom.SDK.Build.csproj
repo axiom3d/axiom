@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{721891E7-3A22-4679-9233-73C05301057D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.SDK.Build</RootNamespace>
+    <AssemblyName>Axiom.SDK.Build</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="..\..\Projects\Axiom\Engine\axiom.module">
+      <Link>Core\axiom.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Platforms\OpenTK\axiom.platform.opentk.module">
+      <Link>Core\Platform Managers\axiom.platform.opentk.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Platforms\Win32\axiom.platform.win32.module">
+      <Link>Core\Platform Managers\axiom.platform.win32.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\axiom.plugin.systemdrawingcodecs.module">
+      <Link>Core\Plugins\axiom.plugin.systemdrawingcodecs.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Plugins\CgProgramManager\axiom.plugin.cgprogrammanager.module">
+      <Link>Core\Plugins\axiom.plugin.cgprogrammanager.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Plugins\DevILCodecs\axiom.plugin.devilcodecs.module">
+      <Link>Core\Plugins\axiom.plugin.devilcodecs.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Plugins\OctreeZone\axiom.plugin.octreezone.module">
+      <Link>Core\Plugins\axiom.plugin.octreezone.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\Plugins\ParticleFX\axiom.plugin.particlefx.module">
+      <Link>Core\Plugins\axiom.plugin.particlefx.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\RenderSystems\DirectX9\axiom.rendersystem.directx9.module">
+      <Link>Core\Render Systems\axiom.rendersystem.directx9.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\RenderSystems\OpenGL\axiom.rendersystem.opengl.opentk.module">
+      <Link>Core\Render Systems\axiom.rendersystem.opengl.opentk.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\RenderSystems\OpenGL\axiom.rendersystem.opengl.win32.module">
+      <Link>Core\Render Systems\axiom.rendersystem.opengl.win32.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\RenderSystems\XNA\axiom.rendersystem.xna.module">
+      <Link>Core\Render Systems\axiom.rendersystem.xna.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\SceneManagers\Bsp\axiom.scenemanager.bsp.module">
+      <Link>Core\Scene Managers\axiom.scenemanager.bsp.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\SceneManagers\Octree\axiom.scenemanager.octree.module">
+      <Link>Core\Scene Managers\axiom.scenemanager.octree.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\SceneManagers\PCZ\axiom.scenemanager.pcz.module">
+      <Link>Core\Scene Managers\axiom.scenemanager.pcz.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom\axiom.core.module">
+      <Link>Core\axiom.core.module</Link>
+    </None>
+    <None Include="..\..\Projects\Axiom.msbuild">
+      <Link>Axiom.msbuild</Link>
+    </None>
+    <None Include="..\..\Projects\AxiomDemos\axiom.samples.module">
+      <Link>Samples\axiom.samples.module</Link>
+    </None>
+    <None Include="..\..\Projects\axiom.sdk.module">
+      <Link>SDK\axiom.sdk.module</Link>
+    </None>
+    <None Include="..\..\Projects\Tests\axiom.tests.module">
+      <Link>Tests\axiom.tests.module</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
