@@ -6,6 +6,7 @@
     <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).csproj</ProjectFile>
     <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
     <ImagePath>bin\$(Platform)\$(Configuration)</ImagePath>
+    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,9 @@
     <CSharpProject Include="$(ProjectFile)" >
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
       <Platform Condition="'$(Platform)'=='Xbox'">$(Platform) 360</Platform>
+      <OutputPath>$(OutputPath)</OutputPath>
+      <WarningLevel Condition="'$(Configuration)'=='Debug'">4</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)'=='Release'">0</WarningLevel>
     </CSharpProject>
 
     <!-- The path of a built file to be copied to the "image" directory. -->
@@ -24,7 +28,7 @@
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="bin\$(Platform)\$(Configuration)\$(ProjectBase).xml"  Condition="'$(Configuration)'=='Release'">
+    <File Include="bin\$(Platform)\$(Configuration)\$(ProjectBase).XML"  Condition="'$(Configuration)'=='Release'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
