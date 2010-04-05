@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{721891E7-3A22-4679-9233-73C05301057D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.SDK.Build</RootNamespace>
     <AssemblyName>Axiom.SDK.Build</AssemblyName>
@@ -33,6 +33,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration>Release</Configuration>
+
+    <Version>$(CCNetLabel)</Version>
+    <Version Condition="'$(Version)'==''">0.8.0.0</Version>
+    <RootDir>$(MSBuildProjectDirectory)\..\..\Projects</RootDir>
+    <BuildDir>$(RootDir)\..\build</BuildDir>
+    <StartDir>$(RootDir)</StartDir>
+    <MetaBuildBinDir>$(RootDir)\..\tools\MetaBuild\bin</MetaBuildBinDir>
+    <MetaBuildConfigFile>$(RootDir)\..\tools\MetaBuild\bin\MetaBuild.config.custom</MetaBuildConfigFile>
+  </PropertyGroup>
+
+
   <ItemGroup />
   <ItemGroup>
     <None Include="..\..\Projects\Axiom\Engine\axiom.module">
@@ -104,4 +120,20 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterBuild">
+    <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
+             Properties="
+	       Configuration=$(Configuration);
+	       ShowReports=$(ShowReports);
+	       ReportTypes=$(ReportTypes);
+	       Coverage=$(Coverage);
+	       Version=$(Version);
+	       RootDir=$(RootDir);
+	       StartDir=$(StartDir);
+         BuildDir=$(BuildDir);
+	       MetaBuildBinDir=$(MetaBuildBinDir);
+	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
+	     Targets="Clean;Build;Image;Test;Dist" />
+  </Target>
+
 </Project>
