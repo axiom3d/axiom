@@ -13,8 +13,8 @@
     <Module Include="RenderSystems\Xna\axiom.rendersystem.xna.module" />
       <Module Include="Tools\Axiom.RenderSystems.Xna.Content\axiom.tool.xna.content.module" />
 
-    <Module Include="SceneManagers\Bsp\axiom.scenemanager.bsp.module" />
-    <Module Include="SceneManagers\Octree\axiom.scenemanager.octree.module" />
+    <Module Include="SceneManagers\Bsp\axiom.scenemanager.bsp.module" Condition="'$(Platform)'=='x86'"/>
+    <Module Include="SceneManagers\Octree\axiom.scenemanager.octree.module" Condition="'$(Platform)'=='x86'"/>
     <Module Include="SceneManagers\PCZ\axiom.scenemanager.pcz.module" Condition="'$(Platform)'=='x86'" />
       <Module Include="Plugins\OctreeZone\axiom.plugin.octreezone.module" Condition="'$(Platform)'=='x86'" />
 
