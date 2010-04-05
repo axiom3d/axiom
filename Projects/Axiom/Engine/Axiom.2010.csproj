@@ -117,7 +117,7 @@
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
+    <WarningLevel>4</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
@@ -183,7 +183,6 @@
     <Compile Include="Animating\Collections\Lists.cs" />
     <Compile Include="Animating\Pose.cs" />
     <Compile Include="Collections\Deque.cs" />
-    <Compile Include="Collections\NamedCollection.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
     <Compile Include="Collections\TextureLayerCollection.cs" />
@@ -206,7 +205,6 @@
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\ILodListener.cs" />
-    <Compile Include="Core\INamable.cs" />
     <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
