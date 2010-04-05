@@ -55,7 +55,7 @@ namespace Axiom.Configuration
     /// <summary>
     /// Packages the details of a configuration option.
     /// </summary>
-    /// <remarks>Used for RenderSystem::getConfigOptions. If immutable is true, this option must be disabled for modifying.</remarks>
+    /// <remarks>Used for <see cref="RenderSystem.ConfigOptions" />. If immutable is true, this option must be disabled for modifying.</remarks>
     public class ConfigOption<T>
     {
         RenderSystem _parent;
@@ -161,7 +161,7 @@ namespace Axiom.Configuration
             return string.Format( "{0} : {1}", this.Name, this.Value );
         }
 
-        public class ConfigOptionValuesCollection<T> : AxiomSortedCollection<int,T>
+        public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int,ValueType>
         {
             
         }
