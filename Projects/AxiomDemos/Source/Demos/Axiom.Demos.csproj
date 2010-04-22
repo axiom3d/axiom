@@ -142,6 +142,7 @@
     </Compile>
     <Compile Include="RoomObject.cs" />
     <Compile Include="Shadows.cs" />
+    <Compile Include="SimpleWaterPlane.cs" />
     <Compile Include="SkeletalAnimation.cs">
       <SubType>Code</SubType>
     </Compile>
