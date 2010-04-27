@@ -1264,7 +1264,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///		You should only use this if you have assigned LOD indexes to the <see cref="Technique"/>
         ///		instances attached to this <see cref="Material"/>. If you have done so, you should call this
-        ///		method to determine the distance at which the lowe levels of detail kick in.
+        ///		method to determine the distance at which the low levels of detail kick in.
         ///		The decision about what distance is actually used is a combination of this
         ///		and the LOD bias applied to both the current <see cref="Camera"/> and the current Entity.
         /// </remarks>
