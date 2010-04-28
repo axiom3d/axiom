@@ -48,6 +48,7 @@ using Axiom.Media;
 using Axiom.Scripting;
 using System.Collections.Generic;
 using Axiom.Core.Collections;
+using Axiom.Collections;
 
 #endregion  Namespace Declarations
 
@@ -59,9 +60,6 @@ namespace Axiom.Serialization
 	public class MaterialSerializer
 	{
 		#region Fields
-
-
-		public static Hashtable materialSourceFiles = new Hashtable();
 
 		/// <summary>
 		///		Represents the current parsing context.
@@ -598,16 +596,7 @@ namespace Axiom.Serialization
 			}
 
 			string materialName = values[ 0 ].Trim();
-			string sourceFileForAlreadyExistingMaterial = (string)materialSourceFiles[ materialName ];
-			if ( sourceFileForAlreadyExistingMaterial != null )
-			{//if a material by this name was already created
-				throw new ArgumentException( string.Format( "A material with name {0} was already created from material script file {1} and a duplicate from {2} cannot be created. "
-					+ "You may need to qualify the material names to prevent this name collision.", materialName, sourceFileForAlreadyExistingMaterial, context.filename ) );
-			}
-
 			context.material = (Material)MaterialManager.Instance.Create( materialName, context.groupName );
-			materialSourceFiles.Add( materialName, context.filename );
-
 			if ( basematerial != null )
 			{
 				// copy parent material details to new material
