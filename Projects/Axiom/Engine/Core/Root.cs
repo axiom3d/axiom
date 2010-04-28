@@ -1069,7 +1069,6 @@ namespace Axiom.Core
             {
                 MaterialManager.Instance.Dispose();
             }
-            MaterialSerializer.materialSourceFiles.Clear();
 
             if ( ParticleSystemManager.Instance != null )
             {
