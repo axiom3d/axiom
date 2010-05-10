@@ -1776,7 +1776,7 @@ namespace Axiom.Core
 
     public class ManualObjectFactory : MovableObjectFactory
     {
-         public const string TypeName = "ManualObject";
+        public new const string TypeName = "ManualObject";
 
         public ManualObjectFactory()
         {

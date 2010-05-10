@@ -120,7 +120,7 @@ namespace Axiom.Core
                 }
                 set
                 {
-                    this.color = this.color;
+                    this.color = value;
                 }
             }
             #endregion
@@ -1018,7 +1018,7 @@ namespace Axiom.Core
 
     public class BillboardChainFactory : MovableObjectFactory
     {
-        public const string TypeName = "BillboardChain";
+        public new const string TypeName = "BillboardChain";
 
         public BillboardChainFactory()
         {

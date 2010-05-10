@@ -1921,7 +1921,7 @@ namespace Axiom.Core
 
     public class BillboardSetFactory : MovableObjectFactory
     {
-        public const string TypeName = "BillboardSet";
+        public new const string TypeName = "BillboardSet";
 
         public BillboardSetFactory()
         {
