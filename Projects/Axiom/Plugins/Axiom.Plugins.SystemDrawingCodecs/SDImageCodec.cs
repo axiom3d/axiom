@@ -234,7 +234,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
             }
             catch ( Exception e )
             {
-                throw new ArgumentException( "Texture loading error." );
+                throw new ArgumentException( "Texture loading error.", e );
             }
 
             return data;
