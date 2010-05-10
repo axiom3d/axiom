@@ -1323,7 +1323,7 @@ namespace Axiom.Core
 
     public class LightFactory : MovableObjectFactory
     {
-        public const string TypeName = "Light";
+        public new const string TypeName = "Light";
 
         public LightFactory()
         {

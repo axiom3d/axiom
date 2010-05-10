@@ -2538,7 +2538,7 @@ namespace Axiom.Core
 
     public class EntityFactory : MovableObjectFactory
     {
-        public const string TypeName = "Entity";
+        public new const string TypeName = "Entity";
 
         public EntityFactory()
         {

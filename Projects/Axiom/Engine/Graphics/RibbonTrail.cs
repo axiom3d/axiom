@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using Axiom.Collections;
-using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
@@ -491,7 +490,7 @@ namespace Axiom.Graphics
 
     public class RibbonTrailFactory : MovableObjectFactory
     {
-        public static string TypeName = "RibbonTrail";
+        public new static string TypeName = "RibbonTrail";
 
         public RibbonTrailFactory()
         {
