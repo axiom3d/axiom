@@ -57,8 +57,12 @@ namespace Axiom.Core
 
         protected float Radius;
 
-        public virtual AxisAlignedBox BoundingBox
+        public new AxisAlignedBox BoundingBox
         {
+            get 
+            {
+                return base.BoundingBox; 
+            }
             set
             {
                 // init the vertices to the aabb

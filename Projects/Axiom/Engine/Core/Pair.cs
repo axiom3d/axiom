@@ -100,5 +100,12 @@ namespace Axiom.Core
 		}
 
 		#endregion IEquatable<Pair<T>> Implementation
-	}
+
+        #region System.Object Implementation
+        public override int GetHashCode()
+        {
+            return this.First.GetHashCode() ^ this.Second.GetHashCode();
+        }
+        #endregion System.Object Implementation
+    }
 }

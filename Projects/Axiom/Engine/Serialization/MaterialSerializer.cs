@@ -46,7 +46,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Scripting;
-using System.Collections.Generic;
 using Axiom.Core.Collections;
 using Axiom.Collections;
 

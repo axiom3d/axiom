@@ -120,7 +120,7 @@ namespace Axiom.Collections
         /// Returns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
         /// </summary>
         /// <returns>An <see cref="IEnumerator{T}"/> for the <see cref="AxiomCollection{T}"/> values.</returns>
-        public virtual IEnumerator GetEnumerator()
+        public new virtual IEnumerator GetEnumerator()
         {
             return Values.GetEnumerator();
         }

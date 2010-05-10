@@ -289,15 +289,15 @@ namespace Axiom.Core
 
         #region MovableObjectFactory fields
 
-        protected readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
+        private readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
 
-        protected EntityFactory entityFactory;
-        protected LightFactory lightFactory;
-        protected BillboardSetFactory billboardSetFactory;
-        protected BillboardChainFactory billboardChainFactory;
-        protected ManualObjectFactory manualObjectFactory;
-        protected uint nextMovableObjectTypeFlag;
-        protected RibbonTrailFactory ribbonTrailFactory;
+        private EntityFactory entityFactory;
+        private LightFactory lightFactory;
+        private BillboardSetFactory billboardSetFactory;
+        private BillboardChainFactory billboardChainFactory;
+        private ManualObjectFactory manualObjectFactory;
+        private uint nextMovableObjectTypeFlag;
+        private RibbonTrailFactory ribbonTrailFactory;
 
         #endregion MovableObjectFactory fields
 
@@ -308,7 +308,7 @@ namespace Axiom.Core
         /// <summary>
         ///    The time when the meter manager was started
         /// </summary>
-        protected long lastFrameStartTime = 0;
+        private long lastFrameStartTime = 0;
 
         /// <summary>
         ///    The number of microseconds per frame when we're
@@ -915,7 +915,7 @@ namespace Axiom.Core
             this.activeRenderSystem.DetachRenderTarget( target );
         }
 
-        protected long CaptureCurrentTime()
+        private long CaptureCurrentTime()
         {
             return Stopwatch.GetTimestamp();
         }
