@@ -56,18 +56,18 @@ namespace Axiom.Core.Collections
         ///	Adds a <see cref="Node"/> to the collection and uses its name automatically as key.
         /// </summary>
         /// <param name="item">A <see cref="Node"/> to add to the collection.</param>
-        public void Add(Node item)
+        public override void Add( Node item )
         {
-            Add(item.Name, item);
+            Add( item.Name, item );
         }
 
         /// <summary>
         /// Removes the specified <see cref="Node"/>.
         /// </summary>
         /// <param name="item">The <see cref="Node"/> to remove.</param>
-        public void Remove(Node item)
+        public void Remove( Node item )
         {
-            base.Remove(item.Name);
+            base.Remove( item.Name );
         }
 
         #endregion

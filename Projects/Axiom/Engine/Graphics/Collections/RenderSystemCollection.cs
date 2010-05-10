@@ -55,7 +55,7 @@ namespace Axiom.Graphics.Collections
         /// </summary>
         /// <param name="key">The name of the <see cref="RenderSystem"/> to add.</param>
         /// <param name="item">A <see cref="RenderSystem"/>.</param>
-        public void Add(string key, RenderSystem item)
+        public new void Add(string key, RenderSystem item)
         {
             if (!ContainsKey(key))
             {
