@@ -221,6 +221,10 @@
       <Link>Media\Textures\wave1.dds</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\..\..\..\Media\Overlays\DP3.overlay">
+      <Link>Media\Overlays\DP3.overlay</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

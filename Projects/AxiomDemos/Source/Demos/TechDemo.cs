@@ -75,7 +75,7 @@ namespace Axiom.Demos
         protected float statDelay = 0.0f;
         protected float debugTextDelay = 0.0f;
         protected string debugText = "";
-        protected float toggleDelay = 0.0f;
+        protected float keypressDelay = 0.5f;
         protected Vector3 camVelocity = Vector3.Zero;
         protected Vector3 camAccel = Vector3.Zero;
         protected float camSpeed = 2.5f;
@@ -461,10 +461,10 @@ namespace Axiom.Demos
             }
 
             // subtract the time since last frame to delay specific key presses
-            toggleDelay -= evt.TimeSinceLastFrame;
+            keypressDelay -= evt.TimeSinceLastFrame;
 
             // toggle rendering mode
-            if ( input.IsKeyPressed( KeyCodes.R ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.R ) && keypressDelay < 0 )
             {
                 if ( camera.PolygonMode == PolygonMode.Points )
                 {
@@ -481,10 +481,10 @@ namespace Axiom.Demos
 
                 SetDebugText( String.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
 
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.T ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.T ) && keypressDelay < 0 )
             {
                 // toggle the texture settings
                 switch ( filtering )
@@ -508,11 +508,11 @@ namespace Axiom.Demos
                 MaterialManager.Instance.SetDefaultTextureFiltering( filtering );
                 MaterialManager.Instance.DefaultAnisotropy = aniso;
 
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 
 #if !( XBOX || XBOX360 )
-            if ( input.IsKeyPressed( KeyCodes.P ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.P ) && keypressDelay < 0 )
             {
                 string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
                 string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
@@ -522,42 +522,42 @@ namespace Axiom.Demos
                 // show on the screen for some seconds
                 SetDebugText( string.Format( "Wrote screenshot '{0}'.", fileName ) );
 
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 #endif
 
-            if ( input.IsKeyPressed( KeyCodes.B ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.B ) && keypressDelay < 0 )
             {
                 scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
 
                 SetDebugText( String.Format( "Bounding boxes {0}.", scene.ShowBoundingBoxes ? "visible" : "hidden" ) );
 
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.F ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.F ) && keypressDelay < 0 )
             {
                 // hide all overlays, includes ones besides the debug overlay
                 viewport.ShowOverlays = !viewport.ShowOverlays;
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.Comma ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.Comma ) && keypressDelay < 0 )
             {
                 Root.Instance.MaxFramesPerSecond = 60;
 
                 SetDebugText( String.Format( "Limiting framerate to {0} FPS.", Root.Instance.MaxFramesPerSecond ) );
 
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.Period ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.Period ) && keypressDelay < 0 )
             {
                 Root.Instance.MaxFramesPerSecond = 0;
 
                 SetDebugText( String.Format( "Framerate limit OFF.", Root.Instance.MaxFramesPerSecond ) );
 
-                toggleDelay = .3f;
+                keypressDelay = .3f;
             }
 
             // turn off debug text when delay ends
@@ -816,6 +816,23 @@ namespace Axiom.Demos
             debugText = text;
             debugTextDelay = delay;
         }
+
+
+		protected delegate void KeyPressCommand();
+
+		protected void IfKeyPressed( KeyCodes key, KeyPressCommand command )
+		{
+			IfKeyPressed( key, 0.5f, command );
+		}
+
+		protected void IfKeyPressed( KeyCodes key, float delay, KeyPressCommand command )
+		{
+			if ( input.IsKeyPressed( key ) && keypressDelay < 0.0f )
+			{
+				keypressDelay = delay;
+				command();
+			}
+		}
 
     }
 
