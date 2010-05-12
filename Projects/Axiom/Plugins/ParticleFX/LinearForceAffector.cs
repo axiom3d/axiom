@@ -119,7 +119,7 @@ namespace Axiom.ParticleFX
 
         #region Command definition classes
 
-        [Command( "force_vector", "Direction of force to apply to this particle.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "force_vector", "Direction of force to apply to this particle.", typeof( ParticleAffector ) )]
 		class ForceVectorCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -143,7 +143,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "force_application", "Type of force to apply to this particle.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "force_application", "Type of force to apply to this particle.", typeof( ParticleAffector ) )]
 		class ForceApplicationCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members

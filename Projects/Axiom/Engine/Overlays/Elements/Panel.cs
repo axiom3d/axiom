@@ -412,7 +412,7 @@ namespace Axiom.Overlays.Elements
 
         #region ScriptableObject Interface Command Classes
 
-        [Command( "tiling", "The number of times to repeat the background texture.", typeof( Panel ) )]
+        [ScriptableProperty( "tiling", "The number of times to repeat the background texture.", typeof( Panel ) )]
         private class TilingAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -454,7 +454,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " +
+        [ScriptableProperty( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " +
             "but it's contents are still displayed.", typeof( Panel ) )]
         private class TransparentAttributeCommand : IPropertyCommand
         {
@@ -495,7 +495,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof( Panel ) )]
+        [ScriptableProperty( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof( Panel ) )]
         private class UVCoordinatesModeAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>

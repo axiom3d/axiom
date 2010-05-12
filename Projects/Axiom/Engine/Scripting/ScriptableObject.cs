@@ -11,48 +11,69 @@ namespace Axiom.Scripting
     public sealed class ScriptableProperties
     {
         private IScriptableObject _owner;
-        public ScriptableProperties(IScriptableObject owner)
+        public ScriptableProperties( IScriptableObject owner )
         {
             _owner = owner;
         }
 
-        public String this[String property]
+        public string this[ string property ]
         {
             get
             {
-                return _owner[property];
+                return _owner[ property ];
             }
             set
             {
-               _owner[ property ] = value;
+                _owner[ property ] = value;
             }
         }
     }
 
+    /// <summary>
+    /// An interface to provide access to object properties through strings
+    /// </summary>
     public interface IScriptableObject
     {
+        /// <summary>
+        /// The property collection available
+        /// </summary>
         ScriptableProperties Properties
         {
             get;
         }
 
+        /// <summary>
+        /// Set multiple properties at once using a <see cref="NameValuePairList"/>
+        /// </summary>
+        /// <param name="parameters">the collection of parameters</param>
         void SetParameters( NameValuePairList parameters );
 
-        string this[string index]
-        { 
+        /// <summary>
+        /// provides access to each property
+        /// </summary>
+        /// <param name="index">name of the property</param>
+        /// <returns>the property value</returns>
+        string this[ string index ]
+        {
             get;
-            set; 
+            set;
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
     public sealed class ScriptablePropertyAttribute : Attribute
     {
-        public readonly String ScriptPropertyName;
-        public ScriptablePropertyAttribute(String scriptPropertyName)
+        public readonly string ScriptPropertyName;
+        public ScriptablePropertyAttribute( string scriptPropertyName )
         {
             ScriptPropertyName = scriptPropertyName;
         }
+
+        public ScriptablePropertyAttribute( string scriptPropertyName, string description, Type owner )
+        {
+            ScriptPropertyName = scriptPropertyName;
+        }
+
     }
 
     public abstract class ScriptableObject : IScriptableObject
@@ -63,7 +84,7 @@ namespace Axiom.Scripting
         /// </summary>
         public ICollection<IPropertyCommand> Commands
         {
-            get 
+            get
             {
                 return _classParameters.Values;
             }
@@ -74,51 +95,60 @@ namespace Axiom.Scripting
         /// </summary>
         protected ScriptableObject()
         {
-            _classParameters = this._getTypePropertyMap( this.GetType() );
+            _classParameters = _getTypePropertyMap( this.GetType() );
             _properties = new ScriptableProperties( this );
         }
 
-        private Dictionary<String, IPropertyCommand> _getTypePropertyMap(Type type)
+        #region Static Implementation
+
+        private static Dictionary<Type, Dictionary<String, IPropertyCommand>> _propertyMaps = new Dictionary<Type, Dictionary<string, IPropertyCommand>>();
+
+        private static Dictionary<String, IPropertyCommand> _getTypePropertyMap( Type type )
         {
-            Dictionary<String, IPropertyCommand> list = new Dictionary<string, IPropertyCommand>();
-
-            // Use reflection to load the mapping between script name and IPropertyCommand
-            _initializeTypeProperties(type, list);
-
+            Dictionary<String, IPropertyCommand> list;
+            if ( !_propertyMaps.TryGetValue( type, out list ) )
+            {
+                list = new Dictionary<string, IPropertyCommand>();
+                _propertyMaps.Add( type, list );
+                // Use reflection to load the mapping between script name and IPropertyCommand
+                _initializeTypeProperties( type, list );
+            }
             return list;
         }
 
-        private void _initializeTypeProperties(Type type, Dictionary<string, IPropertyCommand> list)
+        private static void _initializeTypeProperties( Type type, Dictionary<string, IPropertyCommand> list )
         {
-            foreach (Type nestType in type.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public))
+            foreach ( Type nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
             {
-                if (nestType.FindInterfaces(delegate(Type typeObj, Object criteriaObj)
+                if ( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
                                             {
-                                                if (typeObj.ToString() == criteriaObj.ToString())
+                                                if ( typeObj.ToString() == criteriaObj.ToString() )
                                                     return true;
                                                 else
                                                     return false;
                                             }
-                                            , "Axiom.Scripting.IPropertyCommand").Length != 0)
+                                            , "Axiom.Scripting.IPropertyCommand" ).Length != 0 )
                 {
-                    foreach (ScriptablePropertyAttribute attr in nestType.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true))
+                    foreach ( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
                     {
-                        IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance(nestType);
-                        list.Add(attr.ScriptPropertyName, propertyCommand);
-                    }
-                    foreach (CommandAttribute attr in nestType.GetCustomAttributes(typeof(CommandAttribute), true))
-                    {
-                        IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance(nestType);
-                        list.Add(attr.Name, propertyCommand);
+                        IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance( nestType );
+                        list.Add( attr.ScriptPropertyName, propertyCommand );
                     }
                 }
             }
 
-            if (type.BaseType != typeof(System.Object))
+            // Load the IPropertyCommands from the parent Type
+            if ( type.BaseType != typeof( System.Object ) )
             {
-               _initializeTypeProperties( type.BaseType, list );
+                foreach ( KeyValuePair<string, IPropertyCommand> item in _getTypePropertyMap( type.BaseType ) )
+                {
+                    list.Add( item.Key, item.Value );
+                }
+                type = type.BaseType;
             }
         }
+
+        #endregion Static Implementation
 
         #region Implementation of IScriptableObject
 
@@ -140,9 +170,9 @@ namespace Axiom.Scripting
         /// <param name="parameters">the list of properties to set</param>
         public void SetParameters( NameValuePairList parameters )
         {
-            foreach (KeyValuePair<String, String> item in parameters)
+            foreach ( KeyValuePair<String, String> item in parameters )
             {
-                this.Properties[item.Key] = item.Value;
+                this.Properties[ item.Key ] = item.Value;
             }
         }
 
@@ -154,13 +184,13 @@ namespace Axiom.Scripting
             {
                 IPropertyCommand command;
 
-                if (_classParameters.TryGetValue(property, out command))
+                if ( _classParameters.TryGetValue( property, out command ) )
                 {
-                    return command.Get(this);
+                    return command.Get( this );
                 }
                 else
                 {
-                    LogManager.Instance.Write("{0}: Unrecognized parameter '{1}'", this.GetType().Name, property);
+                    LogManager.Instance.Write( "{0}: Unrecognized parameter '{1}'", this.GetType().Name, property );
                 }
                 return null;
             }
@@ -168,13 +198,13 @@ namespace Axiom.Scripting
             {
                 IPropertyCommand command;
 
-                if (_classParameters.TryGetValue(property, out command))
+                if ( _classParameters.TryGetValue( property, out command ) )
                 {
-                    command.Set(this, value);
+                    command.Set( this, value );
                 }
                 else
                 {
-                    LogManager.Instance.Write("{0}: Unrecognized parameter '{1}'", this.GetType().Name, property);
+                    LogManager.Instance.Write( "{0}: Unrecognized parameter '{1}'", this.GetType().Name, property );
                 }
             }
         }

@@ -150,7 +150,7 @@ namespace Axiom.ParticleFX
 
         #region Command definition classes
 
-        [Command( "red", "Red component.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "red", "Red component.", typeof( ParticleAffector ) )]
 		class RedCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -169,7 +169,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "green", "Green component.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "green", "Green component.", typeof( ParticleAffector ) )]
 		class GreenCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -188,7 +188,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "blue", "Blue component.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "blue", "Blue component.", typeof( ParticleAffector ) )]
 		class BlueCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -207,7 +207,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "alpha", "Alpha component.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "alpha", "Alpha component.", typeof( ParticleAffector ) )]
 		class AlphaCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members

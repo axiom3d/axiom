@@ -796,7 +796,7 @@ namespace Axiom.Overlays.Elements
 
         #region ScriptableObject Interface Command Classes
 
-        [Command( "border_left_uv", "", typeof(BorderPanel) )]
+        [ScriptableProperty( "border_left_uv", "", typeof(BorderPanel) )]
         private class BorderLeftUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -844,7 +844,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_right_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_right_uv", "", typeof( BorderPanel ) )]
         private class BorderRightUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -892,7 +892,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_top_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_top_uv", "", typeof( BorderPanel ) )]
         private class BorderTopUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -940,7 +940,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_bottom_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_bottom_uv", "", typeof( BorderPanel ) )]
         private class BorderBottomUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -988,7 +988,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_topleft_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_topleft_uv", "", typeof( BorderPanel ) )]
         private class BorderTopLeftUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1036,7 +1036,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_topright_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_topright_uv", "", typeof( BorderPanel ) )]
         private class BorderTopRightUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1084,7 +1084,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_bottomleft_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_bottomleft_uv", "", typeof( BorderPanel ) )]
         private class BorderBottomLeftUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1132,7 +1132,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_bottomright_uv", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_bottomright_uv", "", typeof( BorderPanel ) )]
         private class BorderBottomRightUVAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1180,7 +1180,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_size", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_size", "", typeof( BorderPanel ) )]
         private class BorderSizeAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1225,7 +1225,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "border_material", "", typeof( BorderPanel ) )]
+        [ScriptableProperty( "border_material", "", typeof( BorderPanel ) )]
         private class BorderMaterialHeightAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
