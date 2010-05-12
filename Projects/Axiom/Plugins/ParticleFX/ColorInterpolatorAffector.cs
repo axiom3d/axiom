@@ -108,7 +108,7 @@ namespace Axiom.ParticleFX
 
         #region Command definition classes
 
-        [Command( "colour0", "Initial 'keyframe' color.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "colour0", "Initial 'keyframe' color.", typeof( ParticleAffector ) )]
 		class Color0Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -129,7 +129,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "colour1", "1st 'keyframe' color.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "colour1", "1st 'keyframe' color.", typeof( ParticleAffector ) )]
 		class Color1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -151,7 +151,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "colour2", "2nd 'keyframe' color.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "colour2", "2nd 'keyframe' color.", typeof( ParticleAffector ) )]
 		class Color2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -173,7 +173,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "colour3", "3rd 'keyframe' color.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "colour3", "3rd 'keyframe' color.", typeof( ParticleAffector ) )]
 		class Color3Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -194,7 +194,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "colour4", "4th 'keyframe' color.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "colour4", "4th 'keyframe' color.", typeof( ParticleAffector ) )]
 		class Color4Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -215,7 +215,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "colour5", "5th 'keyframe' color.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "colour5", "5th 'keyframe' color.", typeof( ParticleAffector ) )]
 		class Color5Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -236,7 +236,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "time0", "Initial 'keyframe' time.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "time0", "Initial 'keyframe' time.", typeof( ParticleAffector ) )]
 		class Time0Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -257,7 +257,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "time1", "1st 'keyframe' time.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "time1", "1st 'keyframe' time.", typeof( ParticleAffector ) )]
 		class Time1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -278,7 +278,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "time2", "2nd 'keyframe' time.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "time2", "2nd 'keyframe' time.", typeof( ParticleAffector ) )]
 		class Time2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -299,7 +299,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "time3", "3rd 'keyframe' time.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "time3", "3rd 'keyframe' time.", typeof( ParticleAffector ) )]
 		class Time3Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -320,7 +320,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "time4", "4th 'keyframe' time.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "time4", "4th 'keyframe' time.", typeof( ParticleAffector ) )]
 		class Time4Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -341,7 +341,7 @@ namespace Axiom.ParticleFX
             #endregion
         }
 
-        [Command( "time5", "5th 'keyframe' time.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "time5", "5th 'keyframe' time.", typeof( ParticleAffector ) )]
 		class Time5Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members

@@ -100,7 +100,7 @@ namespace Axiom.ParticleFX
 
         #region Command definition classes
 
-        [Command( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
+        [ScriptableProperty( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
 		class RateCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members

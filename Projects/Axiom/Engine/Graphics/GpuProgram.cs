@@ -678,7 +678,7 @@ namespace Axiom.Graphics
 
 		#region Custom Parameters
 
-		[Scripting.ScriptableProperty( "includes_skeletal_animation" )]
+		[ScriptableProperty( "includes_skeletal_animation" )]
 		private class IncludesSkeletalAnimationPropertyCommand : Scripting.IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -696,7 +696,7 @@ namespace Axiom.Graphics
 			#endregion IPropertyCommand Members
 		}
 
-		[Scripting.ScriptableProperty( "includes_morph_animation" )]
+		[ScriptableProperty( "includes_morph_animation" )]
 		private class IncludesMorphAnimationPropertyCommand : Scripting.IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -714,7 +714,7 @@ namespace Axiom.Graphics
 			#endregion IPropertyCommand Members
 		}
 
-		[Scripting.ScriptableProperty( "includes_pose_animation" )]
+		[ScriptableProperty( "includes_pose_animation" )]
 		private class IncludesPoseAnimationPropertyCommand : Scripting.IPropertyCommand
 		{
 			#region IPropertyCommand Members

@@ -1380,7 +1380,7 @@ namespace Axiom.Overlays
 
         #region ScriptableObject Interface Command Classes
 
-        [Command( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof( OverlayElement ) )]
         private class MetricsModeAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1420,7 +1420,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( OverlayElement ) )]
         private class HorizontalAlignmentAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1460,7 +1460,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof( OverlayElement ) )]
         private class VerticalAlignmentAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1500,7 +1500,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "top", "The position of the top border of the gui element.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "top", "The position of the top border of the gui element.", typeof( OverlayElement ) )]
         private class TopAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1540,7 +1540,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "left", "The position of the left border of the gui element.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "left", "The position of the left border of the gui element.", typeof( OverlayElement ) )]
         private class LeftAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1580,7 +1580,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "width", "The width of the gui element.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "width", "The width of the gui element.", typeof( OverlayElement ) )]
         private class WidthAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1620,7 +1620,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "height", "The height of the gui element.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "height", "The height of the gui element.", typeof( OverlayElement ) )]
         private class HeightAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1660,7 +1660,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof( OverlayElement ) )]
+        [ScriptableProperty( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof( OverlayElement ) )]
         private class VisibleAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1700,7 +1700,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "caption", "The element caption, if supported.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "caption", "The element caption, if supported.", typeof( OverlayElement ) )]
         private class CaptionAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -1740,7 +1740,7 @@ namespace Axiom.Overlays
             #endregion
         }
 
-        [Command( "material", "The name of the material to use.", typeof( OverlayElement ) )]
+        [ScriptableProperty( "material", "The name of the material to use.", typeof( OverlayElement ) )]
         private class MaterialAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
