@@ -93,7 +93,7 @@ namespace Axiom.ParticleSystems
                 instance = this;
             }
 
-#if AXIOM_USENEWCOMPILERS
+#if !AXIOM_USENEWCOMPILERS
             _scriptPatterns.Add( "*.particle" );
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
 #endif // AXIOM_USENEWCOMPILERS

@@ -90,10 +90,14 @@ namespace Axiom.Fonts
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
+
+#if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.fontdef" );
 			// Register scripting with resource group manager
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
+#endif // AXIOM_USE_NEWCOMPILERS
+
 
 			// Resource type
 			ResourceType = "Font";

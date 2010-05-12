@@ -163,7 +163,7 @@ namespace Axiom.Graphics
             // Loading order
             this.LoadingOrder = 100.0f;
 
-#if AXIOM_USENEWCOMPILERS
+#if !AXIOM_USENEWCOMPILERS
             // Scripting is supported by this manager
             ScriptPatterns.Add( "*.program" );
             ScriptPatterns.Add( "*.material" );

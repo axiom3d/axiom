@@ -155,7 +155,7 @@ namespace Axiom.Overlays
 
 		public OverlayManager()
 		{
-#if AXIOM_USENEWCOMPILERS
+#if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.overlay" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );

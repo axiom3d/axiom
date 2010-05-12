@@ -54,6 +54,7 @@ using Axiom.Math;
 using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
+using Axiom.Scripting.Compiler;
 using Axiom.Serialization;
 using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
