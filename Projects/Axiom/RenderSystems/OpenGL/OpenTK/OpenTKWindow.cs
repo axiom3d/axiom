@@ -35,12 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Windows.Forms;
-using Axiom.Graphics;
-using OpenTK;
-using OpenTK.Graphics;
-using System;
-using System.IO;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using SWF = System.Windows.Forms;
 
 using Axiom.Core;
@@ -48,17 +43,15 @@ using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using OpenTK;
+using OpenTK.Graphics;
+
 using Tao.OpenGl;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    using System.Collections.Generic;
-    using Collections;
-    using Core;
-    using Media;
 
 
     /// <summary>

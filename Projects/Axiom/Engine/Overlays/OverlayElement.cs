@@ -76,7 +76,7 @@ namespace Axiom.Overlays
     /// 	in physical pixels 0.5 is wider than it is tall, so a 0.5x0.5 panel will not be
     /// 	square on the screen (but it will take up exactly half the screen in both dimensions).
     /// </remarks>
-    public abstract class OverlayElement : ScriptableObject,IRenderable
+    public abstract class OverlayElement : ScriptableObject, IRenderable
     {
         #region Member variables
 
@@ -165,6 +165,7 @@ namespace Axiom.Overlays
             isEnabled = true;
             isInitialized = false;
             sourceTemplate = null;
+
         }
 
         #endregion
@@ -184,7 +185,7 @@ namespace Axiom.Overlays
 
         public void CopyParametersTo( OverlayElement instance )
         {
-            foreach ( IPropertyCommand command in Attributes() )
+            foreach ( IPropertyCommand command in Commands )
             {
                 string srcValue = command.Get( this );
                 command.Set( instance, srcValue  );
@@ -356,13 +357,7 @@ namespace Axiom.Overlays
         /// <param name="val"></param>
         public bool SetParam( string param, string val )
         {
-            IPropertyCommand command = Attributes( param );
-            if ( command == null )
-            {
-                return false;
-            }
-
-            command.Set( this, val );
+            this.Properties[ param ] = val;
             return true;
        }
 

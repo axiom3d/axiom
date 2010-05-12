@@ -8,110 +8,177 @@ using Axiom.Core;
 
 namespace Axiom.Scripting
 {
-	public abstract class ScriptableObject
-	{
-		#region Fields and Properties
-
-        protected static Dictionary<Type, Dictionary<string, IPropertyCommand>> Commands
+    public sealed class ScriptableProperties
+    {
+        private IScriptableObject _owner;
+        public ScriptableProperties(IScriptableObject owner)
         {
-            get;
-            private set;
+            _owner = owner;
         }
 
-        private bool IsInitialized
+        public String this[String property]
         {
-            get; set;
-        }
-
-        public NameValuePairList Parameters
-        {
+            get
+            {
+                return _owner[property];
+            }
             set
             {
-                // This needs to iterate over the parameter names in the List 
-                // and use the associated IPropertyCommand derived object to set
-                // the associated value on the specified property.
+               _owner[ property ] = value;
+            }
+        }
+    }
+
+    public interface IScriptableObject
+    {
+        ScriptableProperties Properties
+        {
+            get;
+        }
+
+        void SetParameters( NameValuePairList parameters );
+
+        string this[string index]
+        { 
+            get;
+            set; 
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class ScriptablePropertyAttribute : Attribute
+    {
+        public readonly String ScriptPropertyName;
+        public ScriptablePropertyAttribute(String scriptPropertyName)
+        {
+            ScriptPropertyName = scriptPropertyName;
+        }
+    }
+
+    public abstract class ScriptableObject : IScriptableObject
+    {
+        private Dictionary<String, IPropertyCommand> _classParameters;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICollection<IPropertyCommand> Commands
+        {
+            get 
+            {
+                return _classParameters.Values;
             }
         }
 
-		#endregion Fields and Properties
-
-		#region Construction and Destruction
-
-        static ScriptableObject()
+        /// <summary>
+        /// 
+        /// </summary>
+        protected ScriptableObject()
         {
-            Commands = new Dictionary<Type, Dictionary<string, IPropertyCommand>>();
+            _classParameters = this._getTypePropertyMap( this.GetType() );
+            _properties = new ScriptableProperties( this );
         }
 
-	    protected ScriptableObject()
-		{
-		}
-
-		#endregion Construction and Destruction
-
-		#region Methods
-
-        protected static void CreateParameterDictionary( Type type )
+        private Dictionary<String, IPropertyCommand> _getTypePropertyMap(Type type)
         {
-            var commands = new Dictionary<string, IPropertyCommand>();
-            CreateParameterDictionary( type, commands );
-            Commands.Add( type, commands );
+            Dictionary<String, IPropertyCommand> list = new Dictionary<string, IPropertyCommand>();
+
+            // Use reflection to load the mapping between script name and IPropertyCommand
+            _initializeTypeProperties(type, list);
+
+            return list;
         }
 
-	    private static void CreateParameterDictionary( Type type, IDictionary<string,IPropertyCommand> commands )
+        private void _initializeTypeProperties(Type type, Dictionary<string, IPropertyCommand> list)
         {
-		    foreach( var commandClass in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic) )
-		    {
-                foreach( Attribute attribute in commandClass.GetCustomAttributes(true) )
+            foreach (Type nestType in type.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public))
+            {
+                if (nestType.FindInterfaces(delegate(Type typeObj, Object criteriaObj)
+                                            {
+                                                if (typeObj.ToString() == criteriaObj.ToString())
+                                                    return true;
+                                                else
+                                                    return false;
+                                            }
+                                            , "Axiom.Scripting.IPropertyCommand").Length != 0)
                 {
-                    if( attribute is CommandAttribute )
+                    foreach (ScriptablePropertyAttribute attr in nestType.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true))
                     {
-                        var pca = attribute as CommandAttribute;
-#if !( XBOX || XBOX360 || SILVERLIGHT )
-                        if ( commandClass.GetInterface( typeof( IPropertyCommand ).Name ) != null )
-                        {
-#else
-                        bool typeFound = false;
-                        for ( int i = 0; i < commandClass.GetInterfaces().GetLength( 0 ); i++ )
-                        {
-                            if ( commandClass.GetInterfaces()[ i ] == typeof( IPropertyCommand ) )
-                            {
-                                typeFound = true;
-                                break;
-                            }
-                        }
-
-                        if ( typeFound )
-                        {
-#endif
-                            object commandInstance = Activator.CreateInstance( commandClass );
-                            var propertyCommand = commandInstance as IPropertyCommand;
-                            commands.Add( pca.Name, propertyCommand );
-                        }
+                        IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance(nestType);
+                        list.Add(attr.ScriptPropertyName, propertyCommand);
+                    }
+                    foreach (CommandAttribute attr in nestType.GetCustomAttributes(typeof(CommandAttribute), true))
+                    {
+                        IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance(nestType);
+                        list.Add(attr.Name, propertyCommand);
                     }
                 }
-		    }
-            if ( !( type.BaseType == typeof(ScriptableObject) ) )
-            {
-                CreateParameterDictionary( type.BaseType, commands );
             }
-		}
 
-        public IEnumerable<IPropertyCommand> Attributes()
-        {
-            var commands = Commands[ this.GetType() ].Values;
-            return commands;
+            if (type.BaseType != typeof(System.Object))
+            {
+               _initializeTypeProperties( type.BaseType, list );
+            }
         }
 
-        public IPropertyCommand Attributes( string attributeName )
+        #region Implementation of IScriptableObject
+
+        private ScriptableProperties _properties;
+        /// <summary>
+        /// a list of properties accessible through though a string interface
+        /// </summary>
+        public ScriptableProperties Properties
         {
-            var commands = Commands[ this.GetType() ];          
-            if ( commands.ContainsKey( attributeName ) )
-                return commands[ attributeName ];
-            return null;
+            get
+            {
+                return _properties;
+            }
         }
 
-		#endregion Methods
+        /// <summary>
+        /// Set multiple properties using a <see cref="NameValuePairList"/>
+        /// </summary>
+        /// <param name="parameters">the list of properties to set</param>
+        public void SetParameters( NameValuePairList parameters )
+        {
+            foreach (KeyValuePair<String, String> item in parameters)
+            {
+                this.Properties[item.Key] = item.Value;
+            }
+        }
 
-        
-	}
+        // This is using explicit interface implementation to hide the inplementation from the public api
+        // access to this indexer is provided through the Properties property
+        string IScriptableObject.this[ string property ]
+        {
+            get
+            {
+                IPropertyCommand command;
+
+                if (_classParameters.TryGetValue(property, out command))
+                {
+                    return command.Get(this);
+                }
+                else
+                {
+                    LogManager.Instance.Write("{0}: Unrecognized parameter '{1}'", this.GetType().Name, property);
+                }
+                return null;
+            }
+            set
+            {
+                IPropertyCommand command;
+
+                if (_classParameters.TryGetValue(property, out command))
+                {
+                    command.Set(this, value);
+                }
+                else
+                {
+                    LogManager.Instance.Write("{0}: Unrecognized parameter '{1}'", this.GetType().Name, property);
+                }
+            }
+        }
+
+        #endregion
+    }
 }

@@ -673,6 +673,108 @@
     <Compile Include="Scripting\CommandAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Scripting\Compiler\AbstractTreeBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\AST\AbstractNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\AST\AtomAbstractNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\CompileError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\ConcreteNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\Translator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Keywords.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Parser\ScriptToken.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Parser\Tokens.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\ScriptCompiler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\ScriptCompilerListener.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\ScriptCompilerManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\ScriptCompilerManager.Events.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Scripting\IPropertyCommand.cs" />
     <Compile Include="Scripting\IScriptLoader.cs" />
     <Compile Include="Scripting\ParseHelper.cs">

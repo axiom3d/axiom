@@ -663,6 +663,25 @@ namespace Axiom.Graphics
 
 		#endregion Pass Convienence Properties
 
+        #region Scheme Property
+        private ushort _schemeIndex;
+        private string _schemeName;
+
+        public String Scheme
+        {
+            get
+            {
+                return _schemeName;
+            }
+
+            set
+            {
+                _schemeIndex = MaterialManager.Instance.GetSchemeIndex(_schemeName);
+                _schemeName = value;
+            }
+        }
+        #endregion Scheme Property
+
 		/// <summary>
 		///    Returns true if this Technique has already been loaded.
 		/// </summary>

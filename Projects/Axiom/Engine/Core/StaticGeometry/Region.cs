@@ -233,6 +233,7 @@ namespace Axiom.Core
 
             public Region( StaticGeometry parent, string name, SceneManager mgr, UInt32 regionID, Vector3 center )
             {
+                this.MovableType = "StaticGeometry";
                 this.parent = parent;
                 this.name = name;
                 this.sceneMgr = mgr;
@@ -490,18 +491,6 @@ namespace Axiom.Core
             }
 
             #region MovableObject Implementation
-
-            public override string MovableType
-            {
-                get
-                {
-                    return "StaticGeometry";
-                }
-                set
-                {
-                    throw new NotSupportedException( "Cannot set value of MoveableType." );
-                }
-            }
 
             /// <summary>
             /// Get the 'type flags' for this <see cref="Region"/>.

@@ -120,6 +120,7 @@ namespace Axiom.Core
 
         public ManualObject(string name) : base(name)
         {
+            this.MovableType = "ManualObject";
             this.dynamic = false;
             this.currentSection = null;
             this.firstVertex = true;
@@ -406,17 +407,6 @@ namespace Axiom.Core
         #region Public
 
         #region Properties
-
-        /// <summary>
-        ///    Movable type
-        /// </summary>
-        public string MovableType
-        {
-            get
-            {
-                return "ManualObject";
-            }
-        }
 
         /// <summary>
         /// Usually ManualObjects will use a projection matrix as determined

@@ -36,9 +36,8 @@ namespace Axiom.UnitTests.Collections
         [Test]
         public void SceneNode_AddRenameEntity_ShouldNotThrowException()
         {
-
             sceneManager.RootSceneNode.AttachObject( entity );
-            entity.Name = "newName";
+            entity.Name = "newName_" + "SceneNode_AddRenameEntity";
             Assert.IsTrue( sceneManager.RootSceneNode.GetObject( entity.Name ) != null );
 
             sceneManager.RootSceneNode.DetachAllObjects();
@@ -47,12 +46,27 @@ namespace Axiom.UnitTests.Collections
         [Test]
         public void SceneManager_AddRenameEntity_ShouldNotThrowException()
         {
-
             sceneManager.RootSceneNode.AttachObject( entity );
-            entity.Name = "newName";
+            entity.Name = "newName_" + "SceneManager_AddRenameEntity";
             Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
 
             sceneManager.RootSceneNode.DetachAllObjects();
+        }
+
+        [Test]
+        public void SceneManager_AttachDetachRenameEntity_ShouldNotThrowException()
+        {
+            sceneManager.RootSceneNode.AttachObject( entity );
+            sceneManager.RootSceneNode.DetachAllObjects();
+            entity.Name = "newName_" + "SceneManager_AddRenameEntity";
+            Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
+        }
+
+        [Test]
+        public void MovableObject_RenameUnattachedEntity_ShouldNotThrowException()
+        {
+            entity.Name = "newName_" + "MovableObject_RenameUnattachedEntity";
+            Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
         }
     }
 }

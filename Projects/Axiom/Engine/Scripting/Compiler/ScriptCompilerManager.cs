@@ -38,6 +38,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Axiom.Core;
+using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
 
@@ -47,7 +48,7 @@ namespace Axiom.Scripting.Compiler
     /// Manages threaded compilation of scripts. This script loader forwards
     /// scripts compilations to a specific compiler instance.
     /// </summary>
-    class ScriptCompilerManager : Singleton<ScriptCompilerManager>, IScriptLoader
+    public partial class ScriptCompilerManager : Singleton<ScriptCompilerManager>, IScriptLoader
     {
         #region Fields and Properties
 
@@ -56,97 +57,52 @@ namespace Axiom.Scripting.Compiler
 
         private ScriptCompiler _compiler;
 
-        #region Listener Property
-        private ScriptCompilerListener _listener;
-        /// <summary>
-        /// The listener used for compiler instances
-        /// </summary>
-        public ScriptCompilerListener Listener
+        private List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
+        private ScriptTranslatorManager _builtinTranslatorManager;
+
+        public IList<ScriptTranslatorManager> TranslatorMangers
         {
             get
             {
-                return _listener;
-            }
-            set
-            {
-                _listener = value;
+                return _translatorManagers;
             }
         }
-        #endregion Listener Property
 
         #endregion Fields and Properties
-
-        #region Singleton implementation
-
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static ScriptCompilerManager Instance
-        {
-            get
-            {
-                return Singleton<ScriptCompilerManager>.Instance;
-            }
-        }
-
-        #endregion Singleton implementation
 
         #region Construction and Destruction
 
         /// <summary>
         /// 
         /// </summary>
-        private ScriptCompilerManager()
+        public ScriptCompilerManager()
         {
 
-#if AXIOM_USENEWCOMPILERS
-			_scriptPatterns.Add( "*.program" );
-			_scriptPatterns.Add( "*.material" );
-			_scriptPatterns.Add( "*.particle" );
-			_scriptPatterns.Add( "*.compositor" );
+#if AXIOM_USENEWCOMPILER
+			this._scriptPatterns.Add( "*.program" );
+			this._scriptPatterns.Add( "*.material" );
+			this._scriptPatterns.Add( "*.particle" );
+			this._scriptPatterns.Add( "*.compositor" );
 #endif
-            _scriptPatterns.Add( "*.os" );
+            this._scriptPatterns.Add( "*.os" );
 
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
 
-            _compiler = new ScriptCompiler();
+            this._compiler = new ScriptCompiler();
 
-            //BuiltinTranslatorManager = new BuiltinScriptTranslatorManager();
-            //Managers.Add(BuiltinTranslatorManager);
+            this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
+            this._translatorManagers.Add( this._builtinTranslatorManager );
 
         }
         #endregion Construction and Destruction
 
         #region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="manager"></param>
-        //public void AddTranslatorManager(IScriptTranslatorManager manager)
-        //{
-        //    Managers.Add( manager );
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="manager"></param>
-        //public void RemoveTranslatorManager(IScriptTranslatorManager manager)
-        //{
-        //    if ( Managers.Contains( manger ) )
-        //        Managers.Remove( IScriptTranslatorManager manager );
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        //public IScriptTranslator GetTranslator( AST.AbstractNode node )
-        //{
-            
-        //}
+        /// Retrieves a ScriptTranslator from the supported managers
+        public ScriptCompiler.Translator GetTranslator( AbstractNode node )
+        {
+            return null;
+        }
 
         #endregion Methods
 
@@ -163,7 +119,7 @@ namespace Axiom.Scripting.Compiler
         public void ParseScript( System.IO.Stream stream, string groupName, string fileName )
         {
             // Set the listener on the compiler before we continue
-            _compiler.Listener = Listener;
+            //_compiler.Listener = Listener;
 
             System.IO.StreamReader rdr = new System.IO.StreamReader( stream );
             String script = rdr.ReadToEnd();
@@ -182,5 +138,13 @@ namespace Axiom.Scripting.Compiler
 
         #endregion  IScriptLoader Implementation
 
+    }
+
+    public class BuiltinScriptTranslatorManager : ScriptTranslatorManager
+    {
+    }
+
+    public class ScriptTranslatorManager
+    {
     }
 }

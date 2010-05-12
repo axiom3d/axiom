@@ -82,11 +82,6 @@ namespace Axiom.Overlays.Elements
 
         #region Constructors
 
-        static TextArea()
-        {
-            ScriptableObject.CreateParameterDictionary( typeof(TextArea) );
-        }
-
         /// <summary>
         ///    Basic constructor, internal since it should only be created by factories.
         /// </summary>

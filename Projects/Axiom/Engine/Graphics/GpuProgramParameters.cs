@@ -650,6 +650,11 @@ namespace Axiom.Graphics
                 SetConstant( GetParamIndex( name ), val );
 		}
 
+        public void SetNamedConstant(string name, int[] val)
+        {
+            SetConstant(GetParamIndex(name), val);
+        }
+
 		/// <summary>
 		///    Sends 4 packed floating-point values to the program.
 		/// </summary>
