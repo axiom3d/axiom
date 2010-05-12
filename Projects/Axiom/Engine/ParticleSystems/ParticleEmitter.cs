@@ -985,7 +985,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "angle", "Angle to emit the particles at.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "angle", "Angle to emit the particles at.", typeof( ParticleEmitter ) )]
         class AngleCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1003,7 +1003,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "position", "Particle emitter position.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "position", "Particle emitter position.", typeof( ParticleEmitter ) )]
         class PositionCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1021,7 +1021,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "emission_rate", "Rate of particle emission.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "emission_rate", "Rate of particle emission.", typeof( ParticleEmitter ) )]
         class EmissionRateCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1036,7 +1036,7 @@ namespace Axiom.ParticleSystems
             }
         }
 
-		[Command( "emit_emitter", "If set, this emitter will emit other emitters instead of visual particles.", typeof( ParticleEmitter ) )]
+		[ScriptableProperty( "emit_emitter", "If set, this emitter will emit other emitters instead of visual particles.", typeof( ParticleEmitter ) )]
 		class EmitEmitterCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
@@ -1054,7 +1054,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "time_to_live", "Constant lifespan of a particle.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "time_to_live", "Constant lifespan of a particle.", typeof( ParticleEmitter ) )]
         class TtlCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1072,7 +1072,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "time_to_live_min", "Minimum lifespan of a particle.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "time_to_live_min", "Minimum lifespan of a particle.", typeof( ParticleEmitter ) )]
         class TtlMinCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1090,7 +1090,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "time_to_live_max", "Maximum lifespan of a particle.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "time_to_live_max", "Maximum lifespan of a particle.", typeof( ParticleEmitter ) )]
         class TtlMaxCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1108,7 +1108,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "direction", "Particle direction.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "direction", "Particle direction.", typeof( ParticleEmitter ) )]
         class DirectionCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1126,7 +1126,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "duration", "Constant duration.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "duration", "Constant duration.", typeof( ParticleEmitter ) )]
         class DurationCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1144,7 +1144,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "duration_min", "Minimum duration.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "duration_min", "Minimum duration.", typeof( ParticleEmitter ) )]
         class MinDurationCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1162,7 +1162,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "duration_max", "Maximum duration.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "duration_max", "Maximum duration.", typeof( ParticleEmitter ) )]
         class MaxDurationCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1180,7 +1180,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "repeat_delay", "Constant delay between repeating durations.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "repeat_delay", "Constant delay between repeating durations.", typeof( ParticleEmitter ) )]
         class RepeatDelayCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1198,7 +1198,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "repeat_delay_min", "Minimum delay between repeating durations.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "repeat_delay_min", "Minimum delay between repeating durations.", typeof( ParticleEmitter ) )]
         class RepeatDelayMinCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1216,7 +1216,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "repeat_delay_max", "Maximum delay between repeating durations.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "repeat_delay_max", "Maximum delay between repeating durations.", typeof( ParticleEmitter ) )]
         class RepeatDelayMaxCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1234,7 +1234,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "velocity", "Constant particle velocity.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "velocity", "Constant particle velocity.", typeof( ParticleEmitter ) )]
         class VelocityCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1252,7 +1252,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "velocity_min", "Minimum particle velocity.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "velocity_min", "Minimum particle velocity.", typeof( ParticleEmitter ) )]
         class VelocityMinCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1270,7 +1270,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///    
         /// </summary>
-        [Command( "velocity_max", "Maximum particle velocity.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "velocity_max", "Maximum particle velocity.", typeof( ParticleEmitter ) )]
         class VelocityMaxCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1288,7 +1288,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         /// 
         /// </summary>
-		[Command( "colour", "Color.", typeof( ParticleEmitter ) )]
+		[ScriptableProperty( "colour", "Color.", typeof( ParticleEmitter ) )]
 		class ColorCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
@@ -1306,7 +1306,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		/// 
 		/// </summary>
-        [Command( "colour_range_start", "Color range start.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "colour_range_start", "Color range start.", typeof( ParticleEmitter ) )]
         class ColorRangeStartCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1325,7 +1325,7 @@ namespace Axiom.ParticleSystems
         /// <summary>
         /// 
         /// </summary>
-        [Command( "colour_range_end", "Color range end.", typeof( ParticleEmitter ) )]
+        [ScriptableProperty( "colour_range_end", "Color range end.", typeof( ParticleEmitter ) )]
         class ColorRangeEndCommand : IPropertyCommand
         {
             public void Set( object target, string val )
@@ -1343,7 +1343,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///    
 		/// </summary>
-		[Command( "name", "particle emmitter name.", typeof( ParticleEmitter ) )]
+		[ScriptableProperty( "name", "particle emmitter name.", typeof( ParticleEmitter ) )]
 		class NameCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
