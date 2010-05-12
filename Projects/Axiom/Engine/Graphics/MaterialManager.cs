@@ -163,11 +163,12 @@ namespace Axiom.Graphics
             // Loading order
             this.LoadingOrder = 100.0f;
 
+#if AXIOM_USENEWCOMPILER
             // Scripting is supported by this manager
             ScriptPatterns.Add( "*.program" );
             ScriptPatterns.Add( "*.material" );
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
-
+#endif
             // Material Schemes
             ActiveScheme = MaterialManager.DefaultSchemeName;
             ActiveSchemeIndex = 0;

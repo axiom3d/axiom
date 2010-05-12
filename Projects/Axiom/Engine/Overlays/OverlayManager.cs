@@ -155,10 +155,12 @@ namespace Axiom.Overlays
 
 		public OverlayManager()
 		{
+#if AXIOM_USENEWCOMPILER
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.overlay" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
-		}
+#endif		
+        }
 
 		#endregion Construction and Destruction
 

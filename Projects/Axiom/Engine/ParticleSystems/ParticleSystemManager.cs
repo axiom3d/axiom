@@ -93,8 +93,10 @@ namespace Axiom.ParticleSystems
                 instance = this;
             }
 
+#if AXIOM_USENEWCOMPILER
             _scriptPatterns.Add( "*.particle" );
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
+#endif
 
             //TODO : MovableObjectFactory : _psFactory = new new ParticleSystemFactory();
             //TODO : MovableObjectFactory : Root.Instance.RegisterMovableObjectFactory( _psFactory );
