@@ -151,6 +151,11 @@ namespace Axiom.Core
 
                 LodStrategyManager.Instance.Initialize();
 
+
+#if AXIOM_USENEWCOMPILERS
+				ScriptCompilerManager.Instance.Initialize();
+#endif // AXIOM_USENEWCOMPILERS
+
                 new PluginManager();
                 PluginManager.Instance.LoadAll();
 
