@@ -667,7 +667,7 @@ namespace Axiom.Overlays.Elements
 
         #region ScriptableObject Interface Command Classes
 
-        [Command( "char_height", "", typeof(TextArea) )]
+        [ScriptableProperty( "char_height", "", typeof(TextArea) )]
         private class CharacterHeightAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -707,7 +707,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "space_width", "", typeof( TextArea ) )]
+        [ScriptableProperty( "space_width", "", typeof( TextArea ) )]
         private class SpaceWidthAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -747,7 +747,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "font_name", "", typeof( TextArea ) )]
+        [ScriptableProperty( "font_name", "", typeof( TextArea ) )]
         private class FontNameAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -787,7 +787,7 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
+        [ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
         private class HorizontalAlignmentAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -826,8 +826,8 @@ namespace Axiom.Overlays.Elements
 
             #endregion
         }
-        [Command( "color", "", typeof( TextArea ) )]
-        [Command( "colour", "", typeof( TextArea ) )]
+        [ScriptableProperty( "color", "", typeof( TextArea ) )]
+        [ScriptableProperty( "colour", "", typeof( TextArea ) )]
         private class ColorAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -867,8 +867,8 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "color_top", "", typeof( TextArea ) )]
-        [Command( "colour_top", "", typeof( TextArea ) )]
+        [ScriptableProperty( "color_top", "", typeof( TextArea ) )]
+        [ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
         private class TopColorAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
@@ -908,8 +908,8 @@ namespace Axiom.Overlays.Elements
             #endregion
         }
 
-        [Command( "color_bottom", "", typeof( TextArea ) )]
-        [Command( "colour_bottom", "", typeof( TextArea ) )]
+        [ScriptableProperty( "color_bottom", "", typeof( TextArea ) )]
+        [ScriptableProperty( "colour_bottom", "", typeof( TextArea ) )]
         private class BottomColorAttributeCommand : IPropertyCommand
         {
             #region Implementation of IPropertyCommand<object,string>
