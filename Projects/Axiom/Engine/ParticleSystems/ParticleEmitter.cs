@@ -460,7 +460,7 @@ namespace Axiom.ParticleSystems
         ///		this color. See the alternate Start/End versions of this property which takes 2 colous in order to establish 
         ///		a range of colors to be assigned to particles.
         /// </remarks>
-        public virtual ColorEx Color
+        public new virtual ColorEx Color
         {
             get
             {

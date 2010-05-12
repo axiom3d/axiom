@@ -128,7 +128,7 @@ namespace Axiom.Scripting.Compiler
 
 				// Set the custom parameters
 				foreach ( Pair<String> item in customParameters )
-					prog.Properties[ item.first ] = item.second;
+					prog.Properties[ item.First ] = item.Second;
 
 				// Set up default parameters
 				if(prog.IsSupported && param != null)

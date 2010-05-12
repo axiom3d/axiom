@@ -40,32 +40,32 @@ using System;
 namespace Axiom.Scripting
 {
 	/// <summary>
-	/// Specialization of the IPropertyCommand using object and string
+	/// Specialization of the IPropertyCommand using object
 	/// </summary>
-	public interface IPropertyCommand : IPropertyCommand<object, string>
+	public interface IPropertyCommand : IPropertyCommand<object>
 	{
 	}
+
 
 	/// <summary>
 	/// Provides an interface for setting object properties via a Command Pattern.
 	/// </summary>
-	/// <typeparam name="ObjectType">Type of the object to operate on.</typeparam>
-	/// <typeparam name="PropertyType">Type of the property to operate on.</typeparam>
-	public interface IPropertyCommand<TObjectType, TPropertyType>
+	/// <typeparam name="TObjectType">Type of the object to operate on.</typeparam>
+	public interface IPropertyCommand<TObjectType>
 	{
 		/// <summary>
 		///    Gets the value for this command from the target object.
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		TPropertyType Get( TObjectType target );
+		string Get( TObjectType target );
 
         /// <summary>
         ///    Sets the value for this command on the target object.
         /// </summary>
         /// <param name="target"></param>
         /// <param name="val"></param>
-        void Set( TObjectType target, TPropertyType val );
+        void Set( TObjectType target, string val );
     
     }
 

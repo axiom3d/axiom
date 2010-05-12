@@ -177,7 +177,9 @@ namespace Axiom.Scripting.Compiler
 											if ( getInts( prop.values, 2, out vals, roundedCount ) )
 											{
 												if ( named )
-													_parameters.SetNamedConstant( name, vals );
+												{
+												    //_parameters.SetNamedConstant( name, vals );
+												}
 												else
 													_parameters.SetConstant( index, vals );
 											}

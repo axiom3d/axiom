@@ -88,11 +88,6 @@ namespace Axiom.Overlays.Elements
 
         #region Constructors
 
-        static Panel()
-        {
-            ScriptableObject.CreateParameterDictionary( typeof(Panel) );
-        }
-
         internal Panel( string name )
             : base( name )
         {

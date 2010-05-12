@@ -410,6 +410,7 @@ namespace Axiom.Core
 		///     IManualResourceLoader instance is strongly recommended.
 		/// </param>
 		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+            : this()
 		{
 			_creator = parent;
 			_name = name;
@@ -418,6 +419,7 @@ namespace Axiom.Core
 			_size = 0;
 			_isManuallyLoaded = isManual;
 			_loader = loader;
+
 		}
 
 		~Resource()
@@ -800,6 +802,7 @@ namespace Axiom.Core
 		}
 
 		#endregion IDisposable Implementation
+
 	}
 
 	/// <summary>

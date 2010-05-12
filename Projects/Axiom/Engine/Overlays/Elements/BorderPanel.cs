@@ -108,11 +108,6 @@ namespace Axiom.Overlays.Elements
 
         #region Constructors
 
-        static BorderPanel()
-        {
-            ScriptableObject.CreateParameterDictionary( typeof(BorderPanel) );
-        }
-
         /// <summary>
         ///    Internal constructor, used when objects create by the factory.
         /// </summary>

@@ -177,7 +177,7 @@ namespace Axiom.Scripting.Compiler
 			protected bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result )
 			{
 				Real[] vals = new Real[ 4 ] { 0, 0, 0, 0 };
-				result = new ColorEx( vals[ 0 ], vals[ 1 ], vals[ 2 ], vals[ 3 ] );
+				result = ColorEx.White;
 
 				int n = 0;
 				while ( i != nodes.Count && n < 4 )

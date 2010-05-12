@@ -157,7 +157,7 @@ namespace Axiom.Core
 
         private MovableObjectFactory _creator;
         private SceneManager _manager;
-        private string movableType;
+        private string _movableType;
 
         #endregion Fields for MovableObjectFactory
 
@@ -412,7 +412,7 @@ namespace Axiom.Core
         /// <param name="void"></param>
         public virtual void DetachFromParent()
         {
-            if ( IsAttached )
+            if ( IsInScene )
             {
                 if ( parentIsTagPoint )
                 {
@@ -937,17 +937,17 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///     Gets the MovableType for this MovableObject.
+        /// Gets the MovableType for this MovableObject.
         /// </summary>
-        public virtual string MovableType
+        public string MovableType
         {
             get
             {
-                return movableType;
+                return this._movableType;
             }
             set
             {
-                movableType = value;
+                this._movableType = value;
             }
         }
 

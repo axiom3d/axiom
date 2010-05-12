@@ -333,7 +333,9 @@ namespace Axiom.Core
 			// Call creation implementation
 			Resource ret = _create( name, nextHandle, group, isManual, loader, createParams );
 			if ( createParams != null )
-				ret.Parameters = createParams;
+			{
+			    ret.SetParameters( createParams );
+			}
 
 			_add( ret );
 

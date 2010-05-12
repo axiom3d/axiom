@@ -39,6 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Axiom.Core;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -117,7 +118,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					case Keywords.ID_LOD_DISTANCES:
 						{
-							FloatList lods= new FloatList();
+                            LodValueList lods = new LodValueList();
 							foreach ( AbstractNode node in property.values )
 							{
 								if ( node.type == AbstractNodeType.Atom && ( (AtomAbstractNode)node ).IsNumber )

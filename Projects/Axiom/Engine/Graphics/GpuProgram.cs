@@ -39,6 +39,7 @@ using System.IO;
 using System.Collections;
 
 using Axiom.Core;
+using Axiom.Scripting;
 
 using ResourceHandle = System.UInt64;
 
@@ -675,5 +676,62 @@ namespace Axiom.Graphics
 
 		#endregion
 
-	}
+		#region Custom Parameters
+
+		[Scripting.ScriptableProperty( "includes_skeletal_animation" )]
+		private class IncludesSkeletalAnimationPropertyCommand : Scripting.IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				return ( (GpuProgram)target ).IsSkeletalAnimationIncluded.ToString();
+			}
+
+			public void Set( object target, string val )
+			{
+				( (GpuProgram)target ).IsSkeletalAnimationIncluded = bool.Parse( val );
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		[Scripting.ScriptableProperty( "includes_morph_animation" )]
+		private class IncludesMorphAnimationPropertyCommand : Scripting.IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				return ( (GpuProgram)target ).IsMorphAnimationIncluded.ToString();
+			}
+
+			public void Set( object target, string val )
+			{
+				( (GpuProgram)target ).IsMorphAnimationIncluded = bool.Parse( val );
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		[Scripting.ScriptableProperty( "includes_pose_animation" )]
+		private class IncludesPoseAnimationPropertyCommand : Scripting.IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				return ( (GpuProgram)target ).poseAnimationCount.ToString();
+			}
+
+			public void Set( object target, string val )
+			{
+				( (GpuProgram)target ).poseAnimationCount = ushort.Parse( val );
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		#endregion Custom Parameters	
+    }
 }

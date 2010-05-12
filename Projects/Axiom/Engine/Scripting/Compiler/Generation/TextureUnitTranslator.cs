@@ -69,7 +69,7 @@ namespace Axiom.Scripting.Compiler
 				Compiler.Context = _textureunit;
 
 				// Get the name of the technique
-				if ( obj.name != null && obj.name.Length != 0 )
+				if ( !string.IsNullOrEmpty( obj.name ) )
 					_textureunit.Name = obj.name;
 
 				// Set the properties for the technique
