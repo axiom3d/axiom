@@ -99,6 +99,9 @@
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\BillboardChain.cs" />
     <Compile Include="Core\BitConverterEx.cs" />
+    <Compile Include="Core\InstancedGeometry\InstancedGeometry.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Pair.cs" />
