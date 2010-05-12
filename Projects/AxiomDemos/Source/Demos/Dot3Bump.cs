@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
 
 using Axiom.Core;
 using Axiom.Overlays;
@@ -99,10 +100,27 @@ namespace Axiom.Demos
 		SceneNode[] lightNodes = new SceneNode[ NUM_LIGHTS ];
 		SceneNode[] lightPivots = new SceneNode[ NUM_LIGHTS ];
 
+		OverlayElement objectInfo, materialInfo, info;
+
 		#endregion Fields
 
-        public override void CreateScene()
+	    public override void CreateScene()
 		{
+			// Check prerequisites first
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			if ( !caps.HasCapability( Capabilities.VertexPrograms ) || !caps.HasCapability( Capabilities.FragmentPrograms ) )
+			{
+				throw new AxiomException( "Your card does not support vertex and fragment programs, so cannot run this demo. Sorry!" );
+			}
+			else
+			{
+				if ( !GpuProgramManager.Instance.IsSyntaxSupported( "arbfp1" ) &&
+					!GpuProgramManager.Instance.IsSyntaxSupported( "ps_2_0" ) )
+				{
+					throw new AxiomException( "Your card does not support shader model 2, so cannot run this demo. Sorry!" );
+				}
+			}
+
 			scene.AmbientLight = ColorEx.Black;
 
 			// create scene node
@@ -133,7 +151,7 @@ namespace Axiom.Demos
 				// Make invisible, except for index 0
 				if ( mn == 0 )
 				{
-					entities[ mn ].MaterialName = materialNames[ currentEntity , currentMaterial ];
+					entities[ mn ].MaterialName = materialNames[ currentEntity, currentMaterial ];
 				}
 				else
 				{
@@ -167,56 +185,67 @@ namespace Axiom.Demos
 			// move the camera a bit right and make it look at the knot
 			camera.MoveRelative( new Vector3( 50, 0, 20 ) );
 			camera.LookAt( new Vector3( 0, 0, 0 ) );
+
+			// show overlay
+			Overlay pOver = OverlayManager.Instance.GetByName( "Example/DP3Overlay" );
+			objectInfo = OverlayManager.Instance.Elements.GetElement( "Example/DP3/ObjectInfo" );
+			materialInfo = OverlayManager.Instance.Elements.GetElement( "Example/DP3/MaterialInfo" );
+			info = OverlayManager.Instance.Elements.GetElement( "Example/DP3/Info" );
+
+			objectInfo.Text = "Current: " + entityMeshes[ currentEntity ];
+			materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
+			if ( !caps.HasCapability( Capabilities.FragmentPrograms ) )
+			{
+				info.Text = "NOTE: Light colours and specular highlights are not supported by your card.";
+			}
+			pOver.Show();
+
 		}
 
-		protected override void OnFrameStarted( object source, FrameEventArgs evt )
+		protected override void OnFrameStarted( object source, FrameEventArgs e )
 		{
-            base.OnFrameStarted( source, evt );
-            if ( evt.StopRendering )
-                return;
+			base.OnFrameStarted( source, e );
 
-			if ( timeDelay > 0.0f )
+			timeDelay -= e.TimeSinceLastFrame;
+
+			IfKeyPressed( KeyCodes.O, delegate()
 			{
-				timeDelay -= evt.TimeSinceLastFrame;
-			}
-			else
+				entities[ currentEntity ].IsVisible = false;
+				currentEntity = ( ++currentEntity ) % NUM_ENTITIES;
+				entities[ currentEntity ].IsVisible = true;
+				entities[ currentEntity ].MaterialName = materialNames[ currentEntity , currentMaterial ];
+
+				objectInfo.Text = "Current: " + entityMeshes[ currentEntity ];
+				materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
+			} );
+
+			IfKeyPressed( KeyCodes.M, delegate()
 			{
-				if ( input.IsKeyPressed( KeyCodes.O ) )
-				{
-					entities[ currentEntity ].IsVisible = false;
-					currentEntity = ( ++currentEntity ) % NUM_ENTITIES;
-					entities[ currentEntity ].IsVisible = true;
-					entities[ currentEntity ].MaterialName = materialNames[ currentEntity , currentMaterial ];
-				}
+				currentMaterial = ( ++currentMaterial ) % NUM_MATERIALS;
+				entities[ currentEntity ].MaterialName = materialNames[ currentEntity, currentMaterial ];
 
-				if ( input.IsKeyPressed( KeyCodes.M ) )
-				{
-					currentMaterial = ( ++currentMaterial ) % NUM_MATERIALS;
-					entities[ currentEntity ].MaterialName = materialNames[ currentEntity , currentMaterial ];
-				}
+				materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
+			} );
 
-				if ( input.IsKeyPressed( KeyCodes.D1 ) )
-				{
-					FlipLightState( 0 );
-				}
+			IfKeyPressed( KeyCodes.D1, delegate()
+			{
+				FlipLightState( 0 );
+			} );
 
-				if ( input.IsKeyPressed( KeyCodes.D2 ) )
-				{
-					FlipLightState( 1 );
-				}
+			IfKeyPressed( KeyCodes.D2, delegate()
+			{
+				FlipLightState( 1 );
+			} );
 
-				if ( input.IsKeyPressed( KeyCodes.D3 ) )
-				{
-					FlipLightState( 2 );
-				}
-
-				timeDelay = 0.1f;
-			}
+			IfKeyPressed( KeyCodes.D3, delegate()
+			{
+				FlipLightState( 2 );
+			} );
 
 			// animate the lights
 			for ( int i = 0; i < NUM_LIGHTS; i++ )
 			{
-				lightPivots[ i ].Rotate( Vector3.UnitZ, lightSpeeds[ i ] * evt.TimeSinceLastFrame );
+				lightPivots[ i ].Rotate( Vector3.UnitZ, lightSpeeds[ i ] * e.TimeSinceLastFrame );
 			}
 		}
 
@@ -231,5 +260,6 @@ namespace Axiom.Demos
 			lights[ index ].IsVisible = lightState[ index ];
 			lightFlareSets[ index ].IsVisible = lightState[ index ];
 		}
+
 	}
 }

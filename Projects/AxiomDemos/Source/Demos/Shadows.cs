@@ -215,20 +215,20 @@ namespace Axiom.Demos
             if ( evt.StopRendering )
                 return;
 
-			if ( input.IsKeyPressed( KeyCodes.O ) && toggleDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.O ) && keypressDelay < 0 )
 			{
 				ChangeShadowTechnique();
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;
 
-				toggleDelay = 1;
+				keypressDelay = 1;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.M ) && toggleDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.M ) && keypressDelay < 0 )
 			{
 				scene.ShowDebugShadows = !scene.ShowDebugShadows;
-				toggleDelay = 1;
+				keypressDelay = 1;
 
 				// show briefly on the screen
                 this.debugText = string.Format("Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off");
