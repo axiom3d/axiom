@@ -1,3 +1,38 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -5,91 +40,113 @@ using System.Text;
 using Axiom.Math;
 using Axiom.Overlays;
 
+#endregion Namespace Declarations
+
 namespace Axiom.Core
 {
+    /// <summary>
+    /// Attaches a label to a <see cref="MovableObject"/>
+    /// </summary>
 	public class ObjectTextDisplay
-	{
-		protected MovableObject m_p;
-		protected Camera m_c;
-		protected bool m_enabled;
-		protected Overlay m_pOverlay;
-		protected OverlayElement m_pText;
-		protected OverlayElementContainer m_pContainer;
-		protected string m_text;
+    {
+        #region Fields and Properties
 
-		public ObjectTextDisplay( MovableObject p, Camera c, string shapeName )
+        protected MovableObject parent;
+		protected Camera camera;
+		protected Overlay parentOverlay;
+		protected OverlayElement parentText;
+		protected OverlayElementContainer parentContainer;
+
+		protected bool enabled;
+	    public bool IsEnabled
+	    { 
+            get
+            {
+                return enabled;
+            }
+	        set
+	        {
+	            this.enabled = value;
+	            if ( value )
+	                this.parentOverlay.Show();
+	            else
+	                this.parentOverlay.Hide();
+
+	        }
+	    }
+		protected string text;
+	    public string Text
+	    {
+	        get
+	        {
+	            return text;
+	        }
+            set
+            {
+			    this.text = value;
+			    this.parentText.Text = this.text;
+            }
+	    }
+
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        public ObjectTextDisplay( MovableObject p, Camera c, string shapeName )
 		{
-			m_p = p;
-			m_c = c;
-			m_enabled = false;
-			m_text = "";
+			this.parent = p;
+			this.camera = c;
+			this.enabled = false;
+			this.text = "";
 
 			// create an overlay that we can use for later
 
 			// = Ogre.OverlayManager.getSingleton().create("shapeName");
-			m_pOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
+			this.parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
 
 			// (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
-			m_pContainer = (OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
+			this.parentContainer = (OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
 
-			//m_pOverlay.add2D(m_pContainer);
-			m_pOverlay.AddElement( m_pContainer );
+			//parentOverlay.add2D(parentContainer);
+			this.parentOverlay.AddElement( this.parentContainer );
 
-			//m_pText = Ogre.OverlayManager.getSingleton().createOverlayElement("TextArea", "shapeNameText");
-			m_pText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
+			//parentText = Ogre.OverlayManager.getSingleton().createOverlayElement("TextArea", "shapeNameText");
+			this.parentText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
 
-			m_pText.SetDimensions( 1.0f, 1.0f );
+			this.parentText.SetDimensions( 1.0f, 1.0f );
 
-			//m_pText.setMetricsMode(Ogre.GMM_PIXELS);
-			m_pText.MetricsMode = MetricsMode.Pixels;
-
-
-			m_pText.SetPosition( 1.0f, 1.0f );
+			//parentText.setMetricsMode(Ogre.GMM_PIXELS);
+			this.parentText.MetricsMode = MetricsMode.Pixels;
 
 
-			m_pText.SetParam( "font_name", "Arial" );
-			m_pText.SetParam( "char_height", "25" );
-			m_pText.SetParam( "horz_align", "center" );
-			m_pText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
-			//m_pText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
+			this.parentText.SetPosition( 1.0f, 1.0f );
 
 
-			m_pContainer.AddChild( m_pText );
+			this.parentText.SetParam( "font_name", "Arial" );
+			this.parentText.SetParam( "char_height", "25" );
+			this.parentText.SetParam( "horz_align", "center" );
+			this.parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
+			//parentText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
 
-			m_pOverlay.Show();
+
+			this.parentContainer.AddChild( this.parentText );
+
+			this.parentOverlay.Show();
 		}
 
+        #endregion Construction and Destruction
 
-
-		public void enable( bool enable )
+		public void Update()
 		{
-			m_enabled = enable;
-			if ( enable )
-				m_pOverlay.Show();
-			else
-				m_pOverlay.Hide();
-
-		}
-
-		public void setText( string text )
-		{
-
-			m_text = text;
-
-			m_pText.Text = m_text;
-		}
-
-		public void update()
-		{
-			if ( !m_enabled )
+			if ( !this.enabled )
 				return;
 
 			// get the projection of the object's AABB into screen space
-			AxisAlignedBox bbox = m_p.GetWorldBoundingBox( true );//new AxisAlignedBox(m_p.BoundingBox.Minimum, m_p.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+			AxisAlignedBox bbox = this.parent.GetWorldBoundingBox( true );//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
-			//Ogre.Matrix4 mat = m_c.getViewMatrix();
-			Matrix4 mat = m_c.ViewMatrix;
+			//Ogre.Matrix4 mat = camera.getViewMatrix();
+			Matrix4 mat = this.camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
 			Vector3[] corners = bbox.Corners;
 
@@ -132,12 +189,10 @@ namespace Axiom.Core
 			// we need to center the text above the BB on the top edge. The line that defines
 			// this top edge is (min_x, min_y) to (max_x, min_y)
 
-			//m_pContainer->setPosition(min_x, min_y);
-			m_pContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
-			m_pContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
+			//parentContainer->setPosition(min_x, min_y);
+			this.parentContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
+			this.parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
 		}
-
-
 	}
 
 
