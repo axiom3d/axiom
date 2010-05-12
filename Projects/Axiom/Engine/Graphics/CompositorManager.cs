@@ -146,8 +146,10 @@ namespace Axiom.Graphics
 			//Load right after materials
 			LoadingOrder = 110.0f;
 
-			ScriptPatterns.Add( "*.compositor" );
+#if !AXIOM_USENEWCOMPILERS
+            ScriptPatterns.Add( "*.compositor" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
+#endif // AXIOM_USENEWCOMPILERS
 
 			ResourceType = "Compositor";
 			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
