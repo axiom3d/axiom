@@ -960,15 +960,14 @@ namespace Axiom.ParticleSystems
                     Type type = types[ i ];
 
                     // get as many command attributes as there are on this type
-                    CommandAttribute[] commandAtts =
-                        (CommandAttribute[])type.GetCustomAttributes( typeof( CommandAttribute ), true );
+                    ScriptablePropertyAttribute[] commandAtts = (ScriptablePropertyAttribute[])type.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true);
 
                     // loop through each one we found and register its command
                     for ( int j = 0; j < commandAtts.Length; j++ )
                     {
-                        CommandAttribute commandAtt = commandAtts[ j ];
+                        ScriptablePropertyAttribute commandAtt = commandAtts[j];
 
-                        commandTable.Add( commandAtt.Name, Activator.CreateInstance( type ) );
+                        commandTable.Add( commandAtt.ScriptPropertyName, Activator.CreateInstance( type ) );
                     } // for
                 } // for
 
