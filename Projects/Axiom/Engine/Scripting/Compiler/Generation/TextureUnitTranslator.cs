@@ -69,17 +69,17 @@ namespace Axiom.Scripting.Compiler
 				Compiler.Context = _textureunit;
 
 				// Get the name of the technique
-				if ( !string.IsNullOrEmpty( obj.name ) )
-					_textureunit.Name = obj.name;
+				if ( !string.IsNullOrEmpty( obj.Name ) )
+					_textureunit.Name = obj.Name;
 
 				// Set the properties for the technique
-				foreach ( AbstractNode node in obj.children )
+				foreach ( AbstractNode node in obj.Children )
 				{
-					if ( node.type == AbstractNodeType.Property )
+					if ( node.Type == AbstractNodeType.Property )
 					{
 						Translator.Translate( this, node );
 					}
-					else if ( node.type == AbstractNodeType.Object )
+					else if ( node.Type == AbstractNodeType.Object )
 					{
 					}
 				}
@@ -93,11 +93,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 5 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -112,10 +112,10 @@ namespace Axiom.Scripting.Compiler
 									for ( int index = 1; index < property.values.Count; index++ )
 									{
 										AbstractNode node = property.values[ index ];
-										if ( node.type == AbstractNodeType.Atom )
+										if ( node.Type == AbstractNodeType.Atom )
 										{
 											AtomAbstractNode atom = (AtomAbstractNode)node;
-											switch ( (Keywords)atom.id )
+											switch ( (Keywords)atom.Id )
 											{
 												case Keywords.ID_1D:
 													texType = TextureType.OneD;
@@ -151,7 +151,7 @@ namespace Axiom.Scripting.Compiler
 										}
 										else
 										{
-											Compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+											Compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 										}
 									}
 
@@ -162,7 +162,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 								}
 
 							}

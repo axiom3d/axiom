@@ -69,20 +69,20 @@ namespace Axiom.Scripting.Compiler
 				Compiler.Context = _technique;
 
 				// Get the name of the technique
-				if ( obj.name != null && obj.name.Length != 0 )
-					_technique.Name = obj.name;
+				if ( obj.Name != null && obj.Name.Length != 0 )
+					_technique.Name = obj.Name;
 
 				// Set the properties for the technique
-				foreach ( AbstractNode node in obj.children )
+				foreach ( AbstractNode node in obj.Children )
 				{
-					if ( node.type == AbstractNodeType.Property )
+					if ( node.Type == AbstractNodeType.Property )
 					{
 						Translator.Translate( this, node );
 					}
-					else if ( node.type == AbstractNodeType.Object )
+					else if ( node.Type == AbstractNodeType.Object )
 					{
 						ObjectAbstractNode child = (ObjectAbstractNode)node;
-						if ( (Keywords)child.id == Keywords.ID_PASS )
+						if ( (Keywords)child.Id == Keywords.ID_PASS )
 						{
 							// Create a pass and compile it
 							Pass pass = _technique.CreatePass();
@@ -102,11 +102,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 3 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -114,7 +114,7 @@ namespace Axiom.Scripting.Compiler
 								if ( getString( property.values[ 0 ], out val ) )
 									_technique.Scheme = val;
 								else
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 							}
 							break;
 						}
@@ -123,11 +123,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 3 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -135,7 +135,7 @@ namespace Axiom.Scripting.Compiler
 								if ( getNumber( property.values[ 0 ], out val ) )
 									_technique.LodIndex = (int)val;
 								else
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 							}
 							break;
 						}

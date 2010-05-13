@@ -58,7 +58,7 @@ namespace Axiom.Scripting.Compiler
 			static public void Translate( Translator translator, AbstractNode node )
 			{
 				// If it an abstract object it is completely skipped
-				if ( node.type == AbstractNodeType.Object && ( (ObjectAbstractNode)node ).isAbstract )
+				if ( node.Type == AbstractNodeType.Object && ( (ObjectAbstractNode)node ).IsAbstract )
 					return;
 
 				// First check if the compiler listener will override this node
@@ -67,16 +67,16 @@ namespace Axiom.Scripting.Compiler
 				if ( translator != null && translator._compiler != null && translator._compiler.Listener != null )
 				{
 					Translator p = null;
-					if ( node.type == AbstractNodeType.Object )
+					if ( node.Type == AbstractNodeType.Object )
 						p = translator._compiler.Listener.PreObjectTranslation( (ObjectAbstractNode)node );
-					else if ( node.type == AbstractNodeType.Property )
+					else if ( node.Type == AbstractNodeType.Property )
 						p = translator._compiler.Listener.PrePropertyTranslation( (PropertyAbstractNode)node );
 					if ( p != null )
 					{
 						// Call the returned translator
-						if ( node.type == AbstractNodeType.Object )
+						if ( node.Type == AbstractNodeType.Object )
 							p.ProcessObject( (ObjectAbstractNode)node );
-						else if ( node.type == AbstractNodeType.Property )
+						else if ( node.Type == AbstractNodeType.Property )
 							p.ProcessProperty( (PropertyAbstractNode)node );
 						process = false;
 					}
@@ -86,9 +86,9 @@ namespace Axiom.Scripting.Compiler
 				// Or ignore the node if no translator is given
 				if ( process && translator != null )
 				{
-					if ( node.type == AbstractNodeType.Object )
+					if ( node.Type == AbstractNodeType.Object )
 						translator.ProcessObject( (ObjectAbstractNode)node );
-					else if ( node.type == AbstractNodeType.Property )
+					else if ( node.Type == AbstractNodeType.Property )
 						translator.ProcessProperty( (PropertyAbstractNode)node );
 				}
 			}
@@ -121,20 +121,20 @@ namespace Axiom.Scripting.Compiler
 			{
 				result = false;
 
-				if ( node.type != AbstractNodeType.Atom )
+				if ( node.Type != AbstractNodeType.Atom )
 				{
-					_compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+					_compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 					return false;
 				}
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
-				if ( atom.id != 1 && atom.id != 0 )
+				if ( atom.Id != 1 && atom.Id != 0 )
 				{
-					_compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+					_compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 					return false;
 				}
 
-				result = atom.id == 1 ? true : false;
+				result = atom.Id == 1 ? true : false;
 				return true;
 			}
 
@@ -142,14 +142,14 @@ namespace Axiom.Scripting.Compiler
 			{
 				result = "";
 
-				if ( node.type != AbstractNodeType.Atom )
+				if ( node.Type != AbstractNodeType.Atom )
 				{
-					_compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+					_compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 					return false;
 				}
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
-				result = atom.value;
+				result = atom.Value;
 				return true;
 
 			}
@@ -158,16 +158,16 @@ namespace Axiom.Scripting.Compiler
 			{
 				result = 0.0f;
 
-				if ( node.type != AbstractNodeType.Atom )
+				if ( node.Type != AbstractNodeType.Atom )
 				{
-					_compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+					_compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 					return false;
 				}
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
 				if ( !atom.IsNumber )
 				{
-					_compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+					_compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 					return false;
 				}
 				result = atom.Number;
@@ -182,7 +182,7 @@ namespace Axiom.Scripting.Compiler
 				int n = 0;
 				while ( i != nodes.Count && n < 4 )
 				{
-					if ( nodes[ i ].type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+					if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 					{
 						vals[ n ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 					}
@@ -207,7 +207,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i != nodes.Count )
 					{
-						if ( nodes[ i ].type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+						if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 							m[ n % 4, n / 4 ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 						else
 							return false;
@@ -229,7 +229,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i != nodes.Count )
 					{
-						if ( nodes[ i ].type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+						if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 							vals[ n ] = (int)( (AtomAbstractNode)nodes[ i ] ).Number;
 						else
 							break;
@@ -256,7 +256,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i != nodes.Count )
 					{
-						if ( nodes[ i ].type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+						if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 							vals[ n ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 						else
 							break;
@@ -279,21 +279,21 @@ namespace Axiom.Scripting.Compiler
 				property = default(T);
 
 				// Verify Parameters
-				if ( node.type != AbstractNodeType.Atom )
+				if ( node.Type != AbstractNodeType.Atom )
 				{
-					_compiler.AddError( CompileErrorCode.InvalidParameters, node.file, node.line );
+					_compiler.AddError( CompileErrorCode.InvalidParameters, node.File, node.Line );
 					return false;
 				}
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
-				if ( _compiler.KeywordMap.ContainsValue( atom.id ) )
+				if ( _compiler.KeywordMap.ContainsValue( atom.Id ) )
 				{
 					String keyText = "";
 
 					// For this ID, find the script Token 
 					foreach ( KeyValuePair<string, uint> item in _compiler.KeywordMap )
 					{
-						if ( item.Value == atom.id )
+						if ( item.Value == atom.Id )
 							keyText = item.Key;
 					}
 
@@ -305,7 +305,7 @@ namespace Axiom.Scripting.Compiler
 						return true;
 					}
 				}
-				_compiler.AddError( CompileErrorCode.InvalidParameters, atom.file, atom.line );
+				_compiler.AddError( CompileErrorCode.InvalidParameters, atom.File, atom.Line );
 				return false;
 
 			}

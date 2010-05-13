@@ -68,20 +68,20 @@ namespace Axiom.Scripting.Compiler
 				Compiler.Context = _pass;
 
 				// Get the name of the technique
-				if ( obj.name != null && obj.name.Length != 0 )
-					_pass.Name = obj.name;
+				if ( obj.Name != null && obj.Name.Length != 0 )
+					_pass.Name = obj.Name;
 
 				// Set the properties for the technique
-				foreach ( AbstractNode node in obj.children )
+				foreach ( AbstractNode node in obj.Children )
 				{
-					if ( node.type == AbstractNodeType.Property )
+					if ( node.Type == AbstractNodeType.Property )
 					{
 						Translator.Translate( this, node );
 					}
-					else if ( node.type == AbstractNodeType.Object )
+					else if ( node.Type == AbstractNodeType.Object )
 					{
 						ObjectAbstractNode child = (ObjectAbstractNode)node;
-						switch ( (Keywords)child.id )
+						switch ( (Keywords)child.Id )
 						{
 							case Keywords.ID_TEXTURE_UNIT:
 								{
@@ -105,11 +105,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 4 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -117,7 +117,7 @@ namespace Axiom.Scripting.Compiler
 								if ( getColor( property.values, 0, out val ) )
 									_pass.Ambient = val;
 								else
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 							}
 							break;
 						}
@@ -127,11 +127,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 4 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -139,7 +139,7 @@ namespace Axiom.Scripting.Compiler
 								if ( getColor( property.values, 0, out val ) )
 									_pass.Diffuse = val;
 								else
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 							}
 							break;
 						}
@@ -149,11 +149,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 4 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -161,7 +161,7 @@ namespace Axiom.Scripting.Compiler
 								if ( getColor( property.values, 0, out val ) )
 									_pass.Specular = val;
 								else
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 							}
 							break;
 						}
@@ -171,11 +171,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 4 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else
 							{
@@ -183,7 +183,7 @@ namespace Axiom.Scripting.Compiler
 								if ( getColor( property.values, 0, out val ) )
 									_pass.Emissive = val;
 								else
-									Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 							}
 							break;
 						}
@@ -193,11 +193,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( property.values.Count == 0 )
 							{
-								Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count > 2 )
 							{
-								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 							}
 							else if ( property.values.Count == 1 )
 							{

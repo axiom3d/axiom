@@ -174,10 +174,10 @@ namespace Axiom.Scripting.Compiler
 			int end = ast.Count;
 			while ( iter != end )
 			{
-				if ( ast[ iter ].type == AbstractNodeType.Object )
+				if ( ast[ iter ].Type == AbstractNodeType.Object )
 				{
 					ObjectAbstractNode obj = (ObjectAbstractNode)( ast[ iter ] );
-					switch ( (Keywords)obj.id )
+					switch ( (Keywords)obj.Id )
 					{
 						case Keywords.ID_MATERIAL:
 							{
@@ -203,11 +203,11 @@ namespace Axiom.Scripting.Compiler
 						case Keywords.ID_VERTEX_PROGRAM:
 						case Keywords.ID_FRAGMENT_PROGRAM:
 							{
-								if ( obj.values.Count != 0 )
+								if ( obj.Values.Count != 0 )
 								{
-									if ( obj.values[ 0 ].type == AbstractNodeType.Atom )
+									if ( obj.Values[ 0 ].Type == AbstractNodeType.Atom )
 									{
-										String language = ( (AtomAbstractNode)( obj.values[ 0 ] ) ).value;
+										String language = ( (AtomAbstractNode)( obj.Values[ 0 ] ) ).Value;
 										Translator translator = null;
 										switch ( language )
 										{
@@ -228,12 +228,12 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										AddError( CompileErrorCode.InvalidParameters, obj.file, obj.line );
+										AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
 									}
 								}
 								else
 								{
-									AddError( CompileErrorCode.StringExpected, obj.file, obj.line );
+									AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 								}
 							}
 							break;
@@ -262,17 +262,17 @@ namespace Axiom.Scripting.Compiler
 		{
 			foreach ( AbstractNode node in nodes )
 			{
-				if ( node.type == AbstractNodeType.Object )
+				if ( node.Type == AbstractNodeType.Object )
 				{
 					ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
 					// Check if it is inheriting anything
-					if ( obj.baseClass != null )
+					if ( obj.BaseClass != null )
 					{
 						// Check the top level first, then check the import table
-						List<AbstractNode> newNodes = _locateTarget( top, obj.baseClass );
+						List<AbstractNode> newNodes = _locateTarget( top, obj.BaseClass );
 						if ( newNodes.Count == 0 )
-							newNodes = _locateTarget( _importTable, obj.baseClass );
+							newNodes = _locateTarget( _importTable, obj.BaseClass );
 
 						if ( newNodes.Count != 0 )
 						{
@@ -282,7 +282,7 @@ namespace Axiom.Scripting.Compiler
 					}
 
 					// Recurse into children
-					_processObjects( obj.children, top );
+					_processObjects( obj.Children, top );
 				}
 			}
 		}
@@ -294,10 +294,10 @@ namespace Axiom.Scripting.Compiler
 			// Search for a top-level object node
 			foreach ( AbstractNode node in nodes )
 			{
-				if ( node.type == AbstractNodeType.Object )
+				if ( node.Type == AbstractNodeType.Object )
 				{
 					ObjectAbstractNode impl = (ObjectAbstractNode)node;
-					if ( impl.name == target )
+					if ( impl.Name == target )
 						iter = node;
 				}
 			}
@@ -312,7 +312,7 @@ namespace Axiom.Scripting.Compiler
 
 		private void _overlayObject( AbstractNode source, ObjectAbstractNode destination )
 		{
-			if ( source.type == AbstractNodeType.Object )
+			if ( source.Type == AbstractNodeType.Object )
 			{
 				ObjectAbstractNode src = (ObjectAbstractNode)source;
 			}

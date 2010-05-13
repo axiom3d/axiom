@@ -49,12 +49,12 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		public String name, cls, baseClass;
-		public uint id;
-		public bool isAbstract;
+		public string Name, Cls, BaseClass;
+		public uint Id;
+		public bool IsAbstract;
 
 		private List<AbstractNode> _children = new List<AbstractNode>();
-		public IList<AbstractNode> children
+		public IList<AbstractNode> Children
 		{
 			get
 			{
@@ -63,7 +63,7 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		private List<AbstractNode> _values = new List<AbstractNode>();
-		public IList<AbstractNode> values
+		public IList<AbstractNode> Values
 		{
 			get
 			{
@@ -85,32 +85,32 @@ namespace Axiom.Scripting.Compiler.AST
 		public ObjectAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			type = AbstractNodeType.Object;
+			Type = AbstractNodeType.Object;
 		}
 
 		#region Methods
 
-		public void AddVariable( String name )
+		public void AddVariable( string name )
 		{
 			_environment.Add( name, "" );
 		}
 
-		public void SetVariable( String name, String value )
+		public void SetVariable( string name, string value )
 		{
 			_environment[ name ] = value;
 		}
 
-		public String GetVariable( String name )
+		public String GetVariable( string name )
 		{
 			if ( _environment.ContainsKey( name ) )
 				return _environment[ name ];
 
-			ObjectAbstractNode oan = (ObjectAbstractNode)this.parent;
+			ObjectAbstractNode oan = (ObjectAbstractNode)this.Parent;
 			while ( oan != null )
 			{
 				if ( oan.Variables.ContainsKey( name ) )
 					return oan.Variables[ name ];
-				oan = (ObjectAbstractNode)oan.parent;
+				oan = (ObjectAbstractNode)oan.Parent;
 			}
 			return null;
 		}
@@ -121,30 +121,37 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override AbstractNode Clone()
 		{
-			ObjectAbstractNode node = new ObjectAbstractNode( parent );
-			node.file = file;
-			node.line = line;
-			node.type = type;
-			node.name = name;
-			node.cls = cls;
-			node.id = id;
-			node.isAbstract = isAbstract;
-			foreach ( AbstractNode an in children )
+			ObjectAbstractNode node = new ObjectAbstractNode( Parent );
+			node.File = File;
+			node.Line = Line;
+			node.Type = Type;
+			node.Name = this.Name;
+			node.Cls = this.Cls;
+			node.Id = this.Id;
+			node.IsAbstract = this.IsAbstract;
+			foreach ( AbstractNode an in this.Children )
 			{
 				AbstractNode newNode = (AbstractNode)( an.Clone() );
-				newNode.parent = an;
-				node.children.Add( newNode );
+				newNode.Parent = an;
+				node.Children.Add( newNode );
 			}
-			foreach ( AbstractNode an in values )
+			foreach ( AbstractNode an in this.Values )
 			{
 				AbstractNode newNode = (AbstractNode)( an.Clone() );
-				newNode.parent = an;
-				node.values.Add( newNode );
+				newNode.Parent = an;
+				node.Values.Add( newNode );
 			}
 			node._environment = new Dictionary<string, string>( _environment );
 			return node;
 		}
 
+        public override string Value
+        {
+            get 
+            {
+                return Cls;
+            }
+        }
 		#endregion AbstractNode Implementation
 	}
 }

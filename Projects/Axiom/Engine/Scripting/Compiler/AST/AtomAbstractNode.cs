@@ -50,12 +50,11 @@ namespace Axiom.Scripting.Compiler.AST
 		#region Fields and Properties
 
 		private bool _parsed = false;
+	    private string _value;
+
+		public uint Id;
+
 		private bool _isNumber = false;
-		private float _number;
-
-		public String value;
-		public uint id;
-
 		public bool IsNumber
 		{
 			get
@@ -66,6 +65,7 @@ namespace Axiom.Scripting.Compiler.AST
 			}
 		}
 
+		private float _number;
 		public float Number
 		{
 			get
@@ -80,12 +80,21 @@ namespace Axiom.Scripting.Compiler.AST
 		public AtomAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			type = AbstractNodeType.Atom;
+			Type = AbstractNodeType.Atom;
 		}
+
+        public AtomAbstractNode(AbstractNode parent, ConcreteNode concreteNode)
+            : this(parent)
+        {
+            this.File = concreteNode.File;
+            this.Line = concreteNode.Line;
+            this._value = concreteNode.Token;
+        }
+
 
 		private void _parse()
 		{
-			_isNumber = float.TryParse( value, out _number);
+			_isNumber = float.TryParse( _value, out _number);
 			_parsed = true;
 		}
 
@@ -93,14 +102,22 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override AbstractNode Clone()
 		{
-			AtomAbstractNode node = new AtomAbstractNode( parent );
-			node.file = file;
-			node.line = line;
-			node.id = id;
-			node.type = type;
-			node.value = value;
+			AtomAbstractNode node = new AtomAbstractNode( Parent );
+			node.File = File;
+			node.Line = Line;
+			node.Id = this.Id;
+			node.Type = Type;
+			node._value = Value;
 			return node;
 		}
+
+        public override string Value
+        {
+            get 
+            {
+                return _value;
+            }
+        }
 
 		#endregion AbstractNode Implementation
 	}
