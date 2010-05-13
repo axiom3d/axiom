@@ -83,15 +83,6 @@ namespace Axiom.Scripting.Compiler.AST
 			Type = AbstractNodeType.Atom;
 		}
 
-        public AtomAbstractNode(AbstractNode parent, ConcreteNode concreteNode)
-            : this(parent)
-        {
-            this.File = concreteNode.File;
-            this.Line = concreteNode.Line;
-            this._value = concreteNode.Token;
-        }
-
-
 		private void _parse()
 		{
 			_isNumber = float.TryParse( _value, out _number);
@@ -116,6 +107,11 @@ namespace Axiom.Scripting.Compiler.AST
             get 
             {
                 return _value;
+            }
+
+            protected internal set
+            {
+                _value = value;
             }
         }
 

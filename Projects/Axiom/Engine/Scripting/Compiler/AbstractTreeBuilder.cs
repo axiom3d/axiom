@@ -207,7 +207,11 @@ namespace Axiom.Scripting.Compiler
 							}
 							else
 							{
-								AtomAbstractNode atom = new AtomAbstractNode( impl, iter.Current );
+								AtomAbstractNode atom = new AtomAbstractNode( impl );
+								atom.File = iter.Current.File;
+								atom.Line = iter.Current.Line;
+								atom.Type = AbstractNodeType.Atom;
+								atom.Value = iter.Current.Token;
 								impl.Values.Add( atom );
 							}
 							validNode = iter.MoveNext();
@@ -265,7 +269,10 @@ namespace Axiom.Scripting.Compiler
 				// Otherwise, it is a standard atom
 				else
 				{
-					AtomAbstractNode impl = new AtomAbstractNode( _current, node );
+					AtomAbstractNode impl = new AtomAbstractNode( _current );
+					impl.Line = node.Line;
+					impl.File = node.File;
+					impl.Value = node.Token;
 
 					if ( _compiler.KeywordMap.ContainsKey( impl.Value ) )
 					{

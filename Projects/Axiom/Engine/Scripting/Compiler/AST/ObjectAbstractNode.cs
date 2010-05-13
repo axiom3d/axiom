@@ -151,6 +151,10 @@ namespace Axiom.Scripting.Compiler.AST
             {
                 return Cls;
             }
+            protected internal set
+            {
+                Cls = value;
+            }
         }
 		#endregion AbstractNode Implementation
 	}
