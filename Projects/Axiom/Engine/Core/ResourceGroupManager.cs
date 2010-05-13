@@ -498,6 +498,10 @@ namespace Axiom.Core
         ///  Special resource group name which causes resource group to be automatically determined based on searching for the resource in all groups.
         /// </summary>
         public const string AutoDetectResourceGroupName = "AutoDetect";
+        /// <summary>
+        /// The number of reference counts held per resource by the resource system
+        /// </summary>
+        public const int ResourceSystemNumReferenceCount = 3;
 
         #endregion Constants
 

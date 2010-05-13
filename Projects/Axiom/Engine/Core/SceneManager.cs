@@ -115,7 +115,10 @@ namespace Axiom.Core
     public abstract class SceneManager
     {
         #region Fields
-
+        /// <summary>
+        /// 
+        /// </summary>
+        protected CompositorChain _activeCompositorChain;
         protected static int lastNumTexUnitsUsed = 0;
 
         /// <summary>
@@ -545,6 +548,14 @@ namespace Axiom.Core
 
         #endregion MovableobjectFactory fields
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsLateMaterialResolving
+        {
+            get { throw new NotImplementedException();}
+            set { throw new NotImplementedException(); }
+        }
         public ICollection<Camera> Cameras
         {
             get { return this.cameraList.Values; }
@@ -3769,7 +3780,23 @@ namespace Axiom.Core
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// Sets the active compositor chain of the current scene being rendered.
+        /// </summary>
+        /// <note>
+        /// CompositorChain does this automatically, no need to call manually.
+        /// </note>
+        public CompositorChain ActiveCompositorChain
+        {
+            get 
+            {
+                return _activeCompositorChain; 
+            }
+            set 
+            {
+                _activeCompositorChain = value; 
+            }
+        }
         /// <summary>
         /// Gets/Sets the target render system that this scene manager should be using.
         /// </summary>

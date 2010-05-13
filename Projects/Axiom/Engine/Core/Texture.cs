@@ -84,9 +84,18 @@ namespace Axiom.Core
 
 		#endregion internalResourcesCreated Property
 
-		#region Width Property
+        #region UseCount Property
 
-		/// <summary>Width of this texture.</summary>
+        public int UseCount
+        {
+            get; set;
+        }
+
+        #endregion UseCount Property
+
+        #region Width Property
+
+        /// <summary>Width of this texture.</summary>
         private int _width;
         /// <summary>
         ///    Gets the width (in pixels) of this texture.
@@ -562,7 +571,7 @@ namespace Axiom.Core
 
 		#endregion
 
-		#region FSAA Property
+		#region FSAA Properties
 
 		/// <summary></summary>
 		private int _fsaa = 0;
@@ -580,7 +589,16 @@ namespace Axiom.Core
 			}
 		}
 
-		#endregion FSAA Property
+        public string FSAAHint
+        { get; protected set; }
+
+        public void SetFSAA(int fsaa, string fsaaHint)
+        {
+            _fsaa = fsaa;
+            FSAAHint = fsaaHint;
+        }
+
+        #endregion FSAA Propertyies
 
         #region HardwareGammaEnabled Property
 
@@ -1020,5 +1038,6 @@ namespace Axiom.Core
         }
 
         #endregion
+
     }
 }

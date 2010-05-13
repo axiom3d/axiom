@@ -190,19 +190,24 @@ namespace Axiom.Graphics
 		private long _lastSecond;
 		private long _frameCount;
 
-        public RenderTarget()
+        #region DepthBufferPool Property
+        private ushort _poolID;
+        public ushort DepthBufferPool
         {
-
+            get
+            {
+                return _poolID;
+            }
+            set
+            {
+                _poolID = value;
+            }
         }
+        #endregion DepthBufferPool Property
 
-        public RenderTarget(string name)
-        {
-            _name = name;
-        }
+        #region Height Property
 
-		#region Height Property
-
-		/// <summary>
+        /// <summary>
 		///    Height of this render target.
 		/// </summary>
 		private int _height;
@@ -448,7 +453,32 @@ namespace Axiom.Graphics
 
 		#endregion FSAA Property
 
-		#endregion Fields
+        #region FSAAHint Property
+        private string _fsaaHint;
+        public string FSAAHint
+        {
+            get
+            {
+                return _fsaaHint;
+            }
+            set
+            {
+                _fsaaHint = value;
+            }
+        }
+        #endregion FSAAHint Property
+
+		#endregion Fields and Properties
+
+        public RenderTarget()
+        {
+
+        }
+
+        public RenderTarget(string name)
+        {
+            _name = name;
+        }
 
 		#region Event Handling
 
