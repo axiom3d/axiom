@@ -89,12 +89,12 @@ namespace Axiom.Demos
 			_createEffects();
 
 			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Bloom" );
-			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Glass" );
-			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Tiling" );
-			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "B&W" );
-			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Old TV" );
-			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Embossed" );
-			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Old Movie" );
+			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Glass" );
+			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Tiling" );
+			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "B&W" );
+			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Old TV" );
+			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Embossed" );
+			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Old Movie" );
 
 			CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Bloom", true );
 			//CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Motion Blur", true );
@@ -107,23 +107,23 @@ namespace Axiom.Demos
 			{
 				CompositionTechnique t = comp3.CreateTechnique();
 				{
-					CompositionTextureDefinition def = t.CreateTextureDefinition("scene");
+					CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("scene");
 					def.Width = 0;
 					def.Height = 0;
-					def.Format = PixelFormat.R8G8B8;
+					def.FormatList.Add( PixelFormat.R8G8B8 );
 				}
 				{
-					CompositionTextureDefinition def = t.CreateTextureDefinition("sum");
+                    CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("sum");
 					def.Width = 0;
 					def.Height = 0;
-					def.Format = PixelFormat.R8G8B8;
-				}
+                    def.FormatList.Add(PixelFormat.R8G8B8);
+                }
 				{
-					CompositionTextureDefinition def = t.CreateTextureDefinition("temp");
+                    CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("temp");
 					def.Width = 0;
 					def.Height = 0;
-					def.Format = PixelFormat.R8G8B8;
-				}
+                    def.FormatList.Add(PixelFormat.R8G8B8);
+                }
 				/// Render scene
 				{
 					CompositionTargetPass tp = t.CreateTargetPass();
@@ -145,7 +145,7 @@ namespace Axiom.Demos
 					{ 
 						CompositionPass pass = tp.CreatePass();
 						pass.Type = CompositorPassType.RenderQuad;
-						pass.MaterialName = "Ogre/Compositor/Combine";
+						pass.SetMaterialName("Ogre/Compositor/Combine");
 						pass.SetInput(0, "scene");
 						pass.SetInput(1, "sum");
 					}
@@ -158,7 +158,7 @@ namespace Axiom.Demos
 					{ 
 						CompositionPass pass = tp.CreatePass();
 						pass.Type = CompositorPassType.RenderQuad;
-						pass.MaterialName = "Ogre/Compositor/Copyback";
+						pass.SetMaterialName("Ogre/Compositor/Copyback");
 						pass.SetInput(0, "temp");
 					}
 				}
@@ -169,7 +169,7 @@ namespace Axiom.Demos
 					{
 						CompositionPass pass = tp.CreatePass();
 						pass.Type = CompositorPassType.RenderQuad;
-						pass.MaterialName = "Ogre/Compositor/MotionBlur";
+						pass.SetMaterialName("Ogre/Compositor/MotionBlur");
 						pass.SetInput( 0, "sum" );
 					}
 				}
@@ -182,17 +182,17 @@ namespace Axiom.Demos
 			{
 				CompositionTechnique t = comp4.CreateTechnique();
 				{
-					CompositionTextureDefinition def = t.CreateTextureDefinition( "scene" );
+					CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition( "scene" );
 					def.Width = 256;
 					def.Height = 256;
-					def.Format = PixelFormat.R8G8B8;
+					def.FormatList.Add( PixelFormat.R8G8B8 );
 				}
 				{
-					CompositionTextureDefinition def = t.CreateTextureDefinition( "temp" );
+                    CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("temp");
 					def.Width = 256;
 					def.Height = 256;
-					def.Format = PixelFormat.R8G8B8;
-				}
+                    def.FormatList.Add(PixelFormat.R8G8B8);
+                }
 				/// Render scene
 				{
 					CompositionTargetPass tp = t.CreateTargetPass();
@@ -208,7 +208,7 @@ namespace Axiom.Demos
 						CompositionPass pass = tp.CreatePass();
 						pass.Type = CompositorPassType.RenderQuad;
 						pass.Identifier = 0xDEADBABE; /// Identify pass for use in listener
-						pass.MaterialName = "Fury/HeatVision/LightToHeat";
+						pass.SetMaterialName("Fury/HeatVision/LightToHeat");
 						pass.SetInput(0, "scene");
 					}
 				}
@@ -219,7 +219,7 @@ namespace Axiom.Demos
 					{
 						CompositionPass pass = tp.CreatePass();
 						pass.Type = CompositorPassType.RenderQuad;
-						pass.MaterialName = "Fury/HeatVision/Blur";
+						pass.SetMaterialName("Fury/HeatVision/Blur");
 						pass.SetInput(0, "temp");
 					}
 				}

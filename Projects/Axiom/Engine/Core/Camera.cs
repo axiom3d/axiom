@@ -1200,6 +1200,17 @@ namespace Axiom.Core
 			}
 		}
 
+        /// <summary>
+        /// Returns the ViewMatrix for the underlying Frustum only
+        /// </summary>
+        public Matrix4 FrustumViewMatrix
+        {
+            get
+            {
+                return base.ViewMatrix;
+            }
+        }
+
 		#endregion Custom Frustum culling implementation
 
 		#endregion Frustum Members

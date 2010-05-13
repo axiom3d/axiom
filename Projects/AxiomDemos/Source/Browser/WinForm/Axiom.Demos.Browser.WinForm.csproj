@@ -105,12 +105,36 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.hlsl">
+      <Link>Media\GpuPrograms\Bloom2_ps20.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\BlurH_ps20.hlsl">
+      <Link>Media\GpuPrograms\BlurH_ps20.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\BlurV_ps20.hlsl">
+      <Link>Media\GpuPrograms\BlurV_ps20.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\Blur_vs11.hlsl">
+      <Link>Media\GpuPrograms\Blur_vs11.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\BrightBloom2_ps20.hlsl">
+      <Link>Media\GpuPrograms\BrightBloom2_ps20.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\CelShadingPS_2_0.hlsl">
       <Link>Media\GpuPrograms\CelShadingPS_2_0.hlsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\CelShadingVS_1_1.hlsl">
       <Link>Media\GpuPrograms\CelShadingVS_1_1.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Materials\Bloom2.material">
+      <Link>Media\Materials\Bloom2.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">

@@ -1350,7 +1350,8 @@ namespace Axiom.Graphics
 		Clear,           // Clear target to one colour
 		Stencil,		 // Set stencil operation
 		RenderScene,     // Render the scene or part of it
-		RenderQuad       // Render a full screen quad
+		RenderQuad,       // Render a full screen quad
+        RenderCustom
 	}
 
 	/// <summary>

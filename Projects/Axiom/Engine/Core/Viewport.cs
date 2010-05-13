@@ -556,6 +556,14 @@ namespace Axiom.Core
 
         #endregion RenderQueueSequence Properties Property
 
+        /// <summary>
+        /// Gets the default depth buffer value to which the viewport is cleared.
+        /// </summary>
+        public float ClearDepth
+        {
+            get;
+            set;
+        }
         #endregion Fields and Properties
 
         #region Construction and Destruction
@@ -731,6 +739,5 @@ namespace Axiom.Core
         }
 
         #endregion
-
     }
 }
