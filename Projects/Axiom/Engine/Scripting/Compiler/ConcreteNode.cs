@@ -25,11 +25,11 @@ namespace Axiom.Scripting.Compiler
 	/// </summary>
 	public class ConcreteNode
 	{
-		public String token;
-		public String file;
-		public uint line;
-		public ConcreteNodeType type;
-		public List<ConcreteNode> children = new List<ConcreteNode>();
-		public ConcreteNode parent;
+		public string Token;
+		public string File;
+		public uint Line;
+		public ConcreteNodeType Type;
+		public List<ConcreteNode> Children = new List<ConcreteNode>();
+		public ConcreteNode Parent;
 	}
 }

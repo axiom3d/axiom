@@ -72,48 +72,48 @@ namespace Axiom.Scripting.Compiler
 				AbstractNode asn = null;
 
 				// Import = "import" >> 2 children, _current == null
-				if ( node.type == ConcreteNodeType.Import && _current == null )
+				if ( node.Type == ConcreteNodeType.Import && _current == null )
 				{
-					if ( node.children.Count > 2 )
+					if ( node.Children.Count > 2 )
 					{
-						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.file, node.line );
+						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
 						return;
 					}
-					if ( node.children.Count < 2 )
+					if ( node.Children.Count < 2 )
 					{
-						_compiler.AddError( CompileErrorCode.StringExpected, node.file, node.line );
+						_compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
 						return;
 					}
 
 					ImportAbstractNode impl = new ImportAbstractNode();
-					impl.line = node.line;
-					impl.file = node.file;
-					impl.target = node.children[ 0 ].token;
-					impl.source = node.children[ 1 ].token;
+					impl.line = node.Line;
+					impl.file = node.File;
+					impl.target = node.Children[ 0 ].Token;
+					impl.source = node.Children[ 1 ].Token;
 
 					asn = impl;
 				}
 				// variable set = "set" >> 2 children, children[0] == variable
-				else if ( node.type == ConcreteNodeType.VariableAssignment )
+				else if ( node.Type == ConcreteNodeType.VariableAssignment )
 				{
-					if ( node.children.Count > 2 )
+					if ( node.Children.Count > 2 )
 					{
-						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.file, node.line );
+						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
 						return;
 					}
-					if ( node.children.Count < 2 )
+					if ( node.Children.Count < 2 )
 					{
-						_compiler.AddError( CompileErrorCode.StringExpected, node.file, node.line );
+						_compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
 						return;
 					}
-					if ( node.children[ 0 ].type != ConcreteNodeType.Variable )
+					if ( node.Children[ 0 ].Type != ConcreteNodeType.Variable )
 					{
-						_compiler.AddError( CompileErrorCode.VariableExpected, node.children[ 0 ].file, node.children[ 0 ].line );
+						_compiler.AddError( CompileErrorCode.VariableExpected, node.Children[ 0 ].File, node.Children[ 0 ].Line );
 						return;
 					}
 
-					String name = node.children[ 0 ].token;
-					String value = node.children[ 1 ].token;
+					String name = node.Children[ 0 ].Token;
+					String value = node.Children[ 1 ].Token;
 
 					if ( _current != null && _current.type == AbstractNodeType.Object )
 					{
@@ -126,50 +126,50 @@ namespace Axiom.Scripting.Compiler
 					}
 				}
 				// variable = $*, no children
-				else if ( node.type == ConcreteNodeType.Variable )
+				else if ( node.Type == ConcreteNodeType.Variable )
 				{
-					if ( node.children.Count != 0 )
+					if ( node.Children.Count != 0 )
 					{
-						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.file, node.line );
+						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
 						return;
 					}
 
 					VariableAccessAbstractNode impl = new VariableAccessAbstractNode( _current );
-					impl.line = node.line;
-					impl.file = node.file;
-					impl.name = node.token;
+					impl.line = node.Line;
+					impl.file = node.File;
+					impl.name = node.Token;
 
 					asn = impl;
 				}
 				// Handle properties and objects here
-				else if ( node.children.Count != 0 )
+				else if ( node.Children.Count != 0 )
 				{
 					// Grab the last two nodes
 					ConcreteNode temp1 = null, temp2 = null;
 
-					if ( node.children.Count >= 1 )
-						temp1 = node.children[ node.children.Count - 1 ];
-					if ( node.children.Count >= 2 )
-						temp2 = node.children[ node.children.Count - 2 ];
+					if ( node.Children.Count >= 1 )
+						temp1 = node.Children[ node.Children.Count - 1 ];
+					if ( node.Children.Count >= 2 )
+						temp2 = node.Children[ node.Children.Count - 2 ];
 
 					// object = last 2 children == { and }
 					if ( temp1 != null && temp2 != null &&
-						temp1.type == ConcreteNodeType.RightBrace && temp2.type == ConcreteNodeType.LeftBrace )
+						temp1.Type == ConcreteNodeType.RightBrace && temp2.Type == ConcreteNodeType.LeftBrace )
 					{
-						if ( node.children.Count < 2 )
+						if ( node.Children.Count < 2 )
 						{
-							_compiler.AddError( CompileErrorCode.StringExpected, node.file, node.line );
+							_compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
 							return;
 						}
 
 						ObjectAbstractNode impl = new ObjectAbstractNode( _current );
-						impl.line = node.line;
-						impl.file = node.file;
+						impl.line = node.Line;
+						impl.file = node.File;
 						impl.isAbstract = false;
 
 						// Create a temporary detail list
 						List<ConcreteNode> temp = new List<ConcreteNode>();
-						if ( node.token == "abstract" )
+						if ( node.Token == "abstract" )
 						{
 							impl.isAbstract = true;
 						}
@@ -177,55 +177,55 @@ namespace Axiom.Scripting.Compiler
 						{
 							temp.Add( node );
 						}
-						foreach ( ConcreteNode cn in node.children )
+						foreach ( ConcreteNode cn in node.Children )
 							temp.Add( cn );
 
 						// Get the type of object
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
 						iter.MoveNext();
-						impl.cls = iter.Current.token;
+						impl.cls = iter.Current.Token;
 						bool validNode = iter.MoveNext();
 
 						// Get the name
-						if ( validNode && ( iter.Current.type == ConcreteNodeType.Word || iter.Current.type == ConcreteNodeType.Quote ) )
+						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) )
 						{
-							impl.name = iter.Current.token;
+							impl.name = iter.Current.Token;
 							validNode = iter.MoveNext();
 						}
 
 						// Everything up until the colon is a "value" of this object
-						while ( validNode && iter.Current.type != ConcreteNodeType.Colon && iter.Current.type != ConcreteNodeType.LeftBrace )
+						while ( validNode && iter.Current.Type != ConcreteNodeType.Colon && iter.Current.Type != ConcreteNodeType.LeftBrace )
 						{
-							if ( iter.Current.type == ConcreteNodeType.Variable )
+							if ( iter.Current.Type == ConcreteNodeType.Variable )
 							{
 								VariableAccessAbstractNode var = new VariableAccessAbstractNode( impl );
-								var.file = iter.Current.file;
-								var.line = iter.Current.line;
+								var.file = iter.Current.File;
+								var.line = iter.Current.Line;
 								var.type = AbstractNodeType.VariableGet;
-								var.name = iter.Current.token;
+								var.name = iter.Current.Token;
 								impl.values.Add( var );
 							}
 							else
 							{
 								AtomAbstractNode atom = new AtomAbstractNode( impl );
-								atom.file = iter.Current.file;
-								atom.line = iter.Current.line;
+								atom.file = iter.Current.File;
+								atom.line = iter.Current.Line;
 								atom.type = AbstractNodeType.Atom;
-								atom.value = iter.Current.token;
+								atom.value = iter.Current.Token;
 								impl.values.Add( atom );
 							}
 							validNode = iter.MoveNext();
 						}
 
 						// Find the base
-						if ( validNode && iter.Current.type == ConcreteNodeType.Colon )
+						if ( validNode && iter.Current.Type == ConcreteNodeType.Colon )
 						{
-							if ( iter.Current.children.Count == 0 )
+							if ( iter.Current.Children.Count == 0 )
 							{
-								_compiler.AddError( CompileErrorCode.StringExpected, iter.Current.file, iter.Current.line );
+								_compiler.AddError( CompileErrorCode.StringExpected, iter.Current.File, iter.Current.Line );
 								return;
 							}
-							impl.baseClass = iter.Current.children[ 0 ].token;
+							impl.baseClass = iter.Current.Children[ 0 ].Token;
 						}
 
 						// Finally try to map the cls to an id
@@ -238,7 +238,7 @@ namespace Axiom.Scripting.Compiler
 						_current = impl;
 
 						// Visit the children of the {
-						AbstractTreeBuilder.Visit( this, temp2.children );
+						AbstractTreeBuilder.Visit( this, temp2.Children );
 
 						// Go back up the stack
 						_current = impl.parent;
@@ -247,9 +247,9 @@ namespace Axiom.Scripting.Compiler
 					else
 					{
 						PropertyAbstractNode impl = new PropertyAbstractNode( _current );
-						impl.line = node.line;
-						impl.file = node.file;
-						impl.name = node.token;
+						impl.line = node.Line;
+						impl.file = node.File;
+						impl.name = node.Token;
 
 						if ( _compiler.KeywordMap.ContainsKey( impl.name ) )
 						{
@@ -260,7 +260,7 @@ namespace Axiom.Scripting.Compiler
 						_current = impl;
 
 						// Visit the children of the {
-						AbstractTreeBuilder.Visit( this, node.children );
+						AbstractTreeBuilder.Visit( this, node.Children );
 
 						// Go back up the stack
 						_current = impl.parent;
@@ -270,9 +270,9 @@ namespace Axiom.Scripting.Compiler
 				else
 				{
 					AtomAbstractNode impl = new AtomAbstractNode( _current );
-					impl.line = node.line;
-					impl.file = node.file;
-					impl.value = node.token;
+					impl.line = node.Line;
+					impl.file = node.File;
+					impl.value = node.Token;
 
 					if ( _compiler.KeywordMap.ContainsKey( impl.value ) )
 					{
