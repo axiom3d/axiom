@@ -63,25 +63,25 @@ namespace Axiom.Scripting.Compiler
 
 			protected override void ProcessObject( ObjectAbstractNode obj )
 			{
-				if ( obj.name.Length == 0 )
+				if ( obj.Name.Length == 0 )
 				{
-					Compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.file, obj.line );
+					Compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
 					return;
 				}
 
 				List<Pair<String>> customParameters = new List<Pair<String>>();
 				String source = "";
 				AbstractNode param = null;
-				foreach ( AbstractNode child in obj.children )
+				foreach ( AbstractNode child in obj.Children )
 				{
-					if ( child.type == AbstractNodeType.Property )
+					if ( child.Type == AbstractNodeType.Property )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)child;
 						if ( prop.name == "delegate" )
 						{
 							string value = "";
-							if ( prop.values.Count != 0 && prop.values[ 0 ].type == AbstractNodeType.Atom )
-									value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).value;
+							if ( prop.values.Count != 0 && prop.values[ 0 ].Type == AbstractNodeType.Atom )
+									value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 							if ( CompilerListener != null )
 								CompilerListener.GetGpuProgramName( value );
 
@@ -90,8 +90,8 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							String name = prop.name, value = "";
-							if ( prop.values.Count != 0 && prop.values[ 0 ].type == AbstractNodeType.Atom )
-								value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).value;
+							if ( prop.values.Count != 0 && prop.values[ 0 ].Type == AbstractNodeType.Atom )
+								value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 							customParameters.Add( new Pair<String>( name, value ) );
 						}
 
@@ -101,22 +101,22 @@ namespace Axiom.Scripting.Compiler
 				// Allocate the program
 				HighLevelGpuProgram prog;
 				if ( CompilerListener != null )
-					prog = CompilerListener.CreateHighLevelGpuProgram( obj.name, Compiler.ResourceGroup, "unified", (Keywords)( obj.id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment, source );
+					prog = CompilerListener.CreateHighLevelGpuProgram( obj.Name, Compiler.ResourceGroup, "unified", (Keywords)( obj.Id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment, source );
 				else
 				{
-					prog = HighLevelGpuProgramManager.Instance.CreateProgram( obj.name, Compiler.ResourceGroup, "unified", (Keywords)( obj.id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment );
+					prog = HighLevelGpuProgramManager.Instance.CreateProgram( obj.Name, Compiler.ResourceGroup, "unified", (Keywords)( obj.Id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment );
 					prog.Source = source;
 				}
 
 				// Check that allocation worked
 				if ( prog == null )
 				{
-					Compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.file, obj.line );
+					Compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
 				Compiler.Context = prog;
-				prog.Origin = obj.file;
+				prog.Origin = obj.File;
 
 				// Set the custom parameters
 				foreach ( Pair<String> item in customParameters )

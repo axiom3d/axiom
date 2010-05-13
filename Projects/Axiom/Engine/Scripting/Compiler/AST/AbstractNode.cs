@@ -42,6 +42,9 @@ using System.Text;
 
 namespace Axiom.Scripting.Compiler.AST
 {
+    /// <summary>
+    /// the types of the possible abstract nodes
+    /// </summary>
 	public enum AbstractNodeType
 	{
 		Unknown,
@@ -53,29 +56,45 @@ namespace Axiom.Scripting.Compiler.AST
 		VariableGet
 	}
 
+    /// <summary>
+    /// base node type for the AST
+    /// </summary>
 	public abstract class AbstractNode : ICloneable
 	{
-		public String file;
-		public uint line;
-		public AbstractNodeType type;
-		public AbstractNode parent;
+		public String File;
+		public uint Line;
+		public AbstractNodeType Type;
+		public AbstractNode Parent;
 
-		public AbstractNode( AbstractNode parent )
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="parent">the parent AbstractNode in the tree</param>
+		protected AbstractNode( AbstractNode parent )
 		{
-			this.parent = parent;
-			line = 0;
-			type = AbstractNodeType.Unknown;
+			this.Parent = parent;
+			this.Line = 0;
+			this.Type = AbstractNodeType.Unknown;
 		}
 
-		#region ICloneable Members
+        /// <summary>
+        /// returns a string value depending on the tpe of the node.
+        /// </summary>
+        public abstract string Value { get; }
+
+		#region ICloneable Implementation
 
 		object ICloneable.Clone()
 		{
 			return (object)Clone();
 		}
 
+        /// <summary>
+        /// Returns a new AbstractNode which is a replica of this one
+        /// </summary>
+        /// <returns>a new AbstractNode</returns>
 		public abstract AbstractNode Clone();
 
-		#endregion
-	}
+        #endregion ICloneable Implementation
+    }
 }

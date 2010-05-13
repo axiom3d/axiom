@@ -86,8 +86,8 @@ namespace Axiom.Scripting.Compiler
 					}
 
 					ImportAbstractNode impl = new ImportAbstractNode();
-					impl.line = node.Line;
-					impl.file = node.File;
+					impl.Line = node.Line;
+					impl.File = node.File;
 					impl.target = node.Children[ 0 ].Token;
 					impl.source = node.Children[ 1 ].Token;
 
@@ -115,7 +115,7 @@ namespace Axiom.Scripting.Compiler
 					String name = node.Children[ 0 ].Token;
 					String value = node.Children[ 1 ].Token;
 
-					if ( _current != null && _current.type == AbstractNodeType.Object )
+					if ( _current != null && _current.Type == AbstractNodeType.Object )
 					{
 						ObjectAbstractNode ptr = (ObjectAbstractNode)_current;
 						ptr.SetVariable( name, value );
@@ -135,8 +135,8 @@ namespace Axiom.Scripting.Compiler
 					}
 
 					VariableAccessAbstractNode impl = new VariableAccessAbstractNode( _current );
-					impl.line = node.Line;
-					impl.file = node.File;
+					impl.Line = node.Line;
+					impl.File = node.File;
 					impl.name = node.Token;
 
 					asn = impl;
@@ -163,15 +163,15 @@ namespace Axiom.Scripting.Compiler
 						}
 
 						ObjectAbstractNode impl = new ObjectAbstractNode( _current );
-						impl.line = node.Line;
-						impl.file = node.File;
-						impl.isAbstract = false;
+						impl.Line = node.Line;
+						impl.File = node.File;
+						impl.IsAbstract = false;
 
 						// Create a temporary detail list
 						List<ConcreteNode> temp = new List<ConcreteNode>();
 						if ( node.Token == "abstract" )
 						{
-							impl.isAbstract = true;
+							impl.IsAbstract = true;
 						}
 						else
 						{
@@ -183,13 +183,13 @@ namespace Axiom.Scripting.Compiler
 						// Get the type of object
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
 						iter.MoveNext();
-						impl.cls = iter.Current.Token;
+						impl.Cls = iter.Current.Token;
 						bool validNode = iter.MoveNext();
 
 						// Get the name
 						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) )
 						{
-							impl.name = iter.Current.Token;
+							impl.Name = iter.Current.Token;
 							validNode = iter.MoveNext();
 						}
 
@@ -199,20 +199,16 @@ namespace Axiom.Scripting.Compiler
 							if ( iter.Current.Type == ConcreteNodeType.Variable )
 							{
 								VariableAccessAbstractNode var = new VariableAccessAbstractNode( impl );
-								var.file = iter.Current.File;
-								var.line = iter.Current.Line;
-								var.type = AbstractNodeType.VariableGet;
+								var.File = iter.Current.File;
+								var.Line = iter.Current.Line;
+								var.Type = AbstractNodeType.VariableGet;
 								var.name = iter.Current.Token;
-								impl.values.Add( var );
+								impl.Values.Add( var );
 							}
 							else
 							{
-								AtomAbstractNode atom = new AtomAbstractNode( impl );
-								atom.file = iter.Current.File;
-								atom.line = iter.Current.Line;
-								atom.type = AbstractNodeType.Atom;
-								atom.value = iter.Current.Token;
-								impl.values.Add( atom );
+								AtomAbstractNode atom = new AtomAbstractNode( impl, iter.Current );
+								impl.Values.Add( atom );
 							}
 							validNode = iter.MoveNext();
 						}
@@ -225,13 +221,13 @@ namespace Axiom.Scripting.Compiler
 								_compiler.AddError( CompileErrorCode.StringExpected, iter.Current.File, iter.Current.Line );
 								return;
 							}
-							impl.baseClass = iter.Current.Children[ 0 ].Token;
+							impl.BaseClass = iter.Current.Children[ 0 ].Token;
 						}
 
 						// Finally try to map the cls to an id
-						if ( _compiler.KeywordMap.ContainsKey( impl.cls ) )
+						if ( _compiler.KeywordMap.ContainsKey( impl.Cls ) )
 						{
-							impl.id = _compiler.KeywordMap[ impl.cls ];
+							impl.Id = _compiler.KeywordMap[ impl.Cls ];
 						}
 
 						asn = (AbstractNode)impl;
@@ -241,14 +237,14 @@ namespace Axiom.Scripting.Compiler
 						AbstractTreeBuilder.Visit( this, temp2.Children );
 
 						// Go back up the stack
-						_current = impl.parent;
+						_current = impl.Parent;
 					}
 					// Otherwise, it is a property
 					else
 					{
 						PropertyAbstractNode impl = new PropertyAbstractNode( _current );
-						impl.line = node.Line;
-						impl.file = node.File;
+						impl.Line = node.Line;
+						impl.File = node.File;
 						impl.name = node.Token;
 
 						if ( _compiler.KeywordMap.ContainsKey( impl.name ) )
@@ -263,20 +259,17 @@ namespace Axiom.Scripting.Compiler
 						AbstractTreeBuilder.Visit( this, node.Children );
 
 						// Go back up the stack
-						_current = impl.parent;
+						_current = impl.Parent;
 					}
 				}
 				// Otherwise, it is a standard atom
 				else
 				{
-					AtomAbstractNode impl = new AtomAbstractNode( _current );
-					impl.line = node.Line;
-					impl.file = node.File;
-					impl.value = node.Token;
+					AtomAbstractNode impl = new AtomAbstractNode( _current, node );
 
-					if ( _compiler.KeywordMap.ContainsKey( impl.value ) )
+					if ( _compiler.KeywordMap.ContainsKey( impl.Value ) )
 					{
-						impl.id = _compiler.KeywordMap[ impl.value ];
+						impl.Id = _compiler.KeywordMap[ impl.Value ];
 					}
 
 					asn = impl;
@@ -286,7 +279,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( _current != null )
 					{
-						if ( _current.type == AbstractNodeType.Property )
+						if ( _current.Type == AbstractNodeType.Property )
 						{
 							PropertyAbstractNode impl = (PropertyAbstractNode)_current;
 							impl.values.Add( asn );
@@ -294,7 +287,7 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							ObjectAbstractNode impl = (ObjectAbstractNode)_current;
-							impl.children.Add( asn );
+							impl.Children.Add( asn );
 						}
 					}
 					else

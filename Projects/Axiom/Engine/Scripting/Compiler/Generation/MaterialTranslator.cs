@@ -67,18 +67,18 @@ namespace Axiom.Scripting.Compiler
 
 			protected override void ProcessObject( ObjectAbstractNode obj )
 			{
-				if ( obj.name == null || obj.name.Length == 0 )
-					Compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.file, obj.line );
+				if ( obj.Name == null || obj.Name.Length == 0 )
+					Compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
 
 				// Create a material with the given name
 				if ( CompilerListener != null )
-					_material = CompilerListener.CreateMaterial( obj.name, Compiler.ResourceGroup );
+					_material = CompilerListener.CreateMaterial( obj.Name, Compiler.ResourceGroup );
 				else
-					_material = (Material)MaterialManager.Instance.Create( obj.name, Compiler.ResourceGroup );
+					_material = (Material)MaterialManager.Instance.Create( obj.Name, Compiler.ResourceGroup );
 
 				if ( _material == null )
 				{
-					Compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.file, obj.line );
+					Compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
@@ -86,16 +86,16 @@ namespace Axiom.Scripting.Compiler
 				Compiler.Context = _material;
 
 				// Set the properties for the material
-				foreach ( AbstractNode node in obj.children )
+				foreach ( AbstractNode node in obj.Children )
 				{
-					if ( node.type == AbstractNodeType.Property )
+					if ( node.Type == AbstractNodeType.Property )
 					{
 						Translator.Translate( this, node );
 					}
-					else if ( node.type == AbstractNodeType.Object )
+					else if ( node.Type == AbstractNodeType.Object )
 					{
 						ObjectAbstractNode child = (ObjectAbstractNode)node;
-						if ( (Keywords)child.id == Keywords.ID_TECHNIQUE )
+						if ( (Keywords)child.Id == Keywords.ID_TECHNIQUE )
 						{
 							// Compile the technique
 							Technique tec = _material.CreateTechnique();
@@ -121,10 +121,10 @@ namespace Axiom.Scripting.Compiler
                             LodValueList lods = new LodValueList();
 							foreach ( AbstractNode node in property.values )
 							{
-								if ( node.type == AbstractNodeType.Atom && ( (AtomAbstractNode)node ).IsNumber )
+								if ( node.Type == AbstractNodeType.Atom && ( (AtomAbstractNode)node ).IsNumber )
 									lods.Add( ( (AtomAbstractNode)node ).Number );
 								else
-									Compiler.AddError( CompileErrorCode.NumberExpected, node.file, node.line );
+									Compiler.AddError( CompileErrorCode.NumberExpected, node.File, node.Line );
 							}
 							_material.SetLodLevels( lods );
 						}
@@ -132,11 +132,11 @@ namespace Axiom.Scripting.Compiler
 					case Keywords.ID_RECEIVE_SHADOWS:
 						if ( property.values.Count == 0 )
 						{
-							Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+							Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 						}
 						else if ( property.values.Count > 1 )
 						{
-							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 						}
 						else
 						{
@@ -144,17 +144,17 @@ namespace Axiom.Scripting.Compiler
 							if ( getBoolean( property.values[ 0 ], out val ) )
 								_material.ReceiveShadows = val;
 							else
-								Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 						}
 						break;
 					case Keywords.ID_TRANSPARENCY_CASTS_SHADOWS:
 						if ( property.values.Count == 0 )
 						{
-							Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+							Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 						}
 						else if ( property.values.Count > 1 )
 						{
-							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 						}
 						else
 						{
@@ -162,17 +162,17 @@ namespace Axiom.Scripting.Compiler
 							if ( getBoolean( property.values[ 0 ], out val ) )
 								_material.TransparencyCastsShadows = val;
 							else
-								Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 						}
 						break;
 					case Keywords.ID_SET_TEXTURE_ALIAS:
 						if ( property.values.Count == 0 )
 						{
-							Compiler.AddError( CompileErrorCode.StringExpected, property.file, property.line );
+							Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
 						}
 						else if ( property.values.Count > 3 )
 						{
-							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.file, property.line );
+							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
 						}
 						else
 						{
@@ -181,7 +181,7 @@ namespace Axiom.Scripting.Compiler
 							if ( getString( i0, out name ) && getString( i1, out value ) )
 								_textureAliases.Add( name, value );
 							else
-								Compiler.AddError( CompileErrorCode.InvalidParameters, property.file, property.line );
+								Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
 						}
 						break;
 				}

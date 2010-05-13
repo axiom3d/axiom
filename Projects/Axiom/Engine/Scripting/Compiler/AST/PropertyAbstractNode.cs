@@ -66,27 +66,32 @@ namespace Axiom.Scripting.Compiler.AST
 		public PropertyAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			type = AbstractNodeType.Property;
+			Type = AbstractNodeType.Property;
 		}
 
 		#region AbstractNode Implementation
 
 		public override AbstractNode Clone()
 		{
-			PropertyAbstractNode node = new PropertyAbstractNode( parent );
-			node.file = file;
-			node.line = line;
-			node.type = type;
+			PropertyAbstractNode node = new PropertyAbstractNode( Parent );
+			node.File = File;
+			node.Line = Line;
+			node.Type = Type;
 			node.name = name;
 			node.id = id;
 			foreach ( AbstractNode an in values )
 			{
 				AbstractNode newNode = (AbstractNode)( an.Clone() );
-				newNode.parent = an;
+				newNode.Parent = an;
 				node.values.Add( newNode );
 			}
 			return node;
 		}
+
+        public override string Value
+        {
+            get { throw new NotImplementedException(); }
+        }
 
 		#endregion AbstractNode Implementation
 	}

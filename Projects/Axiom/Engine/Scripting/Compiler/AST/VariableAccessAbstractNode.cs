@@ -52,20 +52,25 @@ namespace Axiom.Scripting.Compiler.AST
 		public VariableAccessAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			type = AbstractNodeType.VariableGet;
+			Type = AbstractNodeType.VariableGet;
 		}
 
 		#region AbstractNode Implementation
 
 		public override AbstractNode Clone()
 		{
-			VariableAccessAbstractNode node = new VariableAccessAbstractNode( parent );
-			node.file = file;
-			node.line = line;
-			node.type = type;
+			VariableAccessAbstractNode node = new VariableAccessAbstractNode( Parent );
+			node.File = File;
+			node.Line = Line;
+			node.Type = Type;
 			node.name = name;
 			return node;
 		}
+
+        public override string Value
+        {
+            get { throw new NotImplementedException(); }
+        }
 
 		#endregion AbstractNode Implementation
 	}

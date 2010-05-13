@@ -71,9 +71,9 @@ namespace Axiom.Scripting.Compiler
 				_animParametricsCount = 0;
 
 				// Set up the parameters
-				foreach ( AbstractNode node in obj.children )
+				foreach ( AbstractNode node in obj.Children )
 				{
-					if ( node.type == AbstractNodeType.Property )
+					if ( node.Type == AbstractNodeType.Property )
 					{
 						Translator.Translate( this, node );
 					}
@@ -94,16 +94,16 @@ namespace Axiom.Scripting.Compiler
 											 i1 = getNodeAt( prop.values, 1 ),
 											 k = getNodeAt( prop.values, 2 );
 
-								if ( i0.type != AbstractNodeType.Atom || i1.type != AbstractNodeType.Atom )
+								if ( i0.Type != AbstractNodeType.Atom || i1.Type != AbstractNodeType.Atom )
 								{
-									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.file, prop.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 									return;
 								}
 
 								AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 								if ( !named && !atom0.IsNumber )
 								{
-									Compiler.AddError( CompileErrorCode.NumberExpected, prop.file, prop.line );
+									Compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 									return;
 								}
 
@@ -111,12 +111,12 @@ namespace Axiom.Scripting.Compiler
 								int index = 0;
 								// Assign the name/index
 								if ( named )
-									name = atom0.value;
+									name = atom0.Value;
 								else
 									index = (int)atom0.Number;
 
 								// Determine the type
-								if ( atom1.value == "matrix4x4" )
+								if ( atom1.Value == "matrix4x4" )
 								{
 									Matrix4 m;
 									if ( getMatrix4( prop.values, 2, out m ) )
@@ -128,7 +128,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										Compiler.AddError( CompileErrorCode.NumberExpected, prop.file, prop.line );
+										Compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 									}
 								}
 								else
@@ -137,21 +137,21 @@ namespace Axiom.Scripting.Compiler
 									bool isValid = true;
 									String type = "int";
 									int count = 0;
-									if ( atom1.value.Contains( "float" ) )
+									if ( atom1.Value.Contains( "float" ) )
 									{
 										type = "float";
-										if ( atom1.value.Length >= 6 )
-											count = Int32.Parse( atom1.value.Substring( 5 ) );
+										if ( atom1.Value.Length >= 6 )
+											count = Int32.Parse( atom1.Value.Substring( 5 ) );
 										else
 										{
 											count = 1;
 										}
 									}
-									else if ( atom1.value.Contains( "int" ) )
+									else if ( atom1.Value.Contains( "int" ) )
 									{
 										type = "int";
-										if ( atom1.value.Length >= 4 )
-											count = Int32.Parse( atom1.value.Substring( 3 ) );
+										if ( atom1.Value.Length >= 4 )
+											count = Int32.Parse( atom1.Value.Substring( 3 ) );
 										else
 										{
 											count = 1;
@@ -159,7 +159,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										Compiler.AddError( CompileErrorCode.InvalidParameters, prop.file, prop.line );
+										Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 										isValid = false;
 									}
 									if ( isValid )
@@ -185,7 +185,7 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												Compiler.AddError( CompileErrorCode.NumberExpected, prop.file, prop.line );
+												Compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 											}
 
 										}
@@ -201,7 +201,7 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												Compiler.AddError( CompileErrorCode.NumberExpected, prop.file, prop.line );
+												Compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 											}
 										}
 									}
@@ -209,7 +209,7 @@ namespace Axiom.Scripting.Compiler
 							}
 							else
 							{
-								Compiler.AddError( CompileErrorCode.InvalidParameters, prop.file, prop.line );
+								Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 							}
 						}
 						break;
@@ -224,16 +224,16 @@ namespace Axiom.Scripting.Compiler
 											 i1 = getNodeAt( prop.values, 1 ),
 											 i2 = getNodeAt( prop.values, 2 );
 
-								if ( i0.type != AbstractNodeType.Atom || i1.type != AbstractNodeType.Atom )
+								if ( i0.Type != AbstractNodeType.Atom || i1.Type != AbstractNodeType.Atom )
 								{
-									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.file, prop.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 									return;
 								}
 
 								AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 								if ( !named && !atom0.IsNumber )
 								{
-									Compiler.AddError( CompileErrorCode.NumberExpected, prop.file, prop.line );
+									Compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 									return;
 								}
 
@@ -241,7 +241,7 @@ namespace Axiom.Scripting.Compiler
 								int index = 0;
 								// Assign the name/index
 								if ( named )
-									name = atom0.value;
+									name = atom0.Value;
 								else
 									index = (int)atom0.Number;
 
@@ -251,12 +251,12 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.file, prop.line );
+									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 								}
 							}
 							else
 							{
-								Compiler.AddError( CompileErrorCode.InvalidParameters, prop.file, prop.line );
+								Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 							}
 						}
 						break;

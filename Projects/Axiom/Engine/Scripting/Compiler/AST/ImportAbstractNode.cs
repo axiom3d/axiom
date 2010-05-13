@@ -52,7 +52,7 @@ namespace Axiom.Scripting.Compiler.AST
 		public ImportAbstractNode()
 			: base( null )
 		{
-			type = AbstractNodeType.Import;
+			Type = AbstractNodeType.Import;
 		}
 
 		#region AbstractNode Implementation
@@ -60,13 +60,18 @@ namespace Axiom.Scripting.Compiler.AST
 		public override AbstractNode Clone()
 		{
 			ImportAbstractNode node = new ImportAbstractNode();
-			node.file = file;
-			node.line = line;
-			node.type = type;
+			node.File = File;
+			node.Line = Line;
+			node.Type = Type;
 			node.target = target;
 			node.source = source;
 			return node;
 		}
+
+        public override string Value
+        {
+            get { throw new NotImplementedException(); }
+        }
 
 		#endregion AbstractNode Implementation
 	}
