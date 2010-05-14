@@ -160,7 +160,7 @@ namespace Axiom.ParticleFX
 
         #region Command definition classes
 
-        [ Command( "randomness", "The amount of randomness (chaos) to apply to the particle movement.", typeof ( ParticleAffector ) ) ]
+		[ScriptableProperty("randomness", "The amount of randomness (chaos) to apply to the particle movement.", typeof(ParticleAffector))]
         private class RandomnessCommand : IPropertyCommand
         {
             public string Get( object target )
@@ -176,7 +176,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        [ Command( "scope", "The percentage of particles which is affected.", typeof ( ParticleAffector ) ) ]
+		[ScriptableProperty("scope", "The percentage of particles which is affected.", typeof(ParticleAffector))]
         private class ScopeCommand : IPropertyCommand
         {
             public string Get( object target )
@@ -192,7 +192,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        [ Command( "keep_velocity", "Detemines whether the velocity of the particles is changed.", typeof ( ParticleAffector ) ) ]
+		[ScriptableProperty("keep_velocity", "Detemines whether the velocity of the particles is changed.", typeof(ParticleAffector))]
         private class KeepVelocityCommand : IPropertyCommand
         {
             public string Get( object target )
