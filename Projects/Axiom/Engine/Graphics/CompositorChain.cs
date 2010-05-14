@@ -319,6 +319,10 @@ namespace Axiom.Graphics
             {
                 return _viewport;
             }
+            internal set
+            {
+                _viewport = value;
+            }
         }
 
         /// <summary>
@@ -350,7 +354,7 @@ namespace Axiom.Graphics
         /// 
         /// </summary>
         /// <param name="e"></param>
-        public void AfterViewportUpdate( ViewportUpdateEventArgs e )
+        public void AfterViewportUpdate( RenderTargetViewportEventArgs e )
         {
             // Only tidy up if there is at least one compositor enabled, and it's this viewport
             if ( e.Viewport != _viewport || !_anyCompositorEnabled )
@@ -366,7 +370,7 @@ namespace Axiom.Graphics
         /// 
         /// </summary>
         /// <param name="e"></param>
-        public void AfterUpdate( RenderTargetUpdateEventArgs e )
+        public void AfterUpdate( RenderTargetEventArgs e )
         {
             Camera cam = _viewport.Camera;
             if ( cam != null )
@@ -379,7 +383,7 @@ namespace Axiom.Graphics
         /// 
         /// </summary>
         /// <param name="e"></param>
-        public void BeforeViewportUpdate( ViewportUpdateEventArgs e )
+        public void BeforeViewportUpdate( RenderTargetViewportEventArgs e )
         {
             // Only set up if there is at least one compositor enabled, and it's this viewport
             if ( e.Viewport != _viewport || !_anyCompositorEnabled )
@@ -419,7 +423,7 @@ namespace Axiom.Graphics
         /// 
         /// </summary>
         /// <param name="e"></param>
-        public void BeforeUpdate( RenderTargetUpdateEventArgs e )
+        public void BeforeUpdate( RenderTargetEventArgs e )
         {
             // Compile if state is dirty
             if ( _dirty )
@@ -493,10 +497,10 @@ namespace Axiom.Graphics
         {
             if ( _originalScene == null )
             {
-                _viewport.Target.BeforeUpdate += new RenderTargetUpdateEventHandler( BeforeUpdate );
-                _viewport.Target.BeforeViewportUpdate += new ViewportUpdateEventHandler( BeforeViewportUpdate );
-                _viewport.Target.AfterUpdate += new RenderTargetUpdateEventHandler( AfterUpdate );
-                _viewport.Target.AfterViewportUpdate += new ViewportUpdateEventHandler( AfterViewportUpdate );
+                _viewport.Target.BeforeUpdate += new RenderTargetEventHandler( BeforeUpdate );
+                _viewport.Target.BeforeViewportUpdate += new RenderTargetViewportEventHandler( BeforeViewportUpdate );
+                _viewport.Target.AfterUpdate += new RenderTargetEventHandler( AfterUpdate );
+                _viewport.Target.AfterViewportUpdate += new RenderTargetViewportEventHandler( AfterViewportUpdate );
 
                 /// Create base "original scene" compositor
                 Compositor cbase = CompositorManager.Instance.Load( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName ) as Compositor;

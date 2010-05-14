@@ -55,17 +55,17 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Delegate for RenderTarget update events.
 	/// </summary>
-	public delegate void RenderTargetUpdateEventHandler( RenderTargetUpdateEventArgs e );
+	public delegate void RenderTargetEventHandler( RenderTargetEventArgs e );
 
 	/// <summary>
 	///    Delegate for Viewport update events.
 	/// </summary>
-	public delegate void ViewportUpdateEventHandler( ViewportUpdateEventArgs e );
+	public delegate void RenderTargetViewportEventHandler( RenderTargetViewportEventArgs e );
 
 	/// <summary>
 	///    Event arguments for render target updates.
 	/// </summary>
-	public class RenderTargetUpdateEventArgs : EventArgs
+	public class RenderTargetEventArgs : EventArgs
 	{
 		internal RenderTarget source;
 
@@ -77,7 +77,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public RenderTargetUpdateEventArgs( RenderTarget source )
+		public RenderTargetEventArgs( RenderTarget source )
 		{
 			this.source = source;
 		}
@@ -87,7 +87,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Event arguments for viewport updates while processing a RenderTarget.
 	/// </summary>
-	public class ViewportUpdateEventArgs : RenderTargetUpdateEventArgs
+	public class RenderTargetViewportEventArgs : RenderTargetEventArgs
 	{
 		internal Viewport viewport;
 
@@ -99,7 +99,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public ViewportUpdateEventArgs( RenderTarget source, Viewport viewport )
+		public RenderTargetViewportEventArgs( RenderTarget source, Viewport viewport )
 			: base( source )
 		{
 			this.viewport = viewport;
@@ -488,40 +488,40 @@ namespace Axiom.Graphics
 		///    you would like to show/hide certain entities to avoid rendering more than was necessary
 		///    to reduce processing time.
 		/// </summary>
-		public event RenderTargetUpdateEventHandler BeforeUpdate;
+		public event RenderTargetEventHandler BeforeUpdate;
 
 		/// <summary>
 		///    Gets fired right after this RenderTarget has been updated each frame.  If the scene has been modified
 		///    in the BeforeUpdate event (such as showing/hiding objects), this event can be handled to set everything 
 		///    back to normal.
 		/// </summary>
-		public event RenderTargetUpdateEventHandler AfterUpdate;
+		public event RenderTargetEventHandler AfterUpdate;
 
 		/// <summary>
 		///    Gets fired before rendering the contents of each viewport attached to this RenderTarget.
 		/// </summary>
-		public event ViewportUpdateEventHandler BeforeViewportUpdate;
+		public event RenderTargetViewportEventHandler BeforeViewportUpdate;
 
 		/// <summary>
 		///    Gets fired after rendering the contents of each viewport attached to this RenderTarget.
 		/// </summary>
-		public event ViewportUpdateEventHandler AfterViewportUpdate;
+		public event RenderTargetViewportEventHandler AfterViewportUpdate;
 
 		/// <summary>
 		/// Gets fired when a Viewport has been added to this RenderTarget.
 		/// </summary>
-		public event ViewportUpdateEventHandler ViewportAdded;
+		public event RenderTargetViewportEventHandler ViewportAdded;
 
 		/// <summary>
 		/// Gets fired when a Viewport has been removed from this RenderTarget.
 		/// </summary>
-		public event ViewportUpdateEventHandler ViewportRemoved;
+		public event RenderTargetViewportEventHandler ViewportRemoved;
 
 		protected virtual void OnBeforeUpdate()
 		{
 			if ( BeforeUpdate != null )
 			{
-				BeforeUpdate( new RenderTargetUpdateEventArgs( this ) );
+				BeforeUpdate( new RenderTargetEventArgs( this ) );
 			}
 		}
 
@@ -529,7 +529,7 @@ namespace Axiom.Graphics
 		{
 			if ( AfterUpdate != null )
 			{
-				AfterUpdate( new RenderTargetUpdateEventArgs( this ) );
+				AfterUpdate( new RenderTargetEventArgs( this ) );
 			}
 		}
 
@@ -537,7 +537,7 @@ namespace Axiom.Graphics
 		{
 			if ( BeforeViewportUpdate != null )
 			{
-				BeforeViewportUpdate( new ViewportUpdateEventArgs( this, viewport ) );
+				BeforeViewportUpdate( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -545,7 +545,7 @@ namespace Axiom.Graphics
 		{
 			if ( AfterViewportUpdate != null )
 			{
-				AfterViewportUpdate( new ViewportUpdateEventArgs( this, viewport ) );
+				AfterViewportUpdate( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -553,7 +553,7 @@ namespace Axiom.Graphics
 		{
 			if ( ViewportAdded != null )
 			{
-				ViewportAdded( new ViewportUpdateEventArgs( this, viewport ) );
+				ViewportAdded( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -561,7 +561,7 @@ namespace Axiom.Graphics
 		{
 			if ( ViewportRemoved != null )
 			{
-				ViewportRemoved( new ViewportUpdateEventArgs( this, viewport ) );
+				ViewportRemoved( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 

@@ -86,7 +86,7 @@ namespace Axiom.Demos
 
 			/// Create a couple of hard coded postfilter effects as an example of how to do it
 			/// but the preferred method is to use compositor scripts.
-			_createEffects();
+			//_createEffects();
 
 			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Bloom" );
 			//CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Glass" );
