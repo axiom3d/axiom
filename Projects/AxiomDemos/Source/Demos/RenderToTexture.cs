@@ -109,8 +109,8 @@ namespace Axiom.Demos
             t.SetProjectiveTexturing( true, reflectCam );
 
             // register events for viewport before/after update
-            rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( rttTex_AfterUpdate );
-            rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( rttTex_BeforeUpdate );
+            rttTex.AfterUpdate += new RenderTargetEventHandler( rttTex_AfterUpdate );
+            rttTex.BeforeUpdate += new RenderTargetEventHandler( rttTex_BeforeUpdate );
 
             // set up linked reflection
             reflectCam.EnableReflection( plane );
@@ -156,7 +156,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rttTex_BeforeUpdate( RenderTargetUpdateEventArgs e )
+        private void rttTex_BeforeUpdate( RenderTargetEventArgs e )
         {
             planeEntity.IsVisible = false;
         }
@@ -166,7 +166,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rttTex_AfterUpdate( RenderTargetUpdateEventArgs e )
+        private void rttTex_AfterUpdate( RenderTargetEventArgs e )
         {
             planeEntity.IsVisible = true;
         }

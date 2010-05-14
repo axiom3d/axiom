@@ -85,8 +85,8 @@ namespace Axiom.Demos
                 Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
 				vp.ShowOverlays = false;
                 mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 2 ).SetTextureName( "Refraction" );
-                rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( Refraction_BeforeUpdate );
-                rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( Refraction_AfterUpdate );
+                rttTex.BeforeUpdate += new RenderTargetEventHandler( Refraction_BeforeUpdate );
+                rttTex.AfterUpdate += new RenderTargetEventHandler( Refraction_AfterUpdate );
             }
 
             // Reflection texture
@@ -97,8 +97,8 @@ namespace Axiom.Demos
                 Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
 				vp.ShowOverlays = false;
                 mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 1 ).SetTextureName( "Reflection" );
-                rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( Reflection_BeforeUpdate );
-                rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( Reflection_AfterUpdate );
+                rttTex.BeforeUpdate += new RenderTargetEventHandler( Reflection_BeforeUpdate );
+                rttTex.AfterUpdate += new RenderTargetEventHandler( Reflection_AfterUpdate );
             }
 
             reflectionPlane.Normal = Vector3.UnitY;
@@ -220,7 +220,7 @@ namespace Axiom.Demos
 
         #region Event Handlers
 
-        private void Reflection_BeforeUpdate( RenderTargetUpdateEventArgs e )
+        private void Reflection_BeforeUpdate( RenderTargetEventArgs e )
         {
             planeEnt.IsVisible = false;
 
@@ -232,7 +232,7 @@ namespace Axiom.Demos
             theCam.EnableReflection( reflectionPlane );
         }
 
-        private void Reflection_AfterUpdate( RenderTargetUpdateEventArgs e )
+        private void Reflection_AfterUpdate( RenderTargetEventArgs e )
         {
             planeEnt.IsVisible = true;
 
@@ -244,7 +244,7 @@ namespace Axiom.Demos
             theCam.DisableReflection();
         }
 
-        private void Refraction_BeforeUpdate( RenderTargetUpdateEventArgs e )
+        private void Refraction_BeforeUpdate( RenderTargetEventArgs e )
         {
             planeEnt.IsVisible = false;
 
@@ -254,7 +254,7 @@ namespace Axiom.Demos
             }
         }
 
-        private void Refraction_AfterUpdate( RenderTargetUpdateEventArgs e )
+        private void Refraction_AfterUpdate( RenderTargetEventArgs e )
         {
             planeEnt.IsVisible = true;
 

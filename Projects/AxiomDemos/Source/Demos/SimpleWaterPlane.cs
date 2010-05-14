@@ -45,29 +45,29 @@ namespace Axiom.Demos
             mViewport = mTarget.AddViewport( camera );
             mViewport.ShowOverlays = false;
 
-            mTarget.ViewportAdded += new ViewportUpdateEventHandler( ViewportAdded );
-            mTarget.ViewportRemoved += new ViewportUpdateEventHandler( ViewportRemoved );
-            mTarget.BeforeViewportUpdate += new ViewportUpdateEventHandler( PostViewportUpdate );
-            mTarget.BeforeUpdate += new RenderTargetUpdateEventHandler( PreRenderTargetUpdate );
-            mTarget.AfterUpdate += new RenderTargetUpdateEventHandler( PostRenderTargetUpdate );
+            mTarget.ViewportAdded += new RenderTargetViewportEventHandler( ViewportAdded );
+            mTarget.ViewportRemoved += new RenderTargetViewportEventHandler( ViewportRemoved );
+            mTarget.BeforeViewportUpdate += new RenderTargetViewportEventHandler( PostViewportUpdate );
+            mTarget.BeforeUpdate += new RenderTargetEventHandler( PreRenderTargetUpdate );
+            mTarget.AfterUpdate += new RenderTargetEventHandler( PostRenderTargetUpdate );
         }
-        public virtual void ViewportRemoved( ViewportUpdateEventArgs e )
+        public virtual void ViewportRemoved( RenderTargetViewportEventArgs e )
         {
 
         }
-        public virtual void ViewportAdded( ViewportUpdateEventArgs e )
+        public virtual void ViewportAdded( RenderTargetViewportEventArgs e )
         {
         }
-        public virtual void PostViewportUpdate( ViewportUpdateEventArgs e )
+        public virtual void PostViewportUpdate( RenderTargetViewportEventArgs e )
         {
         }
-        public virtual void PreViewportUpdate( ViewportUpdateEventArgs e )
+        public virtual void PreViewportUpdate( RenderTargetViewportEventArgs e )
         {
         }
-        public virtual void PostRenderTargetUpdate( RenderTargetUpdateEventArgs e )
+        public virtual void PostRenderTargetUpdate( RenderTargetEventArgs e )
         {
         }
-        public virtual void PreRenderTargetUpdate( RenderTargetUpdateEventArgs e )
+        public virtual void PreRenderTargetUpdate( RenderTargetEventArgs e )
         {
         }
 
@@ -93,7 +93,7 @@ namespace Axiom.Demos
         /// 
         /// </summary>
         /// <param name="evt"></param>
-        public override void PreRenderTargetUpdate( RenderTargetUpdateEventArgs e )
+        public override void PreRenderTargetUpdate( RenderTargetEventArgs e )
         {
             mWaterNode.IsVisible = false;
         }
@@ -101,7 +101,7 @@ namespace Axiom.Demos
         /// 
         /// </summary>
         /// <param name="evt"></param>
-        public override void PostRenderTargetUpdate( RenderTargetUpdateEventArgs e )
+        public override void PostRenderTargetUpdate( RenderTargetEventArgs e )
         {
             mWaterNode.IsVisible = true;
         }
@@ -158,8 +158,8 @@ namespace Axiom.Demos
             mReflectionViewport = mTarget.AddViewport( camera );
             mReflectionViewport.ShowOverlays = false;
 
-            mTarget.BeforeUpdate += new RenderTargetUpdateEventHandler( PreRenderTargetUpdate );
-            mTarget.AfterUpdate += new RenderTargetUpdateEventHandler( PostRenderTargetUpdate );
+            mTarget.BeforeUpdate += new RenderTargetEventHandler( PreRenderTargetUpdate );
+            mTarget.AfterUpdate += new RenderTargetEventHandler( PostRenderTargetUpdate );
 
             RenderTarget reflTarget = mReflectionMap.GetBuffer().GetRenderTarget();
             mReflectCamera = sm.CreateCamera( "ReflectCam" );
@@ -173,8 +173,8 @@ namespace Axiom.Demos
             mReflectionViewport.ClearEveryFrame = true;
             mReflectionViewport.ShowSkies = false;
 
-            reflTarget.BeforeUpdate += new RenderTargetUpdateEventHandler( PreRenderTargetUpdate );
-            reflTarget.AfterUpdate += new RenderTargetUpdateEventHandler( PostRenderTargetUpdate );
+            reflTarget.BeforeUpdate += new RenderTargetEventHandler( PreRenderTargetUpdate );
+            reflTarget.AfterUpdate += new RenderTargetEventHandler( PostRenderTargetUpdate );
             Material waterMat = (Material)MaterialManager.Instance.GetByName( "SimpleWaterMesh_Material" );
             TextureUnitState tus = waterMat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "ReflectionMap" );
             tus.TextureAddressing = TextureAddressing.Clamp;
@@ -188,7 +188,7 @@ namespace Axiom.Demos
             mReflectCamera.Orientation = mSceneCam.Orientation;
             mReflectCamera.Position = mSceneCam.Position;
         }
-        public void PreRenderTargetUpdate( RenderTargetUpdateEventArgs e )
+        public void PreRenderTargetUpdate( RenderTargetEventArgs e )
         {
             mWaterNode.IsVisible = false;
         }
@@ -196,7 +196,7 @@ namespace Axiom.Demos
         /// 
         /// </summary>
         /// <param name="evt"></param>
-        public void PostRenderTargetUpdate( RenderTargetUpdateEventArgs e )
+        public void PostRenderTargetUpdate( RenderTargetEventArgs e )
         {
             mWaterNode.IsVisible = true;
         }
