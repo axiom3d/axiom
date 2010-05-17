@@ -1326,7 +1326,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                             if ( entry.isSet )
                             {
-                                device.SetVertexShaderConstant( index, entry.val );
+								device.SetVertexShaderConstant(index, entry.val, 0, 1);
                             }
                         }
                     }
@@ -1339,7 +1339,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                             if ( entry.isSet )
                             {
-                                device.SetVertexShaderConstant( index, entry.val );
+								device.SetVertexShaderConstant(index, entry.val, 0, 1);
                             }
                         }
                     }
@@ -1355,7 +1355,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                             if ( entry.isSet )
                             {
-                                device.SetPixelShaderConstant( index, entry.val );
+								device.SetPixelShaderConstant(index, entry.val, 0, 1);
                             }
                         }
                     }
@@ -1368,7 +1368,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                             if ( entry.isSet )
                             {
-                                device.SetPixelShaderConstant( index, entry.val );
+                                device.SetPixelShaderConstant( index, entry.val,0,1 );
                             }
                         }
                     }
