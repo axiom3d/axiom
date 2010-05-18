@@ -136,6 +136,8 @@
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
+    <Compile Include="Graphics\ICompositorLogic.cs" />
+    <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
