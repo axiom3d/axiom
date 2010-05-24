@@ -49,6 +49,21 @@ using Axiom.Media;
 
 namespace Axiom.Graphics
 {
+	/// <summary>
+	/// The type of unit to bind the texture settings to.
+	/// </summary>
+	public enum TextureBindingType
+	{
+		/// <summary>
+		///  Regular fragment processing unit - the default.
+		/// </summary>
+		Fragment,
+		/// <summary>
+		/// Vertex processing unit - indicates this unit will be used for a vertex texture fetch.
+		/// </summary>
+		Vertex
+	}
+
     /// <summary>
     /// 	Class representing the state of a single texture unit during a Pass of a
     /// 	Technique, of a Material.
@@ -69,24 +84,6 @@ namespace Axiom.Graphics
     /// TODO: Destroy controllers
     public class TextureUnitState
 	{
-		#region Nested Types
-
-		/// <summary>
-		/// The type of unit to bind the texture settings to.
-		/// </summary>
-		public enum BindingType
-		{
-			/// <summary>
-			///  Regular fragment processing unit - the default.
-			/// </summary>
-			Fragment,
-			/// <summary>
-			/// Vertex processing unit - indicates this unit will be used for a vertex texture fetch.
-			/// </summary>
-			Vertex
-		}
-
-		#endregion Nested Types
 
 		#region Fields and Properties
 
@@ -781,6 +778,22 @@ namespace Axiom.Graphics
 			{
 				return textureType == TextureType.CubeMap;
 			}
+		}
+
+		/// <summary>
+		/// The type of unit these texture settings should be bound to
+		/// </summary>
+		/// <remarks>
+		/// Some render systems, when implementing vertex texture fetch, separate
+		/// the binding of textures for use in the vertex program versus those
+		/// used in fragment programs. This setting allows you to target the
+		/// vertex processing unit with a texture binding, in those cases. For
+		/// rendersystems which have a unified binding for the vertex and fragment
+		/// units, this setting makes no difference.
+		/// </remarks>
+		public TextureBindingType BindingType
+		{
+			get; set;
 		}
 
         #endregion Fields and Properties
