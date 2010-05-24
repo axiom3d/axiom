@@ -157,12 +157,28 @@
       <Link>Media\GpuPrograms\CelShadingVS_1_1.hlsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\hdr.cg">
+      <Link>Media\GpuPrograms\hdr.cg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\InvertFP.cg">
+      <Link>Media\GpuPrograms\InvertFP.cg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\Materials\Bloom2.material">
       <Link>Media\Materials\Bloom2.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\..\..\Media\Materials\Embossed.material">
+      <Link>Media\Materials\Embossed.material</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Materials\Invert.material">
+      <Link>Media\Materials\Invert.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\smoke.particle">
@@ -271,6 +287,22 @@
     </Content>
     <None Include="..\..\..\..\..\Media\Overlays\DP3.overlay">
       <Link>Media\Overlays\DP3.overlay</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Textures\NoiseVolume.dds">
+      <Link>Media\Textures\NoiseVolume.dds</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Textures\Random3D.dds">
+      <Link>Media\Textures\Random3D.dds</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Textures\WaterNormal1.tga">
+      <Link>Media\Textures\WaterNormal1.tga</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Textures\WaterNormal2.tga">
+      <Link>Media\Textures\WaterNormal2.tga</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="EngineConfig.xml">

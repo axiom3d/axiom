@@ -127,7 +127,7 @@ namespace Axiom.Graphics
 							if (token == "{")
 								context.seenOpen = true;
 							else
-								LogError(context, "Expected open brace '{'; instead got {0}", token);
+								LogError(context, "Expected open brace; instead got {0}", token);
 							continue; // next line
 						}
 						switch (context.section)

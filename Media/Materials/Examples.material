@@ -516,6 +516,14 @@ material Examples/Aureola
 	}
 }
 
+fragment_program Examples/MorningSkyBoxHDRfp cg
+{
+	source hdr.cg
+	entry_point morningskybox_fp
+	profiles ps_2_0 arbfp1
+
+}
+
 material Examples/MorningSkyBox
 {
 	technique
@@ -561,22 +569,16 @@ material Examples/MorningSkyBox
 	}
 }
 
+fragment_program Examples/MorningCubeMapHDRfp cg
+{
+	source hdr.cg
+	entry_point morningcubemap_fp
+	profiles ps_2_0 arbfp1
+
+}
+
 material Examples/MorningCubeMap
 {
-	technique
-	{
-		pass
-		{
-			lighting off
-
-			texture_unit
-			{
-				cubic_texture morning.jpg combinedUVW
-				tex_address_mode clamp
-				env_map cubic_reflection
-			}
-		}
-	}
 	// HDR technique (fake)
 	technique
 	{
