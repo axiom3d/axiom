@@ -87,81 +87,337 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Nested Types
-		#region Fields
+
+		#region Fields and Properties
 
 		/// <summary>
         ///    Maximum amount of animation frames allowed.
         /// </summary>
         public const int MaxAnimationFrames = 32;
+
         /// <summary>
         ///    The parent Pass that owns this TextureUnitState.
         /// </summary>
         protected Pass parent;
+		///		Gets the number of frames for a texture.
+		/// <summary>
+		///    Gets a reference to the Pass that owns this TextureUnitState.
+		/// </summary>
+		public Pass Parent
+		{
+			get
+			{
+				return parent;
+			}
+		}
+		/// <summary>
+		///    Returns true if the resource for this texture layer have been loaded.
+		/// </summary>
+		public bool IsLoaded
+		{
+			get
+			{
+				return parent.IsLoaded;
+			}
+		}
+
+
         /// <summary>
         ///    Index of the texture coordinate set to use for texture mapping.
         /// </summary>
         private int texCoordSet;
-        /// <summary>
+		/// <summary>
+		///		Gets/Sets the texture coordinate set to be used by this texture layer.
+		/// </summary>
+		/// <remarks>
+		///		Default is 0 for all layers. Only change this if you have provided multiple texture coords per
+		///		vertex.
+		///		<p/>
+		///		Applies to both fixed-function and programmable pipeline.
+		/// </remarks>
+		public int TextureCoordSet
+		{
+			get
+			{
+				return texCoordSet;
+			}
+			set
+			{
+				texCoordSet = value;
+			}
+		}
+
+		/// <summary>
         ///    Addressing mode to use for texture coordinates.
         /// </summary>
         private TextureAddressing texAddressingMode;
-        /// <summary>
+		/// <remarks>
+		///    The default is <code>TextureAddressing.Wrap</code> i.e. the texture repeats over values of 1.0.
+		///    This applies for both the fixed-function and programmable pipelines.
+		/// </remarks>
+		public TextureAddressing TextureAddressing
+		{
+			get
+			{
+				return texAddressingMode;
+			}
+			set
+			{
+				texAddressingMode = value;
+			}
+		}
+
+		/// <summary>
         ///    Border color to use when texture addressing mode is set to Border
         /// </summary>
         private ColorEx texBorderColor = ColorEx.Black;
-        /// <summary>
+		/// <summary>
+		///    Gets/Sets the texture border color, which is used to fill outside the 0-1 range of
+		///    texture coordinates when the texture addressing mode is set to Border.
+		/// </summary>
+		public ColorEx TextureBorderColor
+		{
+			get
+			{
+				return texBorderColor;
+			}
+			set
+			{
+				texBorderColor = value;
+			}
+		}
+
+		/// <summary>
         ///    Reference to a class containing the color blending operation params for this stage.
         /// </summary>
         private LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
+		/// <summary>
+		///		Gets a structure that describes the layer blending mode parameters.
+		/// </summary>
+		public LayerBlendModeEx ColorBlendMode
+		{
+			get
+			{
+				return colorBlendMode;
+			}
+		}
+
+
         /// <summary>
         ///    Reference to a class containing the alpha blending operation params for this stage.
         /// </summary>
         private LayerBlendModeEx alphaBlendMode = new LayerBlendModeEx();
-        /// <summary>
+		/// <summary>
+		///		Gets a structure that describes the layer blending mode parameters.
+		/// </summary>
+		public LayerBlendModeEx AlphaBlendMode
+		{
+			get
+			{
+				return alphaBlendMode;
+			}
+		}
+
+		/// <summary>
         ///    Fallback source blending mode, for use if the desired mode is not available.
         /// </summary>
         private SceneBlendFactor colorBlendFallbackSrc;
-        /// <summary>
+		/// <summary>
+		///    Gets/Sets the multipass fallback for color blending operation source factor.
+		/// </summary>
+		public SceneBlendFactor ColorBlendFallbackSource
+		{
+			get
+			{
+				return colorBlendFallbackSrc;
+			}
+		}
+
+		/// <summary>
         ///    Fallback destination blending mode, for use if the desired mode is not available.
         /// </summary>
         private SceneBlendFactor colorBlendFallbackDest;
-        /// <summary>
+		/// <summary>
+		///    Gets/Sets the multipass fallback for color blending operation destination factor.
+		/// </summary>
+		public SceneBlendFactor ColorBlendFallbackDest
+		{
+			get
+			{
+				return colorBlendFallbackDest;
+			}
+		}
+
+		/// <summary>
         ///    Operation to use (add, modulate, etc.) for color blending between stages.
         /// </summary>
         private LayerBlendOperation colorOp;
-        /// <summary>
+		/// <summary>
+		/// 
+		/// </summary>
+		public LayerBlendOperation ColorOperation
+		{
+			get
+			{
+				return colorOp;
+			}
+			set
+			{
+				this.SetColorOperation(value);
+			}
+		}
+
+		/// <summary>
         ///    Is this a blank layer (i.e. no textures, or texture failed to load)?
         /// </summary>
         private bool isBlank;
-        /// <summary>
+		/// <summary>
+		///    Gets/Sets wether this texture layer is currently blank.
+		/// </summary>
+		public bool IsBlank
+		{
+			get
+			{
+				return isBlank;
+			}
+			set
+			{
+				isBlank = value;
+			}
+		}
+
+		/// <summary>
         ///    Is this a series of 6 2D textures to make up a cube?
         /// </summary>
         private bool isCubic;
-        /// <summary>
+		/// </summary>
+		/// <remarks>
+		///    Applies to both fixed-function and programmable pipeline.
+		/// </remarks>
+		public bool IsCubic
+		{
+			get
+			{
+				return isCubic;
+			}
+		}
+
+		/// <summary>
         ///    Number of frames for this layer.
         /// </summary>
         private int numFrames;
-        /// <summary>
+		/// </summary>
+		/// <remarks>
+		///    Applies to both fixed-function and programmable pipeline.
+		/// </remarks>
+		public int NumFrames
+		{
+			get
+			{
+				return numFrames;
+			}
+		}
+
+		/// <summary>
         ///    Duration (in seconds) of the animated texture (if any).
         /// </summary>
         private float animDuration;
+
         /// <summary>
         ///    Index of the current frame of animation (always 0 for single texture stages).
         /// </summary>
         private int currentFrame;
-        /// <summary>
+		/// <summary>
+		///		Gets/Sets the active frame in an animated or multi-image texture.
+		/// </summary>
+		/// <remarks>
+		///		An animated texture (or a cubic texture where the images are not combined for 3D use) is made up of
+		///		a number of frames. This method sets the active frame.
+		///		<p/>
+		///		Applies to both fixed-function and programmable pipeline.
+		/// </remarks>
+		public int CurrentFrame
+		{
+			get
+			{
+				return currentFrame;
+			}
+			set
+			{
+				Debug.Assert(value < numFrames, "Cannot set the current frame of a texture layer to be greater than the number of frames in the layer.");
+				currentFrame = value;
+
+				// this will affect the passes hashcode because of the texture name change
+				parent.DirtyHash();
+			}
+		}
+
+		/// <summary>
         ///    Store names of textures for animation frames.
         /// </summary>
         private string[] frames = new string[ MaxAnimationFrames ];
+
         /// <summary>
         ///     Optional name for the texture unit state
         /// </summary>
         private string name;
+		/// <summary>
+		///    Get/Set the name of this texture unit state
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return name;
+			}
+			set
+			{
+				name = value;
+				if (textureNameAlias == null)
+					textureNameAlias = name;
+			}
+		}
+
+
         /// <summary>
         ///     Optional alias for texture frames
         /// </summary>
         private string textureNameAlias;
-        /// <summary>
+		/// <summary>
+		///    Get/Set the alias for this texture unit state.
+		/// </summary>
+		public string TextureNameAlias
+		{
+			get
+			{
+				return textureNameAlias;
+			}
+			set
+			{
+				textureNameAlias = value;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets the name of the texture for this texture pass.
+		/// </summary>
+		/// <remarks>
+		///    This will either always be a single name for this layer,
+		///    or will be the name of the current frame for an animated
+		///    or otherwise multi-frame texture.
+		///    <p/>
+		///    Applies to both fixed-function and programmable pipeline.
+		/// </remarks>
+		public string TextureName
+		{
+			get
+			{
+				return frames[currentFrame];
+			}
+		}
+
+
+		/// <summary>
         ///    Flag the determines if a recalc of the texture matrix is required, usually set after a rotate or
         ///    other transformations.
         /// </summary>
@@ -170,27 +426,99 @@ namespace Axiom.Graphics
         ///    U coord of the texture transformation.
         /// </summary>
         private float transU;
-        /// <summary>
+		public float TextureScrollU
+		{
+			get
+			{
+				return this.transU;
+			}
+			set
+			{
+				this.SetTextureScrollU(value);
+			}
+		}
+
+		/// <summary>
         ///    V coord of the texture transformation.
         /// </summary>
         private float transV;
-        /// <summary>
+		public float TextureScrollV
+		{
+			get
+			{
+				return this.transV;
+			}
+			set
+			{
+				this.SetTextureScrollV(value);
+			}
+		}
+
+		/// <summary>
         ///    U coord of the texture scroll animation
         /// </summary>
         private float scrollU;
-        /// <summary>
+		public float TextureAnimU
+		{
+			get
+			{
+				return this.scrollU;
+			}
+			set
+			{
+				this.SetScrollAnimation(value, this.scrollV);
+			}
+		}
+
+		/// <summary>
         ///    V coord of the texture scroll animation
         /// </summary>
         private float scrollV;
-        /// <summary>
+		public float TextureAnimV
+		{
+			get
+			{
+				return this.scrollV;
+			}
+			set
+			{
+				this.SetScrollAnimation(this.scrollU, value);
+			}
+		}
+
+		/// <summary>
         ///    U scale value of the texture transformation.
         /// </summary>
         private float scaleU;
-        /// <summary>
+		public float ScaleU
+		{
+			get
+			{
+				return this.scaleU;
+			}
+			set
+			{
+				this.SetTextureScaleU(value);
+			}
+		}
+
+		/// <summary>
         ///    V scale value of the texture transformation.
         /// </summary>
         private float scaleV;
-        /// <summary>
+		public float ScaleV
+		{
+			get
+			{
+				return this.scaleV;
+			}
+			set
+			{
+				this.SetTextureScaleV(value);
+			}
+		}
+
+		/// <summary>
         ///    Rotation value of the texture transformation.
         /// </summary>
         private float rotate;
@@ -198,31 +526,148 @@ namespace Axiom.Graphics
         ///    4x4 texture matrix which gets updated based on various transformations made to this stage.
         /// </summary>
         private Matrix4 texMatrix;
-        /// <summary>
+		/// <summary>
+		///		Gets/Sets the Matrix4 that represents transformation to the texture in this layer.
+		/// </summary>
+		/// <remarks>
+		///    Texture coordinates can be modified on a texture layer to create effects like scrolling
+		///    textures. A texture transform can either be applied to a layer which takes the source coordinates
+		///    from a fixed set in the geometry, or to one which generates them dynamically (e.g. environment mapping).
+		///    <p/>
+		///    It's obviously a bit impractical to create scrolling effects by calling this method manually since you
+		///    would have to call it every frame with a slight alteration each time, which is tedious. Instead
+		///    you can use the ControllerManager class to create a Controller object which will manage the
+		///    effect over time for you. See <see cref="ControllerManager.CreateTextureScroller"/> and it's sibling methods for details.<BR/>
+		///    In addition, if you want to set the individual texture transformations rather than concatenating them
+		///    yourself, use <see cref="SetTextureScroll"/>, <see cref="SetTextureScroll"/> and <see cref="SetTextureRotate"/>. 
+		///    <p/>
+		///    This has no effect in the programmable pipeline.
+		/// </remarks>
+		/// <seealso cref="Controller"/><seealso cref="ControllerManager"/>
+		public Matrix4 TextureMatrix
+		{
+			get
+			{
+				// update the matrix before returning it if necessary
+				if (recalcTexMatrix)
+					RecalcTextureMatrix();
+				return texMatrix;
+			}
+			set
+			{
+				texMatrix = value;
+				recalcTexMatrix = false;
+			}
+		}
+
+		/// <summary>
         ///    List of effects to apply during this texture stage.
         /// </summary>
         private TextureEffectList effectList = new TextureEffectList();
-        /// <summary>
+		/// <summary>
+		///    Gets the number of effects currently tied to this texture stage.
+		/// </summary>
+		public int NumEffects
+		{
+			get
+			{
+				return effectList.Count;
+			}
+		}
+
+		/// <summary>
         ///    Type of texture this is.
         /// </summary>
         private TextureType textureType;
-        /// <summary>
+		/// <summary>
+		///    Gets the type of texture this unit has.
+		/// </summary>
+		public TextureType TextureType
+		{
+			get
+			{
+				return textureType;
+			}
+		}
+
+		/// <summary>
         /// the desired pixel format when load the texture
         /// </summary>
         private PixelFormat desiredFormat;
-        /// <summary>
+		/// <summary>
+		/// The desired pixel format when load the texture.
+		/// </summary>
+		public PixelFormat DesiredFormat
+		{
+			get
+			{
+				return desiredFormat;
+			}
+			set
+			{
+				desiredFormat = value;
+			}
+		}
+
+		/// <summary>
         /// how many mipmaps have been requested for the texture
         /// </summary>
         private int textureSrcMipmaps;
-        /// <summary>
+		/// <summary>
+		/// How many mipmaps have been requested for the texture.
+		/// </summary>
+		public int MipmapCount
+		{
+			get
+			{
+				return textureSrcMipmaps;
+			}
+			set
+			{
+				textureSrcMipmaps = value;
+			}
+		}
+
+		/// <summary>
         /// whether this texture is requested to be loaded as alpha if single channel
         /// </summary>
         private bool isAlpha;
-        /// <summary>
+		/// <summary>
+		/// Whether this texture is requested to be loaded as alpha if single channel.
+		/// </summary>
+		public bool IsAlpha
+		{
+			get
+			{
+				return isAlpha;
+			}
+			set
+			{
+				isAlpha = value;
+			}
+		}
+
+		/// <summary>
         /// 
         /// </summary>
         private bool hwGamma;
-        /// <summary>
+		/// <summary>
+		/// Whether this texture will be set up so that on sampling it, 
+		/// hardware gamma correction is applied.
+		/// </summary>
+		public bool IsHardwareGammaEnabled
+		{
+			get
+			{
+				return hwGamma;
+			}
+			set
+			{
+				hwGamma = value;
+			}
+		}
+
+		/// <summary>
         ///    Texture filtering - minification.
         /// </summary>
         private FilterOptions minFilter;
@@ -235,17 +680,9 @@ namespace Axiom.Graphics
         /// </summary>
         private FilterOptions mipFilter;
         /// <summary>
-        ///    Anisotropy setting for this stage.
-        /// </summary>
-        private int maxAnisotropy;
-        /// <summary>
         ///    Is the filtering level the default?
         /// </summary>
         private bool isDefaultFiltering;
-        /// <summary>
-        ///    Is anisotropy the default?
-        /// </summary>
-        private bool isDefaultAniso;
         /// <summary>
         ///     Reference to an animation controller for this texture unit.
         /// </summary>
@@ -255,10 +692,98 @@ namespace Axiom.Graphics
         ///     Reference to the environment mapping type for this texunit.
         /// </summary>
         private EnvironmentMap environMap;
-        private bool envMapEnabled = false;
-        private float rotationSpeed = 0;
 
-        #endregion Fields
+        private bool envMapEnabled = false;
+		public bool EnvironmentMapEnabled
+		{
+			get
+			{
+				return this.envMapEnabled;
+			}
+		}
+
+		private float rotationSpeed = 0;
+		public float RotationSpeed
+		{
+			get
+			{
+				return this.rotationSpeed;
+			}
+			set
+			{
+				this.SetRotateAnimation(value);
+			}
+		}
+
+
+		/// <summary>
+		///    Anisotropy setting for this stage.
+		/// </summary>
+		private int maxAnisotropy;
+		/// <summary>
+		///    Is anisotropy the default?
+		/// </summary>
+		private bool isDefaultAniso;
+		/// <summary>
+		///    Gets/Sets the anisotropy level to be used for this texture stage.
+		/// </summary>
+		/// <remarks>
+		///    This option applies in both the fixed function and the programmable pipeline.
+		/// </remarks>
+		/// <value>
+		///    The maximal anisotropy level, should be between 2 and the maximum supported by hardware (1 is the default, ie. no anisotropy)
+		/// </value>
+		public int TextureAnisotropy
+		{
+			get
+			{
+				return isDefaultAniso ? MaterialManager.Instance.DefaultAnisotropy : maxAnisotropy;
+			}
+			set
+			{
+				maxAnisotropy = value;
+				isDefaultAniso = false;
+			}
+		}
+
+		/// <summary>
+		///    Returns true if this texture unit requires an updated view matrix
+		///    to allow for proper texture matrix generation.
+		/// </summary>
+		public bool HasViewRelativeTexCoordGen
+		{
+			get
+			{
+				// TODO: Optimize this to hopefully eliminate the search every time
+				foreach (TextureEffect effect in effectList)
+				{
+					if (effect.subtype == (System.Enum)EnvironmentMap.Reflection)
+					{
+						return true;
+					}
+
+					if (effect.type == TextureEffectType.ProjectiveTexture)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Returns true if this texture layer uses a composit 3D cubic texture.
+		/// </summary>
+		public bool Is3D
+		{
+			get
+			{
+				return textureType == TextureType.CubeMap;
+			}
+		}
+
+        #endregion Fields and Properties
 
         #region Constructors
 
@@ -329,77 +854,7 @@ namespace Axiom.Graphics
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        ///		Gets a structure that describes the layer blending mode parameters.
-        /// </summary>
-        public LayerBlendModeEx AlphaBlendMode
-        {
-            get
-            {
-                return alphaBlendMode;
-            }
-        }
-
-        /// <summary>
-        ///    Gets/Sets the anisotropy level to be used for this texture stage.
-        /// </summary>
-        /// <remarks>
-        ///    This option applies in both the fixed function and the programmable pipeline.
-        /// </remarks>
-        /// <value>
-        ///    The maximal anisotropy level, should be between 2 and the maximum supported by hardware (1 is the default, ie. no anisotropy)
-        /// </value>
-        public int TextureAnisotropy
-        {
-            get
-            {
-                return isDefaultAniso ? MaterialManager.Instance.DefaultAnisotropy : maxAnisotropy;
-            }
-            set
-            {
-                maxAnisotropy = value;
-                isDefaultAniso = false;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a structure that describes the layer blending mode parameters.
-        /// </summary>
-        public LayerBlendModeEx ColorBlendMode
-        {
-            get
-            {
-                return colorBlendMode;
-            }
-        }
-
-        /// <summary>
-        ///    Returns true if this texture unit requires an updated view matrix
-        ///    to allow for proper texture matrix generation.
-        /// </summary>
-        public bool HasViewRelativeTexCoordGen
-        {
-            get
-            {
-                // TODO: Optimize this to hopefully eliminate the search every time
-                foreach ( TextureEffect effect in effectList )
-                {
-                    if ( effect.subtype == (System.Enum)EnvironmentMap.Reflection )
-                    {
-                        return true;
-                    }
-
-                    if ( effect.type == TextureEffectType.ProjectiveTexture )
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        }
+        #region Methods
 
         /// <summary>
         ///    Enables or disables projective texturing on this texture unit.
@@ -441,468 +896,6 @@ namespace Axiom.Graphics
                 RemoveEffect( TextureEffectType.ProjectiveTexture );
             }
         }
-
-        /// <summary>
-        ///		Gets/Sets the name of the texture for this texture pass.
-        /// </summary>
-        /// <remarks>
-        ///    This will either always be a single name for this layer,
-        ///    or will be the name of the current frame for an animated
-        ///    or otherwise multi-frame texture.
-        ///    <p/>
-        ///    Applies to both fixed-function and programmable pipeline.
-        /// </remarks>
-        public string TextureName
-        {
-            get
-            {
-                return frames[ currentFrame ];
-            }
-        }
-
-        /// <summary>
-        ///    Gets the type of texture this unit has.
-        /// </summary>
-        public TextureType TextureType
-        {
-            get
-            {
-                return textureType;
-            }
-        }
-
-        /// <summary>
-        ///    Get/Set the name of this texture unit state
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-                if ( textureNameAlias == null )
-                    textureNameAlias = name;
-            }
-        }
-
-        /// <summary>
-        ///    Get/Set the alias for this texture unit state.
-        /// </summary>
-        public string TextureNameAlias
-        {
-            get
-            {
-                return textureNameAlias;
-            }
-            set
-            {
-                textureNameAlias = value;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the texture coordinate set to be used by this texture layer.
-        /// </summary>
-        /// <remarks>
-        ///		Default is 0 for all layers. Only change this if you have provided multiple texture coords per
-        ///		vertex.
-        ///		<p/>
-        ///		Applies to both fixed-function and programmable pipeline.
-        /// </remarks>
-        public int TextureCoordSet
-        {
-            get
-            {
-                return texCoordSet;
-            }
-            set
-            {
-                texCoordSet = value;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the texture addressing mode, i.e. what happens at uv values above 1.0.
-        /// </summary>
-        /// <remarks>
-        ///    The default is <code>TextureAddressing.Wrap</code> i.e. the texture repeats over values of 1.0.
-        ///    This applies for both the fixed-function and programmable pipelines.
-        /// </remarks>
-        public TextureAddressing TextureAddressing
-        {
-            get
-            {
-                return texAddressingMode;
-            }
-            set
-            {
-                texAddressingMode = value;
-            }
-        }
-
-        /// <summary>
-        ///    Gets/Sets the texture border color, which is used to fill outside the 0-1 range of
-        ///    texture coordinates when the texture addressing mode is set to Border.
-        /// </summary>
-        public ColorEx TextureBorderColor
-        {
-            get
-            {
-                return texBorderColor;
-            }
-            set
-            {
-                texBorderColor = value;
-            }
-        }
-
-        /// <summary>
-        ///    Gets/Sets the multipass fallback for color blending operation source factor.
-        /// </summary>
-        public SceneBlendFactor ColorBlendFallbackSource
-        {
-            get
-            {
-                return colorBlendFallbackSrc;
-            }
-        }
-
-        /// <summary>
-        ///    Gets/Sets the multipass fallback for color blending operation destination factor.
-        /// </summary>
-        public SceneBlendFactor ColorBlendFallbackDest
-        {
-            get
-            {
-                return colorBlendFallbackDest;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public LayerBlendOperation ColorOperation
-        {
-            get
-            {
-                return colorOp;
-            }
-            set
-            {
-                this.SetColorOperation( value );
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the active frame in an animated or multi-image texture.
-        /// </summary>
-        /// <remarks>
-        ///		An animated texture (or a cubic texture where the images are not combined for 3D use) is made up of
-        ///		a number of frames. This method sets the active frame.
-        ///		<p/>
-        ///		Applies to both fixed-function and programmable pipeline.
-        /// </remarks>
-        public int CurrentFrame
-        {
-            get
-            {
-                return currentFrame;
-            }
-            set
-            {
-                Debug.Assert( value < numFrames, "Cannot set the current frame of a texture layer to be greater than the number of frames in the layer." );
-                currentFrame = value;
-
-                // this will affect the passes hashcode because of the texture name change
-                parent.DirtyHash();
-            }
-        }
-
-        /// <summary>
-        ///    Gets/Sets wether this texture layer is currently blank.
-        /// </summary>
-        public bool IsBlank
-        {
-            get
-            {
-                return isBlank;
-            }
-            set
-            {
-                isBlank = value;
-            }
-        }
-
-        /// <summary>
-        ///    Returns true if this texture unit is either a series of 6 2D textures, each 
-        ///    in it's own frame, or is a full 3D cube map. You can tell which by checking 
-        ///    TextureType. 
-        /// </summary>
-        /// <remarks>
-        ///    Applies to both fixed-function and programmable pipeline.
-        /// </remarks>
-        public bool IsCubic
-        {
-            get
-            {
-                return isCubic;
-            }
-        }
-
-        /// <summary>
-        ///    Returns true if this texture layer uses a composite 3D cubic texture.
-        /// </summary>
-        /// <remarks>
-        ///    Applies to both fixed-function and programmable pipeline.
-        /// </remarks>
-        public bool Is3D
-        {
-            get
-            {
-                return textureType == TextureType.CubeMap;
-            }
-        }
-
-        /// <summary>
-        ///    Returns true if the resource for this texture layer have been loaded.
-        /// </summary>
-        public bool IsLoaded
-        {
-            get
-            {
-                return parent.IsLoaded;
-            }
-        }
-
-        /// <summary>
-        ///    Gets the number of effects currently tied to this texture stage.
-        /// </summary>
-        public int NumEffects
-        {
-            get
-            {
-                return effectList.Count;
-            }
-        }
-
-        /// <summary>
-        ///		Gets the number of frames for a texture.
-        /// </summary>
-        /// <remarks>
-        ///    Applies to both fixed-function and programmable pipeline.
-        /// </remarks>
-        public int NumFrames
-        {
-            get
-            {
-                return numFrames;
-            }
-        }
-
-        /// <summary>
-        ///    Gets a reference to the Pass that owns this TextureUnitState.
-        /// </summary>
-        public Pass Parent
-        {
-            get
-            {
-                return parent;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the Matrix4 that represents transformation to the texture in this layer.
-        /// </summary>
-        /// <remarks>
-        ///    Texture coordinates can be modified on a texture layer to create effects like scrolling
-        ///    textures. A texture transform can either be applied to a layer which takes the source coordinates
-        ///    from a fixed set in the geometry, or to one which generates them dynamically (e.g. environment mapping).
-        ///    <p/>
-        ///    It's obviously a bit impractical to create scrolling effects by calling this method manually since you
-        ///    would have to call it every frame with a slight alteration each time, which is tedious. Instead
-        ///    you can use the ControllerManager class to create a Controller object which will manage the
-        ///    effect over time for you. See <see cref="ControllerManager.CreateTextureScroller"/>and it's sibling methods for details.<BR>
-        ///    In addition, if you want to set the individual texture transformations rather than concatenating them
-        ///    yourself, use <see cref="SetTextureScroll"/>, <see cref="SetTextureScroll"/> and <see cref="SetTextureRotate"/>. 
-        ///    <p/>
-        ///    This has no effect in the programmable pipeline.
-        /// </remarks>
-        /// <seealso cref="Controller"/><seealso cref="ControllerManager"/>
-        public Matrix4 TextureMatrix
-        {
-            get
-            {
-                // update the matrix before returning it if necessary
-                if ( recalcTexMatrix )
-                    RecalcTextureMatrix();
-                return texMatrix;
-            }
-            set
-            {
-                texMatrix = value;
-                recalcTexMatrix = false;
-            }
-        }
-
-        public bool EnvironmentMapEnabled
-        {
-            get
-            {
-                return this.envMapEnabled;
-            }
-        }
-
-        public float TextureScrollU
-        {
-            get
-            {
-                return this.transU;
-            }
-            set
-            {
-                this.SetTextureScrollU( value );
-            }
-        }
-
-        public float TextureScrollV
-        {
-            get
-            {
-                return this.transV;
-            }
-            set
-            {
-                this.SetTextureScrollV( value );
-            }
-        }
-
-        public float TextureAnimU
-        {
-            get
-            {
-                return this.scrollU;
-            }
-            set
-            {
-                this.SetScrollAnimation( value, this.scrollV );
-            }
-        }
-
-        public float TextureAnimV
-        {
-            get
-            {
-                return this.scrollV;
-            }
-            set
-            {
-                this.SetScrollAnimation( this.scrollU, value );
-            }
-        }
-
-        public float ScaleU
-        {
-            get
-            {
-                return this.scaleU;
-            }
-            set
-            {
-                this.SetTextureScaleU( value );
-            }
-        }
-
-        public float ScaleV
-        {
-            get
-            {
-                return this.scaleV;
-            }
-            set
-            {
-                this.SetTextureScaleV( value );
-            }
-        }
-
-        public float RotationSpeed
-        {
-            get
-            {
-                return this.rotationSpeed;
-            }
-            set
-            {
-                this.SetRotateAnimation( value );
-            }
-        }
-
-        /// <summary>
-        /// How many mipmaps have been requested for the texture.
-        /// </summary>
-        public int MipmapCount
-        {
-            get
-            {
-                return textureSrcMipmaps;
-            }
-            set
-            {
-                textureSrcMipmaps = value;
-            }
-        }
-
-        /// <summary>
-        /// The desired pixel format when load the texture.
-        /// </summary>
-        public PixelFormat DesiredFormat
-        {
-            get
-            {
-                return desiredFormat;
-            }
-            set
-            {
-                desiredFormat = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether this texture is requested to be loaded as alpha if single channel.
-        /// </summary>
-        public bool IsAlpha
-        {
-            get
-            {
-                return isAlpha;
-            }
-            set
-            {
-                isAlpha = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether this texture will be set up so that on sampling it, 
-        /// hardware gamma correction is applied.
-        /// </summary>
-        public bool IsHardwareGammaEnabled
-        {
-            get
-            {
-                return hwGamma;
-            }
-            set
-            {
-                hwGamma = value;
-            }
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///    Gets the texture effect at the specified index.
