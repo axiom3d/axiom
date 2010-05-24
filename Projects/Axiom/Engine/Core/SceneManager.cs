@@ -549,13 +549,16 @@ namespace Axiom.Core
         #endregion MovableobjectFactory fields
 
         /// <summary>
-        /// 
+        /// If set, materials will be resolved from the materials at the 
+        /// pass-setting stage and not at the render queue building stage.
+        /// This is useful when the active material scheme during the render 
+        /// queue building stage is different from the one during the rendering stage.
         /// </summary>
         public bool IsLateMaterialResolving
         {
-            get { throw new NotImplementedException();}
-            set { throw new NotImplementedException(); }
+        	get; set;
         }
+
         public ICollection<Camera> Cameras
         {
             get { return this.cameraList.Values; }

@@ -172,6 +172,7 @@ material Ogre/Compositor/BlurH
 			cull_hardware none
 			cull_software none
 			depth_check off
+            scene_blend alpha_blend
 
 			fragment_program_ref BlurH_ps
 			{
@@ -223,30 +224,28 @@ material Ogre/Compositor/BloomBlend2
     {
         pass
         {
-		cull_hardware none
-		cull_software none
-		depth_check off
+			cull_hardware none
+			cull_software none
+			depth_check off
 
-		fragment_program_ref Bloom2_ps
-		{
-			param_named OriginalImageWeight float 1.0
-			param_named BlurWeight float 0.65
-		}
-		//vertex_program_ref Blur_vs
-		//	{
-		//	}
+			fragment_program_ref Bloom2_ps
+			{
+				param_named OriginalImageWeight float 1.0
+				param_named BlurWeight float 0.65
+			}
+
             texture_unit
             {
-			tex_coord_set 0
-			tex_address_mode clamp
-			filtering none
+				tex_coord_set 0
+				tex_address_mode clamp
+				filtering none
             }
-		texture_unit
-		{
-			tex_coord_set 0
-			tex_address_mode clamp
-			filtering trilinear
-		}
+			texture_unit
+			{
+				tex_coord_set 0
+				tex_address_mode clamp
+				filtering trilinear
+			}
         }
     }
 }

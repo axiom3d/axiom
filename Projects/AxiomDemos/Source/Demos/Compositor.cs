@@ -67,7 +67,7 @@ namespace Axiom.Demos
 			entity = scene.CreateEntity( "3", "knot.mesh" );
 			_spinny = scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 0, 300 ) );
 			_spinny.AttachObject( entity );
-			entity.MaterialName = "Examples/MorningCubeMap";
+			//entity.MaterialName = "Examples/MorningCubeMap";
 
 			scene.SetSkyBox( true, "Examples/MorningSkyBox", 50 );
 
@@ -103,128 +103,128 @@ namespace Axiom.Demos
 		private void _createEffects()
 		{
 			#region /// Motion blur effect
-			Axiom.Graphics.Compositor comp3 = (Axiom.Graphics.Compositor)CompositorManager.Instance.Create( "Motion Blur", ResourceGroupManager.DefaultResourceGroupName );
-			{
-				CompositionTechnique t = comp3.CreateTechnique();
-				{
-					CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("scene");
-					def.Width = 0;
-					def.Height = 0;
-					def.FormatList.Add( PixelFormat.R8G8B8 );
-				}
-				{
-                    CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("sum");
-					def.Width = 0;
-					def.Height = 0;
-                    def.FormatList.Add(PixelFormat.R8G8B8);
-                }
-				{
-                    CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("temp");
-					def.Width = 0;
-					def.Height = 0;
-                    def.FormatList.Add(PixelFormat.R8G8B8);
-                }
-				/// Render scene
-				{
-					CompositionTargetPass tp = t.CreateTargetPass();
-					tp.InputMode = CompositorInputMode.Previous;
-					tp.OutputName = "scene";
-				}
-				/// Initialisation pass for sum texture
-				{
-					CompositionTargetPass tp = t.CreateTargetPass();
-					tp.InputMode = CompositorInputMode.Previous;
-					tp.OutputName = "sum" ;
-					tp.OnlyInitial = true;
-				}
-				/// Do the motion blur
-				{
-					CompositionTargetPass tp = t.CreateTargetPass();
-					tp.InputMode = CompositorInputMode.None;
-					tp.OutputName = "temp";
-					{ 
-						CompositionPass pass = tp.CreatePass();
-						pass.Type = CompositorPassType.RenderQuad;
-						pass.SetMaterialName("Ogre/Compositor/Combine");
-						pass.SetInput(0, "scene");
-						pass.SetInput(1, "sum");
-					}
-				}
-				/// Copy back sum texture
-				{
-					CompositionTargetPass tp = t.CreateTargetPass();
-					tp.InputMode = CompositorInputMode.None;
-					tp.OutputName = "sum";
-					{ 
-						CompositionPass pass = tp.CreatePass();
-						pass.Type = CompositorPassType.RenderQuad;
-						pass.SetMaterialName("Ogre/Compositor/Copyback");
-						pass.SetInput(0, "temp");
-					}
-				}
-				/// Display result
-				{
-					CompositionTargetPass tp = t.OutputTarget;
-					tp.InputMode = CompositorInputMode.None;
-					{
-						CompositionPass pass = tp.CreatePass();
-						pass.Type = CompositorPassType.RenderQuad;
-						pass.SetMaterialName("Ogre/Compositor/MotionBlur");
-						pass.SetInput( 0, "sum" );
-					}
-				}
-			}
+			//Axiom.Graphics.Compositor comp3 = (Axiom.Graphics.Compositor)CompositorManager.Instance.Create( "Motion Blur", ResourceGroupManager.DefaultResourceGroupName );
+			//{
+			//    CompositionTechnique t = comp3.CreateTechnique();
+			//    {
+			//        CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("scene");
+			//        def.Width = 0;
+			//        def.Height = 0;
+			//        def.PixelFormats.Add( PixelFormat.R8G8B8 );
+			//    }
+			//    {
+			//        CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("sum");
+			//        def.Width = 0;
+			//        def.Height = 0;
+			//        def.PixelFormats.Add(PixelFormat.R8G8B8);
+			//    }
+			//    {
+			//        CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("temp");
+			//        def.Width = 0;
+			//        def.Height = 0;
+			//        def.PixelFormats.Add(PixelFormat.R8G8B8);
+			//    }
+			//    /// Render scene
+			//    {
+			//        CompositionTargetPass tp = t.CreateTargetPass();
+			//        tp.InputMode = CompositorInputMode.Previous;
+			//        tp.OutputName = "scene";
+			//    }
+			//    /// Initialisation pass for sum texture
+			//    {
+			//        CompositionTargetPass tp = t.CreateTargetPass();
+			//        tp.InputMode = CompositorInputMode.Previous;
+			//        tp.OutputName = "sum" ;
+			//        tp.OnlyInitial = true;
+			//    }
+			//    /// Do the motion blur
+			//    {
+			//        CompositionTargetPass tp = t.CreateTargetPass();
+			//        tp.InputMode = CompositorInputMode.None;
+			//        tp.OutputName = "temp";
+			//        { 
+			//            CompositionPass pass = tp.CreatePass();
+			//            pass.Type = CompositorPassType.RenderQuad;
+			//            pass.SetMaterialName("Ogre/Compositor/Combine");
+			//            pass.SetInput(0, "scene");
+			//            pass.SetInput(1, "sum");
+			//        }
+			//    }
+			//    /// Copy back sum texture
+			//    {
+			//        CompositionTargetPass tp = t.CreateTargetPass();
+			//        tp.InputMode = CompositorInputMode.None;
+			//        tp.OutputName = "sum";
+			//        { 
+			//            CompositionPass pass = tp.CreatePass();
+			//            pass.Type = CompositorPassType.RenderQuad;
+			//            pass.SetMaterialName("Ogre/Compositor/Copyback");
+			//            pass.SetInput(0, "temp");
+			//        }
+			//    }
+			//    /// Display result
+			//    {
+			//        CompositionTargetPass tp = t.OutputTarget;
+			//        tp.InputMode = CompositorInputMode.None;
+			//        {
+			//            CompositionPass pass = tp.CreatePass();
+			//            pass.Type = CompositorPassType.RenderQuad;
+			//            pass.SetMaterialName("Ogre/Compositor/MotionBlur");
+			//            pass.SetInput( 0, "sum" );
+			//        }
+			//    }
+			//}
 			CompositorManager.Instance.AddCompositor( this.viewport, "Motion Blur" );
 			#endregion
 
 			#region /// Heat vision effect
-			Axiom.Graphics.Compositor comp4 = (Axiom.Graphics.Compositor)CompositorManager.Instance.Create( "Heat Vision", ResourceGroupManager.DefaultResourceGroupName );
-			{
-				CompositionTechnique t = comp4.CreateTechnique();
-				{
-					CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition( "scene" );
-					def.Width = 256;
-					def.Height = 256;
-					def.FormatList.Add( PixelFormat.R8G8B8 );
-				}
-				{
-                    CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("temp");
-					def.Width = 256;
-					def.Height = 256;
-                    def.FormatList.Add(PixelFormat.R8G8B8);
-                }
-				/// Render scene
-				{
-					CompositionTargetPass tp = t.CreateTargetPass();
-					tp.InputMode = CompositorInputMode.Previous;
-					tp.OutputName = "scene";
-				}
-				/// Light to heat pass
-				{
-					CompositionTargetPass tp = t.CreateTargetPass();
-					tp.InputMode = CompositorInputMode.None;
-					tp.OutputName = "temp";
-					{
-						CompositionPass pass = tp.CreatePass();
-						pass.Type = CompositorPassType.RenderQuad;
-						pass.Identifier = 0xDEADBABE; /// Identify pass for use in listener
-						pass.SetMaterialName("Fury/HeatVision/LightToHeat");
-						pass.SetInput(0, "scene");
-					}
-				}
-				/// Display result
-				{
-					CompositionTargetPass tp = t.OutputTarget;
-					tp.InputMode = CompositorInputMode.None;
-					{
-						CompositionPass pass = tp.CreatePass();
-						pass.Type = CompositorPassType.RenderQuad;
-						pass.SetMaterialName("Fury/HeatVision/Blur");
-						pass.SetInput(0, "temp");
-					}
-				}
-			}
-			CompositorManager.Instance.AddCompositor( this.viewport, "Heat Vision" );
+			//Axiom.Graphics.Compositor comp4 = (Axiom.Graphics.Compositor)CompositorManager.Instance.Create( "Heat Vision", ResourceGroupManager.DefaultResourceGroupName );
+			//{
+			//    CompositionTechnique t = comp4.CreateTechnique();
+			//    {
+			//        CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition( "scene" );
+			//        def.Width = 256;
+			//        def.Height = 256;
+			//        def.PixelFormats.Add( PixelFormat.R8G8B8 );
+			//    }
+			//    {
+			//        CompositionTechnique.TextureDefinition def = t.CreateTextureDefinition("temp");
+			//        def.Width = 256;
+			//        def.Height = 256;
+			//        def.PixelFormats.Add(PixelFormat.R8G8B8);
+			//    }
+			//    /// Render scene
+			//    {
+			//        CompositionTargetPass tp = t.CreateTargetPass();
+			//        tp.InputMode = CompositorInputMode.Previous;
+			//        tp.OutputName = "scene";
+			//    }
+			//    /// Light to heat pass
+			//    {
+			//        CompositionTargetPass tp = t.CreateTargetPass();
+			//        tp.InputMode = CompositorInputMode.None;
+			//        tp.OutputName = "temp";
+			//        {
+			//            CompositionPass pass = tp.CreatePass();
+			//            pass.Type = CompositorPassType.RenderQuad;
+			//            pass.Identifier = 0xDEADBABE; /// Identify pass for use in listener
+			//            pass.SetMaterialName("Fury/HeatVision/LightToHeat");
+			//            pass.SetInput(0, "scene");
+			//        }
+			//    }
+			//    /// Display result
+			//    {
+			//        CompositionTargetPass tp = t.OutputTarget;
+			//        tp.InputMode = CompositorInputMode.None;
+			//        {
+			//            CompositionPass pass = tp.CreatePass();
+			//            pass.Type = CompositorPassType.RenderQuad;
+			//            pass.SetMaterialName("Fury/HeatVision/Blur");
+			//            pass.SetInput(0, "temp");
+			//        }
+			//    }
+			//}
+			//CompositorManager.Instance.AddCompositor( this.viewport, "Heat Vision" );
 			#endregion
 		}
 	}
