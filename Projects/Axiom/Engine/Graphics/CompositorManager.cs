@@ -255,7 +255,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		private Dictionary<TextureDefinition, List<Texture>> texturesByDef;
+		private Dictionary<TextureDefinition, List<Texture>> texturesByDef = new Dictionary<TextureDefinition, List<Texture>>();
 
 		/// <summary>
 		/// 
