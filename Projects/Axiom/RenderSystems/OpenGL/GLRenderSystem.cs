@@ -1739,11 +1739,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="stage"></param>
 		/// <param name="enabled"></param>
 		/// <param name="textureName"></param>
-		public override void SetTexture( int stage, bool enabled, string textureName )
+		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
-			// load the texture
-			GLTexture texture = (GLTexture)TextureManager.Instance.GetByName( textureName );
-
+			GLTexture glTexture = (GLTexture)texture;
 			int lastTextureType = textureTypes[ stage ];
 
 			// set the active texture
@@ -1752,9 +1750,9 @@ namespace Axiom.RenderSystems.OpenGL
 			// enable and bind the texture if necessary
 			if ( enabled )
 			{
-				if ( texture != null )
+				if ( glTexture != null )
 				{
-					textureTypes[ stage ] = texture.GLTextureType;
+					textureTypes[ stage ] = glTexture.GLTextureType;
 				}
 				else
 				{
@@ -1775,9 +1773,9 @@ namespace Axiom.RenderSystems.OpenGL
                     Gl.glEnable( textureTypes[ stage ] );
                 }
 
-				if ( texture != null )
+				if ( glTexture != null )
 				{
-					Gl.glBindTexture( textureTypes[ stage ], texture.TextureID );
+					Gl.glBindTexture( textureTypes[ stage ], glTexture.TextureID );
 				}
                 else
 				{

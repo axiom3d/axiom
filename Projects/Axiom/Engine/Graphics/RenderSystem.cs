@@ -570,7 +570,7 @@ namespace Axiom.Graphics
             Texture texture = (Texture)TextureManager.Instance.GetByName( unitState.TextureName );
             // Vertex Texture Binding?
             if (    this.HardwareCapabilities.HasCapability( Capabilities.VertexTextureFetch ) 
-                 && this.HardwareCapabilities.VertexTextureUnitsShared )
+                 && !this.HardwareCapabilities.VertexTextureUnitsShared )
             {                
                 if ( unitState.BindingType == TextureBindingType.Vertex )
                 {
@@ -578,7 +578,7 @@ namespace Axiom.Graphics
                     SetVertexTexture( unit, texture );
                     // bind nothing to fragment unit (hardware isn't shared but fragment
                     // unit can't be using the same index
-                    this.SetTexture( unit, true, null );
+                    this.SetTexture( unit, true, (Texture)null );
                 }
                 else
                 {
@@ -1476,12 +1476,19 @@ namespace Axiom.Graphics
         ///		is designed to manage materials for objects.
         ///		Note that this method is called by SetMaterial.
         /// </summary>
-        /// <param name="stage">The index of the texture unit to modify. Multitexturing hardware
-		//		can support multiple units (see TextureUnitCount)</param>
+		/// <param name="stage">The index of the texture unit to modify. Multitexturing hardware 
+		/// can support multiple units (see TextureUnitCount)</param>
         /// <param name="enabled">Boolean to turn the unit on/off</param>
         /// <param name="textureName">The name of the texture to use - this should have
         ///		already been loaded with TextureManager.Load.</param>
-        public abstract void SetTexture( int stage, bool enabled, string textureName );
+        public void SetTexture( int stage, bool enabled, string textureName )
+        {
+			// load the texture
+			Texture texture = (Texture)TextureManager.Instance.GetByName( textureName );
+        	SetTexture( stage, enabled, texture );
+        }
+
+    	public abstract void SetTexture( int stage, bool enabled, Texture texture );
 
 		/// <summary>
 		/// Binds a texture to a vertex sampler.
