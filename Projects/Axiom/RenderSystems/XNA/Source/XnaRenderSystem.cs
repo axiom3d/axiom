@@ -2158,16 +2158,16 @@ namespace Axiom.RenderSystems.Xna
             _device.RenderState.PointSizeMax = maxSize;
         }
 
-        public override void SetTexture( int stage, bool enabled, string textureName )
+        public override void SetTexture( int stage, bool enabled, Texture texture )
         {
-            XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName( textureName );
+        	XnaTexture xnaTexture = (XnaTexture)texture;
             texStageDesc[ stage ].Enabled = enabled;
-            if ( enabled && texture != null )
+            if ( enabled && xnaTexture != null )
             {
-                _device.Textures[ stage ] = texture.DXTexture;
+                _device.Textures[ stage ] = xnaTexture.DXTexture;
                 // set stage description
-                texStageDesc[ stage ].tex = texture.DXTexture;
-                texStageDesc[ stage ].texType = texture.TextureType;
+                texStageDesc[ stage ].tex = xnaTexture.DXTexture;
+                texStageDesc[ stage ].texType = xnaTexture.TextureType;
             }
             else
             {

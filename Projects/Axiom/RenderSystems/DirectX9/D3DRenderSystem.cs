@@ -1221,22 +1221,22 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="stage"></param>
         /// <param name="enabled"></param>
         /// <param name="textureName"></param>
-        public override void SetTexture( int stage, bool enabled, string textureName )
+        public override void SetTexture( int stage, bool enabled, Texture texture )
         {
-            D3DTexture texture = (D3DTexture)TextureManager.Instance.GetByName( textureName );
+            D3DTexture dxTexture = (D3DTexture)texture;
 
-            if ( enabled && texture != null )
+            if ( enabled && dxTexture != null )
             {
                 // note used
-                texture.Touch();
+                dxTexture.Touch();
 
-                if ( texStageDesc[ stage ].tex != texture.DXTexture )
+                if ( texStageDesc[ stage ].tex != dxTexture.DXTexture )
                 {
-                    device.SetTexture( stage, texture.DXTexture );
+                    device.SetTexture( stage, dxTexture.DXTexture );
 
                     // set stage description
-                    texStageDesc[ stage ].tex = texture.DXTexture;
-                    texStageDesc[ stage ].texType = D3DHelper.ConvertEnum( texture.TextureType );
+                    texStageDesc[ stage ].tex = dxTexture.DXTexture;
+                    texStageDesc[ stage ].texType = D3DHelper.ConvertEnum( dxTexture.TextureType );
                 }
                 // TODO : Set gamma now too
                 //if ( dt->isHardwareGammaReadToBeUsed() )
