@@ -68,10 +68,28 @@ namespace Axiom.Graphics
     /// </remarks>
     /// TODO: Destroy controllers
     public class TextureUnitState
-    {
-        #region Fields
+	{
+		#region Nested Types
 
-        /// <summary>
+		/// <summary>
+		/// The type of unit to bind the texture settings to.
+		/// </summary>
+		public enum BindingType
+		{
+			/// <summary>
+			///  Regular fragment processing unit - the default.
+			/// </summary>
+			Fragment,
+			/// <summary>
+			/// Vertex processing unit - indicates this unit will be used for a vertex texture fetch.
+			/// </summary>
+			Vertex
+		}
+
+		#endregion Nested Types
+		#region Fields
+
+		/// <summary>
         ///    Maximum amount of animation frames allowed.
         /// </summary>
         public const int MaxAnimationFrames = 32;
