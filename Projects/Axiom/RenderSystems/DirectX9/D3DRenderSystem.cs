@@ -1392,6 +1392,40 @@ namespace Axiom.RenderSystems.DirectX9
             base.UnbindGpuProgram( type );
         }
 
+		public override void SetVertexTexture( int stage, Texture texture )
+		{
+			if ( texture == null )
+			{
+				if ( texStageDesc[ stage ].vertexTex != null )
+				{
+					DX.Result result = this.device.SetTexture( ( (int)D3D.VertexTextureSampler.Sampler0 ) + stage, null );
+					if ( result.IsFailure )
+					{
+						throw new AxiomException( "Unable to disable vertex texture '{0}' in D3D9.", stage );
+					}
+				}
+				texStageDesc[ stage ].vertexTex = null;
+			}
+			else
+			{
+				D3DTexture dt = (D3DTexture)texture;
+				dt.Touch();
+
+				DX.Direct3D9.BaseTexture tex = dt.DXTexture;
+
+				if ( texStageDesc[ stage ].vertexTex != tex )
+				{
+					DX.Result result = this.device.SetTexture( ( (int)D3D.VertexTextureSampler.Sampler0 ) + stage, tex);
+					if ( result.IsFailure )
+					{
+						throw new AxiomException( "Unable to disable vertex texture '{0}' in D3D9.", stage );
+					}
+				}
+				texStageDesc[ stage ].vertexTex = tex;
+			}
+
+		}
+
         #endregion
 
         public override Axiom.Math.Matrix4 WorldMatrix
