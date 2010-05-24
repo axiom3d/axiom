@@ -571,11 +571,8 @@ namespace Axiom.Graphics
             // Vertex Texture Binding?
             if (    this.HardwareCapabilities.HasCapability( Capabilities.VertexTextureFetch ) 
                  && this.HardwareCapabilities.VertexTextureUnitsShared )
-            {
-                LogManager.Instance.Write( "Vertex Texture not implemented using fallback method." );
-                this.SetTexture( unit, true, unitState.TextureName );
-                /*
-                if ( unitState.BindingType = BindingType.Vertex )
+            {                
+                if ( unitState.BindingType == TextureBindingType.Vertex )
                 {
                     // Bind Vertex Texture
                     SetVertexTexture( unit, texture );
@@ -587,9 +584,9 @@ namespace Axiom.Graphics
                 {
                     // vice versa
                     SetVertexTexture( unit, null );
-                    this.SetTexture( unit, true, texture );
+					this.SetTexture( unit, true, unitState.TextureName );
                 }
-                */
+                
             }
             else
             {
@@ -1480,13 +1477,34 @@ namespace Axiom.Graphics
         ///		Note that this method is called by SetMaterial.
         /// </summary>
         /// <param name="stage">The index of the texture unit to modify. Multitexturing hardware
-        //		can support multiple units (see TextureUnitCount)</param>
+		//		can support multiple units (see TextureUnitCount)</param>
         /// <param name="enabled">Boolean to turn the unit on/off</param>
         /// <param name="textureName">The name of the texture to use - this should have
         ///		already been loaded with TextureManager.Load.</param>
         public abstract void SetTexture( int stage, bool enabled, string textureName );
 
-        /// <summary>
+		/// <summary>
+		/// Binds a texture to a vertex sampler.
+		/// </summary>
+		/// <remarks>
+		/// Not all rendersystems support separate vertex samplers. For those that
+		/// do, you can set a texture for them, separate to the regular texture
+		/// samplers, using this method. For those that don't, you should use the
+		/// regular texture samplers which are shared between the vertex and
+		/// fragment units; calling this method will throw an exception.
+		/// <see>RenderSystemCapabilites.VertexTextureUnitsShared</see>
+		/// </remarks>
+		/// <param name="unit"></param>
+		/// <param name="texture"></param>
+		public virtual void SetVertexTexture( int unit, Texture texture )
+		{
+			throw new NotSupportedException(
+				"This rendersystem does not support separate vertex texture samplers, " +
+				"you should use the regular texture samplers which are shared between " +
+				"the vertex and fragment units." );
+		}
+
+    	/// <summary>
         ///		Tells the hardware how to treat texture coordinates.
         /// </summary>
         /// <param name="stage"></param>
