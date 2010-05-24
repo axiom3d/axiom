@@ -2153,6 +2153,25 @@ namespace Axiom.Serialization
 			return false;
 		}
 
+
+		[MaterialAttributeParser( "binding_type", MaterialScriptSection.TextureUnit )]
+		protected static bool ParseBindingType(string parameters, MaterialScriptContext context)
+		{
+			switch ( parameters.ToLower() )
+			{
+				case "texture":
+					context.textureUnit.BindingType = TextureBindingType.Fragment;
+					break;
+				case "vertex":
+					context.textureUnit.BindingType = TextureBindingType.Vertex;
+					break;
+				default:
+					LogParseError( context, "Invalid binding type option - {0}", parameters );
+					break;
+			}
+			return false;
+		}
+
 		[MaterialAttributeParser( "wave_xform", MaterialScriptSection.TextureUnit )]
 		protected static bool ParseWaveXForm( string parameters, MaterialScriptContext context )
 		{
