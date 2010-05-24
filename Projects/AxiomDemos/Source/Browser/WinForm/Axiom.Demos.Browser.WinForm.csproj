@@ -68,6 +68,10 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
@@ -105,20 +109,40 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.glsl">
+      <Link>Media\GpuPrograms\Bloom2_ps20.glsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.hlsl">
       <Link>Media\GpuPrograms\Bloom2_ps20.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\BlurH_ps20.glsl">
+      <Link>Media\GpuPrograms\BlurH_ps20.glsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\BlurH_ps20.hlsl">
       <Link>Media\GpuPrograms\BlurH_ps20.hlsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\BlurV_ps20.glsl">
+      <Link>Media\GpuPrograms\BlurV_ps20.glsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\BlurV_ps20.hlsl">
       <Link>Media\GpuPrograms\BlurV_ps20.hlsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\Blur_vs.glsl">
+      <Link>Media\GpuPrograms\Blur_vs.glsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\Blur_vs11.hlsl">
       <Link>Media\GpuPrograms\Blur_vs11.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\BrightBloom2_ps20.glsl">
+      <Link>Media\GpuPrograms\BrightBloom2_ps20.glsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\BrightBloom2_ps20.hlsl">

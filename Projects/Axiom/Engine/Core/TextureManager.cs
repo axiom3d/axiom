@@ -409,7 +409,7 @@ namespace Axiom.Core
             return CreateManual(name, group, type, width, height, depth, numMipmaps, format, usage, loader, false, 0, string.Empty);
         }
 
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection)
+        public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection )
         {
             return CreateManual(name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, 0, string.Empty);
         }

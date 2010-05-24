@@ -62,9 +62,9 @@ namespace Axiom.Graphics
         /// <param name="pass">The CompositionPass that triggered the request</param>
         /// <returns></returns>
         /// <remarks>
-        /// This call only happens once during creation. The RenderSystemOperation will
+        /// This call only happens once during creation. The CompositeRenderSystemOperation will
         /// get called each render.
         /// </remarks>
-        CompositorInstance.RenderSystemOperation CreateOperation( CompositorInstance instance, CompositionPass pass );
+        CompositeRenderSystemOperation CreateOperation( CompositorInstance instance, CompositionPass pass );
     }
 }

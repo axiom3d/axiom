@@ -1,5 +1,4 @@
 #region LGPL License
-
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
@@ -26,17 +25,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /*
  * Many thanks to the folks at Multiverse for providing the initial port for this class
  */
-
 #endregion
 
 #region SVN Version Information
-
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
-
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -49,840 +45,770 @@ using System.IO;
 
 using Axiom.Core;
 using Axiom.Configuration;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// Chain of compositor effects applying to one viewport.
-    /// </summary>
-    public class CompositorChain : IDisposable
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public class RQListener
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            private CompositorInstance.TargetOperation _operation;
 
-            /// <summary>
-            /// 
-            /// </summary>
-            private SceneManager _sceneManager;
+	///<summary>
+	///    Chain of compositor effects applying to one viewport.
+	///</summary>
+	public class CompositorChain
+	{
 
-            /// <summary>
-            /// 
-            /// </summary>
-            private RenderSystem _renderSystem;
+		public class RQListener
+		{
+			///<summary>
+			/// Fields that are treated as temps by queue started/ended events
+			///</summary>
+			CompositeTargetOperation operation;
+			///<summary>
+			///    The scene manager instance
+			///</summary>
+			SceneManager sceneManager;
+			///<summary>
+			///    The render system
+			///</summary>
+			RenderSystem renderSystem;
+			///<summary>
+			///    The view port
+			///</summary>
+			Viewport viewport;
+			public Viewport Viewport
+			{
+				set
+				{
+					viewport = value;
+				}
+			}
 
-            /// <summary>
-            /// 
-            /// </summary>
-            private Viewport _viewport;
+			///<summary>
+			///    The number of the first render system op to be processed by the event
+			///</summary>
+			int currentOp;
+			///<summary>
+			///    The number of the last render system op to be processed by the event
+			///</summary>
+			int lastOp;
 
-            /// <summary>
-            /// 
-            /// </summary>
-            private IEnumerator<Tuple<int,CompositorInstance.RenderSystemOperation>> _currentOp;
+			///<summary>
+			///    Set current operation and target */
+			///</summary>
+			public void SetOperation( CompositeTargetOperation op, SceneManager sm, RenderSystem rs )
+			{
+				operation = op;
+				sceneManager = sm;
+				renderSystem = rs;
+				currentOp = 0;
+				lastOp = op.RenderSystemOperations.Count;
+			}
 
-            /// <summary>
-            /// 
-            /// </summary>
-            public Viewport Viewport
-            {
-                get
-                {
-                    return _viewport;
-                }
-                set
-                {
-                    _viewport = value;
-                }
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public RQListener()
-            {
-            }
-
-            /// <summary>
-            /// Set current operation and target
-            /// </summary>
-            /// <param name="op"></param>
-            /// <param name="sm"></param>
-            /// <param name="rs"></param>
-            public void SetOperation( CompositorInstance.TargetOperation op, SceneManager sm, RenderSystem rs )
-            {
-                _operation = op;
-                _sceneManager = sm;
-                _renderSystem = rs;
-                _currentOp = op.RenderSystemOperations.GetEnumerator();
-                _currentOp.MoveNext();
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            public void RenderQueueEnded( object sender, SceneManager.EndRenderQueueEventArgs e )
-            {
-                //nothing todo
-            }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            public void RenderQueueStarted( object sender, SceneManager.BeginRenderQueueEventArgs e )
-            {
-                // Skip when not matching viewport
-                // shadows update is nested within main viewport update
-                if ( _sceneManager.CurrentViewport != _viewport )
+			///<summary>
+			/// <see>RenderQueueListener.RenderQueueStarted</see>
+			///</summary>
+			public void OnRenderQueueStarted(object sender, SceneManager.BeginRenderQueueEventArgs e )
+			{
+				// Skip when not matching viewport
+				// shadows update is nested within main viewport update
+				if ( sceneManager.CurrentViewport != viewport )
                 {
                     return;
                 }
 
-                FlushUpTo( e.RenderQueueId );
+				FlushUpTo( e.RenderQueueId );
+				// If noone wants to render this queue, skip it
+				// Don't skip the OVERLAY queue because that's handled seperately
+                if ( !operation.RenderQueues[(int)e.RenderQueueId] && e.RenderQueueId != RenderQueueGroupID.Overlay )
+					e.SkipInvocation = true;
+			}
 
-                // If noone wants to render this queue, skip it
-                // Don't skip the OVERLAY queue because that's handled seperately
-                if ( !_operation.RenderQueues[ (int)e.RenderQueueId ] && e.RenderQueueId != RenderQueueGroupID.Overlay )
-                {
-                    e.SkipInvocation = true;
-                }
-            }
+			///<summary>
+			/// <see>RenderQueueListener.RenderQueueEnded</see>
+			///</summary>
+            public void OnRenderQueueEnded( object sender, SceneManager.EndRenderQueueEventArgs e )
+			{
+				e.RepeatInvocation = false;
+			}
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="id"></param>
-            public void FlushUpTo( RenderQueueGroupID id )
-            {
-                // Process all RenderSystemOperations up to and including render queue id.
-                // Including, because the operations for RenderQueueGroup x should be executed
-                // at the beginning of the RenderQueueGroup render for x.
-                while ( _currentOp.Current.Second != null && _currentOp.Current.First <= (int)id)
-                {
-                    _currentOp.Current.Second.Execute(_sceneManager, _renderSystem);
-                    _currentOp.MoveNext();
-                }
-            }
-        }
+			///<summary>
+			///    Flush remaining render system operations
+			///</summary>
+			public void FlushUpTo( RenderQueueGroupID id )
+			{
+				// Process all RenderSystemOperations up to and including render queue id.
+				// Including, because the operations for RenderQueueGroup x should be executed
+				// at the beginning of the RenderQueueGroup render for x.
+				while ( currentOp != lastOp &&
+					   ( (int)operation.RenderSystemOperations[ currentOp ].QueueID < (int)id ) )
+				{
+					operation.RenderSystemOperations[ currentOp ].Operation.Execute( sceneManager, renderSystem );
+					currentOp++;
+				}
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private RQListener _ourListener = new RQListener();
+		#region Fields and Properties
 
-        /// <summary>
-        /// Store old shadows enabled flag
-        /// </summary>
-        private bool _oldShadowsEnabled;
+		///<summary>
+		///    Viewport affected by this CompositorChain
+		///</summary>
+		protected Viewport viewport;
+		public Viewport Viewport
+		{
+			get
+			{
+				return viewport;
+			}
+			set
+			{
+				viewport = value;
+			}
+		}
 
-        /// <summary>
-        /// Store old viewport material scheme
-        /// </summary>
-        private string _oldMaterialScheme;
+		///<summary>
+		///    Plainly renders the scene; implicit first compositor in the chain.
+		///</summary>
+		protected CompositorInstance originalScene;
+		public CompositorInstance OriginalScene
+		{
+			get
+			{
+				return originalScene;
+			}
+		}
 
-        /// <summary>
-        /// Store old camera LOD bias
-        /// </summary>
-        private float _oldLodBias;
+		///<summary>
+		///    Postfilter instances in this chain
+		///</summary>
+		protected List<CompositorInstance> instances;
+		public IList<CompositorInstance> Instances
+		{
+			get
+			{
+				return instances;
+			}
+		}
 
-        /// <summary>
-        /// Store old find visible objects
-        /// </summary>
-        private bool _oldFindVisibleObjects;
+		///<summary>
+		///    State needs recompile
+		///</summary>
+		protected bool dirty;
+		public bool Dirty
+		{
+			get
+			{
+				return dirty;
+			}
+			set
+			{
+				dirty = value;
+			}
+		}
+		///<summary>
+		///    Any compositors enabled?
+		///</summary>
+		protected bool anyCompositorsEnabled;
+		///<summary>
+		///    Compiled state (updated with _compile)
+		///</summary>
+		protected List<CompositeTargetOperation> compiledState;
+		protected CompositeTargetOperation outputOperation;
+		/// <summary>
+		///    Render System operations queued by last compile, these are created by this
+		///    instance thus managed and deleted by it. The list is cleared with 
+		///    ClearCompilationState()
+		/// </summary>
+		protected List<CompositeRenderSystemOperation> renderSystemOperations;
+		internal IList<CompositeRenderSystemOperation> RenderSystemOperations
+		{
+			get
+			{
+				return renderSystemOperations;
+			}
+		}
+		///<summary>
+		///    Old viewport settings
+		///</summary>
+		protected FrameBufferType oldClearEveryFrameBuffers;
+		///<summary>
+		///    Store old scene visibility mask
+		///</summary>
+		protected ulong oldVisibilityMask;
+		///<summary>
+		///    Store old find visible objects
+		///</summary>
+		protected bool oldFindVisibleObjects;
+		///<summary>
+		///    Store old camera LOD bias
+		///</summary>
+		protected float oldLodBias;
+		///<summary>
+		///    Store old viewport material scheme
+		///</summary>
+		protected string oldMaterialScheme;
 
-        /// <summary>
-        /// Store old scene visibility mask
-        /// </summary>
-        private ulong _oldVisibilityMask;
+		protected bool oldShowShadows;
 
-        /// <summary>
-        /// Old viewport settings
-        /// </summary>
-        private FrameBufferType _oldClearEveryFrameBuffers;
 
-        /// <summary>
-        /// Viewport affected by this CompositorChain
-        /// </summary>
-        protected Viewport _viewport;
+		/// <summary>
+		///   The class that will handle the callbacks from the RenderQueue
+		/// </summary>
+		protected RQListener listener;
 
-        /// <summary>
-        /// Plainly renders the scene; implicit first compositor in the chain.
-        /// </summary>
-        protected CompositorInstance _originalScene;
+		///<summary>
+		///    Identifier for "last" compositor in chain
+		///</summary>
+		protected static int lastCompositor = int.MaxValue;
+		public static int LastCompositor
+		{
+			get
+			{
+				return lastCompositor;
+			}
+		}
 
-        /// <summary>
-        /// Postfilter instances in this chain
-        /// </summary>
-        protected List<CompositorInstance> _instances;
+		///<summary>
+		///    Identifier for best technique
+		///</summary>
+		protected static int bestCompositor = 0;
+		public static int BestCompositor
+		{
+			get
+			{
+				return BestCompositor;
+			}
+		}
 
-        /// <summary>
-        /// State needs recompile
-        /// </summary>
-        protected bool _dirty;
+		#endregion Fields and Properties
 
-        /// <summary>
-        /// Any compositors enabled?
-        /// </summary>
-        protected bool _anyCompositorEnabled;
+		#region Constructor
 
-        /// <summary>
-        /// Compiled state (updated with _compile)
-        /// </summary>
-        protected List<CompositorInstance.TargetOperation> _compiledState;
+		public CompositorChain( Viewport vp )
+		{
+			this.viewport = vp;
+			originalScene = null;
+			instances = new List<CompositorInstance>();
+			dirty = true;
+			anyCompositorsEnabled = false;
+			compiledState = new List<CompositeTargetOperation>();
+			outputOperation = null;
+			oldClearEveryFrameBuffers = viewport.ClearBuffers;
+			renderSystemOperations = new List<CompositeRenderSystemOperation>();
+			listener = new RQListener();
+			Debug.Assert( viewport != null );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        protected CompositorInstance.TargetOperation _outputOperation;
+		#endregion Constructor
 
-        /// <summary>
-        /// Render System operations queued by last compile, these are created by this
-        /// instance thus managed and deleted by it. The list is cleared with
-        /// clearCompilationState()
-        /// </summary>
-        protected List<CompositorInstance.RenderSystemOperation> _rendersystemOperations;
+		#region Methods
 
-        /// <summary>
-        /// Identifier for "last" compositor in chain
-        /// </summary>
-        public static int LastCompositor
-        {
-            get
-            {
-                return -1;
-            }
-        }
+		///<summary>
+		///    destroy internal resources
+		///</summary>
+		protected void DestroyResources()
+		{
+			ClearCompiledState();
 
-        /// <summary>
-        /// Identifier for best technique
-        /// </summary>
-        public static int BestCompositor
-        {
-            get
-            {
-                return 0;
-            }
-        }
+			if ( viewport != null )
+			{
+				RemoveAllCompositors();
 
-        /// <summary>
-        /// Get's the number of compositors.
-        /// </summary>
-        public int CompositorCount
-        {
-            get
-            {
-                return _instances.Count;
-            }
-        }
+				if (originalScene != null)
+				{
+					viewport.Target.BeforeUpdate -= BeforeRenderTargetUpdate;
+					viewport.Target.AfterUpdate -= AfterRenderTargetUpdate;
+					viewport.Target.BeforeViewportUpdate -= BeforeViewportUpdate;
+					viewport.Target.AfterViewportUpdate -= AfterViewportUpdate;
+					// Destroy "original scene" compositor instance
+					originalScene = null;
+				}
+				viewport = null;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<CompositorInstance> Instances
-        {
-            get
-            {
-                return _instances;
-            }
-        }
+		///<summary>
+		///    Apply a compositor. Initially, the filter is enabled.
+		///</summary>
+		///<param name="filter">Filter to apply</param>
+		public CompositorInstance AddCompositor(Compositor filter)
+		{
+			return AddCompositor(filter, lastCompositor, bestCompositor, string.Empty);
+		}
 
-        /// <summary>
-        /// Get the original scene compositor instance for this chain (internal use).
-        /// </summary>
-        public CompositorInstance OriginalSceneCompositor
-        {
-            get
-            {
-                return _originalScene;
-            }
-        }
+		///<summary>
+		///    Apply a compositor. Initially, the filter is enabled.
+		///</summary>
+		///<param name="filter">Filter to apply</param>
+		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+		public CompositorInstance AddCompositor(Compositor filter, int addPosition)
+		{
+			return AddCompositor(filter, addPosition, bestCompositor, string.Empty);
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Viewport Viewport
-        {
-            get
-            {
-                return _viewport;
-            }
-            internal set
-            {
-                _viewport = value;
-            }
-        }
+		///<summary>
+		///    Apply a compositor. Initially, the filter is enabled.
+		///</summary>
+		///<param name="filter">Filter to apply</param>
+		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+		///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one 
+		///                        available (first technique supported)
+		///</param>
+		CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique )
+		{
+			return AddCompositor( filter, addPosition, technique, string.Empty );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vp"></param>
-        public CompositorChain( Viewport vp )
-        {
-            Debug.Assert( vp != null, "Viewport NULL, CompositorChain ctor" );
-            _oldClearEveryFrameBuffers = vp.ClearBuffers;
-            _viewport = vp;
-            _dirty = true;
-            _instances = new List<CompositorInstance>();
-            _oldMaterialScheme = string.Empty;
-            _rendersystemOperations = new List<CompositorInstance.RenderSystemOperation>();
-            _compiledState = new List<CompositorInstance.TargetOperation>();
+		///<summary>
+		///    Apply a compositor. Initially, the filter is enabled.
+		///</summary>
+		///<param name="filter">Filter to apply</param>
+		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+		///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one 
+		///                        available (first technique supported)
+		///</param>
+		CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique, string scheme )
+		{
+			// Init on demand
+			if ( originalScene == null )
+			{
+				viewport.Target.BeforeUpdate += BeforeRenderTargetUpdate;
+				viewport.Target.AfterUpdate += AfterRenderTargetUpdate;
+				viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
+				viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
+				// Create base "original scene" compositor
+				Compositor baseCompositor = (Compositor)CompositorManager.Instance.Load( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName );
+				originalScene = new CompositorInstance( baseCompositor.GetSupportedTechniqueByScheme(), this );
+			}
 
-        }
+			filter.Touch();
+			CompositionTechnique tech = filter.GetSupportedTechniqueByScheme(scheme);
+			if ( tech == null )
+			{
+				// Warn user
+				LogManager.Instance.Write( "CompositorChain: Compositor " + filter.Name + " has no supported techniques." );
+				return null;
+			}
+			CompositorInstance t = new CompositorInstance( tech, this );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-            DestroyResources();
-        }
+			if ( addPosition == lastCompositor )
+			{
+				addPosition = instances.Count;
+			}
+			else
+			{
+				Debug.Assert( addPosition <= instances.Count, "Index out of bounds" );
+			}
+			instances.Insert( addPosition, t );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        public void AfterViewportUpdate( RenderTargetViewportEventArgs e )
-        {
-            // Only tidy up if there is at least one compositor enabled, and it's this viewport
-            if ( e.Viewport != _viewport || !_anyCompositorEnabled )
-            {
-                return;
-            }
+			dirty = true;
+			anyCompositorsEnabled = true;
+			return t;
+		}
 
-            Camera cam = _viewport.Camera;
-            AfterTargetOperation( _outputOperation, _viewport, cam );
-        }
+		///<summary>
+		/// Removes the last compositor in the chain.
+		///</summary>
+		public void RemoveCompositor()
+		{
+			RemoveCompositor(lastCompositor);
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        public void AfterUpdate( RenderTargetEventArgs e )
-        {
-            Camera cam = _viewport.Camera;
-            if ( cam != null )
-            {
-                cam.SceneManager.ActiveCompositorChain = null;
-            }
-        }
+		///<summary>
+		/// Remove a compositor.
+		///</summary>
+		///<param name="position">Position in filter chain of filter to remove</param>
+		public void RemoveCompositor( int position )
+		{
+			CompositorInstance instance = instances[ position ];
+			instances.RemoveAt( position );
+			instance = null;
+			dirty = true;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        public void BeforeViewportUpdate( RenderTargetViewportEventArgs e )
-        {
-            // Only set up if there is at least one compositor enabled, and it's this viewport
-            if ( e.Viewport != _viewport || !_anyCompositorEnabled )
-            {
-                return;
-            }
+		///<summary>
+		///    Remove all compositors.
+		///</summary>
+		public void RemoveAllCompositors()
+		{
+			instances.Clear();
+			dirty = true;
+		}
 
-            // set original scene details from viewport
-            CompositionPass pass = _originalScene.Technique.OutputTarget.GetPass( 0 );
+		///<summary>
+		///    Remove a compositor by pointer. This is internally used by CompositionTechnique to
+		///    "weak" remove any instanced of a deleted technique.
+		///</summary>
+		public void RemoveInstance( CompositorInstance instance )
+		{
+			instances.Remove( instance );
+			instance = null;
+		}
+
+		///<summary>
+		///    Get compositor instance by position.
+		///</summary>
+		public CompositorInstance GetCompositor( int index )
+		{
+			return instances[ index ];
+		}
+
+		/// <summary>
+		/// Get the previous instance in this chain to the one specified.
+		/// </summary>
+		/// <param name="curr"></param>
+		/// <returns></returns>
+		public CompositorInstance GetPreviousInstance(CompositorInstance curr)
+		{
+			return GetPreviousInstance(curr, true);
+		}
+
+		/// <summary>
+		/// Get the previous instance in this chain to the one specified.
+		/// </summary>
+		/// <param name="curr"></param>
+		/// <param name="activeOnly"></param>
+		/// <returns></returns>
+		public CompositorInstance GetPreviousInstance(CompositorInstance curr, bool activeOnly)
+		{
+			bool found = false;
+			int begin = instances.Count - 1;
+			int end = 0;
+			for (; begin >= end; begin--)
+			{
+				if (found)
+				{
+					if (instances[begin].IsEnabled || !activeOnly)
+					{
+						return instances[begin];
+					}
+				}
+				else if (curr == instances[begin])
+				{
+					found = true;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Get the next instance in this chain to the one specified.
+		/// </summary>
+		/// <param name="curr"></param>
+		/// <returns></returns>
+		public CompositorInstance GetNextInstance(CompositorInstance curr)
+		{
+			return GetNextInstance(curr, true);
+		}
+
+		/// <summary>
+		/// Get the next instance in this chain to the one specified.
+		/// </summary>
+		/// <param name="curr"></param>
+		/// <param name="activeOnly"></param>
+		/// <returns></returns>
+		public CompositorInstance GetNextInstance(CompositorInstance curr, bool activeOnly)
+		{
+			bool found = false;
+			for (int i = 0; i < instances.Count; i++)
+			{
+				if (found)
+				{
+					if (instances[i].IsEnabled || !activeOnly)
+					{
+						return instances[i];
+					}
+				}
+				else if (instances[i] == curr)
+				{
+					found = true;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///    Enable or disable a compositor, by position. Disabling a compositor stops it from rendering
+		///    but does not free any resources. This can be more efficient than using removeCompositor and 
+		///    addCompositor in cases the filter is switched on and off a lot.
+		/// </summary>
+		/// <param name="position">Position in filter chain of filter</param>
+		/// <param name="state"></param>
+		public void SetCompositorEnabled( int position, bool state )
+		{
+			CompositorInstance instance = GetCompositor( position );
+			if ( state && instance.IsEnabled )
+			{
+				// If we're disabling a 'middle' compositor in a chain, we have to be
+				// careful about textures which might have been shared by non-adjacent
+				// instances which have now become adjacent.
+				CompositorInstance nextInstance = GetNextInstance( instance, true );
+				if (nextInstance != null)
+				{
+					foreach ( CompositionTargetPass tp in nextInstance.Technique.TargetPasses )
+					{
+						if ( tp.InputMode == CompositorInputMode.Previous )
+						{
+							if ( nextInstance.Technique.GetTextureDefinition( tp.OutputName ).Pooled )
+							{
+								// recreate
+								nextInstance.FreeResources( false, true );
+								nextInstance.CreateResources( false );
+							}
+						}
+					}
+				}
+			}
+			instance.IsEnabled = state;
+		}
+
+		///<summary>
+		///    @see RenderTargetListener.PreRenderTargetUpdate
+		///</summary>
+		public void BeforeRenderTargetUpdate( RenderTargetEventArgs evt )
+		{
+			// Compile if state is dirty
+			if ( dirty )
+			{
+				Compile();
+			}
+
+			// Do nothing if no compositors enabled
+			if ( !anyCompositorsEnabled )
+			{
+				return;
+			}
+
+			// Update dependent render targets; this is done in the BeforeRenderTargetUpdate
+			// and not the BeforeViewportUpdate for a reason: at this time, the
+			// target Rendertarget will not yet have been set as current. 
+			// ( RenderSystem.Viewport = ... ) if it would have been, the rendering
+			// order would be screwed up and problems would arise with copying rendertextures.
+			Camera cam = viewport.Camera;
+			if ( cam == null )
+			{
+				return;
+			}
+			cam.SceneManager.ActiveCompositorChain = this;
+
+			// Iterate over compiled state
+			foreach ( CompositeTargetOperation op in compiledState )
+			{
+				// Skip if this is a target that should only be initialised initially
+				if ( op.OnlyInitial && op.HasBeenRendered )
+				{
+					continue;
+				}
+				op.HasBeenRendered = true;
+				// Setup and render
+				PreTargetOperation( op, op.Target.GetViewport( 0 ), cam );
+				op.Target.Update();
+				//op.Target.WriteContentsToFile( op.Target.Name + ".png" );
+				PostTargetOperation( op, op.Target.GetViewport( 0 ), cam );
+			}
+		}
+
+		///<summary>
+		///    @see RenderTargetListener.PreRenderTargetUpdate
+		///</summary>
+		public void AfterRenderTargetUpdate( RenderTargetEventArgs evt )
+		{
+			Camera cam = viewport.Camera;
+			if (cam != null)
+			{
+				cam.SceneManager.ActiveCompositorChain = null;
+			}
+		}
+
+		///<summary>
+		///    @see RenderTargetListener.PreViewportUpdate
+		///</summary>
+		public virtual void BeforeViewportUpdate( RenderTargetViewportEventArgs evt )
+		{
+			// Only set up if there is at least one compositor enabled, and it's this viewport
+			if ( evt.Viewport != viewport || !anyCompositorsEnabled )
+			{
+				return;
+			}
+
+			// set original scene details from viewport
+			CompositionPass pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
             CompositionTargetPass passParent = pass.Parent;
-            if ( pass.ClearBuffers != _viewport.ClearBuffers ||
-                 pass.ClearColor != _viewport.BackgroundColor ||
-                 pass.ClearDepth != _viewport.ClearDepth ||
-                 passParent.VisibilityMask != _viewport.VisibilityMask ||
-                 passParent.MaterialScheme != _viewport.MaterialScheme ||
-                 passParent.ShadowsEnabled != _viewport.ShowShadows )
-            {
-                // recompile if viewport settings are different
-                pass.ClearBuffers = _viewport.ClearBuffers;
-                pass.ClearColor = _viewport.BackgroundColor;
-                pass.ClearDepth = _viewport.ClearDepth;
-                passParent.VisibilityMask = _viewport.VisibilityMask;
-                passParent.MaterialScheme = _viewport.MaterialScheme;
-                passParent.ShadowsEnabled = _viewport.ShowShadows;
-                Compile();
-            }
+            if (pass.ClearBuffers != viewport.ClearBuffers ||
+				pass.ClearColor != viewport.BackgroundColor ||
+                passParent.VisibilityMask != viewport.VisibilityMask || 
+                passParent.MaterialScheme != viewport.MaterialScheme ||
+                passParent.ShadowsEnabled != viewport.ShowShadows )
+			{
+				pass.ClearBuffers = viewport.ClearBuffers;
+				pass.ClearColor = viewport.BackgroundColor;
+			    passParent.VisibilityMask = viewport.VisibilityMask;
+			    passParent.MaterialScheme = viewport.MaterialScheme;
+			    passParent.ShadowsEnabled = viewport.ShowShadows;
+				Compile();
+			}
 
-            Camera cam = _viewport.Camera;
-            if ( cam != null )
-            {
-                /// Prepare for output operation
-                BeforeTargetOperation( _outputOperation, _viewport, cam );
-            }
-        }
+			Camera camera = viewport.Camera;
+			if (camera != null)
+			{
+				// Prepare for output operation
+				PreTargetOperation( outputOperation, viewport, viewport.Camera );
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        public void BeforeUpdate( RenderTargetEventArgs e )
-        {
-            // Compile if state is dirty
-            if ( _dirty )
-            {
-                Compile();
-            }
+		///<summary>
+		///    Prepare a viewport, the camera and the scene for a rendering operation
+		///</summary>
+		protected void PreTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
+		{
+			SceneManager sm = cam.SceneManager;
+			// Set up render target listener
+			listener.SetOperation( op, sm, sm.TargetRenderSystem );
+			listener.Viewport = vp ;
+			// Register it
+			sm.QueueStarted += listener.OnRenderQueueStarted;
+			sm.QueueEnded += listener.OnRenderQueueEnded;
+			// Set visiblity mask
+			oldVisibilityMask = sm.VisibilityMask;
+			sm.VisibilityMask = op.VisibilityMask;
+			// Set whether we find visibles
+			oldFindVisibleObjects = sm.FindVisibleObjectsBool;
+			sm.FindVisibleObjectsBool = op.FindVisibleObjects;
+			// Set LOD bias level
+			oldLodBias = cam.LodBias;
+			cam.LodBias = cam.LodBias * op.LodBias;
+			// Set material scheme 
+			oldMaterialScheme = vp.MaterialScheme;
+			vp.MaterialScheme = op.MaterialScheme;
+			// Set Shadows Enabled
+			oldShowShadows = vp.ShowShadows;
+			vp.ShowShadows = op.ShadowsEnabled;
 
-            // Do nothing if no compositors enabled
-            if ( !_anyCompositorEnabled )
-            {
-                return;
-            }
+			//vp.ClearEveryFrame = true;
+			//vp.ShowOverlays = false;
+			//vp.BackgroundColor = op.ClearColor;
+		}
 
-            // Update dependent render targets; this is done in the BeforeUpdate
-            // and not the BeforeViewportUpdate for a reason: at this time, the
-            // target Rendertarget will not yet have been set as current.
-            // ( RenderSystem.SetViewport(...) ) if it would have been, the rendering
-            // order would be screwed up and problems would arise with copying rendertextures.
-            Camera cam = _viewport.Camera;
-            if ( cam != null )
-            {
-                cam.SceneManager.ActiveCompositorChain = this;
-            }
+		///<summary>
+		///    Restore a viewport, the camera and the scene after a rendering operation
+		///</summary>
+		protected void PostTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
+		{
+			SceneManager sm = cam.SceneManager;
+			// Unregister our listener
+			sm.QueueStarted -= listener.OnRenderQueueStarted;
+			sm.QueueEnded -= listener.OnRenderQueueEnded;
+			// Restore default scene and camera settings
+			sm.VisibilityMask = oldVisibilityMask;
+			sm.FindVisibleObjectsBool = oldFindVisibleObjects;
+			cam.LodBias = oldLodBias;
+			vp.MaterialScheme = oldMaterialScheme;
+			vp.ShowShadows = oldShowShadows;
+		}
 
-            // Iterate over compiled state
-            foreach ( CompositorInstance.TargetOperation i in _compiledState )
-            {
-                // Skip if this is a target that should only be initialised initially
-                if ( i.OnlyInitial && i.HasBeenRendered )
-                {
-                    continue;
-                }
-                i.HasBeenRendered = true;
-                // Setup and render
-                BeforeTargetOperation( i, i.Target.GetViewport( 0 ), cam );
-                i.Target.Update();
-                i.Target.WriteContentsToFile( i.Target.Name + ".jpg" );
-                AfterTargetOperation( i, i.Target.GetViewport( 0 ), cam );
-            }
-        }
+		///<summary>
+		///    @see RenderTargetListener.PostViewportUpdate
+		///</summary>
+		public virtual void AfterViewportUpdate( RenderTargetViewportEventArgs evt )
+		{
+			// Only tidy up if there is at least one compositor enabled, and it's this viewport
+			if ( evt.Viewport != viewport || !anyCompositorsEnabled )
+			{
+				return;
+			}
 
-        /// <summary>
-        /// Apply a compositor. Initially, the filter is enabled.
-        /// </summary>
-        /// <param name="filter">Filter to apply</param>
-        /// <returns>new Compositor Instance</returns>
-        public CompositorInstance AddCompositor( Compositor filter )
-        {
-            return AddCompositor( filter, LastCompositor, string.Empty );
-        }
+			if ( viewport.Camera != null )
+			{
+				PostTargetOperation( outputOperation, viewport, viewport.Camera );
+			}
+		}
 
-        /// <summary>
-        /// Apply a compositor. Initially, the filter is enabled.
-        /// </summary>
-        /// <param name="filter">Filter to apply</param>
-        /// <param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-        /// <returns>new Compositor Instance</returns>
-        public CompositorInstance AddCompositor( Compositor filter, int addPosition )
-        {
-            return AddCompositor( filter, addPosition, string.Empty );
-        }
+		///<summary>
+		///    @see RenderTargetListener.ViewportRemoved
+		///</summary>
+		public virtual void OnViewportRemoved(RenderTargetViewportEventArgs evt)
+		{
+			// check this is the viewport we're attached to (multi-viewport targets)
+			if ( evt.Viewport == viewport )
+			{
+				// this chain is now orphaned
+				// can't delete it since held from outside, but release all resources being used
+				DestroyResources();
+			}
+		}
 
-        /// <summary>
-        /// Apply a compositor. Initially, the filter is enabled.
-        /// </summary>
-        /// <param name="filter">Filter to apply</param>
-        /// <param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-        /// <param name="scheme">Scheme to use (blank means default)</param>
-        /// <returns>new Compositor Instance</returns>
-        public CompositorInstance AddCompositor( Compositor filter, int addPosition, string scheme )
-        {
-            if ( _originalScene == null )
-            {
-                _viewport.Target.BeforeUpdate += new RenderTargetEventHandler( BeforeUpdate );
-                _viewport.Target.BeforeViewportUpdate += new RenderTargetViewportEventHandler( BeforeViewportUpdate );
-                _viewport.Target.AfterUpdate += new RenderTargetEventHandler( AfterUpdate );
-                _viewport.Target.AfterViewportUpdate += new RenderTargetViewportEventHandler( AfterViewportUpdate );
+		///<summary>
+		///    Compile this Composition chain into a series of RenderTarget operations.
+		///</summary>
+		protected void Compile()
+		{
+			ClearCompiledState();
 
-                /// Create base "original scene" compositor
-                Compositor cbase = CompositorManager.Instance.Load( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName ) as Compositor;
-                _originalScene = new CompositorInstance( cbase.GetSupportedTechnique(), this );
-            }
+			bool compositorsEnabled = false;
 
-            filter.Touch();
-            CompositionTechnique tech = filter.GetSupportedTechnique( scheme );
-            if ( tech == null )
-            {
-                /// Warn user
-                LogManager.Instance.Write( LogMessageLevel.Critical, false, "CompositorChain: Compositor " + filter.Name + " has no supported techniques.", null );
-            }
-
-            CompositorInstance t = new CompositorInstance( tech, this );
-            if ( addPosition == LastCompositor )
-            {
-                addPosition = _instances.Count;
-            }
-            else
-            {
-                Debug.Assert( addPosition <= _instances.Count, "Index out of bounds, CompositorChain.AddCompositor" );
-            }
-            _instances.Insert( addPosition, t );
-
-            _dirty = true;
-            _anyCompositorEnabled = true;
-            return t;
-        }
-
-        /// <summary>
-        /// Remove a compositor.
-        /// </summary>
-        /// <remarks>
-        /// defaults to the end (last applied filter)
-        /// </remarks>
-        public void RemoveCompositor()
-        {
-            RemoveCompositor( LastCompositor );
-        }
-
-        /// <summary>
-        /// Remove a compositor.
-        /// </summary>
-        /// <param name="position">Position in filter chain of filter to remove </param>
-        public void RemoveCompositor( int position )
-        {
-            Debug.Assert( position <= _instances.Count, "Index out of bounds, CompositorChain.RemoveCompositor" );
-            _instances.RemoveAt( position );
-            _dirty = true;
-        }
-
-        /// <summary>
-        /// Remove all compositors.
-        /// </summary>
-        public void RemoveAllCompositors()
-        {
-            _instances.Clear();
-        }
-
-        /// <summary>
-        /// Get's compositor instance by position.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public CompositorInstance GetCompositor( int index )
-        {
-            Debug.Assert( index <= _instances.Count, "Index out of bounds, CompositorChain.GetCompositor" );
-            return _instances[ index ];
-        }
-
-        /// <summary>
-        /// Get compositor instance by name. 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns>Returns null if not found.</returns>
-        public CompositorInstance GetCompositor( string name )
-        {
-            foreach ( CompositorInstance iter in _instances )
-            {
-                if ( iter.Name == name )
-                {
-                    return iter;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Enable or disable a compositor, by position. Disabling a compositor stops it from rendering
-        /// but does not free any resources. This can be more efficient than using removeCompositor and
-        /// addCompositor in cases the filter is switched on and off a lot.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="state"></param>
-        public void SetCompositorEnabled( int position, bool state )
-        {
-            CompositorInstance inst = GetCompositor( position );
-            if ( !state && inst.Enabled )
-            {
-                // If we're disabling a 'middle' compositor in a chain, we have to be
-                // careful about textures which might have been shared by non-adjacent
-                // instances which have now become adjacent.
-                CompositorInstance nextInstance = GetNextInstance( inst, true );
-                if ( nextInstance != null )
-                {
-                    foreach ( CompositionTargetPass tp in nextInstance.Technique.TargetPasses )
-                    {
-                        if ( tp.InputMode == CompositorInputMode.Previous )
-                        {
-                            if ( nextInstance.Technique.GetTextureDefinition( tp.OutputName ).Pooled )
-                            {
-                                // recreate
-                                nextInstance.FreeResources( false, true );
-                                nextInstance.CreateResources( false );
-                            }
-                        }
-                    }
-                }
-            }
-            inst.Enabled = state;
-        }
-
-        /// <summary>
-        /// Mark state as dirty, and to be recompiled next frame.
-        /// </summary>
-        public void MarkDirty()
-        {
-            _dirty = true;
-        }
-
-        /// <summary>
-        /// Remove a compositor by pointer. This is internally used by CompositionTechnique to
-        /// "weak" remove any instanced of a deleted technique.
-        /// </summary>
-        /// <param name="instance"></param>
-        public void RemoveInstance( CompositorInstance instance )
-        {
-            _instances.Remove( instance );
-        }
-
-        /// <summary>
-        /// Internal method for registering a queued operation for deletion later
-        /// </summary>
-        /// <param name="op"></param>
-        public void QueuedOperation( CompositorInstance.RenderSystemOperation op )
-        {
-            _rendersystemOperations.Add( op );
-        }
-
-        /// <summary>
-        /// Compile this Composition chain into a series of RenderTarget operations.
-        /// </summary>
-        public void Compile()
-        {
-            ClearCompiledState();
-
-            bool compositorsenabled = false;
-            // force default scheme so materials for compositor quads will determined correctly
-            MaterialManager matMgr = MaterialManager.Instance;
-            string prevMaterialScheme = matMgr.ActiveScheme;
+	        // force default scheme so materials for compositor quads will determined correctly
+	        MaterialManager matMgr = MaterialManager.Instance;
+	        string prevMaterialScheme = matMgr.ActiveScheme;
             matMgr.ActiveScheme = MaterialManager.DefaultSchemeName;
 
-            /// Set previous CompositorInstance for each compositor in the list
-            CompositorInstance lastComposition = _originalScene;
-            _originalScene.PreviousInstance = null;
-            CompositionPass pass = _originalScene.Technique.OutputTarget.GetPass( 0 );
-            pass.ClearBuffers = _viewport.ClearBuffers;
-            pass.ClearColor = _viewport.BackgroundColor;
-            pass.ClearDepth = _viewport.ClearDepth;
-            foreach ( CompositorInstance i in _instances )
-            {
-                if ( i.Enabled )
-                {
-                    compositorsenabled = true;
-                    i.PreviousInstance = lastComposition;
-                    lastComposition = i;
-                }
-            }
+			// Set previous CompositorInstance for each compositor in the list
+			CompositorInstance lastComposition = originalScene;
+			originalScene.PreviousInstance = null;
+			CompositionPass pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
+			pass.ClearBuffers = viewport.ClearBuffers;
+			pass.ClearColor = viewport.BackgroundColor;
+			foreach ( CompositorInstance instance in instances )
+			{
+				if ( instance.IsEnabled )
+				{
+					compositorsEnabled = true;
+					instance.PreviousInstance = lastComposition;
+					lastComposition = instance;
+				}
+			}
 
-            /// Compile misc targets
-            lastComposition.CompileTargetOperations( ref _compiledState );
+			// Compile misc targets
+			lastComposition.CompileTargetOperations( compiledState );
 
-            /// Final target viewport (0)
-            _outputOperation.RenderSystemOperations.Clear();
-            lastComposition.CompileOutputOperation( _outputOperation );
+			// Final target viewport (0)
+			outputOperation.RenderSystemOperations.Clear();
+			lastComposition.CompileOutputOperation( outputOperation );
 
-            // Deal with viewport settings
-            if ( compositorsenabled != _anyCompositorEnabled )
-            {
-                _anyCompositorEnabled = compositorsenabled;
-                if ( _anyCompositorEnabled )
-                {
-                    // Save old viewport clearing options
-                    _oldClearEveryFrameBuffers = _viewport.ClearBuffers;
-                    // Don't clear anything every frame since we have our own clear ops
-                    _viewport.ClearEveryFrame = false;
-                }
-                else
-                {
-                    // Reset clearing options
-                    _viewport.ClearEveryFrame = ( (int)_oldClearEveryFrameBuffers > 0 );
-                    _viewport.ClearBuffers = _oldClearEveryFrameBuffers;
-                }
-            }
+			// Deal with viewport settings
+			if ( compositorsEnabled != anyCompositorsEnabled )
+			{
+				anyCompositorsEnabled = compositorsEnabled;
+				if ( anyCompositorsEnabled )
+				{
+					// Save old viewport clearing options
+					oldClearEveryFrameBuffers = viewport.ClearBuffers;
+					// Don't clear anything every frame since we have our own clear ops
+					viewport.ClearEveryFrame = false;
+				}
+				else
+				{
+					// Reset clearing options
+					viewport.ClearEveryFrame = oldClearEveryFrameBuffers > 0;
+					viewport.ClearBuffers = oldClearEveryFrameBuffers;
+				}
+			}
+			dirty = false;
 
-            // restore material scheme
             matMgr.ActiveScheme = prevMaterialScheme;
-            _dirty = false;
-        }
+		}
 
-        /// <summary>
-        /// Get the previous instance in this chain to the one specified.
-        /// </summary>
-        /// <param name="curr"></param>
-        /// <returns></returns>
-        public CompositorInstance GetPreviousInstance( CompositorInstance curr )
-        {
-            return GetPreviousInstance( curr, true );
-        }
+		protected void ClearCompiledState()
+		{
+			renderSystemOperations.Clear();
+			compiledState.Clear();
+			outputOperation = new CompositeTargetOperation( null );
+		}
 
-        /// <summary>
-        /// Get the previous instance in this chain to the one specified.
-        /// </summary>
-        /// <param name="curr"></param>
-        /// <param name="activeOnly"></param>
-        /// <returns></returns>
-        public CompositorInstance GetPreviousInstance( CompositorInstance curr, bool activeOnly )
-        {
-            bool found = false;
-            int begin = _instances.Count - 1;
-            int end = 0;
-            for ( ; begin >= end; begin-- )
-            {
-                if ( found )
-                {
-                    if ( _instances[ begin ].Enabled || !activeOnly )
-                    {
-                        return _instances[ begin ];
-                    }
-                }
-                else if ( curr == _instances[ begin ] )
-                {
-                    found = true;
-                }
-            }
+		#endregion Methods
 
-            return null;
-        }
+	}
 
-        /// <summary>
-        /// Get the next instance in this chain to the one specified.
-        /// </summary>
-        /// <param name="curr"></param>
-        /// <returns></returns>
-        public CompositorInstance GetNextInstance( CompositorInstance curr )
-        {
-            return GetNextInstance( curr, true );
-        }
-
-        /// <summary>
-        /// Get the next instance in this chain to the one specified.
-        /// </summary>
-        /// <param name="curr"></param>
-        /// <param name="activeOnly"></param>
-        /// <returns></returns>
-        public CompositorInstance GetNextInstance( CompositorInstance curr, bool activeOnly )
-        {
-            bool found = false;
-            for ( int i = 0; i < _instances.Count; i++ )
-            {
-                if ( found )
-                {
-                    if ( _instances[ i ].Enabled || !activeOnly )
-                    {
-                        return _instances[ i ];
-                    }
-                }
-                else if ( _instances[ i ] == curr )
-                {
-                    found = true;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Clear compiled state
-        /// </summary>
-        protected void ClearCompiledState()
-        {
-            _rendersystemOperations.Clear();
-
-            // Clear compiled state
-            _compiledState.Clear();
-            _outputOperation = new CompositorInstance.TargetOperation( null );
-        }
-
-        /// <summary>
-        /// Prepare a viewport, the camera and the scene for a rendering operation
-        /// </summary>
-        /// <param name="op"></param>
-        /// <param name="vp"></param>
-        /// <param name="cam"></param>
-        protected void BeforeTargetOperation( CompositorInstance.TargetOperation op, Viewport vp, Camera cam )
-        {
-            if ( cam != null )
-            {
-                SceneManager sm = cam.SceneManager;
-                /// Set up render target listener
-                _ourListener.SetOperation( op, sm, sm.TargetRenderSystem );
-                _ourListener.Viewport = vp;
-                /// Register it
-                sm.QueueStarted += _ourListener.RenderQueueStarted;
-                sm.QueueEnded += _ourListener.RenderQueueEnded;
-                /// Set visiblity mask
-                _oldVisibilityMask = sm.VisibilityMask;
-                sm.VisibilityMask = op.VisibilityMask;
-                /// Set whether we find visibles
-                _oldFindVisibleObjects = sm.FindVisibleObjectsBool;
-                sm.FindVisibleObjectsBool = op.FindVisibleObjects;
-                /// Set LOD bias level
-                _oldLodBias = cam.LodBias;
-                cam.LodBias = cam.LodBias * op.LodBias;
-            }
-            /// Set material scheme
-            _oldMaterialScheme = vp.MaterialScheme;
-            vp.MaterialScheme = op.MaterialScheme;
-            /// Set shadows enabled
-            _oldShadowsEnabled = vp.ShowShadows;
-            vp.ShowShadows = op.ShadowsEnabled;
-            /// XXX TODO
-            //vp->setClearEveryFrame( true );
-            //vp->setOverlaysEnabled( false );
-            //vp->setBackgroundColour( op.clearColour );
-        }
-
-        /// <summary>
-        /// Restore a viewport, the camera and the scene after a rendering operation
-        /// </summary>
-        /// <param name="op"></param>
-        /// <param name="vp"></param>
-        /// <param name="cam"></param>
-        protected void AfterTargetOperation( CompositorInstance.TargetOperation op, Viewport vp, Camera cam )
-        {
-            if ( cam != null )
-            {
-                SceneManager sm = cam.SceneManager;
-                /// Unregister our listener
-                sm.QueueStarted -= _ourListener.RenderQueueStarted;
-                sm.QueueEnded -= _ourListener.RenderQueueEnded;
-                /// Restore default scene and camera settings
-                sm.VisibilityMask = _oldVisibilityMask;
-                sm.FindVisibleObjectsBool = _oldFindVisibleObjects;
-                cam.LodBias = _oldLodBias;
-            }
-
-            vp.MaterialScheme = _oldMaterialScheme;
-            vp.ShowShadows = _oldShadowsEnabled;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected void DestroyResources()
-        {
-            ClearCompiledState();
-            if ( _viewport != null )
-            {
-                /// Destroy "original scene" compositor instance
-                if ( _originalScene != null )
-                {
-                    _viewport.Target.BeforeUpdate -= BeforeUpdate;
-                    _viewport.Target.BeforeViewportUpdate -= BeforeViewportUpdate;
-                    _viewport.Target.AfterUpdate -= AfterUpdate;
-                    _viewport.Target.AfterViewportUpdate -= AfterViewportUpdate;
-                    _originalScene = null;
-                }
-                _viewport = null;
-            }
-        }
-    }
 }
+

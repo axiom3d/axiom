@@ -79,6 +79,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
@@ -95,6 +96,7 @@
     <Compile Include="Collections\Deque.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
+    <Compile Include="Collections\ReadOnlyDictionary~2.cs" />
     <Compile Include="Controllers\Canned\PassthroughControllerFunction.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\BillboardChain.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
+    <Compile Include="Graphics\CompositorScriptLoader.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />
     <Compile Include="Graphics\CompositionTargetPass.cs" />
@@ -781,11 +784,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripting\IPropertyCommand.cs" />
-    <Compile Include="Scripting\IScriptLoader.cs" />
+    <Compile Include="Scripting\IScriptLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Scripting\ParseHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Scripting\ParserCommandAttribute.cs" />
+    <Compile Include="Scripting\ParserCommandAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Scripting\ScriptableObject.cs" />
     <Compile Include="Scripting\ScriptEnumAttribute.cs">
       <SubType>Code</SubType>

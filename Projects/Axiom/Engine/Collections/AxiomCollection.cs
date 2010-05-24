@@ -125,6 +125,21 @@ namespace Axiom.Collections
             return Values.GetEnumerator();
         }
 
+		public T this[int index]
+		{
+			get
+			{
+				foreach (T item in Values)
+				{
+					if (index == 0)
+					{
+						return item;
+						index--;
+					}
+				}
+				return default(T);
+			}
+		}
         #endregion
     }
 
