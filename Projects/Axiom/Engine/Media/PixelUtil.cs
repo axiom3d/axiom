@@ -76,6 +76,16 @@ namespace Axiom.Media
 			return rgba;
 		}
 
+		public static uint[] GetBitMasks(PixelFormat format)
+		{
+			uint[] rgba = new uint[4];
+			rgba[0] = PixelConverter.GetDescriptionFor(format).rmask;
+			rgba[1] = PixelConverter.GetDescriptionFor(format).gmask;
+			rgba[2] = PixelConverter.GetDescriptionFor(format).bmask;
+			rgba[3] = PixelConverter.GetDescriptionFor(format).amask;
+			return rgba;
+		}
+
 		///<summary>
 		///    Returns the size in memory of a region with the given extents and pixel
 		///    format with consecutive memory layout.
