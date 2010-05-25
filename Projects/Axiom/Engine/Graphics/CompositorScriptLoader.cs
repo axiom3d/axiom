@@ -173,6 +173,11 @@ namespace Axiom.Graphics
 										context.target = context.technique.OutputTarget;
 										context.seenOpen = false;
 										break;
+									case "compositor_logic":
+										if (!OptionCount(context, token, 1, args.Length))
+											break;
+										context.technique.CompositorLogicName = args[0].Trim();
+										break;
 									case "}":
 										context.section = CompositorScriptSection.Compositor;
 										context.seenOpen = true;
@@ -219,9 +224,9 @@ namespace Axiom.Graphics
 										context.section = CompositorScriptSection.Pass;
 										context.pass = context.target.CreatePass();
 										context.seenOpen = false;
-										if (!OptionCount(context, token, 1, args.Length))
+										if (!OptionCount(context, token, 1, args.Length) && !OptionCount(context, token, 2, args.Length))
 											break;
-										arg = arg.Trim();
+										arg = args[0].Trim();
 										switch (arg)
 										{
 											case "render_quad":
@@ -235,6 +240,10 @@ namespace Axiom.Graphics
 												break;
 											case "render_scene":
 												context.pass.Type = CompositorPassType.RenderScene;
+												break;
+											case "render_custom":
+												context.pass.Type = CompositorPassType.RenderCustom;
+												context.pass.CustomType = args[ 1 ].Trim();
 												break;
 											default:
 												LogError(context, "In line '{0}', unrecognized compositor pass type '{1}'", arg);
