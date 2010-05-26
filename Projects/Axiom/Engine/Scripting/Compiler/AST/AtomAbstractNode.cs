@@ -85,7 +85,19 @@ namespace Axiom.Scripting.Compiler.AST
 
 		private void _parse()
 		{
+#if !(XBOX || XBOX360)
 			_isNumber = float.TryParse( _value, out _number);
+#else
+			try
+			{
+				_number = float.Parse(_value);
+				_isNumber = true;
+			}
+			catch (Exception)
+			{
+				_isNumber =  false;
+			}
+#endif
 			_parsed = true;
 		}
 

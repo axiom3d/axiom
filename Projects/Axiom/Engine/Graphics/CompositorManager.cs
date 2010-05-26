@@ -260,7 +260,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		private Dictionary<Pair<string>, SortedDictionary<TextureDefinition, Texture>> chainTexturesByRef = new Dictionary<Pair<string>, SortedDictionary<TextureDefinition, Texture>>();
+		private Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>> chainTexturesByRef = new Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>>();
 
 		///<summary>
 		///</summary>
@@ -537,7 +537,7 @@ namespace Axiom.Graphics
 			if ( scope == CompositionTechnique.TextureScope.Chain )
 			{
 				Pair<string> pair = new Pair<string>( instance.Compositor.Name, localName );
-				SortedDictionary<TextureDefinition, Texture> defMap = null;
+				SortedList<TextureDefinition, Texture> defMap = null;
 				if ( chainTexturesByRef.TryGetValue( pair, out defMap ) )
 				{
 					Texture tex;
@@ -549,7 +549,7 @@ namespace Axiom.Graphics
 				// ok, we need to create a new one
 				if ( defMap == null )
 				{
-					defMap = new SortedDictionary<TextureDefinition, Texture>( new TextureDefLess() );
+					defMap = new SortedList<TextureDefinition, Texture>( new TextureDefLess() );
 				}
 
 				Texture newTex = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa, aaHint );
@@ -663,9 +663,9 @@ namespace Axiom.Graphics
 						}
 					}
 				}
-				foreach ( KeyValuePair<Pair<string>, SortedDictionary<TextureDefinition, Texture>> i in chainTexturesByRef )
+				foreach ( KeyValuePair<Pair<string>, SortedList<TextureDefinition, Texture>> i in chainTexturesByRef )
 				{
-					SortedDictionary<TextureDefinition, Texture> texMap = i.Value;
+					SortedList<TextureDefinition, Texture> texMap = i.Value;
 					foreach ( KeyValuePair<TextureDefinition, Texture> j in texMap )
 					{
 						Texture tex = j.Value;

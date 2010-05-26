@@ -120,14 +120,12 @@ namespace Axiom.Scripting
         {
             foreach ( Type nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
             {
+#if !(XBOX || XBOX360)
                 if ( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
-                                            {
-                                                if ( typeObj.ToString() == criteriaObj.ToString() )
-                                                    return true;
-                                                else
-                                                    return false;
-                                            }
-                                            , "Axiom.Scripting.IPropertyCommand" ).Length != 0 )
+                                              	{
+                                              		return typeObj.ToString() == criteriaObj.ToString();
+                                              	}
+                                            ,  typeof(IPropertyCommand).Name ).Length != 0 )
                 {
                     foreach ( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
                     {
@@ -135,8 +133,20 @@ namespace Axiom.Scripting
                         list.Add( attr.ScriptPropertyName, propertyCommand );
                     }
                 }
+#else
+				foreach ( Type iface in nestType.GetInterfaces() )
+				{
+					if ( iface.Name == typeof(IPropertyCommand).Name )
+					{
+						foreach (ScriptablePropertyAttribute attr in nestType.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true))
+						{
+							IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance(nestType);
+							list.Add(attr.ScriptPropertyName, propertyCommand);
+						}
+					}
+				}
+#endif
             }
-
             // Load the IPropertyCommands from the parent Type
             if ( type.BaseType != typeof( System.Object ) )
             {
