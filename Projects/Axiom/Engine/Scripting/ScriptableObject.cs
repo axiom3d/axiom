@@ -123,9 +123,12 @@ namespace Axiom.Scripting
 #if !(XBOX || XBOX360)
                 if ( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
                                               	{
-                                              		return typeObj.ToString() == criteriaObj.ToString();
-                                              	}
-                                            ,  typeof(IPropertyCommand).Name ).Length != 0 )
+													if (typeObj.ToString() == criteriaObj.ToString())
+														return true;
+													else
+														return false;
+												}
+                                            ,  typeof(IPropertyCommand).FullName ).Length != 0 )
                 {
                     foreach ( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
                     {
@@ -136,7 +139,7 @@ namespace Axiom.Scripting
 #else
 				foreach ( Type iface in nestType.GetInterfaces() )
 				{
-					if ( iface.Name == typeof(IPropertyCommand).Name )
+					if ( iface.FullName == typeof(IPropertyCommand).FullName )
 					{
 						foreach (ScriptablePropertyAttribute attr in nestType.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true))
 						{
