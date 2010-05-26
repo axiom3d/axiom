@@ -16,6 +16,7 @@
   <MorphLODFactorParamName></MorphLODFactorParamName>
   <MorphLODFactorParamIndex></MorphLODFactorParamIndex>
   <PageSource>Heightmap</PageSource>
+  <HeightmapImage>terrain2.png</HeightmapImage>
   <MaxPixelError>8</MaxPixelError>
   <ScaleX>1</ScaleX>
   <ScaleY>0.2</ScaleY>
