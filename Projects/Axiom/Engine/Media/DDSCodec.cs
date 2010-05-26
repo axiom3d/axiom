@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.IO;
 
 using Axiom.Core;
 using Axiom.Math;
@@ -115,7 +116,7 @@ namespace Axiom.Media
         /// <summary>
         /// Finalizer
         /// </summary>
-        public virtual ~DDSCodec()
+        ~DDSCodec()
         {
         }
 
