@@ -161,6 +161,14 @@
       <Link>Media\GpuPrograms\hdr.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\hdr.hlsl">
+      <Link>Media\GpuPrograms\hdr.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\hdrutils.hlsl">
+      <Link>Media\GpuPrograms\hdrutils.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\..\..\..\Media\GpuPrograms\InvertFP.cg">
       <Link>Media\GpuPrograms\InvertFP.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -175,6 +183,10 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Materials\hdr.material">
+      <Link>Media\Materials\hdr.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Invert.material">

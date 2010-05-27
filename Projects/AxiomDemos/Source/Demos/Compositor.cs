@@ -10,11 +10,11 @@ using Axiom.Media;
 
 namespace Axiom.Demos
 {
-	class Compositor : TechDemo
+	partial class Compositor : TechDemo
 	{
 		private SceneNode _spinny;
 	    private int _compositorIndex = -1;
-		private string[] _compositorList = new string[] { "Bloom", "Glass", "Old TV", "B&W", "Motion Blur", "Heat Vision", "Embossed", "Sharpen Edges", "Invert" };
+		private string[] _compositorList = new string[] { "Bloom", "Glass", "Old TV", "B&W", "Motion Blur", "Heat Vision", "Embossed", "Sharpen Edges", "Invert", "HDR" };
 		private bool[] _compositorEnabled = new bool[2];
 
 		protected override void OnFrameStarted( object source, Axiom.Core.FrameEventArgs evt )
@@ -57,6 +57,9 @@ namespace Axiom.Demos
 
 		public override void CreateScene()
 		{
+			// Register Compositor Logics
+			CompositorManager.Instance.RegisterCompositorLogic( "HDR", new HdrLogic() );
+
 			scene.ShadowTechnique = ShadowTechnique.TextureModulative;
 			scene.ShadowFarDistance = 1000;
 
@@ -114,6 +117,147 @@ namespace Axiom.Demos
 															 _compositorList[ _compositorList.Length - 1 ],
 			                                                 true );
 
+		}
+
+		internal class HdrLogic : CompositorLogic
+		{
+			private int vpWidth, vpHeight;
+			int bloomSize;
+			// Array params - have to pack in groups of 4 since this is how Cg generates them
+			// also prevents dependent texture read problems if ops don't require swizzle
+			float[] bloomTexWeights = new float[15*4];
+			float[] bloomTexOffsetsHorz = new float[15*4];
+			float[] bloomTexOffsetsVert = new float[15*4];
+
+			public void SetViewport( Viewport viewport )
+			{
+				vpWidth = viewport.ActualWidth;
+				vpHeight = viewport.ActualHeight;
+			}
+
+			public void SetCompositor( CompositorInstance compositor )
+			{
+				// Get some RTT dimensions for later calculations
+				foreach ( CompositionTechnique.TextureDefinition textureDefinition in compositor.Technique.TextureDefinitions )
+				{
+
+					if (textureDefinition.Name == "rt_bloom0")
+					{
+						bloomSize = (int)textureDefinition.Width; // should be square
+						// Calculate gaussian texture offsets & weights
+						float deviation = 3.0f;
+						float texelSize = 1.0f / (float)bloomSize;
+
+						// central sample, no offset
+						bloomTexOffsetsHorz[ 0 ] = 0.0f;
+						bloomTexOffsetsHorz[ 1 ] = 0.0f;
+						bloomTexOffsetsVert[ 0 ] = 0.0f;
+						bloomTexOffsetsVert[ 1 ] = 0.0f;
+						bloomTexWeights[ 0 ] = bloomTexWeights[ 1 ] = bloomTexWeights[ 2 ] = Utility.GaussianDistribution( 0, 0, deviation );
+						bloomTexWeights[ 3 ] = 1.0f;
+
+						// 'pre' samples
+						for ( int i = 1; i < 8; ++i )
+						{
+							int offset = i * 4;
+							bloomTexWeights[ offset + 0 ] = bloomTexWeights[ offset + 1 ] = bloomTexWeights[ offset + 2 ] = 1.25f * Utility.GaussianDistribution( i, 0, deviation );
+							bloomTexWeights[ offset + 3 ] = 1.0f;
+							bloomTexOffsetsHorz[ offset + 0 ] = i * texelSize;
+							bloomTexOffsetsHorz[ offset + 1 ] = 0.0f;
+							bloomTexOffsetsVert[ offset + 0 ] = 0.0f;
+							bloomTexOffsetsVert[ offset + 1 ] = i * texelSize;
+						}
+						// 'post' samples
+						for ( int i = 8; i < 15; ++i )
+						{
+							int offset = i * 4;
+							bloomTexWeights[ offset + 0 ] = bloomTexWeights[ offset + 1 ] =
+							                                bloomTexWeights[ offset + 2 ] = bloomTexWeights[ offset - 7 * 4 + 0 ];
+							bloomTexWeights[ offset + 3 ] = 1.0f;
+
+							bloomTexOffsetsHorz[ offset + 0 ] = -bloomTexOffsetsHorz[ offset - 7 * 4 + 0 ];
+							bloomTexOffsetsHorz[ offset + 1 ] = 0.0f;
+							bloomTexOffsetsVert[ offset + 0 ] = 0.0f;
+							bloomTexOffsetsVert[ offset + 1 ] = -bloomTexOffsetsVert[ offset - 7 * 4 + 1 ];
+						}
+					}
+				}
+			}
+
+			void OnMaterialSetup(CompositorInstance source, CompositorInstanceMaterialEventArgs e)
+			{
+				this.SetViewport( source.Chain.Viewport );
+				this.SetCompositor( source );
+
+				// Prepare the fragment params offsets
+				switch (e.PassID)
+				{
+					//case 994: // rt_lum4
+					case 993: // rt_lum3
+					case 992: // rt_lum2
+					case 991: // rt_lum1
+					case 990: // rt_lum0
+						break;
+					case 800: // rt_brightpass
+						break;
+					case 701: // rt_bloom1
+						{
+							// horizontal bloom
+							e.Material.Load();
+							GpuProgramParameters fparams = e.Material.GetBestTechnique().GetPass( 0 ).FragmentProgramParameters;
+							fparams.SetNamedConstant("sampleOffsets", bloomTexOffsetsHorz);
+							fparams.SetNamedConstant("sampleWeights", bloomTexWeights);
+
+							break;
+						}
+					case 700: // rt_bloom0
+						{
+							// vertical bloom
+							e.Material.Load();
+							GpuProgramParameters fparams = e.Material.GetTechnique(0).GetPass(0).FragmentProgramParameters;
+							fparams.SetNamedConstant("sampleOffsets", bloomTexOffsetsHorz);
+							fparams.SetNamedConstant("sampleWeights", bloomTexWeights);
+
+							break;
+						}
+				}
+			}
+
+			void OnMaterialRender(CompositorInstance source, CompositorInstanceMaterialEventArgs e)
+			{
+			}
+
+
+			#region Implementation of ICompositorLogicFactory
+
+			/// <summary>
+			/// Called when a compositor instance has been created.
+			/// </summary>
+			/// <remarks>
+			/// This happens after its setup was finished, so the chain is also accessible.
+			/// This is an ideal method to automatically attach a compositor listener.
+			/// </remarks>
+			/// <param name="newInstance"></param>
+			public override void CompositorInstanceCreated( CompositorInstance newInstance )
+			{
+				newInstance.MaterialRender += new CompositorInstanceMaterialEventHandler(OnMaterialRender);
+				newInstance.MaterialSetup += new CompositorInstanceMaterialEventHandler(OnMaterialSetup);
+			}
+
+			/// <summary>
+			/// Called when a compositor instance has been destroyed
+			/// </summary>
+			/// <remarks>
+			/// The chain that contained the compositor is still alive during this call.
+			/// </remarks>
+			/// <param name="destroyedInstance"></param>
+			public override void CompositorInstanceDestroyed( CompositorInstance destroyedInstance )
+			{
+				destroyedInstance.MaterialRender -= new CompositorInstanceMaterialEventHandler(OnMaterialRender);
+				destroyedInstance.MaterialSetup -= new CompositorInstanceMaterialEventHandler(OnMaterialSetup);
+			}
+
+			#endregion
 		}
 
 		private void _createEffects()

@@ -15,4 +15,8 @@
 	<FilePath type="ZipFile" src="Media/Archives/Fresnel.zip"/>
 	<FilePath type="ZipFile" src="Media/Textures/SkyBoxes.zip"/>
   <FilePath type="ZipFile" src="Media/Archives/Water.zip"/>
+  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Video Mode" Value="1280 x 720 @ 32-bit color" />
+  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Full Screen" Value="No" />
+  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="VSync" Value="No" />
+  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Anti aliasing" Value="None" />
 </EngineConfig>
