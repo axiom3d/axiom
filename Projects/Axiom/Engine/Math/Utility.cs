@@ -1378,6 +1378,18 @@ namespace Axiom.Math
             return 31;
         }
 
+		/// <summary>
+		/// Generates a value based on the Gaussian (normal) distribution function
+		/// with the given offset and scale parameters.
+		/// </summary>
+		/// <returns></returns>
+    	public static float GaussianDistribution( Real x, Real offset, Real scale )
+    	{
+			Real nom = System.Math.Exp( -Utility.Sqr( x - offset ) / ( 2 * Utility.Sqr( scale ) ) );
+			Real denom = scale * Utility.Sqrt(2 * Utility.PI);
+
+			return nom / denom;    
+		}
     }
 
     #region Return result structures
