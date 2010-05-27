@@ -59,13 +59,13 @@ namespace Axiom.Graphics
 	/// Delegate for handling material events.
 	/// </summary>
 	/// <param name="e"></param>
-	public delegate void CompositorInstanceMaterialEventHandler( CompositorInstanceMaterialEventArgs e );
+	public delegate void CompositorInstanceMaterialEventHandler( CompositorInstance source, CompositorInstanceMaterialEventArgs e );
 
 	/// <summary>
 	/// Delegate for handling resource events.
 	/// </summary>
 	/// <param name="e"></param>
-	public delegate void CompositorInstanceResourceEventHandler( CompositorInstanceResourceEventArgs e );
+	public delegate void CompositorInstanceResourceEventHandler( CompositorInstance source, CompositorInstanceResourceEventArgs e);
 
 	/// <summary>
 	/// 
@@ -969,7 +969,7 @@ namespace Axiom.Graphics
 		{
 			if ( MaterialSetup != null )
 			{
-				MaterialSetup( args );
+				MaterialSetup( this, args );
 			}
 		}
 
@@ -980,7 +980,7 @@ namespace Axiom.Graphics
 		{
 			if ( MaterialRender != null )
 			{
-				MaterialRender( args );
+				MaterialRender( this, args );
 			}
 		}
 
@@ -988,11 +988,11 @@ namespace Axiom.Graphics
 		/// Notify listeners of a material render.
 		/// </summary>
 		/// <param name="e"></param>
-		public void OnResourceCreated( CompositorInstanceResourceEventArgs e )
+		public void OnResourceCreated( CompositorInstanceResourceEventArgs args )
 		{
 			if ( ResourceCreated != null )
 			{
-				ResourceCreated( e );
+				ResourceCreated( this, args );
 			}
 		}
 

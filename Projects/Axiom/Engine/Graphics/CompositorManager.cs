@@ -820,5 +820,19 @@ namespace Axiom.Graphics
 		}
 
 		#endregion ResourceManager Implementation
+
+		public void RegisterCompositorLogic( string name, ICompositorLogic compositorLogic )
+		{
+			if ( string.IsNullOrEmpty( name ))
+			{
+				throw new AxiomException( "Compositor logic name must not be empty." );
+			}
+			if ( compositorLogics.ContainsKey( name ))
+			{
+				throw new AxiomException( "Compositor logic '" + name + "' already exists." );
+			}
+
+			compositorLogics.Add( name, compositorLogic );
+		}
 	}
 }
