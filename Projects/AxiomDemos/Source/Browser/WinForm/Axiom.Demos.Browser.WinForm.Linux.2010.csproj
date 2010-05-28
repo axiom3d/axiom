@@ -73,6 +73,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
