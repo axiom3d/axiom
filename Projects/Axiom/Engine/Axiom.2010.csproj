@@ -185,6 +185,7 @@
     <Compile Include="Collections\Deque.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
+    <Compile Include="Collections\ReadOnlyDictionary~2.cs" />
     <Compile Include="Collections\TextureLayerCollection.cs" />
     <Compile Include="Collections\UnsortedCollection.cs" />
     <Compile Include="Controllers\Canned\PassthroughControllerFunction.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Graphics\CompositorChain.cs" />
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
+    <Compile Include="Graphics\CompositorScriptLoader.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
@@ -248,6 +250,8 @@
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\HardwareOcclusionQuery.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
+    <Compile Include="Graphics\ICompositorLogic.cs" />
+    <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
@@ -812,6 +816,40 @@
     <Compile Include="Scripting\CommandAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Scripting\Compiler\AbstractTreeBuilder.cs" />
+    <Compile Include="Scripting\Compiler\AST\AbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\AtomAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\CompileError.cs" />
+    <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\Translator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Keywords.cs" />
+    <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs" />
+    <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs" />
+    <Compile Include="Scripting\Compiler\Parser\ScriptToken.cs" />
+    <Compile Include="Scripting\Compiler\Parser\Tokens.cs" />
+    <Compile Include="Scripting\Compiler\ScriptCompiler.cs" />
+    <Compile Include="Scripting\Compiler\ScriptCompilerListener.cs" />
+    <Compile Include="Scripting\Compiler\ScriptCompilerManager.cs" />
+    <Compile Include="Scripting\Compiler\ScriptCompilerManager.Events.cs" />
     <Compile Include="Scripting\IPropertyCommand.cs" />
     <Compile Include="Scripting\IScriptLoader.cs" />
     <Compile Include="Scripting\ParseHelper.cs">
