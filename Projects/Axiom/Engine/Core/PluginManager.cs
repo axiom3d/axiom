@@ -110,11 +110,22 @@ namespace Axiom.Core
             }
         }
 
-		/// <summary>
-		///		Scans for plugin files in the current directory.
-		/// </summary>
-		/// <returns></returns>
-        protected IList<ObjectCreator> ScanForPlugins()
+	    /// <summary>
+	    ///		Scans for plugin files in the current directory.
+	    /// </summary>
+	    ///<param name="folder"></param>
+	    ///<returns></returns>
+	    protected IList<ObjectCreator> ScanForPlugins()
+	    {
+	        return ScanForPlugins(".");
+	    }
+
+	    /// <summary>
+	    ///		Scans for plugin files in the current directory.
+	    /// </summary>
+	    ///<param name="folder"></param>
+	    ///<returns></returns>
+	    protected IList<ObjectCreator> ScanForPlugins(string folder)
 		{
 		    string[] files = Directory.GetFiles( ".", "*.dll" );
 		    Assembly assembly = null;
