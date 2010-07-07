@@ -40,7 +40,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Axiom.Core.Collections
+namespace Axiom.Collections
 {
     /// <summary>
     /// Represents a pair of a <see cref="MovableObject"/> and a <see cref="SceneQuery.WorldFragment"/>.

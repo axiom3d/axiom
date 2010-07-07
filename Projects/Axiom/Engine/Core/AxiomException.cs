@@ -42,7 +42,7 @@ namespace Axiom.Core
     /// <summary>
     /// Summary description for AxiomException.
     /// </summary>
-    public class AxiomException : ApplicationException
+    public class AxiomException : Exception
     {
         public AxiomException( string message, params object[] args )
             : base( string.Format( message, args ) )

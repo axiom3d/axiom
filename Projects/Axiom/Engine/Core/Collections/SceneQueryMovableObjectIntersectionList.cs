@@ -40,7 +40,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Axiom.Core.Collections
+namespace Axiom.Collections
 {
     /// <summary>
     /// Represents a pair of two <see cref="MovableObject">MovableObjects</see>.

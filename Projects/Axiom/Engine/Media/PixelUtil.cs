@@ -166,12 +166,6 @@ namespace Axiom.Media
 		{
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
-        /** 
-            @param  name            
-            @param  accessibleOnly  
-            @param  caseSensitive   
-            @returns                
-        */
 
         /// <summary>
         /// Gets the format from given name.

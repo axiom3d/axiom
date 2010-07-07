@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,7 +54,7 @@ namespace Axiom.Core
         #region Constants
 
         private const int PositionBinding = 0;
- 
+
         #endregion Constants
 
         #region Field and Properties
@@ -59,14 +63,14 @@ namespace Axiom.Core
 
         public new AxisAlignedBox BoundingBox
         {
-            get 
+            get
             {
-                return base.BoundingBox; 
+                return base.BoundingBox;
             }
             set
             {
                 // init the vertices to the aabb
-                SetupBoundingBoxVertices( value );
+                SetupBoundingBoxVertices(value);
 
                 // setup the bounding box of this SimpleRenderable
                 box = value;
@@ -95,19 +99,19 @@ namespace Axiom.Core
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // add elements for position and color only
-            decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+            decl.AddElement(PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position);
 
             // create a new hardware vertex buffer for the position data
             HardwareVertexBuffer buffer = HardwareBufferManager.Instance
                                                                .CreateVertexBuffer(
-                                                                    decl.GetVertexSize( PositionBinding ),
+                                                                    decl.GetVertexSize(PositionBinding),
                                                                     vertexData.vertexCount,
-                                                                    BufferUsage.StaticWriteOnly );
+                                                                    BufferUsage.StaticWriteOnly);
 
             // bind the position buffer
-            binding.SetBinding( PositionBinding, buffer );
+            binding.SetBinding(PositionBinding, buffer);
 
-			this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
+            this.material = (Material)MaterialManager.Instance["BaseWhiteNoLighting"];
         }
 
         #endregion Constructors
@@ -115,26 +119,25 @@ namespace Axiom.Core
         #region Methods
 
         [Obsolete("Use WireBoundingBox.BoundingBox property.")]
-        public void InitAABB( AxisAlignedBox box )
+        public void InitAABB(AxisAlignedBox box)
         {
             // store the bounding box locally
             this.BoundingBox = box;
         }
 
-        [Obsolete( "Use WireBoundingBox.BoundingBox property." )]
-        public void SetupBoundingBox( AxisAlignedBox aabb )
+        [Obsolete("Use WireBoundingBox.BoundingBox property.")]
+        public void SetupBoundingBox(AxisAlignedBox aabb)
         {
             // store the bounding box locally
             this.BoundingBox = box;
         }
 
-        protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
+        protected virtual void SetupBoundingBoxVertices(AxisAlignedBox aab)
         {
-
             Vector3 vmax = aab.Maximum;
             Vector3 vmin = aab.Minimum;
 
-            float sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
+            float sqLen = System.Math.Max(vmax.LengthSquared, vmin.LengthSquared);
             //mRadius = System.Math.Sqrt(sqLen);
 
             float maxx = vmax.x;
@@ -145,9 +148,9 @@ namespace Axiom.Core
             float miny = vmin.y;
             float minz = vmin.z;
 
-            HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
+            HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer(PositionBinding);
 
-            IntPtr posPtr = buffer.Lock( BufferLocking.Discard );
+            IntPtr posPtr = buffer.Lock(BufferLocking.Discard);
 
             unsafe
             {
@@ -246,26 +249,25 @@ namespace Axiom.Core
         #region Implementation of SimpleRenderable
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="matrices"></param>
-        public override void GetWorldTransforms( Matrix4[] matrices )
+        public override void GetWorldTransforms(Matrix4[] matrices)
         {
             // return identity matrix to prevent parent transforms
-            matrices[ 0 ] = Matrix4.Identity;
+            matrices[0] = Matrix4.Identity;
         }
 
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public override float GetSquaredViewDepth( Camera camera )
+        public override float GetSquaredViewDepth(Camera camera)
         {
             Vector3 min = box.Minimum,
                     max = box.Maximum,
-                    mid = ( ( max - min ) * 0.5f ) + min,
+                    mid = ((max - min) * 0.5f) + min,
                     dist = camera.DerivedPosition - mid;
 
             return dist.LengthSquared;
@@ -282,6 +284,6 @@ namespace Axiom.Core
             }
         }
 
-        #endregion
+        #endregion Implementation of SimpleRenderable
     }
 }
