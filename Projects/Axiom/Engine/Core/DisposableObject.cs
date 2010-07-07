@@ -45,27 +45,46 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
+	/// <summary>
+	/// Monitors the object lifetime of objects that are in control of unmanaged resources 
+	/// </summary>
     internal class ObjectManager : Singleton<ObjectManager>
     {
-        private readonly Dictionary<Type, List<WeakReference>> _objects = new Dictionary<Type, List<WeakReference>>();
+		private struct ObjectEntry
+		{
+			public WeakReference Instance;
+			public string ConstructionStack;
+		}
+		
+        private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
 
-        public void Add( DisposableObject instance )
+		/// <summary>
+		/// Add an object to be monitored 
+		/// </summary>
+		/// <param name="instance">
+		/// A <see cref="DisposableObject"/> to monitor for proper disposal
+		/// </param>
+        public void Add( DisposableObject instance, string stackTrace )
         {
-            List<WeakReference> objectList = GetOrCreateObjectList( instance.GetType() );
+            List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
 
-            objectList.Add( new WeakReference( instance ) );
+            objectList.Add( new ObjectEntry 
+			               		{ 
+									Instance = new WeakReference( instance ), 
+									ConstructionStack = stackTrace 
+								} );
         }
 
-        private List<WeakReference> GetOrCreateObjectList( Type type )
+        private List<ObjectEntry> GetOrCreateObjectList( Type type )
         {
-            List<WeakReference> objectList;
+            List<ObjectEntry> objectList;
             if ( _objects.ContainsKey( type ) )
             {
                 objectList = _objects[ type ];
             }
             else
             {
-                objectList = new List<WeakReference>();
+                objectList = new List<ObjectEntry>();
                 _objects.Add( type, objectList );
             }
             return objectList;
@@ -84,6 +103,19 @@ namespace Axiom.Core
                 if ( disposeManagedResources )
                 {
                     // Dispose managed resources.
+					foreach( KeyValuePair<Type, List<ObjectEntry>> item in this._objects )
+					{
+						string typeName = item.Key.Name;
+						List<ObjectEntry> objectList = item.Value;
+						foreach( ObjectEntry objectEntry in objectList ) 
+						{
+							if ( objectEntry.Instance.IsAlive && ((DisposableObject)objectEntry.Instance.Target).IsDisposed )
+							{
+								string msg = String.Format("An instance of {0} was not disposed properly, it was created at : {1}", typeName, objectEntry.ConstructionStack );
+								System.Diagnostics.Debug.WriteLine(msg);
+							}
+						}
+					}
                 }
 
                 // There are no unmanaged resources to release, but
@@ -103,7 +135,7 @@ namespace Axiom.Core
         protected DisposableObject()
         {
             IsDisposed = false;
-            ObjectManager.Instance.Add( this );
+            ObjectManager.Instance.Add( this, Environment.StackTrace );
         }
 
         ~DisposableObject()
@@ -117,7 +149,7 @@ namespace Axiom.Core
         /// <summary>
         /// Determines if this instance has been disposed of already.
         /// </summary>
-        protected bool IsDisposed { get; set; }
+        public bool IsDisposed { get; set; }
 
         /// <summary>
         /// Class level dispose method
