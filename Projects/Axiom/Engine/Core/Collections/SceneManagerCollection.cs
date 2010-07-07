@@ -32,7 +32,7 @@ using Axiom.Collections;
 
 #endregion
 
-namespace Axiom.Core.Collections
+namespace Axiom.Collections
 {
     /// <summary>
     /// Represents a collection of <see cref="SceneManager">SceneManagers</see> that are sorted by name.

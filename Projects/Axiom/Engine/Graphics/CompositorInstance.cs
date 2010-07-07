@@ -560,7 +560,7 @@ namespace Axiom.Graphics
 				previousInstance.CompileOutputOperation( finalState );
 			}
 			// Collect passes
-			CollectPasses( finalState, tpass );
+			CollectPasses( finalState, tpass );			
 		}
 
 		///<summary>
@@ -761,28 +761,21 @@ namespace Axiom.Graphics
 				// We may be sharing / reusing this texture, so test before adding viewport
 				if ( rendTarget.ViewportCount == 0 )
 				{
-					Viewport v = null;
 					Camera camera = chain.Viewport.Camera;
-					if ( camera == null )
-					{
-						v = rendTarget.AddViewport( camera );
-					}
-					else
-					{
-						// Save last viewport and current aspect ratio
-						Viewport oldViewport = camera.Viewport;
-						float aspectRatio = camera.AspectRatio;
-						v = rendTarget.AddViewport( camera );
-						// Should restore aspect ratio, in case of auto aspect ratio
-						// enabled, it'll changed when add new viewport.
-						camera.AspectRatio = aspectRatio;
-						// Should restore last viewport, i.e. never disturb user code
-						// which might based on that.
-						camera.NotifyViewport( oldViewport );
-					}
+					// Save last viewport and current aspect ratio
+					Viewport oldViewport = camera.Viewport;
+					float aspectRatio = camera.AspectRatio;
+
+					Viewport v = rendTarget.AddViewport( camera );
 					v.ClearEveryFrame = false;
 					v.ShowOverlays = false;
 					v.BackgroundColor = new ColorEx( 0, 0, 0, 0 );
+					// Should restore aspect ratio, in case of auto aspect ratio
+					// enabled, it'll changed when add new viewport.
+					camera.AspectRatio = aspectRatio;
+					// Should restore last viewport, i.e. never disturb user code
+					// which might based on that.
+					camera.NotifyViewport( oldViewport );
 				}
 			}
 

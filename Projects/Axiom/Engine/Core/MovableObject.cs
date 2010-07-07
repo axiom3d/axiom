@@ -4,9 +4,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -24,7 +24,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 
@@ -47,7 +47,7 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
 
-#endregion
+#endregion Namespace Declarations
 
 namespace Axiom.Core
 {
@@ -56,13 +56,13 @@ namespace Axiom.Core
     /// </summary>
     /// <remarks>
     ///		Instances of this class are discrete, relatively small, movable objects
-    ///		which are attached to SceneNode objects to define their position.						  
+    ///		which are attached to SceneNode objects to define their position.
     /// </remarks>
     public abstract class MovableObject : ShadowCaster, IAnimableObject
     {
-        public delegate void ObjectDelegate( MovableObject obj );
-        public delegate bool ObjectRenderingDelegate( MovableObject obj, Camera camera );
-        public delegate LightList ObjectQueryLightsDelegate( MovableObject obj );
+        public delegate void ObjectDelegate(MovableObject obj);
+        public delegate bool ObjectRenderingDelegate(MovableObject obj, Camera camera);
+        public delegate LightList ObjectQueryLightsDelegate(MovableObject obj);
         public delegate void ObjectRenamedDelegate(MovableObject obj, string oldName);
 
         // Define all events Handler
@@ -76,7 +76,6 @@ namespace Axiom.Core
         public event ObjectQueryLightsDelegate ObjectQueryLights;
 
         #region Fields
-
 
         /// <summary>
         ///		Does this object cast shadows?
@@ -165,7 +164,7 @@ namespace Axiom.Core
 
         #region Constructors
 
-        protected MovableObject( string name )
+        protected MovableObject(string name)
             : this()
         {
             this.name = name;
@@ -237,7 +236,7 @@ namespace Axiom.Core
         {
             get
             {
-                if ( this.parentIsTagPoint )
+                if (this.parentIsTagPoint)
                 {
                     TagPoint tp = (TagPoint)this.parentNode;
                     return tp.ParentEntity.ParentSceneNode;
@@ -252,12 +251,12 @@ namespace Axiom.Core
         /// <summary>
         ///		See if this object is attached to another node.
         /// </summary>
-        [Obsolete( "This property has been superceded by the IsInScene property" )]
+        [Obsolete("This property has been superceded by the IsInScene property")]
         public bool IsAttached
         {
             get
             {
-                return ( this.parentNode != null );
+                return (this.parentNode != null);
             }
         }
 
@@ -268,11 +267,11 @@ namespace Axiom.Core
         {
             get
             {
-                if ( !isVisible || beyondFarDistance || renderingDisabled )
+                if (!isVisible || beyondFarDistance || renderingDisabled)
                     return false;
 
                 SceneManager sm = Root.Instance.SceneManager;
-                return ( sm != null ) && ( ( visibilityFlags & sm.CombinedVisibilityMask ) != 0 );
+                return (sm != null) && ((visibilityFlags & sm.CombinedVisibilityMask) != 0);
             }
             set
             {
@@ -293,8 +292,8 @@ namespace Axiom.Core
             {
                 string oldName = name;
                 name = value;
-                if ( ObjectRenamed != null )
-                    ObjectRenamed( this, oldName );
+                if (ObjectRenamed != null)
+                    ObjectRenamed(this, oldName);
             }
         }
 
@@ -305,7 +304,7 @@ namespace Axiom.Core
         {
             get
             {
-                if ( this.parentNode != null )
+                if (this.parentNode != null)
                 {
                     // object is attached to a node, so return the nodes transform
                     return this.parentNode.FullTransform;
@@ -320,17 +319,18 @@ namespace Axiom.Core
         /// Get the 'type flags' for this MovableObject.
         /// </summary>
         /// <remarks>
-        /// A type flag identifies the type of the MovableObject as a bitpattern. 
+        /// A type flag identifies the type of the MovableObject as a bitpattern.
         /// This is used for categorical inclusion / exclusion in SceneQuery
-        /// objects. By default, this method returns all ones for objects not 
-        /// created by a MovableObjectFactory (hence always including them); 
+        /// objects. By default, this method returns all ones for objects not
+        /// created by a MovableObjectFactory (hence always including them);
         /// otherwise it returns the value assigned to the MovableObjectFactory.
-        /// Custom objects which don't use MovableObjectFactory will need to 
+        /// Custom objects which don't use MovableObjectFactory will need to
         /// override this if they want to be included in queries.
         /// </remarks>
         public virtual uint TypeFlags
         {
-            get; set;
+            get;
+            set;
         }
 
         /// <summary>
@@ -343,11 +343,11 @@ namespace Axiom.Core
         {
             get
             {
-                return ( (SceneNode)this.parentNode ).ShowBoundingBox;
+                return ((SceneNode)this.parentNode).ShowBoundingBox;
             }
             set
             {
-                ( (SceneNode)this.parentNode ).ShowBoundingBox = value;
+                ((SceneNode)this.parentNode).ShowBoundingBox = value;
             }
         }
 
@@ -375,7 +375,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Returns true if this object is attached to a SceneNode or TagPoint, 
+        /// Returns true if this object is attached to a SceneNode or TagPoint,
         /// and this SceneNode / TagPoint is currently in an active part of the
         /// scene graph.
         /// </summary>
@@ -383,9 +383,9 @@ namespace Axiom.Core
         {
             get
             {
-                if ( this.parentNode != null )
+                if (this.parentNode != null)
                 {
-                    if ( this.parentIsTagPoint )
+                    if (this.parentIsTagPoint)
                     {
                         TagPoint tp = (TagPoint)this.ParentNode;
                         return tp.ParentEntity.IsInScene;
@@ -406,24 +406,24 @@ namespace Axiom.Core
         #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Detaches an object from a parent SceneNode or TagPoint, if attached.
         /// </summary>
         /// <param name="void"></param>
         public virtual void DetachFromParent()
         {
-            if ( IsInScene )
+            if (IsInScene)
             {
-                if ( parentIsTagPoint )
+                if (parentIsTagPoint)
                 {
                     TagPoint tp = (TagPoint)parentNode;
-                    tp.ParentEntity.DetachObjectFromBone( this );
-
+                    tp.ParentEntity.DetachObjectFromBone(this);
                 }
                 else
                 {
                     SceneNode sn = (SceneNode)parentNode;
-                    sn.DetachObject( this );
+                    sn.DetachObject(this);
                 }
             }
         }
@@ -435,47 +435,47 @@ namespace Axiom.Core
             --lightListUpdated;
 
             // Notify listener if exists
-            if ( ObjectMoved != null )
+            if (ObjectMoved != null)
             {
-                ObjectMoved( this );
+                ObjectMoved(this);
             }
         }
 
         public virtual LightList QueryLights()
         {
             // Try listener first
-            if ( ObjectQueryLights != null )
+            if (ObjectQueryLights != null)
             {
-                lightList = ObjectQueryLights( this );
-                if ( lightList != null )
+                lightList = ObjectQueryLights(this);
+                if (lightList != null)
                 {
                     return lightList;
                 }
             }
 
             // Query from parent entity if exists
-            if ( parentIsTagPoint )
+            if (parentIsTagPoint)
             {
                 TagPoint tp = (TagPoint)parentNode;
                 return tp.ParentEntity.QueryLights();
             }
 
-            if ( parentNode != null )
+            if (parentNode != null)
             {
                 SceneNode sn = (SceneNode)parentNode;
 
                 // Make sure we only update this only if need.
                 ulong frame = sn.Creator.LightsDirtyCounter;
-                if ( lightListUpdated != frame )
+                if (lightListUpdated != frame)
                 {
                     lightListUpdated = frame;
 
-                    lightList = sn.FindLights( this.BoundingRadius );
+                    lightList = sn.FindLights(this.BoundingRadius);
                 }
             }
             else
             {
-                if ( lightList != null )
+                if (lightList != null)
                 {
                     lightList.Clear();
                 }
@@ -504,12 +504,12 @@ namespace Axiom.Core
         ///    Retrieves the axis-aligned bounding box for this object in world coordinates.
         /// </summary>
         /// <returns></returns>
-        public override AxisAlignedBox GetWorldBoundingBox( bool derive )
+        public override AxisAlignedBox GetWorldBoundingBox(bool derive)
         {
-            if ( derive )
+            if (derive)
             {
                 this.worldAABB = this.BoundingBox;
-                this.worldAABB.Transform( this.ParentNodeFullTransform );
+                this.worldAABB.Transform(this.ParentNodeFullTransform);
             }
 
             return this.worldAABB;
@@ -521,7 +521,7 @@ namespace Axiom.Core
         /// <returns></returns>
         public Sphere GetWorldBoundingSphere()
         {
-            return this.GetWorldBoundingSphere( false );
+            return this.GetWorldBoundingSphere(false);
         }
 
         /// <summary>
@@ -529,9 +529,9 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="derive">Whether or not to derive from parent transforms.</param>
         /// <returns></returns>
-        public virtual Sphere GetWorldBoundingSphere( bool derive )
+        public virtual Sphere GetWorldBoundingSphere(bool derive)
         {
-            if ( derive )
+            if (derive)
             {
                 this.worldBoundingSphere.Radius = this.BoundingRadius;
                 this.worldBoundingSphere.Center = this.parentNode.DerivedPosition;
@@ -552,7 +552,7 @@ namespace Axiom.Core
         /// <summary>
         /// default query flags for all future MovableObject instances.
         /// </summary>
-        protected uint defaultQueryFlags = unchecked( 0xFFFFFFFF );
+        protected uint defaultQueryFlags = unchecked(0xFFFFFFFF);
 
         /// <summary>
         /// Gets/Sets default query flags for all future MovableObject instances.
@@ -594,7 +594,7 @@ namespace Axiom.Core
         ///		Appends the specified flags to the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void AddQueryFlags( uint flags )
+        public void AddQueryFlags(uint flags)
         {
             this.queryFlags |= flags;
         }
@@ -603,7 +603,7 @@ namespace Axiom.Core
         ///		Removes the specified flags from the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void RemoveQueryFlags( uint flags )
+        public void RemoveQueryFlags(uint flags)
         {
             this.queryFlags ^= flags;
         }
@@ -620,7 +620,7 @@ namespace Axiom.Core
         /// <summary>
         /// default visibility flags for all future MovableObject instances.
         /// </summary>
-        protected static uint defaultVisibilityFlags = unchecked( 0xFFFFFFFF );
+        protected static uint defaultVisibilityFlags = unchecked(0xFFFFFFFF);
 
         /// <summary>
         /// Gets/Sets default visibility flags for all future MovableObject instances.
@@ -661,7 +661,7 @@ namespace Axiom.Core
         ///		Appends the specified flags to the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void AddVisibilityFlags( uint flags )
+        public void AddVisibilityFlags(uint flags)
         {
             this.visibilityFlags |= flags;
         }
@@ -670,7 +670,7 @@ namespace Axiom.Core
         ///		Removes the specified flags from the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void RemoveVisibilityFlags( uint flags )
+        public void RemoveVisibilityFlags(uint flags)
         {
             this.visibilityFlags ^= flags;
         }
@@ -696,8 +696,8 @@ namespace Axiom.Core
         /// Gets/Sets whether or not the debug display of this object is enabled.
         /// <remarks>
         /// Some objects aren't visible themselves but it can be useful to display
-        ///	a debug representation of them. Or, objects may have an additional 
-        ///	debug display on top of their regular display. This option enables / 
+        ///	a debug representation of them. Or, objects may have an additional
+        ///	debug display on top of their regular display. This option enables /
         ///	disables that debug display. Objects that are not visible never display
         ///	debug geometry regardless of this setting.
         /// </remarks>
@@ -721,18 +721,18 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		
+        ///
         /// </summary>
         /// <param name="light"></param>
         /// <param name="extrusionDistance"></param>
         /// <returns></returns>
-        public override AxisAlignedBox GetDarkCapBounds( Light light, float extrusionDistance )
+        public override AxisAlignedBox GetDarkCapBounds(Light light, float extrusionDistance)
         {
             // Extrude own light cap bounds
             // need a clone to avoid modifying the original bounding box
             this.worldDarkCapBounds = (AxisAlignedBox)this.GetLightCapBounds().Clone();
 
-            this.ExtrudeBounds( this.worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance );
+            this.ExtrudeBounds(this.worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance);
 
             return this.worldDarkCapBounds;
         }
@@ -740,17 +740,17 @@ namespace Axiom.Core
         /// <summary>
         ///		Overridden.  Returns null by default.
         /// </summary>
-        public override EdgeData GetEdgeList( int lodIndex )
+        public override EdgeData GetEdgeList(int lodIndex)
         {
             return null;
         }
 
-        public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique,
+        public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique,
                                                                          Light light,
                                                                          HardwareIndexBuffer indexBuffer,
                                                                          bool extrudeVertices,
                                                                          float extrusionDistance,
-                                                                         int flags )
+                                                                         int flags)
         {
             return this.dummyList.GetEnumerator();
         }
@@ -765,11 +765,11 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="light"></param>
         /// <returns></returns>
-        public override float GetPointExtrusionDistance( Light light )
+        public override float GetPointExtrusionDistance(Light light)
         {
-            if ( this.parentNode != null )
+            if (this.parentNode != null)
             {
-                return this.GetExtrusionDistance( this.parentNode.DerivedPosition, light );
+                return this.GetExtrusionDistance(this.parentNode.DerivedPosition, light);
             }
             else
             {
@@ -794,57 +794,126 @@ namespace Axiom.Core
 
         /// <summary>
         ///     Part of the IAnimableObject interface.
-        ///		Create an AnimableValue for the attribute with the given name, or 
+        ///		Create an AnimableValue for the attribute with the given name, or
         ///     throws an exception if this object doesn't support creating them.
         /// </summary>
-        public virtual AnimableValue CreateAnimableValue( string valueName )
+        public virtual AnimableValue CreateAnimableValue(string valueName)
         {
-            throw new Exception( "This object has no AnimableValue attributes" );
+            throw new Exception("This object has no AnimableValue attributes");
         }
 
         #endregion IAnimable methods
 
-        #region Internal engine methods
+        #region IDisposable Implementation
 
+        #region isDisposed Property
+
+        private bool _disposed = false;
+
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        protected bool isDisposed
+        {
+            get
+            {
+                return _disposed;
+            }
+            set
+            {
+                _disposed = value;
+            }
+        }
+
+        #endregion isDisposed Property
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Implementation
+
+        #region Internal engine methods
 
         /// <summary>
         ///		Internal method called to notify the object that it has been attached to a node.
         /// </summary>
         /// <param name="node">Scene node to notify.</param>
-        internal virtual void NotifyAttached( Node node )
+        internal virtual void NotifyAttached(Node node)
         {
-            this.NotifyAttached( node, false );
+            this.NotifyAttached(node, false);
         }
 
         /// <summary>
         ///		Internal method called to notify the object that it has been attached to a node.
         /// </summary>
         /// <param name="node">Scene node to notify.</param>
-        internal virtual void NotifyAttached( Node node, bool isTagPoint )
+        internal virtual void NotifyAttached(Node node, bool isTagPoint)
         {
-            bool parentChanged = ( node != this.parentNode );
+            bool parentChanged = (node != this.parentNode);
             this.parentNode = node;
             this.parentIsTagPoint = isTagPoint;
             // Mark light list being dirty, simply decrease
             // counter by one for minimise overhead
             --lightListUpdated;
 
-            if ( parentChanged )
+            if (parentChanged)
             {
-                if ( this.parentNode != null )
+                if (this.parentNode != null)
                 {
-                    if ( ObjectAttached != null )
+                    if (ObjectAttached != null)
                     {
                         //Fire Event
-                        ObjectAttached( this );
+                        ObjectAttached(this);
                     }
                 }
                 else
                 {
-                    if ( ObjectDetached != null )
+                    if (ObjectDetached != null)
                     {
                         //Fire Event
-                        ObjectDetached( this );
+                        ObjectDetached(this);
                     }
                 }
             }
@@ -858,17 +927,17 @@ namespace Axiom.Core
         ///		them incase they wish to do this.
         /// </remarks>
         /// <param name="camera">Reference to the Camera being used for the current rendering operation.</param>
-        public virtual void NotifyCurrentCamera( Camera camera )
+        public virtual void NotifyCurrentCamera(Camera camera)
         {
-            if ( parentNode != null )
+            if (parentNode != null)
             {
-                if ( camera.UseRenderingDistance && upperDistance > 0 )
+                if (camera.UseRenderingDistance && upperDistance > 0)
                 {
                     float rad = this.BoundingRadius;
-                    float squaredDepth = parentNode.GetSquaredViewDepth( camera.LodCamera );
+                    float squaredDepth = parentNode.GetSquaredViewDepth(camera.LodCamera);
                     // Max distance to still render
                     float maxDist = upperDistance + rad;
-                    if ( squaredDepth > Utility.Sqr( maxDist ) )
+                    if (squaredDepth > Utility.Sqr(maxDist))
                     {
                         beyondFarDistance = true;
                     }
@@ -883,9 +952,9 @@ namespace Axiom.Core
                 }
             }
 
-            if ( ObjectRendering != null )
+            if (ObjectRendering != null)
             {
-                renderingDisabled = ObjectRendering( this, camera );
+                renderingDisabled = ObjectRendering(this, camera);
             }
             else
             {
@@ -894,11 +963,11 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///	An abstract method that causes the specified RenderQueue to update itself.  
+        ///	An abstract method that causes the specified RenderQueue to update itself.
         /// </summary>
         /// <remarks>This is an internal method used by the engine assembly only.</remarks>
         /// <param name="queue">The render queue that this object should be updated in.</param>
-        public abstract void UpdateRenderQueue( RenderQueue queue );
+        public abstract void UpdateRenderQueue(RenderQueue queue);
 
         #endregion Internal engine methods
 
@@ -992,23 +1061,22 @@ namespace Axiom.Core
             }
         }
 
-
         /// <summary>
-        ///     Does this factory require the allocation of a 'type flag', used to 
+        ///     Does this factory require the allocation of a 'type flag', used to
         ///	    selectively include / exclude this type from scene queries?
         /// </summary>
         /// <remarks>
-        ///     The default implementation here is to return 'false', ie not to 
+        ///     The default implementation here is to return 'false', ie not to
         ///     request a unique type mask from Root. For objects that
         ///     never need to be excluded in SceneQuery results, that's fine, since
         ///     the default implementation of MovableObject::getTypeFlags is to return
         ///     all ones, hence matching any query type mask. However, if you want the
-        ///     objects created by this factory to be filterable by queries using a 
-        ///     broad type, you have to give them a (preferably unique) type mask - 
-        ///     and given that you don't know what other MovableObject types are 
-        ///     registered, Root will allocate you one. 
+        ///     objects created by this factory to be filterable by queries using a
+        ///     broad type, you have to give them a (preferably unique) type mask -
+        ///     and given that you don't know what other MovableObject types are
+        ///     registered, Root will allocate you one.
         /// </remarks>
-        /// 
+        ///
         public virtual bool RequestTypeFlags
         {
             get
@@ -1019,9 +1087,9 @@ namespace Axiom.Core
 
         #region AbstractFactory<MovableObject> Members
 
-        public override MovableObject CreateInstance( string name )
+        public override MovableObject CreateInstance(string name)
         {
-            return this.CreateInstance( name, null );
+            return this.CreateInstance(name, null);
         }
 
         /// <summary>
@@ -1030,7 +1098,7 @@ namespace Axiom.Core
         /// <param name="obj">
         ///     The MovableObject to destroy.
         /// </param>
-        public override void DestroyInstance( ref MovableObject obj )
+        public override void DestroyInstance(ref MovableObject obj)
         {
         }
 
@@ -1046,9 +1114,9 @@ namespace Axiom.Core
             }
         }
 
-        #endregion
+        #endregion AbstractFactory<MovableObject> Members
 
-        protected abstract MovableObject _createInstance( string name, NamedParameterList param );
+        protected abstract MovableObject _createInstance(string name, NamedParameterList param);
 
         /// <summary>
         ///     Create a new instance of the object.
@@ -1060,17 +1128,17 @@ namespace Axiom.Core
         ///     The SceneManager instance that will be holding the instance once created.
         /// </param>
         /// <param name="param">
-        ///     Name/value pair list of additional parameters required to construct the object 
+        ///     Name/value pair list of additional parameters required to construct the object
         ///     (defined per subtype).
         /// </param>
         /// <returns>A new MovableObject</returns>
-        public MovableObject CreateInstance( string name, SceneManager manager, NamedParameterList param )
+        public MovableObject CreateInstance(string name, SceneManager manager, NamedParameterList param)
         {
-            MovableObject m = this._createInstance( name, param );
+            MovableObject m = this._createInstance(name, param);
             m.Creator = this;
             m.Manager = manager;
             m.MovableType = this.Type;
-            m.TypeFlags = this.TypeFlag; 
+            m.TypeFlags = this.TypeFlag;
             return m;
         }
 
@@ -1084,11 +1152,10 @@ namespace Axiom.Core
         ///     The SceneManager instance that will be holding the instance once created.
         /// </param>
         /// <returns>A new MovableObject</returns>
-        public MovableObject CreateInstance( string name, SceneManager manager )
+        public MovableObject CreateInstance(string name, SceneManager manager)
         {
-            return this.CreateInstance( name, manager, null );
+            return this.CreateInstance(name, manager, null);
         }
-
     }
 
     #endregion MovableObjectFactory

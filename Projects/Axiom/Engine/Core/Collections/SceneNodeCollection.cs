@@ -40,7 +40,7 @@ using Axiom.Collections;
 
 #endregion
 
-namespace Axiom.Core.Collections
+namespace Axiom.Collections
 {
     /// <summary>
     /// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by name.

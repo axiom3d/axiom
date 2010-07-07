@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -50,9 +53,9 @@ namespace Axiom.Graphics
     /// </summary>
     /// <remarks>
     ///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
-    ///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the 
+    ///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the
     ///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
-    ///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry 
+    ///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry
     ///		should come from one buffer if possible)
     /// </remarks>
     public abstract class ShadowRenderable : IRenderable
@@ -74,10 +77,10 @@ namespace Axiom.Graphics
         ///		If possible, the light cap (when required) should be contained in the
         ///		usual geometry of the shadow renderable. However, if for some reason
         ///		the normal depth function (less than) could cause artefacts, then a
-        ///		separate light cap with a depth function of 'always fail' can be used 
+        ///		separate light cap with a depth function of 'always fail' can be used
         ///		instead. The primary example of this is when there are floating point
         ///		inaccuracies caused by calculating the shadow geometry separately from
-        ///		the real geometry. 
+        ///		the real geometry.
         /// </remarks>
         public bool IsLightCapSeperate
         {
@@ -172,6 +175,7 @@ namespace Axiom.Graphics
         }
 
         protected RenderOperation renderOperation;
+
         /// <summary>
         ///		Gets the render operation for this shadow renderable.
         /// </summary>
@@ -184,7 +188,7 @@ namespace Axiom.Graphics
             }
         }
 
-        public abstract void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );
+        public abstract void GetWorldTransforms(Axiom.Math.Matrix4[] matrices);
 
         public LightList Lights
         {
@@ -244,36 +248,112 @@ namespace Axiom.Graphics
             get;
         }
 
-        public virtual float GetSquaredViewDepth( Camera camera )
+        public virtual float GetSquaredViewDepth(Camera camera)
         {
             return 0;
         }
 
-        public Vector4 GetCustomParameter( int index )
+        public Vector4 GetCustomParameter(int index)
         {
-            if ( customParams[ index ] == null )
+            if (customParams[index] == null)
             {
-                throw new Exception( "A parameter was not found at the given index" );
+                throw new Exception("A parameter was not found at the given index");
             }
             else
             {
-                return (Vector4)customParams[ index ];
+                return (Vector4)customParams[index];
             }
         }
 
-        public void SetCustomParameter( int index, Vector4 val )
+        public void SetCustomParameter(int index, Vector4 val)
         {
-            customParams[ index ] = val;
+            customParams[index] = val;
         }
 
-        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+        public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams)
         {
-            if ( customParams[ entry.Data ] != null )
+            if (customParams[entry.Data] != null)
             {
-                gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+                gpuParams.SetConstant(entry.PhysicalIndex, (Vector4)customParams[entry.Data]);
             }
         }
 
-        #endregion
+        #endregion IRenderable Members
+
+        #region IDisposable Implementation
+
+        #region isDisposed Property
+
+        private bool _disposed = false;
+
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        protected bool isDisposed
+        {
+            get
+            {
+                return _disposed;
+            }
+            set
+            {
+                _disposed = value;
+            }
+        }
+
+        #endregion isDisposed Property
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    if (renderOperation != null)
+                    {
+                        renderOperation.vertexData = null;
+                        renderOperation.indexData = null;
+                        renderOperation = null;
+                    }
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Implementation
     }
 }

@@ -43,7 +43,7 @@ using Axiom.Collections;
 
 #endregion
 
-namespace Axiom.Core.Collections
+namespace Axiom.Collections
 {
     /// <summary>
     /// Represents a collection of Viewports that are sorted by zOrder key based on the associated <see cref="IComparer"/> implementation.

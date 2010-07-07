@@ -67,7 +67,7 @@ namespace Axiom.Animating
 		///		Used for auto generated tag point handles to ensure they are unique.
 		///	</summary>
 		protected internal ushort nextTagPointAutoHandle;
-		protected Hashtable tagPointList = new Hashtable();
+        protected Hashtable tagPointList = new Hashtable();
 
 		#endregion Fields
 
@@ -178,7 +178,7 @@ namespace Axiom.Animating
 
 		public void FreeTagPoint( TagPoint tagPoint )
 		{
-			if  ( tagPointList.ContainsValue( tagPoint ) )
+			if  ( tagPointList.Contains( tagPoint ) )
 			{
 				if ( tagPoint.Parent != null )
 				{

@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
-using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -57,13 +60,13 @@ namespace Axiom.SceneManagers.Bsp
 
         public BspGeometry()
         {
-            geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
+            geometryMat = (Material)MaterialManager.Instance.GetByName("Axiom/BspGeometryMaterial");
 
-            if ( geometryMat == null )
+            if (geometryMat == null)
             {
-                geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
+                geometryMat = (Material)MaterialManager.Instance.Create("Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName);
                 geometryMat.ReceiveShadows = true;
-                technique = geometryMat.GetTechnique( 0 );
+                technique = geometryMat.GetTechnique(0);
             }
         }
 
@@ -72,7 +75,7 @@ namespace Axiom.SceneManagers.Bsp
         #region Properties
 
         /// <summary>
-        ///		Gets whether this renderable would normally cast a shadow. 
+        ///		Gets whether this renderable would normally cast a shadow.
         /// </summary>
         public bool CastsShadows
         {
@@ -109,6 +112,7 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         protected RenderOperation renderOperation = new RenderOperation();
+
         /// <summary>
         ///    Gets the render operation required to send this object to the frame buffer.
         /// </summary>
@@ -131,7 +135,7 @@ namespace Axiom.SceneManagers.Bsp
         ///    does use vertex blending it will fill the passed in pointer with an array of matrices,
         ///    the length being the value returned from getNumWorldTransforms.
         /// </remarks>
-        public void GetWorldTransforms( Matrix4[] matrices )
+        public void GetWorldTransforms(Matrix4[] matrices)
         {
         }
 
@@ -167,7 +171,7 @@ namespace Axiom.SceneManagers.Bsp
         ///    When a renderable uses vertex blending, it uses multiple world matrices instead of a single
         ///    one. Each vertex sent to the pipeline can reference one or more matrices in this list
         ///    with given weights.
-        ///    If a renderable does not use vertex blending this method returns 1, which is the default for 
+        ///    If a renderable does not use vertex blending this method returns 1, which is the default for
         ///    simplicity.
         /// </remarks>
 
@@ -181,7 +185,7 @@ namespace Axiom.SceneManagers.Bsp
 
         /// <summary>
         /// Gets whether this renderable's chosen detail level can be
-        ///	overridden (downgraded) by the camera setting. 
+        ///	overridden (downgraded) by the camera setting.
         /// override true means that a lower camera detail will override this
         /// renderables detail level, false means it won't.
         /// </summary>
@@ -218,7 +222,7 @@ namespace Axiom.SceneManagers.Bsp
         ///    Usually IRenderable objects will use a view matrix as determined
         ///    by the active camera. However, if they want they can cancel this out
         ///    and use an identity matrix, which means all geometry is assumed
-        ///    to be relative to camera space already. Useful for overlay rendering. 
+        ///    to be relative to camera space already. Useful for overlay rendering.
         ///    Normal renderables need not override this.
         /// </remarks>
         public bool UseIdentityView
@@ -233,7 +237,7 @@ namespace Axiom.SceneManagers.Bsp
         ///    Gets the worldspace orientation of this renderable; this is used in order to
         ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
         ///    and Vector in order to derive object-space positions / directions for cameras and
-        ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
+        ///    lights is much more efficient than inverting a complete 4x4 matrix, and also
         ///    eliminates problems introduced by scaling.
         /// </summary>
         public Quaternion WorldOrientation
@@ -248,7 +252,7 @@ namespace Axiom.SceneManagers.Bsp
         ///    Gets the worldspace position of this renderable; this is used in order to
         ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
         ///    and Vector in order to derive object-space positions / directions for cameras and
-        ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
+        ///    lights is much more efficient than inverting a complete 4x4 matrix, and also
         ///    eliminates problems introduced by scaling.
         /// </summary>
         public Vector3 WorldPosition
@@ -259,7 +263,7 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Public Methods
 
@@ -268,33 +272,33 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         /// <remarks>
         ///		Used to sort transparent objects. Squared depth is used rather than
-        ///		actual depth to avoid having to perform a square root on the result.	
+        ///		actual depth to avoid having to perform a square root on the result.
         /// </remarks>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public float GetSquaredViewDepth( Camera camera )
+        public float GetSquaredViewDepth(Camera camera)
         {
             return 0;
         }
 
         /// <summary>
-        ///		Gets the custom value associated with this Renderable at the given index. 
+        ///		Gets the custom value associated with this Renderable at the given index.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Vector4 GetCustomParameter( int index )
+        public Vector4 GetCustomParameter(int index)
         {
-            return new Vector4( 0, 0, 0, 0 );
+            return new Vector4(0, 0, 0, 0);
         }
 
         /// <summary>
-        ///		Sets a custom parameter for this Renderable, which may be used to 
+        ///		Sets a custom parameter for this Renderable, which may be used to
         ///		drive calculations for this specific Renderable, like GPU program parameters.
         /// </summary>
         /// <remarks>
         ///		Calling this method simply associates a numeric index with a 4-dimensional
         ///		value for this specific Renderable. This is most useful if the material
-        ///		which this Renderable uses a vertex or fragment program, and has an 
+        ///		which this Renderable uses a vertex or fragment program, and has an
         ///		AutoConstant.Custom parameter entry. This parameter entry can refer to the
         ///		index you specify as part of this call, thereby mapping a custom
         ///		parameter for this renderable to a program parameter.
@@ -306,12 +310,12 @@ namespace Axiom.SceneManagers.Bsp
         ///		two is performed by the AutoConstant.Custom entry, if that is used.
         /// </param>
         /// <param name="val">The value to associate.</param>
-        public void SetCustomParameter( int index, Vector4 val )
+        public void SetCustomParameter(int index, Vector4 val)
         {
         }
 
         /// <summary>
-        ///		Update a custom GpuProgramParameters constant which is derived from 
+        ///		Update a custom GpuProgramParameters constant which is derived from
         ///		information only this Renderable knows.
         /// </summary>
         /// <remarks>
@@ -320,19 +324,95 @@ namespace Axiom.SceneManagers.Bsp
         ///		of AutoConstantType.Custom, and to allow there to be more than one of these per
         ///		Renderable, the 'data' field on the auto parameter will identify
         ///		which parameter is being updated. The implementation of this method
-        ///		must identify the parameter being updated, and call a 'SetConstant' 
+        ///		must identify the parameter being updated, and call a 'SetConstant'
         ///		method on the passed in <see cref="GpuProgramParameters"/> object, using the details
         ///		provided in the incoming auto constant setting to identify the index
         ///		at which to set the parameter.
         /// </remarks>
         /// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
         /// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
-        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters )
+        public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters)
         {
         }
 
-        #endregion
+        #endregion Public Methods
 
-        #endregion
+        #endregion IRenderable implementation
+
+        #region IDisposable Implementation
+
+        #region isDisposed Property
+
+        private bool _disposed = false;
+
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        protected bool isDisposed
+        {
+            get
+            {
+                return _disposed;
+            }
+            set
+            {
+                _disposed = value;
+            }
+        }
+
+        #endregion isDisposed Property
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    if (renderOperation != null)
+                    {
+                        renderOperation.vertexData = null;
+                        renderOperation.indexData = null;
+                        renderOperation = null;
+                    }
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Implementation
     }
 }

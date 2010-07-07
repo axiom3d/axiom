@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,10 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
-using Axiom.Graphics;
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -80,34 +82,35 @@ namespace Axiom.Graphics
         ///		Default constructor.
         /// </summary>
         public SimpleRenderable()
-            : this( "SimpleRenderable" + nextAutoGenName++ )
+            : this("SimpleRenderable" + nextAutoGenName++)
         {
         }
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public SimpleRenderable(string name) : base(name)
+        public SimpleRenderable(string name)
+            : base(name)
         {
             materialName = "BaseWhite";
-            material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+            material = (Material)MaterialManager.Instance["BaseWhite"];
             name = "SimpleRenderable" + nextAutoGenName++;
             material.Load();
-         }
+        }
 
         private void LoadDefaultMaterial()
         {
             this.materialName = "BaseWhite";
-            this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+            this.material = (Material)MaterialManager.Instance["BaseWhite"];
             this.material.Load();
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Implementation of MovableObject
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override AxisAlignedBox BoundingBox
         {
@@ -118,25 +121,25 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="camera"></param>
-        public override void NotifyCurrentCamera( Camera camera )
+        public override void NotifyCurrentCamera(Camera camera)
         {
             this.camera = camera;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="queue"></param>
-        public override void UpdateRenderQueue( RenderQueue queue )
+        public override void UpdateRenderQueue(RenderQueue queue)
         {
             // add ourself to the render queue
-            queue.AddRenderable( this );
+            queue.AddRenderable(this);
         }
 
-        #endregion
+        #endregion Implementation of MovableObject
 
         #region IRenderable Members
 
@@ -144,12 +147,12 @@ namespace Axiom.Graphics
         {
             get
             {
-				return CastShadows;
+                return CastShadows;
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public virtual Material Material
         {
@@ -180,12 +183,12 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="matrices"></param>
-        public virtual void GetWorldTransforms( Matrix4[] matrices )
+        public virtual void GetWorldTransforms(Matrix4[] matrices)
         {
-            matrices[ 0 ] = worldTransform * parentNode.FullTransform;
+            matrices[0] = worldTransform * parentNode.FullTransform;
         }
 
         public bool NormalizeNormals
@@ -197,7 +200,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public ushort NumWorldTransforms
         {
@@ -208,7 +211,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public virtual bool UseIdentityProjection
         {
@@ -219,7 +222,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public virtual bool UseIdentityView
         {
@@ -238,14 +241,14 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public abstract float GetSquaredViewDepth( Camera camera );
+        public abstract float GetSquaredViewDepth(Camera camera);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public virtual Quaternion WorldOrientation
         {
@@ -256,7 +259,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public virtual Vector3 WorldPosition
         {
@@ -270,7 +273,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                if ( parentNode != null )
+                if (parentNode != null)
                 {
                     return parentNode.Lights;
                 }
@@ -281,31 +284,111 @@ namespace Axiom.Graphics
             }
         }
 
-        public Vector4 GetCustomParameter( int index )
+        public Vector4 GetCustomParameter(int index)
         {
-            if ( customParams[ index ] == null )
+            if (customParams[index] == null)
             {
-                throw new Exception( "A parameter was not found at the given index" );
+                throw new Exception("A parameter was not found at the given index");
             }
             else
             {
-                return (Vector4)customParams[ index ];
+                return (Vector4)customParams[index];
             }
         }
 
-        public void SetCustomParameter( int index, Vector4 val )
+        public void SetCustomParameter(int index, Vector4 val)
         {
-            customParams[ index ] = val;
+            customParams[index] = val;
         }
 
-        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+        public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams)
         {
-            if ( customParams[ entry.Data ] != null )
+            if (customParams[entry.Data] != null)
             {
-                gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+                gpuParams.SetConstant(entry.PhysicalIndex, (Vector4)customParams[entry.Data]);
             }
         }
 
-        #endregion
+        #endregion IRenderable Members
+
+        #region IDisposable Implementation
+
+        #region isDisposed Property
+
+        private bool _disposed = false;
+
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        protected bool isDisposed
+        {
+            get
+            {
+                return _disposed;
+            }
+            set
+            {
+                _disposed = value;
+            }
+        }
+
+        #endregion isDisposed Property
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    if (renderOperation != null)
+                    {
+                        renderOperation.vertexData = null;
+                        renderOperation.indexData = null;
+                        renderOperation = null;
+                    }
+                    if (indexData != null)
+                        indexData.Dispose();
+                    if (vertexData != null)
+                        vertexData.Dispose();
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Implementation
     }
 }
