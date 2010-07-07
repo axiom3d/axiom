@@ -24,7 +24,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 
@@ -38,10 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -60,78 +59,15 @@ namespace Axiom.Graphics
     ///		the list of vertex buffer bindings, it becomes possible to reuse bindings between declarations
     ///		and vice versa, giving opportunities to reduce the state changes required to perform rendering.
     /// </remarks>
-    public class VertexBufferBinding
+    public class VertexBufferBinding : DisposableObject
     {
-        #region Fields
+        #region Fields & Properties
 
         /// <summary>
         ///		Defines the vertex buffer bindings used as source for vertex declarations.
         /// </summary>
         protected Dictionary<short, HardwareVertexBuffer> bindingMap =
             new Dictionary<short, HardwareVertexBuffer>();
-        /// <summary>
-        ///		The highest index in use for this binding.
-        /// </summary>
-        protected short highIndex;
-
-        #endregion Fields
-
-        #region Methods
-
-        /// <summary>
-        ///		Set a binding, associating a vertex buffer with a given index.
-        /// </summary>
-        /// <remarks>
-        ///		If the index is already associated with a vertex buffer,
-        ///		the association will be replaced. This may cause the old buffer
-        ///		to be destroyed if nothing else is referring to it.
-        ///		You should assign bindings from 0 and not leave gaps, although you can
-        ///		bind them in any order.
-        /// </remarks>
-        /// <param name="index">Index at which to bind the buffer.</param>
-        /// <param name="buffer">Vertex buffer to bind.</param>
-        public virtual void SetBinding(short index, HardwareVertexBuffer buffer)
-        {
-            bindingMap[index] = buffer;
-            highIndex = (short)Utility.Max(highIndex, index + 1);
-        }
-
-        /// <summary>
-        ///		Removes an existing binding.
-        /// </summary>
-        /// <param name="index">Index of the buffer binding to remove.</param>
-        public virtual void UnsetBinding(short index)
-        {
-            Debug.Assert(bindingMap.ContainsKey(index), "Cannot find buffer for index" + index);
-
-            bindingMap.Remove(index);
-        }
-
-        /// <summary>
-        ///		Removes all current buffer bindings.
-        /// </summary>
-        public virtual void UnsetAllBindings()
-        {
-            bindingMap.Clear();
-        }
-
-        /// <summary>
-        ///		Gets the buffer bound to the given source index.
-        /// </summary>
-        /// <param name="index">Index of the binding to retreive the buffer for.</param>
-        /// <returns>Buffer at the specified index.</returns>
-        public virtual HardwareVertexBuffer GetBuffer(short index)
-        {
-            Debug.Assert(bindingMap.ContainsKey(index), "No buffer is bound to index " + index);
-
-            HardwareVertexBuffer buf = bindingMap[index];
-
-            return buf;
-        }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///		Gets an enumerator to iterate through the buffer bindings.
@@ -157,6 +93,11 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///		The highest index in use for this binding.
+        /// </summary>
+        protected short highIndex;
+
+        /// <summary>
         ///		Gets the highest index which has already been set, plus 1.
         /// </summary>
         /// <remarks>
@@ -171,64 +112,79 @@ namespace Axiom.Graphics
             }
         }
 
-        #endregion Properties
+        #endregion Fields & Properties
+
+        #region Construction & Destruction
+
+        #endregion Construction & Destruction
+
+        #region Methods
+
+        /// <summary>
+        ///		Set a binding, associating a vertex buffer with a given index.
+        /// </summary>
+        /// <remarks>
+        ///		If the index is already associated with a vertex buffer,
+        ///		the association will be replaced. This may cause the old buffer
+        ///		to be destroyed if nothing else is referring to it.
+        ///		You should assign bindings from 0 and not leave gaps, although you can
+        ///		bind them in any order.
+        /// </remarks>
+        /// <param name="index">Index at which to bind the buffer.</param>
+        /// <param name="buffer">Vertex buffer to bind.</param>
+        public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
+        {
+            bindingMap[ index ] = buffer;
+            highIndex = (short)Utility.Max( highIndex, index + 1 );
+        }
+
+        /// <summary>
+        ///		Removes an existing binding.
+        /// </summary>
+        /// <param name="index">Index of the buffer binding to remove.</param>
+        public virtual void UnsetBinding( short index )
+        {
+            Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
+
+            bindingMap.Remove( index );
+        }
+
+        /// <summary>
+        ///		Removes all current buffer bindings.
+        /// </summary>
+        public virtual void UnsetAllBindings()
+        {
+            bindingMap.Clear();
+        }
+
+        /// <summary>
+        ///		Gets the buffer bound to the given source index.
+        /// </summary>
+        /// <param name="index">Index of the binding to retreive the buffer for.</param>
+        /// <returns>Buffer at the specified index.</returns>
+        public virtual HardwareVertexBuffer GetBuffer( short index )
+        {
+            Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
+
+            HardwareVertexBuffer buf = bindingMap[ index ];
+
+            return buf;
+        }
+
+        #endregion Methods
 
         #region IDisposable Implementation
 
-        #region isDisposed Property
-
-        private bool _disposed = false;
-        /// <summary>
-        /// Determines if this instance has been disposed of already.
-        /// </summary>
-        protected bool isDisposed
+        protected override void dispose( bool disposeManagedResources )
         {
-            get
+            if ( !IsDisposed )
             {
-                return _disposed;
-            }
-            set
-            {
-                _disposed = value;
-            }
-        }
-
-        #endregion isDisposed Property
-
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected virtual void dispose(bool disposeManagedResources)
-        {
-            if (!isDisposed)
-            {
-                if (disposeManagedResources)
+                if ( disposeManagedResources )
                 {
                     // Dispose managed resources.
-                    if (this.bindingMap != null)
+                    if ( this.bindingMap != null )
                     {
-                        foreach (KeyValuePair<short, HardwareVertexBuffer> item in bindingMap)
+                        foreach ( KeyValuePair<short, HardwareVertexBuffer> item in bindingMap )
                         {
                             item.Value.Dispose();
                         }
@@ -240,13 +196,10 @@ namespace Axiom.Graphics
                 // There are no unmanaged resources to release, but
                 // if we add them, they need to be released here.
             }
-            isDisposed = true;
-        }
 
-        public void Dispose()
-        {
-            dispose(true);
-            GC.SuppressFinalize(this);
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
         }
 
         #endregion IDisposable Implementation

@@ -4,9 +4,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -42,7 +42,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 
 using Axiom.Animating;
 using Axiom.Collections;
@@ -50,14 +49,11 @@ using Axiom.Controllers;
 using Axiom.FileSystem;
 using Axiom.Fonts;
 using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler;
-using Axiom.Serialization;
 using Axiom.Graphics.Collections;
-using Axiom.Core.Collections;
 
 #endregion
 
@@ -112,7 +108,7 @@ namespace Axiom.Core
 
                 // Initializes the Log Manager singleton
                 this.logMgr = new LogManager();
-				
+
                 //if logFileName is null, then just the Diagnostics (debug) writes will be made
                 // create a new default log
                 this.logMgr.CreateLog( logFilename, true, true );
@@ -152,9 +148,8 @@ namespace Axiom.Core
 
                 LodStrategyManager.Instance.Initialize();
 
-
 #if !AXIOM_USENEWCOMPILERS
-				ScriptCompilerManager.Instance.Initialize();
+                ScriptCompilerManager.Instance.Initialize();
 #endif // AXIOM_USENEWCOMPILERS
 
                 new PluginManager();
@@ -283,7 +278,7 @@ namespace Axiom.Core
         private float secondsBetweenFPSAverages = 1f;
 
         /// <summary>
-        ///		True if a request has been made to suspend rendering, typically because the 
+        ///		True if a request has been made to suspend rendering, typically because the
         ///	    form has been minimized
         /// </summary>
         private bool suspendRendering = false;
@@ -381,14 +376,14 @@ namespace Axiom.Core
         #region Properties
 
         /// <summary>
-        /// Specifies the name of the engine that will be used where needed (i.e. log files, etc).  
+        /// Specifies the name of the engine that will be used where needed (i.e. log files, etc).
         /// </summary>
         public string Copyright
         {
             get
             {
                 AssemblyCopyrightAttribute attribute =
-                        ( AssemblyCopyrightAttribute )
+                        (AssemblyCopyrightAttribute)
                         Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
                                                       typeof( AssemblyCopyrightAttribute ),
                                                       false );
@@ -421,7 +416,7 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>
         ///		This is only intended for internal use; it is only valid during the
-        ///		rendering of a frame.		
+        ///		rendering of a frame.
         ///</remarks>
         public SceneManager SceneManager
         {
@@ -447,7 +442,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Gets a list of all types of SceneManager available for construction, 
+        ///		Gets a list of all types of SceneManager available for construction,
         ///		providing some information about each one.
         /// </summary>
         public List<SceneManagerMetaData> MetaDataList
@@ -517,7 +512,7 @@ namespace Axiom.Core
             get
             {
                 return
-                        ( int )
+                        (int)
                         ( ( this.microsecondsPerFrame == 0 )
                                   ? this.microsecondsPerFrame
                                   : ( 1000000.0f / this.microsecondsPerFrame ) );
@@ -526,8 +521,8 @@ namespace Axiom.Core
             {
                 if ( value != 0 )
                 {
-                    this.microsecondsPerTick = 1000000.0f / ( float ) Stopwatch.Frequency;
-                    this.microsecondsPerFrame = 1000000.0f / ( float ) value;
+                    this.microsecondsPerTick = 1000000.0f / (float)Stopwatch.Frequency;
+                    this.microsecondsPerFrame = 1000000.0f / (float)value;
                 }
                 else // Disable MaxFPS
                 {
@@ -625,7 +620,7 @@ namespace Axiom.Core
 
         /// <summary>
         ///		Registers a new SceneManagerFactory, a factory object for creating instances
-        ///		of specific SceneManagers. 
+        ///		of specific SceneManagers.
         /// </summary>
         /// <remarks>
         ///		Plugins should call this to register as new SceneManager providers.
@@ -649,13 +644,13 @@ namespace Axiom.Core
         ///		Gets more information about a given type of SceneManager.
         /// </summary>
         /// <remarks>
-        ///		The metadata returned tells you a few things about a given type 
+        ///		The metadata returned tells you a few things about a given type
         ///		of SceneManager, which can be created using a factory that has been
         ///		registered already.
         /// </remarks>
         /// <param name="typeName">
         ///		The type name of the SceneManager you want to enquire on.
-        /// 	If you don't know the typeName already, you can iterate over the 
+        /// 	If you don't know the typeName already, you can iterate over the
         ///		metadata for all types using getMetaDataIterator.
         /// </param>
         public SceneManagerMetaData GetSceneManagerMetaData( string typeName )
@@ -667,7 +662,7 @@ namespace Axiom.Core
         ///		Creates a <see cref="SceneManager"/> instance of a given type.
         /// </summary>
         /// <remarks>
-        ///		You can use this method to create a SceneManager instance of a 
+        ///		You can use this method to create a SceneManager instance of a
         ///		given specific type. You may know this type already, or you may
         ///		have discovered it by looking at the results from <see cref="Root.GetSceneManagerMetaData"/>.
         /// </remarks>
@@ -683,7 +678,7 @@ namespace Axiom.Core
         ///		Creates a <see cref="SceneManager"/> instance of a given type.
         /// </summary>
         /// <remarks>
-        ///		You can use this method to create a SceneManager instance of a 
+        ///		You can use this method to create a SceneManager instance of a
         ///		given specific type. You may know this type already, or you may
         ///		have discovered it by looking at the results from <see cref="Root.GetSceneManagerMetaData"/>.
         /// </remarks>
@@ -707,15 +702,15 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>
         ///		Creates an instance of a <see cref="SceneManager"/> which supports the scene types
-        ///		identified in the parameter. If more than one type of SceneManager 
-        ///		has been registered as handling that combination of scene types, 
-        ///		in instance of the last one registered is returned.	
+        ///		identified in the parameter. If more than one type of SceneManager
+        ///		has been registered as handling that combination of scene types,
+        ///		in instance of the last one registered is returned.
         /// </remarks>
         /// <param name="sceneType"> A mask containing one or more <see cref="SceneType"/> flags.</param>
         /// <returns></returns>
         public SceneManager CreateSceneManager( SceneType sceneType )
         {
-            string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName(sceneType.ToString());
+            string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( sceneType.ToString() );
             return this.sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
         }
 
@@ -724,9 +719,9 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>
         ///		Creates an instance of a <see cref="SceneManager"/> which supports the scene types
-        ///		identified in the parameter. If more than one type of SceneManager 
-        ///		has been registered as handling that combination of scene types, 
-        ///		in instance of the last one registered is returned.	
+        ///		identified in the parameter. If more than one type of SceneManager
+        ///		has been registered as handling that combination of scene types,
+        ///		in instance of the last one registered is returned.
         /// </remarks>
         /// <param name="sceneType"> A mask containing one or more <see cref="SceneType"/> flags.</param>
         /// <param name="instanceName">
@@ -736,7 +731,7 @@ namespace Axiom.Core
         /// <returns></returns>
         public SceneManager CreateSceneManager( SceneType sceneType, string instanceName )
         {
-            if (String.IsNullOrEmpty( instanceName ) )
+            if ( String.IsNullOrEmpty( instanceName ) )
             {
                 return CreateSceneManager( sceneType );
             }
@@ -806,7 +801,7 @@ namespace Axiom.Core
 
             new ControllerManager();
 
- #if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             PlatformInformation.Log( LogManager.Instance.DefaultLog );
 #endif
             // initialize the current render system
@@ -858,7 +853,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		
+        ///
         /// </summary>
         /// <param name="name"></param>
         /// <param name="target"></param>
@@ -896,7 +891,7 @@ namespace Axiom.Core
 
         /// <summary>
         ///		Asks the current API to convert an instance of ColorEx to a 4 byte packed
-        ///		int value the way it would expect it. 		
+        ///		int value the way it would expect it.
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
@@ -908,7 +903,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///     
+        ///
         /// </summary>
         /// <param name="target"></param>
         public void DetachRenderTarget( RenderTarget target )
@@ -940,8 +935,8 @@ namespace Axiom.Core
                 return false;
 
             // update all current render targets
-            if ( ! this.UpdateAllRenderTargets() )
-               return false;
+            if ( !this.UpdateAllRenderTargets() )
+                return false;
 
             // Stop rendering if frame callback says so
             return this.OnFrameEnded();
@@ -972,7 +967,6 @@ namespace Axiom.Core
 
                 if ( !this.RenderOneFrame() )
                     break;
-
             }
         }
 
@@ -1004,7 +998,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///     Internal method used for updating all <see cref="RenderTarget"/> objects (windows, 
+        ///     Internal method used for updating all <see cref="RenderTarget"/> objects (windows,
         ///     renderable textures etc) which are set to auto-update.
         /// </summary>
         /// <remarks>
@@ -1109,6 +1103,11 @@ namespace Axiom.Core
                 PlatformManager.Instance.Dispose();
             }
 #endif
+            if ( ObjectManager.Instance != null )
+            {
+                ObjectManager.Instance.Dispose();
+            }
+
             if ( LogManager.Instance != null )
             {
                 LogManager.Instance.Dispose();
@@ -1133,7 +1132,7 @@ namespace Axiom.Core
 
             if ( type == FrameEventType.Start )
             {
-                result = ( float ) ( time - this.lastStartTime ) / 1000;
+                result = (float)( time - this.lastStartTime ) / 1000;
 
                 // update the last start time before the render targets are rendered
                 this.lastStartTime = time;
@@ -1148,7 +1147,7 @@ namespace Axiom.Core
                 {
                     // Is It Time To Update Our Calculations?
                     // Calculate New Framerate
-                    this.currentFPS = ( float ) this.frameCount / ( float ) ( time - this.lastCalculationTime ) * 1000f;
+                    this.currentFPS = (float)this.frameCount / (float)( time - this.lastCalculationTime ) * 1000f;
 
                     // calculate the averge framerate
                     if ( this.averageFPS == 0 )
@@ -1161,7 +1160,7 @@ namespace Axiom.Core
                     }
 
                     // Is The New Framerate A New Low?
-                    if ( this.currentFPS < this.lowestFPS || ( int ) this.lowestFPS == 0 )
+                    if ( this.currentFPS < this.lowestFPS || (int)this.lowestFPS == 0 )
                     {
                         // Set It To The New Low
                         this.lowestFPS = this.currentFPS;
@@ -1181,7 +1180,7 @@ namespace Axiom.Core
                     this.frameCount = 0;
                 }
 
-                result = ( float ) ( time - this.lastEndTime ) / 1000;
+                result = (float)( time - this.lastEndTime ) / 1000;
 
                 this.lastEndTime = time;
             }
@@ -1196,11 +1195,11 @@ namespace Axiom.Core
         ///    This method is only for internal use when you use the built-in rendering
         ///    loop (Root.StartRendering). However, if you run your own rendering loop then
         ///    you should call this method to ensure that FrameEvent handlers are notified
-        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    of frame events; processes like texture animation and particle systems rely on
         ///    this.
         ///    <p/>
         ///    This method calculates the frame timing information for you based on the elapsed
-        ///    time. If you want to specify elapsed times yourself you should call the other 
+        ///    time. If you want to specify elapsed times yourself you should call the other
         ///    version of this method which takes event details as a parameter.
         /// </remarks>
         public bool OnFrameStarted()
@@ -1222,8 +1221,8 @@ namespace Axiom.Core
         ///    you you may want to call this method too, although nothing in Axiom relies on this
         ///    particular event. Really if you're running your own rendering loop at
         ///    this level of detail then you can get the same effect as doing your
-        ///    updates in a OnFrameRenderingQueued event by just calling 
-        ///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false. 
+        ///    updates in a OnFrameRenderingQueued event by just calling
+        ///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false.
         /// </remarks>
         public bool OnFrameRenderingQueued()
         {
@@ -1242,11 +1241,11 @@ namespace Axiom.Core
         ///    This method is only for internal use when you use the built-in rendering
         ///    loop (Root.StartRendering). However, if you run your own rendering loop then
         ///    you should call this method to ensure that FrameEvent handlers are notified
-        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    of frame events; processes like texture animation and particle systems rely on
         ///    this.
         ///    <p/>
         ///    This method calculates the frame timing information for you based on the elapsed
-        ///    time. If you want to specify elapsed times yourself you should call the other 
+        ///    time. If you want to specify elapsed times yourself you should call the other
         ///    version of this method which takes event details as a parameter.
         /// </remarks>
         public bool OnFrameEnded()
@@ -1266,7 +1265,7 @@ namespace Axiom.Core
         ///    This method is only for internal use when you use the built-in rendering
         ///    loop (Root.StartRendering). However, if you run your own rendering loop then
         ///    you should call this method to ensure that FrameEvent handlers are notified
-        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    of frame events; processes like texture animation and particle systems rely on
         ///    this.
         ///    <p/>
         ///    This method takes an event object as a parameter, so you can specify the times
@@ -1274,7 +1273,7 @@ namespace Axiom.Core
         ///    for you, then call the other version of this method with no parameters.
         /// </remarks>
         /// <param name="e">
-        ///    Event object which includes all the timing information which must already be 
+        ///    Event object which includes all the timing information which must already be
         ///    calculated.  RequestShutdown should be checked after each call, because that means
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
@@ -1297,8 +1296,8 @@ namespace Axiom.Core
         ///    you you may want to call this method too, although nothing in Axiom relies on this
         ///    particular event. Really if you're running your own rendering loop at
         ///    this level of detail then you can get the same effect as doing your
-        ///    updates in a OnFrameRenderingQueued event by just calling 
-        ///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false. 
+        ///    updates in a OnFrameRenderingQueued event by just calling
+        ///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false.
         /// </remarks>
         public bool OnFrameRenderingQueued( FrameEventArgs e )
         {
@@ -1314,7 +1313,7 @@ namespace Axiom.Core
         ///    This method is only for internal use when you use the built-in rendering
         ///    loop (Root.StartRendering). However, if you run your own rendering loop then
         ///    you should call this method to ensure that FrameEvent handlers are notified
-        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    of frame events; processes like texture animation and particle systems rely on
         ///    this.
         ///    <p/>
         ///    This method takes an event object as a parameter, so you can specify the times
@@ -1322,13 +1321,13 @@ namespace Axiom.Core
         ///    for you, then call the other version of this method with no parameters.
         /// </remarks>
         /// <param name="e">
-        ///    Event object which includes all the timing information which must already be 
+        ///    Event object which includes all the timing information which must already be
         ///    calculated.  RequestShutdown should be checked after each call, because that means
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
         public bool OnFrameEnded( FrameEventArgs e )
         {
-            this._frameEndedEvent.Fire(this, e, (args) => args.StopRendering != true );
+            this._frameEndedEvent.Fire( this, e, ( args ) => args.StopRendering != true );
 
             // Tell buffer manager to free temp buffers used this frame
             if ( HardwareBufferManager.Instance != null )
@@ -1398,7 +1397,7 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>
         ///	    All instances of objects created by this factory will be destroyed
-        ///	    before removing the factory (by calling back the factories 
+        ///	    before removing the factory (by calling back the factories
         ///	    'DestroyInstance' method). The plugin writer is responsible for actually
         ///	    destroying the factory.
         /// </remarks>
@@ -1416,8 +1415,8 @@ namespace Axiom.Core
         ///	    instances of a particular type, as identified by the Type property.
         /// </summary>
         /// <remarks>
-        ///     Plugin creators can create subclasses of MovableObjectFactory which 
-        ///	    construct custom subclasses of MovableObject for insertion in the 
+        ///     Plugin creators can create subclasses of MovableObjectFactory which
+        ///	    construct custom subclasses of MovableObject for insertion in the
         ///	    scene. This is the primary way that plugins can make custom objects
         ///	    available.
         /// </remarks>
@@ -1425,7 +1424,7 @@ namespace Axiom.Core
         ///     The factory instance.
         /// </param>
         /// <param name="overrideExisting">
-        ///     Set this to true to override any existing 
+        ///     Set this to true to override any existing
         ///	    factories which are registered for the same type. You should only
         ///	    change this if you are very sure you know what you're doing.
         /// </param>

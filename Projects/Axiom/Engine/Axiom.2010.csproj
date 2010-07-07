@@ -203,6 +203,7 @@
     <Compile Include="Core\Collections\SceneQueryMovableObjectWorldFragmentIntersectionList.cs" />
     <Compile Include="Core\Collections\ViewportCollection.cs" />
     <Compile Include="Core\DefaultShadowCameraSetup.cs" />
+    <Compile Include="Core\DisposableObject.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\ILodListener.cs" />
