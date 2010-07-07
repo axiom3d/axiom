@@ -2,7 +2,6 @@
 
 using System.Threading;
 using System.Drawing;
-using Axiom.Core;
 using Axiom.Input;
 using Axiom.Utilities;
 using OpenTK.Input;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{766F7401-E3A2-495F-BA07-E0DBFF228705}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Axiom.Demos.Browser.CommandLine</AssemblyName>
@@ -24,7 +24,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -87,7 +87,7 @@
       <Name>Axiom.Platforms.OpenTK</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
-      <Project>{24CC9752-FFA0-43A7-8CCE-44812D828E7D}</Project>
+      <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
       <Name>Axiom.Plugins.CgProgramManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
@@ -99,7 +99,7 @@
       <Name>OctreeZone</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
-      <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
+      <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
       <Name>Axiom.Plugins.ParticleFX</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj">
@@ -107,11 +107,11 @@
       <Name>Axiom.RenderSystems.OpenGL.OpenTK</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
-      <Project>{AE2065CC-32F5-48F2-988F-D7E8D0789F30}</Project>
+      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
       <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
@@ -1130,6 +1130,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
