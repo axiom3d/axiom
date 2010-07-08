@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -80,7 +80,7 @@ namespace Axiom.Core
 	///    have parts with different materials.
 	///    <p/>
 	///    As described above, because the mesh may have sections of differing
-	///    material properties, a mesh is inherently a compound contruct,
+	///    material properties, a mesh is inherently a compound construct,
 	///    consisting of one or more SubMesh objects.
 	///    However, it strongly 'owns' its SubMeshes such that they
 	///    are loaded / unloaded at the same time. This is contrary to
@@ -133,9 +133,9 @@ namespace Axiom.Core
 				return _subMeshList.Count;
 			}
 		}
-		
+
 		#endregion SubMesh Properties
-			
+
 		#region BoundingBox Property
 
 		/// <summary>
@@ -146,8 +146,8 @@ namespace Axiom.Core
 		///		Gets/Sets the bounding box for this mesh.
 		/// </summary>
 		/// <remarks>
-		///		Setting this property is required when building manual meshes now, because Axiom can no longer 
-		///		update the bounds for you, because it cannot necessarily read vertex data back from 
+		///		Setting this property is required when building manual meshes now, because Axiom can no longer
+		///		update the bounds for you, because it cannot necessarily read vertex data back from
 		///		the vertex buffers which this mesh uses (they very well might be write-only, and even
 		///		if they are not, reading data from a hardware buffer is a bottleneck).
 		/// </remarks>
@@ -283,9 +283,9 @@ namespace Axiom.Core
 				return _boneAssignmentList;
 			}
 		}
-		
+
 		#endregion BoneAssignmentList Property
-			
+
 		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
 		protected bool boneAssignmentsOutOfDate;
 
@@ -317,7 +317,7 @@ namespace Axiom.Core
 		}
 
 		#endregion VertexBufferUsage Property
-			
+
 		#region IndexBufferUsage Property
 
 		/// <summary>
@@ -363,7 +363,7 @@ namespace Axiom.Core
 		}
 
 		#endregion UseVertexShadowBuffer Property
-			
+
 		#region UseIndexShadowBuffer Property
 
 		/// <summary>
@@ -394,7 +394,7 @@ namespace Axiom.Core
 		/// </summary>
 		private bool _isPreparedForShadowVolumes;
 		/// <summary>
-		///		Gets whether this mesh has already had its geometry prepared for use in 
+		///		Gets whether this mesh has already had its geometry prepared for use in
 		///		rendering shadow volumes.
 		/// </summary>
 		public bool IsPreparedForShadowVolumes
@@ -406,7 +406,7 @@ namespace Axiom.Core
 		}
 
 		#endregion IsPreparedForShadowVolumes Property
-			
+
 		#region AutoBuildEdgeLists Property
 
 		/// <summary>
@@ -452,9 +452,9 @@ namespace Axiom.Core
 				_edgeListsBuilt = value;
 			}
 		}
-		
+
 		#endregion IsEdgeListBuilt Property
-			
+
 		#region AttachmentPoints Property
 
 		/// <summary>Internal list of named transforms attached to this mesh.</summary>
@@ -472,7 +472,7 @@ namespace Axiom.Core
 		}
 
 		#endregion AttachmentPoints Property
-			
+
 		/// <summary>
 		///     Storage of morph animations, lookup by name
 		/// </summary>
@@ -574,7 +574,7 @@ namespace Axiom.Core
 		}
 
 		#endregion TriangleIntersector Property
-			
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -594,16 +594,16 @@ namespace Axiom.Core
 			_useVertexShadowBuffer = true;
 			_useIndexShadowBuffer = true;
 
-            // Initialise to default strategy
-            _lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
+			// Initialise to default strategy
+			_lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
 
-		    // Init first (manual) lod
-		    MeshLodUsage lod = new MeshLodUsage();
-            lod.UserValue = float.NaN; // User value not used for base lod level
-		    lod.Value = _lodStrategy.BaseValue;
-            lod.EdgeData = null;
-            lod.ManualMesh = null;
-		    meshLodUsageList.Add( lod );
+			// Init first (manual) lod
+			MeshLodUsage lod = new MeshLodUsage();
+			lod.UserValue = float.NaN; // User value not used for base lod level
+			lod.Value = _lodStrategy.BaseValue;
+			lod.EdgeData = null;
+			lod.ManualMesh = null;
+			meshLodUsageList.Add( lod );
 
 
 			// always use software blending for now
@@ -618,7 +618,7 @@ namespace Axiom.Core
 
 
 		/// <summary>
-		///		Gets the edge list for this mesh, building it if required. 
+		///		Gets the edge list for this mesh, building it if required.
 		/// </summary>
 		/// <returns>The edge list for mesh LOD 0.</returns>
 		public EdgeData GetEdgeList()
@@ -627,10 +627,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Gets the edge list for this mesh, building it if required. 
+		///		Gets the edge list for this mesh, building it if required.
 		/// </summary>
 		/// <remarks>
-		///		You must ensure that the Mesh as been prepared for shadow volume 
+		///		You must ensure that the Mesh as been prepared for shadow volume
 		///		rendering if you intend to use this information for that purpose.
 		/// </remarks>
 		public EdgeData GetEdgeList( int lodIndex )
@@ -648,12 +648,12 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///    Assigns a vertex to a bone with a given weight, for skeletal animation. 
+		///    Assigns a vertex to a bone with a given weight, for skeletal animation.
 		/// </summary>
 		/// <remarks>
 		///    This method is only valid after setting SkeletonName.
-		///    You should not need to modify bone assignments during rendering (only the positions of bones) 
-		///    and the engine reserves the right to do some internal data reformatting of this information, 
+		///    You should not need to modify bone assignments during rendering (only the positions of bones)
+		///    and the engine reserves the right to do some internal data reformatting of this information,
 		///    depending on render system requirements.
 		/// </remarks>
 		/// <param name="boneAssignment">Bone assignment to add.</param>
@@ -930,7 +930,7 @@ namespace Axiom.Core
 							// get indices of vertices that form a polygon in the position buffer
 							vertIdx[ i ] = pIdx[ vCount++ ];
 
-                            IntPtr tmpPtr = new IntPtr( posPtr.ToInt64() + elemPos.Offset + ( posInc * vertIdx[ i ] ) );
+							IntPtr tmpPtr = new IntPtr( posPtr.ToInt64() + elemPos.Offset + ( posInc * vertIdx[ i ] ) );
 
 							pVPos = (float*)tmpPtr.ToPointer();
 
@@ -940,7 +940,7 @@ namespace Axiom.Core
 							vertPos[ i ].z = pVPos[ 2 ];
 
 							// get the vertex tex coords from the 2D tex coord buffer
-                            tmpPtr = new IntPtr( srcPtr.ToInt64() + srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
+							tmpPtr = new IntPtr( srcPtr.ToInt64() + srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
 							p2DTC = (float*)tmpPtr.ToPointer();
 
 							u[ i ] = p2DTC[ 0 ];
@@ -953,7 +953,7 @@ namespace Axiom.Core
 								vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ],
 								u[ 0 ], v[ 0 ], u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
 
-						// write new tex.coords 
+						// write new tex.coords
 						// note we only write the tangent, not the binormal since we can calculate
 						// the binormal in the vertex program
 						byte* vBase = (byte*)destPtr.ToPointer();
@@ -962,7 +962,7 @@ namespace Axiom.Core
 						{
 							// write values (they must be 0 and we must add them so we can average
 							// all the contributions from all the faces
-                            IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + ( destInc * vertIdx[ i ] ) );
+							IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + ( destInc * vertIdx[ i ] ) );
 
 							p3DTC = (float*)tmpPtr.ToPointer();
 
@@ -981,7 +981,7 @@ namespace Axiom.Core
 					// loop through and normalize all 3d tex coords
 					for ( int n = 0; n < numVerts; n++ )
 					{
-                        IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + offset );
+						IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + offset );
 
 						p3DTC = (float*)tmpPtr.ToPointer();
 
@@ -1030,12 +1030,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public void BuildTangentVectors()
 		{
-			// default using the first tex coord set and stuffing the tangent vectors in the 
+			// default using the first tex coord set and stuffing the tangent vectors in the
 			BuildTangentVectors( 0, 1 );
 		}
 
 		/// <summary>
-		///    Removes all bone assignments for this mesh. 
+		///    Removes all bone assignments for this mesh.
 		/// </summary>
 		/// <remarks>
 		///    This method is for modifying weights to the shared geometry of the Mesh. To assign
@@ -1219,8 +1219,8 @@ namespace Axiom.Core
 
 			if ( needsToBeCreated )
 			{
-				// What we need to do, to be most efficient with our vertex streams, 
-				// is to tack the new 3D coordinate set onto the same buffer as the 
+				// What we need to do, to be most efficient with our vertex streams,
+				// is to tack the new 3D coordinate set onto the same buffer as the
 				// previous texture coord set
 				VertexElement prevTexCoordElem =
 					vertexData.vertexDeclaration.FindElementBySemantic(
@@ -1287,8 +1287,8 @@ namespace Axiom.Core
 		/// <remarks>
 		///     This helper method will suggest source and destination texture coordinate sets
 		///     for a call to <see cref="BuildTangentVectors"/>. It will detect when there are inappropriate
-		///     conditions (such as multiple geometry sets which don't agree). 
-		///     Moreover, it will return 'true' if it detects that there are aleady 3D 
+		///     conditions (such as multiple geometry sets which don't agree).
+		///     Moreover, it will return 'true' if it detects that there are aleady 3D
 		///     coordinates in the mesh, and therefore tangents may have been prepared already.
 		/// </remarks>
 		/// <param name="sourceCoordSet">A source texture coordinate set which will be populated.</param>
@@ -1526,7 +1526,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///    Internal notification, used to tell the Mesh which Skeleton to use without loading it. 
+		///    Internal notification, used to tell the Mesh which Skeleton to use without loading it.
 		/// </summary>
 		/// <remarks>
 		///    This is only here for unusual situation where you want to manually set up a
@@ -1544,16 +1544,16 @@ namespace Axiom.Core
 		///		This method prepares the mesh for generating a renderable shadow volume.
 		/// </summary>
 		/// <remarks>
-		///		Preparing a mesh to generate a shadow volume involves firstly ensuring that the 
+		///		Preparing a mesh to generate a shadow volume involves firstly ensuring that the
 		///		vertex buffer containing the positions for the mesh is a standalone vertex buffer,
 		///		with no other components in it. This method will therefore break apart any existing
-		///		vertex buffers this mesh holds if position is sharing a vertex buffer. 
-		///		Secondly, it will double the size of this vertex buffer so that there are 2 copies of 
-		///		the position data for the mesh. The first half is used for the original, and the second 
-		///		half is used for the 'extruded' version of the mesh. The vertex count of the main 
-		///		<see cref="VertexData"/> used to render the mesh will remain the same though, so as not to add any 
+		///		vertex buffers this mesh holds if position is sharing a vertex buffer.
+		///		Secondly, it will double the size of this vertex buffer so that there are 2 copies of
+		///		the position data for the mesh. The first half is used for the original, and the second
+		///		half is used for the 'extruded' version of the mesh. The vertex count of the main
+		///		<see cref="VertexData"/> used to render the mesh will remain the same though, so as not to add any
 		///		overhead to regular rendering of the object.
-		///		Both copies of the position are required in one buffer because shadow volumes stretch 
+		///		Both copies of the position are required in one buffer because shadow volumes stretch
 		///		from the original mesh to the extruded version.
 		///		<p/>
 		///		Because shadow volumes are rendered in turn, no additional
@@ -1613,7 +1613,7 @@ namespace Axiom.Core
 				// gets the numbers of assignments for the current vertex
 				currentBones = assignment.Value.Count;
 
-				// Deal with max bones update 
+				// Deal with max bones update
 				// (note this will record maxBones even if they exceed limit)
 				if ( maxBones < currentBones )
 				{
@@ -1673,14 +1673,14 @@ namespace Axiom.Core
 		/// <returns>A new <see cref="SubMesh"/> with this Mesh as its parent.</returns>
 		public SubMesh CreateSubMesh( string name )
 		{
-            SubMesh subMesh = new SubMesh();
-            subMesh.Name = name;
+			SubMesh subMesh = new SubMesh();
+			subMesh.Name = name;
 
-            // set the parent of the subMesh to us
-            subMesh.Parent = this;
+			// set the parent of the subMesh to us
+			subMesh.Parent = this;
 
-            // add to the list of child meshes
-            _subMeshList.Add(subMesh);
+			// add to the list of child meshes
+			_subMeshList.Add( subMesh );
 
 			return subMesh;
 		}
@@ -1696,15 +1696,15 @@ namespace Axiom.Core
 		/// <returns>A new SubMesh with this Mesh as its parent.</returns>
 		public SubMesh CreateSubMesh()
 		{
-            return CreateSubMesh(String.Empty);
+			return CreateSubMesh( String.Empty );
 		}
 
 		/// <summary>
 		///		Sets the policy for the vertex buffers to be used when loading this Mesh.
 		/// </summary>
 		/// <remarks>
-		///		By default, when loading the Mesh, static, write-only vertex and index buffers 
-		///		will be used where possible in order to improve rendering performance. 
+		///		By default, when loading the Mesh, static, write-only vertex and index buffers
+		///		will be used where possible in order to improve rendering performance.
 		///		However, such buffers
 		///		cannot be manipulated on the fly by CPU code (although shader code can). If you
 		///		wish to use the CPU to modify these buffers, you should call this method. Note,
@@ -1713,7 +1713,7 @@ namespace Axiom.Core
 		///		own if you see fit too, in which case you don't need to call this method since it
 		///		only affects buffers created by the mesh itself.
 		///		<p/>
-		///		You can define the approach to a Mesh by changing the default parameters to 
+		///		You can define the approach to a Mesh by changing the default parameters to
 		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
 		///		the first time instead of you having to reload the mesh after changing these options.
 		/// </remarks>
@@ -1733,8 +1733,8 @@ namespace Axiom.Core
 		///		Sets the policy for the index buffers to be used when loading this Mesh.
 		/// </summary>
 		/// <remarks>
-		///		By default, when loading the Mesh, static, write-only vertex and index buffers 
-		///		will be used where possible in order to improve rendering performance. 
+		///		By default, when loading the Mesh, static, write-only vertex and index buffers
+		///		will be used where possible in order to improve rendering performance.
 		///		However, such buffers
 		///		cannot be manipulated on the fly by CPU code (although shader code can). If you
 		///		wish to use the CPU to modify these buffers, you should call this method. Note,
@@ -1743,7 +1743,7 @@ namespace Axiom.Core
 		///		own if you see fit too, in which case you don't need to call this method since it
 		///		only affects buffers created by the mesh itself.
 		///		<p/>
-		///		You can define the approach to a Mesh by changing the default parameters to 
+		///		You can define the approach to a Mesh by changing the default parameters to
 		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
 		///		the first time instead of you having to reload the mesh after changing these options.
 		/// </remarks>
@@ -1846,7 +1846,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Creates a new Animation object for vertex animating this mesh. 
+		///     Creates a new Animation object for vertex animating this mesh.
 		/// </summary>
 		/// <param name="name">The name of this animation</param>
 		/// <param name="length">The length of the animation in seconds</param>
@@ -1867,7 +1867,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Returns the named vertex Animation object. 
+		///     Returns the named vertex Animation object.
 		/// </summary>
 		/// <param name="name">The name of the animation</param>
 		public Animation GetAnimation( string name )
@@ -1879,7 +1879,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>Gets a single morph animation by index.</summary>
-		// ??? Not sure this is right - - it's depending on the order of 
+		// ??? Not sure this is right - - it's depending on the order of
 		// ??? insertion, which seems really wrong for a dictionary
 		public Animation GetAnimation( ushort index )
 		{
@@ -1924,7 +1924,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Gets a pointer to a vertex data element based on a morph animation 
+		///     Gets a pointer to a vertex data element based on a morph animation
 		///    	track handle.
 		/// </summary>
 		/// <remarks>
@@ -1944,7 +1944,7 @@ namespace Axiom.Core
 		/// <param name="target">
 		///     The target geometry index; 0 is the shared Mesh geometry, 1+ is the
 		///    	dedicated SubMesh geometry belonging to submesh index + 1.
-		/// </param>	
+		/// </param>
 		/// <param name="name">Name to give the pose, which is optional</param>
 		/// <returns>A new Pose ready for population</returns>
 		public Pose CreatePose( ushort target, string name )
@@ -2021,209 +2021,209 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-        #region Mesh Level of Detail
+		#region Mesh Level of Detail
 
-        #region IsLodManual Property
+		#region IsLodManual Property
 
-        /// <summary>
-        ///	Flag indicating the use of manually created LOD meshes.
-        /// </summary>
-        private bool _isLodManual;
-        /// <summary>
-        /// Returns true if this mesh is using manual LOD.
-        /// </summary>
-        /// <remarks>
-        /// A mesh can either use automatically generated LOD, or it can use alternative
-        /// meshes as provided by an artist. A mesh can only use either all manual LODs 
-        /// or all generated LODs, not a mixture of both.
-        /// </remarks>
-        public bool IsLodManual
-        {
-            get
-            {
-                return _isLodManual;
-            }
-            protected internal set
-            {
-                _isLodManual = value;
-            }
-        }
-
-        #endregion IsLodManual Property
-
-        #region LodStrategy Property
-
-	    private LodStrategy _lodStrategy;
-        public LodStrategy LodStrategy
-        {
-            get
-            {
-                return _lodStrategy;
-            }
-            set
-            {
-                _lodStrategy = value;
-                Debug.Assert( this.meshLodUsageList.Count > 0 );
-
-                this.meshLodUsageList[ 0 ].Value = this._lodStrategy.BaseValue;
-
-                // Re-transform user lod values (starting at index 1, no need to transform base value)
-                foreach ( MeshLodUsage meshLodUsage in meshLodUsageList )
-                {
-                    meshLodUsage.Value = this._lodStrategy.TransformUserValue( meshLodUsage.UserValue );
-                }
-            }
-        }
-
-        #endregion LodStrategy Property
-
-        /// <summary>
-        ///	List of data structures describing LOD usage.
-        /// </summary>
-        protected MeshLodUsageList meshLodUsageList = new MeshLodUsageList();
-
-        public MeshLodUsageList MeshLodUsageList
-        {
-            get
-            {
-                return meshLodUsageList;
-            }
-        }
-        /// <summary>
-        ///	Gets the current number of Lod levels associated with this mesh.
-        /// </summary>
-        public int LodLevelCount
-        {
-            get
-            {
-                return meshLodUsageList.Count;
-            }
-        }
-
-        public void GenerateLodLevels( LodValueList lodValues, ProgressiveMesh.VertexReductionQuota reductionMethod, Real reductionValue )
-        {
-            RemoveLodLevels();
-
-            LogManager.Instance.Write( "Generating {0} lower LODs for mesh {1}.", lodValues.Count, Name );
-
-            foreach ( SubMesh subMesh in _subMeshList )
-            {
-                            // check if triangles are present
-                if ( subMesh.IndexData.indexCount > 0 )
-                {
-                    // Set up data for reduction
-                    VertexData vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
-
-                    ProgressiveMesh pm = new ProgressiveMesh( vertexData, subMesh.indexData );
-                    pm.Build( (ushort)lodValues.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
-                }
-                else
-                {
-                    // create empty index data for each lod
-                    for ( int i = 0; i < lodValues.Count; ++i )
-                    {
-                        subMesh.LodFaceList.Add( new IndexData() );
-                    }
-                }
-            }
-
-            // Iterate over the lods and record usage
-            foreach ( Real value in lodValues )
-            {
-                // Record usage
-                MeshLodUsage lod = new MeshLodUsage();
-                lod.UserValue = value;
-                lod.Value = _lodStrategy.TransformUserValue( value );
-                lod.EdgeData = null;
-                lod.ManualMesh = null;
-                meshLodUsageList.Add( lod );
-            }
-        }
-
-        public void RemoveLodLevels()
-        {
-            if ( !this.IsLodManual )
-            {
-                foreach ( SubMesh subMesh in this._subMeshList )
-                    subMesh.RemoveLodLevels();
-            }
-
-            FreeEdgeList();
-            this.meshLodUsageList.Clear();
-            MeshLodUsage lod = new MeshLodUsage();
-            lod.UserValue = float.NaN;
-            lod.Value = _lodStrategy.BaseValue;
-            lod.EdgeData = null;
-            lod.ManualMesh = null;
-            this.meshLodUsageList.Add( lod );
-            this._isLodManual = false;
-        }
-
-        /// <summary>
-        ///    Retrieves the level of detail index for the given lod value.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public int GetLodIndex( Real value )
-        {
-            return _lodStrategy.GetIndex( value, meshLodUsageList );
-        }
-
-        /// <summary>
-        ///    Gets the mesh lod level at the specified index.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public MeshLodUsage GetLodLevel( int index )
-        {
-            Debug.Assert( index < meshLodUsageList.Count, "index < lodUsageList.Count" );
-
-            MeshLodUsage usage = meshLodUsageList[ index ];
-
-            // load the manual lod mesh for this level if not done already
-            if ( _isLodManual && index > 0 && usage.ManualMesh == null )
-            {
-                usage.ManualMesh = MeshManager.Instance.Load( usage.ManualName, Group );
-
-                // get the edge data, if required
-                if ( !_autoBuildEdgeLists )
-                {
-                    usage.EdgeData = usage.ManualMesh.GetEdgeList( 0 );
-                }
-            }
-
-            return usage;
-        }
-
-        public void SetLodInfo(int levelCount, bool isManual)
-        {
-#warning Implement Mesh.edgeListsBuilt
-            //Debug.Assert( !this.edgeListsBuilt, "Can't modify LOD after edge lists built.");\
-
-            // Basic prerequisites
-            Debug.Assert( levelCount > 0, "Must be at least one level (full detail level must exist)" );
-
-            //mNumLods = numLevels;
-            //mMeshLodUsageList.resize( numLevels );
-            //// Resize submesh face data lists too
-            //for ( SubMeshList::iterator i = mSubMeshList.begin(); i != mSubMeshList.end(); ++i )
-            //{
-            //    ( *i )->mLodFaceList.resize( numLevels - 1 );
-            //}
-            IsLodManual = isManual;
-
-        }
-        #endregion Mesh Level of Detail
-
-        #region Static Methods
-
-        /// <summary>
-		///		Performs a software indexed vertex blend, of the kind used for
-		///		skeletal animation although it can be used for other purposes. 
+		/// <summary>
+		///	Flag indicating the use of manually created LOD meshes.
+		/// </summary>
+		private bool _isLodManual;
+		/// <summary>
+		/// Returns true if this mesh is using manual LOD.
 		/// </summary>
 		/// <remarks>
-		///		This function is supplied to update vertex data with blends 
-		///		done in software, either because no hardware support is available, 
+		/// A mesh can either use automatically generated LOD, or it can use alternative
+		/// meshes as provided by an artist. A mesh can only use either all manual LODs
+		/// or all generated LODs, not a mixture of both.
+		/// </remarks>
+		public bool IsLodManual
+		{
+			get
+			{
+				return _isLodManual;
+			}
+			protected internal set
+			{
+				_isLodManual = value;
+			}
+		}
+
+		#endregion IsLodManual Property
+
+		#region LodStrategy Property
+
+		private LodStrategy _lodStrategy;
+		public LodStrategy LodStrategy
+		{
+			get
+			{
+				return _lodStrategy;
+			}
+			set
+			{
+				_lodStrategy = value;
+				Debug.Assert( this.meshLodUsageList.Count > 0 );
+
+				this.meshLodUsageList[ 0 ].Value = this._lodStrategy.BaseValue;
+
+				// Re-transform user lod values (starting at index 1, no need to transform base value)
+				foreach ( MeshLodUsage meshLodUsage in meshLodUsageList )
+				{
+					meshLodUsage.Value = this._lodStrategy.TransformUserValue( meshLodUsage.UserValue );
+				}
+			}
+		}
+
+		#endregion LodStrategy Property
+
+		/// <summary>
+		///	List of data structures describing LOD usage.
+		/// </summary>
+		protected MeshLodUsageList meshLodUsageList = new MeshLodUsageList();
+
+		public MeshLodUsageList MeshLodUsageList
+		{
+			get
+			{
+				return meshLodUsageList;
+			}
+		}
+		/// <summary>
+		///	Gets the current number of Lod levels associated with this mesh.
+		/// </summary>
+		public int LodLevelCount
+		{
+			get
+			{
+				return meshLodUsageList.Count;
+			}
+		}
+
+		public void GenerateLodLevels( LodValueList lodValues, ProgressiveMesh.VertexReductionQuota reductionMethod, Real reductionValue )
+		{
+			RemoveLodLevels();
+
+			LogManager.Instance.Write( "Generating {0} lower LODs for mesh {1}.", lodValues.Count, Name );
+
+			foreach ( SubMesh subMesh in _subMeshList )
+			{
+				// check if triangles are present
+				if ( subMesh.IndexData.indexCount > 0 )
+				{
+					// Set up data for reduction
+					VertexData vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
+
+					ProgressiveMesh pm = new ProgressiveMesh( vertexData, subMesh.indexData );
+					pm.Build( (ushort)lodValues.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
+				}
+				else
+				{
+					// create empty index data for each lod
+					for ( int i = 0; i < lodValues.Count; ++i )
+					{
+						subMesh.LodFaceList.Add( new IndexData() );
+					}
+				}
+			}
+
+			// Iterate over the lods and record usage
+			foreach ( Real value in lodValues )
+			{
+				// Record usage
+				MeshLodUsage lod = new MeshLodUsage();
+				lod.UserValue = value;
+				lod.Value = _lodStrategy.TransformUserValue( value );
+				lod.EdgeData = null;
+				lod.ManualMesh = null;
+				meshLodUsageList.Add( lod );
+			}
+		}
+
+		public void RemoveLodLevels()
+		{
+			if ( !this.IsLodManual )
+			{
+				foreach ( SubMesh subMesh in this._subMeshList )
+					subMesh.RemoveLodLevels();
+			}
+
+			FreeEdgeList();
+			this.meshLodUsageList.Clear();
+			MeshLodUsage lod = new MeshLodUsage();
+			lod.UserValue = float.NaN;
+			lod.Value = _lodStrategy.BaseValue;
+			lod.EdgeData = null;
+			lod.ManualMesh = null;
+			this.meshLodUsageList.Add( lod );
+			this._isLodManual = false;
+		}
+
+		/// <summary>
+		///    Retrieves the level of detail index for the given lod value.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public int GetLodIndex( Real value )
+		{
+			return _lodStrategy.GetIndex( value, meshLodUsageList );
+		}
+
+		/// <summary>
+		///    Gets the mesh lod level at the specified index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public MeshLodUsage GetLodLevel( int index )
+		{
+			Debug.Assert( index < meshLodUsageList.Count, "index < lodUsageList.Count" );
+
+			MeshLodUsage usage = meshLodUsageList[ index ];
+
+			// load the manual lod mesh for this level if not done already
+			if ( _isLodManual && index > 0 && usage.ManualMesh == null )
+			{
+				usage.ManualMesh = MeshManager.Instance.Load( usage.ManualName, Group );
+
+				// get the edge data, if required
+				if ( !_autoBuildEdgeLists )
+				{
+					usage.EdgeData = usage.ManualMesh.GetEdgeList( 0 );
+				}
+			}
+
+			return usage;
+		}
+
+		public void SetLodInfo( int levelCount, bool isManual )
+		{
+#warning Implement Mesh.edgeListsBuilt
+			//Debug.Assert( !this.edgeListsBuilt, "Can't modify LOD after edge lists built.");\
+
+			// Basic prerequisites
+			Debug.Assert( levelCount > 0, "Must be at least one level (full detail level must exist)" );
+
+			//mNumLods = numLevels;
+			//mMeshLodUsageList.resize( numLevels );
+			//// Resize submesh face data lists too
+			//for ( SubMeshList::iterator i = mSubMeshList.begin(); i != mSubMeshList.end(); ++i )
+			//{
+			//    ( *i )->mLodFaceList.resize( numLevels - 1 );
+			//}
+			IsLodManual = isManual;
+
+		}
+		#endregion Mesh Level of Detail
+
+		#region Static Methods
+
+		/// <summary>
+		///		Performs a software indexed vertex blend, of the kind used for
+		///		skeletal animation although it can be used for other purposes.
+		/// </summary>
+		/// <remarks>
+		///		This function is supplied to update vertex data with blends
+		///		done in software, either because no hardware support is available,
 		///		or that you need the results of the blend for some other CPU operations.
 		/// </remarks>
 		/// <param name="sourceVertexData">
@@ -2232,7 +2232,7 @@ namespace Axiom.Core
 		/// <param name="targetVertexData">
 		///		<see cref="VertexData"/> class containing target position
 		///		and normal buffers which will be updated with the blended versions.
-		///		Note that the layout of the source and target position / normal 
+		///		Note that the layout of the source and target position / normal
 		///		buffers must be identical, ie they must use the same buffer indexes.
 		/// </param>
 		/// <param name="matrices">An array of matrices to be used to blend.</param>
@@ -2462,7 +2462,7 @@ namespace Axiom.Core
 
 					int blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
 					int blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
-					// Loop per blend weight 
+					// Loop per blend weight
 					for ( int blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
 					{
 						float blendWeight = pBlendWeight[ blendWeightOffset + blendIdx ];
@@ -2635,7 +2635,7 @@ namespace Axiom.Core
 
 		/// <summary>
 		///     Performs a software vertex morph, of the kind used for
-		///     morph animation although it can be used for other purposes. 
+		///     morph animation although it can be used for other purposes.
 		/// </summary>
 		/// <remarks>
 		///   	This function will linearly interpolate positions between two
@@ -2688,8 +2688,8 @@ namespace Axiom.Core
 		///     morph animation although it can be used for other purposes.
 		/// </summary>
 		/// <remarks>
-		///     This function will apply a weighted offset to the positions in the 
-		///     incoming vertex data (therefore this is a read/write operation, and 
+		///     This function will apply a weighted offset to the positions in the
+		///     incoming vertex data (therefore this is a read/write operation, and
 		///     if you expect to call it more than once with the same data, then
 		///     you would be best to suppress hardware uploads of the position buffer
 		///     for the duration)
@@ -2779,7 +2779,7 @@ namespace Axiom.Core
 				Unload();
 			}
 
-			// I should eventually call Preload here, and then use 
+			// I should eventually call Preload here, and then use
 			// the preloaded data to make future loads faster, but
 			// I haven't finished the Preload stuff yet.
 			// Preload();
@@ -2821,12 +2821,12 @@ namespace Axiom.Core
 				}
 			}
 
-            // The loading process accesses lod usages directly, so
-            // transformation of user values must occur after loading is complete.
+			// The loading process accesses lod usages directly, so
+			// transformation of user values must occur after loading is complete.
 
-            // Transform user lod values
-            foreach ( MeshLodUsage mlu in meshLodUsageList )
-                mlu.Value = _lodStrategy.TransformUserValue( mlu.UserValue );
+			// Transform user lod values
+			foreach ( MeshLodUsage mlu in meshLodUsageList )
+				mlu.Value = _lodStrategy.TransformUserValue( mlu.UserValue );
 
 			// meshLoadMeter.Exit();
 		}
@@ -2843,7 +2843,34 @@ namespace Axiom.Core
 			_isPreparedForShadowVolumes = false;
 		}
 
-		#endregion
+		#endregion Implementation of Resource
+
+		#region IDisposable Implementation
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					if ( _skeleton != null )
+						this._skeleton.Dispose();
+					foreach ( SubMesh subMesh in _subMeshList )
+					{
+						subMesh.Dispose();
+					}
+					if ( this._sharedVertexData != null )
+						this._sharedVertexData.Dispose();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+		}
+
+
+		#endregion IDisposable Implementation
 	}
 
 	/// <summary>
@@ -2851,31 +2878,31 @@ namespace Axiom.Core
 	/// </summary>
 	public class MeshLodUsage
 	{
-        /// <summary>
-        /// User-supplied values used to determine when th is lod applies.
-        /// </summary>
-        /// <remarks>
-        /// This is required in case the lod strategy changes.
-        /// </remarks>
-        public Real UserValue;
-        /// <summary>
-        /// Value used by to determine when this lod applies.
-        /// </summary>
-        /// <remarks>
-        /// May be interpretted differently by different strategies.
-        /// Transformed from user-supplied values with <see cref="LodStrategy.TransformUserValue"/>.
-        /// </remarks>
-        public Real Value;
-        /// <summary>
+		/// <summary>
+		/// User-supplied values used to determine when th is lod applies.
+		/// </summary>
+		/// <remarks>
+		/// This is required in case the lod strategy changes.
+		/// </remarks>
+		public Real UserValue;
+		/// <summary>
+		/// Value used by to determine when this lod applies.
+		/// </summary>
+		/// <remarks>
+		/// May be interpretted differently by different strategies.
+		/// Transformed from user-supplied values with <see cref="LodStrategy.TransformUserValue"/>.
+		/// </remarks>
+		public Real Value;
+		/// <summary>
 		///	Only relevant if isLodManual is true, the name of the alternative mesh to use.
 		/// </summary>
 		public string ManualName;
 		///	<summary>
 		///		Reference to the manual mesh to avoid looking up each time.
-		///	</summary>    	
+		///	</summary>
 		public Mesh ManualMesh;
 		/// <summary>
-		///		Edge list for this LOD level (may be derived from manual mesh).	
+		///		Edge list for this LOD level (may be derived from manual mesh).
 		/// </summary>
 		public EdgeData EdgeData;
 	}

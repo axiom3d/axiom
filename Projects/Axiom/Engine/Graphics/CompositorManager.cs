@@ -812,22 +812,22 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if (!isDisposed)
+			if ( !isDisposed )
 			{
-				if (disposeManagedResources)
+				if ( disposeManagedResources )
 				{
 					foreach ( KeyValuePair<Viewport, CompositorChain> item in chains )
 					{
-						item.Value.
+						item.Value.RemoveAllCompositors();
 					}
 
-					if (ResourceGroupManager.Instance != null)
+					if ( ResourceGroupManager.Instance != null )
 					{
-						ResourceGroupManager.Instance.UnregisterScriptLoader(this);
-						ResourceGroupManager.Instance.UnregisterResourceManager(ResourceType);
+						ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+						ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					}
 					FreeChains();
-					FreePooledTextures(false);
+					FreePooledTextures( false );
 					Singleton<CompositorManager>.Destroy();
 				}
 
@@ -837,7 +837,7 @@ namespace Axiom.Graphics
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
-			base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion ResourceManager Implementation

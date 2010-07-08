@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Fields and Properties
 
 		/// <summary>
-		/// OpenGL Support 
+		/// OpenGL Support
 		/// </summary>
 		private BaseGLSupport _glSupport;
 
@@ -185,16 +185,16 @@ namespace Axiom.RenderSystems.OpenGL
 				throw new Exception( "Unable to load image file '" + Name + "' - invalid extension." );
 
 			string baseName = Name.Substring( 0, Name.LastIndexOf( '.' ) );
-			string ext = Name.Substring( Name.LastIndexOf( '.' ) + 1);
+			string ext = Name.Substring( Name.LastIndexOf( '.' ) + 1 );
 
 			Image image;
 			Stream stream = null;
 
-			if (   TextureType == TextureType.TwoD
+			if ( TextureType == TextureType.TwoD
 				|| TextureType == TextureType.OneD
 				|| TextureType == TextureType.ThreeD )
 			{
-            	// find & load resource data into stream to allow resource
+				// find & load resource data into stream to allow resource
 				// group changes if required
 				stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 				image = Image.FromStream( stream, ext );
@@ -207,7 +207,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( image.Depth > 1 )
 					TextureType = TextureType.ThreeD;
 
-				// Call internal _loadImages, not loadImage since that's external and 
+				// Call internal _loadImages, not loadImage since that's external and
 				// will determine load status etc again
 				LoadImages( new Image[] { image } );
 			}
@@ -215,12 +215,12 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( Name.EndsWith( ".dds" ) )
 				{
-	            	// find & load resource data intro stream to allow resource
+					// find & load resource data intro stream to allow resource
 					// group changes if required
 					stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 					image = Image.FromStream( stream, ext );
 
-					// Call internal _loadImages, not loadImage since that's external and 
+					// Call internal _loadImages, not loadImage since that's external and
 					// will determine load status etc again
 					LoadImages( new Image[] { image } );
 				}
@@ -249,8 +249,8 @@ namespace Axiom.RenderSystems.OpenGL
 				throw new NotImplementedException( "Unknown texture type." );
 			}
 
-            if ( stream != null )
-                stream.Close();
+			if ( stream != null )
+				stream.Close();
 		}
 
 		/// <summary>
@@ -438,7 +438,7 @@ namespace Axiom.RenderSystems.OpenGL
 			return result - 1;
 		}
 
-		#endregion
+		#endregion Methods
 
 		private void _createSurfaceList()
 		{
@@ -560,8 +560,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			catch ( AccessViolationException ave )
 			{
-				if ( LogManager.Instance != null ) 
-                    LogManager.Instance.Write( "Failed to delete Texture[{0}]", _glTextureID );
+				if ( LogManager.Instance != null )
+					LogManager.Instance.Write( "Failed to delete Texture[{0}]", _glTextureID );
 			}
 		}
 
@@ -581,7 +581,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -45,24 +45,24 @@ namespace Axiom.Graphics
 {
 	/// <summary>
 	/// 	This class declares the format of a set of vertex inputs, which
-	/// 	can be issued to the rendering API through a <see cref="RenderOperation"/>. 
+	/// 	can be issued to the rendering API through a <see cref="RenderOperation"/>.
 	/// </summary>
 	/// <remarks>
-	///		You should be aware that the ordering and structure of the 
+	///		You should be aware that the ordering and structure of the
 	///		VertexDeclaration can be very important on DirectX with older
-	///		cards, so if you want to maintain maximum compatibility with 
+	///		cards, so if you want to maintain maximum compatibility with
 	///		all render systems and all cards you should be careful to follow these
 	///		rules:<ol>
 	///		<li>VertexElements should be added in the following order, and the order of the
-	///		elements within a shared buffer should be as follows: 
-	///		position, blending weights, normals, diffuse colours, specular colours, 
+	///		elements within a shared buffer should be as follows:
+	///		position, blending weights, normals, diffuse colours, specular colours,
 	///		texture coordinates (in order, with no gaps)</li>
 	///		<li>You must not have unused gaps in your buffers which are not referenced
 	///		by any <see cref="VertexElement"/></li>
 	///		<li>You must not cause the buffer & offset settings of 2 VertexElements to overlap</li>
 	///		</ol>
-	///		Whilst GL and more modern graphics cards in D3D will allow you to defy these rules, 
-	///		sticking to them will ensure that your buffers have the maximum compatibility. 
+	///		Whilst GL and more modern graphics cards in D3D will allow you to defy these rules,
+	///		sticking to them will ensure that your buffers have the maximum compatibility.
 	///		<p/>
 	///		Like the other classes in this functional area, these declarations should be created and
 	///		destroyed using the <see cref="HardwareBufferManager"/>.
@@ -78,18 +78,18 @@ namespace Axiom.Graphics
 
 		#endregion Fields
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        ~VertexDeclaration()
-        {
-            dispose( false );
-        }
+		~VertexDeclaration()
+		{
+			dispose( false );
+		}
 
-	    #endregion Contruction and Destruction
+		#endregion Construction and Destruction
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
+		/// <summary>
 		///     Adds a new VertexElement to this declaration.
 		/// </summary>
 		/// <remarks>
@@ -131,8 +131,8 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than 
-		///     one element with the same semantic. 
+		///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than
+		///     one element with the same semantic.
 		/// </summary>
 		/// <param name="semantic">Semantic to search for.</param>
 		/// <returns>If the element is not found, this method returns null.</returns>
@@ -143,8 +143,8 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than 
-		///     one element with the same semantic. 
+		///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than
+		///     one element with the same semantic.
 		/// </summary>
 		/// <param name="semantic">Semantic to search for.</param>
 		/// <param name="index">Index of item to looks for using the supplied semantic (applicable to tex coords and colors).</param>
@@ -251,7 +251,7 @@ namespace Axiom.Graphics
 				return 1;
 			}
 
-			#endregion
+			#endregion IComparer Members
 		}
 
 		public void Sort()
@@ -490,6 +490,18 @@ namespace Axiom.Graphics
 		/// <returns>true if equal, false otherwise.</returns>
 		public static bool operator ==( VertexDeclaration left, VertexDeclaration right )
 		{
+			// If both are null, or both are same instance, return true.
+			if ( System.Object.ReferenceEquals( left, right ) )
+			{
+				return true;
+			}
+
+			// If one is null, but not both, return false.
+			if ( ( (object)left == null ) || ( (object)right == null ) )
+			{
+				return false;
+			}
+
 			// if element lists are different sizes, they can't be equal
 			if ( left.elements.Count != right.elements.Count )
 				return false;
@@ -519,7 +531,7 @@ namespace Axiom.Graphics
 			return !( left == right );
 		}
 
-		#endregion
+		#endregion Methods
 
 		#region Properties
 
@@ -542,7 +554,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+		#endregion Properties
 
 		#region Object overloads
 
@@ -592,76 +604,76 @@ namespace Axiom.Graphics
 			return clone;
 		}
 
-		#endregion
+		#endregion ICloneable Members
 
-        #region IDisposable Implementation
+		#region IDisposable Implementation
 
-        #region isDisposed Property
+		#region isDisposed Property
 
-        private bool _disposed = false;
-        /// <summary>
-        /// Determines if this instance has been disposed of already.
-        /// </summary>
-        protected bool isDisposed
-        {
-            get
-            {
-                return _disposed;
-            }
-            set
-            {
-                _disposed = value;
-            }
-        }
+		private bool _disposed = false;
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
 
-        #endregion isDisposed Property
+		#endregion isDisposed Property
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        /// 
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected virtual void dispose( bool disposeManagedResources )
-        {
-            if ( !isDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
-            isDisposed = true;
-        }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+		}
 
-        public void Dispose()
-        {
-            dispose( true );
-            GC.SuppressFinalize( this );
-        }
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
 
-        #endregion IDisposable Implementation
+		#endregion IDisposable Implementation
 
 	}
 }
