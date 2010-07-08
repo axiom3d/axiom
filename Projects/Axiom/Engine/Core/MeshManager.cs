@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -108,7 +108,7 @@ namespace Axiom.Core
 
 		#region Fields and Properties
 
-		//the factor by which the bounding box of an entity is padded	
+		//the factor by which the bounding box of an entity is padded
 		Real _boundsPaddingFactor;
 		public Real BoundsPaddingFactor
 		{
@@ -127,7 +127,7 @@ namespace Axiom.Core
 		#region PrepareAllMeshesForShadowVolumes Property
 
 		/// <summary>
-		///		Flag indicating whether newly loaded meshes should also be prepared for 
+		///		Flag indicating whether newly loaded meshes should also be prepared for
 		///		shadow volumes.
 		/// </summary>
 		private bool _prepAllMeshesForShadowVolumes = false;
@@ -148,7 +148,7 @@ namespace Axiom.Core
 		}
 
 		#endregion PrepareAllMeshesForShadowVolumes Property
-			
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -197,7 +197,7 @@ namespace Axiom.Core
 		#region Load Method
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="priority"></param>
@@ -207,7 +207,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="priority"></param>
@@ -260,7 +260,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name">Name of the plane mesh.</param>
 		/// <param name="group"></param>
@@ -316,7 +316,7 @@ namespace Axiom.Core
 		#region CreateCurvedPlane Method
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="group"></param>
@@ -330,7 +330,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="group"></param>
@@ -352,11 +352,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
-        /// <param name="controlPointArray"></param>
-        /// <param name="declaration"></param>
+		/// <param name="controlPointArray"></param>
+		/// <param name="declaration"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="bow"></param>
@@ -372,44 +372,44 @@ namespace Axiom.Core
 		/// <param name="vertexShadowBuffer"></param>
 		/// <param name="indexShadowBuffer"></param>
 		/// <returns></returns>
-        public Mesh CreateCurvedPlane( string name, string group, Plane plane, float width, float height, Real bow, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTile, float yTile, Vector3 upVector, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
+		public Mesh CreateCurvedPlane( string name, string group, Plane plane, float width, float height, Real bow, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTile, float yTile, Vector3 upVector, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
 		{
-            // Create manual mesh which calls back self to load
-            Mesh mesh = CreateManual( name, group, this );
-            // Planes can never be manifold
-            mesh.AutoBuildEdgeLists = false;
-            // store parameters
-            MeshBuildParams meshParams = new MeshBuildParams();
-            meshParams.Type = MeshBuildType.CurvedPlane;
-            meshParams.Plane = plane;
-            meshParams.Width = width;
-            meshParams.Height = height;
-            meshParams.Curvature = bow;
-            meshParams.XSegments = xSegments;
-            meshParams.YSegments = ySegments;
-            meshParams.Normals = normals;
-            meshParams.TexCoordSetCount = texCoordSetCount;
-            meshParams.XTile = xTile;
-            meshParams.YTile = yTile;
-            meshParams.UpVector = upVector;
-            meshParams.VertexBufferUsage = vertexBufferUsage;
-            meshParams.IndexBufferUsage = indexBufferUsage;
-            meshParams.VertexShadowBuffer = vertexShadowBuffer;
-            meshParams.IndexShadowBuffer = indexShadowBuffer;
-            _meshBuildParams.Add( mesh, meshParams );
+			// Create manual mesh which calls back self to load
+			Mesh mesh = CreateManual( name, group, this );
+			// Planes can never be manifold
+			mesh.AutoBuildEdgeLists = false;
+			// store parameters
+			MeshBuildParams meshParams = new MeshBuildParams();
+			meshParams.Type = MeshBuildType.CurvedPlane;
+			meshParams.Plane = plane;
+			meshParams.Width = width;
+			meshParams.Height = height;
+			meshParams.Curvature = bow;
+			meshParams.XSegments = xSegments;
+			meshParams.YSegments = ySegments;
+			meshParams.Normals = normals;
+			meshParams.TexCoordSetCount = texCoordSetCount;
+			meshParams.XTile = xTile;
+			meshParams.YTile = yTile;
+			meshParams.UpVector = upVector;
+			meshParams.VertexBufferUsage = vertexBufferUsage;
+			meshParams.IndexBufferUsage = indexBufferUsage;
+			meshParams.VertexShadowBuffer = vertexShadowBuffer;
+			meshParams.IndexShadowBuffer = indexShadowBuffer;
+			_meshBuildParams.Add( mesh, meshParams );
 
-            // to preserve previous behaviour, load immediately
-            mesh.Load();
+			// to preserve previous behaviour, load immediately
+			mesh.Load();
 
-            return mesh;
-        }
+			return mesh;
+		}
 
 		#endregion CreateCurvedPlane Method
 
 		#region CreateCurvedIllusionPlane Method
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="plane"></param>
@@ -430,7 +430,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="plane"></param>
@@ -839,7 +839,7 @@ namespace Axiom.Core
 						{
 							// This part is kinda 'wrong' for curved planes... but curved planes are
 							//   very valuable outside sky planes, which don't typically need normals
-							//   so I'm not going to mess with it for now. 
+							//   so I'm not going to mess with it for now.
 
 							// Default normal is along unit Z
 							//vec = Vector3::UNIT_Z;
@@ -1010,7 +1010,7 @@ namespace Axiom.Core
 
 		private void _createPrefabSphere()
 		{
-			Mesh mesh = (Mesh)Create( "Prefab_Sphere", ResourceGroupManager.InternalResourceGroupName, true, this, null);
+			Mesh mesh = (Mesh)Create( "Prefab_Sphere", ResourceGroupManager.InternalResourceGroupName, true, this, null );
 			// Planes can never be manifold
 			mesh.AutoBuildEdgeLists = false;
 			// to preserve previous behaviour, load immediately
@@ -1054,7 +1054,7 @@ namespace Axiom.Core
 			vertexData.vertexCount = ( mbp.XSegments + 1 ) * ( mbp.YSegments + 1 );
 
 			// create a new vertex buffer (based on current API)
-			HardwareVertexBuffer vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( 0 ), vertexData.vertexCount, mbp.VertexBufferUsage, mbp.VertexShadowBuffer );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( 0 ), vertexData.vertexCount, mbp.VertexBufferUsage, mbp.VertexShadowBuffer );
 
 			// get a reference to the vertex buffer binding
 			VertexBufferBinding binding = vertexData.vertexBufferBinding;
@@ -1102,7 +1102,7 @@ namespace Axiom.Core
 
 			// generate vertex data
 			switch ( mbp.Type )
-        {
+			{
 				case MeshBuildType.Plane:
 					_generatePlaneVertexData( vbuf, mbp.YSegments, mbp.XSegments, xSpace, halfWidth, ySpace, halfHeight, transform, firstTime, mbp.Normals, rotation, mbp.TexCoordSetCount, xTexCoord, yTexCoord, subMesh, ref min, ref max, ref maxSquaredLength );
 					break;
@@ -1114,7 +1114,7 @@ namespace Axiom.Core
 					break;
 				default:
 					throw new Exception( "" );
-        }
+			}
 
 			// generate face list
 			_tesselate2DMesh( subMesh, mbp.XSegments + 1, mbp.YSegments + 1, false, mbp.IndexBufferUsage, mbp.IndexShadowBuffer );
@@ -1235,7 +1235,7 @@ namespace Axiom.Core
 				for ( int vertexIndex = 0; vertexIndex < vertexCount; ++vertexIndex )
 				{
 					Axiom.Animating.VertexBoneAssignment vba = new Axiom.Animating.VertexBoneAssignment();
-					// associate the base of the joint display with the bone's parent, 
+					// associate the base of the joint display with the bone's parent,
 					// and the rest of the points with the bone.
 					vba.boneIndex = parentBone.Handle;
 					vba.weight = 1.0f;
