@@ -154,6 +154,7 @@
     <Compile Include="Core\ColorEx.cs" />
     <Compile Include="Core\CoreEnums.cs" />
     <Compile Include="Core\DefaultShadowCameraSetup.cs" />
+    <Compile Include="Core\DisposableObject.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\Frustum.cs" />
