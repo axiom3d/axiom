@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,20 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: D3DWindow.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using SWF = System.Windows.Forms;
 
 using Axiom.Core;
@@ -92,6 +94,7 @@ namespace Axiom.RenderSystems.DirectX9
         private bool _useNVPerfHUD;
 
         #region Driver Property
+
         private Driver _driver;
         /// <summary>
         /// Get the current Driver
@@ -103,9 +106,11 @@ namespace Axiom.RenderSystems.DirectX9
                 return _driver;
             }
         }
+
         #endregion Driver Property
 
         #region D3DDevice Property
+
         /// <summary>
         /// Gets the active DirectX Device
         /// </summary>
@@ -116,6 +121,7 @@ namespace Axiom.RenderSystems.DirectX9
                 return _driver.D3DDevice;
             }
         }
+
         #endregion D3DDevice Property
 
         #region IsClosed Property
@@ -140,7 +146,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return ((D3D.Surface[])this[ "D3DBACKBUFFER" ])[0];
+                return ((D3D.Surface[])this["D3DBACKBUFFER"])[0];
             }
         }
 
@@ -150,24 +156,24 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                if ( _window != null )
+                if (_window != null)
                 {
-                    if ( _isExternal )
+                    if (_isExternal)
                     {
-                        if ( _window is SWF.Form )
+                        if (_window is SWF.Form)
                         {
-                            if ( ( (SWF.Form)_window ).WindowState == SWF.FormWindowState.Minimized )
+                            if (((SWF.Form)_window).WindowState == SWF.FormWindowState.Minimized)
                             {
                                 return false;
                             }
                         }
-                        else if ( _window is SWF.PictureBox )
+                        else if (_window is SWF.PictureBox)
                         {
                             SWF.Control parent = _window.Parent;
-                            while ( !( parent is SWF.Form ) )
+                            while (!(parent is SWF.Form))
                                 parent = parent.Parent;
 
-                            if ( ( (SWF.Form)parent ).WindowState == SWF.FormWindowState.Minimized )
+                            if (((SWF.Form)parent).WindowState == SWF.FormWindowState.Minimized)
                             {
                                 return false;
                             }
@@ -175,7 +181,7 @@ namespace Axiom.RenderSystems.DirectX9
                     }
                     else
                     {
-                        if ( ( (SWF.Form)_window ).WindowState == SWF.FormWindowState.Minimized )
+                        if (((SWF.Form)_window).WindowState == SWF.FormWindowState.Minimized)
                         {
                             return false;
                         }
@@ -193,37 +199,36 @@ namespace Axiom.RenderSystems.DirectX9
         #region Constructors
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="driver">The root driver</param>
-        public D3DRenderWindow( Driver driver )
+        public D3DRenderWindow(Driver driver)
         {
             _driver = driver;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="driver">The root driver</param>
         /// <param name="deviceIfSwapChain">The existing D3D device to create an additional swap chain from, if this is not	the first window.</param>
-        public D3DRenderWindow( Driver driver, D3D.Device deviceIfSwapChain )
-            : this( driver )
+        public D3DRenderWindow(Driver driver, D3D.Device deviceIfSwapChain)
+            : this(driver)
         {
-            _isSwapChain = ( deviceIfSwapChain != null );
+            _isSwapChain = (deviceIfSwapChain != null);
         }
-
 
         #endregion Constructors
 
         #region Methods
 
-        private bool _checkMultiSampleQuality( D3D.MultisampleType type, out int outQuality, D3D.Format format, int adapterNum, D3D.DeviceType deviceType, bool fullScreen )
+        private bool _checkMultiSampleQuality(D3D.MultisampleType type, out int outQuality, D3D.Format format, int adapterNum, D3D.DeviceType deviceType, bool fullScreen)
         {
             SlimDX.Result result;
 
-            _driver.Direct3D.CheckDeviceMultisampleType( adapterNum, deviceType, format, fullScreen, type, out outQuality, out result );
+            _driver.Direct3D.CheckDeviceMultisampleType(adapterNum, deviceType, format, fullScreen, type, out outQuality, out result);
 
-            if ( result.IsSuccess )
+            if (result.IsSuccess)
                 return true;
             return false;
         }
@@ -233,7 +238,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region RenderWindow implementation
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="name"></param>
         /// <param name="width"></param>
@@ -244,7 +249,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="top"></param>
         /// <param name="depthBuffer"></param>height
         /// <param name="miscParams"></param>
-        public override void Create( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
+        public override void Create(string name, int width, int height, bool isFullScreen, NamedParameterList miscParams)
         {
             SWF.Control parentHWnd = null;
             SWF.Control externalHWnd = null;
@@ -261,57 +266,57 @@ namespace Axiom.RenderSystems.DirectX9
             _fsaaQuality = 0;
             _vSync = false;
 
-            if ( miscParams != null )
+            if (miscParams != null)
             {
                 // left (x)
-                if ( miscParams.ContainsKey( "left" ) )
+                if (miscParams.ContainsKey("left"))
                 {
-                    left = Int32.Parse( miscParams[ "left" ].ToString() );
+                    left = Int32.Parse(miscParams["left"].ToString());
                 }
 
                 // top (y)
-                if ( miscParams.ContainsKey( "top" ) )
+                if (miscParams.ContainsKey("top"))
                 {
-                    top = Int32.Parse( miscParams[ "top" ].ToString() );
+                    top = Int32.Parse(miscParams["top"].ToString());
                 }
 
                 // Window title
-                if ( miscParams.ContainsKey( "title" ) )
+                if (miscParams.ContainsKey("title"))
                 {
-                    title = (string)miscParams[ "title" ];
+                    title = (string)miscParams["title"];
                 }
 
                 // parentWindowHandle		-> parentHWnd
-                if ( miscParams.ContainsKey( "parentWindowHandle" ) )
+                if (miscParams.ContainsKey("parentWindowHandle"))
                 {
-                    object handle = miscParams[ "parentWindowHandle" ];
+                    object handle = miscParams["parentWindowHandle"];
                     IntPtr ptr = IntPtr.Zero;
-                    if ( handle.GetType() == typeof( IntPtr ) )
+                    if (handle.GetType() == typeof(IntPtr))
                     {
                         ptr = (IntPtr)handle;
                     }
-                    else if ( handle.GetType() == typeof( System.Int32 ) )
+                    else if (handle.GetType() == typeof(System.Int32))
                     {
-                        ptr = new IntPtr( (int)handle );
+                        ptr = new IntPtr((int)handle);
                     }
-                    parentHWnd = SWF.Control.FromHandle( ptr );
+                    parentHWnd = SWF.Control.FromHandle(ptr);
                     //parentHWnd = (SWF.Control)miscParams[ "parentWindowHandle" ];
                 }
 
                 // externalWindowHandle		-> externalHWnd
-                if ( miscParams.ContainsKey( "externalWindowHandle" ) )
+                if (miscParams.ContainsKey("externalWindowHandle"))
                 {
-                    object handle = miscParams[ "externalWindowHandle" ];
+                    object handle = miscParams["externalWindowHandle"];
                     IntPtr ptr = IntPtr.Zero;
-                    if ( handle.GetType() == typeof( IntPtr ) )
+                    if (handle.GetType() == typeof(IntPtr))
                     {
                         ptr = (IntPtr)handle;
                     }
-                    else if ( handle.GetType() == typeof( System.Int32 ) )
+                    else if (handle.GetType() == typeof(System.Int32))
                     {
-                        ptr = new IntPtr( (int)handle );
+                        ptr = new IntPtr((int)handle);
                     }
-                    externalHWnd = SWF.Control.FromHandle( ptr );
+                    externalHWnd = SWF.Control.FromHandle(ptr);
                     //externalHWnd = (SWF.Control)miscParams["externalWindowHandle"];
                     //if ( !( externalHWnd is SWF.Form ) && !( externalHWnd is SWF.PictureBox ) )
                     //{
@@ -320,65 +325,64 @@ namespace Axiom.RenderSystems.DirectX9
                 }
 
                 // vsync	[parseBool]
-                if ( miscParams.ContainsKey( "vsync" ) )
+                if (miscParams.ContainsKey("vsync"))
                 {
-                    _vSync = bool.Parse( miscParams[ "vsync" ].ToString() );
+                    _vSync = bool.Parse(miscParams["vsync"].ToString());
                 }
 
                 // displayFrequency
-                if ( miscParams.ContainsKey( "displayFrequency" ) )
+                if (miscParams.ContainsKey("displayFrequency"))
                 {
-                    _displayFrequency = Int32.Parse( miscParams[ "displayFrequency" ].ToString() );
+                    _displayFrequency = Int32.Parse(miscParams["displayFrequency"].ToString());
                 }
 
                 // colourDepth
-                if ( miscParams.ContainsKey( "colorDepth" ) )
+                if (miscParams.ContainsKey("colorDepth"))
                 {
-                    this.ColorDepth = Int32.Parse( miscParams[ "colorDepth" ].ToString() );
+                    this.ColorDepth = Int32.Parse(miscParams["colorDepth"].ToString());
                 }
 
                 // depthBuffer [parseBool]
-                if ( miscParams.ContainsKey( "depthBuffer" ) )
+                if (miscParams.ContainsKey("depthBuffer"))
                 {
-                    depthBuffer = bool.Parse( miscParams[ "depthBuffer" ].ToString() );
+                    depthBuffer = bool.Parse(miscParams["depthBuffer"].ToString());
                 }
 
                 // FSAA type
-                if ( miscParams.ContainsKey( "FSAA" ) )
+                if (miscParams.ContainsKey("FSAA"))
                 {
-                    _fsaaType = (D3D.MultisampleType)miscParams[ "FSAA" ];
+                    _fsaaType = (D3D.MultisampleType)miscParams["FSAA"];
                 }
 
                 // FSAA quality
-                if ( miscParams.ContainsKey( "FSAAQuality" ) )
+                if (miscParams.ContainsKey("FSAAQuality"))
                 {
-                    _fsaaQuality = Int32.Parse( miscParams[ "FSAAQuality" ].ToString() );
+                    _fsaaQuality = Int32.Parse(miscParams["FSAAQuality"].ToString());
                 }
 
                 // window border style
-                if ( miscParams.ContainsKey( "border" ) )
+                if (miscParams.ContainsKey("border"))
                 {
-                    border = ( (string)miscParams[ "border" ] ).ToLower();
+                    border = ((string)miscParams["border"]).ToLower();
                 }
 
                 // set outer dimensions?
-                if ( miscParams.ContainsKey( "outerDimensions" ) )
+                if (miscParams.ContainsKey("outerDimensions"))
                 {
-                    outerSize = bool.Parse( miscParams[ "outerDimensions" ].ToString() );
+                    outerSize = bool.Parse(miscParams["outerDimensions"].ToString());
                 }
 
                 // NV perf HUD?
-                if ( miscParams.ContainsKey( "useNVPerfHUD" ) )
+                if (miscParams.ContainsKey("useNVPerfHUD"))
                 {
-                    _useNVPerfHUD = bool.Parse( miscParams[ "useNVPerfHUD" ].ToString() );
+                    _useNVPerfHUD = bool.Parse(miscParams["useNVPerfHUD"].ToString());
                 }
-
             }
 
-            if ( _window != null )
+            if (_window != null)
                 Dispose();
 
-            if ( externalHWnd == null )
+            if (externalHWnd == null)
             {
                 Width = width;
                 Height = height;
@@ -393,29 +397,29 @@ namespace Axiom.RenderSystems.DirectX9
                  * If we're in windowed mode, we'll want our own.
                  * get references to the render target and depth stencil surface
                  */
-                if ( !isFullScreen )
+                if (!isFullScreen)
                 {
                     newWin.StartPosition = SWF.FormStartPosition.CenterScreen;
-                    if ( parentHWnd != null )
+                    if (parentHWnd != null)
                     {
                         newWin.Parent = parentHWnd;
                     }
                     else
                     {
-                        if ( border == "none" )
+                        if (border == "none")
                         {
                             newWin.FormBorderStyle = SWF.FormBorderStyle.None;
                         }
-                        else if ( border == "fixed" )
+                        else if (border == "fixed")
                         {
                             newWin.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
                             newWin.MaximizeBox = false;
                         }
                     }
 
-                    if ( !outerSize )
+                    if (!outerSize)
                     {
-                        newWin.ClientSize = new System.Drawing.Size( Width, Height );
+                        newWin.ClientSize = new System.Drawing.Size(Width, Height);
                     }
                     else
                     {
@@ -423,12 +427,10 @@ namespace Axiom.RenderSystems.DirectX9
                         newWin.Height = Height;
                     }
 
-                    if ( top < 0 )
-                        top = ( SWF.Screen.PrimaryScreen.Bounds.Height - Height ) / 2;
-                    if ( left < 0 )
-                        left = ( SWF.Screen.PrimaryScreen.Bounds.Width - Width ) / 2;
-
-
+                    if (top < 0)
+                        top = (SWF.Screen.PrimaryScreen.Bounds.Height - Height) / 2;
+                    if (left < 0)
+                        left = (SWF.Screen.PrimaryScreen.Bounds.Width - Width) / 2;
                 }
                 else
                 {
@@ -443,7 +445,7 @@ namespace Axiom.RenderSystems.DirectX9
                 newWin.RenderWindow = this;
                 _window = newWin;
 
-                WindowEventMonitor.Instance.RegisterWindow( this );
+                WindowEventMonitor.Instance.RegisterWindow(this);
             }
             else
             {
@@ -461,7 +463,7 @@ namespace Axiom.RenderSystems.DirectX9
             this.top = top;
             this.left = left;
 
-            LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
+            LogManager.Instance.Write("D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth);
 
             CreateD3DResources();
 
@@ -475,18 +477,18 @@ namespace Axiom.RenderSystems.DirectX9
         {
             D3D.Device device = _driver.D3DDevice;
 
-            if ( _isSwapChain && device == null )
+            if (_isSwapChain && device == null)
             {
-                throw new Exception( "Secondary window has not been given the device from the primary!" );
+                throw new Exception("Secondary window has not been given the device from the primary!");
             }
 
-            if ( _renderSurface != null )
+            if (_renderSurface != null)
             {
                 _renderSurface.Dispose();
                 _renderSurface = null;
             }
 
-            if ( _driver.Description.ToLower().Contains( "nvperfhud" ) )
+            if (_driver.Description.ToLower().Contains("nvperfhud"))
             {
                 _useNVPerfHUD = true;
             }
@@ -504,36 +506,36 @@ namespace Axiom.RenderSystems.DirectX9
             _d3dpp.BackBufferWidth = Width;
             _d3dpp.FullScreenRefreshRateInHertz = IsFullScreen ? _displayFrequency : 0;
 
-            if ( _vSync )
+            if (_vSync)
             {
                 _d3dpp.PresentationInterval = D3D.PresentInterval.One;
             }
             else
             {
-                // NB not using vsync in windowed mode in D3D9 can cause jerking at low 
+                // NB not using vsync in windowed mode in D3D9 can cause jerking at low
                 // frame rates no matter what buffering modes are used (odd - perhaps a
-                // timer issue in D3D9 since GL doesn't suffer from this) 
+                // timer issue in D3D9 since GL doesn't suffer from this)
                 // low is < 200fps in this context
-                if ( !IsFullScreen )
+                if (!IsFullScreen)
                 {
-                    LogManager.Instance.Write( "D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
+                    LogManager.Instance.Write("D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.");
                 }
                 _d3dpp.PresentationInterval = D3D.PresentInterval.Immediate;
             }
 
             _d3dpp.BackBufferFormat = D3D.Format.R5G6B5;
-            if ( ColorDepth > 16 )
+            if (ColorDepth > 16)
             {
                 _d3dpp.BackBufferFormat = D3D.Format.X8R8G8B8;
             }
 
-            if ( ColorDepth > 16 )
+            if (ColorDepth > 16)
             {
                 // Try to create a 32-bit depth, 8-bit stencil
-                if ( _driver.Direct3D.CheckDeviceFormat( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D24S8 ) == false )
+                if (_driver.Direct3D.CheckDeviceFormat(_driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D24S8) == false)
                 {
-                    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer 
-                    if ( _driver.Direct3D.CheckDeviceFormat( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D32 ) == false )
+                    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
+                    if (_driver.Direct3D.CheckDeviceFormat(_driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D32) == false)
                     {
                         // Jeez, what a naff card. Fall back on 16-bit depth buffering
                         _d3dpp.AutoDepthStencilFormat = D3D.Format.D16;
@@ -546,7 +548,7 @@ namespace Axiom.RenderSystems.DirectX9
                 else
                 {
                     // Woohoo!
-                    if ( _driver.Direct3D.CheckDepthStencilMatch( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, _d3dpp.BackBufferFormat, D3D.Format.D24S8 ) == true )
+                    if (_driver.Direct3D.CheckDepthStencilMatch(_driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, _d3dpp.BackBufferFormat, D3D.Format.D24S8) == true)
                     {
                         _d3dpp.AutoDepthStencilFormat = D3D.Format.D24S8;
                     }
@@ -565,49 +567,49 @@ namespace Axiom.RenderSystems.DirectX9
             _d3dpp.Multisample = _fsaaType;
             _d3dpp.MultisampleQuality = _fsaaQuality;
 
-            if ( _isSwapChain )
+            if (_isSwapChain)
             {
-                // Create swap chain	
+                // Create swap chain
                 try
                 {
-                    _swapChain = new D3D.SwapChain( device, _d3dpp );
+                    _swapChain = new D3D.SwapChain(device, _d3dpp);
                 }
-                catch ( Exception )
+                catch (Exception)
                 {
                     // Try a second time, may fail the first time due to back buffer count,
                     // which will be corrected by the runtime
                     try
                     {
-                        _swapChain = new D3D.SwapChain( device, _d3dpp );
+                        _swapChain = new D3D.SwapChain(device, _d3dpp);
                     }
-                    catch ( Exception ex )
+                    catch (Exception ex)
                     {
-                        throw new Exception( "Unable to create an additional swap chain", ex );
+                        throw new Exception("Unable to create an additional swap chain", ex);
                     }
                 }
 
                 // Store references to buffers for convenience
-                _renderSurface = _swapChain.GetBackBuffer( 0 );
+                _renderSurface = _swapChain.GetBackBuffer(0);
 
                 // Additional swap chains need their own depth buffer
                 // to support resizing them
-                if ( isDepthBuffered )
+                if (isDepthBuffered)
                 {
-                    bool discard = ( _d3dpp.PresentFlags & D3D.PresentFlags.DiscardDepthStencil ) == 0;
+                    bool discard = (_d3dpp.PresentFlags & D3D.PresentFlags.DiscardDepthStencil) == 0;
 
                     try
                     {
-                        _renderZBuffer = D3D.Surface.CreateDepthStencil( device, Width, Height, _d3dpp.AutoDepthStencilFormat, _d3dpp.Multisample, _d3dpp.MultisampleQuality, discard );
+                        _renderZBuffer = D3D.Surface.CreateDepthStencil(device, Width, Height, _d3dpp.AutoDepthStencilFormat, _d3dpp.Multisample, _d3dpp.MultisampleQuality, discard);
                     }
-                    catch ( Exception )
+                    catch (Exception)
                     {
-                        throw new Exception( "Unable to create a depth buffer for the swap chain" );
+                        throw new Exception("Unable to create a depth buffer for the swap chain");
                     }
                 }
             }
             else
             {
-                if ( device == null ) // We haven't created the device yet, this must be the first time
+                if (device == null) // We haven't created the device yet, this must be the first time
                 {
                     // Turn off default event handlers, since Managed DirectX seems confused.
                     //D3D.Device.IsUsingEventHandlers = true;
@@ -615,23 +617,23 @@ namespace Axiom.RenderSystems.DirectX9
                     // Do we want to preserve the FPU mode? Might be useful for scientific apps
                     D3D.CreateFlags extraFlags = 0;
                     ConfigOptionCollection configOptions = Root.Instance.RenderSystem.ConfigOptions;
-                    ConfigOption FPUMode = configOptions[ "Floating-point mode" ];
-                    if ( FPUMode.Value == "Consistent" )
+                    ConfigOption FPUMode = configOptions["Floating-point mode"];
+                    if (FPUMode.Value == "Consistent")
                         extraFlags |= D3D.CreateFlags.FpuPreserve;
 
                     // Set default settings (use the one Ogre discovered as a default)
                     int adapterToUse = Driver.AdapterNumber;
 
-                    if ( this._useNVPerfHUD )
+                    if (this._useNVPerfHUD)
                     {
                         // Look for 'NVIDIA NVPerfHUD' adapter
                         // If it is present, override default settings
-                        foreach ( D3D.AdapterInformation adapter in _driver.Direct3D.Adapters )
+                        foreach (D3D.AdapterInformation adapter in _driver.Direct3D.Adapters)
                         {
-                            LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
-                            if ( adapter.Details.Description.ToLower().Contains( "perfhud" ) )
+                            LogManager.Instance.Write("D3D : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Details.Description);
+                            if (adapter.Details.Description.ToLower().Contains("perfhud"))
                             {
-                                LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
+                                LogManager.Instance.Write("D3D : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Details.Description);
                                 adapterToUse = adapter.Adapter;
                                 devType = D3D.DeviceType.Reference;
                                 break;
@@ -643,60 +645,58 @@ namespace Axiom.RenderSystems.DirectX9
                     try
                     {
                         // hardware vertex processing
-                        device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp );
+                        device = new D3D.Device(_driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp);
                     }
-                    catch ( Exception )
+                    catch (Exception)
                     {
                         try
                         {
                             // Try a second time, may fail the first time due to back buffer count,
                             // which will be corrected down to 1 by the runtime
-                            device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp );
+                            device = new D3D.Device(_driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp);
                         }
-                        catch ( Exception )
+                        catch (Exception)
                         {
                             try
                             {
                                 // doh, how bout mixed vertex processing
-                                device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.MixedVertexProcessing | extraFlags, _d3dpp );
+                                device = new D3D.Device(_driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.MixedVertexProcessing | extraFlags, _d3dpp);
                             }
-                            catch ( Exception )
+                            catch (Exception)
                             {
                                 try
                                 {
                                     // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
                                     // anything at all since they obviously don't have a video card installed
-                                    device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.SoftwareVertexProcessing | extraFlags, _d3dpp );
+                                    device = new D3D.Device(_driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.SoftwareVertexProcessing | extraFlags, _d3dpp);
                                 }
-                                catch ( Exception ex )
+                                catch (Exception ex)
                                 {
-                                    throw new Exception( "Failed to create Direct3D9 Device", ex );
+                                    throw new Exception("Failed to create Direct3D9 Device", ex);
                                 }
                             }
                         }
                     }
 
                     //device.DeviceResizing += new System.ComponentModel.CancelEventHandler( OnDeviceResizing );
-
                 }
                 // update device in driver
                 Driver.D3DDevice = device;
                 // Store references to buffers for convenience
-                _renderSurface = device.GetRenderTarget( 0 );
+                _renderSurface = device.GetRenderTarget(0);
                 _renderZBuffer = device.DepthStencilSurface;
                 // release immediately so we don't hog them
                 //_renderZBuffer.ReleaseGraphics();
 
                 //device.DeviceReset += new EventHandler( OnResetDevice );
-
             }
         }
 
-        public override object this[ string attribute ]
+        public override object this[string attribute]
         {
             get
             {
-                switch ( attribute.ToUpper() )
+                switch (attribute.ToUpper())
                 {
                     case "D3DDEVICE":
                         return _driver.D3DDevice;
@@ -708,63 +708,63 @@ namespace Axiom.RenderSystems.DirectX9
                         return false;
 
                     case "D3DZBUFFER":
-                        if ( this.testLostDevice() || _renderZBuffer.Disposed )
+                        if (this.testLostDevice() || _renderZBuffer.Disposed)
                         {
                             //_renderZBuffer =  _driver.D3DDevice.DepthStencilSurface;
-                            LogManager.Instance.Write( "[D3D] : ZBuffer was disposed, reinitializing." );
+                            LogManager.Instance.Write("[D3D] : ZBuffer was disposed, reinitializing.");
                             return null;
                         }
                         return _renderZBuffer;
 
                     case "D3DBACKBUFFER":
-                        D3D.Surface[] surface = new D3D.Surface[ 1 ];
-                        if ( this.testLostDevice() || _renderSurface.Disposed )
+                        D3D.Surface[] surface = new D3D.Surface[1];
+                        if (this.testLostDevice() || _renderSurface.Disposed)
                         {
-                            LogManager.Instance.Write( "[D3D] : BackBuffer was disposed, reinitializing." );
-                            _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
+                            LogManager.Instance.Write("[D3D] : BackBuffer was disposed, reinitializing.");
+                            _renderSurface = _driver.D3DDevice.GetRenderTarget(0);
                         }
-                        surface[ 0 ] = _renderSurface;
+                        surface[0] = _renderSurface;
                         return surface;
 
                     case "D3DFRONTBUFFER":
-                        if ( this.testLostDevice() || _renderSurface.Disposed )
+                        if (this.testLostDevice() || _renderSurface.Disposed)
                         {
-                            LogManager.Instance.Write( "[D3D] : FrontBuffer was disposed, reinitializing." );
-                            _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
+                            LogManager.Instance.Write("[D3D] : FrontBuffer was disposed, reinitializing.");
+                            _renderSurface = _driver.D3DDevice.GetRenderTarget(0);
                         }
                         return _renderSurface;
                 }
-                return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
+                return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
             }
         }
 
         public void DisposeD3DResources()
         {
             // Dispose D3D Resources
-            if ( _isSwapChain )
+            if (_isSwapChain)
             {
                 _swapChain.Dispose();
                 _swapChain = null;
             }
-            if ( _renderZBuffer != null && !_renderZBuffer.Disposed )
+            if (_renderZBuffer != null && !_renderZBuffer.Disposed)
                 _renderZBuffer.Dispose();
-            if ( _renderSurface != null && !_renderSurface.Disposed )
+            if (_renderSurface != null && !_renderSurface.Disposed)
                 _renderSurface.Dispose();
         }
 
-        protected override void dispose( bool disposeManagedResources )
+        protected override void dispose(bool disposeManagedResources)
         {
-            if ( !isDisposed )
+            if (!isDisposed)
             {
-                if ( disposeManagedResources )
+                if (disposeManagedResources)
                 {
                     DisposeD3DResources();
 
                     // Dispose Other resources
-                    if ( _window != null && !_isExternal )
+                    if (_window != null && !_isExternal)
                     {
-                        WindowEventMonitor.Instance.UnregisterWindow( this );
-                        ( (SWF.Form)_window ).Dispose();
+                        WindowEventMonitor.Instance.UnregisterWindow(this);
+                        ((SWF.Form)_window).Dispose();
                     }
                 }
 
@@ -772,31 +772,29 @@ namespace Axiom.RenderSystems.DirectX9
                 _window = null;
                 IsActive = false;
                 _isClosed = true;
-
             }
 
             // If it is available, make the call to the
             // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
+            base.dispose(disposeManagedResources);
 
             isDisposed = true;
-
         }
 
-        public override void Reposition( int left, int right )
+        public override void Reposition(int left, int right)
         {
-            if ( _window != null && !IsFullScreen )
+            if (_window != null && !IsFullScreen)
             {
-                _window.Location = new System.Drawing.Point( left, right );
+                _window.Location = new System.Drawing.Point(left, right);
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public override void Resize( int width, int height )
+        public override void Resize(int width, int height)
         {
             // CMH 4/24/2004 - Start
             width = width < 10 ? 10 : width;
@@ -807,7 +805,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         public override void WindowMovedOrResized()
         {
-            if ( GetForm( _window ) == null || GetForm( _window ).WindowState == SWF.FormWindowState.Minimized )
+            if (GetForm(_window) == null || GetForm(_window).WindowState == SWF.FormWindowState.Minimized)
                 return;
 
             // top and left represent outer window position
@@ -816,12 +814,11 @@ namespace Axiom.RenderSystems.DirectX9
             // width and height represent drawable area only
             int width = _window.ClientRectangle.Width;
             int height = _window.ClientRectangle.Height;
-            if ( Width == width && Height == height )
+            if (Width == width && Height == height)
                 return;
 
-            if ( _isSwapChain )
+            if (_isSwapChain)
             {
-
                 D3D.PresentParameters pp = _d3dpp;
 
                 pp.BackBufferWidth = width;
@@ -834,36 +831,34 @@ namespace Axiom.RenderSystems.DirectX9
 
                 try
                 {
-                    _swapChain = new D3D.SwapChain( _driver.D3DDevice, pp );
+                    _swapChain = new D3D.SwapChain(_driver.D3DDevice, pp);
                     _d3dpp = pp;
 
                     Width = width;
                     Height = height;
                 }
-                catch ( Exception )
+                catch (Exception)
                 {
-                    LogManager.Instance.Write( "Failed to reset device to new dimensions {0}x{1}. Trying to recover.", width, height );
+                    LogManager.Instance.Write("Failed to reset device to new dimensions {0}x{1}. Trying to recover.", width, height);
                     try
                     {
-                        _swapChain = new D3D.SwapChain( _driver.D3DDevice, _d3dpp );
+                        _swapChain = new D3D.SwapChain(_driver.D3DDevice, _d3dpp);
                     }
-                    catch ( Exception ex )
+                    catch (Exception ex)
                     {
-                        throw new Exception( "Reset window to last size failed.", ex );
+                        throw new Exception("Reset window to last size failed.", ex);
                     }
-
                 }
 
-                _renderSurface = _swapChain.GetBackBuffer( 0 );
+                _renderSurface = _swapChain.GetBackBuffer(0);
                 try
                 {
-                    _renderZBuffer = D3D.Surface.CreateDepthStencil( _driver.D3DDevice, Width, Height, _d3dpp.AutoDepthStencilFormat, _d3dpp.Multisample, _d3dpp.MultisampleQuality, false );
+                    _renderZBuffer = D3D.Surface.CreateDepthStencil(_driver.D3DDevice, Width, Height, _d3dpp.AutoDepthStencilFormat, _d3dpp.Multisample, _d3dpp.MultisampleQuality, false);
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
-                    throw new Exception( "Failed to create depth stencil surface for Swap Chain", ex );
+                    throw new Exception("Failed to create depth stencil surface for Swap Chain", ex);
                 }
-
             }
 
             // primary windows must reset the device
@@ -871,58 +866,57 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 _d3dpp.BackBufferWidth = Width = width;
                 _d3dpp.BackBufferHeight = Height = height;
-                ( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
+                ((D3DRenderSystem)(Root.Instance.RenderSystem)).IsDeviceLost = true;
             }
 
             // Notify viewports of resize
-            foreach ( Viewport entry in this.viewportList.Values )
+            foreach (Viewport entry in this.viewportList.Values)
             {
                 entry.UpdateDimensions();
             }
         }
 
-        private SWF.Form GetForm( SWF.Control windowHandle )
+        private SWF.Form GetForm(SWF.Control windowHandle)
         {
             SWF.Control tmp = windowHandle;
 
-            if ( windowHandle == null )
+            if (windowHandle == null)
                 return null;
-            if ( tmp is SWF.Form )
+            if (tmp is SWF.Form)
                 return (SWF.Form)tmp;
             do
             {
                 tmp = tmp.Parent;
-            } while ( !( tmp is SWF.Form ) );
+            } while (!(tmp is SWF.Form));
 
             return (SWF.Form)tmp;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="waitForVSync"></param>
-        public override void SwapBuffers( bool waitForVSync )
+        public override void SwapBuffers(bool waitForVSync)
         {
             DX.Result result;
             D3D.Device device = _driver.D3DDevice;
 
             // Skip if the device is already lost
-            if ( isDeviceLost || testLostDevice() )
+            if (isDeviceLost || testLostDevice())
                 return;
 
-            if ( device != null )
+            if (device != null)
             {
-
-                result = this._isSwapChain ? this._swapChain.Present( D3D.Present.None ) : device.Present();
-                if ( result.Code == D3D.ResultCode.DeviceLost.Code )
+                result = this._isSwapChain ? this._swapChain.Present(D3D.Present.None) : device.Present();
+                if (result.Code == D3D.ResultCode.DeviceLost.Code)
                 {
-                    _renderSurface.ReleaseDC( _renderSurface.GetDC() );
+                    _renderSurface.ReleaseDC(_renderSurface.GetDC());
                     isDeviceLost = true;
-                    ( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
+                    ((D3DRenderSystem)(Root.Instance.RenderSystem)).IsDeviceLost = true;
                 }
-                else if ( result.IsFailure )
+                else if (result.IsFailure)
                 {
-                    throw new AxiomException( "[D3D] : Error presenting surfaces." );
+                    throw new AxiomException("[D3D] : Error presenting surfaces.");
                 }
             }
         }
@@ -930,19 +924,17 @@ namespace Axiom.RenderSystems.DirectX9
         private bool testLostDevice()
         {
             DX.Result result = Driver.D3DDevice.TestCooperativeLevel();
-            return ( result == D3D.ResultCode.DeviceLost ) ||
-                   ( result == D3D.ResultCode.DeviceNotReset );
+            return (result == D3D.ResultCode.DeviceLost) ||
+                   (result == D3D.ResultCode.DeviceNotReset);
         }
 
-
-        public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
+        public override void CopyContentsToMemory(PixelBox dst, FrameBuffer buffer)
         {
-
-            if ( ( dst.Left < 0 ) || ( dst.Right > Width ) ||
-                ( dst.Top < 0 ) || ( dst.Bottom > Height ) ||
-                ( dst.Front != 0 ) || ( dst.Back != 1 ) )
+            if ((dst.Left < 0) || (dst.Right > Width) ||
+                (dst.Top < 0) || (dst.Bottom > Height) ||
+                (dst.Front != 0) || (dst.Back != 1))
             {
-                throw new Exception( "Invalid box." );
+                throw new Exception("Invalid box.");
             }
 
             D3D.Device device = Driver.D3DDevice;
@@ -952,14 +944,14 @@ namespace Axiom.RenderSystems.DirectX9
             D3D.SurfaceDescription desc;
             DX.DataBox lockedBox;
 
-            if ( buffer == RenderTarget.FrameBuffer.Auto )
+            if (buffer == RenderTarget.FrameBuffer.Auto)
             {
                 buffer = RenderTarget.FrameBuffer.Front;
             }
 
-            if ( buffer == RenderTarget.FrameBuffer.Front )
+            if (buffer == RenderTarget.FrameBuffer.Front)
             {
-                D3D.DisplayMode mode = device.GetDisplayMode( 0 );
+                D3D.DisplayMode mode = device.GetDisplayMode(0);
 
                 desc = new D3D.SurfaceDescription();
                 desc.Width = mode.Width;
@@ -967,16 +959,16 @@ namespace Axiom.RenderSystems.DirectX9
                 desc.Format = D3D.Format.A8R8G8B8;
 
                 // create a temp surface which will hold the screen image
-                surface = D3D.Surface.CreateOffscreenPlain( device, mode.Width, mode.Height, D3D.Format.A8R8G8B8, D3D.Pool.SystemMemory );
+                surface = D3D.Surface.CreateOffscreenPlain(device, mode.Width, mode.Height, D3D.Format.A8R8G8B8, D3D.Pool.SystemMemory);
 
                 // get the entire front buffer.  This is SLOW!!
-                device.GetFrontBufferData( 0, surface );
+                device.GetFrontBufferData(0, surface);
 
-                if ( IsFullScreen )
+                if (IsFullScreen)
                 {
-                    if ( ( dst.Left == 0 ) && ( dst.Right == Width ) && ( dst.Top == 0 ) && ( dst.Bottom == Height ) )
+                    if ((dst.Left == 0) && (dst.Right == Width) && (dst.Top == 0) && (dst.Bottom == Height))
                     {
-                        stream = surface.LockRectangle( D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock );
+                        stream = surface.LockRectangle(D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock);
                     }
                     else
                     {
@@ -986,9 +978,8 @@ namespace Axiom.RenderSystems.DirectX9
                         rect.Top = dst.Top;
                         rect.Bottom = dst.Bottom;
 
-                        stream = surface.LockRectangle( D3DHelper.ToRectangle( rect ), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock );
+                        stream = surface.LockRectangle(D3DHelper.ToRectangle(rect), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock);
                     }
-
                 }
                 else
                 {
@@ -1002,42 +993,42 @@ namespace Axiom.RenderSystems.DirectX9
                     System.Drawing.Point point = new System.Drawing.Point();
                     point.X = (int)srcRect.Left;
                     point.Y = (int)srcRect.Top;
-                    point = control.PointToScreen( point );
+                    point = control.PointToScreen(point);
                     srcRect.Top = point.Y;
                     srcRect.Left = point.X;
                     srcRect.Bottom += point.Y;
                     srcRect.Right += point.X;
 
-                    desc.Width = (int)( srcRect.Right - srcRect.Left );
-                    desc.Height = (int)( srcRect.Bottom - srcRect.Top );
+                    desc.Width = (int)(srcRect.Right - srcRect.Left);
+                    desc.Height = (int)(srcRect.Bottom - srcRect.Top);
 
-                    stream = surface.LockRectangle( D3DHelper.ToRectangle( srcRect ), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock );
+                    stream = surface.LockRectangle(D3DHelper.ToRectangle(srcRect), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock);
                 }
             }
             else
             {
-                surface = device.GetBackBuffer( 0, 0 );
+                surface = device.GetBackBuffer(0, 0);
                 desc = surface.Description;
 
-                tmpSurface = D3D.Surface.CreateOffscreenPlain( device, desc.Width, desc.Height, desc.Format, D3D.Pool.SystemMemory );
+                tmpSurface = D3D.Surface.CreateOffscreenPlain(device, desc.Width, desc.Height, desc.Format, D3D.Pool.SystemMemory);
 
-                if ( desc.MultisampleType == D3D.MultisampleType.None )
+                if (desc.MultisampleType == D3D.MultisampleType.None)
                 {
-                    device.GetRenderTargetData( surface, tmpSurface );
+                    device.GetRenderTargetData(surface, tmpSurface);
                 }
                 else
                 {
                     D3D.Surface stretchSurface;
                     Rectangle rect = new Rectangle();
-                    stretchSurface = D3D.Surface.CreateRenderTarget( device, desc.Width, desc.Height, desc.Format, D3D.MultisampleType.None, 0, false );
-                    device.StretchRectangle( tmpSurface, D3DHelper.ToRectangle( rect ), stretchSurface, D3DHelper.ToRectangle( rect ), D3D.TextureFilter.None );
-                    device.GetRenderTargetData( stretchSurface, tmpSurface );
+                    stretchSurface = D3D.Surface.CreateRenderTarget(device, desc.Width, desc.Height, desc.Format, D3D.MultisampleType.None, 0, false);
+                    device.StretchRectangle(tmpSurface, D3DHelper.ToRectangle(rect), stretchSurface, D3DHelper.ToRectangle(rect), D3D.TextureFilter.None);
+                    device.GetRenderTargetData(stretchSurface, tmpSurface);
                     stretchSurface.Dispose();
                 }
 
-                if ( ( dst.Left == 0 ) && ( dst.Right == Width ) && ( dst.Top == 0 ) && ( dst.Bottom == Height ) )
+                if ((dst.Left == 0) && (dst.Right == Width) && (dst.Top == 0) && (dst.Bottom == Height))
                 {
-                    stream = tmpSurface.LockRectangle( D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock );
+                    stream = tmpSurface.LockRectangle(D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock);
                 }
                 else
                 {
@@ -1047,70 +1038,68 @@ namespace Axiom.RenderSystems.DirectX9
                     rect.Top = dst.Top;
                     rect.Bottom = dst.Bottom;
 
-                    stream = tmpSurface.LockRectangle( D3DHelper.ToRectangle( rect ), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock );
+                    stream = tmpSurface.LockRectangle(D3DHelper.ToRectangle(rect), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock);
                 }
-
             }
 
-            PixelFormat format = D3DHelper.ConvertEnum( desc.Format );
+            PixelFormat format = D3DHelper.ConvertEnum(desc.Format);
 
-            if ( format == PixelFormat.Unknown )
+            if (format == PixelFormat.Unknown)
             {
-                if ( tmpSurface != null )
+                if (tmpSurface != null)
                     tmpSurface.Dispose();
-                throw new Exception( "Unsupported format" );
+                throw new Exception("Unsupported format");
             }
 
-            PixelBox src = new PixelBox( dst.Width, dst.Height, 1, format, stream.Data.DataPointer );
-            src.RowPitch = stream.Pitch / PixelUtil.GetNumElemBytes( format );
+            PixelBox src = new PixelBox(dst.Width, dst.Height, 1, format, stream.Data.DataPointer);
+            src.RowPitch = stream.Pitch / PixelUtil.GetNumElemBytes(format);
             src.SlicePitch = desc.Height * src.RowPitch;
 
-            PixelConverter.BulkPixelConversion( src, dst );
+            PixelConverter.BulkPixelConversion(src, dst);
 
-            if ( tmpSurface != null )
+            if (tmpSurface != null)
                 tmpSurface.Dispose();
         }
 
-        private void OnResetDevice( object sender, EventArgs e )
+        private void OnResetDevice(object sender, EventArgs e)
         {
             D3D.Device resetDevice = (D3D.Device)sender;
 
             // Turn off culling, so we see the front and back of the triangle
-            resetDevice.SetRenderState( D3D.RenderState.CullMode, D3D.Cull.None );
+            resetDevice.SetRenderState(D3D.RenderState.CullMode, D3D.Cull.None);
             // Turn on the ZBuffer
-            resetDevice.SetRenderState( D3D.RenderState.ZWriteEnable, true );
-            resetDevice.SetRenderState( D3D.RenderState.Lighting, true );
+            resetDevice.SetRenderState(D3D.RenderState.ZWriteEnable, true);
+            resetDevice.SetRenderState(D3D.RenderState.Lighting, true);
         }
 
-        private void OnDeviceResizing( object sender, System.ComponentModel.CancelEventArgs e )
+        private void OnDeviceResizing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
         }
 
-
-        public override void Update( bool swapBuffers )
+        public override void Update(bool swapBuffers)
         {
             D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
 
             // access device through driver
             D3D.Device device = _driver.D3DDevice;
 
-            if ( rs.IsDeviceLost )
+            if (rs.IsDeviceLost)
             {
                 DX.Result result = device.TestCooperativeLevel();
-                if ( result.Code == D3D.ResultCode.DeviceLost.Code )
+                if (result.Code == D3D.ResultCode.DeviceLost.Code)
                 {
                     // device lost, and we can't reset
-                    // can't do anything about it here, wait until we get 
-                    // D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
+                    // can't do anything about it here, wait until we get
+                    // D3DERR_DEVICENOTRESET; rendering calls will silently fail until
                     // then (except Present, but we ignore device lost there too)
-                    _renderSurface.ReleaseDC( _renderSurface.GetDC() );
+                    _renderSurface.ReleaseDC(_renderSurface.GetDC());
                     // need to release if swap chain
-                    if ( !_isSwapChain )
+                    if (!_isSwapChain)
                         _renderZBuffer = null;
                     else
-                        _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
-                    System.Threading.Thread.Sleep( 50 );
+                        _renderZBuffer.ReleaseDC(_renderZBuffer.GetDC());
+                    System.Threading.Thread.Sleep(50);
                     return;
                 }
                 else
@@ -1119,25 +1108,25 @@ namespace Axiom.RenderSystems.DirectX9
                     rs.RestoreLostDevice();
 
                     // Still lost?
-                    if ( rs.IsDeviceLost )
+                    if (rs.IsDeviceLost)
                     {
                         // Wait a while
-                        System.Threading.Thread.Sleep( 50 );
+                        System.Threading.Thread.Sleep(50);
                         return;
                     }
 
-                    if ( !_isSwapChain )
+                    if (!_isSwapChain)
                     {
                         // re-qeuery buffers
-                        _renderSurface = device.GetRenderTarget( 0 );
+                        _renderSurface = device.GetRenderTarget(0);
                         _renderZBuffer = device.DepthStencilSurface;
                         // release immediately so we don't hog them
-                        _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
+                        //_renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
                     }
                     else
                     {
                         // Update dimensions incase changed
-                        foreach ( Viewport entry in this.viewportList.Values )
+                        foreach (Viewport entry in this.viewportList.Values)
                         {
                             entry.UpdateDimensions();
                         }
@@ -1145,7 +1134,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
             }
 
-            base.Update( swapBuffers );
+            base.Update(swapBuffers);
         }
 
         #endregion

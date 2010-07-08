@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,20 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 using Axiom.Core;
 
@@ -52,9 +55,9 @@ namespace Axiom.Graphics
     ///     could be used with other memory areas such as sound card memory, custom
     ///     coprocessor memory etc.
     ///     <p/>
-    ///     This reflects the fact that memory held outside of main system RAM must 
+    ///     This reflects the fact that memory held outside of main system RAM must
     ///     be interacted with in a more formal fashion in order to promote
-    ///     cooperative and optimal usage of the buffers between the various 
+    ///     cooperative and optimal usage of the buffers between the various
     ///     processing units which manipulate them.
     ///     <p/>
     ///     This abstract class defines the core interface which is common to all
@@ -63,21 +66,21 @@ namespace Axiom.Graphics
     ///     <p/>
     ///     Buffers have the ability to be 'shadowed' in system memory, this is because
     ///     the kinds of access allowed on hardware buffers is not always as flexible as
-    ///     that allowed for areas of system memory - for example it is often either 
+    ///     that allowed for areas of system memory - for example it is often either
     ///     impossible, or extremely undesirable from a performance standpoint to read from
     ///     a hardware buffer; when writing to hardware buffers, you should also write every
-    ///     byte and do it sequentially. In situations where this is too restrictive, 
-    ///     it is possible to create a hardware, write-only buffer (the most efficient kind) 
+    ///     byte and do it sequentially. In situations where this is too restrictive,
+    ///     it is possible to create a hardware, write-only buffer (the most efficient kind)
     ///     and to back it with a system memory 'shadow' copy which can be read and updated arbitrarily.
     ///     Axiom handles synchronizing this buffer with the real hardware buffer (which should still be
-    ///     created with the <see cref="BufferUsage.Dynamic"/> flag if you intend to update it very frequently). 
-    ///     Whilst this approach does have it's own costs, such as increased memory overhead, these costs can 
+    ///     created with the <see cref="BufferUsage.Dynamic"/> flag if you intend to update it very frequently).
+    ///     Whilst this approach does have it's own costs, such as increased memory overhead, these costs can
     ///     often be outweighed by the performance benefits of using a more hardware efficient buffer.
     ///     You should look for the 'useShadowBuffer' parameter on the creation methods used to create
     ///     the buffer of the type you require (see <see cref="HardwareBufferManager"/>) to enable this feature.
     ///     <seealso cref="HardwareBufferManager"/>
     /// </remarks>
-    public abstract class HardwareBuffer : IDisposable
+    public abstract class HardwareBuffer : DisposableObject
     {
         #region Fields
 
@@ -102,7 +105,7 @@ namespace Axiom.Graphics
         /// </summary>
         protected int lockSize;
         /// <summary>
-        ///     
+        ///
         /// </summary>
         protected bool useSystemMemory;
         /// <summary>
@@ -147,7 +150,7 @@ namespace Axiom.Graphics
             this.suppressHardwareUpdate = false;
             ID = nextID++;
 
-			// If use shadow buffer, upgrade to WRITE_ONLY on hardware side
+            // If use shadow buffer, upgrade to WRITE_ONLY on hardware side
             if ( useShadowBuffer && usage == BufferUsage.Dynamic )
                 usage = BufferUsage.DynamicWriteOnly;
             else if ( useShadowBuffer && usage == BufferUsage.Static )
@@ -262,7 +265,7 @@ namespace Axiom.Graphics
         /// <param name="offset">The byte offset from the start of the buffer to read.</param>
         /// <param name="length">The size of the area to read, in bytes.</param>
         /// <param name="dest">
-        ///     The area of memory in which to place the data, must be large enough to 
+        ///     The area of memory in which to place the data, must be large enough to
         ///     accommodate the data!
         /// </param>
         public abstract void ReadData( int offset, int length, IntPtr dest );
@@ -308,7 +311,7 @@ namespace Axiom.Graphics
 
             WriteData( offset, length, dataPtr, false );
 
-            Memory.UnpinObject(data);
+            Memory.UnpinObject( data );
         }
 
         /// <summary>
@@ -325,14 +328,14 @@ namespace Axiom.Graphics
         ///     If true, this allows the driver to discard the entire buffer when writing,
         ///     such that DMA stalls can be avoided; use if you can.
         /// </param>
-		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
-		{
-			IntPtr dataPtr = Memory.PinObject( data );
+        public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+        {
+            IntPtr dataPtr = Memory.PinObject( data );
 
-			WriteData( offset, length, dataPtr, discardWholeBuffer );
+            WriteData( offset, length, dataPtr, discardWholeBuffer );
 
             Memory.UnpinObject( data );
-		}
+        }
 
         /// <summary>
         ///     Copy data from another buffer into this one.
@@ -470,59 +473,5 @@ namespace Axiom.Graphics
         }
 
         #endregion
-
-        #region IDisposable Implementation
-
-        /// <summary>
-        /// Determines if this instance has been disposed of already.
-        /// </summary>
-        protected bool isDisposed;
-
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        /// 
-        /// 		// If there are any unmanaged resources 
-        ///         // they need to be released here.
-        ///
-        ///         base.dispose( disposeManagedResources ); //isDisposed = true;
-        /// 	}
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected virtual void dispose( bool disposeManagedResources )
-        {
-            if ( !isDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                }
-
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
-            isDisposed = true;
-        }
-
-        public void Dispose()
-        {
-            dispose( true );
-            GC.SuppressFinalize( this );
-        }
-
-        #endregion IDisposable Implementation
     }
 }
-
-

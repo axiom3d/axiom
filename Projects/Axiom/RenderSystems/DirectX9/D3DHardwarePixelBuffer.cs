@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,28 +23,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 
-using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using Root = Axiom.Core.Root;
-using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
@@ -59,7 +59,6 @@ namespace Axiom.RenderSystems.DirectX9
     /// </summary>
     public class D3DHardwarePixelBuffer : HardwarePixelBuffer
     {
-
         #region Fields
 
         ///<summary>
@@ -135,7 +134,6 @@ namespace Axiom.RenderSystems.DirectX9
                 return fsaaSurface;
             }
         }
-
 
         ///<summary>
         ///    Accessor for surface
@@ -404,8 +402,8 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         ///<summary>
-        ///    Copies a box from another PixelBuffer to a region of the 
-        ///    this PixelBuffer. 
+        ///    Copies a box from another PixelBuffer to a region of the
+        ///    this PixelBuffer.
         ///</summary>
         ///<param name="src">Source/dest pixel buffer</param>
         ///<param name="srcBox">Image.BasicBox describing the source region in this buffer</param>
@@ -414,7 +412,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///    The source and destination regions dimensions don't have to match, in which
         ///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
         ///    but it is faster to pass the source image in the right dimensions.
-        ///    Only call this function when both buffers are unlocked. 
+        ///    Only call this function when both buffers are unlocked.
         ///</remarks>
         public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
         {
@@ -436,13 +434,13 @@ namespace Axiom.RenderSystems.DirectX9
                 D3D.Volume.FromVolume( volume, _src.volume, D3D.Filter.None, 0, dsrcBox, ddestBox );
             }
             else
-                // Software fallback   
+                // Software fallback
                 base.Blit( _src, srcBox, dstBox );
         }
 
         ///<summary>
         ///    Copies a region from normal memory to a region of this pixelbuffer. The source
-        ///    image can be in any pixel format supported by Axiom, and in any size. 
+        ///    image can be in any pixel format supported by Axiom, and in any size.
         ///</summary>
         ///<param name="src">PixelBox containing the source pixels and format in memory</param>
         ///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
@@ -450,12 +448,12 @@ namespace Axiom.RenderSystems.DirectX9
         ///    The source and destination regions dimensions don't have to match, in which
         ///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
         ///    but it is faster to pass the source image in the right dimensions.
-        ///    Only call this function when both  buffers are unlocked. 
+        ///    Only call this function when both  buffers are unlocked.
         ///</remarks>
         public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
         {
             // TODO: This currently does way too many copies.  We copy
-            // from src to a converted buffer (if needed), then from 
+            // from src to a converted buffer (if needed), then from
             // converted to a byte array, then into the temporary surface,
             // and finally from the temporary surface to the real surface.
             PixelBox converted = src;
@@ -502,13 +500,12 @@ namespace Axiom.RenderSystems.DirectX9
                     //D3D.VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
                     //D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
                 }
-
             }
 
             // If we allocated a buffer for the temporary conversion, free it here
-            // If I used bufPtr to store my temporary data while I converted 
+            // If I used bufPtr to store my temporary data while I converted
             // it, I need to free it here.  This invalidates converted.
-            // My data has already been copied to tmpSurface and then to the 
+            // My data has already been copied to tmpSurface and then to the
             // real surface.
             if ( bufGCHandle.IsAllocated )
                 bufGCHandle.Free();
@@ -525,7 +522,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///<remarks>
         ///    The source and destination regions don't have to match, in which
         ///    case scaling is done.
-        ///    Only call this function when the buffer is unlocked. 
+        ///    Only call this function when the buffer is unlocked.
         ///</remarks>
         public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
         {
@@ -640,14 +637,13 @@ namespace Axiom.RenderSystems.DirectX9
 
         protected override void dispose( bool disposeManagedResources )
         {
-            if ( !isDisposed )
+            if ( !IsDisposed )
             {
                 if ( disposeManagedResources )
                 {
                 }
                 DestroyRenderTextures();
             }
-            isDisposed = true;
 
             // If it is available, make the call to the
             // base class's Dispose(Boolean) method
@@ -655,6 +651,5 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         #endregion Methods
-
     }
 }

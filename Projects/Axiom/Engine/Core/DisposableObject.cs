@@ -40,162 +40,174 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Monitors the object lifetime of objects that are in control of unmanaged resources 
+	/// Monitors the object lifetime of objects that are in control of unmanaged resources
 	/// </summary>
-    internal class ObjectManager : Singleton<ObjectManager>
-    {
+	internal class ObjectManager : Singleton<ObjectManager>
+	{
 		private struct ObjectEntry
 		{
 			public WeakReference Instance;
 			public string ConstructionStack;
 		}
-		
-        private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
+
+		private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
 
 		/// <summary>
-		/// Add an object to be monitored 
+		/// Add an object to be monitored
 		/// </summary>
 		/// <param name="instance">
 		/// A <see cref="DisposableObject"/> to monitor for proper disposal
 		/// </param>
-        public void Add( DisposableObject instance, string stackTrace )
-        {
-            List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
+		public void Add( DisposableObject instance, string stackTrace )
+		{
+			List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
 
-            objectList.Add( new ObjectEntry 
-			               		{ 
-									Instance = new WeakReference( instance ), 
-									ConstructionStack = stackTrace 
+			objectList.Add( new ObjectEntry
+								{
+									Instance = new WeakReference( instance ),
+									ConstructionStack = stackTrace
 								} );
-        }
+		}
 
-        private List<ObjectEntry> GetOrCreateObjectList( Type type )
-        {
-            List<ObjectEntry> objectList;
-            if ( _objects.ContainsKey( type ) )
-            {
-                objectList = _objects[ type ];
-            }
-            else
-            {
-                objectList = new List<ObjectEntry>();
-                _objects.Add( type, objectList );
-            }
-            return objectList;
-        }
+		private List<ObjectEntry> GetOrCreateObjectList( Type type )
+		{
+			List<ObjectEntry> objectList;
+			if ( _objects.ContainsKey( type ) )
+			{
+				objectList = _objects[ type ];
+			}
+			else
+			{
+				objectList = new List<ObjectEntry>();
+				_objects.Add( type, objectList );
+			}
+			return objectList;
+		}
 
-        #region Singleton<ObjectManager> Implementation
+		#region Singleton<ObjectManager> Implementation
 
-        #endregion Singleton<ObjectManager> Implementation
+		#endregion Singleton<ObjectManager> Implementation
 
-        #region IDisposable Implementation
+		#region IDisposable Implementation
 
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !isDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-					foreach( KeyValuePair<Type, List<ObjectEntry>> item in this._objects )
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					long objectCount = 0;
+					StringBuilder msg = new StringBuilder();
+					// Dispose managed resources.
+					foreach ( KeyValuePair<Type, List<ObjectEntry>> item in this._objects )
 					{
 						string typeName = item.Key.Name;
 						List<ObjectEntry> objectList = item.Value;
-						foreach( ObjectEntry objectEntry in objectList ) 
+						foreach ( ObjectEntry objectEntry in objectList )
 						{
-							if ( objectEntry.Instance.IsAlive && ((DisposableObject)objectEntry.Instance.Target).IsDisposed )
+							if ( objectEntry.Instance.IsAlive && !( (DisposableObject)objectEntry.Instance.Target ).IsDisposed )
 							{
-								string msg = String.Format("An instance of {0} was not disposed properly, it was created at : {1}", typeName, objectEntry.ConstructionStack );
-								System.Diagnostics.Debug.WriteLine(msg);
+								objectCount++;
+								msg.AppendFormat( "\nAn instance of {0} was not disposed properly, creation stacktrace :\n{1}", typeName, objectEntry.ConstructionStack );
 							}
 						}
 					}
-                }
+					if ( objectCount > 0 )
+					{
+						System.Diagnostics.Debug.WriteLine( String.Format( "[ObjectManager] Total of {0} objects still alive.", objectCount ) );
+						System.Diagnostics.Debug.WriteLine( msg );
+					}
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-        #endregion IDisposable Implementation
-    }
+		#endregion IDisposable Implementation
+	}
 
-    public abstract class DisposableObject : IDisposable
-    {
-        protected DisposableObject()
-        {
-            IsDisposed = false;
-            ObjectManager.Instance.Add( this, Environment.StackTrace );
-        }
+	public abstract class DisposableObject : IDisposable
+	{
+		protected DisposableObject()
+		{
+			IsDisposed = false;
+#if !(XBOX || XBOX360 )
+			ObjectManager.Instance.Add( this, Environment.StackTrace );
+#else
+			ObjectManager.Instance.Add(this, String.Empty);
+#endif
+		}
 
-        ~DisposableObject()
-        {
-            if ( !IsDisposed )
-                dispose( false );
-        }
+		~DisposableObject()
+		{
+			if ( !IsDisposed )
+				dispose( false );
+		}
 
-        #region IDisposable Implementation
+		#region IDisposable Implementation
 
-        /// <summary>
-        /// Determines if this instance has been disposed of already.
-        /// </summary>
-        public bool IsDisposed { get; set; }
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		public bool IsDisposed { get; set; }
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !IsDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected virtual void dispose( bool disposeManagedResources )
-        {
-            if ( !IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !IsDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
-            IsDisposed = true;
-        }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			IsDisposed = true;
+		}
 
-        public void Dispose()
-        {
-            dispose( true );
-            GC.SuppressFinalize( this );
-        }
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
 
-        #endregion IDisposable Implementation
-    }
+		#endregion IDisposable Implementation
+	}
 }

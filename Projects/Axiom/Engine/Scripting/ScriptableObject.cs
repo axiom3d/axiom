@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Axiom.Collections;
 using System.Reflection;
 
@@ -73,14 +72,13 @@ namespace Axiom.Scripting
         {
             ScriptPropertyName = scriptPropertyName;
         }
-
     }
 
-    public abstract class ScriptableObject : IScriptableObject
+    public abstract class ScriptableObject : DisposableObject, IScriptableObject
     {
         private Dictionary<String, IPropertyCommand> _classParameters;
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public ICollection<IPropertyCommand> Commands
         {
@@ -91,7 +89,7 @@ namespace Axiom.Scripting
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected ScriptableObject()
         {
@@ -122,13 +120,13 @@ namespace Axiom.Scripting
             {
 #if !(XBOX || XBOX360)
                 if ( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
-                                              	{
-													if (typeObj.ToString() == criteriaObj.ToString())
-														return true;
-													else
-														return false;
-												}
-                                            ,  typeof(IPropertyCommand).FullName ).Length != 0 )
+                                                {
+                                                    if ( typeObj.ToString() == criteriaObj.ToString() )
+                                                        return true;
+                                                    else
+                                                        return false;
+                                                }
+                                            , typeof( IPropertyCommand ).FullName ).Length != 0 )
                 {
                     foreach ( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
                     {
