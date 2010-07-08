@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,20 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLHardwarePixelBuffer.cs 1309 2008-07-07 13:34:22Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Axiom.Graphics;
@@ -47,250 +50,250 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLHardwarePixelBuffer : HardwarePixelBuffer
-	{
-		#region Fields and Properties
+    internal class GLHardwarePixelBuffer : HardwarePixelBuffer
+    {
+        #region Fields and Properties
 
-		private BufferLocking _currentLockOptions;
-		private GCHandle _bufferPinndedHandle;
-		private byte[] _data = null;
+        private BufferLocking _currentLockOptions;
+        private GCHandle _bufferPinndedHandle;
+        private byte[] _data = null;
 
-		#region buffer Property
+        #region buffer Property
 
-		private PixelBox _buffer;
-		protected PixelBox buffer
-		{
-			get
-			{
-				return _buffer;
-			}
-			set
-			{
-				_buffer = value;
-			}
-		}
+        private PixelBox _buffer;
 
-		#endregion buffer Property
+        protected PixelBox buffer
+        {
+            get
+            {
+                return _buffer;
+            }
+            set
+            {
+                _buffer = value;
+            }
+        }
 
-		#region GLInternalFormat Property
+        #endregion buffer Property
 
-		private int _glInternalFormat;
-		public int GLFormat
-		{
-			get
-			{
-				return _glInternalFormat;
-			}
+        #region GLInternalFormat Property
 
-			protected set
-			{
-				_glInternalFormat = value;
-			}
-		}
+        private int _glInternalFormat;
 
-		#endregion GLInternalFormat Property
+        public int GLFormat
+        {
+            get
+            {
+                return _glInternalFormat;
+            }
 
-		#endregion Fields and Properties
+            protected set
+            {
+                _glInternalFormat = value;
+            }
+        }
 
-		#region Construction and Destruction
+        #endregion GLInternalFormat Property
 
-		public GLHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
-			: base( width, height, depth, format, usage, false, false )
-		{
-			buffer = new PixelBox( width, height, depth, format );
-			GLFormat = Gl.GL_NONE;
-		}
+        #endregion Fields and Properties
 
-		~GLHardwarePixelBuffer()
-		{
-			dispose( false );
-		}
+        #region Construction and Destruction
 
-		#endregion Construction and Destruction
+        public GLHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
+            : base( width, height, depth, format, usage, false, false )
+        {
+            buffer = new PixelBox( width, height, depth, format );
+            GLFormat = Gl.GL_NONE;
+        }
 
-		#region Methods
+        ~GLHardwarePixelBuffer()
+        {
+            dispose( false );
+        }
 
-		///<summary>
-		/// Bind surface to frame buffer. Needs FBO extension.
-		///</summary>
-		public virtual void BindToFramebuffer( int attachment, int zOffset )
-		{
-			throw new NotSupportedException( "Framebuffer bind not possible for this pixelbuffer type." );
-		}
+        #endregion Construction and Destruction
 
-		protected void allocateBuffer()
-		{
+        #region Methods
 
-			if ( buffer.Data != IntPtr.Zero )
-				// Already allocated
-				return;
+        ///<summary>
+        /// Bind surface to frame buffer. Needs FBO extension.
+        ///</summary>
+        public virtual void BindToFramebuffer( int attachment, int zOffset )
+        {
+            throw new NotSupportedException( "Framebuffer bind not possible for this pixelbuffer type." );
+        }
 
-			// Allocate storage
-			_data = new byte[ this.sizeInBytes ];
-			_bufferPinndedHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
-			buffer.Data = _bufferPinndedHandle.AddrOfPinnedObject();
-			// TODO: use PBO if we're HBU_DYNAMIC
-		}
+        protected void allocateBuffer()
+        {
+            if ( buffer.Data != IntPtr.Zero )
+                // Already allocated
+                return;
 
-		protected void freeBuffer()
-		{
-			if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
-			{
-				if ( _bufferPinndedHandle.IsAllocated )
-				{
-					buffer.Data = IntPtr.Zero;
-					_bufferPinndedHandle.Free();
-					_data = null;
-				}
-			}
-		}
+            // Allocate storage
+            _data = new byte[ this.sizeInBytes ];
+            _bufferPinndedHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
+            buffer.Data = _bufferPinndedHandle.AddrOfPinnedObject();
+            // TODO: use PBO if we're HBU_DYNAMIC
+        }
 
-		protected virtual void download( PixelBox box )
-		{
-			throw new NotSupportedException( "Download not possible for this pixelbuffer type." );
-		}
+        protected void freeBuffer()
+        {
+            if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
+            {
+                if ( _bufferPinndedHandle.IsAllocated )
+                {
+                    buffer.Data = IntPtr.Zero;
+                    _bufferPinndedHandle.Free();
+                    _data = null;
+                }
+            }
+        }
 
-		protected virtual void upload( PixelBox box )
-		{
-			throw new NotSupportedException( "Upload not possible for this pixelbuffer type." );
-		}
+        protected virtual void download( PixelBox box )
+        {
+            throw new NotSupportedException( "Download not possible for this pixelbuffer type." );
+        }
 
-		#endregion Methods
+        protected virtual void upload( PixelBox box )
+        {
+            throw new NotSupportedException( "Upload not possible for this pixelbuffer type." );
+        }
 
-		#region HardwarePixelBuffer Implementation
+        #endregion Methods
 
-		protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
-		{
-			allocateBuffer();
-			if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0 )
-			{
-				// Download the old contents of the texture
-				download( _buffer );
-			}
-			_currentLockOptions = options;
-			return _buffer.GetSubVolume( lockBox );
-		}
+        #region HardwarePixelBuffer Implementation
 
-		protected override void UnlockImpl()
-		{
-			if ( _currentLockOptions != BufferLocking.ReadOnly )
-			{
-				// From buffer to card, only upload if was locked for writing
-				upload( CurrentLock );
-			}
+        protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
+        {
+            allocateBuffer();
+            if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0 )
+            {
+                // Download the old contents of the texture
+                download( _buffer );
+            }
+            _currentLockOptions = options;
+            return _buffer.GetSubVolume( lockBox );
+        }
 
-			freeBuffer();
-		}
+        protected override void UnlockImpl()
+        {
+            if ( _currentLockOptions != BufferLocking.ReadOnly )
+            {
+                // From buffer to card, only upload if was locked for writing
+                upload( CurrentLock );
+            }
 
-		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
-		{
-			PixelBox scaled;
+            freeBuffer();
+        }
 
-			if ( !_buffer.Contains( dstBox ) )
-				throw new ArgumentException( "Destination box out of range." );
+        public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
+        {
+            PixelBox scaled;
 
-			if ( src.Width != dstBox.Width ||
-				 src.Height != dstBox.Height ||
-				 src.Depth != dstBox.Depth )
-			{
-				// Scale to destination size. Use DevIL and not iluScale because ILU screws up for 
-				// floating point textures and cannot cope with 3D images.
-				// This also does pixel format conversion if needed
-				allocateBuffer();
-				scaled = _buffer.GetSubVolume( dstBox );
+            if ( !_buffer.Contains( dstBox ) )
+                throw new ArgumentException( "Destination box out of range." );
 
-				Image.Scale( src, scaled, ImageFilter.Bilinear );
-			}
-			else if ( GLPixelUtil.GetGLOriginFormat( src.Format ) == 0 )
-			{
-				// Extents match, but format is not accepted as valid source format for GL
-				// do conversion in temporary buffer
-				allocateBuffer();
-				scaled = _buffer.GetSubVolume( dstBox );
-				PixelConverter.BulkPixelConversion( src, scaled );
-			}
-			else
-			{
-				// No scaling or conversion needed
-				scaled = src;
-				// Set extents for upload
-				scaled.Left = dstBox.Left;
-				scaled.Right = dstBox.Right;
-				scaled.Top = dstBox.Top;
-				scaled.Bottom = dstBox.Bottom;
-				scaled.Front = dstBox.Front;
-				scaled.Back = dstBox.Back;
-			}
+            if ( src.Width != dstBox.Width ||
+                 src.Height != dstBox.Height ||
+                 src.Depth != dstBox.Depth )
+            {
+                // Scale to destination size. Use DevIL and not iluScale because ILU screws up for
+                // floating point textures and cannot cope with 3D images.
+                // This also does pixel format conversion if needed
+                allocateBuffer();
+                scaled = _buffer.GetSubVolume( dstBox );
 
-			upload( scaled );
-			freeBuffer();
-		}
+                Image.Scale( src, scaled, ImageFilter.Bilinear );
+            }
+            else if ( GLPixelUtil.GetGLOriginFormat( src.Format ) == 0 )
+            {
+                // Extents match, but format is not accepted as valid source format for GL
+                // do conversion in temporary buffer
+                allocateBuffer();
+                scaled = _buffer.GetSubVolume( dstBox );
+                PixelConverter.BulkPixelConversion( src, scaled );
+            }
+            else
+            {
+                // No scaling or conversion needed
+                scaled = src;
+                // Set extents for upload
+                scaled.Left = dstBox.Left;
+                scaled.Right = dstBox.Right;
+                scaled.Top = dstBox.Top;
+                scaled.Bottom = dstBox.Bottom;
+                scaled.Front = dstBox.Front;
+                scaled.Back = dstBox.Back;
+            }
 
-		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
-		{
-			if ( !_buffer.Contains( srcBox ) )
-				throw new ArgumentException( "Source box out of range." );
-			if ( srcBox.Left == 0 && srcBox.Right == Width &&
-			     srcBox.Top == 0 && srcBox.Bottom == Height &&
-			     srcBox.Front == 0 && srcBox.Back == Depth &&
-			     dst.Width == Width &&
-			     dst.Height == Height &&
-			     dst.Depth == Depth &&
-			     GLPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
-			{
-				// The direct case: the user wants the entire texture in a format supported by GL
-				// so we don't need an intermediate buffer
-				download( dst );
-			}
-			else
-			{
-				// Use buffer for intermediate copy
-				allocateBuffer();
-				// Download entire buffer
-				download( _buffer );
-				if ( srcBox.Width != dst.Width ||
-					srcBox.Height != dst.Height ||
-					srcBox.Depth != dst.Depth )
-				{
-					//TODO Implement Image.Scale
-					throw new Exception( "Image scaling not yet implemented" );
-					// We need scaling
-					//Image.Scale( _buffer.GetSubVolume( srcBox ), dst, ImageFilter.BiLinear );
-				}
-				else
-				{
-					// Just copy the bit that we need
-					PixelConverter.BulkPixelConversion( _buffer.GetSubVolume( srcBox ), dst );
-				}
-				freeBuffer();
-			}
-		}
+            upload( scaled );
+            freeBuffer();
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-				}
+        public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
+        {
+            if ( !_buffer.Contains( srcBox ) )
+                throw new ArgumentException( "Source box out of range." );
+            if ( srcBox.Left == 0 && srcBox.Right == Width &&
+                 srcBox.Top == 0 && srcBox.Bottom == Height &&
+                 srcBox.Front == 0 && srcBox.Back == Depth &&
+                 dst.Width == Width &&
+                 dst.Height == Height &&
+                 dst.Depth == Depth &&
+                 GLPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
+            {
+                // The direct case: the user wants the entire texture in a format supported by GL
+                // so we don't need an intermediate buffer
+                download( dst );
+            }
+            else
+            {
+                // Use buffer for intermediate copy
+                allocateBuffer();
+                // Download entire buffer
+                download( _buffer );
+                if ( srcBox.Width != dst.Width ||
+                    srcBox.Height != dst.Height ||
+                    srcBox.Depth != dst.Depth )
+                {
+                    //TODO Implement Image.Scale
+                    throw new Exception( "Image scaling not yet implemented" );
+                    // We need scaling
+                    //Image.Scale( _buffer.GetSubVolume( srcBox ), dst, ImageFilter.BiLinear );
+                }
+                else
+                {
+                    // Just copy the bit that we need
+                    PixelConverter.BulkPixelConversion( _buffer.GetSubVolume( srcBox ), dst );
+                }
+                freeBuffer();
+            }
+        }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-				if ( _bufferPinndedHandle.IsAllocated )
-				{
-					_bufferPinndedHandle.Free();
-				}
-				buffer.Data = IntPtr.Zero;
-				buffer = null;
-			}
-			isDisposed = true;
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+                if ( _bufferPinndedHandle.IsAllocated )
+                {
+                    _bufferPinndedHandle.Free();
+                }
+                buffer.Data = IntPtr.Zero;
+                buffer = null;
+            }
 
-		#endregion HardwarePixelBuffer Implementation
-	}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
+
+        #endregion HardwarePixelBuffer Implementation
+    }
 }

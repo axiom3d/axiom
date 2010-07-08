@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,19 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -94,7 +97,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region Methods
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="length"></param>
@@ -108,7 +111,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected override void UnlockImpl()
         {
@@ -117,7 +120,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="length"></param>
@@ -135,7 +138,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="length"></param>
@@ -186,7 +189,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         protected override void dispose( bool disposeManagedResources )
         {
-            if ( !isDisposed )
+            if ( !IsDisposed )
             {
                 if ( disposeManagedResources )
                 {

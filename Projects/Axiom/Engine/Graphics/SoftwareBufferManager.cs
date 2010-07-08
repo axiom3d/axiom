@@ -1,9 +1,10 @@
-
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -29,7 +30,7 @@ namespace Axiom.Graphics
         #region Methods
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="numIndices"></param>
@@ -41,7 +42,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="type"></param>
         /// <param name="numIndices"></param>
@@ -54,7 +55,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="vertexSize"></param>
         /// <param name="numVerts"></param>
@@ -66,7 +67,7 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="vertexSize"></param>
         /// <param name="numVerts"></param>
@@ -78,15 +79,15 @@ namespace Axiom.Graphics
             return new SoftwareVertexBuffer( vertexSize, numVerts, usage );
         }
 
-        #endregion
+        #endregion Methods
 
         #region Properties
 
-        #endregion
+        #endregion Properties
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class SoftwareVertexBuffer : HardwareVertexBuffer
     {
@@ -107,7 +108,7 @@ namespace Axiom.Graphics
         #region Constructors
 
         /// <summary>
-        ///		
+        ///
         /// </summary>
         /// <remarks>
         ///		This is already in system memory, so no need to use a shadow buffer.
@@ -121,7 +122,7 @@ namespace Axiom.Graphics
             data = new byte[ sizeInBytes ];
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -164,15 +165,15 @@ namespace Axiom.Graphics
         public override void Unlock()
         {
             //Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
-            
+
             isLocked = false;
 
             UnlockImpl();
         }
 
         protected override void UnlockImpl()
-        {            
-            Memory.UnpinObject(data);
+        {
+            Memory.UnpinObject( data );
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -210,11 +211,11 @@ namespace Axiom.Graphics
                 result = (IntPtr)( (byte*)result + offset );
             }
             return result;
-
         }
+
         protected override void dispose( bool disposeManagedResources )
         {
-            if ( !isDisposed )
+            if ( !IsDisposed )
             {
                 if ( IsLocked )
                 {
@@ -228,14 +229,13 @@ namespace Axiom.Graphics
 
                 base.dispose( disposeManagedResources ); //isDisposed = true;
             }
-
         }
 
-        #endregion
+        #endregion Methods
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class SoftwareIndexBuffer : HardwareIndexBuffer
     {
@@ -256,7 +256,7 @@ namespace Axiom.Graphics
         #region Constructors
 
         /// <summary>
-        ///		
+        ///
         /// </summary>
         /// <remarks>
         ///		This is already in system memory, so no need to use a shadow buffer.
@@ -270,7 +270,7 @@ namespace Axiom.Graphics
             data = new byte[ sizeInBytes ];
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Methods
 
@@ -361,7 +361,7 @@ namespace Axiom.Graphics
 
         protected override void dispose( bool disposeManagedResources )
         {
-            if ( !isDisposed )
+            if ( !IsDisposed )
             {
                 if ( IsLocked )
                 {
@@ -377,10 +377,6 @@ namespace Axiom.Graphics
             }
         }
 
-        #endregion
+        #endregion Methods
     }
-
-
 }
-
-

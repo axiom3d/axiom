@@ -199,7 +199,7 @@ namespace Axiom.Demos
 			// cboRenderSystems
 			// 
 			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboRenderSystems.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
 			this.cboRenderSystems.Name = "cboRenderSystems";

@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,24 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
@@ -49,7 +51,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// 	Summary description for XnaHardwareVertexBuffer.
 	/// </summary>
-	/// 
+	///
 	//there is no XNA buffer locking system, copy first into a byte array and when the unlock function is called, fill in memory with setdata<byte>(...)
 	unsafe public class XnaHardwareVertexBuffer : HardwareVertexBuffer
 	{
@@ -63,7 +65,7 @@ namespace Axiom.RenderSystems.Xna
 		private int _offset;
 		private int _length;
 
-		#endregion
+		#endregion Member variables
 
 		#region Constructors
 
@@ -72,24 +74,23 @@ namespace Axiom.RenderSystems.Xna
 		{
 			_device = dev;
 			// Create the Xna vertex buffer
-            if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
-            {
-                _buffer = new XFG.DynamicVertexBuffer(_device, vertexSize * numVertices, XnaHelper.Convert(usage));
-            }
-            else
-			    _buffer = new XFG.VertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
+			if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
+			{
+				_buffer = new XFG.DynamicVertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
+			}
+			else
+				_buffer = new XFG.VertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
 
 			_bufferBytes = new byte[ vertexSize * numVertices ];
 			_bufferBytes.Initialize();
-
 		}
 
-		#endregion
+		#endregion Constructors
 
 		#region Methods
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
@@ -106,7 +107,7 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected override void UnlockImpl()
 		{
@@ -117,7 +118,7 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
@@ -132,11 +133,10 @@ namespace Axiom.RenderSystems.Xna
 
 			// unlock the buffer
 			this.Unlock();
-
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
@@ -144,7 +144,6 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="discardWholeBuffer"></param>
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
-
 			// lock the buffer real quick
 			IntPtr dest = this.Lock( offset, length,
 				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
@@ -153,31 +152,29 @@ namespace Axiom.RenderSystems.Xna
 			Memory.Copy( src, dest, length );
 
 			this.Unlock();
-
 		}
 
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !isDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
 
-                if ( _buffer != null )
-                {
-                    _buffer.Dispose();
-                    _buffer = null;
-                }
+				if ( _buffer != null )
+				{
+					_buffer.Dispose();
+					_buffer = null;
+				}
+			}
 
-            }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
-        }
-
-		#endregion
+		#endregion Methods
 
 		#region Properties
 
@@ -192,7 +189,6 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		#endregion
-
+		#endregion Properties
 	}
 }
