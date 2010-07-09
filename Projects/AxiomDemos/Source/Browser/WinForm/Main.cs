@@ -40,7 +40,7 @@ namespace Axiom.Demos.Browser.WinForm
                 help.Copyright = new CopyrightInfo("Axiom Engine Team", 2003, 2010);
                 help.AddPreOptionsLine("This is free software. You may redistribute copies of it under the terms of");
                 help.AddPreOptionsLine("the LGPL License <http://www.opensource.org/licenses/lgpl-license.php>.");
-                help.AddPreOptionsLine("Usage: SampleApp -sCompositor ");
+                help.AddPreOptionsLine("Usage: Axiom.Demos.Browser.WinForm -sCompositor ");
                 help.AddOptions(this);
 
                 return help;
