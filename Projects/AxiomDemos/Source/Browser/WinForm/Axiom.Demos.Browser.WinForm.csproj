@@ -69,10 +69,6 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
@@ -92,6 +88,10 @@
     <Reference Include="System.Xml">
       <Name>System.Xml</Name>
       <HintPath>\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine, Version=1.8.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
