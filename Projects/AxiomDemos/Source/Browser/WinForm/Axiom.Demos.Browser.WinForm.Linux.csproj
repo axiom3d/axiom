@@ -91,6 +91,10 @@
       <Name>System.Xml</Name>
       <HintPath>\System.Xml.dll</HintPath>
     </Reference>
+    <Reference Include="CommandLine, Version=1.8.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
