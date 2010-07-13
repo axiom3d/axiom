@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,34 +41,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using IO = System.IO;
-
-using Axiom.Core;
+using System.Text;
+using System.Text.RegularExpressions;
 using Axiom.Collections;
+using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Math;
 using Axiom.Scripting;
-
+using IO = System.IO;
 using Real = System.Single;
-using System.Text;
-using System.Text.RegularExpressions;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-
     /// <summary>
     /// This defines an interface which is called back during
-    /// resource group loading to indicate the progress of the load. 
+    /// resource group loading to indicate the progress of the load.
     /// </summary>
     /// <remarks>
-    /// Resource group loading is in 2 phases - creating resources from 
+    /// Resource group loading is in 2 phases - creating resources from
     /// declarations (which includes parsing scripts), and loading
     /// resources. Note that you don't necessarily have to have both; it
     /// is quite possible to just parse all the scripts for a group (see
-    /// ResourceGroupManager.InitialiseResourceGroup, but not to 
-    /// load the resource group. 
+    /// ResourceGroupManager.InitialiseResourceGroup, but not to
+    /// load the resource group.
     /// The sequence of events is (* signifies a repeating item):
     /// <ul>
     ///     <li>resourceGroupScriptingStarted</li>
@@ -110,33 +111,33 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="groupName">The name of the group being loaded</param>
         /// <param name="resourceCount">
-        /// The number of resources which will be loaded, 
+        /// The number of resources which will be loaded,
         /// including a number of stages required to load any linked world geometry
         /// </param>
         void ResourceGroupLoadStarted( string groupName, int resourceCount );
 
         /// <summary>
-        /// This event is fired when a declared resource is about to be loaded. 
+        /// This event is fired when a declared resource is about to be loaded.
         /// </summary>
         /// <param name="resource">Weak reference to the resource loaded</param>
         void ResourceLoadStarted( Resource resource );
 
         /// <summary>
-        /// This event is fired when the resource has been loaded. 
+        /// This event is fired when the resource has been loaded.
         /// </summary>
         void ResourceLoadEnded();
 
         /// <summary>
-        /// This event is fired when a stage of loading linked world geometry 
-        /// is about to start. The number of stages required will have been 
+        /// This event is fired when a stage of loading linked world geometry
+        /// is about to start. The number of stages required will have been
         /// included in the resourceCount passed in resourceGroupLoadStarted.
         /// </summary>
         /// <param name="description">Text description of what was just loaded</param>
         void WorldGeometryStageStarted( string description );
 
         /// <summary>
-        /// This event is fired when a stage of loading linked world geometry 
-        /// has been completed. The number of stages required will have been 
+        /// This event is fired when a stage of loading linked world geometry
+        /// has been completed. The number of stages required will have been
         /// included in the resourceCount passed in resourceGroupLoadStarted.
         /// </summary>
         /// <param name="description">Text description of what was just loaded</param>
@@ -152,43 +153,43 @@ namespace Axiom.Core
     /// This singleton class manages the list of resource groups, and notifying
     /// the various resource managers of their obligations to load / unload
     /// resources in a group. It also provides facilities to monitor resource
-    /// loading per group (to do progress bars etc), provided the resources 
+    /// loading per group (to do progress bars etc), provided the resources
     /// that are required are pre-registered.
     /// <para />
     /// Defining new resource groups,  and declaring the resources you intend to
-    /// use in advance is optional, however it is a very useful feature. In addition, 
-    /// if a ResourceManager supports the definition of resources through scripts, 
+    /// use in advance is optional, however it is a very useful feature. In addition,
+    /// if a ResourceManager supports the definition of resources through scripts,
     ///	then this is the class which drives the locating of the scripts and telling
-    ///	the ResourceManager to parse them. 
+    ///	the ResourceManager to parse them.
     /// @par
     ///	There are several states that a resource can be in (the concept, not the
     ///	object instance in this case):
     ///	<ol>
     ///	<li><b>Undefined</b>. Nobody knows about this resource yet. It might be
-    ///	in the filesystem, but Ogre is oblivious to it at the moment - there 
+    ///	in the filesystem, but Ogre is oblivious to it at the moment - there
     ///	is no Resource instance. This might be because it's never been declared
     ///	(either in a script, or using ResourceGroupManager::declareResource), or
-    ///	it may have previously been a valid Resource instance but has been 
+    ///	it may have previously been a valid Resource instance but has been
     ///	removed, either individually through ResourceManager::remove or as a group
     ///	through ResourceGroupManager::clearResourceGroup.</li>
     ///	<li><b>Declared</b>. Ogre has some forewarning of this resource, either
     ///	through calling ResourceGroupManager::declareResource, or by declaring
     ///	the resource in a script file which is on one of the resource locations
     ///	which has been defined for a group. There is still no instance of Resource,
-    ///	but Ogre will know to create this resource when 
+    ///	but Ogre will know to create this resource when
     ///	ResourceGroupManager.InitializeResourceGroup is called (which is automatic
     ///	if you declare the resource group before Root.Initialize).</li>
-    ///	<li><b>Unloaded</b>. There is now a Resource instance for this resource, 
+    ///	<li><b>Unloaded</b>. There is now a Resource instance for this resource,
     ///	although it is not loaded. This means that code which looks for this
     ///	named resource will find it, but the Resource is not using a lot of memory
     ///	because it is in an unloaded state. A Resource can get into this state
-    ///	by having just been created by ResourceGroupManager.InitializeResourceGroup 
-    ///	(either from a script, or from a call to declareResource), by 
-    ///	being created directly from code (ResourceManager.Create), or it may 
+    ///	by having just been created by ResourceGroupManager.InitializeResourceGroup
+    ///	(either from a script, or from a call to declareResource), by
+    ///	being created directly from code (ResourceManager.Create), or it may
     ///	have previously been loaded and has been unloaded, either individually
     ///	through Resource::unload, or as a group through ResourceGroupManager.UnloadResourceGroup.</li>
     ///	<li><b>Loaded</b>The Resource instance is fully loaded. This may have
-    ///	happened implicitly because something used it, or it may have been 
+    ///	happened implicitly because something used it, or it may have been
     ///	loaded as part of a group.</li>
     ///	</ol>
     ///	<see>ResourceGroupManager.DeclareResource</see>
@@ -197,7 +198,7 @@ namespace Axiom.Core
     ///	<see>ResourceGroupManager.UnloadResourceGroup</see>
     ///	<see>ResourceGroupManager.ClearResourceGroup</see>
     ///	</summary>
-    public class ResourceGroupManager : Singleton<ResourceGroupManager>
+    public class ResourceGroupManager : DisposableObject, ISingleton<ResourceGroupManager>
     {
         #region Delegates
 
@@ -234,28 +235,28 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="groupName">The name of the group being loaded</param>
         /// <param name="resourceCount">
-        /// The number of resources which will be loaded, 
+        /// The number of resources which will be loaded,
         /// including a number of stages required to load any linked world geometry
         /// </param>
         private delegate void ResourceGroupLoadStarted( string groupName, int resourceCount );
         private ResourceGroupLoadStarted _resourceGroupLoadStarted;
 
         /// <summary>
-        /// This event is fired when a declared resource is about to be loaded. 
+        /// This event is fired when a declared resource is about to be loaded.
         /// </summary>
         /// <param name="resource">Weak reference to the resource loaded</param>
         private delegate void ResourceLoadStarted( Resource resource );
         private ResourceLoadStarted _resourceLoadStarted;
 
         /// <summary>
-        /// This event is fired when the resource has been loaded. 
+        /// This event is fired when the resource has been loaded.
         /// </summary>
         private delegate void ResourceLoadEnded();
         private ResourceLoadEnded _resourceLoadEnded;
 
         /// <summary>
-        /// This event is fired when a stage of loading linked world geometry 
-        /// is about to start. The number of stages required will have been 
+        /// This event is fired when a stage of loading linked world geometry
+        /// is about to start. The number of stages required will have been
         /// included in the resourceCount passed in resourceGroupLoadStarted.
         /// </summary>
         /// <param name="description">Text description of what was just loaded</param>
@@ -263,8 +264,8 @@ namespace Axiom.Core
         private WorldGeometryStageStarted _worldGeometryStageStarted;
 
         /// <summary>
-        /// This event is fired when a stage of loading linked world geometry 
-        /// has been completed. The number of stages required will have been 
+        /// This event is fired when a stage of loading linked world geometry
+        /// has been completed. The number of stages required will have been
         /// included in the resourceCount passed in resourceGroupLoadStarted.
         /// </summary>
         /// <param name="description">Text description of what was just loaded</param>
@@ -277,9 +278,10 @@ namespace Axiom.Core
         private delegate void ResourceGroupLoadEnded( string groupName );
         private ResourceGroupLoadEnded _resourceGroupLoadEnded;
 
-        #endregion
+        #endregion Delegates
 
         #region Collection Declarations
+
         /// List of resource declarations
         //         typedef std::list<ResourceDeclaration> ResourceDeclarationList;
         public class ResourceDeclarationList : List<ResourceDeclaration>
@@ -327,7 +329,7 @@ namespace Axiom.Core
         public class ResourceGroupMap : Dictionary<String, ResourceGroup>
         {
             public ResourceGroupMap()
-                : base(new CaseInsensitiveStringComparer())
+                : base( new CaseInsensitiveStringComparer() )
             {
             }
         };
@@ -338,7 +340,7 @@ namespace Axiom.Core
         {
         };
 
-        #endregion
+        #endregion Collection Declarations
 
         #region Nested Types
 
@@ -367,7 +369,6 @@ namespace Axiom.Core
         /// Resource group entry
         public class ResourceGroup : IDisposable
         {
-
             //OGRE_AUTO_MUTEX
             /// <summary>Group name </summary>
             public string Name;
@@ -390,7 +391,7 @@ namespace Axiom.Core
             /// <summary>
             /// Created resources which are ready to be loaded / unloaded
             /// Group by loading order of the type (defined by ResourceManager)
-            /// (e.g. skeletons and materials before meshes) 
+            /// (e.g. skeletons and materials before meshes)
             /// </summary>
             public LoadResourceOrderMap LoadResourceOrders = new LoadResourceOrderMap();
 
@@ -400,37 +401,36 @@ namespace Axiom.Core
             /// <summary>Scene manager to use with linked world geometry </summary>
             public SceneManager WorldGeometrySceneManager;
 
-			public void Add(string filename, Archive arch)
-			{
-		        // internal, assumes mutex lock has already been obtained
-		        this.ResourceIndexCaseSensitive[filename] = arch;
-
-		        if (!arch.IsCaseSensitive)
-		        {
-			        this.ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
-		        }
-			}
-
-            public void Remove(string filename, Archive arch)
+            public void Add( string filename, Archive arch )
             {
-		        // internal, assumes mutex lock has already been obtained
+                // internal, assumes mutex lock has already been obtained
+                this.ResourceIndexCaseSensitive[ filename ] = arch;
+
+                if ( !arch.IsCaseSensitive )
+                {
+                    this.ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
+                }
+            }
+
+            public void Remove( string filename, Archive arch )
+            {
+                // internal, assumes mutex lock has already been obtained
                 if ( this.ResourceIndexCaseSensitive.ContainsKey( filename ) )
                 {
                     this.ResourceIndexCaseSensitive.Remove( filename );
                 }
 
-		        if (!arch.IsCaseSensitive)
-		        {
-			        string lcase = filename.ToLower();
-                    if (this.ResourceIndexCaseInsensitive.ContainsKey(filename))
+                if ( !arch.IsCaseSensitive )
+                {
+                    string lcase = filename.ToLower();
+                    if ( this.ResourceIndexCaseInsensitive.ContainsKey( filename ) )
                     {
-                        this.ResourceIndexCaseInsensitive.Remove(filename);
+                        this.ResourceIndexCaseInsensitive.Remove( filename );
                     }
                 }
-
             }
 
-            public void Remove(Archive arch)
+            public void Remove( Archive arch )
             {
                 List<string> keys = new List<string>();
                 // Delete indexes
@@ -454,7 +454,6 @@ namespace Axiom.Core
                 {
                     this.ResourceIndexCaseInsensitive.Remove( key );
                 }
-
             }
 
             #region IDisposable Members
@@ -475,10 +474,10 @@ namespace Axiom.Core
                 }
             }
 
-            #endregion
+            #endregion IDisposable Members
         };
 
-        #endregion
+        #endregion Nested Types
 
         #region Constants
 
@@ -524,6 +523,7 @@ namespace Axiom.Core
         #region scriptLoaders Property
 
         private ScriptLoaderOrderMap _scriptLoaderOrders = new ScriptLoaderOrderMap();
+
         protected ScriptLoaderOrderMap scriptLoaderOrders
         {
             get
@@ -537,6 +537,7 @@ namespace Axiom.Core
         #region resourceGroupListeners Property
 
         private ResourceGroupListenerList _resourceGroupListeners = new ResourceGroupListenerList();
+
         protected ResourceGroupListenerList resourceGroupListeners
         {
             get
@@ -550,6 +551,7 @@ namespace Axiom.Core
         #region resourceGroups Property
 
         private ResourceGroupMap _resourceGroups = new ResourceGroupMap();
+
         protected ResourceGroupMap resourceGroups
         {
             get
@@ -564,12 +566,13 @@ namespace Axiom.Core
 
         /// <summary>Group name for world resources</summary>
         private String _worldGroupName;
+
         /// <summary>
         /// Gets/Sets the resource group that 'world' resources will use.
         /// </summary>
         /// <remarks>
         ///    This is the group which should be used by SceneManagers implementing
-        ///    world geometry when looking for their resources. Defaults to the 
+        ///    world geometry when looking for their resources. Defaults to the
         ///    DefaultResourceGroupName but this can be altered.
         /// </remarks>
         public String WorldResourceGroupName
@@ -590,6 +593,7 @@ namespace Axiom.Core
 
         /// Stored current group - optimization for when bulk loading a group
         private ResourceGroup _currentGroup = null;
+
         /// <summary>
         /// Stored current group - optimization for when bulk loading a group
         /// </summary>
@@ -616,15 +620,8 @@ namespace Axiom.Core
         /// </summary>
         public ResourceGroupManager()
         {
-
-            // Create the 'General' group
-            CreateResourceGroup( DefaultResourceGroupName );
-            // Create the 'Internal' group
-            CreateResourceGroup( InternalResourceGroupName );
-            // Create the 'Bootstrap' group
-            CreateResourceGroup( BootstrapResourceGroupName );
-            // Create the 'AutoDetect' group
-            CreateResourceGroup( AutoDetectResourceGroupName );
+            if ( instance == null )
+                instance = this;
 
             // default world group to the default group
             _worldGroupName = DefaultResourceGroupName;
@@ -632,7 +629,7 @@ namespace Axiom.Core
 
         ~ResourceGroupManager()
         {
-			dispose( false );
+            dispose( false );
         }
 
         #endregion Constructors and Destructor
@@ -727,19 +724,19 @@ namespace Axiom.Core
         ///  Create a resource group.
         /// </summary>
         /// <remarks>
-        ///    A resource group allows you to define a set of resources that can 
-        ///    be loaded / unloaded as a unit. For example, it might be all the 
+        ///    A resource group allows you to define a set of resources that can
+        ///    be loaded / unloaded as a unit. For example, it might be all the
         ///    resources used for the level of a game. There is always one predefined
-        ///    resource group called ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
-        ///	which is typically used to hold all resources which do not need to 
-        ///	be unloaded until shutdown. You can create additional ones so that 
+        ///    resource group called ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ///	which is typically used to hold all resources which do not need to
+        ///	be unloaded until shutdown. You can create additional ones so that
         ///	you can control the life of your resources in whichever way you wish.
         /// <para>
         ///    Once you have defined a resource group, resources which will be loaded
         ///	as part of it are defined in one of 3 ways:
         ///	<ol>
         ///	<li>Manually through declareResource(); this is useful for scripted
-        ///		declarations since it is entirely generalised, and does not 
+        ///		declarations since it is entirely generalised, and does not
         ///		create Resource instances right away</li>
         ///	<li>Through the use of scripts; some ResourceManager subtypes have
         ///		script formats (e.g. .material, .overlay) which can be used
@@ -774,8 +771,8 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>
         ///	After creating a resource group, adding some resource locations, and
-        ///	perhaps pre-declaring some resources using <see cref="DeclareResource"/> , but 
-        ///	before you need to use the resources in the group, you 
+        ///	perhaps pre-declaring some resources using <see cref="DeclareResource"/> , but
+        ///	before you need to use the resources in the group, you
         ///	should call this method to initialise the group. By calling this,
         ///	you are triggering the following processes:
         ///	<ol>
@@ -790,10 +787,10 @@ namespace Axiom.Core
         ///	you've pre-declared. That means that code looking for these resources
         ///	will find them, but they won't be taking up much memory yet, until
         ///	they are either used, or they are loaded in bulk using <see cref="LoadResourceGroup"/>.
-        ///	Loading the resource group in bulk is entirely optional, but has the 
+        ///	Loading the resource group in bulk is entirely optional, but has the
         ///	advantage of coming with progress reporting as resources are loaded.
         /// <para>
-        ///	Failure to call this method means that <see cref="LoadResourceGroup"/>  will do 
+        ///	Failure to call this method means that <see cref="LoadResourceGroup"/>  will do
         ///	nothing, and any resources you define in scripts will not be found.
         ///	Similarly, once you have called this method you won't be able to
         ///	pick up any new scripts or pre-declared resources, unless you
@@ -802,9 +799,9 @@ namespace Axiom.Core
         /// </para>
         /// <para>
         ///	When you call <see cref="Root.Initialize"/> , all resource groups that have already been
-        ///	created are automatically initialised too. Therefore you do not need to 
-        ///	call this method for groups you define and set up before you call 
-        ///	<see cref="Root.Initialize"/>. However, since one of the most useful features of 
+        ///	created are automatically initialised too. Therefore you do not need to
+        ///	call this method for groups you define and set up before you call
+        ///	<see cref="Root.Initialize"/>. However, since one of the most useful features of
         ///	resource groups is to set them up after the main system initialization
         ///	has occurred (e.g. a group per game level), you must remember to call this
         ///	method for the groups you create after this.
@@ -842,10 +839,10 @@ namespace Axiom.Core
         {
             LogManager.Instance.Write( "Initializing all resource groups:" );
 
-			// Initialize Built-in groups first
-			InitializeResourceGroup( ResourceGroupManager.AutoDetectResourceGroupName );
-			if ( resourceGroups.ContainsKey( ResourceGroupManager.BootstrapResourceGroupName ) )
-				InitializeResourceGroup( ResourceGroupManager.BootstrapResourceGroupName );
+            // Initialize Built-in groups first
+            InitializeResourceGroup( ResourceGroupManager.AutoDetectResourceGroupName );
+            if ( resourceGroups.ContainsKey( ResourceGroupManager.BootstrapResourceGroupName ) )
+                InitializeResourceGroup( ResourceGroupManager.BootstrapResourceGroupName );
 
             // Intialize all declared resource groups
             foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
@@ -872,15 +869,15 @@ namespace Axiom.Core
 
         /// <overloads>
         /// <summary>Loads a resource group.</summary>
-        /// <remarks>            
+        /// <remarks>
         /// Loads any created resources which are part of the named group.
         /// Note that resources must have already been created by calling
         /// ResourceManager::create, or declared using declareResource() or
         /// in a script (such as .material and .overlay). The latter requires
-        /// that initialiseResourceGroup has been called. 
-        /// 
+        /// that initialiseResourceGroup has been called.
+        ///
         /// When this method is called, this class will callback any ResourceGroupListeners
-        /// which have been registered to update them on progress. 
+        /// which have been registered to update them on progress.
         /// </remarks>
         /// <param name="name">The name to of the resource group to load.</param>
         /// </overloads>
@@ -889,7 +886,7 @@ namespace Axiom.Core
             LoadResourceGroup( name, true, true );
         }
 
-        /// <param name="loadMainResources">If true, loads normal resources associated 
+        /// <param name="loadMainResources">If true, loads normal resources associated
         /// with the group (you might want to set this to false if you wanted
         /// to just load world geometry in bulk)</param>
         /// <param name="loadWorldGeom">If true, loads any linked world geometry <see>ResourceGroupManager.LinkWorldGeometryToResourceGroup</see></param>
@@ -940,7 +937,7 @@ namespace Axiom.Core
                         // for progress bars.
                         _fireResourceStarted( res );
 
-                        // If loading one of these resources cascade-loads another resource, 
+                        // If loading one of these resources cascade-loads another resource,
                         // the list will get longer! But these should be loaded immediately
                         // Call load regardless, already loaded resources will be skipped
                         res.Load();
@@ -990,7 +987,6 @@ namespace Axiom.Core
         /// <param name="reloadableOnly"></param>
         public void UnloadResourceGroup( string groupName, bool reloadableOnly )
         {
-
             LogManager.Instance.Write( "Unloading resource group {0}.", groupName );
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
@@ -1015,6 +1011,7 @@ namespace Axiom.Core
             _currentGroup = null;
             LogManager.Instance.Write( "Finished unloading resource group {0}.", groupName );
         }
+
         /// <summary>
         /// Unload all resources which are not referenced by any other object.
         /// </summary>
@@ -1050,9 +1047,9 @@ namespace Axiom.Core
         }
 
         /// <summary>Clears a resource group.</summary>
-        /// <remarks>            
+        /// <remarks>
         /// This method unloads all resources in the group, but in addition it
-        /// removes all those resources from their ResourceManagers, and then 
+        /// removes all those resources from their ResourceManagers, and then
         /// clears all the members from the list. That means after calling this
         /// method, there are no resources declared as part of the named group
         /// any more. Resource locations still persist though.
@@ -1106,12 +1103,12 @@ namespace Axiom.Core
         /// <summary>Method to add a resource location to for a given resource group.</summary>
         /// <remarks>
         /// Resource locations are places which are searched to load resource files.
-        /// When you choose to load a file, or to search for valid files to load, 
+        /// When you choose to load a file, or to search for valid files to load,
         /// the resource locations are used.
         /// </remarks>
         /// <param name="name">The name of the resource location; probably a directory, zip file, URL etc.</param>
         /// <param name="locType">
-        /// The codename for the resource type, which must correspond to the 
+        /// The codename for the resource type, which must correspond to the
         /// Archive factory which is providing the implementation.
         /// </param>
         /// </overloads>
@@ -1122,7 +1119,7 @@ namespace Axiom.Core
 
         /// <param name="resGroup">
         /// The name of the resource group for which this location is
-        /// to apply. ResourceGroupManager.DefaultResourceGroupName is the 
+        /// to apply. ResourceGroupManager.DefaultResourceGroupName is the
         /// default group which always exists, and can
         /// be used for resources which are unlikely to be unloaded until application
         /// shutdown. Otherwise it must be the name of a group; if it
@@ -1134,11 +1131,11 @@ namespace Axiom.Core
             AddResourceLocation( name, locType, resGroup, false, false );
         }
 
-        /// <param name="recursive"> 
-        /// Whether subdirectories will be searched for files when using 
+        /// <param name="recursive">
+        /// Whether subdirectories will be searched for files when using
         /// a pattern match (such as *.material), and whether subdirectories will be
         /// indexed. This can slow down initial loading of the archive and searches.
-        /// When opening a resource you still need to use the fully qualified name, 
+        /// When opening a resource you still need to use the fully qualified name,
         /// this allows duplicate names in alternate paths.
         /// </param>
         public void AddResourceLocation( string name, string locType, bool recursive )
@@ -1148,22 +1145,22 @@ namespace Axiom.Core
 
         /// <param name="resGroup">
         /// The name of the resource group for which this location is
-        /// to apply. ResourceGroupManager.DefaultResourceGroupName is the 
+        /// to apply. ResourceGroupManager.DefaultResourceGroupName is the
         /// default group which always exists, and can
         /// be used for resources which are unlikely to be unloaded until application
         /// shutdown. Otherwise it must be the name of a group; if it
         /// has not already been created with createResourceGroup then it is created
         /// automatically.
         /// </param>
-        /// <param name="recursive"> 
-        /// Whether subdirectories will be searched for files when using 
+        /// <param name="recursive">
+        /// Whether subdirectories will be searched for files when using
         /// a pattern match (such as *.material), and whether subdirectories will be
         /// indexed. This can slow down initial loading of the archive and searches.
-        /// When opening a resource you still need to use the fully qualified name, 
+        /// When opening a resource you still need to use the fully qualified name,
         /// this allows duplicate names in alternate paths.
         /// </param>
         public void AddResourceLocation( string name, string locType, string resGroup, bool recursive, bool monitor )
-        {      
+        {
             ResourceGroup grp = getResourceGroup( resGroup );
             if ( grp == null )
             {
@@ -1242,26 +1239,26 @@ namespace Axiom.Core
         /// <summary>
         /// Declares a resource to be a part of a resource group, allowing you to load and unload it as part of the group.
         /// </summary>
-        /// <remarks>            
-        /// By declaring resources before you attempt to use them, you can 
+        /// <remarks>
+        /// By declaring resources before you attempt to use them, you can
         /// more easily control the loading and unloading of those resources
-        /// by their group. Declaring them also allows them to be enumerated, 
+        /// by their group. Declaring them also allows them to be enumerated,
         /// which means events can be raised to indicate the loading progress
         /// <see>ResourceGroupListener</see>. Note that another way of declaring
         /// resources is to use a script specific to the resource type, if
         /// available (e.g. .material).
-        /// <para>			
+        /// <para>
         /// Declared resources are not created as Resource instances (and thus
-        /// are not available through their ResourceManager) until <see cref="InitializeResourceGroup"/> 
-        /// is called, at which point all declared resources will become created 
+        /// are not available through their ResourceManager) until <see cref="InitializeResourceGroup"/>
+        /// is called, at which point all declared resources will become created
         /// (but unloaded) Resource instances, along with any resources declared
         /// in scripts in resource locations associated with the group.
         /// </para>
         /// </remarks>
         /// <param name="name">The resource name. </param>
         /// <param name="resourceType">
-        /// The type of the resource. Axiom comes preconfigured with 
-        /// a number of resource types: 
+        /// The type of the resource. Axiom comes preconfigured with
+        /// a number of resource types:
         /// <ul>
         /// <li>Font</li>
         /// <li>Material</li>
@@ -1284,7 +1281,7 @@ namespace Axiom.Core
 
         /// <param name="loadParameters">
         /// A list of name / value pairs which supply custom
-        /// parameters to the resource which will be required before it can 
+        /// parameters to the resource which will be required before it can
         /// be loaded. These are specific to the resource type.
         /// </param>
         public void DeclareResource( string name, string resourceType, IManualResourceLoader loader, NameValuePairList loadParameters )
@@ -1295,7 +1292,7 @@ namespace Axiom.Core
         /// <param name="groupName">The name of the group to which it will belong.</param>
         /// <param name="loadParameters">
         /// A list of name / value pairs which supply custom
-        /// parameters to the resource which will be required before it can 
+        /// parameters to the resource which will be required before it can
         /// be loaded. These are specific to the resource type.
         /// </param>
         public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader, NameValuePairList loadParameters )
@@ -1319,9 +1316,9 @@ namespace Axiom.Core
         /// <summary>Undeclare a resource.</summary>
         /// <remarks>
         /// Note that this will not cause it to be unloaded
-        /// if it is already loaded, nor will it destroy a resource which has 
+        /// if it is already loaded, nor will it destroy a resource which has
         /// already been created if InitialiseResourceGroup has been called already.
-        /// Only UnloadResourceGroup / ClearResourceGroup / DestroyResourceGroup 
+        /// Only UnloadResourceGroup / ClearResourceGroup / DestroyResourceGroup
         /// will do that.
         /// </remarks>
         /// <param name="name">The name of the resource. </param>
@@ -1345,18 +1342,20 @@ namespace Axiom.Core
         }
 
         #region OpenResource Method
+
         /** Open a single resource by name and return a DataStream
             pointing at the source of the data.
         @param resourceName The name of the resource to locate.
             Even if resource locations are added recursively, you
-            must provide a fully qualified name to this method. You 
+            must provide a fully qualified name to this method. You
             can find out the matching fully qualified names by using the
             find() method if you need to.
-        @param groupName The name of the resource group; this determines which 
-            locations are searched. 
+        @param groupName The name of the resource group; this determines which
+            locations are searched.
         @returns Shared pointer to data stream containing the data, will be
             destroyed automatically when no longer referenced
         */
+
         public IO.Stream OpenResource( string resourceName )
         {
             return OpenResource( resourceName, DefaultResourceGroupName );
@@ -1372,7 +1371,7 @@ namespace Axiom.Core
             return OpenResource( resourceName, groupName, searchGroupsIfNotFound, null );
         }
 
-        public IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
+        public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
         {
             // Try to find in resource index first
             ResourceGroup grp = getResourceGroup( groupName );
@@ -1431,13 +1430,15 @@ namespace Axiom.Core
             }
             throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + "." );
         }
+
         #endregion OpenResource Method
 
         #region OpenResources Method
+
         /// <overloads>
         /// <summary>
         /// Open all resources matching a given pattern (which can contain
-        /// the character '*' as a wildcard), and return a collection of 
+        /// the character '*' as a wildcard), and return a collection of
         /// DataStream objects on them.
         /// </summary>
         /// <param name="pattern">
@@ -1496,7 +1497,7 @@ namespace Axiom.Core
         /// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
         /// <param name="filename">The name of the file to create</param>
         /// <returns>An open Stream</returns>
-	    public IO.Stream CreateResource(string filename)
+        public IO.Stream CreateResource( string filename )
         {
             return CreateResource( filename, ResourceGroupManager.DefaultResourceGroupName, false, String.Empty );
         }
@@ -1508,7 +1509,7 @@ namespace Axiom.Core
         /// <param name="filename">The name of the file to create</param>
         /// <param name="groupName">The name of the group in which to create the file</param>
         /// <returns>An open Stream</returns>
-	    public IO.Stream CreateResource(string filename, string groupName)
+        public IO.Stream CreateResource( string filename, string groupName )
         {
             return CreateResource( filename, groupName, false, String.Empty );
         }
@@ -1522,7 +1523,7 @@ namespace Axiom.Core
         /// <param name="overwrite">If true, an existing file will be overwritten, if false
         /// an error will occur if the file already exists</param>
         /// <returns>An open Stream</returns>
-	    public IO.Stream CreateResource(string filename, string groupName, bool overwrite)
+        public IO.Stream CreateResource( string filename, string groupName, bool overwrite )
         {
             return CreateResource( filename, groupName, overwrite, String.Empty );
         }
@@ -1536,40 +1537,39 @@ namespace Axiom.Core
         /// <param name="overwrite">If true, an existing file will be overwritten, if false
         /// an error will occur if the file already exists</param>
         /// <param name="locationPattern">If the resource group contains multiple locations,
-        /// then usually the file will be created in the first writable location. If you 
-        /// want to be more specific, you can include a location pattern here and 
+        /// then usually the file will be created in the first writable location. If you
+        /// want to be more specific, you can include a location pattern here and
         /// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
         /// will be considered candidates for creation.</param>
         /// <returns>An open Stream</returns>
-	    public IO.Stream CreateResource(string filename, string groupName, bool overwrite, string locationPattern)
-	    {
-	        //OGRE_LOCK_AUTO_MUTEX
-	        ResourceGroup grp = getResourceGroup( groupName );
-	        if ( grp == null )
-	        {
-	            throw new AxiomException( "Cannot find a group named {0}.", groupName );
-	        }
+        public IO.Stream CreateResource( string filename, string groupName, bool overwrite, string locationPattern )
+        {
+            //OGRE_LOCK_AUTO_MUTEX
+            ResourceGroup grp = getResourceGroup( groupName );
+            if ( grp == null )
+            {
+                throw new AxiomException( "Cannot find a group named {0}.", groupName );
+            }
 
-	        //OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+            //OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
 
-	        foreach ( ResourceLocation rl in grp.LocationList )
-	        {
-	            Archive arch = rl.Archive;
+            foreach ( ResourceLocation rl in grp.LocationList )
+            {
+                Archive arch = rl.Archive;
 
-	            if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
-	            {
-	                if ( !overwrite && arch.Exists( filename ) )
-	                    throw new AxiomException( "Cannot overwrite existing file " + filename );
+                if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+                {
+                    if ( !overwrite && arch.Exists( filename ) )
+                        throw new AxiomException( "Cannot overwrite existing file " + filename );
 
-	                // create it
-	                IO.Stream ret = arch.Create( filename );
-	                grp.Add( filename, arch );
+                    // create it
+                    IO.Stream ret = arch.Create( filename );
+                    grp.Add( filename, arch );
 
-
-	                return ret;
-	            }
-	        }
-	        throw new AxiomException( "Cannot find a writable location in group " + groupName );
+                    return ret;
+                }
+            }
+            throw new AxiomException( "Cannot find a writable location in group " + groupName );
         }
 
         #endregion CreateResource Method
@@ -1580,7 +1580,7 @@ namespace Axiom.Core
         /// Delete a single resource file.
         /// </summary>
         /// <param name="filename">The name of the file to delete</param>
-        public void DeleteResource(string filename)
+        public void DeleteResource( string filename )
         {
             DeleteResource( filename, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
         }
@@ -1590,7 +1590,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="filename">The name of the file to delete</param>
         /// <param name="groupName">The name of the group in which to search</param>
-        public void DeleteResource(string filename, string groupName)
+        public void DeleteResource( string filename, string groupName )
         {
             DeleteResource( filename, groupName, String.Empty );
         }
@@ -1601,11 +1601,11 @@ namespace Axiom.Core
         /// <param name="filename">The name of the file to delete</param>
         /// <param name="groupName">The name of the group in which to search</param>
         /// <param name="locationPattern">If the resource group contains multiple locations,
-        /// then usually first matching file found in any location will be deleted. If you 
-        /// want to be more specific, you can include a location pattern here and 
+        /// then usually first matching file found in any location will be deleted. If you
+        /// want to be more specific, you can include a location pattern here and
         /// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
         /// will be considered candidates for deletion.</param>
-        public void DeleteResource(string filename, string groupName, string locationPattern)
+        public void DeleteResource( string filename, string groupName, string locationPattern )
         {
             //OGRE_LOCK_AUTO_MUTEX
             ResourceGroup grp = getResourceGroup( groupName );
@@ -1632,7 +1632,6 @@ namespace Axiom.Core
                     }
                 }
             }
-
         }
 
         #endregion DeleteResource Method
@@ -1643,7 +1642,7 @@ namespace Axiom.Core
         /// Delete all matching resource files.
         /// </summary>
         /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
-        public void DeleteMatchingResources(string filePattern)
+        public void DeleteMatchingResources( string filePattern )
         {
             DeleteMatchingResources( filePattern, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
         }
@@ -1653,7 +1652,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
         /// <param name="groupName">The name of the group in which to search</param>
-        public void DeleteMatchingResources(string filePattern, string groupName)
+        public void DeleteMatchingResources( string filePattern, string groupName )
         {
             DeleteMatchingResources( filePattern, groupName, String.Empty );
         }
@@ -1663,12 +1662,12 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
         /// <param name="groupName">The name of the group in which to search</param>
-        /// <param name="locationPattern">If the resource group contains multiple locations, 
-        /// then usually all matching files in any location will be deleted. If you 
-        /// want to be more specific, you can include a location pattern here and 
+        /// <param name="locationPattern">If the resource group contains multiple locations,
+        /// then usually all matching files in any location will be deleted. If you
+        /// want to be more specific, you can include a location pattern here and
         /// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
         /// will be considered candidates for deletion.</param>
-        public void DeleteMatchingResources(string filePattern, string groupName, string locationPattern)
+        public void DeleteMatchingResources( string filePattern, string groupName, string locationPattern )
         {
             //OGRE_LOCK_AUTO_MUTEX
             ResourceGroup grp = getResourceGroup( groupName );
@@ -1689,7 +1688,6 @@ namespace Axiom.Core
                     {
                         arch.Remove( f );
                         grp.Remove( f, arch );
-
                     }
                 }
             }
@@ -1744,7 +1742,6 @@ namespace Axiom.Core
             }
 
             return vec;
-
         }
 
         /// <summary>
@@ -1767,7 +1764,6 @@ namespace Axiom.Core
             {
                 throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
-
 
             // Iterate over the archives
             foreach ( ResourceLocation rl in grp.LocationList )
@@ -1827,7 +1823,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Find all files matching a given pattern in a group and get 
+        /// Find all files matching a given pattern in a group and get
         /// some detailed information about them.
         /// </summary>
         /// <param name="groupName">The name of the resource group</param>
@@ -1844,7 +1840,6 @@ namespace Axiom.Core
                 throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
-
             // Iterate over the archives
             foreach ( ResourceLocation rl in grp.LocationList )
             {
@@ -1856,7 +1851,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
@@ -1871,8 +1866,8 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Adds a ResourceGroupListener which will be called back during 
-        /// resource loading events. 
+        /// Adds a ResourceGroupListener which will be called back during
+        /// resource loading events.
         /// </summary>
         /// <param name="rgl"></param>
         public void AddResourceGroupListener( IResourceGroupListener rgl )
@@ -1890,7 +1885,6 @@ namespace Axiom.Core
                 this._scriptParseEnded += new ScriptParseEnded( rgl.ScriptParseEnded );
                 this._worldGeometryStageStarted += new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
                 this._worldGeometryStageEnded += new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
-
             }
         }
 
@@ -1917,13 +1911,13 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Associates some world geometry with a resource group, causing it to 
+        /// Associates some world geometry with a resource group, causing it to
         /// be loaded / unloaded with the resource group.
         /// </summary>
         /// <remarks>
-        /// You would use this method to essentially defer a call to 
+        /// You would use this method to essentially defer a call to
         /// SceneManager::setWorldGeometry to the time when the resource group
-        /// is loaded. The advantage of this is that compatible scene managers 
+        /// is loaded. The advantage of this is that compatible scene managers
         /// will include the estimate of the number of loading stages for that
         /// world geometry when the resource group begins loading, allowing you
         /// to include that in a loading progress report.
@@ -1963,7 +1957,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Shutdown all ResourceManagers, performed as part of clean-up. 
+        /// Shutdown all ResourceManagers, performed as part of clean-up.
         /// </summary>
         public void ShutdownAll()
         {
@@ -1973,7 +1967,6 @@ namespace Axiom.Core
                 rm.RemoveAll();
             }
         }
-
 
         /// <summary>Get a list of the currently defined resource groups.</summary>
         /// <remarks>
@@ -2030,11 +2023,10 @@ namespace Axiom.Core
             }
 
             return null;
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="resource"></param>
         /// <param name="group"></param>
@@ -2108,11 +2100,11 @@ namespace Axiom.Core
         /// <param name="su">ScriptLoader instance.</param>
         public void UnregisterScriptLoader( IScriptLoader su )
         {
-			StringBuilder patterns = new StringBuilder();
-			foreach ( string pattern in su.ScriptPatterns )
-				patterns.Append( pattern + " " );
-			LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns.ToString() );
-			if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
+            StringBuilder patterns = new StringBuilder();
+            foreach ( string pattern in su.ScriptPatterns )
+                patterns.Append( pattern + " " );
+            LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns.ToString() );
+            if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
             {
                 _scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
             }
@@ -2167,7 +2159,6 @@ namespace Axiom.Core
                 {
                     if ( grp.LoadResourceOrders.ContainsKey( res.Creator.LoadingOrder ) )
                     {
-
                         // Iterate over the resource list and remove
                         LoadUnloadResourceList resList = grp.LoadResourceOrders[ res.Creator.LoadingOrder ];
                         foreach ( Resource r in resList )
@@ -2238,14 +2229,13 @@ namespace Axiom.Core
                             index++;
                     }
                 }
-
             }
         }
 
         /// <summary>Notify this manager that one stage of world geometry loading has been started.</summary>
-        /// <remarks>            
-        /// Custom SceneManagers which load custom world geometry should call this 
-        /// method the number of times equal to the value they return from 
+        /// <remarks>
+        /// Custom SceneManagers which load custom world geometry should call this
+        /// method the number of times equal to the value they return from
         /// SceneManager.estimateWorldGeometry while loading their geometry.
         /// </remarks>
         /// <param name="description"></param>
@@ -2256,9 +2246,9 @@ namespace Axiom.Core
         }
 
         /// <summary>Notify this manager that one stage of world geometry loading has been completed.</summary>
-        /// <remarks>            
-        /// Custom SceneManagers which load custom world geometry should call this 
-        /// method the number of times equal to the value they return from 
+        /// <remarks>
+        /// Custom SceneManagers which load custom world geometry should call this
+        /// method the number of times equal to the value they return from
         /// SceneManager.estimateWorldGeometry while loading their geometry.
         /// </remarks>
         public void notifyWorldGeometryStageEnded()
@@ -2273,7 +2263,7 @@ namespace Axiom.Core
 
         /// <summary>
         /// Parses all the available scripts found in the resource locations
-        /// for the given group, for all ResourceManagers. 
+        /// for the given group, for all ResourceManagers.
         /// </summary>
         /// <remarks>
         ///	Called as part of initializeResourceGroup
@@ -2294,7 +2284,6 @@ namespace Axiom.Core
 
                 foreach ( IScriptLoader isl in sl )
                 {
-
                     // Get all the patterns and search them
                     List<string> patterns = isl.ScriptPatterns;
                     foreach ( string p in patterns )
@@ -2361,11 +2350,11 @@ namespace Axiom.Core
                     loadList = grp.LoadResourceOrders[ mgr.LoadingOrder ];
                 }
                 loadList.Add( res );
-
             }
         }
 
         /** Adds a created resource to a group. */
+
         private void _addCreatedResource( Resource res, ResourceGroup group )
         {
             Real order = res.Creator.LoadingOrder;
@@ -2390,7 +2379,6 @@ namespace Axiom.Core
         /// <param name="grp"></param>
         private void _dropGroupContents( ResourceGroup grp )
         {
-
             bool groupSet = false;
             if ( _currentGroup != null )
             {
@@ -2416,7 +2404,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Delete a group for shutdown - don't notify ResourceManagers. 
+        /// Delete a group for shutdown - don't notify ResourceManagers.
         /// </summary>
         /// <param name="grp"></param>
         private void _deleteGroup( ResourceGroup grp )
@@ -2470,33 +2458,67 @@ namespace Axiom.Core
 
         #endregion Private Methods
 
-		#region IDisposable Members
+        #region ISingleton<ResourceGroupManager> implementation
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// delete all resource groups
-					foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
-					{
-						ResourceGroup rg = pair.Value;
-						_deleteGroup( rg );
-					}
-					resourceGroups.Clear();
-					_currentGroup = null;
-				}
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        protected static ResourceGroupManager instance;
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static ResourceGroupManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+        public bool Initialize( params object[] args )
+        {
+            // Create the 'General' group
+            CreateResourceGroup( DefaultResourceGroupName );
+            // Create the 'Internal' group
+            CreateResourceGroup( InternalResourceGroupName );
+            // Create the 'Bootstrap' group
+            CreateResourceGroup( BootstrapResourceGroupName );
+            // Create the 'AutoDetect' group
+            CreateResourceGroup( AutoDetectResourceGroupName );
 
-		#endregion
-	};
+            return true;
+        }
+
+        #endregion ISingleton<ResourceGroupManager> implementation
+
+        #region IDisposable Members
+
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // delete all resource groups
+                    foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
+                    {
+                        ResourceGroup rg = pair.Value;
+                        _deleteGroup( rg );
+                    }
+                    resourceGroups.Clear();
+                    _currentGroup = null;
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
+
+        #endregion IDisposable Members
+    };
 }

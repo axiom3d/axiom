@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -47,14 +47,14 @@ using System.Collections.Generic;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	This ResourceManager manages high-level vertex and fragment programs. 
+	/// 	This ResourceManager manages high-level vertex and fragment programs.
 	/// </summary>
 	/// <remarks>
 	///    High-level vertex and fragment programs can be used instead of assembler programs
-	///    as managed by <see cref="GpuProgramManager"/>; however they typically result in a 
-	///    <see cref="GpuProgram"/> being created as a derivative of the high-level program. 
-	///    High-level programs are easier to write, and can often be API-independent, 
-	///    unlike assembler programs. 
+	///    as managed by <see cref="GpuProgramManager"/>; however they typically result in a
+	///    <see cref="GpuProgram"/> being created as a derivative of the high-level program.
+	///    High-level programs are easier to write, and can often be API-independent,
+	///    unlike assembler programs.
 	///    <p/>
 	///    This class not only manages the programs themselves, it also manages the factory
 	///    classes which allow the creation of high-level programs using a variety of high-level
@@ -75,7 +75,7 @@ namespace Axiom.Graphics
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal HighLevelGpuProgramManager()
-			: base() 
+			: base()
 		{
 			if ( _instance == null )
 			{
@@ -107,7 +107,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Lookup table for list of registered factories.
 		/// </summary>
-		protected Hashtable factories = new Hashtable();
+		protected AxiomCollection<HighLevelGpuProgramFactory> factories = new AxiomCollection<HighLevelGpuProgramFactory>();
 
 		#endregion Fields
 
@@ -129,7 +129,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <remarks>
 		///    This method creates a new program of the type specified as the second and third parameters.
-		///    You will have to call further methods on the returned program in order to 
+		///    You will have to call further methods on the returned program in order to
 		///    define the program fully before you can load it.
 		/// </remarks>
 		/// <param name="name">Name of the program to create.</param>
@@ -147,7 +147,7 @@ namespace Axiom.Graphics
 			}
 
 			// create the high level program using the factory
-			HighLevelGpuProgram program = factory.CreateInstance(this, name, nextHandle, group, false, null );
+			HighLevelGpuProgram program = factory.CreateInstance( this, name, nextHandle, group, false, null );
 			program.Type = type;
 			program.SyntaxCode = language;
 
@@ -190,12 +190,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-        public bool IsLanguageSupported( string language)
-        {
-            return factories.ContainsKey( language );
-        }
+		public bool IsLanguageSupported( string language )
+		{
+			return factories.ContainsKey( language );
+		}
 
-	    #endregion Properties
+		#endregion Properties
 
 		#region ResourceManager Implementation
 
@@ -204,9 +204,9 @@ namespace Axiom.Graphics
 
 			if ( createParams == null || !createParams.ContainsKey( "language" ) )
 			{
-				throw new Exception( "You must supply a 'language' parameter");
+				throw new Exception( "You must supply a 'language' parameter" );
 			}
-	        return GetFactory(createParams["language"]).CreateInstance(this, name, nextHandle, group, isManual, loader );
+			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, nextHandle, group, isManual, loader );
 		}
 
 		/// <summary>

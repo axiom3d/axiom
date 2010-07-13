@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -45,594 +45,594 @@ using Axiom.Math;
 
 namespace Axiom.Core
 {
-    public class MovableText : SimpleRenderable
-    {
-        #region Properties and Fields
+	public class MovableText : SimpleRenderable
+	{
+		#region Properties and Fields
 
-        public enum HorizontalAlignment
-        {
-            Left,
-            Center
-        };
-        public enum VerticalAlignment
-        {
-            Above,
-            Below
-        };
+		public enum HorizontalAlignment
+		{
+			Left,
+			Center
+		};
+		public enum VerticalAlignment
+		{
+			Above,
+			Below
+		};
 
-        // Vertex Buffer Binding Indexes
-        const int POS_TEX_BINDING = 0;
-        const int COLOR_BINDING   = 1;
+		// Vertex Buffer Binding Indexes
+		const int POS_TEX_BINDING = 0;
+		const int COLOR_BINDING = 1;
 
-        HorizontalAlignment _horizontalAlignment = HorizontalAlignment.Left;
-        VerticalAlignment _verticalAlignment = VerticalAlignment.Below;
+		HorizontalAlignment _horizontalAlignment = HorizontalAlignment.Left;
+		VerticalAlignment _verticalAlignment = VerticalAlignment.Below;
 
-        private float _additionalHeight = 0.0f;
+		private float _additionalHeight = 0.0f;
 
-		private bool			_needUpdate;
-        private bool            _updateColor;
+		private bool _needUpdate;
+		private bool _updateColor;
 
-		private float			_timeUntilNextToggle;
-		private float			_radius;
+		private float _timeUntilNextToggle;
+		private float _radius;
 
-		private Font			_font;
-        private string _fontName;
-        public string FontName
-        {
-            get
-            {
-                return _fontName;
-            }
+		private Font _font;
+		private string _fontName;
+		public string FontName
+		{
+			get
+			{
+				return _fontName;
+			}
 
-            set
-            {
-                if ( _fontName != value || this.material == null || _font == null )
-                {
-                    _fontName = value;
-                    _font = (Font)FontManager.Instance[ _fontName ];
-                    if ( _font == null )
-                        throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
-                    _font.Load();
-                    if ( this.material != null )
-                    {
-                        if ( material.Name != "BaseWhite" )
-                            MaterialManager.Instance.Unload( this.material );
-                        this.material = null;
-                    }
-                    this.material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
-                    if ( this.material.IsLoaded == true )
-                        this.material.Load();
-                    this.material.DepthCheck = !_onTop;
-                    this.material.Lighting = false;
-                    _needUpdate = true;
-                }
-            }
-        }
+			set
+			{
+				if ( _fontName != value || this.material == null || _font == null )
+				{
+					_fontName = value;
+					_font = (Font)FontManager.Instance[ _fontName ];
+					if ( _font == null )
+						throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
+					_font.Load();
+					if ( this.material != null )
+					{
+						if ( material.Name != "BaseWhite" )
+							MaterialManager.Instance.Unload( this.material );
+						this.material = null;
+					}
+					this.material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
+					if ( this.material.IsLoaded == true )
+						this.material.Load();
+					this.material.DepthCheck = !_onTop;
+					this.material.Lighting = false;
+					_needUpdate = true;
+				}
+			}
+		}
 
-        private string _caption;
+		private string _caption;
 		public string Caption
-        {
-            get
-            {
-                return _caption;
-            }
-            set
-            {
-                _caption = value;
-                _needUpdate = true;
-            }
-        }
+		{
+			get
+			{
+				return _caption;
+			}
+			set
+			{
+				_caption = value;
+				_needUpdate = true;
+			}
+		}
 
-        private ColorEx _color;
+		private ColorEx _color;
 		public ColorEx Color
-        {
-            get
-            {
-                return _color;
-            }
-            set
-            {
-                _color = value;
-                _updateColor = true;
-            }
-        }
+		{
+			get
+			{
+				return _color;
+			}
+			set
+			{
+				_color = value;
+				_updateColor = true;
+			}
+		}
 
-        private int _characterHeight;
+		private int _characterHeight;
 		public int CharacterHeight
-        {
-            get
-            {
-                return _characterHeight;
-            }
-            set
-            {
-                _characterHeight = value;
-                _needUpdate = true;
-            }
-        }
+		{
+			get
+			{
+				return _characterHeight;
+			}
+			set
+			{
+				_characterHeight = value;
+				_needUpdate = true;
+			}
+		}
 
-        private int _spaceWidth;
+		private int _spaceWidth;
 		public int SpaceWidth
-        {
-            get
-            {
-                return _spaceWidth;
-            }
-            set
-            {
-                _spaceWidth = value;
-                _needUpdate = true;
-            }
-        }
+		{
+			get
+			{
+				return _spaceWidth;
+			}
+			set
+			{
+				_spaceWidth = value;
+				_needUpdate = true;
+			}
+		}
 
-        public HorizontalAlignment HorzAlignment
-        {
-            get
-            {
-                return _horizontalAlignment;
-            }
-            set
-            {
-                if ( _horizontalAlignment != value )
-                    _needUpdate = true;
-                _horizontalAlignment = value;
-            }
-        }
+		public HorizontalAlignment HorzAlignment
+		{
+			get
+			{
+				return _horizontalAlignment;
+			}
+			set
+			{
+				if ( _horizontalAlignment != value )
+					_needUpdate = true;
+				_horizontalAlignment = value;
+			}
+		}
 
-        public VerticalAlignment VertAlignment
-        {
-            get
-            {
-                return _verticalAlignment;
-            }
-            set
-            {
-                if ( _verticalAlignment != value )
-                    _needUpdate = true;
-                _verticalAlignment = value;
-            }
-        }
+		public VerticalAlignment VertAlignment
+		{
+			get
+			{
+				return _verticalAlignment;
+			}
+			set
+			{
+				if ( _verticalAlignment != value )
+					_needUpdate = true;
+				_verticalAlignment = value;
+			}
+		}
 
-        public void SetTextAlignment( HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment )
-        {
-            if ( _horizontalAlignment != horizontalAlignment )
-            {
-                _horizontalAlignment = horizontalAlignment;
-                _needUpdate = true;
-            }
+		public void SetTextAlignment( HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment )
+		{
+			if ( _horizontalAlignment != horizontalAlignment )
+			{
+				_horizontalAlignment = horizontalAlignment;
+				_needUpdate = true;
+			}
 
-            if ( _verticalAlignment != verticalAlignment )
-            {
-                _verticalAlignment = verticalAlignment;
-                _needUpdate = true;
-            }
-        }
+			if ( _verticalAlignment != verticalAlignment )
+			{
+				_verticalAlignment = verticalAlignment;
+				_needUpdate = true;
+			}
+		}
 
-        public float AdditionalHeight
-        {
-            get
-            {
-                return _additionalHeight;
-            }
-            set
-            {
-                if ( _additionalHeight != value )
-                    _needUpdate = true;
-                _additionalHeight = value;
-            }
-        }
+		public float AdditionalHeight
+		{
+			get
+			{
+				return _additionalHeight;
+			}
+			set
+			{
+				if ( _additionalHeight != value )
+					_needUpdate = true;
+				_additionalHeight = value;
+			}
+		}
 
-        private bool _onTop;
+		private bool _onTop;
 		public bool OnTop
-        {
-            get
-            {
-                return _onTop;
-            }
-            set
-            {
-                _onTop = value;
-                if ( this.material != null )
-                {
-                    this.material.DepthCheck = !_onTop;
-                }
-            }
-        }
+		{
+			get
+			{
+				return _onTop;
+			}
+			set
+			{
+				_onTop = value;
+				if ( this.material != null )
+				{
+					this.material.DepthCheck = !_onTop;
+				}
+			}
+		}
 
-        #endregion Properties and Fields
+		#endregion Properties and Fields
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        public MovableText( string name, string caption )
-            : this( name, caption, "TrebuchetMSBold", 12, ColorEx.White )
-        {
-        }
+		public MovableText( string name, string caption )
+			: this( name, caption, "TrebuchetMSBold", 12, ColorEx.White )
+		{
+		}
 
-        public MovableText( string name, string caption, string fontName, int charHeight, ColorEx color )
-            : base(name)
-        {
-            
-            if ( name == "" )
-                throw new AxiomException( "Trying to create MovableText without name." );
-            if ( caption == "" )
-                throw new AxiomException( "Trying to create MovableText without caption." );
+		public MovableText( string name, string caption, string fontName, int charHeight, ColorEx color )
+			: base( name )
+		{
 
-            //this.name = name;
-            _caption = caption;
-            _characterHeight = charHeight;
-            _color = color;
-            _timeUntilNextToggle = 0;
-            _spaceWidth = 0;
-            _updateColor = true;
-            _onTop = true;
-            _horizontalAlignment = HorizontalAlignment.Center;
+			if ( name == "" )
+				throw new AxiomException( "Trying to create MovableText without name." );
+			if ( caption == "" )
+				throw new AxiomException( "Trying to create MovableText without caption." );
 
-		    this.FontName = fontName;
-		    this._setupGeometry();
-        }
+			//this.name = name;
+			_caption = caption;
+			_characterHeight = charHeight;
+			_color = color;
+			_timeUntilNextToggle = 0;
+			_spaceWidth = 0;
+			_updateColor = true;
+			_onTop = true;
+			_horizontalAlignment = HorizontalAlignment.Center;
 
-        #endregion Construction and Destruction
+			this.FontName = fontName;
+			this._setupGeometry();
+		}
 
-        private Vector3 _translate3Dto2D( Camera camera, Vector3 vertex )
-        {
-            return camera.ProjectionMatrix * camera.ViewMatrix * vertex;
-        }
+		#endregion Construction and Destruction
 
-        private void _translate3Dto2DPixels( Camera camera, Vector3 vertex, out int x, out int y )
-        {
-		    // calculate hsc screen coordinates
-            Vector3 hsc = _translate3Dto2D( camera, vertex );
-		    // convert to window position in pixels
-            //RenderTarget *rt = Root.Instance.RenderTarget(in.getName());
-            //if ( !rt )
-            //    throw new AxiomException( string.Format( "Can't find '{0}' render target", mpWin.getName() ) );
-            x = (int)( ( hsc.x + 1.0f ) / 2.0f * 640.0f );
-            y = (int)( ( -hsc.y + 1.0f ) / 2.0f * 480.0f );
-        }
+		private Vector3 _translate3Dto2D( Camera camera, Vector3 vertex )
+		{
+			return camera.ProjectionMatrix * camera.ViewMatrix * vertex;
+		}
 
-        private void _setupGeometry()
-        {
-		    int vertexCount = _caption.Length * 6;
-            if ( renderOperation.vertexData != null )
-            {
-                renderOperation.vertexData = null;
-                _updateColor = true;
-            }
+		private void _translate3Dto2DPixels( Camera camera, Vector3 vertex, out int x, out int y )
+		{
+			// calculate hsc screen coordinates
+			Vector3 hsc = _translate3Dto2D( camera, vertex );
+			// convert to window position in pixels
+			//RenderTarget *rt = Root.Instance.RenderTarget(in.getName());
+			//if ( !rt )
+			//    throw new AxiomException( string.Format( "Can't find '{0}' render target", mpWin.getName() ) );
+			x = (int)( ( hsc.x + 1.0f ) / 2.0f * 640.0f );
+			y = (int)( ( -hsc.y + 1.0f ) / 2.0f * 480.0f );
+		}
 
-            if ( renderOperation.vertexData == null )
-			    renderOperation.vertexData = new VertexData();
+		private void _setupGeometry()
+		{
+			int vertexCount = _caption.Length * 6;
+			if ( renderOperation.vertexData != null )
+			{
+				renderOperation.vertexData = null;
+				_updateColor = true;
+			}
 
-            renderOperation.indexData = null;
-		    renderOperation.vertexData.vertexStart = 0;
-		    renderOperation.vertexData.vertexCount = vertexCount;
-            renderOperation.operationType = OperationType.TriangleList;
-            renderOperation.useIndices = false;
+			if ( renderOperation.vertexData == null )
+				renderOperation.vertexData = new VertexData();
 
-            VertexDeclaration	decl = renderOperation.vertexData.vertexDeclaration;
-            VertexBufferBinding	bind = renderOperation.vertexData.vertexBufferBinding;
-            int offset = 0;
+			renderOperation.indexData = null;
+			renderOperation.vertexData.vertexStart = 0;
+			renderOperation.vertexData.vertexCount = vertexCount;
+			renderOperation.operationType = OperationType.TriangleList;
+			renderOperation.useIndices = false;
 
-		    // create/bind positions/tex.ccord. buffer
-		    if ( decl.FindElementBySemantic( VertexElementSemantic.Position ) == null )
-			    decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float3,  VertexElementSemantic.Position );
-            offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
+			VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+			VertexBufferBinding bind = renderOperation.vertexData.vertexBufferBinding;
+			int offset = 0;
 
-		    if ( decl.FindElementBySemantic( VertexElementSemantic.TexCoords ) == null )
-                decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+			// create/bind positions/tex.ccord. buffer
+			if ( decl.FindElementBySemantic( VertexElementSemantic.Position ) == null )
+				decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
+			offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
-            HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POS_TEX_BINDING ),
-                                                                                           renderOperation.vertexData.vertexCount,
-				                                                                           BufferUsage.DynamicWriteOnly );
-            bind.SetBinding( POS_TEX_BINDING, vbuf );
+			if ( decl.FindElementBySemantic( VertexElementSemantic.TexCoords ) == null )
+				decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
-            // Colours - store these in a separate buffer because they change less often
-		    if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
-			    decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
-            HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR_BINDING ),
-                                                                                           renderOperation.vertexData.vertexCount,
-				                                                                           BufferUsage.DynamicWriteOnly );
-            bind.SetBinding( COLOR_BINDING, cbuf );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POS_TEX_BINDING ),
+																						   renderOperation.vertexData.vertexCount,
+																						   BufferUsage.DynamicWriteOnly );
+			bind.SetBinding( POS_TEX_BINDING, vbuf );
 
-		    int charlen = _caption.Length;
+			// Colours - store these in a separate buffer because they change less often
+			if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
+				decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
+			HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR_BINDING ),
+																						   renderOperation.vertexData.vertexCount,
+																						   BufferUsage.DynamicWriteOnly );
+			bind.SetBinding( COLOR_BINDING, cbuf );
 
-            float largestWidth = 0.0f;
-            float left = 0f * 2.0f - 1.0f;
-            float top = -( ( 0f * 2.0f ) - 1.0f );
+			int charlen = _caption.Length;
 
-            // Derive space with from a capital A
-		    if ( _spaceWidth == 0 )
-                _spaceWidth = (int)( _font.GetGlyphAspectRatio( 'A' ) * _characterHeight * 2.0f );
+			float largestWidth = 0.0f;
+			float left = 0f * 2.0f - 1.0f;
+			float top = -( ( 0f * 2.0f ) - 1.0f );
 
-		    // for calculation of AABB
-		    Vector3 min, max, currPos;
-            float maxSquaredRadius = 0.0f;
-		    bool first = true;
+			// Derive space with from a capital A
+			if ( _spaceWidth == 0 )
+				_spaceWidth = (int)( _font.GetGlyphAspectRatio( 'A' ) * _characterHeight * 2.0f );
 
-            min = max = currPos = Vector3.NegativeUnitY;
-		    // Use iterator
-            bool newLine = true;
-            float len = 0.0f;
+			// for calculation of AABB
+			Vector3 min, max, currPos;
+			float maxSquaredRadius = 0.0f;
+			bool first = true;
 
-            if ( _verticalAlignment == VerticalAlignment.Above )
-            {
-                // Raise the first line of the caption
-                top += _characterHeight;
-                for ( int i = 0; i != charlen; i++ )
-                {
-                    if ( _caption[ i ] == '\n' )
-                        top += _characterHeight * 2.0f;
-                }
-            }
+			min = max = currPos = Vector3.NegativeUnitY;
+			// Use iterator
+			bool newLine = true;
+			float len = 0.0f;
 
-            //Real *pPCBuff = static_cast<Real*>(ptbuf.lock(HardwareBuffer::HBL_DISCARD));
-            IntPtr ipPos = vbuf.Lock( BufferLocking.Discard );
-            int cntPos = 0;
-            unsafe
-            {
-                float* pPCBuff = (float*)ipPos.ToPointer();
+			if ( _verticalAlignment == VerticalAlignment.Above )
+			{
+				// Raise the first line of the caption
+				top += _characterHeight;
+				for ( int i = 0; i != charlen; i++ )
+				{
+					if ( _caption[ i ] == '\n' )
+						top += _characterHeight * 2.0f;
+				}
+			}
 
-                for ( int i = 0; i != charlen; i++ )
-                {
-                    if ( newLine )
-                    {
-                        len = 0.0f;
-                        for ( int j = i; j != charlen && _caption[ j ] != '\n'; j++ )
-                        {
-                            if ( _caption[ j ] == ' ' )
-                                len += _spaceWidth;
-                            else
-                                len += _font.GetGlyphAspectRatio( _caption[ j ] ) * _characterHeight * 2.0f;
-                        }
-                        newLine = false;
-                    }
+			//Real *pPCBuff = static_cast<Real*>(ptbuf.lock(HardwareBuffer::HBL_DISCARD));
+			IntPtr ipPos = vbuf.Lock( BufferLocking.Discard );
+			int cntPos = 0;
+			unsafe
+			{
+				float* pPCBuff = (float*)ipPos.ToPointer();
 
-                    if ( _caption[ i ] == '\n' )
-                    {
-                        left = 0f * 2.0f - 1.0f;
-                        top -= _characterHeight * 2.0f;
-                        newLine = true;
-                        continue;
-                    }
+				for ( int i = 0; i != charlen; i++ )
+				{
+					if ( newLine )
+					{
+						len = 0.0f;
+						for ( int j = i; j != charlen && _caption[ j ] != '\n'; j++ )
+						{
+							if ( _caption[ j ] == ' ' )
+								len += _spaceWidth;
+							else
+								len += _font.GetGlyphAspectRatio( _caption[ j ] ) * _characterHeight * 2.0f;
+						}
+						newLine = false;
+					}
 
-                    if ( _caption[ i ] == ' ' )
-                    {
-                        // Just leave a gap, no tris
-                        left += _spaceWidth;
-                        // Also reduce tri count
-                        renderOperation.vertexData.vertexCount -= 6;
-                        continue;
-                    }
+					if ( _caption[ i ] == '\n' )
+					{
+						left = 0f * 2.0f - 1.0f;
+						top -= _characterHeight * 2.0f;
+						newLine = true;
+						continue;
+					}
 
-                    float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
-                    float u1, u2, v1, v2;
-                    _font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
+					if ( _caption[ i ] == ' ' )
+					{
+						// Just leave a gap, no tris
+						left += _spaceWidth;
+						// Also reduce tri count
+						renderOperation.vertexData.vertexCount -= 6;
+						continue;
+					}
 
-                    // each vert is (x, y, z, u, v)
-                    //-------------------------------------------------------------------------------------
-                    // First tri
-                    //
-                    // Upper left
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    pPCBuff[ cntPos++ ] = left;
-                    else
-                        pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-                    pPCBuff[ cntPos++ ] = top;
-                    pPCBuff[ cntPos++ ] = -1.0f;
-                    pPCBuff[ cntPos++ ] = u1;
-                    pPCBuff[ cntPos++ ] = v1;
+					float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
+					float u1, u2, v1, v2;
+					_font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
 
-                    // Deal with bounds
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    currPos = new Vector3( left, top, -1.0f );
-                    else
-                        currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+					// each vert is (x, y, z, u, v)
+					//-------------------------------------------------------------------------------------
+					// First tri
+					//
+					// Upper left
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						pPCBuff[ cntPos++ ] = left;
+					else
+						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+					pPCBuff[ cntPos++ ] = top;
+					pPCBuff[ cntPos++ ] = -1.0f;
+					pPCBuff[ cntPos++ ] = u1;
+					pPCBuff[ cntPos++ ] = v1;
 
-                    if ( first )
-                    {
-                        min = max = currPos;
-                        maxSquaredRadius = currPos.LengthSquared;
-                        first = false;
-                    }
-                    else
-                    {
-                        min.Floor( currPos );
-                        max.Ceil( currPos );
-                        maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-                    }
+					// Deal with bounds
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						currPos = new Vector3( left, top, -1.0f );
+					else
+						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
 
-                    top -= _characterHeight * 2.0f;
+					if ( first )
+					{
+						min = max = currPos;
+						maxSquaredRadius = currPos.LengthSquared;
+						first = false;
+					}
+					else
+					{
+						min.Floor( currPos );
+						max.Ceil( currPos );
+						maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					}
 
-                    // Bottom left
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    pPCBuff[ cntPos++ ] = left;
-                    else
-                        pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-                    pPCBuff[ cntPos++ ] = top;
-                    pPCBuff[ cntPos++ ] = -1.0f;
-                    pPCBuff[ cntPos++ ] = u1;
-                    pPCBuff[ cntPos++ ] = v2;
+					top -= _characterHeight * 2.0f;
 
-                    // Deal with bounds
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    currPos = new Vector3( left, top, -1.0f );
-                    else
-                        currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+					// Bottom left
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						pPCBuff[ cntPos++ ] = left;
+					else
+						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+					pPCBuff[ cntPos++ ] = top;
+					pPCBuff[ cntPos++ ] = -1.0f;
+					pPCBuff[ cntPos++ ] = u1;
+					pPCBuff[ cntPos++ ] = v2;
 
-                    min.Floor( currPos );
-                    max.Ceil( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					// Deal with bounds
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						currPos = new Vector3( left, top, -1.0f );
+					else
+						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
 
-                    top += _characterHeight * 2.0f;
-                    left += horiz_height * _characterHeight * 2.0f;
+					min.Floor( currPos );
+					max.Ceil( currPos );
+					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-                    // Top right
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    pPCBuff[ cntPos++ ] = left;
-                    else
-                        pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-                    pPCBuff[ cntPos++ ] = top;
-                    pPCBuff[ cntPos++ ] = -1.0f;
-                    pPCBuff[ cntPos++ ] = u2;
-                    pPCBuff[ cntPos++ ] = v1;
-                    //-------------------------------------------------------------------------------------
+					top += _characterHeight * 2.0f;
+					left += horiz_height * _characterHeight * 2.0f;
 
-                    // Deal with bounds
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    currPos = new Vector3( left, top, -1.0f );
-                    else
-                        currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
-                    min.Floor( currPos );
-                    max.Ceil( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					// Top right
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						pPCBuff[ cntPos++ ] = left;
+					else
+						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+					pPCBuff[ cntPos++ ] = top;
+					pPCBuff[ cntPos++ ] = -1.0f;
+					pPCBuff[ cntPos++ ] = u2;
+					pPCBuff[ cntPos++ ] = v1;
+					//-------------------------------------------------------------------------------------
 
-                    //-------------------------------------------------------------------------------------
-                    // Second tri
-                    //
-                    // Top right (again)
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    pPCBuff[ cntPos++ ] = left;
-                    else
-                        pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-                    pPCBuff[ cntPos++ ] = top;
-                    pPCBuff[ cntPos++ ] = -1.0f;
-                    pPCBuff[ cntPos++ ] = u2;
-                    pPCBuff[ cntPos++ ] = v1;
+					// Deal with bounds
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						currPos = new Vector3( left, top, -1.0f );
+					else
+						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+					min.Floor( currPos );
+					max.Ceil( currPos );
+					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-                    currPos = new Vector3( left, top, -1.0f );
-                    min.Floor( currPos );
-                    max.Ceil( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					//-------------------------------------------------------------------------------------
+					// Second tri
+					//
+					// Top right (again)
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						pPCBuff[ cntPos++ ] = left;
+					else
+						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+					pPCBuff[ cntPos++ ] = top;
+					pPCBuff[ cntPos++ ] = -1.0f;
+					pPCBuff[ cntPos++ ] = u2;
+					pPCBuff[ cntPos++ ] = v1;
 
-                    top -= _characterHeight * 2.0f;
-                    left -= horiz_height * _characterHeight * 2.0f;
+					currPos = new Vector3( left, top, -1.0f );
+					min.Floor( currPos );
+					max.Ceil( currPos );
+					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-                    // Bottom left (again)
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    pPCBuff[ cntPos++ ] = left;
-                    else
-                        pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-                    pPCBuff[ cntPos++ ] = top;
-                    pPCBuff[ cntPos++ ] = -1.0f;
-                    pPCBuff[ cntPos++ ] = u1;
-                    pPCBuff[ cntPos++ ] = v2;
+					top -= _characterHeight * 2.0f;
+					left -= horiz_height * _characterHeight * 2.0f;
 
-                    currPos = new Vector3( left, top, -1.0f );
-                    min.Floor( currPos );
-                    max.Ceil( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					// Bottom left (again)
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						pPCBuff[ cntPos++ ] = left;
+					else
+						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+					pPCBuff[ cntPos++ ] = top;
+					pPCBuff[ cntPos++ ] = -1.0f;
+					pPCBuff[ cntPos++ ] = u1;
+					pPCBuff[ cntPos++ ] = v2;
 
-                    left += horiz_height * _characterHeight * 2.0f;
+					currPos = new Vector3( left, top, -1.0f );
+					min.Floor( currPos );
+					max.Ceil( currPos );
+					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-                    // Bottom right
-                    if ( _horizontalAlignment == HorizontalAlignment.Left )
-                    pPCBuff[ cntPos++ ] = left;
-                    else
-                        pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-                    pPCBuff[ cntPos++ ] = top;
-                    pPCBuff[ cntPos++ ] = -1.0f;
-                    pPCBuff[ cntPos++ ] = u2;
-                    pPCBuff[ cntPos++ ] = v2;
-                    //-------------------------------------------------------------------------------------
+					left += horiz_height * _characterHeight * 2.0f;
 
-                    currPos = new Vector3( left, top, -1.0f );
-                    min.Floor( currPos );
-                    max.Ceil( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					// Bottom right
+					if ( _horizontalAlignment == HorizontalAlignment.Left )
+						pPCBuff[ cntPos++ ] = left;
+					else
+						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+					pPCBuff[ cntPos++ ] = top;
+					pPCBuff[ cntPos++ ] = -1.0f;
+					pPCBuff[ cntPos++ ] = u2;
+					pPCBuff[ cntPos++ ] = v2;
+					//-------------------------------------------------------------------------------------
 
-                    // Go back up with top
-                    top += _characterHeight * 2.0f;
+					currPos = new Vector3( left, top, -1.0f );
+					min.Floor( currPos );
+					max.Ceil( currPos );
+					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-                    float currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
-                    if ( currentWidth > largestWidth )
-                        largestWidth = currentWidth;
-                }
-            }
-            // Unlock vertex buffer
-            vbuf.Unlock();
+					// Go back up with top
+					top += _characterHeight * 2.0f;
 
-		    // update AABB/Sphere radius
-            this.box = new AxisAlignedBox( min, max );
-		    this._radius = Utility.Sqrt( maxSquaredRadius );
+					float currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
+					if ( currentWidth > largestWidth )
+						largestWidth = currentWidth;
+				}
+			}
+			// Unlock vertex buffer
+			vbuf.Unlock();
 
-		    if ( _updateColor )
-			    this._updateColors();
+			// update AABB/Sphere radius
+			this.box = new AxisAlignedBox( min, max );
+			this._radius = Utility.Sqrt( maxSquaredRadius );
 
-		    _needUpdate = false;
-        }
+			if ( _updateColor )
+				this._updateColors();
 
-        private void _updateColors()
-        {
-            //assert(mpFont);
-            //assert(!mpMaterial.isNull());
+			_needUpdate = false;
+		}
 
-		    // Convert to system-specific
-            int color;
-            color = Root.Instance.ConvertColor( _color );
-            HardwareVertexBuffer cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
-            IntPtr ipPos = cbuf.Lock( BufferLocking.Discard );
-            unsafe
-            {
-                int* pPos = (int*)ipPos.ToPointer();
-                for ( int i = 0; i < renderOperation.vertexData.vertexCount; i++ )
-                    pPos[ i ] = color;
-            }
-            cbuf.Unlock();
-		    _updateColor = false;
-        }
+		private void _updateColors()
+		{
+			//assert(mpFont);
+			//assert(!mpMaterial.isNull());
 
-        #region Implementation of SimpleRenderable
+			// Convert to system-specific
+			int color;
+			color = Root.Instance.ConvertColor( _color );
+			HardwareVertexBuffer cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+			IntPtr ipPos = cbuf.Lock( BufferLocking.Discard );
+			unsafe
+			{
+				int* pPos = (int*)ipPos.ToPointer();
+				for ( int i = 0; i < renderOperation.vertexData.vertexCount; i++ )
+					pPos[ i ] = color;
+			}
+			cbuf.Unlock();
+			_updateColor = false;
+		}
 
-        public override void GetWorldTransforms( Matrix4[] matrices )
-        {
-            if ( this.IsVisible && camera != null )
-            {
-                Matrix3 scale3x3 = Matrix3.Identity;
+		#region Implementation of SimpleRenderable
 
-                // store rotation in a matrix
-                Matrix3 rot3x3 = camera.DerivedOrientation.ToRotationMatrix();
+		public override void GetWorldTransforms( Matrix4[] matrices )
+		{
+			if ( this.IsVisible && camera != null )
+			{
+				Matrix3 scale3x3 = Matrix3.Identity;
 
-                // parent node position
-                Vector3 ppos = ParentNode.DerivedPosition + Vector3.UnitY * _additionalHeight;
+				// store rotation in a matrix
+				Matrix3 rot3x3 = camera.DerivedOrientation.ToRotationMatrix();
 
-                // apply scale
-                scale3x3.m00 = ParentNode.DerivedScale.x / 2.0f;
-                scale3x3.m11 = ParentNode.DerivedScale.y / 2.0f;
-                scale3x3.m22 = ParentNode.DerivedScale.z / 2.0f;
+				// parent node position
+				Vector3 ppos = ParentNode.DerivedPosition + Vector3.UnitY * _additionalHeight;
 
-                // apply all transforms to matrices
-                matrices[ 0 ] = rot3x3 * scale3x3;
-                matrices[ 0 ].Translation = ppos;
-            }
-        }
+				// apply scale
+				scale3x3.m00 = ParentNode.DerivedScale.x / 2.0f;
+				scale3x3.m11 = ParentNode.DerivedScale.y / 2.0f;
+				scale3x3.m22 = ParentNode.DerivedScale.z / 2.0f;
 
-        public override float GetSquaredViewDepth( Camera camera )
-        {
-            return ( this.ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
-        }
+				// apply all transforms to matrices
+				matrices[ 0 ] = rot3x3 * scale3x3;
+				matrices[ 0 ].Translation = ppos;
+			}
+		}
 
-        public override float BoundingRadius
-        {
-            get
-            {
-                return _radius;
-            }
-        }
+		public override float GetSquaredViewDepth( Camera camera )
+		{
+			return ( this.ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
+		}
 
-        public override RenderOperation RenderOperation
-        {
-            get
-            {
-                if ( this._needUpdate )
-                {
-                    this._setupGeometry();
-                }
-                if ( this._updateColor )
-                {
-                    this._updateColors();
-                }
-                return base.RenderOperation;
-            }
-        }
-        #endregion Implementation of SimpleRenderable
-    }
+		public override float BoundingRadius
+		{
+			get
+			{
+				return _radius;
+			}
+		}
+
+		public override RenderOperation RenderOperation
+		{
+			get
+			{
+				if ( this._needUpdate )
+				{
+					this._setupGeometry();
+				}
+				if ( this._updateColor )
+				{
+					this._updateColors();
+				}
+				return base.RenderOperation;
+			}
+		}
+		#endregion Implementation of SimpleRenderable
+	}
 }

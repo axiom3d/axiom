@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -43,108 +43,108 @@ using ResourceHandle = System.UInt64;
 
 namespace Axiom.Core
 {
-    /// <summary>
-    ///     Patch specialization of <see cref="Mesh" />.
-    /// </summary>
-    /// <remarks>
-    ///     Instances of this class should be created by calling
-    ///     <see cref="MeshManager.CreateBezierPatch" />.
-    /// </remarks>
-    public class PatchMesh : Mesh
-    {
-        #region Fields
-        /// <summary>
-        ///     Internal surface definition.
-        /// </summary>
-        protected PatchSurface patchSurface = new PatchSurface();
-        /// <summary>
-        ///     Vertex declaration, cloned from the input.
-        /// </summary>
-        protected VertexDeclaration vertexDeclaration;
+	/// <summary>
+	///     Patch specialization of <see cref="Mesh" />.
+	/// </summary>
+	/// <remarks>
+	///     Instances of this class should be created by calling
+	///     <see cref="MeshManager.CreateBezierPatch" />.
+	/// </remarks>
+	public class PatchMesh : Mesh
+	{
+		#region Fields
+		/// <summary>
+		///     Internal surface definition.
+		/// </summary>
+		protected PatchSurface patchSurface = new PatchSurface();
+		/// <summary>
+		///     Vertex declaration, cloned from the input.
+		/// </summary>
+		protected VertexDeclaration vertexDeclaration;
 
-        #endregion Fields
+		#endregion Fields
 
-        /// <summary>
-        ///     Creates a new PatchMesh.
-        /// </summary>
-        /// <remarks>
-        ///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
-        /// </remarks>
-        public PatchMesh( ResourceManager parent, string name, ResourceHandle handle, string group )
-            : base( parent, name, handle, group, false, null )
-        {
-        }
+		/// <summary>
+		///     Creates a new PatchMesh.
+		/// </summary>
+		/// <remarks>
+		///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
+		/// </remarks>
+		public PatchMesh( ResourceManager parent, string name, ResourceHandle handle, string group )
+			: base( parent, name, handle, group, false, null )
+		{
+		}
 
-            
-        public void Define( Array controlPointArray, VertexDeclaration declaration,
-            int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
+
+		public void Define( Array controlPointArray, VertexDeclaration declaration,
+			int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
 							BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
-        {
+		{
 
-            VertexBufferUsage = vbUsage;
-            UseVertexShadowBuffer = vbUseShadow;
-            IndexBufferUsage = ibUsage;
-            UseIndexShadowBuffer = ibUseShadow;
+			VertexBufferUsage = vbUsage;
+			UseVertexShadowBuffer = vbUseShadow;
+			IndexBufferUsage = ibUsage;
+			UseIndexShadowBuffer = ibUseShadow;
 
-            // Init patch builder
-            // define the surface
-            // NB clone the declaration to make it independent
-            vertexDeclaration = (VertexDeclaration)declaration.Clone();
-            patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height,
-                PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
-        }
+			// Init patch builder
+			// define the surface
+			// NB clone the declaration to make it independent
+			vertexDeclaration = (VertexDeclaration)declaration.Clone();
+			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height,
+				PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
+		}
 
-        public float Subdivision
-        {
-            get
-            {
-                return patchSurface.SubdivisionFactor;
-            }
-            set
-            {
-                patchSurface.SubdivisionFactor = value;
-                SubMesh sm = GetSubMesh(0);
-                sm.indexData.indexCount = patchSurface.CurrentIndexCount;
-            }
-        }
+		public float Subdivision
+		{
+			get
+			{
+				return patchSurface.SubdivisionFactor;
+			}
+			set
+			{
+				patchSurface.SubdivisionFactor = value;
+				SubMesh sm = GetSubMesh( 0 );
+				sm.indexData.indexCount = patchSurface.CurrentIndexCount;
+			}
+		}
 
-        protected override void load()
-        {
-            SubMesh sm = CreateSubMesh();
-            sm.vertexData = new VertexData();
-            sm.useSharedVertices = false;
+		protected override void load()
+		{
+			SubMesh sm = CreateSubMesh();
+			sm.vertexData = new VertexData();
+			sm.useSharedVertices = false;
 
-            // Set up the vertex buffer
-            sm.vertexData.vertexStart = 0;
-            sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
-            sm.vertexData.vertexDeclaration = vertexDeclaration;
+			// Set up the vertex buffer
+			sm.vertexData.vertexStart = 0;
+			sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
+			sm.vertexData.vertexDeclaration = vertexDeclaration;
 
-            HardwareVertexBuffer buffer =
-                HardwareBufferManager.Instance.CreateVertexBuffer(
-                    vertexDeclaration.GetVertexSize( 0 ),
-                    sm.vertexData.vertexCount,
-                    VertexBufferUsage,
-                    UseVertexShadowBuffer );
+			HardwareVertexBuffer buffer =
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+					vertexDeclaration.GetVertexSize( 0 ),
+					sm.vertexData.vertexCount,
+					VertexBufferUsage,
+					UseVertexShadowBuffer );
 
-            // bind the vertex buffer
-            sm.vertexData.vertexBufferBinding.SetBinding( 0, buffer );
+			// bind the vertex buffer
+			sm.vertexData.vertexBufferBinding.SetBinding( 0, buffer );
 
-            // create the index buffer
-            sm.indexData.indexStart = 0;
-            sm.indexData.indexCount = patchSurface.RequiredIndexCount;
-            sm.indexData.indexBuffer =
-                HardwareBufferManager.Instance.CreateIndexBuffer(
-                IndexType.Size16,
-                sm.indexData.indexCount,
-                IndexBufferUsage,
-                UseIndexShadowBuffer );
+			// create the index buffer
+			sm.indexData.indexStart = 0;
+			sm.indexData.indexCount = patchSurface.RequiredIndexCount;
+			sm.indexData.indexBuffer =
+				HardwareBufferManager.Instance.CreateIndexBuffer(
+				IndexType.Size16,
+				sm.indexData.indexCount,
+				IndexBufferUsage,
+				UseIndexShadowBuffer );
 
-            // build the path
-            patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
+			// build the path
+			patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
 
-            // set the bounds
-            this.BoundingBox = patchSurface.Bounds;
-            this.BoundingSphereRadius = patchSurface.BoundingSphereRadius;
-        }
-    }
+			// set the bounds
+			this.BoundingBox = patchSurface.Bounds;
+			this.BoundingSphereRadius = patchSurface.BoundingSphereRadius;
+		}
+	}
 }

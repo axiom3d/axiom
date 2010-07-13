@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -46,17 +46,17 @@ using Real = System.Single;
 namespace Axiom.Core
 {
 	/// <summary>
-	/// A factory class that can create various mesh prefabs. 
+	/// A factory class that can create various mesh prefabs.
 	/// </summary>
 	/// <remarks>
-	/// This class is used by MeshManager to offload the loading of various prefab types 
+	/// This class is used by MeshManager to offload the loading of various prefab types
 	/// to a central location.
 	/// </remarks>
 	public class PrefabFactory
 	{
 
 		/// <summary>
-		/// If the given mesh has a known prefab resource name (e.g "Prefab_Plane") 
+		/// If the given mesh has a known prefab resource name (e.g "Prefab_Plane")
 		/// then this prefab will be created as a submesh of the given mesh.
 		/// </summary>
 		/// <param name="mesh">The mesh that the potential prefab will be created in.</param>
@@ -98,7 +98,7 @@ namespace Axiom.Core
 				1,0,
 				-100,  100, 0 ,
 				0,0,1,
-				0,0 
+				0,0
 			};
 
 			mesh.SharedVertexData = new VertexData();
@@ -191,7 +191,7 @@ namespace Axiom.Core
 				1,0,
 				-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
 				-1,0,0,
-				0,0, 
+				0,0,
 
 				// right side
 				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
@@ -233,7 +233,7 @@ namespace Axiom.Core
 				1,0,
 				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
 				0,-1,0,
-				0,0 
+				0,0
 			};
 
 			mesh.SharedVertexData = new VertexData();
@@ -380,12 +380,12 @@ namespace Axiom.Core
 						if ( ring != NUM_RINGS )
 						{
 							// each vertex (except the last) has six indicies pointing to it
-							*pIndices++ = (ushort)(wVerticeIndex + NUM_SEGMENTS + 1);
-							*pIndices++ = (ushort)(wVerticeIndex);
-							*pIndices++ = (ushort)(wVerticeIndex + NUM_SEGMENTS);
-							*pIndices++ = (ushort)(wVerticeIndex + NUM_SEGMENTS + 1);
-							*pIndices++ = (ushort)(wVerticeIndex + 1);
-							*pIndices++ = (ushort)(wVerticeIndex);
+							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
+							*pIndices++ = (ushort)( wVerticeIndex );
+							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS );
+							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
+							*pIndices++ = (ushort)( wVerticeIndex + 1 );
+							*pIndices++ = (ushort)( wVerticeIndex );
 							wVerticeIndex++;
 						}
 					}; // end for seg

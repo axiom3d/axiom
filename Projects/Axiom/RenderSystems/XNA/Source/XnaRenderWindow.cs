@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -43,7 +43,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-using RenderTarget=Axiom.Graphics.RenderTarget;
+using RenderTarget = Axiom.Graphics.RenderTarget;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
@@ -54,21 +54,21 @@ using SWF = System.Windows.Forms;
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	/// The Xna implementation of the RenderWindow class.
-	/// </summary>
-	public class XnaRenderWindow : RenderWindow, XFG.IGraphicsDeviceService
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// The Xna implementation of the RenderWindow class.
+    /// </summary>
+    public class XnaRenderWindow : RenderWindow, XFG.IGraphicsDeviceService
+    {
+        #region Fields and Properties
 
         private IntPtr _windowHandle;			// Win32 Window handle
         private bool _isExternal;			// window not created by Axiom
         private bool _sizing;
         private bool _isSwapChain;			// Is this a secondary window?
 
-		/// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-		private XFG.RenderTarget _renderSurface;
-		private XFG.DepthStencilBuffer _stencilBuffer;
+        /// <summary>Used to provide support for multiple RenderWindows per device.</summary>
+        private XFG.RenderTarget _renderSurface;
+        private XFG.DepthStencilBuffer _stencilBuffer;
 
         private XFG.MultiSampleType _fsaaType;
         private int _fsaaQuality;
@@ -94,30 +94,30 @@ namespace Axiom.RenderSystems.Xna
             get
             {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                if ( _windowHandle != null )
+                if (_windowHandle != null)
                 {
-                    SWF.Control control = SWF.Control.FromHandle( _windowHandle );
-                    if(control == null)
+                    SWF.Control control = SWF.Control.FromHandle(_windowHandle);
+                    if (control == null)
                     {
                         return false;
                     }
 
-                    if ( _isExternal )
+                    if (_isExternal)
                     {
-                        if ( control is SWF.Form )
+                        if (control is SWF.Form)
                         {
-                            if ( ( (SWF.Form)control ).WindowState == SWF.FormWindowState.Minimized )
+                            if (((SWF.Form)control).WindowState == SWF.FormWindowState.Minimized)
                             {
                                 return false;
                             }
                         }
-                        else if ( control is SWF.PictureBox )
+                        else if (control is SWF.PictureBox)
                         {
                             SWF.Control parent = control.Parent;
-                            while ( !( parent is SWF.Form ) )
+                            while (!(parent is SWF.Form))
                                 parent = parent.Parent;
 
-                            if ( ( (SWF.Form)parent ).WindowState == SWF.FormWindowState.Minimized )
+                            if (((SWF.Form)parent).WindowState == SWF.FormWindowState.Minimized)
                             {
                                 return false;
                             }
@@ -125,7 +125,7 @@ namespace Axiom.RenderSystems.Xna
                     }
                     else
                     {
-                        if ( ( (SWF.Form)control ).WindowState == SWF.FormWindowState.Minimized )
+                        if (((SWF.Form)control).WindowState == SWF.FormWindowState.Minimized)
                         {
                             return false;
                         }
@@ -177,43 +177,43 @@ namespace Axiom.RenderSystems.Xna
 
         #endregion PresentationParameters Property
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Constructor
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="driver">The root driver</param>
-		public XnaRenderWindow( Driver driver )
-		{
-			_driver = driver;
-		}
+        #region Constructor
 
         /// <summary>
-        /// 
+        ///
+        /// </summary>
+        /// <param name="driver">The root driver</param>
+        public XnaRenderWindow(Driver driver)
+        {
+            _driver = driver;
+        }
+
+        /// <summary>
+        ///
         /// </summary>
         /// <param name="driver">The root driver</param>
         /// <param name="deviceIfSwapChain"></param>
-		public XnaRenderWindow( Driver driver,XFG.GraphicsDevice deviceIfSwapChain )
-			: this( driver )
+        public XnaRenderWindow(Driver driver, XFG.GraphicsDevice deviceIfSwapChain)
+            : this(driver)
         {
-            _isSwapChain = ( deviceIfSwapChain != null );
+            _isSwapChain = (deviceIfSwapChain != null);
         }
 
-		#endregion
+        #endregion Constructor
 
-		#region RenderWindow implementation
+        #region RenderWindow implementation
 
-		/// <summary>
-		/// Initializes a RenderWindow Instance
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="fullScreen"></param>
-		/// <param name="miscParams"></param>
-        public override void Create( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
+        /// <summary>
+        /// Initializes a RenderWindow Instance
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="fullScreen"></param>
+        /// <param name="miscParams"></param>
+        public override void Create(string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams)
         {
             IntPtr parentHWnd = IntPtr.Zero;
             IntPtr externalHWnd = IntPtr.Zero;
@@ -230,115 +230,114 @@ namespace Axiom.RenderSystems.Xna
             _fsaaQuality = 0;
             _vSync = false;
 
-            if ( miscParams != null )
+            if (miscParams != null)
             {
                 // left (x)
-                if ( miscParams.ContainsKey( "left" ) )
+                if (miscParams.ContainsKey("left"))
                 {
-                    left = Int32.Parse( miscParams[ "left" ].ToString() );
+                    left = Int32.Parse(miscParams["left"].ToString());
                 }
 
                 // top (y)
-                if ( miscParams.ContainsKey( "top" ) )
+                if (miscParams.ContainsKey("top"))
                 {
-                    top = Int32.Parse( miscParams[ "top" ].ToString() );
+                    top = Int32.Parse(miscParams["top"].ToString());
                 }
 
                 // Window title
-                if ( miscParams.ContainsKey( "title" ) )
+                if (miscParams.ContainsKey("title"))
                 {
-                    title = (string)miscParams[ "title" ];
+                    title = (string)miscParams["title"];
                 }
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
                 // parentWindowHandle		-> parentHWnd
-                if ( miscParams.ContainsKey( "parentWindowHandle" ) )
+                if (miscParams.ContainsKey("parentWindowHandle"))
                 {
-                    object handle = miscParams[ "parentWindowHandle" ];
-                    if ( handle.GetType() == typeof( IntPtr ) )
+                    object handle = miscParams["parentWindowHandle"];
+                    if (handle.GetType() == typeof(IntPtr))
                     {
                         parentHWnd = (IntPtr)handle;
                     }
-                    else if ( handle.GetType() == typeof( System.Int32 ) )
+                    else if (handle.GetType() == typeof(System.Int32))
                     {
-                        parentHWnd = new IntPtr( (int)handle );
+                        parentHWnd = new IntPtr((int)handle);
                     }
                 }
 
                 // externalWindowHandle		-> externalHWnd
-                if ( miscParams.ContainsKey( "externalWindowHandle" ) )
+                if (miscParams.ContainsKey("externalWindowHandle"))
                 {
-                    object handle = miscParams[ "externalWindowHandle" ];
-                    if ( handle.GetType() == typeof( IntPtr ) )
+                    object handle = miscParams["externalWindowHandle"];
+                    if (handle.GetType() == typeof(IntPtr))
                     {
                         externalHWnd = (IntPtr)handle;
                     }
-                    else if ( handle.GetType() == typeof( System.Int32 ) )
+                    else if (handle.GetType() == typeof(System.Int32))
                     {
-                        externalHWnd = new IntPtr( (int)handle );
+                        externalHWnd = new IntPtr((int)handle);
                     }
                 }
 #endif
                 // vsync	[parseBool]
-                if ( miscParams.ContainsKey( "vsync" ) )
+                if (miscParams.ContainsKey("vsync"))
                 {
-                    _vSync = bool.Parse( miscParams[ "vsync" ].ToString() );
+                    _vSync = bool.Parse(miscParams["vsync"].ToString());
                 }
 
                 // displayFrequency
-                if ( miscParams.ContainsKey( "displayFrequency" ) )
+                if (miscParams.ContainsKey("displayFrequency"))
                 {
-                    _displayFrequency = Int32.Parse( miscParams[ "displayFrequency" ].ToString() );
+                    _displayFrequency = Int32.Parse(miscParams["displayFrequency"].ToString());
                 }
 
                 // colourDepth
-                if ( miscParams.ContainsKey( "colorDepth" ) )
+                if (miscParams.ContainsKey("colorDepth"))
                 {
-                    this.ColorDepth = Int32.Parse( miscParams[ "colorDepth" ].ToString() );
+                    this.ColorDepth = Int32.Parse(miscParams["colorDepth"].ToString());
                 }
 
                 // depthBuffer [parseBool]
-                if ( miscParams.ContainsKey( "depthBuffer" ) )
+                if (miscParams.ContainsKey("depthBuffer"))
                 {
-                    depthBuffer = bool.Parse( miscParams[ "depthBuffer" ].ToString() );
+                    depthBuffer = bool.Parse(miscParams["depthBuffer"].ToString());
                 }
 
                 // FSAA type
-                if ( miscParams.ContainsKey( "FSAA" ) )
+                if (miscParams.ContainsKey("FSAA"))
                 {
-                    _fsaaType = (XFG.MultiSampleType)miscParams[ "FSAA" ];
+                    _fsaaType = (XFG.MultiSampleType)miscParams["FSAA"];
                 }
 
                 // FSAA quality
-                if ( miscParams.ContainsKey( "FSAAQuality" ) )
+                if (miscParams.ContainsKey("FSAAQuality"))
                 {
-                    _fsaaQuality = Int32.Parse( miscParams[ "FSAAQuality" ].ToString() );
+                    _fsaaQuality = Int32.Parse(miscParams["FSAAQuality"].ToString());
                 }
 
                 // window border style
-                if ( miscParams.ContainsKey( "border" ) )
+                if (miscParams.ContainsKey("border"))
                 {
-                    border = ( (string)miscParams[ "border" ] ).ToLower();
+                    border = ((string)miscParams["border"]).ToLower();
                 }
 
                 // set outer dimensions?
-                if ( miscParams.ContainsKey( "outerDimensions" ) )
+                if (miscParams.ContainsKey("outerDimensions"))
                 {
-                    outerSize = bool.Parse( miscParams[ "outerDimensions" ].ToString() );
+                    outerSize = bool.Parse(miscParams["outerDimensions"].ToString());
                 }
 
                 // NV perf HUD?
-                if ( miscParams.ContainsKey( "useNVPerfHUD" ) )
+                if (miscParams.ContainsKey("useNVPerfHUD"))
                 {
-                    _useNVPerfHUD = bool.Parse( miscParams[ "useNVPerfHUD" ].ToString() );
+                    _useNVPerfHUD = bool.Parse(miscParams["useNVPerfHUD"].ToString());
                 }
-
             }
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            if ( _windowHandle != null )
+            if (_windowHandle != IntPtr.Zero)
                 Dispose();
 
-            if ( externalHWnd == IntPtr.Zero )
+            if (externalHWnd == IntPtr.Zero)
             {
                 Width = width;
                 Height = height;
@@ -353,29 +352,29 @@ namespace Axiom.RenderSystems.Xna
                  * If we're in windowed mode, we'll want our own.
                  * get references to the render target and depth stencil surface
                  */
-                if ( !isFullScreen )
+                if (!isFullScreen)
                 {
                     newWin.StartPosition = SWF.FormStartPosition.CenterScreen;
-                    if ( parentHWnd != IntPtr.Zero )
+                    if (parentHWnd != IntPtr.Zero)
                     {
-                        newWin.Parent = SWF.Control.FromHandle( parentHWnd );
+                        newWin.Parent = SWF.Control.FromHandle(parentHWnd);
                     }
                     else
                     {
-                        if ( border == "none" )
+                        if (border == "none")
                         {
                             newWin.FormBorderStyle = SWF.FormBorderStyle.None;
                         }
-                        else if ( border == "fixed" )
+                        else if (border == "fixed")
                         {
                             newWin.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
                             newWin.MaximizeBox = false;
                         }
                     }
 
-                    if ( !outerSize )
+                    if (!outerSize)
                     {
-                        newWin.ClientSize = new System.Drawing.Size( Width, Height );
+                        newWin.ClientSize = new System.Drawing.Size(Width, Height);
                     }
                     else
                     {
@@ -383,12 +382,10 @@ namespace Axiom.RenderSystems.Xna
                         newWin.Height = Height;
                     }
 
-                    if ( top < 0 )
-                        top = ( SWF.Screen.PrimaryScreen.Bounds.Height - Height ) / 2;
-                    if ( left < 0 )
-                        left = ( SWF.Screen.PrimaryScreen.Bounds.Width - Width ) / 2;
-
-
+                    if (top < 0)
+                        top = (SWF.Screen.PrimaryScreen.Bounds.Height - Height) / 2;
+                    if (left < 0)
+                        left = (SWF.Screen.PrimaryScreen.Bounds.Width - Width) / 2;
                 }
                 else
                 {
@@ -403,8 +400,7 @@ namespace Axiom.RenderSystems.Xna
                 newWin.RenderWindow = this;
                 _windowHandle = newWin.Handle;
 
-                WindowEventMonitor.Instance.RegisterWindow( this );
-
+                WindowEventMonitor.Instance.RegisterWindow(this);
             }
             else
             {
@@ -426,31 +422,31 @@ namespace Axiom.RenderSystems.Xna
             CreateXnaResources();
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            (SWF.Control.FromHandle( _windowHandle )).Show();
+            (SWF.Control.FromHandle(_windowHandle)).Show();
 #endif
 
             IsActive = true;
             _isClosed = false;
 
-            LogManager.Instance.Write( "[XNA] : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
+            LogManager.Instance.Write("[XNA] : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth);
         }
 
-	    private void CreateXnaResources()
-	    {
+        private void CreateXnaResources()
+        {
             XFG.GraphicsDevice device = _driver.XnaDevice;
 
-            if ( _isSwapChain && device == null )
+            if (_isSwapChain && device == null)
             {
-                throw new Exception( "Secondary window has not been given the device from the primary!" );
+                throw new Exception("Secondary window has not been given the device from the primary!");
             }
 
-            if ( _renderSurface != null )
+            if (_renderSurface != null)
             {
                 _renderSurface.Dispose();
                 _renderSurface = null;
             }
 
-            if ( _driver.Description.ToLower().Contains( "nvperfhud" ) )
+            if (_driver.Description.ToLower().Contains("nvperfhud"))
             {
                 _useNVPerfHUD = true;
             }
@@ -468,37 +464,37 @@ namespace Axiom.RenderSystems.Xna
             this._xnapp.BackBufferWidth = Width;
             this._xnapp.FullScreenRefreshRateInHz = IsFullScreen ? _displayFrequency : 0;
 
-            if ( _vSync )
+            if (_vSync)
             {
                 this._xnapp.PresentationInterval = XFG.PresentInterval.One;
             }
             else
             {
-                // NB not using vsync in windowed mode in D3D9 can cause jerking at low 
+                // NB not using vsync in windowed mode in D3D9 can cause jerking at low
                 // frame rates no matter what buffering modes are used (odd - perhaps a
-                // timer issue in D3D9 since GL doesn't suffer from this) 
+                // timer issue in D3D9 since GL doesn't suffer from this)
                 // low is < 200fps in this context
-                if ( !IsFullScreen )
+                if (!IsFullScreen)
                 {
-                    LogManager.Instance.Write( "[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
+                    LogManager.Instance.Write("[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.");
                 }
                 this._xnapp.PresentationInterval = XFG.PresentInterval.Immediate;
             }
 
             this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
-            if ( ColorDepth > 16 )
+            if (ColorDepth > 16)
             {
                 this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr32;
             }
 
-	        XFG.GraphicsAdapter currentAdapter = _driver.Adapter;
-            if ( ColorDepth > 16 )
+            XFG.GraphicsAdapter currentAdapter = _driver.Adapter;
+            if (ColorDepth > 16)
             {
                 // Try to create a 32-bit depth, 8-bit stencil
-                if ( currentAdapter.CheckDeviceFormat( devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth24Stencil8 ) == false )
+                if (currentAdapter.CheckDeviceFormat(devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth24Stencil8) == false)
                 {
-                    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer 
-                    if ( currentAdapter.CheckDeviceFormat( devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth32 ) == false )
+                    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
+                    if (currentAdapter.CheckDeviceFormat(devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth32) == false)
                     {
                         // Jeez, what a naff card. Fall back on 16-bit depth buffering
                         this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
@@ -511,7 +507,7 @@ namespace Axiom.RenderSystems.Xna
                 else
                 {
                     // Woohoo!
-                    if ( currentAdapter.CheckDepthStencilMatch( devType, this._xnapp.BackBufferFormat, this._xnapp.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8 ) == true )
+                    if (currentAdapter.CheckDepthStencilMatch(devType, this._xnapp.BackBufferFormat, this._xnapp.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8) == true)
                     {
                         this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
                     }
@@ -530,10 +526,10 @@ namespace Axiom.RenderSystems.Xna
             this._xnapp.MultiSampleType = _fsaaType;
             this._xnapp.MultiSampleQuality = _fsaaQuality;
 
-            if ( _isSwapChain )
+            if (_isSwapChain)
             {
                 /*
-                // Create swap chain	
+                // Create swap chain
                 try
                 {
                     _swapChain = new XFG.SwapChain( device, this._xnapp );
@@ -574,24 +570,24 @@ namespace Axiom.RenderSystems.Xna
             }
             else
             {
-                if ( device == null ) // We haven't created the device yet, this must be the first time
+                if (device == null) // We haven't created the device yet, this must be the first time
                 {
                     ConfigOptionCollection configOptions = Root.Instance.RenderSystem.ConfigOptions;
-                    ConfigOption FPUMode = configOptions[ "Floating-point mode" ];
+                    ConfigOption FPUMode = configOptions["Floating-point mode"];
 
                     // Set default settings (use the one Axiom discovered as a default)
                     XFG.GraphicsAdapter adapterToUse = Driver.Adapter;
 
-                    if ( this._useNVPerfHUD )
+                    if (this._useNVPerfHUD)
                     {
                         // Look for 'NVIDIA NVPerfHUD' adapter
                         // If it is present, override default settings
-                        foreach ( XFG.GraphicsAdapter adapter in XFG.GraphicsAdapter.Adapters )
+                        foreach (XFG.GraphicsAdapter adapter in XFG.GraphicsAdapter.Adapters)
                         {
-                            LogManager.Instance.Write( "[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName, adapter.Description );
-                            if ( adapter.Description.ToLower().Contains( "perfhud" ) )
+                            LogManager.Instance.Write("[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName, adapter.Description);
+                            if (adapter.Description.ToLower().Contains("perfhud"))
                             {
-                                LogManager.Instance.Write( "[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName, adapter.Description );
+                                LogManager.Instance.Write("[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName, adapter.Description);
                                 adapterToUse = adapter;
                                 devType = XFG.DeviceType.Reference;
                                 break;
@@ -603,34 +599,34 @@ namespace Axiom.RenderSystems.Xna
                     try
                     {
                         // hardware vertex processing
-                        device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
+                        device = new XFG.GraphicsDevice(adapterToUse, devType, _windowHandle, this._xnapp);
                     }
-                    catch ( Exception )
+                    catch (Exception)
                     {
                         try
                         {
                             // Try a second time, may fail the first time due to back buffer count,
                             // which will be corrected down to 1 by the runtime
-                            device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
+                            device = new XFG.GraphicsDevice(adapterToUse, devType, _windowHandle, this._xnapp);
                         }
-                        catch ( Exception )
+                        catch (Exception)
                         {
                             try
                             {
                                 // doh, how bout mixed vertex processing
-                                device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle,  this._xnapp );
+                                device = new XFG.GraphicsDevice(adapterToUse, devType, _windowHandle, this._xnapp);
                             }
-                            catch ( Exception )
+                            catch (Exception)
                             {
                                 try
                                 {
                                     // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
                                     // anything at all since they obviously don't have a video card installed
-                                    device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
+                                    device = new XFG.GraphicsDevice(adapterToUse, devType, _windowHandle, this._xnapp);
                                 }
-                                catch ( Exception ex )
+                                catch (Exception ex)
                                 {
-                                    throw new Exception( "Failed to create XNA GraphicsDevice", ex );
+                                    throw new Exception("Failed to create XNA GraphicsDevice", ex);
                                 }
                             }
                         }
@@ -639,24 +635,23 @@ namespace Axiom.RenderSystems.Xna
                 // update device in driver
                 Driver.XnaDevice = device;
                 // Store references to buffers for convenience
-                _renderSurface = device.GetRenderTarget( 0 );                
+                _renderSurface = device.GetRenderTarget(0);
                 _stencilBuffer = device.DepthStencilBuffer;
 
-                device.DeviceReset += new EventHandler( OnResetDevice );
+                device.DeviceReset += new EventHandler(OnResetDevice);
+            }
+        }
 
-            }	        
-	    }
-
-	    /// <summary>
-        /// 
+        /// <summary>
+        ///
         /// </summary>
         /// <param name="attribute"></param>
         /// <returns></returns>
-        public override object this[ string attribute ]
+        public override object this[string attribute]
         {
             get
             {
-                switch ( attribute.ToUpper() )
+                switch (attribute.ToUpper())
                 {
                     case "XNADEVICE":
                         return Driver.XnaDevice;
@@ -681,32 +676,31 @@ namespace Axiom.RenderSystems.Xna
                     }*/
                 }
 
-                return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
+                return new NotSupportedException("There is no Xna RenderWindow custom attribute named " + attribute);
             }
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void dispose( bool disposeManagedResources )
-		{
-            if ( !isDisposed )
+        /// <summary>
+        ///
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
             {
-                if ( disposeManagedResources )
+                if (disposeManagedResources)
                 {
                     // Dispose managed resources.
                     // dispose of our back buffer if need be
-                    if ( this._renderSurface != null && !this._renderSurface.IsDisposed )
+                    if (this._renderSurface != null && !this._renderSurface.IsDisposed)
                     {
                         this._renderSurface.Dispose();
                     }
 
                     // dispose of our stencil buffer if need be
-                    if ( this._stencilBuffer != null && !this._stencilBuffer.IsDisposed )
+                    if (this._stencilBuffer != null && !this._stencilBuffer.IsDisposed)
                     {
                         this._stencilBuffer.Dispose();
                     }
-
                 }
 
                 // There are no unmanaged resources to release, but
@@ -715,95 +709,92 @@ namespace Axiom.RenderSystems.Xna
 
             // If it is available, make the call to the
             // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
+            base.dispose(disposeManagedResources);
 
-			// make sure this window is no longer active
-			IsActive = false;
-		}
-
-		public override void Reposition( int left, int right )
-		{
-			// TODO: Implementation of XnaRenderWindow.Reposition()
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		public override void Resize( int width, int height )
-		{
-			// CMH 4/24/2004 - Start
-			width = width < 10 ? 10 : width;
-			height = height < 10 ? 10 : height;
-			this.Height = height;
-			this.Width = width;
-
-			if ( !isFullScreen )
-			{
-				XFG.PresentationParameters p = new XFG.PresentationParameters();// (_device.PresentationParameters);//swapchain
-				p.BackBufferHeight = height;
-				p.BackBufferWidth = width;
-				//_swapChain.Dispose();
-				//_swapChain = new XFG.SwapChain( _device, p );
-				/*_stencilBuffer.Dispose();
-				_stencilBuffer = new XFG.DepthStencilBuffer(
-					_device,
-					width, height,
-					_device.PresentationParameters.AutoDepthStencilFormat,
-					_device.PresentationParameters.MultiSampleType,
-					_device.PresentationParameters.MultiSampleQuality
-					);*/
-
-
-				// customAttributes[ "SwapChain" ] = _swapChain;
-			}
-			// CMH - End
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="waitForVSync"></param>
-		public override void SwapBuffers( bool waitForVSync )
-		{
-            _driver.XnaDevice.Present( );
+            // make sure this window is no longer active
+            IsActive = false;
         }
 
-        public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
+        public override void Reposition(int left, int right)
         {
+            // TODO: Implementation of XnaRenderWindow.Reposition()
+        }
 
-            if ( ( dst.Left < 0 ) || ( dst.Right > Width ) ||
-                ( dst.Top < 0 ) || ( dst.Bottom > Height ) ||
-                ( dst.Front != 0 ) || ( dst.Back != 1 ) )
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public override void Resize(int width, int height)
+        {
+            // CMH 4/24/2004 - Start
+            width = width < 10 ? 10 : width;
+            height = height < 10 ? 10 : height;
+            this.Height = height;
+            this.Width = width;
+
+            if (!isFullScreen)
             {
-                throw new Exception( "Invalid box." );
+                XFG.PresentationParameters p = new XFG.PresentationParameters();// (_device.PresentationParameters);//swapchain
+                p.BackBufferHeight = height;
+                p.BackBufferWidth = width;
+                //_swapChain.Dispose();
+                //_swapChain = new XFG.SwapChain( _device, p );
+                /*_stencilBuffer.Dispose();
+                _stencilBuffer = new XFG.DepthStencilBuffer(
+                    _device,
+                    width, height,
+                    _device.PresentationParameters.AutoDepthStencilFormat,
+                    _device.PresentationParameters.MultiSampleType,
+                    _device.PresentationParameters.MultiSampleQuality
+                    );*/
+
+                // customAttributes[ "SwapChain" ] = _swapChain;
+            }
+            // CMH - End
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="waitForVSync"></param>
+        public override void SwapBuffers(bool waitForVSync)
+        {
+            _driver.XnaDevice.Present();
+        }
+
+        public override void CopyContentsToMemory(PixelBox dst, FrameBuffer buffer)
+        {
+            if ((dst.Left < 0) || (dst.Right > Width) ||
+                (dst.Top < 0) || (dst.Bottom > Height) ||
+                (dst.Front != 0) || (dst.Back != 1))
+            {
+                throw new Exception("Invalid box.");
             }
 
             XFG.GraphicsDevice device = Driver.XnaDevice;
             XFG.ResolveTexture2D surface;
-            byte[] data = new byte[ dst.ConsecutiveSize ];
+            byte[] data = new byte[dst.ConsecutiveSize];
             int pitch = 0;
 
-            if ( buffer == RenderTarget.FrameBuffer.Auto )
+            if (buffer == RenderTarget.FrameBuffer.Auto)
             {
                 buffer = RenderTarget.FrameBuffer.Front;
             }
 
-
             XFG.DisplayMode mode = device.DisplayMode;
-            surface = new XFG.ResolveTexture2D( device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32 );
+            surface = new XFG.ResolveTexture2D(device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32);
 
-            if ( buffer == RenderTarget.FrameBuffer.Front )
+            if (buffer == RenderTarget.FrameBuffer.Front)
             {
                 // get the entire front buffer.  This is SLOW!!
-                device.ResolveBackBuffer( surface );
+                device.ResolveBackBuffer(surface);
 
-                if ( IsFullScreen )
+                if (IsFullScreen)
                 {
-                    if ( ( dst.Left == 0 ) && ( dst.Right == Width ) && ( dst.Top == 0 ) && ( dst.Bottom == Height ) )
+                    if ((dst.Left == 0) && (dst.Right == Width) && (dst.Top == 0) && (dst.Bottom == Height))
                     {
-                        surface.GetData<byte>( data );
+                        surface.GetData<byte>(data);
                     }
                     else
                     {
@@ -813,9 +804,8 @@ namespace Axiom.RenderSystems.Xna
                         rect.Top = dst.Top;
                         rect.Bottom = dst.Bottom;
 
-                        surface.GetData<byte>( 0, XnaHelper.ToRectangle( rect ), data, 0, 255);
+                        surface.GetData<byte>(0, XnaHelper.ToRectangle(rect), data, 0, 255);
                     }
-
                 }
 #if !( XBOX || XBOX360 )
                 else
@@ -829,24 +819,24 @@ namespace Axiom.RenderSystems.Xna
                     System.Drawing.Point point = new System.Drawing.Point();
                     point.X = (int)srcRect.Left;
                     point.Y = (int)srcRect.Top;
-                    SWF.Control control = SWF.Control.FromHandle( _windowHandle );
-                    point = control.PointToScreen( point );
+                    SWF.Control control = SWF.Control.FromHandle(_windowHandle);
+                    point = control.PointToScreen(point);
                     srcRect.Top = point.Y;
                     srcRect.Left = point.X;
                     srcRect.Bottom += point.Y;
                     srcRect.Right += point.X;
 
-                    surface.GetData<byte>( 0, XnaHelper.ToRectangle( srcRect ), data, 0, 255);
+                    surface.GetData<byte>(0, XnaHelper.ToRectangle(srcRect), data, 0, 255);
                 }
 #endif
             }
             else
             {
-                device.ResolveBackBuffer( surface );
+                device.ResolveBackBuffer(surface);
 
-                if ( ( dst.Left == 0 ) && ( dst.Right == Width ) && ( dst.Top == 0 ) && ( dst.Bottom == Height ) )
+                if ((dst.Left == 0) && (dst.Right == Width) && (dst.Top == 0) && (dst.Bottom == Height))
                 {
-                    surface.GetData<byte>( data );
+                    surface.GetData<byte>(data);
                 }
                 else
                 {
@@ -856,93 +846,92 @@ namespace Axiom.RenderSystems.Xna
                     rect.Top = dst.Top;
                     rect.Bottom = dst.Bottom;
 
-                    surface.GetData<byte>( 0, XnaHelper.ToRectangle( rect ), data, 0, 255 );
+                    surface.GetData<byte>(0, XnaHelper.ToRectangle(rect), data, 0, 255);
                 }
-
             }
 
-            PixelFormat format = XnaHelper.Convert( surface.Format );
+            PixelFormat format = XnaHelper.Convert(surface.Format);
 
-            if ( format == PixelFormat.Unknown )
+            if (format == PixelFormat.Unknown)
             {
-                throw new Exception( "Unsupported format" );
+                throw new Exception("Unsupported format");
             }
 
-            IntPtr dataPtr = Memory.PinObject( data );
-            PixelBox src = new PixelBox( dst.Width, dst.Height, 1, format, dataPtr );
-            src.RowPitch = pitch / PixelUtil.GetNumElemBytes( format );
+            IntPtr dataPtr = Memory.PinObject(data);
+            PixelBox src = new PixelBox(dst.Width, dst.Height, 1, format, dataPtr);
+            src.RowPitch = pitch / PixelUtil.GetNumElemBytes(format);
             src.SlicePitch = surface.Height * src.RowPitch;
 
-            PixelConverter.BulkPixelConversion( src, dst );
+            PixelConverter.BulkPixelConversion(src, dst);
 
-            Memory.UnpinObject( data );
+            Memory.UnpinObject(data);
             surface.Dispose();
         }
-	
-		private void OnResetDevice( object sender, EventArgs e )
-		{
-			XFG.GraphicsDevice resetDevice = (XFG.GraphicsDevice)sender;
 
-			// Turn off culling, so we see the front and back of the triangle
-			resetDevice.RenderState.CullMode = XFG.CullMode.None;
-			// Turn on the ZBuffer
-			//resetDevice.RenderState.ZBufferEnable = true;
-			//resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
-		}
+        private void OnResetDevice(object sender, EventArgs e)
+        {
+            XFG.GraphicsDevice resetDevice = (XFG.GraphicsDevice)sender;
 
-		public override void Update( bool swapBuffers )
-		{
+            // Turn off culling, so we see the front and back of the triangle
+            resetDevice.RenderState.CullMode = XFG.CullMode.None;
+            // Turn on the ZBuffer
+            //resetDevice.RenderState.ZBufferEnable = true;
+            //resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
+        }
+
+        public override void Update(bool swapBuffers)
+        {
             XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
 
-			// access device through driver
-			XFG.GraphicsDevice device = _driver.XnaDevice;
+            // access device through driver
+            XFG.GraphicsDevice device = _driver.XnaDevice;
 
-            switch ( device.GraphicsDeviceStatus )
+            switch (device.GraphicsDeviceStatus)
             {
                 case XFG.GraphicsDeviceStatus.Lost:
-                    System.Threading.Thread.Sleep( 50 );
+                    System.Threading.Thread.Sleep(50);
                     return;
-                    
+
                 case XFG.GraphicsDeviceStatus.NotReset:
                     break;
             }
 
-            base.Update( swapBuffers );
-		}
+            base.Update(swapBuffers);
+        }
 
-	    #endregion
+        #endregion RenderWindow implementation
 
         #region IGraphicsDeviceService Members
 
         private void _fireDeviceCreated()
         {
-            if ( DeviceCreated != null )
+            if (DeviceCreated != null)
             {
-                DeviceCreated( this, new EventArgs() );
+                DeviceCreated(this, new EventArgs());
             }
         }
 
         private void _fireDeviceDisposing()
         {
-            if ( DeviceDisposing != null )
+            if (DeviceDisposing != null)
             {
-                DeviceDisposing( this, new EventArgs() );
+                DeviceDisposing(this, new EventArgs());
             }
         }
 
         private void _fireDeviceReset()
         {
-            if ( DeviceReset != null )
+            if (DeviceReset != null)
             {
-                DeviceReset( this, new EventArgs() );
+                DeviceReset(this, new EventArgs());
             }
         }
 
         private void _fireDeviceResetting()
         {
-            if ( DeviceResetting != null )
+            if (DeviceResetting != null)
             {
-                DeviceResetting( this, new EventArgs() );
+                DeviceResetting(this, new EventArgs());
             }
         }
 
@@ -962,6 +951,6 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        #endregion
+        #endregion IGraphicsDeviceService Members
     }
 }

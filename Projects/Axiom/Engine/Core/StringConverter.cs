@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -59,7 +59,7 @@ namespace Axiom.Core
 			return obj.ToLower().GetHashCode();
 		}
 
-		#endregion
+		#endregion IEqualityComparer<string> Members
 	}
 
 
@@ -152,7 +152,7 @@ namespace Axiom.Core
 			bool removeEmptyEntries;
 			bool separatorFound = false;
 
-			//special cases 
+			//special cases
 			Debug.Assert( s != null, "String instance not set." );
 
 			if ( count == 0 )
@@ -164,25 +164,25 @@ namespace Axiom.Core
 			removeEmptyEntries = ( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
 			if ( s == String.Empty )
 			{
-				_strings = removeEmptyEntries ? new string[] { } : new string[ 1 ] { s }; //keep same instance 
+				_strings = removeEmptyEntries ? new string[] { } : new string[ 1 ] { s }; //keep same instance
 				return _strings;
 			}
 
-			//init 
+			//init
 			StringBuilder str = new StringBuilder( s.Length );
 			results = new List<string>( s.Length > 10 ? 10 : s.Length );
 
 			if ( separators == null || separators.Length == 0 )
 				separators = new char[] { ' ' };
 
-			//parse 
-			//TODO: how to handle \n chars? see MSDN examples of String.Split() 
+			//parse
+			//TODO: how to handle \n chars? see MSDN examples of String.Split()
 
 			for ( int i = 0; i < s.Length; ++i )
 			{
 				bool isSeparator = false;
 
-				foreach ( char sep in separators ) //using foreach with arrays is optimised (.NET2.0) 
+				foreach ( char sep in separators ) //using foreach with arrays is optimised (.NET2.0)
 				{
 					if ( s[ i ] == sep )
 					{
@@ -193,7 +193,7 @@ namespace Axiom.Core
 
 				if ( isSeparator )
 				{
-					separatorFound = true; //so at least one separator was found 
+					separatorFound = true; //so at least one separator was found
 
 					if ( !( removeEmptyEntries && str.Length == 0 ) )
 					{
@@ -210,7 +210,7 @@ namespace Axiom.Core
 				if ( count > 0 && results.Count == count - 1 )
 				{
 					str.Append( s.Substring( i+1 ) );
-					break; //limit reached 
+					break; //limit reached
 				}
 
 			}
@@ -223,11 +223,11 @@ namespace Axiom.Core
 				}
 			}
 
-			//result 
+			//result
 			if ( !separatorFound )
 			{
-				//no separator found, return just the same string 
-				return new string[ 1 ] { s }; //keep same instance, see MSDN 
+				//no separator found, return just the same string
+				return new string[ 1 ] { s }; //keep same instance, see MSDN
 			}
 			else
 			{
@@ -235,9 +235,9 @@ namespace Axiom.Core
 			}
 		}
 #endif
-		#endregion
+		#endregion String.Split() replacements
 		/// <summary>
-		///		Parses a boolean type value 
+		///		Parses a boolean type value
 		/// </summary>
 		/// <param name="val"></param>
 		/// <returns></returns>
@@ -345,13 +345,13 @@ namespace Axiom.Core
 		/// <returns>A float representation of the string value.</returns>
 		public static float ParseFloat( string val )
 		{
-            if ( val == float.NaN.ToString() )
-                return float.NaN;
+			if ( val == float.NaN.ToString() )
+				return float.NaN;
 			return float.Parse( val, englishCulture );
 		}
 
 		/// <summary>
-		///     
+		///
 		/// </summary>
 		/// <param name="color"></param>
 		/// <returns></returns>
@@ -361,7 +361,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="vec"></param>
 		/// <returns></returns>
@@ -371,7 +371,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="vec"></param>
 		/// <returns></returns>
@@ -381,7 +381,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Converts a 
+		///     Converts a
 		/// </summary>
 		/// <param name="val"></param>
 		/// <returns></returns>
@@ -392,24 +392,24 @@ namespace Axiom.Core
 
 		#endregion Static Methods
 
-        public static Quaternion ParseQuaternion( string p )
-        {
-            return Quaternion.Identity;
-        }
+		public static Quaternion ParseQuaternion( string p )
+		{
+			return Quaternion.Identity;
+		}
 
-	    public static bool ParseInt(string value, out int num)
-	    {
-	        bool retVal = true;
-            try
-            {
-                num = Int32.Parse( value );
-            }
-            catch ( Exception e )
-            {
-                num = 0;
-                retVal = false;
-            }
-	        return retVal;
-        }
+		public static bool ParseInt( string value, out int num )
+		{
+			bool retVal = true;
+			try
+			{
+				num = Int32.Parse( value );
+			}
+			catch ( Exception e )
+			{
+				num = 0;
+				retVal = false;
+			}
+			return retVal;
+		}
 	}
 }

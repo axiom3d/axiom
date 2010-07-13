@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -98,17 +98,17 @@ namespace Axiom.Core
 
 			if ( fileName != null )
 			{
-                try
-                {
-                    // create the log file, or open
-                    log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
+				try
+				{
+					// create the log file, or open
+					log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
 
-                    // get a stream writer using the file stream
-                    writer = new StreamWriter( log );
-                    writer.AutoFlush = true;	//always flush after write
-                }
-                catch
-                {}
+					// get a stream writer using the file stream
+					writer = new StreamWriter( log );
+					writer.AutoFlush = true;	//always flush after write
+				}
+				catch
+				{ }
 			}
 
 		}
@@ -150,7 +150,7 @@ namespace Axiom.Core
 		/// </remarks>
 		/// <param name="message">Message to write, which can include string formatting tokens.</param>
 		/// <param name="substitutions">
-		///     When message includes string formatting tokens, these are the values to 
+		///     When message includes string formatting tokens, these are the values to
 		///     inject into the formatted string.
 		/// </param>
 		public void Write( string message, params object[] substitutions )
@@ -167,7 +167,7 @@ namespace Axiom.Core
 		/// <param name="maskDebug">If true, debug output will not be written.</param>
 		/// <param name="message">Message to write, which can include string formatting tokens.</param>
 		/// <param name="substitutions">
-		///     When message includes string formatting tokens, these are the values to 
+		///     When message includes string formatting tokens, these are the values to
 		///     inject into the formatted string.
 		/// </param>
 		public void Write( bool maskDebug, string message, params object[] substitutions )
@@ -182,7 +182,7 @@ namespace Axiom.Core
 		/// <param name="maskDebug">If true, debug output will not be written.</param>
 		/// <param name="message">Message to write, which can include string formatting tokens.</param>
 		/// <param name="substitutions">
-		///     When message includes string formatting tokens, these are the values to 
+		///     When message includes string formatting tokens, these are the values to
 		///     inject into the formatted string.
 		/// </param>
 		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
@@ -244,6 +244,6 @@ namespace Axiom.Core
 			_isDisposed = true;
 		}
 
-		#endregion
+		#endregion IDisposable Members
 	}
 }

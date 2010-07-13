@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 
@@ -54,14 +53,14 @@ using Real = System.Single;
 ///     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 ///     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
-#endregion
+#endregion Ogre Synchronization Information
 
 namespace Axiom.Overlays
 {
 	/// <summary>
 	///    Manages Overlay objects, parsing them from Ogre .overlay files and
-	///    storing a lookup library of them. Also manages the creation of 
-	///    OverlayContainers and OverlayElements, used for non-interactive 2D 
+	///    storing a lookup library of them. Also manages the creation of
+	///    OverlayContainers and OverlayElements, used for non-interactive 2D
 	///	   elements such as HUDs.
 	/// </summary>
 	public sealed class OverlayManager : Singleton<OverlayManager>, IScriptLoader
@@ -90,11 +89,11 @@ namespace Axiom.Overlays
 
 		private bool _viewportDimensionsChanged;
 		/// <summary>
-		///		Gets if the viewport has changed dimensions. 
+		///		Gets if the viewport has changed dimensions.
 		/// </summary>
 		/// <remarks>
 		///		This is used by pixel-based GuiControls to work out if they need to reclaculate their sizes.
-		///	</remarks>																				  
+		///	</remarks>
 		public bool HasViewportChanged
 		{
 			get
@@ -160,7 +159,7 @@ namespace Axiom.Overlays
 			ScriptPatterns.Add( "*.overlay" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 #endif // AXIOM_USENEWCOMPILERS
-        }
+		}
 
 		#endregion Construction and Destruction
 
@@ -253,13 +252,13 @@ namespace Axiom.Overlays
 
 		#region OverlayElement Management
 
-        public OverlayElementManager Elements
-        {
-            get
-            {
-                return OverlayElementManager.Instance;
-            }
-        }
+		public OverlayElementManager Elements
+		{
+			get
+			{
+				return OverlayElementManager.Instance;
+			}
+		}
 
 		#endregion OverlayElement Management
 
@@ -293,7 +292,7 @@ namespace Axiom.Overlays
 
 		#region Script Parsing
 
-        /// <summary>
+		/// <summary>
 		///    Parses an attribute belonging to an Overlay.
 		/// </summary>
 		/// <param name="line"></param>
@@ -305,19 +304,19 @@ namespace Axiom.Overlays
 			if ( parms[ 0 ].ToLower() == "zorder" )
 			{
 				overlay.ZOrder = int.Parse( parms[ 1 ] );
-			} 
-            else if ( parms[ 0 ].ToLower() == "visible" )
-            {
-                overlay.IsVisible = StringConverter.ParseBool( parms[ 1 ] );
-            }
-            else
+			}
+			else if ( parms[ 0 ].ToLower() == "visible" )
+			{
+				overlay.IsVisible = StringConverter.ParseBool( parms[ 1 ] );
+			}
+			else
 			{
 				ParseHelper.LogParserError( parms[ 0 ], overlay.Name, "Invalid overlay attribute." );
 			}
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="script"></param>
 		/// <param name="line"></param>
@@ -390,7 +389,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="line"></param>
 		/// <param name="overlay"></param>
@@ -495,7 +494,7 @@ namespace Axiom.Overlays
 				if ( disposeManagedResources )
 				{
 					OverlayElementManager.Instance.DestroyAllElements( false );
-                    OverlayElementManager.Instance.DestroyAllElements( true );
+					OverlayElementManager.Instance.DestroyAllElements( true );
 					DestroyAll();
 
 					// Unregister with resource group manager
@@ -511,10 +510,10 @@ namespace Axiom.Overlays
 			base.dispose( disposeManagedResources );
 		}
 
-        public override bool Initialize( params object[] args )
-        {
-            return base.Initialize( args );
-        }
+		public override bool Initialize( params object[] args )
+		{
+			return base.Initialize( args );
+		}
 
 		#endregion Singleton<OverlayManager> Implementation
 
@@ -551,7 +550,7 @@ namespace Axiom.Overlays
 				skipLine = false;
 
 				// ignore comments and blank lines
-				if ( line.Length > 0 && ( !line.StartsWith( "//" ) && !line.StartsWith( "# ") ) )
+				if ( line.Length > 0 && ( !line.StartsWith( "//" ) && !line.StartsWith( "# " ) ) )
 				{
 					// does another overlay have to be included
 					if ( line.StartsWith( "#include" ) )
@@ -638,7 +637,7 @@ namespace Axiom.Overlays
 			}
 		}
 
-		#endregion
+		#endregion IScriptLoader Members
 
 	}
 }

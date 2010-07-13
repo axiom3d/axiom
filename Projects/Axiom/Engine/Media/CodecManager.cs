@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
+using System.IO;
 using Axiom.Core;
 using System.Collections.Generic;
 
@@ -60,7 +60,7 @@ namespace Axiom.Media
         /// </summary>
         internal CodecManager()
         {
-            if ( instance == null )
+            if (instance == null)
             {
                 instance = this;
             }
@@ -81,7 +81,7 @@ namespace Axiom.Media
 
         public void Dispose()
         {
-            if ( instance == this )
+            if (instance == this)
             {
                 instance = null;
             }
@@ -92,7 +92,7 @@ namespace Axiom.Media
         /// <summary>
         ///    List of registered media codecs.
         /// </summary>
-		private Dictionary<string, ICodec> codecs = new Dictionary<string, ICodec>( new CaseInsensitiveStringComparer() );
+        private Dictionary<string, ICodec> codecs = new Dictionary<string, ICodec>(new CaseInsensitiveStringComparer());
 
         #endregion Fields
 
@@ -113,9 +113,9 @@ namespace Axiom.Media
         ///    Registers a new codec that can handle a particular type of media files.
         /// </summary>
         /// <param name="codec"></param>
-        public void RegisterCodec( ICodec codec )
+        public void RegisterCodec(ICodec codec)
         {
-            codecs[ codec.Type ] = codec;
+            codecs[codec.Type] = codec;
         }
 
         /// <summary>
@@ -123,14 +123,44 @@ namespace Axiom.Media
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public ICodec GetCodec( string extension )
+        public ICodec GetCodec(string extension)
         {
-            if ( !codecs.ContainsKey( extension ) )
+            if (!codecs.ContainsKey(extension))
             {
-                throw new AxiomException( "No codec available for media with extension .{0}", extension );
+                LogManager.Instance.Write("No codec available for media with extension .{0}", extension);
+                RegisterCodec(new NullCodec(extension));
             }
 
-            return (ICodec)codecs[ extension ];
+            return (ICodec)codecs[extension];
+        }
+    }
+
+    public class NullCodec : ICodec
+    {
+        private string _type;
+        public NullCodec(string extension)
+        {
+            _type = extension;
+        }
+
+        public object Decode(Stream input, Stream output, params object[] args)
+        {
+            return null;
+        }
+
+        public void Encode(Stream input, Stream output, params object[] args)
+        {
+            return;
+        }
+
+        public void EncodeToFile(Stream input, string fileName, object codecData)
+        {
+            return;
+        }
+
+        public string Type
+        {
+            get { return _type; }
         }
     }
 }

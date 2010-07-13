@@ -8,13 +8,13 @@ using XInput = Microsoft.Xna.Framework.Input;
 
 namespace Axiom.Demos.Browser.Xna
 {
-	class XBoxInput: XnaInput
-	{
-	    private XInput.GamePadState _gpState;
-	    private XInput.KeyboardState _keyboardState;
+    class XBoxInput : XnaInput
+    {
+        private XInput.GamePadState _gpState;
+        private XInput.KeyboardState _keyboardState;
 
         public override void CaptureMouseState()
-        {         
+        {
             _gpState = XInput.GamePad.GetState( XFG.PlayerIndex.One );
 
             relativeMousePosition.X = _gpState.ThumbSticks.Left.X;
@@ -30,8 +30,11 @@ namespace Axiom.Demos.Browser.Xna
         {
             isPressed = false;
 
-            if ( key == Axiom.Input.KeyCodes.Escape && ( _gpState.IsButtonDown( XInput.Buttons.Back ) || _gpState.IsButtonDown( XInput.Buttons.B ) ) )
+            if ( key == Axiom.Input.KeyCodes.Escape && ( _gpState.IsButtonDown( XInput.Buttons.Back ) ) )
+            {
                 isPressed = true;
+                return;
+            }
 
             XFG.Input.Keys xnaKey = Convert( key );
 
@@ -45,7 +48,7 @@ namespace Axiom.Demos.Browser.Xna
                 case Axiom.Input.KeyCodes.G:
                     return Microsoft.Xna.Framework.Input.Keys.G;
                 default:
-                    return (Microsoft.Xna.Framework.Input.Keys) 0;
+                    return (Microsoft.Xna.Framework.Input.Keys)0;
             }
         }
 

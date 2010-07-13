@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -49,7 +49,7 @@ using Axiom.Scripting;
 using Axiom.Core.Collections;
 using Axiom.Collections;
 
-#endregion  Namespace Declarations
+#endregion Namespace Declarations
 
 namespace Axiom.Serialization
 {
@@ -67,35 +67,35 @@ namespace Axiom.Serialization
 		/// <summary>
 		///		Parsers for the root of the material script
 		/// </summary>
-		protected Hashtable rootAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> rootAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the material section of a script.
 		/// </summary>
-		protected Hashtable materialAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> materialAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the technique section of a script.
 		/// </summary>
-		protected Hashtable techniqueAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> techniqueAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the pass section of a script.
 		/// </summary>
-		protected Hashtable passAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> passAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the texture unit section of a script.
 		/// </summary>
-		protected Hashtable textureUnitAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> textureUnitAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the program reference section of a script.
 		/// </summary>
-		protected Hashtable programRefAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> programRefAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the program definition section of a script.
 		/// </summary>
-		protected Hashtable programAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> programAttribParsers = new AxiomCollection<MethodInfo>();
 		/// <summary>
 		///		Parsers for the program definition section of a script.
 		/// </summary>
-		protected Hashtable programDefaultParamAttribParsers = new Hashtable();
+		protected AxiomCollection<MethodInfo> programDefaultParamAttribParsers = new AxiomCollection<MethodInfo>();
 
 		#endregion Fields
 
@@ -128,7 +128,7 @@ namespace Axiom.Serialization
 		/// <param name="line"></param>
 		/// <param name="parsers"></param>
 		/// <returns></returns>
-		protected bool InvokeParser( string line, Hashtable parsers )
+		protected bool InvokeParser( string line, AxiomCollection<MethodInfo> parsers )
 		{
 			string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
 
@@ -490,7 +490,7 @@ namespace Axiom.Serialization
 				{
 					MaterialAttributeParserAttribute parserAtt = parserAtts[ j ];
 
-					Hashtable parserList = null;
+					AxiomCollection<MethodInfo> parserList = null;
 
 					// determine which parser list we will add this handler to
 					switch ( parserAtt.Section )
@@ -576,7 +576,7 @@ namespace Axiom.Serialization
 			// check params for reference to parent material to copy from
 			// syntax: material name : parentMaterialName
 			// check params for a colon after the first name and extract the parent name
-			string[] values = parameters.Split(  new char[] { ':' } );
+			string[] values = parameters.Split( new char[] { ':' } );
 			Material basematerial = null;
 
 			// create a brand new material
@@ -813,26 +813,26 @@ namespace Axiom.Serialization
 		[MaterialAttributeParser( "lod_strategy", MaterialScriptSection.Material )]
 		protected static bool ParseLodStrategy( string parameters, MaterialScriptContext context )
 		{
-		    LodStrategy lodStrategy = LodStrategyManager.Instance.GetStrategy( parameters );
+			LodStrategy lodStrategy = LodStrategyManager.Instance.GetStrategy( parameters );
 
-            if ( lodStrategy == null )
-            {
-                LogParseError( context, "Bad lod_strategy attribute, , available lod strategy name expected." );
-            }
+			if ( lodStrategy == null )
+			{
+				LogParseError( context, "Bad lod_strategy attribute, , available lod strategy name expected." );
+			}
 
-		    context.material.LodStrategy = lodStrategy;
+			context.material.LodStrategy = lodStrategy;
 
-		    return false;
+			return false;
 		}
 
-	    [MaterialAttributeParser( "lod_distances", MaterialScriptSection.Material )]
+		[MaterialAttributeParser( "lod_distances", MaterialScriptSection.Material )]
 		protected static bool ParseLodDistances( string parameters, MaterialScriptContext context )
 		{
-		    context.material.LodStrategy = LodStrategyManager.Instance.GetStrategy(DistanceLodStrategy.StrategyName);
+			context.material.LodStrategy = LodStrategyManager.Instance.GetStrategy( DistanceLodStrategy.StrategyName );
 
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-            LodValueList lodDistances = new LodValueList();
+			LodValueList lodDistances = new LodValueList();
 
 			for ( int i = 0; i < values.Length; i++ )
 			{
@@ -882,12 +882,12 @@ namespace Axiom.Serialization
 			return false;
 		}
 
-        [MaterialAttributeParser( "scheme", MaterialScriptSection.Technique )]
-		protected static bool ParseScheme( string parameters, MaterialScriptContext context)
-	    {
-		    context.technique.SchemeName = parameters;
-		    return false;
-	    }
+		[MaterialAttributeParser( "scheme", MaterialScriptSection.Technique )]
+		protected static bool ParseScheme( string parameters, MaterialScriptContext context )
+		{
+			context.technique.SchemeName = parameters;
+			return false;
+		}
 
 		#endregion Technique
 
@@ -899,22 +899,22 @@ namespace Axiom.Serialization
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
 			// must be 1, 3 or 4 parameters
-            if ( values.Length == 1)
-            {
-                if ( values[ 0 ].ToLower() == "vertexcolour" ||
-                     values[ 0 ].ToLower() == "vertexcolor" )
-                {
-                    context.pass.VertexColorTracking |= TrackVertexColor.Ambient;
-                }
-                else
-                {
-                    LogParseError( context, "Bad ambient attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
-                }
-            }
-		    else if ( values.Length == 3 || values.Length == 4 )
+			if ( values.Length == 1 )
+			{
+				if ( values[ 0 ].ToLower() == "vertexcolour" ||
+					 values[ 0 ].ToLower() == "vertexcolor" )
+				{
+					context.pass.VertexColorTracking |= TrackVertexColor.Ambient;
+				}
+				else
+				{
+					LogParseError( context, "Bad ambient attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
+				}
+			}
+			else if ( values.Length == 3 || values.Length == 4 )
 			{
 				context.pass.Ambient = StringConverter.ParseColor( values );
-			    context.pass.VertexColorTracking &= ~TrackVertexColor.Ambient;
+				context.pass.VertexColorTracking &= ~TrackVertexColor.Ambient;
 			}
 			else
 			{
@@ -1061,65 +1061,65 @@ namespace Axiom.Serialization
 
 		[MaterialAttributeParser( "diffuse", MaterialScriptSection.Pass )]
 		protected static bool ParseDiffuse( string parameters, MaterialScriptContext context )
-        {
-            string[] values = parameters.Split( new char[] { ' ', '\t' } );
+		{
+			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-            // must be 1, 3 or 4 parameters
-            if ( values.Length == 1 )
-            {
-                if ( values[ 0 ].ToLower() == "vertexcolour" ||
-                     values[ 0 ].ToLower() == "vertexcolor" )
-                {
-                    context.pass.VertexColorTracking |= TrackVertexColor.Diffuse;
-                }
-                else
-                {
-                    LogParseError( context, "Bad diffuse attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
-                }
-            }
-            else if ( values.Length == 3 || values.Length == 4 )
-            {
-                context.pass.Diffuse = StringConverter.ParseColor( values );
-                context.pass.VertexColorTracking &= ~TrackVertexColor.Diffuse;
-            }
-            else
-            {
-                LogParseError( context, "Bad diffuse attribute, wrong number of parameters (expected 1, 3 or 4)." );
-            }
+			// must be 1, 3 or 4 parameters
+			if ( values.Length == 1 )
+			{
+				if ( values[ 0 ].ToLower() == "vertexcolour" ||
+					 values[ 0 ].ToLower() == "vertexcolor" )
+				{
+					context.pass.VertexColorTracking |= TrackVertexColor.Diffuse;
+				}
+				else
+				{
+					LogParseError( context, "Bad diffuse attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
+				}
+			}
+			else if ( values.Length == 3 || values.Length == 4 )
+			{
+				context.pass.Diffuse = StringConverter.ParseColor( values );
+				context.pass.VertexColorTracking &= ~TrackVertexColor.Diffuse;
+			}
+			else
+			{
+				LogParseError( context, "Bad diffuse attribute, wrong number of parameters (expected 1, 3 or 4)." );
+			}
 
-            return false;
-        }
+			return false;
+		}
 
 		[MaterialAttributeParser( "emissive", MaterialScriptSection.Pass )]
 		protected static bool ParseEmissive( string parameters, MaterialScriptContext context )
-        {
-            string[] values = parameters.Split( new char[] { ' ', '\t' } );
+		{
+			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-            // must be 1, 3 or 4 parameters
-            if ( values.Length == 1 )
-            {
-                if ( values[ 0 ].ToLower() == "vertexcolour" ||
-                     values[ 0 ].ToLower() == "vertexcolor" )
-                {
-                    context.pass.VertexColorTracking |= TrackVertexColor.Emissive;
-                }
-                else
-                {
-                    LogParseError( context, "Bad emissive attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
-                }
-            }
-            else if ( values.Length == 3 || values.Length == 4 )
-            {
-                context.pass.Emissive = StringConverter.ParseColor( values );
-                context.pass.VertexColorTracking &= ~TrackVertexColor.Emissive;
-            }
-            else
-            {
-                LogParseError( context, "Bad emissive attribute, wrong number of parameters (expected 1, 3 or 4)." );
-            }
+			// must be 1, 3 or 4 parameters
+			if ( values.Length == 1 )
+			{
+				if ( values[ 0 ].ToLower() == "vertexcolour" ||
+					 values[ 0 ].ToLower() == "vertexcolor" )
+				{
+					context.pass.VertexColorTracking |= TrackVertexColor.Emissive;
+				}
+				else
+				{
+					LogParseError( context, "Bad emissive attribute, single parameter flag must be 'vertexcolour' or 'vertexcolor'." );
+				}
+			}
+			else if ( values.Length == 3 || values.Length == 4 )
+			{
+				context.pass.Emissive = StringConverter.ParseColor( values );
+				context.pass.VertexColorTracking &= ~TrackVertexColor.Emissive;
+			}
+			else
+			{
+				LogParseError( context, "Bad emissive attribute, wrong number of parameters (expected 1, 3 or 4)." );
+			}
 
-            return false;
-        }
+			return false;
+		}
 
 		[MaterialAttributeParser( "fog_override", MaterialScriptSection.Pass )]
 		protected static bool ParseFogOverride( string parameters, MaterialScriptContext context )
@@ -1253,11 +1253,11 @@ namespace Axiom.Serialization
 			switch ( values.Length )
 			{
 				case 1:
-					// e.g. scene_blend add 
-					// lookup the real enum equivalent to the script value 
+					// e.g. scene_blend add
+					// lookup the real enum equivalent to the script value
 					object val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( SceneBlendType ) );
 
-					// if a value was found, assign it 
+					// if a value was found, assign it
 					if ( val != null )
 					{
 						context.pass.SetSceneBlending( (SceneBlendType)val );
@@ -1270,12 +1270,12 @@ namespace Axiom.Serialization
 					}
 					break;
 				case 2:
-					// e.g. scene_blend source_alpha one_minus_source_alpha  
-					// lookup the real enums equivalent to the script values 
+					// e.g. scene_blend source_alpha one_minus_source_alpha
+					// lookup the real enums equivalent to the script values
 					object srcVal = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( SceneBlendFactor ) );
 					object destVal = ScriptEnumAttribute.Lookup( values[ 1 ], typeof( SceneBlendFactor ) );
 
-					// if both values were found, assign them 
+					// if both values were found, assign them
 					if ( srcVal != null && destVal != null )
 					{
 						context.pass.SetSceneBlending( (SceneBlendFactor)srcVal, (SceneBlendFactor)destVal );
@@ -1327,25 +1327,25 @@ namespace Axiom.Serialization
 		protected static bool ParseSpecular( string parameters, MaterialScriptContext context )
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
-            // Must be 2, 4 or 5 parameters
-            if ( values.Length == 2 )
-            {
-                if ( values[0].ToLower() == "vertexcolour" || 
-                     values[0].ToLower() == "vertexcolor")
-                {
-                    context.pass.VertexColorTracking |= TrackVertexColor.Specular;
-                    context.pass.Shininess = StringConverter.ParseFloat( values[ 1 ] );
-                }
-                else
-                {
-                    LogParseError( context, "Bad specular attribute, double parameter statement must be 'vertexcolour <shininess>' or 'vertexcolor <shininess>'." );
-                }
-            }
+			// Must be 2, 4 or 5 parameters
+			if ( values.Length == 2 )
+			{
+				if ( values[ 0 ].ToLower() == "vertexcolour" ||
+					 values[ 0 ].ToLower() == "vertexcolor" )
+				{
+					context.pass.VertexColorTracking |= TrackVertexColor.Specular;
+					context.pass.Shininess = StringConverter.ParseFloat( values[ 1 ] );
+				}
+				else
+				{
+					LogParseError( context, "Bad specular attribute, double parameter statement must be 'vertexcolour <shininess>' or 'vertexcolor <shininess>'." );
+				}
+			}
 			else if ( values.Length == 4 || values.Length == 5 )
 			{
-			    context.pass.Specular = StringConverter.ParseColor( values );
+				context.pass.Specular = StringConverter.ParseColor( values );
 
-                context.pass.VertexColorTracking &= ~TrackVertexColor.Specular;
+				context.pass.VertexColorTracking &= ~TrackVertexColor.Specular;
 				context.pass.Shininess = StringConverter.ParseFloat( values[ values.Length - 1 ] );
 			}
 			else
@@ -1720,11 +1720,11 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			// lookup the real enums equivalent to the script values 
+			// lookup the real enums equivalent to the script values
 			object srcVal = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( SceneBlendFactor ) );
 			object destVal = ScriptEnumAttribute.Lookup( values[ 1 ], typeof( SceneBlendFactor ) );
 
-			// if both values were found, assign them 
+			// if both values were found, assign them
 			if ( srcVal != null && destVal != null )
 			{
 				context.textureUnit.SetColorOpMultipassFallback( (SceneBlendFactor)srcVal, (SceneBlendFactor)destVal );
@@ -2086,76 +2086,76 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-            if ( values.Length > 5 )
-            {
-                LogParseError( context, "Invalid texture attribute - expecting 5 parameters or less." );
-                return false;
-            }
+			if ( values.Length > 5 )
+			{
+				LogParseError( context, "Invalid texture attribute - expecting 5 parameters or less." );
+				return false;
+			}
 
 			// use 2d as default if anything goes wrong
 			TextureType texType = TextureType.TwoD;
-            int mipmaps = (int)TextureMipmap.Default; // When passed to TextureManager::load, this means default to default number of mipmaps
-		    bool isAlpha = false;
-            bool hwGamma = false;
-		    PixelFormat desiredFormat = PixelFormat.Unknown;
+			int mipmaps = (int)TextureMipmap.Default; // When passed to TextureManager::load, this means default to default number of mipmaps
+			bool isAlpha = false;
+			bool hwGamma = false;
+			PixelFormat desiredFormat = PixelFormat.Unknown;
 
-		    for ( int p = 1; p < values.Length; p++ )
-		    {
+			for ( int p = 1; p < values.Length; p++ )
+			{
 
-                switch ( values[ p ].ToLower() )
-                {
-                    case "1d":
-                        texType = TextureType.OneD;
-                        break;
-                    case "2d":
-                        texType = TextureType.TwoD;
-                        break;
-                    case "3d":
-                        texType = TextureType.ThreeD;
-                        break;
-                    case "cubic":
-                        texType = TextureType.CubeMap;
-                        break;
-                    case "unlimited":
-                        mipmaps = (int)TextureMipmap.Unlimited;
-                        break;
-                    case "alpha":
-                        isAlpha = true;
-                        break;
-                    case "gamma":
-                        hwGamma = true;
-                        break;
-                    default:
-                        int num;
+				switch ( values[ p ].ToLower() )
+				{
+					case "1d":
+						texType = TextureType.OneD;
+						break;
+					case "2d":
+						texType = TextureType.TwoD;
+						break;
+					case "3d":
+						texType = TextureType.ThreeD;
+						break;
+					case "cubic":
+						texType = TextureType.CubeMap;
+						break;
+					case "unlimited":
+						mipmaps = (int)TextureMipmap.Unlimited;
+						break;
+					case "alpha":
+						isAlpha = true;
+						break;
+					case "gamma":
+						hwGamma = true;
+						break;
+					default:
+						int num;
 
-                        if ( StringConverter.ParseInt( values[ p ], out num ) )
-                        {
-                            mipmaps = num;
-                        }
-                        else if ( ( desiredFormat = PixelUtil.GetFormatFromName( values[ p ], true, false ) ) != PixelFormat.Unknown )
-                        {
-                            // Nothing to do here.
-                        }
-                        else
-                        {
-                            LogParseError( context, "Invalid texture option - " + values[ p ] + "." );
-                        }
-                        break;
-                }
-		    }
+						if ( StringConverter.ParseInt( values[ p ], out num ) )
+						{
+							mipmaps = num;
+						}
+						else if ( ( desiredFormat = PixelUtil.GetFormatFromName( values[ p ], true, false ) ) != PixelFormat.Unknown )
+						{
+							// Nothing to do here.
+						}
+						else
+						{
+							LogParseError( context, "Invalid texture option - " + values[ p ] + "." );
+						}
+						break;
+				}
+			}
 
-            context.textureUnit.SetTextureName( values[ 0 ], texType );
-            context.textureUnit.MipmapCount = mipmaps;
-            context.textureUnit.IsAlpha = isAlpha;
-            context.textureUnit.DesiredFormat = desiredFormat;
-            context.textureUnit.IsHardwareGammaEnabled = hwGamma;
+			context.textureUnit.SetTextureName( values[ 0 ], texType );
+			context.textureUnit.MipmapCount = mipmaps;
+			context.textureUnit.IsAlpha = isAlpha;
+			context.textureUnit.DesiredFormat = desiredFormat;
+			context.textureUnit.IsHardwareGammaEnabled = hwGamma;
 
 			return false;
 		}
 
 
 		[MaterialAttributeParser( "binding_type", MaterialScriptSection.TextureUnit )]
-		protected static bool ParseBindingType(string parameters, MaterialScriptContext context)
+		protected static bool ParseBindingType( string parameters, MaterialScriptContext context )
 		{
 			switch ( parameters.ToLower() )
 			{
@@ -2414,7 +2414,11 @@ namespace Axiom.Serialization
 		/// <param name="groupName">Name of the material group.</param>
 		public void ParseScript( Stream stream, string groupName, string fileName )
 		{
+#if !(WINDOWS_PHONE)
 			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+#else
+			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
+#endif
 
 			string line = string.Empty;
 			bool nextIsOpenBrace = false;
@@ -2464,12 +2468,12 @@ namespace Axiom.Serialization
 				LogParseError( scriptContext, "Unexpected end of file." );
 			}
 		}
-		#endregion
+		#endregion Public Methods
 
 
 		#region Static Methods
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="commandName"></param>
@@ -2477,7 +2481,7 @@ namespace Axiom.Serialization
 		/// <param name="context"></param>
 		protected static void ProcessManualProgramParam( int index, string commandName, string[] parameters, MaterialScriptContext context )
 		{
-			// NB we assume that the first element of vecparams is taken up with either 
+			// NB we assume that the first element of vecparams is taken up with either
 			// the index or the parameter name, which we ignore
 
 			int dims, roundedDims;
@@ -2581,7 +2585,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="commandName"></param>
@@ -2651,7 +2655,7 @@ namespace Axiom.Serialization
 			}
 		}
 
-		#endregion
+		#endregion Static Methods
 	}
 
 
@@ -2745,5 +2749,5 @@ namespace Axiom.Serialization
 			}
 		}
 	}
-	#endregion
+	#endregion Utility Types
 }

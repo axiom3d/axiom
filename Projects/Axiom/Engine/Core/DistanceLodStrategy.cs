@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2009 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -47,158 +47,158 @@ using Axiom.Core.Collections;
 
 namespace Axiom.Core
 {
-    /// <summary>
-    /// Level of detail strategy based on distance from camera.
-    /// </summary>
-    public class DistanceLodStrategy : LodStrategy
-    {
-        #region Fields and Properties
+	/// <summary>
+	/// Level of detail strategy based on distance from camera.
+	/// </summary>
+	public class DistanceLodStrategy : LodStrategy
+	{
+		#region Fields and Properties
 
-        public const string StrategyName = "Distance";
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Real ReferenceViewValue;
+		public const string StrategyName = "Distance";
+		/// <summary>
+		///
+		/// </summary>
+		protected Real ReferenceViewValue;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private bool _referenceViewEnabled;
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool ReferenceViewEnabled
-        {
-            set
-            {
-                // Ensure reference value has been set before being enabled
-                if ( value )
-                    Debug.Assert( ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+		/// <summary>
+		///
+		/// </summary>
+		private bool _referenceViewEnabled;
+		/// <summary>
+		///
+		/// </summary>
+		public bool ReferenceViewEnabled
+		{
+			set
+			{
+				// Ensure reference value has been set before being enabled
+				if ( value )
+					Debug.Assert( ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
 
-                _referenceViewEnabled = value;
-            }
-            get
-            {
-                return _referenceViewEnabled;
-            }
-        }
+				_referenceViewEnabled = value;
+			}
+			get
+			{
+				return _referenceViewEnabled;
+			}
+		}
 
-        #endregion Fields and Properties
+		#endregion Fields and Properties
 
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        protected internal DistanceLodStrategy()
-            : base( StrategyName )
-        {
-            ReferenceViewValue = float.NaN;
-        }
+		/// <summary>
+		/// Default constructor.
+		/// </summary>
+		protected internal DistanceLodStrategy()
+			: base( StrategyName )
+		{
+			ReferenceViewValue = float.NaN;
+		}
 
-        /// <summary>
-        /// Sets the reference view upon which the distances were based.
-        /// </summary>
-        /// <note>
-        /// This automatically enables use of the reference view.
-        ///  There is no corresponding get method for these values as
-        ///    they are not saved, but used to compute a reference value.
-        /// </note>
-        /// <param name="viewportWidth"></param>
-        /// <param name="viewportHeight"></param>
-        /// <param name="fovY"></param>
-        public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
-        {
-            // Determine x FOV based on aspect ratio
-            Radian fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
+		/// <summary>
+		/// Sets the reference view upon which the distances were based.
+		/// </summary>
+		/// <note>
+		/// This automatically enables use of the reference view.
+		///  There is no corresponding get method for these values as
+		///    they are not saved, but used to compute a reference value.
+		/// </note>
+		/// <param name="viewportWidth"></param>
+		/// <param name="viewportHeight"></param>
+		/// <param name="fovY"></param>
+		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
+		{
+			// Determine x FOV based on aspect ratio
+			Radian fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
 
-            // Determine viewport area
-            float viewportArea = viewportHeight * viewportWidth;
+			// Determine viewport area
+			float viewportArea = viewportHeight * viewportWidth;
 
-            // Compute reference view value based on viewport area and FOVs
-            ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
+			// Compute reference view value based on viewport area and FOVs
+			ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
 
-            // Enable use of reference view
-            _referenceViewEnabled = true;
-        }
+			// Enable use of reference view
+			_referenceViewEnabled = true;
+		}
 
-        #region LodStrategy Implemention
+		#region LodStrategy Implemention
 
-        public override Real BaseValue
-        {
-            get
-            {
-                return 0;
-            }
-        }
+		public override Real BaseValue
+		{
+			get
+			{
+				return 0;
+			}
+		}
 
-        protected override Real getValue( MovableObject movableObject, Camera cam )
-        {
-            // Get squared depth taking into account bounding radius
-            // (d - r) ^ 2 = d^2 - 2dr + r^2, but this requires a lot 
-            // more computation (including a sqrt) so we approximate 
-            // it with d^2 - r^2, which is good enough for determining 
-            // lod.
-            float squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
+		protected override Real getValue( MovableObject movableObject, Camera cam )
+		{
+			// Get squared depth taking into account bounding radius
+			// (d - r) ^ 2 = d^2 - 2dr + r^2, but this requires a lot
+			// more computation (including a sqrt) so we approximate
+			// it with d^2 - r^2, which is good enough for determining
+			// lod.
+			float squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
 
-            // Check if reference view needs to be taken into account
-            if ( _referenceViewEnabled )
-            {
-                // Reference view only applicable to perspective projection
-                System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
+			// Check if reference view needs to be taken into account
+			if ( _referenceViewEnabled )
+			{
+				// Reference view only applicable to perspective projection
+				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
 
-                // Get camera viewport
-                Viewport viewport = cam.Viewport;
+				// Get camera viewport
+				Viewport viewport = cam.Viewport;
 
-                // Get viewport area
-                float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
+				// Get viewport area
+				float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
 
-                // Get projection matrix (this is done to avoid computation of tan(fov / 2))
-                Matrix4 projectionMatrix = cam.ProjectionMatrix;
+				// Get projection matrix (this is done to avoid computation of tan(fov / 2))
+				Matrix4 projectionMatrix = cam.ProjectionMatrix;
 
-                // Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
-                float biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
+				// Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
+				float biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
 
-                // Scale squared depth appropriately
-                squaredDepth *= ( ReferenceViewValue / biasValue );
-            }
+				// Scale squared depth appropriately
+				squaredDepth *= ( ReferenceViewValue / biasValue );
+			}
 
-            // Squared depth should never be below 0, so clamp
-            squaredDepth = MathHelper.Max( squaredDepth, 0 );
+			// Squared depth should never be below 0, so clamp
+			squaredDepth = MathHelper.Max( squaredDepth, 0 );
 
-            // Now adjust it by the camera bias and return the computed value
-            return squaredDepth * cam.InverseLodBias;
-        }
+			// Now adjust it by the camera bias and return the computed value
+			return squaredDepth * cam.InverseLodBias;
+		}
 
-        public override Real TransformBias( Real factor )
-        {
-            Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
-            return 1.0f / factor;
-        }
+		public override Real TransformBias( Real factor )
+		{
+			Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
+			return 1.0f / factor;
+		}
 
-        public override Real TransformUserValue( Real userValue )
-        {
-            return MathHelper.Sqr( userValue );
-        }
+		public override Real TransformUserValue( Real userValue )
+		{
+			return MathHelper.Sqr( userValue );
+		}
 
-        public override ushort GetIndex( Real value, MeshLodUsageList meshLodUsageList )
-        {
-            return GetIndexAscending( value, meshLodUsageList );
-        }
+		public override ushort GetIndex( Real value, MeshLodUsageList meshLodUsageList )
+		{
+			return GetIndexAscending( value, meshLodUsageList );
+		}
 
-        public override ushort GetIndex( Real value,LodValueList materialLodValueList )
-        {
-            return GetIndexAscending( value, materialLodValueList );
-        }
+		public override ushort GetIndex( Real value, LodValueList materialLodValueList )
+		{
+			return GetIndexAscending( value, materialLodValueList );
+		}
 
-        public override void Sort( MeshLodUsageList meshLodUsageList )
-        {
-            SortAscending( meshLodUsageList );
-        }
+		public override void Sort( MeshLodUsageList meshLodUsageList )
+		{
+			SortAscending( meshLodUsageList );
+		}
 
-        public override bool IsSorted( LodValueList values )
-        {
-            return IsSortedAscending( values );
-        }
+		public override bool IsSorted( LodValueList values )
+		{
+			return IsSortedAscending( values );
+		}
 
-        #endregion LodStrategy Implementation
-    }
+		#endregion LodStrategy Implemention
+	}
 }

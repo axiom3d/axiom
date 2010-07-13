@@ -114,31 +114,31 @@ namespace Axiom.Core
 			return x >= _left && x <= _right && y >= _top && y <= _bottom;
 		}
 
-        public Rectangle Intersect( Rectangle rhs)
-        {       
-            return Intersect( this, rhs );
-        }
+		public Rectangle Intersect( Rectangle rhs )
+		{
+			return Intersect( this, rhs );
+		}
 
-        public Rectangle Merge( Rectangle rhs )
-        {
-			  if (Width == 0)
-			  {
-				  this = rhs;
-			  }
-			  else
-			  {
-				  Left = System.Math.Min(Left, rhs.Left);
-				  Right = System.Math.Max(Right, rhs.Right);
-				  Top = System.Math.Min(Top, rhs.Top);
-                  Bottom = System.Math.Max(Bottom, rhs.Bottom);
-			  }
+		public Rectangle Merge( Rectangle rhs )
+		{
+			if ( Width == 0 )
+			{
+				this = rhs;
+			}
+			else
+			{
+				Left = System.Math.Min( Left, rhs.Left );
+				Right = System.Math.Max( Right, rhs.Right );
+				Top = System.Math.Min( Top, rhs.Top );
+				Bottom = System.Math.Max( Bottom, rhs.Bottom );
+			}
 
-			  return this;
-        }
+			return this;
+		}
 
-	    #endregion Methods
+		#endregion Methods
 
-        internal static Rectangle Intersect(Rectangle lhs, Rectangle rhs)
+		internal static Rectangle Intersect( Rectangle lhs, Rectangle rhs )
 		{
 			Rectangle r;
 
@@ -259,27 +259,27 @@ namespace Axiom.Core
 			return x >= _left && x <= _right && y >= _top && y <= _bottom;
 		}
 
-        public RectangleF Intersect(RectangleF rhs)
-        {
-            return Intersect(this, rhs);
-        }
+		public RectangleF Intersect( RectangleF rhs )
+		{
+			return Intersect( this, rhs );
+		}
 
-        public RectangleF Merge(RectangleF rhs)
-        {
-            if (Width == 0)
-            {
-                this = rhs;
-            }
-            else
-            {
-                Left = System.Math.Min(Left, rhs.Left);
-                Right = System.Math.Max(Right, rhs.Right);
-                Top = System.Math.Min(Top, rhs.Top);
-                Bottom = System.Math.Max(Bottom, rhs.Bottom);
-            }
+		public RectangleF Merge( RectangleF rhs )
+		{
+			if ( Width == 0 )
+			{
+				this = rhs;
+			}
+			else
+			{
+				Left = System.Math.Min( Left, rhs.Left );
+				Right = System.Math.Max( Right, rhs.Right );
+				Top = System.Math.Min( Top, rhs.Top );
+				Bottom = System.Math.Max( Bottom, rhs.Bottom );
+			}
 
-            return this;
-        }
+			return this;
+		}
 
 
 		#endregion Methods

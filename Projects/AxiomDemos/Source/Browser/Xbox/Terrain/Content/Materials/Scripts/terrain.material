@@ -1,0 +1,48 @@
+material terrain
+{
+	technique
+	{
+		pass
+		{
+         vertex_program_ref Textured1LightVP
+         {
+         }
+         
+         fragment_program_ref Textured1LightFP
+         {
+         }
+      
+         texture_unit
+         {
+            texture terrain.png
+         }
+      }
+   }
+}
+
+material Terrain/WaterPlane
+{
+	technique
+	{
+		pass
+		{
+         vertex_program_ref Textured1LightVP
+         {
+         }
+         
+         fragment_program_ref Textured1LightFP
+         {
+         }
+			ambient 0.3 0.3 0.3
+			scene_blend modulate
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture Water02.jpg
+				scroll_anim 0.01 0.01
+			}
+		}
+	}
+}
