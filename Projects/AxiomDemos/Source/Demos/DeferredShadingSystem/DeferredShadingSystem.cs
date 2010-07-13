@@ -9,7 +9,7 @@ using Axiom.Media;
 
 namespace Axiom.Demos.DeferredShadingSystem
 {
-    class DeferredShadingSystem : CompositorInstanceListener
+    class DeferredShadingSystem 
     {
         #region Enumerations
 
@@ -60,7 +60,7 @@ namespace Axiom.Demos.DeferredShadingSystem
                 for ( int i = 0; i < (int)DeferredShadingMode.Count; i++ )
                 {
                     if ( _compositors[ i ] != null )
-                        _compositors[ i ].Enabled = ( i == (int)_mode );
+                        _compositors[ i ].IsEnabled = ( i == (int)_mode );
                 }
             }
         }
@@ -107,10 +107,10 @@ namespace Axiom.Demos.DeferredShadingSystem
 
         void SetUpAmbientLightMaterial()
         {
-            Debug.Assert( _ambientLight != null && _mode == DeferredShadingMode.ShowLit && this._compositors[ (int)_mode ].Enabled == true );
+            Debug.Assert( _ambientLight != null && _mode == DeferredShadingMode.ShowLit && this._compositors[ (int)_mode ].IsEnabled == true );
 
-            String mrt0 = this._compositors[ (int)_mode ].GetTextureInstanceName( "mrt_output", 0 );
-            String mrt1 = this._compositors[ (int)_mode ].GetTextureInstanceName( "mrt_output", 1 );
+            String mrt0 = this._compositors[ (int)_mode ].GetTextureInstance( "mrt_output", 0 ).Name;
+            String mrt1 = this._compositors[ (int)_mode ].GetTextureInstance( "mrt_output", 1 ).Name;
             SetupMaterial( _ambientLight.Material, mrt0, mrt1 );
         }
 
@@ -151,13 +151,12 @@ namespace Axiom.Demos.DeferredShadingSystem
 
         #endregion Methods
 
-        #region CompositorInstanceListener Implementation
+        #region CompositorInstance EventHandler Implementation
 
-        public override void NotifyMaterialSetup( uint pass_id, Material mat )
+        public void NotifyMaterialSetup( uint pass_id, Material mat )
         {
-            base.NotifyMaterialSetup( pass_id, mat );
-        }
+		}
 
-        #endregion CompositorInstanceListener Implementation
-    }
+		#endregion CompositorInstance EventHandler Implementation
+	}
 }
