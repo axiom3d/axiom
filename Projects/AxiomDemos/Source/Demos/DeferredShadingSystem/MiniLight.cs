@@ -232,11 +232,13 @@ namespace Axiom.Demos.DeferredShadingSystem
         #endregion Methods
 
         #region SimpleRenderable Implementation
-
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            throw new NotImplementedException();
-        }
+		public override RenderOperation RenderOperation
+		{
+			get
+			{
+				return base.RenderOperation;
+			}
+		}
 
         public override float GetSquaredViewDepth( Axiom.Core.Camera camera )
         {
@@ -247,7 +249,7 @@ namespace Axiom.Demos.DeferredShadingSystem
             else
             {
                 Vector3 dist = this.camera.DerivedPosition - WorldPosition;
-                return dist.SquaredLength;
+                return dist.LengthSquared;
             }
         }
 
