@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2007  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -42,9 +42,9 @@ using System.Text;
 
 namespace Axiom.Scripting.Compiler.AST
 {
-    /// <summary>
-    /// the types of the possible abstract nodes
-    /// </summary>
+	/// <summary>
+	/// the types of the possible abstract nodes
+	/// </summary>
 	public enum AbstractNodeType
 	{
 		Unknown,
@@ -56,9 +56,9 @@ namespace Axiom.Scripting.Compiler.AST
 		VariableGet
 	}
 
-    /// <summary>
-    /// base node type for the AST
-    /// </summary>
+	/// <summary>
+	/// base node type for the AST
+	/// </summary>
 	public abstract class AbstractNode : ICloneable
 	{
 		public String File;
@@ -66,10 +66,10 @@ namespace Axiom.Scripting.Compiler.AST
 		public AbstractNodeType Type;
 		public AbstractNode Parent;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="parent">the parent AbstractNode in the tree</param>
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="parent">the parent AbstractNode in the tree</param>
 		protected AbstractNode( AbstractNode parent )
 		{
 			this.Parent = parent;
@@ -77,10 +77,10 @@ namespace Axiom.Scripting.Compiler.AST
 			this.Type = AbstractNodeType.Unknown;
 		}
 
-        /// <summary>
-        /// returns a string value depending on the tpe of the node.
-        /// </summary>
-        public abstract string Value { get; protected internal set; }
+		/// <summary>
+		/// returns a string value depending on the tpe of the node.
+		/// </summary>
+		public abstract string Value { get; protected internal set; }
 
 		#region ICloneable Implementation
 
@@ -89,12 +89,12 @@ namespace Axiom.Scripting.Compiler.AST
 			return (object)Clone();
 		}
 
-        /// <summary>
-        /// Returns a new AbstractNode which is a replica of this one
-        /// </summary>
-        /// <returns>a new AbstractNode</returns>
+		/// <summary>
+		/// Returns a new AbstractNode which is a replica of this one
+		/// </summary>
+		/// <returns>a new AbstractNode</returns>
 		public abstract AbstractNode Clone();
 
-        #endregion ICloneable Implementation
-    }
+		#endregion ICloneable Implementation
+	}
 }

@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
+using Axiom.Collections;
 using Axiom.Math;
 using System.Collections.Generic;
 
@@ -49,7 +49,7 @@ namespace Axiom.Animating
 	/// <remarks>
 	///		The difference between a Skeleton and a SkeletonInstance is that the
 	///		Skeleton is the 'master' version much like Mesh is a 'master' version of
-	///		Entity. Many SkeletonInstance objects can be based on a single Skeleton, 
+	///		Entity. Many SkeletonInstance objects can be based on a single Skeleton,
 	///		and are copies of it when created. Any changes made to this are not
 	///		reflected in the master copy. The exception is animations; these are
 	///		shared on the Skeleton itself and may not be modified here.
@@ -67,7 +67,7 @@ namespace Axiom.Animating
 		///		Used for auto generated tag point handles to ensure they are unique.
 		///	</summary>
 		protected internal ushort nextTagPointAutoHandle;
-        protected Hashtable tagPointList = new Hashtable();
+		protected AxiomSortedCollection<int, TagPoint> tagPointList = new AxiomSortedCollection<int, TagPoint>();
 
 		#endregion Fields
 
@@ -79,7 +79,7 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="masterCopy"></param>
 		public SkeletonInstance( Skeleton masterCopy )
-			: base( )
+			: base()
 		{
 			this.skeleton = masterCopy;
 		}
@@ -88,10 +88,10 @@ namespace Axiom.Animating
 
 		#region Properties
 
-        /// <summary>
-        ///     Gets the animations associated with this skeleton
-        /// </summary>
-        public override ICollection<Animation> Animations
+		/// <summary>
+		///     Gets the animations associated with this skeleton
+		/// </summary>
+		public override ICollection<Animation> Animations
 		{
 			get
 			{
@@ -99,9 +99,9 @@ namespace Axiom.Animating
 			}
 		}
 
-        /// <summary>
-        ///     Gets the master skeleton
-        /// </summary>
+		/// <summary>
+		///     Gets the master skeleton
+		/// </summary>
 		public Skeleton MasterSkeleton
 		{
 			get
@@ -115,7 +115,7 @@ namespace Axiom.Animating
 		#region Methods
 
 		/// <summary>
-		///		Clones bones, for use in cloning the master skeleton to make this a unique 
+		///		Clones bones, for use in cloning the master skeleton to make this a unique
 		///		skeleton instance.
 		/// </summary>
 		/// <param name="source"></param>
@@ -147,7 +147,7 @@ namespace Axiom.Animating
 			}
 
 			// process children
-			foreach (Bone child in source.Children )
+			foreach ( Bone child in source.Children )
 			{
 				CloneBoneAndChildren( child, newBone );
 			}
@@ -178,7 +178,7 @@ namespace Axiom.Animating
 
 		public void FreeTagPoint( TagPoint tagPoint )
 		{
-			if  ( tagPointList.Contains( tagPoint ) )
+			if ( tagPointList.ContainsValue( tagPoint ) )
 			{
 				if ( tagPoint.Parent != null )
 				{
@@ -224,7 +224,7 @@ namespace Axiom.Animating
 			skeleton.RemoveAnimation( name );
 		}
 
-		#endregion Methods
+		#endregion Skeleton Members
 
 		#region Resource Members
 

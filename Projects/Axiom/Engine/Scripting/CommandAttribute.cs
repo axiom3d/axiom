@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -39,102 +39,102 @@ using System;
 
 namespace Axiom.Scripting
 {
-    /// <summary>
-    /// 	Summary description for CommandAttribute.
-    /// </summary>
-    [AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
-    public sealed class CommandAttribute : Attribute
-    {
+	/// <summary>
+	/// 	Summary description for CommandAttribute.
+	/// </summary>
+	[AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
+	public sealed class CommandAttribute : Attribute
+	{
 
-        #region Fields
+		#region Fields
 
-        /// <summary>
-        ///    Name of the command the target class will be registered to handle.
-        /// </summary>
-        private string name;
-        /// <summary>
-        ///    Description of what this command does.
-        /// </summary>
-        private string description;
-        /// <summary>
-        ///    Target type this class is meant to handle commands for.
-        /// </summary>
-        private Type target;
+		/// <summary>
+		///    Name of the command the target class will be registered to handle.
+		/// </summary>
+		private string name;
+		/// <summary>
+		///    Description of what this command does.
+		/// </summary>
+		private string description;
+		/// <summary>
+		///    Target type this class is meant to handle commands for.
+		/// </summary>
+		private Type target;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///    Constructor.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="description"></param>
-        /// <param name="target"></param>
-        public CommandAttribute( string name, string description, Type target )
-        {
-            this.name = name;
-            this.description = description;
-            this.target = target;
-        }
+		/// <summary>
+		///    Constructor.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="description"></param>
+		/// <param name="target"></param>
+		public CommandAttribute( string name, string description, Type target )
+		{
+			this.name = name;
+			this.description = description;
+			this.target = target;
+		}
 
-        /// <summary>
-        ///    Constructor.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="description"></param>
-        public CommandAttribute( string name, string description )
-        {
-            this.name = name;
-            this.description = description;
-        }
+		/// <summary>
+		///    Constructor.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="description"></param>
+		public CommandAttribute( string name, string description )
+		{
+			this.name = name;
+			this.description = description;
+		}
 
-        /// <summary>
-        ///    Constructor.
-        /// </summary>
-        /// <param name="name"></param>
-        public CommandAttribute( string name )
-        {
-            this.name = name;
-        }
+		/// <summary>
+		///    Constructor.
+		/// </summary>
+		/// <param name="name"></param>
+		public CommandAttribute( string name )
+		{
+			this.name = name;
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///    Name of this command.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+		/// <summary>
+		///    Name of this command.
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return name;
+			}
+		}
 
-        /// <summary>
-        ///    Optional description of what this command does.
-        /// </summary>
-        public string Description
-        {
-            get
-            {
-                return description;
-            }
-        }
+		/// <summary>
+		///    Optional description of what this command does.
+		/// </summary>
+		public string Description
+		{
+			get
+			{
+				return description;
+			}
+		}
 
-        /// <summary>
-        ///    Optional target to specify what object type this command affects.
-        /// </summary>
-        public Type Target
-        {
-            get
-            {
-                return target;
-            }
-        }
+		/// <summary>
+		///    Optional target to specify what object type this command affects.
+		/// </summary>
+		public Type Target
+		{
+			get
+			{
+				return target;
+			}
+		}
 
-        #endregion
-    }
+		#endregion Properties
+	}
 }

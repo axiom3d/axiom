@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -48,7 +48,7 @@ namespace Axiom.Core
 	/// <remarks>
 	///    Texture manager serves as an abstract singleton for all API specific texture managers.
 	///		When a class inherits from this and is created, a instance of that class (i.e. GLTextureManager)
-	///		is stored in the global singleton instance of the TextureManager.  
+	///		is stored in the global singleton instance of the TextureManager.
 	///		Note: This will not take place until the RenderSystem is initialized and at least one RenderWindow
 	///		has been created.
 	/// </remarks>
@@ -76,7 +76,7 @@ namespace Axiom.Core
 			}
 
 			ResourceType = "Texture";
-			LoadingOrder = 75.0f; 
+			LoadingOrder = 75.0f;
 		}
 
 		/// <summary>
@@ -222,7 +222,7 @@ namespace Axiom.Core
 				}
 			}
 		}
-		
+
 		#endregion PreferredFloatBitDepth Property
 
 		public void SetPreferredBitDepths( ushort integerBits, ushort floatBits, bool reloadTextures )
@@ -277,15 +277,15 @@ namespace Axiom.Core
 		/// not available in this context.
 		/// </param>
 		/// <param name="usage">
-		/// The kind of usage this texture is intended for. It 
-		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY, 
+		/// The kind of usage this texture is intended for. It
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
 		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
-		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to 
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
 		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
 		/// </param>
 		/// <param name="loader">
-		/// If you intend the contents of the manual texture to be 
-		/// regularly updated, to the extent that you don't need to recover 
+		/// If you intend the contents of the manual texture to be
+		/// regularly updated, to the extent that you don't need to recover
 		/// the contents if the texture content is lost somehow, you can leave
 		/// this parameter as null. However, if you intend to populate the
 		/// texture only once, then you should implement ManualResourceLoader
@@ -294,7 +294,7 @@ namespace Axiom.Core
 		/// will be called to do it.
 		/// </param>
 		/// <returns></returns>
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint)
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
 		{
 			Texture ret = (Texture)Create( name, group, true, loader, null );
 			ret.TextureType = type;
@@ -304,8 +304,8 @@ namespace Axiom.Core
 			ret.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 			ret.Format = format;
 			ret.Usage = usage;
-		    ret.HardwareGammaEnabled = hwGammaCorrection;
-		    ret.SetFSAA( fsaa, fsaaHint );
+			ret.HardwareGammaEnabled = hwGammaCorrection;
+			ret.SetFSAA( fsaa, fsaaHint );
 			ret.CreateInternalResources();
 			return ret;
 		}
@@ -330,15 +330,15 @@ namespace Axiom.Core
 		/// not available in this context.
 		/// </param>
 		/// <param name="usage">
-		/// The kind of usage this texture is intended for. It 
-		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY, 
+		/// The kind of usage this texture is intended for. It
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
 		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
-		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to 
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
 		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
 		/// </param>
 		/// <param name="loader">
-		/// If you intend the contents of the manual texture to be 
-		/// regularly updated, to the extent that you don't need to recover 
+		/// If you intend the contents of the manual texture to be
+		/// regularly updated, to the extent that you don't need to recover
 		/// the contents if the texture content is lost somehow, you can leave
 		/// this parameter as null. However, if you intend to populate the
 		/// texture only once, then you should implement ManualResourceLoader
@@ -349,7 +349,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
 		{
-            return CreateManual(name, group, type, width, height, 1, numMipmaps, format, usage, loader, false, 0, String.Empty);
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, loader, false, 0, String.Empty );
 		}
 
 		/// <summary>
@@ -372,10 +372,10 @@ namespace Axiom.Core
 		/// not available in this context.
 		/// </param>
 		/// <param name="usage">
-		/// The kind of usage this texture is intended for. It 
-		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY, 
+		/// The kind of usage this texture is intended for. It
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
 		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
-		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to 
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
 		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
 		/// </param>
 		/// <returns></returns>
@@ -384,40 +384,40 @@ namespace Axiom.Core
 			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, null, false, 0, String.Empty );
 		}
 
-		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format)
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format )
 		{
-            return CreateManual(name, group, type, width, height, 1, numMipmaps, format, TextureUsage.Default, null, false, 0, String.Empty);
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, TextureUsage.Default, null, false, 0, String.Empty );
 		}
 
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection)
-        {
-            return CreateManual(name, group, type, width, height, numMipmaps, format, usage, loader, hwGammaCorrection, 0, string.Empty);
-        }
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection )
+		{
+			return CreateManual( name, group, type, width, height, numMipmaps, format, usage, loader, hwGammaCorrection, 0, string.Empty );
+		}
 
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa)
-        {
-            return CreateManual(name, group, type, width, height, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty);
-        }
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa )
+		{
+			return CreateManual( name, group, type, width, height, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty );
+		}
 
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint)
-        {
-            return CreateManual(name, group, type, width, height, 1, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty);
-        }
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
+		{
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty );
+		}
 
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
-        {
-            return CreateManual(name, group, type, width, height, depth, numMipmaps, format, usage, loader, false, 0, string.Empty);
-        }
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
+		{
+			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, false, 0, string.Empty );
+		}
 
-        public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection )
-        {
-            return CreateManual(name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, 0, string.Empty);
-        }
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection )
+		{
+			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, 0, string.Empty );
+		}
 
-        public Texture CreateManual(string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa)
-        {
-            return CreateManual(name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty);
-        }
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa )
+		{
+			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty );
+		}
 
 		/// <summary>
 		///    Loads a texture with the specified name.
@@ -430,7 +430,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
@@ -446,7 +446,7 @@ namespace Axiom.Core
 			return Load( name, group, type, numMipMaps, 1.0f, false );
 		}
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="numMipMaps"></param>
@@ -459,7 +459,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="group"></param>
@@ -560,7 +560,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Called when the engine is shutting down.    
+		///     Called when the engine is shutting down.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{

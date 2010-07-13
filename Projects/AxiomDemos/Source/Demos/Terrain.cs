@@ -15,7 +15,6 @@ namespace Axiom.Demos
     /// </summary>
     public class Terrain : TechDemo
     {
-
         SceneNode waterNode;
         float flowAmount;
         bool flowUp = true;
@@ -106,20 +105,19 @@ namespace Axiom.Demos
 
                 waterNode.Translate( new Vector3( 0, flowUp ? waterFlow : -waterFlow, 0 ) );
             }
-            if (input.IsMousePressed(Axiom.Input.MouseButtons.Left))
+            if ( input.IsMousePressed( Axiom.Input.MouseButtons.Left ) )
             {
                 float mouseX = (float)input.AbsoluteMouseX / (float)window.Width;
                 float mouseY = (float)input.AbsoluteMouseY / (float)window.Height;
 
-                Ray ray = camera.GetCameraToViewportRay(mouseX, mouseY);
-                RaySceneQuery r = scene.CreateRayQuery(ray);
-                foreach (RaySceneQueryResultEntry re in r.Execute())
+                Ray ray = camera.GetCameraToViewportRay( mouseX, mouseY );
+                RaySceneQuery r = scene.CreateRayQuery( ray );
+                foreach ( RaySceneQueryResultEntry re in r.Execute() )
                 {
-                    if (re.worldFragment != null)
+                    if ( re.worldFragment != null )
                         debugText = re.worldFragment.SingleIntersection.ToString();
                 }
             }
         }
-
     }
 }

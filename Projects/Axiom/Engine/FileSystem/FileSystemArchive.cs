@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -44,14 +44,13 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem
 {
-
     /// <summary>
     /// Specialization of the Archive class to allow reading of files from filesystem folders / directories.
     /// </summary>
     /// <ogre name="FileSystemArchive">
     ///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
     ///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
+    /// </ogre>
     public class FileSystemArchive : Archive
     {
         #region Fields and Properties
@@ -86,16 +85,16 @@ namespace Axiom.FileSystem
         /// <param name="simpleList">Populated if retrieving a simple list</param>
         /// <param name="detailList">Populated if retrieving a detailed list</param>
         /// </overloads>
-        protected void findFiles(string pattern, bool recursive, List<string> simpleList, FileInfoList detailList)
+        protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList )
         {
             findFiles( pattern, recursive, simpleList, detailList, "" );
         }
         /// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
         protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
         {
-			if ( pattern == "" )
-				pattern = "*";
-            if ( currentDir == "") currentDir = _basePath;
+            if ( pattern == "" )
+                pattern = "*";
+            if ( currentDir == "" ) currentDir = _basePath;
 
 #if !( XBOX || XBOX360 )
             SearchOption so;
@@ -108,7 +107,7 @@ namespace Axiom.FileSystem
                 so = SearchOption.TopDirectoryOnly;
             }
 
-            foreach( string file in Directory.GetFiles( currentDir , pattern, so) )
+            foreach ( string file in Directory.GetFiles( currentDir, pattern, so ) )
 #else
             foreach( string file in Directory.GetFiles( currentDir, pattern ) )
 #endif
@@ -122,26 +121,24 @@ namespace Axiom.FileSystem
                 {
                     FileInfo fileInfo;
                     fileInfo.Archive = this;
-                    fileInfo.Filename = fi.FullName;
-                    fileInfo.Basename = fi.FullName.Substring(currentDir.Length);
+                    fileInfo.Filename = fi.FullName.Substring( currentDir.Length );
+                    fileInfo.Basename = fi.FullName.Substring( currentDir.Length );
                     fileInfo.Path = currentDir;
                     fileInfo.CompressedSize = fi.Length;
                     fileInfo.UncompressedSize = fi.Length;
                     detailList.Add( fileInfo );
-
                 }
             }
-
         }
 
         /// <summary>Utility method to change the current directory </summary>
-        protected void changeDirectory(string dir)
+        protected void changeDirectory( string dir )
         {
             Directory.SetCurrentDirectory( dir );
         }
 
         /// <summary>Utility method to change directory and push the current directory onto a stack </summary>
-        void pushDirectory(string dir) 
+        void pushDirectory( string dir )
         {
             // get current directory and push it onto the stack
 #if !( XBOX || XBOX360 )
@@ -152,12 +149,12 @@ namespace Axiom.FileSystem
         }
 
         /// <summary>Utility method to pop a previous directory off the stack and change to it </summary>
-        void popDirectory() 
+        void popDirectory()
         {
-            if ( _directoryStack.Count == 0)
+            if ( _directoryStack.Count == 0 )
             {
 #if !( XBOX || XBOX360 )
-                throw new AxiomException("No directories left in the stack.");
+                throw new AxiomException( "No directories left in the stack." );
 #else
                 return;
 #endif
@@ -194,21 +191,21 @@ namespace Axiom.FileSystem
 
         public override void Load()
         {
-			_basePath = Path.GetFullPath( Name ) + Path.DirectorySeparatorChar;
+            _basePath = Path.GetFullPath( Name ) + Path.DirectorySeparatorChar;
 
             // Check we can change to it
-            pushDirectory(_basePath);
+            pushDirectory( _basePath );
 
             // check to see if it's writable
             try
             {
 #if !( XBOX || XBOX360 )
-                File.Create(_basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose);
+                File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
 #else
                 File.Create(_basePath + @"__testWrite.Axiom", 1 );
 #endif
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
                 IsReadOnly = true;
             }
@@ -219,10 +216,9 @@ namespace Axiom.FileSystem
             }
 
             IsReadOnly = false;
-
         }
 
-        public override Stream Create(string filename, bool overwrite)
+        public override Stream Create( string filename, bool overwrite )
         {
             if ( IsReadOnly )
             {
@@ -242,7 +238,7 @@ namespace Axiom.FileSystem
                     stream = File.Create( fullPath, 1 );
 #endif
                 }
-                catch( Exception ex )
+                catch ( Exception ex )
                 {
                     throw new AxiomException( "Failed to open file : " + filename, ex );
                 }
@@ -262,15 +258,15 @@ namespace Axiom.FileSystem
 
         public override System.IO.Stream Open( string filename, bool readOnly )
         {
-			Stream strm = null;
+            Stream strm = null;
 
-			pushDirectory( _basePath );
+            pushDirectory( _basePath );
             if ( File.Exists( _basePath + filename ) )
             {
-				System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
+                System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
                 strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
             }
-			popDirectory();
+            popDirectory();
 
             return strm;
         }
@@ -313,15 +309,14 @@ namespace Axiom.FileSystem
 
         public override bool Exists( string fileName )
         {
-            pushDirectory(_basePath);
+            pushDirectory( _basePath );
 
             bool retVal = File.Exists( _basePath + fileName );
 
-		    popDirectory();
+            popDirectory();
 
             return retVal;
         }
-
 
         #endregion Archive Implementation
     }
@@ -332,33 +327,31 @@ namespace Axiom.FileSystem
     /// <ogre name="FileSystemArchiveFactory">
     ///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
     ///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
+    /// </ogre>
     public class FileSystemArchiveFactory : ArchiveFactory
-	{
+    {
         private const string _type = "Folder";
 
-		#region ArchiveFactory Implementation
+        #region ArchiveFactory Implementation
 
-		public override string Type
-		{
-			get
-			{
-				return _type;
-			}
-		}
+        public override string Type
+        {
+            get
+            {
+                return _type;
+            }
+        }
 
-		public override Archive CreateInstance( string name )
-		{
-			return new FileSystemArchive( name, _type );
-		}
+        public override Archive CreateInstance( string name )
+        {
+            return new FileSystemArchive( name, _type );
+        }
 
-		public override void DestroyInstance( ref Archive obj )
-		{
-			obj.Dispose();
-		}
+        public override void DestroyInstance( ref Archive obj )
+        {
+            obj.Dispose();
+        }
 
-		#endregion ArchiveFactory Implementation
-
-	};
-
+        #endregion ArchiveFactory Implementation
+    };
 }

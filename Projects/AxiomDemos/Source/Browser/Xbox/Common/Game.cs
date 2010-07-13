@@ -1,18 +1,10 @@
 ﻿#region Namespace Declarations
 
 using System;
-using System.IO;
-using System.Globalization;
-using System.Threading;
-
-using Axiom.Demos;
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Configuration;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
+using Axiom.Core;
 using Axiom.Input;
+using Axiom.RenderSystems.Xna;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Storage;
 
@@ -24,29 +16,36 @@ namespace Axiom.Demos.Browser.Xna
     /// Demo command line browser entry point.
     /// </summary>
     /// <remarks>
-    /// This demo browser is implemented using a commandline interface. 
+    /// This demo browser is implemented using a commandline interface.
     /// </remarks>
     public partial class Game : IDisposable
     {
         private Root engine;
 
-        string nextGame = "";
+        string nextGame = String.Empty;
         string titleLocation;
         private InputReader _input;
 
         partial void _setDefaultNextGame();
+
         partial void _setupResources();
+
         partial void _loadPlugins();
 
         private bool _configure()
         {
+#if (XBOX || XBOX360)
+            new XnaResourceGroupManager();
+#endif
 
             // instantiate the Root singleton
             engine = new Root( titleLocation + "AxiomDemos.log" );
-
+#if (XBOX || XBOX360)
             ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
-
+            ( new Axiom.RenderSystems.Xna.XnaCodecPlugin() ).Initialize();
+#endif
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
+
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
             Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
 
@@ -61,14 +60,11 @@ namespace Axiom.Demos.Browser.Xna
 
         void engine_FrameStarted( object source, FrameEventArgs e )
         {
-            //Axiom.Overlays.OverlayManager.Instance.GetByName( "Core/XnaOverlay" ).Show();
-            //engine.FrameStarted -= engine_FrameStarted;            
-            if ( _input.IsKeyPressed(KeyCodes.G) && !Guide.IsVisible )
+            if ( _input.IsKeyPressed( KeyCodes.G ) && !Guide.IsVisible )
             {
-                Guide.ShowSignIn(1,false);
+                Guide.ShowSignIn( 1, false );
             }
         }
-
 
         public void Run()
         {
@@ -104,7 +100,6 @@ namespace Axiom.Demos.Browser.Xna
                         }//dispose of it when done
                     }
                 }
-                
             }
             catch ( Exception caughtException )
             {
@@ -121,8 +116,10 @@ namespace Axiom.Demos.Browser.Xna
         #region Main
 
 #if !(XBOX || XBOX360)
+
         [STAThread]
 #endif
+
         private static void Main( string[] args )
         {
             try
@@ -174,6 +171,6 @@ namespace Axiom.Demos.Browser.Xna
             //throw new Exception( "The method or operation is not implemented." );
         }
 
-        #endregion
+        #endregion IDisposable Members
     }
 }

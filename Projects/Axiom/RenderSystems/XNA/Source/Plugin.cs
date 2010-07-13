@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using Axiom.RenderSystems.Xna.Content;
 
 #endregion Namespace Declarations
 
@@ -59,6 +64,9 @@ namespace Axiom.RenderSystems.Xna
         {
             // add an instance of this plugin to the list of available RenderSystems
             Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
+
+            // override default ResourceGroupManager and leverage the ContentPipeline
+            new XnaResourceGroupManager();
         }
 
         public void Shutdown()
@@ -67,6 +75,6 @@ namespace Axiom.RenderSystems.Xna
             //renderSystem.Shutdown();
         }
 
-        #endregion
+        #endregion Implementation of IPlugin
     }
 }

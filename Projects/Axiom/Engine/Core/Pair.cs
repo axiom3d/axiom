@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -39,17 +39,17 @@ using System;
 using Axiom.Math;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Core
 {
 
-    /// <summary>
-	/// 	A simple container class for returning a pair of objects from a method call 
+	/// <summary>
+	/// 	A simple container class for returning a pair of objects from a method call
 	/// 	(similar to std::pair).
 	/// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class Pair<T> : IEquatable<Pair<T>>
-    {
+	/// <typeparam name="T"></typeparam>
+	public class Pair<T> : IEquatable<Pair<T>>
+	{
 		private Tuple<T, T> data;
 
 		public T First
@@ -76,10 +76,10 @@ namespace Axiom.Core
 			}
 		}
 
-        public Pair( T first, T second )
-        {
+		public Pair( T first, T second )
+		{
 			data = new Tuple<T, T>( first, second );
-        }
+		}
 
 
 		#region IEquatable<Pair<T>> Implementation
@@ -101,11 +101,11 @@ namespace Axiom.Core
 
 		#endregion IEquatable<Pair<T>> Implementation
 
-        #region System.Object Implementation
-        public override int GetHashCode()
-        {
-            return this.First.GetHashCode() ^ this.Second.GetHashCode();
-        }
-        #endregion System.Object Implementation
-    }
+		#region System.Object Implementation
+		public override int GetHashCode()
+		{
+			return this.First.GetHashCode() ^ this.Second.GetHashCode();
+		}
+		#endregion System.Object Implementation
+	}
 }

@@ -1,14 +1,14 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</ProjectGuid>
-    <ProjectTypeGuids>{2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.RenderSystems.Xna.Content</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.Xna.Content</AssemblyName>
-    <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
+    <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCrossPlatformGroupID>f95b7adf-1a1c-4092-8e5d-b3ff12a5f548</XnaCrossPlatformGroupID>
@@ -51,9 +51,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=51c3bfb2db46012c, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=51c3bfb2db46012c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.0\References\Xbox360\Microsoft.Xna.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>

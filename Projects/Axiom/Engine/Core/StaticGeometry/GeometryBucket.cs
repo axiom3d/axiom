@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -47,15 +47,15 @@ using Axiom.Collections;
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Core
 {
 	public partial class StaticGeometry
 	{
 
 		///<summary>
-		///    A GeometryBucket is a the lowest level bucket where geometry with 
-		///    the same vertex & index format is stored. It also acts as the 
+		///    A GeometryBucket is a the lowest level bucket where geometry with
+		///    the same vertex & index format is stored. It also acts as the
 		///    renderable.
 		///</summary>
 		public class GeometryBucket : IRenderable, IDisposable
@@ -79,7 +79,7 @@ namespace Axiom.Core
 			// Maximum vertex indexable
 			protected int maxVertexIndex;
 
-			protected Hashtable customParams = new Hashtable();
+			protected List<Vector4> customParams = new List<Vector4>();
 
 			public MaterialBucket Parent
 			{
@@ -89,7 +89,7 @@ namespace Axiom.Core
 				}
 			}
 
-			// Get the vertex data for this geometry 
+			// Get the vertex data for this geometry
 			public VertexData VertexData
 			{
 				get
@@ -98,7 +98,7 @@ namespace Axiom.Core
 				}
 			}
 
-			// Get the index data for this geometry 
+			// Get the index data for this geometry
 			public IndexData IndexData
 			{
 				get
@@ -212,21 +212,21 @@ namespace Axiom.Core
 				return parent.Parent.SquaredDistance;
 			}
 
-		    protected RenderOperation renderOperation = new RenderOperation();
-		    public RenderOperation RenderOperation
-		    {
-		        get
-		        {
-                    renderOperation.indexData = this.indexData;
-                    renderOperation.operationType = OperationType.TriangleList;
-		            //op.srcRenderable = this;
-                    renderOperation.useIndices = true;
-                    renderOperation.vertexData = this.vertexData;
-		            return renderOperation;
-		        }
-		    }
+			protected RenderOperation renderOperation = new RenderOperation();
+			public RenderOperation RenderOperation
+			{
+				get
+				{
+					renderOperation.indexData = this.indexData;
+					renderOperation.operationType = OperationType.TriangleList;
+					//op.srcRenderable = this;
+					renderOperation.useIndices = true;
+					renderOperation.vertexData = this.vertexData;
+					return renderOperation;
+				}
+			}
 
-		    public void GetWorldTransforms( Matrix4[] xform )
+			public void GetWorldTransforms( Matrix4[] xform )
 			{
 				// Should be the identity transform, but lets allow transformation of the
 				// nodes the regions are attached to for kicks
@@ -378,7 +378,7 @@ namespace Axiom.Core
 				LogManager.Instance.Write( "---------------" );
 			}
 
-			#endregion
+			#endregion Public Methods
 
 			#region Protected Methods
 
@@ -466,7 +466,7 @@ namespace Axiom.Core
 				return pDst;
 			}
 
-			#endregion
+			#endregion Protected Methods
 
 			#region IRenderable members
 
@@ -502,13 +502,13 @@ namespace Axiom.Core
 				}
 			}
 
-            public virtual bool PolygonModeOverrideable
-            {
-                get
-                {
-                    return true;
-                }
-            }
+			public virtual bool PolygonModeOverrideable
+			{
+				get
+				{
+					return true;
+				}
+			}
 
 			public Vector4 GetCustomParameter( int index )
 			{
@@ -546,7 +546,7 @@ namespace Axiom.Core
 					bindings.GetBuffer( b ).Dispose();
 			}
 
-			#endregion
+			#endregion IRenderable members
 
 		}
 	}

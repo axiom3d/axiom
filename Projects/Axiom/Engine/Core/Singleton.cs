@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -38,7 +38,7 @@ using System;
 using System.Reflection;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Core
 {
 
@@ -47,35 +47,35 @@ namespace Axiom.Core
 		bool Initialize( params object[] args );
 	}
 
-    /// <summary>
-    /// A generic singleton
-    /// </summary>
-    /// <remarks>
-    /// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
-    /// </remarks>
-    /// <typeparam name="T">a class</typeparam>
-    public abstract class Singleton<T> : IDisposable where T : class, new()
-    {
-        public Singleton()
-        {
-            if (SingletonFactory.instance != null && !IntPtr.ReferenceEquals(this, SingletonFactory.instance))
-                throw new Exception(String.Format("Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name));
-        }
+	/// <summary>
+	/// A generic singleton
+	/// </summary>
+	/// <remarks>
+	/// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
+	/// </remarks>
+	/// <typeparam name="T">a class</typeparam>
+	public abstract class Singleton<T> : IDisposable where T : class, new()
+	{
+		public Singleton()
+		{
+			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
+				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
+		}
 
 		~Singleton()
 		{
 			dispose( false );
 		}
 
-        public virtual bool Initialize( params object[] args )
-        {
-            return true;
-        }
+		public virtual bool Initialize( params object[] args )
+		{
+			return true;
+		}
 
-        public static T Instance
-        {
-            get
-            {
+		public static T Instance
+		{
+			get
+			{
 				try
 				{
 					return SingletonFactory.instance;
@@ -84,23 +84,23 @@ namespace Axiom.Core
 				{
 					throw new Exception( string.Format( "Type {0} must implement a private parameterless constructor.", typeof( T ) ) );
 				}
-            }
-        }
+			}
+		}
 
-        class SingletonFactory
-        {
-            static SingletonFactory()
-            {
-                
-            }
+		class SingletonFactory
+		{
+			static SingletonFactory()
+			{
 
-            internal static T instance = new T();
-        }
+			}
 
-        public static void Destroy()
-        {
-            SingletonFactory.instance = null;
-        }
+			internal static T instance = new T();
+		}
+
+		public static void Destroy()
+		{
+			SingletonFactory.instance = null;
+		}
 
 		#region IDisposable Implementation
 
@@ -138,7 +138,7 @@ namespace Axiom.Core
 		/// 		{
 		/// 			// Dispose managed resources.
 		/// 		}
-		/// 
+		///
 		/// 		// There are no unmanaged resources to release, but
 		/// 		// if we add them, they need to be released here.
 		/// 	}

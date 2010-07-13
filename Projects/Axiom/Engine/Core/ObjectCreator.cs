@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -42,70 +42,70 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-    /// <summary>
-    /// Used by configuration classes to store assembly/class names and instantiate
-    /// objects from them.
-    /// </summary>
-    public class ObjectCreator
-    {
-        private Assembly _assembly;
-        private Type _type;
+	/// <summary>
+	/// Used by configuration classes to store assembly/class names and instantiate
+	/// objects from them.
+	/// </summary>
+	public class ObjectCreator
+	{
+		private Assembly _assembly;
+		private Type _type;
 
-        public ObjectCreator( Type type )
-        {
-            this._type = type;
-        }
+		public ObjectCreator( Type type )
+		{
+			this._type = type;
+		}
 
-        public ObjectCreator( string assemblyName, string className )
-        {
-            string assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
-            try
-            {
-                _assembly = Assembly.LoadFrom( assemblyFile );
-            }
-            catch ( Exception ex )
-            {
-                _assembly = Assembly.GetExecutingAssembly();
-            }
+		public ObjectCreator( string assemblyName, string className )
+		{
+			string assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
+			try
+			{
+				_assembly = Assembly.LoadFrom( assemblyFile );
+			}
+			catch ( Exception ex )
+			{
+				_assembly = Assembly.GetExecutingAssembly();
+			}
 
-            _type = _assembly.GetType( className );
-        }
+			_type = _assembly.GetType( className );
+		}
 
-        public ObjectCreator( string className )
-        {
-            _assembly = Assembly.GetExecutingAssembly();
-            _type = _assembly.GetType( className );
-        }
+		public ObjectCreator( string className )
+		{
+			_assembly = Assembly.GetExecutingAssembly();
+			_type = _assembly.GetType( className );
+		}
 
-        public ObjectCreator( Assembly assembly, Type type )
-        {
-            _assembly = assembly;
-            _type = type;
-        }
+		public ObjectCreator( Assembly assembly, Type type )
+		{
+			_assembly = assembly;
+			_type = type;
+		}
 
-        public string GetAssemblyTitle()
-        {
-            Attribute title = Attribute.GetCustomAttribute( _assembly, typeof( AssemblyTitleAttribute ) );
-            if ( title == null )
-                return _assembly.GetName().Name;
-            return ( (AssemblyTitleAttribute)title ).Title;
-        }
+		public string GetAssemblyTitle()
+		{
+			Attribute title = Attribute.GetCustomAttribute( _assembly, typeof( AssemblyTitleAttribute ) );
+			if ( title == null )
+				return _assembly.GetName().Name;
+			return ( (AssemblyTitleAttribute)title ).Title;
+		}
 
-        public T CreateInstance<T>() where T : class
-        {
-            Type type = _type;
-            Assembly assembly = _assembly;
+		public T CreateInstance<T>() where T : class
+		{
+			Type type = _type;
+			Assembly assembly = _assembly;
 #if !( XBOX || XBOX360 || SILVERLIGHT )
-            // Check interfaces or Base type for casting purposes
-            if ( type.GetInterface( typeof( T ).Name ) != null
-                 || type.BaseType.Name == typeof( T ).Name )
-            {
+			// Check interfaces or Base type for casting purposes
+			if ( type.GetInterface( typeof( T ).Name ) != null
+				 || type.BaseType.Name == typeof( T ).Name )
+			{
 #else
             bool typeFound = false;
             for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
             {
                 if ( type.GetInterfaces()[ i ] == typeof( T ) )
-                { 
+                {
                     typeFound = true;
                     break;
                 }
@@ -114,91 +114,91 @@ namespace Axiom.Core
             if ( typeFound )
             {
 #endif
-                try
-                {
-                    return (T)Activator.CreateInstance( type );
-                }
-                catch ( Exception e )
-                {
-                    LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
-                    LogManager.Instance.Write( e.Message );
-                }
-            }
-            return null;
-        }
-    }
+				try
+				{
+					return (T)Activator.CreateInstance( type );
+				}
+				catch ( Exception e )
+				{
+					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
+					LogManager.Instance.Write( e.Message );
+				}
+			}
+			return null;
+		}
+	}
 
 
-    internal class DynamicLoader
-    {
-        #region Fields and Properties
+	internal class DynamicLoader
+	{
+		#region Fields and Properties
 
-        private string _assemblyFilename;
-        private Assembly _assembly;
+		private string _assemblyFilename;
+		private Assembly _assembly;
 
-        #endregion Fields and Properties
+		#endregion Fields and Properties
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        /// <summary>
-        /// Creates a loader instance for the current executing assembly
-        /// </summary>
-        public DynamicLoader()
-        {
-        }
+		/// <summary>
+		/// Creates a loader instance for the current executing assembly
+		/// </summary>
+		public DynamicLoader()
+		{
+		}
 
-        /// <summary>
-        /// Creates a loader instance for the specified assembly
-        /// </summary>
-        public DynamicLoader( string assemblyFilename )
-            : this()
-        {
-            _assemblyFilename = assemblyFilename;
-        }
+		/// <summary>
+		/// Creates a loader instance for the specified assembly
+		/// </summary>
+		public DynamicLoader( string assemblyFilename )
+			: this()
+		{
+			_assemblyFilename = assemblyFilename;
+		}
 
-        #endregion Construction and Destruction
+		#endregion Construction and Destruction
 
-        #region Methods
+		#region Methods
 
 
-        public Assembly GetAssembly()
-        {
-            if ( _assembly == null )
-            {
-                lock ( this )
-                {
-                    if ( String.IsNullOrEmpty( _assemblyFilename ) )
-                    {
-                        _assembly = Assembly.GetExecutingAssembly();
-                    }
-                    else
-                    {
-                        _assembly = Assembly.LoadFrom( _assemblyFilename );
-                    }
-                }
-            }
-            return _assembly;
-        }
+		public Assembly GetAssembly()
+		{
+			if ( _assembly == null )
+			{
+				lock ( this )
+				{
+					if ( String.IsNullOrEmpty( _assemblyFilename ) )
+					{
+						_assembly = Assembly.GetExecutingAssembly();
+					}
+					else
+					{
+						_assembly = Assembly.LoadFrom( _assemblyFilename );
+					}
+				}
+			}
+			return _assembly;
+		}
 
-        public IList<ObjectCreator> Find( Type baseType )
-        {
-            List<ObjectCreator> types = new List<ObjectCreator>();
-            Assembly assembly;
-            Type[] assemblyTypes = null;
+		public IList<ObjectCreator> Find( Type baseType )
+		{
+			List<ObjectCreator> types = new List<ObjectCreator>();
+			Assembly assembly;
+			Type[] assemblyTypes = null;
 
-            try
-            {
-                assembly = GetAssembly();
-                assemblyTypes = assembly.GetTypes();
+			try
+			{
+				assembly = GetAssembly();
+				assemblyTypes = assembly.GetTypes();
 
-                foreach ( Type type in assemblyTypes )
-                {
+				foreach ( Type type in assemblyTypes )
+				{
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                    if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName ) != null ) ||
-                         ( !baseType.IsInterface && type.BaseType == baseType ) )
-                    {
-                        types.Add( new ObjectCreator( assembly, type ) );
-                    }
+					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName ) != null ) ||
+						 ( !baseType.IsInterface && type.BaseType == baseType ) )
+					{
+						types.Add( new ObjectCreator( assembly, type ) );
+					}
 #else
                     for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
                     {
@@ -209,23 +209,23 @@ namespace Axiom.Core
                         }
                     }
 #endif
-                }
-            }
+				}
+			}
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            catch ( ReflectionTypeLoadException ex )
-            {
-                LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-                LogManager.Instance.Write( "Loader Exceptions:" );
-                foreach ( Exception lex in ex.LoaderExceptions )
-                {
-                    LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
-                }
-            }
-            catch ( BadImageFormatException ex )
-            {
-                LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
-            }
+			catch ( ReflectionTypeLoadException ex )
+			{
+				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+				LogManager.Instance.Write( "Loader Exceptions:" );
+				foreach ( Exception lex in ex.LoaderExceptions )
+				{
+					LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
+				}
+			}
+			catch ( BadImageFormatException ex )
+			{
+				LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
+			}
 
 #else
             catch( Exception ex )
@@ -235,9 +235,9 @@ namespace Axiom.Core
             }
 #endif
 
-            return types;
-        }
+			return types;
+		}
 
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }

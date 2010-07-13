@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -36,186 +36,186 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Reflection;
-
+using Axiom.Collections;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
-    /// <summary>
-    ///		Abstract class defining the interface to be implemented by particle affectors.
-    /// </summary>
-    /// <remarks>
-    ///		Particle affectors modify particles in a particle system over their lifetime. They can be
-    ///		grouped into types, e.g. 'vector force' affectors, 'fader' affectors etc; each type will 
-    ///		modify particles in a different way, using different parameters.
-    ///		<para/>
-    ///		Because there are so many types of affectors you could use, the engine chooses not to dictate
-    ///		the available types. It comes with some in-built, but allows plugins or applications to extend the affector types available.
-    ///		This is done by subclassing ParticleAffector to have the appropriate emission behavior you want,
-    ///		and also creating a subclass of ParticleAffectorFactory which is responsible for creating instances 
-    ///		of your new affector type. You register this factory with the ParticleSystemManager using
-    ///		AddAffectorFactory, and from then on affectors of this type can be created either from code or through
-    ///		.particle scripts by naming the type.
-    ///		<para/>
-    ///		This same approach is used for ParticleEmitters (which are the source of particles in a system).
-    ///		This means that the engine is particularly flexible when it comes to creating particle system effects,
-    ///		with literally infinite combinations of affector and affector types, and parameters within those
-    ///		types.
-    /// </remarks>
-    public abstract class ParticleAffector
-    {
-        #region Fields
+	/// <summary>
+	///		Abstract class defining the interface to be implemented by particle affectors.
+	/// </summary>
+	/// <remarks>
+	///		Particle affectors modify particles in a particle system over their lifetime. They can be
+	///		grouped into types, e.g. 'vector force' affectors, 'fader' affectors etc; each type will
+	///		modify particles in a different way, using different parameters.
+	///		<para/>
+	///		Because there are so many types of affectors you could use, the engine chooses not to dictate
+	///		the available types. It comes with some in-built, but allows plugins or applications to extend the affector types available.
+	///		This is done by subclassing ParticleAffector to have the appropriate emission behavior you want,
+	///		and also creating a subclass of ParticleAffectorFactory which is responsible for creating instances
+	///		of your new affector type. You register this factory with the ParticleSystemManager using
+	///		AddAffectorFactory, and from then on affectors of this type can be created either from code or through
+	///		.particle scripts by naming the type.
+	///		<para/>
+	///		This same approach is used for ParticleEmitters (which are the source of particles in a system).
+	///		This means that the engine is particularly flexible when it comes to creating particle system effects,
+	///		with literally infinite combinations of affector and affector types, and parameters within those
+	///		types.
+	/// </remarks>
+	public abstract class ParticleAffector
+	{
+		#region Fields
 
-        /// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
-        protected string type;
+		/// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
+		protected string type;
 
-        protected Hashtable commandTable = new Hashtable();
+		protected AxiomCollection<IPropertyCommand> commandTable = new AxiomCollection<IPropertyCommand>();
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor
-        /// </summary>
-        public ParticleAffector()
-        {
-            RegisterCommands();
-        }
+		/// <summary>
+		///		Default constructor
+		/// </summary>
+		public ParticleAffector()
+		{
+			RegisterCommands();
+		}
 
-        #endregion
+		#endregion Constructors
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Gets the type name of this affector.
-        /// </summary>
-        public string Type
-        {
-            get
-            {
-                return type;
-            }
-            set
-            {
-                type = value;
-            }
-        }
+		/// <summary>
+		///		Gets the type name of this affector.
+		/// </summary>
+		public string Type
+		{
+			get
+			{
+				return type;
+			}
+			set
+			{
+				type = value;
+			}
+		}
 
-        #endregion
+		#endregion Properties
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
-        /// </summary>
-        /// <remarks>
-        ///		This is where the affector gets the chance to apply it's effects to the particles of a system.
-        ///		The affector is expected to apply it's effect to some or all of the particles in the system
-        ///		passed to it, depending on the affector's approach.
-        /// </remarks>
-        /// <param name="system">Reference to a ParticleSystem to affect.</param>
-        /// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-        public abstract void AffectParticles( ParticleSystem system, float timeElapsed );
+		/// <summary>
+		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
+		/// </summary>
+		/// <remarks>
+		///		This is where the affector gets the chance to apply it's effects to the particles of a system.
+		///		The affector is expected to apply it's effect to some or all of the particles in the system
+		///		passed to it, depending on the affector's approach.
+		/// </remarks>
+		/// <param name="system">Reference to a ParticleSystem to affect.</param>
+		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
+		public abstract void AffectParticles( ParticleSystem system, float timeElapsed );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="emitter"></param>
-        public virtual void CopyTo( ParticleAffector affector )
-        {
-            // loop through all registered commands and copy from this instance to the target instance
-            foreach ( DictionaryEntry entry in commandTable )
-            {
-                string name = (string)entry.Key;
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="emitter"></param>
+		public virtual void CopyTo( ParticleAffector affector )
+		{
+			// loop through all registered commands and copy from this instance to the target instance
+			foreach ( DictionaryEntry entry in commandTable )
+			{
+				string name = (string)entry.Key;
 
-                // get the value of the param from this instance
-                string val = ( (IPropertyCommand)entry.Value ).Get( this );
+				// get the value of the param from this instance
+				string val = ( (IPropertyCommand)entry.Value ).Get( this );
 
-                // set the param on the target instance
-                affector.SetParam( name, val );
-            }
-        }
+				// set the param on the target instance
+				affector.SetParam( name, val );
+			}
+		}
 
-        /// <summary>
-        ///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
-        /// </summary>
-        /// <remarks>
-        ///		This is where the affector gets the chance to apply it's effects to the particles of a system.
-        ///		The affector is expected to apply it's effect to some or all of the particles in the system
-        ///		passed to it, depending on the affector's approach.
-        /// </remarks>
-        /// <param name="system">Reference to a ParticleSystem to affect.</param>
-        /// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-        public virtual void InitParticle( ref Particle particle )
-        {
-            // do nothing by default
-        }
+		/// <summary>
+		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
+		/// </summary>
+		/// <remarks>
+		///		This is where the affector gets the chance to apply it's effects to the particles of a system.
+		///		The affector is expected to apply it's effect to some or all of the particles in the system
+		///		passed to it, depending on the affector's approach.
+		/// </remarks>
+		/// <param name="system">Reference to a ParticleSystem to affect.</param>
+		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
+		public virtual void InitParticle( ref Particle particle )
+		{
+			// do nothing by default
+		}
 
-        #endregion
+		#endregion Methods
 
-        #region Script parser methods
+		#region Script parser methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public bool SetParam( string name, string val )
-        {
-            if ( commandTable.ContainsKey( name ) )
-            {
-                IPropertyCommand command = (IPropertyCommand)commandTable[ name ];
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public bool SetParam( string name, string val )
+		{
+			if ( commandTable.ContainsKey( name ) )
+			{
+				IPropertyCommand command = (IPropertyCommand)commandTable[ name ];
 
-                command.Set( this, val );
+				command.Set( this, val );
 
-                return true;
-            }
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        /// <summary>
-        ///		Registers all attribute names with their respective parser.
-        /// </summary>
-        /// <remarks>
-        ///		Methods meant to serve as attribute parsers should use a method attribute to 
-        /// </remarks>
-        protected void RegisterCommands()
-        {
-            Type baseType = GetType();
+		/// <summary>
+		///		Registers all attribute names with their respective parser.
+		/// </summary>
+		/// <remarks>
+		///		Methods meant to serve as attribute parsers should use a method attribute to
+		/// </remarks>
+		protected void RegisterCommands()
+		{
+			Type baseType = GetType();
 
-            do
-            {
-                Type[] types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
+			do
+			{
+				Type[] types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
 
-                // loop through all methods and look for ones marked with attributes
-                for ( int i = 0; i < types.Length; i++ )
-                {
-                    // get the current method in the loop
-                    Type type = types[ i ];
+				// loop through all methods and look for ones marked with attributes
+				for ( int i = 0; i < types.Length; i++ )
+				{
+					// get the current method in the loop
+					Type type = types[ i ];
 
-                    // get as many command attributes as there are on this type
-                    ScriptablePropertyAttribute[] commandAtts =
-                        (ScriptablePropertyAttribute[])type.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true);
+					// get as many command attributes as there are on this type
+					ScriptablePropertyAttribute[] commandAtts =
+						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true );
 
-                    // loop through each one we found and register its command
-                    for ( int j = 0; j < commandAtts.Length; j++ )
-                    {
-                        ScriptablePropertyAttribute commandAtt = commandAtts[j];
+					// loop through each one we found and register its command
+					for ( int j = 0; j < commandAtts.Length; j++ )
+					{
+						ScriptablePropertyAttribute commandAtt = commandAtts[ j ];
 
-                        commandTable.Add( commandAtt.ScriptPropertyName, Activator.CreateInstance( type ) );
-                    } // for
-                } // for
+						commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
+					} // for
+				} // for
 
-                // get the base type of the current type
-                baseType = baseType.BaseType;
+				// get the base type of the current type
+				baseType = baseType.BaseType;
 
-            } while ( baseType != typeof( object ) );
-        }
+			} while ( baseType != typeof( object ) );
+		}
 
-        #endregion Script parser methods
-    }
+		#endregion Script parser methods
+	}
 }

@@ -1,13 +1,13 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{85269F35-5E22-4070-97A3-5E92DC863770}</ProjectGuid>
-    <ProjectTypeGuids>{2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">XBox 360</Platform>
-    <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
+    <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <ApplicationIcon>
     </ApplicationIcon>
@@ -37,7 +37,7 @@
     <OutputPath>bin\Xbox\Debug\</OutputPath>
     <DocumentationFile>
     </DocumentationFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -50,7 +50,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release\</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.SceneManagers.Bsp.XML</DocumentationFile>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>

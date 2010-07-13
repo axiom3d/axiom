@@ -16,9 +16,9 @@ namespace Axiom.Collections
 			this.dictionary = dictionary;
 		}
 
-		public TValue this[ TKey index ] 
-		{ 
-			get 
+		public TValue this[ TKey index ]
+		{
+			get
 			{
 				return dictionary[ index ];
 			}
