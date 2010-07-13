@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -169,25 +169,25 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Bind()
 		{
-            if ( !IsSupported )
-                return;
+			if ( !IsSupported )
+				return;
 			Gl.glEnable( programType );
 			Gl.glBindProgramARB( programType, programId );
 		}
 
 		public override void Unbind()
 		{
-            if ( !IsSupported )
-                return;
-            Gl.glBindProgramARB( programType, 0 );
+			if ( !IsSupported )
+				return;
+			Gl.glBindProgramARB( programType, 0 );
 			Gl.glDisable( programType );
 		}
 
 		public override void BindParameters( GpuProgramParameters parms )
 		{
-            if ( !IsSupported )
-                return;
-            if ( parms.HasFloatConstants )
+			if ( !IsSupported )
+				return;
+			if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{

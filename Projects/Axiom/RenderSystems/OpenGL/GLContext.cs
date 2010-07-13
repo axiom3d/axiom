@@ -1,11 +1,12 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,28 +23,29 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+
+#endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLContext.cs 1085 2007-08-13 20:37:24Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
 	/// <summary>
-	/// Class that encapsulates an GL context. (IE a window/pbuffer). This is a 
+	/// Class that encapsulates an GL context. (IE a window/pbuffer). This is a
 	/// virtual base class which should be implemented in a GLSupport.
 	/// This object can also be used to cache renderstate if we decide to do so
 	/// in the future.
@@ -53,9 +55,10 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Fields and Properties
 
 		#region Initialized Property
+
 		private bool _initialized;
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public bool Initialized
 		{
@@ -68,7 +71,21 @@ namespace Axiom.RenderSystems.OpenGL
 				_initialized = value;
 			}
 		}
+
 		#endregion Initialized Property
+
+		#region VSync Property
+
+		/// <summary>
+		///
+		/// </summary>
+		public abstract bool VSync
+		{
+			get;
+			set;
+		}
+
+		#endregion VSync Property
 
 		#endregion Fields and Properties
 
@@ -147,7 +164,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// 		{
 		/// 			// Dispose managed resources.
 		/// 		}
-		/// 
+		///
 		/// 		// There are no unmanaged resources to release, but
 		/// 		// if we add them, they need to be released here.
 		/// 	}
@@ -180,6 +197,5 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -45,129 +45,129 @@ using D3D = SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    ///		Direct3D implementation of a hardware occlusion query.
-    /// </summary>
-    // Original Author: Lee Sandberg
-    public class D3DHardwareOcclusionQuery : HardwareOcclusionQuery
-    {
-        #region Fields
+	/// <summary>
+	///		Direct3D implementation of a hardware occlusion query.
+	/// </summary>
+	// Original Author: Lee Sandberg
+	public class D3DHardwareOcclusionQuery : HardwareOcclusionQuery
+	{
+		#region Fields
 
-        /// <summary>
-        ///		Reference to the current Direct3D device object.
-        /// </summary>
-        private D3D.Device device;
-        /// <summary>
-        ///		Reference to the query object being used.
-        /// </summary>
-        private D3D.Query query;
-        /// <summary>
-        ///		Flag that indicates whether hardware queries are supported
-        /// </summary>
-        private bool isSupported;
+		/// <summary>
+		///		Reference to the current Direct3D device object.
+		/// </summary>
+		private D3D.Device device;
+		/// <summary>
+		///		Reference to the query object being used.
+		/// </summary>
+		private D3D.Query query;
+		/// <summary>
+		///		Flag that indicates whether hardware queries are supported
+		/// </summary>
+		private bool isSupported;
 
-        private bool isQueryResultStillOutstanding;
+		private bool isQueryResultStillOutstanding;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        /// <param name="device">Reference to a Direct3D device.</param>
-        public D3DHardwareOcclusionQuery( D3D.Device device )
-        {
-            this.device = device;
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="device">Reference to a Direct3D device.</param>
+		public D3DHardwareOcclusionQuery( D3D.Device device )
+		{
+			this.device = device;
 
-            isQueryResultStillOutstanding = true;
+			isQueryResultStillOutstanding = true;
 
-            // check if queries are supported
-            isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
+			// check if queries are supported
+			isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
 
-            if ( isSupported )
-            {
-                // attempt to create an occlusion query
-                query = new D3D.Query( device, D3D.QueryType.Occlusion );
-            }
-        }
+			if ( isSupported )
+			{
+				// attempt to create an occlusion query
+				query = new D3D.Query( device, D3D.QueryType.Occlusion );
+			}
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region HardwareOcclusionQuery Members
+		#region HardwareOcclusionQuery Members
 
-        /// <summary>
-        /// Starts the hardware occlusion query
-        /// </summary>
-        public override void Begin()
-        {
-            // proceed if supported, or silently fail otherwise
-            if ( isSupported )
-            {
-                query.Issue( D3D.Issue.Begin );
-            }
-            isQueryResultStillOutstanding = true;
-        }
+		/// <summary>
+		/// Starts the hardware occlusion query
+		/// </summary>
+		public override void Begin()
+		{
+			// proceed if supported, or silently fail otherwise
+			if ( isSupported )
+			{
+				query.Issue( D3D.Issue.Begin );
+			}
+			isQueryResultStillOutstanding = true;
+		}
 
-        /// <summary>
-        /// Pulls the hardware occlusion query.
-        /// </summary>
-        /// <remarks>
-        /// Waits until the query result is available; use <see cref="HardwareOcclusionQuery.IsStillOutstanding"/>
-        /// if just want to test if the result is available.
-        /// </remarks>
-        /// <returns>the resulting number of fragments.</returns>
-        public override int PullResults()
-        {
-            if ( isQueryResultStillOutstanding )
-            {
-                // default to returning a high count.  will be set otherwise if the query runs
-                LastFragmentCount = 100000;
+		/// <summary>
+		/// Pulls the hardware occlusion query.
+		/// </summary>
+		/// <remarks>
+		/// Waits until the query result is available; use <see cref="HardwareOcclusionQuery.IsStillOutstanding"/>
+		/// if just want to test if the result is available.
+		/// </remarks>
+		/// <returns>the resulting number of fragments.</returns>
+		public override int PullResults()
+		{
+			if ( isQueryResultStillOutstanding )
+			{
+				// default to returning a high count.  will be set otherwise if the query runs
+				LastFragmentCount = 100000;
 
-                if ( isSupported )
-                {
-                    while ( !query.CheckStatus( true ) )
-                        ;
-                    LastFragmentCount = query.GetData<int>( true );
-                }
-                isQueryResultStillOutstanding = false;
-            }
-            return LastFragmentCount;
-        }
+				if ( isSupported )
+				{
+					while ( !query.CheckStatus( true ) )
+						;
+					LastFragmentCount = query.GetData<int>( true );
+				}
+				isQueryResultStillOutstanding = false;
+			}
+			return LastFragmentCount;
+		}
 
-        /// <summary>
-        /// Ends the hardware occlusion test
-        /// </summary>
-        public override void End()
-        {
-            // proceed if supported, or silently fail otherwise
-            if ( isSupported )
-            {
-                query.Issue( D3D.Issue.End );
-            }
-        }
+		/// <summary>
+		/// Ends the hardware occlusion test
+		/// </summary>
+		public override void End()
+		{
+			// proceed if supported, or silently fail otherwise
+			if ( isSupported )
+			{
+				query.Issue( D3D.Issue.End );
+			}
+		}
 
-        /// <summary>
-        /// Lets you know when query is done, or still be processed by the Hardware
-        /// </summary>
-        /// <returns>true if query isn't finished.</returns>
-        public override bool IsStillOutstanding()
-        {
-            if (!isQueryResultStillOutstanding)
-                return false;
+		/// <summary>
+		/// Lets you know when query is done, or still be processed by the Hardware
+		/// </summary>
+		/// <returns>true if query isn't finished.</returns>
+		public override bool IsStillOutstanding()
+		{
+			if ( !isQueryResultStillOutstanding )
+				return false;
 
-            return query.CheckStatus( true );
-        }
+			return query.CheckStatus( true );
+		}
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// <filterpriority>2</filterpriority>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            query.Dispose();
-            base.dispose( disposeManagedResources );
-        }
-        #endregion
-    }
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		/// <filterpriority>2</filterpriority>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			query.Dispose();
+			base.dispose( disposeManagedResources );
+		}
+		#endregion HardwareOcclusionQuery Members
+	}
 }

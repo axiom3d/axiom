@@ -39,6 +39,7 @@ using System;
 #if !USE_CUSTOM_SORTEDLIST
 using System.Collections;
 using System.Collections.Generic;
+
 #endif
 
 #endregion Namespace Declarations
@@ -156,7 +157,9 @@ namespace Axiom.Collections
 			set
 			{
 				if ( this.ContainsKey( key ) )
+				{
 					this.Remove( key );
+				}
 				this.Add( key, value );
 			}
 		}

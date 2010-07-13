@@ -121,7 +121,9 @@ namespace Axiom.Core
 				new PluginManager();
 				PluginManager.Instance.LoadAll();
 				if ( ResourceGroupManager.Instance == null )
+				{
 					new ResourceGroupManager();
+				}
 				ResourceGroupManager.Instance.Initialize();
 				new HighLevelGpuProgramManager();
 				new ParticleSystemManager();
@@ -152,7 +154,8 @@ namespace Axiom.Core
 
 #if !AXIOM_USENEWCOMPILERS
 				ScriptCompilerManager.Instance.Initialize();
-#endif // AXIOM_USENEWCOMPILERS
+#endif
+				// AXIOM_USENEWCOMPILERS
 
 				// instantiate and register base movable factories
 				this.entityFactory = new EntityFactory();
@@ -323,6 +326,7 @@ namespace Axiom.Core
 		private float microsecondsPerTick;
 
 		private readonly ChainedEvent<FrameEventArgs> _frameStartedEvent = new ChainedEvent<FrameEventArgs>();
+
 		/// <summary>
 		/// Fired as a frame is about to be rendered.
 		/// </summary>
@@ -339,6 +343,7 @@ namespace Axiom.Core
 		}
 
 		private readonly ChainedEvent<FrameEventArgs> _frameEndedEvent = new ChainedEvent<FrameEventArgs>();
+
 		/// <summary>
 		/// Fired after a frame has completed rendering.
 		/// </summary>
@@ -355,6 +360,7 @@ namespace Axiom.Core
 		}
 
 		private readonly ChainedEvent<FrameEventArgs> _frameRenderingQueuedEvent = new ChainedEvent<FrameEventArgs>();
+
 		/// <summary>
 		/// Fired after a frame has completed rendering.
 		/// </summary>
@@ -382,10 +388,10 @@ namespace Axiom.Core
 			get
 			{
 				AssemblyCopyrightAttribute attribute =
-						(AssemblyCopyrightAttribute)
-						Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
-													  typeof( AssemblyCopyrightAttribute ),
-													  false );
+					(AssemblyCopyrightAttribute)
+					Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
+												  typeof( AssemblyCopyrightAttribute ),
+												  false );
 
 				if ( attribute != null )
 				{
@@ -511,10 +517,10 @@ namespace Axiom.Core
 			get
 			{
 				return
-						(int)
-						( ( this.microsecondsPerFrame == 0 )
-								  ? this.microsecondsPerFrame
-								  : ( 1000000.0f / this.microsecondsPerFrame ) );
+					(int)
+					( ( this.microsecondsPerFrame == 0 )
+						? this.microsecondsPerFrame
+						: ( 1000000.0f / this.microsecondsPerFrame ) );
 			}
 			set
 			{
@@ -931,11 +937,15 @@ namespace Axiom.Core
 		{
 			// Stop rendering if frame callback says so
 			if ( !this.OnFrameStarted() )
+			{
 				return false;
+			}
 
 			// update all current render targets
 			if ( !this.UpdateAllRenderTargets() )
+			{
 				return false;
+			}
 
 			// Stop rendering if frame callback says so
 			return this.OnFrameEnded();
@@ -965,7 +975,9 @@ namespace Axiom.Core
 				}
 
 				if ( !this.RenderOneFrame() )
+				{
 					break;
+				}
 			}
 		}
 
@@ -1352,7 +1364,7 @@ namespace Axiom.Core
 			if ( this.nextMovableObjectTypeFlag == (uint)SceneQueryTypeMask.UserLimit )
 			{
 				throw new AxiomException(
-						"Cannot allocate a type flag since all the available flags have been used." );
+					"Cannot allocate a type flag since all the available flags have been used." );
 			}
 
 			uint ret = this.nextMovableObjectTypeFlag;
@@ -1451,7 +1463,8 @@ namespace Axiom.Core
 			// Save
 			this.movableObjectFactoryMap.Add( fact.Type, fact );
 
-			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type + "'." );
+			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type +
+									   "'." );
 		}
 
 		public MovableObjectFactoryMap MovableObjectFactories

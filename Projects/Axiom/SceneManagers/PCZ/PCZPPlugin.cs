@@ -5,27 +5,26 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-    public class PCZPPlugin : IPlugin
-    {
-        public void Initialize()
-        {
-            PCZSMFactory = new PCZSceneManagerFactory();
-            lightFactory = new PCZLightFactory();
+	public class PCZPPlugin : IPlugin
+	{
+		public void Initialize()
+		{
+			PCZSMFactory = new PCZSceneManagerFactory();
+			lightFactory = new PCZLightFactory();
 
-            Root.Instance.AddSceneManagerFactory(PCZSMFactory);
-            Root.Instance.AddMovableObjectFactory(lightFactory, true);
-        }
+			Root.Instance.AddSceneManagerFactory( PCZSMFactory );
+			Root.Instance.AddMovableObjectFactory( lightFactory, true );
+		}
 
-        public void Shutdown()
-        {
-            Root.Instance.RemoveSceneManagerFactory(PCZSMFactory);
-            Root.Instance.RemoveMovableObjectFactory(lightFactory);
-        }
+		public void Shutdown()
+		{
+			Root.Instance.RemoveSceneManagerFactory( PCZSMFactory );
+			Root.Instance.RemoveMovableObjectFactory( lightFactory );
+		}
 
-        PCZSceneManagerFactory PCZSMFactory;
+		PCZSceneManagerFactory PCZSMFactory;
 
-        private PCZLightFactory lightFactory;
-    }
+		private PCZLightFactory lightFactory;
+	}
 
 }
-

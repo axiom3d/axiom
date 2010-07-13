@@ -7,11 +7,11 @@ using System.IO;
 
 namespace Axiom.RenderSystems.Xna.Content
 {
-    class HlslIncludeHandler : CompilerIncludeHandler
-    {
-        public override Stream Open( CompilerIncludeHandlerType includeType, string filename )
-        {
-            return File.Open( filename, FileMode.Open );
-        }
-    }
+	class HlslIncludeHandler : CompilerIncludeHandler
+	{
+		public override Stream Open( CompilerIncludeHandlerType includeType, string filename )
+		{
+			return File.Open( filename, FileMode.Open );
+		}
+	}
 }

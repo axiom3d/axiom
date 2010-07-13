@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -88,7 +88,7 @@ namespace Axiom.RenderSystems.OpenGL
 		};
 
 		/// <summary>
-		/// Stencil and depth renderbuffers of the same format are re-used between surfaces of the 
+		/// Stencil and depth renderbuffers of the same format are re-used between surfaces of the
 		/// same size and format. This can save a lot of memory when a large amount of rendertargets
 		/// are used.
 		/// </summary>
@@ -191,7 +191,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		private Dictionary<RBFormat, RBRef> _renderBufferMap = new Dictionary<RBFormat, RBRef>();
 
@@ -272,8 +272,8 @@ namespace Axiom.RenderSystems.OpenGL
 					desirability += 2000;
 				if ( _depthBits[ props.Modes[ mode ].Depth ] == 24 ) // Prefer 24 bit for now
 					desirability += 500;
-				if ( _depthFormats[ props.Modes[ mode ].Depth ] == GL_DEPTH24_STENCIL8_EXT ) // Prefer 24/8 packed 
-				    desirability += 5000;
+				if ( _depthFormats[ props.Modes[ mode ].Depth ] == GL_DEPTH24_STENCIL8_EXT ) // Prefer 24/8 packed
+					desirability += 5000;
 				desirability += _stencilBits[ props.Modes[ mode ].Stencil ] + _depthBits[ props.Modes[ mode ].Depth ];
 
 				if ( desirability > bestscore )
@@ -355,7 +355,7 @@ namespace Axiom.RenderSystems.OpenGL
 			RBRef value;
 			bool result = _renderBufferMap.TryGetValue( key, out value );
 			Debug.Assert( result );
-			lock( this )
+			lock ( this )
 			{
 				Debug.Assert( value.Buffer == surface.Buffer );
 				// Increase refcount
@@ -396,11 +396,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// Try all formats, and report which ones work as target
 			int fb, tid;
-            int old_drawbuffer, old_readbuffer;
+			int old_drawbuffer, old_readbuffer;
 			int target = Gl.GL_TEXTURE_2D;
 
-            Gl.glGetIntegerv( Gl.GL_DRAW_BUFFER, out old_drawbuffer );
-            Gl.glGetIntegerv( Gl.GL_READ_BUFFER, out old_readbuffer );
+			Gl.glGetIntegerv( Gl.GL_DRAW_BUFFER, out old_drawbuffer );
+			Gl.glGetIntegerv( Gl.GL_READ_BUFFER, out old_readbuffer );
 
 			for ( int x = 0; x < (int)PixelFormat.Count; ++x )
 			{
@@ -420,9 +420,9 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( fmt != Gl.GL_NONE && _atiMode && ( depths[ 0 ] == 0 || depths[ 1 ] == 0 || depths[ 2 ] == 0 ) )
 					continue;
 
-                // Buggy NVidia Drivers fail on 32Bit FP formats on Windows.
-                if ( PixelUtil.IsFloatingPoint( (PixelFormat)x )  && PlatformManager.IsWindowsOS && !_atiMode )
-                    continue;
+				// Buggy NVidia Drivers fail on 32Bit FP formats on Windows.
+				if ( PixelUtil.IsFloatingPoint( (PixelFormat)x ) && PlatformManager.IsWindowsOS && !_atiMode )
+					continue;
 
 				// Create and attach framebuffer
 				Gl.glGenFramebuffersEXT( 1, out fb );
@@ -433,7 +433,7 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glGenTextures( 1, out tid );
 					Gl.glBindTexture( target, tid );
 
-					// Set some default parameters so it won't fail on NVidia cards         
+					// Set some default parameters so it won't fail on NVidia cards
 					Gl.glTexParameteri( target, Gl.GL_TEXTURE_MAX_LEVEL, 0 );
 					Gl.glTexParameteri( target, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST );
 					Gl.glTexParameteri( target, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST );
@@ -484,12 +484,12 @@ namespace Axiom.RenderSystems.OpenGL
 								}
 							}
 						}
-                        else
-                        {
+						else
+						{
 							// Packed depth/stencil format
 #if false
                             // Only query packed depth/stencil formats for 32-bit
-                            // non-floating point formats (ie not R32!) 
+                            // non-floating point formats (ie not R32!)
                             // Linux nVidia driver segfaults if you query others
 							if ( !PlatformManager.IsWindowsOS &&
 								 ( PixelUtil.GetNumElemBits( (PixelFormat)x ) != 32 ||
@@ -497,7 +497,7 @@ namespace Axiom.RenderSystems.OpenGL
 							{
 								continue;
 							}
-#endif 
+#endif
 							if ( _tryPackedFormat( _depthFormats[ depth ] ) )
 							{
 								/// Add mode to allowed modes
@@ -517,17 +517,17 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
 				Gl.glDeleteFramebuffersEXT( 1, ref fb );
 
-                // Workaround for NVIDIA / Linux 169.21 driver problem
-                // see http://www.ogre3d.org/phpBB2/viewtopic.php?t=38037&start=25
-                Gl.glFinish();
+				// Workaround for NVIDIA / Linux 169.21 driver problem
+				// see http://www.ogre3d.org/phpBB2/viewtopic.php?t=38037&start=25
+				Gl.glFinish();
 
 				Gl.glDeleteTextures( 1, ref tid );
 			}
 
-            // It seems a bug in nVidia driver: glBindFramebufferEXT should restore
-            // draw and read buffers, but in some unclear circumstances it won't.
-            Gl.glDrawBuffer( old_drawbuffer );
-            Gl.glReadBuffer( old_readbuffer );
+			// It seems a bug in nVidia driver: glBindFramebufferEXT should restore
+			// draw and read buffers, but in some unclear circumstances it won't.
+			Gl.glDrawBuffer( old_drawbuffer );
+			Gl.glReadBuffer( old_readbuffer );
 
 			string fmtstring = "";
 			for ( int x = 0; x < (int)PixelFormat.Count; ++x )
@@ -627,7 +627,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLRTTManager Implementation
 
-        public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
+		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 		{
 			return new GLFBORenderTexture( this, name, target, writeGamma, fsaa );
 		}

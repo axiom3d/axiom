@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -41,64 +41,64 @@ using Tao.DevIl;
 
 namespace Axiom.Plugins.DevILCodecs
 {
-    /// <summary>
-    ///    PNG image file codec.
-    /// </summary>
-    public class PNGCodec : ILImageCodec
-    {
-        public PNGCodec()
-        {
-        }
+	/// <summary>
+	///    PNG image file codec.
+	/// </summary>
+	public class PNGCodec : ILImageCodec
+	{
+		public PNGCodec()
+		{
+		}
 
-        #region ILImageCodec Implementation
+		#region ILImageCodec Implementation
 
-        /// <summary>
-        ///    Passthrough implementation, no special code needed.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="output"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public override object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args )
-        {
-            // nothing special needed, just pass through
-            return base.Decode( input, output, args );
-        }
+		/// <summary>
+		///    Passthrough implementation, no special code needed.
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="output"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public override object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args )
+		{
+			// nothing special needed, just pass through
+			return base.Decode( input, output, args );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="dest"></param>
-        /// <param name="args"></param>
-        public override void Encode( System.IO.Stream source, System.IO.Stream dest, params object[] args )
-        {
-            throw new NotImplementedException( "PNG encoding is not yet implemented." );
-        }
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="dest"></param>
+		/// <param name="args"></param>
+		public override void Encode( System.IO.Stream source, System.IO.Stream dest, params object[] args )
+		{
+			throw new NotImplementedException( "PNG encoding is not yet implemented." );
+		}
 
-        /// <summary>
-        ///    Returns the PNG file extension.
-        /// </summary>
-        public override String Type
-        {
-            get
-            {
-                return "png";
-            }
-        }
+		/// <summary>
+		///    Returns the PNG file extension.
+		/// </summary>
+		public override String Type
+		{
+			get
+			{
+				return "png";
+			}
+		}
 
 
-        /// <summary>
-        ///    Returns PNG enum.
-        /// </summary>
-        public override int ILType
-        {
-            get
-            {
-                return Il.IL_PNG;
-            }
-        }
+		/// <summary>
+		///    Returns PNG enum.
+		/// </summary>
+		public override int ILType
+		{
+			get
+			{
+				return Il.IL_PNG;
+			}
+		}
 
-        #endregion ILImageCodec Implementation
-    }
+		#endregion ILImageCodec Implementation
+	}
 }

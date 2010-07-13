@@ -43,11 +43,11 @@ namespace Axiom.Demos
 		private IControllerValue<float> blueLightFlasher;
 		private List<AnimationState> animationStateList = new List<AnimationState>();
 
-		#endregion
+		#endregion Member variables
 
 		#region Methods
 
-        public override void CreateScene()
+		public override void CreateScene()
 		{
 			// set some ambient light
 			scene.AmbientLight = new ColorEx( 1, 0.5f, 0.5f, 0.5f );
@@ -169,10 +169,10 @@ namespace Axiom.Demos
 			{
 				anim.AddTime( evt.TimeSinceLastFrame );
 			}
-            base.OnFrameStarted( source, evt );
+			base.OnFrameStarted( source, evt );
 		}
 
-		#endregion
+		#endregion Methods
 	}
 
 	public class LightFlasherControllerValue : IControllerValue<float>
@@ -212,7 +212,7 @@ namespace Axiom.Demos
 			}
 		}
 
-		#endregion
+		#endregion IControllerValue Members
 
 	}
 

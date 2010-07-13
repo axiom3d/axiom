@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections;
-
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 using Axiom.Collections;
 using System.Collections.Generic;
@@ -143,7 +145,8 @@ namespace Axiom.Graphics
 
 			if ( factory == null )
 			{
-				throw new Exception( string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
+				throw new Exception(
+					string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
 			}
 
 			// create the high level program using the factory
@@ -199,9 +202,9 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+											 IManualResourceLoader loader, NameValuePairList createParams )
 		{
-
 			if ( createParams == null || !createParams.ContainsKey( "language" ) )
 			{
 				throw new Exception( "You must supply a 'language' parameter" );
@@ -263,5 +266,4 @@ namespace Axiom.Graphics
 
 		#endregion ResourceManager Implementation
 	}
-
 }

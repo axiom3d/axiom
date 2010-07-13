@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -44,43 +44,44 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-    /// <summary>
-    /// 	Summary description for PointEmitter.
-    /// </summary>
-    public class PointEmitter : ParticleEmitter
-    {
-        #region Constructors
+	/// <summary>
+	/// 	Summary description for PointEmitter.
+	/// </summary>
+	public class PointEmitter : ParticleEmitter
+	{
+		#region Constructors
 
-		public PointEmitter( ParticleSystem ps ) : base (ps)
-        {
-            this.Type = "Point";
-        }
+		public PointEmitter( ParticleSystem ps )
+			: base( ps )
+		{
+			this.Type = "Point";
+		}
 
-        #endregion
+		#endregion Constructors
 
-        #region Methods
+		#region Methods
 
 		public override ushort GetEmissionCount( float timeElapsed )
-        {
-            // use basic constant emission
-            return GenerateConstantEmissionCount( timeElapsed );
-        }
+		{
+			// use basic constant emission
+			return GenerateConstantEmissionCount( timeElapsed );
+		}
 
-        public override void InitParticle( Particle particle )
-        {
-            base.InitParticle( particle );
+		public override void InitParticle( Particle particle )
+		{
+			base.InitParticle( particle );
 
-            // point emitter emits starting from its own position
-            particle.Position = this.position;
+			// point emitter emits starting from its own position
+			particle.Position = this.position;
 
-            GenerateEmissionColor( ref particle.Color );
-            GenerateEmissionDirection( ref particle.Direction );
-            GenerateEmissionVelocity( ref particle.Direction );
+			GenerateEmissionColor( ref particle.Color );
+			GenerateEmissionDirection( ref particle.Direction );
+			GenerateEmissionVelocity( ref particle.Direction );
 
-            // generate time to live
-            particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
-        }
+			// generate time to live
+			particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
+		}
 
-        #endregion
-    }
+		#endregion Methods
+	}
 }

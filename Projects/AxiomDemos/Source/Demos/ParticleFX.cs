@@ -10,21 +10,21 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.Demos
 {
-    /// <summary>
-    /// 	Summary description for Particles.
-    /// </summary>
-    public class ParticleFX : TechDemo
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for Particles.
+	/// </summary>
+	public class ParticleFX : TechDemo
+	{
+		#region Member variables
 
-        private SceneNode fountainNode;
+		private SceneNode fountainNode;
 
-        #endregion Member variables
+		#endregion Member variables
 
-        #region Methods
+		#region Methods
 
-        public override void CreateScene()
-        {
+		public override void CreateScene()
+		{
 
 			// set some ambient light
 			scene.AmbientLight = ColorEx.Gray;
@@ -41,7 +41,7 @@ namespace Axiom.Demos
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( greenyNimbus );
 
 			// Create some nice fireworks
-            ParticleSystem fireWorks = ParticleSystemManager.Instance.CreateSystem( "Fireworks", "ParticleSystems/Fireworks" );
+			ParticleSystem fireWorks = ParticleSystemManager.Instance.CreateSystem( "Fireworks", "ParticleSystems/Fireworks" );
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( fireWorks );
 
 			// shared node for the 2 fountains
@@ -70,25 +70,25 @@ namespace Axiom.Demos
 			rain.FastForward( 5.0f );
 
 			// Aureola around Ogre perpendicular to the ground
-            ParticleSystem aureola = ParticleSystemManager.Instance.CreateSystem( "Aureola", "ParticleSystems/Aureola" );
+			ParticleSystem aureola = ParticleSystemManager.Instance.CreateSystem( "Aureola", "ParticleSystems/Aureola" );
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( aureola );
 		}
 
-        protected override void OnFrameStarted( object source, FrameEventArgs evt )
-        {
-            // rotate fountains
-            fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
+		protected override void OnFrameStarted( object source, FrameEventArgs evt )
+		{
+			// rotate fountains
+			fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
 
-            // call base method
-            base.OnFrameStarted( source, evt );
-        }
+			// call base method
+			base.OnFrameStarted( source, evt );
+		}
 
 
-        #endregion
+		#endregion Methods
 
-        #region Properties
+		#region Properties
 
-        #endregion
-    }
+		#endregion Properties
+	}
 
 }
