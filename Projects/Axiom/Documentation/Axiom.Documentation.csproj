@@ -60,7 +60,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties Sandcastle_ShowEntireBuildComponentStack="True" Sandcastle_DocumentationSetName="Axiom" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" IsDocProject="true" DocProjectVersion="1.11.0.0" BuildEngineProviderName="Sandcastle" Sandcastle_Version="2.4.10520.1" Sandcastle_PresentationName="Sandcastle Hana" ExternalSources="" />
+      <UserProperties ExternalSources="" Sandcastle_PresentationName="Sandcastle Hana" Sandcastle_Version="2.4.10520.1" BuildEngineProviderName="Sandcastle" DocProjectVersion="1.11.0.0" IsDocProject="true" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" Sandcastle_DocumentationSetName="Axiom" Sandcastle_ShowEntireBuildComponentStack="True" />
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
