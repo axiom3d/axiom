@@ -1,21 +1,59 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<topic id="b9bfe49b-5b03-43dd-b19f-53e38494122d" revisionNumber="0">
-  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+<topic id="baad978e-1dc5-493c-858f-50f15c398e5a" revisionNumber="0">
+  <developerSDKTechnologyOverviewTechnologySummaryDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <summary>
       <para>Optional abstract</para>
     </summary>
 
     <introduction>
-      <para>Welcome to the Axiom 3d Rendering Engine SDK. This section will cover what you need in order to beginusing the engine ini your own projects.</para>
+      <para>Required introduction</para>
     </introduction>
 
-    <section>
-      <title>Getting Started with the Axiom 3D SDK</title>
-
+    <keywords>
       <content>
-        <para>Something intelligent and useful needs to go here.</para>
+        <para>Required keywords information</para>
       </content>
-    </section>
+    </keywords>
+    
+    <namespaces>
+      <content>
+        <para>Required namespace information</para>
+      </content>
+    </namespaces>
+
+    <relatedTechnologies>
+      <content>
+        <para>Optional related technologies information</para>
+      </content>
+    </relatedTechnologies>
+    
+    <background>
+      <content>
+        <para>Required background information</para>
+      </content>
+    </background>
+    
+    <implementingTechnologyNameClasses>
+      <title>Required implementation information</title>
+      
+      <content>
+        <para>Some topic content</para>
+      </content>
+    </implementingTechnologyNameClasses>
+    
+    <technologyNameClassesAtAGlance>
+      <title>Required at a glance information</title>
+      
+      <content>
+        <para>Some topic content</para>
+      </content>
+    </technologyNameClassesAtAGlance>
+
+    <whatsNew>
+      <content>
+        <para>Optional comparison to previous releases</para>
+      </content>
+    </whatsNew>
 
     <relatedTopics>
       <!-- Supported Link Types
@@ -38,7 +76,7 @@
     Linking to other conceptual topics: 
     
         <link xlink:href="GUID topic name (without file extension)" />
-        
+                
     Linking to named references:
     
         (Refer to the project's Help\Settings\links.xml file for more information)
@@ -71,6 +109,6 @@
       <link vref="/controls/design.aspx">Control Architecture</link>
       -->
     </relatedTopics>
-
-  </developerConceptualDocument>
+    
+  </developerSDKTechnologyOverviewTechnologySummaryDocument>
 </topic>
