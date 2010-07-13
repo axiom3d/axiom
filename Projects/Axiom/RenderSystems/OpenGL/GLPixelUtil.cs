@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		/// <param name="format">Axiom PixelFormat</param>
 		/// <returns>
-		/// a GLenum describing the format, or 0 if there is no exactly matching 
+		/// a GLenum describing the format, or 0 if there is no exactly matching
 		/// one (and conversion is needed)
 		/// </returns>
 		public static int GetGLOriginFormat( PixelFormat format )
@@ -69,7 +69,7 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.L16:
 					return Gl.GL_LUMINANCE;
 				case PixelFormat.BYTE_LA:
-				    return Gl.GL_LUMINANCE_ALPHA;
+					return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.R3G3B2:
 					return Gl.GL_RGB;
 				case PixelFormat.A1R5G5B5:
@@ -117,7 +117,7 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.SHORT_RGBA:
 					return Gl.GL_RGBA;
 				case PixelFormat.SHORT_RGB:
-				    return Gl.GL_RGB;
+					return Gl.GL_RGB;
 				case PixelFormat.SHORT_GR:
 					return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.DXT1:
@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		/// <param name="format"></param>
 		/// <returns>
-		/// a GLenum describing the data type, or 0 if there is no exactly matching 
+		/// a GLenum describing the data type, or 0 if there is no exactly matching
 		/// one (and conversion is needed)
 		/// </returns>
 		public static int GetGLOriginDataType( PixelFormat format )
@@ -149,7 +149,7 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.R8G8B8:
 				case PixelFormat.B8G8R8:
 				case PixelFormat.BYTE_LA:
-				    return Gl.GL_UNSIGNED_BYTE;
+					return Gl.GL_UNSIGNED_BYTE;
 				case PixelFormat.R3G3B2:
 					return Gl.GL_UNSIGNED_BYTE_3_3_2;
 				case PixelFormat.A1R5G5B5:
@@ -297,7 +297,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		/// <summary>
 		/// Function to get the closest matching OGRE format to an internal GL format. To be
-		/// precise, the format will be chosen that is most efficient to transfer to the card 
+		/// precise, the format will be chosen that is most efficient to transfer to the card
 		/// without losing precision.
 		/// </summary>
 		/// <remarks>
@@ -370,7 +370,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		/// <summary>
 		/// Returns the maximum number of Mipmaps that can be generated until we reach
-		/// the mininum format possible. This does not count the base level.			
+		/// the mininum format possible. This does not count the base level.
 		/// </summary>
 		/// <param name="width">The width of the area</param>
 		/// <param name="height">The height of the area</param>

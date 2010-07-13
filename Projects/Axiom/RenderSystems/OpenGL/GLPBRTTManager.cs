@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -85,7 +85,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLRTTManager Implementation
 
-        public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
+		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 		{
 			return new GLPBRenderTexture( this, name, target, writeGamma, fsaa );
 		}
@@ -103,15 +103,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Unbind( RenderTarget target )
 		{
-            // copy on unbind
-            object attr = target.GetCustomAttribute( "target" );
-            if ( attr != null )
-            {
-                GLSurfaceDesc surface = (GLSurfaceDesc)attr;
-                if ( surface.Buffer != null )
-                    ( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
-            }
-        }
+			// copy on unbind
+			object attr = target.GetCustomAttribute( "target" );
+			if ( attr != null )
+			{
+				GLSurfaceDesc surface = (GLSurfaceDesc)attr;
+				if ( surface.Buffer != null )
+					( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
+			}
+		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -140,24 +140,24 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="height"></param>
 		public void RequestPBuffer( PixelComponentType pcType, int width, int height )
 		{
-            // Check Size
-            GLPBuffer pBuffer = pBuffers[ (int)pcType ].PixelBuffer;
-            if ( pBuffer != null )
-            {
-                if ( pBuffer.Width < width || pBuffer.Height < height )
-                {
-                    // if the current buffer is too small destroy it and recreate it
-                    pBuffer = null;
-                    pBuffers[ (int)pcType ].PixelBuffer = null;
-                }
-            }
-            
-            if ( pBuffer == null )
-            {
-                // create pixelbuffer via rendersystem
-                pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
-            }
-            pBuffers[ (int)pcType ].InUseCount++;
+			// Check Size
+			GLPBuffer pBuffer = pBuffers[ (int)pcType ].PixelBuffer;
+			if ( pBuffer != null )
+			{
+				if ( pBuffer.Width < width || pBuffer.Height < height )
+				{
+					// if the current buffer is too small destroy it and recreate it
+					pBuffer = null;
+					pBuffers[ (int)pcType ].PixelBuffer = null;
+				}
+			}
+
+			if ( pBuffer == null )
+			{
+				// create pixelbuffer via rendersystem
+				pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
+			}
+			pBuffers[ (int)pcType ].InUseCount++;
 		}
 
 		/// <summary>
@@ -182,16 +182,16 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public GLContext GetContextFor( PixelComponentType pcType, int width, int height )
 		{
-            // Faster to return main context if the RTT is smaller than the window size
-            // and pcType is PixelComponentType.Byte. This must be checked every time because the window might have been resized
-            if ( pcType == PixelComponentType.Byte )
-            {
-                if ( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
-                    return this._mainGLContext;
-            }
-            Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );
-            return pBuffers[ (int)pcType ].PixelBuffer.Context;
-        }
+			// Faster to return main context if the RTT is smaller than the window size
+			// and pcType is PixelComponentType.Byte. This must be checked every time because the window might have been resized
+			if ( pcType == PixelComponentType.Byte )
+			{
+				if ( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
+					return this._mainGLContext;
+			}
+			Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );
+			return pBuffers[ (int)pcType ].PixelBuffer.Context;
+		}
 
 		#endregion Methods
 

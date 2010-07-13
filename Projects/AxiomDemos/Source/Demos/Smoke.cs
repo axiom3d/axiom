@@ -9,22 +9,22 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.Demos
 {
-    /// <summary>
-    /// Summary description for Smoke.
-    /// </summary>
-    public class Smoke : TechDemo
-    {
-        public override void CreateScene()
-        {
-            scene.AmbientLight = ColorEx.Gray;
+	/// <summary>
+	/// Summary description for Smoke.
+	/// </summary>
+	public class Smoke : TechDemo
+	{
+		public override void CreateScene()
+		{
+			scene.AmbientLight = ColorEx.Gray;
 
-            scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
+			scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
 
-            ParticleSystem smokeSystem =
-                ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
+			ParticleSystem smokeSystem =
+				ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
 
-            scene.RootSceneNode.CreateChildSceneNode().AttachObject( smokeSystem );
+			scene.RootSceneNode.CreateChildSceneNode().AttachObject( smokeSystem );
 
-        }
-    }
+		}
+	}
 }

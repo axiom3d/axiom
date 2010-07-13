@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -62,11 +62,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Collection of extensions supported by the current hardware.
 		/// </summary>
-        private static List<String> _extensionList;
+		private static List<String> _extensionList;
 		/// <summary>
 		///		Gets a collection of strings listing all the available extensions.
 		/// </summary>
-        public List<String> Extensions
+		public List<String> Extensions
 		{
 			get
 			{
@@ -163,11 +163,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public bool CheckMinVersion( string version )
 		{
-			return Utility.ParseReal( version ) <= Utility.ParseReal( _glVersion.Substring( 0, version.Length ) ); 
+			return Utility.ParseReal( version ) <= Utility.ParseReal( _glVersion.Substring( 0, version.Length ) );
 		}
 
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		/// <param name="extention"></param>
 		/// <returns></returns>
@@ -178,13 +178,13 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void InitializeExtensions()
 		{
 			if ( _extensionList == null )
 			{
-                Gl.ReloadFunctions();
+				Gl.ReloadFunctions();
 
 				// get the OpenGL version string and vendor name
 				_glVersion = Gl.glGetString( Gl.GL_VERSION ); // TAO 2.0
@@ -201,7 +201,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 
 				// create a new extension list
-                _extensionList = new List<String>();
+				_extensionList = new List<String>();
 
 				string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); // TAO 2.0
 				//string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
@@ -248,7 +248,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public abstract void AddConfig();
 
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		/// <param name="autoCreateWindow"></param>
 		/// <param name="renderSystem"></param>

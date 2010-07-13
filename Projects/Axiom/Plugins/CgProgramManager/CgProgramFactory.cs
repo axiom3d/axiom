@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -44,36 +44,36 @@ using Tao.Cg;
 
 namespace Axiom.CgPrograms
 {
-    /// <summary>
-    /// 	Summary description for CgProgramFactory.
-    /// </summary>
-    public class CgProgramFactory : HighLevelGpuProgramFactory, IDisposable
-    {
-        #region Fields
+	/// <summary>
+	/// 	Summary description for CgProgramFactory.
+	/// </summary>
+	public class CgProgramFactory : HighLevelGpuProgramFactory, IDisposable
+	{
+		#region Fields
 
-        /// <summary>
-        ///    ID of the active Cg context.
-        /// </summary>
-        private IntPtr cgContext;
+		/// <summary>
+		///    ID of the active Cg context.
+		/// </summary>
+		private IntPtr cgContext;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///    Internal constructor.
-        /// </summary>
-        internal CgProgramFactory()
-        {
-            // create the Cg context
-            cgContext = Cg.cgCreateContext();
+		/// <summary>
+		///    Internal constructor.
+		/// </summary>
+		internal CgProgramFactory()
+		{
+			// create the Cg context
+			cgContext = Cg.cgCreateContext();
 
-            CgHelper.CheckCgError( "Error creating Cg context.", cgContext );
-        }
+			CgHelper.CheckCgError( "Error creating Cg context.", cgContext );
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region HighLevelGpuProgramFactory Members
+		#region HighLevelGpuProgramFactory Members
 
 		public override string Language
 		{
@@ -83,31 +83,31 @@ namespace Axiom.CgPrograms
 			}
 		}
 
-        /// <summary>
-        ///    Creates and returns a specialized CgProgram instance.
-        /// </summary>
-        /// <param name="name">Name of the program to create.</param>
-        /// <param name="type">Type of program to create, vertex or fragment.</param>
-        /// <returns>A new CgProgram instance within the current Cg Context.</returns>
+		/// <summary>
+		///    Creates and returns a specialized CgProgram instance.
+		/// </summary>
+		/// <param name="name">Name of the program to create.</param>
+		/// <param name="type">Type of program to create, vertex or fragment.</param>
+		/// <returns>A new CgProgram instance within the current Cg Context.</returns>
 		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
 		{
-            return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
-        }
+			return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
+		}
 
-        #endregion
+		#endregion HighLevelGpuProgramFactory Members
 
-        #region IDisposable Members
+		#region IDisposable Members
 
-        /// <summary>
-        ///    Destroys the Cg context upon being disposed.
-        /// </summary>
-        public void Dispose()
-        {
-            // destroy the Cg context
-            Cg.cgDestroyContext( cgContext );
-        }
+		/// <summary>
+		///    Destroys the Cg context upon being disposed.
+		/// </summary>
+		public void Dispose()
+		{
+			// destroy the Cg context
+			Cg.cgDestroyContext( cgContext );
+		}
 
-        #endregion
+		#endregion IDisposable Members
 
 
 	}

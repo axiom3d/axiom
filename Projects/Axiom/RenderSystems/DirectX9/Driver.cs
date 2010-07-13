@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -70,7 +70,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Name Property
 		private string _name;
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public string Name
 		{
@@ -84,7 +84,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Description Property
 		private string _description;
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public string Description
 		{
@@ -98,7 +98,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region AdapterNumber Property
 		private int _adapterNum;
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public int AdapterNumber
 		{
@@ -112,7 +112,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region AdapterIdentifier Property
 		private Guid _adapterIdentifier;
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public Guid AdapterIdentifier
 		{
@@ -126,7 +126,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region DesktopMode Property
 		private D3D.DisplayMode _desktopMode;
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		public D3D.DisplayMode DesktopMode
 		{
@@ -140,7 +140,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region VideoModes Property
 		private VideoModeCollection _videoModeList;
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		public VideoModeCollection VideoModes
 		{
@@ -154,7 +154,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region D3DDevice Property
 		private D3D.Device _device;
 		/// <summary>
-		///		
+		///
 		/// </summary>
 		public D3D.Device D3DDevice
 		{
@@ -169,24 +169,24 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 		#endregion D3DDevice Property
 
-        #region Direct3D Property
-        private D3D.Direct3D _direct3D;
-        /// <summary>
-        /// This is the main Direct3D object
-        /// </summary>
-        public D3D.Direct3D Direct3D
-        {
-            get
-            {
-                return _direct3D;
-            }
-            set
-            {
-                _direct3D = value;
-            }
-        }
-        #endregion Direct3D Property
+		#region Direct3D Property
+		private D3D.Direct3D _direct3D;
+		/// <summary>
+		/// This is the main Direct3D object
+		/// </summary>
+		public D3D.Direct3D Direct3D
+		{
+			get
+			{
+				return _direct3D;
+			}
+			set
+			{
+				_direct3D = value;
+			}
+		}
+		#endregion Direct3D Property
 
-        #endregion Properties
-    }
+		#endregion Properties
+	}
 }

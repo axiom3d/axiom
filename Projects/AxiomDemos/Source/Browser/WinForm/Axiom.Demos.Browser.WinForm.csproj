@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -1167,10 +1167,6 @@
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj">
       <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
       <Name>Axiom.RenderSystems.DirectX9</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj">
-      <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.Win32</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj">
       <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>

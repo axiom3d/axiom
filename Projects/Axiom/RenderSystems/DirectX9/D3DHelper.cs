@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -62,9 +62,9 @@ namespace Axiom.RenderSystems.DirectX9
 												 new System.Drawing.Size( (int)rect.Width, (int)rect.Height ) );
 		}
 
-		public static System.Drawing.Color ToColor( ColorEx color)
+		public static System.Drawing.Color ToColor( ColorEx color )
 		{
-		    return System.Drawing.Color.FromArgb( (int)( color.a < 1.0f ? color.a * 255.0f : color.a ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );
+			return System.Drawing.Color.FromArgb( (int)( color.a < 1.0f ? color.a * 255.0f : color.a ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );
 		}
 
 		/// <summary>
@@ -75,44 +75,44 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns>A new <code>ColorEx instance.</code></returns>
 		public static ColorEx FromColor( System.Drawing.Color color )
 		{
-            ColorEx retVal;
-            retVal.a = (float)color.A / 255.0f;
-            retVal.r = (float)color.R / 255.0f;
-            retVal.g = (float)color.G / 255.0f;
-            retVal.b = (float)color.B / 255.0f ;
-            return retVal;
+			ColorEx retVal;
+			retVal.a = (float)color.A / 255.0f;
+			retVal.r = (float)color.R / 255.0f;
+			retVal.g = (float)color.G / 255.0f;
+			retVal.b = (float)color.B / 255.0f;
+			return retVal;
 		}
 
 		/// <summary>
 		///		Enumerates driver information and their supported display modes.
 		/// </summary>
-        public static DriverCollection GetDriverInfo( D3D.Direct3D manager )
+		public static DriverCollection GetDriverInfo( D3D.Direct3D manager )
 		{
 			DriverCollection driverList = new DriverCollection();
 
 			foreach ( D3D.AdapterInformation adapterInfo in manager.Adapters )
 			{
-                List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
+				List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
 				Driver driver = new Driver( adapterInfo );
-                driver.Direct3D = manager;
+				driver.Direct3D = manager;
 
 				int lastWidth = 0, lastHeight = 0;
 				D3D.Format lastFormat = 0;
 
-                // 32bit Modes
-                foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.X8R8G8B8 ) )
-                {
-                    displaymodeList.Add( mode );
-                }
+				// 32bit Modes
+				foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.X8R8G8B8 ) )
+				{
+					displaymodeList.Add( mode );
+				}
 
-                // 16Bit modes
-                foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.R5G6B5 ) )
-                {
-                    displaymodeList.Add( mode );
-                }
+				// 16Bit modes
+				foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.R5G6B5 ) )
+				{
+					displaymodeList.Add( mode );
+				}
 
-                foreach ( D3D.DisplayMode mode in displaymodeList )
-                {
+				foreach ( D3D.DisplayMode mode in displaymodeList )
+				{
 					// filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
 					if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
 						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
@@ -131,132 +131,132 @@ namespace Axiom.RenderSystems.DirectX9
 			return driverList;
 		}
 
-        /// <summary>
-		/// 
+		/// <summary>
+		///
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="options"></param>
 		/// <param name="caps"></param>
 		/// <param name="texType"></param>
 		/// <returns></returns>
-        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, D3DTextureType texType )
-        {
-            // setting a default val here to keep compiler from complaining about using unassigned value types
-            D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
+		public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, D3DTextureType texType )
+		{
+			// setting a default val here to keep compiler from complaining about using unassigned value types
+			D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
 
-            switch ( texType )
-            {
-                case D3DTextureType.Normal:
-                    filterCaps = devCaps.TextureFilterCaps;
-                    break;
-                case D3DTextureType.Cube:
-                    filterCaps = devCaps.CubeTextureFilterCaps;
-                    break;
-                case D3DTextureType.Volume:
-                    filterCaps = devCaps.VolumeTextureFilterCaps;
-                    break;
-            }
+			switch ( texType )
+			{
+				case D3DTextureType.Normal:
+					filterCaps = devCaps.TextureFilterCaps;
+					break;
+				case D3DTextureType.Cube:
+					filterCaps = devCaps.CubeTextureFilterCaps;
+					break;
+				case D3DTextureType.Volume:
+					filterCaps = devCaps.VolumeTextureFilterCaps;
+					break;
+			}
 
-            switch ( type )
-            {
-                case FilterType.Min:
-                    {
-                        switch ( options )
-                        {
-                            case FilterOptions.Anisotropic:
-                                if ( ( filterCaps & D3D.FilterCaps.MinAnisotropic ) == D3D.FilterCaps.MinAnisotropic )
-                                {
-                                    return D3D.TextureFilter.Anisotropic;
-                                }
-                                else
-                                {
-                                    return D3D.TextureFilter.Linear;
-                                }
+			switch ( type )
+			{
+				case FilterType.Min:
+					{
+						switch ( options )
+						{
+							case FilterOptions.Anisotropic:
+								if ( ( filterCaps & D3D.FilterCaps.MinAnisotropic ) == D3D.FilterCaps.MinAnisotropic )
+								{
+									return D3D.TextureFilter.Anisotropic;
+								}
+								else
+								{
+									return D3D.TextureFilter.Linear;
+								}
 
-                            case FilterOptions.Linear:
-                                if ( ( filterCaps & D3D.FilterCaps.MinLinear ) == D3D.FilterCaps.MinLinear )
-                                {
-                                    return D3D.TextureFilter.Linear;
-                                }
-                                else
-                                {
-                                    return D3D.TextureFilter.Point;
-                                }
+							case FilterOptions.Linear:
+								if ( ( filterCaps & D3D.FilterCaps.MinLinear ) == D3D.FilterCaps.MinLinear )
+								{
+									return D3D.TextureFilter.Linear;
+								}
+								else
+								{
+									return D3D.TextureFilter.Point;
+								}
 
-                            case FilterOptions.Point:
-                            case FilterOptions.None:
-                                return D3D.TextureFilter.Point;
-                        }
-                        break;
-                    }
-                case FilterType.Mag:
-                    {
-                        switch ( options )
-                        {
-                            case FilterOptions.Anisotropic:
-                                if ( ( filterCaps & D3D.FilterCaps.MagAnisotropic ) == D3D.FilterCaps.MagAnisotropic )
-                                {
-                                    return D3D.TextureFilter.Anisotropic;
-                                }
-                                else
-                                {
-                                    return D3D.TextureFilter.Linear;
-                                }
+							case FilterOptions.Point:
+							case FilterOptions.None:
+								return D3D.TextureFilter.Point;
+						}
+						break;
+					}
+				case FilterType.Mag:
+					{
+						switch ( options )
+						{
+							case FilterOptions.Anisotropic:
+								if ( ( filterCaps & D3D.FilterCaps.MagAnisotropic ) == D3D.FilterCaps.MagAnisotropic )
+								{
+									return D3D.TextureFilter.Anisotropic;
+								}
+								else
+								{
+									return D3D.TextureFilter.Linear;
+								}
 
-                            case FilterOptions.Linear:
-                                if ( ( filterCaps & D3D.FilterCaps.MagLinear ) == D3D.FilterCaps.MagLinear )
-                                {
-                                    return D3D.TextureFilter.Linear;
-                                }
-                                else
-                                {
-                                    return D3D.TextureFilter.Point;
-                                }
+							case FilterOptions.Linear:
+								if ( ( filterCaps & D3D.FilterCaps.MagLinear ) == D3D.FilterCaps.MagLinear )
+								{
+									return D3D.TextureFilter.Linear;
+								}
+								else
+								{
+									return D3D.TextureFilter.Point;
+								}
 
-                            case FilterOptions.Point:
-                            case FilterOptions.None:
-                                return D3D.TextureFilter.Point;
-                        }
-                        break;
-                    }
-                case FilterType.Mip:
-                    {
-                        switch ( options )
-                        {
-                            case FilterOptions.Anisotropic:
-                            case FilterOptions.Linear:
-                                if ( ( filterCaps & D3D.FilterCaps.MipLinear ) == D3D.FilterCaps.MipLinear )
-                                {
-                                    return D3D.TextureFilter.Linear;
-                                }
-                                else
-                                {
-                                    return D3D.TextureFilter.Point;
-                                }
+							case FilterOptions.Point:
+							case FilterOptions.None:
+								return D3D.TextureFilter.Point;
+						}
+						break;
+					}
+				case FilterType.Mip:
+					{
+						switch ( options )
+						{
+							case FilterOptions.Anisotropic:
+							case FilterOptions.Linear:
+								if ( ( filterCaps & D3D.FilterCaps.MipLinear ) == D3D.FilterCaps.MipLinear )
+								{
+									return D3D.TextureFilter.Linear;
+								}
+								else
+								{
+									return D3D.TextureFilter.Point;
+								}
 
-                            case FilterOptions.Point:
-                                if ( ( filterCaps & D3D.FilterCaps.MipPoint ) == D3D.FilterCaps.MipPoint )
-                                {
-                                    return D3D.TextureFilter.Point;
-                                }
-                                else
-                                {
-                                    return D3D.TextureFilter.None;
-                                }
+							case FilterOptions.Point:
+								if ( ( filterCaps & D3D.FilterCaps.MipPoint ) == D3D.FilterCaps.MipPoint )
+								{
+									return D3D.TextureFilter.Point;
+								}
+								else
+								{
+									return D3D.TextureFilter.None;
+								}
 
-                            case FilterOptions.None:
-                                return D3D.TextureFilter.None;
-                        }
-                        break;
-                    }
-            }
+							case FilterOptions.None:
+								return D3D.TextureFilter.None;
+						}
+						break;
+					}
+			}
 
-            // should never get here
-            return 0;
-        }
+			// should never get here
+			return 0;
+		}
 
 		/// <summary>
-		///		Static method for converting LayerBlendOperationEx enum values to the Direct3D 
+		///		Static method for converting LayerBlendOperationEx enum values to the Direct3D
 		///		TextureOperation enum.
 		/// </summary>
 		/// <param name="blendop"></param>
@@ -476,7 +476,7 @@ namespace Axiom.RenderSystems.DirectX9
 					return D3D.DeclarationUsage.TextureCoordinate;
 
 				case VertexElementSemantic.Binormal:
-			        return D3D.DeclarationUsage.Binormal;
+					return D3D.DeclarationUsage.Binormal;
 
 				case VertexElementSemantic.Tangent:
 					return D3D.DeclarationUsage.Tangent;
@@ -525,7 +525,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="mode"></param>
 		/// <returns></returns>
@@ -632,37 +632,37 @@ namespace Axiom.RenderSystems.DirectX9
 					return (int)D3D.TextureCoordIndex.PassThru;
 
 				case TexCoordCalcMethod.EnvironmentMapReflection:
-                    return (int)D3D.TextureCoordIndex.CameraSpaceReflectionVector;
+					return (int)D3D.TextureCoordIndex.CameraSpaceReflectionVector;
 
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
 					//return (int)D3D.TextureCoordinateIndex.CameraSpacePosition;
-                    if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
-                    {
+					if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
+					{
 						// use sphere map if available
-                        return (int)D3D.TextureCoordIndex.SphereMap;
+						return (int)D3D.TextureCoordIndex.SphereMap;
 					}
 					else
 					{
 						// If not, fall back on camera space reflection vector which isn't as good
-                        return (int)D3D.TextureCoordIndex.CameraSpaceReflectionVector;
+						return (int)D3D.TextureCoordIndex.CameraSpaceReflectionVector;
 					}
 
 				case TexCoordCalcMethod.EnvironmentMapNormal:
-                    return (int)D3D.TextureCoordIndex.CameraSpaceNormal;
+					return (int)D3D.TextureCoordIndex.CameraSpaceNormal;
 
 				case TexCoordCalcMethod.EnvironmentMap:
-                    if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
-                    {
-                        return (int)D3D.TextureCoordIndex.SphereMap;
+					if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
+					{
+						return (int)D3D.TextureCoordIndex.SphereMap;
 					}
 					else
 					{
 						// fall back on camera space normal if sphere map isnt supported
-                        return (int)D3D.TextureCoordIndex.CameraSpaceNormal;
+						return (int)D3D.TextureCoordIndex.CameraSpaceNormal;
 					}
 
 				case TexCoordCalcMethod.ProjectiveTexture:
-                    return (int)D3D.TextureCoordIndex.CameraSpacePosition;
+					return (int)D3D.TextureCoordIndex.CameraSpacePosition;
 			} // switch
 
 			return 0;
@@ -755,8 +755,8 @@ namespace Axiom.RenderSystems.DirectX9
 					return D3D.ShadeMode.Flat;
 				case Shading.Gouraud:
 					return D3D.ShadeMode.Gouraud;
-                //case Shading.Phong:
-                //    return D3D.ShadeMode.Phong;
+				//case Shading.Phong:
+				//    return D3D.ShadeMode.Phong;
 			}
 
 			return 0;
@@ -774,8 +774,8 @@ namespace Axiom.RenderSystems.DirectX9
 					return Shading.Flat;
 				case D3D.ShadeMode.Gouraud:
 					return Shading.Gouraud;
-                //case D3D.ShadeMode.Phong:
-                //    return Shading.Phong;
+				//case D3D.ShadeMode.Phong:
+				//    return Shading.Phong;
 			}
 
 			return 0;

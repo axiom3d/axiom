@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -54,18 +54,18 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///     Reference to the render system instance.
 		/// </summary>
-        private GLRenderSystem renderSystem;
+		private GLRenderSystem renderSystem;
 
 		public void Initialize()
 		{
 #if OPENGL_OTK
-            Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", 
+            Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager",
                                "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
 #endif
-            Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
-                               "An instance of the OpenGL renderer is already loaded." );
+			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
+							   "An instance of the OpenGL renderer is already loaded." );
 
-            renderSystem = new GLRenderSystem();
+			renderSystem = new GLRenderSystem();
 			// add an instance of this plugin to the list of available RenderSystems
 			Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
 		}

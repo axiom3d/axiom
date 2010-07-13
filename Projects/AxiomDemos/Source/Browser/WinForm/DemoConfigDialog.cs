@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +34,8 @@ namespace Axiom.Demos
 			}
 		}
 
-		public DemoConfigDialog() : base()
+		public DemoConfigDialog()
+			: base()
 		{
 			InitializeComponent();
 		}
@@ -46,11 +46,11 @@ namespace Axiom.Demos
 				image.Close();
 		}
 
-        private void InitializeComponent()
-        {
+		private void InitializeComponent()
+		{
 			this.lstDemos = new SWF.ListBox();
-            this.grpAvailableDemos = new SWF.GroupBox();
-            this.picPreview = new SWF.PictureBox();
+			this.grpAvailableDemos = new SWF.GroupBox();
+			this.picPreview = new SWF.PictureBox();
 			this.tmrRotator = new System.Windows.Forms.Timer();
 
 			///
@@ -63,7 +63,7 @@ namespace Axiom.Demos
 
 			//
 			// picPreview
-			// 
+			//
 			this.picPreview.BackColor = System.Drawing.Color.White;
 			this.picPreview.Location = new System.Drawing.Point( 205, 20 );
 			this.picPreview.Name = "picPreview";
@@ -74,9 +74,9 @@ namespace Axiom.Demos
 			this.picPreview.Click += new EventHandler( picPreview_Click );
 			this.picPreview.DoubleClick += new EventHandler( cmdOk_Click );
 
-			// 
+			//
 			// grpAvailableDemos
-			// 
+			//
 			this.grpAvailableDemos.Controls.Add( this.lstDemos );
 			this.grpAvailableDemos.Controls.Add( this.picPreview );
 			this.grpAvailableDemos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -91,7 +91,7 @@ namespace Axiom.Demos
 
 			///
 			/// tmrRotator
-			/// 
+			///
 			this.tmrRotator.Interval = 1000;
 			this.tmrRotator.Tick += new EventHandler( tmrRotator_Tick );
 
@@ -109,7 +109,7 @@ namespace Axiom.Demos
 
 		private void tmrRotator_Tick( object sender, EventArgs e )
 		{
-			lstDemos.SelectedIndex = ( lstDemos.SelectedIndex + 1 ) % ( lstDemos.Items.Count);
+			lstDemos.SelectedIndex = ( lstDemos.SelectedIndex + 1 ) % ( lstDemos.Items.Count );
 			this.tmrRotator.Start();
 		}
 
@@ -123,7 +123,7 @@ namespace Axiom.Demos
 
 			try
 			{
-			    image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
+				image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
 			}
 			catch ( Exception )
 			{
@@ -141,13 +141,13 @@ namespace Axiom.Demos
 		{
 			get
 			{
-				return lstDemos.SelectedIndex != -1 ? ((DemoItem)lstDemos.SelectedItem).Demo : null;
+				return lstDemos.SelectedIndex != -1 ? ( (DemoItem)lstDemos.SelectedItem ).Demo : null;
 			}
 		}
 
 		public void LoadDemos( string DemoAssembly )
 		{
-            AxiomSortedCollection<string, DemoItem> demoList = new AxiomSortedCollection<string, DemoItem>();
+			AxiomSortedCollection<string, DemoItem> demoList = new AxiomSortedCollection<string, DemoItem>();
 
 			Assembly demos = Assembly.LoadFrom( DemoAssembly );
 			Type[] demoTypes = demos.GetTypes();
@@ -162,9 +162,9 @@ namespace Axiom.Demos
 				}
 			}
 
-            foreach (KeyValuePair<string, DemoItem> demoItem in demoList)
-            {
-                lstDemos.Items.Add(demoItem.Value);
+			foreach ( KeyValuePair<string, DemoItem> demoItem in demoList )
+			{
+				lstDemos.Items.Add( demoItem.Value );
 			}
 
 			this.lstDemos.SelectedIndexChanged += new EventHandler( lstDemos_SelectedIndexChanged );

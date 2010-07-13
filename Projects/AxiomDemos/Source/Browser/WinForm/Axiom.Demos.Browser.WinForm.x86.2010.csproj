@@ -1201,10 +1201,6 @@
       <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
       <Name>Axiom.RenderSystems.DirectX9.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.2010.csproj">
-      <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.Win32.2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp.2010</Name>

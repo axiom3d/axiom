@@ -1,4 +1,3 @@
-
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -12,8 +11,8 @@ using Axiom.Configuration;
 
 namespace Axiom.Demos
 {
-    public class ConfigDialog : Form, IMessageFilter
-    {
+	public class ConfigDialog : Form, IMessageFilter
+	{
 		// A delegate type for hooking up loaded notifications.
 		public delegate void LoadRenderSystemConfigEventHandler( object sender, RenderSystem rs );
 
@@ -37,7 +36,7 @@ namespace Axiom.Demos
 		protected Label lblOption;
 		protected ComboBox cboOptionValues;
 		protected ListBox lstOptions;
-        protected Button cmdCancel;
+		protected Button cmdCancel;
 		protected Button cmdOk;
 		protected SWF.Panel pnlBackground;
 		protected ComboBox cboRenderSystems;
@@ -69,48 +68,48 @@ namespace Axiom.Demos
 			}
 		}
 
-        public ConfigDialog()
-        {
-            this.SetStyle( ControlStyles.DoubleBuffer, true );
-            InitializeComponent();
+		public ConfigDialog()
+		{
+			this.SetStyle( ControlStyles.DoubleBuffer, true );
+			InitializeComponent();
 
-            try
-            {
+			try
+			{
 				Stream image = ResourceGroupManager.Instance.OpenResource( _logoResourceName, ResourceGroupManager.DefaultResourceGroupName );
 				Stream icon = ResourceGroupManager.Instance.OpenResource( _iconResourceName, ResourceGroupManager.DefaultResourceGroupName );
 
-                if ( image != null )
-                {
-                    this.picLogo.Image = System.Drawing.Image.FromStream( image, true );
-                }
+				if ( image != null )
+				{
+					this.picLogo.Image = System.Drawing.Image.FromStream( image, true );
+				}
 
-                if ( icon != null )
-                {
-                    this.Icon = new Icon( icon );
-                }
+				if ( icon != null )
+				{
+					this.Icon = new Icon( icon );
+				}
 
 				image.Close();
 				icon.Close();
-            }
-            catch ( Exception )
-            {
-            }
-        }
+			}
+			catch ( Exception )
+			{
+			}
+		}
 
-        protected override void Dispose( bool disposing )
-        {
-            if ( disposing )
-            {
-                if ( components != null )
-                {
-                    components.Dispose();
-                }
-            }
-            base.Dispose( disposing );
-        }
+		protected override void Dispose( bool disposing )
+		{
+			if ( disposing )
+			{
+				if ( components != null )
+				{
+					components.Dispose();
+				}
+			}
+			base.Dispose( disposing );
+		}
 
-        private void InitializeComponent()
-        {
+		private void InitializeComponent()
+		{
 			this.picLogo = new System.Windows.Forms.PictureBox();
 			this.grpVideoOptions = new System.Windows.Forms.GroupBox();
 			this.lblOption = new System.Windows.Forms.Label();
@@ -124,9 +123,9 @@ namespace Axiom.Demos
 			( (System.ComponentModel.ISupportInitialize)( this.picLogo ) ).BeginInit();
 			this.grpVideoOptions.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// picLogo
-			// 
+			//
 			this.picLogo.BackColor = System.Drawing.Color.White;
 			this.picLogo.Location = new System.Drawing.Point( 12, 3 );
 			this.picLogo.Name = "picLogo";
@@ -134,9 +133,9 @@ namespace Axiom.Demos
 			this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.picLogo.TabIndex = 3;
 			this.picLogo.TabStop = false;
-			// 
+			//
 			// grpVideoOptions
-			// 
+			//
 			this.grpVideoOptions.Controls.Add( this.lblOption );
 			this.grpVideoOptions.Controls.Add( this.cboOptionValues );
 			this.grpVideoOptions.Controls.Add( this.lstOptions );
@@ -149,9 +148,9 @@ namespace Axiom.Demos
 			this.grpVideoOptions.TabIndex = 6;
 			this.grpVideoOptions.TabStop = false;
 			this.grpVideoOptions.Text = "Rendering System Options";
-			// 
+			//
 			// lblOption
-			// 
+			//
 			this.lblOption.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.lblOption.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblOption.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
@@ -162,9 +161,9 @@ namespace Axiom.Demos
 			this.lblOption.Text = "Option Name:";
 			this.lblOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.lblOption.Visible = false;
-			// 
+			//
 			// cboOptionValues
-			// 
+			//
 			this.cboOptionValues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboOptionValues.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboOptionValues.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
@@ -174,18 +173,18 @@ namespace Axiom.Demos
 			this.cboOptionValues.TabIndex = 8;
 			this.cboOptionValues.Visible = false;
 			this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
-			// 
+			//
 			// lstOptions
-			// 
+			//
 			this.lstOptions.ItemHeight = 14;
 			this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
 			this.lstOptions.Name = "lstOptions";
 			this.lstOptions.Size = new System.Drawing.Size( 407, 130 );
 			this.lstOptions.TabIndex = 0;
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-			// 
+			//
 			// lblRenderer
-			// 
+			//
 			this.lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.lblRenderer.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
@@ -195,20 +194,20 @@ namespace Axiom.Demos
 			this.lblRenderer.TabIndex = 9;
 			this.lblRenderer.Text = "Rendering Subsystem:";
 			this.lblRenderer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
+			//
 			// cboRenderSystems
-			// 
+			//
 			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
 			this.cboRenderSystems.Name = "cboRenderSystems";
 			this.cboRenderSystems.Size = new System.Drawing.Size( 285, 24 );
 			this.cboRenderSystems.TabIndex = 8;
 			this.cboRenderSystems.SelectedIndexChanged += new System.EventHandler( this.RenderSystems_SelectedIndexChanged );
-			// 
+			//
 			// cmdCancel
-			// 
+			//
 			this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cmdCancel.Location = new System.Drawing.Point( 355, 408 );
@@ -217,9 +216,9 @@ namespace Axiom.Demos
 			this.cmdCancel.TabIndex = 10;
 			this.cmdCancel.Text = "Cancel";
 			this.cmdCancel.Click += new System.EventHandler( this.cmdCancel_Click );
-			// 
+			//
 			// cmdOk
-			// 
+			//
 			this.cmdOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.cmdOk.Location = new System.Drawing.Point( 261, 408 );
@@ -228,17 +227,17 @@ namespace Axiom.Demos
 			this.cmdOk.TabIndex = 11;
 			this.cmdOk.Text = "Ok";
 			this.cmdOk.Click += new System.EventHandler( this.cmdOk_Click );
-			// 
+			//
 			// pnlBackground
-			// 
+			//
 			this.pnlBackground.BackColor = System.Drawing.Color.White;
 			this.pnlBackground.Location = new System.Drawing.Point( -2, 3 );
 			this.pnlBackground.Name = "pnlBackground";
 			this.pnlBackground.Size = new System.Drawing.Size( 446, 174 );
 			this.pnlBackground.TabIndex = 12;
-			// 
+			//
 			// ConfigDialog
-			// 
+			//
 			this.ClientSize = new System.Drawing.Size( 442, 436 );
 			this.ControlBox = false;
 			this.Controls.Add( this.cmdOk );
@@ -260,101 +259,101 @@ namespace Axiom.Demos
 			this.grpVideoOptions.ResumeLayout( false );
 			this.ResumeLayout( false );
 
-        }
+		}
 
-        protected void cmdOk_Click( object sender, EventArgs e )
-        {
-            Root.Instance.RenderSystem = (RenderSystem)cboRenderSystems.SelectedItem;
+		protected void cmdOk_Click( object sender, EventArgs e )
+		{
+			Root.Instance.RenderSystem = (RenderSystem)cboRenderSystems.SelectedItem;
 
-            RenderSystem system = Root.Instance.RenderSystem;
+			RenderSystem system = Root.Instance.RenderSystem;
 
-            foreach ( ConfigOption opt in lstOptions.Items )
-            {
-               system.ConfigOptions[ opt.Name ] = opt;
-            }
+			foreach ( ConfigOption opt in lstOptions.Items )
+			{
+				system.ConfigOptions[ opt.Name ] = opt;
+			}
 
 			SaveRenderSystemConfig( this, system );
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
+			this.DialogResult = DialogResult.OK;
+			this.Close();
+		}
 
-        protected void cmdCancel_Click( object sender, EventArgs e )
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Dispose();
-        }
+		protected void cmdCancel_Click( object sender, EventArgs e )
+		{
+			this.DialogResult = DialogResult.Cancel;
+			this.Dispose();
+		}
 
-        private void ConfigDialog_Load( object sender, EventArgs e )
-        {
+		private void ConfigDialog_Load( object sender, EventArgs e )
+		{
 			// Register [Enter] and [Esc] keys for Default buttons
 			Application.AddMessageFilter( this );
 			cmdOk.NotifyDefault( true );
 
-            foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
-            {
+			foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
+			{
 				LoadRenderSystemConfig( this, renderSystem );
-                cboRenderSystems.Items.Add( renderSystem );
-            }
+				cboRenderSystems.Items.Add( renderSystem );
+			}
 
-            if ( cboRenderSystems.Items.Count > 0 )
-                cboRenderSystems.SelectedIndex = 0;
-        }
+			if ( cboRenderSystems.Items.Count > 0 )
+				cboRenderSystems.SelectedIndex = 0;
+		}
 
-        private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
-        {
-            lstOptions.Items.Clear();
-            cboOptionValues.Items.Clear();
-            RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
-            ConfigOption optVideoMode;
+		private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			lstOptions.Items.Clear();
+			cboOptionValues.Items.Clear();
+			RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
+			ConfigOption optVideoMode;
 
-            // Load Render Subsystem Options
-            foreach ( ConfigOption option in system.ConfigOptions.Values )
-            {
-                lstOptions.Items.Add( option );
-            }
+			// Load Render Subsystem Options
+			foreach ( ConfigOption option in system.ConfigOptions.Values )
+			{
+				lstOptions.Items.Add( option );
+			}
 
-        }
+		}
 
-        private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
-        {
+		private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
+		{
 
 			this.cboOptionValues.SelectedIndexChanged -= new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
-			
+
 			RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
-            ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
+			ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
 
-            cboOptionValues.Items.Clear();
-            foreach ( string value in opt.PossibleValues.Values )
-                cboOptionValues.Items.Add( value );
+			cboOptionValues.Items.Clear();
+			foreach ( string value in opt.PossibleValues.Values )
+				cboOptionValues.Items.Add( value );
 
-            if ( cboOptionValues.Items.Count == 0 )
-            {
-                cboOptionValues.Items.Add( opt.Value );
-            }
-            cboOptionValues.SelectedIndex = cboOptionValues.Items.IndexOf( opt.Value );
+			if ( cboOptionValues.Items.Count == 0 )
+			{
+				cboOptionValues.Items.Add( opt.Value );
+			}
+			cboOptionValues.SelectedIndex = cboOptionValues.Items.IndexOf( opt.Value );
 
-            this.lblOption.Text = opt.Name;
-            this.lblOption.Visible = true;
-            this.cboOptionValues.Visible = true;
-            this.cboOptionValues.Enabled = ( !opt.Immutable );
+			this.lblOption.Text = opt.Name;
+			this.lblOption.Visible = true;
+			this.cboOptionValues.Visible = true;
+			this.cboOptionValues.Enabled = ( !opt.Immutable );
 
 			this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
-        }
+		}
 
-        private void cboOptionValues_SelectedIndexChanged( object sender, EventArgs e )
-        {
-            ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
-            string value = (string)cboOptionValues.SelectedItem;
+		private void cboOptionValues_SelectedIndexChanged( object sender, EventArgs e )
+		{
+			ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
+			string value = (string)cboOptionValues.SelectedItem;
 
-            opt.Value = value;
+			opt.Value = value;
 
 			this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
 			for ( int index = 0; index < this.lstOptions.Items.Count; index++ )
 			{
 				lstOptions.Items[ index ] = lstOptions.Items[ index ];
 			}
-			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );				
+			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
 
 		}
 
@@ -375,6 +374,6 @@ namespace Axiom.Demos
 			}
 			return false;
 		}
-		#endregion
+		#endregion IMessageFilter Members
 	}
 }

@@ -3,9 +3,9 @@
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
@@ -42,22 +42,22 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    /// Summary description for DriverCollection.
-    /// </summary>
-    public class DriverCollection : List<Driver>
-    {
+	/// <summary>
+	/// Summary description for DriverCollection.
+	/// </summary>
+	public class DriverCollection : List<Driver>
+	{
 		public Driver this[ string description ]
-        {
-            get
-            {
+		{
+			get
+			{
 				foreach ( Driver drv in this )
-                {
-                    if ( drv.Description == description )
-                        return drv;
-                }
-                return null;
-            }
+				{
+					if ( drv.Description == description )
+						return drv;
+				}
+				return null;
+			}
 		}
-    }
+	}
 }
