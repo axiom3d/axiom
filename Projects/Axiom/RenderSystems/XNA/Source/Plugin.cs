@@ -64,9 +64,6 @@ namespace Axiom.RenderSystems.Xna
         {
             // add an instance of this plugin to the list of available RenderSystems
             Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
-
-            // override default ResourceGroupManager and leverage the ContentPipeline
-            new XnaResourceGroupManager();
         }
 
         public void Shutdown()

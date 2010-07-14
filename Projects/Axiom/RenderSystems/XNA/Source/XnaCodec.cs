@@ -146,11 +146,13 @@ namespace Axiom.RenderSystems.Xna
         /// </remarks>
         public void Initialize()
         {
+#if ( XBOX || XBOX360 )
             CodecManager.Instance.RegisterCodec( new XnaCodec( "png" ) );
             CodecManager.Instance.RegisterCodec( new XnaCodec( "jpg" ) );
             CodecManager.Instance.RegisterCodec( new XnaCodec( "gif" ) );
             CodecManager.Instance.RegisterCodec( new XnaCodec( "dds" ) );
             CodecManager.Instance.RegisterCodec( new XnaCodec( "bmp" ) );
+#endif
         }
 
         /// <summary>

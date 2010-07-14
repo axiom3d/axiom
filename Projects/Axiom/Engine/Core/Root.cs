@@ -42,17 +42,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.FileSystem;
 using Axiom.Fonts;
 using Axiom.Graphics;
-using Axiom.Graphics.Collections;
 using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
@@ -115,27 +116,17 @@ namespace Axiom.Core
 				this.logMgr.Write( info.ToString() );
 				this.logMgr.Write( "*-*-* Axiom Intializing" );
 
-				new CodecManager();
-				this.sceneManagerEnumerator = SceneManagerEnumerator.Instance;
-
-				new PluginManager();
-				PluginManager.Instance.LoadAll();
-				if ( ResourceGroupManager.Instance == null )
-				{
-					new ResourceGroupManager();
-				}
-				ResourceGroupManager.Instance.Initialize();
-				new HighLevelGpuProgramManager();
-				new ParticleSystemManager();
-
 				ArchiveManager.Instance.Initialize();
-				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
-				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
 
+				new ResourceGroupManager();
+				ResourceGroupManager.Instance.Initialize();
+
+				this.sceneManagerEnumerator = SceneManagerEnumerator.Instance;
 
 				MaterialManager mat = MaterialManager.Instance;
 				MeshManager mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
+				new ParticleSystemManager();
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 				new PlatformManager();
 #endif
@@ -148,14 +139,22 @@ namespace Axiom.Core
 				OverlayManager.Instance.Initialize();
 				new OverlayElementManager();
 
+				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
+				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
+
+				new CodecManager();
+
+				new HighLevelGpuProgramManager();
 				CompositorManager.Instance.Initialize();
 
 				LodStrategyManager.Instance.Initialize();
 
 #if !AXIOM_USENEWCOMPILERS
 				ScriptCompilerManager.Instance.Initialize();
-#endif
-				// AXIOM_USENEWCOMPILERS
+#endif // AXIOM_USENEWCOMPILERS
+
+				new PluginManager();
+				PluginManager.Instance.LoadAll();
 
 				// instantiate and register base movable factories
 				this.entityFactory = new EntityFactory();
@@ -326,7 +325,6 @@ namespace Axiom.Core
 		private float microsecondsPerTick;
 
 		private readonly ChainedEvent<FrameEventArgs> _frameStartedEvent = new ChainedEvent<FrameEventArgs>();
-
 		/// <summary>
 		/// Fired as a frame is about to be rendered.
 		/// </summary>
@@ -343,7 +341,6 @@ namespace Axiom.Core
 		}
 
 		private readonly ChainedEvent<FrameEventArgs> _frameEndedEvent = new ChainedEvent<FrameEventArgs>();
-
 		/// <summary>
 		/// Fired after a frame has completed rendering.
 		/// </summary>
@@ -360,7 +357,6 @@ namespace Axiom.Core
 		}
 
 		private readonly ChainedEvent<FrameEventArgs> _frameRenderingQueuedEvent = new ChainedEvent<FrameEventArgs>();
-
 		/// <summary>
 		/// Fired after a frame has completed rendering.
 		/// </summary>
@@ -388,10 +384,10 @@ namespace Axiom.Core
 			get
 			{
 				AssemblyCopyrightAttribute attribute =
-					(AssemblyCopyrightAttribute)
-					Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
-												  typeof( AssemblyCopyrightAttribute ),
-												  false );
+						(AssemblyCopyrightAttribute)
+						Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
+													  typeof( AssemblyCopyrightAttribute ),
+													  false );
 
 				if ( attribute != null )
 				{
@@ -517,10 +513,10 @@ namespace Axiom.Core
 			get
 			{
 				return
-					(int)
-					( ( this.microsecondsPerFrame == 0 )
-						? this.microsecondsPerFrame
-						: ( 1000000.0f / this.microsecondsPerFrame ) );
+						(int)
+						( ( this.microsecondsPerFrame == 0 )
+								  ? this.microsecondsPerFrame
+								  : ( 1000000.0f / this.microsecondsPerFrame ) );
 			}
 			set
 			{
@@ -1364,7 +1360,7 @@ namespace Axiom.Core
 			if ( this.nextMovableObjectTypeFlag == (uint)SceneQueryTypeMask.UserLimit )
 			{
 				throw new AxiomException(
-					"Cannot allocate a type flag since all the available flags have been used." );
+						"Cannot allocate a type flag since all the available flags have been used." );
 			}
 
 			uint ret = this.nextMovableObjectTypeFlag;
@@ -1463,8 +1459,7 @@ namespace Axiom.Core
 			// Save
 			this.movableObjectFactoryMap.Add( fact.Type, fact );
 
-			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type +
-									   "'." );
+			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type + "'." );
 		}
 
 		public MovableObjectFactoryMap MovableObjectFactories
