@@ -76,6 +76,31 @@ namespace Axiom.FileSystem
 
         #region Utility Methods
 
+        protected delegate void Action();
+
+        protected void SafeDirectoryChange( string directory, Action action )
+        {
+            if ( Directory.Exists( directory ) )
+            {
+                // Check we can change to it
+                pushDirectory( _basePath );
+
+                try
+                {
+                    action();
+                }
+                catch ( Exception ex )
+                {
+                    LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+                }
+                finally
+                {
+                    // return to previous
+                    popDirectory();
+                }
+            }
+        }
+
         /// <overloads>
         /// <summary>
         /// Utility method to retrieve all files in a directory matching pattern.
@@ -121,7 +146,7 @@ namespace Axiom.FileSystem
                 {
                     FileInfo fileInfo;
                     fileInfo.Archive = this;
-                    fileInfo.Filename = fi.FullName.Substring( currentDir.Length );
+                    fileInfo.Filename = fi.FullName;
                     fileInfo.Basename = fi.FullName.Substring( currentDir.Length );
                     fileInfo.Path = currentDir;
                     fileInfo.CompressedSize = fi.Length;
@@ -192,37 +217,32 @@ namespace Axiom.FileSystem
         public override void Load()
         {
             _basePath = Path.GetFullPath( Name ) + Path.DirectorySeparatorChar;
-
-            // Check we can change to it
-            pushDirectory( _basePath );
-
-            // check to see if it's writable
-            try
-            {
-#if !( XBOX || XBOX360 )
-                File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
-#else
-                File.Create(_basePath + @"__testWrite.Axiom", 1 );
-#endif
-            }
-            catch ( Exception ex )
-            {
-                IsReadOnly = true;
-            }
-            finally
-            {
-                // return to previous
-                popDirectory();
-            }
-
             IsReadOnly = false;
+
+            SafeDirectoryChange( _basePath, () =>
+                                            {
+                                                try
+                                                {
+                                                
+#if !( XBOX || XBOX360 )
+                                                    File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
+#else
+                                                    File.Create(_basePath + @"__testWrite.Axiom", 1 );
+#endif
+                                                }
+                                                catch( Exception ex )
+                                                {
+                                                    IsReadOnly = true;
+                                                }
+                                            } );
+
         }
 
         public override Stream Create( string filename, bool overwrite )
         {
             if ( IsReadOnly )
             {
-                throw new AxiomException( "Cannot create a file in a read-only archive" );
+                throw new AxiomException( "Cannot create a file in a read-only archive." );
             }
 
             Stream stream = null;
@@ -260,13 +280,14 @@ namespace Axiom.FileSystem
         {
             Stream strm = null;
 
-            pushDirectory( _basePath );
-            if ( File.Exists( _basePath + filename ) )
-            {
-                System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
-                strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
-            }
-            popDirectory();
+            SafeDirectoryChange( _basePath, () =>
+                                            {
+                                                if ( File.Exists( _basePath + filename ) )
+                                                {
+                                                    System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
+                                                    strm = (Stream) fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+                                                }
+                                            } );
 
             return strm;
         }
@@ -283,39 +304,25 @@ namespace Axiom.FileSystem
 
         public override List<string> Find( string pattern, bool recursive )
         {
-            pushDirectory( _basePath );
-
             List<string> ret = new List<string>();
 
-            findFiles( pattern, recursive, ret, null );
-
-            popDirectory();
+            SafeDirectoryChange( _basePath, () => findFiles( pattern, recursive, ret, null ) );
 
             return ret;
         }
 
         public override FileInfoList FindFileInfo( string pattern, bool recursive )
         {
-            pushDirectory( _basePath );
-
             FileInfoList ret = new FileInfoList();
 
-            findFiles( pattern, recursive, null, ret );
-
-            popDirectory();
+            SafeDirectoryChange( _basePath, () => findFiles( pattern, recursive, null, ret ) );
 
             return ret;
         }
 
         public override bool Exists( string fileName )
         {
-            pushDirectory( _basePath );
-
-            bool retVal = File.Exists( _basePath + fileName );
-
-            popDirectory();
-
-            return retVal;
+            return File.Exists( _basePath + fileName );
         }
 
         #endregion Archive Implementation
