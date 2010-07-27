@@ -163,6 +163,19 @@
       <Processor>PassThroughProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="Materials\Programs\TerrainFP.hlsl">
+      <Name>TerrainFP</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <ProcessorParameters_EntryPoint>FP</ProcessorParameters_EntryPoint>
+    </Compile>
+    <Compile Include="Materials\Programs\TerrainVS.hlsl">
+      <Name>TerrainVS</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+      <ProcessorParameters_EntryPoint>VS</ProcessorParameters_EntryPoint>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\..\..\..\..\Media\Textures\terrain.png">
@@ -203,6 +216,9 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

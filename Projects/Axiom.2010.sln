@@ -146,6 +146,7 @@ Global
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Debug|Mixed Platforms.Build.0 = Debug|x64
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Debug|x86.ActiveCfg = Debug|x86
+		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Debug|x86.Build.0 = Debug|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Mono-Debug|Mixed Platforms.ActiveCfg = Mono-Debug|x64
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Mono-Debug|Mixed Platforms.Build.0 = Mono-Debug|x64
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Mono-Debug|x86.ActiveCfg = Mono-Debug|x86
@@ -337,6 +338,7 @@ Global
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|x86.ActiveCfg = Debug|x86
+		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Debug|x86.Build.0 = Debug|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Mono-Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Mono-Debug|Mixed Platforms.Build.0 = Debug|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Mono-Debug|x86.ActiveCfg = Debug|x86
@@ -425,8 +427,8 @@ Global
 		{721891E7-3A22-4679-9233-73C05301057D} = {E8E2F297-B384-4311-B5C0-F6AB9354D91B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_RulesLocation = 0
 		CodeStyleEnforcer_Active = -1
+		CodeStyleEnforcer_RulesLocation = 0
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1

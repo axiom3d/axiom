@@ -34,16 +34,20 @@ namespace Axiom.Demos.Browser.Xna
 
         private bool _configure()
         {
-#if (XBOX || XBOX360)
             new XnaResourceGroupManager();
-#endif
 
             // instantiate the Root singleton
             engine = new Root( titleLocation + "AxiomDemos.log" );
+
 #if (XBOX || XBOX360)
             ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
-            ( new Axiom.RenderSystems.Xna.XnaCodecPlugin() ).Initialize();
 #endif
+
+            XnaResourceGroupManager.Instance.Initialize( new string[]
+                                                         {
+                                                             "png", "jpg", "bmp", "dds", "jpeg", "tiff"
+                                                         } );
+
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
 
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
