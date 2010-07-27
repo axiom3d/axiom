@@ -34,14 +34,60 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
+
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
+    #region LogListenerEventArgs Class
+    /// <summary>
+    /// 
+    /// </summary>
+    public class LogListenerEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The message to be logged
+        /// </summary>
+        public string Message { get; private set; }
+
+        /// <summary>
+        /// The message level the log is using
+        /// </summary>
+        public LogMessageLevel Level { get; private set; }
+
+        /// <summary>
+        /// If we are printing to the console or not
+        /// </summary>
+        public bool MaskDebug { get; private set; }
+
+        /// <summary>
+        /// the name of this log (so you can have several listeners for different logs, and identify them)
+        /// </summary>
+        public string LogName { get; private set; }
+
+        /// <summary>
+        /// This is called whenever the log recieves a message and is about to write it out
+        /// </summary>
+        /// <param name="message">The message to be logged</param>
+        /// <param name="lml">The message level the log is using</param>
+        /// <param name="maskDebug">If we are printing to the console or not</param>
+        /// <param name="logName">the name of this log (so you can have several listeners for different logs, and identify them)</param>
+        public LogListenerEventArgs(string message, LogMessageLevel lml, bool maskDebug, string logName)
+            : base()
+        {
+            this.Message    = message;
+            this.Level      = lml;
+            this.MaskDebug  = maskDebug;
+            this.LogName    = logName;
+        }
+    }
+    #endregion LogListenerEventArgs Class
+
+    #region Log Class
+    /// <summary>
 	///     Log class for writing debug/log data to files.
 	/// </summary>
 	public sealed class Log : IDisposable
@@ -73,7 +119,11 @@ namespace Axiom.Core
 		/// </summary>
 		const int LogThreshold = 4;
 
-		#endregion Fields
+        private string mLogName;
+
+        #endregion Fields
+
+        public event EventHandler<LogListenerEventArgs> MessageLogged;
 
 		#region Constructors
 
@@ -93,6 +143,9 @@ namespace Axiom.Core
 		/// <param name="debugOutput">Write log messages to the debug output?</param>
 		public Log( string fileName, bool debugOutput )
 		{
+            this.mLogName       = fileName;
+            this.MessageLogged  = null;
+
 			this.debugOutput = debugOutput;
 			logLevel = LoggingLevel.Normal;
 
@@ -142,7 +195,7 @@ namespace Axiom.Core
 
 		#region Methods
 
-		/// <summary>
+        /// <summary>
 		///     Write a message to the log.
 		/// </summary>
 		/// <remarks>
@@ -217,7 +270,19 @@ namespace Axiom.Core
 				writer.WriteLine( message );
 				//writer auto-flushes
 			}
+
+            FireMessageLogged(level, maskDebug, message);
 		}
+
+        private void FireMessageLogged(LogMessageLevel level, bool maskDebug, string message)
+        {
+            // Now fire the MessageLogged event
+            if (this.MessageLogged != null)
+            {
+                LogListenerEventArgs args = new LogListenerEventArgs(message, level, maskDebug, this.mLogName);
+                this.MessageLogged(this, args);
+            }
+        }
 
 		#endregion Methods
 
@@ -235,15 +300,17 @@ namespace Axiom.Core
 			{
 				if ( writer != null )
 					writer.Close();
-				if ( log != null )
+
+                if ( log != null )
 					log.Close();
 			}
-			catch ( Exception ex )
+			catch
 			{
 			}
 			_isDisposed = true;
 		}
 
 		#endregion IDisposable Members
-	}
+    }
+    #endregion Log Class
 }
