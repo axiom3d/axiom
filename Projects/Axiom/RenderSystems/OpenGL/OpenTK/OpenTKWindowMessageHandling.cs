@@ -38,6 +38,7 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using System.Runtime.InteropServices;
+using OpenTK;
 
 #endregion Namespace Declarations
 
@@ -63,6 +64,15 @@ namespace Axiom.RenderSystems.OpenGL
 
         static public void MessagePump()
         {
+            foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
+            {
+                var window = renderWindow[ "WINDOW" ];
+                if ( null != window && window is INativeWindow )
+                {
+                    ((INativeWindow)window).ProcessEvents();
+                }
+                
+            }
             // TODO: implement MessagePump 
         }
 

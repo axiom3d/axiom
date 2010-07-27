@@ -47,7 +47,9 @@ namespace Axiom.Core.Collections
     /// <summary>
     ///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
     /// </summary>
+#if !( SILVERLIGHT )
     [Serializable]
+#endif
     public class NodeCollection : AxiomCollection<Node>
     {
         #region Instance Methods

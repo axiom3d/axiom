@@ -133,7 +133,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			if ( mouse == null ) return;
 
-			INativeWindow window = (INativeWindow)parent[ "window" ];
+			NativeWindow window = (NativeWindow)parent[ "window" ];
 
 			isVisible = window.WindowState != WindowState.Minimized && window.Focused;
 
@@ -194,16 +194,16 @@ namespace Axiom.Platforms.OpenTK
 
 			if ( window == null )
 				return;
-
-			keyboard = new KeyboardDevice();
+            
+			keyboard = window.InputDriver.Keyboard[0];
 			//keyboard = window.Keyboard;
 
 			if ( useMouse )
 			{
-				//mouse = window.Mouse;
+				mouse = window.InputDriver.Mouse[0];
 				if ( ownMouse )
 				{
-					this.ownMouse = true;
+					this.ownMouse = true;                    
 					System.Windows.Forms.Cursor.Hide();
 				}
 				// mouse starts out in the center of the window
