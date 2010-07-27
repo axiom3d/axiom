@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -126,6 +126,10 @@
     </None>
     <None Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.OpenGl\Tao.OpenGl.dll.config">
       <Link>Tao.OpenGl.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\hdr.cg">
+      <Link>Media\GpuPrograms\hdr.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">

@@ -241,7 +241,7 @@ namespace Axiom.RenderSystems.OpenGL
                 FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo(ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico");
                 if (ico.Count != 0)
                 {
-                    _window.Icon = System.Drawing.Icon.ExtractAssociatedIcon(ico[0].Filename);
+                    _window.Icon = System.Drawing.Icon.ExtractAssociatedIcon(ico[0].Path + ico[0].Filename);
                 }
 
                 if (fullScreen)
