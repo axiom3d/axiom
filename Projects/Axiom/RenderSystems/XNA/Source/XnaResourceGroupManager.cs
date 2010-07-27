@@ -50,6 +50,23 @@ namespace Axiom.RenderSystems.Xna
 {
     public class XnaResourceGroupManager : ResourceGroupManager
     {
+        public override bool Initialize( params object[] args )
+        {
+            if ( args.Length == 0 )
+            {
+                base.Initialize( args );
+            }
+
+            else
+            {
+                foreach ( var codec in args )
+                {
+                    CodecManager.Instance.RegisterCodec( new XnaCodec( (string)codec ) );
+                }
+            }
+            return true;
+        }
+
         public override System.IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
         {
             string extension = System.IO.Path.GetExtension( resourceName ).Substring( 1 );
