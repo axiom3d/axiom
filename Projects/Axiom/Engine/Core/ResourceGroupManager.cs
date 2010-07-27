@@ -2529,7 +2529,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public bool Initialize( params object[] args )
+		public virtual bool Initialize( params object[] args )
 		{
 			// Create the 'General' group
 			CreateResourceGroup( DefaultResourceGroupName );
