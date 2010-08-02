@@ -94,6 +94,7 @@ namespace Axiom.Demos
 			catch ( Exception )
 			{
 			}
+		    cboRenderSystems.Enabled = false;
 		}
 
 		protected override void Dispose( bool disposing )

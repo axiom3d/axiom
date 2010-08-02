@@ -1783,7 +1783,9 @@ namespace Axiom.Core
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			this.customParams[ index ] = val;
+            while ( customParams.Count <= index )
+                customParams.Add( Vector4.Zero );
+            this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry,

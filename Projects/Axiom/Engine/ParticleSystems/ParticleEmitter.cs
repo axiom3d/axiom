@@ -924,15 +924,13 @@ namespace Axiom.ParticleSystems
 		public virtual void CopyTo( ParticleEmitter emitter )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( DictionaryEntry entry in commandTable )
+			foreach ( string key  in commandTable.Keys )
 			{
-				string name = (string)entry.Key;
-
 				// get the value of the param from this instance
-				string val = ( (IPropertyCommand)entry.Value ).Get( this );
+				string val = ( (IPropertyCommand)commandTable[key] ).Get( this );
 
 				// set the param on the target instance
-				emitter.SetParam( name, val );
+				emitter.SetParam( key, val );
 			}
 		}
 
