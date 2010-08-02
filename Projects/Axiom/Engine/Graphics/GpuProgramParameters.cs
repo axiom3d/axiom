@@ -182,9 +182,9 @@ namespace Axiom.Graphics
             }
 
             // copy named params
-            foreach (DictionaryEntry e in namedParams)
+            foreach ( string key in namedParams.Keys)
             {
-                p.MapParamNameToIndex(e.Key as string, (int)e.Value);
+                p.MapParamNameToIndex(key, namedParams[key]);
             }
 
             for (int i = 0; i < paramTypeList.Count; i++)

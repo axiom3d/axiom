@@ -130,18 +130,16 @@ namespace Axiom.ParticleSystems
 		/// <param name="emitter"></param>
 		public virtual void CopyTo( ParticleAffector affector )
 		{
-			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( DictionaryEntry entry in commandTable )
-			{
-				string name = (string)entry.Key;
+            // loop through all registered commands and copy from this instance to the target instance
+            foreach ( string key in commandTable.Keys )
+            {
+                // get the value of the param from this instance
+                string val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
 
-				// get the value of the param from this instance
-				string val = ( (IPropertyCommand)entry.Value ).Get( this );
-
-				// set the param on the target instance
-				affector.SetParam( name, val );
-			}
-		}
+                // set the param on the target instance
+                affector.SetParam( key, val );
+            }
+        }
 
 		/// <summary>
 		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.

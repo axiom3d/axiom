@@ -524,6 +524,8 @@ namespace Axiom.Core
 
 			public void SetCustomParameter( int index, Vector4 val )
 			{
+                while ( customParams.Count <= index )
+                    customParams.Add( Vector4.Zero );
 				customParams[ index ] = val;
 			}
 

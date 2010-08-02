@@ -44,6 +44,7 @@ using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -69,7 +70,7 @@ namespace Axiom.SceneManagers.Octree
 		protected int numMipMaps;
 		protected int size;
 		protected float[] minLevelDistSqr;
-		protected Hashtable customParams = new Hashtable();
+	    protected List<Vector4> customParams = new List<Vector4>();
 
 		const int POSITION = 0;
 		const int NORMAL = 1;
@@ -995,7 +996,9 @@ namespace Axiom.SceneManagers.Octree
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			customParams[ index ] = val;
+            while ( customParams.Count <= index )
+                customParams.Add( Vector4.Zero );
+            customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
