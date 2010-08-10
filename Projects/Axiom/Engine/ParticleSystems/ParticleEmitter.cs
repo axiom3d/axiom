@@ -306,27 +306,27 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the maximum angle away from the emitter direction which particle will be emitted.
-		/// </summary>
-		/// <remarks>
-		///		Whilst the direction property defines the general direction of emission for particles,
-		///		this property defines how far the emission angle can deviate away from this base direction.
-		///		This allows you to create a scatter effect - if set to 0, all particles will be emitted
-		///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
-		///		will be emitted in a sphere, i.e. in all directions.
-		/// </remarks>
-		public virtual float Angle
-		{
-			get
-			{
-				return Utility.RadiansToDegrees( angle );
-			}
-			set
-			{
-				angle = Utility.DegreesToRadians( value );
-			}
-		}
+        /// <summary>
+        ///		Gets/Sets the maximum angle away from the emitter direction which particle will be emitted.
+        /// </summary>
+        /// <remarks>
+        ///		Whilst the direction property defines the general direction of emission for particles, 
+        ///		this property defines how far the emission angle can deviate away from this base direction.
+        ///		This allows you to create a scatter effect - if set to 0, all particles will be emitted
+        ///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
+        ///		will be emitted in a sphere, i.e. in all directions.
+        /// </remarks>
+        public virtual float Angle
+        {
+            get
+            {
+                return Utility.RadiansToDegrees( (Real)angle );
+            }
+            set
+            {
+                angle = Utility.DegreesToRadians((Real)value);
+            }
+        }
 
 		/// <summary>
 		///		Gets/Sets the initial velocity of particles emitted.

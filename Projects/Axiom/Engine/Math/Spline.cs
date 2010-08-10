@@ -158,7 +158,7 @@ namespace Axiom.Math
         /// </remarks>
         /// <param name="t">Parametric value.</param>
         /// <returns>An interpolated point along the spline.</returns>
-        abstract public T Interpolate( float t );
+        abstract public T Interpolate(Real t);
 
         /// <summary>
         ///		Interpolates a single segment of the spline given a parametric value.
@@ -166,7 +166,7 @@ namespace Axiom.Math
         /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
         /// <param name="t">Parametric value</param>
         /// <returns>An interpolated point along the spline.</returns>
-        abstract public T Interpolate( int index, float t );
+        abstract public T Interpolate(int index, Real t);
 
         #endregion Methods
     }

@@ -74,9 +74,9 @@ namespace Axiom.Math
 		/// <summary>
 		/// 
 		/// </summary>
-		public float m00, m01, m02;
-		public float m10, m11, m12;
-		public float m20, m21, m22;
+		public Real m00, m01, m02;
+		public Real m10, m11, m12;
+		public Real m20, m21, m22;
 
 		private static readonly Matrix3 identityMatrix = new Matrix3( 1, 0, 0,
 			0, 1, 0,
@@ -93,9 +93,9 @@ namespace Axiom.Math
 		/// <summary>
 		///		Creates a new Matrix3 with all the specified parameters.
 		/// </summary>
-		public Matrix3( float m00, float m01, float m02,
-			float m10, float m11, float m12,
-			float m20, float m21, float m22 )
+		public Matrix3( Real m00, Real m01, Real m02,
+			Real m10, Real m11, Real m12,
+			Real m20, Real m21, Real m22 )
 		{
 			this.m00 = m00;
 			this.m01 = m01;
@@ -179,7 +179,7 @@ namespace Axiom.Math
 
 			unsafe
 			{
-				fixed ( float* pM = &m00 )
+				fixed ( Real* pM = &m00 )
 					return new Vector3( *( pM + col ),        //m[0,col], 
 									    *( pM + 3 + col ),    //m[1,col], 
 										*( pM + 6 + col ) );  //m[2,col]);
@@ -220,10 +220,10 @@ namespace Axiom.Math
 		/// <param name="yaw"></param>
 		/// <param name="pitch"></param>
 		/// <param name="roll"></param>
-		public void FromEulerAnglesXYZ( float yaw, float pitch, float roll )
+		public void FromEulerAnglesXYZ( Real yaw, Real pitch, Real roll )
 		{
-			float cos = Utility.Cos( yaw );
-			float sin = Utility.Sin( yaw );
+			Real cos = Utility.Cos( yaw );
+			Real sin = Utility.Sin( yaw );
 			Matrix3 xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
 
 			cos = Utility.Cos( pitch );
@@ -254,7 +254,7 @@ namespace Axiom.Math
                 else
                 {
                     // WARNING. Not a unique solution.
-                    float fRmY = (float)Utility.ATan2( -m20, m22 );
+                    Real fRmY = (Real)Utility.ATan2( -m20, m22 );
                     rAngle = 0.0f; // any angle works
                     yAngle = rAngle - fRmY;
                 }
@@ -373,7 +373,7 @@ namespace Axiom.Math
 		/// <param name="matrix"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Matrix3 Multiply( Matrix3 matrix, float scalar )
+		public static Matrix3 Multiply( Matrix3 matrix, Real scalar )
 		{
 			return matrix * scalar;
 		}
@@ -384,7 +384,7 @@ namespace Axiom.Math
 		/// <param name="matrix"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Matrix3 operator *( Matrix3 matrix, float scalar )
+		public static Matrix3 operator *( Matrix3 matrix, Real scalar )
 		{
 			Matrix3 result = new Matrix3();
 
@@ -407,7 +407,7 @@ namespace Axiom.Math
 		/// <param name="matrix"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Matrix3 Multiply( float scalar, Matrix3 matrix )
+		public static Matrix3 Multiply( Real scalar, Matrix3 matrix )
 		{
 			return scalar * matrix;
 		}
@@ -418,7 +418,7 @@ namespace Axiom.Math
 		/// <param name="matrix"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Matrix3 operator *( float scalar, Matrix3 matrix )
+		public static Matrix3 operator *( Real scalar, Matrix3 matrix )
 		{
 			Matrix3 result = new Matrix3();
 
@@ -559,7 +559,7 @@ namespace Axiom.Math
 		/// <summary>
 		/// Indexer for accessing the matrix like a 2d array (i.e. matrix[2,3]).
 		/// </summary>
-		public float this[ int row, int col ]
+		public Real this[ int row, int col ]
 		{
 			get
 			{
@@ -567,7 +567,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pM = &m00 )
+					fixed ( Real* pM = &m00 )
 						return *( pM + ( ( 3 * row ) + col ) );
 				}
 			}
@@ -577,7 +577,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pM = &m00 )
+					fixed ( Real* pM = &m00 )
 						*( pM + ( ( 3 * row ) + col ) ) = value;
 				}
 			}
@@ -586,7 +586,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Allows the Matrix to be accessed linearly (m[0] -> m[8]).  
 		/// </summary>
-		public float this[ int index ]
+		public Real this[ int index ]
 		{
 			get
 			{
@@ -594,7 +594,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -606,7 +606,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -618,15 +618,15 @@ namespace Axiom.Math
 
 		#region Properties
 
-		public float Determinant
+		public Real Determinant
 		{
 			get
 			{
-				float cofactor00 = m11 * m22 - m12 * m21;
-				float cofactor10 = m12 * m20 - m10 * m22;
-				float cofactor20 = m10 * m21 - m11 * m20;
+				Real cofactor00 = m11 * m22 - m12 * m21;
+				Real cofactor10 = m12 * m20 - m10 * m22;
+				Real cofactor20 = m10 * m21 - m11 * m20;
 
-				float result =
+				Real result =
 					m00 * cofactor00 +
 					m01 * cofactor10 +
 					m02 * cofactor20;
@@ -670,7 +670,7 @@ namespace Axiom.Math
 
 			unsafe
 			{
-				fixed ( float* pM = &m00 )
+				fixed ( Real* pM = &m00 )
 				{
 					for ( int i = 0; i < 9; i++ )
 						hashCode ^= (int)( *( pM + i ) );

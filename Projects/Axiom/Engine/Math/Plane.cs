@@ -71,7 +71,7 @@ namespace Axiom.Math
         /// <summary>
         ///		Distance from the origin.
         /// </summary>
-        public float D;
+        public Real D;
 
         /// <summary>
         ///		Direction the plane is facing.
@@ -94,7 +94,7 @@ namespace Axiom.Math
         //public Plane()
         //{
         //    this.Normal = Vector3.Zero;
-        //    this.D = float.NaN;
+        //    this.D = Real.NaN;
         //}
 
         public Plane( Plane plane )
@@ -108,7 +108,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="normal"></param>
         /// <param name="constant"></param>
-        public Plane( Vector3 normal, float constant )
+        public Plane(Vector3 normal, Real constant)
         {
             this.Normal = normal;
             this.D = -constant;
@@ -146,7 +146,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public PlaneSide GetSide( Vector3 point )
         {
-            float distance = this.GetDistance( point );
+            Real distance = this.GetDistance(point);
 
             if ( distance < 0.0f )
             {
@@ -224,7 +224,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public float GetDistance( Vector3 point )
+        public Real GetDistance(Vector3 point)
         {
             return this.Normal.Dot( point ) + this.D;
         }

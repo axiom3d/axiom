@@ -145,7 +145,7 @@ namespace Axiom.Math
                 Plane plane = (Plane)planes[ i ];
 
                 // Test which side of the plane the sphere is
-                float d = plane.GetDistance( sphere.Center );
+                Real d = plane.GetDistance(sphere.Center);
 
                 // Negate d if planes point inwards
                 if ( outside == PlaneSide.Negative )

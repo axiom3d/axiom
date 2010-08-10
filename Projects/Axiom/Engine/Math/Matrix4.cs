@@ -44,7 +44,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using Real = System.Single;
+//using Real = System.Single;
 
 #endregion Namespace Declarations
 
@@ -89,10 +89,10 @@ namespace Axiom.Math
 	{
 		#region Member variables
 
-		public float m00, m01, m02, m03;
-		public float m10, m11, m12, m13;
-		public float m20, m21, m22, m23;
-		public float m30, m31, m32, m33;
+		public Real m00, m01, m02, m03;
+		public Real m10, m11, m12, m13;
+		public Real m20, m21, m22, m23;
+		public Real m30, m31, m32, m33;
 
 		private readonly static Matrix4 zeroMatrix = new Matrix4(
 			0, 0, 0, 0,
@@ -123,10 +123,10 @@ namespace Axiom.Math
 		/// <summary>
 		///		Creates a new Matrix4 with all the specified parameters.
 		/// </summary>
-		public Matrix4( float m00, float m01, float m02, float m03,
-			float m10, float m11, float m12, float m13,
-			float m20, float m21, float m22, float m23,
-			float m30, float m31, float m32, float m33 )
+		public Matrix4( Real m00, Real m01, Real m02, Real m03,
+			Real m10, Real m11, Real m12, Real m13,
+			Real m20, Real m21, Real m22, Real m23,
+			Real m30, Real m31, Real m32, Real m33 )
 		{
 			this.m00 = m00;
 			this.m01 = m01;
@@ -252,12 +252,12 @@ namespace Axiom.Math
 		/// <summary>
 		///    Gets the determinant of this matrix.
 		/// </summary>
-		public float Determinant
+		public Real Determinant
 		{
 			get
 			{
 				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
-				float result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
+				Real result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
 					m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
 					m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
 					m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
@@ -469,24 +469,24 @@ namespace Axiom.Math
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public void MakeFloatArray( float[] floats )
+		public void MakeRealArray( Real[] reals )
 		{
-			floats[0] = this.m00;
-			floats[1] = this.m01;
-			floats[2] = this.m02;
-			floats[3] = this.m03;
-			floats[4] = this.m10;
-			floats[5] = this.m11;
-			floats[6] = this.m12;
-			floats[7] = this.m13;
-			floats[8] = this.m20;
-			floats[9] = this.m21;
-			floats[10] = this.m22;
-			floats[11] = this.m23;
-			floats[12] = this.m30;
-			floats[13] = this.m31;
-			floats[14] = this.m32;
-			floats[15] = this.m33;
+			reals[0] = this.m00;
+			reals[1] = this.m01;
+			reals[2] = this.m02;
+			reals[3] = this.m03;
+			reals[4] = this.m10;
+			reals[5] = this.m11;
+			reals[6] = this.m12;
+			reals[7] = this.m13;
+			reals[8] = this.m20;
+			reals[9] = this.m21;
+			reals[10] = this.m22;
+			reals[11] = this.m23;
+			reals[12] = this.m30;
+			reals[13] = this.m31;
+			reals[14] = this.m32;
+			reals[15] = this.m33;
 		}
 		
 		/// <summary>
@@ -603,22 +603,22 @@ namespace Axiom.Math
 		private Matrix4 Adjoint()
 		{
 			// note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-			float val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
-			float val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
-			float val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
-			float val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
-			float val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
-			float val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
-			float val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
-			float val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
-			float val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
-			float val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
-			float val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
-			float val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
-			float val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
-			float val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
-			float val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
-			float val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
+			Real val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
+			Real val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
+			Real val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
+			Real val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
+			Real val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
+			Real val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
+			Real val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
+			Real val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
+			Real val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
+			Real val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
+			Real val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
+			Real val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
+			Real val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+			Real val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
+			Real val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
+			Real val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
 
 			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
 		}
@@ -713,7 +713,7 @@ namespace Axiom.Math
 		{
 			Vector3 result = new Vector3();
 
-            float inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
+            Real inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
 
 			result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
 			result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
@@ -728,7 +728,7 @@ namespace Axiom.Math
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix4 operator *( Matrix4 left, float scalar )
+		public static Matrix4 operator *( Matrix4 left, Real scalar )
 		{
 			Matrix4 result = new Matrix4();
 
@@ -926,7 +926,7 @@ namespace Axiom.Math
 		///    This indexer is only provided as a convenience, and is <b>not</b> recommended for use in
 		///    intensive applications.  
 		/// </remarks>
-		public float this[ int row, int col ]
+		public Real this[ int row, int col ]
 		{
 			get
 			{
@@ -934,7 +934,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pM = &m00 )
+					fixed ( Real* pM = &m00 )
 						return *( pM + ( ( 4 * row ) + col ) );
 				}
 			}
@@ -944,7 +944,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pM = &m00 )
+					fixed ( Real* pM = &m00 )
 						*( pM + ( ( 4 * row ) + col ) ) = value;
 				}
 			}
@@ -957,7 +957,7 @@ namespace Axiom.Math
 		///    This indexer is only provided as a convenience, and is <b>not</b> recommended for use in
 		///    intensive applications.  
 		/// </remarks>
-		public float this[ int index ]
+		public Real this[ int index ]
 		{
 			get
 			{
@@ -965,7 +965,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pMatrix = &this.m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -977,7 +977,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* pMatrix = &this.m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -1021,7 +1021,7 @@ namespace Axiom.Math
 
 			unsafe
 			{
-				fixed ( float* pM = &m00 )
+				fixed ( Real* pM = &m00 )
 				{
 					for ( int i = 0; i < 16; i++ )
 						hashCode ^= (int)( *( pM + i ) );

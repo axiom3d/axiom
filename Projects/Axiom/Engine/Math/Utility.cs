@@ -82,15 +82,16 @@ namespace Axiom.Math
         {
         }
 
-        /// <summary>
-        ///		Converts degrees to radians.
-        /// </summary>
-        /// <param name="degrees"></param>
-        /// <returns></returns>
-        public static Radian DegreesToRadians( Degree degrees )
-        {
-            return degrees;
-        }
+        ///// <summary>
+        /////		Converts degrees to radians.
+        ///// </summary>
+        ///// <param name="degrees"></param>
+        ///// <returns></returns>
+        //public static Radian DegreesToRadians( Degree degrees )
+        //{
+        //    return degrees;
+        //}
+
 
         /// <summary>
         ///		Converts radians to degrees.
@@ -107,7 +108,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        public static float DegreesToRadians(float degrees)
+        public static Real DegreesToRadians(Real degrees)
         {
             return degrees * RADIANS_PER_DEGREE;
         }
@@ -117,7 +118,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="radians"></param>
         /// <returns></returns>
-        public static float RadiansToDegrees(float radians)
+        public static Real RadiansToDegrees(Real radians)
         {
             return radians * DEGREES_PER_RADIAN;
         }
@@ -134,9 +135,9 @@ namespace Axiom.Math
         /// <param name="b"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
-        public static bool FloatEqual( float a, float b, float tolerance )
+        public static bool RealEqual(Real a, Real b, Real tolerance)
         {
-            return ( System.Math.Abs( b - a ) <= tolerance );
+            return (System.Math.Abs(b - a) <= tolerance);
         }
 
         /// <summary>
@@ -148,12 +149,12 @@ namespace Axiom.Math
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool FloatEqual( float a, float b )
+        public static bool RealEqual(Real a, Real b)
         {
-        	return ( System.Math.Abs( b - a ) <= float.Epsilon );
+            return (System.Math.Abs(b - a) <= Real.Epsilon);
         }
 
-		public static Real ParseReal( string value )
+        public static Real ParseReal( string value )
 		{
 			return Real.Parse( value, new System.Globalization.CultureInfo( "en-US" ) );
 		}
@@ -485,7 +486,7 @@ namespace Axiom.Math
         /// <param name="v3"></param>
         /// <returns></returns>
         public static Vector3 CalculateTangentSpaceVector(
-            Vector3 position1, Vector3 position2, Vector3 position3, float u1, float v1, float u2, float v2, float u3, float v3 )
+            Vector3 position1, Vector3 position2, Vector3 position3, Real u1, Real v1, Real u2, Real v2, Real u3, Real v3)
         {
 
             // side0 is the vector along one side of the triangle of vertices passed in, 
@@ -497,14 +498,14 @@ namespace Axiom.Math
             normal.Normalize();
 
             // Now we use a formula to calculate the tangent. 
-            float deltaV0 = v1 - v2;
-            float deltaV1 = v3 - v1;
+            Real deltaV0 = v1 - v2;
+            Real deltaV1 = v3 - v1;
             Vector3 tangent = deltaV1 * side0 - deltaV0 * side1;
             tangent.Normalize();
 
             // Calculate binormal
-            float deltaU0 = u1 - u2;
-            float deltaU1 = u3 - u1;
+            Real deltaU0 = u1 - u2;
+            Real deltaU1 = u3 - u1;
             Vector3 binormal = deltaU1 * side0 - deltaU0 * side1;
             binormal.Normalize();
 
@@ -566,9 +567,9 @@ namespace Axiom.Math
         ///         </item>
         ///     </list>
         /// </returns>
-        public static bool PointInTri2D( float px, float py, float ax, float ay, float bx, float by, float cx, float cy )
+        public static bool PointInTri2D(Real px, Real py, Real ax, Real ay, Real bx, Real by, Real cx, Real cy)
         {
-            float v1x, v2x, v1y, v2y;
+            Real v1x, v2x, v1y, v2y;
             bool bClockwise;
 
             v1x = bx - ax;
@@ -611,7 +612,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="method"></param>
 		/// <returns>The elapsed time in seconds.</returns>
-		public static float Measure( SimpleMethodDelegate method ) 
+        public static Real Measure(SimpleMethodDelegate method) 
 		{
 			long start = System.Diagnostics.Stopwatch.GetTimestamp();
 			
@@ -620,7 +621,7 @@ namespace Axiom.Math
 			double elapsed = (double)(System.Diagnostics.Stopwatch.GetTimestamp() - start);
 			double freq = (double)System.Diagnostics.Stopwatch.Frequency;
 
-			return (float)(elapsed / freq);
+            return (Real)(elapsed / freq);
 		}
 	
 		
@@ -647,8 +648,8 @@ namespace Axiom.Math
                 return new IntersectResult( true, 0 );
             }
 
-            float lowt = 0.0f;
-            float t;
+            Real lowt = 0.0f;
+            Real t;
             bool hit = false;
             Vector3 hitPoint;
             Vector3 min = box.Minimum;
@@ -795,16 +796,16 @@ namespace Axiom.Math
             Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide)
         {
             // Calculate intersection with plane.
-            float t;
+            Real t;
             {
-                float denom = normal.Dot(ray.Direction);
+                Real denom = normal.Dot(ray.Direction);
                 // Check intersect side
-                if (denom > +float.Epsilon)
+                if (denom > +Real.Epsilon)
                 {
                     if (!negativeSide)
                         return new IntersectResult(false, 0);
                 }
-                else if (denom < -float.Epsilon)
+                else if (denom < -Real.Epsilon)
                 {
                     if (!positiveSide)
                         return new IntersectResult(false, 0);
@@ -826,9 +827,9 @@ namespace Axiom.Math
             // Calculate the largest area projection plane in X, Y or Z.
             int i0, i1;
             {
-                float n0 = Math.Utility.Abs(normal[0]);
-                float n1 = Math.Utility.Abs(normal[1]);
-                float n2 = Math.Utility.Abs(normal[2]);
+                Real n0 = Math.Utility.Abs(normal[0]);
+                Real n1 = Math.Utility.Abs(normal[1]);
+                Real n2 = Math.Utility.Abs(normal[2]);
 
                 i0 = 1; i1 = 2;
                 if (n1 > n2)
@@ -855,7 +856,7 @@ namespace Axiom.Math
                 Real beta = u1 * v0 - u0 * v1;
                 Real area = u1 * v2 - u2 * v1;
 
-                // epsilon to avoid float precision error
+                // epsilon to avoid Real precision error
                 Real EPSILON = 1e-3f;
 
                 Real tolerance = -EPSILON * area;
@@ -981,7 +982,7 @@ namespace Axiom.Math
             Vector3 rayDir = ray.Direction;
             //Adjust ray origin relative to sphere center
             Vector3 rayOrig = ray.Origin - sphere.Center;
-            float radius = sphere.Radius;
+            Real radius = sphere.Radius;
 
             // check origin inside first
             if ( ( rayOrig.LengthSquared <= radius * radius ) && discardInside )
@@ -992,12 +993,12 @@ namespace Axiom.Math
             // mmm...sweet quadratics
             // Build coeffs which can be used with std quadratic solver
             // ie t = (-b +/- sqrt(b*b* + 4ac)) / 2a
-            float a = rayDir.Dot( rayDir );
-            float b = 2 * rayOrig.Dot( rayDir );
-            float c = rayOrig.Dot( rayOrig ) - ( radius * radius );
+            Real a = rayDir.Dot(rayDir);
+            Real b = 2 * rayOrig.Dot(rayDir);
+            Real c = rayOrig.Dot(rayOrig) - (radius * radius);
 
             // calc determinant
-            float d = ( b * b ) - ( 4 * a * c );
+            Real d = (b * b) - (4 * a * c);
 
             if ( d < 0 )
             {
@@ -1009,7 +1010,7 @@ namespace Axiom.Math
                 // BTW, if d=0 there is one intersection, if d > 0 there are 2
                 // But we only want the closest one, so that's ok, just use the 
                 // '-' version of the solver
-                float t = ( -b - Utility.Sqrt( d ) ) / ( 2 * a );
+                Real t = (-b - Utility.Sqrt(d)) / (2 * a);
 
                 if ( t < 0 )
                 {
@@ -1030,17 +1031,17 @@ namespace Axiom.Math
         {
             Contract.RequiresNotNull( ray, "ray" );
 
-            float denom = plane.Normal.Dot( ray.Direction );
+            Real denom = plane.Normal.Dot(ray.Direction);
 
-            if ( Utility.Abs( denom ) < float.Epsilon )
+            if (Utility.Abs(denom) < Real.Epsilon)
             {
                 // Parellel
                 return new IntersectResult( false, 0 );
             }
             else
             {
-                float nom = plane.Normal.Dot( ray.Origin ) + plane.D;
-                float t = -( nom / denom );
+                Real nom = plane.Normal.Dot(ray.Origin) + plane.D;
+                Real t = -(nom / denom);
                 return new IntersectResult( t >= 0, t );
             }
         }
@@ -1061,7 +1062,7 @@ namespace Axiom.Math
 
             // Use splitting planes
             Vector3 center = sphere.Center;
-            float radius = sphere.Radius;
+            Real radius = sphere.Radius;
             Vector3 min = box.Minimum;
             Vector3 max = box.Maximum;
 
@@ -1161,17 +1162,17 @@ namespace Axiom.Math
 
             PlaneList planes = volume.planes;
 
-            float maxExtDist = 0.0f;
-            float minIntDist = float.PositiveInfinity;
+            Real maxExtDist = 0.0f;
+            Real minIntDist = Real.PositiveInfinity;
 
-            float dist, denom, nom;
+            Real dist, denom, nom;
 
             for ( int i = 0; i < planes.Count; i++ )
             {
                 Plane plane = (Plane)planes[ i ];
 
                 denom = plane.Normal.Dot( ray.Direction );
-                if ( Utility.Abs( denom ) < float.Epsilon )
+                if (Utility.Abs(denom) < Real.Epsilon)
                 {
                     // Parallel
                     if ( plane.GetSide( ray.Origin ) == volume.outside )
@@ -1411,7 +1412,7 @@ namespace Axiom.Math
         ///		i.e. for a Ray-Box test, the distance will be the distance from the start point
         ///		of the ray to the point of intersection.
         /// </summary>
-        public float Distance;
+        public Real Distance;
 
         #endregion Fields
 
@@ -1420,7 +1421,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="hit"></param>
         /// <param name="distance"></param>
-        public IntersectResult( bool hit, float distance )
+        public IntersectResult(bool hit, Real distance)
         {
             this.Hit = hit;
             this.Distance = distance;

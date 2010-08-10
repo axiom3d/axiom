@@ -1646,7 +1646,7 @@ namespace Axiom.Core
 
 				// Now normalise if total weight is outside tolerance
 				float delta = 1.0f / ( 1 << 24 );
-				if ( !Utility.FloatEqual( totalWeight, 1.0f, delta ) )
+				if ( !Utility.RealEqual( totalWeight, 1.0f, delta ) )
 				{
 					foreach ( VertexBoneAssignment vba in vbaList )
 					{

@@ -90,7 +90,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public Vector3 GetPoint( float t )
+        public Vector3 GetPoint(Real t)
         {
             return origin + ( direction * t );
         }
@@ -100,7 +100,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public Vector3 this[ float t ]
+        public Vector3 this[Real t]
         {
             get
             {
@@ -174,7 +174,7 @@ namespace Axiom.Math
 		/// <param name="ray"></param>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public static Vector3 operator *( Ray ray, float t )
+        public static Vector3 operator *(Ray ray, Real t)
 		{
 			return ray.origin + ( ray.direction * t );
 		}
