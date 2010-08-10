@@ -569,9 +569,9 @@ namespace Axiom.Graphics
 			{
 				CommonVertex commonVec = (CommonVertex)vertices[ index ];
 
-				if ( Utility.FloatEqual( vec.x, commonVec.position.x, 1e-04f ) &&
-					Utility.FloatEqual( vec.y, commonVec.position.y, 1e-04f ) &&
-					Utility.FloatEqual( vec.z, commonVec.position.z, 1e-04f ) &&
+				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
+                    Utility.RealEqual(vec.y, commonVec.position.y, 1e-04f) &&
+                    Utility.RealEqual(vec.z, commonVec.position.z, 1e-04f) &&
 					( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
 					( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
 					( commonVec.originalIndex == originalIndex || weldVertices ) )

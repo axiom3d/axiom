@@ -1208,7 +1208,7 @@ namespace Axiom.Core
 
 			public override void SetValue( float val )
 			{
-				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( val );
+				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( float val )
@@ -1238,7 +1238,7 @@ namespace Axiom.Core
 
 			public override void SetValue( float val )
 			{
-				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( val );
+				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( float val )

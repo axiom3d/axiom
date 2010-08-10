@@ -774,12 +774,12 @@ namespace Axiom.Animating
 				Vector3 trans = kf.Translate;
 				Vector3 scale = kf.Scale;
 				Vector3 axis = Vector3.Zero;
-				float angle = 0f;
+				Real angle = 0f;
 				kf.Rotation.ToAngleAxis( ref angle, ref axis );
 				float tolerance = 1e-3f;
 				if ( trans.Length > tolerance ||
 					( scale - Vector3.UnitScale ).Length > tolerance ||
-					!Utility.FloatEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
+					!Utility.RealEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
 				{
 					return true;
 				}

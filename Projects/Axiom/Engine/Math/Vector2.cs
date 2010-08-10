@@ -55,7 +55,7 @@ namespace Axiom.Math
 	{
 		#region Fields
 
-		public float x, y;
+        public Real x, y;
 
 		#endregion Fields
 
@@ -110,7 +110,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="x">X position.</param>
 		/// <param name="y">Y position</param>
-		public Vector2( float x, float y )
+        public Vector2(Real x, Real y)
 		{
 			this.x = x;
 			this.y = y;
@@ -131,14 +131,14 @@ namespace Axiom.Math
         ///		will be no changes made to their components.
         ///	</remarks>
         ///	<returns>The previous length of the vector.</returns>
-        public float Normalize()
+        public Real Normalize()
         {
-            float length = Utility.Sqrt( this.x * this.x + this.y * this.y );
+            Real length = Utility.Sqrt(this.x * this.x + this.y * this.y);
 
             // Will also work for zero-sized vectors, but will change nothing
-            if ( length > float.Epsilon )
+            if (length > Real.Epsilon)
             {
-                float inverseLength = 1.0f / length;
+                Real inverseLength = 1.0f / length;
 
                 this.x *= inverseLength;
                 this.y *= inverseLength;
@@ -161,13 +161,13 @@ namespace Axiom.Math
 		        
         /// <summary>
         /// Calculates the 2 dimensional cross-product of 2 vectors, which results
-        /// in a single floating point value which is 2 times the area of the triangle
+        /// in a Real value which is 2 times the area of the triangle
         /// defined by the two vectors. It also is the magnitude of the 3D vector that is perpendicular
         /// to the 2D vectors if the 2D vectors are projected to 3D space.
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float Cross(Vector2 vector)
+        public Real Cross(Vector2 vector)
         {
             return this.x * vector.y - this.y * vector.x;
         }
@@ -179,7 +179,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float Dot(Vector2 vector)
+        public Real Dot(Vector2 vector)
         {
             return this.x * vector.x + this.y * vector.y;
         }
@@ -259,7 +259,7 @@ namespace Axiom.Math
 		/// <param name="left"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Vector2 Multiply( Vector2 left, float scalar )
+        public static Vector2 Multiply(Vector2 left, Real scalar)
 		{
 			return left * scalar;
 		}
@@ -270,7 +270,7 @@ namespace Axiom.Math
 		/// <param name="left"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Vector2 operator *( Vector2 left, float scalar )
+        public static Vector2 operator *(Vector2 left, Real scalar)
 		{
 			return new Vector2( left.x * scalar, left.y * scalar );
 		}
@@ -281,7 +281,7 @@ namespace Axiom.Math
 		/// <param name="scalar"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector2 Multiply( float scalar, Vector2 right )
+        public static Vector2 Multiply(Real scalar, Vector2 right)
 		{
 			return scalar * right;
 		}
@@ -292,7 +292,7 @@ namespace Axiom.Math
 		/// <param name="scalar"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Vector2 operator *( float scalar, Vector2 right )
+        public static Vector2 operator *(Real scalar, Vector2 right)
 		{
 			return new Vector2( right.x * scalar, right.y * scalar );
 		}
@@ -343,8 +343,8 @@ namespace Axiom.Math
 			    
 			string[] values = s.Substring(8).TrimEnd('}').Split(',');
 
-			return new Vector2(float.Parse(values[0], CultureInfo.InvariantCulture),
-			                   float.Parse(values[1], CultureInfo.InvariantCulture));			                      
+            return new Vector2(Real.Parse(values[0], CultureInfo.InvariantCulture),
+                               Real.Parse(values[1], CultureInfo.InvariantCulture));			                      
 		}
 		
 		#endregion		

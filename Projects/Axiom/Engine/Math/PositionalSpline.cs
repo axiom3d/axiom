@@ -93,13 +93,13 @@ namespace Axiom.Math
         /// </remarks>
         /// <param name="t">Parametric value.</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public override Vector3 Interpolate( float t )
+        public override Vector3 Interpolate(Real t)
         {
             // This does not take into account that points may not be evenly spaced.
             // This will cause a change in velocity for interpolation.
 
             // What segment this is in?
-            float segment = t * ( pointList.Count - 1 );
+            Real segment = t * (pointList.Count - 1);
             int segIndex = (int)segment;
 
             // apportion t
@@ -115,7 +115,7 @@ namespace Axiom.Math
         /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
         /// <param name="t">Parametric value</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public override Vector3 Interpolate( int index, float t )
+        public override Vector3 Interpolate(int index, Real t)
         {
             Contract.Requires( index >= 0, "index", "Spline point index underrun." );
             Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );
@@ -134,7 +134,7 @@ namespace Axiom.Math
 
             // Time for real interpolation
             // Construct a Vector4 of powers of 2
-            float t2, t3;
+            Real t2, t3;
             // t^2
             t2 = t * t;
             // t^3

@@ -1466,28 +1466,26 @@ namespace Axiom.Graphics
 		///     Total length of the animation sequence.  When set to 0, automatic animation does not occur.
 		///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
 		/// </param>
-		public void SetAnimatedTextureName( string name, int numFrames, float duration )
+        public void SetAnimatedTextureName( string name, int numFrames, float duration )
 		{
-			string ext, baseName;
+		    string ext, baseName;
 
-			// split up the base name and file extension
-			int pos = name.LastIndexOf( "." );
-			baseName = name.Substring( 0, pos );
-			ext = name.Substring( pos );
+		    // split up the base name and file extension
+		    int pos = name.LastIndexOf( "." );
+		    baseName = name.Substring( 0, pos );
+		    ext = name.Substring( pos );
 
-			string[] names = new string[numFrames];
+		    string[] names = new string[numFrames];
 
-			// loop through and create the real texture names from the base name
-			for ( int i = 0; i < numFrames; i++ )
-			{
-				names[ i ] = string.Format( "{0}_{1}{2}", baseName, i, ext );
-			}
+		    // loop through and create the real texture names from the base name
+		    for ( int i = 0; i < numFrames; i++ )
+		    {
+		        names[ i ] = string.Format( "{0}_{1}{2}", baseName, i, ext );
+		    }
 
-			// call the overloaded method, passing in our final texture names
-			SetAnimatedTextureName( names, numFrames, duration );
 		}
 
-		/// <summary>
+	    /// <summary>
 		///     Sets the names of the texture images for an animated texture.
 		/// </summary>
 		/// <remarks>
@@ -1921,9 +1919,9 @@ namespace Axiom.Graphics
 			{
 				Matrix4 rotation = Matrix4.Identity;
 
-				float theta = Utility.DegreesToRadians( rotate );
-				float cosTheta = Utility.Cos( theta );
-				float sinTheta = Utility.Sin( theta );
+                float theta = Utility.DegreesToRadians( rotate );
+                float cosTheta = Utility.Cos( theta );
+                float sinTheta = Utility.Sin( theta );
 
 				// set the rotation portion of the matrix
 				rotation.m00 = cosTheta;

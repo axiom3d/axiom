@@ -1373,8 +1373,10 @@ namespace Axiom.Core
 		/// <param name="degrees"></param>
 		public void Rotate( Vector3 axis, float degrees )
 		{
-			Quaternion q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( degrees ), axis );
-			Rotate( q );
+            Quaternion q = Quaternion.FromAngleAxis(
+                    Utility.DegreesToRadians( (Real)degrees ) ,
+                    axis);
+			Rotate(q);
 		}
 
 		/// <summary>

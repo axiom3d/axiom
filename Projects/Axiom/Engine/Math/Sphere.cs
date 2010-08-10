@@ -57,7 +57,7 @@ namespace Axiom.Math
     {
         #region Protected member variables
 
-        private float radius;
+        private Real radius;
         private Vector3 center;
 
         #endregion
@@ -78,7 +78,7 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="center">Center point of the sphere.</param>
         /// <param name="radius">Radius of the sphere.</param>
-        public Sphere( Vector3 center, float radius )
+        public Sphere(Vector3 center, Real radius)
         {
             this.center = center;
             this.radius = radius;
@@ -106,7 +106,7 @@ namespace Axiom.Math
         /// <summary>
         ///		Gets/Sets the radius of the sphere.
         /// </summary>
-        public float Radius
+        public Real Radius
         {
             get
             {

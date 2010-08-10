@@ -55,7 +55,7 @@ namespace Axiom.Math
 	{
 		#region Member variables
 
-		public float x, y, z, w;
+		public Real x, y, z, w;
 
 		private static readonly Vector4 zeroVector = new Vector4( 0.0f, 0.0f, 0.0f, 0.0f );
 
@@ -66,7 +66,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Creates a new 4 dimensional Vector.
 		/// </summary>
-		public Vector4( float x, float y, float z, float w )
+		public Vector4( Real x, Real y, Real z, Real w )
 		{
 			this.x = x;
 			this.y = y;
@@ -99,8 +99,8 @@ namespace Axiom.Math
 		/// <param name="vec">
 		///     Vector with which to calculate the dot product (together with this one).
 		/// </param>
-		/// <returns>A float representing the dot product value.</returns>
-		public float Dot( Vector4 vec )
+		/// <returns>A Real representing the dot product value.</returns>
+		public Real Dot( Vector4 vec )
 		{
 			return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
 		}
@@ -156,7 +156,7 @@ namespace Axiom.Math
 		/// <param name="vector"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-		public static Vector4 operator *( Vector4 vector, float scalar )
+		public static Vector4 operator *( Vector4 vector, Real scalar )
 		{
 			Vector4 result = new Vector4();
 
@@ -233,7 +233,7 @@ namespace Axiom.Math
 		/// <remarks>
 		///		Uses unsafe pointer arithmetic to reduce the code required.
 		///	</remarks>
-		public float this[ int index ]
+		public Real this[ int index ]
 		{
 			get
 			{
@@ -242,7 +242,7 @@ namespace Axiom.Math
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
 				unsafe
 				{
-					fixed ( float* pX = &x )
+					fixed ( Real* pX = &x )
 						return *( pX + index );
 				}
 			}
@@ -253,7 +253,7 @@ namespace Axiom.Math
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
 				unsafe
 				{
-					fixed ( float* pX = &x )
+					fixed ( Real* pX = &x )
 						*( pX + index ) = value;
 				}
 			}
@@ -315,7 +315,7 @@ namespace Axiom.Math
         {
             string[] vals = vector.TrimStart('<').TrimEnd('>').Split(',');
 
-            return new Vector4(float.Parse(vals[0].Trim()), float.Parse(vals[1].Trim()), float.Parse(vals[2].Trim()), float.Parse(vals[3].Trim()));
+            return new Vector4(Real.Parse(vals[0].Trim()), Real.Parse(vals[1].Trim()), Real.Parse(vals[2].Trim()), Real.Parse(vals[3].Trim()));
         }
 
 

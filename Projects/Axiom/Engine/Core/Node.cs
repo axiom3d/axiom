@@ -491,14 +491,14 @@ namespace Axiom.Core
 			Rotate( Vector3.UnitY, degrees, TransformSpace.Local );
 		}
 
-		/// <summary>
-		/// Rotate the node around an arbitrary axis.
-		/// </summary>
-		public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
-		{
-			Quaternion q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( degrees ), axis );
-			Rotate( q, relativeTo );
-		}
+        /// <summary>
+        /// Rotate the node around an arbitrary axis.
+        /// </summary>
+        public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
+        {
+            Quaternion q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( (Real)degrees ), axis );
+            Rotate( q, relativeTo );
+        }
 
 		/// <summary>
 		/// Rotate the node around an arbitrary axis.

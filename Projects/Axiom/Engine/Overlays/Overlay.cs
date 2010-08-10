@@ -479,7 +479,7 @@ namespace Axiom.Overlays
             Matrix3 rot3x3 = Matrix3.Identity;
             Matrix3 scale3x3 = Matrix3.Zero;
 
-            rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( rotate ) );
+            rot3x3.FromEulerAnglesXYZ(0.0f, 0.0f, Utility.DegreesToRadians((Real)rotate));
             scale3x3.m00 = scaleX;
             scale3x3.m11 = scaleY;
             scale3x3.m22 = 1.0f;

@@ -249,15 +249,15 @@ namespace Axiom.SceneManagers.Bsp
 			if ( createParam.ContainsKey( "Scale" ) )
 				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );
 
-			Vector3 move = Vector3.Zero;
-			if ( createParam.ContainsKey( "MoveX" ) )
-				float.TryParse( createParam[ "MoveX" ], out move.x );
+            Vector3 move = Vector3.Zero;
+            if (createParam.ContainsKey("MoveX"))
+                Real.TryParse(createParam["MoveX"], out move.x);
 
-			if ( createParam.ContainsKey( "MoveY" ) )
-				float.TryParse( createParam[ "MoveY" ], out move.y );
+            if (createParam.ContainsKey("MoveY"))
+                Real.TryParse(createParam["MoveY"], out move.y);
 
-			if ( createParam.ContainsKey( "MoveZ" ) )
-				float.TryParse( createParam[ "MoveZ" ], out move.z );
+            if (createParam.ContainsKey("MoveZ"))
+                Real.TryParse(createParam["MoveZ"], out move.z);
 
 			if ( createParam.ContainsKey( "UseLightmaps" ) )
 				bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );
