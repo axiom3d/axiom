@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
 using Numeric = System.Single;
 #else
 using Numeric = System.Double;

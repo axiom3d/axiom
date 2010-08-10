@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 // The Real datatype is actually one of these under the covers
-#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
 using Numeric = System.Single;
 #else
 using Numeric = System.Double;
@@ -57,8 +57,8 @@ namespace Axiom.Math
     /// a floating point number abstraction allows the use of either a single-precision or double-precision floating point number
     /// </summary>
     /// <remarks>
-    /// Use the _REAL_AS_DOUBLE condition compilation argument to use a double-precision value or
-    /// _REAL_AS_SINGLE to use a single-precision value.
+    /// Use the AXIOM_REAL_AS_DOUBLE condition compilation argument to use a double-precision value or
+    /// AXIOM_REAL_AS_SINGLE to use a single-precision value.
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
 #if !( XBOX || XBOX360 )
@@ -799,7 +799,7 @@ namespace Axiom.Math
             get
             {
                 // The Real datatype is actually one of these under the covers
-#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
                 return sizeof(System.Single);
 #else
                 return sizeof(System.Double);
@@ -827,7 +827,7 @@ namespace Axiom.Math
             bool b;
             float f;
             double d;
-#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
             b = float.TryParse(s, out f);
             result = f;
 #else
@@ -871,7 +871,7 @@ namespace Axiom.Math
 
         public void ReadXml(XmlReader reader)
         {
-#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
             try
             {
                 string v = reader.ReadElementContentAsString();
