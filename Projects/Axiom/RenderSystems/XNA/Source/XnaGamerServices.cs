@@ -18,7 +18,6 @@ namespace Axiom.RenderSystems.Xna
         private Root _engine;
         private XnaRenderSystem _renderSystem;
         private RenderWindow _window;
-        private bool _isInitialized;
 
         /// <summary>
         /// Creates a new instance of <see cref="XnaGamerServices"/>
@@ -36,12 +35,11 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// Initializes the XNA GamerServicesDispatcher
         /// </summary>
-        public void Initialize( )
+        public void Initialize()
         {
             GamerServicesDispatcher.WindowHandle = (IntPtr)_window[ "WINDOW" ];
             GamerServicesDispatcher.Initialize( this._renderSystem );
             this._engine.FrameStarted += this.Update;
-            this._isInitialized = true;
         }
     
         /// <summary>
@@ -53,7 +51,6 @@ namespace Axiom.RenderSystems.Xna
             this._engine = null;
             this._renderSystem = null;
             this._window = null;
-            this._isInitialized = false;
         }
 
         /// <summary>
@@ -63,7 +60,7 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="e">per-frame specfic arguments</param>
         private void Update( object sender, FrameEventArgs e )
         {
-            GamerServicesDispatcher.Update();
+			GamerServicesDispatcher.Update();
         }
     }
 }
