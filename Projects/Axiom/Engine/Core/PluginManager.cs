@@ -127,7 +127,7 @@ namespace Axiom.Core
 		///<returns></returns>
 		protected IList<ObjectCreator> ScanForPlugins( string folder )
 		{
-			string[] files = Directory.GetFiles( ".", "*.dll" );
+			string[] files = Directory.GetFiles( folder, "*.dll" );
 			Assembly assembly = null;
 			List<ObjectCreator> pluginFactories = new List<ObjectCreator>();
 
