@@ -488,7 +488,26 @@ namespace Axiom.Math
 			reals[14] = this.m32;
 			reals[15] = this.m33;
 		}
-		
+
+        public void MakeFloatArray(float[] floats)
+        {
+            floats[0] = this.m00;
+            floats[1] = this.m01;
+            floats[2] = this.m02;
+            floats[3] = this.m03;
+            floats[4] = this.m10;
+            floats[5] = this.m11;
+            floats[6] = this.m12;
+            floats[7] = this.m13;
+            floats[8] = this.m20;
+            floats[9] = this.m21;
+            floats[10] = this.m22;
+            floats[11] = this.m23;
+            floats[12] = this.m30;
+            floats[13] = this.m31;
+            floats[14] = this.m32;
+            floats[15] = this.m33;
+        }
 		/// <summary>
 		///     Extract the 3x3 matrix representing the current rotation. 
 		/// </summary>
