@@ -121,21 +121,14 @@ namespace Axiom.FileSystem
                 pattern = "*";
             if ( currentDir == "" ) currentDir = _basePath;
 
-#if !( XBOX || XBOX360 )
-            SearchOption so;
-            if ( recursive )
-            {
-                so = SearchOption.AllDirectories;
-            }
-            else
-            {
-                so = SearchOption.TopDirectoryOnly;
-            }
+            string[] files;
 
-            foreach ( string file in Directory.GetFiles( currentDir, pattern, so ) )
+#if !( XBOX || XBOX360 )
+            files = Directory.GetFiles(currentDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly );
 #else
-            foreach( string file in Directory.GetFiles( currentDir, pattern ) )
+            files = recursive ? this.getFilesRecursively(currentDir, pattern) : Directory.GetFiles(currentDir, pattern);
 #endif
+            foreach (string file in files)
             {
                 System.IO.FileInfo fi = new System.IO.FileInfo( file );
                 if ( simpleList != null )
@@ -155,6 +148,35 @@ namespace Axiom.FileSystem
                 }
             }
         }
+
+#if ( XBOX || XBOX360 )
+        /// <summary>
+        /// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+        /// </summary>
+        /// <param name="dir">The directory to search.</param>
+        /// <param name="pattern">The search string to match against the names of files in path.</param>
+        private string[] getFilesRecursively( string dir, string pattern )
+        {
+            List<string> searchResults = new List<string>();
+            string[] folders = Directory.GetDirectories( dir );
+            string[] files = Directory.GetFiles( dir );
+
+            foreach ( string folder in folders )
+            {
+                searchResults.AddRange( this.getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
+            }
+
+            foreach ( string file in files )
+            {
+                string ext = Path.GetExtension( file );
+
+                if ( pattern == "*" || pattern.Contains( ext ) )
+                    searchResults.Add( file );
+            }
+
+            return searchResults.ToArray();
+        }
+#endif
 
         /// <summary>Utility method to change the current directory </summary>
         protected void changeDirectory( string dir )

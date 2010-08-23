@@ -1402,8 +1402,7 @@ namespace Axiom.Core
 			return OpenResource( resourceName, groupName, searchGroupsIfNotFound, null );
 		}
 
-		public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound,
-											   Resource resourceBeingLoaded )
+		public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
 		{
 			// Try to find in resource index first
 			ResourceGroup grp = getResourceGroup( groupName );
@@ -1417,7 +1416,24 @@ namespace Axiom.Core
 			{
 				// Found in the index
 				arch = grp.ResourceIndexCaseSensitive[ resourceName ];
-				return arch.Open( resourceName );
+                IO.Stream stream = arch.Open(resourceName);
+
+                //Maybe, the stream is null 'cause we added a resource location recursively, so 
+                //we try to find the wanted resource with the following search.
+                if (stream == null)
+                {
+                    FileInfoList fileList = FindResourceFileInfo( groupName, "*" + System.IO.Path.GetExtension( resourceName ) );
+                    foreach ( FileInfo info in fileList )
+                    {
+                        if ( !info.Basename.Contains( resourceName ) )
+                            continue;
+
+                        stream = arch.Open( info.Basename );
+                        break;
+                    }
+                }
+
+                return stream;
 			}
 			else
 			{
