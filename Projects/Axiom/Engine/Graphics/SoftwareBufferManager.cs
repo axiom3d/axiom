@@ -1,7 +1,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
