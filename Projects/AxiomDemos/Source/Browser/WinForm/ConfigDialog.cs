@@ -141,7 +141,7 @@ namespace Axiom.Demos
 			this.grpVideoOptions.Controls.Add( this.cboOptionValues );
 			this.grpVideoOptions.Controls.Add( this.lstOptions );
 			this.grpVideoOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.grpVideoOptions.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.grpVideoOptions.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.grpVideoOptions.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.grpVideoOptions.Location = new System.Drawing.Point( 12, 215 );
 			this.grpVideoOptions.Name = "grpVideoOptions";
@@ -153,7 +153,7 @@ namespace Axiom.Demos
 			// lblOption
 			//
 			this.lblOption.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.lblOption.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+            this.lblOption.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblOption.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.lblOption.Location = new System.Drawing.Point( 104, 160 );
 			this.lblOption.Name = "lblOption";
@@ -166,7 +166,7 @@ namespace Axiom.Demos
 			// cboOptionValues
 			//
 			this.cboOptionValues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboOptionValues.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.cboOptionValues.Font = new System.Drawing.Font( "Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboOptionValues.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.cboOptionValues.Location = new System.Drawing.Point( 238, 158 );
 			this.cboOptionValues.Name = "cboOptionValues";
@@ -180,14 +180,14 @@ namespace Axiom.Demos
 			this.lstOptions.ItemHeight = 14;
 			this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
 			this.lstOptions.Name = "lstOptions";
-			this.lstOptions.Size = new System.Drawing.Size( 407, 130 );
+			this.lstOptions.Size = new System.Drawing.Size( 407, 165 );
 			this.lstOptions.TabIndex = 0;
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
 			//
 			// lblRenderer
 			//
 			this.lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.lblRenderer.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.lblRenderer.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.lblRenderer.Location = new System.Drawing.Point( 10, 185 );
 			this.lblRenderer.Name = "lblRenderer";
@@ -199,7 +199,7 @@ namespace Axiom.Demos
 			// cboRenderSystems
 			//
 			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+            this.cboRenderSystems.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
 			this.cboRenderSystems.Name = "cboRenderSystems";
@@ -248,7 +248,7 @@ namespace Axiom.Demos
 			this.Controls.Add( this.cboRenderSystems );
 			this.Controls.Add( this.picLogo );
 			this.Controls.Add( this.pnlBackground );
-			this.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+            this.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
