@@ -43,7 +43,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
 using TInput = System.String;
-using TOutput = HlslCompiledShaders;
+using TOutput = Axiom.RenderSystems.Xna.Content.HlslCompiledShaders;
 
 #endregion Namespace Declarations
 
