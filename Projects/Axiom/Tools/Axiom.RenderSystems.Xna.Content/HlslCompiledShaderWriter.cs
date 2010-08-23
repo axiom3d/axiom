@@ -42,7 +42,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-using TWrite = HlslCompiledShaders;
+using TWrite = Axiom.RenderSystems.Xna.Content.HlslCompiledShaders;
 
 #endregion Namespace Declarations
 
