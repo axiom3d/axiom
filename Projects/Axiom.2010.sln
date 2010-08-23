@@ -30,8 +30,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32.2010"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.OpenTK.2010", "Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.2010.csproj", "{081F78DE-8224-4CA6-BD34-8B7939CF21AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.Win32.2010", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.2010.csproj", "{503C2DEF-293E-491F-ADDA-EE3860FCF84B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9.2010", "Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.2010.csproj", "{68DBB62F-F98D-47B5-A769-C20B461227AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.2010", "Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj", "{628E7ED7-EC58-4C93-B8AB-CB69087D381B}"
