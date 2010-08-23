@@ -799,11 +799,7 @@ namespace Axiom.Math
             get
             {
                 // The Real datatype is actually one of these under the covers
-#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
-                return sizeof(System.Single);
-#else
-                return sizeof(System.Double);
-#endif
+                return sizeof(Numeric);
             }
         }
 
@@ -825,14 +821,21 @@ namespace Axiom.Math
         public static bool TryParse(string s, out Real result)
         {
             bool b;
-            float f;
-            double d;
-#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
-            b = float.TryParse(s, out f);
-            result = f;
+#if !( XBOX || XBOX360 )
+            Numeric retval;
+            b = Numeric.TryParse( s, out retval );
+            result = (Real)retval;
 #else
-            b = double.TryParse(s, out d);
-            result = d;
+            try
+            {
+                result = Parse(s);
+                b = true;
+            }
+            catch
+            {
+                result = (Numeric)0;
+                b = false; 
+            }
 #endif
             return b;
         }
