@@ -44,6 +44,8 @@ using Axiom.Math;
 using Axiom.Media;
 using Axiom.Core;
 
+#endregion Namespace Declarations
+
 namespace OctreeZone
 {
 	public class HeightmapTerrainZonePageSource : TerrainZonePageSource
