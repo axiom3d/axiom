@@ -232,6 +232,10 @@
       <Link>Media\PCZAppMedia\terrain2.cfg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\..\..\..\Media\Overlays\DP3.overlay">
+      <Link>Media\Overlays\DP3.overlay</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="axiom.demos.browser.winform.module" />
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
