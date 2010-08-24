@@ -133,7 +133,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			if ( mouse == null ) return;
 
-			NativeWindow window = (NativeWindow)parent[ "window" ];
+			NativeWindow window = (NativeWindow)parent[ "nativewindow" ];
 
 			isVisible = window.WindowState != WindowState.Minimized && window.Focused;
 
@@ -190,7 +190,7 @@ namespace Axiom.Platforms.OpenTK
 
 			this.parent = parent;
 
-			INativeWindow window = (INativeWindow)parent[ "window" ];
+			INativeWindow window = (INativeWindow)parent[ "nativewindow" ];
 
 			if ( window == null )
 				return;
