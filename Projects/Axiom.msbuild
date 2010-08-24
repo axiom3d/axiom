@@ -14,16 +14,16 @@
   <Target Name="Build">
     <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
              Properties="
-	       Configuration=$(Configuration);
-	       ShowReports=$(ShowReports);
-	       ReportTypes=$(ReportTypes);
-	       Coverage=$(Coverage);
-	       Version=$(Version);
-	       RootDir=$(RootDir);
-	       StartDir=$(StartDir);
-         BuildDir=$(BuildDir);
-	       MetaBuildBinDir=$(MetaBuildBinDir);
-	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
-	     Targets="Clean;Build;Image;Test;Dist" />
+			 Configuration=$(Configuration);
+	         ShowReports=$(ShowReports);
+	         ReportTypes=$(ReportTypes);
+	         Coverage=$(Coverage);
+	         Version=$(Version);
+	         RootDir=$(RootDir);
+	         StartDir=$(StartDir);
+             BuildDir=$(BuildDir);
+	         MetaBuildBinDir=$(MetaBuildBinDir);
+	         MetaBuildConfigFile=$(MetaBuildConfigFile)"
+	         Targets="Clean;Build;Image;Test;Dist" />
   </Target>
 </Project>
