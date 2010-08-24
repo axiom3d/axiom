@@ -4,7 +4,7 @@
   <PropertyGroup>
     <RenderSystem>$(RenderSystem)</RenderSystem>
     <ProjectBase>Axiom.Demos.Browser.WinForm</ProjectBase>
-    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).csproj</ProjectFile>
+    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).$(RenderSystem).csproj</ProjectFile>
     <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
     <ImagePath>samples\$(RenderSystem)</ImagePath>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>

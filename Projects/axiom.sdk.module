@@ -7,10 +7,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </Module>
-	  <Module Include="Axiom\axiom.core.module">
-  		<Configuration>Release</Configuration>
-  		<Platform>x86</Platform>
-	  </Module>
+	<Module Include="Axiom\axiom.core.module">
+  	  <Configuration>Release</Configuration>
+  	  <Platform>x86</Platform>
+	</Module>
 
     <Module Include="Axiom\axiom.core.module">
       <Configuration>Debug</Configuration>
@@ -24,11 +24,42 @@
     <Module Include="AxiomDemos\axiom.samples.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
+      <Properties>
+        RenderSystem=DirectX
+      </Properties>
     </Module>
+
+    <Module Include="AxiomDemos\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+      <Properties>
+        RenderSystem=OpenGL
+      </Properties>
+    </Module>
+
+    <Module Include="AxiomDemos\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+      <Properties>
+        RenderSystem=Xna
+      </Properties>
+    </Module>
+
+    <Module Include="AxiomDemos\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox</Platform>
+    </Module>
+
     <Module Include="Tests\axiom.tests.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
     </Module>
   </ItemGroup>
 
+  <ItemGroup>
+	<File Include="..\Media\**\*" >
+      <ImagePath>$(ImagePath)\samples\media</ImagePath>
+    </File>
+  </ItemGroup>
+  
 </Project>
