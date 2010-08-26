@@ -107,14 +107,12 @@ namespace Axiom.Media
 				switch ( format )
 				{
 					case PixelFormat.DXT1:
-						Debug.Assert( depth == 1 );
-						return ( ( width * 3 ) / 4 ) * ( ( height * 3 ) / 4 ) * 8;
+						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 8 * depth;
 					case PixelFormat.DXT2:
 					case PixelFormat.DXT3:
 					case PixelFormat.DXT4:
 					case PixelFormat.DXT5:
-						Debug.Assert( depth == 1 );
-						return ( ( width * 3 ) / 4 ) * ( ( height * 3 ) / 4 ) * 16;
+						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
 					default:
 						throw new Exception( "Invalid compressed pixel format" );
 				}
@@ -124,7 +122,8 @@ namespace Axiom.Media
 				return width * height * depth * GetNumElemBytes( format );
 			}
 		}
-        public static bool IsAccessible( PixelFormat format )
+
+		public static bool IsAccessible( PixelFormat format )
         {
             if ( format == PixelFormat.Unknown )
                 return false;
