@@ -110,9 +110,6 @@
     <Compile Include="Main.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Settings.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <None Include="..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll.config">
       <Link>OpenTK.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1172,7 +1169,7 @@
       <Name>Axiom.Demos.2010</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
 if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"
