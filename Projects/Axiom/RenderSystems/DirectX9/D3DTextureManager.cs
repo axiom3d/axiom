@@ -139,7 +139,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return device.AvailableTextureMemory;
+				return (int)device.AvailableTextureMemory;
 			}
 		}
 	}
