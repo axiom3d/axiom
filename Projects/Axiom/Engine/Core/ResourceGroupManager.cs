@@ -1473,12 +1473,10 @@ namespace Axiom.Core
 				}
 				else
 				{
-					throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName +
-														" or any other group." );
+					throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + " or any other group." );
 				}
 			}
-			throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName +
-												"." );
+			throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + "." );
 		}
 
 		#endregion OpenResource Method
