@@ -97,6 +97,7 @@ namespace Axiom.Math
                 return invalidVector;
             }
         }
+        
         private static readonly Vector3 zeroVector = new Vector3( 0.0f, 0.0f, 0.0f );
         private static readonly Vector3 unitX = new Vector3( 1.0f, 0.0f, 0.0f );
         private static readonly Vector3 unitY = new Vector3( 0.0f, 1.0f, 0.0f );
@@ -152,7 +153,9 @@ namespace Axiom.Math
         /// <returns>true or false</returns>
         public static bool operator ==( Vector3 left, Vector3 right )
         {
-            return ( left.x == right.x && left.y == right.y && left.z == right.z );
+            if ( left.IsInvalid && right.IsInvalid ) return true;
+            if ( left.IsInvalid || right.IsInvalid ) return false;
+            return (left.x == right.x && left.y == right.y && left.z == right.z);
         }
 
         /// <summary>
@@ -163,6 +166,8 @@ namespace Axiom.Math
         /// <returns>true or false</returns>
         public static bool operator !=( Vector3 left, Vector3 right )
         {
+            if ( left.IsInvalid && right.IsInvalid ) return false;
+            if ( left.IsInvalid || right.IsInvalid ) return true;
             return ( left.x != right.x || left.y != right.y || left.z != right.z );
         }
 
@@ -843,6 +848,14 @@ namespace Axiom.Math
             {
                 Real sqlen = ( x * x ) + ( y * y ) + ( z * z );
                 return ( sqlen < ( 1e-06f * 1e-06f ) );
+            }
+        }
+
+        public bool IsInvalid
+        {
+            get
+            {
+                return Real.IsNaN( this.x ) || Real.IsNaN( this.y ) || Real.IsNaN( this.z );
             }
         }
 
