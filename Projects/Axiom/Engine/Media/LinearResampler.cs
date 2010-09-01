@@ -54,7 +54,7 @@ namespace Axiom.Media
         /// 
         /// </summary>
         /// <param name="src"></param>
-        /// <param name="temp"></param>
+        /// <param name="dst"></param>
         public void Scale( PixelBox src, PixelBox dst )
         {
             int srcelemsize = PixelUtil.GetNumElemBytes( src.Format );

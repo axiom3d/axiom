@@ -474,22 +474,27 @@ namespace Axiom.Core
             /// <summary>
             ///     Remove the region from the scene graph
             /// </summary>
-            public virtual void Dispose()
+            protected override void dispose(bool disposeManagedResources)
             {
-                if ( node != null )
+                if (!IsDisposed)
                 {
-                    node.RemoveFromParent();
-                    sceneMgr.DestroySceneNode( node );
-                    node = null;
-                }
+                    if (disposeManagedResources)
+                    {
+                        if (node != null)
+                        {
+                            node.RemoveFromParent();
+                            sceneMgr.DestroySceneNode(node);
+                            node = null;
+                        }
 
-                foreach ( LODBucket lodBucket in lodBucketList )
-                {
-                    lodBucket.Dispose();
+                        foreach (LODBucket lodBucket in lodBucketList)
+                        {
+                            lodBucket.Dispose();
+                        }
+                        lodBucketList.Clear();
+                    }
                 }
-                lodBucketList.Clear();
             }
-
             #region MovableObject Implementation
 
             /// <summary>
