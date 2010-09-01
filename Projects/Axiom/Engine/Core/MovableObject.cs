@@ -806,26 +806,18 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
-
-		private bool _disposed = false;
+		#region IsDisposed Property
 
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+        protected bool IsDisposed
+        {
+            get;
+            set;
+        }
 
-		#endregion isDisposed Property
+		#endregion IsDisposed Property
 
 		/// <summary>
 		/// Class level dispose method
@@ -853,7 +845,7 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected virtual void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -863,7 +855,7 @@ namespace Axiom.Core
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
+			IsDisposed = true;
 		}
 
 		public void Dispose()

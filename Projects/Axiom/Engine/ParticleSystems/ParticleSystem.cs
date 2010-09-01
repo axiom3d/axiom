@@ -234,23 +234,29 @@ namespace Axiom.ParticleSystems
 			RegisterParsers();
 		}
 
-		public void Dispose()
-		{
-			if ( timeController != null )
-			{
-				// timeController.Dispose();
-				timeController = null;
-			}
-			RemoveAllEmitters();
-			RemoveAllAffectors();
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (timeController != null)
+                    {
+                        // timeController.Dispose();
+                        timeController = null;
+                    }
+                    RemoveAllEmitters();
+                    RemoveAllAffectors();
 
-			DestroyVisualParticles( 0, particlePool.Count );
-			if ( renderer != null )
-			{
-				// renderer.Dispose();
-				renderer = null;
-			}
-		}
+                    DestroyVisualParticles(0, particlePool.Count);
+                    if (renderer != null)
+                    {
+                        // renderer.Dispose();
+                        renderer = null;
+                    }
+                }
+            }
+        }
 
 		/// <summary>
 		///		Adds an emitter to this particle system.

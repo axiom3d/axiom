@@ -55,7 +55,7 @@ namespace Axiom.Core
 
 		///<summary>
 		///    A GeometryBucket is a the lowest level bucket where geometry with
-		///    the same vertex & index format is stored. It also acts as the
+		///    the same vertex &amp; index format is stored. It also acts as the
 		///    renderable.
 		///</summary>
 		public class GeometryBucket : IRenderable, IDisposable

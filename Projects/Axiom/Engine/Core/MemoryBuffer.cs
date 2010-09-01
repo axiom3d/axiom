@@ -151,11 +151,11 @@ namespace Axiom.Core
 			_buffer = new T[ size ];
 		}
 
-		public T[] AsArray<T>()
+		public TDestType[] AsArray<TDestType>()
 		{
-			if ( Owner.BitConverters.ContainsKey( typeof( T ) ) )
-				return (T[])( Owner.BitConverters[ typeof( T ) ].Convert( _buffer, 0 ) );
-			return new T[ 0 ];
+			if ( Owner.BitConverters.ContainsKey( typeof( TDestType ) ) )
+				return (TDestType[])( Owner.BitConverters[ typeof( TDestType ) ].Convert( _buffer, 0 ) );
+			return new TDestType[ 0 ];
 		}
 
 		#region IDisposable Implementation

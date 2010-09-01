@@ -42,7 +42,7 @@ namespace Axiom.Utilities
 	/// <summary>
 	/// Factory class for some exception classes that have variable constructors based on the 
 	/// framework that is targeted. Rather than use <c>#if</c> around the different constructors
-	/// use the least common demonitor, but wrap it in an easier to use method.
+	/// use the least common denominator, but wrap it in an easier to use method.
 	/// </summary>
 	internal static class ExceptionFactory
 	{
