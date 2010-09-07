@@ -149,58 +149,64 @@ namespace Axiom.Media
 		/**
 		 * Write a n*8 bits integer value to memory in native endian.
 		 */
-		unsafe public static void IntWrite( byte* dest, int n, uint value )
+		public static void IntWrite( IntPtr dest, int n, uint value )
 		{
-			switch ( n )
-			{
-				case 1:
-					( (byte*)dest )[ 0 ] = (byte)value;
-					break;
-				case 2:
-					( (ushort*)dest )[ 0 ] = (ushort)value;
-					break;
-				case 3:
+            unsafe
+            {
+                switch (n)
+                {
+                    case 1:
+                        ((byte*)dest)[0] = (byte)value;
+                        break;
+                    case 2:
+                        ((ushort*)dest)[0] = (ushort)value;
+                        break;
+                    case 3:
 #if BIG_ENDIAN
                     ((byte*)dest)[0] = (byte)((value >> 16) & 0xFF);
                     ((byte*)dest)[1] = (byte)((value >> 8) & 0xFF);
                     ((byte*)dest)[2] = (byte)(value & 0xFF);
 #else
-					( (byte*)dest )[ 2 ] = (byte)( ( value >> 16 ) & 0xFF );
-					( (byte*)dest )[ 1 ] = (byte)( ( value >> 8 ) & 0xFF );
-					( (byte*)dest )[ 0 ] = (byte)( value & 0xFF );
+                        ((byte*)dest)[2] = (byte)((value >> 16) & 0xFF);
+                        ((byte*)dest)[1] = (byte)((value >> 8) & 0xFF);
+                        ((byte*)dest)[0] = (byte)(value & 0xFF);
 #endif
-					break;
-				case 4:
-					( (uint*)dest )[ 0 ] = (uint)value;
-					break;
-			}
+                        break;
+                    case 4:
+                        ((uint*)dest)[0] = (uint)value;
+                        break;
+                }
+            }
 		}
 
 		///<summary>
 		///    Read a n*8 bits integer value to memory in native endian.
 		///</summary>
-		unsafe public static uint IntRead( byte* src, int n )
+		public static uint IntRead( IntPtr src, int n )
 		{
-			switch ( n )
-			{
-				case 1:
-					return ( (byte*)src )[ 0 ];
-				case 2:
-					return ( (ushort*)src )[ 0 ];
-				case 3:
+            unsafe
+            {
+                switch (n)
+                {
+                    case 1:
+                        return ((byte*)src)[0];
+                    case 2:
+                        return ((ushort*)src)[0];
+                    case 3:
 #if BIG_ENDIAN
                     return ((uint)((byte*)src)[0]<<16)|
                             ((uint)((byte*)src)[1]<<8)|
                             ((uint)((byte*)src)[2]);
 #else
-					return ( (uint)( (byte*)src )[ 0 ] ) |
-							( (uint)( (byte*)src )[ 1 ] << 8 ) |
-							( (uint)( (byte*)src )[ 2 ] << 16 );
+                        return ((uint)((byte*)src)[0]) |
+                                ((uint)((byte*)src)[1] << 8) |
+                                ((uint)((byte*)src)[2] << 16);
 #endif
-				case 4:
-					return ( (uint*)src )[ 0 ];
-			}
-			return 0; // ?
+                    case 4:
+                        return ((uint*)src)[0];
+                }
+                return 0; // ?
+            }
 		}
 
 		private static float[] floatConversionBuffer = new float[] { 0f };

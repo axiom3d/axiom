@@ -25,21 +25,21 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
+
+#region Namespace Declarations
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using GLES = OpenTK.Graphics.ES11;
 using Axiom.Media;
 using Axiom.Core;
 using Axiom.Graphics;
-#region Namespace Declarations
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -134,14 +134,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="fmt"></param>
 		/// <param name="hwGamma"></param>
 		/// <returns></returns>
-		public static GLES.PixelFormat GetGLInternalFormat(PixelFormat fmt, bool hwGamma)
+		public static GLES.All GetGLInternalFormat(PixelFormat fmt, bool hwGamma)
 		{
 			switch (fmt)
 			{
 				case PixelFormat.L8:
-					return GLES.PixelFormat.Luminance;
+                    return GLES.All.Luminance;
 				case PixelFormat.A8:
-					return GLES.PixelFormat.LuminanceAlpha;
+                    return GLES.All.LuminanceAlpha;
 				case PixelFormat.R8G8B8:
 				case PixelFormat.B8G8R8:
 				case PixelFormat.X8B8G8R8:
@@ -151,7 +151,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					{
 						if (!hwGamma)
 						{
-							return GLES.PixelFormat.Rgba;
+                            return GLES.All.Rgba;
 						}
 					}
 					return 0;
@@ -260,9 +260,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="mFormat">mFormat The pixel format</param>
 		/// <param name="hwGamma">hwGamma Whether a hardware gamma-corrected version is requested</param>
 		/// <returns></returns>
-		public static GLES.PixelFormat GetClosestGLInternalFormat(PixelFormat mFormat, bool hwGamma = false)
+		public static GLES.All GetClosestGLInternalFormat(PixelFormat mFormat, bool hwGamma = false)
 		{
-			GLES.PixelFormat format = GetGLInternalFormat(mFormat, hwGamma);
+			GLES.All format = GetGLInternalFormat(mFormat, hwGamma);
 			if (format == 0)
 			{
 				if (hwGamma)
@@ -272,7 +272,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 				else
 				{
-					return GLES.PixelFormat.Rgba;
+					return GLES.All.Rgba;
 				}
 			}
 			else
@@ -289,7 +289,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="fmt"></param>
 		/// <returns></returns>
-		public static PixelFormat GetClosestAxiomFormat(GLES.PixelFormat fmt)
+		public static PixelFormat GetClosestAxiomFormat(GLES.All fmt)
 		{
 			switch (fmt)
 			{
@@ -303,16 +303,16 @@ namespace Axiom.RenderSystems.OpenGLES
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 				return PixelFormat.PVRTC_RGBA4;
 #endif
-				case GLES.PixelFormat.Luminance:
+				case GLES.All.Luminance:
 					return PixelFormat.L8;
-				case GLES.PixelFormat.Alpha:
+				case GLES.All.Alpha:
 					return PixelFormat.A8;
-				case GLES.PixelFormat.LuminanceAlpha:
+				case GLES.All.LuminanceAlpha:
 					return PixelFormat.BYTE_LA;
 
-				case GLES.PixelFormat.Rgb:
+				case GLES.All.Rgb:
 					return PixelFormat.X8R8G8B8;
-				case GLES.PixelFormat.Rgba:
+				case GLES.All.Rgba:
 #if (AXIOM_PLATFORM_IPHONE)
 				// seems that in iPhone we need this value to get the right color
 				return PixelFormat.A8R8G8B8;
@@ -320,7 +320,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					return PixelFormat.X8B8G8R8;
 #endif
 #if GL_BGRA
-			case GLES.PixelFormat.Rgba:
+			case GLES.All.Rgba:
 #endif
 				//                return PixelFormat.X8B8G8R8;
 				default:

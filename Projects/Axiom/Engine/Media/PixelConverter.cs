@@ -743,35 +743,15 @@ namespace Axiom.Media
 		///*************************************************************************
 
 
-		///<summary>
-		///    Pack a color value to memory
-		///</summary>
-		///<param name="color">The color</param>
-		///<param name="format">Pixel format in which to write the color</param>
-		///<param name="dest">Destination memory location</param>
-		public static void PackColor( ColorEx color, PixelFormat format, IntPtr dest )
-		{
-			unsafe
-			{
-				PixelConverter.PackColor( color.r, color.g, color.b, color.a, format, (byte*)( dest.ToPointer() ) );
-			}
-		}
-
         ///<summary>
         ///    Pack a color value to memory
         ///</summary>
-        ///<param name="r">the red component of the color</param>
-        ///<param name="g">the green component of the color</param>
-        ///<param name="b">the blue component of the color</param>
-        ///<param name="a">the alpha component of the color</param>
+        ///<param name="color">The color</param>
         ///<param name="format">Pixel format in which to write the color</param>
         ///<param name="dest">Destination memory location</param>
-        public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
+        public static void PackColor(ColorEx color, PixelFormat format, IntPtr dest)
         {
-            unsafe
-            {
-                PixelConverter.PackColor( r, g, b, a, format, (byte*)( dest.ToPointer() ) );
-            }
+            PixelConverter.PackColor(color.r, color.g, color.b, color.a, format, dest);
         }
 
 		///<summary>
@@ -780,7 +760,7 @@ namespace Axiom.Media
 		///<param name="r,g,b,a">The four color components, range 0x00 to 0xFF</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
-		unsafe public static void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, byte* dest )
+		public static void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, IntPtr dest )
 		{
 			PixelFormatDescription des = GetDescriptionFor( format );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
@@ -810,7 +790,7 @@ namespace Axiom.Media
 		///</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
-		unsafe protected static void PackColor( float r, float g, float b, float a, PixelFormat format, byte* dest )
+		public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
 		{
 			// Catch-it-all here
 			PixelFormatDescription des = GetDescriptionFor( format );
@@ -826,60 +806,67 @@ namespace Axiom.Media
 			}
 			else
 			{
-				switch ( format )
-				{
-					case PixelFormat.FLOAT32_R:
-						( (float*)dest )[ 0 ] = r;
-						break;
-					case PixelFormat.FLOAT32_RGB:
-						( (float*)dest )[ 0 ] = r;
-						( (float*)dest )[ 1 ] = g;
-						( (float*)dest )[ 2 ] = b;
-						break;
-					case PixelFormat.FLOAT32_RGBA:
-						( (float*)dest )[ 0 ] = r;
-						( (float*)dest )[ 1 ] = g;
-						( (float*)dest )[ 2 ] = b;
-						( (float*)dest )[ 3 ] = a;
-						break;
-					case PixelFormat.FLOAT16_R:
-						( (ushort*)dest )[ 0 ] = Bitwise.FloatToHalf( r );
-						break;
-					case PixelFormat.FLOAT16_RGB:
-						( (ushort*)dest )[ 0 ] = Bitwise.FloatToHalf( r );
-						( (ushort*)dest )[ 1 ] = Bitwise.FloatToHalf( g );
-						( (ushort*)dest )[ 2 ] = Bitwise.FloatToHalf( b );
-						break;
-					case PixelFormat.FLOAT16_RGBA:
-						( (ushort*)dest )[ 0 ] = Bitwise.FloatToHalf( r );
-						( (ushort*)dest )[ 1 ] = Bitwise.FloatToHalf( g );
-						( (ushort*)dest )[ 2 ] = Bitwise.FloatToHalf( b );
-						( (ushort*)dest )[ 3 ] = Bitwise.FloatToHalf( a );
-						break;
-					case PixelFormat.SHORT_RGBA:
-						( (ushort*)dest )[ 0 ] = (ushort)Bitwise.FloatToFixed( r, 16 );
-						( (ushort*)dest )[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
-						( (ushort*)dest )[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
-						( (ushort*)dest )[ 3 ] = (ushort)Bitwise.FloatToFixed( a, 16 );
-					    break;
-					case PixelFormat.BYTE_LA:
-						( (byte*)dest )[ 0 ] = (byte)Bitwise.FloatToFixed( r, 8 );
-						( (byte*)dest )[ 1 ] = (byte)Bitwise.FloatToFixed( a, 8 );
-					    break;
-					default:
-						// Not yet supported
-						throw new Exception( "Pack to " + format + " not implemented, in PixelUtil.PackColor" );
-				}
+                unsafe
+                {
+                    switch (format)
+                    {
+                        case PixelFormat.FLOAT32_R:
+                            ((float*)dest)[0] = r;
+                            break;
+                        case PixelFormat.FLOAT32_RGB:
+                            ((float*)dest)[0] = r;
+                            ((float*)dest)[1] = g;
+                            ((float*)dest)[2] = b;
+                            break;
+                        case PixelFormat.FLOAT32_RGBA:
+                            ((float*)dest)[0] = r;
+                            ((float*)dest)[1] = g;
+                            ((float*)dest)[2] = b;
+                            ((float*)dest)[3] = a;
+                            break;
+                        case PixelFormat.FLOAT16_R:
+                            ((ushort*)dest)[0] = Bitwise.FloatToHalf(r);
+                            break;
+                        case PixelFormat.FLOAT16_RGB:
+                            ((ushort*)dest)[0] = Bitwise.FloatToHalf(r);
+                            ((ushort*)dest)[1] = Bitwise.FloatToHalf(g);
+                            ((ushort*)dest)[2] = Bitwise.FloatToHalf(b);
+                            break;
+                        case PixelFormat.FLOAT16_RGBA:
+                            ((ushort*)dest)[0] = Bitwise.FloatToHalf(r);
+                            ((ushort*)dest)[1] = Bitwise.FloatToHalf(g);
+                            ((ushort*)dest)[2] = Bitwise.FloatToHalf(b);
+                            ((ushort*)dest)[3] = Bitwise.FloatToHalf(a);
+                            break;
+                        case PixelFormat.SHORT_RGBA:
+                            ((ushort*)dest)[0] = (ushort)Bitwise.FloatToFixed(r, 16);
+                            ((ushort*)dest)[1] = (ushort)Bitwise.FloatToFixed(g, 16);
+                            ((ushort*)dest)[2] = (ushort)Bitwise.FloatToFixed(b, 16);
+                            ((ushort*)dest)[3] = (ushort)Bitwise.FloatToFixed(a, 16);
+                            break;
+                        case PixelFormat.BYTE_LA:
+                            ((byte*)dest)[0] = (byte)Bitwise.FloatToFixed(r, 8);
+                            ((byte*)dest)[1] = (byte)Bitwise.FloatToFixed(a, 8);
+                            break;
+                        default:
+                            // Not yet supported
+                            throw new Exception("Pack to " + format + " not implemented, in PixelUtil.PackColor");
+                    }
+                }
 			}
 		}
-
+        /// <summary>
+        /// Unpack a color value from memory
+        /// </summary>
+        /// <param name="pf">Pixelformat in which to read the color</param>
+        /// <param name="src">Source memory location</param>
+        /// <returns>The color is returned here</returns>
 		public static ColorEx UnpackColor( PixelFormat pf, IntPtr src )
 		{
 			ColorEx val = new ColorEx();
-			unsafe
-			{
-				UnpackColor( out val.r, out val.g, out val.b, out val.a, pf, (byte*)src.ToPointer() );
-			}
+
+			UnpackColor( out val.r, out val.g, out val.b, out val.a, pf, src );
+			
 			return val;
 		}
 
@@ -897,9 +884,10 @@ namespace Axiom.Media
 		/// this will lose precision when coming from A2R10G10B10 or floating
 		/// point formats.
 		/// </remarks>
-		unsafe protected static void UnpackColor( ref byte r, ref byte g, ref byte b, ref byte a,
-												 PixelFormat pf, byte* src )
+		public static void UnpackColor( ref byte r, ref byte g, ref byte b, ref byte a,
+												 PixelFormat pf, IntPtr src )
 		{
+
 			PixelFormatDescription des = GetDescriptionFor( pf );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
@@ -932,9 +920,17 @@ namespace Axiom.Media
 				a = Bitwise.FloatToByteFixed( aa );
 			}
 		}
-
-		unsafe protected static void UnpackColor( out float r, out float g, out float b, out float a,
-												 PixelFormat pf, byte* src )
+        /// <summary>
+        /// Unpack a color value from memory
+        /// </summary>
+        /// <param name="r">The color is returned here (as float)</param>
+        /// <param name="g">The color is returned here (as float)</param>
+        /// <param name="b">The color is returned here (as float)</param>
+        /// <param name="a">The color is returned here (as float)</param>
+        /// <param name="pf">Pixelformat in which to read the color</param>
+        /// <param name="src">Source memory location</param>
+		public static void UnpackColor( out float r, out float g, out float b, out float a,
+												 PixelFormat pf, IntPtr src )
 		{
 			PixelFormatDescription des = GetDescriptionFor( pf );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
@@ -960,53 +956,55 @@ namespace Axiom.Media
 			}
 			else
 			{
-				switch ( pf )
-				{
-					case PixelFormat.FLOAT32_R:
-						r = g = b = ( (float*)src )[ 0 ];
-						a = 1.0f;
-						break;
-					case PixelFormat.FLOAT32_RGB:
-						r = ( (float*)src )[ 0 ];
-						g = ( (float*)src )[ 1 ];
-						b = ( (float*)src )[ 2 ];
-						a = 1.0f;
-						break;
-					case PixelFormat.FLOAT32_RGBA:
-						r = ( (float*)src )[ 0 ];
-						g = ( (float*)src )[ 1 ];
-						b = ( (float*)src )[ 2 ];
-						a = ( (float*)src )[ 3 ];
-						break;
-					case PixelFormat.FLOAT16_R:
-						r = g = b = Bitwise.HalfToFloat( ( (ushort*)src )[ 0 ] );
-						a = 1.0f;
-						break;
-					case PixelFormat.FLOAT16_RGB:
-						r = Bitwise.HalfToFloat( ( (ushort*)src )[ 0 ] );
-						g = Bitwise.HalfToFloat( ( (ushort*)src )[ 1 ] );
-						b = Bitwise.HalfToFloat( ( (ushort*)src )[ 2 ] );
-						a = 1.0f;
-						break;
-					case PixelFormat.FLOAT16_RGBA:
-						r = Bitwise.HalfToFloat( ( (ushort*)src )[ 0 ] );
-						g = Bitwise.HalfToFloat( ( (ushort*)src )[ 1 ] );
-						b = Bitwise.HalfToFloat( ( (ushort*)src )[ 2 ] );
-						a = Bitwise.HalfToFloat( ( (ushort*)src )[ 3 ] );
-						break;
-					case PixelFormat.SHORT_RGBA:
-					    r = Bitwise.FixedToFloat( ( (ushort*)src )[ 0 ], 16 );
-					    g = Bitwise.FixedToFloat( ( (ushort*)src )[ 1 ], 16 );
-					    b = Bitwise.FixedToFloat( ( (ushort*)src )[ 2 ], 16 );
-					    a = Bitwise.FixedToFloat( ( (ushort*)src )[ 3 ], 16 );
-					    break;
-					case PixelFormat.BYTE_LA:
-					    r = g = b = Bitwise.FixedToFloat( ( (byte*)src )[ 0 ], 8 );
-					    a = Bitwise.FixedToFloat( ( (byte*)src )[ 1 ], 8 );
-					    break;
-					default:
-						// Not yet supported
-						throw new Exception( "Unpack from " + pf + " not implemented, in PixelUtil.UnpackColor" );
+                unsafe{
+                    switch (pf)
+                    {
+                        case PixelFormat.FLOAT32_R:
+                            r = g = b = ((float*)src)[0];
+                            a = 1.0f;
+                            break;
+                        case PixelFormat.FLOAT32_RGB:
+                            r = ((float*)src)[0];
+                            g = ((float*)src)[1];
+                            b = ((float*)src)[2];
+                            a = 1.0f;
+                            break;
+                        case PixelFormat.FLOAT32_RGBA:
+                            r = ((float*)src)[0];
+                            g = ((float*)src)[1];
+                            b = ((float*)src)[2];
+                            a = ((float*)src)[3];
+                            break;
+                        case PixelFormat.FLOAT16_R:
+                            r = g = b = Bitwise.HalfToFloat(((ushort*)src)[0]);
+                            a = 1.0f;
+                            break;
+                        case PixelFormat.FLOAT16_RGB:
+                            r = Bitwise.HalfToFloat(((ushort*)src)[0]);
+                            g = Bitwise.HalfToFloat(((ushort*)src)[1]);
+                            b = Bitwise.HalfToFloat(((ushort*)src)[2]);
+                            a = 1.0f;
+                            break;
+                        case PixelFormat.FLOAT16_RGBA:
+                            r = Bitwise.HalfToFloat(((ushort*)src)[0]);
+                            g = Bitwise.HalfToFloat(((ushort*)src)[1]);
+                            b = Bitwise.HalfToFloat(((ushort*)src)[2]);
+                            a = Bitwise.HalfToFloat(((ushort*)src)[3]);
+                            break;
+                        case PixelFormat.SHORT_RGBA:
+                            r = Bitwise.FixedToFloat(((ushort*)src)[0], 16);
+                            g = Bitwise.FixedToFloat(((ushort*)src)[1], 16);
+                            b = Bitwise.FixedToFloat(((ushort*)src)[2], 16);
+                            a = Bitwise.FixedToFloat(((ushort*)src)[3], 16);
+                            break;
+                        case PixelFormat.BYTE_LA:
+                            r = g = b = Bitwise.FixedToFloat(((byte*)src)[0], 8);
+                            a = Bitwise.FixedToFloat(((byte*)src)[1], 8);
+                            break;
+                        default:
+                            // Not yet supported
+                            throw new Exception("Unpack from " + pf + " not implemented, in PixelUtil.UnpackColor");
+                    }
 				}
 			}
 		}
@@ -1162,8 +1160,8 @@ namespace Axiom.Media
 					{
 						for ( int x = src.Left; x < src.Right; x++ )
 						{
-							UnpackColor( out r, out g, out b, out a, src.Format, srcptr );
-							PackColor( r, g, b, a, dst.Format, dstptr );
+							UnpackColor( out r, out g, out b, out a, src.Format, (IntPtr)srcptr );
+							PackColor( r, g, b, a, dst.Format, (IntPtr)dstptr );
 							srcptr += srcPixelSize;
 							dstptr += dstPixelSize;
 						}

@@ -615,7 +615,36 @@ namespace Axiom.Core
 				throw new NotImplementedException();
 			}
 		}
-
+        /// <summary>
+        /// Returns whether this render system has hardware filtering supported for the
+        /// texture format requested with the given usage options.
+        /// </summary>
+        /// <param name="ttype">The texture type requested</param>
+        /// <param name="format">The pixel format requested</param>
+        /// <param name="usage">the kind of usage this texture is intended for, a combination of the TextureUsage flags.</param>
+        /// <returns>true if the texture filtering is supported.</returns>
+        public virtual bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage)
+        {
+            return IsHardwareFilteringSupported(ttype, format, usage);
+        }
+        /// <summary>
+        /// Returns whether this render system has hardware filtering supported for the
+        /// texture format requested with the given usage options.
+        /// </summary>
+        /// <param name="ttype">The texture type requested</param>
+        /// <param name="format">The pixel format requested</param>
+        /// <param name="usage">the kind of usage this texture is intended for, a combination of the TextureUsage flags.</param>
+        /// <param name="preciseFormatOnly">
+        /// Whether precise or fallback format mode is used to detecting.
+        /// In case the pixel format doesn't supported by device, false will be returned
+        /// if in precise mode, and natively used pixel format will be actually use to
+        /// check if in fallback mode.
+        /// </param>
+        /// <returns>true if the texture filtering is supported.</returns>
+        public virtual bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage, bool preciseFormatOnly)
+        {
+            throw new NotImplementedException();
+        }
 		#endregion Methods
 	}
 }
