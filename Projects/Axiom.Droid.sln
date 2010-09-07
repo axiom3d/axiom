@@ -1,0 +1,85 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1EAB961C-47EC-4015-B61E-E672AE1C82A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platform Managers", "{676C7702-0B62-4E50-8211-EA5BC21A5DF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Systems", "{FC473D51-36A2-4437-BC06-92A8E92374B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Managers", "{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{DC26813F-4527-477E-8068-272E10CF5C37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CDC63BED-5686-4A70-A0F7-C383CE74F536}"
+	ProjectSection(SolutionItems) = preProject
+		..\ChangeLog.txt = ..\ChangeLog.txt
+		..\Credits.txt = ..\Credits.txt
+		..\license.txt = ..\license.txt
+		..\readme.txt = ..\readme.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5326DA77-945E-47D4-B9D8-D2AF047D5D63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E8E2F297-B384-4311-B5C0-F6AB9354D91B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Droid", "Axiom\Engine\Axiom.Droid.csproj", "{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Mono-Debug|Any CPU = Mono-Debug|Any CPU
+		Mono-Debug|Mixed Platforms = Mono-Debug|Mixed Platforms
+		Mono-Debug|x86 = Mono-Debug|x86
+		Mono-Release|Any CPU = Mono-Release|Any CPU
+		Mono-Release|Mixed Platforms = Mono-Release|Mixed Platforms
+		Mono-Release|x86 = Mono-Release|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|x86.ActiveCfg = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{676C7702-0B62-4E50-8211-EA5BC21A5DF5} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{FC473D51-36A2-4437-BC06-92A8E92374B7} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{DC26813F-4527-477E-8068-272E10CF5C37} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{E8E2F297-B384-4311-B5C0-F6AB9354D91B} = {5326DA77-945E-47D4-B9D8-D2AF047D5D63}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		version = 0.1
+		StartupItem = AxiomDemos\Source\Browser\CommandLine\Axiom.Demos.Browser.CommandLine.OpenTK.2010.csproj
+	EndGlobalSection
+EndGlobal
