@@ -174,7 +174,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="dst"></param>
         public override void BlitToMemory(BasicBox srcBox, PixelBox dst)
         {
-            if (_buffer.Contains(srcBox))
+            if (!_buffer.Contains(srcBox))
             {
                 throw new ArgumentOutOfRangeException("source boux out of range");
             }
@@ -219,7 +219,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="dstBox"></param>
         public override void BlitFromMemory(PixelBox src, Media.BasicBox dstBox)
         {
-            if (_buffer.Contains(dstBox))
+            if (!_buffer.Contains(dstBox))
             {
                 throw new ArgumentOutOfRangeException("Destination box out of range, GLESHardwarePixelBuffer.BlitToMemory");
             }
