@@ -38,30 +38,30 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    /// <summary>
-    /// Plugin instance for GL Manager
-    /// </summary>
+	/// <summary>
+	/// Plugin instance for GL Manager
+	/// </summary>
 	public class GLESPlugin : IPlugin
 	{
-        /// <summary>
-        /// 
-        /// </summary>
-        protected GLESRenderSystem _renderSystem;
-        /// <summary>
-        /// Stops the plugin
-        /// </summary>
-        public void Shutdown()
-        {
-            _renderSystem.Shutdown();
-        }
-        /// <summary>
-        /// Initializes the plugin.
-        /// </summary>
-        public void Initialize()
-        {
-            _renderSystem = new GLESRenderSystem();
-            Root.Instance.RenderSystems.Add("OpenGLES", _renderSystem);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		protected GLESRenderSystem _renderSystem;
+		/// <summary>
+		/// Stops the plugin
+		/// </summary>
+		public void Shutdown()
+		{
+			_renderSystem.Shutdown();
+		}
+		/// <summary>
+		/// Initializes the plugin.
+		/// </summary>
+		public void Initialize()
+		{
+			_renderSystem = new GLESRenderSystem();
+			Root.Instance.RenderSystems.Add("OpenGLES", _renderSystem);
+		}
 	}
 }
 

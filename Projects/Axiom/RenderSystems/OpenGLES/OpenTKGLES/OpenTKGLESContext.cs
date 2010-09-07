@@ -24,6 +24,4 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
             
         }
     }
-
-
 }

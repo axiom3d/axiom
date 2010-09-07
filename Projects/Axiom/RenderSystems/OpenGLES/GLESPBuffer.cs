@@ -40,59 +40,59 @@ using Axiom.Media;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    /// <summary>
-    /// An off-screen rendering context. These contexts are always RGBA for simplicity, speed and
-    /// convience, but the component format is configurable.
-    /// </summary>
+	/// <summary>
+	/// An off-screen rendering context. These contexts are always RGBA for simplicity, speed and
+	/// convience, but the component format is configurable.
+	/// </summary>
 	public class GLESPBuffer
 	{
-        /// <summary>
-        /// Format of the PBuffer
-        /// </summary>
-        public PixelComponentType Format
-        {
-            get;
-            protected set;
-        }
-        /// <summary>
-        /// Get's the width of the PBuffer
-        /// </summary>
-        public int Width
-        {
-            get;
-            protected set;
-        }
-        /// <summary>
-        /// Get's the height of the PBuffer
-        /// </summary>
-        public int Height
-        {
-            get;
-            protected set;
-        }
+		/// <summary>
+		/// Format of the PBuffer
+		/// </summary>
+		public PixelComponentType Format
+		{
+			get;
+			protected set;
+		}
+		/// <summary>
+		/// Get's the width of the PBuffer
+		/// </summary>
+		public int Width
+		{
+			get;
+			protected set;
+		}
+		/// <summary>
+		/// Get's the height of the PBuffer
+		/// </summary>
+		public int Height
+		{
+			get;
+			protected set;
+		}
 
-        /// <summary>
-        /// Default ctor.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public GLESPBuffer(PixelComponentType format, int width, int height)
-        {
-            Format = format;
-            Width = width;
-            Height = height;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fmt"></param>
-        /// <returns></returns>
-        public static PixelComponentType GetPixelComponentType(PixelFormat fmt)
-        {
-            throw new NotImplementedException();
-            
-        }
+		/// <summary>
+		/// Default ctor.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public GLESPBuffer(PixelComponentType format, int width, int height)
+		{
+			Format = format;
+			Width = width;
+			Height = height;
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fmt"></param>
+		/// <returns></returns>
+		public static PixelComponentType GetPixelComponentType(PixelFormat fmt)
+		{
+			throw new NotImplementedException();
+			
+		}
 	}
 }
 

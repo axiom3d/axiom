@@ -46,47 +46,62 @@ namespace Axiom.RenderSystems.OpenGLES
 {
 	public class GLESTexture : Texture
 	{
-        private int _textureID;
-        /// <summary>
-        /// List of subsurfaces
-        /// </summary>
-        private List<HardwarePixelBuffer> _surfaceList;
-        /// <summary>
-        /// List of images that were pulled from disk by
-        /// prepareLoad but have yet to be pushed into texture memory
-        /// by loadImpl.  Images should be deleted by loadImpl and unprepareImpl.
-        /// </summary>
-        protected List<Image> _loadedImages;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="creator"></param>
-        /// <param name="name"></param>
-        /// <param name="handle"></param>
-        /// <param name="group"></param>
-        /// <param name="isManual"></param>
-        /// <param name="loader"></param>
-        /// <param name="support"></param>
-        public GLESTexture(ResourceManager creator, string name, ResourceHandle handle,
-            string group, bool isManual, IManualResourceLoader loader, GLESSupport support)
-            : base(creator, name, handle, group, isManual, loader)
-        {
+		private int _textureID;
+		/// <summary>
+		/// List of subsurfaces
+		/// </summary>
+		private List<HardwarePixelBuffer> _surfaceList;
+		/// <summary>
+		/// List of images that were pulled from disk by
+		/// prepareLoad but have yet to be pushed into texture memory
+		/// by loadImpl.  Images should be deleted by loadImpl and unprepareImpl.
+		/// </summary>
+		protected List<Image> _loadedImages;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="creator"></param>
+		/// <param name="name"></param>
+		/// <param name="handle"></param>
+		/// <param name="group"></param>
+		/// <param name="isManual"></param>
+		/// <param name="loader"></param>
+		/// <param name="support"></param>
+		public GLESTexture(ResourceManager creator, string name, ResourceHandle handle,
+			string group, bool isManual, IManualResourceLoader loader, GLESSupport support)
+			: base(creator, name, handle, group, isManual, loader)
+		{
 
-        }
-        public override HardwarePixelBuffer GetBuffer(int face, int mipmap)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public void CreateRenderTexture()
-        {
-        }
-        protected void CreateSurfaceList()
-        {
-            throw new NotImplementedException();
-        }
+		}
+		public override HardwarePixelBuffer GetBuffer(int face, int mipmap)
+		{
+			throw new NotImplementedException();
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		public void CreateRenderTexture()
+		{
+		}
+		protected void CreateSurfaceList()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void createInternalResources()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void freeInternalResources()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void load()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
 
