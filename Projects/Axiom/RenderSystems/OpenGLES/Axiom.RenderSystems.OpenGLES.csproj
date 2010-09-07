@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.RenderSystems.OpenGLES</RootNamespace>
+    <AssemblyName>Axiom.RenderSystems.OpenGLES</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Axiom">
+      <HintPath>..\..\..\..\..\Downloads\Axiom-0.8.0.0-B2\bin\debug\Axiom.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="OpenTK" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GLESContext.cs" />
+    <Compile Include="GLESDefaultHardwareBufferManager.cs" />
+    <Compile Include="GLESDepthBuffer.cs" />
+    <Compile Include="GLESFBOMultiRenderTarget.cs" />
+    <Compile Include="GLESFBORenderTexture.cs" />
+    <Compile Include="GLESFrameBufferObject.cs" />
+    <Compile Include="GLESGpuProgramManager.cs" />
+    <Compile Include="GLESHardwareBufferManager.cs" />
+    <Compile Include="GLESHardwareIndexBuffer.cs" />
+    <Compile Include="GLESHardwarePixelBuffer.cs" />
+    <Compile Include="GLESHardwareVertexBuffer.cs" />
+    <Compile Include="GLESPBRenderTexture.cs" />
+    <Compile Include="GLESPBuffer.cs" />
+    <Compile Include="GLESPixelFormat.cs" />
+    <Compile Include="GLESPlugin.cs" />
+    <Compile Include="GLESPrerequisites.cs" />
+    <Compile Include="GLESRenderSystem.cs" />
+    <Compile Include="GLESRenderTexture.cs" />
+    <Compile Include="GLESRTTManager.cs" />
+    <Compile Include="GLESSupport.cs" />
+    <Compile Include="GLESTexture.cs" />
+    <Compile Include="GLESTextureManager.cs" />
+    <Compile Include="OpenTKGLES\OpenTKGLESContext.cs" />
+    <Compile Include="OpenTKGLES\OpenTKGLESSupport.cs" />
+    <Compile Include="OpenTKGLES\OpenTKGLESUtil.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
