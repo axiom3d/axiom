@@ -18,7 +18,7 @@ namespace Droid
 {
 	public class DemoListActivity : ListActivity
 	{
-		private readonly string[] demos;
+		private string[] demos;
 
 		private readonly string DemoAssembly = /*Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
 											   System.IO.Path.DirectorySeparatorChar +*/ @"Axiom.Demos.dll";
@@ -26,21 +26,22 @@ namespace Droid
 		public DemoListActivity(IntPtr handle)
 			: base(handle)
 		{
-			demos = LoadDemos( "Axiom.Demos.dll" );
+			Title = "Axiom Demos";
 		}
 
 		protected override void OnCreate( Bundle savedInstanceState )
 		{
 			base.OnCreate( savedInstanceState );
-			ListAdapter = new ArrayAdapter<string>( this, R.layout.demo_item, demos );
+			demos = LoadDemos(DemoAssembly);
+			ListAdapter = new ArrayAdapter<string>(this, R.layout.demo_item, demos);
 
 			ListView.TextFilterEnabled = true;
+		}
 
-			ListView.ItemClick += delegate(AdapterView<object> parent, View view, int position, long id)
-			{
-				// When clicked, show a toast with the TextView text
-				Toast.MakeText(Application, ((TextView)view).Text, Toast.LengthShort).Show();
-			};
+		protected override void OnListItemClick(ListView l, View v, int position, long id)
+		{
+			Toast.MakeText(Application, ((TextView)v).Text, Toast.LengthShort).Show();
+			base.OnListItemClick(l, v, position, id);
 		}
 
 		public string[] LoadDemos(string DemoAssembly)
