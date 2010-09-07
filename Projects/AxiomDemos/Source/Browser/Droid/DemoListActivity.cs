@@ -26,7 +26,6 @@ namespace Droid
 		public DemoListActivity(IntPtr handle)
 			: base(handle)
 		{
-			Title = "Axiom Demos";
 		}
 
 		protected override void OnCreate( Bundle savedInstanceState )
