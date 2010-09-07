@@ -44,6 +44,7 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="GLESConfig.cs" />
     <Compile Include="GLESContext.cs" />
     <Compile Include="GLESDefaultHardwareBufferManager.cs" />
     <Compile Include="GLESDepthBuffer.cs" />
@@ -60,11 +61,14 @@
     <Compile Include="GLESPixelFormat.cs" />
     <Compile Include="GLESPlugin.cs" />
     <Compile Include="GLESPrerequisites.cs" />
+    <Compile Include="GLESRenderBuffer.cs" />
     <Compile Include="GLESRenderSystem.cs" />
     <Compile Include="GLESRenderTexture.cs" />
     <Compile Include="GLESRTTManager.cs" />
     <Compile Include="GLESSupport.cs" />
+    <Compile Include="GLESSurfaceDescription.cs" />
     <Compile Include="GLESTexture.cs" />
+    <Compile Include="GLESTextureBuffer.cs" />
     <Compile Include="GLESTextureManager.cs" />
     <Compile Include="OpenTKGLES\OpenTKGLESContext.cs" />
     <Compile Include="OpenTKGLES\OpenTKGLESSupport.cs" />

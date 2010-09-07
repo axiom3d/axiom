@@ -25,23 +25,249 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 #region Namespace Declarations
+using System;
+using Axiom.Graphics;
+using Axiom.Media;
+using Axiom.Core;
+using TK = OpenTK.Graphics.ES11;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESHardwarePixelBuffer
+	public class GLESHardwarePixelBuffer : HardwarePixelBuffer
 	{
+        /// <summary>
+        /// Internal buffer; either on-card or in system memory, freed/allocated on demand
+        /// depending on buffer usage
+        /// </summary>
+        protected PixelBox _buffer;
+        protected TK.All _glInternalFormat;
+        protected BufferLocking _currentLocking;
+        protected byte[] data;
+        public GLESHardwarePixelBuffer(int width, int height, int depth, PixelFormat format, BufferUsage usage)
+            : base(width, height, depth, format, usage, false, false)
+        {
+            _buffer = new PixelBox(width, height, depth, format);
+            _glInternalFormat = 0;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int ComputeLog(int value)
+        {
+            int i;
+
+            i = 0;
+
+            /* Error! */
+            if (value == 0) return -1;
+
+            for (; ; )
+            {
+                if ((value & 1) != 0)
+                {
+                    /* Error! */
+                    if (value != 1) return -1;
+                    return i;
+                }
+                value = value >> 1;
+                i++;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        protected void AllocateBuffer()
+        {
+            if (_buffer.Data != IntPtr.Zero)
+                return;//allready allocated
+
+            data = new byte[sizeInBytes];
+            _buffer.Data = Memory.PinObject(data);
+            // TODO use PBO if we're HBU_DYNAMIC
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        protected void FreeBuffer()
+        {
+            // Free buffer if we're STATIC to save memory
+            if ((Usage & BufferUsage.Static) == BufferUsage.Static)
+            {
+                Memory.UnpinObject(data);
+                data = null;
+                _buffer.Data = IntPtr.Zero;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="dest"></param>
+        protected virtual void Upload(PixelBox data, BasicBox dest)
+        {
+            throw new AxiomException("Upload not possible for this pixelbuffer type");
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        protected virtual void Download(PixelBox data)
+        {
+            throw new AxiomException("Download not possible for this pixelbuffer type");
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attachment"></param>
+        /// <param name="zOffset"></param>
+        public void BindToFramebuffer(TK.All attachment, int zOffset)
+        {
+            throw new AxiomException("Framebuffer bind not possible for this pixelbuffer type");
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lockBox"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        protected override PixelBox LockImpl(BasicBox lockBox, BufferLocking options)
+        {
+            AllocateBuffer();
+            if (options != BufferLocking.Discard &&
+                (Usage & BufferUsage.WriteOnly) == 0)
+            {
+                // Download the old contents of the texture
+                Download(_buffer);
+            }
+            _currentLocking = options;
+            return _buffer.GetSubVolume(lockBox);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void UnlockImpl()
+        {
+            if (_currentLocking != BufferLocking.ReadOnly)
+            {
+                // From buffer to card, only upload if was locked for writing
+                Upload(base.CurrentLock, new BasicBox(0, 0, 0, Width, Height, Depth));
+            }
+            FreeBuffer();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="srcBox"></param>
+        /// <param name="dst"></param>
+        public override void BlitToMemory(BasicBox srcBox, PixelBox dst)
+        {
+            if (_buffer.Contains(srcBox))
+            {
+                throw new ArgumentOutOfRangeException("source boux out of range");
+            }
+
+            if (srcBox.Left == 0 && srcBox.Right == Width &&
+                srcBox.Top == 0 && srcBox.Bottom == Height &&
+                srcBox.Front == 0 && srcBox.Back == Depth &&
+                dst.Width == Width &&
+                dst.Height == Height &&
+                dst.Depth == Depth &&
+                GLESPixelUtil.GetGLOriginFormat(dst.Format) != 0)
+            {
+                // The direct case: the user wants the entire texture in a format supported by GL
+                // so we don't need an intermediate buffer
+                Download(dst);
+            }
+            else
+            {
+                // Use buffer for intermediate copy
+                AllocateBuffer();
+                //download entire buffer
+                Download(_buffer);
+                if (srcBox.Width != dst.Width ||
+                    srcBox.Height != dst.Height ||
+                    srcBox.Depth != dst.Depth)
+                {
+                    // we need scaling
+                    Image.Scale(_buffer.GetSubVolume(srcBox), dst, ImageFilter.Bilinear);
+                }
+                else
+                {
+                    // Just copy the bit that we need
+                    PixelConverter.BulkPixelConversion(_buffer.GetSubVolume(srcBox), dst);
+                }
+                FreeBuffer();
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dstBox"></param>
+        public override void BlitFromMemory(PixelBox src, Media.BasicBox dstBox)
+        {
+            if (_buffer.Contains(dstBox))
+            {
+                throw new ArgumentOutOfRangeException("Destination box out of range, GLESHardwarePixelBuffer.BlitToMemory");
+            }
+
+            PixelBox scaled;
+
+            if (src.Width != dstBox.Width ||
+                src.Height != dstBox.Height ||
+                src.Depth != dstBox.Depth)
+            {
+                // Scale to destination size. Use DevIL and not iluScale because ILU screws up for 
+                // floating point textures and cannot cope with 3D images.
+                // This also does pixel format conversion if needed
+                AllocateBuffer();
+                scaled = _buffer.GetSubVolume(dstBox);
+                Image.Scale(src, scaled, ImageFilter.Bilinear);
+            }
+            else if ((src.Format != Format) ||
+                ((GLESPixelUtil.GetGLOriginFormat(src.Format) == 0) && (src.Format != PixelFormat.R8G8B8)))
+            {
+                // Extents match, but format is not accepted as valid source format for GL
+                // do conversion in temporary buffer
+                AllocateBuffer();
+                scaled = _buffer.GetSubVolume(dstBox);
+
+                PixelConverter.BulkPixelConversion(src, scaled);
+            }
+            else
+            {
+                scaled = src;
+                if (src.Format == PixelFormat.R8G8B8)
+                {
+                    scaled.Format = PixelFormat.R8G8B8;
+                    PixelConverter.BulkPixelConversion(src, scaled);
+                }
+                // No scaling or conversion needed
+                // Set extents for upload
+                scaled.Left = dstBox.Left;
+                scaled.Right = dstBox.Right;
+                scaled.Top = dstBox.Top;
+                scaled.Bottom = dstBox.Bottom;
+                scaled.Front = dstBox.Front;
+                scaled.Back = dstBox.Back;
+            }
+
+            Upload(scaled, dstBox);
+            FreeBuffer();
+        }        
 	}
 }
 
