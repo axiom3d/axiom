@@ -48,6 +48,7 @@
     <Compile Include="GLESContext.cs" />
     <Compile Include="GLESDefaultHardwareBufferManager.cs" />
     <Compile Include="GLESDepthBuffer.cs" />
+    <Compile Include="GLESFBOManager.cs" />
     <Compile Include="GLESFBOMultiRenderTarget.cs" />
     <Compile Include="GLESFBORenderTexture.cs" />
     <Compile Include="GLESFrameBufferObject.cs" />

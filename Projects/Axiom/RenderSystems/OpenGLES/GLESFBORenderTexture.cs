@@ -40,8 +40,13 @@ using System.Text;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESFBORenderTexture
+	public class GLESFBORenderTexture : GLESRenderTexture
 	{
+        public GLESFBORenderTexture(GLESRTTManager manager, string name,
+            GLESSurfaceDescription target, bool writeGamma, int fsaa)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
 

@@ -132,7 +132,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// </summary>
         /// <param name="attachment"></param>
         /// <param name="zOffset"></param>
-        public void BindToFramebuffer(TK.All attachment, int zOffset)
+        public virtual void BindToFramebuffer(TK.All attachment, int zOffset)
         {
             throw new AxiomException("Framebuffer bind not possible for this pixelbuffer type");
         }
