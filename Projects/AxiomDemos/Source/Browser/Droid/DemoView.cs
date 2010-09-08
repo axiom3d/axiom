@@ -8,63 +8,98 @@ using OpenTK.Platform.Android;
 
 using Android.Views;
 using Android.Content;
+using Axiom.Core;
 
 namespace Droid
 {
 	class DemoView : AndroidGameView
 	{
-		public DemoView(Context context)
-			: base(context)
-		{
+
+		protected Root engine;
+
+		public DemoView( IntPtr handle )
+			: base( handle )
+		{ 
 		}
 
 		// This gets called when the drawing surface is ready
-		protected override void OnLoad(EventArgs e)
+		protected override void OnLoad( EventArgs e )
 		{
 			base.OnLoad(e);
+
+			try
+			{
+				//new AndroidResourceGroupManager();
+
+				// instantiate the Root singleton
+				engine = new Root("AxiomDemos.log");
+
+				(new Axiom.RenderSystems.OpenGLES.GLESPlugin()).Initialize();
+
+				Root.Instance.RenderSystem = Root.Instance.RenderSystems["OpenGLES"];
+
+				_loadPlugins();
+
+				_setupResources();
+
+				Axiom.Demos.TechDemo demo = new Axiom.Demos.Tutorial1();
+
+				demo.Setup();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("An exception has occurred. See below for details:");
+				Console.WriteLine(BuildExceptionString(ex));
+			}
+			// UpdateFrame and RenderFrame are called
+			// by the render loop. This is takes effect
+			// when we use 'Run ()', like below
+			UpdateFrame += this.Update;
+
+			RenderFrame += delegate
+			{
+				engine.RenderOneFrame();
+			};
 
 			// Run the render loop
 			Run();
 		}
 
-		// This gets called on each frame render
-		protected override void OnRenderFrame(FrameEventArgs e)
+		protected virtual void Update( object sender, OpenTK.FrameEventArgs e )
 		{
-			base.OnRenderFrame(e);
-
-			MakeCurrent();
-
-			GL.MatrixMode(All.Projection);
-			GL.LoadIdentity();
-			GL.Ortho(-1.0f, 1.0f, -1.5f, 1.5f, -1.0f, 1.0f);
-			GL.MatrixMode(All.Modelview);
-			GL.Rotate(3.0f, 0.0f, 0.0f, 1.0f);
-
-			GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-			GL.Clear((uint)All.ColorBufferBit);
-
-			GL.VertexPointer(2, All.Float, 0, square_vertices);
-			GL.EnableClientState(All.VertexArray);
-			GL.ColorPointer(4, All.UnsignedByte, 0, square_colors);
-			GL.EnableClientState(All.ColorArray);
-
-			GL.DrawArrays(All.TriangleStrip, 0, 4);
-
-			SwapBuffers();
 		}
 
-		float[] square_vertices = {
-			-0.5f, -0.5f,
-			0.5f, -0.5f,
-			-0.5f, 0.5f, 
-			0.5f, 0.5f,
-		};
+		private void _setupResources()
+		{
+		}
 
-		byte[] square_colors = {
-			255, 255,   0, 255,
-			0,   255, 255, 255,
-			0,     0,    0,  0,
-			255,   0,  255, 255,
-		};
+		private void _loadPlugins()
+		{
+		}
+
+		private static string BuildExceptionString( Exception exception )
+		{
+			string errMessage = string.Empty;
+
+			errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+
+			while ( exception.InnerException != null )
+			{
+				errMessage += BuildInnerExceptionString( exception.InnerException );
+				exception = exception.InnerException;
+			}
+
+			return errMessage;
+		}
+
+		private static string BuildInnerExceptionString( Exception innerException )
+		{
+			string errMessage = string.Empty;
+
+			errMessage += Environment.NewLine + " InnerException ";
+			errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+
+			return errMessage;
+		}
 	}
 }

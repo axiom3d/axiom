@@ -43,7 +43,7 @@ namespace Axiom.Demos
 
 		}
 
-		protected override bool Setup()
+		public override bool Setup()
 		{
 			if ( base.Setup() )
 			{
