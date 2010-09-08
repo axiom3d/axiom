@@ -25,23 +25,47 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 #region Namespace Declarations
+using System;
+using Axiom.Graphics;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESFBOMultiRenderTarget
+    /// <summary>
+    /// MultiRenderTarget for GL ES. Requires the FBO extension.
+    /// </summary>
+	public class GLESFBOMultiRenderTarget : MultiRenderTarget
 	{
+        public GLESFBOMultiRenderTarget(string name)
+            : base(name)
+        {
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attachment"></param>
+        /// <param name="target"></param>
+        public override void BindSurface(int attachment, RenderTexture target)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attachment"></param>
+        public override void UnbindSurface(int attachment)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
 

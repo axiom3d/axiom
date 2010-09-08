@@ -32,16 +32,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // </file>
 #endregion SVN Version Information
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Axiom.Graphics;
 #region Namespace Declarations
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESRenderTexture
+	public class GLESRenderTexture : RenderTexture
 	{
+        public GLESRenderTexture()
+            : base(null, 0)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
 
