@@ -73,17 +73,14 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.0.0.201, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\opentk-1.0.0-rc1\Binaries\OpenTK\Debug\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.Compatibility, Version=1.0.0.201, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\opentk-1.0.0-rc1\Binaries\OpenTK\Debug\OpenTK.Compatibility.dll</HintPath>
+    <Reference Include="OpenTK.Compatibility">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.Compatibility.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.GLControl, Version=1.0.0.201, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\opentk-1.0.0-rc1\Binaries\OpenTK\Debug\OpenTK.GLControl.dll</HintPath>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
