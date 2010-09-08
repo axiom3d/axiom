@@ -25,6 +25,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
@@ -40,57 +41,8 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    /// <summary>
-    /// Specialisation of HardwareBufferManager to emulate hardware buffers.
-    /// </summary>
-    /// <remarks>
-    ///  You might want to instantiate this class if you want to utilise
-    ///  classes like MeshSerializer without having initialised the 
-    ///  rendering system (which is required to create a 'real' hardware
-    ///  buffer manager.
-    /// </remarks>
-    public class GLES2DefaultHardwareBufferManager : HardwareBufferManager
+    public class GLESHardwareBufferManager
     {
-        public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage)
-        {
-            return CreateVertexBuffer(vertexSize, numVerts, usage, false);
-        }
-        /// <summary>
-        /// Creates n vertex buffer
-        /// </summary>
-        /// <param name="vertexSize"></param>
-        /// <param name="numVerts"></param>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
-        /// <returns></returns>
-        public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer)
-        {
-            return new GLES2DefaultHardwareVertexBuffer(vertexSize, numVerts, usage);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="numIndices"></param>
-        /// <param name="usage"></param>
-        /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage)
-        {
-            return CreateIndexBuffer(type, numIndices, usage, false);
-        }
-        /// <summary>
-        /// Creates an index buffer
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="numIndices"></param>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
-        /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer)
-        {
-            return new GLES2DefaultHardwareIndexBuffer(type, numIndices, usage);
-        }
-
     }
 }
 

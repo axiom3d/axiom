@@ -45,7 +45,7 @@ namespace Axiom.RenderSystems.OpenGLES
     /// <summary>
     /// 
     /// </summary>
-    public class GLES2DefaultHardwareIndexBuffer : HardwareIndexBuffer, IDisposable
+    public class GLESDefaultHardwareIndexBuffer : HardwareIndexBuffer, IDisposable
     {
         protected byte[] _data;
         protected IntPtr _dataPtr;
@@ -56,7 +56,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="idxType"></param>
         /// <param name="numIndexes"></param>
         /// <param name="usage"></param>
-        public GLES2DefaultHardwareIndexBuffer(IndexType idxType, int numIndexes, BufferUsage usage)
+        public GLESDefaultHardwareIndexBuffer(IndexType idxType, int numIndexes, BufferUsage usage)
             : base(idxType, numIndexes, usage, true, false)// always software, never shadowed
         {
             if (idxType == IndexType.Size32)
