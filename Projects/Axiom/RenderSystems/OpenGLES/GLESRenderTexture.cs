@@ -31,19 +31,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
+
+#region Namespace Declarations
 using System;
 using Axiom.Graphics;
-#region Namespace Declarations
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	public class GLESRenderTexture : RenderTexture
 	{
-        public GLESRenderTexture()
-            : base(null, 0)
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool RequiresTextureFlipping
         {
-            throw new NotImplementedException();
+            get
+            {
+                return true;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="target"></param>
+        /// <param name="writeGamma"></param>
+        /// <param name="fsaa"></param>
+        public GLESRenderTexture(string name, GLESSurfaceDescription target, bool writeGamma, int fsaa)
+            : base(target.Buffer,target.ZOffset)
+        {
+            Name = name;
+            HardwareGammaEnabled = writeGamma;
+            FSAA = fsaa;
         }
 	}
 }

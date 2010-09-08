@@ -41,9 +41,51 @@ using System.Text;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESContext
+    /// <summary>
+    ///  Class that encapsulates an GL context. (IE a window/pbuffer). This is a
+    ///  virtual base class which should be implemented in a GLES2Support.
+    ///  This object can also be used to cache renderstate if we decide to do so
+    ///  in the future.
+    /// </summary>
+    public abstract class GLESContext
 	{
-		
+		protected bool _initialized;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public GLESContext()
+        {
+            _initialized = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsInitialized
+        {
+            get { return _initialized; }
+            set { _initialized = value; }
+        }
+        /// <summary>
+        /// Enable the context. All subsequent rendering commands will go here.
+        /// </summary>
+        public abstract void SetCurrent();
+        /// <summary>
+        /// This is called before another context is made current. By default,
+        /// nothing is done here.
+        /// </summary>
+        public abstract void EndCurrent();
+        /// <summary>
+        /// Create a new context based on the same window/pbuffer as this
+        /// context - mostly useful for additional threads.
+        /// </summary>
+        /// <note>The caller is responsible for deleting the returned context.</note>
+        /// <returns>Cloned GLESContext</returns>
+        public abstract GLESContext Clone();
+        /// <summary>
+        /// 
+        /// </summary>
+        public abstract void Dispose();
 	}
 }
 

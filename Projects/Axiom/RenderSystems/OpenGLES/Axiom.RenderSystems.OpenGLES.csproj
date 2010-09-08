@@ -57,7 +57,6 @@
     <Compile Include="GLESHardwareIndexBuffer.cs" />
     <Compile Include="GLESHardwarePixelBuffer.cs" />
     <Compile Include="GLESHardwareVertexBuffer.cs" />
-    <Compile Include="GLESPBRenderTexture.cs" />
     <Compile Include="GLESPBuffer.cs" />
     <Compile Include="GLESPixelFormat.cs" />
     <Compile Include="GLESPlugin.cs" />
@@ -71,6 +70,7 @@
     <Compile Include="GLESTexture.cs" />
     <Compile Include="GLESTextureBuffer.cs" />
     <Compile Include="GLESTextureManager.cs" />
+    <Compile Include="OpenTKGLES\OpenTKGLESWindow.cs" />
     <Compile Include="OpenTKGLES\OpenTKGLESContext.cs" />
     <Compile Include="OpenTKGLES\OpenTKGLESSupport.cs" />
     <Compile Include="OpenTKGLES\OpenTKGLESUtil.cs" />

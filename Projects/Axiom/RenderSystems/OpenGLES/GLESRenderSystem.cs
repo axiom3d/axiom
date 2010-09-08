@@ -54,7 +54,6 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		#region - private -
 		Light[] _lights = new Light[MaxLights];
-		short _currentLights;
 		/// View matrix to set world against
 		Matrix4 _ViewMatrix;
 		Matrix4 _worldMatrix;
@@ -729,6 +728,13 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 		
 		#endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        public GLESContext MainContext
+        {
+            get { return _mainContext; }
+        }
 		/// <summary>
 		/// Default ctor.
 		/// </summary>
@@ -748,8 +754,36 @@ namespace Axiom.RenderSystems.OpenGLES
 			_worldMatrix = Matrix4.Identity;
 			_ViewMatrix = Matrix4.Identity;
 
+            _glSupport.AddConfig();
 
+            _colorWrite[0] = _colorWrite[1] = _colorWrite[2] = _colorWrite[4] = true;
+
+            for (int layer = 0; layer < Axiom.Configuration.Config.MaxTextureLayers; layer++)
+            {
+                // Dummy value
+                _textureCoodIndex[layer] = 99;
+            }
+
+            _textureCount = 0;
+            activeRenderTarget = null;
+            _currentContext = null;
+            _mainContext = null;
+            _glInitialized = false;
+            numCurrentLights = 0;
+            _textureMimmapCount = 0;
+            mMinFilter = FilterOptions.Linear;
+            _mipFilter = FilterOptions.Point;
+           // _polygonMode = OpenTK.Graphics.ES11.
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        public void UnregisterContext(GLESContext context)
+        {
+            throw new NotImplementedException();
+        }
 
 	}
 }

@@ -426,6 +426,10 @@ namespace Axiom.Graphics
             {
                 return _hwGamma;
             }
+            protected set
+            {
+                _hwGamma = value;
+            }
         }
 
         #endregion HardwareGammaEnabled Property
