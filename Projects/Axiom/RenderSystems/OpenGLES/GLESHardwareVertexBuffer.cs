@@ -41,7 +41,7 @@ using Axiom.Utilities;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    public class GLES2DefaultHardwareVertexBuffer : HardwareVertexBuffer, IDisposable
+    public class GLESDefaultHardwareVertexBuffer : HardwareVertexBuffer, IDisposable
     {
         /// <summary>
         /// 
@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="vertexSize"></param>
         /// <param name="numVertices"></param>
         /// <param name="usage"></param>
-        public GLES2DefaultHardwareVertexBuffer(int vertexSize, int numVertices,
+        public GLESDefaultHardwareVertexBuffer(int vertexSize, int numVertices,
             BufferUsage usage)
             : base(vertexSize, numVertices, usage, true, false)
         {
