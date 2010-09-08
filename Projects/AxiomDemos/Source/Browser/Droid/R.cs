@@ -28,10 +28,7 @@ namespace Droid
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int demo_item = 2130903040;
-			
-			// aapt resource value: 0x7f030001
-			public const int main = 2130903041;
+			public const int demo = 2130903040;
 			
 			private layout()
 			{
@@ -48,6 +45,17 @@ namespace Droid
 			public const int app_name = 2130968577;
 			
 			private @string()
+			{
+			}
+		}
+		
+		public class id
+		{
+			
+			// aapt resource value: 0x7f050000
+			public const int paintingview = 2131034112;
+			
+			private id()
 			{
 			}
 		}
