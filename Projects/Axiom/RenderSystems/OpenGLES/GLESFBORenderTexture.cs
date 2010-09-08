@@ -44,6 +44,7 @@ namespace Axiom.RenderSystems.OpenGLES
 	{
         public GLESFBORenderTexture(GLESRTTManager manager, string name,
             GLESSurfaceDescription target, bool writeGamma, int fsaa)
+            : base(name, target, writeGamma, fsaa)
         {
             throw new NotImplementedException();
         }

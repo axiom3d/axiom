@@ -33,10 +33,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion SVN Version Information
 using System;
 using System.Collections.Generic;
+using System.Text;
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Utilities;
 using Axiom.Collections;
 using Axiom.Graphics.Collections;
-using Axiom.Graphics;
-using Axiom.Media;
+using OpenTK.Graphics.ES20;
 #region Namespace Declarations
 #endregion Namespace Declarations
 
@@ -47,108 +50,166 @@ namespace Axiom.RenderSystems.OpenGLES
     /// </summary>
     public abstract class GLESSupport
     {
-        /**
-            * Add any special config values to the system.
-            * Must have a "Full Screen" value that is a bool and a "Video Mode" value
-            * that is a string in the form of wxh
-            */
-
+       private string _version;
+        private string _vendor;
+        private string _shaderCachePath;
+        private string _shaderLibraryPath;
+        
+        /// <summary>
+        /// Stored options
+        /// </summary>
+        protected ConfigOptionCollection _options;
+        /// <summary>
+        /// This contains the complete list of supported extensions
+        /// </summary>
+        protected List<string> _extensionList;
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual ConfigOptionCollection ConfigOptions
+        {
+            get { return _options; }
+        }
+        /// <summary>
+        /// Get's vendor information
+        /// </summary>
+        public string GLVendor
+        {
+            get { return _vendor; }
+        }
+        /// <summary>
+        /// Get's version information
+        /// </summary>
+        public string GLVersion
+        {
+            get { return _version; }
+        }
+        /// <summary>
+        /// Get's the shader cache path.
+        /// </summary>
+        public string ShaderCachePath
+        {
+            get { return _shaderCachePath; }
+            set { _shaderCachePath = value; }
+        }
+        /// <summary>
+        /// Get's the shader library path
+        /// </summary>
+        public string ShaderLibraryPath
+        {
+            get { return _shaderLibraryPath; }
+            set { _shaderLibraryPath = value; }
+        }
+        /// <summary>
+        /// Get's the ammount of aviable Monitors.
+        /// </summary>
+        public int DisplayMonitorCount
+        {
+            get { return 1; }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public GLESSupport()
+        {
+            _options = new ConfigOptionCollection();
+            _extensionList = new List<string>();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
         public abstract void AddConfig();
-        public virtual void SetConfigOption(String name, String value)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public virtual void SetConfigOption(string name, string value)
         {
+            if (_options[name] == null)
+                throw new AxiomException(string.Format("Option named {0} does not exist.", name), new Object[] { });
+
+            _options[name].Value = value;
         }
-
-        /**
-         * Make sure all the extra options are valid
-         * @return string with error message
-         */
-        public virtual String ValidateConfig()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public abstract string ValidateConfig();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="autoCreateWindow"></param>
+        /// <param name="renderSystem"></param>
+        /// <param name="windowTitle"></param>
+        /// <returns></returns>
+        public abstract RenderWindow CreateWindow(bool autoCreateWindow, GLESRenderSystem renderSystem, string windowTitle);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="fullScreen"></param>
+        /// <param name="miscParams"></param>
+        /// <returns></returns>
+        public abstract RenderWindow NewWindow(string name, int width, int height, bool fullScreen, NamedParameterList miscParams = null);
+        /// <summary>
+        /// Get's the address of a function
+        /// </summary>
+        /// <param name="procname">name of the function</param>
+        /// <returns>address of the named function</returns>
+        public abstract IntPtr GetProcAddress(string procname);
+        /// <summary>
+        /// Initializes GL extensions, must be done AFTER the GL context has been
+        /// established.
+        /// </summary>
+        public virtual void IntializeExtensions()
         {
-            throw new NotImplementedException();
-        }
-        public ConfigOptionCollection ConfigOptions
-        {
-            get;
-            protected set;
-        }
-        public abstract RenderWindow CreateWindow(bool autoCreateWindow, GLESRenderSystem renderSystem,
-                                           String windowTitle);
+            //get version
+            string tmpStr = GL.GetString(All.Version);
+            Contract.Requires(!string.IsNullOrEmpty(tmpStr));
+            LogManager.Instance.Write("GL_VERSION = " + tmpStr);
+            _version = tmpStr.Substring(0, tmpStr.IndexOf(" "));
 
+            //get vendor
+            tmpStr = GL.GetString(All.Vendor);
+            LogManager.Instance.Write("GL_VENDOR = " + tmpStr);
+            _vendor = tmpStr.Substring(0, tmpStr.IndexOf(" "));
 
-        public abstract RenderWindow NewWindow(String name, int width, int height,
-                                        bool fullScreen,
-                                        NameValuePairList miscParams = null);
+            //get renderer
+            tmpStr = GL.GetString(All.Renderer);
+            LogManager.Instance.Write("GL_RENDERER = " + tmpStr);
 
-        /**
-        * Get vendor information
-        */
-        public String GLVendor
-        {
-            get
+            // Set extension list
+            StringBuilder ext = new StringBuilder();
+            _extensionList = new List<string>();
+            ext.Append(GL.GetString(All.Extensions));
+            string[] extSplit = ext.ToString().Split(' ');
+            for (int i = 0; i < extSplit.Length; i++)
             {
-                return _vendor;
+                LogManager.Instance.Write("GL_EXTENSIONS = " + extSplit[i]);
+                _extensionList.Add(extSplit[i]);
             }
         }
-
-        /**
-         * Get version information
-         */
-        String GLVersion
+        /// <summary>
+        /// Check if an extension is available
+        /// </summary>
+        /// <param name="extension">name of the extension to check</param>
+        /// <returns>true if extension is aviable</returns>
+        public virtual bool CheckExtension(string extension)
         {
-            get
-            {
-                return _version;
-            }
+            return _extensionList.Contains(extension);
         }
-
-        /**
-        * Get the address of a function
-        */
-        public abstract void GetProcAddress(String procname);
-
-        /** Initialises GL extensions, must be done AFTER the GL context has been
-           established.
-        */
-        public virtual void InitializeExtensions()
-        {
-        }
-
-        /**
-        * Check if an extension is available
-        */
-        public virtual bool CheckExtension(String ext)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual int DisplayMonitorCount
-        {
-            get
-            {
-
-                return 1;
-            }
-        }
-
-        /**
-        * Start anything special
-        */
+        /// <summary>
+        /// Start anything special.
+        /// </summary>
         public abstract void Start();
-        /**
-        * Stop anything special
-        */
+        /// <summary>
+        /// Stop anything special.
+        /// </summary>
         public abstract void Stop();
-
-        public abstract GLESPBuffer CreatePBuffer(PixelComponentType format, int width, int height);
-
-        string _version;
-        string _vendor;
-
-        // Stored options
-        ConfigOptionCollection _options;
-
-        // This contains the complete list of supported extensions
-        List<string> _extensionList;
     }
+    
 }
 

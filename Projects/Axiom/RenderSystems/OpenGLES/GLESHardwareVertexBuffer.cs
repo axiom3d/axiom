@@ -31,17 +31,117 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 #region Namespace Declarations
+using System;
+using Axiom.Graphics;
+using Axiom.Core;
+using Axiom.Utilities;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESHardwareVertexBuffer
-	{
-	}
+    public class GLES2DefaultHardwareVertexBuffer : HardwareVertexBuffer, IDisposable
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        protected IntPtr _dataPtr;
+        protected byte[] _data;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="usage"></param>
+        public GLES2DefaultHardwareVertexBuffer(int vertexSize, int numVertices,
+            BufferUsage usage)
+            : base(vertexSize, numVertices, usage, true, false)
+        {
+            _data = new byte[numVertices];
+            _dataPtr = Memory.PinObject(_data);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        public IntPtr GetData(int offset)
+        {
+            return new IntPtr(_dataPtr.ToInt32() + offset);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="src"></param>
+        /// <param name="discardWholeBuffer"></param>
+        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
+        {
+            Contract.Requires((offset + length) <= sizeInBytes);
+            // ignore discard, memory is not guaranteed to be zeroised
+            Memory.Copy(src, GetData(offset), length);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="dest"></param>
+        public override void ReadData(int offset, int length, IntPtr dest)
+        {
+            Contract.Requires((offset + length) <= sizeInBytes);
+            Memory.Copy(GetData(offset), dest, length);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="locking"></param>
+        /// <returns></returns>
+        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
+        {
+            return GetData(offset);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="locking"></param>
+        /// <returns></returns>
+        public override IntPtr Lock(int offset, int length, BufferLocking locking)
+        {
+            isLocked = true;
+            return GetData(offset);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void UnlockImpl()
+        {
+            //nothing todo
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Unlock()
+        {
+            isLocked = false;
+            //nothing todo
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual void Dispose()
+        {
+            if (_data != null)
+            {
+                Memory.UnpinObject(_data);
+            }
+        }
+    }
 }
 

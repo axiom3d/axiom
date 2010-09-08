@@ -39,6 +39,8 @@ using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Media;
 using ResourceHandle = System.Int64;
+using OpenGL = OpenTK.Graphics.ES11.GL;
+using OpenTK.Graphics.ES11;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -49,20 +51,42 @@ namespace Axiom.RenderSystems.OpenGLES
 	public class GLESTextureManager : TextureManager
 	{
         protected GLESSupport _glSupport;
+        protected int _warningTextureID;
         /// <summary>
         /// 
         /// </summary>
         public int WarningTextureID
         {
-            get;
-            protected set;
+            get { return _warningTextureID; }
+            protected set{ _warningTextureID = value;}
         }
         /// <summary>
         /// 
         /// </summary>
-        protected void CraeteWarningTexture()
+        /// <param name="support"></param>
+        public GLESTextureManager(GLESSupport support)
         {
-            throw new NotImplementedException();
+            _glSupport = support;
+            WarningTextureID = 0;
+            GLESConfig.GlCheckError(this);
+            // Register with group manager
+            ResourceGroupManager.Instance.RegisterResourceManager(base.ResourceType, this);
+
+            CreateWarningTexture();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            // Unregister with group manager
+            ResourceGroupManager.Instance.UnregisterResourceManager(base.ResourceType);
+            // Delete warning texture
+            OpenGL.DeleteTextures(1, ref _warningTextureID);
+            GLESConfig.GlCheckError(this);
+
+            base.dispose(disposeManagedResources);
         }
         /// <summary>
         /// 
@@ -71,9 +95,35 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override PixelFormat GetNativeFormat(TextureType ttype, PixelFormat format, TextureUsage usage)
+        public override Media.PixelFormat GetNativeFormat(TextureType ttype, Media.PixelFormat format, TextureUsage usage)
         {
-            return base.GetNativeFormat(ttype, format, usage);
+            // Adjust requested parameters to capabilities
+            RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+#warning check TextureCompressionVTC == RSC_TEXTURE_COMPRESSION_PVRTC
+            // Check compressed texture support
+            // if a compressed format not supported, revert to A8R8G8B8
+            if (PixelUtil.IsCompressed(format) &&
+                !caps.HasCapability(Capabilities.TextureCompressionDXT) && !caps.HasCapability(Capabilities.TextureCompressionVTC))
+            {
+                return Media.PixelFormat.A8R8G8B8;
+            }
+            // if floating point textures not supported, revert to A8R8G8B8
+            if (PixelUtil.IsFloatingPoint(format) &&
+                !caps.HasCapability(Capabilities.TextureFloat))
+            {
+                return Media.PixelFormat.A8R8G8B8;
+            }
+
+            // Check if this is a valid rendertarget format
+            if ((usage & TextureUsage.RenderTarget) != 0)
+            {
+                /// Get closest supported alternative
+                /// If format is supported it's returned
+                return GLESRTTManager.Instance.GetSupportedAlternative(format);
+            }
+
+            // Supported
+            return format;
         }
         /// <summary>
         /// Returns whether this render system has hardware filtering supported for the
@@ -89,13 +139,66 @@ namespace Axiom.RenderSystems.OpenGLES
         /// check if in fallback mode.
         /// </param>
         /// <returns>true if the texture filtering is supported.</returns>
-        public override bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage, bool preciseFormatOnly)
+        public override bool IsHardwareFilteringSupported(TextureType ttype, Media.PixelFormat format, int usage, bool preciseFormatOnly)
         {
-            throw new NotImplementedException();
+            if (format == Media.PixelFormat.Unknown)
+                return false;
+
+            // Check native format
+            Media.PixelFormat nativeFormat = GetNativeFormat(ttype, format, (TextureUsage)usage);
+            if (preciseFormatOnly && format != nativeFormat)
+                return false;
+
+            // Assume non-floating point is supported always
+            if (!PixelUtil.IsFloatingPoint(nativeFormat))
+                return true;
+
+            return false;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="handle"></param>
+        /// <param name="group"></param>
+        /// <param name="isManual"></param>
+        /// <param name="loader"></param>
+        /// <param name="createParams"></param>
+        /// <returns></returns>
         protected override Resource _create(string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams)
         {
-            throw new NotImplementedException();
+            return new GLESTexture(this, name, handle, group, isManual, loader, _glSupport);
+        }
+        /// <summary>
+        /// Internal method to create a warning texture (bound when a texture unit is blank)
+        /// </summary>
+        protected void CreateWarningTexture()
+        {
+            // Generate warning texture
+            int width = 8;
+            int height = 8;
+            // TODO convert to 5_6_5
+            unsafe
+            {
+                int* data = stackalloc int[width * height];// 0xXXRRGGBB
+
+                //yellow / black stripes
+                for (int y = 0; y < height; ++y)
+                {
+                    for (int x = 0; x < width; ++x)
+                    {
+                        data[y * width + x] = (((x + y) % 8) < 4) ? 0x000000 : 0xFFFF00;
+                    }
+                }
+
+                // Create GL resource
+                OpenGL.GenTextures(1, ref _warningTextureID);
+                GLESConfig.GlCheckError(this);
+                OpenGL.BindTexture(All.TextureBinding2D, _warningTextureID);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexImage2D(All.TextureBinding2D, 0, (int)All.Rgb, width, height, 0, All.Rgb, All.UnsignedByte, (IntPtr)data);
+                GLESConfig.GlCheckError(this);
+            }
         }
 	}
 }

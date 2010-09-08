@@ -25,6 +25,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
@@ -34,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 using System;
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using OpenTK.Graphics.ES11;
@@ -127,7 +129,8 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <returns></returns>
         public virtual MultiRenderTarget CreateMultiRenderTarget(string name)
         {
-            throw new NotImplementedException();
+            // TODO: Check rendersystem capabilities before throwing the exception
+            throw new AxiomException("MultiRenderTarget can only be used with GL_OES_framebuffer_object extension");
         }
         /// <summary>
         /// 
@@ -136,7 +139,35 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <returns></returns>
         public virtual Media.PixelFormat GetSupportedAlternative(Media.PixelFormat format)
         {
-            throw new NotImplementedException();
+            if (CheckFormat(format))
+            {
+                return format;
+            }
+            /// Find first alternative
+            PixelComponentType pct = PixelUtil.GetComponentType(format);
+            switch (pct)
+            {
+                case PixelComponentType.Byte:
+                    format = Media.PixelFormat.A8R8G8B8;
+                    break;
+                case PixelComponentType.Short:
+                    format = Media.PixelFormat.SHORT_RGBA;
+                    break;
+                case PixelComponentType.Float16:
+                    format = Media.PixelFormat.FLOAT16_RGBA;
+                    break;
+                case PixelComponentType.Float32:
+                    format = Media.PixelFormat.FLOAT32_RGBA;
+                    break;
+                case PixelComponentType.Count:
+                default:
+                    break;
+            }
+            if (CheckFormat(format))
+                return format;
+
+            // If none at all, return to default
+            return Media.PixelFormat.A8R8G8B8;
         }
     }
 }

@@ -31,17 +31,124 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 #region Namespace Declarations
+using System;
+using Axiom.Graphics;
+using Axiom.Core;
+using Axiom.Utilities;
+using System.Runtime.InteropServices;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESHardwareIndexBuffer
-	{
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public class GLES2DefaultHardwareIndexBuffer : HardwareIndexBuffer, IDisposable
+    {
+        protected byte[] _data;
+        protected IntPtr _dataPtr;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="idxType"></param>
+        /// <param name="numIndexes"></param>
+        /// <param name="usage"></param>
+        public GLES2DefaultHardwareIndexBuffer(IndexType idxType, int numIndexes, BufferUsage usage)
+            : base(idxType, numIndexes, usage, true, false)// always software, never shadowed
+        {
+            if (idxType == IndexType.Size32)
+            {
+                throw new AxiomException("32 bit hardware buffers are not allowed in OpenGL ES.", new Object[] { });
+            }
+
+            _data = new byte[sizeInBytes];
+            _dataPtr = Memory.PinObject(_data);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        public IntPtr GetData(int offset)
+        {
+            return new IntPtr(_dataPtr.ToInt32() + offset);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="locking"></param>
+        /// <returns></returns>
+        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
+        {
+            // Only for use internally, no 'locking' as such
+            return GetData(offset);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void UnlockImpl()
+        {
+            // Nothing to do
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="locking"></param>
+        /// <returns></returns>
+        public override IntPtr Lock(int offset, int length, BufferLocking locking)
+        {
+            isLocked = true;
+            return GetData(offset);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Unlock()
+        {
+            isLocked = false;
+            // Nothing to do
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="dest"></param>
+        public override void ReadData(int offset, int length, IntPtr dest)
+        {
+            Contract.Requires((offset + length) <= sizeInBytes);
+            Memory.Copy(GetData(offset), dest, length);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="src"></param>
+        /// <param name="discardWholeBuffer"></param>
+        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
+        {
+            Contract.Requires((offset + length) <= sizeInBytes);
+            // ignore discard, memory is not guaranteed to be zeroised
+            Memory.Copy(src, GetData(offset), length);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            if (_data != null)
+            {
+                Memory.UnpinObject(_data);
+                _data = null;
+            }
+        }
+    }
 }
 
