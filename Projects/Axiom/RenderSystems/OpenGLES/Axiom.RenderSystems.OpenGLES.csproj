@@ -54,8 +54,10 @@
     <Compile Include="GLESFrameBufferObject.cs" />
     <Compile Include="GLESGpuProgramManager.cs" />
     <Compile Include="GLESHardwareBufferManager.cs" />
+    <Compile Include="GLESDefaultHardwareIndexBuffer.cs" />
     <Compile Include="GLESHardwareIndexBuffer.cs" />
     <Compile Include="GLESHardwarePixelBuffer.cs" />
+    <Compile Include="GLESDefaultHardwareVertexBuffer.cs" />
     <Compile Include="GLESHardwareVertexBuffer.cs" />
     <Compile Include="GLESPBuffer.cs" />
     <Compile Include="GLESPixelFormat.cs" />
