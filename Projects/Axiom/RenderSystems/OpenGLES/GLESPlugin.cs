@@ -25,6 +25,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
@@ -47,6 +48,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// 
 		/// </summary>
 		protected GLESRenderSystem _renderSystem;
+
 		/// <summary>
 		/// Stops the plugin
 		/// </summary>
@@ -54,13 +56,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			_renderSystem.Shutdown();
 		}
+
 		/// <summary>
 		/// Initializes the plugin.
 		/// </summary>
 		public void Initialize()
 		{
 			_renderSystem = new GLESRenderSystem();
-			Root.Instance.RenderSystems.Add("OpenGLES", _renderSystem);
+			Root.Instance.RenderSystems.Add( "OpenGLES", _renderSystem );
 		}
 	}
 }

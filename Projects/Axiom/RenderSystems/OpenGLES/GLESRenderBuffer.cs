@@ -41,62 +41,65 @@ using OpenTK.Graphics.ES11;
 using OpenGL = OpenTK.Graphics.ES11.GL;
 using OpenGLOES = OpenTK.Graphics.ES11.GL.Oes;
 #endregion
+
 namespace Axiom.RenderSystems.OpenGLES
 {
-    public class GLESRenderBuffer : GLESHardwarePixelBuffer
-    {
-        /// <summary>
-        /// In case this is a render buffer
-        /// </summary>
-        protected int _renderbufferID;
+	public class GLESRenderBuffer : GLESHardwarePixelBuffer
+	{
+		/// <summary>
+		/// In case this is a render buffer
+		/// </summary>
+		protected int _renderbufferID;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="numSamples"></param>
-        public GLESRenderBuffer(All format, int width, int height, int numSamples)
-            : base(width, height, 1, GLESPixelUtil.GetClosestAxiomFormat(format), BufferUsage.WriteOnly)
-        {
-            _glInternalFormat = format;
-            /// Generate renderbuffer
-            OpenGLOES.GenRenderbuffers(1, ref _renderbufferID);
-            GLESConfig.GlCheckError(this);
-            /// Bind it to FBO
-            OpenGLOES.BindRenderbuffer(All.RenderbufferOes, _renderbufferID);
-            GLESConfig.GlCheckError(this);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="numSamples"></param>
+		public GLESRenderBuffer( All format, int width, int height, int numSamples )
+			: base( width, height, 1, GLESPixelUtil.GetClosestAxiomFormat( format ), BufferUsage.WriteOnly )
+		{
+			_glInternalFormat = format;
+			/// Generate renderbuffer
+			OpenGLOES.GenRenderbuffers( 1, ref _renderbufferID );
+			GLESConfig.GlCheckError( this );
+			/// Bind it to FBO
+			OpenGLOES.BindRenderbuffer( All.RenderbufferOes, _renderbufferID );
+			GLESConfig.GlCheckError( this );
 
-            /// Allocate storage for depth buffer
-            if (numSamples <= 0)
-            {
-                OpenGLOES.RenderbufferStorage(All.RenderbufferOes, format, width, height);
-                GLESConfig.GlCheckError(this);
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            base.dispose(disposeManagedResources);
-            OpenGLOES.DeleteRenderbuffers(1, ref _renderbufferID);
-            GLESConfig.GlCheckError(this);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="attachment"></param>
-        /// <param name="zOffset"></param>
-        public override void BindToFramebuffer(All attachment, int zOffset)
-        {
-            Utilities.Contract.Requires(zOffset < Depth);
-            OpenGLOES.FramebufferRenderbuffer(All.FramebufferOes, attachment,
-                 All.RenderbufferOes, _renderbufferID);
-            GLESConfig.GlCheckError(this);
-        }
-  
-    }
+			/// Allocate storage for depth buffer
+			if ( numSamples <= 0 )
+			{
+				OpenGLOES.RenderbufferStorage( All.RenderbufferOes, format, width, height );
+				GLESConfig.GlCheckError( this );
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			base.dispose( disposeManagedResources );
+			OpenGLOES.DeleteRenderbuffers( 1, ref _renderbufferID );
+			GLESConfig.GlCheckError( this );
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="attachment"></param>
+		/// <param name="zOffset"></param>
+		public override void BindToFramebuffer( All attachment, int zOffset )
+		{
+			Utilities.Contract.Requires( zOffset < Depth );
+			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, attachment,
+				 All.RenderbufferOes, _renderbufferID );
+			GLESConfig.GlCheckError( this );
+		}
+
+	}
 }

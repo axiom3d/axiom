@@ -43,12 +43,12 @@ using OpenTK.Graphics.ES11;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    /// <summary>
-    /// Manager/factory for RenderTextures.
-    /// </summary>
-    public abstract class GLESRTTManager
-    {
-        #region Singleton implementation
+	/// <summary>
+	/// Manager/factory for RenderTextures.
+	/// </summary>
+	public abstract class GLESRTTManager
+	{
+		#region Singleton implementation
 
 		/// <summary>
 		///     Singleton instance of this class.
@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		///     Protected internal because this singleton will actually hold the instance of a subclass
 		///     created by a render system plugin.
 		/// </remarks>
-        protected internal GLESRTTManager()
+		protected internal GLESRTTManager()
 		{
 			if ( instance == null )
 			{
@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-        public static GLESRTTManager Instance
+		public static GLESRTTManager Instance
 		{
 			get
 			{
@@ -84,90 +84,96 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		#endregion Singleton implementation
 
-        /// <summary>
-        /// Create a texture rendertarget object
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="target"></param>
-        /// <param name="writeGame"></param>
-        /// <param name="fsaa"></param>
-        /// <returns></returns>
-        public abstract RenderTexture CreateRenderTexture(string name, GLESSurfaceDescription target, bool writeGame, int fsaa);
-        /// <summary>
-        /// Check if a certain format is usable as rendertexture format
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public abstract bool CheckFormat(Media.PixelFormat format);
-        /// <summary>
-        /// Bind a certain render target.
-        /// </summary>
-        /// <param name="target"></param>
-        public abstract void Bind(RenderTarget target);
-        /// <summary>
-        /// Unbind a certain render target. This is called before binding another RenderTarget, and
-        /// before the context is switched. It can be used to do a copy, or just be a noop if direct
-        /// binding is used.
-        /// </summary>
-        /// <param name="target"></param>
-        public abstract void Unbind(RenderTarget target);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="internalFormat"></param>
-        /// <param name="depthFormat"></param>
-        /// <param name="stencilFormat"></param>
-        public virtual void GetBestDepthStencil(All internalFormat, out All depthFormat, out All stencilFormat)
-        {
-            depthFormat = 0;
-            stencilFormat = 0;
-        }
-        /// <summary>
-        /// Create a multi render target
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public virtual MultiRenderTarget CreateMultiRenderTarget(string name)
-        {
-            // TODO: Check rendersystem capabilities before throwing the exception
-            throw new AxiomException("MultiRenderTarget can only be used with GL_OES_framebuffer_object extension");
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public virtual Media.PixelFormat GetSupportedAlternative(Media.PixelFormat format)
-        {
-            if (CheckFormat(format))
-            {
-                return format;
-            }
-            /// Find first alternative
-            PixelComponentType pct = PixelUtil.GetComponentType(format);
-            switch (pct)
-            {
-                case PixelComponentType.Byte:
-                    format = Media.PixelFormat.A8R8G8B8;
-                    break;
-                case PixelComponentType.Short:
-                    format = Media.PixelFormat.SHORT_RGBA;
-                    break;
-                case PixelComponentType.Float16:
-                    format = Media.PixelFormat.FLOAT16_RGBA;
-                    break;
-                case PixelComponentType.Float32:
-                    format = Media.PixelFormat.FLOAT32_RGBA;
-                    break;
-                case PixelComponentType.Count:
-                default:
-                    break;
-            }
-            if (CheckFormat(format))
-                return format;
+		/// <summary>
+		/// Create a texture rendertarget object
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="target"></param>
+		/// <param name="writeGame"></param>
+		/// <param name="fsaa"></param>
+		/// <returns></returns>
+		public abstract RenderTexture CreateRenderTexture( string name, GLESSurfaceDescription target, bool writeGame, int fsaa );
 
-            // If none at all, return to default
-            return Media.PixelFormat.A8R8G8B8;
-        }
-    }
+		/// <summary>
+		/// Check if a certain format is usable as rendertexture format
+		/// </summary>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public abstract bool CheckFormat( Media.PixelFormat format );
+
+		/// <summary>
+		/// Bind a certain render target.
+		/// </summary>
+		/// <param name="target"></param>
+		public abstract void Bind( RenderTarget target );
+
+		/// <summary>
+		/// Unbind a certain render target. This is called before binding another RenderTarget, and
+		/// before the context is switched. It can be used to do a copy, or just be a noop if direct
+		/// binding is used.
+		/// </summary>
+		/// <param name="target"></param>
+		public abstract void Unbind( RenderTarget target );
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="internalFormat"></param>
+		/// <param name="depthFormat"></param>
+		/// <param name="stencilFormat"></param>
+		public virtual void GetBestDepthStencil( All internalFormat, out All depthFormat, out All stencilFormat )
+		{
+			depthFormat = 0;
+			stencilFormat = 0;
+		}
+
+		/// <summary>
+		/// Create a multi render target
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public virtual MultiRenderTarget CreateMultiRenderTarget( string name )
+		{
+			// TODO: Check rendersystem capabilities before throwing the exception
+			throw new AxiomException( "MultiRenderTarget can only be used with GL_OES_framebuffer_object extension" );
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public virtual Media.PixelFormat GetSupportedAlternative( Media.PixelFormat format )
+		{
+			if ( CheckFormat( format ) )
+			{
+				return format;
+			}
+			/// Find first alternative
+			PixelComponentType pct = PixelUtil.GetComponentType( format );
+			switch ( pct )
+			{
+				case PixelComponentType.Byte:
+					format = Media.PixelFormat.A8R8G8B8;
+					break;
+				case PixelComponentType.Short:
+					format = Media.PixelFormat.SHORT_RGBA;
+					break;
+				case PixelComponentType.Float16:
+					format = Media.PixelFormat.FLOAT16_RGBA;
+					break;
+				case PixelComponentType.Float32:
+					format = Media.PixelFormat.FLOAT32_RGBA;
+					break;
+				case PixelComponentType.Count:
+				default:
+					break;
+			}
+			if ( CheckFormat( format ) )
+				return format;
+
+			// If none at all, return to default
+			return Media.PixelFormat.A8R8G8B8;
+		}
+	}
 }

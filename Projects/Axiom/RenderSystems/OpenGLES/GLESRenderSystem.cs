@@ -25,12 +25,16 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using Axiom.Graphics;
 using Axiom.Graphics.Collections;
@@ -40,7 +44,7 @@ using Axiom.Math;
 using Axiom.Configuration;
 using OpenTK.Graphics.ES11;
 using Axiom.RenderSystems.OpenGLES.OpenTKGLES;
-#region Namespace Declarations
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -53,7 +57,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public const int MaxLights = 8;
 
 		#region - private -
-		Light[] _lights = new Light[MaxLights];
+		Light[] _lights = new Light[ MaxLights ];
 		/// View matrix to set world against
 		Matrix4 _ViewMatrix;
 		Matrix4 _worldMatrix;
@@ -68,7 +72,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// What texture coord set each texture unit is using
 		/// </summary>
-		int[] _textureCoodIndex = new int[Config.MaxTextureLayers];
+		int[] _textureCoodIndex = new int[ Config.MaxTextureLayers ];
 		/// <summary>
 		/// Number of fixed-function texture units
 		/// </summary>
@@ -76,7 +80,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// Store last colour write state
 		/// </summary>
-		bool[] _colorWrite = new bool[4];
+		bool[] _colorWrite = new bool[ 4 ];
 		/// <summary>
 		/// Store last depth write state
 		/// </summary>
@@ -88,7 +92,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// 
 		/// </summary>
-		float[] _autoTextureMatrix = new float[16];
+		float[] _autoTextureMatrix = new float[ 16 ];
 		bool _useAutoTextureMatrix;
 		int _textureCount;
 		bool _textureEnabled;
@@ -126,115 +130,123 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		All _polygonMode;
 
-
 		/// <summary>
 		/// 
 		/// </summary>
 		private int CombindedMinMipFilter
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="tam"></param>
 		/// <returns></returns>
-		private int GetTextureAddressingMode(TextureAddressing tam)
+		private int GetTextureAddressingMode( TextureAddressing tam )
 		{
-			throw new NotImplementedException(); 
+			throw new NotImplementedException();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="blend"></param>
 		/// <returns></returns>
-		private int GetBlendMode(SceneBlendFactor blend)
+		private int GetBlendMode( SceneBlendFactor blend )
 		{
-			throw new NotImplementedException(); 
+			throw new NotImplementedException();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="glMatrix"></param>
 		/// <param name="m"></param>
-		private void MakeGLMatrix(float[] glMatrix, Matrix4 m)
+		private void MakeGLMatrix( float[] glMatrix, Matrix4 m )
 		{
-			throw new NotImplementedException(); 
+			throw new NotImplementedException();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="l"></param>
-		private void SetGLLight(int index, Light l)
-		{
-			throw new NotImplementedException(); 
-		}
-		private void SetGLLightPositionDirection(Light lt, All lightindex)
-		{
-			throw new NotImplementedException(); 
-		}
-		private void SetLights()
-		{
-			throw new NotImplementedException(); 
-		}
-
-		private bool ActivateGLTextureUnit(int unit)
-		{
-			throw new NotImplementedException(); 
-		}
-		private bool ActivateGLClientTextureUnit(int unit)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLTexEnvi(All target, All name, int param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLTexEnvf(All target, All name, float param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLTexEnvfv(All target, All name, float param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLPointParamf(All name, float param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLPointParamfv(All name, float param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLMaterialfv(All face, All name, float param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLMatrixMode(All mode)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLDepthMask(bool flag)
-		{
-			throw new NotImplementedException(); 
-		}
-			//void setGLClearDepthf(OpenTK.Graphics.ES11. depth);
-		void SetGLColorMask(bool red, bool green, bool blue, bool alpha)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLLightf(All light, All name, float param)
-		{
-			throw new NotImplementedException(); 
-		}
-		void SetGLLightfv(All light, All name, float param)
+		private void SetGLLight( int index, Light l )
 		{
 			throw new NotImplementedException();
 		}
+		private void SetGLLightPositionDirection( Light lt, All lightindex )
+		{
+			throw new NotImplementedException();
+		}
+		private void SetLights()
+		{
+			throw new NotImplementedException();
+		}
+
+		private bool ActivateGLTextureUnit( int unit )
+		{
+			throw new NotImplementedException();
+		}
+		private bool ActivateGLClientTextureUnit( int unit )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLTexEnvi( All target, All name, int param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLTexEnvf( All target, All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLTexEnvfv( All target, All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLPointParamf( All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLPointParamfv( All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLMaterialfv( All face, All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLMatrixMode( All mode )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLDepthMask( bool flag )
+		{
+			throw new NotImplementedException();
+		}
+		//void setGLClearDepthf(OpenTK.Graphics.ES11. depth);
+		void SetGLColorMask( bool red, bool green, bool blue, bool alpha )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLLightf( All light, All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+		void SetGLLightfv( All light, All name, float param )
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#region - Abstracts -
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -245,6 +257,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				return base.Name;
 			}
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -255,6 +268,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				return base.ConfigOptions;
 			}
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -265,6 +279,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				return base.HardwareCapabilities;
 			}
 		}
+
 		public override ColorEx AmbientLight
 		{
 			get
@@ -276,6 +291,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override Shading ShadingMode
 		{
 			get
@@ -287,6 +303,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override bool LightingEnabled
 		{
 			get
@@ -298,6 +315,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override bool NormalizeNormals
 		{
 			get
@@ -309,15 +327,17 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public override void SetConfigOption(string name, string value)
+		public override void SetConfigOption( string name, string value )
 		{
 			throw new NotImplementedException();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -326,16 +346,18 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			return base.ValidateConfiguration();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="autoCreateWindow"></param>
 		/// <param name="windowTitle"></param>
 		/// <returns></returns>
-		public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle)
+		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
-			return base.Initialize(autoCreateWindow, windowTitle);
+			return base.Initialize( autoCreateWindow, windowTitle );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -343,6 +365,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			base.Shutdown();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -352,71 +375,85 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="isFullScreen"></param>
 		/// <param name="miscParams"></param>
 		/// <returns></returns>
-		public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen, Collections.NamedParameterList miscParams)
+		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, Collections.NamedParameterList miscParams )
 		{
 			throw new NotImplementedException();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public override MultiRenderTarget CreateMultiRenderTarget(string name)
+		public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
 			throw new NotImplementedException();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="name"></param>
-		public override void DestroyRenderWindow(string name)
+		public override void DestroyRenderWindow( string name )
 		{
-			base.DestroyRenderWindow(name);
+			base.DestroyRenderWindow( name );
 		}
-		public override void ApplyObliqueDepthProjection(ref Matrix4 projMatrix, Plane plane, bool forGpuProgram)
+
+		public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
 		{
 			throw new NotImplementedException();
 		}
-		public override void AttachRenderTarget(RenderTarget target)
+
+		public override void AttachRenderTarget( RenderTarget target )
 		{
-			base.AttachRenderTarget(target);
+			base.AttachRenderTarget( target );
 		}
+
 		public override void BeginFrame()
 		{
 			throw new NotImplementedException();
 		}
+
 		public override void BeginGeometryCount()
 		{
 			base.BeginGeometryCount();
 		}
-		public override void BindGpuProgram(GpuProgram program)
+
+		public override void BindGpuProgram( GpuProgram program )
 		{
-			base.BindGpuProgram(program);
+			base.BindGpuProgram( program );
 		}
-		public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms)
-		{
-			throw new NotImplementedException();
-		}
-		public override void ClearFrameBuffer(FrameBufferType buffers, ColorEx color, float depth, int stencil)
+
+		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
 		{
 			throw new NotImplementedException();
 		}
-		public override int ConvertColor(ColorEx color)
+
+		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			throw new NotImplementedException();
 		}
-		public override ColorEx ConvertColor(int color)
+
+		public override int ConvertColor( ColorEx color )
 		{
 			throw new NotImplementedException();
 		}
-		public override Matrix4 ConvertProjectionMatrix(Matrix4 matrix, bool forGpuProgram)
+
+		public override ColorEx ConvertColor( int color )
 		{
 			throw new NotImplementedException();
 		}
+
+		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
+		{
+			throw new NotImplementedException();
+		}
+
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
 			throw new NotImplementedException();
 		}
+
 		public override CullingMode CullingMode
 		{
 			get
@@ -428,6 +465,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override float DepthBias
 		{
 			get
@@ -439,6 +477,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override bool DepthCheck
 		{
 			get
@@ -450,6 +489,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override CompareFunction DepthFunction
 		{
 			get
@@ -461,6 +501,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override bool DepthWrite
 		{
 			get
@@ -472,54 +513,70 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
-		public override void DestroyRenderTarget(string name)
+
+		public override void DestroyRenderTarget( string name )
 		{
-			base.DestroyRenderTarget(name);
+			base.DestroyRenderTarget( name );
 		}
-		public override void DestroyRenderTexture(string name)
+
+		public override void DestroyRenderTexture( string name )
 		{
-			base.DestroyRenderTexture(name);
+			base.DestroyRenderTexture( name );
 		}
-		public override RenderTarget DetachRenderTarget(RenderTarget target)
+
+		public override RenderTarget DetachRenderTarget( RenderTarget target )
 		{
-			return base.DetachRenderTarget(target);
+			return base.DetachRenderTarget( target );
 		}
-		public override void DisableTextureUnit(int stage)
+
+		public override void DisableTextureUnit( int stage )
 		{
-			base.DisableTextureUnit(stage);
+			base.DisableTextureUnit( stage );
 		}
-		public override void DisableTextureUnitsFrom(int texUnit)
+
+		public override void DisableTextureUnitsFrom( int texUnit )
 		{
-			base.DisableTextureUnitsFrom(texUnit);
+			base.DisableTextureUnitsFrom( texUnit );
 		}
+
 		public override void Dispose()
 		{
 			base.Dispose();
 		}
-		public override void EnableClipPlane(ushort index, bool enable)
+
+		public override void EnableClipPlane( ushort index, bool enable )
 		{
 			throw new NotImplementedException();
 		}
+
 		public override void EndFrame()
 		{
 			throw new NotImplementedException();
 		}
-		public override bool Equals(object obj)
+
+		public override bool Equals( object obj )
 		{
-			return base.Equals(obj);
+			return base.Equals( obj );
 		}
+
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
 		}
+
 		public override float HorizontalTexelOffset
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
+
 		public override void InitRenderTargets()
 		{
 			base.InitRenderTargets();
 		}
+
 		public override bool InvertVertexWinding
 		{
 			get
@@ -532,6 +589,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				base.InvertVertexWinding = value;
 			}
 		}
+
 		public override bool IsVSync
 		{
 			get
@@ -543,30 +601,46 @@ namespace Axiom.RenderSystems.OpenGLES
 				base.IsVSync = value;
 			}
 		}
-		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms)
+
+		public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
 		{
 			throw new NotImplementedException();
 		}
-		public override Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram)
+
+		public override Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
 		{
 			throw new NotImplementedException();
 		}
-		public override Matrix4 MakeProjectionMatrix(float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram)
+
+		public override Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram )
 		{
 			throw new NotImplementedException();
 		}
+
 		public override Real MaximumDepthInputValue
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
+
 		public override Real MinimumDepthInputValue
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
+
 		public override bool PointSprites
 		{
-			set { throw new NotImplementedException(); }
+			set
+			{
+				throw new NotImplementedException();
+			}
 		}
+
 		public override PolygonMode PolygonMode
 		{
 			get
@@ -578,6 +652,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override Matrix4 ProjectionMatrix
 		{
 			get
@@ -589,106 +664,132 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override void RemoveRenderTargets()
 		{
 			base.RemoveRenderTargets();
 		}
-		public override void Render(RenderOperation op)
+
+		public override void Render( RenderOperation op )
 		{
-			base.Render(op);
+			base.Render( op );
 		}
-		public override void SetAlphaRejectSettings(CompareFunction func, int val, bool alphaToCoverage)
-		{
-			throw new NotImplementedException();
-		}
-		public override void SetClipPlane(ushort index, float A, float B, float C, float D)
+
+		public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
 		{
 			throw new NotImplementedException();
 		}
-		public override void UseLights(Core.Collections.LightList lightList, int limit)
+
+		public override void SetClipPlane( ushort index, float A, float B, float C, float D )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetViewport(Viewport viewport)
+
+		public override void UseLights( Core.Collections.LightList lightList, int limit )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetWorldMatrices(Matrix4[] matrices, ushort count)
-		{
-			base.SetWorldMatrices(matrices, count);
-		}
-		public override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha)
+
+		public override void SetViewport( Viewport viewport )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureUnitFiltering(int stage, FilterType type, FilterOptions filter)
+
+		public override void SetWorldMatrices( Matrix4[] matrices, ushort count )
+		{
+			base.SetWorldMatrices( matrices, count );
+		}
+
+		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureMatrix(int stage, Matrix4 xform)
+
+		public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetDepthBufferParams(bool depthTest, bool depthWrite, CompareFunction depthFunction)
+
+		public override void SetTextureMatrix( int stage, Matrix4 xform )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetFog(Graphics.FogMode mode, ColorEx color, float density, float start, float end)
+
+		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetPointParameters(float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize)
+
+		public override void SetFog( Graphics.FogMode mode, ColorEx color, float density, float start, float end )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest)
+
+		public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetScissorTest(bool enable, int left, int top, int right, int bottom)
+
+		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetSeparateSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha)
+
+		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetStencilBufferParams(CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation)
+
+		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking)
+
+		public override void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTexture(int stage, bool enabled, Texture texture)
+
+		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode)
+
+		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
+
+		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureBorderColor(int stage, ColorEx borderColor)
+
+		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum)
+
+		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureCoordSet(int stage, int index)
+
+		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
 		{
 			throw new NotImplementedException();
 		}
-		public override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy)
+
+		public override void SetTextureCoordSet( int stage, int index )
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
+		{
+			throw new NotImplementedException();
+		}
+
 		public override Matrix4 WorldMatrix
 		{
 			get
@@ -700,6 +801,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override Matrix4 ViewMatrix
 		{
 			get
@@ -711,10 +813,15 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
+
 		public override float VerticalTexelOffset
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
+
 		public override bool StencilCheckEnabled
 		{
 			get
@@ -726,15 +833,20 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
-		
+
 		#endregion
-        /// <summary>
-        /// 
-        /// </summary>
-        public GLESContext MainContext
-        {
-            get { return _mainContext; }
-        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public GLESContext MainContext
+		{
+			get
+			{
+				return _mainContext;
+			}
+		}
+
 		/// <summary>
 		/// Default ctor.
 		/// </summary>
@@ -744,46 +856,46 @@ namespace Axiom.RenderSystems.OpenGLES
 			_stencilMask = 0xFFFFFFFF;
 			int i;
 
-			LogManager.Instance.Write(string.Format("{0} created.", Name));
+			LogManager.Instance.Write( string.Format( "{0} created.", Name ) );
 
 			_glSupport = OpenTKGLESUtil.GLESSupport;
 
-			for (i = 0; i < MaxLights; i++)
-				_lights[i] = null;
+			for ( i = 0; i < MaxLights; i++ )
+				_lights[ i ] = null;
 
 			_worldMatrix = Matrix4.Identity;
 			_ViewMatrix = Matrix4.Identity;
 
-            _glSupport.AddConfig();
+			_glSupport.AddConfig();
 
-            _colorWrite[0] = _colorWrite[1] = _colorWrite[2] = _colorWrite[4] = true;
+			_colorWrite[ 0 ] = _colorWrite[ 1 ] = _colorWrite[ 2 ] = _colorWrite[ 4 ] = true;
 
-            for (int layer = 0; layer < Axiom.Configuration.Config.MaxTextureLayers; layer++)
-            {
-                // Dummy value
-                _textureCoodIndex[layer] = 99;
-            }
+			for ( int layer = 0; layer < Axiom.Configuration.Config.MaxTextureLayers; layer++ )
+			{
+				// Dummy value
+				_textureCoodIndex[ layer ] = 99;
+			}
 
-            _textureCount = 0;
-            activeRenderTarget = null;
-            _currentContext = null;
-            _mainContext = null;
-            _glInitialized = false;
-            numCurrentLights = 0;
-            _textureMimmapCount = 0;
-            mMinFilter = FilterOptions.Linear;
-            _mipFilter = FilterOptions.Point;
-           // _polygonMode = OpenTK.Graphics.ES11.
+			_textureCount = 0;
+			activeRenderTarget = null;
+			_currentContext = null;
+			_mainContext = null;
+			_glInitialized = false;
+			numCurrentLights = 0;
+			_textureMimmapCount = 0;
+			mMinFilter = FilterOptions.Linear;
+			_mipFilter = FilterOptions.Point;
+			// _polygonMode = OpenTK.Graphics.ES11.
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        public void UnregisterContext(GLESContext context)
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="context"></param>
+		public void UnregisterContext( GLESContext context )
+		{
+			throw new NotImplementedException();
+		}
 
 	}
 }

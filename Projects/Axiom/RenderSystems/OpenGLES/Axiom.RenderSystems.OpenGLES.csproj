@@ -59,6 +59,7 @@
     <Compile Include="GLESHardwarePixelBuffer.cs" />
     <Compile Include="GLESDefaultHardwareVertexBuffer.cs" />
     <Compile Include="GLESHardwareVertexBuffer.cs" />
+    <Compile Include="GLESPBRenderTexture.cs" />
     <Compile Include="GLESPBuffer.cs" />
     <Compile Include="GLESPixelFormat.cs" />
     <Compile Include="GLESPlugin.cs" />

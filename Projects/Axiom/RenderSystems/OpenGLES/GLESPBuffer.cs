@@ -54,6 +54,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			get;
 			protected set;
 		}
+
 		/// <summary>
 		/// Get's the width of the PBuffer
 		/// </summary>
@@ -62,6 +63,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			get;
 			protected set;
 		}
+
 		/// <summary>
 		/// Get's the height of the PBuffer
 		/// </summary>
@@ -83,6 +85,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			Width = width;
 			Height = height;
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -91,7 +94,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		public static PixelComponentType GetPixelComponentType(PixelFormat fmt)
 		{
 			throw new NotImplementedException();
-			
 		}
 	}
 }

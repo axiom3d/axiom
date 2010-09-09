@@ -42,6 +42,7 @@ using Axiom.Graphics;
 using OpenTK.Graphics.ES11;
 using OpenGL = OpenTK.Graphics.ES11.GL;
 #endregion
+
 namespace Axiom.RenderSystems.OpenGLES
 {
     /// <summary>
@@ -72,8 +73,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="crappyCard"></param>
         /// <param name="writeGamma"></param>
         /// <param name="fsaa"></param>
-        public GLESTextureBuffer(string basename, All targetfmt, int id, int width, int height, int format, int face,
-            int level, BufferUsage usage, bool crappyCard,bool writeGamma, int fsaa)
+        public GLESTextureBuffer(string basename, All targetfmt, int id, int width, int height, int format, int face, int level, BufferUsage usage, bool crappyCard,bool writeGamma, int fsaa)
             : base(0, 0, 0, Media.PixelFormat.Unknown, usage)
         {
             _target = targetfmt;
@@ -127,6 +127,7 @@ namespace Axiom.RenderSystems.OpenGLES
             }
 
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -136,6 +137,7 @@ namespace Axiom.RenderSystems.OpenGLES
         {
             return base.GetRenderTarget(slice);
         }
+
         /// <summary>
         /// Notify TextureBuffer of destruction of render target
         /// </summary>
@@ -145,6 +147,7 @@ namespace Axiom.RenderSystems.OpenGLES
             Utilities.Contract.Requires(zoffset < _sliceTRT.Count);
             _sliceTRT[zoffset] = null;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -155,11 +158,10 @@ namespace Axiom.RenderSystems.OpenGLES
         {
             base.Blit(src, srcBox, dstBox);
         }
+
         protected static void BuildMipmaps(PixelBox data)
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }

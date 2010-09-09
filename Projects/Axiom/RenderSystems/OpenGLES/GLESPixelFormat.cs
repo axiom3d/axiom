@@ -52,9 +52,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="fm"></param>
 		/// <returns>a GLenum describing the format, or 0 if there is no exactly matching 
 		/// one (and conversion is needed)</returns>
-		public static GLES.PixelFormat GetGLOriginFormat(PixelFormat fmt)
+		public static GLES.PixelFormat GetGLOriginFormat( PixelFormat fmt )
 		{
-			switch (fmt)
+			switch ( fmt )
 			{
 				case PixelFormat.A8:
 					return GLES.PixelFormat.Alpha;
@@ -127,6 +127,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					return 0;
 			}
 		}
+
 		/// <summary>
 		/// Takes the Axiom pixel format and returns the type that must be provided
 		/// to GL as internal format. 0 if no match exists.
@@ -134,14 +135,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="fmt"></param>
 		/// <param name="hwGamma"></param>
 		/// <returns></returns>
-		public static GLES.All GetGLInternalFormat(PixelFormat fmt, bool hwGamma)
+		public static GLES.All GetGLInternalFormat( PixelFormat fmt, bool hwGamma )
 		{
-			switch (fmt)
+			switch ( fmt )
 			{
 				case PixelFormat.L8:
-                    return GLES.All.Luminance;
+					return GLES.All.Luminance;
 				case PixelFormat.A8:
-                    return GLES.All.LuminanceAlpha;
+					return GLES.All.LuminanceAlpha;
 				case PixelFormat.R8G8B8:
 				case PixelFormat.B8G8R8:
 				case PixelFormat.X8B8G8R8:
@@ -149,9 +150,9 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.A8B8G8R8:
 				case PixelFormat.B8G8R8A8:
 					{
-						if (!hwGamma)
+						if ( !hwGamma )
 						{
-                            return GLES.All.Rgba;
+							return GLES.All.Rgba;
 						}
 					}
 					return 0;
@@ -182,6 +183,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					return 0;
 			}
 		}
+
 		/// <summary>
 		/// Takes the Axiom pixel format and returns type that must be provided
 		/// to GL as data type for reading it into the GPU
@@ -189,9 +191,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="mFormat"></param>
 		/// <returns>returns a GLenum describing the data type, or 0 if there is no exactly matching 
 		/// one (and conversion is needed)</returns>
-		public static GLES.All GetGLOriginDataType(PixelFormat mFormat)
+		public static GLES.All GetGLOriginDataType( PixelFormat mFormat )
 		{
-			switch (mFormat)
+			switch ( mFormat )
 			{
 				case PixelFormat.A8:
 				case PixelFormat.L8:
@@ -253,6 +255,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					return 0;
 			}
 		}
+
 		/// <summary>
 		/// Takes the Axiom pixel format and returns the type that must be provided
 		/// to GL as internal format. If no match exists, returns the closest match.
@@ -260,12 +263,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="mFormat">mFormat The pixel format</param>
 		/// <param name="hwGamma">hwGamma Whether a hardware gamma-corrected version is requested</param>
 		/// <returns></returns>
-		public static GLES.All GetClosestGLInternalFormat(PixelFormat mFormat, bool hwGamma = false)
+		public static GLES.All GetClosestGLInternalFormat( PixelFormat mFormat, bool hwGamma = false )
 		{
-			GLES.All format = GetGLInternalFormat(mFormat, hwGamma);
-			if (format == 0)
+			GLES.All format = GetGLInternalFormat( mFormat, hwGamma );
+			if ( format == 0 )
 			{
-				if (hwGamma)
+				if ( hwGamma )
 				{
 					// TODO not supported
 					return 0;
@@ -289,9 +292,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="fmt"></param>
 		/// <returns></returns>
-		public static PixelFormat GetClosestAxiomFormat(GLES.All fmt)
+		public static PixelFormat GetClosestAxiomFormat( GLES.All fmt )
 		{
-			switch (fmt)
+			switch ( fmt )
 			{
 #if GL_IMG_texture_compression_pvrtc
 			case GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
@@ -351,21 +354,21 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="depth"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		public static int GetMaxMipmaps(int width, int height, int depth, PixelFormat format)
+		public static int GetMaxMipmaps( int width, int height, int depth, PixelFormat format )
 		{
 			int count = 0;
 
 			do
 			{
-				if (width > 1)
+				if ( width > 1 )
 				{
 					width = width / 2;
 				}
-				if (height > 1)
+				if ( height > 1 )
 				{
 					height = height / 2;
 				}
-				if (depth > 1)
+				if ( depth > 1 )
 				{
 					depth = depth / 2;
 				}
@@ -377,7 +380,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					break;
 				*/
 				count++;
-			} while (!(width == 1 && height == 1 && depth == 1));
+			} while ( !( width == 1 && height == 1 && depth == 1 ) );
 
 			return count;
 		}
@@ -388,11 +391,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static int OptionalPO2(int value)
+		public static int OptionalPO2( int value )
 		{
 			RenderSystemCapabilities caps =
 			Root.Instance.RenderSystem.HardwareCapabilities;
-			if (caps.HasCapability(Capabilities.NonPowerOf2Textures))
+			if ( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
 			{
 				return value;
 			}
@@ -416,11 +419,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="data"></param>
 		/// <param name="outputFormat"></param>
 		/// <returns></returns>
-		public static PixelBox ConvertToGLformat(PixelBox data, out GLES.PixelFormat outputFormat)
+		public static PixelBox ConvertToGLformat( PixelBox data, out GLES.PixelFormat outputFormat )
 		{
-			GLES.PixelFormat glFormat = GetGLOriginFormat(data.Format);
+			GLES.PixelFormat glFormat = GetGLOriginFormat( data.Format );
 			outputFormat = glFormat;
-			if (glFormat != 0)
+			if ( glFormat != 0 )
 			{
 				// format already supported
 				return data;
@@ -428,23 +431,23 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			PixelBox converted = null;
 
-			if (data.Format == PixelFormat.R8G8B8)
+			if ( data.Format == PixelFormat.R8G8B8 )
 			{
 				converted = new PixelBox();
 				// Convert BGR -> RGB
 				converted.Format = PixelFormat.R8G8B8;
 				outputFormat = GLES.PixelFormat.Rgb;
-				converted = new PixelBox(data.Width, data.Height, data.Depth, data.Format);
+				converted = new PixelBox( data.Width, data.Height, data.Depth, data.Format );
 				converted.Data = data.Data;
 				unsafe
 				{
 					uint* dataptr = (uint*)converted.Data;
-					for (uint i = 0; i < converted.Width * converted.Height; i++)
+					for ( uint i = 0; i < converted.Width * converted.Height; i++ )
 					{
 						uint* color = dataptr;
-						*color = (*color & 0x000000ff) << 16 |
-								 (*color & 0x0000FF00) |
-								 (*color & 0x00FF0000) >> 16;
+						*color = ( *color & 0x000000ff ) << 16 |
+								 ( *color & 0x0000FF00 ) |
+								 ( *color & 0x00FF0000 ) >> 16;
 						dataptr += 1;
 					}
 				}
