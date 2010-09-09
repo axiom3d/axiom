@@ -93,42 +93,42 @@ namespace Axiom.Core
 		static PlatformInformation()
 		{
 #if MONO_SIMD
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSSE3 ) == AccelMode.SSSE3 )
-            {
-                cpuFeatures[ (int)CPUFeature.SSSE3 ] = true;
-            }
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSE4A ) == AccelMode.SSE4A )
-            {
-                cpuFeatures[ (int)CPUFeature.SSE4A ] = true;
-            }
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSE42 ) == AccelMode.SSE42 )
-            {
-                cpuFeatures[ (int)CPUFeature.SSE42 ] = true;
-            }
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSE41 ) == AccelMode.SSE41 )
-            {
-                cpuFeatures[ (int)CPUFeature.SSE41 ] = true;
-            }
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSE3 ) == AccelMode.SSE3 )
-            {
-                cpuFeatures[ (int)CPUFeature.SSE3 ] = true;
-            }
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSE2 ) == AccelMode.SSE2 )
-            {
-                cpuFeatures[ (int)CPUFeature.SSE2 ] = true;
-            }
-            if ( ( SimdRuntime.AccelMode & AccelMode.SSE1 ) == AccelMode.SSE1 )
-            {
-                cpuFeatures[ (int)CPUFeature.SSE1 ] = true;
-            }
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSSE3 ) == AccelMode.SSSE3 )
+			{
+				cpuFeatures[ (int)CPUFeature.SSSE3 ] = true;
+			}
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSE4A ) == AccelMode.SSE4A )
+			{
+				cpuFeatures[ (int)CPUFeature.SSE4A ] = true;
+			}
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSE42 ) == AccelMode.SSE42 )
+			{
+				cpuFeatures[ (int)CPUFeature.SSE42 ] = true;
+			}
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSE41 ) == AccelMode.SSE41 )
+			{
+				cpuFeatures[ (int)CPUFeature.SSE41 ] = true;
+			}
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSE3 ) == AccelMode.SSE3 )
+			{
+				cpuFeatures[ (int)CPUFeature.SSE3 ] = true;
+			}
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSE2 ) == AccelMode.SSE2 )
+			{
+				cpuFeatures[ (int)CPUFeature.SSE2 ] = true;
+			}
+			if ( ( SimdRuntime.AccelMode & AccelMode.SSE1 ) == AccelMode.SSE1 )
+			{
+				cpuFeatures[ (int)CPUFeature.SSE1 ] = true;
+			}
 #endif
 
 #if SYSTEM_MANAGEMENT
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher( "select * from Win32_Processor" );
-            foreach ( var item in searcher.Get() )
-            {
-                cpuIdentifier = item.Properties[ "Name" ].Value.ToString();
-            }
+			ManagementObjectSearcher searcher = new ManagementObjectSearcher( "select * from Win32_Processor" );
+			foreach ( var item in searcher.Get() )
+			{
+				cpuIdentifier = item.Properties[ "Name" ].Value.ToString();
+			}
 #endif
 		}
 
