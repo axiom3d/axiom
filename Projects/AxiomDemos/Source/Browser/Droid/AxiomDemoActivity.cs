@@ -14,20 +14,20 @@ namespace Droid
 {
 	public class AxiomDemoActivity : Activity
 	{
-		public AxiomDemoActivity(IntPtr handle)
-			: base(handle)
+		public AxiomDemoActivity( IntPtr handle )
+			: base( handle )
 		{
 		}
 
-		protected override void OnCreate(Bundle bundle)
+		protected override void OnCreate( Bundle bundle )
 		{
-			base.OnCreate(bundle);
+			base.OnCreate( bundle );
 
 			// Inflate our UI from its XML layout description
-			SetContentView(R.layout.demo);
+			SetContentView( R.layout.demo );
 
 			// Load the view
-			FindViewById(R.id.paintingview);
+			FindViewById( R.id.paintingview );
 		}
 	}
 }
