@@ -373,7 +373,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Updates the real buffer from the shadow buffer, if required.
         /// </summary>
-        protected void UpdateFromShadow()
+        protected virtual void UpdateFromShadow()
         {
             if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
             {
