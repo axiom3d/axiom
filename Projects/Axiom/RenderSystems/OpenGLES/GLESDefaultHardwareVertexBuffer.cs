@@ -25,6 +25,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
@@ -41,26 +42,27 @@ using Axiom.Utilities;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    public class GLESDefaultHardwareVertexBuffer : HardwareVertexBuffer, IDisposable
+    public class GLESDefaultHardwareVertexBuffer : HardwareVertexBuffer
     {
         /// <summary>
         /// 
         /// </summary>
         protected IntPtr _dataPtr;
         protected byte[] _data;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="vertexSize"></param>
         /// <param name="numVertices"></param>
         /// <param name="usage"></param>
-        public GLESDefaultHardwareVertexBuffer(int vertexSize, int numVertices,
-            BufferUsage usage)
+        public GLESDefaultHardwareVertexBuffer(int vertexSize, int numVertices, BufferUsage usage)
             : base(vertexSize, numVertices, usage, true, false)
         {
             _data = new byte[numVertices];
             _dataPtr = Memory.PinObject(_data);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -70,6 +72,7 @@ namespace Axiom.RenderSystems.OpenGLES
         {
             return new IntPtr(_dataPtr.ToInt32() + offset);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -83,6 +86,7 @@ namespace Axiom.RenderSystems.OpenGLES
             // ignore discard, memory is not guaranteed to be zeroised
             Memory.Copy(src, GetData(offset), length);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -94,6 +98,7 @@ namespace Axiom.RenderSystems.OpenGLES
             Contract.Requires((offset + length) <= sizeInBytes);
             Memory.Copy(GetData(offset), dest, length);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -105,6 +110,7 @@ namespace Axiom.RenderSystems.OpenGLES
         {
             return GetData(offset);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -117,6 +123,7 @@ namespace Axiom.RenderSystems.OpenGLES
             isLocked = true;
             return GetData(offset);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -124,6 +131,7 @@ namespace Axiom.RenderSystems.OpenGLES
         {
             //nothing todo
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -132,15 +140,27 @@ namespace Axiom.RenderSystems.OpenGLES
             isLocked = false;
             //nothing todo
         }
+
         /// <summary>
         /// 
         /// </summary>
-        public virtual void Dispose()
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose( bool disposeManagedResources )
         {
-            if (_data != null)
+            if ( !IsDisposed )
             {
-                Memory.UnpinObject(_data);
+                if ( disposeManagedResources )
+                {
+                    if ( _data != null )
+                    {
+                        Memory.UnpinObject( _data );
+                    }
+                }
             }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
         }
     }
 }

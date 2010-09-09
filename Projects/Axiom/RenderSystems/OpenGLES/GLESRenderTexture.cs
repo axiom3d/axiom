@@ -25,6 +25,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion LGPL License
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
@@ -41,30 +42,31 @@ namespace Axiom.RenderSystems.OpenGLES
 {
 	public class GLESRenderTexture : RenderTexture
 	{
-        /// <summary>
-        /// 
-        /// </summary>
-        public override bool RequiresTextureFlipping
-        {
-            get
-            {
-                return true;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="target"></param>
-        /// <param name="writeGamma"></param>
-        /// <param name="fsaa"></param>
-        public GLESRenderTexture(string name, GLESSurfaceDescription target, bool writeGamma, int fsaa)
-            : base(target.Buffer,target.ZOffset)
-        {
-            Name = name;
-            HardwareGammaEnabled = writeGamma;
-            FSAA = fsaa;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="target"></param>
+		/// <param name="writeGamma"></param>
+		/// <param name="fsaa"></param>
+		public GLESRenderTexture( string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
+			: base( target.Buffer, target.ZOffset )
+		{
+			Name = name;
+			HardwareGammaEnabled = writeGamma;
+			FSAA = fsaa;
+		}
 	}
 }
 

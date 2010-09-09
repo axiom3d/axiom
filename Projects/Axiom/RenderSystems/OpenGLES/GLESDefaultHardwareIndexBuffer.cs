@@ -45,7 +45,7 @@ namespace Axiom.RenderSystems.OpenGLES
     /// <summary>
     /// 
     /// </summary>
-    public class GLESDefaultHardwareIndexBuffer : HardwareIndexBuffer, IDisposable
+    public class GLESDefaultHardwareIndexBuffer : HardwareIndexBuffer
     {
         protected byte[] _data;
         protected IntPtr _dataPtr;
@@ -56,24 +56,24 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="idxType"></param>
         /// <param name="numIndexes"></param>
         /// <param name="usage"></param>
-        public GLESDefaultHardwareIndexBuffer(IndexType idxType, int numIndexes, BufferUsage usage)
-            : base(idxType, numIndexes, usage, true, false)// always software, never shadowed
+        public GLESDefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
+            : base( idxType, numIndexes, usage, true, false )// always software, never shadowed
         {
-            if (idxType == IndexType.Size32)
+            if ( idxType == IndexType.Size32 )
             {
-                throw new AxiomException("32 bit hardware buffers are not allowed in OpenGL ES.", new Object[] { });
+                throw new AxiomException( "32 bit hardware buffers are not allowed in OpenGL ES." );
             }
 
-            _data = new byte[sizeInBytes];
-            _dataPtr = Memory.PinObject(_data);
+            _data = new byte[ sizeInBytes ];
+            _dataPtr = Memory.PinObject( _data );
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="offset"></param>
-        public IntPtr GetData(int offset)
+        public IntPtr GetData( int offset )
         {
-            return new IntPtr(_dataPtr.ToInt32() + offset);
+            return new IntPtr( _dataPtr.ToInt32() + offset );
         }
         /// <summary>
         /// 
@@ -82,10 +82,10 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="length"></param>
         /// <param name="locking"></param>
         /// <returns></returns>
-        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
+        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
             // Only for use internally, no 'locking' as such
-            return GetData(offset);
+            return GetData( offset );
         }
         /// <summary>
         /// 
@@ -101,10 +101,10 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="length"></param>
         /// <param name="locking"></param>
         /// <returns></returns>
-        public override IntPtr Lock(int offset, int length, BufferLocking locking)
+        public override IntPtr Lock( int offset, int length, BufferLocking locking )
         {
             isLocked = true;
-            return GetData(offset);
+            return GetData( offset );
         }
         /// <summary>
         /// 
@@ -120,10 +120,10 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <param name="dest"></param>
-        public override void ReadData(int offset, int length, IntPtr dest)
+        public override void ReadData( int offset, int length, IntPtr dest )
         {
-            Contract.Requires((offset + length) <= sizeInBytes);
-            Memory.Copy(GetData(offset), dest, length);
+            Contract.Requires( ( offset + length ) <= sizeInBytes );
+            Memory.Copy( GetData( offset ), dest, length );
         }
         /// <summary>
         /// 
@@ -132,22 +132,34 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="length"></param>
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
-        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
+        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-            Contract.Requires((offset + length) <= sizeInBytes);
+            Contract.Requires( ( offset + length ) <= sizeInBytes );
             // ignore discard, memory is not guaranteed to be zeroised
-            Memory.Copy(src, GetData(offset), length);
+            Memory.Copy( src, GetData( offset ), length );
         }
+
         /// <summary>
         /// 
         /// </summary>
-        public void Dispose()
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose( bool disposeManagedResources )
         {
-            if (_data != null)
+            if ( !IsDisposed )
             {
-                Memory.UnpinObject(_data);
-                _data = null;
+                if ( disposeManagedResources )
+                {
+                    if ( _data != null )
+                    {
+                        Memory.UnpinObject( _data );
+                        _data = null;
+                    }
+                }
             }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
         }
     }
 }

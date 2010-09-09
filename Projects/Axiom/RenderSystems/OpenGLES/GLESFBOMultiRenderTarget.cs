@@ -40,32 +40,34 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    /// <summary>
-    /// MultiRenderTarget for GL ES. Requires the FBO extension.
-    /// </summary>
+	/// <summary>
+	/// MultiRenderTarget for GL ES. Requires the FBO extension.
+	/// </summary>
 	public class GLESFBOMultiRenderTarget : MultiRenderTarget
 	{
-        public GLESFBOMultiRenderTarget(string name)
-            : base(name)
-        {
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="attachment"></param>
-        /// <param name="target"></param>
-        public override void BindSurface(int attachment, RenderTexture target)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="attachment"></param>
-        public override void UnbindSurface(int attachment)
-        {
-            throw new NotImplementedException();
-        }
+		public GLESFBOMultiRenderTarget( string name )
+			: base( name )
+		{
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="attachment"></param>
+		/// <param name="target"></param>
+		public override void BindSurface( int attachment, RenderTexture target )
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="attachment"></param>
+		public override void UnbindSurface( int attachment )
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
 
