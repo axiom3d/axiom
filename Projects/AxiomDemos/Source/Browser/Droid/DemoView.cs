@@ -19,24 +19,24 @@ namespace Droid
 
 		public DemoView( IntPtr handle )
 			: base( handle )
-		{ 
+		{
 		}
 
 		// This gets called when the drawing surface is ready
 		protected override void OnLoad( EventArgs e )
 		{
-			base.OnLoad(e);
+			base.OnLoad( e );
 
 			try
 			{
 				//new AndroidResourceGroupManager();
 
 				// instantiate the Root singleton
-				engine = new Root("AxiomDemos.log");
+				engine = new Root( "AxiomDemos.log" );
 
-				(new Axiom.RenderSystems.OpenGLES.GLESPlugin()).Initialize();
+				( new Axiom.RenderSystems.OpenGLES.GLESPlugin() ).Initialize();
 
-				Root.Instance.RenderSystem = Root.Instance.RenderSystems["OpenGLES"];
+				Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "OpenGLES" ];
 
 				_loadPlugins();
 
@@ -46,10 +46,10 @@ namespace Droid
 
 				demo.Setup();
 			}
-			catch (Exception ex)
+			catch ( Exception ex )
 			{
-				Console.WriteLine("An exception has occurred. See below for details:");
-				Console.WriteLine(BuildExceptionString(ex));
+				Console.WriteLine( "An exception has occurred. See below for details:" );
+				Console.WriteLine( BuildExceptionString( ex ) );
 			}
 			// UpdateFrame and RenderFrame are called
 			// by the render loop. This is takes effect
