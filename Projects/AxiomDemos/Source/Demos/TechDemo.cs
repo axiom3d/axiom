@@ -32,7 +32,6 @@ namespace Axiom.Demos
 	{
 		public delegate InputReader ConfigureInput();
 		public ConfigureInput SetupInput;
-
 		public TechDemo() { SetupInput = new ConfigureInput( _setupInput ); }
 
 		#region Protected Fields
@@ -167,7 +166,6 @@ namespace Axiom.Demos
 			engine.FrameEnded += OnFrameEnded;
 
 			window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
-
 			TechDemoListener rwl = new TechDemoListener( window );
 			WindowEventMonitor.Instance.RegisterListener( window, rwl );
 

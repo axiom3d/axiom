@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGLES
             _softwareMipmap = crappyCard;
 
             GLESConfig.GlCheckError(this);
-            OpenGL.BindTexture(All.TextureBinding2D, _textureId);
+            OpenGL.BindTexture(All.Texture2D, _textureId);
             GLESConfig.GlCheckError(this);
 
             // Get face identifier

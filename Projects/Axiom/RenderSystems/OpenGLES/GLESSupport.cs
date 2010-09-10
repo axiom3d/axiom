@@ -43,7 +43,7 @@ using Axiom.Graphics;
 using Axiom.Utilities;
 using Axiom.Collections;
 using Axiom.Graphics.Collections;
-using OpenTK.Graphics.ES20;
+using OpenTK.Graphics.ES11;
 using System.Collections.ObjectModel;
 
 #endregion Namespace Declarations
@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGLES
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract class GLESSupport
+	public abstract class GLESSupport : OpenTK.Graphics.GraphicsBindingsBase
 	{
 		private string _version;
 		private string _vendor;
@@ -231,18 +231,21 @@ namespace Axiom.RenderSystems.OpenGLES
 		public virtual void InitializeExtensions()
 		{
 			//get version
-			string tmpStr = GL.GetString( All.Version );
+            string tmpStr =  GL.GetString(All.Version);
 			Contract.Requires( !string.IsNullOrEmpty( tmpStr ) );
+            LogManager.Instance.Write("Version= " + tmpStr);
 			_version = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );
-
+            
 			//get vendor
 			tmpStr = GL.GetString( All.Vendor );
-			_vendor = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );
+            LogManager.Instance.Write("Vendor= " + tmpStr);
+            _vendor = tmpStr;
 
 			//get renderer
-			tmpStr = GL.GetString( All.Renderer );
+            tmpStr = GL.GetString(All.Renderer);
+            LogManager.Instance.Write("Renderer= " + tmpStr);
 			_videoCard = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );			
-
+            
 			// Set extension list
 			StringBuilder ext = new StringBuilder();
 			_extensionList = new List<string>();

@@ -71,7 +71,10 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		{
 			throw new NotImplementedException();
 		}
-
+        public OpenTKGLESWindow()
+        {
+            //OpenTK.Platform.Utilities.CreateGraphicsContext(new OpenTK.Graphics.GraphicsMode(), null, 1, 1, OpenTK.Graphics.GraphicsContextFlags.Default);
+        }
 		#region RenderWindow Members
 
 		public override object this[ string attribute ]
@@ -81,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 				switch ( attribute.ToLower() )
 				{
 					case "glcontext":
-						return _context;
+                        return _context;
 					case "window":
 						return _window;
 					case "nativewindow":
@@ -123,7 +126,8 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			this.Name = name;
 			this.Width = width;
 			this.Height = height;
-
+            //_context = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetCurrentContext();
+            //Axiom.Core.LogManager.Instance.Write(_context == null ? "CONTEXT == NULL" : "CONTEXT == NOTNULL");
 		}
 
 		/// <summary>

@@ -12,96 +12,112 @@ using Axiom.Core;
 
 namespace Droid
 {
-	class DemoView : AndroidGameView
-	{
+    class DemoView : AndroidGameView
+    {
 
-		protected Root engine;
+        protected Root engine;
+        protected bool Initialized = false;
+        delegate void OnInitDelegate();
+        event OnInitDelegate OnStartInit;
+        public DemoView(Context handle)
+            : base(handle)
+        {
+            
+        }
 
-		public DemoView( IntPtr handle )
-			: base( handle )
-		{
-		}
+        // This gets called when the drawing surface is ready
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            OnStartInit += new OnInitDelegate(DemoView_OnStartInit);
+           // this.GLContextVersion = GLContextVersion.Gles1_1;
+            // Run the render loop
+            Run();
+        }
 
-		// This gets called when the drawing surface is ready
-		protected override void OnLoad( EventArgs e )
-		{
-			base.OnLoad( e );
+        void DemoView_OnStartInit()
+        {
+            try
+            {
+                //new AndroidResourceGroupManager();
 
-			this.GLContextVersion = GLContextVersion.Gles2_0;
+                // instantiate the Root singleton
+                engine = new Root("AxiomDemos.log");
 
-			try
-			{
-				//new AndroidResourceGroupManager();
+                (new Axiom.RenderSystems.OpenGLES.GLESPlugin()).Initialize();
 
-				// instantiate the Root singleton
-				engine = new Root( "AxiomDemos.log" );
+                Root.Instance.RenderSystem = Root.Instance.RenderSystems["OpenGLES"];
 
-				( new Axiom.RenderSystems.OpenGLES.GLESPlugin() ).Initialize();
+                _loadPlugins();
 
-				Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "OpenGLES" ];
+                _setupResources();
 
-				_loadPlugins();
+                Axiom.Demos.TechDemo demo = new Axiom.Demos.Tutorial1();
 
-				_setupResources();
+                demo.Setup();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception has occurred. See below for details:");
+                Console.WriteLine(BuildExceptionString(ex));
+            }
+            //// UpdateFrame and RenderFrame are called
+            //// by the render loop. This is takes effect
+            //// when we use 'Run ()', like below
+            //UpdateFrame += this.Update;
 
-				Axiom.Demos.TechDemo demo = new Axiom.Demos.Tutorial1();
+            //RenderFrame += delegate
+            //{
+            //    engine.RenderOneFrame();
+            //};
+        }
+        protected override void OnRenderFrame(OpenTK.FrameEventArgs e)
+        {
+            base.OnRenderFrame(e);
+            if (!Initialized)
+            {
+                if (OnStartInit != null)
+                    OnStartInit();
+                Initialized = true;
+            }
+            if (engine != null)
+                engine.RenderOneFrame();
+        }
+        protected virtual void Update(object sender, OpenTK.FrameEventArgs e)
+        {
+        }
 
-				demo.Setup();
-			}
-			catch ( Exception ex )
-			{
-				Console.WriteLine( "An exception has occurred. See below for details:" );
-				Console.WriteLine( BuildExceptionString( ex ) );
-			}
-			// UpdateFrame and RenderFrame are called
-			// by the render loop. This is takes effect
-			// when we use 'Run ()', like below
-			UpdateFrame += this.Update;
+        private void _setupResources()
+        {
+        }
 
-			RenderFrame += delegate
-			{
-				engine.RenderOneFrame();
-			};
+        private void _loadPlugins()
+        {
+        }
 
-			// Run the render loop
-			Run();
-		}
+        private static string BuildExceptionString(Exception exception)
+        {
+            string errMessage = string.Empty;
 
-		protected virtual void Update( object sender, OpenTK.FrameEventArgs e )
-		{
-		}
+            errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
 
-		private void _setupResources()
-		{
-		}
+            while (exception.InnerException != null)
+            {
+                errMessage += BuildInnerExceptionString(exception.InnerException);
+                exception = exception.InnerException;
+            }
 
-		private void _loadPlugins()
-		{
-		}
+            return errMessage;
+        }
 
-		private static string BuildExceptionString( Exception exception )
-		{
-			string errMessage = string.Empty;
+        private static string BuildInnerExceptionString(Exception innerException)
+        {
+            string errMessage = string.Empty;
 
-			errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+            errMessage += Environment.NewLine + " InnerException ";
+            errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
 
-			while ( exception.InnerException != null )
-			{
-				errMessage += BuildInnerExceptionString( exception.InnerException );
-				exception = exception.InnerException;
-			}
-
-			return errMessage;
-		}
-
-		private static string BuildInnerExceptionString( Exception innerException )
-		{
-			string errMessage = string.Empty;
-
-			errMessage += Environment.NewLine + " InnerException ";
-			errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
-
-			return errMessage;
-		}
-	}
+            return errMessage;
+        }
+    }
 }

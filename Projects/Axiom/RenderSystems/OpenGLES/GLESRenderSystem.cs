@@ -454,6 +454,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			// Set main and current context
 			_mainContext = (GLESContext)primary[ "GLCONTEXT" ];
+            LogManager.Instance.Write(_mainContext == null ? "maincontext NULL" : "maincontext NOT NULL");
 			_currentContext = _mainContext;
 
 			// Set primary context as active
