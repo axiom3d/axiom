@@ -120,7 +120,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		{
 			ConfigOption optFullsreen = new ConfigOption( "Full Screen", "No", false );
 			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "640 x 320", false );
-			ConfigOption optDisplayFrequenzy = new ConfigOption( "Display Frequenzy", "60", false );
+			ConfigOption optDisplayFrequenzy = new ConfigOption( "Display Frequency", "60", false );
 			ConfigOption optFSAA = new ConfigOption( "FSAA", "1", false );
 			ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "Copy", false );
 			optFullsreen.PossibleValues.Add( 0, "Yes" );
@@ -137,7 +137,6 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			index = 0;
 			optVideoMode.Value = _currentMode.Key.Width + " x " + _currentMode.Key.Height;
 
-			RefreshConfig();
 			if ( _sampleLevels.Count > 0 )
 			{
 				foreach ( string fssa in _sampleLevels )
@@ -373,7 +372,9 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 
 		public override Graphics.RenderWindow NewWindow( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams = null )
 		{
-			throw new NotImplementedException();
+			OpenTKGLESWindow window = new OpenTKGLESWindow();
+			window.Create( name, width, height, fullScreen, miscParams );
+			return window;
 		}
 
 		/// <summary>
@@ -381,6 +382,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// </summary>
 		public override void Start()
 		{
+			LogManager.Instance.Write( "*** Starting OpenTKGLES Subsystem ***" );
 		}
 
 		/// <summary>
@@ -388,6 +390,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// </summary>
 		public override void Stop()
 		{
+			LogManager.Instance.Write( "*** Stopping OpenTKGLES Subsystem ***" );
 		}
 	}
 }

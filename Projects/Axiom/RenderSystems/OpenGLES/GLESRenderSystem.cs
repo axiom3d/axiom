@@ -44,6 +44,8 @@ using Axiom.Math;
 using Axiom.Configuration;
 using OpenTK.Graphics.ES11;
 using Axiom.RenderSystems.OpenGLES.OpenTKGLES;
+using System.Text;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -76,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// Number of fixed-function texture units
 		/// </summary>
-		short _fixedFunctionTextureUnits;
+		int _fixedFunctionTextureUnits;
 		/// <summary>
 		/// Store last colour write state
 		/// </summary>
@@ -180,10 +182,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			throw new NotImplementedException();
 		}
+
 		private void SetGLLightPositionDirection( Light lt, All lightindex )
 		{
 			throw new NotImplementedException();
 		}
+
 		private void SetLights()
 		{
 			throw new NotImplementedException();
@@ -193,30 +197,37 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			throw new NotImplementedException();
 		}
+
 		private bool ActivateGLClientTextureUnit( int unit )
 		{
 			throw new NotImplementedException();
 		}
+
 		void SetGLTexEnvi( All target, All name, int param )
 		{
 			throw new NotImplementedException();
 		}
+
 		void SetGLTexEnvf( All target, All name, float param )
 		{
 			throw new NotImplementedException();
 		}
+
 		void SetGLTexEnvfv( All target, All name, float param )
 		{
 			throw new NotImplementedException();
 		}
+
 		void SetGLPointParamf( All name, float param )
 		{
 			throw new NotImplementedException();
 		}
+
 		void SetGLPointParamfv( All name, float param )
 		{
 			throw new NotImplementedException();
 		}
+
 		void SetGLMaterialfv( All face, All name, float param )
 		{
 			throw new NotImplementedException();
@@ -355,7 +366,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
-			return base.Initialize( autoCreateWindow, windowTitle );
+			this._glSupport.Start();
+
+			RenderWindow autoWindow = this._glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
+			base.Initialize( autoCreateWindow, windowTitle );
+
+			return autoWindow;
 		}
 
 		/// <summary>
@@ -375,9 +391,137 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="isFullScreen"></param>
 		/// <param name="miscParams"></param>
 		/// <returns></returns>
-		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, Collections.NamedParameterList miscParams )
+		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, Collections.NamedParameterList miscParams )
 		{
-			throw new NotImplementedException();
+			if ( renderTargets.ContainsKey( name ) )
+			{
+				throw new Exception( String.Format( "Window with the name '{0}' already exists.", name ) );
+			}
+
+			// Log a message
+			StringBuilder msg = new StringBuilder();
+			msg.AppendFormat( "GLESRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height, isFullscreen ? "fullscreen" : "windowed" );
+			if ( miscParams != null )
+			{
+				msg.Append( "miscParams: " );
+				foreach ( KeyValuePair<string, object> param in miscParams )
+				{
+					msg.AppendFormat( " {0} = {1} ", param.Key, param.Value.ToString() );
+				}
+				LogManager.Instance.Write( msg.ToString() );
+			}
+			msg = null;
+
+			// create the window
+			RenderWindow window = _glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
+
+			// add the new render target
+			AttachRenderTarget( window );
+
+			if ( !this._glInitialized )
+			{
+				InitializeContext( window );
+
+				// set the number of texture units
+				_fixedFunctionTextureUnits = this._rsCapabilities.TextureUnitCount;
+
+				// in GL there can be less fixed function texture units than general
+				// texture units. use the smaller of the two.
+				if ( HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
+				{
+					int maxTexUnits = 0;
+					//Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out maxTexUnits );
+					if ( _fixedFunctionTextureUnits > maxTexUnits )
+					{
+						_fixedFunctionTextureUnits = maxTexUnits;
+					}
+				}
+
+				// Initialise the main context
+				_oneTimeContextInitialization();
+				if ( _currentContext != null )
+					_currentContext.IsInitialized = true;
+			}
+
+			return window;
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="primary"></param>
+		protected void InitializeContext( RenderTarget primary )
+		{
+			// Set main and current context
+			_mainContext = (GLESContext)primary[ "GLCONTEXT" ];
+			_currentContext = _mainContext;
+
+			// Set primary context as active
+			if ( _currentContext != null )
+				_currentContext.SetCurrent();
+
+			// intialize GL extensions and check capabilites
+			_glSupport.InitializeExtensions();
+
+			LogManager.Instance.Write( "***************************" );
+			LogManager.Instance.Write( "*** GLES Renderer Started ***" );
+			LogManager.Instance.Write( "***************************" );
+
+			// log hardware info
+			LogManager.Instance.Write( "Vendor: {0}", _glSupport.Vendor );
+			LogManager.Instance.Write( "Video Board: {0}", _glSupport.VideoCard );
+			LogManager.Instance.Write( "Version: {0}", _glSupport.Version );
+
+			LogManager.Instance.Write( "Extensions supported: " );
+
+			foreach ( string ext in _glSupport.Extensions )
+			{
+				LogManager.Instance.Write( ext );
+			}
+
+			// create our special program manager
+			this._gpuProgramManager = new GLESGpuProgramManager();
+
+			// query hardware capabilites
+			//CheckCaps( primary );
+
+			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
+			// use software buffers as a fallback, which operate as regular vertex arrays
+			if ( this._rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+			{
+				hardwareBufferManager = new GLESHardwareBufferManager();
+			}
+			else
+			{
+				hardwareBufferManager = new GLESDefaultHardwareBufferManager();
+			}
+
+			// by creating our texture manager, singleton TextureManager will hold our implementation
+			textureManager = new GLESTextureManager( _glSupport );
+
+			this._glInitialized = true;
+		}
+
+		private void _oneTimeContextInitialization()
+		{
+			//// Set nicer lighting model -- d3d9 has this by default
+			//Gl.glLightModeli( Gl.GL_LIGHT_MODEL_COLOR_CONTROL, Gl.GL_SEPARATE_SPECULAR_COLOR );
+			//Gl.glLightModeli( Gl.GL_LIGHT_MODEL_LOCAL_VIEWER, 1 );
+			//Gl.glEnable( Gl.GL_COLOR_SUM );
+			//Gl.glDisable( Gl.GL_DITHER );
+
+			//// Check for FSAA
+			//// Enable the extension if it was enabled by the GLSupport
+			//if ( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
+			//{
+			//    int fsaa_active = 0; // Default to false
+			//    Gl.glGetIntegerv( Gl.GL_SAMPLE_BUFFERS_ARB, out fsaa_active );
+			//    if ( fsaa_active == 1 )
+			//    {
+			//        Gl.glEnable( Gl.GL_MULTISAMPLE_ARB );
+			//        LogManager.Instance.Write( "Using FSAA from GL_ARB_multisample extension." );
+			//    }
+			//}
 		}
 
 		/// <summary>
@@ -402,11 +546,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
 		{
 			throw new NotImplementedException();
-		}
-
-		public override void AttachRenderTarget( RenderTarget target )
-		{
-			base.AttachRenderTarget( target );
 		}
 
 		public override void BeginFrame()
@@ -868,7 +1007,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			_glSupport.AddConfig();
 
-			_colorWrite[ 0 ] = _colorWrite[ 1 ] = _colorWrite[ 2 ] = _colorWrite[ 4 ] = true;
+			_colorWrite[ 0 ] = _colorWrite[ 1 ] = _colorWrite[ 2 ] = _colorWrite[ 3 ] = true;
 
 			for ( int layer = 0; layer < Axiom.Configuration.Config.MaxTextureLayers; layer++ )
 			{
