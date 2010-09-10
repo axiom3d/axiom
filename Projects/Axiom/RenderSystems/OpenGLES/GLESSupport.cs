@@ -44,6 +44,7 @@ using Axiom.Utilities;
 using Axiom.Collections;
 using Axiom.Graphics.Collections;
 using OpenTK.Graphics.ES20;
+using System.Collections.ObjectModel;
 
 #endregion Namespace Declarations
 
@@ -56,6 +57,7 @@ namespace Axiom.RenderSystems.OpenGLES
 	{
 		private string _version;
 		private string _vendor;
+		private string _videoCard;
 		private string _shaderCachePath;
 		private string _shaderLibraryPath;
 
@@ -81,9 +83,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Get's vendor information
+		/// Gets vendor information
 		/// </summary>
-		public string GLVendor
+		public string Vendor
 		{
 			get
 			{
@@ -92,13 +94,32 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Get's version information
+		/// Gets version information
 		/// </summary>
-		public string GLVersion
+		public string Version
 		{
 			get
 			{
 				return _version;
+			}
+		}
+
+		/// <summary>
+		/// Gets renderer information
+		/// </summary>
+		public string VideoCard
+		{
+			get
+			{
+				return _videoCard;
+			}
+		}
+
+		public IList<string> Extensions
+		{
+			get
+			{
+				return new ReadOnlyCollection<string>( this._extensionList );
 			}
 		}
 
@@ -133,7 +154,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Get's the ammount of aviable Monitors.
+		/// Get's the amount of available Monitors.
 		/// </summary>
 		public int DisplayMonitorCount
 		{
@@ -165,7 +186,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public virtual void SetConfigOption( string name, string value )
 		{
 			if ( _options[ name ] == null )
-				throw new AxiomException( string.Format( "Option named {0} does not exist.", name ), new Object[] { } );
+				throw new AxiomException( string.Format( "Option named {0} does not exist.", name ) );
 
 			_options[ name ].Value = value;
 		}
@@ -207,22 +228,20 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// Initializes GL extensions, must be done AFTER the GL context has been
 		/// established.
 		/// </summary>
-		public virtual void IntializeExtensions()
+		public virtual void InitializeExtensions()
 		{
 			//get version
 			string tmpStr = GL.GetString( All.Version );
 			Contract.Requires( !string.IsNullOrEmpty( tmpStr ) );
-			LogManager.Instance.Write( "GL_VERSION = " + tmpStr );
 			_version = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );
 
 			//get vendor
 			tmpStr = GL.GetString( All.Vendor );
-			LogManager.Instance.Write( "GL_VENDOR = " + tmpStr );
 			_vendor = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );
 
 			//get renderer
 			tmpStr = GL.GetString( All.Renderer );
-			LogManager.Instance.Write( "GL_RENDERER = " + tmpStr );
+			_videoCard = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );			
 
 			// Set extension list
 			StringBuilder ext = new StringBuilder();
@@ -231,7 +250,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			string[] extSplit = ext.ToString().Split( ' ' );
 			for ( int i = 0; i < extSplit.Length; i++ )
 			{
-				LogManager.Instance.Write( "GL_EXTENSIONS = " + extSplit[ i ] );
 				_extensionList.Add( extSplit[ i ] );
 			}
 		}

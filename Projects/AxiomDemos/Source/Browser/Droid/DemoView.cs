@@ -27,6 +27,8 @@ namespace Droid
 		{
 			base.OnLoad( e );
 
+			this.GLContextVersion = GLContextVersion.Gles2_0;
+
 			try
 			{
 				//new AndroidResourceGroupManager();

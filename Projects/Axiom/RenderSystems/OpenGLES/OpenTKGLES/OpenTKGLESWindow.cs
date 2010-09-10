@@ -72,6 +72,26 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			throw new NotImplementedException();
 		}
 
+		#region RenderWindow Members
+
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				switch ( attribute.ToLower() )
+				{
+					case "glcontext":
+						return _context;
+					case "window":
+						return _window;
+					case "nativewindow":
+						return _window;
+					default:
+						return null;
+				}
+			}
+		}
+
 		public override bool IsClosed
 		{
 			get
@@ -100,7 +120,10 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// <param name="miscParams"></param>
 		public override void Create( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams )
 		{
-			throw new NotImplementedException();
+			this.Name = name;
+			this.Width = width;
+			this.Height = height;
+
 		}
 
 		/// <summary>
@@ -112,6 +135,8 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		{
 			throw new NotImplementedException();
 		}
+
+		#endregion RenderWindow Members
 
 	}
 }
