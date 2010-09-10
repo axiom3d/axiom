@@ -37,15 +37,165 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
+using Axiom.Core;
+using Axiom.Media;
+using Axiom.Graphics;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESGpuProgramManager
+	public class GLESGpuProgramManager : GpuProgramManager
 	{
+        public delegate GpuProgram CreateGpuProgramDelegate(ResourceManager creator,
+            string name, ulong handle, string group, bool isManual, IManualResourceLoader loader,
+            GpuProgramType type, string syntaxCode);
+        /// <summary>
+        /// 
+        /// </summary>
+        private Dictionary<string, CreateGpuProgramDelegate> _programMap;
+        /// <summary>
+        /// 
+        /// </summary>
+        public GLESGpuProgramManager()
+        {
+            ResourceGroupManager.Instance.RegisterResourceManager(base.ResourceType, this);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
+            {
+                ResourceGroupManager.Instance.UnregisterResourceManager(base.ResourceType);
+            }
+            // If it is available, make the call to the 
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxCode"></param>
+        /// <param name="createFn"></param>
+        /// <returns></returns>
+        public bool RegisterProgramFactory(string syntaxCode, CreateGpuProgramDelegate createFn)
+        {
+            if (!_programMap.ContainsKey(syntaxCode))
+            {
+                _programMap.Add(syntaxCode, createFn);
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxCode"></param>
+        /// <returns></returns>
+        public bool UnregisterProgramFactory(string syntaxCode)
+        {
+            if (_programMap.ContainsKey(syntaxCode))
+            {
+                _programMap.Remove(syntaxCode);
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="handle"></param>
+        /// <param name="group"></param>
+        /// <param name="isManual"></param>
+        /// <param name="loader"></param>
+        /// <param name="createParams"></param>
+        /// <returns></returns>
+        protected override Resource _create(string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Collections.NameValuePairList createParams)
+        {
+            if (createParams == null || !createParams.ContainsKey("syntax")
+                || !createParams.ContainsKey("type"))
+            {
+                throw new NotImplementedException("You must supply 'syntax' and 'type' parameters");
+            }
+
+            GpuProgramType gpt = 0;
+            CreateGpuProgramDelegate iter = _programMap[createParams["syntax"]];
+            if (iter == null)
+            {
+                return null;
+            }
+            string syntaxcode = string.Empty;
+            foreach(KeyValuePair<string, CreateGpuProgramDelegate> pair in _programMap)
+                if (pair.Value == iter)
+                {
+                    syntaxcode = pair.Key;
+                    break;
+                }
+            if (createParams["type"] == "vertex_program")
+            {
+                gpt = GpuProgramType.Vertex;
+            }
+            else if (createParams["type"] == "fragment_program")
+            {
+                gpt = GpuProgramType.Fragment;
+            }
+            else
+            {
+                throw new AxiomException("Unknown GpuProgramType : " + createParams["type"]);
+            }
+            return iter(this, name, handle, group, isManual, loader, gpt, syntaxcode);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="handle"></param>
+        /// <param name="group"></param>
+        /// <param name="isManual"></param>
+        /// <param name="loader"></param>
+        /// <param name="type"></param>
+        /// <param name="syntaxCode"></param>
+        /// <returns></returns>
+        protected override Resource _create(string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
+        {
+            return new DummyGpuProgram(this, name, handle, group, isManual, loader);
+        }
+        /// <summary>
+        /// TODO not implemented
+        /// </summary>
+        class DummyGpuProgram : GpuProgram
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public override int SamplerCount
+            {
+                get { return 0; }
+            }
+            public DummyGpuProgram(ResourceManager creator, string name, ulong handle,
+                string group, bool isManual, IManualResourceLoader loader)
+                : base(creator, name, handle, group, isManual, loader)
+            {
+            }
+            /// <summary>
+            /// 
+            /// </summary>
+            public override void Unload()
+            {
+            }
+            /// <summary>
+            /// 
+            /// </summary>
+            protected override void LoadFromSource()
+            {
+                
+            }
+        }
+
 	}
 }
 

@@ -415,7 +415,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			// Try all formats, and report which ones work as target
 			int fb = 0, tid = 0;
-			All target = All.TextureBinding2D;
+			All target = All.Texture2D;
 
 			for ( int x = 0; x < (int)Media.PixelFormat.Count; x++ )
 			{

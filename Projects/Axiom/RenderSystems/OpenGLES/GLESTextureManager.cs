@@ -194,6 +194,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			// TODO convert to 5_6_5
 			unsafe
 			{
+                LogManager.Instance.Write("CREATEWARING ENTER");
 				int* data = stackalloc int[ width * height ];// 0xXXRRGGBB
 
 				//yellow / black stripes
@@ -207,11 +208,15 @@ namespace Axiom.RenderSystems.OpenGLES
 
 				// Create GL resource
 				OpenGL.GenTextures( 1, ref _warningTextureID );
+                LogManager.Instance.Write("GenTextures : " + _warningTextureID);
 				GLESConfig.GlCheckError( this );
-				OpenGL.BindTexture( All.TextureBinding2D, _warningTextureID );
+				OpenGL.BindTexture(All.Texture2D, _warningTextureID );
+                LogManager.Instance.Write("BindTexture");
 				GLESConfig.GlCheckError( this );
-				OpenGL.TexImage2D( All.TextureBinding2D, 0, (int)All.Rgb, width, height, 0, All.Rgb, All.UnsignedByte, (IntPtr)data );
+                OpenGL.TexImage2D(All.Texture2D, 0, (int)All.Rgb, width, height, 0, All.Rgb, All.UnsignedByte, (IntPtr)data);
+                LogManager.Instance.Write("TexImage2D");
 				GLESConfig.GlCheckError( this );
+                LogManager.Instance.Write("CREATEWARING EXIT");
 			}
 		}
 	}

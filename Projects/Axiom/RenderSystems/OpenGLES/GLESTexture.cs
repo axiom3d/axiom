@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				return All.TextureBinding2D;
+                return All.Texture2D;
 			}
 		}
 
@@ -230,16 +230,16 @@ namespace Axiom.RenderSystems.OpenGLES
 			OpenGL.GenTextures( 1, ref _textureID );
 			GLESConfig.GlCheckError( this );
 			// Set texture type
-			OpenGL.BindTexture( All.TextureBinding2D, _textureID );
+			OpenGL.BindTexture( All.Texture2D, _textureID );
 			GLESConfig.GlCheckError( this );
 			// Set some misc default parameters, these can of course be changed later
-			OpenGL.TexParameter( All.TextureBinding2D, All.TextureMinFilter, (int)All.LinearMipmapNearest );
+			OpenGL.TexParameter( All.Texture2D, All.TextureMinFilter, (int)All.LinearMipmapNearest );
 			GLESConfig.GlCheckError( this );
-			OpenGL.TexParameter( All.TextureBinding2D, All.TextureMagFilter, (int)All.Nearest );
+			OpenGL.TexParameter( All.Texture2D, All.TextureMagFilter, (int)All.Nearest );
 			GLESConfig.GlCheckError( this );
-			OpenGL.TexParameter( All.TextureBinding2D, All.TextureWrapS, (int)All.ClampToEdge );
+			OpenGL.TexParameter( All.Texture2D, All.TextureWrapS, (int)All.ClampToEdge );
 			GLESConfig.GlCheckError( this );
-			OpenGL.TexParameter( All.TextureBinding2D, All.TextureWrapT, (int)All.ClampToEdge );
+			OpenGL.TexParameter( All.Texture2D, All.TextureWrapT, (int)All.ClampToEdge );
 			GLESConfig.GlCheckError( this );
 			// If we can do automip generation and the user desires this, do so
 			MipmapsHardwareGenerated =
@@ -248,7 +248,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			if ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap &&
 				RequestedMipmapCount > 0 && MipmapsHardwareGenerated )
 			{
-				OpenGL.TexParameter( All.TextureBinding2D, All.GenerateMipmap, (int)All.True );
+				OpenGL.TexParameter( All.Texture2D, All.GenerateMipmap, (int)All.True );
 				GLESConfig.GlCheckError( this );
 			}
 
@@ -273,7 +273,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
 					size = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
-					OpenGL.CompressedTexImage2D( All.TextureBinding2D, mip, format, width, height,
+					OpenGL.CompressedTexImage2D( All.Texture2D, mip, format, width, height,
 												0, size, tmpDataptr );
 
 					GLESConfig.GlCheckError( this );
@@ -298,7 +298,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				// Run through this process to pregenerate mipmap pyramid
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
-					OpenGL.TexImage2D( All.TextureBinding2D, mip,
+					OpenGL.TexImage2D( All.Texture2D, mip,
 						(int)format, width, height, 0, format, All.UnsignedByte, IntPtr.Zero );
 					GLESConfig.GlCheckError( this );
 

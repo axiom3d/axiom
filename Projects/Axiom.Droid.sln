@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Droid", "AxiomD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Browser.Droid", "AxiomDemos\Source\Browser\Droid\Axiom.Demos.Browser.Droid.csproj", "{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Browser.DroidGL", "Axiom.Demos.Browser.DroidGL\Axiom.Demos.Browser.DroidGL.csproj", "{4AC86F95-4014-4166-BE00-DA20ED5E7630}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +150,30 @@ Global
 		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Release|Windows Phone.ActiveCfg = Release|Any CPU
 		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Release|x86.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Debug|x86.ActiveCfg = Debug|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Release|Windows Phone.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Mono-Release|x86.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Release|Windows Phone.ActiveCfg = Release|Any CPU
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,11 +187,12 @@ Global
 		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
 		{2851B1D7-F1B1-4647-A952-20569116299A} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
+		{4AC86F95-4014-4166-BE00-DA20ED5E7630} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{E8E2F297-B384-4311-B5C0-F6AB9354D91B} = {5326DA77-945E-47D4-B9D8-D2AF047D5D63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1

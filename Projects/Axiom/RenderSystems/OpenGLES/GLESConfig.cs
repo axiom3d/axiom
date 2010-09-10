@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			int e = (int)OpenGL.GetError();
 			if ( e != 0 )
 			{
-				throw new Exception( "OpenGL error " + caller.ToString() );
+				throw new Exception( string.Format("OpenGL error {0} from {1}", e, caller.ToString() ) );
 			}
 		}
 	}

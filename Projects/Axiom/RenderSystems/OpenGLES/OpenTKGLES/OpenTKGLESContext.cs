@@ -65,6 +65,12 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 				return _drawable;
 			}
 		}
+        class DummyInfo : OpenTK.Platform.IWindowInfo
+        {
+            public void Dispose()
+            {
+            }
+        }
 		/// <summary>
 		/// 
 		/// </summary>
@@ -72,27 +78,28 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// <param name="support"></param>
 		/// <param name="fbconfig"></param>
 		/// <param name="drawable"></param>
-		public OpenTKGLESContext( EGLDisplay eglDisplay, OpenTKGLESSupport support,	EGLConfig fbconfig, EGLSurface drawable )
+		public OpenTKGLESContext(EGLDisplay eglDisplay, OpenTKGLESSupport support, EGLConfig fbconfig, EGLSurface drawable )
 		{
-			_glSupport = support;
-			_drawable = drawable;
-			_context = null;
-			_config = fbconfig;
-			_eglDisplay = eglDisplay;
+            //_glSupport = support;
+            //_drawable = drawable;
+            //_context = null;
+            //_config = fbconfig;
+            //_eglDisplay = eglDisplay;
 
-			Contract.Requires( _drawable != null );
-			GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
-			GLESContext mainContext = rendersystem.MainContext;
-			EGLCONTEXT shareContext = null;
-			//if (mainContext != null)
-			//{
-			//    shareContext = mainContext._context;
-			//}
-			//if (mainContext == null)
-			//{
-			//    throw new AxiomException("Unable to create a suitable EGLContext");
-			//}
-			throw new NotImplementedException();
+            //Contract.Requires(_drawable != null);
+            //GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
+            //GLESContext mainContext = rendersystem.MainContext;
+            //EGLCONTEXT shareContext = null;
+            //if (mainContext != null)
+            //{
+            //    shareContext = mainContext.con;
+            //}
+            //if (mainContext == null)
+            //{
+            //    throw new AxiomException("Unable to create a suitable EGLContext");
+            //}
+
+          // _context = _glSupport.CreateNewContext(_eglDisplay, _config, shareContext);
 		}
 
 		/// <summary>
@@ -100,12 +107,13 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// </summary>
 		public override void SetCurrent()
 		{
-			bool ret = EGLCONTEXT.EGL11.EglMakeCurrent(
-				_eglDisplay, _drawable, _drawable, _context );
-			if ( !ret )
-			{
-				throw new AxiomException( "Fail to make context current" );
-			}
+            //bool ret = EGLCONTEXT.EGL11.EglMakeCurrent(
+            //    _eglDisplay, _drawable, _drawable, _context );
+            //if ( !ret )
+            //{
+            //    throw new AxiomException( "Fail to make context current" );
+            //}
+          
 		}
 
 		/// <summary>
