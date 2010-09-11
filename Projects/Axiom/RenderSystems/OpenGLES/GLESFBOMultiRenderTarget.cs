@@ -45,9 +45,29 @@ namespace Axiom.RenderSystems.OpenGLES
 	/// </summary>
 	public class GLESFBOMultiRenderTarget : MultiRenderTarget
 	{
-		public GLESFBOMultiRenderTarget( string name )
+        /// <summary>
+        /// 
+        /// </summary>
+        private GLESFrameBufferObject _fbo;
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool RequiresTextureFlipping
+        {
+            get
+            {
+                return true;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="name"></param>
+		public GLESFBOMultiRenderTarget( GLESFBOManager manager, string name )
 			: base( name )
 		{
+            _fbo = new GLESFrameBufferObject(manager, 0);
 		}
 
 		/// <summary>
@@ -57,7 +77,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="target"></param>
 		public override void BindSurface( int attachment, RenderTexture target )
 		{
-			throw new NotImplementedException();
+            /// Check if the render target is in the rendertarget->FBO map
+            GLESFrameBufferObject fbobj = target["FBO"] as GLESFrameBufferObject;
+            Utilities.Contract.Requires( fbobj != null );
+            _fbo.BindSurface( attachment, fbobj.GetSurface(0) );
+            GLESConfig.GlCheckError( this );
+
+            Width = _fbo.Width;
+            Height = _fbo.Height;
 		}
 
 		/// <summary>
@@ -66,8 +93,27 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="attachment"></param>
 		public override void UnbindSurface( int attachment )
 		{
-			throw new NotImplementedException();
+            _fbo.UnbindSurface( attachment );
+            GLESConfig.GlCheckError( attachment );
+
+            Width = _fbo.Width;
+            Height = _fbo.Height;
 		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        public override object this[string attribute]
+        {
+            get
+            {
+                if (attribute == "FBO")
+                    return _fbo;
+
+                return base[attribute];
+            }
+        }
 	}
 }
 

@@ -93,10 +93,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// Store last colour write state
 		/// </summary>
 		bool[] _colorWrite = new bool[ 4 ];
-		/// <summary>
-		/// Store last depth write state
-		/// </summary>
-		bool _depthWrite;
+        
 		/// <summary>
 		/// Store last stencil mask state
 		/// </summary>
@@ -852,8 +849,8 @@ namespace Axiom.RenderSystems.OpenGLES
                  */
                 // Create FBO manager
                 LogManager.Instance.Write("GLES: Using GL_EXT_framebuffer_object for rendering to textures (best)");
-                _rttManager = new GLESFBOManager( /* _glSupport, _glSupport.Vendor == "ATI" */);
-                _rsCapabilities.SetCapability(Capabilities.HardwareRenderToTexture);
+                //_rttManager = new GLESFBOManager( /* _glSupport, _glSupport.Vendor == "ATI" */);
+                //_rsCapabilities.SetCapability(Capabilities.HardwareRenderToTexture);
             }
             //else
             {
@@ -903,6 +900,9 @@ namespace Axiom.RenderSystems.OpenGLES
             // Alpha to coverage always 'supported' when MSAA is available
             // although card may ignore it if it doesn't specifically support A2C
             _rsCapabilities.SetCapability(Capabilities.AlphaToCoverage);
+
+            _rttManager = new GLESFBOManager( /* _glSupport, _glSupport.Vendor == "ATI" */);
+            _rsCapabilities.SetCapability(Capabilities.HardwareRenderToTexture);
         }
 		private void _oneTimeContextInitialization()
 		{
@@ -947,7 +947,15 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void BeginFrame()
 		{
-			throw new NotImplementedException();
+            if (activeViewport == null)
+            {
+                throw new AxiomException("Cannot begin frame - no viewport selected.");
+            }
+            if (_rsCapabilities.HasCapability(Capabilities.ScissorTest))
+            {
+                OpenGL.Enable(All.ScissorTest);
+                GLESConfig.GlCheckError(this);
+            }
 		}
 
 		public override void BeginGeometryCount()
@@ -979,11 +987,118 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
             //not implemented
 		}
-        
-		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
-		{
-			throw new NotImplementedException();
-		}
+
+        public override void ClearFrameBuffer(FrameBufferType buffers, ColorEx color, float depth, int stencil)
+        {
+            bool colorMask = !_colorWrite[0] || !_colorWrite[1] || !_colorWrite[2] || !_colorWrite[3];
+            int flags = 0;
+            if ((buffers & FrameBufferType.Color) != 0)
+            {
+                flags |= (int)All.ColorBufferBit;
+                // Enable buffer for writing if it isn't
+                if (colorMask)
+                {
+                    OpenGL.ColorMask(true, true, true, true);
+                    GLESConfig.GlCheckError(this);
+                }
+                OpenGL.ClearColor(color.r, color.g, color.b, color.a);
+                GLESConfig.GlCheckError(this);
+            }
+
+            if ((buffers & FrameBufferType.Depth) != 0)
+            {
+                flags |= (int)All.DepthBufferBit;
+                // Enable buffer for writing if it isn't
+                if (!depthWrite)
+                {
+                    OpenGL.DepthMask(true);
+                    GLESConfig.GlCheckError(this);
+                }
+                OpenGL.ClearDepth(depth);
+                GLESConfig.GlCheckError(this);
+            }
+
+            if ((buffers & FrameBufferType.Stencil) != 0)
+            {
+                flags |= (int)All.StencilBufferBit;
+                // Enable buffer for writing if it isn't
+                OpenGL.StencilMask(0xFFFFFFFF);
+                GLESConfig.GlCheckError(this);
+                OpenGL.ClearStencil(stencil);
+                GLESConfig.GlCheckError(this);
+            }
+
+            // Should be enable scissor test due the clear region is
+            // relied on scissor box bounds.
+            bool scissorTestEnabled = OpenGL.IsEnabled(All.ScissorTest);
+            GLESConfig.GlCheckError(this);
+            if (!scissorTestEnabled)
+            {
+                OpenGL.Enable(All.ScissorTest);
+                GLESConfig.GlCheckError(this);
+            }
+
+            // Sets the scissor box as same as viewport
+            unsafe
+            {
+                int[] viewport = new int[4];
+                int[] scissor = new int[4];
+                LogManager.Instance.Write("FLAG VIEWPORT");
+                //OpenGL.GetInteger(All.Viewport, viewport);
+                GLESConfig.GlCheckError(this);
+                LogManager.Instance.Write("FLAG ScissorBox");
+                //OpenGL.GetInteger(All.ScissorBox, scissor);
+                GLESConfig.GlCheckError(this);
+                bool scissorBoxDifference =
+                    viewport[0] != scissor[0] || viewport[1] != scissor[1] ||
+                    viewport[2] != scissor[2] || viewport[3] != scissor[3];
+                if (scissorBoxDifference)
+                {
+                    OpenGL.Scissor(viewport[0], viewport[1], viewport[2], viewport[3]);
+                    GLESConfig.GlCheckError(this);
+                }
+
+                //clear buffers
+                LogManager.Instance.Write("FLAG CLEAR");
+                OpenGL.Clear(flags);
+                GLESConfig.GlCheckError(this);
+
+                //restore scissor box
+                if (scissorBoxDifference)
+                {
+                    OpenGL.Scissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+                    GLESConfig.GlCheckError(this);
+                }
+            }
+
+            // Restore scissor test
+            if (!scissorTestEnabled)
+            {
+                LogManager.Instance.Write("FLAG ScissorTest");
+                OpenGL.Disable(All.ScissorTest);
+                GLESConfig.GlCheckError(this);
+            }
+
+            // Reset buffer write state
+            if (!depthWrite && ((buffers & FrameBufferType.Depth) != 0))
+            {
+                OpenGL.DepthMask(false);
+                GLESConfig.GlCheckError(this);
+            }
+
+            if (colorMask && ((buffers & FrameBufferType.Color) != 0))
+            {
+                OpenGL.ColorMask(_colorWrite[0], _colorWrite[1], _colorWrite[2], _colorWrite[3]);
+                GLESConfig.GlCheckError(this);
+            }
+            if ((buffers & FrameBufferType.Stencil) != 0)
+            {
+                OpenGL.StencilMask(_stencilMask);
+                GLESConfig.GlCheckError(this);
+            }
+
+
+        }
 
 		public override int ConvertColor( ColorEx color )
 		{
@@ -1052,12 +1167,15 @@ namespace Axiom.RenderSystems.OpenGLES
         }
 		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
 		{
-			throw new NotImplementedException();
+            // no any conversion request for OpenGL
+            Matrix4 dest = matrix;
+            return dest;
 		}
-
+        
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
-			throw new NotImplementedException();
+            // Not supported
+            return null;
 		}
 
 		public override CullingMode CullingMode
@@ -1068,7 +1186,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				throw new NotImplementedException();
+				//throw new NotImplementedException();
 			}
 		}
 
@@ -1083,7 +1201,7 @@ namespace Axiom.RenderSystems.OpenGLES
                 SetDepthBias(value); 
 			}
 		}
-
+        bool lastDepthCheck = false;
 		public override bool DepthCheck
 		{
 			get
@@ -1092,10 +1210,24 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				throw new NotImplementedException();
+                if (lastDepthCheck == value)
+                    return;
+
+                lastDepthCheck = value;
+                if (value)
+                {
+                    OpenGL.ClearDepth(1.0f);
+                    OpenGL.Enable(All.DepthTest);
+                   
+                }
+                else
+                {
+                    OpenGL.Disable(All.DepthTest);
+                }
+                GLESConfig.GlCheckError(this);
 			}
 		}
-
+        CompareFunction lastDepthFunc = CompareFunction.AlwaysPass;
 		public override CompareFunction DepthFunction
 		{
 			get
@@ -1104,7 +1236,14 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				throw new NotImplementedException();
+                // reduce dupe state changes
+                if (lastDepthFunc == value)
+                    return;
+
+                lastDepthFunc = value;
+
+                OpenGL.DepthFunc(ConvertCompareFunction(lastDepthFunc));
+                GLESConfig.GlCheckError(this);
 			}
 		}
 
@@ -1116,7 +1255,14 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				throw new NotImplementedException();
+                if (depthWrite == value)
+                    return;
+
+                depthWrite = value;
+
+                OpenGL.DepthMask(value);
+                GLESConfig.GlCheckError(this);
+                
 			}
 		}
 
@@ -1157,7 +1303,12 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void EndFrame()
 		{
-			throw new NotImplementedException();
+            // Deactivate the viewport clipping.
+            if (_rsCapabilities.HasCapability(Capabilities.ScissorTest))
+            {
+                OpenGL.Disable(All.ScissorTest);
+                GLESConfig.GlCheckError(this);
+            }
 		}
 
 		public override bool Equals( object obj )
@@ -1174,7 +1325,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				throw new NotImplementedException();
+                return 0.0f;
 			}
 		}
 
@@ -1235,7 +1386,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				throw new NotImplementedException();
+                return -1.0f;
 			}
 		}
 
@@ -1278,7 +1429,19 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				throw new NotImplementedException();
+                switch (value)
+                {
+                    case Graphics.PolygonMode.Points:
+                        _polygonMode = (int)All.Points;
+                        break;
+                    case Graphics.PolygonMode.Wireframe:
+                        _polygonMode = (int)All.LineStrip;
+                        break;
+                    default:
+                    case Graphics.PolygonMode.Solid:
+                        _polygonMode = GLFill;
+                        break;
+                }
 			}
 		}
 
@@ -1292,6 +1455,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
                 float[] mat = new float[16];
                 MakeGLMatrix(ref mat, value);
+                Contract.Requires(activeRenderTarget != null);
                 if (activeRenderTarget.RequiresTextureFlipping)
                 {
                     mat[1] = -mat[1];
@@ -1324,6 +1488,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <param name="op"></param>
 		public override void Render( RenderOperation op )
 		{
+            LogManager.Instance.Write("RENDER ENTER");
             GLESConfig.GlCheckError(this);
             base.Render(op);
 
@@ -1344,6 +1509,7 @@ namespace Axiom.RenderSystems.OpenGLES
                     op.vertexData.vertexBufferBinding.GetBuffer(elem.Source);
                 if (_rsCapabilities.HasCapability(Capabilities.FrameBufferObjects))
                 {
+                    LogManager.Instance.Write("RENDER Bindbuffer ID " + ((GLESHardwareVertexBuffer)vertexBuffer).BufferID);
                     OpenGL.BindBuffer(All.ArrayBuffer, ((GLESHardwareVertexBuffer)vertexBuffer).BufferID);
                     GLESConfig.GlCheckError(this);
                     pBufferData = VBOBufferOffset(elem.Offset);
@@ -1368,6 +1534,7 @@ namespace Axiom.RenderSystems.OpenGLES
                 switch (sem)
                 {
                     case VertexElementSemantic.Position:
+                        LogManager.Instance.Write("RENDER VERTEXPOS");
                         OpenGL.VertexPointer(VertexElement.GetTypeSize(elem.Type), GLESHardwareBufferManager.GetGLType(elem.Type),
                             vertexBuffer.VertexSize, pBufferData);
                         GLESConfig.GlCheckError(this);
@@ -1375,12 +1542,14 @@ namespace Axiom.RenderSystems.OpenGLES
                         GLESConfig.GlCheckError(this);
                         break;
                     case VertexElementSemantic.Normal:
+                        LogManager.Instance.Write("RENDER VERTEXNORM");
                         OpenGL.NormalPointer(GLESHardwareBufferManager.GetGLType(elem.Type), vertexBuffer.VertexSize, pBufferData);
                         GLESConfig.GlCheckError(this);
                         OpenGL.EnableClientState(All.NormalArray);
                         GLESConfig.GlCheckError(this);
                         break;
                     case VertexElementSemantic.Diffuse:
+                        LogManager.Instance.Write("RENDER VERTEXDIFF");
                         OpenGL.ColorPointer(4, GLESHardwareBufferManager.GetGLType(elem.Type), vertexBuffer.VertexSize, pBufferData);
                         GLESConfig.GlCheckError(this);
                         OpenGL.EnableClientState(All.ColorArray);
@@ -1397,16 +1566,20 @@ namespace Axiom.RenderSystems.OpenGLES
                                 // is supposed to be using this element's index
                                 if (_textureCoodIndex[i] == elem.Index && i < _fixedFunctionTextureUnits)
                                 {
+                                   
                                     GLESConfig.GlCheckError(this);
                                     if (multitexturing)
                                     {
+                                        LogManager.Instance.Write("RENDER ClientActiveTexture");
                                         OpenGL.ClientActiveTexture(All.Texture0 + unit);
                                     }
                                     GLESConfig.GlCheckError(this);
+                                    LogManager.Instance.Write("RENDER VERTEXTEXPOITNER");
                                     OpenGL.TexCoordPointer(VertexElement.GetTypeCount(elem.Type),
                                         GLESHardwareBufferManager.GetGLType(elem.Type),
                                         vertexBuffer.VertexSize, pBufferData);
                                     GLESConfig.GlCheckError(this);
+                                    LogManager.Instance.Write("RENDER TextureCoordArray");
                                     OpenGL.EnableClientState(All.TextureCoordArray);
                                     GLESConfig.GlCheckError(this);
                                 }
@@ -1419,7 +1592,10 @@ namespace Axiom.RenderSystems.OpenGLES
             }
 
             if (multitexturing)
+            {
+                LogManager.Instance.Write("RENDER ClientActiveTexture multi");
                 OpenGL.ClientActiveTexture(All.Texture0);
+            }
             GLESConfig.GlCheckError(this);
 
             // Find the correct type to render
@@ -1451,6 +1627,7 @@ namespace Axiom.RenderSystems.OpenGLES
             {
                 if (_rsCapabilities.HasCapability(Capabilities.FrameBufferObjects))
                 {
+                    LogManager.Instance.Write("RENDER BINDBUFF ElemArr " + ((GLESHardwareIndexBuffer)op.indexData.indexBuffer).BufferID);
                     OpenGL.BindBuffer(All.ElementArrayBuffer, ((GLESHardwareIndexBuffer)op.indexData.indexBuffer).BufferID);
                     GLESConfig.GlCheckError(this);
                     pBufferData = VBOBufferOffset(op.indexData.indexStart * op.indexData.indexBuffer.IndexSize);
@@ -1466,10 +1643,12 @@ namespace Axiom.RenderSystems.OpenGLES
                 {
                     if (derivedDepthBias && currentPassIterationCount > 0)
                     {
+                        LogManager.Instance.Write("RENDER SetDepthBias");
                         SetDepthBias(derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationCount,
                              derivedDepthBiasSlopeScale);
                     }
                     GLESConfig.GlCheckError(this);
+                    LogManager.Instance.Write("RENDER DrawElements");
                     OpenGL.DrawElements((_polygonMode == GLFill) ? primType : (All)_polygonMode, op.indexData.indexCount, indexType, pBufferData);
                     GLESConfig.GlCheckError(this);
                 }
@@ -1530,7 +1709,7 @@ namespace Axiom.RenderSystems.OpenGLES
         }
         public override void SetAlphaRejectSettings(CompareFunction func, int val, bool alphaToCoverage)
 		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
 		public override void SetClipPlane( ushort index, float A, float B, float C, float D )
@@ -1606,6 +1785,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			if ( activeViewport != null )
 				_rttManager.Unbind( activeRenderTarget );
 
+            activeRenderTarget = target;
 			// Switch context if different from current one
 			GLESContext newContext = null;
 			newContext = (GLESContext)target[ "GLCONTEXT" ];
@@ -1630,7 +1810,13 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
-			throw new NotImplementedException();
+            OpenGL.ColorMask(red, green, blue, alpha);
+            GLESConfig.GlCheckError(this);
+            // record this
+            _colorWrite[0] = red;
+            _colorWrite[1] = blue;
+            _colorWrite[2] = green;
+            _colorWrite[3] = alpha;
 		}
 
 		public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
@@ -1678,7 +1864,36 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void SetFog( Graphics.FogMode mode, ColorEx color, float density, float start, float end )
 		{
-			throw new NotImplementedException();
+            All fogMode = 0;
+            switch (mode)
+            {
+                case Graphics.FogMode.Exp:
+                    fogMode = All.Exp;
+                    break;
+                case Graphics.FogMode.Exp2:
+                    fogMode = All.Exp2;
+                    break;
+                case Graphics.FogMode.Linear:
+                    fogMode = All.Linear;
+                    break;
+                default:
+                    // Give up on it
+                    OpenGL.Disable(All.Fog);
+                    GLESConfig.GlCheckError(this);
+                    return;
+            }
+            OpenGL.Enable(All.Fog);
+            GLESConfig.GlCheckError(this);
+            OpenGL.Fogx(All.FogMode, (int)fogMode);
+            float[] fogColor = new float[] { color.r, color.g, color.b, color.a };
+            OpenGL.Fog(All.FogColor, fogColor);
+            GLESConfig.GlCheckError(this);
+            OpenGL.Fog(All.FogDensity, density);
+            GLESConfig.GlCheckError(this);
+            OpenGL.Fog(All.FogStart, start);
+            GLESConfig.GlCheckError(this);
+            OpenGL.Fog(All.FogEnd, end);
+            GLESConfig.GlCheckError(this);
 		}
         /// <summary>
         /// 
@@ -1747,10 +1962,38 @@ namespace Axiom.RenderSystems.OpenGLES
                 }
             }
 		}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="dest"></param>
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
-			throw new NotImplementedException();
+            GLESConfig.GlCheckError(this);
+            All sourceBlend = GetBlendMode(src);
+            All destBlend = GetBlendMode(dest);
+            if (src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero)
+            {
+                OpenGL.Disable(All.Blend);
+                GLESConfig.GlCheckError(this);
+            }
+            else
+            {
+                // SBF_SOURCE_COLOUR - not allowed for source - http://www.khronos.org/opengles/sdk/1.1/docs/man/
+                if (src == SceneBlendFactor.SourceColor)
+                {
+                    sourceBlend = GetBlendMode(SceneBlendFactor.SourceAlpha);
+                }
+                OpenGL.Enable(All.Blend);
+                GLESConfig.GlCheckError(this);
+                OpenGL.BlendFunc(sourceBlend, destBlend);
+                GLESConfig.GlCheckError(this);
+            }
+
+#if GL_OES_blend_subtract
+            
+#endif
+            
 		}
 
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
@@ -2309,7 +2552,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				throw new NotImplementedException();
+                return 0.0f;
 			}
 		}
 
@@ -2343,7 +2586,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		public GLESRenderSystem()
 		{
-			_depthWrite = true;
+			depthWrite = true;
 			_stencilMask = 0xFFFFFFFF;
 			int i;
 

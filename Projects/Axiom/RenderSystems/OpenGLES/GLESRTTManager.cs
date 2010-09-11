@@ -62,12 +62,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		///     Protected internal because this singleton will actually hold the instance of a subclass
 		///     created by a render system plugin.
 		/// </remarks>
-		protected internal GLESRTTManager()
+		public GLESRTTManager()
 		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
+            //if ( instance == null )
+            //{
+            //    instance = this;
+            //}
 
 		}
 
