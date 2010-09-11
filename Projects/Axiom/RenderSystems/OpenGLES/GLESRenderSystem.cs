@@ -47,6 +47,7 @@ using Axiom.RenderSystems.OpenGLES.OpenTKGLES;
 using System.Text;
 using System.Collections.Generic;
 using OpenGL = OpenTK.Graphics.ES11.GL;
+using Axiom.Utilities;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -809,6 +810,71 @@ namespace Axiom.RenderSystems.OpenGLES
             // DOT3 support is standard
             _rsCapabilities.SetCapability(Capabilities.Dot3);
 
+            /// Do this after extension function pointers are initialised as the extension
+            /// is used to probe further capabilities.
+            int rttMode = 0;
+            if (ConfigOptions.ContainsKey("RTT Preferred Mode"))
+            {
+                ConfigOption opt = ConfigOptions["RTT Preferred Mode"];
+                // RTT Mode: 0 use whatever available, 1 use PBuffers, 2 force use copying
+                if (opt.Value == "PBuffer")
+                {
+                    rttMode = 1;
+                }
+                else if (opt.Value == "Copy")
+                {
+                    rttMode = 2;
+                }
+            }
+            // Check for framebuffer object extension
+            //if ( _glSupport.CheckExtension( "GL_ANDROID_vertex_buffer_object" ) && ( rttMode < 1 ) )
+            {
+                /*
+                // Probe number of draw buffers
+                // Only makes sense with FBO support, so probe here
+                if ( _glSupport.CheckMinVersion( "2.0" ) ||
+                    _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) ||
+                    _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+                {
+                    int buffers;
+                    Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
+                    _rsCapabilities.MultiRenderTargetCount = (int)Utility.Min( buffers, Config.MaxMultipleRenderTargets );
+                    // borrillis - This check moved inside GLFrameBufferObject where Gl.glDrawBuffers is called
+                    //if ( !_glSupport.CheckMinVersion( "2.0" ) )
+                    //{
+                    //    //TODO: Before GL version 2.0, we need to get one of the extensions
+                    //	if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
+                    //	    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
+                    //	else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+                    //	    Gl.glDrawBuffers = Gl.glDrawBuffersATI;
+                    //}
+                }
+                 */
+                // Create FBO manager
+                LogManager.Instance.Write("GLES: Using GL_EXT_framebuffer_object for rendering to textures (best)");
+                _rttManager = new GLESFBOManager( /* _glSupport, _glSupport.Vendor == "ATI" */);
+                _rsCapabilities.SetCapability(Capabilities.HardwareRenderToTexture);
+            }
+            //else
+            {
+                /*
+                // Check GLSupport for PBuffer support
+                if ( _glSupport.SupportsPBuffers && rttMode < 2 )
+                {
+                    // Use PBuffers
+                    _rttManager = new GLPBRTTManager( _glSupport, primary );
+                    LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
+                    _rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
+                }
+                else
+                {
+                    // No pbuffer support either -- fallback to simplest copying from framebuffer
+                    _rttManager = new GLCopyingRTTManager( _glSupport );
+                    LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
+                    LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
+                }
+                 */
+            }
             // Point size
             float ps = 0;
             OpenGL.GetFloat(All.PointSizeMax, ref ps);
@@ -1534,21 +1600,22 @@ namespace Axiom.RenderSystems.OpenGLES
 
             }
 		}
-        private void SetRenderTarget(RenderTarget target)
-        {
-            if (activeViewport != null)
-                _rttManager.Unbind(activeRenderTarget);
+        private void SetRenderTarget( RenderTarget target )
+		{
+			Contract.RequiresNotNull( _rttManager, "_rttManager" );
+			if ( activeViewport != null )
+				_rttManager.Unbind( activeRenderTarget );
 
-            // Switch context if different from current one
-            GLESContext newContext = null;
-            newContext = (GLESContext)target["GLCONTEXT"];
-            if (newContext != null && this._currentContext != newContext)
-            {
-                SwitchContext(newContext);
-            }
-            // Bind frame buffer object
-            _rttManager.Bind(target);
-        }
+			// Switch context if different from current one
+			GLESContext newContext = null;
+			newContext = (GLESContext)target[ "GLCONTEXT" ];
+			if ( newContext != null && this._currentContext != newContext )
+			{
+				SwitchContext( newContext );
+			}
+			// Bind frame buffer object
+			_rttManager.Bind( target );
+		}
         /// <summary>
         /// 
         /// </summary>
