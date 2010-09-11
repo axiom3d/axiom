@@ -23,7 +23,7 @@ namespace Axiom.Demos
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			base.OnFrameStarted( source, evt );
+			//base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
 				return;
 
@@ -52,10 +52,10 @@ namespace Axiom.Demos
 				ColorEx.Red,
 				ColorEx.Blue,
 				ColorEx.Green );
-            LogManager.Instance.Write("LineCreated");
+
 			// create a node for the line
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
-            LogManager.Instance.Write("NodeCreated");
+
 			SceneNode lineNode = node.CreateChildSceneNode();
 			SceneNode triNode = node.CreateChildSceneNode();
 			triNode.Position = new Vector3( 50, 0, 0 );
@@ -63,7 +63,7 @@ namespace Axiom.Demos
 			// add the line and triangle to the scene
 			lineNode.AttachObject( line );
 			triNode.AttachObject( tri );
-            LogManager.Instance.Write("Attached");
+
 			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
 			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
 			NodeRotationControllerValue rotate = new NodeRotationControllerValue( triNode, Vector3.UnitY );
@@ -74,7 +74,7 @@ namespace Axiom.Demos
 
 			// create a new controller, using the rotate and func objects created above.  there are 2 overloads to this method.  the one being
 			// used uses an internal FrameTimeControllerValue as the source value by default.  The destination value will be the node, which
-			// is implemented to simply call Rotate on the specified node along the specified axis.  The function will mutiply the given value
+			// is implemented to simply call Rotate on the specified node along the specified axis.  The function will multiply the given value
 			// against the source value, which in this case is the current frame time.  The end result in this demo is that if 50 is specified in the
 			// MultiplyControllerValue, then the node will rotate 50 degrees per second.  since the value is scaled by the frame time, the speed
 			// of the rotation will be consistent on all machines regardless of CPU speed.
@@ -261,10 +261,10 @@ namespace Axiom.Demos
 			// note: these must be converted to the current API's
 			// preferred packed int format
 			int[] colors = new int[] {
-                Root.Instance.RenderSystem.ConvertColor(c1),
-                Root.Instance.RenderSystem.ConvertColor(c2),
-                Root.Instance.RenderSystem.ConvertColor(c3)
-            };
+				Root.Instance.RenderSystem.ConvertColor(c1),
+				Root.Instance.RenderSystem.ConvertColor(c2),
+				Root.Instance.RenderSystem.ConvertColor(c3)
+			};
 
 			// write the colors to the color buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );

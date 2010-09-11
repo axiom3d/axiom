@@ -12,115 +12,118 @@ using Axiom.Core;
 
 namespace Droid
 {
-    class DemoView : AndroidGameView
-    {
+	class DemoView : AndroidGameView
+	{
 
-        protected Root engine;
-        protected bool Initialized = false;
-        delegate void OnInitDelegate();
-        event OnInitDelegate OnStartInit;
-        public DemoView(Context handle)
-            : base(handle)
-        {
-            
-        }
+		private Root _engine;
+		private bool _initialized = false;
+		private Demos.Tutorial1 demo;
 
-        // This gets called when the drawing surface is ready
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            OnStartInit += new OnInitDelegate(DemoView_OnStartInit);
-           // this.GLContextVersion = GLContextVersion.Gles1_1;
-            // Run the render loop
-            Run();
-        }
+		public DemoView( Context handle )
+			: base( handle )
+		{
 
-        void DemoView_OnStartInit()
-        {
-            try
-            {
-                //new AndroidResourceGroupManager();
+		}
 
-                // instantiate the Root singleton
-                engine = new Root("AxiomDemos.log");
+		// This gets called when the drawing surface is ready
+		protected override void OnLoad( EventArgs e )
+		{
+			base.OnLoad( e );
+			// this.GLContextVersion = GLContextVersion.Gles1_1;
+			// Run the render loop
+			Run();
+		}
 
-                (new Axiom.RenderSystems.OpenGLES.GLESPlugin()).Initialize();
+		void Initialize()
+		{
+			try
+			{
+				//new AndroidResourceGroupManager();
 
-                Root.Instance.RenderSystem = Root.Instance.RenderSystems["OpenGLES"];
+				// instantiate the Root singleton
+				_engine = new Root( "AxiomDemos.log" );
 
-                _loadPlugins();
+				( new Axiom.RenderSystems.OpenGLES.GLESPlugin() ).Initialize();
 
-                _setupResources();
+				Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "OpenGLES" ];
 
-                Axiom.Demos.TechDemo demo = new Axiom.Demos.Tutorial1();
+				_loadPlugins();
 
-                demo.Setup();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An exception has occurred. See below for details:");
-                Console.WriteLine(BuildExceptionString(ex));
-            }
-            //// UpdateFrame and RenderFrame are called
-            //// by the render loop. This is takes effect
-            //// when we use 'Run ()', like below
-            //UpdateFrame += this.Update;
+				_setupResources();
 
-            //RenderFrame += delegate
-            //{
-            //    engine.RenderOneFrame();
-            //};
-        }
-        protected override void OnRenderFrame(OpenTK.FrameEventArgs e)
-        {
-            base.OnRenderFrame(e);
-            MakeCurrent();
-            if (!Initialized)
-            {
-                if (OnStartInit != null)
-                    OnStartInit();
-                Initialized = true;
-            }
-            //if (engine != null)
-            //    engine.RenderOneFrame();
+				demo = new Demos.Tutorial1();
 
-            SwapBuffers();
-        }
-        protected virtual void Update(object sender, OpenTK.FrameEventArgs e)
-        {
-        }
+				demo.Setup( this.GraphicsContext, this.Width, this.Height );
+			}
+			catch ( Exception ex )
+			{
+				Console.WriteLine( "An exception has occurred. See below for details:" );
+				Console.WriteLine( BuildExceptionString( ex ) );
+			}
+		}
 
-        private void _setupResources()
-        {
-        }
+		protected override void OnRenderFrame( OpenTK.FrameEventArgs e )
+		{
+			base.OnRenderFrame( e );
 
-        private void _loadPlugins()
-        {
-        }
+			if ( !_initialized )
+			{
+				Initialize();
+				_initialized = true;
+			}
 
-        private static string BuildExceptionString(Exception exception)
-        {
-            string errMessage = string.Empty;
+			try
+			{
 
-            errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+				if ( _engine != null )
+				{
+					_engine.RenderOneFrame();
+				}
+			}
+			catch ( Exception ex )
+			{
+				Console.WriteLine( "An exception has occurred. See below for details:" );
+				Console.WriteLine( BuildExceptionString( ex ) );
+			}
+			
+		}
 
-            while (exception.InnerException != null)
-            {
-                errMessage += BuildInnerExceptionString(exception.InnerException);
-                exception = exception.InnerException;
-            }
+		protected override void OnUpdateFrame( OpenTK.FrameEventArgs e )
+		{
+			base.OnUpdateFrame( e );
+		}
 
-            return errMessage;
-        }
+		private void _setupResources()
+		{
+		}
 
-        private static string BuildInnerExceptionString(Exception innerException)
-        {
-            string errMessage = string.Empty;
+		private void _loadPlugins()
+		{
+		}
 
-            errMessage += Environment.NewLine + " InnerException ";
-            errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+		private static string BuildExceptionString( Exception exception )
+		{
+			string errMessage = string.Empty;
 
-            return errMessage;
-        }
-    }
+			errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+
+			while ( exception.InnerException != null )
+			{
+				errMessage += BuildInnerExceptionString( exception.InnerException );
+				exception = exception.InnerException;
+			}
+
+			return errMessage;
+		}
+
+		private static string BuildInnerExceptionString( Exception innerException )
+		{
+			string errMessage = string.Empty;
+
+			errMessage += Environment.NewLine + " InnerException ";
+			errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+
+			return errMessage;
+		}
+	}
 }

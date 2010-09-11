@@ -231,21 +231,15 @@ namespace Axiom.RenderSystems.OpenGLES
 		public virtual void InitializeExtensions()
 		{
 			//get version
-            string tmpStr =  GL.GetString(All.Version);
-			Contract.Requires( !string.IsNullOrEmpty( tmpStr ) );
-            LogManager.Instance.Write("Version= " + tmpStr);
-			_version = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );
-            
+			_version = GL.GetString( All.Version );
+			Contract.Requires( !string.IsNullOrEmpty( _version ) );
+			
 			//get vendor
-			tmpStr = GL.GetString( All.Vendor );
-            LogManager.Instance.Write("Vendor= " + tmpStr);
-            _vendor = tmpStr;
+			_vendor = GL.GetString( All.Vendor );
 
 			//get renderer
-            tmpStr = GL.GetString(All.Renderer);
-            LogManager.Instance.Write("Renderer= " + tmpStr);
-			_videoCard = tmpStr.Substring( 0, tmpStr.IndexOf( " " ) );			
-            
+			_videoCard = GL.GetString(All.Renderer);
+			
 			// Set extension list
 			StringBuilder ext = new StringBuilder();
 			_extensionList = new List<string>();
