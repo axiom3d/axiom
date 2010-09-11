@@ -158,9 +158,16 @@ namespace Axiom.Graphics
 
         protected bool vertexProgramBound = false;
         protected bool fragmentProgramBound = false;
-
+        /// <summary>
+        /// Saved manual color blends
+        /// </summary>
+        protected ColorEx[,] manualBlendColors = new ColorEx[Config.MaxTextureLayers, 2];
         protected static long totalRenderCalls = 0;
-
+        protected int disabledTexUnitsFrom = 0;
+        protected bool derivedDepthBias = false;
+        protected float derivedDepthBiasBase;
+        protected float derivedDepthBiasMultiplier;
+        protected float derivedDepthBiasSlopeScale;
         #endregion Fields
 
         #region Constructor
@@ -330,6 +337,72 @@ namespace Axiom.Graphics
 
         #region Methods
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constantBias"></param>
+        public virtual void SetDepthBias(float constantBias)
+        {
+            SetDepthBias(constantBias, 0);
+        }
+        /// <summary>
+        /// Sets the depth bias, NB you should use the Material version of this.
+        /// </summary>
+        /// <param name="constantBias"></param>
+        /// <param name="slopeScaleBias"></param>
+        public virtual void SetDepthBias(float constantBias, float slopeScaleBias)
+        {
+            //need to be implemented by the rendersystem should be abstract, but this will course compiler error's.
+        }
+        /// <summary>
+        /// Tell the render system whether to derive a depth bias on its own based on 
+        /// the values passed to it in setCurrentPassIterationCount.
+        /// The depth bias set will be baseValue + iteration * multiplier
+        /// </summary>
+        /// <param name="derive">true to tell the RS to derive this automatically</param>
+        public virtual void SetDerivedDepthBias(bool derive)
+        {
+            SetDerivedDepthBias(derive, 0, 0, 0);
+        }
+        /// <summary>
+        /// Tell the render system whether to derive a depth bias on its own based on 
+        /// the values passed to it in setCurrentPassIterationCount.
+        /// The depth bias set will be baseValue + iteration * multiplier
+        /// </summary>
+        /// <param name="derive">true to tell the RS to derive this automatically</param>
+        /// <param name="baseValue">The base value to which the multiplier should be added</param>
+        public virtual void SetDerivedDepthBias(bool derive, float baseValue)
+        {
+            SetDerivedDepthBias(derive, baseValue, 0, 0);
+        }
+        /// <summary>
+        /// Tell the render system whether to derive a depth bias on its own based on 
+        /// the values passed to it in setCurrentPassIterationCount.
+        /// The depth bias set will be baseValue + iteration * multiplier
+        /// </summary>
+        /// <param name="derive">true to tell the RS to derive this automatically</param>
+        /// <param name="baseValue">The base value to which the multiplier should be added</param>
+        /// <param name="multiplier">The amount of depth bias to apply per iteration</param>
+        public virtual void SetDerivedDepthBias(bool derive, float baseValue, float multiplier)
+        {
+            SetDerivedDepthBias(derive, baseValue, multiplier, 0);
+        }
+        /// <summary>
+        /// Tell the render system whether to derive a depth bias on its own based on 
+		/// the values passed to it in setCurrentPassIterationCount.
+		/// The depth bias set will be baseValue + iteration * multiplier
+        /// </summary>
+        /// <param name="derive">true to tell the RS to derive this automatically</param>
+        /// <param name="baseValue">The base value to which the multiplier should be added</param>
+        /// <param name="multiplier">The amount of depth bias to apply per iteration</param>
+        /// <param name="slopeScale">The constant slope scale bias for completeness</param>
+        public virtual void SetDerivedDepthBias(bool derive, float baseValue, float multiplier, float slopeScale)
+        {
+            derivedDepthBias = derive;
+            derivedDepthBiasBase = baseValue;
+            derivedDepthBiasMultiplier = multiplier;
+            derivedDepthBiasSlopeScale = slopeScale;
+        }
+        /// <summary>
         /// Validates the configuration of the rendering system
         /// </summary>
         /// <remarks>Calling this method can cause the rendering system to modify the ConfigOptions collection.</remarks>
@@ -414,7 +487,11 @@ namespace Axiom.Graphics
 
         public virtual void DisableTextureUnitsFrom( int texUnit )
         {
-            for ( int i = texUnit; i < _rsCapabilities.TextureUnitCount; ++i )
+            int disableTo = Config.MaxTextureLayers;
+            if (disableTo > disabledTexUnitsFrom)
+                disableTo = disabledTexUnitsFrom;
+            disabledTexUnitsFrom = texUnit;
+            for ( int i = texUnit; i < disableTo; ++i )
             {
                 try
                 {

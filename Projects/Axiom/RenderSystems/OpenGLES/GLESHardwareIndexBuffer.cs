@@ -56,7 +56,10 @@ namespace Axiom.RenderSystems.OpenGLES
         bool _scratchUploadOnUnlock;
         int _scratchOffset;
         int _scratchSize;
-
+        public int BufferID
+        {
+            get { return _bufferId; }
+        }
         public GLESHardwareIndexBuffer( HardwareBufferManager mgr, IndexType idxType, int numIndexes, BufferUsage usage, bool useShadowBuffer )
             : base( idxType, numIndexes, usage, false, useShadowBuffer )
         {

@@ -56,7 +56,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		bool _scratchUploadOnUnlock;
 		int _scratchOffset;
 		int _scratchSize;
-
+        public int BufferID
+        {
+            get { return _bufferId; }
+        }
 		public GLESHardwareVertexBuffer( HardwareBufferManager mgr, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
 			: base( numVertices, vertexSize, usage, false, useShadowBuffer )
 		{
