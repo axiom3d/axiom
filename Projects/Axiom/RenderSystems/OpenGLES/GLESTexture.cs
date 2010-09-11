@@ -70,7 +70,13 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// by loadImpl.  Images should be deleted by loadImpl and unprepareImpl.
 		/// </summary>
 		protected List<Image> _loadedImages;
-
+        /// <summary>
+        /// Unique ID of the texture (assigned by OpenGL)
+        /// </summary>
+        public int TextureID
+        {
+            get { return _textureID; }
+        }
 		/// <summary>
 		/// 
 		/// </summary>

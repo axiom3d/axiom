@@ -57,9 +57,20 @@ namespace Axiom.Graphics
         /// </summary>
         private Capabilities _caps;
 
-		#region TextureUnitCount Property
+        #region RendersystemName
+        private string _rendersystemName;
+        /// <summary>
+        /// Gets or sets the current rendersystem name.
+        /// </summary>
+        public string RendersystemName
+        {
+            get { return _rendersystemName; }
+            set { _rendersystemName = value; }
+        }
+        #endregion
+        #region TextureUnitCount Property
 
-		/// <summary>
+        /// <summary>
 		///    Max number of texture units available on the current hardware.
 		/// </summary>
 		private int _textureUnitCount;

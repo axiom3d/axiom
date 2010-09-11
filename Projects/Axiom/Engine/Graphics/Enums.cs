@@ -248,7 +248,31 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports Alpha to Coverage (A2C)
         /// </summary>
-        AlphaToCoverage = 0x20000000
+        AlphaToCoverage = 0x20000000,
+        /// <summary>
+        ///     Supports fixed-function pipeline
+        /// </summary>
+        FixedFunction = 0x40000000,
+        /// <summary>
+        ///     Supports compressed textures in the PVRTC format
+        /// </summary>
+        TextureCompressionPVRTC = 0x40000001,
+        /// <summary>
+        ///     Support for Frame Buffer Objects (FBOs)
+        /// </summary>
+        FrameBufferObjects = 0x40000002,
+        /// <summary>
+        ///     Support for PBuffer
+        /// </summary>
+        PBuffer = 0x40000003,
+        /// <summary>
+        ///     Supports Blending operations other than +
+        /// </summary>
+        AdvancedBlendOperations = 0x40000004,
+        /// <summary>
+        /// 
+        /// </summary>
+        Automipmap = 0x12800000
 	}
 
 	/// <summary>
