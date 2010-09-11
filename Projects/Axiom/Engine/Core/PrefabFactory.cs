@@ -249,19 +249,13 @@ namespace Axiom.Core
 			decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-					offset, NUM_VERTICES, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( offset, NUM_VERTICES, BufferUsage.StaticWriteOnly );
 			bind.SetBinding( 0, vbuf );
 
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
 
 			sub.useSharedVertices = true;
-			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.
-				CreateIndexBuffer(
-					IndexType.Size16,
-					NUM_INDICES,
-					BufferUsage.StaticWriteOnly );
+			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES,	BufferUsage.StaticWriteOnly );
 
 			short[] faces = new short[ NUM_INDICES ] {
 				// front
@@ -308,7 +302,7 @@ namespace Axiom.Core
 		{
 			// sphere creation code taken from the DeferredShading sample, originally from the [Ogre] wiki
 			SubMesh pSphereVertex = mesh.CreateSubMesh();
-            LogManager.Instance.Write("CREATESUBMESH");
+
 			const int NUM_SEGMENTS = 16;
 			const int NUM_RINGS = 16;
 			const Real SPHERE_RADIUS = 50.0f;
@@ -346,9 +340,9 @@ namespace Axiom.Core
 			unsafe
 			{
 
-                float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
+				float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
 
-                ushort* pIndices =(ushort*)iBuf.Lock( BufferLocking.Discard );
+				ushort* pIndices =(ushort*)iBuf.Lock( BufferLocking.Discard );
 
 				float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
 				float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );
