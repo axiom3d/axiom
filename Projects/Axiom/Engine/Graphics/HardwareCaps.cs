@@ -43,34 +43,40 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// 	This serves as a way to query information about the capabilies of a 3D API and the
-    /// 	users hardware configuration.  A RenderSystem should create and initialize an instance
-    /// 	of this class during startup so that it will be available for use ASAP for checking caps.
-    /// </summary>
-    public class RenderSystemCapabilities
-    {
-        #region Fields and Properties
+	/// <summary>
+	/// 	This serves as a way to query information about the capabilies of a 3D API and the
+	/// 	users hardware configuration.  A RenderSystem should create and initialize an instance
+	/// 	of this class during startup so that it will be available for use ASAP for checking caps.
+	/// </summary>
+	public class RenderSystemCapabilities
+	{
+		#region Fields and Properties
 
-        /// <summary>
-        ///    Flag enum holding the bits that identify each supported feature.
-        /// </summary>
-        private Capabilities _caps;
+		/// <summary>
+		///    Flag enum holding the bits that identify each supported feature.
+		/// </summary>
+		private Capabilities _caps;
 
-        #region RendersystemName
-        private string _rendersystemName;
-        /// <summary>
-        /// Gets or sets the current rendersystem name.
-        /// </summary>
-        public string RendersystemName
-        {
-            get { return _rendersystemName; }
-            set { _rendersystemName = value; }
-        }
-        #endregion
-        #region TextureUnitCount Property
+		#region RendersystemName
+		private string _rendersystemName;
+		/// <summary>
+		/// Gets or sets the current rendersystem name.
+		/// </summary>
+		public string RendersystemName
+		{
+			get
+			{
+				return _rendersystemName;
+			}
+			set
+			{
+				_rendersystemName = value;
+			}
+		}
+		#endregion
+		#region TextureUnitCount Property
 
-        /// <summary>
+		/// <summary>
 		///    Max number of texture units available on the current hardware.
 		/// </summary>
 		private int _textureUnitCount;
@@ -113,7 +119,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion WorlMatrixCount Property
-			
+
 		#region MaxVertexProgramVersion Property
 
 		/// <summary>
@@ -205,7 +211,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion VertexProgramConstantBoolCount Property
-			
+
 		#region MaxFragmentProgramVersion Property
 
 		/// <summary>
@@ -228,7 +234,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion MaxFragmentProgramVersion Property
-			
+
 		#region FragmentProgramConstantFloatCount Property
 
 		/// <summary>
@@ -320,7 +326,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion MultiRenderTargetCount Property
-			
+
 		#region StencilBufferBitCount Property
 
 		/// <summary>
@@ -343,7 +349,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion StencilBufferBitCount Property
-			
+
 		#region MaxLights Property
 
 		/// <summary>
@@ -533,11 +539,11 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		/// <summary>
-        ///    Default constructor.
-        /// </summary>
-        public RenderSystemCapabilities()
-        {
-            _caps = 0;
+		///    Default constructor.
+		/// </summary>
+		public RenderSystemCapabilities()
+		{
+			_caps = 0;
 		}
 
 		#endregion Construction and Destruction
@@ -545,101 +551,101 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-        ///    Returns true if the current hardware supports the requested feature.
-        /// </summary>
-        /// <param name="cap">Feature to query (i.e. Dot3 bump mapping)</param>
-        /// <returns></returns>
-        public bool HasCapability( Capabilities cap )
-        {
-            return ( _caps & cap ) > 0;
-        }
+		///    Returns true if the current hardware supports the requested feature.
+		/// </summary>
+		/// <param name="cap">Feature to query (i.e. Dot3 bump mapping)</param>
+		/// <returns></returns>
+		public bool HasCapability( Capabilities cap )
+		{
+			return ( _caps & cap ) > 0;
+		}
 
-        /// <summary>
-        ///    Sets a flag stating the specified feature is supported.
-        /// </summary>
-        /// <param name="cap"></param>
-        public void SetCapability( Capabilities cap )
-        {
-            _caps |= cap;
-        }
+		/// <summary>
+		///    Sets a flag stating the specified feature is supported.
+		/// </summary>
+		/// <param name="cap"></param>
+		public void SetCapability( Capabilities cap )
+		{
+			_caps |= cap;
+		}
 
-        /// <summary>
-        ///    Write all hardware capability information to registered listeners.
-        /// </summary>
-        public void Log()
-        {
-            LogManager logMgr = LogManager.Instance;
+		/// <summary>
+		///    Write all hardware capability information to registered listeners.
+		/// </summary>
+		public void Log()
+		{
+			LogManager logMgr = LogManager.Instance;
 
-            logMgr.Write( "---RenderSystem capabilities---" );
+			logMgr.Write( "---RenderSystem capabilities---" );
 			logMgr.Write( "\t-Adapter Name: {0}", _deviceName );
 			logMgr.Write( "\t-Driver Version: {0}", _driverVersion );
-            logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
-            logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
-            logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
-            logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.TextureBlending ) ) );
-            logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
-            logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( HasCapability( Capabilities.Dot3 ) ) );
-            logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( HasCapability( Capabilities.CubeMapping ) ) );
+			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
+			logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
+			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
+			logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.TextureBlending ) ) );
+			logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
+			logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( HasCapability( Capabilities.Dot3 ) ) );
+			logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( HasCapability( Capabilities.CubeMapping ) ) );
 
-            logMgr.Write( "\t-Hardware stencil buffer: {0}", ConvertBool( HasCapability( Capabilities.StencilBuffer ) ) );
+			logMgr.Write( "\t-Hardware stencil buffer: {0}", ConvertBool( HasCapability( Capabilities.StencilBuffer ) ) );
 
-            if ( HasCapability( Capabilities.StencilBuffer ) )
-            {
-                logMgr.Write( "\t\t-Stencil depth: {0} bits", _stencilBufferBitCount );
-                logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( HasCapability( Capabilities.TwoSidedStencil ) ) );
-                logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( HasCapability( Capabilities.StencilWrap ) ) );
-            }
+			if ( HasCapability( Capabilities.StencilBuffer ) )
+			{
+				logMgr.Write( "\t\t-Stencil depth: {0} bits", _stencilBufferBitCount );
+				logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( HasCapability( Capabilities.TwoSidedStencil ) ) );
+				logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( HasCapability( Capabilities.StencilWrap ) ) );
+			}
 
-            logMgr.Write( "\t-Hardware vertex/index buffers: {0}", ConvertBool( HasCapability( Capabilities.VertexBuffer ) ) );
+			logMgr.Write( "\t-Hardware vertex/index buffers: {0}", ConvertBool( HasCapability( Capabilities.VertexBuffer ) ) );
 
-            logMgr.Write( "\t-Vertex programs: {0}", ConvertBool( HasCapability( Capabilities.VertexPrograms ) ) );
+			logMgr.Write( "\t-Vertex programs: {0}", ConvertBool( HasCapability( Capabilities.VertexPrograms ) ) );
 
-            if ( HasCapability( Capabilities.VertexPrograms ) )
-            {
-                logMgr.Write( "\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion );
-            }
+			if ( HasCapability( Capabilities.VertexPrograms ) )
+			{
+				logMgr.Write( "\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion );
+			}
 
-            logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( HasCapability( Capabilities.FragmentPrograms ) ) );
+			logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( HasCapability( Capabilities.FragmentPrograms ) ) );
 
-            if ( HasCapability( Capabilities.FragmentPrograms ) )
-            {
-                logMgr.Write( "\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion );
-            }
+			if ( HasCapability( Capabilities.FragmentPrograms ) )
+			{
+				logMgr.Write( "\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion );
+			}
 
-            logMgr.Write( "\t-Texture compression: {0}", ConvertBool( HasCapability( Capabilities.TextureCompression ) ) );
+			logMgr.Write( "\t-Texture compression: {0}", ConvertBool( HasCapability( Capabilities.TextureCompression ) ) );
 
-            if ( HasCapability( Capabilities.TextureCompression ) )
-            {
-                logMgr.Write( "\t\t-DXT: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionDXT ) ) );
-                logMgr.Write( "\t\t-VTC: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionVTC ) ) );
-            }
+			if ( HasCapability( Capabilities.TextureCompression ) )
+			{
+				logMgr.Write( "\t\t-DXT: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionDXT ) ) );
+				logMgr.Write( "\t\t-VTC: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionVTC ) ) );
+			}
 
-            logMgr.Write( "\t-Scissor rectangle: {0}", ConvertBool( HasCapability( Capabilities.ScissorTest ) ) );
-            logMgr.Write( "\t-Hardware Occlusion Query: {0}", ConvertBool( HasCapability( Capabilities.HardwareOcculusion ) ) );
-            logMgr.Write( "\t-User clip planes: {0}", ConvertBool( HasCapability( Capabilities.UserClipPlanes ) ) );
-            logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( HasCapability( Capabilities.VertexFormatUByte4 ) ) );
-            logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( HasCapability( Capabilities.InfiniteFarPlane ) ) );
+			logMgr.Write( "\t-Scissor rectangle: {0}", ConvertBool( HasCapability( Capabilities.ScissorTest ) ) );
+			logMgr.Write( "\t-Hardware Occlusion Query: {0}", ConvertBool( HasCapability( Capabilities.HardwareOcculusion ) ) );
+			logMgr.Write( "\t-User clip planes: {0}", ConvertBool( HasCapability( Capabilities.UserClipPlanes ) ) );
+			logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( HasCapability( Capabilities.VertexFormatUByte4 ) ) );
+			logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( HasCapability( Capabilities.InfiniteFarPlane ) ) );
 
 			logMgr.Write( "\t-Max Point Size: {0} ", MaxPointSize );
 			logMgr.Write( "\t-Vertex texture fetch: {0} ", ConvertBool( HasCapability( Capabilities.VertexTextureFetch ) ) );
-			if (HasCapability( Capabilities.VertexTextureFetch ))
+			if ( HasCapability( Capabilities.VertexTextureFetch ) )
 			{
-				logMgr.Write( "\t\t-Max vertex textures: {0}", VertexTextureUnitCount);
+				logMgr.Write( "\t\t-Max vertex textures: {0}", VertexTextureUnitCount );
 				logMgr.Write( "\t\t-Vertex textures shared: {0}", ConvertBool( VertexTextureUnitsShared ) );
 			}
 
-        }
+		}
 
-        /// <summary>
-        ///     Helper method to convert true/false to yes/no.
-        /// </summary>
-        /// <param name="val">Bool bal.</param>
-        /// <returns>"yes" if true, else "no".</returns>
-        private string ConvertBool( bool val )
-        {
-            return val ? "yes" : "no";
-        }
+		/// <summary>
+		///     Helper method to convert true/false to yes/no.
+		/// </summary>
+		/// <param name="val">Bool bal.</param>
+		/// <returns>"yes" if true, else "no".</returns>
+		private string ConvertBool( bool val )
+		{
+			return val ? "yes" : "no";
+		}
 
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }
