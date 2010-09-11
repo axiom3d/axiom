@@ -44,7 +44,7 @@ using Axiom.Core;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	This serves as a way to query information about the capabilies of a 3D API and the
+	/// 	This serves as a way to query information about the capabilities of a 3D API and the
 	/// 	users hardware configuration.  A RenderSystem should create and initialize an instance
 	/// 	of this class during startup so that it will be available for use ASAP for checking caps.
 	/// </summary>
