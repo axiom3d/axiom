@@ -60,13 +60,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// Size of probe texture
 		/// </summary>
 		public const int ProbeSize = 16;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public static int StencilFormatCount = StencilFormats.Length;///Marshal.SizeOf(StencilFormats) / Marshal.SizeOf(typeof(All));
-		public static int DepthFormatCount = DepthFormats.Length;//Marshal.SizeOf(DepthFormats) / Marshal.SizeOf(typeof(All));
-
 		/// <summary>
 		/// Stencil and depth formats to be tried
 		/// </summary>
@@ -107,7 +100,11 @@ namespace Axiom.RenderSystems.OpenGLES
 			24,
 			24
 		};
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public static int StencilFormatCount = StencilFormats.Length;///Marshal.SizeOf(StencilFormats) / Marshal.SizeOf(typeof(All));
+        public static int DepthFormatCount = DepthFormats.Length;//Marshal.SizeOf(DepthFormats) / Marshal.SizeOf(typeof(All));
 		#region - structs -
 		/// <summary>
 		/// Frame Buffer Object properties for a certain texture format.
@@ -277,12 +274,15 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// 
 		/// </summary>
 		public GLESFBOManager()
+            :base()
 		{
-			_renderBuffer = new Dictionary<RBFormat, RBRef>();
-			TemporaryFBO = 0;
-			DetectFBOFormats();
-			OpenGLOES.GenFramebuffers( 1, ref _tempFbo );
-			GLESConfig.GlCheckError( this );
+            LogManager.Instance.Write("FBO CTOR ENTER");
+            _renderBuffer = new Dictionary<RBFormat, RBRef>();
+            TemporaryFBO = 0;
+            DetectFBOFormats();
+            OpenGLOES.GenFramebuffers(1, ref _tempFbo);
+            GLESConfig.GlCheckError(this);
+            LogManager.Instance.Write("FBO CTOR EXIT");
 		}
 
 		/// <summary>
@@ -292,7 +292,22 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="target"></param>
 		public override void Bind( Graphics.RenderTarget target )
 		{
-			throw new NotImplementedException();
+            /// Check if the render target is in the rendertarget->FBO map
+            GLESFrameBufferObject fbo = null;
+            fbo = target["FBO"] as GLESFrameBufferObject;
+            if (fbo != null)
+                fbo.Bind();
+            else
+            {
+                // Old style context (window/pbuffer) or copying render texture
+#if AXIOM_PLATFORM_IPHONE
+                // The screen buffer is 1 on iPhone
+                OpenGLOES.BindFramebuffer(All.FramebufferOes, 1);
+#else
+                OpenGLOES.BindFramebuffer(All.FramebufferOes, 0);
+#endif
+                GLESConfig.GlCheckError(this);
+            }
 		}
 
 		/// <summary>
@@ -301,7 +316,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="target"></param>
 		public override void Unbind( Graphics.RenderTarget target )
 		{
-			throw new NotImplementedException();
+			
 		}
 
 		/// <summary>
@@ -366,7 +381,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public override Graphics.MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
-			throw new NotImplementedException();
+            return new GLESFBOMultiRenderTarget(this, name);
 		}
 
 		/// <summary>
@@ -379,7 +394,30 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public GLESSurfaceDescription RequestRenderbuffer( All format, int width, int height, int fsaa )
 		{
-			throw new NotImplementedException();
+            GLESSurfaceDescription retval = new GLESSurfaceDescription();
+            if (format != All.NoneOes)
+            {
+                RBFormat key = new RBFormat(format, width, height, fsaa);
+                RBRef iter;
+                if (_renderBuffer.TryGetValue(key, out iter))
+                {
+                    retval.Buffer = iter.Buffer;
+                    retval.ZOffset = 0;
+                    retval.NumSamples = fsaa;
+                    iter.RefCount++;
+                }
+                else
+                {
+                    // New one
+                    GLESRenderBuffer rb = new GLESRenderBuffer(format, width, height, fsaa);
+                    _renderBuffer.Add(key, new RBRef(rb));
+                    retval.Buffer = rb;
+                    retval.ZOffset = 0;
+                    retval.NumSamples = fsaa;
+                }
+            }
+
+            return retval;
 		}
 
 		/// <summary>
@@ -389,7 +427,15 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="surface"></param>
 		public void RequestRenderbuffer( GLESSurfaceDescription surface )
 		{
-			throw new NotImplementedException();
+            if (surface.Buffer == null)
+                return;
+
+            RBFormat key = new RBFormat(surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height, surface.NumSamples);
+            Utilities.Contract.Requires(_renderBuffer.ContainsKey(key));
+            Utilities.Contract.Requires(_renderBuffer[key].Buffer == surface.Buffer);
+            RBRef refval = _renderBuffer[key];
+            refval.RefCount++;
+            _renderBuffer[key] = refval;
 		}
 
 		/// <summary>
@@ -398,7 +444,26 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="surface"></param>
 		public void ReleaseRenderbuffer( GLESSurfaceDescription surface )
 		{
-			throw new NotImplementedException();
+            if (surface.Buffer == null)
+                return;
+
+            RBFormat key = new RBFormat(surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height, surface.NumSamples);
+            RBRef refval;
+            if (_renderBuffer.TryGetValue(key, out refval))
+            {
+                // Decrease refcount
+                refval.RefCount--;
+                if (refval.RefCount == 0)
+                {
+                    // If refcount reaches zero, delete buffer and remove from map
+                    refval.Buffer.Dispose();
+                    _renderBuffer.Remove(key);
+                }
+                else
+                {
+                    _renderBuffer[key] = refval;
+                }
+            }
 		}
 
 		public override bool CheckFormat( Media.PixelFormat format )
@@ -532,8 +597,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				{
 					fmtstring += PixelUtil.GetFormatName( (Media.PixelFormat)x );
 				}
-				LogManager.Instance.Write( "[GL] : Valid FBO targets " + fmtstring );
 			}
+            LogManager.Instance.Write("[GL] : Valid FBO targets " + fmtstring);
 		}
 
 		/// <summary>
