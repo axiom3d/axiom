@@ -202,6 +202,7 @@ namespace Axiom.RenderSystems.OpenGLES
         {
             unsafe
             {
+                LogManager.Instance.Write("Allocate Scratch : " + size.ToString());
                 // simple forward link search based on alloc sizes
                 // not that fast but the list should never get that long since not many
                 // locks at once (hopefully)
@@ -217,15 +218,19 @@ namespace Axiom.RenderSystems.OpenGLES
                     byte* dataPtr = (byte*)_scratchBufferPoolPtr;
                     while ( bufferPos < ScratchPoolSize )
                     {
+                        LogManager.Instance.Write("Bufferpos " + bufferPos);
                         GLESScratchBufferAlloc* pNext = (GLESScratchBufferAlloc*)( dataPtr + bufferPos );
                         // Big enough?
                         if ( pNext->Free != 0 && pNext->Size >= size )
                         {
+                            LogManager.Instance.Write("Was big enough!");
                             // split? And enough space for control block
-                            if ( pNext->Size > size + sizeof( GLESScratchBufferAlloc ) + size )
+                            if ( pNext->Size > size + sizeof( GLESScratchBufferAlloc ) )
                             {
+                                LogManager.Instance.Write("Split! " + pNext->Size.ToString());
                                 int offset = sizeof( GLESScratchBufferAlloc ) + size;
                                 GLESScratchBufferAlloc* pSplitAlloc = (GLESScratchBufferAlloc*)( dataPtr + bufferPos + offset );
+                                pSplitAlloc->Free = 1;
                                 // split size is remainder minus new control block
                                 pSplitAlloc->Size = pNext->Size - size - sizeof( GLESScratchBufferAlloc );
                                 // New size of current

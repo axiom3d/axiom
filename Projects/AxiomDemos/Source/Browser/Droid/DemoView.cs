@@ -74,14 +74,17 @@ namespace Droid
         protected override void OnRenderFrame(OpenTK.FrameEventArgs e)
         {
             base.OnRenderFrame(e);
+            MakeCurrent();
             if (!Initialized)
             {
                 if (OnStartInit != null)
                     OnStartInit();
                 Initialized = true;
             }
-            if (engine != null)
-                engine.RenderOneFrame();
+            //if (engine != null)
+            //    engine.RenderOneFrame();
+
+            SwapBuffers();
         }
         protected virtual void Update(object sender, OpenTK.FrameEventArgs e)
         {

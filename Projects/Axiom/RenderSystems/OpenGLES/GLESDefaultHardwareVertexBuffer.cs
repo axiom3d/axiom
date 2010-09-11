@@ -108,6 +108,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <returns></returns>
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
         {
+            LogManager.Instance.Write("WRONG LOCK");
             return GetData(offset);
         }
 
@@ -120,6 +121,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <returns></returns>
         public override IntPtr Lock(int offset, int length, BufferLocking locking)
         {
+            LogManager.Instance.Write("WRONG LOCK");
             isLocked = true;
             return GetData(offset);
         }

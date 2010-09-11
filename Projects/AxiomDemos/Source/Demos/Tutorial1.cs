@@ -52,9 +52,10 @@ namespace Axiom.Demos
 				ColorEx.Red,
 				ColorEx.Blue,
 				ColorEx.Green );
-
+            LogManager.Instance.Write("LineCreated");
 			// create a node for the line
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
+            LogManager.Instance.Write("NodeCreated");
 			SceneNode lineNode = node.CreateChildSceneNode();
 			SceneNode triNode = node.CreateChildSceneNode();
 			triNode.Position = new Vector3( 50, 0, 0 );
@@ -62,7 +63,7 @@ namespace Axiom.Demos
 			// add the line and triangle to the scene
 			lineNode.AttachObject( line );
 			triNode.AttachObject( tri );
-
+            LogManager.Instance.Write("Attached");
 			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
 			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
 			NodeRotationControllerValue rotate = new NodeRotationControllerValue( triNode, Vector3.UnitY );

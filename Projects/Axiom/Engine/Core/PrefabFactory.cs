@@ -308,7 +308,7 @@ namespace Axiom.Core
 		{
 			// sphere creation code taken from the DeferredShading sample, originally from the [Ogre] wiki
 			SubMesh pSphereVertex = mesh.CreateSubMesh();
-
+            LogManager.Instance.Write("CREATESUBMESH");
 			const int NUM_SEGMENTS = 16;
 			const int NUM_RINGS = 16;
 			const Real SPHERE_RADIUS = 50.0f;
@@ -331,20 +331,24 @@ namespace Axiom.Core
 
 			// allocate the vertex buffer
 			vertexData.vertexCount = ( NUM_RINGS + 1 ) * ( NUM_SEGMENTS + 1 );
+
 			HardwareVertexBuffer vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.GetVertexSize( 0 ), vertexData.vertexCount, BufferUsage.StaticWriteOnly, false );
+
 			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 			binding.SetBinding( 0, vBuf );
 
 			// allocate index buffer
 			pSphereVertex.IndexData.indexCount = 6 * NUM_RINGS * ( NUM_SEGMENTS + 1 );
+
 			pSphereVertex.IndexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, pSphereVertex.IndexData.indexCount, BufferUsage.StaticWriteOnly, false );
 			HardwareIndexBuffer iBuf = pSphereVertex.IndexData.indexBuffer;
 
 			unsafe
 			{
-				float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
 
-				ushort* pIndices = (ushort*)iBuf.Lock( BufferLocking.Discard );
+                float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
+
+                ushort* pIndices =(ushort*)iBuf.Lock( BufferLocking.Discard );
 
 				float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
 				float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );
@@ -391,9 +395,11 @@ namespace Axiom.Core
 					}; // end for seg
 				} // end for ring
 			}
+
 			// Unlock
 			vBuf.Unlock();
 			iBuf.Unlock();
+
 			// Generate face list
 			pSphereVertex.useSharedVertices = true;
 
