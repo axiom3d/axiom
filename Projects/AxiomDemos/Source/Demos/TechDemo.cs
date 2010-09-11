@@ -168,20 +168,20 @@ namespace Axiom.Demos
 			window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
 			TechDemoListener rwl = new TechDemoListener( window );
 			WindowEventMonitor.Instance.RegisterListener( window, rwl );
-            LogManager.Instance.Write("SceneManager");
+
 			ChooseSceneManager();
-            LogManager.Instance.Write("Camera");
+
 			CreateCamera();
-            LogManager.Instance.Write("Viewport");
+
 			CreateViewports();
-            LogManager.Instance.Write("mipmap");
+
 			// set default mipmap level
 			TextureManager.Instance.DefaultMipmapCount = 5;
-            LogManager.Instance.Write("ResourceListener");
+
 			// Create any resource listeners (for loading screens)
 			this.CreateResourceListener();
 			// Load resources
-            LogManager.Instance.Write("Resources");
+
 			this.LoadResources();
 
 			//ShowDebugOverlay( showDebugOverlay );
@@ -192,7 +192,7 @@ namespace Axiom.Demos
 			//input = SetupInput();
 
 			// call the overridden CreateScene method
-            LogManager.Instance.Write("CreateScene");
+
 			CreateScene();
 			return true;
 		}

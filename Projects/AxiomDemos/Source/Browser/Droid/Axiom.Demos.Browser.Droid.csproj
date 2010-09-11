@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AxiomDemoActivity.cs" />
+    <Compile Include="Demos\Tutorial1.cs" />
     <Compile Include="DemoView.cs" />
     <Compile Include="R.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

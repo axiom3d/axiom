@@ -41,6 +41,8 @@ using Axiom.Media;
 using Javax.Microedition.Khronos.Egl;
 using NativeWindowType = System.IntPtr;
 using NativeDisplayType = System.IntPtr;
+using OpenTK.Graphics;
+using OpenTK.Platform.Android;
 
 #endregion Namespace Declarations
 
@@ -48,18 +50,20 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 {
 	class OpenTKGLESWindow : RenderWindow
 	{
-		protected bool _isClosed;
-		protected bool _isVisible;
-		protected bool _isTopLevel;
-		protected bool _isExternal;
-		protected bool _isGLControl;
-		protected OpenTKGLESSupport _glSupport;
-		protected EGLContext _context;
-		protected NativeWindowType _window;
-		protected NativeDisplayType _nativeDisplay;
-		protected EGLDisplay _eglDisplay;
-		protected EGLConfig _eglConfig;
-		protected EGLSurface _eglSurface;
+		private bool _isClosed;
+		private bool _isVisible;
+		private bool _isTopLevel;
+		private bool _isExternal;
+		private bool _isGLControl;
+
+		private OpenTKGLESContext _glContext;
+		private OpenTKGLESSupport _glSupport;
+		private EGLContext _context;
+		private NativeWindowType _window;
+		private NativeDisplayType _nativeDisplay;
+		private EGLDisplay _eglDisplay;
+		private EGLConfig _eglConfig;
+		private EGLSurface _eglSurface;
 
 		/// <summary>
 		/// 
@@ -71,10 +75,12 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		{
 			throw new NotImplementedException();
 		}
-        public OpenTKGLESWindow()
-        {
-            //OpenTK.Platform.Utilities.CreateGraphicsContext(new OpenTK.Graphics.GraphicsMode(), null, 1, 1, OpenTK.Graphics.GraphicsContextFlags.Default);
-        }
+
+		public OpenTKGLESWindow()
+		{
+			//OpenTK.Platform.Utilities.CreateGraphicsContext(new OpenTK.Graphics.GraphicsMode(), null, 1, 1, OpenTK.Graphics.GraphicsContextFlags.Default);
+		}
+
 		#region RenderWindow Members
 
 		public override object this[ string attribute ]
@@ -84,7 +90,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 				switch ( attribute.ToLower() )
 				{
 					case "glcontext":
-                        return _context;
+						return _glContext;
 					case "window":
 						return _window;
 					case "nativewindow":
@@ -99,7 +105,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return _window == null && _glContext == null;
 			}
 		}
 
@@ -123,11 +129,90 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// <param name="miscParams"></param>
 		public override void Create( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams )
 		{
+			string title = name;
+			bool vsync = false;
+			int depthBuffer = GraphicsMode.Default.Depth;
+			float displayFrequency = 60f;
+			string border = "resizable";
+
 			this.Name = name;
 			this.Width = width;
 			this.Height = height;
-            //_context = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetCurrentContext();
-            //Axiom.Core.LogManager.Instance.Write(_context == null ? "CONTEXT == NULL" : "CONTEXT == NOTNULL");
+			this.ColorDepth = 32;
+			this.IsFullScreen = fullScreen;
+
+			#region Parameter Handling
+
+			if ( miscParams != null )
+			{
+				foreach ( var entry in miscParams )
+				{
+					switch ( entry.Key )
+					{
+						case "title":
+							title = entry.Value.ToString();
+							break;
+						case "left":
+							left = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "top":
+							top = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "fsaa":
+							FSAA = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "colourDepth":
+						case "colorDepth":
+							ColorDepth = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "vsync":
+							vsync = entry.Value.ToString() == "No" ? false : true;
+							break;
+						case "displayFrequency":
+							displayFrequency = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "depthBuffer":
+							depthBuffer = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "border":
+							border = entry.Value.ToString().ToLower();
+							break;
+
+						case "externalWindowInfo":
+							var androidContext = (AndroidGraphicsContext)entry.Value;
+							_glContext = new OpenTKGLESContext( androidContext, _glSupport );
+							break;
+
+						case "externalWindowHandle":
+							object handle = entry.Value;
+							IntPtr ptr = IntPtr.Zero;
+							if ( handle.GetType() == typeof( IntPtr ) )
+							{
+								ptr = (IntPtr)handle;
+							}
+							else if ( handle.GetType() == typeof( System.Int32 ) )
+							{
+								ptr = new IntPtr( (int)handle );
+							}
+							_window = ptr;
+
+							fullScreen = false;
+							IsActive = true;
+							break;
+
+						case "externalWindow":
+							fullScreen = false;
+							IsActive = true;
+							break;
+
+						default:
+							break;
+					}
+				}
+			}
+
+			#endregion Parameter Handling
+
 		}
 
 		/// <summary>
@@ -138,6 +223,37 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		public override void CopyContentsToMemory( PixelBox pb, RenderTarget.FrameBuffer buffer )
 		{
 			throw new NotImplementedException();
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					//if ( _glContext != null ) // Do We Not Have A Rendering Context?
+					//{
+					//    _glContext.SetCurrent();
+					//    _glContext.Dispose();
+					//    _glContext = null;
+					//}
+
+					//if ( _window != null )
+					//{
+					//    if ( IsFullScreen )
+					//        displayDevice.RestoreResolution();
+
+					//    _window.Close();
+					//    _window = null;
+					//}
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion RenderWindow Members

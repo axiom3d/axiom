@@ -40,6 +40,8 @@ using Axiom.Utilities;
 using Axiom.Core;
 using Javax.Microedition.Khronos.Egl;
 using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
+using OpenTK.Graphics;
+using OpenTK.Platform.Android;
 
 #endregion Namespace Declarations
 
@@ -53,8 +55,9 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		protected EGLConfig _config;
 		protected OpenTKGLESSupport _glSupport;
 		protected EGLSurface _drawable;
-		protected EGLCONTEXT _context;
+		protected IGraphicsContext _context;
 		protected EGLDisplay _eglDisplay;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -65,12 +68,14 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 				return _drawable;
 			}
 		}
-        class DummyInfo : OpenTK.Platform.IWindowInfo
-        {
-            public void Dispose()
-            {
-            }
-        }
+
+		class DummyInfo : OpenTK.Platform.IWindowInfo
+		{
+			public void Dispose()
+			{
+			}
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -78,42 +83,42 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// <param name="support"></param>
 		/// <param name="fbconfig"></param>
 		/// <param name="drawable"></param>
-		public OpenTKGLESContext(EGLDisplay eglDisplay, OpenTKGLESSupport support, EGLConfig fbconfig, EGLSurface drawable )
+		public OpenTKGLESContext( AndroidGraphicsContext glContext, OpenTKGLESSupport support )
 		{
-            //_glSupport = support;
-            //_drawable = drawable;
-            //_context = null;
-            //_config = fbconfig;
-            //_eglDisplay = eglDisplay;
+			_glSupport = support;
+			//_drawable = drawable;
+			_context = glContext;
+			//_config = fbconfig;
+			//_eglDisplay = eglDisplay;
 
-            //Contract.Requires(_drawable != null);
-            //GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
-            //GLESContext mainContext = rendersystem.MainContext;
-            //EGLCONTEXT shareContext = null;
-            //if (mainContext != null)
-            //{
-            //    shareContext = mainContext.con;
-            //}
-            //if (mainContext == null)
-            //{
-            //    throw new AxiomException("Unable to create a suitable EGLContext");
-            //}
+			//Contract.Requires(_drawable != null);
+			//GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
+			//GLESContext mainContext = rendersystem.MainContext;
+			//EGLCONTEXT shareContext = null;
+			//if (mainContext != null)
+			//{
+			//    shareContext = mainContext.con;
+			//}
+			//if (mainContext == null)
+			//{
+			//    throw new AxiomException("Unable to create a suitable EGLContext");
+			//}
 
-          // _context = _glSupport.CreateNewContext(_eglDisplay, _config, shareContext);
+			// _context = _glSupport.CreateNewContext(_eglDisplay, _config, shareContext);
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		public override void SetCurrent()
-		{
-            //bool ret = EGLCONTEXT.EGL11.EglMakeCurrent(
-            //    _eglDisplay, _drawable, _drawable, _context );
-            //if ( !ret )
-            //{
-            //    throw new AxiomException( "Fail to make context current" );
-            //}
-          
+		{			
+			//bool ret = EGLCONTEXT.EGL11.EglMakeCurrent(
+			//    _eglDisplay, _drawable, _drawable, _context );
+			//if ( !ret )
+			//{
+			//    throw new AxiomException( "Fail to make context current" );
+			//}
+
 		}
 
 		/// <summary>
@@ -121,7 +126,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// </summary>
 		public override void EndCurrent()
 		{
-			EGLCONTEXT.EGL11.EglMakeCurrent( _eglDisplay, null, null, null );
+			//EGLCONTEXT.EGL11.EglMakeCurrent( _eglDisplay, null, null, null );
 		}
 
 		public override void Dispose()
@@ -129,7 +134,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			if ( Root.Instance != null && Root.Instance.RenderSystem != null )
 			{
 				GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
-				Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglDestroyContext( _eglDisplay, _context );
+				//Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglDestroyContext( _eglDisplay, _context );
 				rendersystem.UnregisterContext( this );
 			}
 
