@@ -655,6 +655,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "blend_manual" )]
 		BlendManual,
+        /// <summary>
+        /// 
+        /// </summary>
+        [ScriptEnum( "blend_diffuse_color" )]
+        BlendDiffuseColor,
 		/// <summary>
 		///		Takes the dot product of color 1 and color 2.
 		/// </summary>

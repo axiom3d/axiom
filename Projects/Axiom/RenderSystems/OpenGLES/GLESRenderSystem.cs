@@ -47,7 +47,6 @@ using Axiom.RenderSystems.OpenGLES.OpenTKGLES;
 using System.Text;
 using System.Collections.Generic;
 using OpenGL = OpenTK.Graphics.ES11.GL;
-using Axiom.Utilities;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -58,7 +57,16 @@ namespace Axiom.RenderSystems.OpenGLES
 	public class GLESRenderSystem : RenderSystem
 	{
 		public const int MaxLights = 8;
-
+        public const int GLFill = 0x1B02;
+        public static IntPtr VBOBufferOffset(int i)
+        {
+            IntPtr ret = IntPtr.Zero;
+            unsafe
+            {
+                ret = (IntPtr)(((byte*)IntPtr.Zero) + i);
+            }
+            return ret;
+        }
 		#region - private -
 		Light[] _lights = new Light[ MaxLights ];
 		/// View matrix to set world against
@@ -131,7 +139,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// OpenGL ES doesn't support setting the PolygonMode like desktop GL
 		/// So we will cache the value and set it manually
 		/// </summary>
-		All _polygonMode;
+		int _polygonMode;
 
 		/// <summary>
 		/// 
@@ -149,9 +157,21 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="tam"></param>
 		/// <returns></returns>
-		private int GetTextureAddressingMode( TextureAddressing tam )
+		private All GetTextureAddressingMode( TextureAddressing tam )
 		{
-			throw new NotImplementedException();
+            switch (tam)
+            {
+                case TextureAddressing.Clamp:
+                case TextureAddressing.Border:
+                    return All.ClampToEdge;
+                case TextureAddressing.Mirror:
+#if GL_OES_texture_mirrored_repeat
+                    return All.MirroredRepeatOes;
+#endif
+                case TextureAddressing.Wrap:
+                default:
+                    return All.Repeat;
+            }
 		}
 
 		/// <summary>
@@ -159,9 +179,35 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="blend"></param>
 		/// <returns></returns>
-		private int GetBlendMode( SceneBlendFactor blend )
+		private All GetBlendMode( SceneBlendFactor blend )
 		{
-			throw new NotImplementedException();
+            switch (blend)
+            {
+                case SceneBlendFactor.One:
+                    return All.One;
+                case SceneBlendFactor.Zero:
+                    return All.Zero;
+                case SceneBlendFactor.DestColor:
+                    return All.DstColor;
+                case SceneBlendFactor.SourceColor:
+                    return All.SrcColor;
+                case SceneBlendFactor.OneMinusDestColor:
+                    return All.OneMinusDstColor;
+                case SceneBlendFactor.OneMinusSourceColor:
+                    return All.OneMinusSrcColor;
+                case SceneBlendFactor.DestAlpha:
+                    return All.DstAlpha;
+                case SceneBlendFactor.SourceAlpha:
+                    return All.SrcAlpha;
+                case SceneBlendFactor.OneMinusDestAlpha:
+                    return All.OneMinusDstAlpha;
+                case SceneBlendFactor.OneMinusSourceAlpha:
+                    return All.OneMinusSrcAlpha;
+                default:
+                    // to keep compiler happy
+                    return All.One;
+            }
+
 		}
 
 		/// <summary>
@@ -169,18 +215,18 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="glMatrix"></param>
 		/// <param name="m"></param>
-		private void MakeGLMatrix( ref float[] glMatrix, Matrix4 m )
+		private void MakeGLMatrix(ref float[] glMatrix, Matrix4 m )
 		{
-			int x = 0;
+            int x = 0;
 
-			for ( int i = 0; i < 4; i++ )
-			{
-				for ( int j = 0; j < 4; j++ )
-				{
-					glMatrix[ x ] = m[ j, i ];
-					x++;
-				}
-			}
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    glMatrix[x] = m[j, i];
+                    x++;
+                }
+            }
 		}
 
 		/// <summary>
@@ -190,134 +236,134 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="l"></param>
 		private void SetGLLight( int index, Light l )
 		{
-			All glIndex = All.Light0 + index;
+            All glIndex = All.Light0 + index;
 
-			if ( l == null )
-			{
-				// Disable in the scene
-				OpenGL.Disable( glIndex );
-			}
-			else
-			{
-				switch ( l.Type )
-				{
-					case LightType.Spotlight:
-						OpenGL.Light( glIndex, All.SpotCutoff, 0.5f * l.SpotlightOuterAngle );
-						GLESConfig.GlCheckError( this );
-						OpenGL.Light( glIndex, All.SpotExponent, l.SpotlightFalloff );
-						GLESConfig.GlCheckError( this );
-						break;
-					default:
-						OpenGL.Light( glIndex, All.SpotCutoff, 180.0f );
-						break;
-				}
+            if (l == null)
+            {
+                // Disable in the scene
+                OpenGL.Disable(glIndex);
+            }
+            else
+            {
+                switch (l.Type)
+                {
+                    case LightType.Spotlight:
+                        OpenGL.Light(glIndex, All.SpotCutoff, 0.5f * l.SpotlightOuterAngle);
+                        GLESConfig.GlCheckError(this);
+                        OpenGL.Light(glIndex, All.SpotExponent, l.SpotlightFalloff);
+                        GLESConfig.GlCheckError(this);
+                        break;
+                    default:
+                        OpenGL.Light(glIndex, All.SpotCutoff, 180.0f);
+                        break;
+                }
 
-				//// Color
-				ColorEx col = l.Diffuse;
+                //// Color
+                ColorEx col = l.Diffuse;
 
-				float[] f4Vals = new float[] { col.r, col.g, col.b, col.a };
-				OpenGL.Light( glIndex, All.Diffuse, f4Vals );
-				GLESConfig.GlCheckError( this );
-				col = l.Specular;
-				f4Vals[ 0 ] = col.r;
-				f4Vals[ 1 ] = col.g;
-				f4Vals[ 2 ] = col.b;
-				f4Vals[ 3 ] = col.a;
-				OpenGL.Light( glIndex, All.Specular, f4Vals );
-				GLESConfig.GlCheckError( this );
+                float[] f4Vals = new float[] { col.r, col.g, col.b, col.a };
+                OpenGL.Light(glIndex, All.Diffuse, f4Vals);
+                GLESConfig.GlCheckError(this);
+                col = l.Specular;
+                f4Vals[0] = col.r;
+                f4Vals[1] = col.g;
+                f4Vals[2] = col.b;
+                f4Vals[3] = col.a;
+                OpenGL.Light(glIndex, All.Specular, f4Vals);
+                GLESConfig.GlCheckError(this);
 
-				// Disable ambient light for movables;
-				f4Vals[ 0 ] = 0;
-				f4Vals[ 1 ] = 0;
-				f4Vals[ 2 ] = 0;
-				f4Vals[ 3 ] = 1;
-				OpenGL.Light( glIndex, All.Ambient, f4Vals );
-				GLESConfig.GlCheckError( this );
+                // Disable ambient light for movables;
+                f4Vals[0] = 0;
+                f4Vals[1] = 0;
+                f4Vals[2] = 0;
+                f4Vals[3] = 1;
+                OpenGL.Light(glIndex, All.Ambient, f4Vals);
+                GLESConfig.GlCheckError(this);
 
-				SetGLLightPositionDirection( l, glIndex );
-				// Attenuation
-				OpenGL.Light( glIndex, All.ConstantAttenuation, l.AttenuationConstant );
-				GLESConfig.GlCheckError( this );
+                SetGLLightPositionDirection(l, glIndex);
+                // Attenuation
+                OpenGL.Light(glIndex, All.ConstantAttenuation, l.AttenuationConstant);
+                GLESConfig.GlCheckError(this);
 
-				OpenGL.Light( glIndex, All.LinearAttenuation, l.AttenuationLinear );
-				GLESConfig.GlCheckError( this );
+                OpenGL.Light(glIndex, All.LinearAttenuation, l.AttenuationLinear);
+                GLESConfig.GlCheckError(this);
 
-				OpenGL.Light( glIndex, All.QuadraticAttenuation, l.AttenuationQuadratic );
-				GLESConfig.GlCheckError( this );
+                OpenGL.Light(glIndex, All.QuadraticAttenuation, l.AttenuationQuadratic);
+                GLESConfig.GlCheckError(this);
 
-				// Enable in the scene
-				OpenGL.Enable( glIndex );
-				GLESConfig.GlCheckError( this );
-			}
+                // Enable in the scene
+                OpenGL.Enable(glIndex);
+                GLESConfig.GlCheckError(this);
+            }
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="lt"></param>
-		/// <param name="lightindex"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lt"></param>
+        /// <param name="lightindex"></param>
 		private void SetGLLightPositionDirection( Light lt, All lightindex )
 		{
-			// Set position / direction
-			Vector4 vec = Vector4.Zero;
-			// Use general 4D vector which is the same as GL's approach
-			vec = lt.GetAs4DVector();
-			// Must convert to float*
-			float[] tmp = new float[] { vec.x, vec.y, vec.z, vec.w };
-			OpenGL.Light( lightindex, All.Position, tmp );
+            // Set position / direction
+            Vector4 vec = Vector4.Zero;
+            // Use general 4D vector which is the same as GL's approach
+            vec = lt.GetAs4DVector();
+            // Must convert to float*
+            float[] tmp = new float[] { vec.x, vec.y, vec.z, vec.w };
+            OpenGL.Light(lightindex, All.Position, tmp);
 
 
-			// Set spotlight direction
-			if ( lt.Type == LightType.Spotlight )
-			{
-				Vector3 vec3 = lt.DerivedDirection;
-				float[] tmp2 = new float[] { vec3.x, vec3.y, vec3.z, 0 };
-				OpenGL.Light( lightindex, All.SpotDirection, tmp2 );
-			}
+            // Set spotlight direction
+            if (lt.Type == LightType.Spotlight)
+            {
+                Vector3 vec3 = lt.DerivedDirection;
+                float[] tmp2 = new float[] { vec3.x, vec3.y, vec3.z, 0 };
+                OpenGL.Light(lightindex, All.SpotDirection, tmp2);
+            }
 		}
-		/// <summary>
-		/// 
-		/// </summary>
+        /// <summary>
+        /// 
+        /// </summary>
 		private void SetLights()
 		{
-			for ( int i = 0; i < MaxLights; i++ )
-			{
-				if ( _lights[ i ] != null )
-				{
-					Light lt = _lights[ i ];
-					SetGLLightPositionDirection( lt, All.Light0 + i );
-				}
-			}
+            for (int i = 0; i < MaxLights; i++)
+            {
+                if (_lights[i] != null)
+                {
+                    Light lt = _lights[i];
+                    SetGLLightPositionDirection(lt, All.Light0 + i);
+                }
+            }
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="unit"></param>
-		/// <returns></returns>
-		private bool ActivateGLTextureUnit( int unit )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <returns></returns>
+        private bool ActivateGLTextureUnit(int unit)
 		{
-			if ( _activeTextureUnit != unit )
-			{
-				if ( unit < HardwareCapabilities.VertexTextureUnitCount )
-				{
-					OpenGL.ActiveTexture( All.Texture0 + unit );
-					GLESConfig.GlCheckError( this );
-					_activeTextureUnit = (short)unit;
-					return true;
-				}
-				else if ( unit == 0 )
-				{
-					// always ok to use the first unit
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return true;
-			}
+            if (_activeTextureUnit != unit)
+            {
+                if (unit < HardwareCapabilities.VertexTextureUnitCount)
+                {
+                    OpenGL.ActiveTexture(All.Texture0 + unit);
+                    GLESConfig.GlCheckError(this);
+                    _activeTextureUnit = (short)unit;
+                    return true;
+                }
+                else if (unit == 0)
+                {
+                    // always ok to use the first unit
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
 		}
 
 		private bool ActivateGLClientTextureUnit( int unit )
@@ -398,7 +444,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				return _glSupport.ConfigOptions;
+                return _glSupport.ConfigOptions;
 			}
 		}
 
@@ -412,94 +458,94 @@ namespace Axiom.RenderSystems.OpenGLES
 				return base.HardwareCapabilities;
 			}
 		}
-		private ColorEx _ambientLight = new ColorEx( 1, 0, 0, 0 );
-		/// <summary>
-		/// 
-		/// </summary>
+        private ColorEx _ambientLight = new ColorEx(1, 0, 0,0);
+        /// <summary>
+        /// 
+        /// </summary>
 		public override ColorEx AmbientLight
 		{
 			get
 			{
-				return _ambientLight;
+                return _ambientLight;
 			}
 			set
 			{
-				if ( value == _ambientLight )
-					return;
-				float[] lmodelAmbient = new float[] { value.r, value.g, value.b, 1.0f };
-				OpenGL.LightModel( All.LightModelAmbient, lmodelAmbient );
-				GLESConfig.GlCheckError( this );
-				_ambientLight = value;
+                if (value == _ambientLight)
+                    return;
+                float[] lmodelAmbient = new float[] { value.r, value.g, value.b, 1.0f };
+                OpenGL.LightModel(All.LightModelAmbient, lmodelAmbient);
+                GLESConfig.GlCheckError(this);
+                _ambientLight = value;
 			}
 		}
-		private Shading _shadingMode = Shading.Flat;
+        private Shading _shadingMode = Shading.Flat;
 		public override Shading ShadingMode
 		{
 			get
 			{
-				return _shadingMode;
+                return _shadingMode;
 			}
 			set
 			{
-				if ( value == _shadingMode )
-					return;
+                if (value == _shadingMode)
+                    return;
 
-				switch ( value )
-				{
-					case Shading.Flat:
-						OpenGL.ShadeModel( All.Flat );
-						GLESConfig.GlCheckError( this );
-						break;
-					default:
-						OpenGL.ShadeModel( All.Smooth );
-						GLESConfig.GlCheckError( this );
-						break;
-				}
-				_shadingMode = value;
+                switch (value)
+                {
+                    case Shading.Flat:
+                        OpenGL.ShadeModel(All.Flat);
+                        GLESConfig.GlCheckError(this);
+                        break;
+                    default:
+                        OpenGL.ShadeModel(All.Smooth);
+                        GLESConfig.GlCheckError(this);
+                        break;
+                }
+                _shadingMode = value;
 			}
 		}
-		private bool _lightingEnabled = true;
+        private bool _lightingEnabled = true;
 		public override bool LightingEnabled
 		{
 			get
 			{
-				return _lightingEnabled;
+                return _lightingEnabled;
 			}
 			set
 			{
-				if ( value )
-				{
-					OpenGL.Enable( All.Lighting );
-					GLESConfig.GlCheckError( this );
-				}
-				else
-				{
-					OpenGL.Disable( All.Lighting );
-					GLESConfig.GlCheckError( this );
-				}
+                if (value)
+                {
+                    OpenGL.Enable(All.Lighting);
+                    GLESConfig.GlCheckError(this);
+                }
+                else
+                {
+                    OpenGL.Disable(All.Lighting);
+                    GLESConfig.GlCheckError(this);
+                }
 			}
 		}
-		private bool _normalizeNormals;
+        private bool _normalizeNormals;
 		public override bool NormalizeNormals
 		{
 			get
 			{
-				return _normalizeNormals;
+                return _normalizeNormals;
 			}
 			set
 			{
-				if ( value != _normalizeNormals )
-					return;
-				if ( value )
-				{
-					OpenGL.Enable( All.Normalize );
-				}
-				else
-				{
-					OpenGL.Disable( All.Normalize );
-				}
-				GLESConfig.GlCheckError( this );
-				_normalizeNormals = value;
+                if (value != _normalizeNormals)
+                    return;
+                if (value)
+                {
+                    OpenGL.Enable(All.Normalize);
+                }
+                else
+                {
+                    OpenGL.Disable(All.Normalize);
+                }
+                GLESConfig.GlCheckError(this);
+                _normalizeNormals = value;
 			}
 		}
 
@@ -510,7 +556,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="value"></param>
 		public override void SetConfigOption( string name, string value )
 		{
-			_glSupport.SetConfigOption( name, value );
+            _glSupport.SetConfigOption(name, value);
 		}
 
 		/// <summary>
@@ -519,7 +565,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public override string ValidateConfiguration()
 		{
-			return _glSupport.ValidateConfig();
+            return _glSupport.ValidateConfig();
 		}
 
 		/// <summary>
@@ -618,7 +664,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			// Set main and current context
 			_mainContext = (GLESContext)primary[ "GLCONTEXT" ];
-			LogManager.Instance.Write( _mainContext == null ? "maincontext NULL" : "maincontext NOT NULL" );
+            LogManager.Instance.Write(_mainContext == null ? "maincontext NULL" : "maincontext NOT NULL");
 			_currentContext = _mainContext;
 
 			// Set primary context as active
@@ -649,7 +695,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			// query hardware capabilites
 			CheckCaps( primary );
-
+            
 			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
 			// use software buffers as a fallback, which operate as regular vertex arrays
 			if ( this._rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
@@ -663,216 +709,148 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			// by creating our texture manager, singleton TextureManager will hold our implementation
 			textureManager = new GLESTextureManager( _glSupport );
-
+            _polygonMode = GLFill;
 			this._glInitialized = true;
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="primary"></param>
-		private void CheckCaps( RenderTarget primary )
-		{
-			_rsCapabilities = new RenderSystemCapabilities();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="primary"></param>
+        private void CheckCaps(RenderTarget primary)
+        {
+            _rsCapabilities = new RenderSystemCapabilities();
 
-			_rsCapabilities.DeviceName = OpenTK.Graphics.ES11.GL.GetString( All.Renderer );
-			_rsCapabilities.VendorName = OpenTK.Graphics.ES11.GL.GetString( All.Vendor );
-			_rsCapabilities.RendersystemName = Name;
+            _rsCapabilities.DeviceName = OpenTK.Graphics.ES11.GL.GetString(All.Renderer);
+            _rsCapabilities.VendorName = OpenTK.Graphics.ES11.GL.GetString(All.Vendor);
+            _rsCapabilities.RendersystemName = Name;
 
-			// GL ES 1.x is fixed function only
-			_rsCapabilities.SetCapability( Capabilities.FixedFunction );
-			// Multitexturing support and set number of texture units
-			int units = 0;
-			OpenGL.GetInteger( All.MaxTextureUnits, ref units );
-			_rsCapabilities.TextureUnitCount = units;
+            // GL ES 1.x is fixed function only
+            _rsCapabilities.SetCapability(Capabilities.FixedFunction);
+            // Multitexturing support and set number of texture units
+            int units = 0;
+            OpenGL.GetInteger(All.MaxTextureUnits, ref units);
+            _rsCapabilities.TextureUnitCount = units;
 
-			// Check for hardware stencil support and set bit depth
-			int stencil = 0;
-			OpenGL.GetInteger( All.StencilBits, ref stencil );
-			GLESConfig.GlCheckError( this );
+            // Check for hardware stencil support and set bit depth
+            int stencil = 0;
+            OpenGL.GetInteger(All.StencilBits, ref stencil);
+            GLESConfig.GlCheckError(this);
 
-			if ( stencil != 0 )
-			{
-				_rsCapabilities.SetCapability( Capabilities.StencilBuffer );
-				_rsCapabilities.StencilBufferBitCount = stencil;
-			}
+            if (stencil != 0)
+            {
+                _rsCapabilities.SetCapability(Capabilities.StencilBuffer);
+                _rsCapabilities.StencilBufferBitCount = stencil;
+            }
 
-			// Scissor test is standard
-			_rsCapabilities.SetCapability( Capabilities.ScissorTest );
+            // Scissor test is standard
+            _rsCapabilities.SetCapability(Capabilities.ScissorTest);
 
-			// Vertex Buffer Objects are always supported by OpenGL ES
-			_rsCapabilities.SetCapability( Capabilities.VertexBuffer );
+            // Vertex Buffer Objects are always supported by OpenGL ES
+            _rsCapabilities.SetCapability(Capabilities.VertexBuffer);
 
-			// OpenGL ES - Check for these extensions too
-			// For 1.1, http://www.khronos.org/registry/gles/api/1.1/glext.h
-			// For 2.0, http://www.khronos.org/registry/gles/api/2.0/gl2ext.h
+            // OpenGL ES - Check for these extensions too
+            // For 1.1, http://www.khronos.org/registry/gles/api/1.1/glext.h
+            // For 2.0, http://www.khronos.org/registry/gles/api/2.0/gl2ext.h
 
-			if ( _glSupport.CheckExtension( "GL_IMG_texture_compression_pvrtc" ) ||
-				_glSupport.CheckExtension( "GL_AMD_compressed_3DC_texture" ) ||
-				_glSupport.CheckExtension( "GL_AMD_compressed_ATC_texture" ) ||
-				_glSupport.CheckExtension( "GL_OES_compressed_ETC1_RGB8_texture" ) ||
-				_glSupport.CheckExtension( "GL_OES_compressed_paletted_texture" ) )
-			{
-				// TODO: Add support for compression types other than pvrtc
-				_rsCapabilities.SetCapability( Capabilities.TextureCompression );
+            if (_glSupport.CheckExtension("GL_IMG_texture_compression_pvrtc") ||
+                _glSupport.CheckExtension("GL_AMD_compressed_3DC_texture") ||
+                _glSupport.CheckExtension("GL_AMD_compressed_ATC_texture") ||
+                _glSupport.CheckExtension("GL_OES_compressed_ETC1_RGB8_texture") ||
+                _glSupport.CheckExtension("GL_OES_compressed_paletted_texture"))
+            {
+                // TODO: Add support for compression types other than pvrtc
+                _rsCapabilities.SetCapability(Capabilities.TextureCompression);
 
-				if ( _glSupport.CheckExtension( "GL_IMG_texture_compression_pvrtc" ) )
-					_rsCapabilities.SetCapability( Capabilities.TextureCompressionPVRTC );
-			}
+                if (_glSupport.CheckExtension("GL_IMG_texture_compression_pvrtc"))
+                    _rsCapabilities.SetCapability(Capabilities.TextureCompressionPVRTC);
+            }
 
-			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
-				_rsCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
+            if (_glSupport.CheckExtension("GL_EXT_texture_filter_anisotropic"))
+                _rsCapabilities.SetCapability(Capabilities.AnisotropicFiltering);
 
-			if ( _glSupport.CheckExtension( "GL_OES_framebuffer_object" ) )
-			{
-				_rsCapabilities.SetCapability( Capabilities.FrameBufferObjects );
-				_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
-			}
-			else
-			{
-				_rsCapabilities.SetCapability( Capabilities.PBuffer );
-				_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
-			}
+            if (_glSupport.CheckExtension("GL_OES_framebuffer_object"))
+            {
+                _rsCapabilities.SetCapability(Capabilities.FrameBufferObjects);
+                _rsCapabilities.SetCapability(Capabilities.HardwareRenderToTexture);
+            }
+            else
+            {
+                _rsCapabilities.SetCapability(Capabilities.PBuffer);
+                _rsCapabilities.SetCapability(Capabilities.HardwareRenderToTexture);
+            }
 
-			// Cube map
-			if ( _glSupport.CheckExtension( "GL_OES_texture_cube_map" ) )
-				_rsCapabilities.SetCapability( Capabilities.CubeMapping );
+            // Cube map
+            if (_glSupport.CheckExtension("GL_OES_texture_cube_map"))
+                _rsCapabilities.SetCapability(Capabilities.CubeMapping);
 
-			if ( _glSupport.CheckExtension( "GL_OES_stencil_wrap" ) )
-				_rsCapabilities.SetCapability( Capabilities.StencilWrap );
+            if (_glSupport.CheckExtension("GL_OES_stencil_wrap"))
+                _rsCapabilities.SetCapability(Capabilities.StencilWrap);
 
-			if ( _glSupport.CheckExtension( "GL_OES_blend_subtract" ) )
-				_rsCapabilities.SetCapability( Capabilities.AdvancedBlendOperations );
+            if (_glSupport.CheckExtension("GL_OES_blend_subtract"))
+                _rsCapabilities.SetCapability(Capabilities.AdvancedBlendOperations);
 
-			if ( _glSupport.CheckExtension( "GL_ANDROID_user_clip_plane" ) )
-				_rsCapabilities.SetCapability( Capabilities.UserClipPlanes );
+            if (_glSupport.CheckExtension("GL_ANDROID_user_clip_plane"))
+                _rsCapabilities.SetCapability(Capabilities.UserClipPlanes);
 
-			if ( _glSupport.CheckExtension( "GL_OES_texture3D" ) )
-				_rsCapabilities.SetCapability( Capabilities.Texture3D );
+            if (_glSupport.CheckExtension("GL_OES_texture3D"))
+                _rsCapabilities.SetCapability(Capabilities.Texture3D);
 
-			// GL always shares vertex and fragment texture units (for now?)
-			_rsCapabilities.VertexTextureUnitsShared = true;
-			// Hardware support mipmapping
-			_rsCapabilities.SetCapability( Capabilities.Automipmap );
+            // GL always shares vertex and fragment texture units (for now?)
+            _rsCapabilities.VertexTextureUnitsShared = true;
+            // Hardware support mipmapping
+            _rsCapabilities.SetCapability(Capabilities.Automipmap);
 
-			if ( _glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
-				_rsCapabilities.SetCapability( Capabilities.MipmapLODBias );
+            if (_glSupport.CheckExtension("GL_EXT_texture_lod_bias"))
+                _rsCapabilities.SetCapability(Capabilities.MipmapLODBias);
 
-			//blending support
-			_rsCapabilities.SetCapability( Capabilities.TextureBlending );
+            //blending support
+            _rsCapabilities.SetCapability(Capabilities.TextureBlending);
 
-			// DOT3 support is standard
-			_rsCapabilities.SetCapability( Capabilities.Dot3 );
+            // DOT3 support is standard
+            _rsCapabilities.SetCapability(Capabilities.Dot3);
 
-			/// Do this after extension function pointers are initialised as the extension
-			/// is used to probe further capabilities.
-			int rttMode = 0;
-			if ( ConfigOptions.ContainsKey( "RTT Preferred Mode" ) )
-			{
-				ConfigOption opt = ConfigOptions[ "RTT Preferred Mode" ];
-				// RTT Mode: 0 use whatever available, 1 use PBuffers, 2 force use copying
-				if ( opt.Value == "PBuffer" )
-				{
-					rttMode = 1;
-				}
-				else if ( opt.Value == "Copy" )
-				{
-					rttMode = 2;
-				}
-			}
+            // Point size
+            float ps = 0;
+            OpenGL.GetFloat(All.PointSizeMax, ref ps);
+            GLESConfig.GlCheckError(this);
+            _rsCapabilities.MaxPointSize = ps;
 
-			// Check for framebuffer object extension
-			//if ( _glSupport.CheckExtension( "GL_ANDROID_vertex_buffer_object" ) && ( rttMode < 1 ) )
-			{
-				/*
-				// Probe number of draw buffers
-				// Only makes sense with FBO support, so probe here
-				if ( _glSupport.CheckMinVersion( "2.0" ) ||
-					_glSupport.CheckExtension( "GL_ARB_draw_buffers" ) ||
-					_glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
-				{
-					int buffers;
-					Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
-					_rsCapabilities.MultiRenderTargetCount = (int)Utility.Min( buffers, Config.MaxMultipleRenderTargets );
-					// borrillis - This check moved inside GLFrameBufferObject where Gl.glDrawBuffers is called
-					//if ( !_glSupport.CheckMinVersion( "2.0" ) )
-					//{
-					//    //TODO: Before GL version 2.0, we need to get one of the extensions
-					//	if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
-					//	    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
-					//	else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
-					//	    Gl.glDrawBuffers = Gl.glDrawBuffersATI;
-					//}
-				}
-				 */
-				// Create FBO manager
-				LogManager.Instance.Write( "GLES: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
-				_rttManager = new GLESFBOManager( /* _glSupport, _glSupport.Vendor == "ATI" */);
-				_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
-			}
-			//else
-			{
-				/*
-				// Check GLSupport for PBuffer support
-				if ( _glSupport.SupportsPBuffers && rttMode < 2 )
-				{
-					// Use PBuffers
-					_rttManager = new GLPBRTTManager( _glSupport, primary );
-					LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
-					_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
-				}
-				else
-				{
-					// No pbuffer support either -- fallback to simplest copying from framebuffer
-					_rttManager = new GLCopyingRTTManager( _glSupport );
-					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
-					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
-				}
-				 */
-			}
+            // Point sprites
+            if (_glSupport.CheckExtension("GL_OES_point_sprite"))
+                _rsCapabilities.SetCapability(Capabilities.PointSprites);
 
-			// Point size
-			float ps = 0;
-			OpenGL.GetFloat( All.PointSizeMax, ref ps );
-			GLESConfig.GlCheckError( this );
-			_rsCapabilities.MaxPointSize = ps;
+            _rsCapabilities.SetCapability(Capabilities.PointExtendedParameters);
 
-			// Point sprites
-			if ( _glSupport.CheckExtension( "GL_OES_point_sprite" ) )
-				_rsCapabilities.SetCapability( Capabilities.PointSprites );
+            // UBYTE4 always supported
+            _rsCapabilities.SetCapability(Capabilities.VertexFormatUByte4);
 
-			_rsCapabilities.SetCapability( Capabilities.PointExtendedParameters );
+            // Infinite far plane always supported
+            _rsCapabilities.SetCapability(Capabilities.InfiniteFarPlane);
 
-			// UBYTE4 always supported
-			_rsCapabilities.SetCapability( Capabilities.VertexFormatUByte4 );
+            // hardware occlusion support
+            _rsCapabilities.SetCapability(Capabilities.HardwareOcculusion);
 
-			// Infinite far plane always supported
-			_rsCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
+            //// Check for Float textures
+            if (_glSupport.CheckExtension("GL_OES_texture_half_float"))
+                _rsCapabilities.SetCapability(Capabilities.TextureFloat);
 
-			// hardware occlusion support
-			_rsCapabilities.SetCapability( Capabilities.HardwareOcculusion );
-
-			//// Check for Float textures
-			if ( _glSupport.CheckExtension( "GL_OES_texture_half_float" ) )
-				_rsCapabilities.SetCapability( Capabilities.TextureFloat );
-
-			// Alpha to coverage always 'supported' when MSAA is available
-			// although card may ignore it if it doesn't specifically support A2C
-			_rsCapabilities.SetCapability( Capabilities.AlphaToCoverage );
-		}
-
+            // Alpha to coverage always 'supported' when MSAA is available
+            // although card may ignore it if it doesn't specifically support A2C
+            _rsCapabilities.SetCapability(Capabilities.AlphaToCoverage);
+        }
 		private void _oneTimeContextInitialization()
 		{
-			//OpenGL.Disable(All.Dither);
-			//GLESConfig.GlCheckError(this);
-			//int fsaa_active = 0;
-			//OpenGL.GetInteger(All.SampleBuffers, ref fsaa_active);
-			//GLESConfig.GlCheckError(this);
-			//if (fsaa_active != 0)
-			//{
-			//    OpenGL.Enable(All.Multisample);
-			//    GLESConfig.GlCheckError(this);
-			//    LogManager.Instance.Write("Using FSAA OpenGL ES.");
-			//}
+            //OpenGL.Disable(All.Dither);
+            //GLESConfig.GlCheckError(this);
+            //int fsaa_active = 0;
+            //OpenGL.GetInteger(All.SampleBuffers, ref fsaa_active);
+            //GLESConfig.GlCheckError(this);
+            //if (fsaa_active != 0)
+            //{
+            //    OpenGL.Enable(All.Multisample);
+            //    GLESConfig.GlCheckError(this);
+            //    LogManager.Instance.Write("Using FSAA OpenGL ES.");
+            //}
 		}
 
 		/// <summary>
@@ -882,9 +860,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
-			MultiRenderTarget reval = _rttManager.CreateMultiRenderTarget( name );
-			AttachRenderTarget( reval );
-			return reval;
+            MultiRenderTarget reval = _rttManager.CreateMultiRenderTarget(name);
+            AttachRenderTarget(reval);
+            return reval;
 		}
 
 		/// <summary>
@@ -910,32 +888,32 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			base.BeginGeometryCount();
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="program"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="program"></param>
 		public override void BindGpuProgram( GpuProgram program )
 		{
 			//not implemented
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="type"></param>
-		public override void UnbindGpuProgram( GpuProgramType type )
-		{
-			//not implemented
-		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="parms"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        public override void UnbindGpuProgram(GpuProgramType type)
+        {
+            //not implemented
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="parms"></param>
 		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
 		{
-			//not implemented
+            //not implemented
 		}
-
+        
 		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			throw new NotImplementedException();
@@ -943,69 +921,69 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override int ConvertColor( ColorEx color )
 		{
-			return color.ToABGR();
+            return color.ToABGR();
 		}
 
 		public override ColorEx ConvertColor( int color )
 		{
-			ColorEx colorEx;
-			colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
-			colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
-			colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
-			colorEx.b = (float)( ( color ) % 256 ) / 255;
-			return colorEx;
+            ColorEx colorEx;
+            colorEx.a = (float)((color >> 24) % 256) / 255;
+            colorEx.r = (float)((color >> 16) % 256) / 255;
+            colorEx.g = (float)((color >> 8) % 256) / 255;
+            colorEx.b = (float)((color) % 256) / 255;
+            return colorEx;
 		}
-		private All ConvertCompareFunction( CompareFunction func )
-		{
-			switch ( func )
-			{
-				case CompareFunction.AlwaysFail:
-					return All.Never;
-				case CompareFunction.AlwaysPass:
-					return All.Always;
-				case CompareFunction.Less:
-					return All.Less;
-				case CompareFunction.Equal:
-					return All.Equal;
-				case CompareFunction.LessEqual:
-					return All.Lequal;
-				case CompareFunction.NotEqual:
-					return All.Notequal;
-				case CompareFunction.GreaterEqual:
-					return All.Gequal;
-				case CompareFunction.Greater:
-					return All.Greater;
-				default:
-					// To keep compiler happy
-					return All.Always;
-			}
+        private All ConvertCompareFunction(CompareFunction func)
+        {
+            switch (func)
+            {
+                case CompareFunction.AlwaysFail:
+                    return All.Never;
+                case CompareFunction.AlwaysPass:
+                    return All.Always;
+                case CompareFunction.Less:
+                    return All.Less;
+                case CompareFunction.Equal:
+                    return All.Equal;
+                case CompareFunction.LessEqual:
+                    return All.Lequal;
+                case CompareFunction.NotEqual:
+                    return All.Notequal;
+                case CompareFunction.GreaterEqual:
+                    return All.Gequal;
+                case CompareFunction.Greater:
+                    return All.Greater;
+                default:
+                    // To keep compiler happy
+                    return All.Always;
+            }
+           
+        }
 
-		}
+        private All ConvertStencilOP(StencilOperation op, bool invert)
+        {
+            switch (op)
+            {
+                case StencilOperation.Keep:
+                    return All.Keep;
+                case StencilOperation.Zero:
+                    return All.Zero;
+                case StencilOperation.Replace:
+                    return All.Replace;
+                case StencilOperation.IncrementWrap:
+                case StencilOperation.Increment:
+                    return invert == true ? All.Decr : All.Incr;
+                case StencilOperation.DecrementWrap:
+                case StencilOperation.Decrement:
+                    return invert == true ? All.Incr : All.Decr;
+                case StencilOperation.Invert:
+                    return All.Invert;
+                default:
+                // to keep compiler happy
+                    return All.Keep;
+            }
 
-		private All ConvertStencilOP( StencilOperation op, bool invert )
-		{
-			switch ( op )
-			{
-				case StencilOperation.Keep:
-					return All.Keep;
-				case StencilOperation.Zero:
-					return All.Zero;
-				case StencilOperation.Replace:
-					return All.Replace;
-				case StencilOperation.IncrementWrap:
-				case StencilOperation.Increment:
-					return invert == true ? All.Decr : All.Incr;
-				case StencilOperation.DecrementWrap:
-				case StencilOperation.Decrement:
-					return invert == true ? All.Incr : All.Decr;
-				case StencilOperation.Invert:
-					return All.Invert;
-				default:
-					// to keep compiler happy
-					return All.Keep;
-			}
-
-		}
+        }
 		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
 		{
 			throw new NotImplementedException();
@@ -1036,7 +1014,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				throw new NotImplementedException();
+                SetDepthBias(value); 
 			}
 		}
 
@@ -1199,30 +1177,30 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			set
 			{
-				if ( _rsCapabilities.HasCapability( Capabilities.PointSprites ) )
-					return;
+                if (_rsCapabilities.HasCapability(Capabilities.PointSprites))
+                    return;
 
-				GLESConfig.GlCheckError( this );
-				if ( value )
-				{
-					OpenGL.Enable( All.PointSpriteOes );
-					GLESConfig.GlCheckError( this );
-				}
-				else
-				{
-					OpenGL.Disable( All.PointSpriteOes );
-					GLESConfig.GlCheckError( this );
-				}
+                GLESConfig.GlCheckError(this);
+                if (value)
+                {
+                    OpenGL.Enable(All.PointSpriteOes);
+                    GLESConfig.GlCheckError(this);
+                }
+                else
+                {
+                    OpenGL.Disable(All.PointSpriteOes);
+                    GLESConfig.GlCheckError(this);
+                }
 
-				// Set sprite texture coord generation
-				// Don't offer this as an option since D3D links it to sprite enabled
-				for ( int i = 0; i < _fixedFunctionTextureUnits; i++ )
-				{
-					ActivateGLTextureUnit( i );
-					OpenGL.TexEnv( All.PointSpriteOes, All.CoordReplaceOes,
-						value == true ? (int)All.True : (int)All.False );
-				}
-				ActivateGLTextureUnit( 0 );
+                // Set sprite texture coord generation
+                // Don't offer this as an option since D3D links it to sprite enabled
+                for(int i = 0; i < _fixedFunctionTextureUnits;i++)
+                {
+                    ActivateGLTextureUnit(i);
+                    OpenGL.TexEnv(All.PointSpriteOes, All.CoordReplaceOes,
+                        value == true ? (int)All.True : (int)All.False);
+                }
+                ActivateGLTextureUnit(0);
 			}
 		}
 
@@ -1242,29 +1220,31 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				throw new NotImplementedException();
+                throw new NotImplementedException();
 			}
 			set
 			{
-				float[] mat = new float[ 16 ];
-				MakeGLMatrix( ref mat, value );
-				if ( activeRenderTarget.RequiresTextureFlipping )
-				{
-					mat[ 1 ] = -mat[ 1 ];
-					mat[ 5 ] = -mat[ 5 ];
-					mat[ 9 ] = -mat[ 9 ];
-					mat[ 13 ] = -mat[ 13 ];
-				}
-				OpenGL.MatrixMode( All.Projection );
-				GLESConfig.GlCheckError( this );
-				OpenGL.LoadMatrix( mat );
-				GLESConfig.GlCheckError( this );
+                float[] mat = new float[16];
+                MakeGLMatrix(ref mat, value);
+                if (activeRenderTarget.RequiresTextureFlipping)
+                {
+                    mat[1] = -mat[1];
+                    mat[5] = -mat[5];
+                    mat[9] = -mat[9];
+                    mat[13] = -mat[13];
+                }
+                OpenGL.MatrixMode(All.Projection);
+                GLESConfig.GlCheckError(this);
+                OpenGL.LoadMatrix(mat);
+                GLESConfig.GlCheckError(this);
 
-				OpenGL.MatrixMode( All.Modelview );
-				GLESConfig.GlCheckError( this );
+                OpenGL.MatrixMode(All.Modelview);
+                GLESConfig.GlCheckError(this);
 
-				if ( _clipPlanes.Count > 0 )
-					_clipPlanesDirty = true;
+                if (_clipPlanes.Count > 0)
+                    _clipPlanesDirty = true;
+
+               
 			}
 		}
 
@@ -1272,14 +1252,217 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			base.RemoveRenderTargets();
 		}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="op"></param>
 		public override void Render( RenderOperation op )
 		{
-			LogManager.Instance.Write( "[OGLES] [DEBUG] - Render()" );
-			base.Render( op );
-		}
+            GLESConfig.GlCheckError(this);
+            base.Render(op);
 
-		public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
+            IntPtr pBufferData = IntPtr.Zero;
+            bool multitexturing = (_rsCapabilities.TextureUnitCount > 1);
+
+            List<VertexElement> decl =
+                 op.vertexData.vertexDeclaration.Elements;
+
+            List<int> attribsBound = new List<int>();
+            for (int i = 0; i < decl.Count; i++)
+            {
+                VertexElement elem = decl[i];
+                if (!op.vertexData.vertexBufferBinding.Bindings.ContainsKey(elem.Source))
+                    continue; //skip unbound elements
+
+                HardwareVertexBuffer vertexBuffer =
+                    op.vertexData.vertexBufferBinding.GetBuffer(elem.Source);
+                if (_rsCapabilities.HasCapability(Capabilities.FrameBufferObjects))
+                {
+                    OpenGL.BindBuffer(All.ArrayBuffer, ((GLESHardwareVertexBuffer)vertexBuffer).BufferID);
+                    GLESConfig.GlCheckError(this);
+                    pBufferData = VBOBufferOffset(elem.Offset);
+                }
+                else
+                {
+                    pBufferData = ((GLESDefaultHardwareVertexBuffer)vertexBuffer).GetData(elem.Offset);
+                }
+
+                if (op.vertexData.vertexStart != 0)
+                {
+                    unsafe
+                    {
+                        pBufferData = (IntPtr)((byte*)pBufferData + op.vertexData.vertexStart + vertexBuffer.VertexSize);
+                    }
+                }
+
+                int unit = 0;
+                VertexElementSemantic sem = elem.Semantic;
+                GLESConfig.GlCheckError(this);
+                // fixed-function & builtin attribute support
+                switch (sem)
+                {
+                    case VertexElementSemantic.Position:
+                        OpenGL.VertexPointer(VertexElement.GetTypeSize(elem.Type), GLESHardwareBufferManager.GetGLType(elem.Type),
+                            vertexBuffer.VertexSize, pBufferData);
+                        GLESConfig.GlCheckError(this);
+                        OpenGL.EnableClientState(All.VertexArray);
+                        GLESConfig.GlCheckError(this);
+                        break;
+                    case VertexElementSemantic.Normal:
+                        OpenGL.NormalPointer(GLESHardwareBufferManager.GetGLType(elem.Type), vertexBuffer.VertexSize, pBufferData);
+                        GLESConfig.GlCheckError(this);
+                        OpenGL.EnableClientState(All.NormalArray);
+                        GLESConfig.GlCheckError(this);
+                        break;
+                    case VertexElementSemantic.Diffuse:
+                        OpenGL.ColorPointer(4, GLESHardwareBufferManager.GetGLType(elem.Type), vertexBuffer.VertexSize, pBufferData);
+                        GLESConfig.GlCheckError(this);
+                        OpenGL.EnableClientState(All.ColorArray);
+                        GLESConfig.GlCheckError(this);
+                        break;
+                    case VertexElementSemantic.Specular:
+                        break;
+                    case VertexElementSemantic.TexCoords:
+                        {
+                            // fixed function matching to units based on tex_coord_set
+                            for (unit = 0; unit < disabledTexUnitsFrom; i++)
+                            {
+                                // Only set this texture unit's texcoord pointer if it
+                                // is supposed to be using this element's index
+                                if (_textureCoodIndex[i] == elem.Index && i < _fixedFunctionTextureUnits)
+                                {
+                                    GLESConfig.GlCheckError(this);
+                                    if (multitexturing)
+                                    {
+                                        OpenGL.ClientActiveTexture(All.Texture0 + unit);
+                                    }
+                                    GLESConfig.GlCheckError(this);
+                                    OpenGL.TexCoordPointer(VertexElement.GetTypeCount(elem.Type),
+                                        GLESHardwareBufferManager.GetGLType(elem.Type),
+                                        vertexBuffer.VertexSize, pBufferData);
+                                    GLESConfig.GlCheckError(this);
+                                    OpenGL.EnableClientState(All.TextureCoordArray);
+                                    GLESConfig.GlCheckError(this);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (multitexturing)
+                OpenGL.ClientActiveTexture(All.Texture0);
+            GLESConfig.GlCheckError(this);
+
+            // Find the correct type to render
+            All primType = 0;
+            switch (op.operationType)
+            {
+                case OperationType.PointList:
+                    primType = All.Points;
+                    break;
+                case OperationType.LineList:
+                    primType = All.Lines;
+                    break;
+                case OperationType.LineStrip:
+                    primType = All.LineStrip;
+                    break;
+                default:
+                case OperationType.TriangleList:
+                    primType = All.Triangles;
+                    break;
+                case OperationType.TriangleStrip:
+                    primType = All.TriangleStrip;
+                    break;
+                case OperationType.TriangleFan:
+                    primType = All.TriangleFan;
+                    break;
+            }
+
+            if (op.useIndices)
+            {
+                if (_rsCapabilities.HasCapability(Capabilities.FrameBufferObjects))
+                {
+                    OpenGL.BindBuffer(All.ElementArrayBuffer, ((GLESHardwareIndexBuffer)op.indexData.indexBuffer).BufferID);
+                    GLESConfig.GlCheckError(this);
+                    pBufferData = VBOBufferOffset(op.indexData.indexStart * op.indexData.indexBuffer.IndexSize);
+                }
+                else
+                {
+                    pBufferData = ((GLESDefaultHardwareIndexBuffer)op.indexData.indexBuffer).GetData(op.indexData.indexStart * op.indexData.indexBuffer.IndexSize);
+                }
+
+                All indexType = (op.indexData.indexBuffer.Type == IndexType.Size16) ? All.UnsignedShort : All.UnsignedByte;
+
+                do
+                {
+                    if (derivedDepthBias && currentPassIterationCount > 0)
+                    {
+                        SetDepthBias(derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationCount,
+                             derivedDepthBiasSlopeScale);
+                    }
+                    GLESConfig.GlCheckError(this);
+                    OpenGL.DrawElements((_polygonMode == GLFill) ? primType : (All)_polygonMode, op.indexData.indexCount, indexType, pBufferData);
+                    GLESConfig.GlCheckError(this);
+                }
+                while (UpdatePassIterationRenderState());
+            }
+            else
+            {
+                do
+                {
+                    if (derivedDepthBias && currentPassIterationCount > 0)
+                    {
+                        SetDepthBias(derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationCount, derivedDepthBiasSlopeScale);
+                    }
+                    OpenGL.DrawArrays((_polygonMode == GLFill) ? primType : (All)_polygonMode, 0, op.vertexData.vertexCount);
+                    GLESConfig.GlCheckError(this);
+                }
+                while (UpdatePassIterationRenderState());
+            }
+
+            OpenGL.DisableClientState(All.VertexArray);
+            GLESConfig.GlCheckError(this);
+            // Only valid up to GL_MAX_TEXTURE_UNITS, which is recorded in mFixedFunctionTextureUnits
+            if (multitexturing)
+            {
+                for (int i = 0; i < _fixedFunctionTextureUnits; i++)
+                {
+                    OpenGL.ClientActiveTexture(All.Texture0 + i);
+                    OpenGL.DisableClientState(All.TextureCoordArray);
+                }
+                OpenGL.ClientActiveTexture(All.Texture0);
+            }
+            else
+            {
+                OpenGL.DisableClientState(All.TextureCoordArray);
+            }
+            GLESConfig.GlCheckError(this);
+            OpenGL.DisableClientState(All.NormalArray);
+            GLESConfig.GlCheckError(this);
+            OpenGL.DisableClientState(All.ColorArray);
+            GLESConfig.GlCheckError(this);
+            OpenGL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+            GLESConfig.GlCheckError(this);
+		}
+        public override void SetDepthBias(float constantBias, float slopeScaleBias)
+        {
+            if (constantBias != 0 || slopeScaleBias != 0)
+            {
+                OpenGL.Enable(All.PolygonOffsetFill);
+                GLESConfig.GlCheckError(this);
+                OpenGL.PolygonOffset(-slopeScaleBias, -constantBias);
+                GLESConfig.GlCheckError(this);
+            }
+            else
+            {
+                OpenGL.Disable(All.PolygonOffsetFill);
+                GLESConfig.GlCheckError(this);
+            }
+        }
+        public override void SetAlphaRejectSettings(CompareFunction func, int val, bool alphaToCoverage)
 		{
 			throw new NotImplementedException();
 		}
@@ -1291,92 +1474,88 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void UseLights( Core.Collections.LightList lightList, int limit )
 		{
-			// Save previous modelview
-			OpenGL.MatrixMode( All.Modelview );
-			GLESConfig.GlCheckError( this );
-			OpenGL.PushMatrix();
+            // Save previous modelview
+            OpenGL.MatrixMode(All.Modelview);
+            GLESConfig.GlCheckError(this);
+            OpenGL.PushMatrix();
 
-			// Just load view matrix (identity world)
-			float[] mat = new float[ 16 ];
-			MakeGLMatrix( ref mat, _ViewMatrix );
-			OpenGL.LoadMatrix( mat );
-			GLESConfig.GlCheckError( this );
-			int num = 0;
-			for ( int i = 0; i < lightList.Count && i < limit; i++, num++ )
-			{
-				SetGLLight( num, lightList[ i ] );
-				_lights[ num ] = lightList[ i ];
-			}
+            // Just load view matrix (identity world)
+            float[] mat = new float[16];
+            MakeGLMatrix(ref mat, _ViewMatrix);
+            OpenGL.LoadMatrix(mat);
+            GLESConfig.GlCheckError(this);
+            int num = 0;
+            for (int i = 0; i < lightList.Count && i < limit; i++, num++)
+            {
+                SetGLLight(num, lightList[i]);
+                _lights[num] = lightList[i];
+            }
 
-			// Disable extra lights
-			for ( ; num < numCurrentLights; ++num )
-			{
-				SetGLLight( num, null );
-				_lights[ num ] = null;
-			}
-			numCurrentLights = System.Math.Min( limit, lightList.Count );
+            // Disable extra lights
+            for (; num < numCurrentLights; ++num)
+            {
+                SetGLLight(num, null);
+                _lights[num] = null;
+            }
+            numCurrentLights = System.Math.Min(limit, lightList.Count);
 
-			SetLights();
-			// restore previous
-			OpenGL.PopMatrix();
-			GLESConfig.GlCheckError( this );
+            SetLights();
+            // restore previous
+            OpenGL.PopMatrix();
+            GLESConfig.GlCheckError(this);
 		}
 
-		public override void SetViewport( Viewport viewport )
+        public override void SetViewport(Viewport viewport)
 		{
-			if ( viewport != activeViewport || viewport.IsUpdated )
-			{
-				RenderTarget target = viewport.Target;
-				SetRenderTarget( target );
-				activeViewport = viewport;
+            if (viewport != activeViewport || viewport.IsUpdated)
+            {
+                RenderTarget target = viewport.Target;
+                SetRenderTarget(target);
+                activeViewport = viewport;
 
-				int x, y, w, h;
-				w = viewport.ActualWidth;
-				h = viewport.ActualHeight;
-				x = viewport.ActualLeft;
-				y = viewport.ActualTop;
+                int x, y, w, h;
+                w = viewport.ActualWidth;
+                h = viewport.ActualHeight;
+                x = viewport.ActualLeft;
+                y = viewport.ActualTop;
 
-				if ( !target.RequiresTextureFlipping )
-				{
-					// Convert "upper-left" corner to "lower-left"
-					y = target.Height - h - y;
-				}
+                if (!target.RequiresTextureFlipping)
+                {
+                    // Convert "upper-left" corner to "lower-left"
+                    y = target.Height - h - y;
+                }
 
-				OpenGL.Viewport( x, y, w, h );
-				GLESConfig.GlCheckError( this );
-				// Configure the viewport clipping
-				OpenGL.Scissor( x, y, w, h );
-				GLESConfig.GlCheckError( this );
-				viewport.IsUpdated = false;
+                OpenGL.Viewport(x, y, w, h);
+                GLESConfig.GlCheckError(this);
+                // Configure the viewport clipping
+                OpenGL.Scissor(x, y, w, h);
+                GLESConfig.GlCheckError(this);
+                viewport.IsUpdated = false;
 
-			}
+            }
 		}
+        private void SetRenderTarget(RenderTarget target)
+        {
+            if (activeViewport != null)
+                _rttManager.Unbind(activeRenderTarget);
 
-		private void SetRenderTarget( RenderTarget target )
-		{
-			Contract.RequiresNotNull( _rttManager, "_rttManager" );
-			if ( activeViewport != null )
-				_rttManager.Unbind( activeRenderTarget );
-
-			// Switch context if different from current one
-			GLESContext newContext = null;
-			newContext = (GLESContext)target[ "GLCONTEXT" ];
-			if ( newContext != null && this._currentContext != newContext )
-			{
-				SwitchContext( newContext );
-			}
-			// Bind frame buffer object
-			_rttManager.Bind( target );
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="context"></param>
-		private void SwitchContext( GLESContext context )
-		{
-		}
-
+            // Switch context if different from current one
+            GLESContext newContext = null;
+            newContext = (GLESContext)target["GLCONTEXT"];
+            if (newContext != null && this._currentContext != newContext)
+            {
+                SwitchContext(newContext);
+            }
+            // Bind frame buffer object
+            _rttManager.Bind(target);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        private void SwitchContext(GLESContext context)
+        {
+        }
 		public override void SetWorldMatrices( Matrix4[] matrices, ushort count )
 		{
 			base.SetWorldMatrices( matrices, count );
@@ -1391,10 +1570,38 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			throw new NotImplementedException();
 		}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="xform"></param>
 		public override void SetTextureMatrix( int stage, Matrix4 xform )
 		{
-			throw new NotImplementedException();
+            if (stage >= _fixedFunctionTextureUnits)
+            {
+                //can't do this
+                return;
+            }
+            if (!ActivateGLTextureUnit(stage))
+                return;
+
+            float[] mat = new float[16];
+            MakeGLMatrix(ref mat, xform);
+            OpenGL.MatrixMode(All.Texture);
+            GLESConfig.GlCheckError(this);
+
+            // Load this matrix in
+            OpenGL.LoadMatrix(mat);
+            GLESConfig.GlCheckError(this);
+
+            if (_useAutoTextureMatrix)
+            {
+                // Concat auto matrix
+                OpenGL.MultMatrix(_autoTextureMatrix);
+            }
+            OpenGL.MatrixMode(All.Modelview);
+            GLESConfig.GlCheckError(this);
+            ActivateGLTextureUnit(0);
 		}
 
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
@@ -1406,72 +1613,72 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			throw new NotImplementedException();
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="size"></param>
-		/// <param name="attenuationEnabled"></param>
-		/// <param name="constant"></param>
-		/// <param name="linear"></param>
-		/// <param name="quadratic"></param>
-		/// <param name="minSize"></param>
-		/// <param name="maxSize"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="attenuationEnabled"></param>
+        /// <param name="constant"></param>
+        /// <param name="linear"></param>
+        /// <param name="quadratic"></param>
+        /// <param name="minSize"></param>
+        /// <param name="maxSize"></param>
 		public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
 		{
-			GLESConfig.GlCheckError( this );
-			if ( attenuationEnabled &&
-				_rsCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
-			{
-				// Point size is still calculated in pixels even when attenuation is
-				// enabled, which is pretty awkward, since you typically want a viewport
-				// independent size if you're looking for attenuation.
-				// So, scale the point size up by viewport size (this is equivalent to
-				// what D3D does as standard)
-				Real adjSize = size * activeViewport.ActualHeight;
-				Real adjMinSize = minSize * activeViewport.ActualHeight;
-				Real adjMaxSize = 0;
-				if ( maxSize == 0 )
-					adjMaxSize = _rsCapabilities.MaxPointSize;
-				else
-					adjMaxSize = maxSize * activeViewport.ActualHeight;
+            GLESConfig.GlCheckError(this);
+            if (attenuationEnabled &&
+                _rsCapabilities.HasCapability(Capabilities.PointExtendedParameters))
+            {
+                // Point size is still calculated in pixels even when attenuation is
+                // enabled, which is pretty awkward, since you typically want a viewport
+                // independent size if you're looking for attenuation.
+                // So, scale the point size up by viewport size (this is equivalent to
+                // what D3D does as standard)
+                Real adjSize = size * activeViewport.ActualHeight;
+                Real adjMinSize = minSize * activeViewport.ActualHeight;
+                Real adjMaxSize = 0;
+                if (maxSize == 0)
+                    adjMaxSize = _rsCapabilities.MaxPointSize;
+                else
+                    adjMaxSize = maxSize * activeViewport.ActualHeight;
 
-				OpenGL.PointSize( adjSize );
+                OpenGL.PointSize(adjSize);
 
-				// XXX: why do I need this for results to be consistent with D3D?
-				// Equations are supposedly the same once you factor in vp height
-				Real correction = 0.005;
-				//scaling required
-				float[] val = new float[]{constant,linear * correction,
-					quadratic * correction,1};
-				OpenGL.PointParameter( All.PointDistanceAttenuation, val );
-				GLESConfig.GlCheckError( this );
-				OpenGL.PointParameter( All.PointSizeMin, adjMinSize );
-				GLESConfig.GlCheckError( this );
-				OpenGL.PointParameter( All.PointSizeMax, adjMaxSize );
-				GLESConfig.GlCheckError( this );
-			}
-			else
-			{
-				// no scaling required
-				// GL has no disabled flag for this so just set to constant
-				OpenGL.PointSize( size );
-				GLESConfig.GlCheckError( this );
+                // XXX: why do I need this for results to be consistent with D3D?
+                // Equations are supposedly the same once you factor in vp height
+                Real correction = 0.005;
+                //scaling required
+                float[] val = new float[]{constant,linear * correction,
+                    quadratic * correction,1};
+                OpenGL.PointParameter(All.PointDistanceAttenuation, val);
+                GLESConfig.GlCheckError(this);
+                OpenGL.PointParameter(All.PointSizeMin, adjMinSize);
+                GLESConfig.GlCheckError(this);
+                OpenGL.PointParameter(All.PointSizeMax, adjMaxSize);
+                GLESConfig.GlCheckError(this);
+            }
+            else
+            {
+                // no scaling required
+                // GL has no disabled flag for this so just set to constant
+                OpenGL.PointSize(size);
+                GLESConfig.GlCheckError(this);
 
-				if ( _rsCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
-				{
-					float[] val = new float[] { 1, 0, 0, 1 };
-					OpenGL.PointParameter( All.PointDistanceAttenuation, val );
-					GLESConfig.GlCheckError( this );
-					OpenGL.PointParameter( All.PointSizeMin, minSize );
-					GLESConfig.GlCheckError( this );
-					if ( maxSize == 0.0f )
-					{
-						maxSize = _rsCapabilities.MaxPointSize;
-					}
-					OpenGL.PointParameter( All.PointSizeMax, maxSize );
-					GLESConfig.GlCheckError( this );
-				}
-			}
+                if (_rsCapabilities.HasCapability(Capabilities.PointExtendedParameters))
+                {
+                    float[] val = new float[] { 1, 0, 0, 1 };
+                    OpenGL.PointParameter(All.PointDistanceAttenuation, val);
+                    GLESConfig.GlCheckError(this);
+                    OpenGL.PointParameter(All.PointSizeMin, minSize);
+                    GLESConfig.GlCheckError(this);
+                    if (maxSize == 0.0f)
+                    {
+                        maxSize = _rsCapabilities.MaxPointSize;
+                    }
+                    OpenGL.PointParameter(All.PointSizeMax, maxSize);
+                    GLESConfig.GlCheckError(this);
+                }
+            }
 		}
 
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
@@ -1493,161 +1700,488 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			throw new NotImplementedException();
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="ambient"></param>
-		/// <param name="diffuse"></param>
-		/// <param name="specular"></param>
-		/// <param name="emissive"></param>
-		/// <param name="shininess"></param>
-		/// <param name="tracking"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ambient"></param>
+        /// <param name="diffuse"></param>
+        /// <param name="specular"></param>
+        /// <param name="emissive"></param>
+        /// <param name="shininess"></param>
+        /// <param name="tracking"></param>
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
 		{
-			// Track vertex colour
-			if ( tracking != TrackVertexColor.None )
-			{
-				All gt = All.Diffuse;
-				// There are actually 15 different combinations for tracking, of which
-				// GL only supports the most used 5. This means that we have to do some
-				// magic to find the best match. NOTE:
-				// GL_AMBIENT_AND_DIFFUSE != GL_AMBIENT | GL__DIFFUSE
-				if ( ( tracking & TrackVertexColor.Ambient ) != 0 )
-				{
-					if ( ( tracking & TrackVertexColor.Diffuse ) != 0 )
-					{
-						gt = All.AmbientAndDiffuse;
-					}
-					else
-					{
-						gt = All.Ambient;
-					}
-				}
-				else if ( ( tracking & TrackVertexColor.Diffuse ) != 0 )
-				{
-					gt = All.Diffuse;
-				}
-				else if ( ( tracking & TrackVertexColor.Specular ) != 0 )
-				{
-					gt = All.Emission;
-				}
-				OpenGL.Enable( gt );
-				GLESConfig.GlCheckError( this );
-				OpenGL.Enable( All.ColorMaterial );
-				GLESConfig.GlCheckError( this );
-			}
-			else
-			{
-				OpenGL.Disable( All.ColorMaterial );
-			}
+            // Track vertex colour
+            if (tracking != TrackVertexColor.None)
+            {
+                All gt = All.Diffuse;
+                // There are actually 15 different combinations for tracking, of which
+                // GL only supports the most used 5. This means that we have to do some
+                // magic to find the best match. NOTE:
+                // GL_AMBIENT_AND_DIFFUSE != GL_AMBIENT | GL__DIFFUSE
+                if ((tracking & TrackVertexColor.Ambient) != 0)
+                {
+                    if ((tracking & TrackVertexColor.Diffuse) != 0)
+                    {
+                        gt = All.AmbientAndDiffuse;
+                    }
+                    else
+                    {
+                        gt = All.Ambient;
+                    }
+                }
+                else if ((tracking & TrackVertexColor.Diffuse) != 0)
+                {
+                    gt = All.Diffuse;
+                }
+                else if ((tracking & TrackVertexColor.Specular) != 0)
+                {
+                    gt = All.Emission;
+                }
+                OpenGL.Enable(gt);
+                GLESConfig.GlCheckError(this);
+                OpenGL.Enable(All.ColorMaterial);
+                GLESConfig.GlCheckError(this);
+            }
+            else
+            {
+                OpenGL.Disable(All.ColorMaterial);
+            }
 
-			// XXX Cache previous values?
-			// XXX Front or Front and Back?
+            // XXX Cache previous values?
+            // XXX Front or Front and Back?
 
-			float[] f4Val = new float[] { diffuse.r, diffuse.g, diffuse.b, diffuse.a };
-			OpenGL.Material( All.FrontAndBack, All.Diffuse, f4Val );
-			GLESConfig.GlCheckError( this );
-			f4Val[ 0 ] = ambient.r;
-			f4Val[ 1 ] = ambient.g;
-			f4Val[ 2 ] = ambient.b;
-			f4Val[ 3 ] = ambient.a;
-			OpenGL.Material( All.FrontAndBack, All.Ambient, f4Val );
-			GLESConfig.GlCheckError( this );
-			f4Val[ 0 ] = specular.r;
-			f4Val[ 1 ] = specular.g;
-			f4Val[ 2 ] = specular.b;
-			f4Val[ 3 ] = specular.a;
-			OpenGL.Material( All.FrontAndBack, All.Specular, f4Val );
-			GLESConfig.GlCheckError( this );
-			f4Val[ 0 ] = emissive.r;
-			f4Val[ 1 ] = emissive.g;
-			f4Val[ 2 ] = emissive.b;
-			f4Val[ 3 ] = emissive.a;
-			OpenGL.Material( All.FrontAndBack, All.Emission, f4Val );
-			GLESConfig.GlCheckError( this );
-			OpenGL.Material( All.FrontAndBack, All.Shininess, shininess );
-			GLESConfig.GlCheckError( this );
+            float[] f4Val = new float[] { diffuse.r, diffuse.g, diffuse.b, diffuse.a };
+            OpenGL.Material(All.FrontAndBack, All.Diffuse, f4Val);
+            GLESConfig.GlCheckError(this);
+            f4Val[0] = ambient.r;
+            f4Val[1] = ambient.g;
+            f4Val[2] = ambient.b;
+            f4Val[3] = ambient.a;
+            OpenGL.Material(All.FrontAndBack, All.Ambient, f4Val);
+            GLESConfig.GlCheckError(this);
+            f4Val[0] = specular.r;
+            f4Val[1] = specular.g;
+            f4Val[2] = specular.b;
+            f4Val[3] = specular.a;
+            OpenGL.Material(All.FrontAndBack, All.Specular, f4Val);
+            GLESConfig.GlCheckError(this);
+            f4Val[0] = emissive.r;
+            f4Val[1] = emissive.g;
+            f4Val[2] = emissive.b;
+            f4Val[3] = emissive.a;
+            OpenGL.Material(All.FrontAndBack, All.Emission, f4Val);
+            GLESConfig.GlCheckError(this);
+            OpenGL.Material(All.FrontAndBack, All.Shininess, shininess);
+            GLESConfig.GlCheckError(this);
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="enabled"></param>
-		/// <param name="texture"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="enabled"></param>
+        /// <param name="texture"></param>
 		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
-			GLESConfig.GlCheckError( this );
+            GLESConfig.GlCheckError(this);
 
-			// TODO We need control texture types?????
+            // TODO We need control texture types?????
 
-			GLESTexture tex = texture as GLESTexture;
+            GLESTexture tex = texture as GLESTexture;
 
-			if ( !ActivateGLTextureUnit( stage ) )
-				return;
+            if (!ActivateGLTextureUnit(stage))
+                return;
 
-			if ( enabled )
-			{
-				if ( tex != null )
-				{
-					// note used
-					tex.Touch();
-				}
-				OpenGL.Enable( All.Texture2D );
-				GLESConfig.GlCheckError( this );
-				// Store the number of mipmaps
-				_textureMimmapCount = tex.MipmapCount;
+            if (enabled)
+            {
+                if (tex != null)
+                {
+                    // note used
+                    tex.Touch();
+                }
+                OpenGL.Enable(All.Texture2D);
+                GLESConfig.GlCheckError(this);
+                // Store the number of mipmaps
+                _textureMimmapCount = tex.MipmapCount;
 
-				if ( tex != null )
-				{
-					OpenGL.BindTexture( All.Texture2D, tex.TextureID );
-					GLESConfig.GlCheckError( this );
-				}
-				else
-				{
-					OpenGL.BindTexture( All.Texture2D, ( (GLESTextureManager)textureManager ).WarningTextureID );
-					GLESConfig.GlCheckError( this );
-				}
-			}//end if enabled
-			else
-			{
-				OpenGL.Enable( All.Texture2D );
-				OpenGL.Disable( All.Texture2D );
-				GLESConfig.GlCheckError( this );
+                if (tex != null)
+                {
+                    OpenGL.BindTexture(All.Texture2D, tex.TextureID);
+                    GLESConfig.GlCheckError(this);
+                }
+                else
+                {
+                    OpenGL.BindTexture(All.Texture2D, ((GLESTextureManager)textureManager).WarningTextureID);
+                    GLESConfig.GlCheckError(this);
+                }
+            }//end if enabled
+            else
+            {
+                OpenGL.Enable(All.Texture2D);
+                OpenGL.Disable(All.Texture2D);
+                GLESConfig.GlCheckError(this);
 
-				OpenGL.TexEnv( All.TextureEnv, All.TextureEnvMode, (int)All.Modulate );
-				GLESConfig.GlCheckError( this );
+                OpenGL.TexEnv(All.TextureEnv, All.TextureEnvMode, (int)All.Modulate);
+                GLESConfig.GlCheckError(this);
 
-				// bind zero texture
-				OpenGL.BindTexture( All.Texture2D, 0 );
-				GLESConfig.GlCheckError( this );
-			}
+                // bind zero texture
+                OpenGL.BindTexture(All.Texture2D, 0);
+                GLESConfig.GlCheckError(this);
+            }
 
-			ActivateGLTextureUnit( 0 );
+            ActivateGLTextureUnit(0);
 		}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="texAddressingMode"></param>
 		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
 		{
-			throw new NotImplementedException();
-		}
+            if (!ActivateGLTextureUnit(stage))
+                return;
 
-		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
+            OpenGL.TexParameter(All.Texture2D, All.TextureWrapS, (int)GetTextureAddressingMode(texAddressingMode));
+            GLESConfig.GlCheckError(this);
+
+            OpenGL.TexParameter(All.Texture2D, All.TextureWrapT, (int)GetTextureAddressingMode(texAddressingMode));
+            GLESConfig.GlCheckError(this);
+
+            ActivateGLTextureUnit(0);
+		}
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="unit"></param>
+        ///// <param name="bias"></param>
+        //public void SetTextureMipmapBias(int unit, float bias)
+        //{
+        //    if (_rsCapabilities.HasCapability(Capabilities.MipmapLODBias))
+        //    {
+        //        if (ActivateGLTextureUnit(unit))
+        //        {
+        //            OpenGL.TexEnv(All.Texturef
+        //        }
+        //    }
+        //}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="blendMode"></param>
+		public override void SetTextureBlendMode( int stage, LayerBlendModeEx bm )
 		{
-			throw new NotImplementedException();
-		}
+            if (stage >= _fixedFunctionTextureUnits)
+            {
+                //cant do this
+                return; 
+            }
+            // Check to see if blending is supported
+            if (!_rsCapabilities.HasCapability(Capabilities.TextureBlending))
+                return;
 
+            All src1op, src2op, cmd;
+            float[] cv1 = new float[4];
+            float[] cv2 = new float[4];
+
+            if (bm.blendType == LayerBlendType.Color)
+            {
+                cv1[0] = bm.colorArg1.r;
+                cv1[1] = bm.colorArg1.g;
+                cv1[2] = bm.colorArg1.b;
+                cv1[3] = bm.colorArg1.a;
+                manualBlendColors[stage,0] = bm.colorArg1;
+                
+                cv2[0] = bm.colorArg2.r;
+                cv2[1] = bm.colorArg2.g;
+                cv2[2] = bm.colorArg2.b;
+                cv2[3] = bm.colorArg2.a;
+                manualBlendColors[stage,1] = bm.colorArg2;
+            }
+            if (bm.blendType == LayerBlendType.Alpha)
+            {
+                cv1[0] = manualBlendColors[stage,0].r;
+                cv1[1] = manualBlendColors[stage,0].g;
+                cv1[2] = manualBlendColors[stage,0].b;
+                cv1[3] = bm.alphaArg1;
+
+                cv2[0] = manualBlendColors[stage,1].r;
+                cv2[1] = manualBlendColors[stage,1].g;
+                cv2[2] = manualBlendColors[stage,1].b;
+                cv2[3] = bm.alphaArg2;
+            }
+            switch (bm.source1)
+            {
+                case LayerBlendSource.Current:
+                    src1op = All.Previous;
+                    break;
+                case LayerBlendSource.Texture:
+                    src1op = All.Texture;
+                    break;
+                case LayerBlendSource.Manual:
+                    src1op = All.Constant;
+                    break;
+                case LayerBlendSource.Diffuse:
+                    src1op = All.PrimaryColor;
+                    break;
+                case LayerBlendSource.Specular:
+                    src1op = All.PrimaryColor;
+                    break;
+                default:
+                    src1op = 0;
+                    break;
+            }
+
+            switch (bm.source2)
+            {
+                case LayerBlendSource.Current:
+                    src2op = All.Previous;
+                    break;
+                case LayerBlendSource.Texture:
+                    src2op = All.Texture;
+                    break;
+                case LayerBlendSource.Manual:
+                    src2op = All.Constant;
+                    break;
+                case LayerBlendSource.Diffuse:
+                    src2op = All.PrimaryColor;
+                    break;
+                case LayerBlendSource.Specular:
+                    src2op = All.PrimaryColor;
+                    break;
+                default:
+                    src2op = 0;
+                    break;
+            }
+
+            switch (bm.operation)
+            {
+                case LayerBlendOperationEx.Source1:
+                    cmd = All.Replace;
+                    break;
+                case LayerBlendOperationEx.Source2:
+                    cmd = All.Replace;
+                    break;
+                case LayerBlendOperationEx.Modulate:
+                case LayerBlendOperationEx.ModulateX2:
+                case LayerBlendOperationEx.ModulateX4:
+                    cmd = All.Modulate;
+                    break;
+                case LayerBlendOperationEx.Add:
+                    cmd = All.Add;
+                    break;
+                case LayerBlendOperationEx.AddSigned:
+                    cmd = All.AddSigned;
+                    break;
+                case LayerBlendOperationEx.AddSmooth:
+                    cmd = All.Interpolate;
+                    break;
+                case LayerBlendOperationEx.Subtract:
+                    cmd = All.Subtract;
+                    break;
+                case LayerBlendOperationEx.BlendDiffuseAlpha:
+                case LayerBlendOperationEx.BlendCurrentAlpha:
+                case LayerBlendOperationEx.BlendManual:
+                case LayerBlendOperationEx.BlendTextureAlpha:
+                case LayerBlendOperationEx.BlendDiffuseColor:
+                    cmd = All.Interpolate;
+                    break;
+                case LayerBlendOperationEx.DotProduct:
+                    bool cap = _rsCapabilities.HasCapability(Capabilities.Dot3);
+                    cmd = cap ? All.Dot3Rgb : All.Modulate;
+                    break;
+                default:
+                    cmd = 0;
+                    break;
+            }
+
+            if (!ActivateGLTextureUnit(0))
+                return;
+
+            OpenGL.TexEnv(All.TextureEnv, All.TextureEnvMode, (int)All.Combine);
+            GLESConfig.GlCheckError(this);
+
+            if (bm.blendType == LayerBlendType.Color)
+            {
+                OpenGL.TexEnv(All.TextureEnv, All.CombineRgb, (int)cmd);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexEnv(All.TextureEnv, All.Src0Rgb, (int)src1op);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexEnv(All.TextureEnv, All.Src1Rgb, (int)src2op);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexEnv(All.TextureEnv, All.Src2Rgb, (int)All.Constant);
+                GLESConfig.GlCheckError(this);
+            }
+            else
+            {
+                OpenGL.TexEnv(All.TextureEnv, All.CombineAlpha, (int)cmd);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexEnv(All.TextureEnv, All.Src0Alpha, (int)src1op);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexEnv(All.TextureEnv, All.Src1Alpha, (int)src2op);
+                GLESConfig.GlCheckError(this);
+                OpenGL.TexEnv(All.TextureEnv, All.Src2Alpha, (int)All.Constant);
+                GLESConfig.GlCheckError(this);
+            }
+            float[] blendValue = new float[] { 0, 0, 0, bm.blendFactor };
+            switch (bm.operation)
+            {
+                case LayerBlendOperationEx.BlendDiffuseColor:
+                case LayerBlendOperationEx.BlendDiffuseAlpha:
+                    OpenGL.TexEnv(All.TextureEnv, All.Src2Rgb, (int)All.PrimaryColor);
+                    GLESConfig.GlCheckError(this);
+                    OpenGL.TexEnv(All.TextureEnv, All.Src2Alpha, (int)All.PrimaryColor);
+                    GLESConfig.GlCheckError(this);
+                    break;
+                case LayerBlendOperationEx.BlendTextureAlpha:
+                    OpenGL.TexEnv(All.TextureEnv, All.Src2Rgb, (int)All.Texture);
+                    GLESConfig.GlCheckError(this);
+                    OpenGL.TexEnv(All.TextureEnv, All.Src2Alpha, (int)All.Texture);
+                    GLESConfig.GlCheckError(this);
+                    break;
+                case LayerBlendOperationEx.BlendCurrentAlpha:
+                    OpenGL.TexEnv(All.TextureEnv, All.Src2Rgb, (int)All.Previous);
+                    GLESConfig.GlCheckError(this);
+                    OpenGL.TexEnv(All.TextureEnv, All.Src2Alpha, (int)All.Previous);
+                    GLESConfig.GlCheckError(this);
+                    break;
+                case LayerBlendOperationEx.BlendManual:
+                    OpenGL.TexEnv(All.TextureEnv,All.TextureEnvColor,blendValue);
+                    GLESConfig.GlCheckError(this);
+                    break;
+                case LayerBlendOperationEx.ModulateX2:
+                    OpenGL.TexEnv(All.TextureEnv, bm.blendType == LayerBlendType.Color ?
+                        All.RgbScale : All.AlphaScale,2);
+                    GLESConfig.GlCheckError(this);
+                    break;
+                case LayerBlendOperationEx.ModulateX4:
+                    OpenGL.TexEnv(All.TextureEnv, bm.blendType == LayerBlendType.Color ?
+                        All.RgbScale : All.AlphaScale,4);
+                    GLESConfig.GlCheckError(this);
+                    break;
+                default:
+                    break;
+            }
+
+            if(bm.blendType == LayerBlendType.Color)
+            {
+                OpenGL.TexEnv( All.TextureEnv, All.Operand0Rgb, (int)All.SrcColor );
+                GLESConfig.GlCheckError( this );
+                OpenGL.TexEnv( All.TextureEnv, All.Operand1Rgb, (int)All.SrcColor );
+                if(bm.operation == LayerBlendOperationEx.BlendDiffuseColor)
+                {
+                    OpenGL.TexEnv( All.TextureEnv, All.Operand2Rgb, (int)All.SrcColor );
+                    GLESConfig.GlCheckError( this );
+                }
+                else
+                {
+                    OpenGL.TexEnv( All.TextureEnv, All.Operand2Rgb, (int)All.SrcAlpha );
+                    GLESConfig.GlCheckError( this );
+                }
+            }
+
+            OpenGL.TexEnv(All.TextureEnv, All.Operand0Alpha,(int)All.SrcAlpha);
+            GLESConfig.GlCheckError(this);
+            OpenGL.TexEnv(All.TextureEnv, All.Operand1Alpha,(int)All.SrcAlpha);
+            GLESConfig.GlCheckError(this);
+            OpenGL.TexEnv(All.TextureEnv, All.Operand2Alpha,(int)All.SrcAlpha);
+            GLESConfig.GlCheckError(this);
+            if(bm.source1 == LayerBlendSource.Manual)
+                OpenGL.TexEnv(All.TextureEnv, All.TextureEnvColor, cv1);
+            if(bm.source2 == LayerBlendSource.Manual)
+                OpenGL.TexEnv(All.TextureEnv, All.TextureEnvColor, cv2);
+
+            GLESConfig.GlCheckError(this);
+
+            ActivateGLTextureUnit(1);
+		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="borderColor"></param>
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
-			throw new NotImplementedException();
+			//not supported
 		}
 
 		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
 		{
-			throw new NotImplementedException();
-		}
+            if (stage > _fixedFunctionTextureUnits)
+            {
+                // Can't do this
+                return;
+            }
+            float[] m = new float[16];
+            Matrix4 projectionBias = Matrix4.Identity;
 
+            // Default to no extra auto texture matrix
+            _useAutoTextureMatrix = false;
+
+            if (!ActivateGLTextureUnit(stage))
+                return;
+
+            switch (method)
+            {
+                case TexCoordCalcMethod.None:
+                    break;
+                case TexCoordCalcMethod.EnvironmentMap:
+                    _useAutoTextureMatrix = true;
+                    _autoTextureMatrix = new float[16];
+                    _autoTextureMatrix[0] = _autoTextureMatrix[10] = _autoTextureMatrix[15] = 1.0f;
+                    _autoTextureMatrix[5] = -1.0f;
+                    break;
+                case TexCoordCalcMethod.EnvironmentMapPlanar:
+                    // TODO not implemented
+                    break;
+                case TexCoordCalcMethod.EnvironmentMapReflection:
+                    // We need an extra texture matrix here
+                    // This sets the texture matrix to be the inverse of the view matrix
+                    _useAutoTextureMatrix = true;
+                    MakeGLMatrix(ref m, _ViewMatrix);
+                    if(_autoTextureMatrix == null)
+                        _autoTextureMatrix = new float[16];
+                    // Transpose 3x3 in order to invert matrix (rotation)
+                    // Note that we need to invert the Z _before_ the rotation
+                    // No idea why we have to invert the Z at all, but reflection is wrong without it
+                    _autoTextureMatrix[0] = m[0]; _autoTextureMatrix[1] = m[4]; _autoTextureMatrix[2] = -m[8];
+                    _autoTextureMatrix[4] = m[1]; _autoTextureMatrix[5] = m[5]; _autoTextureMatrix[6] = -m[9];
+                    _autoTextureMatrix[8] = m[2]; _autoTextureMatrix[9] = m[6]; _autoTextureMatrix[10] = -m[10];
+                    _autoTextureMatrix[3] = _autoTextureMatrix[7] = _autoTextureMatrix[11] = 0.0f;
+                    _autoTextureMatrix[12] = _autoTextureMatrix[13] = _autoTextureMatrix[14] = 0.0f;
+                    _autoTextureMatrix[15] = 1.0f;
+                    break;
+                case TexCoordCalcMethod.EnvironmentMapNormal:
+                    break;
+                case TexCoordCalcMethod.ProjectiveTexture:
+                    _useAutoTextureMatrix = true;
+                    if (_autoTextureMatrix == null)
+                        _autoTextureMatrix = new float[16];
+
+                    // Set scale and translation matrix for projective textures
+                    projectionBias = Matrix4.ClipSpace2DToImageSpace;
+
+                    projectionBias = projectionBias * frustum.ProjectionMatrix;
+                    projectionBias = projectionBias * frustum.ViewMatrix;
+                    projectionBias = projectionBias * _worldMatrix;
+
+                    MakeGLMatrix(ref _autoTextureMatrix, projectionBias);
+                    break;
+                default:
+                    break;
+            }
+
+
+            ActivateGLTextureUnit(0);
+		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="index"></param>
 		public override void SetTextureCoordSet( int stage, int index )
 		{
-			throw new NotImplementedException();
+            _textureCoodIndex[stage] = index;
 		}
 
 		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
@@ -1659,48 +2193,48 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				return _worldMatrix;
+                return _worldMatrix;
 			}
 			set
 			{
-				if ( value == _worldMatrix )
-					return;
+                if (value == _worldMatrix)
+                    return;
 
-				float[] mat = new float[ 16 ];
-				_worldMatrix = value;
-				MakeGLMatrix( ref mat, _ViewMatrix * _worldMatrix );
-				OpenGL.MatrixMode( All.Modelview );
-				GLESConfig.GlCheckError( this );
-				OpenGL.LoadMatrix( mat );
-				GLESConfig.GlCheckError( this );
+                float[] mat = new float[16];
+                _worldMatrix = value;
+                MakeGLMatrix(ref mat, _ViewMatrix * _worldMatrix);
+                OpenGL.MatrixMode(All.Modelview);
+                GLESConfig.GlCheckError(this);
+                OpenGL.LoadMatrix(mat);
+                GLESConfig.GlCheckError(this);
 			}
 		}
-		private List<Vector4> _clipPlanes = new List<Vector4>();
-		private bool _clipPlanesDirty = false;
+        private List<Vector4> _clipPlanes = new List<Vector4>();
+        private bool _clipPlanesDirty = false;
 		public override Matrix4 ViewMatrix
 		{
 			get
 			{
-				return _ViewMatrix;
+                return _ViewMatrix;
 			}
 			set
 			{
-				if ( value == _ViewMatrix )
-					return;
+                if (value == _ViewMatrix)
+                    return;
 
-				float[] mat = new float[ 16 ];
-				_ViewMatrix = value;
-				MakeGLMatrix( ref mat, _ViewMatrix * _worldMatrix );
-				OpenGL.MatrixMode( All.Modelview );
-				GLESConfig.GlCheckError( this );
-				OpenGL.LoadMatrix( mat );
-				GLESConfig.GlCheckError( this );
+                float[] mat = new float[16];
+                _ViewMatrix = value;
+                MakeGLMatrix(ref mat, _ViewMatrix * _worldMatrix);
+                OpenGL.MatrixMode(All.Modelview);
+                GLESConfig.GlCheckError(this);
+                OpenGL.LoadMatrix(mat);
+                GLESConfig.GlCheckError(this);
 
-				// also mark clip planes dirty
-				if ( _clipPlanes.Count > 0 )
-				{
-					_clipPlanesDirty = true;
-				}
+                // also mark clip planes dirty
+                if (_clipPlanes.Count > 0)
+                {
+                    _clipPlanesDirty = true;
+                }
 			}
 		}
 
