@@ -36,22 +36,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System;
 using Axiom.Graphics;
+using Axiom.Media;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	public class GLESRenderTexture : RenderTexture
 	{
-		/// <summary>
-		/// 
-		/// </summary>
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return true;
-			}
-		}
 
 		/// <summary>
 		/// 
@@ -67,6 +58,21 @@ namespace Axiom.RenderSystems.OpenGLES
 			HardwareGammaEnabled = writeGamma;
 			FSAA = fsaa;
 		}
+
+		#region RenderTexture Implementation
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		#endregion RenderTexture Implementation
 	}
 }
 

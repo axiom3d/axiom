@@ -122,7 +122,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "640 x 320", false );
 			ConfigOption optDisplayFrequenzy = new ConfigOption( "Display Frequency", "60", false );
 			ConfigOption optFSAA = new ConfigOption( "FSAA", "1", false );
-			ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "Copy", false );
+			ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
 			optFullsreen.PossibleValues.Add( 0, "Yes" );
 			optFullsreen.PossibleValues.Add( 1, "No" );
 
@@ -145,7 +145,9 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 				optFSAA.Value = optFSAA.PossibleValues[ 0 ];
 			}
 
-			optRTTMode.PossibleValues.Add( 0, "Copy" );
+			optRTTMode.PossibleValues.Add( 0, "FBO" );
+			optRTTMode.PossibleValues.Add( 1, "PBuffer" );
+			optRTTMode.PossibleValues.Add( 2, "Copy" );
 			optRTTMode.Value = optRTTMode.PossibleValues[ 0 ];
 
 			_options[ optFullsreen.Name ] = optFullsreen;
@@ -167,6 +169,11 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			base.SetConfigOption( name, value );
 			if ( name == "Video Mode" )
 				RefreshConfig();
+		}
+
+		public override GLESPBuffer CreatePixelBuffer( Media.PixelComponentType ctype, int width, int height )
+		{
+			return null;
 		}
 
 		/// <summary>

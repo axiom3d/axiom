@@ -51,7 +51,7 @@ namespace Droid.Demos
 			// Load resources
 			this.LoadResources();
 
-			//ShowDebugOverlay( showDebugOverlay );
+			ShowDebugOverlay( false );
 
 			//CreateGUI();
 

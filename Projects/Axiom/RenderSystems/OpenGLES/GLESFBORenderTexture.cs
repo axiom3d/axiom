@@ -46,11 +46,48 @@ namespace Axiom.RenderSystems.OpenGLES
 {
 	public class GLESFBORenderTexture : GLESRenderTexture
 	{
-		public GLESFBORenderTexture( GLESRTTManager manager, string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
+		#region Fields and Properties
+
+		private GLESFrameBufferObject _fbo;
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+		
+		public GLESFBORenderTexture( GLESFBORTTManager manager, string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
 			: base( name, target, writeGamma, fsaa )
 		{
-			throw new NotImplementedException();
+			this._fbo = new GLESFrameBufferObject( manager, fsaa );
+			GLESConfig.GlCheckError( this );
+
+			Width = _fbo.Width;
+			Height = _fbo.Height;
 		}
+ 
+		#endregion Construction and Destruction
+
+		#region GLESRenderTexture Implementation
+
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				switch ( attribute.ToLower() )
+				{
+					case "fbo":
+						return _fbo;
+					default:
+						return base[ attribute ];
+				}
+			}
+		}
+		
+		public override void SwapBuffers( bool waitForVSync )
+		{
+			_fbo.SwapBuffers();
+		}
+
+		#endregion GLESRenderTexture Implementation
 	}
 }
 

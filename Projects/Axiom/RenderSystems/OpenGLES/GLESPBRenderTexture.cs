@@ -39,13 +39,72 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	public class GLESPBRenderTexture
+	public class GLESPBRenderTexture : GLESRenderTexture
 	{
+		#region Fields and Properties
+
+		private GLESPBRTTManager _manager;
+		private PixelComponentType _pbFormat;
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="target"></param>
+		/// <param name="writeGamma"></param>
+		/// <param name="fsaa"></param>
+		public GLESPBRenderTexture( GLESPBRTTManager manager, string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
+			: base( name, target, writeGamma, fsaa )
+		{
+			this._manager = manager;
+			this._pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
+			this._manager.RequestPBuffer( _pbFormat, Width, Height );
+		}
+
+		#endregion Construction and Destruction
+
+		#region GLESRenderTexture Implementation
+
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				switch( attribute.ToLower() )
+				{
+					case "target":
+						GLESSurfaceDescription target = new GLESSurfaceDescription();
+						target.Buffer = (GLESHardwarePixelBuffer)pixelBuffer;
+						target.ZOffset = zOffset;
+						return target;
+				}
+				return base[ attribute ];
+			}
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					this._manager.ReleasePBuffer( _pbFormat );
+					_manager = null;
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion GLESRenderTexture Implementation
 	}
 }
 

@@ -918,7 +918,7 @@ namespace Axiom.Graphics
         ///	</param>
         public virtual void Update( bool swapBuffers )
         {
-	        // Clear per frame statistics
+			// Clear per frame statistics
             _statistics.BatchCount = _statistics.TriangleCount = 0;
 
 			// notify event handlers that this RenderTarget is about to be updated

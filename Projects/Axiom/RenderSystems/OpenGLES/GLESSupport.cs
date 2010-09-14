@@ -197,6 +197,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public abstract string ValidateConfig();
 
+
+		public abstract GLESPBuffer CreatePixelBuffer( Media.PixelComponentType ctype, int width, int height );
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -270,6 +273,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// Stop anything special.
 		/// </summary>
 		public abstract void Stop();
+
 	}
 
 }
