@@ -1148,7 +1148,7 @@ namespace Axiom.Core
 		{
 			float result = 0;
 
-			if ( type == FrameEventType.Start )
+			if ( type != FrameEventType.End)
 			{
 				result = (float)( time - this.lastStartTime ) / 1000;
 
@@ -1167,7 +1167,7 @@ namespace Axiom.Core
 					// Calculate New Framerate
 					this.currentFPS = (float)this.frameCount / (float)( time - this.lastCalculationTime ) * 1000f;
 
-					// calculate the averge framerate
+					// calculate the average framerate
 					if ( this.averageFPS == 0 )
 					{
 						this.averageFPS = this.currentFPS;
@@ -1246,7 +1246,7 @@ namespace Axiom.Core
 		{
 			FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
+			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
 			return this.OnFrameRenderingQueued( e );
@@ -1510,6 +1510,7 @@ namespace Axiom.Core
 	public enum FrameEventType
 	{
 		Start,
+		Queued,
 		End
 	}
 

@@ -851,17 +851,17 @@ namespace Axiom.Graphics
         /// <param name="swapBuffers"></param>
         public virtual void UpdateAllRenderTargets( bool swapBuffers )
         {
-            // Update all in order of priority
+			// Update all in order of priority
             // This ensures render-to-texture targets get updated before render windows
-            foreach ( RenderTarget target in prioritizedRenderTargets )
+			foreach ( RenderTarget target in prioritizedRenderTargets )
             {
                 // only update if it is active
                 if ( target.IsActive && target.IsAutoUpdated )
                 {
-                    target.Update( swapBuffers );
+					target.Update( swapBuffers );
                 }
             }
-        }
+		}
 
         /// <summary>
         /// Internal method for swapping all the buffers on all render targets,

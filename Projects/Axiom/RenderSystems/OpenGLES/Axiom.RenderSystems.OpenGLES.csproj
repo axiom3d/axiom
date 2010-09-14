@@ -46,9 +46,11 @@
     </Compile>
     <Compile Include="GLESConfig.cs" />
     <Compile Include="GLESContext.cs" />
+    <Compile Include="GLESCopyingRenderTexture.cs" />
+    <Compile Include="GLESCopyingRTTManager.cs" />
     <Compile Include="GLESDefaultHardwareBufferManager.cs" />
     <Compile Include="GLESDepthBuffer.cs" />
-    <Compile Include="GLESFBOManager.cs" />
+    <Compile Include="GLESFBORTTManager.cs" />
     <Compile Include="GLESFBOMultiRenderTarget.cs" />
     <Compile Include="GLESFBORenderTexture.cs" />
     <Compile Include="GLESFrameBufferObject.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="GLESHardwarePixelBuffer.cs" />
     <Compile Include="GLESDefaultHardwareVertexBuffer.cs" />
     <Compile Include="GLESHardwareVertexBuffer.cs" />
+    <Compile Include="GLESPBRTTManager.cs" />
     <Compile Include="GLESPBRenderTexture.cs" />
     <Compile Include="GLESPBuffer.cs" />
     <Compile Include="GLESPixelFormat.cs" />

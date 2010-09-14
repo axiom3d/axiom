@@ -64,10 +64,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </remarks>
 		public GLESRTTManager()
 		{
-            //if ( instance == null )
-            //{
-            //    instance = this;
-            //}
+			//if ( instance == null )
+			//{
+			//    instance = this;
+			//}
 
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="writeGame"></param>
 		/// <param name="fsaa"></param>
 		/// <returns></returns>
-		public abstract RenderTexture CreateRenderTexture( string name, GLESSurfaceDescription target, bool writeGame, int fsaa );
+		public abstract RenderTexture CreateRenderTexture( string name, GLESSurfaceDescription target, bool writeGama, int fsaa );
 
 		/// <summary>
 		/// Check if a certain format is usable as rendertexture format
@@ -149,6 +149,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				return format;
 			}
+
 			/// Find first alternative
 			PixelComponentType pct = PixelUtil.GetComponentType( format );
 			switch ( pct )
@@ -169,6 +170,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				default:
 					break;
 			}
+
 			if ( CheckFormat( format ) )
 				return format;
 

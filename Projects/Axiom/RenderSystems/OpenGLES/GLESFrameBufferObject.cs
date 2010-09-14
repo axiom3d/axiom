@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGLES
     /// </summary>
 	public class GLESFrameBufferObject : IDisposable
 	{
-        private GLESFBOManager _manager;
+        private GLESFBORTTManager _manager;
         private int _numSamples;
         private int _fb;
         private int _multiSampleFB;
@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// <summary>
         /// Gets the FBO manager.
         /// </summary>
-        public GLESFBOManager Manager
+        public GLESFBORTTManager Manager
         {
             get { return _manager; }
         }
@@ -114,7 +114,7 @@ namespace Axiom.RenderSystems.OpenGLES
         /// </summary>
         /// <param name="manager"></param>
         /// <param name="fsaa"></param>
-        public GLESFrameBufferObject(GLESFBOManager manager, int fsaa)
+        public GLESFrameBufferObject(GLESFBORTTManager manager, int fsaa)
         {
             /// Generate framebuffer object
             OpenGLOES.GenFramebuffers(1, ref _fb);
