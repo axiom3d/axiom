@@ -417,13 +417,16 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			for ( int x = 0; x < (int)Media.PixelFormat.Count; x++ )
 			{
+				LogManager.Instance.Write( "[GLES] [DEBUG] testing PixelFormat : {0}", (Media.PixelFormat)x );
+
 				_props[ x ] = new FormatProperties();
-				_props[ x ].IsValid = false;
 				_props[ x ].Modes = new List<FormatProperties.Mode>();
+				_props[ x ].IsValid = false;
+
 				// Fetch GL format token
 				All fmt = GLESPixelUtil.GetClosestGLInternalFormat( (Media.PixelFormat)x );
 				LogManager.Instance.Write( "[GLES] [DEBUG] fmt={0}", fmt );
-				if ( fmt == 0 && x != 0 )
+				if ( fmt == All.NoneOes && x != 0 )
 					continue;
 
 				// No test for compressed formats
@@ -435,7 +438,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				GLESConfig.GlCheckError( this );
 				OpenGLOES.BindFramebuffer( All.FramebufferOes, fb );
 				GLESConfig.GlCheckError( this );
-				if ( fmt != 0 )
+
+				if ( fmt != All.NoneOes )
 				{
 					// Create and attach texture
 					OpenGL.GenTextures( 1, ref tid );
