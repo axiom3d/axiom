@@ -209,9 +209,9 @@ namespace Axiom.RenderSystems.OpenGLES
 				// Create GL resource
 				OpenGL.GenTextures( 1, ref _warningTextureID );
 				GLESConfig.GlCheckError( this );
-				OpenGL.BindTexture(All.Texture2D, _warningTextureID );
+				OpenGL.BindTexture( All.Texture2D, _warningTextureID );
 				GLESConfig.GlCheckError( this );
-                OpenGL.TexImage2D(All.Texture2D, 0, (int)All.Rgb, width, height, 0, All.Rgb, All.UnsignedByte, (IntPtr)data);
+				OpenGL.TexImage2D( All.Texture2D, 0, (int)All.Rgb, width, height, 0, All.Rgb, All.UnsignedByte, (IntPtr)data );
 				GLESConfig.GlCheckError( this );
 			}
 		}

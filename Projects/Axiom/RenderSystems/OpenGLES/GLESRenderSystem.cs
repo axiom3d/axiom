@@ -118,7 +118,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// 
 		/// </summary>
 		GLESGpuProgramManager _gpuProgramManager;
-		HardwareBufferManager _hardwareBufferManager;
+
 		/// <summary>
 		/// Manager object for creating render textures.
 		/// direct render to texture via GL_OES_framebuffer_object is preferable 
@@ -126,6 +126,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// unwieldy and slow. However, FBO support for stencil buffers is poor.
 		/// </summary>
 		GLESRTTManager _rttManager;
+
 		short _activeTextureUnit;
 		short _activeClientTextureUnit;
 		//Check if the GL system has already been initialized
@@ -453,6 +454,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				return base.HardwareCapabilities;
 			}
 		}
+
 		private ColorEx _ambientLight = new ColorEx( 1, 0, 0, 0 );
 		/// <summary>
 		/// 
@@ -473,6 +475,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				_ambientLight = value;
 			}
 		}
+
 		private Shading _shadingMode = Shading.Flat;
 		public override Shading ShadingMode
 		{
@@ -499,6 +502,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				_shadingMode = value;
 			}
 		}
+
 		private bool _lightingEnabled = true;
 		public override bool LightingEnabled
 		{
@@ -520,6 +524,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 			}
 		}
+
 		private bool _normalizeNormals;
 		public override bool NormalizeNormals
 		{
@@ -585,6 +590,22 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override void Shutdown()
 		{
 			base.Shutdown();
+
+			_gpuProgramManager.Dispose();
+			_gpuProgramManager = null;
+
+			hardwareBufferManager.Dispose();
+			hardwareBufferManager = null;
+
+			//_rttManager.Dispose();
+			_rttManager = null;
+
+			_glSupport.Stop();
+
+			textureManager.Dispose();
+			textureManager = null;
+
+			_glInitialized = false;
 		}
 
 		/// <summary>
@@ -808,11 +829,11 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 			{
-				_hardwareBufferManager = new GLESHardwareBufferManager();
+				hardwareBufferManager = new GLESHardwareBufferManager();
 			}
 			else
 			{
-				_hardwareBufferManager = new GLESDefaultHardwareBufferManager();
+				hardwareBufferManager = new GLESDefaultHardwareBufferManager();
 			}
 
 			/// Do this after extension function pointers are initialised as the extension

@@ -142,6 +142,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.L8:
 					return GLES.All.Luminance;
 				case PixelFormat.A8:
+					return GLES.All.Alpha;
+				case PixelFormat.BYTE_LA:
 					return GLES.All.LuminanceAlpha;
 				case PixelFormat.R8G8B8:
 				case PixelFormat.B8G8R8:
