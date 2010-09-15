@@ -108,8 +108,8 @@ Global
 		{081F78DE-8224-4CA6-BD34-8B7939CF21AB}.Xna Release|x86.ActiveCfg = Release|x86
 		{68DBB62F-F98D-47B5-A769-C20B461227AB}.Debug|x86.ActiveCfg = Debug|x86
 		{68DBB62F-F98D-47B5-A769-C20B461227AB}.Debug|x86.Build.0 = Debug|x86
-		{68DBB62F-F98D-47B5-A769-C20B461227AB}.DirectX Debug|x86.ActiveCfg = Release|x86
-		{68DBB62F-F98D-47B5-A769-C20B461227AB}.DirectX Debug|x86.Build.0 = Release|x86
+		{68DBB62F-F98D-47B5-A769-C20B461227AB}.DirectX Debug|x86.ActiveCfg = Debug|x86
+		{68DBB62F-F98D-47B5-A769-C20B461227AB}.DirectX Debug|x86.Build.0 = Debug|x86
 		{68DBB62F-F98D-47B5-A769-C20B461227AB}.DirectX Release|x86.ActiveCfg = Release|x86
 		{68DBB62F-F98D-47B5-A769-C20B461227AB}.DirectX Release|x86.Build.0 = Release|x86
 		{68DBB62F-F98D-47B5-A769-C20B461227AB}.OpenGL Debug|x86.ActiveCfg = Debug|x86
@@ -120,7 +120,7 @@ Global
 		{68DBB62F-F98D-47B5-A769-C20B461227AB}.Xna Release|x86.ActiveCfg = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Debug|x86.ActiveCfg = Debug|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Debug|x86.Build.0 = Debug|x86
-		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.DirectX Debug|x86.ActiveCfg = Release|x86
+		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.DirectX Debug|x86.ActiveCfg = Debug|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.DirectX Release|x86.ActiveCfg = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.OpenGL Debug|x86.ActiveCfg = Debug|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.OpenGL Release|x86.ActiveCfg = Release|x86
@@ -132,7 +132,7 @@ Global
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Xna Release|x86.Build.0 = Release|x86
 		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.Debug|x86.ActiveCfg = Debug|x86
 		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.Debug|x86.Build.0 = Debug|x86
-		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.DirectX Debug|x86.ActiveCfg = Release|x86
+		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.DirectX Debug|x86.ActiveCfg = Debug|x86
 		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.DirectX Release|x86.ActiveCfg = Release|x86
 		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.OpenGL Debug|x86.ActiveCfg = Debug|x86
 		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.OpenGL Debug|x86.Build.0 = Debug|x86
@@ -337,15 +337,11 @@ Global
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.DirectX Release|x86.ActiveCfg = Release|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.DirectX Release|x86.Build.0 = Release|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.OpenGL Debug|x86.ActiveCfg = Debug|x86
-		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.OpenGL Debug|x86.Build.0 = Debug|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.OpenGL Release|x86.ActiveCfg = Release|x86
-		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.OpenGL Release|x86.Build.0 = Release|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.Release|x86.ActiveCfg = Release|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.Release|x86.Build.0 = Release|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.Xna Debug|x86.ActiveCfg = Debug|x86
-		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.Xna Debug|x86.Build.0 = Debug|x86
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.Xna Release|x86.ActiveCfg = Release|x86
-		{EE5785DC-D49E-44DD-BFDA-DD776C012704}.Xna Release|x86.Build.0 = Release|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Debug|x86.ActiveCfg = Debug|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Debug|x86.Build.0 = Debug|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.DirectX Debug|x86.ActiveCfg = Debug|x86
@@ -359,19 +355,13 @@ Global
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Release|x86.ActiveCfg = Release|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Release|x86.Build.0 = Release|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Xna Debug|x86.ActiveCfg = Debug|x86
-		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Xna Debug|x86.Build.0 = Debug|x86
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Xna Release|x86.ActiveCfg = Release|x86
-		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}.Xna Release|x86.Build.0 = Release|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.Debug|x86.ActiveCfg = Debug|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.Debug|x86.Build.0 = Debug|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.DirectX Debug|x86.ActiveCfg = Debug|x86
-		{77AC4C2F-775D-4388-8157-2767C585C24E}.DirectX Debug|x86.Build.0 = Debug|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.DirectX Release|x86.ActiveCfg = Release|x86
-		{77AC4C2F-775D-4388-8157-2767C585C24E}.DirectX Release|x86.Build.0 = Release|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.OpenGL Debug|x86.ActiveCfg = Debug|x86
-		{77AC4C2F-775D-4388-8157-2767C585C24E}.OpenGL Debug|x86.Build.0 = Debug|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.OpenGL Release|x86.ActiveCfg = Release|x86
-		{77AC4C2F-775D-4388-8157-2767C585C24E}.OpenGL Release|x86.Build.0 = Release|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.Release|x86.ActiveCfg = Release|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.Release|x86.Build.0 = Release|x86
 		{77AC4C2F-775D-4388-8157-2767C585C24E}.Xna Debug|x86.ActiveCfg = Debug|x86
@@ -411,8 +401,8 @@ Global
 		{721891E7-3A22-4679-9233-73C05301057D} = {E8E2F297-B384-4311-B5C0-F6AB9354D91B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1

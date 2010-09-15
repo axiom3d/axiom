@@ -227,13 +227,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Methods
 
-		private bool _checkMultiSampleQuality( D3D.MultisampleType type, out int outQuality, D3D.Format format, int adapterNum,
-											   D3D.DeviceType deviceType, bool fullScreen )
+		private bool _checkMultiSampleQuality( D3D.MultisampleType type, out int outQuality, D3D.Format format, int adapterNum, D3D.DeviceType deviceType, bool fullScreen )
 		{
 			SlimDX.Result result;
 
-			_driver.Direct3D.CheckDeviceMultisampleType( adapterNum, deviceType, format, fullScreen, type, out outQuality,
-														 out result );
+			_driver.Direct3D.CheckDeviceMultisampleType( adapterNum, deviceType, format, fullScreen, type, out outQuality, out result );
 
 			if ( result.IsSuccess )
 			{
@@ -397,8 +395,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				Width = width;
 				Height = height;
-				top = top;
-				left = left;
+				this.top = top;
+				this.left = left;
 
 				_isExternal = false;
 				DefaultForm newWin = new DefaultForm();
@@ -478,8 +476,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this.top = top;
 			this.left = left;
 
-			LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height,
-									   ColorDepth );
+			LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
 
 			CreateD3DResources();
 
@@ -534,8 +531,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// low is < 200fps in this context
 				if ( !IsFullScreen )
 				{
-					LogManager.Instance.Write(
-						"D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
+					LogManager.Instance.Write( "D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
 				}
 				_d3dpp.PresentationInterval = D3D.PresentInterval.Immediate;
 			}
@@ -550,13 +546,11 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				// Try to create a 32-bit depth, 8-bit stencil
 				if (
-					_driver.Direct3D.CheckDeviceFormat( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil,
-														D3D.ResourceType.Surface, D3D.Format.D24S8 ) == false )
+					_driver.Direct3D.CheckDeviceFormat( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D24S8 ) == false )
 				{
 					// Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
 					if (
-						_driver.Direct3D.CheckDeviceFormat( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat,
-															D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D32 ) == false )
+						_driver.Direct3D.CheckDeviceFormat( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.Format.D32 ) == false )
 					{
 						// Jeez, what a naff card. Fall back on 16-bit depth buffering
 						_d3dpp.AutoDepthStencilFormat = D3D.Format.D16;
@@ -570,8 +564,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					// Woohoo!
 					if (
-						_driver.Direct3D.CheckDepthStencilMatch( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat,
-																 _d3dpp.BackBufferFormat, D3D.Format.D24S8 ) == true )
+						_driver.Direct3D.CheckDepthStencilMatch( _driver.AdapterNumber, devType, _d3dpp.BackBufferFormat, _d3dpp.BackBufferFormat, D3D.Format.D24S8 ) == true )
 					{
 						_d3dpp.AutoDepthStencilFormat = D3D.Format.D24S8;
 					}
@@ -622,8 +615,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 					try
 					{
-						_renderZBuffer = D3D.Surface.CreateDepthStencil( device, Width, Height, _d3dpp.AutoDepthStencilFormat,
-																		 _d3dpp.Multisample, _d3dpp.MultisampleQuality, discard );
+						_renderZBuffer = D3D.Surface.CreateDepthStencil( device, Width, Height, _d3dpp.AutoDepthStencilFormat, _d3dpp.Multisample, _d3dpp.MultisampleQuality, discard );
 					}
 					catch ( Exception )
 					{
@@ -635,9 +627,6 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( device == null ) // We haven't created the device yet, this must be the first time
 				{
-					// Turn off default event handlers, since Managed DirectX seems confused.
-					//D3D.Device.IsUsingEventHandlers = true;
-
 					// Do we want to preserve the FPU mode? Might be useful for scientific apps
 					D3D.CreateFlags extraFlags = 0;
 					ConfigOptionCollection configOptions = Root.Instance.RenderSystem.ConfigOptions;
@@ -656,12 +645,10 @@ namespace Axiom.RenderSystems.DirectX9
 						// If it is present, override default settings
 						foreach ( D3D.AdapterInformation adapter in _driver.Direct3D.Adapters )
 						{
-							LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter,
-													   adapter.Details.Description );
+							LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
 							if ( adapter.Details.Description.ToLower().Contains( "perfhud" ) )
 							{
-								LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter,
-														   adapter.Details.Description );
+								LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
 								adapterToUse = adapter.Adapter;
 								devType = D3D.DeviceType.Reference;
 								break;
@@ -673,8 +660,7 @@ namespace Axiom.RenderSystems.DirectX9
 					try
 					{
 						// hardware vertex processing
-						device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle,
-												 D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp );
+						device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp );
 					}
 					catch ( Exception )
 					{
@@ -682,16 +668,14 @@ namespace Axiom.RenderSystems.DirectX9
 						{
 							// Try a second time, may fail the first time due to back buffer count,
 							// which will be corrected down to 1 by the runtime
-							device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle,
-													 D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp );
+							device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.HardwareVertexProcessing | extraFlags, _d3dpp );
 						}
 						catch ( Exception )
 						{
 							try
 							{
 								// doh, how bout mixed vertex processing
-								device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle,
-														 D3D.CreateFlags.MixedVertexProcessing | extraFlags, _d3dpp );
+								device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.MixedVertexProcessing | extraFlags, _d3dpp );
 							}
 							catch ( Exception )
 							{
@@ -699,8 +683,7 @@ namespace Axiom.RenderSystems.DirectX9
 								{
 									// what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
 									// anything at all since they obviously don't have a video card installed
-									device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle,
-															 D3D.CreateFlags.SoftwareVertexProcessing | extraFlags, _d3dpp );
+									device = new D3D.Device( _driver.Direct3D, adapterToUse, devType, _window.Handle, D3D.CreateFlags.SoftwareVertexProcessing | extraFlags, _d3dpp );
 								}
 								catch ( Exception ex )
 								{
@@ -740,30 +723,14 @@ namespace Axiom.RenderSystems.DirectX9
 						return false;
 
 					case "D3DZBUFFER":
-						if ( this.testLostDevice() || _renderZBuffer.Disposed )
-						{
-							//_renderZBuffer =  _driver.D3DDevice.DepthStencilSurface;
-							LogManager.Instance.Write( "[D3D] : ZBuffer was disposed, reinitializing." );
-							return null;
-						}
 						return _renderZBuffer;
 
 					case "D3DBACKBUFFER":
 						D3D.Surface[] surface = new D3D.Surface[ 1 ];
-						if ( this.testLostDevice() || _renderSurface.Disposed )
-						{
-							LogManager.Instance.Write( "[D3D] : BackBuffer was disposed, reinitializing." );
-							_renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
-						}
 						surface[ 0 ] = _renderSurface;
 						return surface;
 
 					case "D3DFRONTBUFFER":
-						if ( this.testLostDevice() || _renderSurface.Disposed )
-						{
-							LogManager.Instance.Write( "[D3D] : FrontBuffer was disposed, reinitializing." );
-							_renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
-						}
 						return _renderSurface;
 				}
 				return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
@@ -893,8 +860,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_renderSurface = _swapChain.GetBackBuffer( 0 );
 				try
 				{
-					_renderZBuffer = D3D.Surface.CreateDepthStencil( _driver.D3DDevice, Width, Height, _d3dpp.AutoDepthStencilFormat,
-																	 _d3dpp.Multisample, _d3dpp.MultisampleQuality, false );
+					_renderZBuffer = D3D.Surface.CreateDepthStencil( _driver.D3DDevice, Width, Height, _d3dpp.AutoDepthStencilFormat, _d3dpp.Multisample, _d3dpp.MultisampleQuality, false );
 				}
 				catch ( Exception ex )
 				{
@@ -1144,7 +1110,8 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( rs.IsDeviceLost )
 			{
 				DX.Result result = device.TestCooperativeLevel();
-				if ( result.Code == D3D.ResultCode.DeviceLost.Code )
+				if ( result.Code == D3D.ResultCode.DeviceLost.Code ||
+					 result.Code == D3D.ResultCode.DeviceNotReset.Code )
 				{
 					// device lost, and we can't reset
 					// can't do anything about it here, wait until we get
