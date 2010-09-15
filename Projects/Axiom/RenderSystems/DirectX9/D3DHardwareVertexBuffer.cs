@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// if discardable, keeping the software backing is expensive
 				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
 #else
-            d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
+			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
 			// Create the d3d vertex buffer
 			d3dBuffer = new D3D.VertexBuffer(

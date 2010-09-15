@@ -472,7 +472,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			//int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
 			using ( D3D.Surface tmpSurface = D3D.Surface.CreateOffscreenPlain( device, converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch ) )
-			{
+			{ 
 				int pitch;
 				// Ideally I would be using the Array mechanism here, but that doesn't seem to work
 				DX.DataRectangle buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock );
