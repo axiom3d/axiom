@@ -513,7 +513,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( ( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.Usage.Dynamic;
 #else
-                ret |= D3D.Usage.Dynamic;
+				ret |= D3D.Usage.Dynamic;
 #endif
 			}
 			if ( ( usage & BufferUsage.WriteOnly ) != 0 )
@@ -548,7 +548,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 #if ORIG
-        public static D3D.LockFlags ConvertEnum(BufferLocking locking) {
+		public static D3D.LockFlags ConvertEnum(BufferLocking locking) {
 			D3D.LockFlags d3dLockFlags = 0;
 
 			if ( locking == BufferLocking.Discard )
@@ -561,25 +561,25 @@ namespace Axiom.RenderSystems.DirectX9
 			return d3dLockFlags;
 		}
 
-        public static D3D.LockFlags ConvertEnum(BufferLocking locking, BufferUsage usage) {
-            D3D.LockFlags d3dLockFlags = 0;
-            if (locking == BufferLocking.Discard) {
-                // D3D doesn't like discard or no_overwrite on non-dynamic buffers
-                if ((usage & BufferUsage.Dynamic) != 0)
-                    d3dLockFlags |= D3D.LockFlags.Discard;
-            } else if (locking == BufferLocking.ReadOnly) {
-                // D3D debug runtime doesn't like you locking managed buffers readonly
-                // when they were created with write-only (even though you CAN read
-                // from the software backed version)
-                if ((usage & BufferUsage.WriteOnly) == 0)
-                    d3dLockFlags |= D3D.LockFlags.ReadOnly;
-            } else if (locking == BufferLocking.NoOverwrite) {
-                // D3D doesn't like discard or no_overwrite on non-dynamic buffers
-                if ((usage & BufferUsage.Dynamic) != 0)
-                    d3dLockFlags |= D3D.LockFlags.NoOverwrite;
-            }
-            return d3dLockFlags;
-        }
+		public static D3D.LockFlags ConvertEnum(BufferLocking locking, BufferUsage usage) {
+			D3D.LockFlags d3dLockFlags = 0;
+			if (locking == BufferLocking.Discard) {
+				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+				if ((usage & BufferUsage.Dynamic) != 0)
+					d3dLockFlags |= D3D.LockFlags.Discard;
+			} else if (locking == BufferLocking.ReadOnly) {
+				// D3D debug runtime doesn't like you locking managed buffers readonly
+				// when they were created with write-only (even though you CAN read
+				// from the software backed version)
+				if ((usage & BufferUsage.WriteOnly) == 0)
+					d3dLockFlags |= D3D.LockFlags.ReadOnly;
+			} else if (locking == BufferLocking.NoOverwrite) {
+				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+				if ((usage & BufferUsage.Dynamic) != 0)
+					d3dLockFlags |= D3D.LockFlags.NoOverwrite;
+			}
+			return d3dLockFlags;
+		}
 #else
 		public static D3D.LockFlags ConvertEnum( BufferLocking locking, BufferUsage usage )
 		{
@@ -592,9 +592,9 @@ namespace Axiom.RenderSystems.DirectX9
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.Discard;
 #else
-                // D3D doesn't like discard or no_overwrite on non-dynamic buffers
-                if ((usage & BufferUsage.Dynamic) != 0)
-                    ret |= D3D.LockFlags.Discard;
+				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+				if ((usage & BufferUsage.Dynamic) != 0)
+					ret |= D3D.LockFlags.Discard;
 #endif
 			}
 			if ( locking == BufferLocking.ReadOnly )
@@ -614,9 +614,9 @@ namespace Axiom.RenderSystems.DirectX9
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.NoOverwrite;
 #else
-                // D3D doesn't like discard or no_overwrite on non-dynamic buffers
-                if ((usage & BufferUsage.Dynamic) != 0)
-                    ret |= D3D.LockFlags.NoOverwrite;
+				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+				if ((usage & BufferUsage.Dynamic) != 0)
+					ret |= D3D.LockFlags.NoOverwrite;
 #endif
 			}
 
