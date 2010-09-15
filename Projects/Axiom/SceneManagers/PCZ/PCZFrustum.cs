@@ -90,10 +90,12 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool IsObjectVisible( AxisAlignedBox bound )
 		{
 			// Null boxes are always invisible
-			if ( bound.IsNull ) return false;
+			if ( bound.IsNull )
+				return false;
 
 			// Infinite boxes are always visible
-			if ( bound.IsInfinite ) return true;
+			if ( bound.IsInfinite )
+				return true;
 
 			// Get centre of the box
 			Vector3 centre = bound.Center;

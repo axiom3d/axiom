@@ -238,7 +238,7 @@ namespace Axiom.Graphics
 
 		public TriangleIntersector( IEnumerable<TriangleVertices> triangles )
 		{
-			this.triangles = new List<TriangleVertices>(triangles);
+			this.triangles = new List<TriangleVertices>( triangles );
 		}
 
 		#endregion Constructor
@@ -260,7 +260,7 @@ namespace Axiom.Graphics
 				if ( RayIntersectsTriangle( ray, t.Vertices, ref modelBase, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared && 
+					if ( distSquared > ignoreDistanceSquared &&
 						 distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
@@ -272,7 +272,7 @@ namespace Axiom.Graphics
 			return intersects;
 		}
 
-		public bool ClosestRayIntersection( Ray ray, Matrix4 transform,	float ignoreDistance, out Vector3 intersection )
+		public bool ClosestRayIntersection( Ray ray, Matrix4 transform, float ignoreDistance, out Vector3 intersection )
 		{
 			bool intersects = false;
 			intersection = Vector3.Zero;
@@ -284,11 +284,11 @@ namespace Axiom.Graphics
 			for ( int i = 0; i < triangles.Count; i++ )
 			{
 				TriangleVertices t = triangles[ i ];
-				if ( RayIntersectsTriangle( ray, t.Vertices, ref transform,	ref where ) )
+				if ( RayIntersectsTriangle( ray, t.Vertices, ref transform, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared && 
-						distSquared	< minDistSquared )
+					if ( distSquared > ignoreDistanceSquared &&
+						distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
 						intersection = where;

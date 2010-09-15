@@ -50,8 +50,12 @@ using Axiom.Core;
 
 namespace OctreeZone
 {
-	public class TerrainZonePageRow : List<TerrainZonePage> { }
-	public class TerrainZonePage2D : List<TerrainZonePageRow> { }
+	public class TerrainZonePageRow : List<TerrainZonePage>
+	{
+	}
+	public class TerrainZonePage2D : List<TerrainZonePageRow>
+	{
+	}
 
 	public class TerrainZone : OctreeZone
 	{
@@ -111,19 +115,28 @@ namespace OctreeZone
 		/// Terrain size, detail etc
 		public TerrainZoneOptions Options
 		{
-			get { return mOptions; }
+			get
+			{
+				return mOptions;
+			}
 		}
 
 		/// Shared array of IndexData (reuse indexes across tiles)
 		public Hashtable LevelIndex
 		{
-			get { return mLevelIndex; }
+			get
+			{
+				return mLevelIndex;
+			}
 		}
 
 		/// Shared list of index buffers
 		public TerrainBufferCache IndexCache
 		{
-			get { return mIndexCache; }
+			get
+			{
+				return mIndexCache;
+			}
 		}
 
 		public int PageCount
@@ -477,7 +490,8 @@ namespace OctreeZone
 			ushort i, j;
 			for ( i = 0; i < pageSlots; ++i )
 			{
-				mTerrainZonePages.Add( new TerrainZonePageRow() ); ;
+				mTerrainZonePages.Add( new TerrainZonePageRow() );
+				;
 				for ( j = 0; j < pageSlots; ++j )
 				{
 					mTerrainZonePages[ i ].Add( null );
@@ -499,7 +513,9 @@ namespace OctreeZone
 			{
 				fs = File.Open( filename, FileMode.Open );
 			}
-			catch { }
+			catch
+			{
+			}
 
 			if ( null != fs )
 			{

@@ -72,12 +72,18 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public Segment Segment
 		{
-			get { return mSegment; }
+			get
+			{
+				return mSegment;
+			}
 		}
 
 		public float Radius
 		{
-			get { return mRadius; }
+			get
+			{
+				return mRadius;
+			}
 		}
 
 		#endregion propertys

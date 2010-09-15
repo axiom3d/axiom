@@ -94,7 +94,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public abstract String GetShaderSource( String vertexProgramName, String fragmentProgramName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState fixedFuncState );
 
-        public abstract FixedFunctionPrograms CreateFixedFunctionPrograms();
+		public abstract FixedFunctionPrograms CreateFixedFunctionPrograms();
 
 		#endregion Methods
 

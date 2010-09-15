@@ -367,7 +367,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Store names of textures for animation frames.
 		/// </summary>
-		private string[] frames = new string[MaxAnimationFrames];
+		private string[] frames = new string[ MaxAnimationFrames ];
 
 		/// <summary>
 		///     Optional name for the texture unit state
@@ -832,7 +832,11 @@ namespace Axiom.Graphics
 		/// rendersystems which have a unified binding for the vertex and fragment
 		/// units, this setting makes no difference.
 		/// </remarks>
-		public TextureBindingType BindingType { get; set; }
+		public TextureBindingType BindingType
+		{
+			get;
+			set;
+		}
 
 		#endregion Fields and Properties
 
@@ -1072,7 +1076,7 @@ namespace Axiom.Graphics
 				string[] postfixes = {
 				                     	"_fr", "_bk", "_lf", "_rt", "_up", "_dn"
 				                     };
-				string[] fullNames = new string[6];
+				string[] fullNames = new string[ 6 ];
 				string baseName;
 				string ext;
 
@@ -1432,15 +1436,15 @@ namespace Axiom.Graphics
 			{
 				case FilterType.Min:
 					return isDefaultFiltering ?
-					                          	MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Min ) : minFilter;
+												MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Min ) : minFilter;
 
 				case FilterType.Mag:
 					return isDefaultFiltering ?
-					                          	MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mag ) : magFilter;
+												MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mag ) : magFilter;
 
 				case FilterType.Mip:
 					return isDefaultFiltering ?
-					                          	MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mip ) : mipFilter;
+												MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mip ) : mipFilter;
 			}
 
 			// should never get here, but makes the compiler happy
@@ -1466,26 +1470,26 @@ namespace Axiom.Graphics
 		///     Total length of the animation sequence.  When set to 0, automatic animation does not occur.
 		///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
 		/// </param>
-        public void SetAnimatedTextureName( string name, int numFrames, float duration )
+		public void SetAnimatedTextureName( string name, int numFrames, float duration )
 		{
-		    string ext, baseName;
+			string ext, baseName;
 
-		    // split up the base name and file extension
-		    int pos = name.LastIndexOf( "." );
-		    baseName = name.Substring( 0, pos );
-		    ext = name.Substring( pos );
+			// split up the base name and file extension
+			int pos = name.LastIndexOf( "." );
+			baseName = name.Substring( 0, pos );
+			ext = name.Substring( pos );
 
-		    string[] names = new string[numFrames];
+			string[] names = new string[ numFrames ];
 
-		    // loop through and create the real texture names from the base name
-		    for ( int i = 0; i < numFrames; i++ )
-		    {
-		        names[ i ] = string.Format( "{0}_{1}{2}", baseName, i, ext );
-		    }
+			// loop through and create the real texture names from the base name
+			for ( int i = 0; i < numFrames; i++ )
+			{
+				names[ i ] = string.Format( "{0}_{1}{2}", baseName, i, ext );
+			}
 
 		}
 
-	    /// <summary>
+		/// <summary>
 		///     Sets the names of the texture images for an animated texture.
 		/// </summary>
 		/// <remarks>
@@ -1919,9 +1923,9 @@ namespace Axiom.Graphics
 			{
 				Matrix4 rotation = Matrix4.Identity;
 
-                float theta = Utility.DegreesToRadians( rotate );
-                float cosTheta = Utility.Cos( theta );
-                float sinTheta = Utility.Sin( theta );
+				float theta = Utility.DegreesToRadians( rotate );
+				float cosTheta = Utility.Cos( theta );
+				float sinTheta = Utility.Sin( theta );
 
 				// set the rotation portion of the matrix
 				rotation.m00 = cosTheta;
@@ -1961,11 +1965,11 @@ namespace Axiom.Graphics
 
 			// these effects must be unique, so remove any existing
 			if ( effect.type == TextureEffectType.EnvironmentMap ||
-			     effect.type == TextureEffectType.UVScroll ||
-			     effect.type == TextureEffectType.UScroll ||
-			     effect.type == TextureEffectType.VScroll ||
-			     effect.type == TextureEffectType.Rotate ||
-			     effect.type == TextureEffectType.ProjectiveTexture )
+				 effect.type == TextureEffectType.UVScroll ||
+				 effect.type == TextureEffectType.UScroll ||
+				 effect.type == TextureEffectType.VScroll ||
+				 effect.type == TextureEffectType.Rotate ||
+				 effect.type == TextureEffectType.ProjectiveTexture )
 			{
 				for ( int i = 0; i < effectList.Count; i++ )
 				{
@@ -2178,7 +2182,7 @@ namespace Axiom.Graphics
 			// restore correct parent
 			target.parent = tmpParent;
 
-			target.frames = new string[MaxAnimationFrames];
+			target.frames = new string[ MaxAnimationFrames ];
 
 			// copy over animation frame texture names
 			for ( int i = 0; i < MaxAnimationFrames; i++ )
@@ -2256,11 +2260,11 @@ namespace Axiom.Graphics
 			}
 
 			if ( left.colorArg1 != right.colorArg1 ||
-			     left.colorArg2 != right.colorArg2 ||
-			     left.blendFactor != right.blendFactor ||
-			     left.source1 != right.source1 ||
-			     left.source2 != right.source2 ||
-			     left.operation != right.operation )
+				 left.colorArg2 != right.colorArg2 ||
+				 left.blendFactor != right.blendFactor ||
+				 left.source1 != right.source1 ||
+				 left.source2 != right.source2 ||
+				 left.operation != right.operation )
 			{
 				return false;
 			}
@@ -2296,11 +2300,11 @@ namespace Axiom.Graphics
 			if ( left.blendType == LayerBlendType.Color )
 			{
 				if ( left.colorArg1 != right.colorArg1 ||
-				     left.colorArg2 != right.colorArg2 ||
-				     left.blendFactor != right.blendFactor ||
-				     left.source1 != right.source1 ||
-				     left.source2 != right.source2 ||
-				     left.operation != right.operation )
+					 left.colorArg2 != right.colorArg2 ||
+					 left.blendFactor != right.blendFactor ||
+					 left.source1 != right.source1 ||
+					 left.source2 != right.source2 ||
+					 left.operation != right.operation )
 				{
 					return true;
 				}
@@ -2308,11 +2312,11 @@ namespace Axiom.Graphics
 			else
 			{
 				if ( left.alphaArg1 != right.alphaArg1 ||
-				     left.alphaArg2 != right.alphaArg2 ||
-				     left.blendFactor != right.blendFactor ||
-				     left.source1 != right.source1 ||
-				     left.source2 != right.source2 ||
-				     left.operation != right.operation )
+					 left.alphaArg2 != right.alphaArg2 ||
+					 left.blendFactor != right.blendFactor ||
+					 left.source1 != right.source1 ||
+					 left.source2 != right.source2 ||
+					 left.operation != right.operation )
 				{
 					return true;
 				}
@@ -2367,15 +2371,15 @@ namespace Axiom.Graphics
 		{
 			return ( new System.Text.StringBuilder() )
 				.AppendFormat( "blendType : {0}; opertaion : {1}; source1 : {2}; source2 : {3}; colorArg1 : {4}; colorArg2 : {5}; alphaArg1 : {6}; alphaArg2 : {7}; blendType : {8};",
-				               this.blendType,
-				               this.operation,
-				               this.source1,
-				               this.source2,
-				               this.colorArg1,
-				               this.colorArg2,
-				               this.alphaArg1,
-				               this.alphaArg2,
-				               this.blendFactor ).ToString();
+							   this.blendType,
+							   this.operation,
+							   this.source1,
+							   this.source2,
+							   this.colorArg1,
+							   this.colorArg2,
+							   this.alphaArg1,
+							   this.alphaArg2,
+							   this.blendFactor ).ToString();
 		}
 
 		#endregion Object overloads

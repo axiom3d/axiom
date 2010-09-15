@@ -56,7 +56,7 @@ namespace Axiom.Scripting.Compiler
 		class MaterialTranslator : Translator
 		{
 			private Material _material;
-			Dictionary<string,string> _textureAliases = new Dictionary<string,string>();
+			Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
 
 			public MaterialTranslator( ScriptCompiler compiler )
 				: base( compiler )
@@ -118,7 +118,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					case Keywords.ID_LOD_DISTANCES:
 						{
-                            LodValueList lods = new LodValueList();
+							LodValueList lods = new LodValueList();
 							foreach ( AbstractNode node in property.values )
 							{
 								if ( node.Type == AbstractNodeType.Atom && ( (AtomAbstractNode)node ).IsNumber )

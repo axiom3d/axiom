@@ -42,143 +42,143 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// Summary description for VideoMode.
-    /// </summary>
-    public class VideoMode
-    {
-        #region Member variables
+	/// <summary>
+	/// Summary description for VideoMode.
+	/// </summary>
+	public class VideoMode
+	{
+		#region Member variables
 
-        private XFG.DisplayMode displayMode;
-        private int modeNum;
-        static int modeCount = 0;
+		private XFG.DisplayMode displayMode;
+		private int modeNum;
+		static int modeCount = 0;
 
-        #endregion
+		#endregion
 
-        #region Constructors
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public VideoMode()
-        {
-            modeNum = ++modeCount;
-            displayMode = new XFG.DisplayMode();
-        }
+		#region Constructors
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public VideoMode()
+		{
+			modeNum = ++modeCount;
+			displayMode = new XFG.DisplayMode();
+		}
 
-        /// <summary>
-        ///		Accepts a existing XNAVideoMode object.
-        /// </summary>
-        public VideoMode( VideoMode videoMode )
-        {
-            modeNum = ++modeCount;
-            displayMode = videoMode.displayMode;
-        }
+		/// <summary>
+		///		Accepts a existing XNAVideoMode object.
+		/// </summary>
+		public VideoMode( VideoMode videoMode )
+		{
+			modeNum = ++modeCount;
+			displayMode = videoMode.displayMode;
+		}
 
-        /// <summary>
-        ///		Accepts a existing Direct3D.DisplayMode object.
-        /// </summary>
-        public VideoMode( XFG.DisplayMode videoMode )
-        {
-            modeNum = ++modeCount;
-            displayMode = videoMode;
-        }
+		/// <summary>
+		///		Accepts a existing Direct3D.DisplayMode object.
+		/// </summary>
+		public VideoMode( XFG.DisplayMode videoMode )
+		{
+			modeNum = ++modeCount;
+			displayMode = videoMode;
+		}
 
-        /// <summary>
-        ///		Destructor.
-        /// </summary>
-        ~VideoMode()
-        {
-            modeCount--;
-        }
+		/// <summary>
+		///		Destructor.
+		/// </summary>
+		~VideoMode()
+		{
+			modeCount--;
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Width of this video mode.
-        /// </summary>
-        public int Width
-        {
-            get
-            {
-                return displayMode.Width;
-            }
-        }
+		/// <summary>
+		///		Width of this video mode.
+		/// </summary>
+		public int Width
+		{
+			get
+			{
+				return displayMode.Width;
+			}
+		}
 
-        /// <summary>
-        ///		Height of this video mode.
-        /// </summary>
-        public int Height
-        {
-            get
-            {
-                return displayMode.Height;
-            }
-        }
+		/// <summary>
+		///		Height of this video mode.
+		/// </summary>
+		public int Height
+		{
+			get
+			{
+				return displayMode.Height;
+			}
+		}
 
-        /// <summary>
-        ///		Format of this video mode.
-        /// </summary>
-        public XFG.SurfaceFormat Format
-        {
-            get
-            {
-                return displayMode.Format;
-            }
-        }
+		/// <summary>
+		///		Format of this video mode.
+		/// </summary>
+		public XFG.SurfaceFormat Format
+		{
+			get
+			{
+				return displayMode.Format;
+			}
+		}
 
-        /// <summary>
-        ///		Refresh rate of this video mode.
-        /// </summary>
-        public int RefreshRate
-        {
-            get
-            {
-                return displayMode.RefreshRate;
-            }
-        }
+		/// <summary>
+		///		Refresh rate of this video mode.
+		/// </summary>
+		public int RefreshRate
+		{
+			get
+			{
+				return displayMode.RefreshRate;
+			}
+		}
 
-        /// <summary>
-        ///		Color depth of this video mode.
-        /// </summary>
-        public int ColorDepth
-        {
-            get
-            {
-                if ( displayMode.Format == XFG.SurfaceFormat.Bgr32 ||
-                    displayMode.Format == XFG.SurfaceFormat.Color ||
-                    displayMode.Format == XFG.SurfaceFormat.Bgr24 )
-                {
-                    return 32;
-                }
-                else
-                {
-                    return 16;
-                }
-            }
-        }
+		/// <summary>
+		///		Color depth of this video mode.
+		/// </summary>
+		public int ColorDepth
+		{
+			get
+			{
+				if ( displayMode.Format == XFG.SurfaceFormat.Bgr32 ||
+					displayMode.Format == XFG.SurfaceFormat.Color ||
+					displayMode.Format == XFG.SurfaceFormat.Bgr24 )
+				{
+					return 32;
+				}
+				else
+				{
+					return 16;
+				}
+			}
+		}
 
-        /// <summary>
-        ///		Gets the XNA.DisplayMode object associated with this video mode.
-        /// </summary>
-        public XFG.DisplayMode DisplayMode
-        {
-            get
-            {
-                return displayMode;
-            }
-        }
+		/// <summary>
+		///		Gets the XNA.DisplayMode object associated with this video mode.
+		/// </summary>
+		public XFG.DisplayMode DisplayMode
+		{
+			get
+			{
+				return displayMode;
+			}
+		}
 
-        /// <summary>
-        ///		Returns a string representation of this video mode.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
-        }
+		/// <summary>
+		///		Returns a string representation of this video mode.
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+		{
+			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

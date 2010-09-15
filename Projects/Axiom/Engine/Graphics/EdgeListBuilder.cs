@@ -162,7 +162,7 @@ namespace Axiom.Graphics
 			We deal with this with fallback techniques. We try the following approaches,
 			in order, falling back on the next approach if the current one results in
 			an ambiguous hull:
-        
+		
 			1. Weld all vertices at the same position across all vertex and index sets. 
 			2. Weld vertices at the same position if they are in the same vertex set, 
 			   but regardless of the index set
@@ -570,8 +570,8 @@ namespace Axiom.Graphics
 				CommonVertex commonVec = (CommonVertex)vertices[ index ];
 
 				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
-                    Utility.RealEqual(vec.y, commonVec.position.y, 1e-04f) &&
-                    Utility.RealEqual(vec.z, commonVec.position.z, 1e-04f) &&
+					Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
+					Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
 					( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
 					( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
 					( commonVec.originalIndex == originalIndex || weldVertices ) )

@@ -80,7 +80,11 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <summary>
 		/// returns a string value depending on the tpe of the node.
 		/// </summary>
-		public abstract string Value { get; protected internal set; }
+		public abstract string Value
+		{
+			get;
+			protected internal set;
+		}
 
 		#region ICloneable Implementation
 

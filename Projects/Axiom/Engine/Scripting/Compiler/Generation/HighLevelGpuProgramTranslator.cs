@@ -82,7 +82,7 @@ namespace Axiom.Scripting.Compiler
 							if ( prop.values.Count != 0 )
 							{
 								if ( prop.values[ 0 ].Type == AbstractNodeType.Atom )
-									source = ((AtomAbstractNode)(prop.values[0])).Value;
+									source = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 								else
 									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 							}
@@ -96,12 +96,12 @@ namespace Axiom.Scripting.Compiler
 							String name = prop.name, value = "";
 							if ( prop.values.Count != 0 && prop.values[ 0 ].Type == AbstractNodeType.Atom )
 								value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
-							customParameters.Add( new Pair<String>(name, value) );
+							customParameters.Add( new Pair<String>( name, value ) );
 						}
 					}
 					else if ( child.Type == AbstractNodeType.Object )
 					{
-						if ( (Keywords)(( (ObjectAbstractNode)child ).Id) == Keywords.ID_DEFAULT_PARAMS )
+						if ( (Keywords)( ( (ObjectAbstractNode)child ).Id ) == Keywords.ID_DEFAULT_PARAMS )
 							param = child;
 					}
 				}
@@ -131,10 +131,10 @@ namespace Axiom.Scripting.Compiler
 					prog.Properties[ item.First ] = item.Second;
 
 				// Set up default parameters
-				if(prog.IsSupported && param != null)
+				if ( prog.IsSupported && param != null )
 				{
-				    GpuProgramParameters ptr = prog.DefaultParameters;
-				    Translator.Translate(new GpuProgramParametersTranslator(Compiler, ptr), param);
+					GpuProgramParameters ptr = prog.DefaultParameters;
+					Translator.Translate( new GpuProgramParametersTranslator( Compiler, ptr ), param );
 				}
 				//prog.Touch();
 			}

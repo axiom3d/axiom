@@ -161,7 +161,11 @@ namespace Axiom.Core
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		public bool IsDisposed { get; set; }
+		public bool IsDisposed
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Class level dispose method

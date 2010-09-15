@@ -55,38 +55,47 @@ namespace Axiom.Math
 	{
 		#region Fields
 
-        public Real x, y;
+		public Real x, y;
 
 		#endregion Fields
 
 		#region Properties
-		
+
 		/// <summary>
 		/// Gets length of this vector
 		/// </summary>
 		public Real Length
 		{
-			get { return Utility.Sqrt( x * x + y * y ); }
+			get
+			{
+				return Utility.Sqrt( x * x + y * y );
+			}
 		}
-		
+
 		/// <summary>
 		/// Gets the squared length of this vector
 		/// </summary>
 		public Real LengthSquared
 		{
-			get { return x * x + y * y; }
+			get
+			{
+				return x * x + y * y;
+			}
 		}
-		
-        /// <summary>
-        /// Gets a vector perpendicular to this, which has the same magnitude.
-        /// </summary>
-        public Vector2 Perpendicular
-        {
-        	get { return new Vector2(this.y, -this.x); }
-        }
-        		
+
+		/// <summary>
+		/// Gets a vector perpendicular to this, which has the same magnitude.
+		/// </summary>
+		public Vector2 Perpendicular
+		{
+			get
+			{
+				return new Vector2( this.y, -this.x );
+			}
+		}
+
 		#endregion
-		
+
 		#region Static
 
 		private static readonly Vector2 zeroVector = new Vector2( 0.0f, 0.0f );
@@ -102,7 +111,7 @@ namespace Axiom.Math
 		}
 
 		#endregion
-		
+
 		#region Constructors
 
 		/// <summary>
@@ -110,7 +119,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="x">X position.</param>
 		/// <param name="y">Y position</param>
-        public Vector2(Real x, Real y)
+		public Vector2( Real x, Real y )
 		{
 			this.x = x;
 			this.y = y;
@@ -120,33 +129,33 @@ namespace Axiom.Math
 
 		#region Methods
 
-        /// <summary>
-        ///		Normalizes the vector.
-        /// </summary>
-        /// <remarks>
-        ///		This method normalises the vector such that it's
-        ///		length / magnitude is 1. The result is called a unit vector.
-        ///		<p/>
-        ///		This function will not crash for zero-sized vectors, but there
-        ///		will be no changes made to their components.
-        ///	</remarks>
-        ///	<returns>The previous length of the vector.</returns>
-        public Real Normalize()
-        {
-            Real length = Utility.Sqrt(this.x * this.x + this.y * this.y);
+		/// <summary>
+		///		Normalizes the vector.
+		/// </summary>
+		/// <remarks>
+		///		This method normalises the vector such that it's
+		///		length / magnitude is 1. The result is called a unit vector.
+		///		<p/>
+		///		This function will not crash for zero-sized vectors, but there
+		///		will be no changes made to their components.
+		///	</remarks>
+		///	<returns>The previous length of the vector.</returns>
+		public Real Normalize()
+		{
+			Real length = Utility.Sqrt( this.x * this.x + this.y * this.y );
 
-            // Will also work for zero-sized vectors, but will change nothing
-            if (length > Real.Epsilon)
-            {
-                Real inverseLength = 1.0f / length;
+			// Will also work for zero-sized vectors, but will change nothing
+			if ( length > Real.Epsilon )
+			{
+				Real inverseLength = 1.0f / length;
 
-                this.x *= inverseLength;
-                this.y *= inverseLength;
-            }
+				this.x *= inverseLength;
+				this.y *= inverseLength;
+			}
 
-            return length;
-        }
-        
+			return length;
+		}
+
 		/// <summary>
 		/// Gets a normalized (unit length) vector of this vector
 		/// </summary>
@@ -158,34 +167,34 @@ namespace Axiom.Math
 
 			return vec;
 		}
-		        
-        /// <summary>
-        /// Calculates the 2 dimensional cross-product of 2 vectors, which results
-        /// in a Real value which is 2 times the area of the triangle
-        /// defined by the two vectors. It also is the magnitude of the 3D vector that is perpendicular
-        /// to the 2D vectors if the 2D vectors are projected to 3D space.
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <returns></returns>
-        public Real Cross(Vector2 vector)
-        {
-            return this.x * vector.y - this.y * vector.x;
-        }
 
-        /// <summary>
-        /// Calculates the 2 dimensional dot-product of 2 vectors, 
-        /// which is equal to the cosine of the angle between the vectors, times the lengths of each of the vectors.
-        /// A.Dot(B) == |A| * |B| * cos(fi)
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <returns></returns>
-        public Real Dot(Vector2 vector)
-        {
-            return this.x * vector.x + this.y * vector.y;
-        }
-        
+		/// <summary>
+		/// Calculates the 2 dimensional cross-product of 2 vectors, which results
+		/// in a Real value which is 2 times the area of the triangle
+		/// defined by the two vectors. It also is the magnitude of the 3D vector that is perpendicular
+		/// to the 2D vectors if the 2D vectors are projected to 3D space.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns></returns>
+		public Real Cross( Vector2 vector )
+		{
+			return this.x * vector.y - this.y * vector.x;
+		}
+
+		/// <summary>
+		/// Calculates the 2 dimensional dot-product of 2 vectors, 
+		/// which is equal to the cosine of the angle between the vectors, times the lengths of each of the vectors.
+		/// A.Dot(B) == |A| * |B| * cos(fi)
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns></returns>
+		public Real Dot( Vector2 vector )
+		{
+			return this.x * vector.x + this.y * vector.y;
+		}
+
 		#endregion
-		
+
 		#region CLS compliant methods and operator overloads
 
 		/// <summary>
@@ -212,7 +221,7 @@ namespace Axiom.Math
 		{
 			return obj is Vector2 && this == (Vector2)obj;
 		}
-		
+
 		/// <summary>
 		///		Used when a Vector2 is added to another Vector2.
 		/// </summary>
@@ -246,12 +255,12 @@ namespace Axiom.Math
 			return new Vector2( left.x - right.x, left.y - right.y );
 		}
 
-        public static Vector2 operator *(Vector2 left, Vector2 right)
-        {
-            left.x *= right.x;
-            left.y *= right.y;
-            return left;
-        }
+		public static Vector2 operator *( Vector2 left, Vector2 right )
+		{
+			left.x *= right.x;
+			left.y *= right.y;
+			return left;
+		}
 
 		/// <summary>
 		///		Used when a Vector2 is multiplied by a scalar value.
@@ -259,7 +268,7 @@ namespace Axiom.Math
 		/// <param name="left"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-        public static Vector2 Multiply(Vector2 left, Real scalar)
+		public static Vector2 Multiply( Vector2 left, Real scalar )
 		{
 			return left * scalar;
 		}
@@ -270,7 +279,7 @@ namespace Axiom.Math
 		/// <param name="left"></param>
 		/// <param name="scalar"></param>
 		/// <returns></returns>
-        public static Vector2 operator *(Vector2 left, Real scalar)
+		public static Vector2 operator *( Vector2 left, Real scalar )
 		{
 			return new Vector2( left.x * scalar, left.y * scalar );
 		}
@@ -281,7 +290,7 @@ namespace Axiom.Math
 		/// <param name="scalar"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-        public static Vector2 Multiply(Real scalar, Vector2 right)
+		public static Vector2 Multiply( Real scalar, Vector2 right )
 		{
 			return scalar * right;
 		}
@@ -292,7 +301,7 @@ namespace Axiom.Math
 		/// <param name="scalar"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-        public static Vector2 operator *(Real scalar, Vector2 right)
+		public static Vector2 operator *( Real scalar, Vector2 right )
 		{
 			return new Vector2( right.x * scalar, right.y * scalar );
 		}
@@ -316,9 +325,9 @@ namespace Axiom.Math
 		{
 			return new Vector2( -left.x, -left.y );
 		}
-		
+
 		#endregion
-				
+
 		#region Object overrides
 
 		public override int GetHashCode()
@@ -328,25 +337,25 @@ namespace Axiom.Math
 
 		public string ToString()
 		{
-			return String.Format(CultureInfo.InvariantCulture, "Vector2({0}, {1})", this.x, this.y);
+			return String.Format( CultureInfo.InvariantCulture, "Vector2({0}, {1})", this.x, this.y );
 		}
-		
+
 		#endregion
-		
+
 		#region Parse from string
 
-		public Vector2 Parse(string s)
+		public Vector2 Parse( string s )
 		{
-        	// the format is "Vector2(x, y)"
-        	if (!s.StartsWith("Vector2("))
-			    throw new FormatException();
-			    
-			string[] values = s.Substring(8).TrimEnd('}').Split(',');
+			// the format is "Vector2(x, y)"
+			if ( !s.StartsWith( "Vector2(" ) )
+				throw new FormatException();
 
-            return new Vector2(Real.Parse(values[0], CultureInfo.InvariantCulture),
-                               Real.Parse(values[1], CultureInfo.InvariantCulture));			                      
+			string[] values = s.Substring( 8 ).TrimEnd( '}' ).Split( ',' );
+
+			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
+							   Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
 		}
-		
-		#endregion		
+
+		#endregion
 	}
 }

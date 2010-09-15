@@ -43,105 +43,106 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-    /// <summary>
-    /// Summary description for TexCoordModifierControllerValue.
-    /// </summary>
+	/// <summary>
+	/// Summary description for TexCoordModifierControllerValue.
+	/// </summary>
 	public class TexCoordModifierControllerValue : IControllerValue<float>
-    {
-        #region Member variables
+	{
+		#region Member variables
 
-        protected bool transU;
-        protected bool transV;
-        protected bool scaleU;
-        protected bool scaleV;
-        protected bool rotate;
-        protected TextureUnitState texUnit;
+		protected bool transU;
+		protected bool transV;
+		protected bool scaleU;
+		protected bool scaleV;
+		protected bool rotate;
+		protected TextureUnitState texUnit;
 
-        #endregion
+		#endregion
 
-        public TexCoordModifierControllerValue( TextureUnitState texUnit )
-        {
-            this.texUnit = texUnit;
-        }
+		public TexCoordModifierControllerValue( TextureUnitState texUnit )
+		{
+			this.texUnit = texUnit;
+		}
 
-        public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU ) : this ( texUnit, scrollU, false )
-        {
-        }
+		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU )
+			: this( texUnit, scrollU, false )
+		{
+		}
 
-        public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
-        {
-            this.texUnit = texUnit;
-            this.transU = scrollU;
-            this.transV = scrollV;
-        }
+		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
+		{
+			this.texUnit = texUnit;
+			this.transU = scrollU;
+			this.transV = scrollV;
+		}
 
-        public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV, bool scaleU, bool scaleV, bool rotate )
-        {
-            this.texUnit = texUnit;
-            this.transU = scrollU;
-            this.transV = scrollV;
-            this.scaleU = scaleU;
-            this.scaleV = scaleV;
-            this.rotate = rotate;
-        }
+		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV, bool scaleU, bool scaleV, bool rotate )
+		{
+			this.texUnit = texUnit;
+			this.transU = scrollU;
+			this.transV = scrollV;
+			this.scaleU = scaleU;
+			this.scaleV = scaleV;
+			this.rotate = rotate;
+		}
 
-        #region IControllerValue Members
+		#region IControllerValue Members
 
-        public float Value
-        {
-            get
-            {
-                Matrix4 trans = texUnit.TextureMatrix;
+		public float Value
+		{
+			get
+			{
+				Matrix4 trans = texUnit.TextureMatrix;
 
-                if ( transU )
-                    return trans.m03;
-                else if ( transV )
-                    return trans.m13;
-                else if ( scaleU )
-                    return trans.m00;
-                else if ( scaleV )
-                    return trans.m11;
+				if ( transU )
+					return trans.m03;
+				else if ( transV )
+					return trans.m13;
+				else if ( scaleU )
+					return trans.m00;
+				else if ( scaleV )
+					return trans.m11;
 
-                // should never get here
-                return 0.0f;
-            }
-            set
-            {
-                if ( transU )
-                    texUnit.SetTextureScrollU( value );
+				// should never get here
+				return 0.0f;
+			}
+			set
+			{
+				if ( transU )
+					texUnit.SetTextureScrollU( value );
 
-                if ( transV )
-                    texUnit.SetTextureScrollV( value );
+				if ( transV )
+					texUnit.SetTextureScrollV( value );
 
-                if ( scaleU )
-                {
-                    if ( value >= 0 )
-                    {
-                        texUnit.SetTextureScaleU( 1 + value );
-                    }
-                    else
-                    {
-                        texUnit.SetTextureScaleU( 1 / -value );
-                    }
-                }
+				if ( scaleU )
+				{
+					if ( value >= 0 )
+					{
+						texUnit.SetTextureScaleU( 1 + value );
+					}
+					else
+					{
+						texUnit.SetTextureScaleU( 1 / -value );
+					}
+				}
 
-                if ( scaleV )
-                {
-                    if ( value >= 0 )
-                    {
-                        texUnit.SetTextureScaleV( 1 + value );
-                    }
-                    else
-                    {
-                        texUnit.SetTextureScaleV( 1 / -value );
-                    }
-                }
+				if ( scaleV )
+				{
+					if ( value >= 0 )
+					{
+						texUnit.SetTextureScaleV( 1 + value );
+					}
+					else
+					{
+						texUnit.SetTextureScaleV( 1 / -value );
+					}
+				}
 
-                if ( rotate )
-                    texUnit.SetTextureRotate( value * 360 );
-            }
-        }
+				if ( rotate )
+					texUnit.SetTextureRotate( value * 360 );
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

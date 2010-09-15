@@ -52,55 +52,55 @@ using Axiom.Graphics;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		Types of interpolation used in animation.
-    /// </summary>
-    public enum InterpolationMode
-    {
-        /// <summary>
-        ///		Values are interpolated along straight lines.  
-        ///		More robotic movement, not as realistic.
-        ///	 </summary>
-        Linear,
+	/// <summary>
+	///		Types of interpolation used in animation.
+	/// </summary>
+	public enum InterpolationMode
+	{
+		/// <summary>
+		///		Values are interpolated along straight lines.  
+		///		More robotic movement, not as realistic.
+		///	 </summary>
+		Linear,
 
-        /// <summary>
-        ///		Values are interpolated along a spline, resulting in smoother changes in direction.  
-        ///		Smooth movement between keyframes.
-        ///	 </summary>
-        Spline
-    }
+		/// <summary>
+		///		Values are interpolated along a spline, resulting in smoother changes in direction.  
+		///		Smooth movement between keyframes.
+		///	 </summary>
+		Spline
+	}
 
-    /// <summary>
-    /// The types of rotational interpolation available.
-    /// </summary>
-    public enum RotationInterpolationMode
-    {
-        /// <summary>
-        /// Values are interpolated linearly. This is faster but does not 
-        ///    necessarily give a completely accurate result.
-        /// </summary>
-        Linear,
+	/// <summary>
+	/// The types of rotational interpolation available.
+	/// </summary>
+	public enum RotationInterpolationMode
+	{
+		/// <summary>
+		/// Values are interpolated linearly. This is faster but does not 
+		///    necessarily give a completely accurate result.
+		/// </summary>
+		Linear,
 
-        /// <summary>
-        ///  Values are interpolated spherically. This is more accurate but
-        ///    has a higher cost.
-        /// </summary>
-        Spherical
-    };
+		/// <summary>
+		///  Values are interpolated spherically. This is more accurate but
+		///    has a higher cost.
+		/// </summary>
+		Spherical
+	};
 
-    /// <summary>
-    ///		An animation sequence. 
-    /// </summary>
-    /// <remarks>
-    ///		This class defines the interface for a sequence of animation, whether that
-    ///		be animation of a mesh, a path along a spline, or possibly more than one
-    ///		type of animation in one. An animation is made up of many 'tracks', which are
-    ///		the more specific types of animation.
-    ///		<p/>
-    ///		You should not create these animations directly. They will be created via a parent
-    ///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
-    /// </remarks>
-    public class Animation
+	/// <summary>
+	///		An animation sequence. 
+	/// </summary>
+	/// <remarks>
+	///		This class defines the interface for a sequence of animation, whether that
+	///		be animation of a mesh, a path along a spline, or possibly more than one
+	///		type of animation in one. An animation is made up of many 'tracks', which are
+	///		the more specific types of animation.
+	///		<p/>
+	///		You should not create these animations directly. They will be created via a parent
+	///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
+	/// </remarks>
+	public class Animation
 	{
 		#region Member variables
 

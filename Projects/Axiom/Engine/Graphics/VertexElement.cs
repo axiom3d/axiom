@@ -40,10 +40,10 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// 	This class declares the usage of a single vertex buffer as a component
-    /// 	of a complete <see cref="VertexDeclaration"/>. 
-    /// </summary>
+	/// <summary>
+	/// 	This class declares the usage of a single vertex buffer as a component
+	/// 	of a complete <see cref="VertexDeclaration"/>. 
+	/// </summary>
 	public class VertexElement : ICloneable
 	{
 		#region Fields

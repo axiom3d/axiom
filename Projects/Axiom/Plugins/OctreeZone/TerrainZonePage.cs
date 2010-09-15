@@ -43,8 +43,12 @@ using Axiom.Math;
 
 namespace OctreeZone
 {
-	public class TerrainZoneRow : List<TerrainZoneRenderable> { }
-	public class TerrainZone2D : List<TerrainZoneRow> { }
+	public class TerrainZoneRow : List<TerrainZoneRenderable>
+	{
+	}
+	public class TerrainZone2D : List<TerrainZoneRow>
+	{
+	}
 
 	public class TerrainZonePage
 	{

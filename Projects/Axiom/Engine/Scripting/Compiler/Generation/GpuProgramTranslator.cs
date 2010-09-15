@@ -82,7 +82,7 @@ namespace Axiom.Scripting.Compiler
 							if ( prop.values.Count != 0 )
 							{
 								if ( prop.values[ 0 ].Type == AbstractNodeType.Atom )
-									source = ((AtomAbstractNode)(prop.values[0])).Value;
+									source = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 								else
 									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 							}
@@ -91,12 +91,12 @@ namespace Axiom.Scripting.Compiler
 								Compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 							}
 						}
-						else if ( (Keywords)prop.id == Keywords.ID_SYNTAX)
+						else if ( (Keywords)prop.id == Keywords.ID_SYNTAX )
 						{
 							if ( prop.values.Count != 0 )
 							{
 								if ( prop.values[ 0 ].Type == AbstractNodeType.Atom )
-									syntax = ((AtomAbstractNode)(prop.values[0])).Value;
+									syntax = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 								else
 									Compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 							}
@@ -115,17 +115,17 @@ namespace Axiom.Scripting.Compiler
 					}
 					else if ( child.Type == AbstractNodeType.Object )
 					{
-						if ( (Keywords)(( (ObjectAbstractNode)child ).Id) == Keywords.ID_DEFAULT_PARAMS )
+						if ( (Keywords)( ( (ObjectAbstractNode)child ).Id ) == Keywords.ID_DEFAULT_PARAMS )
 							param = child;
 					}
 				}
 
 				// Allocate the program
 				GpuProgram prog;
-				if( CompilerListener != null )
-					prog = CompilerListener.CreateGpuProgram(obj.Name, Compiler.ResourceGroup, source, (Keywords)( obj.Id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment , syntax); 
+				if ( CompilerListener != null )
+					prog = CompilerListener.CreateGpuProgram( obj.Name, Compiler.ResourceGroup, source, (Keywords)( obj.Id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment, syntax );
 				else
-					prog = GpuProgramManager.Instance.CreateProgram(obj.Name, Compiler.ResourceGroup, source, (Keywords)( obj.Id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment , syntax);
+					prog = GpuProgramManager.Instance.CreateProgram( obj.Name, Compiler.ResourceGroup, source, (Keywords)( obj.Id ) == Keywords.ID_VERTEX_PROGRAM ? GpuProgramType.Vertex : GpuProgramType.Fragment, syntax );
 
 				// Check that allocation worked
 				if ( prog == null )
@@ -142,10 +142,10 @@ namespace Axiom.Scripting.Compiler
 					prog.Properties[ item.First ] = item.Second;
 
 				// Set up default parameters
-				if(prog.IsSupported && param != null)
+				if ( prog.IsSupported && param != null )
 				{
-				    GpuProgramParameters ptr = prog.DefaultParameters;
-				    Translator.Translate(new GpuProgramParametersTranslator(Compiler, ptr), param);
+					GpuProgramParameters ptr = prog.DefaultParameters;
+					Translator.Translate( new GpuProgramParametersTranslator( Compiler, ptr ), param );
 				}
 				prog.Touch();
 			}

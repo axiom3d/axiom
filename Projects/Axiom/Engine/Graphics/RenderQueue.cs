@@ -244,7 +244,7 @@ namespace Axiom.Graphics
 			{
 				renderable.Material.Touch();
 			}
-			
+
 			// Check material & technique supplied (the former since the default implementation
 			// of getTechnique is based on it for backwards compatibility
 			if ( renderable.Material == null || renderable.Technique == null )

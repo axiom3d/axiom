@@ -190,24 +190,24 @@ namespace Axiom.Graphics
 		private long _lastSecond;
 		private long _frameCount;
 
-        #region DepthBufferPool Property
-        private ushort _poolID;
-        public ushort DepthBufferPool
-        {
-            get
-            {
-                return _poolID;
-            }
-            set
-            {
-                _poolID = value;
-            }
-        }
-        #endregion DepthBufferPool Property
+		#region DepthBufferPool Property
+		private ushort _poolID;
+		public ushort DepthBufferPool
+		{
+			get
+			{
+				return _poolID;
+			}
+			set
+			{
+				_poolID = value;
+			}
+		}
+		#endregion DepthBufferPool Property
 
-        #region Height Property
+		#region Height Property
 
-        /// <summary>
+		/// <summary>
 		///    Height of this render target.
 		/// </summary>
 		private int _height;
@@ -318,7 +318,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        
+
 		#endregion Name Property
 
 		#region RequiresTextureFlipping Property
@@ -408,31 +408,31 @@ namespace Axiom.Graphics
 
 		#endregion isDepthBuffered Property
 
-        #region HardwareGammaEnabled Property
+		#region HardwareGammaEnabled Property
 
-        private bool _hwGamma;
+		private bool _hwGamma;
 
-        /// <summary>
-        /// Indicates whether on rendering, linear color space is converted to 
-        /// sRGB gamma colour space. This is the exact opposite conversion of
-        /// what is indicated by <see cref="Texture.HardwareGammaEnabled" />, and can only
-        /// be enabled on creation of the render target. For render windows, it's
-        /// enabled through the 'gamma' creation misc parameter. For textures, 
-        /// it is enabled through the hwGamma parameter to the create call.
-        /// </summary>
-        public bool HardwareGammaEnabled
-        {
-            get
-            {
-                return _hwGamma;
-            }
-        }
+		/// <summary>
+		/// Indicates whether on rendering, linear color space is converted to 
+		/// sRGB gamma colour space. This is the exact opposite conversion of
+		/// what is indicated by <see cref="Texture.HardwareGammaEnabled" />, and can only
+		/// be enabled on creation of the render target. For render windows, it's
+		/// enabled through the 'gamma' creation misc parameter. For textures, 
+		/// it is enabled through the hwGamma parameter to the create call.
+		/// </summary>
+		public bool HardwareGammaEnabled
+		{
+			get
+			{
+				return _hwGamma;
+			}
+		}
 
-        #endregion HardwareGammaEnabled Property
+		#endregion HardwareGammaEnabled Property
 
-        #region FSAA Property
+		#region FSAA Property
 
-        /// <summary>
+		/// <summary>
 		///    Flag that states whether this target is FSAA.
 		/// </summary>
 		private int _fsaa = 0;
@@ -453,32 +453,32 @@ namespace Axiom.Graphics
 
 		#endregion FSAA Property
 
-        #region FSAAHint Property
-        private string _fsaaHint;
-        public string FSAAHint
-        {
-            get
-            {
-                return _fsaaHint;
-            }
-            set
-            {
-                _fsaaHint = value;
-            }
-        }
-        #endregion FSAAHint Property
+		#region FSAAHint Property
+		private string _fsaaHint;
+		public string FSAAHint
+		{
+			get
+			{
+				return _fsaaHint;
+			}
+			set
+			{
+				_fsaaHint = value;
+			}
+		}
+		#endregion FSAAHint Property
 
 		#endregion Fields and Properties
 
-        public RenderTarget()
-        {
+		public RenderTarget()
+		{
 
-        }
+		}
 
-        public RenderTarget(string name)
-        {
-            _name = name;
-        }
+		public RenderTarget( string name )
+		{
+			_name = name;
+		}
 
 		#region Event Handling
 
@@ -601,7 +601,7 @@ namespace Axiom.Graphics
 		{
 			Debug.Assert( index >= 0 && index < _viewportList.Count );
 
-            return _viewportList.Values[index];
+			return _viewportList.Values[ index ];
 		}
 
 		/// <summary>
@@ -881,41 +881,41 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-        /// <summary>
-        ///		Updates the window contents.
-        /// </summary>
-        /// <remarks>
-        ///		The window is updated by telling each camera which is supposed
-        ///		to render into this window to render it's view, and then
-        ///		the window buffers are swapped via SwapBuffers()
-        ///	</remarks>
-        public virtual void Update()
-        {
-            Update( true );
-        }
+		/// <summary>
+		///		Updates the window contents.
+		/// </summary>
+		/// <remarks>
+		///		The window is updated by telling each camera which is supposed
+		///		to render into this window to render it's view, and then
+		///		the window buffers are swapped via SwapBuffers()
+		///	</remarks>
+		public virtual void Update()
+		{
+			Update( true );
+		}
 
-        /// <summary>
-        ///		Updates the window contents.
-        /// </summary>
-        /// <remarks>
-        ///		The window is updated by telling each camera which is supposed
-        ///		to render into this window to render it's view, and then
-        ///		the window buffers are swapped via SwapBuffers() if requested.
-        ///	</remarks>
-        ///	<param name="swapBuffers">
-        ///	If set to true, the window will immediately
-        ///	swap it's buffers after update. Otherwise, the buffers are
-        ///	not swapped, and you have to call swapBuffers yourself sometime
-        ///	later. You might want to do this on some rendersystems which 
-        ///	pause for queued rendering commands to complete before accepting
-        ///	swap buffers calls - so you could do other CPU tasks whilst the 
-        ///	queued commands complete. Or, you might do this if you want custom
-        ///	control over your windows, such as for externally created windows.
-        ///	</param>
-        public virtual void Update( bool swapBuffers )
-        {
-	        // Clear per frame statistics
-            _statistics.BatchCount = _statistics.TriangleCount = 0;
+		/// <summary>
+		///		Updates the window contents.
+		/// </summary>
+		/// <remarks>
+		///		The window is updated by telling each camera which is supposed
+		///		to render into this window to render it's view, and then
+		///		the window buffers are swapped via SwapBuffers() if requested.
+		///	</remarks>
+		///	<param name="swapBuffers">
+		///	If set to true, the window will immediately
+		///	swap it's buffers after update. Otherwise, the buffers are
+		///	not swapped, and you have to call swapBuffers yourself sometime
+		///	later. You might want to do this on some rendersystems which 
+		///	pause for queued rendering commands to complete before accepting
+		///	swap buffers calls - so you could do other CPU tasks whilst the 
+		///	queued commands complete. Or, you might do this if you want custom
+		///	control over your windows, such as for externally created windows.
+		///	</param>
+		public virtual void Update( bool swapBuffers )
+		{
+			// Clear per frame statistics
+			_statistics.BatchCount = _statistics.TriangleCount = 0;
 
 			// notify event handlers that this RenderTarget is about to be updated
 			OnBeforeUpdate();
@@ -924,7 +924,7 @@ namespace Axiom.Graphics
 			// Tell each to refresh
 			for ( int i = 0; i < _viewportList.Count; i++ )
 			{
-                Viewport viewport = _viewportList.Values[i];
+				Viewport viewport = _viewportList.Values[ i ];
 
 				// notify listeners (pre)
 				OnBeforeViewportUpdate( viewport );
@@ -944,8 +944,8 @@ namespace Axiom.Graphics
 			// notify event handlers that this target update is complete
 			OnAfterUpdate();
 
-            if( swapBuffers )
-                this.SwapBuffers( Root.Instance.RenderSystem.IsVSync );
+			if ( swapBuffers )
+				this.SwapBuffers( Root.Instance.RenderSystem.IsVSync );
 		}
 
 
@@ -959,7 +959,7 @@ namespace Axiom.Graphics
 		{
 			for ( int i = 0; i < _viewportList.Count; i++ )
 			{
-                Viewport viewport = _viewportList.Values[i];
+				Viewport viewport = _viewportList.Values[ i ];
 
 				// remove the link to this camera
 				if ( viewport.Camera == camera )
@@ -1107,8 +1107,8 @@ namespace Axiom.Graphics
 						this._viewportList.Remove( vp.ZOrder );
 					}
 					// Write final performance stats
-                    if ( LogManager.Instance != null )
-					    LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
+					if ( LogManager.Instance != null )
+						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 				}
 			}
 			isDisposed = true;

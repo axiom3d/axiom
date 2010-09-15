@@ -43,35 +43,35 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-    /// <summary>
-    /// Summary description for NodeRotationControllerValue.
-    /// </summary>
+	/// <summary>
+	/// Summary description for NodeRotationControllerValue.
+	/// </summary>
 	public class NodeRotationControllerValue : IControllerValue<float>
-    {
-        private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
-        private Node node;
-        private Vector3 axis;
+	{
+		private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
+		private Node node;
+		private Vector3 axis;
 
-        public NodeRotationControllerValue( Node node, Vector3 axis )
-        {
-            this.node = node;
-            this.axis = axis;
-        }
+		public NodeRotationControllerValue( Node node, Vector3 axis )
+		{
+			this.node = node;
+			this.axis = axis;
+		}
 
-        #region IControllerValue Members
+		#region IControllerValue Members
 
-        public float Value
-        {
-            get
-            {
-                return radians;
-            }
-            set
-            {
-                node.Rotate( axis, value );
-            }
-        }
+		public float Value
+		{
+			get
+			{
+				return radians;
+			}
+			set
+			{
+				node.Rotate( axis, value );
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -44,34 +44,34 @@ using Axiom.RenderSystems.Xna.Content;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// Summary description for Plugin.
-    /// </summary>
-    public sealed class Plugin : Axiom.Core.IPlugin
-    {
-        #region Fields
+	/// <summary>
+	/// Summary description for Plugin.
+	/// </summary>
+	public sealed class Plugin : Axiom.Core.IPlugin
+	{
+		#region Fields
 
-        /// <summary>
-        ///     Reference to the render system instance.
-        /// </summary>
-        private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
+		/// <summary>
+		///     Reference to the render system instance.
+		/// </summary>
+		private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Implementation of IPlugin
+		#region Implementation of IPlugin
 
-        public void Initialize()
-        {
-            // add an instance of this plugin to the list of available RenderSystems
-            Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
-        }
+		public void Initialize()
+		{
+			// add an instance of this plugin to the list of available RenderSystems
+			Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
+		}
 
-        public void Shutdown()
-        {
-            // nothing at the moment
-            //renderSystem.Shutdown();
-        }
+		public void Shutdown()
+		{
+			// nothing at the moment
+			//renderSystem.Shutdown();
+		}
 
-        #endregion Implementation of IPlugin
-    }
+		#endregion Implementation of IPlugin
+	}
 }

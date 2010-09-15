@@ -71,20 +71,38 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public Vector3 Origin
 		{
-			get { return origin; }
-			set { origin = value; }
+			get
+			{
+				return origin;
+			}
+			set
+			{
+				origin = value;
+			}
 		}
 
 		public Vector3 Direction
 		{
-			get { return direction; }
-			set { direction = value; }
+			get
+			{
+				return direction;
+			}
+			set
+			{
+				direction = value;
+			}
 		}
 
 		public float Extent
 		{
-			get { return extent; }
-			set { extent = value; }
+			get
+			{
+				return extent;
+			}
+			set
+			{
+				extent = value;
+			}
 		}
 
 		public Vector3 EndPoint

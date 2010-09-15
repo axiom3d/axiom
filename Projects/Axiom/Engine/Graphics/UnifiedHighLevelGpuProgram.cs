@@ -43,7 +43,7 @@ using Axiom.Core;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Graphics
 {
 	/// <summary>
@@ -106,12 +106,12 @@ namespace Axiom.Graphics
 			_chosenDelegate = null;
 			foreach ( string delegateName in _delegateNames )
 			{
-                HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
-                if ( program != null && program.IsSupported )
-                {
-                    _chosenDelegate = program;
-                    break;
-                }
+				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
+				if ( program != null && program.IsSupported )
+				{
+					_chosenDelegate = program;
+					break;
+				}
 			}
 		}
 
@@ -237,29 +237,29 @@ namespace Axiom.Graphics
 			}
 		}
 
-        public override bool HasDefaultParameters
-        {
-            get
-            {
-                if ( Delegate != null )
-                {
-                    return Delegate.HasDefaultParameters;
-                }
-                return false;
-            }
-        }
+		public override bool HasDefaultParameters
+		{
+			get
+			{
+				if ( Delegate != null )
+				{
+					return Delegate.HasDefaultParameters;
+				}
+				return false;
+			}
+		}
 
-        public override GpuProgramParameters DefaultParameters
-        {
-            get
-            {
-                if ( Delegate != null )
-                {
-                    return Delegate.DefaultParameters;
-                }
-                return null;
-            }
-        }
+		public override GpuProgramParameters DefaultParameters
+		{
+			get
+			{
+				if ( Delegate != null )
+				{
+					return Delegate.DefaultParameters;
+				}
+				return null;
+			}
+		}
 
 		public override GpuProgramParameters CreateParameters()
 		{
@@ -276,25 +276,25 @@ namespace Axiom.Graphics
 			}
 		}
 
-        public override bool SetParam( string name, string val )
-        {
-            switch ( name )
-            {
-                case "delegate":
-                    AddDelegateProgram( val );
-                    return true;
-                    break;
-            }
-            return false;
-        }
+		public override bool SetParam( string name, string val )
+		{
+			switch ( name )
+			{
+				case "delegate":
+					AddDelegateProgram( val );
+					return true;
+					break;
+			}
+			return false;
+		}
 
-        public override void Load( bool background )
-        {
-            if ( Delegate != null )
-                Delegate.Load( background );
-        }
+		public override void Load( bool background )
+		{
+			if ( Delegate != null )
+				Delegate.Load( background );
+		}
 
-        protected override void CreateLowLevelImpl()
+		protected override void CreateLowLevelImpl()
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}
@@ -341,7 +341,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override HighLevelGpuProgram  CreateInstance(ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader)
+		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 		{
 			return new UnifiedHighLevelGpuProgram( creator, name, handle, group, isManual, loader );
 		}

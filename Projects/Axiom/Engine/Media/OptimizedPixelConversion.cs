@@ -112,7 +112,7 @@ namespace Axiom.Media
 				uint inp = inputPtr[ offset ];
 
 				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-				
+
 			}
 		}
 
@@ -334,7 +334,7 @@ namespace Axiom.Media
 				outputPtr[ offset ] = 0xFF000000 | ( ( (uint)inp ) << 0 ) | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 );
 			}
 		}
-		
+
 		[PixelConverter( PixelFormat.L8, PixelFormat.A8R8G8B8 )]
 		private class L8toA8R8G8B8Converter : IPixelConverter
 		{
@@ -684,7 +684,7 @@ namespace Axiom.Media
 			_supportedConversions = new Dictionary<int, IPixelConverter>();
 			Type t = Assembly.GetExecutingAssembly().GetType( "Axiom.Media.OptimizedPixelConversion" );
 
-			foreach( Type converter in t.GetNestedTypes( BindingFlags.NonPublic ) )
+			foreach ( Type converter in t.GetNestedTypes( BindingFlags.NonPublic ) )
 			{
 				object[] attribs = converter.GetCustomAttributes( typeof( PixelConverterAttribute ), false );
 				if ( attribs.Length != 0 )
@@ -698,7 +698,7 @@ namespace Axiom.Media
 
 		private static class PixelBoxConverter
 		{
-			public static void Convert(  PixelBox src, PixelBox dst, IPixelConverter pixelConverter )
+			public static void Convert( PixelBox src, PixelBox dst, IPixelConverter pixelConverter )
 			{
 				unsafe
 				{

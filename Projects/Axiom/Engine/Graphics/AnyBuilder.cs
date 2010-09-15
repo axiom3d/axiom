@@ -76,7 +76,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// List of software index buffers that were created and to be disposed by this class.
 		/// </summary>
-		protected List<SoftwareIndexBuffer> customIndexBufferList = new	List<SoftwareIndexBuffer>();
+		protected List<SoftwareIndexBuffer> customIndexBufferList = new List<SoftwareIndexBuffer>();
 
 		#endregion Fields
 

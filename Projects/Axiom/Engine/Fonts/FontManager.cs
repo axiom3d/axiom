@@ -54,7 +54,7 @@ namespace Axiom.Fonts
 	///     <file name="OgreFontManager.cpp" revision="1.14" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
 	/// 
-	public class FontManager : ResourceManager , ISingleton<FontManager>
+	public class FontManager : ResourceManager, ISingleton<FontManager>
 	{
 		#region ISingleton<FontManager> Implementation
 

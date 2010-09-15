@@ -44,9 +44,9 @@ using Axiom.Math;
 
 namespace Axiom.Serialization
 {
-    /// <summary>
-    /// Summary description for Serializer.
-    /// </summary>
+	/// <summary>
+	/// Summary description for Serializer.
+	/// </summary>
 	public class Serializer
 	{
 		#region Fields
@@ -105,22 +105,22 @@ namespace Axiom.Serialization
 			unsafe
 			{
 				byte* pointer = (byte*)dest.ToPointer();
-                #if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				for ( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadByte();
 				}
-                #else
-                for ( int i =0; i <count ; i+=4 )
-                {
-                        pointer[i + 3] = reader.ReadByte();
-                        pointer[i + 2] = reader.ReadByte();
-                        pointer[i+1] = reader.ReadByte();
-                        pointer[i] = reader.ReadByte();
+#else
+				for ( int i =0; i <count ; i+=4 )
+				{
+						pointer[i + 3] = reader.ReadByte();
+						pointer[i + 2] = reader.ReadByte();
+						pointer[i+1] = reader.ReadByte();
+						pointer[i] = reader.ReadByte();
 			}
-                #endif
+#endif
+			}
 		}
-        }
 
 		/// <summary>
 		///		Writes a specified number of bytes.

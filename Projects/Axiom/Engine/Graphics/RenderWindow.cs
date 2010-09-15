@@ -42,31 +42,31 @@ using Axiom.Collections;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///		Manages the target rendering window.
-    /// </summary>
-    /// <remarks>
-    ///		This class handles a window into which the contents
-    ///		of a scene are rendered. There is a many-to-1 relationship
-    ///		between instances of this class an instance of RenderSystem
-    ///		which controls the rendering of the scene. There may be
-    ///		more than one window in the case of level editor tools etc.
-    ///		This class is abstract since there may be
-    ///		different implementations for different windowing systems.
-    ///
-    ///		Instances are created and communicated with by the render system
-    ///		although client programs can get a reference to it from
-    ///		the render system if required for resizing or moving.
-    ///		Note that you can have multiple viewpoints
-    ///		in the window for effects like rear-view mirrors and
-    ///		picture-in-picture views (see Viewport and Camera).
-    ///	</remarks>
-    public abstract class RenderWindow : RenderTarget
-    {
-        #region Protected member variables
+	/// <summary>
+	///		Manages the target rendering window.
+	/// </summary>
+	/// <remarks>
+	///		This class handles a window into which the contents
+	///		of a scene are rendered. There is a many-to-1 relationship
+	///		between instances of this class an instance of RenderSystem
+	///		which controls the rendering of the scene. There may be
+	///		more than one window in the case of level editor tools etc.
+	///		This class is abstract since there may be
+	///		different implementations for different windowing systems.
+	///
+	///		Instances are created and communicated with by the render system
+	///		although client programs can get a reference to it from
+	///		the render system if required for resizing or moving.
+	///		Note that you can have multiple viewpoints
+	///		in the window for effects like rear-view mirrors and
+	///		picture-in-picture views (see Viewport and Camera).
+	///	</remarks>
+	public abstract class RenderWindow : RenderTarget
+	{
+		#region Protected member variables
 
-        protected bool isFullScreen;
-        protected IntPtr targetHandle;
+		protected bool isFullScreen;
+		protected IntPtr targetHandle;
 		#region top Property
 
 		private int _top;
@@ -140,7 +140,7 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				
+
 			}
 		}
 
@@ -190,46 +190,46 @@ namespace Axiom.Graphics
 		}
 
 		#endregion IsPrimary Property
-			
+
 		#endregion
 
-        #region Constructor
+		#region Constructor
 
-        protected RenderWindow()
-        {
-			
-            // render windows are low priority
-            this.Priority = RenderTargetPriority.Default;
-        }
+		protected RenderWindow()
+		{
 
-        #endregion
+			// render windows are low priority
+			this.Priority = RenderTargetPriority.Default;
+		}
 
-        #region Abstract methods and properties
+		#endregion
 
-        /// <summary>
-        ///		Creates & displays the new window.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="width">The width of the window in pixels.</param>
-        /// <param name="height">The height of the window in pixels.</param>
-        /// <param name="fullScreen">If true, the window fills the screen, with no title bar or border.</param>
-        /// <param name="miscParams">A variable number of platform-specific arguments. 
-        /// The actual requirements must be defined by the implementing subclasses.</param>
+		#region Abstract methods and properties
+
+		/// <summary>
+		///		Creates & displays the new window.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="width">The width of the window in pixels.</param>
+		/// <param name="height">The height of the window in pixels.</param>
+		/// <param name="fullScreen">If true, the window fills the screen, with no title bar or border.</param>
+		/// <param name="miscParams">A variable number of platform-specific arguments. 
+		/// The actual requirements must be defined by the implementing subclasses.</param>
 		public abstract void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
 
-        /// <summary>
-        ///		Alter the size of the window.
-        /// </summary>
-        /// <param name="pWidth"></param>
-        /// <param name="pHeight"></param>
-        public abstract void Resize( int width, int height );
+		/// <summary>
+		///		Alter the size of the window.
+		/// </summary>
+		/// <param name="pWidth"></param>
+		/// <param name="pHeight"></param>
+		public abstract void Resize( int width, int height );
 
-        /// <summary>
-        ///		Reposition the window.
-        /// </summary>
-        /// <param name="pLeft"></param>
-        /// <param name="pRight"></param>
-        public abstract void Reposition( int left, int right );
+		/// <summary>
+		///		Reposition the window.
+		/// </summary>
+		/// <param name="pLeft"></param>
+		/// <param name="pRight"></param>
+		public abstract void Reposition( int left, int right );
 
 		/// <summary>
 		/// Notify that the window has been resized
@@ -239,9 +239,9 @@ namespace Axiom.Graphics
 		{
 		}
 
-        #endregion
+		#endregion
 
-        #region Virtual methods and properties
+		#region Virtual methods and properties
 
 		/// <summary>
 		/// Retrieve information about the render target.
@@ -249,7 +249,7 @@ namespace Axiom.Graphics
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="colourDepth"></param>
-		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top)
+		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
 			top = _top;
@@ -257,7 +257,7 @@ namespace Axiom.Graphics
 		}
 
 
-        #endregion
+		#endregion
 
 	}
 }

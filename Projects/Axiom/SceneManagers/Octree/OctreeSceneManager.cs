@@ -93,7 +93,10 @@ namespace Axiom.SceneManagers.Octree
 
 		public override string TypeName
 		{
-			get { return "OctreeSceneManager"; }
+			get
+			{
+				return "OctreeSceneManager";
+			}
 		}
 
 		#endregion Properties

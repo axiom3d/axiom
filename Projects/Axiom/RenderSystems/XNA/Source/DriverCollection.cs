@@ -43,22 +43,22 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// Summary description for DriverCollection.
-    /// </summary>
-    public class DriverCollection : List<Driver>
-    {
-        public Driver this[ string description ]
-        {
-            get
-            {
-                foreach ( Driver drv in this )
-                {
-                    if ( drv.Description == description )
-                        return drv;
-                }
-                return null;
-            }
-        }
-    }
+	/// <summary>
+	/// Summary description for DriverCollection.
+	/// </summary>
+	public class DriverCollection : List<Driver>
+	{
+		public Driver this[ string description ]
+		{
+			get
+			{
+				foreach ( Driver drv in this )
+				{
+					if ( drv.Description == description )
+						return drv;
+				}
+				return null;
+			}
+		}
+	}
 }

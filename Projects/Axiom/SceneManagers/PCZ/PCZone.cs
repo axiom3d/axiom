@@ -129,7 +129,10 @@ namespace Axiom.SceneManagers.PortalConnected
 		/** Indicates whether or not this zone requires zone-specific data for
 		 *  each scene node
 		 */
-		public abstract bool RequiresZoneSpecificNodeData { get; }
+		public abstract bool RequiresZoneSpecificNodeData
+		{
+			get;
+		}
 
 		/** create zone specific data for a node
 		*/
@@ -251,7 +254,10 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public string Name
 		{
-			get { return mName; }
+			get
+			{
+				return mName;
+			}
 		}
 
 		public object UserData

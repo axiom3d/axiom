@@ -66,7 +66,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-        protected internal List<RenderablePass> transparentPasses = new List<RenderablePass>();
+		protected internal List<RenderablePass> transparentPasses = new List<RenderablePass>();
 		/// <summary>
 		///		Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
 		/// </summary>
@@ -490,9 +490,9 @@ namespace Axiom.Graphics
 
 
 
-            #region IComparer<RenderablePass> Members
+			#region IComparer<RenderablePass> Members
 
-            public int Compare(RenderablePass x, RenderablePass y)
+			public int Compare( RenderablePass x, RenderablePass y )
 			{
 				if ( x == null || y == null )
 					return 0;
@@ -501,12 +501,12 @@ namespace Axiom.Graphics
 				if ( x == y )
 					return 0;
 
-                float adepth = x.renderable.GetSquaredViewDepth(camera);
-                float bdepth = y.renderable.GetSquaredViewDepth(camera);
+				float adepth = x.renderable.GetSquaredViewDepth( camera );
+				float bdepth = y.renderable.GetSquaredViewDepth( camera );
 
 				if ( adepth == bdepth )
 				{
-                    if (x.pass.GetHashCode() < y.pass.GetHashCode())
+					if ( x.pass.GetHashCode() < y.pass.GetHashCode() )
 					{
 						return 1;
 					}

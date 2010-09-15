@@ -47,7 +47,7 @@ using Axiom.Graphics;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.ParticleSystems
 {
 	public class BillboardParticleRenderer : ParticleSystemRenderer

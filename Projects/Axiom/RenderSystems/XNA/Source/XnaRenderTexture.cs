@@ -48,118 +48,118 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    ///     Summary description for XnaRenderTexture.
-    /// </summary>
-    public class XnaRenderTexture : RenderTexture
-    {
+	/// <summary>
+	///     Summary description for XnaRenderTexture.
+	/// </summary>
+	public class XnaRenderTexture : RenderTexture
+	{
 
-        public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
-            : base( buffer, 0 )
-        {
-            this.Name = name;
-        }
+		public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
+			: base( buffer, 0 )
+		{
+			this.Name = name;
+		}
 
-        public void Rebind( XnaHardwarePixelBuffer buffer )
-        {
-            pixelBuffer = buffer;
-            Width = pixelBuffer.Width;
-            Height = pixelBuffer.Height;
-            ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
-        }
+		public void Rebind( XnaHardwarePixelBuffer buffer )
+		{
+			pixelBuffer = buffer;
+			Width = pixelBuffer.Width;
+			Height = pixelBuffer.Height;
+			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+		}
 
-        #region Axiom.Graphics.RenderTexture Implementation
+		#region Axiom.Graphics.RenderTexture Implementation
 
-        public override void Update()
-        {
-            XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
-            // TODO: Implement XnaRenderSystem.IsDeviceLost
-            //if ( rs.IsDeviceLost )
-            //{
-            //    return;
-            //}
+		public override void Update()
+		{
+			XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+			// TODO: Implement XnaRenderSystem.IsDeviceLost
+			//if ( rs.IsDeviceLost )
+			//{
+			//    return;
+			//}
 
-            base.Update();
-        }
+			base.Update();
+		}
 
-        public override object this[ string attribute ]
-        {
-            get
-            {
-                switch ( attribute.ToUpper() )
-                {
-                    case "XNABACKBUFFER":
-                        XFG.RenderTarget2D[] surface = new XFG.RenderTarget2D[ Config.MaxMultipleRenderTargets ];
-                        if ( this.FSAA > 0 )
-                        {
-                            surface[0] = ( (XnaHardwarePixelBuffer)pixelBuffer ).FSAASurface;
-                        }
-                        else
-                        {
-                            surface[0] = ((XnaHardwarePixelBuffer)pixelBuffer).RenderTarget;
-                        }
-                        return surface;
-                    case "HWND":
-                        return null;
-                    case "BUFFER":
-                        return (HardwarePixelBuffer)pixelBuffer;
-                    default:
-                        return null;
-                }
-                return null;
-            }
-        }
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				switch ( attribute.ToUpper() )
+				{
+					case "XNABACKBUFFER":
+						XFG.RenderTarget2D[] surface = new XFG.RenderTarget2D[ Config.MaxMultipleRenderTargets ];
+						if ( this.FSAA > 0 )
+						{
+							surface[ 0 ] = ( (XnaHardwarePixelBuffer)pixelBuffer ).FSAASurface;
+						}
+						else
+						{
+							surface[ 0 ] = ( (XnaHardwarePixelBuffer)pixelBuffer ).RenderTarget;
+						}
+						return surface;
+					case "HWND":
+						return null;
+					case "BUFFER":
+						return (HardwarePixelBuffer)pixelBuffer;
+					default:
+						return null;
+				}
+				return null;
+			}
+		}
 
-        public override bool RequiresTextureFlipping
-        {
-            get
-            {
-                return false;
-            }
-        }
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return false;
+			}
+		}
 
-        public override void SwapBuffers( bool waitForVSync )
-        {
-            
+		public override void SwapBuffers( bool waitForVSync )
+		{
 
-            //// Only needed if we have to blit from AA surface
-            if ( this.FSAA > 0 )
-            {
-                XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
-                // TODO: Implement XnaRenderSystem.IsDeviceLost
-                //if ( rs.IsDeviceLost )
-                //{
-                //    return;
-                //}
 
-                XnaHardwarePixelBuffer buf = (XnaHardwarePixelBuffer)this.pixelBuffer;
+			//// Only needed if we have to blit from AA surface
+			if ( this.FSAA > 0 )
+			{
+				XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+				// TODO: Implement XnaRenderSystem.IsDeviceLost
+				//if ( rs.IsDeviceLost )
+				//{
+				//    return;
+				//}
 
-                // TODO: Implement rs.Device.StretchRect()
-                //    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
-                //    if (FAILED(hr))
-                //    {
-                //        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
-                //            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)), 
-                //            "D3D9RenderTexture::swapBuffers");
-                //    }
-            }
-        }
+				XnaHardwarePixelBuffer buf = (XnaHardwarePixelBuffer)this.pixelBuffer;
 
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !isDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                }
-            }
+				// TODO: Implement rs.Device.StretchRect()
+				//    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
+				//    if (FAILED(hr))
+				//    {
+				//        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
+				//            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)), 
+				//            "D3D9RenderTexture::swapBuffers");
+				//    }
+			}
+		}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
-        }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
+			}
 
-        #endregion Axiom.Graphics.RenderTexture Implementation
-    }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion Axiom.Graphics.RenderTexture Implementation
+	}
 }

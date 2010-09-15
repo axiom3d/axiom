@@ -245,10 +245,10 @@ namespace Axiom.Graphics
 		///		Supports mipmap LOD biasing
 		/// </summary>
 		MipmapLODBias = 0x10000000,
-        /// <summary>
-        ///     Supports Alpha to Coverage (A2C)
-        /// </summary>
-        AlphaToCoverage = 0x20000000
+		/// <summary>
+		///     Supports Alpha to Coverage (A2C)
+		/// </summary>
+		AlphaToCoverage = 0x20000000
 	}
 
 	/// <summary>
@@ -424,11 +424,11 @@ namespace Axiom.Graphics
 		///    while this program is active..
 		/// </summary>
 		Fragment,
-       /// <summary>
-        ///    Executes for each geometry for primitives that are passed through the pipeline
-        ///    while this program is active..
-        /// </summary>
-        Geometry
+		/// <summary>
+		///    Executes for each geometry for primitives that are passed through the pipeline
+		///    while this program is active..
+		/// </summary>
+		Geometry
 	}
 
 	/// <summary>
@@ -496,7 +496,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		RenderToTexture,
 		/// <summary>
-        ///		Render from shadow texture to receivers stage.
+		///		Render from shadow texture to receivers stage.
 		/// </summary>
 		RenderReceiverPass
 	}
@@ -857,11 +857,11 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "add" )]
 		Add,
-        /// <summary>
-        /// The default blend mode where source replaces destination
-        /// </summary>
-        [ScriptEnum( "replace" )]
-        Replace,
+		/// <summary>
+		/// The default blend mode where source replaces destination
+		/// </summary>
+		[ScriptEnum( "replace" )]
+		Replace,
 	}
 
 	/// <summary>
@@ -1093,15 +1093,15 @@ namespace Axiom.Graphics
 		///		Constant u/v scrolling effect.
 		///	 </summary>
 		UVScroll,
-        /// <summary>
-        ///		Constant u scrolling effect.
-        ///	 </summary>
-        UScroll,
-        /// <summary>
-        ///		Constant v scrolling effect.
-        ///	 </summary>
-        VScroll,
-        /// <summary>
+		/// <summary>
+		///		Constant u scrolling effect.
+		///	 </summary>
+		UScroll,
+		/// <summary>
+		///		Constant v scrolling effect.
+		///	 </summary>
+		VScroll,
+		/// <summary>
 		///		Constant rotation.
 		///	 </summary>
 		Rotate,
@@ -1201,16 +1201,16 @@ namespace Axiom.Graphics
 		CubeMap = 4
 	}
 
-    /// <summary>
-    /// Enum identifying special mipmap numbers
-    /// </summary>
-    public enum TextureMipmap
-    {
-        /// Generate mipmaps up to 1x1
-        Unlimited = 0x7FFFFFFF,
-        /// Use TextureManager default
-        Default = -1
-    }
+	/// <summary>
+	/// Enum identifying special mipmap numbers
+	/// </summary>
+	public enum TextureMipmap
+	{
+		/// Generate mipmaps up to 1x1
+		Unlimited = 0x7FFFFFFF,
+		/// Use TextureManager default
+		Default = -1
+	}
 
 	/// <summary>
 	///		Specifies how a texture is to be used in the engine.
@@ -1351,7 +1351,7 @@ namespace Axiom.Graphics
 		Stencil,		 // Set stencil operation
 		RenderScene,     // Render the scene or part of it
 		RenderQuad,       // Render a full screen quad
-        RenderCustom
+		RenderCustom
 	}
 
 	/// <summary>

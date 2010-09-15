@@ -126,7 +126,10 @@ namespace Axiom.SceneManagers.Bsp
 
 		public override string TypeName
 		{
-			get { return "BspSceneManager"; }
+			get
+			{
+				return "BspSceneManager";
+			}
 		}
 
 		#endregion Public properties

@@ -129,7 +129,7 @@ namespace Axiom.Media
 		///</summary>
 		protected static PixelFormatDescription[] UnindexedPixelFormats = new PixelFormatDescription[] {
 			new PixelFormatDescription(
-			    "PF_UNKNOWN", 
+				"PF_UNKNOWN", 
 				PixelFormat.Unknown,
 				/* Bytes per element */ 
 				0,  
@@ -141,7 +141,7 @@ namespace Axiom.Media
 				0, 0, 0, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
-  				),
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_L8",
@@ -203,20 +203,20 @@ namespace Axiom.Media
 				0x0F, 0, 0, 0xF0, 0, 0, 0, 4
 				),
 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+			new PixelFormatDescription(
 				 "PF_BYTE_LA",
 				 PixelFormat.A8L8,
-  				/* Bytes per element */ 
-  				2,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha | PixelFormatFlags.Luminance,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 2,
-  				/* rbits, gbits, bbits, abits */
-  				8, 0, 0, 8,
-  				/* Masks and shifts */
-  				0,0,0,0,0,0,0,0
-  				),
+				/* Bytes per element */ 
+				2,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha | PixelFormatFlags.Luminance,  
+				/* Component type and count */
+				PixelComponentType.Byte, 2,
+				/* rbits, gbits, bbits, abits */
+				8, 0, 0, 8,
+				/* Masks and shifts */
+				0,0,0,0,0,0,0,0
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_R5G6B5",
@@ -266,21 +266,21 @@ namespace Axiom.Media
 				8, 4, 0, 12 
 				),
 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+			new PixelFormatDescription(
 				 "PF_A1R5G5B5",
 				 PixelFormat.A1R5G5B5,
-  				/* Bytes per element */ 
-  				2,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 4,
-  				/* rbits, gbits, bbits, abits */
-  				5, 5, 5, 1,
-  				/* Masks and shifts */
-  				0x7C00, 0x03E0, 0x001F, 0x8000, 
-  				10, 5, 0, 15
-  				),
+				/* Bytes per element */ 
+				2,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 4,
+				/* rbits, gbits, bbits, abits */
+				5, 5, 5, 1,
+				/* Masks and shifts */
+				0x7C00, 0x03E0, 0x001F, 0x8000, 
+				10, 5, 0, 15
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_R8G8B8",
@@ -330,21 +330,21 @@ namespace Axiom.Media
 				16, 8, 0, 24
 				),
 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+			new PixelFormatDescription(
 				 "PF_A8B8G8R8",
 				 PixelFormat.A8B8G8R8,
-  				/* Bytes per element */ 
-  				4,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 4,
-  				/* rbits, gbits, bbits, abits */
-  				8, 8, 8, 8,
-  				/* Masks and shifts */
-  				0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000,
-  				0, 8, 16, 24
-  				),
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 4,
+				/* rbits, gbits, bbits, abits */
+				8, 8, 8, 8,
+				/* Masks and shifts */
+				0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000,
+				0, 8, 16, 24
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_B8G8R8A8",
@@ -362,37 +362,37 @@ namespace Axiom.Media
 				8, 16, 24, 0
 				),
 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+			new PixelFormatDescription(
 				 "PF_A2R10G10B10",
 				 PixelFormat.A2R10G10B10,
-  				/* Bytes per element */ 
-  				4,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 4,
-  				/* rbits, gbits, bbits, abits */
-  				10, 10, 10, 2,
-  				/* Masks and shifts */
-  				0x3FF00000, 0x000FFC00, 0x000003FF, 0xC0000000,
-  				20, 10, 0, 30
-  				),
- 		    //-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 4,
+				/* rbits, gbits, bbits, abits */
+				10, 10, 10, 2,
+				/* Masks and shifts */
+				0x3FF00000, 0x000FFC00, 0x000003FF, 0xC0000000,
+				20, 10, 0, 30
+				),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
 				 "PF_A2B10G10R10",
 				 PixelFormat.A2B10G10R10,
-  				/* Bytes per element */ 
-  				4,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 4,
-  				/* rbits, gbits, bbits, abits */
-  				10, 10, 10, 2,
-  				/* Masks and shifts */
-  				0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000,
-  				0, 10, 20, 30
-  				),
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 4,
+				/* rbits, gbits, bbits, abits */
+				10, 10, 10, 2,
+				/* Masks and shifts */
+				0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000,
+				0, 10, 20, 30
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_DXT1",
@@ -529,99 +529,99 @@ namespace Axiom.Media
 				0, 0, 0, 0, 0, 0, 0, 0 
 				),
 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+			new PixelFormatDescription(
 				 "PF_X8R8G8B8",
 				 PixelFormat.X8R8G8B8,
-  				/* Bytes per element */ 
-  				4,  
-  				/* Flags */
-  				PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 3,
-  				/* rbits, gbits, bbits, abits */
-  				8, 8, 8, 0,
-  				/* Masks and shifts */
-  				0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000,
-  				16, 8, 0, 24
-  				),
-  			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 3,
+				/* rbits, gbits, bbits, abits */
+				8, 8, 8, 0,
+				/* Masks and shifts */
+				0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000,
+				16, 8, 0, 24
+				),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
 				 "PF_X8B8G8R8",
 				 PixelFormat.X8B8G8R8,
-  				/* Bytes per element */ 
-  				4,  
-  				/* Flags */
-  				PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 3,
-  				/* rbits, gbits, bbits, abits */
-  				8, 8, 8, 0,
-  				/* Masks and shifts */
-  				0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000,
-  				0, 8, 16, 24
-  				),
- 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 3,
+				/* rbits, gbits, bbits, abits */
+				8, 8, 8, 0,
+				/* Masks and shifts */
+				0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000,
+				0, 8, 16, 24
+				),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
 				 "PF_R8G8B8A8",
 				 PixelFormat.R8G8B8A8,
-  				/* Bytes per element */ 
-  				4,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 4,
-  				/* rbits, gbits, bbits, abits */
-  				8, 8, 8, 8,
-  				/* Masks and shifts */
-  				0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF,
-  				24, 16, 8, 0
-  				),
- 			//-----------------------------------------------------------------------
-	  		new PixelFormatDescription(
-	             "PF_DEPTH",
-	             PixelFormat.DEPTH,
-	  			/* Bytes per element */ 
-	  			4,  
-	  			/* Flags */
-	  			PixelFormatFlags.Depth, 
-	  			/* Component type and count */
-	  			PixelComponentType.Float32, 1, // ?
-	  			/* rbits, gbits, bbits, abits */
-	  			0, 0, 0, 0,
-	  			/* Masks and shifts */
-	  			0, 0, 0, 0, 0, 0, 0, 0
-	  			),
- 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 4,
+				/* rbits, gbits, bbits, abits */
+				8, 8, 8, 8,
+				/* Masks and shifts */
+				0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF,
+				24, 16, 8, 0
+				),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
+				 "PF_DEPTH",
+				 PixelFormat.DEPTH,
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.Depth, 
+				/* Component type and count */
+				PixelComponentType.Float32, 1, // ?
+				/* rbits, gbits, bbits, abits */
+				0, 0, 0, 0,
+				/* Masks and shifts */
+				0, 0, 0, 0, 0, 0, 0, 0
+				),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
 				 "PF_SHORT_RGBA",
 				 PixelFormat.SHORT_RGBA,
-  				/* Bytes per element */ 
-  				8,  
-  				/* Flags */
-  				PixelFormatFlags.HasAlpha,  
-  				/* Component type and count */
-  				PixelComponentType.Short, 4,
-  				/* rbits, gbits, bbits, abits */
-  				16, 16, 16, 16,
-  				/* Masks and shifts */
-  				0, 0, 0, 0, 0, 0, 0, 0
-  				),
- 			//-----------------------------------------------------------------------
-  			new PixelFormatDescription(
+				/* Bytes per element */ 
+				8,  
+				/* Flags */
+				PixelFormatFlags.HasAlpha,  
+				/* Component type and count */
+				PixelComponentType.Short, 4,
+				/* rbits, gbits, bbits, abits */
+				16, 16, 16, 16,
+				/* Masks and shifts */
+				0, 0, 0, 0, 0, 0, 0, 0
+				),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
 				 "PF_R3G3B2",
 				 PixelFormat.R3G3B2,
-  				/* Bytes per element */ 
-  				1,  
-  				/* Flags */
-  				PixelFormatFlags.NativeEndian,  
-  				/* Component type and count */
-  				PixelComponentType.Byte, 3,
-  				/* rbits, gbits, bbits, abits */
-  				3, 3, 2, 0,
-  				/* Masks and shifts */
-  				0xE0, 0x1C, 0x03, 0, 
-  				5, 2, 0, 0 
-  				),
+				/* Bytes per element */ 
+				1,  
+				/* Flags */
+				PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Byte, 3,
+				/* rbits, gbits, bbits, abits */
+				3, 3, 2, 0,
+				/* Masks and shifts */
+				0xE0, 0x1C, 0x03, 0, 
+				5, 2, 0, 0 
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_FLOAT16_R",
@@ -651,7 +651,7 @@ namespace Axiom.Media
 				32, 0, 0, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
- 			    ),
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_SHORT_GR",
@@ -666,7 +666,7 @@ namespace Axiom.Media
 				16, 16, 0, 0,
 				/* Masks and shifts */
 				0x0000FFFF, 0xFFFF0000, 0, 0, 0, 16, 0, 0 
- 			    ),
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_FLOAT16_GR",
@@ -681,7 +681,7 @@ namespace Axiom.Media
 				16, 16, 0, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
- 			    ),
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_FLOAT32_GR",
@@ -696,7 +696,7 @@ namespace Axiom.Media
 				32, 32, 0, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
- 			    ),
+				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
 				"PF_SHORT_RGB",
@@ -711,8 +711,8 @@ namespace Axiom.Media
 				16, 16, 16, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
- 			    )
- 		};
+				)
+		};
 
 		protected static PixelFormatDescription[] IndexedPixelFormats = null;
 
@@ -757,22 +757,22 @@ namespace Axiom.Media
 			}
 		}
 
-        ///<summary>
-        ///    Pack a color value to memory
-        ///</summary>
-        ///<param name="r">the red component of the color</param>
-        ///<param name="g">the green component of the color</param>
-        ///<param name="b">the blue component of the color</param>
-        ///<param name="a">the alpha component of the color</param>
-        ///<param name="format">Pixel format in which to write the color</param>
-        ///<param name="dest">Destination memory location</param>
-        public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
-        {
-            unsafe
-            {
-                PixelConverter.PackColor( r, g, b, a, format, (byte*)( dest.ToPointer() ) );
-            }
-        }
+		///<summary>
+		///    Pack a color value to memory
+		///</summary>
+		///<param name="r">the red component of the color</param>
+		///<param name="g">the green component of the color</param>
+		///<param name="b">the blue component of the color</param>
+		///<param name="a">the alpha component of the color</param>
+		///<param name="format">Pixel format in which to write the color</param>
+		///<param name="dest">Destination memory location</param>
+		public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
+		{
+			unsafe
+			{
+				PixelConverter.PackColor( r, g, b, a, format, (byte*)( dest.ToPointer() ) );
+			}
+		}
 
 		///<summary>
 		///    Pack a color value to memory
@@ -861,11 +861,11 @@ namespace Axiom.Media
 						( (ushort*)dest )[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
 						( (ushort*)dest )[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
 						( (ushort*)dest )[ 3 ] = (ushort)Bitwise.FloatToFixed( a, 16 );
-					    break;
+						break;
 					case PixelFormat.BYTE_LA:
 						( (byte*)dest )[ 0 ] = (byte)Bitwise.FloatToFixed( r, 8 );
 						( (byte*)dest )[ 1 ] = (byte)Bitwise.FloatToFixed( a, 8 );
-					    break;
+						break;
 					default:
 						// Not yet supported
 						throw new Exception( "Pack to " + format + " not implemented, in PixelUtil.PackColor" );
@@ -995,15 +995,15 @@ namespace Axiom.Media
 						a = Bitwise.HalfToFloat( ( (ushort*)src )[ 3 ] );
 						break;
 					case PixelFormat.SHORT_RGBA:
-					    r = Bitwise.FixedToFloat( ( (ushort*)src )[ 0 ], 16 );
-					    g = Bitwise.FixedToFloat( ( (ushort*)src )[ 1 ], 16 );
-					    b = Bitwise.FixedToFloat( ( (ushort*)src )[ 2 ], 16 );
-					    a = Bitwise.FixedToFloat( ( (ushort*)src )[ 3 ], 16 );
-					    break;
+						r = Bitwise.FixedToFloat( ( (ushort*)src )[ 0 ], 16 );
+						g = Bitwise.FixedToFloat( ( (ushort*)src )[ 1 ], 16 );
+						b = Bitwise.FixedToFloat( ( (ushort*)src )[ 2 ], 16 );
+						a = Bitwise.FixedToFloat( ( (ushort*)src )[ 3 ], 16 );
+						break;
 					case PixelFormat.BYTE_LA:
-					    r = g = b = Bitwise.FixedToFloat( ( (byte*)src )[ 0 ], 8 );
-					    a = Bitwise.FixedToFloat( ( (byte*)src )[ 1 ], 8 );
-					    break;
+						r = g = b = Bitwise.FixedToFloat( ( (byte*)src )[ 0 ], 8 );
+						a = Bitwise.FixedToFloat( ( (byte*)src )[ 1 ], 8 );
+						break;
 					default:
 						// Not yet supported
 						throw new Exception( "Unpack from " + pf + " not implemented, in PixelUtil.UnpackColor" );
@@ -1045,7 +1045,7 @@ namespace Axiom.Media
 		{
 			Debug.Assert( src.Width == dst.Width && src.Height == dst.Height && src.Depth == dst.Depth );
 
-            LogManager.Instance.Write( "Converting image from {0} to {1}", PixelUtil.GetFormatName( src.Format ), PixelUtil.GetFormatName( dst.Format ) );
+			LogManager.Instance.Write( "Converting image from {0} to {1}", PixelUtil.GetFormatName( src.Format ), PixelUtil.GetFormatName( dst.Format ) );
 
 			// Check for compressed formats, we don't support decompression, compression or recoding
 			if ( PixelBox.Compressed( src.Format ) || PixelBox.Compressed( dst.Format ) )

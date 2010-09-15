@@ -1,7 +1,6 @@
 ﻿#region Namespace Declarations
 
 using System;
-using System.Drawing;
 
 using Axiom.Animating;
 using Axiom.Core;

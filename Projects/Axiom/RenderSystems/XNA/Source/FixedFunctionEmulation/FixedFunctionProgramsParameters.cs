@@ -54,70 +54,70 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			#region Fields and Properties
 
-            protected ColorEx materialAmbient;
-            public ColorEx MaterialAmbient
-            {
-                get
-                {
-                    return materialAmbient;
-                }
-                set
-                {
-                    materialAmbient = value;
-                }
-            }
+			protected ColorEx materialAmbient;
+			public ColorEx MaterialAmbient
+			{
+				get
+				{
+					return materialAmbient;
+				}
+				set
+				{
+					materialAmbient = value;
+				}
+			}
 
-            protected ColorEx materialDiffuse;
-            public ColorEx MaterialDiffuse
-            {
-                get
-                {
-                    return materialDiffuse;
-                }
-                set
-                {
-                    materialDiffuse = value;
-                }
-            }
+			protected ColorEx materialDiffuse;
+			public ColorEx MaterialDiffuse
+			{
+				get
+				{
+					return materialDiffuse;
+				}
+				set
+				{
+					materialDiffuse = value;
+				}
+			}
 
-            protected ColorEx materialSpecular;
-            public ColorEx MaterialSpecular
-            {
-                get
-                {
-                    return materialSpecular;
-                }
-                set
-                {
-                    materialSpecular = value;
-                }
-            }
+			protected ColorEx materialSpecular;
+			public ColorEx MaterialSpecular
+			{
+				get
+				{
+					return materialSpecular;
+				}
+				set
+				{
+					materialSpecular = value;
+				}
+			}
 
-            protected ColorEx materialEmissive;
-            public ColorEx MaterialEmissive
-            {
-                get
-                {
-                    return materialEmissive;
-                }
-                set
-                {
-                    materialEmissive = value;
-                }
-            }
+			protected ColorEx materialEmissive;
+			public ColorEx MaterialEmissive
+			{
+				get
+				{
+					return materialEmissive;
+				}
+				set
+				{
+					materialEmissive = value;
+				}
+			}
 
-            protected float materialShininess;
-            public float MaterialShininess
-            {
-                get
-                {
-                    return materialShininess;
-                }
-                set
-                {
-                    materialShininess = value;
-                }
-            }
+			protected float materialShininess;
+			public float MaterialShininess
+			{
+				get
+				{
+					return materialShininess;
+				}
+				set
+				{
+					materialShininess = value;
+				}
+			}
 
 			protected Matrix4 worldMatrix;
 			public Matrix4 WorldMatrix
@@ -159,7 +159,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-			protected bool lightingEnabled=false;
+			protected bool lightingEnabled = false;
 			public bool LightingEnabled
 			{
 				get
@@ -173,7 +173,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-			protected List<Light> lights =new List<Light>();
+			protected List<Light> lights = new List<Light>();
 			public List<Light> Lights
 			{
 				get
@@ -274,13 +274,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 			protected List<bool> textureEnabled = new List<bool>();
-            public List<bool> TextureEnabled
-            {
-                get
-                {
-                    return textureEnabled;
-                }
-            }
+			public List<bool> TextureEnabled
+			{
+				get
+				{
+					return textureEnabled;
+				}
+			}
 
 			#endregion Fields and Properties
 

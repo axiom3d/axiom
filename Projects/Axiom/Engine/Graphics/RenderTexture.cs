@@ -56,18 +56,18 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-        public RenderTexture( string name, HardwarePixelBuffer buffer, int zOffset )
-            : base( name )
-        {
-            pixelBuffer = buffer;
-            this.zOffset = zOffset;
-            Priority = RenderTargetPriority.RenderToTexture;
-            Width = buffer.Width;
-            Height = buffer.Height;
-            ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
-        }
+		public RenderTexture( string name, HardwarePixelBuffer buffer, int zOffset )
+			: base( name )
+		{
+			pixelBuffer = buffer;
+			this.zOffset = zOffset;
+			Priority = RenderTargetPriority.RenderToTexture;
+			Width = buffer.Width;
+			Height = buffer.Height;
+			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+		}
 
-	    public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
+		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
 		{
 			pixelBuffer = buffer;
 			this.zOffset = zOffset;
@@ -83,10 +83,11 @@ namespace Axiom.Graphics
 
 		public override void CopyContentsToMemory( PixelBox dst, RenderTarget.FrameBuffer buffer )
 		{
-			if (buffer == FrameBuffer.Auto) buffer = FrameBuffer.Front;
-			if (buffer != FrameBuffer.Front)
+			if ( buffer == FrameBuffer.Auto )
+				buffer = FrameBuffer.Front;
+			if ( buffer != FrameBuffer.Front )
 			{
-				throw new Exception("Invalid buffer.");
+				throw new Exception( "Invalid buffer." );
 			}
 
 			pixelBuffer.BlitToMemory( dst );

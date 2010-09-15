@@ -69,7 +69,7 @@ namespace Axiom.Graphics
 			{
 				instance = this;
 
-                freeTempVertexBufferMap = new Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>>(new BufferComparer());
+				freeTempVertexBufferMap = new Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>>( new BufferComparer() );
 			}
 		}
 
@@ -91,28 +91,28 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     A list of vertex declarations created by this buffer manager.
 		/// </summary>
-        protected List<VertexDeclaration> vertexDeclarations = new List<VertexDeclaration>();
+		protected List<VertexDeclaration> vertexDeclarations = new List<VertexDeclaration>();
 		/// <summary>
 		///     A list of vertex buffer bindings created by this buffer manager.
 		/// </summary>
-        protected List<VertexBufferBinding> vertexBufferBindings = new List<VertexBufferBinding>();
+		protected List<VertexBufferBinding> vertexBufferBindings = new List<VertexBufferBinding>();
 		/// <summary>
 		///     A list of vertex buffers created by this buffer manager.
 		/// </summary>
-        protected List<HardwareBuffer> vertexBuffers = new List<HardwareBuffer>();
+		protected List<HardwareBuffer> vertexBuffers = new List<HardwareBuffer>();
 		/// <summary>
 		///     A list of index buffers created by this buffer manager.
 		/// </summary>
-        protected List<HardwareBuffer> indexBuffers = new List<HardwareBuffer>();
+		protected List<HardwareBuffer> indexBuffers = new List<HardwareBuffer>();
 
 		/// <summary>
 		///		Map from original buffer to list of temporary buffers.
 		/// </summary>
-        protected Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>> freeTempVertexBufferMap;
+		protected Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>> freeTempVertexBufferMap;
 		/// <summary>
 		///		List of currently licensed temp buffers.
 		/// </summary>
-        protected List<VertexBufferLicense> tempVertexBufferLicenses = new List<VertexBufferLicense>();
+		protected List<VertexBufferLicense> tempVertexBufferLicenses = new List<VertexBufferLicense>();
 
 		/// <summary>
 		///		Number of frames elapsed since temporary buffers utilization was above half the available
@@ -316,12 +316,12 @@ namespace Axiom.Graphics
 			HardwareVertexBuffer vbuf = null;
 
 			// Locate existing buffer copy in free list
-            List<HardwareVertexBuffer> list;
-            freeTempVertexBufferMap.TryGetValue(sourceBuffer, out list);
+			List<HardwareVertexBuffer> list;
+			freeTempVertexBufferMap.TryGetValue( sourceBuffer, out list );
 
 			if ( list == null )
 			{
-                list = new List<HardwareVertexBuffer>();
+				list = new List<HardwareVertexBuffer>();
 				freeTempVertexBufferMap[ sourceBuffer ] = list;
 			}
 
@@ -413,31 +413,31 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public void FreeUnusedBufferCopies()
 		{
-            int numFreed = 0;
+			int numFreed = 0;
 
-            // Free unused temporary buffers
-            foreach ( IList<HardwareVertexBuffer> list in freeTempVertexBufferMap.Values )
-            {
-                for ( int i = list.Count - 1; i > 0; i-- )
-                {
-                    HardwareVertexBuffer vbuf = list[ i ];
-                    // Free the temporary buffer that referenced by ourself only.
-                    // TODO: Some temporary buffers are bound to vertex buffer bindings
-                    // but not checked out, need to sort out method to unbind them.
-                    if ( vbuf.UseCount <= 1 )
-                    {
-                        ++numFreed;
-                        list.RemoveAt( i );
-                    }
-                }
-            }
+			// Free unused temporary buffers
+			foreach ( IList<HardwareVertexBuffer> list in freeTempVertexBufferMap.Values )
+			{
+				for ( int i = list.Count - 1; i > 0; i-- )
+				{
+					HardwareVertexBuffer vbuf = list[ i ];
+					// Free the temporary buffer that referenced by ourself only.
+					// TODO: Some temporary buffers are bound to vertex buffer bindings
+					// but not checked out, need to sort out method to unbind them.
+					if ( vbuf.UseCount <= 1 )
+					{
+						++numFreed;
+						list.RemoveAt( i );
+					}
+				}
+			}
 
-            string str;
-            if ( numFreed > 0 )
-                str = "HardwareBufferManager: Freed " + numFreed + " unused temporary vertex buffers.";
-            else
-                str = "HardwareBufferManager: No unused temporary vertex buffers found.";
-            LogManager.Instance.Write( str );
+			string str;
+			if ( numFreed > 0 )
+				str = "HardwareBufferManager: Freed " + numFreed + " unused temporary vertex buffers.";
+			else
+				str = "HardwareBufferManager: No unused temporary vertex buffers found.";
+			LogManager.Instance.Write( str );
 		}
 
 		/// <summary>
@@ -520,11 +520,11 @@ namespace Axiom.Graphics
 			}
 
 			// TODO: Verify this works
-            foreach (KeyValuePair<HardwareVertexBuffer, List<HardwareVertexBuffer>> entry in freeTempVertexBufferMap)
+			foreach ( KeyValuePair<HardwareVertexBuffer, List<HardwareVertexBuffer>> entry in freeTempVertexBufferMap )
 			{
 				if ( entry.Key == sourceBuffer )
 				{
-                    List<HardwareVertexBuffer> list = entry.Value;
+					List<HardwareVertexBuffer> list = entry.Value;
 					list.Clear();
 				}
 			}
@@ -553,27 +553,27 @@ namespace Axiom.Graphics
 		{
 			// Destroy all necessary objects
 
-            foreach ( VertexDeclaration buffer in vertexDeclarations )
-            {
-                buffer.Dispose();
-            }
-            vertexDeclarations.Clear();
+			foreach ( VertexDeclaration buffer in vertexDeclarations )
+			{
+				buffer.Dispose();
+			}
+			vertexDeclarations.Clear();
 
-            vertexBufferBindings.Clear();
+			vertexBufferBindings.Clear();
 
 			// destroy all vertex buffers
 			foreach ( HardwareBuffer buffer in vertexBuffers )
 			{
 				buffer.Dispose();
 			}
-            vertexBuffers.Clear();
+			vertexBuffers.Clear();
 
 			// destroy all index buffers
 			foreach ( HardwareBuffer buffer in indexBuffers )
 			{
 				buffer.Dispose();
 			}
-		    indexBuffers.Clear();
+			indexBuffers.Clear();
 
 			instance = null;
 		}
@@ -595,9 +595,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Used for buffer comparison.
 		/// </summary>
-        protected class BufferComparer : IEqualityComparer<HardwareVertexBuffer>, IComparer<HardwareVertexBuffer>
+		protected class BufferComparer : IEqualityComparer<HardwareVertexBuffer>, IComparer<HardwareVertexBuffer>
 		{
-            #region IComparer<HardwareBuffer> Members
+			#region IComparer<HardwareBuffer> Members
 
 			/// <summary>
 			///     Comparse 2 HardwareBuffers for equality.
@@ -605,9 +605,9 @@ namespace Axiom.Graphics
 			/// <param name="x"></param>
 			/// <param name="y"></param>
 			/// <returns></returns>
-            public int Compare(HardwareVertexBuffer x, HardwareVertexBuffer y)
+			public int Compare( HardwareVertexBuffer x, HardwareVertexBuffer y )
 			{
-                if (x.ID == y.ID)
+				if ( x.ID == y.ID )
 				{
 					return 0;
 				}
@@ -615,21 +615,21 @@ namespace Axiom.Graphics
 				return -1;
 			}
 
-            #endregion
+			#endregion
 
-            #region IEqualityComparer<HardwareBuffer> Members
+			#region IEqualityComparer<HardwareBuffer> Members
 
-            public bool Equals(HardwareVertexBuffer x, HardwareVertexBuffer y)
-            {
-                return Compare(x, y) == 0;
+			public bool Equals( HardwareVertexBuffer x, HardwareVertexBuffer y )
+			{
+				return Compare( x, y ) == 0;
+			}
+
+			public int GetHashCode( HardwareVertexBuffer obj )
+			{
+				return obj.GetHashCode();
+			}
+
+			#endregion
 		}
-
-            public int GetHashCode(HardwareVertexBuffer obj)
-            {
-                return obj.GetHashCode();
 	}
-
-            #endregion
-}
-    }
 }

@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Scripting.Compiler.Parser
 {
 	public struct ScriptToken
@@ -50,6 +50,6 @@ namespace Axiom.Scripting.Compiler.Parser
 		public Tokens type;
 		/// This holds the line number of the input stream where the token was found.
 		public uint line;
-		
+
 	}
 }

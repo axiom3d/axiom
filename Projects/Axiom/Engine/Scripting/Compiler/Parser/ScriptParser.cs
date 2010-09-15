@@ -39,7 +39,7 @@ using System.Text;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptParser
@@ -306,7 +306,7 @@ namespace Axiom.Scripting.Compiler.Parser
 								if ( parent != null && parent.Type == ConcreteNodeType.LeftBrace && parent.Parent != null )
 								{
 									parent = parent.Parent;
-								
+
 								}
 
 								node = new ConcreteNode();

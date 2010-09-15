@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Scripting.Compiler.Parser
 {
 	public enum Tokens

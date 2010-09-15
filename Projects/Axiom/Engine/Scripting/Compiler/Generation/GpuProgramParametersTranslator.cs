@@ -178,7 +178,7 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( named )
 												{
-												    //_parameters.SetNamedConstant( name, vals );
+													//_parameters.SetNamedConstant( name, vals );
 												}
 												else
 													_parameters.SetConstant( index, vals );

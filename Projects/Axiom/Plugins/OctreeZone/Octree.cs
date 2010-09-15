@@ -66,7 +66,7 @@ namespace OctreeZone
 		#region Member Variables
 
 		/** Returns the number of scene nodes attached to this octree
-        */
+		*/
 		protected int nunodeList;
 
 		/** Public list of SceneNodes attached to this particular octree
@@ -328,9 +328,11 @@ namespace OctreeZone
 		static Intersection intersect( Ray one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( two.IsNull ) return Intersection.OUTSIDE;
+			if ( two.IsNull )
+				return Intersection.OUTSIDE;
 			// Infinite box?
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 			bool inside = true;
 			Vector3 twoMin = two.Minimum;
@@ -398,9 +400,11 @@ namespace OctreeZone
 		private static Intersection intersect( PlaneBoundedVolume one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( two.IsNull ) return Intersection.OUTSIDE;
+			if ( two.IsNull )
+				return Intersection.OUTSIDE;
 			// Infinite box?
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 			// Get centre of the box
 			Vector3 centre = two.Center;
@@ -437,9 +441,12 @@ namespace OctreeZone
 		static Intersection intersect( AxisAlignedBox one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( one.IsNull || two.IsNull ) return Intersection.OUTSIDE;
-			if ( one.IsInfinite ) return Intersection.INSIDE;
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( one.IsNull || two.IsNull )
+				return Intersection.OUTSIDE;
+			if ( one.IsInfinite )
+				return Intersection.INSIDE;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 
 			Vector3 insideMin = two.Minimum;
@@ -478,8 +485,10 @@ namespace OctreeZone
 		static Intersection intersect( Sphere one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( two.IsNull ) return Intersection.OUTSIDE;
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( two.IsNull )
+				return Intersection.OUTSIDE;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 			float sradius = one.Radius;
 
@@ -913,7 +922,8 @@ namespace OctreeZone
 		public bool _isIn( AxisAlignedBox box )
 		{
 			// Always fail if not in the scene graph or box is null
-			if ( !mAssociatedNode.IsVisible || box.IsNull ) return false;
+			if ( !mAssociatedNode.IsVisible || box.IsNull )
+				return false;
 
 			// Always succeed if AABB is infinite
 			if ( box.IsInfinite )

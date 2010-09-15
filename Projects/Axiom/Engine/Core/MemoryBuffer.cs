@@ -55,15 +55,21 @@ namespace Axiom.Core
 	{
 		private readonly List<IMemoryBuffer> _memoryPool = new List<IMemoryBuffer>();
 		private readonly static Dictionary<Type, IBitConverter> _bitConverters;
-		public Dictionary<Type, IBitConverter> BitConverters { get { return _bitConverters; } }
+		public Dictionary<Type, IBitConverter> BitConverters
+		{
+			get
+			{
+				return _bitConverters;
+			}
+		}
 
 		static MemoryManager()
 		{
 			_bitConverters = new Dictionary<Type, IBitConverter>()
-                                 {
-                                     {typeof (int), new IntBitConverter()},
-                                     {typeof (float), new SingleBitConverter()}
-                                 };
+								 {
+									 {typeof (int), new IntBitConverter()},
+									 {typeof (float), new SingleBitConverter()}
+								 };
 		}
 
 		public MemoryBuffer<T> Allocate<T>( long size )
@@ -124,7 +130,11 @@ namespace Axiom.Core
 	{
 		private T[] _buffer;
 
-		public MemoryManager Owner { get; private set; }
+		public MemoryManager Owner
+		{
+			get;
+			private set;
+		}
 
 		public T this[ long index ]
 		{

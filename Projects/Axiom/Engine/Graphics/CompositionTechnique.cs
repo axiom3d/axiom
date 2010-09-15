@@ -89,68 +89,120 @@ namespace Axiom.Graphics
 			///<summary>
 			/// Name of the texture definition.
 			///</summary>
-			public string Name { get; set; }
+			public string Name
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// If a reference, the name of the compositor being referenced
 			/// </summary>
-			public string ReferenceCompositorName { get; set; }
+			public string ReferenceCompositorName
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// If a reference, the name of the texture in the compositor being referenced
 			/// </summary>
-			public string ReferenceTextureName { get; set; }
+			public string ReferenceTextureName
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// 0 means adapt to target width
 			/// </summary>
-			public int Width { get; set; }
+			public int Width
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// 0 means adapt to target height
 			/// </summary>
-			public int Height { get; set; }
+			public int Height
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// multiple of target width to use (if width = 0)
 			/// </summary>
-			public float WidthFactor { get; set; }
+			public float WidthFactor
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// multiple of target height to use (if height = 0)
 			/// </summary>
-			public float HeightFactor { get; set; }
+			public float HeightFactor
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// more than one means MRT
 			/// </summary>
-			public IList<PixelFormat> PixelFormats { get; set; }
+			public IList<PixelFormat> PixelFormats
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// FSAA enabled; 
 			/// true = determine from main target (if render_scene), false = disable
 			/// </summary>
-			public bool Fsaa { get; set; }
+			public bool Fsaa
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// Do sRGB gamma correction on write (only 8-bit per channel formats)
 			/// </summary>
-			public bool HwGammaWrite { get; set; }
+			public bool HwGammaWrite
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// Depth Buffer's pool ID. (unrelated to "pool" variable below)
 			/// </summary>
-			public ushort DepthBufferId { get; set; }
+			public ushort DepthBufferId
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// whether to use pooled textures for this one
 			/// </summary>
-			public bool Pooled { get; set; }
+			public bool Pooled
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// Which scope has access to this texture
 			/// </summary>
-			public TextureScope Scope { get; set; }
+			public TextureScope Scope
+			{
+				get;
+				set;
+			}
 
 			/// <summary>
 			/// Creates a new local texture definition.

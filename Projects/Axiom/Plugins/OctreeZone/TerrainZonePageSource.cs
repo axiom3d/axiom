@@ -191,8 +191,12 @@ namespace OctreeZone
 			return page;
 		}
 
-		public virtual void Shutdown() { }
-		public virtual void RequestPage( ushort x, ushort z ) { }
+		public virtual void Shutdown()
+		{
+		}
+		public virtual void RequestPage( ushort x, ushort z )
+		{
+		}
 
 		protected void OnPageConstructed( int x, int z, Real[] data )
 		{

@@ -177,7 +177,10 @@ namespace Axiom.Core
 		/// </summary>
 		public string Name
 		{
-			get { return subMesh.Name; }
+			get
+			{
+				return subMesh.Name;
+			}
 		}
 
 		/// <summary>
@@ -696,8 +699,8 @@ namespace Axiom.Core
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-            while ( customParams.Count <= index )
-                customParams.Add( Vector4.Zero );
+			while ( customParams.Count <= index )
+				customParams.Add( Vector4.Zero );
 			customParams[ index ] = val;
 		}
 

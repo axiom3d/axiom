@@ -40,7 +40,7 @@ using Axiom.Math;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
-			
+
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="KeyFrame.h"   revision="1.9" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
@@ -127,7 +127,8 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
-		public NumericKeyFrame( AnimationTrack parent, float time ) : base( parent, time )
+		public NumericKeyFrame( AnimationTrack parent, float time )
+			: base( parent, time )
 		{
 		}
 
@@ -357,7 +358,8 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
-		public VertexMorphKeyFrame( AnimationTrack parent, float time ) : base( parent, time )
+		public VertexMorphKeyFrame( AnimationTrack parent, float time )
+			: base( parent, time )
 		{
 		}
 
@@ -404,7 +406,8 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
-		public VertexPoseKeyFrame( AnimationTrack parent, float time ) : base( parent, time )
+		public VertexPoseKeyFrame( AnimationTrack parent, float time )
+			: base( parent, time )
 		{
 		}
 

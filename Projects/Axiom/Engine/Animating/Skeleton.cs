@@ -726,7 +726,7 @@ namespace Axiom.Animating
 			writer.WriteLine( "Number of bones: {0}", boneList.Count );
 
 			Quaternion q = new Quaternion();
-            Real angle = 0;
+			Real angle = 0;
 			Vector3 axis = new Vector3();
 
 			// write each bone out

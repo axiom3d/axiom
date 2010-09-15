@@ -46,37 +46,37 @@ using ResourceHandle = System.UInt64;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// 	Abstract base class representing a high-level program (a vertex or
-    /// 	fragment program).
-    /// </summary>
-    /// <remarks>
-    ///    High-level programs are vertex and fragment programs written in a high-level
-    ///    language such as Cg or HLSL, and as such do not require you to write assembler code
-    ///    like GpuProgram does. However, the high-level program does eventually 
-    ///    get converted (compiled) into assembler and then eventually microcode which is
-    ///    what runs on the GPU. As well as the convenience, some high-level languages like Cg allow
-    ///    you to write a program which will operate under both Direct3D and OpenGL, something
-    ///    which you cannot do with just GpuProgram (which requires you to write 2 programs and
-    ///    use each in a Technique to provide cross-API compatibility). The engine will be creating
-    ///    a GpuProgram for you based on the high-level program, which is compiled specifically 
-    ///    for the API being used at the time, but this process is transparent.
-    ///    <p/>
-    ///    You cannot create high-level programs direct - use HighLevelGpuProgramManager instead.
-    ///    Plugins can register new implementations of HighLevelGpuProgramFactory in order to add
-    ///    support for new languages without requiring changes to the core engine API. To allow 
-    ///    custom parameters to be set, this class implement IConfigurable - the application
-    ///    can query on the available custom parameters and get/set them without having to 
-    ///    link specifically with it.
-    /// </remarks>
-    public abstract class HighLevelGpuProgram : GpuProgram, IConfigurable
-    {
-        #region Fields and Properties
+	/// <summary>
+	/// 	Abstract base class representing a high-level program (a vertex or
+	/// 	fragment program).
+	/// </summary>
+	/// <remarks>
+	///    High-level programs are vertex and fragment programs written in a high-level
+	///    language such as Cg or HLSL, and as such do not require you to write assembler code
+	///    like GpuProgram does. However, the high-level program does eventually 
+	///    get converted (compiled) into assembler and then eventually microcode which is
+	///    what runs on the GPU. As well as the convenience, some high-level languages like Cg allow
+	///    you to write a program which will operate under both Direct3D and OpenGL, something
+	///    which you cannot do with just GpuProgram (which requires you to write 2 programs and
+	///    use each in a Technique to provide cross-API compatibility). The engine will be creating
+	///    a GpuProgram for you based on the high-level program, which is compiled specifically 
+	///    for the API being used at the time, but this process is transparent.
+	///    <p/>
+	///    You cannot create high-level programs direct - use HighLevelGpuProgramManager instead.
+	///    Plugins can register new implementations of HighLevelGpuProgramFactory in order to add
+	///    support for new languages without requiring changes to the core engine API. To allow 
+	///    custom parameters to be set, this class implement IConfigurable - the application
+	///    can query on the available custom parameters and get/set them without having to 
+	///    link specifically with it.
+	/// </remarks>
+	public abstract class HighLevelGpuProgram : GpuProgram, IConfigurable
+	{
+		#region Fields and Properties
 
-        /// <summary>
-        ///    Whether the high-level program (and it's parameter defs) is loaded.
-        /// </summary>
-        protected bool isHighLevelLoaded;
+		/// <summary>
+		///    Whether the high-level program (and it's parameter defs) is loaded.
+		/// </summary>
+		protected bool isHighLevelLoaded;
 
 		#region BindingDelegate Property
 
@@ -93,22 +93,22 @@ namespace Axiom.Graphics
 			{
 				return assemblerProgram;
 			}
-		} 
+		}
 		#endregion BindingDelegate Property
-			
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		/// <summary>
-        ///    Default constructor.
-        /// </summary>
-        /// <param name="name">Name of the high level program.</param>
-        /// <param name="type">Type of program, vertex or fragment.</param>
-        /// <param name="language">HLSL language this program is written in.</param>
+		///    Default constructor.
+		/// </summary>
+		/// <param name="name">Name of the high level program.</param>
+		/// <param name="type">Type of program, vertex or fragment.</param>
+		/// <param name="language">HLSL language this program is written in.</param>
 		public HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
-        {
+		{
 		}
 
 		#endregion Construction and Destruction
@@ -116,127 +116,127 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-        ///    Implementation of Resource.load.
-        /// </summary>
-        protected override void load()
-        {
-            if ( IsLoaded )
-            {
-                Unload();
-            }
+		///    Implementation of Resource.load.
+		/// </summary>
+		protected override void load()
+		{
+			if ( IsLoaded )
+			{
+				Unload();
+			}
 
-            // polymorphic load 
-            LoadHighLevelImpl();
+			// polymorphic load 
+			LoadHighLevelImpl();
 
-            // polymorphic creation of the low level program
-            CreateLowLevelImpl();
+			// polymorphic creation of the low level program
+			CreateLowLevelImpl();
 
-            Debug.Assert( assemblerProgram != null, "Subclasses of HighLevelGpuProgram MUST initialize the low level assembler program." );
+			Debug.Assert( assemblerProgram != null, "Subclasses of HighLevelGpuProgram MUST initialize the low level assembler program." );
 
-            // load the low level assembler program
-            assemblerProgram.Load();
-        }
+			// load the low level assembler program
+			assemblerProgram.Load();
+		}
 
-        /// <summary>
-        ///    Internal load implementation, loads just the high-level portion, enough to 
-        ///    get parameters.
-        /// </summary>
-        protected virtual void LoadHighLevelImpl()
-        {
-            if ( !isHighLevelLoaded )
-            {
-                if ( loadFromFile )
-                {
-                    Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
-                    StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
-                    source = reader.ReadToEnd();
+		/// <summary>
+		///    Internal load implementation, loads just the high-level portion, enough to 
+		///    get parameters.
+		/// </summary>
+		protected virtual void LoadHighLevelImpl()
+		{
+			if ( !isHighLevelLoaded )
+			{
+				if ( loadFromFile )
+				{
+					Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
+					StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
+					source = reader.ReadToEnd();
 					stream.Close();
-                }
+				}
 
-                LoadFromSource();
-                isHighLevelLoaded = true;
-            }
-        }
+				LoadFromSource();
+				isHighLevelLoaded = true;
+			}
+		}
 
-        /// <summary>
-        ///    Internal method for creating an appropriate low-level program from this
-        ///    high-level program, must be implemented by subclasses.
-        /// </summary>
-        protected abstract void CreateLowLevelImpl();
+		/// <summary>
+		///    Internal method for creating an appropriate low-level program from this
+		///    high-level program, must be implemented by subclasses.
+		/// </summary>
+		protected abstract void CreateLowLevelImpl();
 
-        /// <summary>
-        ///    Implementation of Resource.unload.
-        /// </summary>
-        protected override void unload()
-        {
-            if ( assemblerProgram != null )
-            {
-                assemblerProgram.Unload();
-            }
+		/// <summary>
+		///    Implementation of Resource.unload.
+		/// </summary>
+		protected override void unload()
+		{
+			if ( assemblerProgram != null )
+			{
+				assemblerProgram.Unload();
+			}
 
-            // polymorphic unload
-            UnloadImpl();
+			// polymorphic unload
+			UnloadImpl();
 
-            isHighLevelLoaded = false;
-        }
+			isHighLevelLoaded = false;
+		}
 
-        /// <summary>
-        ///    Internal unload implementation, must be implemented by subclasses.
-        /// </summary>
-        protected abstract void UnloadImpl();
+		/// <summary>
+		///    Internal unload implementation, must be implemented by subclasses.
+		/// </summary>
+		protected abstract void UnloadImpl();
 
-        /// <summary>
-        ///    Populate the passed parameters with name->index map, must be overridden.
-        /// </summary>
-        /// <param name="parms"></param>
-        protected abstract void PopulateParameterNames( GpuProgramParameters parms );
+		/// <summary>
+		///    Populate the passed parameters with name->index map, must be overridden.
+		/// </summary>
+		/// <param name="parms"></param>
+		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
 
-        /// <summary>
-        ///    Creates a new parameters object compatible with this program definition.
-        /// </summary>
-        /// <remarks>
-        ///    Unlike low-level assembly programs, parameters objects are specific to the
-        ///    program and therefore must be created from it rather than by the 
-        ///    HighLevelGpuProgramManager. This method creates a new instance of a parameters
-        ///    object containing the definition of the parameters this program understands.
-        /// </remarks>
-        /// <returns>A new set of program parameters.</returns>
-        public override GpuProgramParameters CreateParameters()
-        {
-            // create and load named parameters
-            GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+		/// <summary>
+		///    Creates a new parameters object compatible with this program definition.
+		/// </summary>
+		/// <remarks>
+		///    Unlike low-level assembly programs, parameters objects are specific to the
+		///    program and therefore must be created from it rather than by the 
+		///    HighLevelGpuProgramManager. This method creates a new instance of a parameters
+		///    object containing the definition of the parameters this program understands.
+		/// </remarks>
+		/// <returns>A new set of program parameters.</returns>
+		public override GpuProgramParameters CreateParameters()
+		{
+			// create and load named parameters
+			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
 
-            // load high level program and parameters if required
-            if ( IsSupported )
-            {
-                // make sure parameter definitions are loaded
-                LoadHighLevelImpl();
+			// load high level program and parameters if required
+			if ( IsSupported )
+			{
+				// make sure parameter definitions are loaded
+				LoadHighLevelImpl();
 
-                PopulateParameterNames( newParams );
-            }
+				PopulateParameterNames( newParams );
+			}
 
-            // copy in default parameters if present
-            if ( defaultParams != null )
-            {
-                newParams.CopyConstantsFrom( defaultParams );
-            }
+			// copy in default parameters if present
+			if ( defaultParams != null )
+			{
+				newParams.CopyConstantsFrom( defaultParams );
+			}
 
-            return newParams;
-        }
+			return newParams;
+		}
 
-        #endregion
+		#endregion
 
-        #region IConfigurable Members
+		#region IConfigurable Members
 
-        /// <summary>
-        ///    Must be implemented by subclasses.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="val"></param>
-        public abstract bool SetParam( string name, string val );
+		/// <summary>
+		///    Must be implemented by subclasses.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="val"></param>
+		public abstract bool SetParam( string name, string val );
 
-        #endregion
-    }
+		#endregion
+	}
 
 	/// <summary>
 	///    Interface definition for factories that create instances of HighLevelGpuProgram.

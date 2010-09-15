@@ -92,6 +92,21 @@ namespace Axiom.Core
 				}
 			}
 
+			// Then look in loaded assemblies
+			if ( instance == null )
+			{
+				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				for ( int index = 0; index < assemblies.Length && instance == null; index++ )
+				{
+					DynamicLoader platformMgr = new DynamicLoader( assemblies[ index ].Location );
+					IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
+					if ( platforms.Count != 0 )
+					{
+						instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
+					}
+				}
+			}
+
 			// Then look in external assemblies
 			if ( instance == null )
 			{

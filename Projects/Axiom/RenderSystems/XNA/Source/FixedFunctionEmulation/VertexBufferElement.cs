@@ -52,22 +52,22 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#endregion Fields
 
-        #region System.Object Implementation
+		#region System.Object Implementation
 
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            return VertexElementSemantic.GetHashCode() ^ VertexElementType.GetHashCode() ^ VertexElementIndex.GetHashCode();
-        }
+		public override int GetHashCode()
+		{
+			return VertexElementSemantic.GetHashCode() ^ VertexElementType.GetHashCode() ^ VertexElementIndex.GetHashCode();
+		}
 
-        public override string ToString()
-        {
-            return String.Format( "{1} {2}{0}", VertexElementIndex, VertexElementType, VertexElementSemantic );
-        }
-        #endregion System.Object Implementation
-    }
+		public override string ToString()
+		{
+			return String.Format( "{1} {2}{0}", VertexElementIndex, VertexElementType, VertexElementSemantic );
+		}
+		#endregion System.Object Implementation
+	}
 }

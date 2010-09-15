@@ -37,14 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    ///		Xna texture types
-    /// </summary>
-    internal enum XnaTextureType
-    {
-        Normal,
-        Cube,
-        Volume,
-        None
-    }
+	/// <summary>
+	///		Xna texture types
+	/// </summary>
+	internal enum XnaTextureType
+	{
+		Normal,
+		Cube,
+		Volume,
+		None
+	}
 }

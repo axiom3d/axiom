@@ -53,338 +53,338 @@ using System.Collections.Generic;
 
 namespace Axiom.Overlays
 {
-    /// <summary>
-    /// 	A 2D element which contains other OverlayElement instances.
-    /// </summary>
-    /// <remarks>
-    /// 	This is a specialization of OverlayElement for 2D elements that contain other
-    /// 	elements. These are also the smallest elements that can be attached directly
-    /// 	to an Overlay.
-    /// 	<p/>
-    /// 	OverlayElementContainers should be managed using OverlayElementManager. This class is responsible for
-    /// 	instantiating elements, and also for accepting new types of element
-    /// 	from plugins etc.
-    /// </remarks>
-    public abstract class OverlayElementContainer : OverlayElement
-    {
-        #region Member variables
+	/// <summary>
+	/// 	A 2D element which contains other OverlayElement instances.
+	/// </summary>
+	/// <remarks>
+	/// 	This is a specialization of OverlayElement for 2D elements that contain other
+	/// 	elements. These are also the smallest elements that can be attached directly
+	/// 	to an Overlay.
+	/// 	<p/>
+	/// 	OverlayElementContainers should be managed using OverlayElementManager. This class is responsible for
+	/// 	instantiating elements, and also for accepting new types of element
+	/// 	from plugins etc.
+	/// </remarks>
+	public abstract class OverlayElementContainer : OverlayElement
+	{
+		#region Member variables
 
-        protected Dictionary<string, OverlayElement> children = new Dictionary<string, OverlayElement>();
-        protected Dictionary<string, OverlayElement> childContainers = new Dictionary<string, OverlayElement>();
-        protected bool childrenProcessEvents;
+		protected Dictionary<string, OverlayElement> children = new Dictionary<string, OverlayElement>();
+		protected Dictionary<string, OverlayElement> childContainers = new Dictionary<string, OverlayElement>();
+		protected bool childrenProcessEvents;
 
-        /// <summary>
-        /// Gets the children OverlayElements as a Key-Value collection
-        /// </summary>
-        public IDictionary<string, OverlayElement> Children
-        {
-            get
-            {
-                return children;
-            }
-        }
+		/// <summary>
+		/// Gets the children OverlayElements as a Key-Value collection
+		/// </summary>
+		public IDictionary<string, OverlayElement> Children
+		{
+			get
+			{
+				return children;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///    Don't use directly, create through GuiManager.CreateElement.
-        /// </summary>
-        /// <param name="name"></param>
-        protected internal OverlayElementContainer( string name )
-            : base( name )
-        {
-            childrenProcessEvents = true;
-        }
+		/// <summary>
+		///    Don't use directly, create through GuiManager.CreateElement.
+		/// </summary>
+		/// <param name="name"></param>
+		protected internal OverlayElementContainer( string name )
+			: base( name )
+		{
+			childrenProcessEvents = true;
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        public override void Initialize()
-        {
-            foreach ( OverlayElementContainer container in childContainers.Values)
-            {                
-                container.Initialize();
-            }
+		public override void Initialize()
+		{
+			foreach ( OverlayElementContainer container in childContainers.Values )
+			{
+				container.Initialize();
+			}
 
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.Initialize();
-            }
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.Initialize();
+			}
 
-        }
+		}
 
-        /// <summary>
-        ///    Adds another OverlayElement to this container.
-        /// </summary>
-        /// <param name="element"></param>
-        public virtual void AddChild( OverlayElement element )
-        {
-            if ( element.IsContainer )
-            {
-                AddChildContainer( (OverlayElementContainer)element);
-            }
-            else
-            {
-                AddChildElement( element );
-            }
-        }
+		/// <summary>
+		///    Adds another OverlayElement to this container.
+		/// </summary>
+		/// <param name="element"></param>
+		public virtual void AddChild( OverlayElement element )
+		{
+			if ( element.IsContainer )
+			{
+				AddChildContainer( (OverlayElementContainer)element );
+			}
+			else
+			{
+				AddChildElement( element );
+			}
+		}
 
-        /// <summary>
-        ///    Adds another OverlayElement to this container.
-        /// </summary>
-        /// <param name="element"></param>
-        public virtual void AddChildElement( OverlayElement element )
-        {
-            Debug.Assert( !children.ContainsKey( element.Name ), string.Format( "Child with name '{0}' already defined.", element.Name ) );
+		/// <summary>
+		///    Adds another OverlayElement to this container.
+		/// </summary>
+		/// <param name="element"></param>
+		public virtual void AddChildElement( OverlayElement element )
+		{
+			Debug.Assert( !children.ContainsKey( element.Name ), string.Format( "Child with name '{0}' already defined.", element.Name ) );
 
-            // add to lookup table and list
-            children.Add( element.Name, element );
+			// add to lookup table and list
+			children.Add( element.Name, element );
 
-            // inform this child about his/her parent and zorder
-            element.NotifyParent( this, overlay );
-            element.NotifyZOrder( zOrder + 1 );
-            element.NotifyWorldTransforms( xform );
-            element.NotifyViewport();
-        }
+			// inform this child about his/her parent and zorder
+			element.NotifyParent( this, overlay );
+			element.NotifyZOrder( zOrder + 1 );
+			element.NotifyWorldTransforms( xform );
+			element.NotifyViewport();
+		}
 
-        /// <summary>
-        ///    Add a nested container to this container.
-        /// </summary>
-        /// <param name="container"></param>
-        public virtual void AddChildContainer( OverlayElementContainer container )
-        {
-            // add this container to the main child list first
-            OverlayElement element = container;
-            AddChildElement( element );
+		/// <summary>
+		///    Add a nested container to this container.
+		/// </summary>
+		/// <param name="container"></param>
+		public virtual void AddChildContainer( OverlayElementContainer container )
+		{
+			// add this container to the main child list first
+			OverlayElement element = container;
+			AddChildElement( element );
 
-            // now add the container to the container collection
-            childContainers.Add( container.Name, container );
-        }
+			// now add the container to the container collection
+			childContainers.Add( container.Name, container );
+		}
 
-        /// <summary>
-        /// Removes a child element by its name
-        /// </summary>
-        /// <param name="name"></param>
-        public virtual void RemoveChild( string name )
-        {
-            OverlayElement element = GetChild( name );
-            children.Remove( name );
+		/// <summary>
+		/// Removes a child element by its name
+		/// </summary>
+		/// <param name="name"></param>
+		public virtual void RemoveChild( string name )
+		{
+			OverlayElement element = GetChild( name );
+			children.Remove( name );
 
-            // remove from container list (if found)
-            if ( childContainers.ContainsKey( name ) )
-            {
-                childContainers.Remove( name );
-            }
-            element.Parent = null;
-        }
-        /// <summary>
-        ///    Gets the named child of this container.
-        /// </summary>
-        /// <param name="name"></param>
-        public virtual OverlayElement GetChild( string name )
-        {
-            Debug.Assert(children.ContainsKey(name), string.Format("Child with name '{0}' not found.", name));
+			// remove from container list (if found)
+			if ( childContainers.ContainsKey( name ) )
+			{
+				childContainers.Remove( name );
+			}
+			element.Parent = null;
+		}
+		/// <summary>
+		///    Gets the named child of this container.
+		/// </summary>
+		/// <param name="name"></param>
+		public virtual OverlayElement GetChild( string name )
+		{
+			Debug.Assert( children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
 
-            return children[ name ];
-        }
+			return children[ name ];
+		}
 
-        /// <summary>
-        ///    Tell the object and its children to recalculate their positions.
-        /// </summary>
-        public override void PositionsOutOfDate()
-        {
-            // call baseclass method
-            base.PositionsOutOfDate();
+		/// <summary>
+		///    Tell the object and its children to recalculate their positions.
+		/// </summary>
+		public override void PositionsOutOfDate()
+		{
+			// call baseclass method
+			base.PositionsOutOfDate();
 
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.PositionsOutOfDate();
-            }
-        }
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.PositionsOutOfDate();
+			}
+		}
 
-        public override void Update()
-        {
-            // call base class method
-            base.Update();
+		public override void Update()
+		{
+			// call base class method
+			base.Update();
 
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.Update();
-            }
-        }
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.Update();
+			}
+		}
 
-        public override int NotifyZOrder( int zOrder )
-        {
-            // call base class method
-            base.NotifyZOrder( zOrder );
+		public override int NotifyZOrder( int zOrder )
+		{
+			// call base class method
+			base.NotifyZOrder( zOrder );
 
-            //One for us
-            zOrder++;
+			//One for us
+			zOrder++;
 
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.NotifyZOrder( zOrder );
-            }
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.NotifyZOrder( zOrder );
+			}
 
-            return zOrder;
-        }
-        
+			return zOrder;
+		}
 
-        public override void NotifyWorldTransforms( Matrix4[] xform )
-        {
-            base.NotifyWorldTransforms( xform );
 
-            // Update children
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.NotifyWorldTransforms( xform );
-            }
-        }
+		public override void NotifyWorldTransforms( Matrix4[] xform )
+		{
+			base.NotifyWorldTransforms( xform );
 
-        public override void NotifyViewport()
-        {
-            base.NotifyViewport();
-            // Update children
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.NotifyViewport();
-            }
-        }
+			// Update children
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.NotifyWorldTransforms( xform );
+			}
+		}
 
-        public override void NotifyParent( OverlayElementContainer parent, Overlay overlay )
-        {
-            // call the base class method
-            base.NotifyParent( parent, overlay );
+		public override void NotifyViewport()
+		{
+			base.NotifyViewport();
+			// Update children
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.NotifyViewport();
+			}
+		}
 
-            foreach ( OverlayElement child in children.Values )
-            {
-                child.NotifyParent( this, overlay );
-            }
-        }
+		public override void NotifyParent( OverlayElementContainer parent, Overlay overlay )
+		{
+			// call the base class method
+			base.NotifyParent( parent, overlay );
 
-        public void UpdateRenderQueue( RenderQueue queue, bool updateChildren )
-        {
-            if ( isVisible )
-            {
-                // call base class method
-                base.UpdateRenderQueue( queue );
+			foreach ( OverlayElement child in children.Values )
+			{
+				child.NotifyParent( this, overlay );
+			}
+		}
 
-                if ( updateChildren )
-                {
-                    foreach ( OverlayElement child in children.Values )
-                    {
-                        child.UpdateRenderQueue( queue );
-                    }
-                }
-            }
-        }
+		public void UpdateRenderQueue( RenderQueue queue, bool updateChildren )
+		{
+			if ( isVisible )
+			{
+				// call base class method
+				base.UpdateRenderQueue( queue );
 
-        public override void UpdateRenderQueue( RenderQueue queue )
-        {
-            this.UpdateRenderQueue( queue, true );
-        }
+				if ( updateChildren )
+				{
+					foreach ( OverlayElement child in children.Values )
+					{
+						child.UpdateRenderQueue( queue );
+					}
+				}
+			}
+		}
 
-        public override OverlayElement FindElementAt( float x, float y )
-        {
-            OverlayElement ret = null;
+		public override void UpdateRenderQueue( RenderQueue queue )
+		{
+			this.UpdateRenderQueue( queue, true );
+		}
 
-            int currZ = -1;
+		public override OverlayElement FindElementAt( float x, float y )
+		{
+			OverlayElement ret = null;
 
-            if ( isVisible )
-            {
-                ret = base.FindElementAt( x, y );	//default to the current container if no others are found
-                if ( ret != null && childrenProcessEvents )
-                {
-                    foreach ( OverlayElement currentOverlayElement in children.Values )
-                    {
-                        if ( currentOverlayElement.IsVisible && currentOverlayElement.Enabled )
-                        {
-                            int z = currentOverlayElement.ZOrder;
-                            if ( z > currZ )
-                            {
-                                OverlayElement elementFound = currentOverlayElement.FindElementAt( x, y );
-                                if ( elementFound != null )
-                                {
-                                    currZ = z;
-                                    ret = elementFound;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return ret;
-        }
-        #endregion
+			int currZ = -1;
 
-        #region Properties
+			if ( isVisible )
+			{
+				ret = base.FindElementAt( x, y );	//default to the current container if no others are found
+				if ( ret != null && childrenProcessEvents )
+				{
+					foreach ( OverlayElement currentOverlayElement in children.Values )
+					{
+						if ( currentOverlayElement.IsVisible && currentOverlayElement.Enabled )
+						{
+							int z = currentOverlayElement.ZOrder;
+							if ( z > currZ )
+							{
+								OverlayElement elementFound = currentOverlayElement.FindElementAt( x, y );
+								if ( elementFound != null )
+								{
+									currZ = z;
+									ret = elementFound;
+								}
+							}
+						}
+					}
+				}
+			}
+			return ret;
+		}
+		#endregion
 
-        /// <summary>
-        ///    This is most certainly a container.
-        /// </summary>
-        public override bool IsContainer
-        {
-            get
-            {
-                return true;
-            }
-        }
-        /// <summary>
-        ///   Should this container pass events to their children 
-        /// </summary>
-        public bool IsChildrenProcessEvents
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-                childrenProcessEvents = value;
-            }
-        }
+		#region Properties
 
-        #endregion
+		/// <summary>
+		///    This is most certainly a container.
+		/// </summary>
+		public override bool IsContainer
+		{
+			get
+			{
+				return true;
+			}
+		}
+		/// <summary>
+		///   Should this container pass events to their children 
+		/// </summary>
+		public bool IsChildrenProcessEvents
+		{
+			get
+			{
+				return true;
+			}
+			set
+			{
+				childrenProcessEvents = value;
+			}
+		}
 
-        public override void CopyFromTemplate( OverlayElement templateOverlay )
-        {
-            base.CopyFromTemplate( templateOverlay );
+		#endregion
 
-            if ( templateOverlay.IsContainer && IsContainer )
-            {
-                foreach ( OverlayElement oldChildElement in ((OverlayElementContainer)templateOverlay).Children.Values )
-                {
-                    if ( oldChildElement.IsCloneable )
-                    {
-                        OverlayElement newChildElement = OverlayManager.Instance.Elements.CreateElement(
-                            oldChildElement.GetType().Name,
-                            Name + "/" + oldChildElement.Name );
-                        newChildElement.CopyFromTemplate( oldChildElement );
-                        AddChild( (OverlayElement)newChildElement );
-                    }
-                }
-            }
-        }
+		public override void CopyFromTemplate( OverlayElement templateOverlay )
+		{
+			base.CopyFromTemplate( templateOverlay );
 
-        public override OverlayElement Clone( string instanceName )
-        {
-            OverlayElementContainer newContainer;
+			if ( templateOverlay.IsContainer && IsContainer )
+			{
+				foreach ( OverlayElement oldChildElement in ( (OverlayElementContainer)templateOverlay ).Children.Values )
+				{
+					if ( oldChildElement.IsCloneable )
+					{
+						OverlayElement newChildElement = OverlayManager.Instance.Elements.CreateElement(
+							oldChildElement.GetType().Name,
+							Name + "/" + oldChildElement.Name );
+						newChildElement.CopyFromTemplate( oldChildElement );
+						AddChild( (OverlayElement)newChildElement );
+					}
+				}
+			}
+		}
 
-            newContainer = (OverlayElementContainer)( base.Clone( instanceName ) );
+		public override OverlayElement Clone( string instanceName )
+		{
+			OverlayElementContainer newContainer;
 
-            foreach ( OverlayElement oldChildElement in Children.Values )
-            {
-                if ( oldChildElement.IsCloneable )
-                {
-                    OverlayElement newChildElement = oldChildElement.Clone( instanceName );
-                    newContainer.AddChild( newChildElement );
-                }
-            }
+			newContainer = (OverlayElementContainer)( base.Clone( instanceName ) );
 
-            return newContainer;
-        }
-    }
+			foreach ( OverlayElement oldChildElement in Children.Values )
+			{
+				if ( oldChildElement.IsCloneable )
+				{
+					OverlayElement newChildElement = oldChildElement.Clone( instanceName );
+					newContainer.AddChild( newChildElement );
+				}
+			}
+
+			return newContainer;
+		}
+	}
 }

@@ -80,7 +80,7 @@ namespace Axiom.Demos
 			this.grpAvailableDemos.Controls.Add( this.lstDemos );
 			this.grpAvailableDemos.Controls.Add( this.picPreview );
 			this.grpAvailableDemos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.grpAvailableDemos.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.grpAvailableDemos.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.grpAvailableDemos.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.grpAvailableDemos.Location = new System.Drawing.Point( 12, 408 );
 			this.grpAvailableDemos.Name = "grpAvailableDemos";

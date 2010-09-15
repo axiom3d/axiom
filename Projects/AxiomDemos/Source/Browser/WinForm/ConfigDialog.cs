@@ -94,7 +94,7 @@ namespace Axiom.Demos
 			catch ( Exception )
 			{
 			}
-		    cboRenderSystems.Enabled = false;
+			cboRenderSystems.Enabled = false;
 		}
 
 		protected override void Dispose( bool disposing )
@@ -153,7 +153,7 @@ namespace Axiom.Demos
 			// lblOption
 			//
 			this.lblOption.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lblOption.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblOption.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblOption.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.lblOption.Location = new System.Drawing.Point( 104, 160 );
 			this.lblOption.Name = "lblOption";
@@ -199,7 +199,7 @@ namespace Axiom.Demos
 			// cboRenderSystems
 			//
 			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRenderSystems.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cboRenderSystems.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
 			this.cboRenderSystems.Name = "cboRenderSystems";
@@ -248,7 +248,7 @@ namespace Axiom.Demos
 			this.Controls.Add( this.cboRenderSystems );
 			this.Controls.Add( this.picLogo );
 			this.Controls.Add( this.pnlBackground );
-            this.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
