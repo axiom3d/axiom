@@ -1136,14 +1136,14 @@ namespace Axiom.Core
 		{
 			float result = 0;
 
-			if ( type != FrameEventType.End )
+			if ( type == FrameEventType.Start )
 			{
 				result = (float)( time - this.lastStartTime ) / 1000;
 
 				// update the last start time before the render targets are rendered
 				this.lastStartTime = time;
 			}
-			else
+			else if ( type == FrameEventType.End )
 			{
 				// increment frameCount
 				this.frameCount++;
