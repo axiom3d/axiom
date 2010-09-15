@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// </summary>
 	/// <remarks>
 	/// When loading a cubic texture, the image with the texture base name plus the
-	/// "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.
+	/// "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automatically be loaded to construct it.
 	/// </remarks>
 	public sealed class D3DTexture : Texture
 	{
@@ -202,10 +202,8 @@ namespace Axiom.RenderSystems.DirectX9
 			_devParms = _device.CreationParameters;
 
 			// get our back buffer pixel format
-			using ( D3D.Surface back = _device.GetBackBuffer( 0, 0 ) )
-			{
-				_bbPixelFormat = back.Description.Format;
-			}
+			D3D.Surface back = _device.GetBackBuffer( 0, 0 );
+			_bbPixelFormat = back.Description.Format;
 		}
 
 		private void LoadNormalTexture()

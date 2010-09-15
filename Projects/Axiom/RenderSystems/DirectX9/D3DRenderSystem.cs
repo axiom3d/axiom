@@ -658,8 +658,8 @@ namespace Axiom.RenderSystems.DirectX9
 			DX.Configuration.DetectDoubleDispose = false;
 			DX.Configuration.EnableObjectTracking = true;
 #else
-            DX.Configuration.DetectDoubleDispose = false;
-            DX.Configuration.EnableObjectTracking = false;
+			DX.Configuration.DetectDoubleDispose = false;
+			DX.Configuration.EnableObjectTracking = false;
 #endif
 
 			return renderWindow;
@@ -2491,7 +2491,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 			D3D.Surface surface = device.DepthStencilSurface;
 			D3D.SurfaceDescription surfaceDesc = surface.Description;
-			surface.Dispose();
 
 			if ( surfaceDesc.Format == D3D.Format.D24S8 || surfaceDesc.Format == D3D.Format.D24X8 )
 			{
@@ -2883,6 +2882,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			catch ( SlimDX.SlimDXException dlx )
 			{
+				LogManager.Instance.Write( "[Error] Received error while trying to restore the device." );
 				LogManager.Instance.Write( LogManager.BuildExceptionString( dlx ) );
 				return;
 			}
