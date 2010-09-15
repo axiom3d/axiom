@@ -70,8 +70,14 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override string Value
 		{
-			get { throw new NotImplementedException(); }
-			protected internal set { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
+			protected internal set
+			{
+				throw new NotImplementedException();
+			}
 		}
 
 		#endregion AbstractNode Implementation

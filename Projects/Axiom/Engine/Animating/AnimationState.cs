@@ -120,7 +120,7 @@ namespace Axiom.Animating
 			: this( animationName, animationStates, time, length, 1.0f, false )
 		{
 		}
-	
+
 		/// <summary>
 		///     The moral equivalent of a copy constructor
 		/// </summary>

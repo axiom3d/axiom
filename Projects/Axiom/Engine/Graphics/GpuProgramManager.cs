@@ -125,7 +125,7 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    A new instance of GpuProgram.
 		/// </returns>
-		public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode)
+		public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode )
 		{
 			return Create( name, group, type, syntaxCode, false, null );
 		}
@@ -306,7 +306,7 @@ namespace Axiom.Graphics
 		/// </param>
 		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = GetByName(name);
+			GpuProgram program = GetByName( name );
 
 			if ( program == null )
 			{

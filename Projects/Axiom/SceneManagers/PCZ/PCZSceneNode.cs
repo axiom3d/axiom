@@ -99,7 +99,10 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public Vector3 PreviousPosition
 		{
-			get { return prevPosition; }
+			get
+			{
+				return prevPosition;
+			}
 		}
 
 		public bool IsAnchored

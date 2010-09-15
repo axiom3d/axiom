@@ -81,11 +81,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							string value = "";
 							if ( prop.values.Count != 0 && prop.values[ 0 ].Type == AbstractNodeType.Atom )
-									value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
+								value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 							if ( CompilerListener != null )
 								CompilerListener.GetGpuProgramName( value );
 
-							customParameters.Add( new Pair<string>("delegate", value) );
+							customParameters.Add( new Pair<string>( "delegate", value ) );
 						}
 						else
 						{

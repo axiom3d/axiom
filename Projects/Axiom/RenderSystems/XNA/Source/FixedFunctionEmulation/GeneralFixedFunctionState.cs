@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			gffs.FogMode = FogMode.None;
 			gffs.Shading = Shading.Gouraud;
 			gffs.AlphaRejectFunction = CompareFunction.AlwaysPass;
-            gffs.lightTypeCount = new uint[(uint)(LightType.Spotlight) + 1];
+			gffs.lightTypeCount = new uint[ (uint)( LightType.Spotlight ) + 1 ];
 
 			return gffs;
 		}
@@ -153,31 +153,31 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		/// </remarks>
 		public Shading Shading;
 
-        private uint[] lightTypeCount;
+		private uint[] lightTypeCount;
 
 		#endregion Fields
 
-        internal void ResetLightTypeCounts()
-        {
-            for ( int index = 0; index < lightTypeCount.Length; index++ )
-                lightTypeCount[ index ] = 0;
-        }
+		internal void ResetLightTypeCounts()
+		{
+			for ( int index = 0; index < lightTypeCount.Length; index++ )
+				lightTypeCount[ index ] = 0;
+		}
 
-        internal void IncrementLightTypeCount( LightType lightType )
-        {
-            lightTypeCount[ (uint)lightType ]++;
-        }
+		internal void IncrementLightTypeCount( LightType lightType )
+		{
+			lightTypeCount[ (uint)lightType ]++;
+		}
 
-        #region Object Implementation
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		#region Object Implementation
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount[ 1 ].GetHashCode() ^ lightTypeCount[ 2 ].GetHashCode();
-        }
-        #endregion
-    }
+		public override int GetHashCode()
+		{
+			return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount[ 1 ].GetHashCode() ^ lightTypeCount[ 2 ].GetHashCode();
+		}
+		#endregion
+	}
 }

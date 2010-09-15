@@ -180,7 +180,7 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				material = (Material)MaterialManager.Instance[value];
+				material = (Material)MaterialManager.Instance[ value ];
 			}
 		}
 
@@ -325,7 +325,7 @@ namespace Axiom.Graphics
 		///    Inputs (for material used for rendering the quad)
 		///    An empty string signifies that no input is used
 		///</summary>
-        protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
+		protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
 		///<summary>
 		///    Inputs (for material used for rendering the quad)
 		///    An empty string signifies that no input is used
@@ -583,15 +583,15 @@ namespace Axiom.Graphics
 		///<remarks>
 		///    Note applies when CompositorPassType is RenderQuad 
 		///</remarks>	
-        public void SetInput( int id, string name, int mrtIndex )
-        {
-            inputs[ id ] = new InputTexture( name, mrtIndex );
-        }
-
-        public void SetInput( int id, string name )
+		public void SetInput( int id, string name, int mrtIndex )
 		{
-            SetInput( id, name, 0 );
-        }
+			inputs[ id ] = new InputTexture( name, mrtIndex );
+		}
+
+		public void SetInput( int id, string name )
+		{
+			SetInput( id, name, 0 );
+		}
 
 		public void SetInput( int id )
 		{
@@ -605,7 +605,7 @@ namespace Axiom.Graphics
 		///<remarks>
 		///    Note applies when CompositorPassType is RenderQuad 
 		///</remarks>	
-        public InputTexture GetInput( int id )
+		public InputTexture GetInput( int id )
 		{
 			return inputs[ id ];
 		}

@@ -267,9 +267,9 @@ namespace Axiom.Graphics
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-            while ( customParams.Count <= index )
-                customParams.Add( Vector4.Zero );
-            customParams[ index ] = val;
+			while ( customParams.Count <= index )
+				customParams.Add( Vector4.Zero );
+			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )

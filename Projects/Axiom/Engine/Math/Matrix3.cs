@@ -181,7 +181,7 @@ namespace Axiom.Math
 			{
 				fixed ( Real* pM = &m00 )
 					return new Vector3( *( pM + col ),        //m[0,col], 
-									    *( pM + 3 + col ),    //m[1,col], 
+										*( pM + 3 + col ),    //m[1,col], 
 										*( pM + 6 + col ) );  //m[2,col]);
 			}
 		}
@@ -237,38 +237,38 @@ namespace Axiom.Math
 			this = xMat * ( yMat * zMat );
 		}
 
-        public Vector3 ToEulerAnglesXYZ()
-        {
-            Real yAngle;
-            Real rAngle;
-            Real pAngle;
+		public Vector3 ToEulerAnglesXYZ()
+		{
+			Real yAngle;
+			Real rAngle;
+			Real pAngle;
 
-            pAngle = Utility.ASin( m01 );
-            if ( pAngle < Utility.PI / 2 )
-            {
-                if ( pAngle > -Utility.PI / 2 )
-                {
-                    yAngle = Utility.ATan2( m21, m11 );
-                    rAngle = Utility.ATan2( m02, m00 );
-                }
-                else
-                {
-                    // WARNING. Not a unique solution.
-                    Real fRmY = (Real)Utility.ATan2( -m20, m22 );
-                    rAngle = 0.0f; // any angle works
-                    yAngle = rAngle - fRmY;
-                }
-            }
-            else
-            {
-                // WARNING. Not a unique solution.
-                Real fRpY = Utility.ATan2( -m20, m22 );
-                rAngle = 0.0f; // any angle works
-                yAngle = fRpY - rAngle;
-            }
+			pAngle = Utility.ASin( m01 );
+			if ( pAngle < Utility.PI / 2 )
+			{
+				if ( pAngle > -Utility.PI / 2 )
+				{
+					yAngle = Utility.ATan2( m21, m11 );
+					rAngle = Utility.ATan2( m02, m00 );
+				}
+				else
+				{
+					// WARNING. Not a unique solution.
+					Real fRmY = (Real)Utility.ATan2( -m20, m22 );
+					rAngle = 0.0f; // any angle works
+					yAngle = rAngle - fRmY;
+				}
+			}
+			else
+			{
+				// WARNING. Not a unique solution.
+				Real fRpY = Utility.ATan2( -m20, m22 );
+				rAngle = 0.0f; // any angle works
+				yAngle = fRpY - rAngle;
+			}
 
-            return new Vector3( yAngle, rAngle, pAngle );
-        }
+			return new Vector3( yAngle, rAngle, pAngle );
+		}
 
 		#endregion
 

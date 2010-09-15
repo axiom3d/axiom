@@ -300,25 +300,25 @@ namespace Axiom.Math
 
 		#endregion
 
-        #region Parse method, implemented for factories
+		#region Parse method, implemented for factories
 
-        /// <summary>
-        ///		Parses a string and returns Vector4.
-        /// </summary>
-        /// <param name="vector">
-        ///     A string representation of a Vector4. ( as its returned from Vector4.ToString() )
-        /// </param>
-        /// <returns>
-        ///     A new Vector4.
-        /// </returns>
-        public static Vector4 Parse(string vector)
-        {
-            string[] vals = vector.TrimStart('<').TrimEnd('>').Split(',');
+		/// <summary>
+		///		Parses a string and returns Vector4.
+		/// </summary>
+		/// <param name="vector">
+		///     A string representation of a Vector4. ( as its returned from Vector4.ToString() )
+		/// </param>
+		/// <returns>
+		///     A new Vector4.
+		/// </returns>
+		public static Vector4 Parse( string vector )
+		{
+			string[] vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
 
-            return new Vector4(Real.Parse(vals[0].Trim()), Real.Parse(vals[1].Trim()), Real.Parse(vals[2].Trim()), Real.Parse(vals[3].Trim()));
-        }
+			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
+		}
 
 
-        #endregion
-    }
+		#endregion
+	}
 }

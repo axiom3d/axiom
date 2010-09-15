@@ -1021,60 +1021,104 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Target
 		///</summary>
-		public RenderTarget Target { get; set; }
+		public RenderTarget Target
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    Current group ID
 		///</summary>
-		public RenderQueueGroupID CurrentQueueGroupId { get; set; }
+		public RenderQueueGroupID CurrentQueueGroupId
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    RenderSystem operations to queue into the scene manager
 		///</summary>
-		public List<CompositorInstance.QueueIDAndOperation> RenderSystemOperations { get; protected set; }
+		public List<CompositorInstance.QueueIDAndOperation> RenderSystemOperations
+		{
+			get;
+			protected set;
+		}
 
 		///<summary>
 		///    Scene visibility mask
 		///    If this is 0, the scene is not rendered at all
 		///</summary>
-		public ulong VisibilityMask { get; set; }
+		public ulong VisibilityMask
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    LOD offset. This is multiplied with the camera LOD offset
 		///    1.0 is default, lower means lower detail, higher means higher detail
 		///</summary>
-		public float LodBias { get; set; }
+		public float LodBias
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    A set of render queues to either include or exclude certain render queues.
 		///</summary>
-		public BitArray RenderQueues { get; set; }
+		public BitArray RenderQueues
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		/// <see>CompositionTargetPass.OnlyInitial</see>
 		///</summary>
-		public bool OnlyInitial { get; set; }
+		public bool OnlyInitial
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    "Has been rendered" flag; used in combination with
 		///    onlyInitial to determine whether to skip this target operation.
 		///</summary>
-		public bool HasBeenRendered { get; set; }
+		public bool HasBeenRendered
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    Whether this op needs to find visible scene objects or not
 		///</summary>
-		public bool FindVisibleObjects { get; set; }
+		public bool FindVisibleObjects
+		{
+			get;
+			set;
+		}
 
 		///<summary>
 		///    Which material scheme this op will use */
 		///</summary>
-		public string MaterialScheme { get; set; }
+		public string MaterialScheme
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Whether shadows will be enabled or not
 		/// </summary>
-		public bool ShadowsEnabled { get; set; }
+		public bool ShadowsEnabled
+		{
+			get;
+			set;
+		}
 
 		#endregion Fields and Properties
 
@@ -1214,57 +1258,101 @@ namespace Axiom.Graphics
 		/// <summary>
 		///
 		/// </summary>
-		public Material Material { get; set; }
+		public Material Material
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public Technique Technique { get; set; }
+		public Technique Technique
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public CompositorInstance Instance { get; set; }
+		public CompositorInstance Instance
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public uint PassId { get; set; }
+		public uint PassId
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool QuadCornerModified { get; set; }
+		public bool QuadCornerModified
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool QuadFarCorners { get; set; }
+		public bool QuadFarCorners
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool QuadFarCornersViewSpace { get; set; }
+		public bool QuadFarCornersViewSpace
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public float QuadLeft { get; set; }
+		public float QuadLeft
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public float QuadTop { get; set; }
+		public float QuadTop
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public float QuadRight { get; set; }
+		public float QuadRight
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public float QuadBottom { get; set; }
+		public float QuadBottom
+		{
+			get;
+			set;
+		}
 
 		public RSQuadOperation( CompositorInstance instance, uint pass_id, Material mat )
 		{
@@ -1361,17 +1449,29 @@ namespace Axiom.Graphics
 		/// <summary>
 		///
 		/// </summary>
-		public string PreviousSchemeName { get; set; }
+		public string PreviousSchemeName
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool PreviousLateResolving { get; set; }
+		public bool PreviousLateResolving
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public string SchemeName { get; set; }
+		public string SchemeName
+		{
+			get;
+			set;
+		}
 
 		#endregion Fields and Properties
 
@@ -1417,7 +1517,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///
 		/// </summary>
-		public RSSetSchemeOperation SetOperation { get; set; }
+		public RSSetSchemeOperation SetOperation
+		{
+			get;
+			set;
+		}
 
 		#endregion Fields and Properties
 

@@ -67,18 +67,18 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	{
 		#region Fields and Properties
 
-        /*protected bool materialEnabled;
-        public bool MaterialEnabled
-        {
-            get
-            {
-                return materialEnabled;
-            }
-            set
-            {
-                materialEnabled = value;
-            }
-        }*/
+		/*protected bool materialEnabled;
+		public bool MaterialEnabled
+		{
+			get
+			{
+				return materialEnabled;
+			}
+			set
+			{
+				materialEnabled = value;
+			}
+		}*/
 
 		protected GeneralFixedFunctionState generalFFState = GeneralFixedFunctionState.Create();
 		public GeneralFixedFunctionState GeneralFixedFunctionState
@@ -87,10 +87,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			{
 				return generalFFState;
 			}
-            set
-            {
-                generalFFState = value;
-            }
+			set
+			{
+				generalFFState = value;
+			}
 		}
 
 		protected List<LightType> lights = new List<LightType>();
@@ -132,26 +132,26 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Methods
 		#endregion Methods
 
-        #region Object Overrides
+		#region Object Overrides
 
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            int hashCode = generalFFState.GetHashCode();
-            foreach( TextureLayerState tls in textureLayerStates )
-                hashCode ^= tls.GetHashCode();
-            foreach( LightType light in lights )
-                hashCode ^= light.GetHashCode();
-            hashCode ^= textureLayerStates.Count;
-            hashCode ^= lights.Count;
-            //hashCode ^= materialEnabled.GetHashCode();
-            return hashCode;
-        }
+		public override int GetHashCode()
+		{
+			int hashCode = generalFFState.GetHashCode();
+			foreach ( TextureLayerState tls in textureLayerStates )
+				hashCode ^= tls.GetHashCode();
+			foreach ( LightType light in lights )
+				hashCode ^= light.GetHashCode();
+			hashCode ^= textureLayerStates.Count;
+			hashCode ^= lights.Count;
+			//hashCode ^= materialEnabled.GetHashCode();
+			return hashCode;
+		}
 
-        #endregion
+		#endregion
 	}
 }

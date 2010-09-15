@@ -52,118 +52,118 @@ namespace Axiom.Configuration
 		}
 	}
 
-    /// <summary>
-    /// Packages the details of a configuration option.
-    /// </summary>
-    /// <remarks>Used for <see cref="RenderSystem.ConfigOptions" />. If immutable is true, this option must be disabled for modifying.</remarks>
-    public class ConfigOption<T>
-    {
-        RenderSystem _parent;
+	/// <summary>
+	/// Packages the details of a configuration option.
+	/// </summary>
+	/// <remarks>Used for <see cref="RenderSystem.ConfigOptions" />. If immutable is true, this option must be disabled for modifying.</remarks>
+	public class ConfigOption<T>
+	{
+		RenderSystem _parent;
 
-        #region Name Property
+		#region Name Property
 
-        private string _name;
-        /// <summary>
-        /// The name for the Configuration Option
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+		private string _name;
+		/// <summary>
+		/// The name for the Configuration Option
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+		}
 
-        #endregion Name Property
+		#endregion Name Property
 
-        #region Value Property
+		#region Value Property
 
-        private T _value;
-        /// <summary>
-        /// The value of the Configuration Option
-        /// </summary>
-        public T Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                if ( _immutable != true )
-                {
-                    _value = value;
-                    OnValueChanged( _name, _value );
-                }
-            }
-        }
+		private T _value;
+		/// <summary>
+		/// The value of the Configuration Option
+		/// </summary>
+		public T Value
+		{
+			get
+			{
+				return _value;
+			}
+			set
+			{
+				if ( _immutable != true )
+				{
+					_value = value;
+					OnValueChanged( _name, _value );
+				}
+			}
+		}
 
-        #endregion Value Property
+		#endregion Value Property
 
-        #region PossibleValues Property
+		#region PossibleValues Property
 
-        private ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
-        /// <summary>
-        /// A list of the possible values for this Configuration Option
-        /// </summary>
-        public ConfigOptionValuesCollection<T> PossibleValues
-        {
-            get
-            {
-                return _possibleValues;
-            }
-        }
+		private ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
+		/// <summary>
+		/// A list of the possible values for this Configuration Option
+		/// </summary>
+		public ConfigOptionValuesCollection<T> PossibleValues
+		{
+			get
+			{
+				return _possibleValues;
+			}
+		}
 
-        #endregion PossibleValues Property
+		#endregion PossibleValues Property
 
-        #region Immutable Property
+		#region Immutable Property
 
-        private bool _immutable;
-        /// <summary>
-        /// Indicates if this option can be modified.
-        /// </summary>
-        public bool Immutable
-        {
+		private bool _immutable;
+		/// <summary>
+		/// Indicates if this option can be modified.
+		/// </summary>
+		public bool Immutable
+		{
 			set
 			{
 				_immutable = value;
 			}
-            get
-            {
-                return _immutable;
-            }
-        }
+			get
+			{
+				return _immutable;
+			}
+		}
 
-        #endregion Immutable Property
+		#endregion Immutable Property
 
-        public ConfigOption( string name, T value, bool immutable)
-        {
-            _name = name;
-            _value = value;
-            _immutable = immutable;
-        }
+		public ConfigOption( string name, T value, bool immutable )
+		{
+			_name = name;
+			_value = value;
+			_immutable = immutable;
+		}
 
-        #region Events
+		#region Events
 
-        public delegate void ValueChanged( string name, string value );
-        public event ValueChanged ConfigValueChanged;
+		public delegate void ValueChanged( string name, string value );
+		public event ValueChanged ConfigValueChanged;
 
-        private void OnValueChanged( string name, T value )
-        {
-            if ( ConfigValueChanged != null )
-                ConfigValueChanged( name, Value.ToString() );
-        }
+		private void OnValueChanged( string name, T value )
+		{
+			if ( ConfigValueChanged != null )
+				ConfigValueChanged( name, Value.ToString() );
+		}
 
-        #endregion Events
+		#endregion Events
 
-        public override string ToString()
-        {
-            return string.Format( "{0} : {1}", this.Name, this.Value );
-        }
+		public override string ToString()
+		{
+			return string.Format( "{0} : {1}", this.Name, this.Value );
+		}
 
-        public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int,ValueType>
-        {
-            
-        }
-    }
+		public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int, ValueType>
+		{
+
+		}
+	}
 }

@@ -45,7 +45,7 @@ using Axiom.Math;
 using Axiom.Collections;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Core
 {
 	public partial class StaticGeometry
@@ -189,20 +189,20 @@ namespace Axiom.Core
 
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, Real lodValue )
 			{
-                // Get batch instance
+				// Get batch instance
 #warning OGRE-1.6 BatchInstance Implementation
-                //BatchInstance batchInstance = Parent.Parent;
+				//BatchInstance batchInstance = Parent.Parent;
 
-                // Get material lod strategy
-			    LodStrategy materialLodStrategy = Material.LodStrategy;
+				// Get material lod strategy
+				LodStrategy materialLodStrategy = Material.LodStrategy;
 
-                // If material strategy doesn't match, recompute lod value with correct strategy
+				// If material strategy doesn't match, recompute lod value with correct strategy
 #warning OGRE-1.6 BatchInstance Implementation needed
-                //if ( materialLodStrategy != batchInstance.LodStrategy )
-                //    lodValue = materialLodStrategy.GetValue( batchInstance, batchInstance.Camera );
+				//if ( materialLodStrategy != batchInstance.LodStrategy )
+				//    lodValue = materialLodStrategy.GetValue( batchInstance, batchInstance.Camera );
 
 				// determine the current material technique
-                technique = material.GetBestTechnique( material.GetLodIndex( lodValue ) );
+				technique = material.GetBestTechnique( material.GetLodIndex( lodValue ) );
 				foreach ( GeometryBucket gbucket in geometryBucketList )
 					queue.AddRenderable( gbucket, RenderQueue.DEFAULT_PRIORITY, group );
 			}

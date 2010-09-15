@@ -44,7 +44,7 @@ using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Animating
 {
 

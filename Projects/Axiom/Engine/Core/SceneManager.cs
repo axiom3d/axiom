@@ -563,18 +563,27 @@ namespace Axiom.Core
 
 		public ICollection<Camera> Cameras
 		{
-			get { return this.cameraList.Values; }
+			get
+			{
+				return this.cameraList.Values;
+			}
 		}
 
 		/// <summary>A list of lights in the scene for easy lookup.</summary>
 		public ICollection<MovableObject> Lights
 		{
-			get { return this.GetMovableObjectCollection( LightFactory.TypeName ).Values; }
+			get
+			{
+				return this.GetMovableObjectCollection( LightFactory.TypeName ).Values;
+			}
 		}
 
 		public ICollection<SceneNode> SceneNodes
 		{
-			get { return this.sceneNodeList.Values; }
+			get
+			{
+				return this.sceneNodeList.Values;
+			}
 		}
 
 		/// <summary>
@@ -630,7 +639,10 @@ namespace Axiom.Core
 		/// </summary>
 		public bool IsShadowTechniqueInUse
 		{
-			get { return this.shadowTechnique != ShadowTechnique.None; }
+			get
+			{
+				return this.shadowTechnique != ShadowTechnique.None;
+			}
 		}
 
 		#endregion Fields
@@ -3751,7 +3763,7 @@ namespace Axiom.Core
 					}
 					Pass p = mat.GetTechnique( 0 ).GetPass( 0 );
 					if ( p.TextureUnitStageCount != 1 /* ||
-                         p.GetTextureUnitState( 0 ).GetTexture( 0 ) != shadowTexture */ )
+						 p.GetTextureUnitState( 0 ).GetTexture( 0 ) != shadowTexture */ )
 					{
 						mat.GetTechnique( 0 ).GetPass( 0 ).RemoveAllTextureUnitStates();
 						// create texture unit referring to render target texture
@@ -3803,8 +3815,14 @@ namespace Axiom.Core
 		/// </summary>
 		public RenderSystem TargetRenderSystem
 		{
-			get { return this.targetRenderSystem; }
-			set { this.targetRenderSystem = value; }
+			get
+			{
+				return this.targetRenderSystem;
+			}
+			set
+			{
+				this.targetRenderSystem = value;
+			}
 		}
 
 		/// <summary>
@@ -3823,7 +3841,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public SceneNode RootSceneNode
 		{
-			get { return this.rootSceneNode; }
+			get
+			{
+				return this.rootSceneNode;
+			}
 		}
 
 		/// <summary>
@@ -3842,7 +3863,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public ColorEx AmbientLight
 		{
-			get { return this.ambientColor; }
+			get
+			{
+				return this.ambientColor;
+			}
 			set
 			{
 				if ( value == null )
@@ -3863,7 +3887,10 @@ namespace Axiom.Core
 		/// </summary>
 		public AxiomCollection<object> Options
 		{
-			get { return this.optionList; }
+			get
+			{
+				return this.optionList;
+			}
 		}
 
 		/// <summary>
@@ -3899,7 +3926,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public ColorEx ShadowColor
 		{
-			get { return this.shadowColor; }
+			get
+			{
+				return this.shadowColor;
+			}
 			set
 			{
 				this.shadowColor = value;
@@ -3932,8 +3962,14 @@ namespace Axiom.Core
 		/// </remarks>
 		public float ShadowDirectionalLightExtrusionDistance
 		{
-			get { return this.shadowDirLightExtrudeDist; }
-			set { this.shadowDirLightExtrudeDist = value; }
+			get
+			{
+				return this.shadowDirLightExtrudeDist;
+			}
+			set
+			{
+				this.shadowDirLightExtrudeDist = value;
+			}
 		}
 
 		/// <summary>
@@ -3942,7 +3978,10 @@ namespace Axiom.Core
 		/// </summary>
 		public Real ShadowDirectionalLightTextureOffset
 		{
-			get { return this.shadowTextureOffset; }
+			get
+			{
+				return this.shadowTextureOffset;
+			}
 		}
 
 		/// <summary>
@@ -4008,7 +4047,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public int ShadowIndexBufferSize
 		{
-			get { return this.shadowIndexBufferSize; }
+			get
+			{
+				return this.shadowIndexBufferSize;
+			}
 			set
 			{
 				if ( this.shadowIndexBuffer != null || value != this.shadowIndexBufferSize )
@@ -4036,7 +4078,10 @@ namespace Axiom.Core
 		///	</remarks>
 		public ushort ShadowTextureSize
 		{
-			get { return this.shadowTextureSize; }
+			get
+			{
+				return this.shadowTextureSize;
+			}
 			set
 			{
 				// possibly recreate
@@ -4056,7 +4101,10 @@ namespace Axiom.Core
 		///	</remarks>
 		public ushort ShadowTextureCount
 		{
-			get { return this.shadowTextureCount; }
+			get
+			{
+				return this.shadowTextureCount;
+			}
 			set
 			{
 				// possibly recreate
@@ -4067,7 +4115,10 @@ namespace Axiom.Core
 
 		public PixelFormat ShadowTextureFormat
 		{
-			get { return this.shadowTextureFormat; }
+			get
+			{
+				return this.shadowTextureFormat;
+			}
 			set
 			{
 				// possibly recreate
@@ -4087,8 +4138,14 @@ namespace Axiom.Core
 		///	</remarks>
 		public bool ShadowTextureSelfShadow
 		{
-			get { return this.shadowTextureSelfShadow; }
-			set { this.shadowTextureSelfShadow = value; }
+			get
+			{
+				return this.shadowTextureSelfShadow;
+			}
+			set
+			{
+				this.shadowTextureSelfShadow = value;
+			}
 		}
 
 		/// <summary>
@@ -4126,7 +4183,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public ShadowTechnique ShadowTechnique
 		{
-			get { return this.shadowTechnique; }
+			get
+			{
+				return this.shadowTechnique;
+			}
 			set
 			{
 				this.shadowTechnique = value;
@@ -4174,7 +4234,10 @@ namespace Axiom.Core
 
 		public string ShadowTextureCasterMaterial
 		{
-			get { return this.shadowTextureCasterMaterial; }
+			get
+			{
+				return this.shadowTextureCasterMaterial;
+			}
 			set
 			{
 				// When rendering with a material that includes its own custom shadow caster
@@ -4247,7 +4310,10 @@ namespace Axiom.Core
 
 		public string ShadowTextureReceiverMaterial
 		{
-			get { return this.shadowTextureReceiverMaterial; }
+			get
+			{
+				return this.shadowTextureReceiverMaterial;
+			}
 			set
 			{
 				// When rendering with a material that includes its own custom shadow receiver
@@ -4359,14 +4425,26 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool ShadowUseInfiniteFarPlane
 		{
-			get { return this.shadowUseInfiniteFarPlane; }
-			set { this.shadowUseInfiniteFarPlane = value; }
+			get
+			{
+				return this.shadowUseInfiniteFarPlane;
+			}
+			set
+			{
+				this.shadowUseInfiniteFarPlane = value;
+			}
 		}
 
 		public bool SuppressRenderStateChanges
 		{
-			get { return this.suppressRenderStateChanges; }
-			set { this.suppressRenderStateChanges = value; }
+			get
+			{
+				return this.suppressRenderStateChanges;
+			}
+			set
+			{
+				this.suppressRenderStateChanges = value;
+			}
 		}
 
 		/// <summary>
@@ -4374,8 +4452,14 @@ namespace Axiom.Core
 		/// </summary>
 		public bool ShowBoundingBoxes
 		{
-			get { return this.showBoundingBoxes; }
-			set { this.showBoundingBoxes = value; }
+			get
+			{
+				return this.showBoundingBoxes;
+			}
+			set
+			{
+				this.showBoundingBoxes = value;
+			}
 		}
 
 		/// <summary>
@@ -4384,8 +4468,14 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual bool ShowDebugShadows
 		{
-			get { return this.showDebugShadows; }
-			set { this.showDebugShadows = value; }
+			get
+			{
+				return this.showDebugShadows;
+			}
+			set
+			{
+				this.showDebugShadows = value;
+			}
 		}
 
 		/// <summary>
@@ -4396,8 +4486,14 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool DisplayNodes
 		{
-			get { return this.displayNodes; }
-			set { this.displayNodes = value; }
+			get
+			{
+				return this.displayNodes;
+			}
+			set
+			{
+				this.displayNodes = value;
+			}
 		}
 
 		/// <summary>
@@ -4405,8 +4501,14 @@ namespace Axiom.Core
 		/// </summary>
 		public FogMode FogMode
 		{
-			get { return this.fogMode; }
-			set { this.fogMode = value; }
+			get
+			{
+				return this.fogMode;
+			}
+			set
+			{
+				this.fogMode = value;
+			}
 		}
 
 		/// <summary>
@@ -4414,8 +4516,14 @@ namespace Axiom.Core
 		/// </summary>
 		public float FogStart
 		{
-			get { return this.fogStart; }
-			set { this.fogStart = value; }
+			get
+			{
+				return this.fogStart;
+			}
+			set
+			{
+				this.fogStart = value;
+			}
 		}
 
 		/// <summary>
@@ -4423,8 +4531,14 @@ namespace Axiom.Core
 		/// </summary>
 		public float FogEnd
 		{
-			get { return this.fogEnd; }
-			set { this.fogEnd = value; }
+			get
+			{
+				return this.fogEnd;
+			}
+			set
+			{
+				this.fogEnd = value;
+			}
 		}
 
 		/// <summary>
@@ -4432,8 +4546,14 @@ namespace Axiom.Core
 		/// </summary>
 		public float FogDensity
 		{
-			get { return this.fogDensity; }
-			set { this.fogDensity = value; }
+			get
+			{
+				return this.fogDensity;
+			}
+			set
+			{
+				this.fogDensity = value;
+			}
 		}
 
 		/// <summary>
@@ -4441,8 +4561,14 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual ColorEx FogColor
 		{
-			get { return this.fogColor; }
-			set { this.fogColor = value; }
+			get
+			{
+				return this.fogColor;
+			}
+			set
+			{
+				this.fogColor = value;
+			}
 		}
 
 		/// <summary>
@@ -4481,7 +4607,10 @@ namespace Axiom.Core
 		///	</remarks>
 		public Material DefaultMaterialSettings
 		{
-			get { return Material.defaultSettings; }
+			get
+			{
+				return Material.defaultSettings;
+			}
 		}
 
 		/// <summary>
@@ -4489,7 +4618,10 @@ namespace Axiom.Core
 		/// </summary>
 		public Viewport CurrentViewport
 		{
-			get { return this.currentViewport; }
+			get
+			{
+				return this.currentViewport;
+			}
 		}
 
 		/// <summary>
@@ -4497,8 +4629,14 @@ namespace Axiom.Core
 		/// </summary>
 		public ulong VisibilityMask
 		{
-			get { return this.visibilityMask; }
-			set { this.visibilityMask = value; }
+			get
+			{
+				return this.visibilityMask;
+			}
+			set
+			{
+				this.visibilityMask = value;
+			}
 		}
 
 		/// <summary>
@@ -4517,8 +4655,14 @@ namespace Axiom.Core
 		/// </summary>
 		public bool FindVisibleObjectsBool
 		{
-			get { return this.findVisibleObjects; }
-			set { this.findVisibleObjects = value; }
+			get
+			{
+				return this.findVisibleObjects;
+			}
+			set
+			{
+				this.findVisibleObjects = value;
+			}
 		}
 
 		/// <summary>
@@ -4526,7 +4670,10 @@ namespace Axiom.Core
 		/// </summary>
 		public string Name
 		{
-			get { return this.name; }
+			get
+			{
+				return this.name;
+			}
 		}
 
 		/// <summary>
@@ -4537,7 +4684,10 @@ namespace Axiom.Core
 		///		return the type name of this SceneManager which agrees with
 		///		the type name of the SceneManagerFactory which created it.
 		///</remarks>
-		public abstract string TypeName { get; }
+		public abstract string TypeName
+		{
+			get;
+		}
 
 		protected ulong _lightsDirtyCounter;
 
@@ -6741,7 +6891,10 @@ namespace Axiom.Core
 
 		public Dictionary<string, MovableObjectCollection> MovableObjectCollectionMap
 		{
-			get { return this.movableObjectCollectionMap; }
+			get
+			{
+				return this.movableObjectCollectionMap;
+			}
 		}
 
 		public MovableObjectCollection GetMovableObjectCollection( string typeName )

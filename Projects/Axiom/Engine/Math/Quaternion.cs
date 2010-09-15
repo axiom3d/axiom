@@ -74,7 +74,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Creates a new Quaternion.
 		/// </summary>
-        public Quaternion(Real w, Real x, Real y, Real z)
+		public Quaternion( Real w, Real x, Real y, Real z )
 		{
 			this.w = w;
 			this.x = x;
@@ -168,23 +168,23 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-        /// Used when a Real value is multiplied by a Quaternion.
+		/// Used when a Real value is multiplied by a Quaternion.
 		/// </summary>
 		/// <param name="scalar"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-        public static Quaternion Multiply(Real scalar, Quaternion right)
+		public static Quaternion Multiply( Real scalar, Quaternion right )
 		{
 			return scalar * right;
 		}
 
 		/// <summary>
-        /// Used when a Real value is multiplied by a Quaternion.
+		/// Used when a Real value is multiplied by a Quaternion.
 		/// </summary>
 		/// <param name="scalar"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-        public static Quaternion operator *(Real scalar, Quaternion right)
+		public static Quaternion operator *( Real scalar, Quaternion right )
 		{
 			return new Quaternion( scalar * right.w, scalar * right.x, scalar * right.y, scalar * right.z );
 		}
@@ -585,21 +585,21 @@ namespace Axiom.Math
 		#region Public methods
 
 		#region Euler Angles
-		
+
 		public Vector3 ToEulerAnglesInDegrees()
 		{
 			Real pitch, yaw, roll;
 			ToEulerAngles( out pitch, out yaw, out roll );
 			return new Vector3( Utility.RadiansToDegrees( pitch ), Utility.RadiansToDegrees( yaw ), Utility.RadiansToDegrees( roll ) );
 		}
-		
+
 		public Vector3 ToEulerAngles()
 		{
 			Real pitch, yaw, roll;
 			ToEulerAngles( out pitch, out yaw, out roll );
 			return new Vector3( pitch, yaw, roll );
 		}
-		
+
 		public void ToEulerAnglesInDegrees( out Real pitch, out Real yaw, out Real roll )
 		{
 			ToEulerAngles( out pitch, out yaw, out roll );
@@ -607,7 +607,7 @@ namespace Axiom.Math
 			yaw = Utility.RadiansToDegrees( yaw );
 			roll = Utility.RadiansToDegrees( roll );
 		}
-		
+
 		public void ToEulerAngles( out Real pitch, out Real yaw, out Real roll )
 		{
 
@@ -642,7 +642,7 @@ namespace Axiom.Math
 			if ( roll <= Real.Epsilon )
 				roll = 0f;
 		}
-		
+
 		public static Quaternion FromEulerAnglesInDegrees( Real pitch, Real yaw, Real roll )
 		{
 			return FromEulerAngles( Utility.DegreesToRadians( pitch ), Utility.DegreesToRadians( yaw ), Utility.DegreesToRadians( roll ) );
@@ -866,7 +866,7 @@ namespace Axiom.Math
 			// article "Quaternion Calculus and Fast Animation".
 
 			Quaternion result = Quaternion.Zero;
-			
+
 			Real trace = matrix.m00 + matrix.m11 + matrix.m22;
 
 			Real root = 0.0f;
@@ -902,16 +902,16 @@ namespace Axiom.Math
 				{
 					Real* apkQuat = &result.x;
 
-						apkQuat[ i ] = 0.5f * root;
-						root = 0.5f / root;
+					apkQuat[ i ] = 0.5f * root;
+					root = 0.5f / root;
 
 					result.w = ( matrix[ k, j ] - matrix[ j, k ] ) * root;
 
-						apkQuat[ j ] = ( matrix[ j, i ] + matrix[ i, j ] ) * root;
-						apkQuat[ k ] = ( matrix[ k, i ] + matrix[ i, k ] ) * root;
-					}
+					apkQuat[ j ] = ( matrix[ j, i ] + matrix[ i, j ] ) * root;
+					apkQuat[ k ] = ( matrix[ k, i ] + matrix[ i, k ] ) * root;
 				}
-			
+			}
+
 			return result;
 		}
 
@@ -1006,14 +1006,14 @@ namespace Axiom.Math
 		{
 			return (int)x ^ (int)y ^ (int)z ^ (int)w;
 		}
-		
+
 		public override bool Equals( object obj )
 		{
 			Quaternion quat = (Quaternion)obj;
 
 			return quat == this;
 		}
-		
+
 		public bool Equals( Quaternion rhs, Real tolerance )
 		{
 			Real fCos = Dot( rhs );
@@ -1025,22 +1025,22 @@ namespace Axiom.Math
 		#endregion
 
 		#region Parse from string
-		
-		public Quaternion Parse(string quat)
+
+		public Quaternion Parse( string quat )
 		{
 			// the format is "Quaternion(w, x, y, z)"
-			if (!quat.StartsWith("Quaternion("))
+			if ( !quat.StartsWith( "Quaternion(" ) )
 				throw new FormatException();
-			
-			string[] values = quat.Substring(11).TrimEnd(')').Split(',');
-			
-			return new Quaternion(Real.Parse(values[0], CultureInfo.InvariantCulture),
-			                      Real.Parse(values[1], CultureInfo.InvariantCulture),
-			                      Real.Parse(values[2], CultureInfo.InvariantCulture),
-			                      Real.Parse(values[3], CultureInfo.InvariantCulture));
-			
+
+			string[] values = quat.Substring( 11 ).TrimEnd( ')' ).Split( ',' );
+
+			return new Quaternion( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
+								  Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ),
+								  Real.Parse( values[ 2 ], CultureInfo.InvariantCulture ),
+								  Real.Parse( values[ 3 ], CultureInfo.InvariantCulture ) );
+
 		}
-		
+
 		#endregion
 	}
 }

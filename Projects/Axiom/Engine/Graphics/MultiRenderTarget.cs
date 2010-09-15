@@ -70,7 +70,7 @@ namespace Axiom.Graphics
 		public MultiRenderTarget( string name )
 		{
 			this.Priority = RenderTargetPriority.RenderToTexture;
-            this.Name = name;
+			this.Name = name;
 			// Width and height is unknown with no targets attached
 			this.Width = this.Height = 0;
 		}
@@ -89,13 +89,13 @@ namespace Axiom.Graphics
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format 
 		/// </remarks>
-        public abstract void BindSurface( int attachment, RenderTexture target );
+		public abstract void BindSurface( int attachment, RenderTexture target );
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
 		/// <param name="attachment"></param>
-        public abstract void UnbindSurface( int attachment );
+		public abstract void UnbindSurface( int attachment );
 
 		#endregion Methods
 
@@ -105,7 +105,7 @@ namespace Axiom.Graphics
 		/// Error throwing implementation, it's not possible to copy a MultiRenderTarget.
 		/// </summary>
 		/// <param name="pb"></param>	
-        /// <param name="buffer"></param>
+		/// <param name="buffer"></param>
 		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
 		{
 			throw new NotSupportedException( "It's not possible to copy a MultiRenderTarget." );

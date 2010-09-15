@@ -164,11 +164,11 @@ namespace Axiom.Core
 
 		// Template texcoord data
 		private float[] texData = new float[ 8 ] {
-                                                       -0.5f, 0.5f,
-                                                       0.5f, 0.5f,
-                                                       -0.5f, -0.5f,
-                                                       0.5f, -0.5f
-                                               };
+													   -0.5f, 0.5f,
+													   0.5f, 0.5f,
+													   -0.5f, -0.5f,
+													   0.5f, -0.5f
+											   };
 
 		#endregion Fields
 
@@ -564,57 +564,57 @@ namespace Axiom.Core
 			}
 
 #if NOT
-        // Default behavior is that billboards are in local node space
-        // so orientation of camera (in world space) must be reverse-transformed
-        // into node space to generate the axes
-            Quaternion invTransform = parentNode.DerivedOrientation.Inverse();
-            Quaternion camQ = Quaternion.Zero;
+		// Default behavior is that billboards are in local node space
+		// so orientation of camera (in world space) must be reverse-transformed
+		// into node space to generate the axes
+			Quaternion invTransform = parentNode.DerivedOrientation.Inverse();
+			Quaternion camQ = Quaternion.Zero;
 
-            switch (billboardType) {
-                case BillboardType.Point:
-                    // Get camera world axes for X and Y (depth is irrelevant)
-                    camQ = camera.DerivedOrientation;
-                        // Convert into billboard local space
-                        camQ = invTransform * camQ;
-                    x = camQ * Vector3.UnitX;
-                    y = camQ * Vector3.UnitY;
-                    break;
-                case BillboardType.OrientedCommon:
-                    // Y-axis is common direction
-                    // X-axis is cross with camera direction
-                    y = commonDirection;
-                    y.Normalize();
-                        // Convert into billboard local space
-                        camQ = invTransform * camQ;
-                    x = camQ * camera.DerivedDirection.Cross(y);
-                    x.Normalize();
-                    break;
-                case BillboardType.OrientedSelf:
-                    // Y-axis is direction
-                    // X-axis is cross with camera direction
-                    y = billboard.Direction;
-                        // Convert into billboard local space
-                        camQ = invTransform * camQ;
-                    x = camQ * camera.DerivedDirection.Cross(y);
-                    x.Normalize();
-                    break;
-                case BillboardType.PerpendicularCommon:
-                    // X-axis is common direction cross common up vector
-                    // Y-axis is coplanar with common direction and common up vector
-                    x = commonDirection.Cross(commonUpVector);
-                    x.Normalize();
-                    y = x.Cross(commonDirection);
-                    y.Normalize();
-                    break;
-                case BillboardType.PerpendicularSelf:
-                    // X-axis is direction cross common up vector
-                    // Y-axis is coplanar with direction and common up vector
-                    x = billboard.Direction.Cross(commonUpVector);
-                    x.Normalize();
-                    y = x.Cross(billboard.Direction);
-                    y.Normalize();
-                    break;
-            }
+			switch (billboardType) {
+				case BillboardType.Point:
+					// Get camera world axes for X and Y (depth is irrelevant)
+					camQ = camera.DerivedOrientation;
+						// Convert into billboard local space
+						camQ = invTransform * camQ;
+					x = camQ * Vector3.UnitX;
+					y = camQ * Vector3.UnitY;
+					break;
+				case BillboardType.OrientedCommon:
+					// Y-axis is common direction
+					// X-axis is cross with camera direction
+					y = commonDirection;
+					y.Normalize();
+						// Convert into billboard local space
+						camQ = invTransform * camQ;
+					x = camQ * camera.DerivedDirection.Cross(y);
+					x.Normalize();
+					break;
+				case BillboardType.OrientedSelf:
+					// Y-axis is direction
+					// X-axis is cross with camera direction
+					y = billboard.Direction;
+						// Convert into billboard local space
+						camQ = invTransform * camQ;
+					x = camQ * camera.DerivedDirection.Cross(y);
+					x.Normalize();
+					break;
+				case BillboardType.PerpendicularCommon:
+					// X-axis is common direction cross common up vector
+					// Y-axis is coplanar with common direction and common up vector
+					x = commonDirection.Cross(commonUpVector);
+					x.Normalize();
+					y = x.Cross(commonDirection);
+					y.Normalize();
+					break;
+				case BillboardType.PerpendicularSelf:
+					// X-axis is direction cross common up vector
+					// Y-axis is coplanar with direction and common up vector
+					x = billboard.Direction.Cross(commonUpVector);
+					x.Normalize();
+					y = x.Cross(billboard.Direction);
+					y.Normalize();
+					break;
+			}
 #endif
 		}
 
@@ -1297,127 +1297,127 @@ namespace Axiom.Core
 		}
 
 #if OLD
-        // 4 vertices per billboard, 3 components = 12
-        // 1 int value per vertex
-        // 2 tris, 6 per billboard
-        // 2d coords, 4 per billboard = 8
+		// 4 vertices per billboard, 3 components = 12
+		// 1 int value per vertex
+		// 2 tris, 6 per billboard
+		// 2d coords, 4 per billboard = 8
 
-                    vertexData = new VertexData();
-                    indexData = new IndexData();
+					vertexData = new VertexData();
+					indexData = new IndexData();
 
-                    vertexData.vertexCount = size * 4;
-                    vertexData.vertexStart = 0;
+					vertexData.vertexCount = size * 4;
+					vertexData.vertexStart = 0;
 
-                    // get references to the declaration and buffer binding
-                    VertexDeclaration decl = vertexData.vertexDeclaration;
-                    VertexBufferBinding binding = vertexData.vertexBufferBinding;
+					// get references to the declaration and buffer binding
+					VertexDeclaration decl = vertexData.vertexDeclaration;
+					VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
-                    // create the 3 vertex elements we need
-                    int offset = 0;
-                    decl.AddElement(POSITION, offset, VertexElementType.Float3, VertexElementSemantic.Position);
-                    decl.AddElement(COLOR, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
-                    decl.AddElement(TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
+					// create the 3 vertex elements we need
+					int offset = 0;
+					decl.AddElement(POSITION, offset, VertexElementType.Float3, VertexElementSemantic.Position);
+					decl.AddElement(COLOR, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
+					decl.AddElement(TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
 
-                    // create position buffer
-                    HardwareVertexBuffer vBuffer =
-                        HardwareBufferManager.Instance.CreateVertexBuffer(
-                        decl.GetVertexSize(POSITION),
-                        vertexData.vertexCount,
-                        BufferUsage.StaticWriteOnly);
+					// create position buffer
+					HardwareVertexBuffer vBuffer =
+						HardwareBufferManager.Instance.CreateVertexBuffer(
+						decl.GetVertexSize(POSITION),
+						vertexData.vertexCount,
+						BufferUsage.StaticWriteOnly);
 
-                    binding.SetBinding(POSITION, vBuffer);
+					binding.SetBinding(POSITION, vBuffer);
 
-                    // create color buffer
-                    vBuffer =
-                        HardwareBufferManager.Instance.CreateVertexBuffer(
-                        decl.GetVertexSize(COLOR),
-                        vertexData.vertexCount,
-                        BufferUsage.StaticWriteOnly);
+					// create color buffer
+					vBuffer =
+						HardwareBufferManager.Instance.CreateVertexBuffer(
+						decl.GetVertexSize(COLOR),
+						vertexData.vertexCount,
+						BufferUsage.StaticWriteOnly);
 
-                    binding.SetBinding(COLOR, vBuffer);
+					binding.SetBinding(COLOR, vBuffer);
 
-                    // create texcoord buffer
-                    vBuffer =
-                        HardwareBufferManager.Instance.CreateVertexBuffer(
-                        decl.GetVertexSize(TEXCOORD),
-                        vertexData.vertexCount,
-                        BufferUsage.StaticWriteOnly);
+					// create texcoord buffer
+					vBuffer =
+						HardwareBufferManager.Instance.CreateVertexBuffer(
+						decl.GetVertexSize(TEXCOORD),
+						vertexData.vertexCount,
+						BufferUsage.StaticWriteOnly);
 
-                    binding.SetBinding(TEXCOORD, vBuffer);
+					binding.SetBinding(TEXCOORD, vBuffer);
 
-                    // calc index buffer size
-                    indexData.indexStart = 0;
-                    indexData.indexCount = size * 6;
+					// calc index buffer size
+					indexData.indexStart = 0;
+					indexData.indexCount = size * 6;
 
-                    // create the index buffer
-                    indexData.indexBuffer =
-                        HardwareBufferManager.Instance.CreateIndexBuffer(
-                        IndexType.Size16,
-                        indexData.indexCount,
-                        BufferUsage.StaticWriteOnly);
+					// create the index buffer
+					indexData.indexBuffer =
+						HardwareBufferManager.Instance.CreateIndexBuffer(
+						IndexType.Size16,
+						indexData.indexCount,
+						BufferUsage.StaticWriteOnly);
 
-                    /* Create indexes and tex coords (will be the same every frame)
-                       Using indexes because it means 1/3 less vertex transforms (4 instead of 6)
+					/* Create indexes and tex coords (will be the same every frame)
+					   Using indexes because it means 1/3 less vertex transforms (4 instead of 6)
 
-                       Billboard layout relative to camera:
+					   Billboard layout relative to camera:
 
-                        2-----3
-                        |    /|
-                        |  /  |
-                        |/    |
-                        0-----1
-                    */
+						2-----3
+						|    /|
+						|  /  |
+						|/    |
+						0-----1
+					*/
 
-                    float[] texData = new float[] {
-                         0.0f, 1.0f,
-                         1.0f, 1.0f,
-                         0.0f, 0.0f,
-                         1.0f, 0.0f };
+					float[] texData = new float[] {
+						 0.0f, 1.0f,
+						 1.0f, 1.0f,
+						 0.0f, 0.0f,
+						 1.0f, 0.0f };
 
-                    // lock the index buffer
-                    IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
+					// lock the index buffer
+					IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
 
-                    // get the texcoord buffer
-                    vBuffer = vertexData.vertexBufferBinding.GetBuffer(TEXCOORD);
+					// get the texcoord buffer
+					vBuffer = vertexData.vertexBufferBinding.GetBuffer(TEXCOORD);
 
-                    // lock the texcoord buffer
-                    IntPtr texPtr = vBuffer.Lock(BufferLocking.Discard);
+					// lock the texcoord buffer
+					IntPtr texPtr = vBuffer.Lock(BufferLocking.Discard);
 
-                    unsafe {
-                        ushort* pIdx = (ushort*)idxPtr.ToPointer();
-                        float* pTex = (float*)texPtr.ToPointer();
+					unsafe {
+						ushort* pIdx = (ushort*)idxPtr.ToPointer();
+						float* pTex = (float*)texPtr.ToPointer();
 
-                        for(int idx, idxOffset, texOffset, bboard = 0; bboard < size; bboard++) {
-                            // compute indexes
-                            idx = bboard * 6;
-                            idxOffset = bboard * 4;
-                            texOffset = bboard * 8;
+						for(int idx, idxOffset, texOffset, bboard = 0; bboard < size; bboard++) {
+							// compute indexes
+							idx = bboard * 6;
+							idxOffset = bboard * 4;
+							texOffset = bboard * 8;
 
-                            pIdx[idx]   =	(ushort)idxOffset; // + 0;, for clarity
-                            pIdx[idx + 1] = (ushort)(idxOffset + 1);
-                            pIdx[idx + 2] = (ushort)(idxOffset + 3);
-                            pIdx[idx + 3] = (ushort)(idxOffset + 0);
-                            pIdx[idx + 4] = (ushort)(idxOffset + 3);
-                            pIdx[idx + 5] = (ushort)(idxOffset + 2);
+							pIdx[idx]   =	(ushort)idxOffset; // + 0;, for clarity
+							pIdx[idx + 1] = (ushort)(idxOffset + 1);
+							pIdx[idx + 2] = (ushort)(idxOffset + 3);
+							pIdx[idx + 3] = (ushort)(idxOffset + 0);
+							pIdx[idx + 4] = (ushort)(idxOffset + 3);
+							pIdx[idx + 5] = (ushort)(idxOffset + 2);
 
-                            // Do tex coords
-                            pTex[texOffset]   = texData[0];
-                            pTex[texOffset+1] = texData[1];
-                            pTex[texOffset+2] = texData[2];
-                            pTex[texOffset+3] = texData[3];
-                            pTex[texOffset+4] = texData[4];
-                            pTex[texOffset+5] = texData[5];
-                            pTex[texOffset+6] = texData[6];
-                            pTex[texOffset+7] = texData[7];
-                        } // for
-                    } // unsafe
+							// Do tex coords
+							pTex[texOffset]   = texData[0];
+							pTex[texOffset+1] = texData[1];
+							pTex[texOffset+2] = texData[2];
+							pTex[texOffset+3] = texData[3];
+							pTex[texOffset+4] = texData[4];
+							pTex[texOffset+5] = texData[5];
+							pTex[texOffset+6] = texData[6];
+							pTex[texOffset+7] = texData[7];
+						} // for
+					} // unsafe
 
-                    // unlock the buffers
-                    indexData.indexBuffer.Unlock();
-                    vBuffer.Unlock();
-                } // if
-            } // set
-        }
+					// unlock the buffers
+					indexData.indexBuffer.Unlock();
+					vBuffer.Unlock();
+				} // if
+			} // set
+		}
 #endif
 
 		/// <summary>
@@ -1783,9 +1783,9 @@ namespace Axiom.Core
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-            while ( customParams.Count <= index )
-                customParams.Add( Vector4.Zero );
-            this.customParams[ index ] = val;
+			while ( customParams.Count <= index )
+				customParams.Add( Vector4.Zero );
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry,

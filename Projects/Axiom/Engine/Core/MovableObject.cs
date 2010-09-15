@@ -811,11 +811,11 @@ namespace Axiom.Core
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-        protected bool IsDisposed
-        {
-            get;
-            set;
-        }
+		protected bool IsDisposed
+		{
+			get;
+			set;
+		}
 
 		#endregion IsDisposed Property
 

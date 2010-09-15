@@ -39,9 +39,9 @@ using System;
 
 namespace Axiom.Serialization
 {
-    /// <summary>
-    ///		Values that mark data chunks in the .mesh file.
-    /// </summary>
+	/// <summary>
+	///		Values that mark data chunks in the .mesh file.
+	/// </summary>
 	public enum MeshChunkID : ushort
 	{
 		/// <summary>

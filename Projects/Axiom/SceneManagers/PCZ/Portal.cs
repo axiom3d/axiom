@@ -163,13 +163,22 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public PORTAL_TYPE Type
 		{
-			get { return mType; }
+			get
+			{
+				return mType;
+			}
 		}
 
 		public bool IsOpen
 		{
-			get { return mOpen; }
-			set { mOpen = value; }
+			get
+			{
+				return mOpen;
+			}
+			set
+			{
+				mOpen = value;
+			}
 		}
 
 		// Set the SceneNode the Portal is associated with

@@ -107,14 +107,14 @@ namespace Axiom.Math
 
 		// NOTE: This is different from what is in OGRE. Not sure why this is the case ATM, however, do not change it.
 		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4(
-                //0.5f,  0.0f, 0.0f, -0.5f,
-                //0.0f, -0.5f, 0.0f, -0.5f,
-                //0.0f,  0.0f, 0.0f,  1.0f,
-                //0.0f,  0.0f, 0.0f,  1.0f );
-                0.5f, 0.0f, 0.0f, 0.5f,
-                0.0f, -0.5f, 0.0f, 0.5f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f );
+			//0.5f,  0.0f, 0.0f, -0.5f,
+			//0.0f, -0.5f, 0.0f, -0.5f,
+			//0.0f,  0.0f, 0.0f,  1.0f,
+			//0.0f,  0.0f, 0.0f,  1.0f );
+				0.5f, 0.0f, 0.0f, 0.5f,
+				0.0f, -0.5f, 0.0f, 0.5f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f );
 
 		#endregion
 
@@ -242,12 +242,12 @@ namespace Axiom.Math
 		/// e.g. no projective coefficients.
 		/// </remarks>
 		public bool IsAffine
-        {
+		{
 			get
 			{
 				return m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1;
 			}
-        }
+		}
 
 		/// <summary>
 		///    Gets the determinant of this matrix.
@@ -265,7 +265,7 @@ namespace Axiom.Math
 				return result;
 			}
 		}
-		
+
 		#endregion
 
 		#region Static methods
@@ -287,7 +287,7 @@ namespace Axiom.Math
 		/// <param name="scale"></param>
 		/// <param name="orientation"></param>
 		/// <returns></returns>
-		public static Matrix4 Compose(Vector3 translation, Vector3 scale, Quaternion orientation)
+		public static Matrix4 Compose( Vector3 translation, Vector3 scale, Quaternion orientation )
 		{
 			// Ordering:
 			//    1. Scale
@@ -307,7 +307,7 @@ namespace Axiom.Math
 
 			return result;
 		}
-		
+
 		/// <summary>
 		/// Creates an inverse translation Matrix
 		/// </summary>
@@ -315,11 +315,11 @@ namespace Axiom.Math
 		/// <param name="scale"></param>
 		/// <param name="orientation"></param>
 		/// <returns></returns>
-		public static Matrix4 ComposeInverse(Vector3 translation, Vector3 scale, Quaternion orientation)
+		public static Matrix4 ComposeInverse( Vector3 translation, Vector3 scale, Quaternion orientation )
 		{
 			// Invert the parameters
 			Vector3 invTranslate = -translation;
-			Vector3 invScale = new Vector3(1f / scale.x, 1f / scale.y, 1f / scale.z);
+			Vector3 invScale = new Vector3( 1f / scale.x, 1f / scale.y, 1f / scale.z );
 			Quaternion invRot = orientation.Inverse();
 
 			// Because we're inverting, order is translation, rotation, scale
@@ -341,7 +341,7 @@ namespace Axiom.Math
 
 			return result;
 		}
-		
+
 		#endregion
 
 		#region Public methods
@@ -436,15 +436,15 @@ namespace Axiom.Math
 		/// </remarks>
 		/// <param name="v"></param>
 		/// <returns></returns>
-        public Vector3 TransformAffine( Vector3 v)
-        {
+		public Vector3 TransformAffine( Vector3 v )
+		{
 			Debug.Assert( IsAffine );
 
-            return new Vector3(
-                    m00 * v.x + m01 * v.y + m02 * v.z + m03, 
-                    m10 * v.x + m11 * v.y + m12 * v.z + m13,
-                    m20 * v.x + m21 * v.y + m22 * v.z + m23);
-        }
+			return new Vector3(
+					m00 * v.x + m01 * v.y + m02 * v.z + m03,
+					m10 * v.x + m11 * v.y + m12 * v.z + m13,
+					m20 * v.x + m21 * v.y + m22 * v.z + m23 );
+		}
 
 		/// <summary>
 		/// 4-D Vector transformation specially for affine matrix.
@@ -454,16 +454,16 @@ namespace Axiom.Math
 		/// </remarks>
 		/// <param name="v"></param>
 		/// <returns></returns>
-        public Vector4 TransformAffine( Vector4 v) 
-        {
-            Debug.Assert( IsAffine );
+		public Vector4 TransformAffine( Vector4 v )
+		{
+			Debug.Assert( IsAffine );
 
-            return new Vector4(
-                m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w, 
-                m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
-                m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
-                v.w);
-        }
+			return new Vector4(
+				m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w,
+				m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
+				m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
+				v.w );
+		}
 
 		/// <summary>
 		/// 
@@ -471,43 +471,43 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public void MakeRealArray( Real[] reals )
 		{
-			reals[0] = this.m00;
-			reals[1] = this.m01;
-			reals[2] = this.m02;
-			reals[3] = this.m03;
-			reals[4] = this.m10;
-			reals[5] = this.m11;
-			reals[6] = this.m12;
-			reals[7] = this.m13;
-			reals[8] = this.m20;
-			reals[9] = this.m21;
-			reals[10] = this.m22;
-			reals[11] = this.m23;
-			reals[12] = this.m30;
-			reals[13] = this.m31;
-			reals[14] = this.m32;
-			reals[15] = this.m33;
+			reals[ 0 ] = this.m00;
+			reals[ 1 ] = this.m01;
+			reals[ 2 ] = this.m02;
+			reals[ 3 ] = this.m03;
+			reals[ 4 ] = this.m10;
+			reals[ 5 ] = this.m11;
+			reals[ 6 ] = this.m12;
+			reals[ 7 ] = this.m13;
+			reals[ 8 ] = this.m20;
+			reals[ 9 ] = this.m21;
+			reals[ 10 ] = this.m22;
+			reals[ 11 ] = this.m23;
+			reals[ 12 ] = this.m30;
+			reals[ 13 ] = this.m31;
+			reals[ 14 ] = this.m32;
+			reals[ 15 ] = this.m33;
 		}
 
-        public void MakeFloatArray(float[] floats)
-        {
-            floats[0] = this.m00;
-            floats[1] = this.m01;
-            floats[2] = this.m02;
-            floats[3] = this.m03;
-            floats[4] = this.m10;
-            floats[5] = this.m11;
-            floats[6] = this.m12;
-            floats[7] = this.m13;
-            floats[8] = this.m20;
-            floats[9] = this.m21;
-            floats[10] = this.m22;
-            floats[11] = this.m23;
-            floats[12] = this.m30;
-            floats[13] = this.m31;
-            floats[14] = this.m32;
-            floats[15] = this.m33;
-        }
+		public void MakeFloatArray( float[] floats )
+		{
+			floats[ 0 ] = this.m00;
+			floats[ 1 ] = this.m01;
+			floats[ 2 ] = this.m02;
+			floats[ 3 ] = this.m03;
+			floats[ 4 ] = this.m10;
+			floats[ 5 ] = this.m11;
+			floats[ 6 ] = this.m12;
+			floats[ 7 ] = this.m13;
+			floats[ 8 ] = this.m20;
+			floats[ 9 ] = this.m21;
+			floats[ 10 ] = this.m22;
+			floats[ 11 ] = this.m23;
+			floats[ 12 ] = this.m30;
+			floats[ 13 ] = this.m31;
+			floats[ 14 ] = this.m32;
+			floats[ 15 ] = this.m33;
+		}
 		/// <summary>
 		///     Extract the 3x3 matrix representing the current rotation. 
 		/// </summary>
@@ -516,7 +516,7 @@ namespace Axiom.Math
 		{
 			Vector3 axis = Vector3.Zero;
 			Matrix3 rotation = Matrix3.Identity;
-			
+
 			axis.x = this.m00;
 			axis.y = this.m10;
 			axis.z = this.m20;
@@ -524,7 +524,7 @@ namespace Axiom.Math
 			rotation.m00 = axis.x;
 			rotation.m10 = axis.y;
 			rotation.m20 = axis.z;
-			
+
 			axis.x = this.m01;
 			axis.y = this.m11;
 			axis.z = this.m21;
@@ -539,11 +539,11 @@ namespace Axiom.Math
 			axis.Normalize();
 			rotation.m02 = axis.x;
 			rotation.m12 = axis.y;
-			rotation.m22 = axis.z;		
-			
+			rotation.m22 = axis.z;
+
 			return rotation;
 		}
-		
+
 		/// <summary>
 		///     Extract scaling information.
 		/// </summary>
@@ -557,7 +557,7 @@ namespace Axiom.Math
 			axis.y = this.m10;
 			axis.z = this.m20;
 			scale.x = axis.Length;
-			
+
 			axis.x = this.m01;
 			axis.y = this.m11;
 			axis.z = this.m21;
@@ -567,22 +567,22 @@ namespace Axiom.Math
 			axis.y = this.m12;
 			axis.z = this.m22;
 			scale.z = axis.Length;
-			
+
 			return scale;
 		}
-		
+
 		/// <summary>
 		///    Decompose the matrix.
 		/// </summary>
 		/// <param name="translation"></param>
 		/// <param name="scale"></param>
 		/// <param name="orientation"></param>
-		public void Decompose(out Vector3 translation, out Vector3 scale, out Quaternion orientation)
-		{		
+		public void Decompose( out Vector3 translation, out Vector3 scale, out Quaternion orientation )
+		{
 			scale = Vector3.UnitScale;
 			Matrix3 rotation = Matrix3.Identity;
 			Vector3 axis = Vector3.Zero;
-			
+
 			axis.x = this.m00;
 			axis.y = this.m10;
 			axis.z = this.m20;
@@ -590,7 +590,7 @@ namespace Axiom.Math
 			rotation.m00 = axis.x;
 			rotation.m10 = axis.y;
 			rotation.m20 = axis.z;
-			
+
 			axis.x = this.m01;
 			axis.y = this.m11;
 			axis.z = this.m21;
@@ -605,12 +605,12 @@ namespace Axiom.Math
 			scale.z = axis.Normalize();
 			rotation.m02 = axis.x;
 			rotation.m12 = axis.y;
-			rotation.m22 = axis.z;		
+			rotation.m22 = axis.z;
 
-			orientation = Quaternion.FromRotationMatrix(rotation);
-			translation = this.Translation;			
+			orientation = Quaternion.FromRotationMatrix( rotation );
+			translation = this.Translation;
 		}
-		
+
 		#endregion
 
 		#region Private methods
@@ -641,7 +641,7 @@ namespace Axiom.Math
 
 			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
 		}
-			
+
 		#endregion
 
 		#region Operator overloads + CLS compliant method equivalents
@@ -732,7 +732,7 @@ namespace Axiom.Math
 		{
 			Vector3 result = new Vector3();
 
-            Real inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
+			Real inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
 
 			result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
 			result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;

@@ -68,7 +68,7 @@ namespace Axiom.Utilities
 			bool result = true;
 			foreach ( object obj in vars )
 			{
-				result &= (obj != null);
+				result &= ( obj != null );
 			}
 			Debug.Assert( result );
 		}

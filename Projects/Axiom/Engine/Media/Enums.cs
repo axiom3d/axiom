@@ -255,7 +255,7 @@ namespace Axiom.Media
 		/// <summary>
 		///		32-bit pixel format, 2-channel floating point pixel format, 16 bits (float) for green, 16 bits (float) for red
 		/// </summary>
- 		FLOAT16_GR = 35,
+		FLOAT16_GR = 35,
 
 		/// <summary>
 		///		64-bit pixel format, 2-channel floating point pixel format, 32 bits (float) for green, 32 bits (float) for red

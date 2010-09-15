@@ -296,8 +296,8 @@ namespace Axiom.Graphics
 
 			BufferLocking method = BufferLocking.Normal;
 			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
-			     dstBox.Right == _width && dstBox.Bottom == _height &&
-			     dstBox.Back == _depth )
+				 dstBox.Right == _width && dstBox.Bottom == _height &&
+				 dstBox.Back == _depth )
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
 
@@ -305,7 +305,7 @@ namespace Axiom.Graphics
 			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
 				// Scaling desired
 				throw new Exception( "Image scaling not yet implemented." );
-				//Image.Scale(srclock, dstlock);
+			//Image.Scale(srclock, dstlock);
 			else
 				// No scaling needed
 				PixelConverter.BulkPixelConversion( srclock, dstlock );

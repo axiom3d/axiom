@@ -75,13 +75,13 @@ namespace Axiom.Core
 	{
 		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
 		private List<RenderWindow> _windows = new List<RenderWindow>();
-	    public IEnumerable<RenderWindow> Windows
-	    {
-	        get
-	        {
-	            return _windows;
-	        }
-	    }
+		public IEnumerable<RenderWindow> Windows
+		{
+			get
+			{
+				return _windows;
+			}
+		}
 
 		private WindowEventMonitor()
 		{

@@ -187,12 +187,12 @@ namespace Axiom.Graphics
 
 				if ( adepth == bdepth )
 				{
-					return ( x.pass.GetHashCode() < y.pass.GetHashCode() )? 1: -1;
+					return ( x.pass.GetHashCode() < y.pass.GetHashCode() ) ? 1 : -1;
 				}
 				else
 				{
 					// sort descending by depth, meaning further objects get drawn first
-					return ( adepth < bdepth )? 1 : -1;
+					return ( adepth < bdepth ) ? 1 : -1;
 				}
 			}
 
@@ -212,7 +212,7 @@ namespace Axiom.Graphics
 		OrganizationMode _organizationMode;
 
 		/// Grouped 
-        AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
+		AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
 
 		/// Sorted descending (can iterate backwards to get ascending)
 		List<RenderablePass> _sortedDescending = new List<RenderablePass>();

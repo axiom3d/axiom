@@ -43,22 +43,22 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// Summary description for VideoModeCollection.
-    /// </summary>
-    public class VideoModeCollection : List<VideoMode>
-    {
-        public VideoMode this[ string description ]
-        {
-            get
-            {
-                foreach ( VideoMode mode in this )
-                {
-                    if ( mode.ToString() == description )
-                        return mode;
-                }
-                return null;
-            }
-        }
-    }
+	/// <summary>
+	/// Summary description for VideoModeCollection.
+	/// </summary>
+	public class VideoModeCollection : List<VideoMode>
+	{
+		public VideoMode this[ string description ]
+		{
+			get
+			{
+				foreach ( VideoMode mode in this )
+				{
+					if ( mode.ToString() == description )
+						return mode;
+				}
+				return null;
+			}
+		}
+	}
 }

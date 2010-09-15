@@ -104,13 +104,13 @@ namespace Axiom.ParticleSystems
 		protected Dictionary<ParticleEmitter, int> requested = new Dictionary<ParticleEmitter, int>();
 
 		/** Pool of emitted emitters for use and reuse in the active emitted emitter list.
-        @remarks
+		@remarks
 			The emitters in this pool act as particles and as emitters. The pool is a map containing lists 
 			of emitters, identified by their name.
-        @par
-            The emitters in this pool are cloned using emitters that are kept in the main emitter list
+		@par
+			The emitters in this pool are cloned using emitters that are kept in the main emitter list
 			of the ParticleSystem.
-        */
+		*/
 		protected Dictionary<string, List<ParticleEmitter>> emittedEmitterPool = new Dictionary<string, List<ParticleEmitter>>();
 
 		/** Free emitted emitter list.
@@ -120,8 +120,8 @@ namespace Axiom.ParticleSystems
 		protected Dictionary<string, List<ParticleEmitter>> freeEmittedEmitters = new Dictionary<string, List<ParticleEmitter>>();
 
 		/** Active emitted emitter list.
-            @remarks
-                This is a linked list of pointers to emitters in the emitted emitter pool.
+			@remarks
+				This is a linked list of pointers to emitters in the emitted emitter pool.
 				Emitters that are used are stored (their pointers) in both the list with active particles and in 
 				the list with active emitted emitters.        */
 		protected List<ParticleEmitter> activeEmittedEmitters = new List<ParticleEmitter>();
@@ -199,7 +199,7 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		private Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
 
-        #endregion
+		#endregion
 
 		#region Constructors
 		/// <summary>
@@ -234,29 +234,29 @@ namespace Axiom.ParticleSystems
 			RegisterParsers();
 		}
 
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (timeController != null)
-                    {
-                        // timeController.Dispose();
-                        timeController = null;
-                    }
-                    RemoveAllEmitters();
-                    RemoveAllAffectors();
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( timeController != null )
+					{
+						// timeController.Dispose();
+						timeController = null;
+					}
+					RemoveAllEmitters();
+					RemoveAllAffectors();
 
-                    DestroyVisualParticles(0, particlePool.Count);
-                    if (renderer != null)
-                    {
-                        // renderer.Dispose();
-                        renderer = null;
-                    }
-                }
-            }
-        }
+					DestroyVisualParticles( 0, particlePool.Count );
+					if ( renderer != null )
+					{
+						// renderer.Dispose();
+						renderer = null;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		///		Adds an emitter to this particle system.
@@ -364,7 +364,7 @@ namespace Axiom.ParticleSystems
 		protected void Expire( float timeElapsed )
 		{
 			List<Particle> expiredList = new List<Particle>();
-			for ( int index = 0; index < activeParticles.Count; index ++)
+			for ( int index = 0; index < activeParticles.Count; index++ )
 			//foreach ( Particle particle in activeParticles )
 			{
 				Particle particle = activeParticles[ index ];
@@ -400,7 +400,7 @@ namespace Axiom.ParticleSystems
 					particle.timeToLive -= timeElapsed;
 				}
 			}
-			for ( int index = 0; index < expiredList.Count; index ++ )
+			for ( int index = 0; index < expiredList.Count; index++ )
 			//foreach ( Particle p in expiredList )
 			{
 				Particle p = expiredList[ index ];
@@ -422,7 +422,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="timeElapsed"></param>
 		protected void TriggerEmitters( float timeElapsed )
 		{
-            int index;
+			int index;
 			int totalRequested, emissionAllowed;
 
 			emissionAllowed = freeParticles.Count;
@@ -430,9 +430,9 @@ namespace Axiom.ParticleSystems
 
 			// Count up total requested emissions
 			//foreach ( ParticleEmitter emitter in emitterList )
-            for ( index = 0; index < emitterList.Count; index++ )
+			for ( index = 0; index < emitterList.Count; index++ )
 			{
-                ParticleEmitter emitter = emitterList[ index ];
+				ParticleEmitter emitter = emitterList[ index ];
 
 				if ( !requested.ContainsKey( emitter ) )
 				{
@@ -446,9 +446,9 @@ namespace Axiom.ParticleSystems
 			}
 
 			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
-            for ( index = 0; index < activeEmittedEmitters.Count; index++ )
+			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
-                ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
+				ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
 				if ( !requested.ContainsKey( activeEmitter ) )
 				{
 					requested.Add( activeEmitter, 0 );
@@ -472,9 +472,9 @@ namespace Axiom.ParticleSystems
 			// this ensures an even distribution of particles when many are
 			// emitted in a single frame
 			//foreach ( ParticleEmitter emitter in emitterList )
-            for ( index =0;index < emitterList.Count; index++ )
+			for ( index = 0; index < emitterList.Count; index++ )
 			{
-                ParticleEmitter emitter = emitterList[ index ];
+				ParticleEmitter emitter = emitterList[ index ];
 				// Trigger the emitters, but exclude the emitters that are already in the emitted emitters list; 
 				// they are handled in a separate loop
 				if ( !emitter.IsEmitted )
@@ -484,9 +484,9 @@ namespace Axiom.ParticleSystems
 			}
 
 			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
-            for( index = 0; index < activeEmittedEmitters.Count; index++ )
+			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
-                ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
+				ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
 				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
 			}
 		}
@@ -1438,11 +1438,11 @@ namespace Axiom.ParticleSystems
 			timeElapsed *= speedFactor;
 
 			// Init renderer if not done already
-            if ( renderer != null )
-            {
-                if ( !isRendererConfigured )
-                    ConfigureRenderer();
-            }
+			if ( renderer != null )
+			{
+				if ( !isRendererConfigured )
+					ConfigureRenderer();
+			}
 
 			// Initialise emitted emitters list if not done already
 			initializeEmittedEmitters();
@@ -1650,17 +1650,17 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-        /// <summary>
-        /// Get the 'type flags' for this <see cref="ParticleSystem"/>.
-        /// </summary>
-        /// <seealso cref="MovableObject.TypeFlags"/>
-        public override uint TypeFlags
-        {
-            get
-            {
-                return (uint)SceneQueryTypeMask.Fx;
-            }
-        }
+		/// <summary>
+		/// Get the 'type flags' for this <see cref="ParticleSystem"/>.
+		/// </summary>
+		/// <seealso cref="MovableObject.TypeFlags"/>
+		public override uint TypeFlags
+		{
+			get
+			{
+				return (uint)SceneQueryTypeMask.Fx;
+			}
+		}
 
 		internal ParticleSystemRenderer Renderer
 		{

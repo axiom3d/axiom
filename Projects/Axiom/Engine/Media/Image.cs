@@ -223,16 +223,16 @@ namespace Axiom.Media
 			}
 		}
 
-        /// <summary>
-        /// Width of the image in bytes
-        /// </summary>
-        public int RowSpan
-        {
-            get
-            {
-                return width * PixelUtil.GetNumElemBytes( format );
-            }
-        }
+		/// <summary>
+		/// Width of the image in bytes
+		/// </summary>
+		public int RowSpan
+		{
+			get
+			{
+				return width * PixelUtil.GetNumElemBytes( format );
+			}
+		}
 
 		#endregion Fields and Properties
 
@@ -403,7 +403,7 @@ namespace Axiom.Media
 		/// <param name="fileName">Full path to the image file on disk.</param>
 		public static Image FromFile( string fileName )
 		{
-            Contract.RequiresNotEmpty( fileName, "fileName" );
+			Contract.RequiresNotEmpty( fileName, "fileName" );
 
 			int pos = fileName.LastIndexOf( "." );
 
@@ -419,10 +419,10 @@ namespace Axiom.Media
 			ICodec codec = CodecManager.Instance.GetCodec( ext );
 
 			Stream encoded = ResourceGroupManager.Instance.OpenResource( fileName );
-            if ( encoded == null )
-            {
-                throw new FileNotFoundException (fileName);
-            }
+			if ( encoded == null )
+			{
+				throw new FileNotFoundException( fileName );
+			}
 
 			// decode the image data
 			MemoryStream decoded = new MemoryStream();
@@ -701,10 +701,10 @@ namespace Axiom.Media
 		/// </remarks>
 		public static void Scale( PixelBox src, PixelBox scaled, ImageFilter filter )
 		{
-            Contract.Requires( PixelUtil.IsAccessible( src.Format ) );
-            Contract.Requires( PixelUtil.IsAccessible( scaled.Format ) );
+			Contract.Requires( PixelUtil.IsAccessible( src.Format ) );
+			Contract.Requires( PixelUtil.IsAccessible( scaled.Format ) );
 
-            byte[] buf; // For auto-delete
+			byte[] buf; // For auto-delete
 			PixelBox temp;
 			switch ( filter )
 			{
@@ -717,10 +717,10 @@ namespace Axiom.Media
 					}
 					else
 					{
-                        // Allocate temporary buffer of destination size in source format 
+						// Allocate temporary buffer of destination size in source format 
 						temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
-                        buf = new byte[ temp.ConsecutiveSize ];
-                        temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
+						buf = new byte[ temp.ConsecutiveSize ];
+						temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
 					}
 
 					// super-optimized: no conversion
@@ -757,9 +757,9 @@ namespace Axiom.Media
 							{
 								// Allocate temp buffer of destination size in source format 
 								temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
-                                buf = new byte[ temp.ConsecutiveSize ];
-                                temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
-                            }
+								buf = new byte[ temp.ConsecutiveSize ];
+								temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
+							}
 
 							// super-optimized: byte-oriented math, no conversion
 							switch ( PixelUtil.GetNumElemBytes( src.Format ) )
@@ -768,17 +768,17 @@ namespace Axiom.Media
 									( new LinearResampler.Byte( 1 ) ).Scale( src, temp );
 									break;
 								case 2:
-                                    ( new LinearResampler.Byte( 2 ) ).Scale( src, temp );
+									( new LinearResampler.Byte( 2 ) ).Scale( src, temp );
 									break;
 								case 3:
-                                    ( new LinearResampler.Byte( 3 ) ).Scale( src, temp );
+									( new LinearResampler.Byte( 3 ) ).Scale( src, temp );
 									break;
 								case 4:
-                                    ( new LinearResampler.Byte( 4 ) ).Scale( src, temp );
+									( new LinearResampler.Byte( 4 ) ).Scale( src, temp );
 									break;
 								default:
-                                    throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
-                                    break;
+									throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
+									break;
 							}
 							if ( temp.Data != scaled.Data )
 							{
@@ -788,20 +788,20 @@ namespace Axiom.Media
 							break;
 						case PixelFormat.FLOAT32_RGB:
 						case PixelFormat.FLOAT32_RGBA:
-                            if ( scaled.Format == PixelFormat.FLOAT32_RGB || scaled.Format == PixelFormat.FLOAT32_RGBA )
-                            {
-                                // float32 to float32, avoid unpack/repack overhead
-                                ( new LinearResampler.Float32( 32 ) ).Scale( src, scaled );
-                            }
-                            else
-                            {
-                                ( new LinearResampler.Float32() ).Scale( src, scaled );
-                            }
-                            break;
+							if ( scaled.Format == PixelFormat.FLOAT32_RGB || scaled.Format == PixelFormat.FLOAT32_RGBA )
+							{
+								// float32 to float32, avoid unpack/repack overhead
+								( new LinearResampler.Float32( 32 ) ).Scale( src, scaled );
+							}
+							else
+							{
+								( new LinearResampler.Float32() ).Scale( src, scaled );
+							}
+							break;
 						default:
 							// non-optimized: floating-point math, performs conversion but always works
-                            ( new LinearResampler.Float32() ).Scale( src, scaled );
-                            break;
+							( new LinearResampler.Float32() ).Scale( src, scaled );
+							break;
 					}
 					break;
 			}
@@ -862,41 +862,41 @@ namespace Axiom.Media
 
 		}
 
-        /// <summary>
-        /// Little utility function that crops an image
-        /// (Doesn't alter the source image, returns a cropped representation)
-        /// </summary>
-        /// <param name="source">The source image</param>
-        /// <param name="offsetX">The X offset from the origin</param>
-        /// <param name="offsetY">The Y offset from the origin</param>
-        /// <param name="width">The width to crop to</param>
-        /// <param name="height">The height to crop to</param>
-        /// <returns>Returns the cropped representation of the source image if the parameters are valid, otherwise, returns the source image.</returns>
-        public Image CropImage( Image source, uint offsetX, uint offsetY, int width, int height )
-        {
-            if ( offsetX + width > source.Width )
-                return source;
-            else if ( offsetY + height > source.Height )
-                return source;
+		/// <summary>
+		/// Little utility function that crops an image
+		/// (Doesn't alter the source image, returns a cropped representation)
+		/// </summary>
+		/// <param name="source">The source image</param>
+		/// <param name="offsetX">The X offset from the origin</param>
+		/// <param name="offsetY">The Y offset from the origin</param>
+		/// <param name="width">The width to crop to</param>
+		/// <param name="height">The height to crop to</param>
+		/// <returns>Returns the cropped representation of the source image if the parameters are valid, otherwise, returns the source image.</returns>
+		public Image CropImage( Image source, uint offsetX, uint offsetY, int width, int height )
+		{
+			if ( offsetX + width > source.Width )
+				return source;
+			else if ( offsetY + height > source.Height )
+				return source;
 
-            int bpp = PixelUtil.GetNumElemBytes( source.Format );
+			int bpp = PixelUtil.GetNumElemBytes( source.Format );
 
-            byte[] srcData = source.Data;
-            byte[] dstData = new byte[ width * height * bpp ];
+			byte[] srcData = source.Data;
+			byte[] dstData = new byte[ width * height * bpp ];
 
-            int srcPitch = source.RowSpan;
-            int dstPitch = width * bpp;
+			int srcPitch = source.RowSpan;
+			int dstPitch = width * bpp;
 
-            for ( int row = 0; row < height; row++ )
-            {
-                for ( int col = 0; col < width * bpp; col++ )
-                {
-                    dstData[ ( row * dstPitch ) + col ] = srcData[ ( ( row + offsetY ) * srcPitch ) + ( offsetX * bpp ) + col ];
-                }
-            }
+			for ( int row = 0; row < height; row++ )
+			{
+				for ( int col = 0; col < width * bpp; col++ )
+				{
+					dstData[ ( row * dstPitch ) + col ] = srcData[ ( ( row + offsetY ) * srcPitch ) + ( offsetX * bpp ) + col ];
+				}
+			}
 
-            return (new Image()).FromDynamicImage( dstData, width, height, source.Format);
-        }
+			return ( new Image() ).FromDynamicImage( dstData, width, height, source.Format );
+		}
 
 		#endregion Methods
 
@@ -976,7 +976,7 @@ namespace Axiom.Media
 		}
 
 		#endregion IDisposable Implementation
-    }
+	}
 }
 
 

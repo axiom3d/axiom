@@ -46,7 +46,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class VertexBufferDeclaration 
+	class VertexBufferDeclaration
 	{
 		#region Fields and Properties
 
@@ -106,35 +106,35 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#endregion Methods
 
-        #region System.Object Implementation
+		#region System.Object Implementation
 
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            int hashcode = 0;
-            foreach ( VertexBufferElement vbe in vertexBufferElements )
-            {
-                hashcode ^= vbe.GetHashCode();
-                //hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
-            }
-            return hashcode;
-        }
+		public override int GetHashCode()
+		{
+			int hashcode = 0;
+			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			{
+				hashcode ^= vbe.GetHashCode();
+				//hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
+			}
+			return hashcode;
+		}
 
-        public override string ToString()
-        {
-            System.Text.StringBuilder result = new System.Text.StringBuilder();
-            foreach ( VertexBufferElement vbe in vertexBufferElements )
-            {
-                result.Append( vbe.ToString() + ";\n" );
-            }
-            return result.ToString();
-        }
+		public override string ToString()
+		{
+			System.Text.StringBuilder result = new System.Text.StringBuilder();
+			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			{
+				result.Append( vbe.ToString() + ";\n" );
+			}
+			return result.ToString();
+		}
 
-        #endregion System.Object Implementation
+		#endregion System.Object Implementation
 
 	}
 }

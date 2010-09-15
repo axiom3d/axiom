@@ -123,7 +123,7 @@ namespace Axiom.Graphics
 		///    Texture anisotropy level.
 		/// </summary>
 		private int _maxAnisotropy;
-			
+
 		#region Parent Property
 
 		/// <summary>
@@ -146,7 +146,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Parent Property
-			
+
 		#region Index Property
 
 		/// <summary>
@@ -165,7 +165,7 @@ namespace Axiom.Graphics
 			set
 			{
 				_index = value;
-			    this.DirtyHash();
+				this.DirtyHash();
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace Axiom.Graphics
 
 
 		#endregion Name Property
-			
+
 		#region Ambient Property
 
 		/// <summary>
@@ -299,7 +299,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Specular Property
-			
+
 		#region Emmissive Property
 
 		/// <summary>
@@ -410,7 +410,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion SourceBlendFactor Property
-			
+
 		#region DestinationBlendFactor Property
 
 		/// <summary>
@@ -429,7 +429,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion DestinationBlendFactor Property
-			
+
 		#region DepthCheck Property
 
 		/// <summary>
@@ -492,7 +492,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion DepthWrite Property
-			
+
 		#region DepthFunction Property
 
 		/// <summary>
@@ -560,7 +560,7 @@ namespace Axiom.Graphics
 			_depthBiasSlopeScale = slopeBias;
 		}
 
-		public void SetDepthBias( float constantBias)
+		public void SetDepthBias( float constantBias )
 		{
 			SetDepthBias( constantBias, 0.0f );
 		}
@@ -627,7 +627,7 @@ namespace Axiom.Graphics
 
 		private CompareFunction _alphaRejectFunction = CompareFunction.AlwaysPass;
 		private int _alphaRejectValue;
-	    private bool _alphaToCoverageEnabled;
+		private bool _alphaToCoverageEnabled;
 
 		/// <summary>
 		/// Sets the way the pass will have use alpha to totally reject pixels from the pipeline.
@@ -669,25 +669,25 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				Debug.Assert( value < 255 && value > 0 , "AlphaRejectValue must be between 0 and 255" );
+				Debug.Assert( value < 255 && value > 0, "AlphaRejectValue must be between 0 and 255" );
 				_alphaRejectValue = value;
 			}
 		}
 
-        /// <summary>
-        /// Whether to use alpha to coverage (A2C) when blending alpha rejected values
-        /// </summary>
-        public bool IsAlphaToCoverageEnabled
-        {
-            get
-            {
-                return _alphaToCoverageEnabled;
-            }
-            set
-            {
-                _alphaToCoverageEnabled = value;
-            }
-        }
+		/// <summary>
+		/// Whether to use alpha to coverage (A2C) when blending alpha rejected values
+		/// </summary>
+		public bool IsAlphaToCoverageEnabled
+		{
+			get
+			{
+				return _alphaToCoverageEnabled;
+			}
+			set
+			{
+				_alphaToCoverageEnabled = value;
+			}
+		}
 
 		#endregion AlphaReject Properties
 
@@ -721,7 +721,7 @@ namespace Axiom.Graphics
 			{
 				_cullingMode = value;
 			}
-		} 
+		}
 
 		#endregion CullingMode Property
 
@@ -754,7 +754,7 @@ namespace Axiom.Graphics
 			{
 				_manualCullingMode = value;
 			}
-		} 
+		}
 
 		#endregion ManualCullingMode Property
 
@@ -897,7 +897,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion LightsPerIteration Property
-			
+
 		#region RunOnlyOncePerLightType Property
 
 		/// <summary>
@@ -920,7 +920,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion RunOnlyOncePerLightType Property
-						
+
 		#region OnlyLightType Property
 
 		/// <summary>
@@ -996,7 +996,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion PolygonMode Property
-			
+
 		#region Fog Properties
 
 		#region FogOverride Property
@@ -1021,7 +1021,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion FogOverride Property
-			
+
 		#region FogMode Property
 
 		/// <summary>
@@ -1047,7 +1047,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion FogMode Property
-			
+
 		#region FogColor Property
 
 		/// <summary>
@@ -1099,7 +1099,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion FogStart Property
-			
+
 		#region FogEnd Property
 
 		/// <summary>
@@ -1125,7 +1125,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion FogEnd Property
-			
+
 		#region FogDensity Property
 
 		/// <summary>
@@ -1313,8 +1313,8 @@ namespace Axiom.Graphics
 		}
 
 		#endregion VertexProgram Properties
-			
-		#region FragmentProgram Properties 
+
+		#region FragmentProgram Properties
 
 		/// <summary>
 		///    Details on the fragment program to be used for this pass.
@@ -1402,93 +1402,93 @@ namespace Axiom.Graphics
 
 		#endregion FragmentProgram Properties
 
-        #region GeometryProgram Properties
+		#region GeometryProgram Properties
 
-        /// <summary>
-        ///    Details on the geometry program to be used for this pass.
-        /// </summary>
-        private GpuProgramUsage _geometryProgramUsage;
+		/// <summary>
+		///    Details on the geometry program to be used for this pass.
+		/// </summary>
+		private GpuProgramUsage _geometryProgramUsage;
 
-        /// <summary>
-        ///    Returns true if this Pass uses the programmable geometry pipeline.
-        /// </summary>
-        public bool HasGeometryProgram
-        {
-            get
-            {
-                return _geometryProgramUsage != null;
-            }
-        }
+		/// <summary>
+		///    Returns true if this Pass uses the programmable geometry pipeline.
+		/// </summary>
+		public bool HasGeometryProgram
+		{
+			get
+			{
+				return _geometryProgramUsage != null;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the geometry program used by this pass.
-        /// </summary>
-        /// <remarks>
-        ///    Only available after Load() has been called.
-        /// </remarks>
-        public GpuProgram GeometryProgram
-        {
-            get
-            {
-                Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
-                return _geometryProgramUsage.Program;
-            }
-        }
+		/// <summary>
+		///    Gets the geometry program used by this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only available after Load() has been called.
+		/// </remarks>
+		public GpuProgram GeometryProgram
+		{
+			get
+			{
+				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+				return _geometryProgramUsage.Program;
+			}
+		}
 
-        /// <summary>
-        ///    Gets/Sets the name of the geometry program to use.
-        /// </summary>
-        /// <remarks>
-        ///    Only applicable to programmable passes, and this particular call is
-        ///    designed for low-level programs; use the named parameter methods
-        ///    for setting high-level programs.
-        ///    <p/>
-        ///    This must have been created using GpuProgramManager by the time that 
-        ///    this Pass is loaded.
-        /// </remarks>
-        public string GeometryProgramName
-        {
-            get
-            {
-                // return blank if there is no geometry program in this pass
-                if ( this.HasGeometryProgram )
-                {
-                    return _geometryProgramUsage.ProgramName;
-                }
-                else
-                {
-                    return String.Empty;
-                }
-            }
-            set
-            {
-                SetGeometryProgram( value );
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the name of the geometry program to use.
+		/// </summary>
+		/// <remarks>
+		///    Only applicable to programmable passes, and this particular call is
+		///    designed for low-level programs; use the named parameter methods
+		///    for setting high-level programs.
+		///    <p/>
+		///    This must have been created using GpuProgramManager by the time that 
+		///    this Pass is loaded.
+		/// </remarks>
+		public string GeometryProgramName
+		{
+			get
+			{
+				// return blank if there is no geometry program in this pass
+				if ( this.HasGeometryProgram )
+				{
+					return _geometryProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+			set
+			{
+				SetGeometryProgram( value );
+			}
+		}
 
-        /// <summary>
-        ///    Gets/Sets the geometry program parameters used by this pass.
-        /// </summary>
-        /// <remarks>
-        ///    Only applicable to programmable passes, and this particular call is
-        ///    designed for low-level programs; use the named parameter methods
-        ///    for setting high-level program parameters.
-        /// </remarks>
-        public GpuProgramParameters GeometryProgramParameters
-        {
-            get
-            {
-                Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
-                return _geometryProgramUsage.Params;
-            }
-            set
-            {
-                Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
-                _geometryProgramUsage.Params = value;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the geometry program parameters used by this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only applicable to programmable passes, and this particular call is
+		///    designed for low-level programs; use the named parameter methods
+		///    for setting high-level program parameters.
+		/// </remarks>
+		public GpuProgramParameters GeometryProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
+				return _geometryProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+				_geometryProgramUsage.Params = value;
+			}
+		}
 
-        #endregion GeometryProgram Properties
+		#endregion GeometryProgram Properties
 
 		#region ShadowCasterVertexProgram Properties
 
@@ -1675,7 +1675,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion ShadowRecieverFragmentProgram Properties
-			
+
 		#endregion Programmable Pipeline Propteries
 
 		#region PointSize Property
@@ -1728,7 +1728,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion PointMaxSize Property
-			
+
 		#region PointSpritesEnabled Property
 
 		private bool _pointSpritesEnabled;
@@ -1746,7 +1746,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion PointSpritesEnabled Property
-			
+
 		/// <summary>
 		///		Is this pass queued for deletion?
 		/// </summary>
@@ -1756,7 +1756,7 @@ namespace Axiom.Graphics
 
 
 		#endregion PassIterationCount Property
-			
+
 		/// <summary>
 		///		Gets a flag indicating whether this pass is ambient only.
 		/// </summary>
@@ -1770,8 +1770,8 @@ namespace Axiom.Graphics
 				// programs are expected to indicate they are ambient only by 
 				// setting the state so it matches one of the conditions above, even 
 				// though this state is not used in rendering.
-				return ( !_lightingEnabled || 
-					     !_colorWriteEnabled ||
+				return ( !_lightingEnabled ||
+						 !_colorWriteEnabled ||
 						 ( _diffuse == ColorEx.Black && _specular == ColorEx.Black ) );
 			}
 		}
@@ -1800,7 +1800,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-	    #endregion Fields and Properties
+		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
@@ -2168,8 +2168,8 @@ namespace Axiom.Graphics
 			_hashCode = ( _index << 28 );
 			int count = TextureUnitStageCount;
 
-            // Fix from Multiverse
-            //    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
+			// Fix from Multiverse
+			//    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
 			if ( count > 0 && !( (TextureUnitState)textureUnitStates[ 0 ] ).IsBlank )
 			{
 				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;
@@ -2509,43 +2509,43 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-        /// <summary>
-        ///		
-        /// </summary>
-        /// <param name="name"></param>
-        public void SetGeometryProgram( string name )
-        {
-            SetGeometryProgram( name, true );
-        }
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="name"></param>
+		public void SetGeometryProgram( string name )
+		{
+			SetGeometryProgram( name, true );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="resetParams"></param>
-        public void SetGeometryProgram( string name, bool resetParams )
-        {
-            // turn off fragment programs when the name is set to null
-            if ( name.Length == 0 )
-            {
-                _geometryProgramUsage = null;
-            }
-            else
-            {
-                // create a new usage object
-                if ( !this.HasGeometryProgram )
-                {
-                    _geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry );
-                }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
+		public void SetGeometryProgram( string name, bool resetParams )
+		{
+			// turn off fragment programs when the name is set to null
+			if ( name.Length == 0 )
+			{
+				_geometryProgramUsage = null;
+			}
+			else
+			{
+				// create a new usage object
+				if ( !this.HasGeometryProgram )
+				{
+					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry );
+				}
 
-                _geometryProgramUsage.ProgramName = name;
-            }
+				_geometryProgramUsage.ProgramName = name;
+			}
 
-            // needs recompilation
-            _parent.NotifyNeedsRecompile();
-        }
+			// needs recompilation
+			_parent.NotifyNeedsRecompile();
+		}
 
-        /// <summary>
+		/// <summary>
 		///		
 		/// </summary>
 		/// <param name="name"></param>
@@ -2836,14 +2836,14 @@ namespace Axiom.Graphics
 			// iterate through all TextureUnitStates and apply texture aliases
 			bool testResult = false;
 
-			foreach ( TextureUnitState tus in textureUnitStates)
+			foreach ( TextureUnitState tus in textureUnitStates )
 			{
 				if ( tus.ApplyTextureAliases( aliasList, apply ) )
 					testResult = true;
 			}
 
 			return testResult;
-			
+
 		}
 
 		#endregion

@@ -267,7 +267,8 @@ namespace Axiom.SceneManagers.PortalConnected
 
 				// This updates frustum planes and deals with cull frustum
 				PlaneSide side = FrustumPlanes[ plane ].GetSide( centre, halfSize );
-				if ( side == PlaneSide.Negative ) return PCZFrustum.Visibility.None;
+				if ( side == PlaneSide.Negative )
+					return PCZFrustum.Visibility.None;
 				// We can't return now as the box could be later on the negative side of a plane.
 				if ( side == PlaneSide.Both )
 					all_inside = false;

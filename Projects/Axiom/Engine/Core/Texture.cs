@@ -591,7 +591,10 @@ namespace Axiom.Core
 		}
 
 		public string FSAAHint
-		{ get; protected set; }
+		{
+			get;
+			protected set;
+		}
 
 		public void SetFSAA( int fsaa, string fsaaHint )
 		{

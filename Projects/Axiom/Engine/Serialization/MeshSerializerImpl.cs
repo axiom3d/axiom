@@ -179,7 +179,7 @@ namespace Axiom.Serialization
 			while ( !IsEOF( reader ) )
 			{
 				chunkID = ReadChunk( reader );
-				
+
 				switch ( chunkID )
 				{
 					case MeshChunkID.DependencyInfo: // NOTE: This case and read is not in Ogre, why is it here?
@@ -703,7 +703,7 @@ namespace Axiom.Serialization
 		{
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
-		    WriteString( writer, mesh.LodStrategy.Name );
+			WriteString( writer, mesh.LodStrategy.Name );
 			WriteShort( writer, (short)mesh.LodLevelCount );
 			WriteBool( writer, mesh.IsLodManual );
 
@@ -725,7 +725,7 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLODUsage, 0 );
 
-		    if ( mesh.IsLodManual )
+			if ( mesh.IsLodManual )
 				WriteMeshLodManual( writer, usage );
 			else
 			{
@@ -1214,8 +1214,8 @@ namespace Axiom.Serialization
 
 			if ( type == VertexElementType.Color )
 			{
-				LogManager.Instance.Write( "Warning: VET_COLOUR element type is deprecated, you should use " + 
-										   "one of the more specific types to indicate the byte order. " + 
+				LogManager.Instance.Write( "Warning: VET_COLOUR element type is deprecated, you should use " +
+										   "one of the more specific types to indicate the byte order. " +
 										   "Use OgreMeshUpgrade on {0} as soon as possible. ", mesh.Name );
 			}
 		}
@@ -1309,7 +1309,7 @@ namespace Axiom.Serialization
 					SubMesh sub = mesh.GetSubMesh( i );
 
 					// TODO: Create typed collection and implement resize
-                    for ( int j = 1; j < lodLevelCount; j++ )
+					for ( int j = 1; j < lodLevelCount; j++ )
 					{
 						sub.lodFaceList.Add( null );
 					}
@@ -1318,7 +1318,7 @@ namespace Axiom.Serialization
 			}
 
 			// Loop from 1 rather than 0 (full detail index is not in file)
-            for ( int i = 1; i < lodLevelCount; i++ )
+			for ( int i = 1; i < lodLevelCount; i++ )
 			{
 				chunkId = ReadChunk( reader );
 
@@ -1330,7 +1330,7 @@ namespace Axiom.Serialization
 				// camera depth
 				MeshLodUsage usage = new MeshLodUsage();
 				usage.Value = ReadFloat( reader );
-			    usage.UserValue = Utility.Sqrt( usage.Value );
+				usage.UserValue = Utility.Sqrt( usage.Value );
 
 				if ( mesh.IsLodManual )
 				{
@@ -1344,7 +1344,7 @@ namespace Axiom.Serialization
 				// push lod usage onto the mesh lod list
 				mesh.MeshLodUsageList.Add( usage );
 			}
-		    Debug.Assert( mesh.LodLevelCount == lodLevelCount );
+			Debug.Assert( mesh.LodLevelCount == lodLevelCount );
 		}
 
 		protected virtual void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
@@ -1515,7 +1515,7 @@ namespace Axiom.Serialization
 							int egTriCount = ReadInt( reader );
 
 							int edgeCount = ReadInt( reader );
-							
+
 							// TODO: Resize the edge group list
 
 							for ( int e = 0; e < edgeCount; e++ )

@@ -44,38 +44,38 @@ using OpenTK;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    class WindowMessageHandling
-    {
+	class WindowMessageHandling
+	{
 
-        #region Fields and Properties
+		#region Fields and Properties
 
-        #endregion Fields and Properties
+		#endregion Fields and Properties
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        public WindowMessageHandling()
-        {
+		public WindowMessageHandling()
+		{
 
-        }
+		}
 
-        #endregion Construction and Destruction
+		#endregion Construction and Destruction
 
-        #region Methods
+		#region Methods
 
-        static public void MessagePump()
-        {
-            foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
-            {
-                var window = renderWindow[ "WINDOW" ];
-                if ( null != window && window is INativeWindow )
-                {
-                    ((INativeWindow)window).ProcessEvents();
-                }
-                
-            }
-            // TODO: implement MessagePump 
-        }
+		static public void MessagePump()
+		{
+			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
+			{
+				var window = renderWindow[ "WINDOW" ];
+				if ( null != window && window is INativeWindow )
+				{
+					( (INativeWindow)window ).ProcessEvents();
+				}
 
-        #endregion Methods
-    }
+			}
+			// TODO: implement MessagePump 
+		}
+
+		#endregion Methods
+	}
 }

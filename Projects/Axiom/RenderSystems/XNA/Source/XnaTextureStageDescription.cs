@@ -50,7 +50,7 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	internal struct XnaTextureStageDescription
 	{
-        public bool Enabled;
+		public bool Enabled;
 		/// the type of the texture
 		public TextureType texType;
 		/// wich texCoordIndex to use
@@ -62,8 +62,8 @@ namespace Axiom.RenderSystems.Xna
 		/// texture 
 		public XFG.Texture tex;
 
-        //keep the blending 
-        public LayerBlendModeEx layerBlendMode;
+		//keep the blending 
+		public LayerBlendModeEx layerBlendMode;
 	}
 
 }

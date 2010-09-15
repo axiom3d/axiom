@@ -83,36 +83,36 @@ namespace Axiom.Math
 
 		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        /// Gets the position of a point t units along the ray.
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public Vector3 GetPoint(Real t)
-        {
-            return origin + ( direction * t );
-        }
+		/// <summary>
+		/// Gets the position of a point t units along the ray.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public Vector3 GetPoint( Real t )
+		{
+			return origin + ( direction * t );
+		}
 
-        /// <summary>
-        /// Gets the position of a point t units along the ray.
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public Vector3 this[Real t]
-        {
-            get
-            {
-                return origin + ( direction * t );
-            }
-        }
+		/// <summary>
+		/// Gets the position of a point t units along the ray.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public Vector3 this[ Real t ]
+		{
+			get
+			{
+				return origin + ( direction * t );
+			}
+		}
 
-        #endregion Methods
+		#endregion Methods
 
-        #region Intersection Methods
+		#region Intersection Methods
 
-        /// <summary>
+		/// <summary>
 		///    Tests whether this ray intersects the given box.
 		/// </summary>
 		/// <param name="box"></param>
@@ -174,7 +174,7 @@ namespace Axiom.Math
 		/// <param name="ray"></param>
 		/// <param name="t"></param>
 		/// <returns></returns>
-        public static Vector3 operator *(Ray ray, Real t)
+		public static Vector3 operator *( Ray ray, Real t )
 		{
 			return ray.origin + ( ray.direction * t );
 		}

@@ -47,7 +47,7 @@ using Axiom.FileSystem;
 using ResourceHandle = System.UInt64;
 using Real = System.Single;
 using CodePoint = System.UInt32;
-using Image=Axiom.Media.Image;
+using Image = Axiom.Media.Image;
 using UVRect = Axiom.Core.RectangleF;
 
 #endregion Namespace Declarations
@@ -85,29 +85,29 @@ namespace Axiom.Fonts
 	/// </ogre> 
 	/// 
 	public class Font : Resource, IManualResourceLoader
-    {
+	{
 
-        #region Internal Classes and Structures
+		#region Internal Classes and Structures
 
-        public struct GlyphInfo 
+		public struct GlyphInfo
 		{
 			public CodePoint codePoint;
 			public UVRect uvRect;
 			public Real aspectRatio;
 
-            public GlyphInfo( CodePoint id, UVRect rect, Real aspect )
-            {
-                codePoint = id;
-                uvRect = rect;
-                aspectRatio = aspect;
-            }
+			public GlyphInfo( CodePoint id, UVRect rect, Real aspect )
+			{
+				codePoint = id;
+				uvRect = rect;
+				aspectRatio = aspect;
+			}
 		}
 
-        #endregion Internal Classes and Structures
+		#endregion Internal Classes and Structures
 
-        #region Constants
+		#region Constants
 
-        const int BITMAP_HEIGHT = 512;
+		const int BITMAP_HEIGHT = 512;
 		const int BITMAP_WIDTH = 512;
 		const int START_CHAR = 33;
 		const int END_CHAR = 127;
@@ -162,9 +162,9 @@ namespace Axiom.Fonts
 
 		#endregion Source Property
 
-        #region TrueTypeSize Property
+		#region TrueTypeSize Property
 
-        /// <summary>
+		/// <summary>
 		///    Size of the truetype font, in points.
 		/// </summary>
 		private int _ttfSize;
@@ -194,44 +194,44 @@ namespace Axiom.Fonts
 		/// <summary>
 		///    Resolution (dpi) of truetype font.
 		/// </summary>
-        public int TrueTypeResolution
-        {
-            get
-            {
-                return _ttfResolution;
-            }
-            set
-            {
-                _ttfResolution = value;
-            }
-        }
+		public int TrueTypeResolution
+		{
+			get
+			{
+				return _ttfResolution;
+			}
+			set
+			{
+				_ttfResolution = value;
+			}
+		}
 
-        #endregion TrueTypeResolution Property
+		#endregion TrueTypeResolution Property
 
-        #region Material Property
+		#region Material Property
 
-        /// <summary>
-        ///    Material create for use on entities by this font.
-        /// </summary>
-        private Material _material;
-        /// <summary>
-        ///    Gets a reference to the material being used for this font.
-        /// </summary>
-        public Material Material
-        {
-            get
-            {
-                return _material;
-            }
-            protected set
-            {
-                _material = value;
-            }
-        }
+		/// <summary>
+		///    Material create for use on entities by this font.
+		/// </summary>
+		private Material _material;
+		/// <summary>
+		///    Gets a reference to the material being used for this font.
+		/// </summary>
+		public Material Material
+		{
+			get
+			{
+				return _material;
+			}
+			protected set
+			{
+				_material = value;
+			}
+		}
 
-        #endregion Material Property
+		#endregion Material Property
 
-	    #region texture Property
+		#region texture Property
 
 		/// <summary>
 		///    Material create for use on entities by this font.
@@ -287,19 +287,19 @@ namespace Axiom.Fonts
 
 		#endregion AntiAliasColor Property
 
-        #region Glyphs Property
+		#region Glyphs Property
 
-        Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
+		Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
 
-        public IDictionary<CodePoint, GlyphInfo> Glyphs
-        {
-            get
-            {
-                return codePoints;
-            }
-        }
+		public IDictionary<CodePoint, GlyphInfo> Glyphs
+		{
+			get
+			{
+				return codePoints;
+			}
+		}
 
-        #endregion Glyphs Property
+		#endregion Glyphs Property
 
 		#region showLines Property
 
@@ -318,11 +318,11 @@ namespace Axiom.Fonts
 
 		#endregion showLines Property
 
-        #endregion Fields and Properties
+		#endregion Fields and Properties
 
-        #region Constructors and Destructor
+		#region Constructors and Destructor
 
-        /// <summary>
+		/// <summary>
 		///		Constructor, should be called through FontManager.Create().
 		/// </summary>
 		public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
@@ -389,63 +389,63 @@ namespace Axiom.Fonts
 		/// <param name="u2"></param>
 		/// <param name="v1"></param>
 		/// <param name="v2"></param>
-        [Obsolete( "Use Glyphs property" )]
-        public void GetGlyphTexCoords( CodePoint c, out Real u1, out Real v1, out Real u2, out Real v2 )
+		[Obsolete( "Use Glyphs property" )]
+		public void GetGlyphTexCoords( CodePoint c, out Real u1, out Real v1, out Real u2, out Real v2 )
 		{
-            if ( codePoints.ContainsKey( c ) )
-            {
-                GlyphInfo glyph = codePoints[ c ];
-                u1 = glyph.uvRect.Top;
-                v1 = glyph.uvRect.Left;
-                u2 = glyph.uvRect.Bottom;
-                v2 = glyph.uvRect.Right;
-            }
-            else
-            {
-                u1 = v1 = u2 = v2 = 0.0f;
-            }
+			if ( codePoints.ContainsKey( c ) )
+			{
+				GlyphInfo glyph = codePoints[ c ];
+				u1 = glyph.uvRect.Top;
+				v1 = glyph.uvRect.Left;
+				u2 = glyph.uvRect.Bottom;
+				v2 = glyph.uvRect.Right;
+			}
+			else
+			{
+				u1 = v1 = u2 = v2 = 0.0f;
+			}
 		}
 
-        /// <summary>
-        /// Sets the texture coordinates of a glyph.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="u1"></param>
-        /// <param name="v1"></param>
-        /// <param name="u2"></param>
-        /// <param name="v2"></param>
-        /// <remarks>
-        /// You only need to call this if you're setting up a font loaded from a texture manually.
-        /// </remarks>
-        [Obsolete( "Use Glyphs property" )]
-        public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2 )
-        {
-            SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 ) / ( v2 - v1 ) );
-        }
-
 		/// <summary>
-        /// Sets the texture coordinates of a glyph.
+		/// Sets the texture coordinates of a glyph.
 		/// </summary>
 		/// <param name="c"></param>
 		/// <param name="u1"></param>
 		/// <param name="v1"></param>
 		/// <param name="u2"></param>
 		/// <param name="v2"></param>
-        /// <remarks>
-        /// You only need to call this if you're setting up a font loaded from a texture manually.
-        /// <para>
-        /// Also sets the aspect ratio (width / height) of this character. textureAspect
-        /// is the width/height of the texture (may be non-square)
-        /// </para>
-        /// </remarks>
-        [Obsolete( "Use Glyphs property" )]
-        public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
+		/// <remarks>
+		/// You only need to call this if you're setting up a font loaded from a texture manually.
+		/// </remarks>
+		[Obsolete( "Use Glyphs property" )]
+		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2 )
 		{
-            GlyphInfo glyph = new GlyphInfo( c, new UVRect(v1, u1, v2, u2), aspect );
-            if ( codePoints.ContainsKey( c ) )
-                codePoints[ c ] = glyph;
-            else
-                codePoints.Add( c, glyph );
+			SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 ) / ( v2 - v1 ) );
+		}
+
+		/// <summary>
+		/// Sets the texture coordinates of a glyph.
+		/// </summary>
+		/// <param name="c"></param>
+		/// <param name="u1"></param>
+		/// <param name="v1"></param>
+		/// <param name="u2"></param>
+		/// <param name="v2"></param>
+		/// <remarks>
+		/// You only need to call this if you're setting up a font loaded from a texture manually.
+		/// <para>
+		/// Also sets the aspect ratio (width / height) of this character. textureAspect
+		/// is the width/height of the texture (may be non-square)
+		/// </para>
+		/// </remarks>
+		[Obsolete( "Use Glyphs property" )]
+		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
+		{
+			GlyphInfo glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect );
+			if ( codePoints.ContainsKey( c ) )
+				codePoints[ c ] = glyph;
+			else
+				codePoints.Add( c, glyph );
 		}
 
 		/// <summary>
@@ -453,13 +453,13 @@ namespace Axiom.Fonts
 		/// </summary>
 		/// <param name="c"></param>
 		/// <returns></returns>
-        [Obsolete( "Use Glyphs property")]
+		[Obsolete( "Use Glyphs property" )]
 		public float GetGlyphAspectRatio( char c )
 		{
-            if ( codePoints.ContainsKey( c ) )
-            {
-                return codePoints[ c ].aspectRatio;
-            }
+			if ( codePoints.ContainsKey( c ) )
+			{
+				return codePoints[ c ].aspectRatio;
+			}
 
 			return 1.0f;
 		}
@@ -471,76 +471,76 @@ namespace Axiom.Fonts
 
 		protected override void load()
 		{
-            // clarabie - nov 18, 2008
-            // modified this to check for an existing material instead of always
-            // creating a new one. Allows more flexibility, but also specifically allows us to
-            // solve the problem of XNA not having fixed function support
+			// clarabie - nov 18, 2008
+			// modified this to check for an existing material instead of always
+			// creating a new one. Allows more flexibility, but also specifically allows us to
+			// solve the problem of XNA not having fixed function support
 
-            _material = (Material)MaterialManager.Instance.GetByName("Fonts/" + _name);
+			_material = (Material)MaterialManager.Instance.GetByName( "Fonts/" + _name );
 
-            if (_material == null)
-            {
+			if ( _material == null )
+			{
 
-                // create a material for this font
-                _material = (Material)MaterialManager.Instance.Create("Fonts/" + _name, Group);
+				// create a material for this font
+				_material = (Material)MaterialManager.Instance.Create( "Fonts/" + _name, Group );
 
-                TextureUnitState unitState = null;
-                bool blendByAlpha = false;
+				TextureUnitState unitState = null;
+				bool blendByAlpha = false;
 
-                if (_fontType == FontType.TrueType)
-                {
+				if ( _fontType == FontType.TrueType )
+				{
 #if !( XBOX || XBOX360 )
-                    // create the font bitmap on the fly
-                    createTexture();
+					// create the font bitmap on the fly
+					createTexture();
 
-                    // a texture layer was added in CreateTexture
-                    unitState = _material.GetTechnique(0).GetPass(0).GetTextureUnitState(0);
+					// a texture layer was added in CreateTexture
+					unitState = _material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
 
-                    blendByAlpha = true;
+					blendByAlpha = true;
 #endif
-                }
-                else
-                {
-                    // load this texture
-                    // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-                    _texture = TextureManager.Instance.Load(Source, Group, TextureType.TwoD, 0);
+				}
+				else
+				{
+					// load this texture
+					// TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
+					_texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
 
-                    blendByAlpha = texture.HasAlpha;
-                    // pre-created font images
-                    unitState = Material.GetTechnique(0).GetPass(0).CreateTextureUnitState(Source);
-                }
+					blendByAlpha = texture.HasAlpha;
+					// pre-created font images
+					unitState = Material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( Source );
+				}
 
-                // set texture addressing mode to Clamp to eliminate fuzzy edges
-                unitState.TextureAddressing = TextureAddressing.Clamp;
+				// set texture addressing mode to Clamp to eliminate fuzzy edges
+				unitState.TextureAddressing = TextureAddressing.Clamp;
 
-                // set up blending mode
-                if (blendByAlpha)
-                {
-                    _material.SetSceneBlending(SceneBlendType.TransparentAlpha);
-                }
-                else
-                {
-                    // assume black background here
-                    _material.SetSceneBlending(SceneBlendType.Add);
-                }
-            }
+				// set up blending mode
+				if ( blendByAlpha )
+				{
+					_material.SetSceneBlending( SceneBlendType.TransparentAlpha );
+				}
+				else
+				{
+					// assume black background here
+					_material.SetSceneBlending( SceneBlendType.Add );
+				}
+			}
 		}
 
 		protected override void unload()
 		{
-            if ( _material != null )
-            {
-                MaterialManager.Instance.Remove( _material );
-                _material.Unload();
-                _material = null;
-            }
+			if ( _material != null )
+			{
+				MaterialManager.Instance.Remove( _material );
+				_material.Unload();
+				_material = null;
+			}
 
-            if ( _texture != null )
-            {
-                TextureManager.Instance.Remove( _texture );
-                _texture.Unload();
-                _texture = null;
-            }
+			if ( _texture != null )
+			{
+				TextureManager.Instance.Remove( _texture );
+				_texture.Unload();
+				_texture = null;
+			}
 		}
 
 		protected override int calculateSize()
@@ -564,45 +564,45 @@ namespace Axiom.Fonts
 			// get a handles to the graphics context of the bitmap
 			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bitmap );
 
-		    // load the font from file into a private collection to make sure
-		    // this works even if the font is not installed
-		    System.Drawing.FontFamily fontFamily;
-		    string fontFile = String.Empty;
-		    IntPtr pData = IntPtr.Zero;
-		    byte[] data = null;
-		    try
-		    {
-		        using ( Stream fileStream = Singleton<ResourceGroupManager>.Instance.OpenResource( this.Source, Group ) )
-		        {
-		            using ( System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection() )
-		            {
-		                data = new byte[fileStream.Length];
-		                fileStream.Read( data, 0, data.Length );
-		                pData = Memory.PinObject( data );
+			// load the font from file into a private collection to make sure
+			// this works even if the font is not installed
+			System.Drawing.FontFamily fontFamily;
+			string fontFile = String.Empty;
+			IntPtr pData = IntPtr.Zero;
+			byte[] data = null;
+			try
+			{
+				using ( Stream fileStream = Singleton<ResourceGroupManager>.Instance.OpenResource( this.Source, Group ) )
+				{
+					using ( System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection() )
+					{
+						data = new byte[ fileStream.Length ];
+						fileStream.Read( data, 0, data.Length );
+						pData = Memory.PinObject( data );
 
-		                fontCollection.AddMemoryFont( pData, data.Length );
+						fontCollection.AddMemoryFont( pData, data.Length );
 
-		                fontFamily = fontCollection.Families[ 0 ];
-		            }
-		        }
-		    }
-		    catch ( Exception e )
-		    {
-		        string error = String.Format( "Error loading font file: {0}\n{1}. Setting font to GenericSansSerif", fontFile, e.Message );
-		        LogManager.Instance.Write( error );
+						fontFamily = fontCollection.Families[ 0 ];
+					}
+				}
+			}
+			catch ( Exception e )
+			{
+				string error = String.Format( "Error loading font file: {0}\n{1}. Setting font to GenericSansSerif", fontFile, e.Message );
+				LogManager.Instance.Write( error );
 
-		        fontFamily = System.Drawing.FontFamily.GenericSansSerif;
-		    }
-		    finally
-		    {
-		        if ( data != null )
-		        {
-		            Memory.UnpinObject( data );
-		        }
-		    }
+				fontFamily = System.Drawing.FontFamily.GenericSansSerif;
+			}
+			finally
+			{
+				if ( data != null )
+				{
+					Memory.UnpinObject( data );
+				}
+			}
 
 			// get a font object for the specified font
-            System.Drawing.Font font = new System.Drawing.Font( fontFamily, 18 );
+			System.Drawing.Font font = new System.Drawing.Font( fontFamily, 18 );
 
 			// create a pen for the grid lines
 			System.Drawing.Pen linePen = new System.Drawing.Pen( System.Drawing.Color.Red );
@@ -611,9 +611,9 @@ namespace Axiom.Fonts
 			g.Clear( System.Drawing.Color.Transparent );
 
 			// nice smooth text
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 
 			// used for calculating position in the image for rendering the characters
 			int x, y, maxHeight;
@@ -674,7 +674,7 @@ namespace Axiom.Fonts
 				g.DrawLine( linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height );
 			}
 
-            System.Drawing.Imaging.BitmapData bmd = bitmap.LockBits( new System.Drawing.Rectangle( 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT ), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
+			System.Drawing.Imaging.BitmapData bmd = bitmap.LockBits( new System.Drawing.Rectangle( 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT ), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
 
 			byte[] imgData = new byte[ PixelUtil.GetNumElemBytes( PixelFormat.A8R8G8B8 ) * BITMAP_WIDTH * BITMAP_HEIGHT ];
 
@@ -691,22 +691,22 @@ namespace Axiom.Fonts
 
 			tex.LoadImages( new Image[] { img } );
 
-            //bitmap.Save( "C:\\" + Name + ".png" );
-            //FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
-            //StreamWriter str = new StreamWriter( file );
-            //str.WriteLine( Name );
-            //str.WriteLine( "{" );
-            //str.WriteLine( "\ttype\timage" );
-            //str.WriteLine( "\tsource\t{0}.png\n", Name );
+			//bitmap.Save( "C:\\" + Name + ".png" );
+			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
+			//StreamWriter str = new StreamWriter( file );
+			//str.WriteLine( Name );
+			//str.WriteLine( "{" );
+			//str.WriteLine( "\ttype\timage" );
+			//str.WriteLine( "\tsource\t{0}.png\n", Name );
 
-            //for ( uint i = 0; i < (uint)(END_CHAR - START_CHAR); i++ )
-            //{
-            //    char c = (char)( i + START_CHAR );
-            //    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
-            //}
-            //str.WriteLine( "}" );
-            //str.Close();
-            //file.Close();
+			//for ( uint i = 0; i < (uint)(END_CHAR - START_CHAR); i++ )
+			//{
+			//    char c = (char)( i + START_CHAR );
+			//    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
+			//}
+			//str.WriteLine( "}" );
+			//str.Close();
+			//file.Close();
 #endif
 		}
 

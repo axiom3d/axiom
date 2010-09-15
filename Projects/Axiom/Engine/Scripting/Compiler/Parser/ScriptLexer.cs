@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptLexer
@@ -195,7 +195,7 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						else if ( IsWhitespace( c ) )
 						{
-							SetToken( lexeme, line, source, tokens);
+							SetToken( lexeme, line, source, tokens );
 							state = ScriptState.Ready;
 						}
 						else if ( c == openbrace || c == closebrace || c == colon )
@@ -221,7 +221,7 @@ namespace Axiom.Scripting.Compiler.Parser
 			if ( state == ScriptState.Word || state == ScriptState.Var )
 			{
 				if ( lexeme.Length != 0 )
-					SetToken( lexeme, line, source, tokens);
+					SetToken( lexeme, line, source, tokens );
 			}
 			else
 			{

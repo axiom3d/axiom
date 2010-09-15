@@ -273,10 +273,10 @@ namespace Axiom.Scripting.Compiler
 				return success;
 			}
 
-			protected bool translateEnumeration<T>( AbstractNode node, out T property ) 
+			protected bool translateEnumeration<T>( AbstractNode node, out T property )
 			{
 				// Set default
-				property = default(T);
+				property = default( T );
 
 				// Verify Parameters
 				if ( node.Type != AbstractNodeType.Atom )

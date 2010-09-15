@@ -282,9 +282,9 @@ namespace Axiom.Graphics
 			if ( bindNormals && destNormalBuffer != null )
 			{
 				if ( normBindIndex != posBindIndex )
-			{
-				destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
-				targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
+				{
+					destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+					targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
 				}
 			}
 			if ( bindTangents && destTangentBuffer != null )

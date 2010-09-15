@@ -2685,12 +2685,12 @@ namespace Axiom.RenderSystems.OpenGL
 		private void MakeGLMatrix( ref Matrix4 matrix, float[] floats )
 		{
 			Matrix4 mat = matrix.Transpose();
-            //Real[] reals = new Real[floats.Length];
-            //for(int i = 0; i < floats.Length; i++)
-            //{
-            //    reals[i] = (Real)floats[i];
-            //}
-            mat.MakeFloatArray(floats);
+			//Real[] reals = new Real[floats.Length];
+			//for(int i = 0; i < floats.Length; i++)
+			//{
+			//    reals[i] = (Real)floats[i];
+			//}
+			mat.MakeFloatArray( floats );
 		}
 
 		/// <summary>

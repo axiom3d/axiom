@@ -62,40 +62,40 @@ namespace Axiom.RenderSystems.Xna
 			Is32Bit = true;
 		}
 
-        protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-        {
-            return new XnaTexture( this, name, handle, group, isManual, loader, _device );
-        }
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			return new XnaTexture( this, name, handle, group, isManual, loader, _device );
+		}
 
-        public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
-        {
-            return PixelFormat.X8R8G8B8;
-        }
+		public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
+		{
+			return PixelFormat.X8R8G8B8;
+		}
 
 
-        public void ReleaseDefaultPoolResources()
-        {
-            int count = 0;
-            foreach ( XnaTexture tex in resources.Values )
-            {
-                //TODO : Implement XnaTexture.ReleaseIfDefaultPool()
-                //if ( tex.ReleaseIfDefaultPool() )
-                //    count++;
-            }
-            LogManager.Instance.Write( "[XNA] : TextureManager released: {0} unmanaged textures", count );
-        }
+		public void ReleaseDefaultPoolResources()
+		{
+			int count = 0;
+			foreach ( XnaTexture tex in resources.Values )
+			{
+				//TODO : Implement XnaTexture.ReleaseIfDefaultPool()
+				//if ( tex.ReleaseIfDefaultPool() )
+				//    count++;
+			}
+			LogManager.Instance.Write( "[XNA] : TextureManager released: {0} unmanaged textures", count );
+		}
 
-        public void RecreateDefaultPoolResources()
-        {
-            int count = 0;
-            foreach ( XnaTexture tex in resources.Values )
-            {
-                //TODO : Implement XnaTexture.RecreateIfDefaultPool()
-                //if ( tex.RecreateIfDefaultPool( device ) )
-                //    count++;
-            }
-            LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
-        }
+		public void RecreateDefaultPoolResources()
+		{
+			int count = 0;
+			foreach ( XnaTexture tex in resources.Values )
+			{
+				//TODO : Implement XnaTexture.RecreateIfDefaultPool()
+				//if ( tex.RecreateIfDefaultPool( device ) )
+				//    count++;
+			}
+			LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
+		}
 
 	}
 }

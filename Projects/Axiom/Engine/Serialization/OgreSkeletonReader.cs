@@ -319,7 +319,7 @@ namespace Axiom.Serialization
 					WriteBoneParent( writer, bone, (Bone)bone.Parent );
 			}
 
-			foreach (Animation anim in skeleton.Animations )
+			foreach ( Animation anim in skeleton.Animations )
 			{
 				WriteAnimation( writer, anim );
 			}

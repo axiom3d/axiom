@@ -45,33 +45,33 @@ using D3D = SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class HLSLIncludeHandler : D3D.Include
-    {
-        protected Resource program;
+	/// <summary>
+	/// 
+	/// </summary>
+	public class HLSLIncludeHandler : D3D.Include
+	{
+		protected Resource program;
 
-        public HLSLIncludeHandler( Resource sourceProgram )
-        {
-            this.program = sourceProgram;
-        }
+		public HLSLIncludeHandler( Resource sourceProgram )
+		{
+			this.program = sourceProgram;
+		}
 
-        public void Open( D3D.IncludeType type, string fileName, out Stream fileStream )
-        {
-            fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-        }
+		public void Open( D3D.IncludeType type, string fileName, out Stream fileStream )
+		{
+			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+		}
 
-        public void Open( D3D.IncludeType includeType, string fileName, Stream parentStream, out Stream stream )
-        {
-            stream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-        }
+		public void Open( D3D.IncludeType includeType, string fileName, Stream parentStream, out Stream stream )
+		{
+			stream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+		}
 
-        public void Close( Stream fileStream )
-        {
-            fileStream.Close();
-        }
+		public void Close( Stream fileStream )
+		{
+			fileStream.Close();
+		}
 
 
-    }
+	}
 }

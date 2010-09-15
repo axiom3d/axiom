@@ -41,7 +41,7 @@ using Axiom.Collections;
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
-			
+
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="TagPoint.h"   revision="1.10.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
@@ -51,112 +51,112 @@ using Axiom.Core.Collections;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		A tagged point on a skeleton, which can be used to attach entities to on specific
-    ///		other entities.
-    /// </summary>
-    /// <remarks>
-    ///		A Skeleton, like a Mesh, is shared between Entity objects and simply updated as required
-    ///		when it comes to rendering. However there are times when you want to attach another object
-    ///		to an animated entity, and make sure that attachment follows the parent entity's animation
-    ///		(for example, a character holding a gun in his / her hand). This class simply identifies
-    ///		attachment points on a skeleton which can be used to attach child objects. 
-    ///		<p/>
-    ///		The child objects themselves are not physically attached to this class; as it's name suggests
-    ///		this class just 'tags' the area. The actual child objects are attached to the Entity using the
-    ///		skeleton which has this tag point. Use <see cref="Entity.AttachObjectToBone"/> to attach
-    ///		the objects, which creates a new TagPoint on demand.
-    /// </remarks>
-    public class TagPoint : Bone
-    {
-        #region Fields
+	/// <summary>
+	///		A tagged point on a skeleton, which can be used to attach entities to on specific
+	///		other entities.
+	/// </summary>
+	/// <remarks>
+	///		A Skeleton, like a Mesh, is shared between Entity objects and simply updated as required
+	///		when it comes to rendering. However there are times when you want to attach another object
+	///		to an animated entity, and make sure that attachment follows the parent entity's animation
+	///		(for example, a character holding a gun in his / her hand). This class simply identifies
+	///		attachment points on a skeleton which can be used to attach child objects. 
+	///		<p/>
+	///		The child objects themselves are not physically attached to this class; as it's name suggests
+	///		this class just 'tags' the area. The actual child objects are attached to the Entity using the
+	///		skeleton which has this tag point. Use <see cref="Entity.AttachObjectToBone"/> to attach
+	///		the objects, which creates a new TagPoint on demand.
+	/// </remarks>
+	public class TagPoint : Bone
+	{
+		#region Fields
 
-        /// <summary>
-        ///		Reference to the entity that owns this tagpoint.
-        /// </summary>
-        protected Entity parentEntity;
-        /// <summary>
-        ///		Object attached to this tagpoint.
-        /// </summary>
-        protected MovableObject childObject;
-        /// <summary>
-        ///		Combined full local transform of this tagpoint.
-        /// </summary>
-        protected Matrix4 fullLocalTransform;
+		/// <summary>
+		///		Reference to the entity that owns this tagpoint.
+		/// </summary>
+		protected Entity parentEntity;
+		/// <summary>
+		///		Object attached to this tagpoint.
+		/// </summary>
+		protected MovableObject childObject;
+		/// <summary>
+		///		Combined full local transform of this tagpoint.
+		/// </summary>
+		protected Matrix4 fullLocalTransform;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///		Constructor.
-        /// </summary>
-        /// <param name="handle">Handle to use.</param>
-        /// <param name="creator">Skeleton who created this tagpoint.</param>
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="handle">Handle to use.</param>
+		/// <param name="creator">Skeleton who created this tagpoint.</param>
 		public TagPoint( ushort handle, Skeleton creator )
 			: base( handle, creator )
-        {
+		{
 			suppressUpdateEvent = true;
-        }
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region Methods
+		#region Methods
 
-        #endregion
+		#endregion
 
-        #region Properties
-        /// <summary>
-        ///		Gets/Sets the object attached to this tagpoint.
-        /// </summary>
-        public MovableObject ChildObject
-        {
-            get
-            {
-                return childObject;
-            }
-            set
-            {
-                childObject = value;
-            }
-        }
+		#region Properties
+		/// <summary>
+		///		Gets/Sets the object attached to this tagpoint.
+		/// </summary>
+		public MovableObject ChildObject
+		{
+			get
+			{
+				return childObject;
+			}
+			set
+			{
+				childObject = value;
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the parent Entity that is using this tagpoint.	
-        /// </summary>
-        public Entity ParentEntity
-        {
-            get
-            {
-                return parentEntity;
-            }
-            set
-            {
-                parentEntity = value;
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the parent Entity that is using this tagpoint.	
+		/// </summary>
+		public Entity ParentEntity
+		{
+			get
+			{
+				return parentEntity;
+			}
+			set
+			{
+				parentEntity = value;
+			}
+		}
 
-        /// <summary>
-        ///		Gets the transform of this node just for the skeleton (not entity).
-        /// </summary>
-        public Matrix4 FullLocalTransform
-        {
-            get
-            {
-                return fullLocalTransform;
-            }
-        }
+		/// <summary>
+		///		Gets the transform of this node just for the skeleton (not entity).
+		/// </summary>
+		public Matrix4 FullLocalTransform
+		{
+			get
+			{
+				return fullLocalTransform;
+			}
+		}
 
-        /// <summary>
-        ///		Transformation matrix of the parent entity.
-        /// </summary>
-        public Matrix4 ParentEntityTransform
-        {
-            get
-            {
-                return parentEntity.ParentNodeFullTransform;
-            }
-        }
+		/// <summary>
+		///		Transformation matrix of the parent entity.
+		/// </summary>
+		public Matrix4 ParentEntityTransform
+		{
+			get
+			{
+				return parentEntity.ParentNodeFullTransform;
+			}
+		}
 
 		/// <summary>
 		///	   Pass on any requests for the lights list to
@@ -170,11 +170,11 @@ namespace Axiom.Animating
 			}
 		}
 
-        #endregion Properties
+		#endregion Properties
 
-        #region Bone Members
+		#region Bone Members
 
-        /// <summary>
+		/// <summary>
 		///		Gets the transform of this node including the parent entity and skeleton.
 		/// </summary>
 		public override Matrix4 FullTransform
@@ -186,52 +186,52 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-        ///		Overridden to update parent entity.
-        /// </summary>
-        public override void NeedUpdate()
-        {
+		///		Overridden to update parent entity.
+		/// </summary>
+		public override void NeedUpdate()
+		{
 			needParentUpdate = true;
-            // // We need to tell parent entities node
+			// // We need to tell parent entities node
 			if ( parentEntity != null )
-            {
-                Node n = parentEntity.ParentNode;
+			{
+				Node n = parentEntity.ParentNode;
 
 				if ( n != null )
-                {
-                    n.NeedUpdate();
-                }
-            }
-        }
+				{
+					n.NeedUpdate();
+				}
+			}
+		}
 
-        protected override void UpdateFromParent()
-        {
-            base.UpdateFromParent();
+		protected override void UpdateFromParent()
+		{
+			base.UpdateFromParent();
 
-            // Save transform for local skeleton
+			// Save transform for local skeleton
 			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
 
-            // Include Entity transform
+			// Include Entity transform
 			if ( parentEntity != null )
-            {
-                Node entityParentNode = parentEntity.ParentNode;
+			{
+				Node entityParentNode = parentEntity.ParentNode;
 				if ( entityParentNode != null )
-                {
-                    Quaternion parentQ = entityParentNode.DerivedOrientation;
-                    derivedOrientation = parentQ * derivedOrientation;
+				{
+					Quaternion parentQ = entityParentNode.DerivedOrientation;
+					derivedOrientation = parentQ * derivedOrientation;
 
-                    // Change position vector based on parent's orientation
-                    derivedPosition = parentQ * derivedPosition;
+					// Change position vector based on parent's orientation
+					derivedPosition = parentQ * derivedPosition;
 
-                    // Add altered position vector to parents
-                    derivedPosition += entityParentNode.DerivedPosition;
+					// Add altered position vector to parents
+					derivedPosition += entityParentNode.DerivedPosition;
 
 					OnUpdatedFromParent();
-                }
-            }
-        }
+				}
+			}
+		}
 
 
-        #endregion Bone Members
-    }
+		#endregion Bone Members
+	}
 
 }
