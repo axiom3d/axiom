@@ -873,7 +873,7 @@ namespace Axiom.RenderSystems.OpenGLES
 						// Use PBuffers
 						_rttManager = new GLESPBRTTManager();
 						LogManager.Instance.Write( "[GLES] Using PBuffers for rendering to textures" );
-					}				
+					}
 				}
 				else
 				{
@@ -1552,7 +1552,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					continue; //skip unbound elements
 				}
 
-				HardwareVertexBuffer vertexBuffer =	op.vertexData.vertexBufferBinding.GetBuffer( elem.Source );
+				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( elem.Source );
 				if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 				{
 					LogManager.Instance.Write( "RENDER Bindbuffer ID " + ( (GLESHardwareVertexBuffer)vertexBuffer ).BufferID );
@@ -1582,8 +1582,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				{
 					case VertexElementSemantic.Position:
 						LogManager.Instance.Write( "RENDER VERTEXPOS" );
-						LogManager.Instance.Write( "[GLES] [render] VertexPointer( {0}, {1}, {2}, {3} )", VertexElement.GetTypeSize( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
-						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ),	vertexBuffer.VertexSize, pBufferData );
+						LogManager.Instance.Write( "[GLES] [render] VertexPointer( {0}, {1}, {2}, {3} )", VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
 						GLESConfig.GlCheckError( this );
 						LogManager.Instance.Write( "ENABLE CLIENTSTATE" );
 						OpenGL.EnableClientState( All.VertexArray );
@@ -1623,9 +1623,7 @@ namespace Axiom.RenderSystems.OpenGLES
 									}
 									GLESConfig.GlCheckError( this );
 									LogManager.Instance.Write( "RENDER VERTEXTEXPOITNER" );
-									OpenGL.TexCoordPointer( VertexElement.GetTypeCount( elem.Type ),
-										GLESHardwareBufferManager.GetGLType( elem.Type ),
-										vertexBuffer.VertexSize, pBufferData );
+									OpenGL.TexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
 									GLESConfig.GlCheckError( this );
 									LogManager.Instance.Write( "RENDER TextureCoordArray" );
 									OpenGL.EnableClientState( All.TextureCoordArray );
