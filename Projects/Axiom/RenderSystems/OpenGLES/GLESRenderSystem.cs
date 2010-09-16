@@ -1548,7 +1548,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					case VertexElementSemantic.Position:
 						LogManager.Instance.Write( "RENDER VERTEXPOS" );
 						LogManager.Instance.Write( "[GLES] [render] VertexPointer( {0}, {1}, {2}, {3} )", VertexElement.GetTypeSize( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
-						OpenGL.VertexPointer( VertexElement.GetTypeSize( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ),	vertexBuffer.VertexSize, pBufferData );
+						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ),	vertexBuffer.VertexSize, pBufferData );
 						GLESConfig.GlCheckError( this );
 						LogManager.Instance.Write( "ENABLE CLIENTSTATE" );
 						OpenGL.EnableClientState( All.VertexArray );
