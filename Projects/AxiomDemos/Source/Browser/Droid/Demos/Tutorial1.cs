@@ -17,7 +17,7 @@ using OpenTK.Graphics;
 namespace Droid.Demos
 {
 	class Tutorial1 : Axiom.Demos.Tutorial1
-	{		
+	{
 		public bool Setup( IGraphicsContext glContext, int width, int height )
 		{
 			// instantiate the Root singleton
@@ -42,6 +42,8 @@ namespace Droid.Demos
 			ChooseSceneManager();
 			CreateCamera();
 			CreateViewports();
+
+			this.viewport.BackgroundColor = ColorEx.Azure;
 
 			// set default mipmap level
 			TextureManager.Instance.DefaultMipmapCount = 5;

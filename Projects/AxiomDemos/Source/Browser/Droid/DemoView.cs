@@ -85,12 +85,13 @@ namespace Droid
 				Console.WriteLine( "An exception has occurred. See below for details:" );
 				Console.WriteLine( BuildExceptionString( ex ) );
 			}
-			base.SwapBuffers();
+			//base.SwapBuffers();
 		}
 
 		protected override void OnUpdateFrame( OpenTK.FrameEventArgs e )
 		{
 			base.OnUpdateFrame( e );
+
 		}
 
 		private void _setupResources()
