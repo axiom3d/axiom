@@ -1197,7 +1197,42 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				//throw new NotImplementedException();
+				All cullMode;
+
+				switch ( value )
+				{
+					case CullingMode.None:
+						OpenGL.Disable( All.CullFace );
+						return;
+
+					default:
+					case CullingMode.Clockwise:
+						if ( activeRenderTarget != null
+							&& ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
+						{
+							cullMode = All.Front;
+						}
+						else
+						{
+							cullMode = All.Back;
+						}
+						break;
+					case CullingMode.CounterClockwise:
+						if ( activeRenderTarget != null
+							&& ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
+						{
+
+							cullMode = All.Back;
+						}
+						else
+						{
+							cullMode = All.Front;
+						}
+						break;
+				}
+
+				OpenGL.Enable( All.CullFace );
+				OpenGL.CullFace( cullMode );
 			}
 		}
 
@@ -1523,7 +1558,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					LogManager.Instance.Write( "RENDER Bindbuffer ID " + ( (GLESHardwareVertexBuffer)vertexBuffer ).BufferID );
 					OpenGL.BindBuffer( All.ArrayBuffer, ( (GLESHardwareVertexBuffer)vertexBuffer ).BufferID );
 					GLESConfig.GlCheckError( this );
-					pBufferData = VBOBufferOffset( elem.Offset );
+					pBufferData = new IntPtr( elem.Offset );//VBOBufferOffset( elem.Offset );
 				}
 				else
 				{
@@ -1624,7 +1659,6 @@ namespace Axiom.RenderSystems.OpenGLES
 				case OperationType.LineStrip:
 					primType = All.LineStrip;
 					break;
-				default:
 				case OperationType.TriangleList:
 					primType = All.Triangles;
 					break;
@@ -1633,6 +1667,9 @@ namespace Axiom.RenderSystems.OpenGLES
 					break;
 				case OperationType.TriangleFan:
 					primType = All.TriangleFan;
+					break;
+				default:
+					primType = All.Triangles;
 					break;
 			}
 
