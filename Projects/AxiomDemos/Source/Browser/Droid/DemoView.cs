@@ -65,7 +65,7 @@ namespace Droid
 		protected override void OnRenderFrame( OpenTK.FrameEventArgs e )
 		{
 			base.OnRenderFrame( e );
-
+			base.MakeCurrent();
 			if ( !_initialized )
 			{
 				Initialize();
@@ -85,7 +85,7 @@ namespace Droid
 				Console.WriteLine( "An exception has occurred. See below for details:" );
 				Console.WriteLine( BuildExceptionString( ex ) );
 			}
-			
+			base.SwapBuffers();
 		}
 
 		protected override void OnUpdateFrame( OpenTK.FrameEventArgs e )
