@@ -869,7 +869,7 @@ namespace Axiom.Math
 
 		public void WriteXml( XmlWriter writer )
 		{
-			writer.WriteString( this._value.ToString() );
+			writer.WriteString( this._value.ToString( CultureInfo.InvariantCulture ) );
 		}
 
 		public void ReadXml( XmlReader reader )
@@ -878,7 +878,7 @@ namespace Axiom.Math
 			try
 			{
 				string v = reader.ReadElementContentAsString();
-				this._value = float.Parse( v );
+				this._value = float.Parse( v, CultureInfo.InvariantCulture );
 			}
 			catch ( Exception e )
 			{
@@ -888,11 +888,11 @@ namespace Axiom.Math
 			try
 			{
 				string v = reader.ReadElementContentAsString();
-				this._value = double.Parse(v);
+				this._value = double.Parse( v, CultureInfo.InvariantCulture );
 			}
-			catch (Exception e)
+			catch ( Exception e )
 			{
-				Console.WriteLine(e.Message);
+				Console.WriteLine( e.Message );
 			}
 #endif
 		}
