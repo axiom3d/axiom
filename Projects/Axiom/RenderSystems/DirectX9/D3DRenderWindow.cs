@@ -261,7 +261,6 @@ namespace Axiom.RenderSystems.DirectX9
 			SWF.Control parentHWnd = null;
 			SWF.Control externalHWnd = null;
 			String title = name;
-			int colourDepth = 32;
 			int left = -1; // Defaults to screen center
 			int top = -1; // Defaults to screen center
 			bool depthBuffer = true;
@@ -692,18 +691,13 @@ namespace Axiom.RenderSystems.DirectX9
 							}
 						}
 					}
-
-					//device.DeviceResizing += new System.ComponentModel.CancelEventHandler( OnDeviceResizing );
 				}
+
 				// update device in driver
 				Driver.D3DDevice = device;
 				// Store references to buffers for convenience
 				_renderSurface = device.GetRenderTarget( 0 );
 				_renderZBuffer = device.DepthStencilSurface;
-				// release immediately so we don't hog them
-				//_renderZBuffer.ReleaseGraphics();
-
-				//device.DeviceReset += new EventHandler( OnResetDevice );
 			}
 		}
 
@@ -819,6 +813,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// width and height represent drawable area only
 			int width = _window.ClientRectangle.Width;
 			int height = _window.ClientRectangle.Height;
+			LogManager.Instance.Write( "[D3D] RenderWindow Resized - new dimensions L:{0},T:{1},W:{2},H:{3}", _window.Left, _window.Top, _window.ClientRectangle.Width, _window.ClientRectangle.Height );
+
 			if ( Width == width && Height == height )
 			{
 				return;
@@ -867,9 +863,7 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new Exception( "Failed to create depth stencil surface for Swap Chain", ex );
 				}
 			}
-
-				// primary windows must reset the device
-			else
+			else // primary windows must reset the device
 			{
 				_d3dpp.BackBufferWidth = Width = width;
 				_d3dpp.BackBufferHeight = Height = height;
@@ -879,7 +873,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Notify viewports of resize
 			foreach ( Viewport entry in this.viewportList.Values )
 			{
-				entry.UpdateDimensions();
+				//entry.UpdateDimensions();
 			}
 		}
 
@@ -1084,22 +1078,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		private void OnResetDevice( object sender, EventArgs e )
-		{
-			D3D.Device resetDevice = (D3D.Device)sender;
-
-			// Turn off culling, so we see the front and back of the triangle
-			resetDevice.SetRenderState( D3D.RenderState.CullMode, D3D.Cull.None );
-			// Turn on the ZBuffer
-			resetDevice.SetRenderState( D3D.RenderState.ZWriteEnable, true );
-			resetDevice.SetRenderState( D3D.RenderState.Lighting, true );
-		}
-
-		private void OnDeviceResizing( object sender, System.ComponentModel.CancelEventArgs e )
-		{
-			e.Cancel = true;
-		}
-
 		public override void Update( bool swapBuffers )
 		{
 			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
@@ -1110,8 +1088,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( rs.IsDeviceLost )
 			{
 				DX.Result result = device.TestCooperativeLevel();
-				if ( result.Code == D3D.ResultCode.DeviceLost.Code ||
-					 result.Code == D3D.ResultCode.DeviceNotReset.Code )
+				if ( result.Code == D3D.ResultCode.DeviceLost.Code  )
 				{
 					// device lost, and we can't reset
 					// can't do anything about it here, wait until we get
@@ -1130,7 +1107,7 @@ namespace Axiom.RenderSystems.DirectX9
 					System.Threading.Thread.Sleep( 50 );
 					return;
 				}
-				else
+				else if ( result.Code == D3D.ResultCode.DeviceNotReset.Code )
 				{
 					// device lost, and we can reset
 					rs.RestoreLostDevice();
@@ -1160,6 +1137,8 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 					}
 				}
+				else if ( result.Code != D3D.ResultCode.Success.Code )
+					return;
 			}
 
 			base.Update( swapBuffers );

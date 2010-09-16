@@ -2910,7 +2910,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			_deviceLost = false;
 
-			device.SetRenderState( D3D.RenderState.Clipping, true );
+			//device.SetRenderState( D3D.RenderState.Clipping, true );
 
 			//TODO fireEvent("DeviceRestored");
 		}
