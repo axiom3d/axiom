@@ -56,10 +56,12 @@ namespace Axiom.RenderSystems.OpenGLES
         bool _scratchUploadOnUnlock;
         int _scratchOffset;
         int _scratchSize;
+
         public int BufferID
         {
             get { return _bufferId; }
         }
+
         public GLESHardwareIndexBuffer( HardwareBufferManager mgr, IndexType idxType, int numIndexes, BufferUsage usage, bool useShadowBuffer )
             : base( idxType, numIndexes, usage, false, useShadowBuffer )
         {
@@ -67,16 +69,19 @@ namespace Axiom.RenderSystems.OpenGLES
             {
                 throw new AxiomException( "32 bit hardware buffers are not allowed in OpenGL ES." );
             }
+
             if ( !useShadowBuffer )
             {
                 throw new AxiomException( "Only support with shadowBuffer" );
             }
+
             OpenGL.GenBuffers( 1, ref _bufferId );
             GLESConfig.GlCheckError( this );
             if ( _bufferId == 0 )
             {
                 throw new AxiomException( "Cannot create GL index buffer" );
             }
+
             OpenGL.BindBuffer( All.ElementArrayBuffer, _bufferId );
             GLESConfig.GlCheckError( this );
             OpenGL.BufferData( All.ElementArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLESHardwareBufferManager.GetGLUsage( usage ) );
@@ -140,13 +145,14 @@ namespace Axiom.RenderSystems.OpenGLES
                     if ( locking != BufferLocking.Discard )
                     {
                         ReadData( offset, length, retPtr );
-                    }//end if
-                }//end if
-            }//end if
+                    }
+                }
+            }
             else
             {
                 throw new AxiomException( "Invalid Buffer lockSize" );
             }
+
             if ( retPtr == IntPtr.Zero )
             {
                 OpenGL.BindBuffer( All.ElementArrayBuffer, _bufferId );
@@ -167,12 +173,12 @@ namespace Axiom.RenderSystems.OpenGLES
                 }
                 unsafe
                 {
-                    // return offsetted
+                    // return offset
                     retPtr = (IntPtr)( (byte*)pBuffer + offset );
                 }
 
                 _lockedToScratch = false;
-            }//endif
+            }
             isLocked = true;
 
             return retPtr;
