@@ -1054,10 +1054,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				int[] viewport = new int[ 4 ];
 				int[] scissor = new int[ 4 ];
-				LogManager.Instance.Write( "FLAG VIEWPORT" );
 				//OpenGL.GetInteger(All.Viewport, viewport);
 				GLESConfig.GlCheckError( this );
-				LogManager.Instance.Write( "FLAG ScissorBox" );
 				//OpenGL.GetInteger(All.ScissorBox, scissor);
 				GLESConfig.GlCheckError( this );
 				bool scissorBoxDifference =
@@ -1070,7 +1068,6 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 
 				//clear buffers
-				LogManager.Instance.Write( "FLAG CLEAR" );
 				OpenGL.Clear( flags );
 				GLESConfig.GlCheckError( this );
 
@@ -1085,7 +1082,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			// Restore scissor test
 			if ( !scissorTestEnabled )
 			{
-				LogManager.Instance.Write( "FLAG ScissorTest" );
 				OpenGL.Disable( All.ScissorTest );
 				GLESConfig.GlCheckError( this );
 			}
@@ -1534,7 +1530,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="op"></param>
 		public override void Render( RenderOperation op )
 		{
-			LogManager.Instance.Write( "RENDER ENTER" );
 			GLESConfig.GlCheckError( this );
 			base.Render( op );
 
@@ -1555,7 +1550,6 @@ namespace Axiom.RenderSystems.OpenGLES
 				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( elem.Source );
 				if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 				{
-					LogManager.Instance.Write( "RENDER Bindbuffer ID " + ( (GLESHardwareVertexBuffer)vertexBuffer ).BufferID );
 					OpenGL.BindBuffer( All.ArrayBuffer, ( (GLESHardwareVertexBuffer)vertexBuffer ).BufferID );
 					GLESConfig.GlCheckError( this );
 					pBufferData = new IntPtr( elem.Offset );//VBOBufferOffset( elem.Offset );
@@ -1569,10 +1563,9 @@ namespace Axiom.RenderSystems.OpenGLES
 				{
 					unsafe
 					{
-						pBufferData = (IntPtr)( (byte*)pBufferData + op.vertexData.vertexStart + vertexBuffer.VertexSize );
+						pBufferData = (IntPtr)( (byte*)pBufferData + ( op.vertexData.vertexStart * vertexBuffer.VertexSize ) );
 					}
 				}
-				LogManager.Instance.Write( "[GLES] [render] pBufferData = {0}", pBufferData.ToInt32() );
 
 				int unit = 0;
 				VertexElementSemantic sem = elem.Semantic;
@@ -1581,24 +1574,19 @@ namespace Axiom.RenderSystems.OpenGLES
 				switch ( sem )
 				{
 					case VertexElementSemantic.Position:
-						LogManager.Instance.Write( "RENDER VERTEXPOS" );
-						LogManager.Instance.Write( "[GLES] [render] VertexPointer( {0}, {1}, {2}, {3} )", VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
-						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), 0, pBufferData );
 						GLESConfig.GlCheckError( this );
-						LogManager.Instance.Write( "ENABLE CLIENTSTATE" );
 						OpenGL.EnableClientState( All.VertexArray );
 						GLESConfig.GlCheckError( this );
 						break;
 					case VertexElementSemantic.Normal:
-						LogManager.Instance.Write( "RENDER VERTEXNORM" );
-						OpenGL.NormalPointer( GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+						OpenGL.NormalPointer( GLESHardwareBufferManager.GetGLType( elem.Type ), 0, pBufferData );
 						GLESConfig.GlCheckError( this );
 						OpenGL.EnableClientState( All.NormalArray );
 						GLESConfig.GlCheckError( this );
 						break;
 					case VertexElementSemantic.Diffuse:
-						LogManager.Instance.Write( "RENDER VERTEXDIFF" );
-						OpenGL.ColorPointer( 4, GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+						OpenGL.ColorPointer( 4, GLESHardwareBufferManager.GetGLType( elem.Type ), 0, pBufferData );
 						GLESConfig.GlCheckError( this );
 						OpenGL.EnableClientState( All.ColorArray );
 						GLESConfig.GlCheckError( this );
@@ -1618,14 +1606,11 @@ namespace Axiom.RenderSystems.OpenGLES
 									GLESConfig.GlCheckError( this );
 									if ( multitexturing )
 									{
-										LogManager.Instance.Write( "RENDER ClientActiveTexture" );
 										OpenGL.ClientActiveTexture( All.Texture0 + unit );
 									}
 									GLESConfig.GlCheckError( this );
-									LogManager.Instance.Write( "RENDER VERTEXTEXPOITNER" );
 									OpenGL.TexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
 									GLESConfig.GlCheckError( this );
-									LogManager.Instance.Write( "RENDER TextureCoordArray" );
 									OpenGL.EnableClientState( All.TextureCoordArray );
 									GLESConfig.GlCheckError( this );
 								}
@@ -1639,7 +1624,6 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			if ( multitexturing )
 			{
-				LogManager.Instance.Write( "RENDER ClientActiveTexture multi" );
 				OpenGL.ClientActiveTexture( All.Texture0 );
 			}
 			GLESConfig.GlCheckError( this );
@@ -1675,7 +1659,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				if ( _rsCapabilities.HasCapability( Capabilities.FrameBufferObjects ) )
 				{
-					LogManager.Instance.Write( "RENDER BINDBUFF ElemArr " + ( (GLESHardwareIndexBuffer)op.indexData.indexBuffer ).BufferID );
 					OpenGL.BindBuffer( All.ElementArrayBuffer, ( (GLESHardwareIndexBuffer)op.indexData.indexBuffer ).BufferID );
 					GLESConfig.GlCheckError( this );
 					pBufferData = VBOBufferOffset( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
@@ -1691,12 +1674,9 @@ namespace Axiom.RenderSystems.OpenGLES
 				{
 					if ( derivedDepthBias && currentPassIterationCount > 0 )
 					{
-						LogManager.Instance.Write( "RENDER SetDepthBias" );
-						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationCount,
-							 derivedDepthBiasSlopeScale );
+						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationCount, derivedDepthBiasSlopeScale );
 					}
 					GLESConfig.GlCheckError( this );
-					LogManager.Instance.Write( "RENDER DrawElements" );
 					OpenGL.DrawElements( ( _polygonMode == GLFill ) ? primType : (All)_polygonMode, op.indexData.indexCount, indexType, pBufferData );
 					GLESConfig.GlCheckError( this );
 				}
@@ -1710,7 +1690,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					{
 						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationCount, derivedDepthBiasSlopeScale );
 					}
-					OpenGL.DrawArrays( ( _polygonMode == GLFill ) ? primType : (All)_polygonMode, 0, op.vertexData.vertexCount );
+					OpenGL.DrawArrays( primType, 0, op.vertexData.vertexCount );
 					GLESConfig.GlCheckError( this );
 				}
 				while ( UpdatePassIterationRenderState() );
