@@ -1574,19 +1574,19 @@ namespace Axiom.RenderSystems.OpenGLES
 				switch ( sem )
 				{
 					case VertexElementSemantic.Position:
-						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), 0, pBufferData );
+						OpenGL.VertexPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), VertexElement.GetTypeSize( elem.Type ), pBufferData );
 						GLESConfig.GlCheckError( this );
 						OpenGL.EnableClientState( All.VertexArray );
 						GLESConfig.GlCheckError( this );
 						break;
 					case VertexElementSemantic.Normal:
-						OpenGL.NormalPointer( GLESHardwareBufferManager.GetGLType( elem.Type ), 0, pBufferData );
+						OpenGL.NormalPointer( GLESHardwareBufferManager.GetGLType( elem.Type ), VertexElement.GetTypeSize( elem.Type ), pBufferData );
 						GLESConfig.GlCheckError( this );
 						OpenGL.EnableClientState( All.NormalArray );
 						GLESConfig.GlCheckError( this );
 						break;
 					case VertexElementSemantic.Diffuse:
-						OpenGL.ColorPointer( 4, GLESHardwareBufferManager.GetGLType( elem.Type ), 0, pBufferData );
+						OpenGL.ColorPointer( 4, GLESHardwareBufferManager.GetGLType( elem.Type ), VertexElement.GetTypeSize( elem.Type ), pBufferData );
 						GLESConfig.GlCheckError( this );
 						OpenGL.EnableClientState( All.ColorArray );
 						GLESConfig.GlCheckError( this );
@@ -1609,7 +1609,7 @@ namespace Axiom.RenderSystems.OpenGLES
 										OpenGL.ClientActiveTexture( All.Texture0 + unit );
 									}
 									GLESConfig.GlCheckError( this );
-									OpenGL.TexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+									OpenGL.TexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLESHardwareBufferManager.GetGLType( elem.Type ), VertexElement.GetTypeSize( elem.Type ), pBufferData );
 									GLESConfig.GlCheckError( this );
 									OpenGL.EnableClientState( All.TextureCoordArray );
 									GLESConfig.GlCheckError( this );
