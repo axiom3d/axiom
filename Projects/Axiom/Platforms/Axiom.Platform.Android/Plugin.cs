@@ -34,19 +34,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using Axiom.Core;
-#endregion Namespace Declarations
 
+using Axiom.Core;
+using Axiom.FileSystem;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Platform.Android
 {
 	class Plugin : IPlugin
 	{
+		AndroidArchiveFactory _archiveFactory;
+
 		#region Axiom.Core.IPlugin Implementation
 
 		public void Initialize()
 		{
-			throw new System.NotImplementedException();
+			_archiveFactory = new AndroidArchiveFactory();
+			ArchiveManager.Instance.AddArchiveFactory( _archiveFactory );
 		}
 
 		public void Shutdown()

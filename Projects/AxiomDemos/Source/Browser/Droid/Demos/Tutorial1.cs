@@ -18,6 +18,11 @@ namespace Droid.Demos
 {
 	class Tutorial1 : Axiom.Demos.Tutorial1
 	{
+		protected override void LoadResources()
+		{
+			ResourceGroupManager.Instance.AddResourceLocation( "Droid.Drawable", "AndroidResource" );
+		}
+
 		public bool Setup( IGraphicsContext glContext, int width, int height )
 		{
 			// instantiate the Root singleton
