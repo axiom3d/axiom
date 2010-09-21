@@ -83,9 +83,21 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( data != null )
+					{
+						OpenGLOES.DeleteRenderbuffers( 1, ref _renderbufferID );
+						GLESConfig.GlCheckError( this );
+					}
+				}
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
-			OpenGLOES.DeleteRenderbuffers( 1, ref _renderbufferID );
-			GLESConfig.GlCheckError( this );
 		}
 
 		/// <summary>
@@ -96,8 +108,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override void BindToFramebuffer( All attachment, int zOffset )
 		{
 			Utilities.Contract.Requires( zOffset < Depth );
-			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, attachment,
-				 All.RenderbufferOes, _renderbufferID );
+			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, attachment, All.RenderbufferOes, _renderbufferID );
 			GLESConfig.GlCheckError( this );
 		}
 
