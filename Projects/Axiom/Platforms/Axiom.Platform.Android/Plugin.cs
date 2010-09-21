@@ -37,12 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using Axiom.Core;
 using Axiom.FileSystem;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Platform.Android
 {
-	class Plugin : IPlugin
+	public class Plugin : IPlugin
 	{
 		AndroidArchiveFactory _archiveFactory;
 
@@ -50,8 +51,9 @@ namespace Axiom.Platform.Android
 
 		public void Initialize()
 		{
-			_archiveFactory = new AndroidArchiveFactory();
-			ArchiveManager.Instance.AddArchiveFactory( _archiveFactory );
+			//_archiveFactory = new AndroidArchiveFactory();
+			//ArchiveManager.Instance.AddArchiveFactory( _archiveFactory );
+			CodecManager.Instance.RegisterCodec( new AndroidImageCodec( "png" ) );
 		}
 
 		public void Shutdown()

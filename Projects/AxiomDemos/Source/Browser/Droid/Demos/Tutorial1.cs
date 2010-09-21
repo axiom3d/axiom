@@ -18,15 +18,15 @@ namespace Droid.Demos
 {
 	class Tutorial1 : Axiom.Demos.Tutorial1
 	{
-		protected override void LoadResources()
+		public override void SetupResources()
 		{
-			ResourceGroupManager.Instance.AddResourceLocation( "Droid.Drawable", "AndroidResource" );
+			ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Archives/AxiomCore.zip", "ZipFile" );
+			ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Textures", "Folder" );
 		}
 
 		public bool Setup( IGraphicsContext glContext, int width, int height )
 		{
 			// instantiate the Root singleton
-			//engine = new Root( "AxiomEngine.log" );
 			engine = Root.Instance;
 
 			// add event handlers for frame events
@@ -44,6 +44,8 @@ namespace Droid.Demos
 			TechDemoListener rwl = new TechDemoListener( window );
 			WindowEventMonitor.Instance.RegisterListener( window, rwl );
 
+			SetupResources();
+
 			ChooseSceneManager();
 			CreateCamera();
 			CreateViewports();
@@ -58,7 +60,7 @@ namespace Droid.Demos
 			// Load resources
 			this.LoadResources();
 
-			ShowDebugOverlay( false );
+			ShowDebugOverlay( true );
 
 			//CreateGUI();
 

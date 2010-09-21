@@ -70,13 +70,16 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// by loadImpl.  Images should be deleted by loadImpl and unprepareImpl.
 		/// </summary>
 		protected List<Image> _loadedImages;
-        /// <summary>
-        /// Unique ID of the texture (assigned by OpenGL)
-        /// </summary>
-        public int TextureID
-        {
-            get { return _textureID; }
-        }
+		/// <summary>
+		/// Unique ID of the texture (assigned by OpenGL)
+		/// </summary>
+		public int TextureID
+		{
+			get
+			{
+				return _textureID;
+			}
+		}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -84,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-                return All.Texture2D;
+				return All.Texture2D;
 			}
 		}
 
@@ -304,8 +307,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				// Run through this process to pregenerate mipmap pyramid
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
-					OpenGL.TexImage2D( All.Texture2D, mip,
-						(int)format, width, height, 0, format, All.UnsignedByte, IntPtr.Zero );
+					OpenGL.TexImage2D( All.Texture2D, mip, (int)format, width, height, 0, format, All.UnsignedByte, IntPtr.Zero );
 					GLESConfig.GlCheckError( this );
 
 					if ( width > 1 )

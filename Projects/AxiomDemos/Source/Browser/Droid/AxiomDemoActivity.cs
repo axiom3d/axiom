@@ -14,6 +14,8 @@ namespace Droid
 {
 	public class AxiomDemoActivity : Activity
 	{
+		DemoView view;
+
 		public AxiomDemoActivity( IntPtr handle )
 			: base( handle )
 		{
@@ -23,13 +25,25 @@ namespace Droid
 		{
 			base.OnCreate( bundle );
 
-			DemoView view = new DemoView(this);
+			view = new DemoView(this);
 			SetContentView(view);
 			//// Inflate our UI from its XML layout description
 			//SetContentView( R.layout.demo );
 
 			//// Load the view
 			//FindViewById( R.id.paintingview );
+		}
+
+		protected override void OnDestroy()
+		{
+			view.Close();
+			base.OnDestroy();
+		}
+
+		protected override void OnPause()
+		{
+			view.Close();
+			base.OnPause();
 		}
 	}
 }
