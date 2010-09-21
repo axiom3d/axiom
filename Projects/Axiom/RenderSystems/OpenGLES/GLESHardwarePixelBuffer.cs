@@ -53,13 +53,13 @@ namespace Axiom.RenderSystems.OpenGLES
 		protected TK.All _glInternalFormat;
 		protected BufferLocking _currentLocking;
 		protected byte[] data;
-        /// <summary>
-        /// 
-        /// </summary>
-        public TK.All GLFormat
-        {
-            get { return _glInternalFormat; }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public TK.All GLFormat
+		{
+			get { return _glInternalFormat; }
+		}
 		public GLESHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
 			: base( width, height, depth, format, usage, false, false )
 		{

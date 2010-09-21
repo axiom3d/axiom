@@ -9,6 +9,8 @@ using OpenTK.Platform.Android;
 using Android.Views;
 using Android.Content;
 using Axiom.Core;
+using System.Reflection;
+using Android.App;
 
 namespace Droid
 {
@@ -44,6 +46,7 @@ namespace Droid
 				_engine = new Root( "AxiomDemos.log" );
 
 				( new Axiom.RenderSystems.OpenGLES.GLESPlugin() ).Initialize();
+				( new Axiom.Platform.Android.Plugin() ).Initialize();
 
 				Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "OpenGLES" ];
 
@@ -92,6 +95,12 @@ namespace Droid
 		{
 			base.OnUpdateFrame( e );
 
+		}
+
+		public override void Close()
+		{
+			_engine.Shutdown();
+			base.Close();
 		}
 
 		private void _setupResources()

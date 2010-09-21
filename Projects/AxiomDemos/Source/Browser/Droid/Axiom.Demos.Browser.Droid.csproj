@@ -56,6 +56,9 @@
     <AndroidResource Include="Resources\values\strings.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Media\Textures\aureola.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Properties\AndroidManifest.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -63,11 +66,17 @@
     <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-ldpi\icon.png" />
     <AndroidResource Include="Resources\drawable-mdpi\icon.png" />
+    <AndroidResource Include="Resources\drawable\aureola.png" />
+    <AndroidResource Include="Resources\drawable\basic_droplet.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.Droid.csproj">
       <Project>{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}</Project>
       <Name>Axiom.Droid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Platforms\Axiom.Platform.Android\Axiom.Platform.Android.csproj">
+      <Project>{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}</Project>
+      <Name>Axiom.Platform.Android</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGLES\Axiom.RenderSystems.OpenGLES.csproj">
       <Project>{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}</Project>
@@ -78,6 +87,7 @@
       <Name>Axiom.Demos.Droid</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.

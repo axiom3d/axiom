@@ -143,7 +143,7 @@ namespace Axiom.Core
 		protected DisposableObject()
 		{
 			IsDisposed = false;
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+#if !(XBOX || XBOX360 || WINDOWS_PHONE || ANDROID)
 			ObjectManager.Instance.Add( this, Environment.StackTrace );
 #else
 			ObjectManager.Instance.Add( this, String.Empty );
