@@ -36,11 +36,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
+using Axiom.Utilities;
+
 using OpenTK.Graphics.ES11;
 using OpenGL = OpenTK.Graphics.ES11.GL;
+using OpenGLOES = OpenTK.Graphics.ES11.GL.Oes;
 #endregion
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -50,6 +54,8 @@ namespace Axiom.RenderSystems.OpenGLES
 	/// </summary>
 	public class GLESTextureBuffer : GLESHardwarePixelBuffer
 	{
+		#region Fields and Properties
+
 		protected All _target;
 		protected All _faceTarget;
 		protected int _textureId;
@@ -57,6 +63,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		protected int _level;
 		protected bool _softwareMipmap;
 		protected List<RenderTexture> _sliceTRT;
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
 
 		/// <summary>
 		/// 
@@ -127,15 +137,23 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 		}
+		
+		#endregion Construction and Destruction
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="slice"></param>
-		/// <returns></returns>
-		public override RenderTexture GetRenderTarget( int slice )
+		#region Methods
+
+		protected static void BuildMipmaps( PixelBox data )
 		{
-			return base.GetRenderTarget( slice );
+		}
+
+		private void BlitFromTexture( GLESTextureBuffer srct, BasicBox srcBox, BasicBox dstBox )
+		{
+			throw new NotImplementedException();
+		}
+
+		public void CopyFromFramebuffer( int p )
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -148,6 +166,27 @@ namespace Axiom.RenderSystems.OpenGLES
 			_sliceTRT[ zoffset ] = null;
 		}
 
+		#endregion Methods
+
+		#region GLESHardwarePixelBuffer Implementation
+
+		public override void BindToFramebuffer( All attachment, int zOffset )
+		{
+			Contract.Requires( zOffset < Depth );
+			OpenGLOES.FramebufferTexture2D( All.FramebufferOes, attachment, _faceTarget, _textureId, _level );
+			GLESConfig.GlCheckError( this );
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="slice"></param>
+		/// <returns></returns>
+		public override RenderTexture GetRenderTarget( int slice )
+		{
+			return base.GetRenderTarget( slice );
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -156,17 +195,100 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="dstBox"></param>
 		public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
-			base.Blit( src, srcBox, dstBox );
+			GLESTextureBuffer srct = (GLESTextureBuffer)src;
+			/// TODO: Check for FBO support first
+			/// Destination texture must be 2D
+			/// Source texture must be 2D
+			//if ( ( ( (int)src.Usage ) & (int)TextureUsage.RenderTarget ) == 0 && ( srct._target == All.Texture2D ) )
+			//{
+			//    BlitFromTexture( srct, srcBox, dstBox );
+			//}
+			//else
+			{
+				base.Blit( src, srcBox, dstBox );
+			}
 		}
 
-		protected static void BuildMipmaps( PixelBox data )
+		protected override void Upload( PixelBox data, BasicBox dest )
 		{
-			throw new NotImplementedException();
+			GL.BindTexture( _target, _textureId );
+			GLESConfig.GlCheckError( this );
+
+			if ( PixelUtil.IsCompressed( data.Format ) )
+			{
+
+				if ( data.Format != Format || !data.IsConsecutive ) 
+					throw new AxiomException( "Compressed images must be consecutive, in the source format." );
+
+				All format = GLESPixelUtil.GetClosestGLInternalFormat( Format );
+				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
+				// for compressed formats
+				if ( dest.Left == 0 && dest.Top == 0 )
+				{
+					GL.CompressedTexImage2D( All.Texture2D, _level, format, dest.Width, dest.Height, 0, data.ConsecutiveSize, data.Data );
+					GLESConfig.GlCheckError( this );
+				}
+				else
+				{
+					GL.CompressedTexSubImage2D( All.Texture2D, _level, dest.Left, dest.Top, dest.Width, dest.Height, format, data.ConsecutiveSize, data.Data );
+					GLESConfig.GlCheckError( this );
+				}
+			}
+			else if ( _softwareMipmap )
+			{
+				if ( data.Width != data.RowPitch )
+				{
+					// TODO
+					throw new AxiomException( "Unsupported texture format." );
+				}
+				if ( data.Height * data.Width != data.SlicePitch )
+				{
+					// TODO
+					throw new AxiomException( "Unsupported texture format." );
+				}
+				GL.PixelStore( All.UnpackAlignment, 1 );
+				GLESConfig.GlCheckError( this );
+				BuildMipmaps( data );
+			}
+			else
+			{
+				if ( data.Width != data.RowPitch )
+				{
+					// TODO
+					throw new AxiomException( "Unsupported texture format." );
+				}
+				if ( data.Height * data.Width != data.SlicePitch )
+				{
+					// TODO
+					throw new AxiomException( "Unsupported texture format." );
+				}
+
+				if ( ( ( data.Width * PixelUtil.GetNumElemBytes( data.Format ) ) & 3 ) != 0 )
+				{
+					// Standard alignment of 4 is not right
+					GL.PixelStore( All.UnpackAlignment, 1 );
+					GLESConfig.GlCheckError( this );
+				}
+
+				GL.TexSubImage2D( _faceTarget, _level, dest.Left, dest.Top, dest.Width, dest.Height, (All)GLESPixelUtil.GetGLOriginFormat( data.Format ), (All)GLESPixelUtil.GetGLOriginDataType( data.Format ), data.Data );
+				GLESConfig.GlCheckError( this );
+			}
+
+			GL.PixelStore( All.UnpackAlignment, 4 );
+			GLESConfig.GlCheckError( this );
+
 		}
 
-		internal void CopyFromFramebuffer( int p )
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="data"></param>
+		protected virtual void Download( PixelBox data )
 		{
-			throw new NotImplementedException();
+			throw new AxiomException( "Download texture buffers is not supported by OpenGL ES." );
 		}
+
+		#endregion GLESHardwarePixelBuffer Implementation
+
 	}
 }
