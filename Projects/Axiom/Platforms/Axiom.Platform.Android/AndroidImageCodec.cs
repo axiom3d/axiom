@@ -71,47 +71,33 @@ namespace Axiom.Platform.Android
 
 			Bitmap bitmap = null;
 
-			LogManager.Instance.Write( "Decoding Image Stream...{0}", args.ToString() );
-
 			try
 			{
 				global::Android.Runtime.JavaInputStream jis = new global::Android.Runtime.JavaInputStream( input );
 				bitmap = BitmapFactory.DecodeStream( jis );
-				LogManager.Instance.Write( "Decoded Stream to Bitmap." );
 
 				Bitmap.Config config = bitmap.GetConfig();
-				if ( config != null )
-				{
-					LogManager.Instance.Write( "Bitmap.Config = {0}", config.Name() );
-				}
 
 				data.height = bitmap.Height;
 				data.width = bitmap.Width;
 				data.depth = 1;
 				data.format = Media.PixelFormat.A8R8G8B8; // need to convert Bitmap.Config
-				data.numMipMaps = 1;
-				
-				LogManager.Instance.Write( "Bitmap.Height = {0}/nBitmap.Width = {1}", data.height, data.width );
+				data.numMipMaps = 0;
+
 				int[] pixels = new int[ bitmap.Width * bitmap.Height ];
 
 				// Start writing from bottom row, to effectively flip it in Y-axis
 				bitmap.GetPixels( pixels, pixels.Length - bitmap.Width, -bitmap.Width, 0, 0, bitmap.Width, bitmap.Height );
 
-				LogManager.Instance.Write( "Finished decoding Stream." );
-
 				IntPtr sourcePtr = Memory.PinObject( pixels );
 				byte[] outputBytes = new byte[ bitmap.Width * bitmap.Height * Marshal.SizeOf( typeof( int ) ) ];
-				LogManager.Instance.Write( "Allocated {0} bytes for IO.Stream.", outputBytes.Length );
 
 				IntPtr destPtr = Memory.PinObject( outputBytes );
-				LogManager.Instance.Write( "Copying bitmap Stream to byte[]." );
 
 				Memory.Copy( sourcePtr, destPtr, outputBytes.Length );
 
-				LogManager.Instance.Write( "Writing byte[] to stream." );
 
 				output.Write( outputBytes, 0, outputBytes.Length );
-				LogManager.Instance.Write( "Finished transcoding Stream." );
 
 				return data;
 			}

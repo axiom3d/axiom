@@ -72,12 +72,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		Matrix4 _worldMatrix;
 		Matrix4 _textureMatrix;
 		/// Last min & mip filtering options, so we can combine them
-		FilterOptions mMinFilter;
+		FilterOptions _minFilter;
 		FilterOptions _mipFilter;
 		/// <summary>
 		/// 
 		/// </summary>
-		int _textureMimmapCount;
+		int _textureMipmapCount;
 		/// <summary>
 		/// What texture coord set each texture unit is using
 		/// </summary>
@@ -140,11 +140,48 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// 
 		/// </summary>
-		private int CombindedMinMipFilter
+		private int CombinedMinMipFilter
 		{
 			get
 			{
-				throw new NotImplementedException();
+				switch ( _minFilter )
+				{
+					case FilterOptions.Anisotropic:
+					case FilterOptions.Linear:
+						switch ( _mipFilter )
+						{
+							case FilterOptions.Anisotropic:
+							case FilterOptions.Linear:
+								// linear min, linear mip
+								return (int)All.LinearMipmapLinear;
+							case FilterOptions.Point:
+								// linear min, point mip
+								return (int)All.LinearMipmapNearest;
+							case FilterOptions.None:
+								// linear min, no mip
+								return (int)All.Linear;
+						}
+						break;
+					case FilterOptions.Point:
+					case FilterOptions.None:
+						switch ( _mipFilter )
+						{
+							case FilterOptions.Anisotropic:
+							case FilterOptions.Linear:
+								// nearest min, linear mip
+								return (int)All.LinearMipmapNearest;
+							case FilterOptions.Point:
+								// nearest min, point mip
+								return (int)All.LinearMipmapNearest;
+							case FilterOptions.None:
+								// nearest min, no mip
+								return (int)All.Linear;
+						}
+						break;
+				}
+
+				// should never get here
+				return 0;
 			}
 		}
 
@@ -1420,7 +1457,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return 1.0f;
 			}
 		}
 
@@ -1850,10 +1887,62 @@ namespace Axiom.RenderSystems.OpenGLES
 			_colorWrite[ 3 ] = alpha;
 		}
 
-		public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
+		public override void SetTextureUnitFiltering( int unit, FilterType ftype, FilterOptions fo )
 		{
-			throw new NotImplementedException();
+			if ( !this.ActivateGLTextureUnit( unit ) )
+				return;
+
+			switch ( ftype )
+			{
+				case FilterType.Min:
+					if ( this._textureMipmapCount == 0 )
+					{
+						_minFilter = FilterOptions.None;
+					}
+					else
+					{
+						_minFilter = fo;
+					}
+
+					// Combine with existing mip filter
+					GL.TexParameter( All.Texture2D, All.TextureMinFilter, CombinedMinMipFilter );
+					GLESConfig.GlCheckError( this );
+					break;
+
+				case FilterType.Mag:
+					switch ( fo )
+					{
+						case FilterOptions.Anisotropic: // GL treats linear and aniso the same
+						case FilterOptions.Linear:
+							GL.TexParameter( All.Texture2D, All.TextureMagFilter, (int)All.Linear );
+							GLESConfig.GlCheckError( this );
+							break;
+						case FilterOptions.Point:
+						case FilterOptions.None:
+							GL.TexParameter( All.Texture2D, All.TextureMagFilter, (int)All.Nearest );
+							GLESConfig.GlCheckError( this );
+							break;
+					}
+					break;
+				case FilterType.Mip:
+					if ( _textureMipmapCount == 0 )
+					{
+						_mipFilter = FilterOptions.None;
+					}
+					else
+					{
+						_mipFilter = fo;
+					}
+
+					// Combine with existing min filter
+					GL.TexParameter( All.Texture2D, All.TextureMinFilter, CombinedMinMipFilter );
+					GLESConfig.GlCheckError( this );
+					break;
+			}
+
+			ActivateGLTextureUnit( 0 );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -2143,7 +2232,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				OpenGL.Enable( All.Texture2D );
 				GLESConfig.GlCheckError( this );
 				// Store the number of mipmaps
-				_textureMimmapCount = tex.MipmapCount;
+				_textureMipmapCount = tex.MipmapCount;
 
 				if ( tex != null )
 				{
@@ -2531,9 +2620,29 @@ namespace Axiom.RenderSystems.OpenGLES
 			_textureCoodIndex[ stage ] = index;
 		}
 
-		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
+		public override void SetTextureLayerAnisotropy( int unit, int maxAnisotropy )
 		{
-			throw new NotImplementedException();
+			if ( !_rsCapabilities.HasCapability( Capabilities.AnisotropicFiltering ) )
+				return;
+
+			if ( !ActivateGLTextureUnit( unit ) )
+				return;
+
+			float largest_supported_anisotropy = 0;
+			GL.GetFloat( All.MaxTextureMaxAnisotropyExt, ref largest_supported_anisotropy );
+			if ( maxAnisotropy > largest_supported_anisotropy )
+				maxAnisotropy = largest_supported_anisotropy != 0 ? (int)largest_supported_anisotropy : 1;
+			if ( GetCurrentAnisotropy( unit ) != maxAnisotropy )
+				GL.TexParameter( All.Texture2D, All.TextureMaxAnisotropyExt, maxAnisotropy );
+
+			ActivateGLTextureUnit( 0 );
+		}
+
+		private int GetCurrentAnisotropy( int unit )
+		{
+			float curAniso = 0;
+			GL.GetTexParameter( All.Texture2D, All.TextureMaxAnisotropyExt, ref curAniso );
+			return (int)( curAniso != 0 ? curAniso : 1 );
 		}
 
 		public override Matrix4 WorldMatrix
@@ -2653,8 +2762,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			_mainContext = null;
 			_glInitialized = false;
 			numCurrentLights = 0;
-			_textureMimmapCount = 0;
-			mMinFilter = FilterOptions.Linear;
+			_textureMipmapCount = 0;
+			_minFilter = FilterOptions.Linear;
 			_mipFilter = FilterOptions.Point;
 			// _polygonMode = OpenTK.Graphics.ES11.
 		}

@@ -121,8 +121,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			int imgIdx = images.Count;
 			images.Add( new Image() );
 
-			Stream stream = ResourceGroupManager.Instance.OpenResource(
-				name, group, true, r );
+			Stream stream = ResourceGroupManager.Instance.OpenResource( name, group, true, r );
 
 			images[ imgIdx ] = Image.FromStream( stream, ext );
 		}
@@ -145,7 +144,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			int idx = face * ( MipmapCount + 1 ) + mipmap;
-			Utilities.Contract.Requires( idx < _surfaceList.Count, "Index > Surfacelist, GLESTexture.GetBuffer." );
+			Utilities.Contract.Requires( idx < _surfaceList.Count, String.Format( "[GLESTexture( Name={0} ) ] Index( {1} ) > Surfacelist.Count( {2} )", Name, idx, _surfaceList.Count ) );
 			return _surfaceList[ idx ];
 		}
 
@@ -178,9 +177,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				int height = Height;
 				for ( int mip = 0; mip < MipmapCount; mip++ )
 				{
-					HardwarePixelBuffer buf = new GLESTextureBuffer( Name, GLESTextureTarget,
-						_textureID, width, height, (int)GLESPixelUtil.GetClosestGLInternalFormat( Format, HardwareGammaEnabled ),
-						face, mip, (BufferUsage)Usage, doSoftware && mip == 0, HardwareGammaEnabled, FSAA );
+					HardwarePixelBuffer buf = new GLESTextureBuffer( Name, GLESTextureTarget, _textureID, width, height, (int)GLESPixelUtil.GetClosestGLInternalFormat( Format, HardwareGammaEnabled ),
+																	 face, mip, (BufferUsage)Usage, doSoftware && mip == 0, HardwareGammaEnabled, FSAA );
 
 					_surfaceList.Add( buf );
 
@@ -205,8 +203,7 @@ namespace Axiom.RenderSystems.OpenGLES
 						buf.Height == 0 ||
 						buf.Depth == 0 )
 					{
-						throw new AxiomException( string.Format( "Zero sized texture surface on texture: {0} face: {1} mipmap : {2}.The GL probably driver refused to create the texture.",
-							Name, face, mip ) );
+						throw new AxiomException( string.Format( "Zero sized texture surface on texture: {0} face: {1} mipmap : {2}. The GL driver probably refused to create the texture.", Name, face, mip ) );
 					}
 
 				}
@@ -251,11 +248,9 @@ namespace Axiom.RenderSystems.OpenGLES
 			OpenGL.TexParameter( All.Texture2D, All.TextureWrapT, (int)All.ClampToEdge );
 			GLESConfig.GlCheckError( this );
 			// If we can do automip generation and the user desires this, do so
-			MipmapsHardwareGenerated =
-				Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareMipMaps ) && !PixelUtil.IsCompressed( Format );
+			MipmapsHardwareGenerated = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareMipMaps ) && !PixelUtil.IsCompressed( Format );
 
-			if ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap &&
-				RequestedMipmapCount > 0 && MipmapsHardwareGenerated )
+			if ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap && RequestedMipmapCount > 0 && MipmapsHardwareGenerated )
 			{
 				OpenGL.TexParameter( All.Texture2D, All.GenerateMipmap, (int)All.True );
 				GLESConfig.GlCheckError( this );
@@ -282,8 +277,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
 					size = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
-					OpenGL.CompressedTexImage2D( All.Texture2D, mip, format, width, height,
-												0, size, tmpDataptr );
+					OpenGL.CompressedTexImage2D( All.Texture2D, mip, format, width, height, 0, size, tmpDataptr );
 
 					GLESConfig.GlCheckError( this );
 
@@ -411,7 +405,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			base.dispose( disposeManagedResources );
 			if ( IsLoaded )
 			{
 				unload();
@@ -420,6 +413,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				freeInternalResources();
 			}
+			base.dispose( disposeManagedResources );
 		}
 	}
 }
