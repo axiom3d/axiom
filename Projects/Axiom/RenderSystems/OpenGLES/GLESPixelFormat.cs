@@ -335,27 +335,20 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// /** Returns the maximum number of Mipmaps that can be generated until we reach
+		/// Returns the maximum number of Mipmaps that can be generated until we reach
 		/// the mininum format possible. This does not count the base level.
-		/// @param width
-		///      The width of the area
-		/// @param height
-		///      The height of the area
-		///  @param depth
-		///       The depth of the area
-		///  @param format
-		///      The format of the area
-		/// @remarks
+		/// </summary>
+		/// <remarks>
 		/// In case that the format is non-compressed, this simply returns
 		/// how many times we can divide this texture in 2 until we reach 1x1.
 		/// For compressed formats, constraints apply on minimum size and alignment
 		///  so this might differ.
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="depth"></param>
-		/// <param name="format"></param>
-		/// <returns></returns>
+		/// </remarks>
+		/// <param name="width">The width of the area</param>
+		/// <param name="height">The height of the area</param>
+		/// <param name="depth">The depth of the area</param>
+		/// <param name="format">The format of the area</param>
+		/// <returns>the maximum number of Mipmaps that can be generated </returns>
 		public static int GetMaxMipmaps( int width, int height, int depth, PixelFormat format )
 		{
 			int count = 0;

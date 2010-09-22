@@ -32,7 +32,10 @@ namespace Axiom.Demos
 	{
 		public delegate InputReader ConfigureInput();
 		public ConfigureInput SetupInput;
-		public TechDemo() { SetupInput = new ConfigureInput( _setupInput ); }
+		public TechDemo()
+		{
+			SetupInput = new ConfigureInput( _setupInput );
+		}
 
 		#region Protected Fields
 
@@ -184,12 +187,12 @@ namespace Axiom.Demos
 
 			this.LoadResources();
 
-			//ShowDebugOverlay( showDebugOverlay );
+			ShowDebugOverlay( showDebugOverlay );
 
 			//CreateGUI();
 
 
-			//input = SetupInput();
+			input = SetupInput();
 
 			// call the overridden CreateScene method
 
@@ -210,7 +213,7 @@ namespace Axiom.Demos
 		/// <remarks>Must at least do ResourceGroupManager.Instance.InitializeAllResourceGroups();</remarks>
 		protected virtual void LoadResources()
 		{
-			//ResourceGroupManager.Instance.InitializeAllResourceGroups();
+			ResourceGroupManager.Instance.InitializeAllResourceGroups();
 		}
 
 		protected InputReader _setupInput()

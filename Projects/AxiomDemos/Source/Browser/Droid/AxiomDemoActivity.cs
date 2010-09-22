@@ -12,6 +12,7 @@ using Android.Widget;
 
 namespace Droid
 {
+	[Activity( MainLauncher = true, Label="Axiom Demo Browser" )]
 	public class AxiomDemoActivity : Activity
 	{
 		DemoView view;
