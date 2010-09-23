@@ -58,12 +58,43 @@ namespace Axiom.Platform.Android
 {
 	class AndroidImageCodec : Media.ImageCodec
 	{
+		#region Fields and Properties
 		private string _imageType;
 
+		#endregion Fields and Properties
+
+		#region Construction and Destructions
+		
 		public AndroidImageCodec( string type )
 		{
 			this._imageType = type;
 		}
+
+		#endregion Construction and Destructions
+
+		#region Methods
+
+		private  Media.PixelFormat Convert( Bitmap.Config config )
+		{
+			switch( config.Name().ToLower() )
+			{
+				case "alpha_8":
+					return Media.PixelFormat.A8;
+				case "rgb_565":
+					return Media.PixelFormat.R5G6B5;
+				case "argb_4444":
+					return Media.PixelFormat.A4R4G4B4;
+				case "argb_8888":
+					return Media.PixelFormat.A8R8G8B8;
+				default:
+					LogManager.Instance.Write( "[AndroidImageCodec] Failed to find conversion for Bitmap.Config.{0}.", config.Name() );
+					return Media.PixelFormat.Unknown;
+			}
+		}
+
+		#endregion Methods
+
+		#region ImageCodec Implementation
 
 		public override object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args )
 		{
@@ -81,7 +112,7 @@ namespace Axiom.Platform.Android
 				data.height = bitmap.Height;
 				data.width = bitmap.Width;
 				data.depth = 1;
-				data.format = Media.PixelFormat.A8R8G8B8; // need to convert Bitmap.Config
+				data.format = Convert( config );
 				data.numMipMaps = 0;
 
 				int[] pixels = new int[ bitmap.Width * bitmap.Height ];
@@ -128,5 +159,7 @@ namespace Axiom.Platform.Android
 				return _imageType;
 			}
 		}
+
+		#endregion ImageCodec Implementation
 	}
 }
