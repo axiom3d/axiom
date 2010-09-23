@@ -175,7 +175,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				int width = Width;
 				int height = Height;
-				for ( int mip = 0; mip < MipmapCount; mip++ )
+				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
 					HardwarePixelBuffer buf = new GLESTextureBuffer( Name, GLESTextureTarget, _textureID, width, height, (int)GLESPixelUtil.GetClosestGLInternalFormat( Format, HardwareGammaEnabled ),
 																	 face, mip, (BufferUsage)Usage, doSoftware && mip == 0, HardwareGammaEnabled, FSAA );
