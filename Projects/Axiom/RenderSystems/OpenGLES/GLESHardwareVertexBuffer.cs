@@ -59,9 +59,9 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public int BufferID
 		{
-			get 
-			{ 
-				return _bufferId; 
+			get
+			{
+				return _bufferId;
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			OpenGL.BindBuffer( All.ArrayBuffer, _bufferId );
 			GLESConfig.GlCheckError( this );
-			OpenGL.BufferData( All.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero,	GLESHardwareBufferManager.GetGLUsage( usage ) );
+			OpenGL.BufferData( All.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLESHardwareBufferManager.GetGLUsage( usage ) );
 			GLESConfig.GlCheckError( this );
 		}
 

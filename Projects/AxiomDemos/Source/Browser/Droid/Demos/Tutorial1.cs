@@ -50,7 +50,7 @@ namespace Droid.Demos
 			CreateCamera();
 			CreateViewports();
 
-			this.viewport.BackgroundColor = ColorEx.Azure;
+			this.viewport.BackgroundColor = ColorEx.SteelBlue;
 
 			// set default mipmap level
 			TextureManager.Instance.DefaultMipmapCount = 5;

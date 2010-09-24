@@ -49,10 +49,10 @@ using OpenTK.Graphics.ES20;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    public struct GLESSurfaceDescription
-    {
-        public GLESHardwarePixelBuffer Buffer;
-        public int ZOffset;
-        public int NumSamples;
-    }
+	public struct GLESSurfaceDescription
+	{
+		public GLESHardwarePixelBuffer Buffer;
+		public int ZOffset;
+		public int NumSamples;
+	}
 }

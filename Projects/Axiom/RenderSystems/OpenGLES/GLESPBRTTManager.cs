@@ -38,10 +38,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			PBRef current = _pixelBuffers[ (int)ctype ];
 			// Check size
-			if (current.Buffer != null)
+			if ( current.Buffer != null )
 			{
-				if (current.Buffer.Width < width ||
-					current.Buffer.Height < height)
+				if ( current.Buffer.Width < width ||
+					current.Buffer.Height < height )
 				{
 					// If the current PBuffer is too small, destroy it and create a new one					
 					//current.Buffer.Dispose();
@@ -49,19 +49,19 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 			}
 
-			if (current.Buffer == null)
+			if ( current.Buffer == null )
 			{
 				// Create pbuffer via rendersystem
 				current.Buffer = this._support.CreatePixelBuffer( ctype, width, height );
 			}
 			++current.ReferenceCount;
-			_pixelBuffers[(int)ctype] = current;
+			_pixelBuffers[ (int)ctype ] = current;
 		}
 
 		public void ReleasePBuffer( PixelComponentType ctype )
 		{
-			--_pixelBuffers[(int)ctype].ReferenceCount;
-			if (_pixelBuffers[(int)ctype].ReferenceCount == 0)
+			--_pixelBuffers[ (int)ctype ].ReferenceCount;
+			if ( _pixelBuffers[ (int)ctype ].ReferenceCount == 0 )
 			{
 				//_pixelBuffers[ (int)ctype ].Buffer.Dispose();
 				_pixelBuffers[ (int)ctype ].Buffer = null;
@@ -95,8 +95,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			surface = (GLESSurfaceDescription)target[ "TARGET" ];
 			if ( surface.Buffer != null )
 			{
-				((GLESTextureBuffer)surface.Buffer).CopyFromFramebuffer( surface.ZOffset );
-				
+				( (GLESTextureBuffer)surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
+
 			}
 		}
 

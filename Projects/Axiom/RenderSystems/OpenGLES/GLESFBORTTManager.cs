@@ -641,8 +641,8 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			/// Check if the render target is in the rendertarget->FBO map
 			GLESFrameBufferObject fbo = null;
-			fbo = target["FBO"] as GLESFrameBufferObject;
-			if (fbo != null)
+			fbo = target[ "FBO" ] as GLESFrameBufferObject;
+			if ( fbo != null )
 				fbo.Bind();
 			else
 			{
@@ -651,9 +651,9 @@ namespace Axiom.RenderSystems.OpenGLES
 				// The screen buffer is 1 on iPhone
 				OpenGLOES.BindFramebuffer(All.FramebufferOes, 1);
 #else
-				OpenGLOES.BindFramebuffer(All.FramebufferOes, 0);
+				OpenGLOES.BindFramebuffer( All.FramebufferOes, 0 );
 #endif
-				GLESConfig.GlCheckError(this);
+				GLESConfig.GlCheckError( this );
 			}
 		}
 
@@ -663,7 +663,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="target"></param>
 		public override void Unbind( Graphics.RenderTarget target )
 		{
-			
+
 		}
 
 		/// <summary>
@@ -733,9 +733,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <returns></returns>
 		public override Graphics.MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
-			return new GLESFBOMultiRenderTarget(this, name);
+			return new GLESFBOMultiRenderTarget( this, name );
 		}
-	
+
 
 		#endregion GLESRTTManager Implementation
 	}

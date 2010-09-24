@@ -571,8 +571,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			set
 			{
-				if ( value != _normalizeNormals )
-					return;
 				if ( value )
 				{
 					OpenGL.Enable( All.Normalize );
@@ -1774,9 +1772,37 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
+		bool lasta2c = false;
+
+		public override void SetAlphaRejectSettings( CompareFunction func, int value, bool alphaToCoverage )
 		{
-			//throw new NotImplementedException();
+			bool a2c = false;
+			if ( func == CompareFunction.AlwaysPass )
+			{
+				GL.Disable( All.AlphaTest );
+				GLESConfig.GlCheckError( this );
+			}
+			else
+			{
+				GL.Enable( All.AlphaTest );
+				GLESConfig.GlCheckError( this );
+
+				a2c = alphaToCoverage;
+
+				GL.AlphaFunc( ConvertCompareFunction( func ), value / 255.0f );
+				GLESConfig.GlCheckError( this );
+			}
+			if ( a2c != lasta2c && _rsCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
+			{
+				if ( a2c )
+					GL.Enable( All.SampleAlphaToCoverage );
+				else
+					GL.Disable( All.SampleAlphaToCoverage );
+
+				GLESConfig.GlCheckError( this );
+
+				lasta2c = a2c;
+			}
 		}
 
 		public override void SetClipPlane( ushort index, float A, float B, float C, float D )

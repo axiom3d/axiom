@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			get
 			{
-				switch( attribute.ToLower() )
+				switch ( attribute.ToLower() )
 				{
 					case "target":
 						GLESSurfaceDescription target = new GLESSurfaceDescription();

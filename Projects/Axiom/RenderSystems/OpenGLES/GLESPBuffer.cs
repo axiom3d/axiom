@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="format"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public GLESPBuffer(PixelComponentType format, int width, int height)
+		public GLESPBuffer( PixelComponentType format, int width, int height )
 		{
 			Format = format;
 			Width = width;
@@ -91,7 +91,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="fmt"></param>
 		/// <returns></returns>
-		public static PixelComponentType GetPixelComponentType(PixelFormat fmt)
+		public static PixelComponentType GetPixelComponentType( PixelFormat fmt )
 		{
 			throw new NotImplementedException();
 		}

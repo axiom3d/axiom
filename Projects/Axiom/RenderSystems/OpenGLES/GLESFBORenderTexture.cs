@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
-		
+
 		public GLESFBORenderTexture( GLESFBORTTManager manager, string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
 			: base( name, target, writeGamma, fsaa )
 		{
@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			Width = _fbo.Width;
 			Height = _fbo.Height;
 		}
- 
+
 		#endregion Construction and Destruction
 
 		#region GLESRenderTexture Implementation
@@ -81,7 +81,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 			}
 		}
-		
+
 		public override void SwapBuffers( bool waitForVSync )
 		{
 			_fbo.SwapBuffers();

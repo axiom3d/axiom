@@ -58,7 +58,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		public TK.All GLFormat
 		{
-			get { return _glInternalFormat; }
+			get
+			{
+				return _glInternalFormat;
+			}
 		}
 		public GLESHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
 			: base( width, height, depth, format, usage, false, false )
@@ -114,6 +117,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		protected void FreeBuffer()
 		{
+			if ( _buffer.Data == IntPtr.Zero )
+				return; //not allocated
+
 			// Free buffer if we're STATIC to save memory
 			if ( ( Usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
@@ -245,9 +251,10 @@ namespace Axiom.RenderSystems.OpenGLES
 			PixelBox scaled;
 
 			if ( src.Width != dstBox.Width ||
-				src.Height != dstBox.Height ||
-				src.Depth != dstBox.Depth )
+				 src.Height != dstBox.Height ||
+				 src.Depth != dstBox.Depth )
 			{
+				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] Scale to destination size." );
 				// Scale to destination size. Use DevIL and not iluScale because ILU screws up for 
 				// floating point textures and cannot cope with 3D images.
 				// This also does pixel format conversion if needed
@@ -256,8 +263,10 @@ namespace Axiom.RenderSystems.OpenGLES
 				Image.Scale( src, scaled, ImageFilter.Bilinear );
 			}
 			else if ( ( src.Format != Format ) ||
-				( ( GLESPixelUtil.GetGLOriginFormat( src.Format ) == 0 ) && ( src.Format != PixelFormat.R8G8B8 ) ) )
+					( ( GLESPixelUtil.GetGLOriginFormat( src.Format ) == 0 ) && ( src.Format != PixelFormat.R8G8B8 ) ) )
 			{
+				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] Extents match, but format is not accepted as valid source format for GL." );
+				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] Source.Format = {0}, Format = {1}, GLOriginFormat = {2}", src.Format, Format, GLESPixelUtil.GetGLOriginFormat( src.Format ) );
 				// Extents match, but format is not accepted as valid source format for GL
 				// do conversion in temporary buffer
 				AllocateBuffer();
@@ -267,6 +276,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			else
 			{
+				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] No scaling or conversion needed." );
 				scaled = src;
 				if ( src.Format == PixelFormat.R8G8B8 )
 				{
@@ -300,7 +310,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					{
 						Memory.UnpinObject( data );
 						data = null;
-						_buffer.Data = IntPtr.Zero;						
+						_buffer.Data = IntPtr.Zero;
 						_buffer = null;
 					}
 				}

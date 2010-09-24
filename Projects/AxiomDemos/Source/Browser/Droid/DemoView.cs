@@ -100,8 +100,7 @@ namespace Droid
 		public override void Close()
 		{
 			_engine = null;
-			Root.Instance.Shutdown();
-			Root.Instance.RenderSystem.Shutdown();
+			demo.Dispose();
 			base.Close();
 		}
 
