@@ -42,125 +42,125 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class GLESDefaultHardwareIndexBuffer : HardwareIndexBuffer
-    {
-        protected byte[] _data;
-        protected IntPtr _dataPtr;
+	/// <summary>
+	/// 
+	/// </summary>
+	public class GLESDefaultHardwareIndexBuffer : HardwareIndexBuffer
+	{
+		protected byte[] _data;
+		protected IntPtr _dataPtr;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="idxType"></param>
-        /// <param name="numIndexes"></param>
-        /// <param name="usage"></param>
-        public GLESDefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
-            : base( idxType, numIndexes, usage, true, false )// always software, never shadowed
-        {
-            if ( idxType == IndexType.Size32 )
-            {
-                throw new AxiomException( "32 bit hardware buffers are not allowed in OpenGL ES." );
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="idxType"></param>
+		/// <param name="numIndexes"></param>
+		/// <param name="usage"></param>
+		public GLESDefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
+			: base( idxType, numIndexes, usage, true, false )// always software, never shadowed
+		{
+			if ( idxType == IndexType.Size32 )
+			{
+				throw new AxiomException( "32 bit hardware buffers are not allowed in OpenGL ES." );
+			}
 
-            _data = new byte[ sizeInBytes ];
-            _dataPtr = Memory.PinObject( _data );
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        public IntPtr GetData( int offset )
-        {
-            return new IntPtr( _dataPtr.ToInt32() + offset );
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="locking"></param>
-        /// <returns></returns>
-        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-        {
-            // Only for use internally, no 'locking' as such
-            return GetData( offset );
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void UnlockImpl()
-        {
-            // Nothing to do
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="locking"></param>
-        /// <returns></returns>
-        public override IntPtr Lock( int offset, int length, BufferLocking locking )
-        {
-            isLocked = true;
-            return GetData( offset );
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public override void Unlock()
-        {
-            isLocked = false;
-            // Nothing to do
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="dest"></param>
-        public override void ReadData( int offset, int length, IntPtr dest )
-        {
-            Contract.Requires( ( offset + length ) <= sizeInBytes );
-            Memory.Copy( GetData( offset ), dest, length );
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="src"></param>
-        /// <param name="discardWholeBuffer"></param>
-        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-        {
-            Contract.Requires( ( offset + length ) <= sizeInBytes );
-            // ignore discard, memory is not guaranteed to be zeroised
-            Memory.Copy( src, GetData( offset ), length );
-        }
+			_data = new byte[ sizeInBytes ];
+			_dataPtr = Memory.PinObject( _data );
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		public IntPtr GetData( int offset )
+		{
+			return new IntPtr( _dataPtr.ToInt32() + offset );
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		{
+			// Only for use internally, no 'locking' as such
+			return GetData( offset );
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void UnlockImpl()
+		{
+			// Nothing to do
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+		{
+			isLocked = true;
+			return GetData( offset );
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void Unlock()
+		{
+			isLocked = false;
+			// Nothing to do
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="dest"></param>
+		public override void ReadData( int offset, int length, IntPtr dest )
+		{
+			Contract.Requires( ( offset + length ) <= sizeInBytes );
+			Memory.Copy( GetData( offset ), dest, length );
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="src"></param>
+		/// <param name="discardWholeBuffer"></param>
+		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		{
+			Contract.Requires( ( offset + length ) <= sizeInBytes );
+			// ignore discard, memory is not guaranteed to be zeroised
+			Memory.Copy( src, GetData( offset ), length );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( _data != null )
-                    {
-                        Memory.UnpinObject( _data );
-                        _data = null;
-                    }
-                }
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( _data != null )
+					{
+						Memory.UnpinObject( _data );
+						_data = null;
+					}
+				}
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
-        }
-    }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+	}
 }
 

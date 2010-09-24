@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.A4R4G4B4:
 				case PixelFormat.A2R10G10B10:
 				// This case in incorrect, swaps R & B channels
-				//                return GLES.PixelFormat.BGRA;
+				//return GLES.PixelFormat.BGRA;
 
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
@@ -149,6 +149,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.B8G8R8:
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.X8R8G8B8:
+				case PixelFormat.A8R8G8B8:
 				case PixelFormat.A8B8G8R8:
 				case PixelFormat.B8G8R8A8:
 					{
@@ -316,13 +317,13 @@ namespace Axiom.RenderSystems.OpenGLES
 					return PixelFormat.BYTE_LA;
 
 				case GLES.All.Rgb:
-					return PixelFormat.X8R8G8B8;
+					return PixelFormat.A8R8G8B8;
 				case GLES.All.Rgba:
 #if (AXIOM_PLATFORM_IPHONE)
 				// seems that in iPhone we need this value to get the right color
 				return PixelFormat.A8R8G8B8;
 #else
-					return PixelFormat.X8B8G8R8;
+					return PixelFormat.A8R8G8B8;
 #endif
 #if GL_BGRA
 			case GLES.All.Rgba:

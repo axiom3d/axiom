@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 		}
-		
+
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -217,7 +217,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			if ( PixelUtil.IsCompressed( data.Format ) )
 			{
 
-				if ( data.Format != Format || !data.IsConsecutive ) 
+				if ( data.Format != Format || !data.IsConsecutive )
 					throw new AxiomException( "Compressed images must be consecutive, in the source format." );
 
 				All format = GLESPixelUtil.GetClosestGLInternalFormat( Format );
@@ -270,7 +270,17 @@ namespace Axiom.RenderSystems.OpenGLES
 					GLESConfig.GlCheckError( this );
 				}
 
-				GL.TexSubImage2D( _faceTarget, _level, dest.Left, dest.Top, dest.Width, dest.Height, (All)GLESPixelUtil.GetGLOriginFormat( data.Format ), (All)GLESPixelUtil.GetGLOriginDataType( data.Format ), data.Data );
+				//GL.TexSubImage2D( _faceTarget, _level, dest.Left, dest.Top, dest.Width, dest.Height, (All)GLESPixelUtil.GetGLOriginFormat( data.Format ), (All)GLESPixelUtil.GetGLOriginDataType( data.Format ), data.Data );
+
+				int[] pixels = new int[ dest.Width * dest.Height ];
+				for ( int y = 0; y < dest.Height; y++ )
+				{
+					for ( int x = 0; x < dest.Width; x++ )
+					{
+						pixels[ ( y * dest.Width ) + x ] = ColorEx.Red.ToRGBA();
+					}
+				}
+				GL.TexSubImage2D( All.Texture2D, 0, dest.Top, dest.Left, dest.Width, dest.Height, All.Rgba, All.UnsignedByte, pixels );
 				GLESConfig.GlCheckError( this );
 			}
 

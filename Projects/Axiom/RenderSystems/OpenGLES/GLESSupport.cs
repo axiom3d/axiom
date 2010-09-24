@@ -236,13 +236,13 @@ namespace Axiom.RenderSystems.OpenGLES
 			//get version
 			_version = GL.GetString( All.Version );
 			Contract.Requires( !string.IsNullOrEmpty( _version ) );
-			
+
 			//get vendor
 			_vendor = GL.GetString( All.Vendor );
 
 			//get renderer
-			_videoCard = GL.GetString(All.Renderer);
-			
+			_videoCard = GL.GetString( All.Renderer );
+
 			// Set extension list
 			StringBuilder ext = new StringBuilder();
 			_extensionList = new List<string>();
