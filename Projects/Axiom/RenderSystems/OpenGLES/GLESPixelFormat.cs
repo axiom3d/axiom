@@ -52,42 +52,42 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="fm"></param>
 		/// <returns>a GLenum describing the format, or 0 if there is no exactly matching 
 		/// one (and conversion is needed)</returns>
-		public static GLES.PixelFormat GetGLOriginFormat( PixelFormat fmt )
+		public static GLES.All GetGLOriginFormat( PixelFormat fmt )
 		{
 			switch ( fmt )
 			{
 				case PixelFormat.A8:
-					return GLES.PixelFormat.Alpha;
+					return GLES.All.Alpha;
 
 				case PixelFormat.L8:
 				case PixelFormat.L16:
 				case PixelFormat.FLOAT16_R:
 				case PixelFormat.FLOAT32_R:
-					return GLES.PixelFormat.Luminance;
+					return GLES.All.Luminance;
 
 				case PixelFormat.BYTE_LA:
 				case PixelFormat.SHORT_GR:
 				case PixelFormat.FLOAT16_GR:
 				case PixelFormat.FLOAT32_GR:
-					return GLES.PixelFormat.LuminanceAlpha;
+					return GLES.All.LuminanceAlpha;
 
 				// PVRTC compressed formats
 #if GL_IMG_texture_compression_pvrtc
 			case PixelFormat.PVRTC_RGB2:
-				return GLES.PixelFormat.COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+				return GLES.All.COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
 			case PixelFormat.PVRTC_RGB4:
-				return GLES.PixelFormat.COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+				return GLES.All.COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 			case PixelFormat.PVRTC_RGBA2:
-				return GLES.PixelFormat.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+				return GLES.All.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
 			case PixelFormat.PVRTC_RGBA4:
-				return GLES.PixelFormat.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+				return GLES.All.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
 #endif
 				case PixelFormat.R3G3B2:
 				case PixelFormat.R5G6B5:
 				case PixelFormat.FLOAT16_RGB:
 				case PixelFormat.FLOAT32_RGB:
 				case PixelFormat.SHORT_RGB:
-					return GLES.PixelFormat.Rgb;
+					return GLES.All.Rgb;
 
 				case PixelFormat.X8R8G8B8:
 				case PixelFormat.A8R8G8B8:
@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.A4R4G4B4:
 				case PixelFormat.A2R10G10B10:
 				// This case in incorrect, swaps R & B channels
-				//return GLES.PixelFormat.BGRA;
+				//return GLES.All.BGRA;
 
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
@@ -104,20 +104,20 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.FLOAT16_RGBA:
 				case PixelFormat.FLOAT32_RGBA:
 				case PixelFormat.SHORT_RGBA:
-					return GLES.PixelFormat.Rgba;
+					return GLES.All.Rgba;
 
 #if AXIOM_ENDIAN_BIG
 				// Formats are in native endian, so R8G8B8 on little endian is
 				// BGR, on big endian it is RGB.
 				case PixelFormat.R8G8B8:
-					return GLES.PixelFormat.Rgb;
+					return GLES.All.Rgb;
 				case PixelFormat.B8G8R8:
 					return 0;
 #else
 				case PixelFormat.R8G8B8:
 					return 0;
 				case PixelFormat.B8G8R8:
-					return GLES.PixelFormat.Rgb;
+					return GLES.All.Rgb;
 #endif
 				case PixelFormat.DXT1:
 				case PixelFormat.DXT3:
@@ -415,9 +415,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="data"></param>
 		/// <param name="outputFormat"></param>
 		/// <returns></returns>
-		public static PixelBox ConvertToGLformat( PixelBox data, out GLES.PixelFormat outputFormat )
+		public static PixelBox ConvertToGLformat( PixelBox data, out GLES.All outputFormat )
 		{
-			GLES.PixelFormat glFormat = GetGLOriginFormat( data.Format );
+			GLES.All glFormat = GetGLOriginFormat( data.Format );
 			outputFormat = glFormat;
 			if ( glFormat != 0 )
 			{
@@ -432,7 +432,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				converted = new PixelBox();
 				// Convert BGR -> RGB
 				converted.Format = PixelFormat.R8G8B8;
-				outputFormat = GLES.PixelFormat.Rgb;
+				outputFormat = GLES.All.Rgb;
 				converted = new PixelBox( data.Width, data.Height, data.Depth, data.Format );
 				converted.Data = data.Data;
 				unsafe
