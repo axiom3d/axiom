@@ -12,7 +12,7 @@ using Android.Widget;
 
 namespace Droid
 {
-	[Activity( MainLauncher = true, Label="Axiom Demo Browser" )]
+	[Activity( MainLauncher = true, Label = "Axiom Demo Browser" )]
 	public class AxiomDemoActivity : Activity
 	{
 		DemoView view;
@@ -26,8 +26,8 @@ namespace Droid
 		{
 			base.OnCreate( bundle );
 
-			view = new DemoView(this);
-			SetContentView(view);
+			view = new DemoView( this );
+			SetContentView( view );
 			//// Inflate our UI from its XML layout description
 			//SetContentView( R.layout.demo );
 

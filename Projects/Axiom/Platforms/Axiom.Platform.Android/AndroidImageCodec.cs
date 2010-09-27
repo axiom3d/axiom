@@ -64,7 +64,7 @@ namespace Axiom.Platform.Android
 		#endregion Fields and Properties
 
 		#region Construction and Destructions
-		
+
 		public AndroidImageCodec( string type )
 		{
 			this._imageType = type;
@@ -74,9 +74,9 @@ namespace Axiom.Platform.Android
 
 		#region Methods
 
-		private  Media.PixelFormat Convert( Bitmap.Config config )
+		private Media.PixelFormat Convert( Bitmap.Config config )
 		{
-			switch( config.Name().ToLower() )
+			switch ( config.Name().ToLower() )
 			{
 				case "alpha_8":
 					return Media.PixelFormat.A8;
