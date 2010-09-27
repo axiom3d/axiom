@@ -323,7 +323,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				// seems that in iPhone we need this value to get the right color
 				return PixelFormat.A8R8G8B8;
 #else
-					return PixelFormat.A8R8G8B8;
+					return PixelFormat.X8B8G8R8;
 #endif
 #if GL_BGRA
 			case GLES.All.Rgba:
