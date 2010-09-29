@@ -2004,6 +2004,7 @@ namespace Axiom.Graphics
 				if ( ( (TextureEffect)effectList[ i ] ).type == type )
 				{
 					effectList.RemoveAt( i );
+					i--;
 				}
 			}
 		}
