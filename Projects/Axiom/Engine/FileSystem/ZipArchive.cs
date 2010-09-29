@@ -70,9 +70,6 @@ namespace Axiom.FileSystem
 		private ZipInputStream _zipStream;
 		private List<FileInfo> _fileList = new List<FileInfo>();
 
-		/// <summary>Directory stack of previous directories </summary>
-		private Stack<string> _directoryStack;
-
 		#endregion Fields and Properties
 
 		#region Utility Methods
