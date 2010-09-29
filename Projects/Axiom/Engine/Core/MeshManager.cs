@@ -41,6 +41,7 @@ using Axiom.Graphics;
 
 using Real = System.Single;
 using ResourceHandle = System.UInt64;
+using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
@@ -51,6 +52,7 @@ namespace Axiom.Core
 	/// </summary>
 	public class MeshManager : ResourceManager, IManualResourceLoader
 	{
+
 		#region Enumerations and Structures
 
 		/// <summary>
@@ -118,6 +120,44 @@ namespace Axiom.Core
 			set
 			{
 				_boundsPaddingFactor = value;
+			}
+		}
+
+		private readonly ChainedEvent<MeshSerializerArgs> _processMaterialNameEvent = new ChainedEvent<MeshSerializerArgs>();
+		/// <summary>
+		/// This event allows users to hook into the mesh loading process and
+		///	modify references within the mesh as they are loading. Material 
+		///	references can be processed using this event which allows
+		///	finer control over resources.
+		/// </summary>
+		public event EventHandler<MeshSerializerArgs> ProcessMaterialName
+		{
+			add
+			{
+				_processMaterialNameEvent.EventSinks += value;
+			}
+			remove
+			{
+				_processMaterialNameEvent.EventSinks -= value;
+			}
+		}
+
+		private readonly ChainedEvent<MeshSerializerArgs> _processSkeletonNameEvent = new ChainedEvent<MeshSerializerArgs>();
+		/// <summary>
+		/// This event allows users to hook into the mesh loading process and
+		///	modify references within the mesh as they are loading. Skeletal 
+		///	references can be processed using this event which allows
+		///	finer control over resources.
+		/// </summary>
+		public event EventHandler<MeshSerializerArgs> ProcessSkeletonName
+		{
+			add
+			{
+				_processSkeletonNameEvent.EventSinks += value;
+			}
+			remove
+			{
+				_processSkeletonNameEvent.EventSinks -= value;
 			}
 		}
 
@@ -1124,6 +1164,16 @@ namespace Axiom.Core
 
 		}
 
+		protected internal void FireProcessMaterialName( Mesh mesh, string name )
+		{
+			_processMaterialNameEvent.Fire(this, new MeshSerializerArgs { Mesh = mesh, Name = name}, (args) => { return true; });
+		}
+
+		protected internal void FireProcessSkeletonName( Mesh mesh, string name )
+		{
+			_processSkeletonNameEvent.Fire(this, new MeshSerializerArgs { Mesh = mesh, Name = name}, (args) => { return true; });
+		}
+
 		#endregion Methods
 
 		#region ResourceManager Implementation
@@ -1251,7 +1301,7 @@ namespace Axiom.Core
 #endif
 		#endregion CreateBoneMesh
 
-		public Mesh this[ string name ]
+		public new Mesh this[ string name ]
 		{
 			get
 			{
@@ -1285,4 +1335,23 @@ namespace Axiom.Core
 
 		#endregion IManualResourceLoader Implementation
 	}
+
+	#region MeshSerializer Events
+
+	/// <summary>
+	///	Used to supply info to the ProcessMaterialName and ProcessSkeletonName events.
+	/// </summary>
+	public class MeshSerializerArgs : EventArgs
+	{
+		/// <summary>
+		/// The mesh being serialized
+		/// </summary>
+		public Mesh Mesh;
+		/// <summary>
+		/// The name of the the Mesh/Skeleton to process
+		/// </summary>
+		public string Name;
+	}
+
+	#endregion MeshSerializer Events
 }

@@ -43,6 +43,7 @@ using Axiom.Core;
 
 namespace Axiom.Serialization
 {
+
 	/// <summary>
 	///		Class for serialising mesh data to/from an OGRE .mesh file.
 	/// </summary>
@@ -68,7 +69,7 @@ namespace Axiom.Serialization
 		/// <summary>
 		///		Current version string.
 		/// </summary>
-		private static string currentVersion = "[MeshSerializer_v1.40]";
+		private static string currentVersion = "[MeshSerializer_v1.41]";
 
 		#endregion Fields
 
@@ -83,6 +84,7 @@ namespace Axiom.Serialization
 			implementations.Add( "[MeshSerializer_v1.10]", new MeshSerializerImplv11() );
 			implementations.Add( "[MeshSerializer_v1.20]", new MeshSerializerImplv12() );
 			implementations.Add( "[MeshSerializer_v1.30]", new MeshSerializerImplv13() );
+			implementations.Add( "[MeshSerializer_v1.40]", new MeshSerializerImplv14() );
 			implementations.Add( currentVersion, new MeshSerializerImpl() );
 		}
 
