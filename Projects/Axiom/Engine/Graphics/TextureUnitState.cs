@@ -1487,6 +1487,7 @@ namespace Axiom.Graphics
 				names[ i ] = string.Format( "{0}_{1}{2}", baseName, i, ext );
 			}
 
+			SetAnimatedTextureName( names, numFrames, duration );
 		}
 
 		/// <summary>
