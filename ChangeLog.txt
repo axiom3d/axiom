@@ -1,3 +1,6 @@
+2010/03/03 - borrillis
+Updated TagPoint class to OGRE r9083
+
 Global Changes:
 	* Some code reorgonizations ( Grouping fields and thier properties together, etc )
 	* Started removing Weak Type collections with Generics
@@ -799,9 +802,9 @@ Known Problems:
   in at least one other place, namely the Fresnel demo.  Comment out the following line in GLRenderSystem.CheckCaps()
   to prevent it from happening in the meantime:
 
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")) {
-                caps.SetCap(Capabilities.VertexBuffer);
-            }
+			if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")) {
+				caps.SetCap(Capabilities.VertexBuffer);
+			}
   This should be resolved fairly soon.
 
 In the works:
