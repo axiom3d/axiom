@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -52,39 +52,39 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public TextureType TextureType;
 		public TexCoordCalcMethod TexCoordCalcMethod;
-        public LayerBlendModeEx LayerBlendMode;
-        public int CoordIndex;
+		public LayerBlendModeEx LayerBlendMode;
+		public int CoordIndex;
 
 		#endregion Fields
 
-        #region Object Implementation
+		#region Object Implementation
 
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            int layerBlendHash;
-            if ( LayerBlendMode == null )
-                layerBlendHash = 0;
-            else
-                layerBlendHash = LayerBlendMode.GetHashCode();
+		public override int GetHashCode()
+		{
+			int layerBlendHash;
+			if ( LayerBlendMode == null )
+				layerBlendHash = 0;
+			else
+				layerBlendHash = LayerBlendMode.GetHashCode();
 
-            return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ layerBlendHash ^ CoordIndex.GetHashCode();
-        }
+			return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ layerBlendHash ^ CoordIndex.GetHashCode();
+		}
 
-        public override string ToString()
-        {
-            return ( new System.Text.StringBuilder() )
-                .AppendFormat( "[ TextureType: {0}; TexCoordCalcMethod : {1}; LayerBlendMode : {2}; CoordIndex : {3} ]",
-                               this.TextureType.ToString(),
-                               this.TexCoordCalcMethod.ToString(),
-                               this.LayerBlendMode.ToString(),
-                               this.CoordIndex.ToString() ).ToString();
-        }
+		public override string ToString()
+		{
+			return ( new System.Text.StringBuilder() )
+				.AppendFormat( "[ TextureType: {0}; TexCoordCalcMethod : {1}; LayerBlendMode : {2}; CoordIndex : {3} ]",
+							   this.TextureType.ToString(),
+							   this.TexCoordCalcMethod.ToString(),
+							   this.LayerBlendMode.ToString(),
+							   this.CoordIndex.ToString() ).ToString();
+		}
 
-        #endregion Object Implementation
-    }
+		#endregion Object Implementation
+	}
 }

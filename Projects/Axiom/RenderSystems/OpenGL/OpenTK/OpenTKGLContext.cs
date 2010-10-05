@@ -26,6 +26,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id:$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -40,102 +47,102 @@ using OpenTK.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    internal class OpenTKGLContext : GLContext
-    {
-        private GLControl glControl;
-        private GraphicsContext graphicsContext;
-        private OpenTK.Platform.IWindowInfo windowInfo;
+	internal class OpenTKGLContext : GLContext
+	{
+		private GLControl glControl;
+		private GraphicsContext graphicsContext;
+		private OpenTK.Platform.IWindowInfo windowInfo;
 
-        public OpenTKGLContext(OpenTK.Platform.IWindowInfo windowInfo)
-        {
-            // setup created glcontrol / gtk control
-            this.windowInfo = windowInfo;
-            graphicsContext = new GraphicsContext(GraphicsMode.Default, this.windowInfo);
-            Initialized = true;
-        }
+		public OpenTKGLContext( OpenTK.Platform.IWindowInfo windowInfo )
+		{
+			// setup created glcontrol / gtk control
+			this.windowInfo = windowInfo;
+			graphicsContext = new GraphicsContext( GraphicsMode.Default, this.windowInfo );
+			Initialized = true;
+		}
 
-        public OpenTKGLContext(Control control, Control parent)
-        {
-            // replaces form's (parent) picturebox (control) by glControl
-            glControl = new GLControl();
-            glControl.VSync = false;
-            glControl.Dock = control.Dock;
-            glControl.BackColor = control.BackColor;
-            glControl.Location = control.Location;
-            glControl.Name = control.Name;
-            glControl.Size = control.Size;
-            glControl.TabIndex = control.TabIndex;
-            glControl.Show();
+		public OpenTKGLContext( Control control, Control parent )
+		{
+			// replaces form's (parent) picturebox (control) by glControl
+			glControl = new GLControl();
+			glControl.VSync = false;
+			glControl.Dock = control.Dock;
+			glControl.BackColor = control.BackColor;
+			glControl.Location = control.Location;
+			glControl.Name = control.Name;
+			glControl.Size = control.Size;
+			glControl.TabIndex = control.TabIndex;
+			glControl.Show();
 
-            int count = 0;
-            while (glControl.Context == null && ++count < 10)
-            {
-                System.Threading.Thread.Sleep(10);
-            }
-            if (glControl.Context == null)
-                throw new Exception("glControl.Context == null");
+			int count = 0;
+			while ( glControl.Context == null && ++count < 10 )
+			{
+				System.Threading.Thread.Sleep( 10 );
+			}
+			if ( glControl.Context == null )
+				throw new Exception( "glControl.Context == null" );
 
-            Form form = (Form)parent;
-            form.Controls.Add(glControl);
-            control.Hide();
+			Form form = (Form)parent;
+			form.Controls.Add( glControl );
+			control.Hide();
 
-            if (ResourceGroupManager.Instance.FindResourceFileInfo(ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico").Count > 0)
-            {
-                using (System.IO.Stream icon = ResourceGroupManager.Instance.OpenResource("AxiomIcon.ico"))
-                {
-                    if (icon != null)
-                        form.Icon = new System.Drawing.Icon(icon);
-                }
-            }
-            Initialized = true;
-        }
+			if ( ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" ).Count > 0 )
+			{
+				using ( System.IO.Stream icon = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) )
+				{
+					if ( icon != null )
+						form.Icon = new System.Drawing.Icon( icon );
+				}
+			}
+			Initialized = true;
+		}
 
-        public override bool VSync
-        {
-            get
-            {
-                return graphicsContext.VSync;
-            }
-            set
-            {
-                graphicsContext.VSync = value;
-            }
-        }
+		public override bool VSync
+		{
+			get
+			{
+				return graphicsContext.VSync;
+			}
+			set
+			{
+				graphicsContext.VSync = value;
+			}
+		}
 
-        public void SwapBuffers()
-        {
-            if (glControl != null)
-            {
-                glControl.MakeCurrent();
-                glControl.SwapBuffers();
-            }
-            else if (graphicsContext != null)
-            {
-                graphicsContext.MakeCurrent(windowInfo);
-                graphicsContext.SwapBuffers();
-            }
-        }
+		public void SwapBuffers()
+		{
+			if ( glControl != null )
+			{
+				glControl.MakeCurrent();
+				glControl.SwapBuffers();
+			}
+			else if ( graphicsContext != null )
+			{
+				graphicsContext.MakeCurrent( windowInfo );
+				graphicsContext.SwapBuffers();
+			}
+		}
 
-        public override void SetCurrent()
-        {
-            if (glControl != null)
-            {
-                glControl.MakeCurrent();
-            }
-            else if (graphicsContext != null)
-            {
-                graphicsContext.MakeCurrent(windowInfo);
-            }
-        }
+		public override void SetCurrent()
+		{
+			if ( glControl != null )
+			{
+				glControl.MakeCurrent();
+			}
+			else if ( graphicsContext != null )
+			{
+				graphicsContext.MakeCurrent( windowInfo );
+			}
+		}
 
-        public override void EndCurrent()
-        {
-        }
+		public override void EndCurrent()
+		{
+		}
 
-        public override GLContext Clone()
-        {
-            throw new NotImplementedException();
-            return null;
-        }
-    }
+		public override GLContext Clone()
+		{
+			throw new NotImplementedException();
+			return null;
+		}
+	}
 }

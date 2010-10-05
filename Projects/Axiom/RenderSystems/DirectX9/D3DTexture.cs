@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// </summary>
 	/// <remarks>
 	/// When loading a cubic texture, the image with the texture base name plus the
-	/// "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.
+	/// "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automatically be loaded to construct it.
 	/// </remarks>
 	public sealed class D3DTexture : Texture
 	{
@@ -202,10 +202,8 @@ namespace Axiom.RenderSystems.DirectX9
 			_devParms = _device.CreationParameters;
 
 			// get our back buffer pixel format
-			using ( D3D.Surface back = _device.GetBackBuffer( 0, 0 ) )
-			{
-				_bbPixelFormat = back.Description.Format;
-			}
+			D3D.Surface back = _device.GetBackBuffer( 0, 0 );
+			_bbPixelFormat = back.Description.Format;
 		}
 
 		private void LoadNormalTexture()

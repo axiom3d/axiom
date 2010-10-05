@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -43,124 +43,127 @@ using System.Collections.Generic;
 
 namespace Axiom.Media
 {
-    /// <summary>
-    ///    Manages registering/fulfilling requests for codecs that handle various types of media.
-    /// </summary>
-    public sealed class CodecManager : IDisposable
-    {
-        #region Singleton implementation
+	/// <summary>
+	///    Manages registering/fulfilling requests for codecs that handle various types of media.
+	/// </summary>
+	public sealed class CodecManager : IDisposable
+	{
+		#region Singleton implementation
 
-        /// <summary>
-        ///     Singleton instance of this class.
-        /// </summary>
-        private static CodecManager instance;
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		private static CodecManager instance;
 
-        /// <summary>
-        ///     Internal constructor.  This class cannot be instantiated externally.
-        /// </summary>
-        internal CodecManager()
-        {
-            if (instance == null)
-            {
-                instance = this;
-            }
-        }
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		internal CodecManager()
+		{
+			if ( instance == null )
+			{
+				instance = this;
+			}
+		}
 
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static CodecManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static CodecManager Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
 
-        #endregion Singleton implementation
+		#endregion Singleton implementation
 
-        public void Dispose()
-        {
-            if (instance == this)
-            {
-                instance = null;
-            }
-        }
+		public void Dispose()
+		{
+			if ( instance == this )
+			{
+				instance = null;
+			}
+		}
 
-        #region Fields
+		#region Fields
 
-        /// <summary>
-        ///    List of registered media codecs.
-        /// </summary>
-        private Dictionary<string, ICodec> codecs = new Dictionary<string, ICodec>(new CaseInsensitiveStringComparer());
+		/// <summary>
+		///    List of registered media codecs.
+		/// </summary>
+		private Dictionary<string, ICodec> codecs = new Dictionary<string, ICodec>( new CaseInsensitiveStringComparer() );
 
-        #endregion Fields
+		#endregion Fields
 
-        /// <summary>
-        ///     Register all default IL image codecs.
-        /// </summary>
-        public void RegisterCodecs()
-        {
-            // register codecs
-            //RegisterCodec( new JPGCodec() );
-            //RegisterCodec( new BMPCodec() );
-            //RegisterCodec( new PNGCodec() );
-            //RegisterCodec( new DDSCodec() );
-            //RegisterCodec( new TGACodec() );
-        }
+		/// <summary>
+		///     Register all default IL image codecs.
+		/// </summary>
+		public void RegisterCodecs()
+		{
+			// register codecs
+			//RegisterCodec( new JPGCodec() );
+			//RegisterCodec( new BMPCodec() );
+			//RegisterCodec( new PNGCodec() );
+			//RegisterCodec( new DDSCodec() );
+			//RegisterCodec( new TGACodec() );
+		}
 
-        /// <summary>
-        ///    Registers a new codec that can handle a particular type of media files.
-        /// </summary>
-        /// <param name="codec"></param>
-        public void RegisterCodec(ICodec codec)
-        {
-            codecs[codec.Type] = codec;
-        }
+		/// <summary>
+		///    Registers a new codec that can handle a particular type of media files.
+		/// </summary>
+		/// <param name="codec"></param>
+		public void RegisterCodec( ICodec codec )
+		{
+			codecs[ codec.Type ] = codec;
+		}
 
-        /// <summary>
-        ///    Gets the codec registered for the passed in file extension.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public ICodec GetCodec(string extension)
-        {
-            if (!codecs.ContainsKey(extension))
-            {
-                LogManager.Instance.Write("No codec available for media with extension .{0}", extension);
-                RegisterCodec(new NullCodec(extension));
-            }
+		/// <summary>
+		///    Gets the codec registered for the passed in file extension.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public ICodec GetCodec( string extension )
+		{
+			if ( !codecs.ContainsKey( extension ) )
+			{
+				LogManager.Instance.Write( "No codec available for media with extension .{0}", extension );
+				RegisterCodec( new NullCodec( extension ) );
+			}
 
-            return (ICodec)codecs[extension];
-        }
-    }
+			return (ICodec)codecs[ extension ];
+		}
+	}
 
-    public class NullCodec : ICodec
-    {
-        private string _type;
-        public NullCodec(string extension)
-        {
-            _type = extension;
-        }
+	public class NullCodec : ICodec
+	{
+		private string _type;
+		public NullCodec( string extension )
+		{
+			_type = extension;
+		}
 
-        public object Decode(Stream input, Stream output, params object[] args)
-        {
-            return null;
-        }
+		public object Decode( Stream input, Stream output, params object[] args )
+		{
+			return null;
+		}
 
-        public void Encode(Stream input, Stream output, params object[] args)
-        {
-            return;
-        }
+		public void Encode( Stream input, Stream output, params object[] args )
+		{
+			return;
+		}
 
-        public void EncodeToFile(Stream input, string fileName, object codecData)
-        {
-            return;
-        }
+		public void EncodeToFile( Stream input, string fileName, object codecData )
+		{
+			return;
+		}
 
-        public string Type
-        {
-            get { return _type; }
-        }
-    }
+		public string Type
+		{
+			get
+			{
+				return _type;
+			}
+		}
+	}
 }

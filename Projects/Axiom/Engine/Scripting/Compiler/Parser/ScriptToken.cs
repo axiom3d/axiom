@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2007  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Scripting.Compiler.Parser
 {
 	public struct ScriptToken
@@ -50,6 +50,6 @@ namespace Axiom.Scripting.Compiler.Parser
 		public Tokens type;
 		/// This holds the line number of the input stream where the token was found.
 		public uint line;
-		
+
 	}
 }

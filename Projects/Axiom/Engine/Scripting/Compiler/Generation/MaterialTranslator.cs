@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2007  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -56,7 +56,7 @@ namespace Axiom.Scripting.Compiler
 		class MaterialTranslator : Translator
 		{
 			private Material _material;
-			Dictionary<string,string> _textureAliases = new Dictionary<string,string>();
+			Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
 
 			public MaterialTranslator( ScriptCompiler compiler )
 				: base( compiler )
@@ -118,7 +118,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					case Keywords.ID_LOD_DISTANCES:
 						{
-                            LodValueList lods = new LodValueList();
+							LodValueList lods = new LodValueList();
 							foreach ( AbstractNode node in property.values )
 							{
 								if ( node.Type == AbstractNodeType.Atom && ( (AtomAbstractNode)node ).IsNumber )

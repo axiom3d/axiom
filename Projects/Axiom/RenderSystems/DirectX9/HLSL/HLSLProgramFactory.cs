@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -42,35 +42,35 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
-    /// <summary>
-    /// Summary description for HLSLProgramFactory.
-    /// </summary>
-    public class HLSLProgramFactory : HighLevelGpuProgramFactory
-    {
-        #region Fields
+	/// <summary>
+	/// Summary description for HLSLProgramFactory.
+	/// </summary>
+	public class HLSLProgramFactory : HighLevelGpuProgramFactory
+	{
+		#region Fields
 
-        private string language = "hlsl";
+		private string language = "hlsl";
 
-        #endregion
+		#endregion
 
-        #region HighLevelGpuProgramFactory Implementation
+		#region HighLevelGpuProgramFactory Implementation
 
-        public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
-        {
-            return new HLSLProgram( creator, name, handle, group, isManual, loader );
-        }
+		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
+		{
+			return new HLSLProgram( creator, name, handle, group, isManual, loader );
+		}
 
-        /// <summary>
-        ///     Gets the high level language that this factory handles requests for.
-        /// </summary>
-        public override string Language
-        {
-            get
-            {
-                return language;
-            }
-        }
+		/// <summary>
+		///     Gets the high level language that this factory handles requests for.
+		/// </summary>
+		public override string Language
+		{
+			get
+			{
+				return language;
+			}
+		}
 
-        #endregion HighLevelGpuProgramFactory Implementation
-    }
+		#endregion HighLevelGpuProgramFactory Implementation
+	}
 }

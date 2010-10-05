@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -127,7 +127,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion IsSupported Property
-			
+
 		#region Name Property
 
 		/// <summary>
@@ -204,9 +204,9 @@ namespace Axiom.Graphics
 				_compiledIlluminationPasses = value;
 			}
 		}
-		
+
 		#endregion compiledIlluminationPasses Property
-			
+
 		#region IlluminationPassCount Property
 
 		/// <summary>
@@ -663,24 +663,24 @@ namespace Axiom.Graphics
 
 		#endregion Pass Convienence Properties
 
-        #region Scheme Property
-        private ushort _schemeIndex;
-        private string _schemeName;
+		#region Scheme Property
+		private ushort _schemeIndex;
+		private string _schemeName;
 
-        public String Scheme
-        {
-            get
-            {
-                return _schemeName;
-            }
+		public String Scheme
+		{
+			get
+			{
+				return _schemeName;
+			}
 
-            set
-            {
-                _schemeIndex = MaterialManager.Instance.GetSchemeIndex(_schemeName);
-                _schemeName = value;
-            }
-        }
-        #endregion Scheme Property
+			set
+			{
+				_schemeIndex = MaterialManager.Instance.GetSchemeIndex( _schemeName );
+				_schemeName = value;
+			}
+		}
+		#endregion Scheme Property
 
 		/// <summary>
 		///    Returns true if this Technique has already been loaded.
@@ -784,7 +784,7 @@ namespace Axiom.Graphics
 		public void CopyTo( Technique target )
 		{
 			target._isSupported = _isSupported;
-		    target.SchemeIndex = SchemeIndex;
+			target.SchemeIndex = SchemeIndex;
 			target._lodIndex = _lodIndex;
 
 			target.RemoveAllPasses();
@@ -800,8 +800,8 @@ namespace Axiom.Graphics
 			// recompile illumination passes
 			if ( _compiledIlluminationPasses )
 			{
-			    target.CompileIlluminationPasses();
-		    }
+				target.CompileIlluminationPasses();
+			}
 		}
 
 		/// <summary>
@@ -813,7 +813,7 @@ namespace Axiom.Graphics
 		/// </param>
 		internal String Compile( bool autoManageTextureUnits )
 		{
-            StringBuilder compileErrors = new StringBuilder();
+			StringBuilder compileErrors = new StringBuilder();
 			// assume not supported unless it proves otherwise
 			_isSupported = false;
 
@@ -821,107 +821,107 @@ namespace Axiom.Graphics
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			int numAvailTexUnits = caps.TextureUnitCount;
 
-		    int passNum = 0;
+			int passNum = 0;
 
-            for (int i = 0; i < _passes.Count; i++, passNum++)
-            {
-                Pass currPass = _passes[ i ];
+			for ( int i = 0; i < _passes.Count; i++, passNum++ )
+			{
+				Pass currPass = _passes[ i ];
 
-                // Adjust pass index
-                // TODO: currPass.Index = passNum;
+				// Adjust pass index
+				// TODO: currPass.Index = passNum;
 
-                // Check for advanced blending operation support
+				// Check for advanced blending operation support
 #warning Capabilities.AdvancedBlendOperation implementation required
-                //if ( ( currPass.SceneBlendingOperation != SceneBlendingOperation.Add || currPass.SceneBlendingOperationAlpha != SceneBlendingOperation.Add ) &&
-                //    !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
-                //{
-                //    return false;
-                //}
+				//if ( ( currPass.SceneBlendingOperation != SceneBlendingOperation.Add || currPass.SceneBlendingOperationAlpha != SceneBlendingOperation.Add ) &&
+				//    !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
+				//{
+				//    return false;
+				//}
 
-                // Check texture unit requirements
-                int numTexUnitsRequired = currPass.TextureUnitStageCount;
+				// Check texture unit requirements
+				int numTexUnitsRequired = currPass.TextureUnitStageCount;
 
-                // Don't trust getNumTextureUnits for programmable
-                if (!currPass.HasFragmentProgram)
-                {
-                    if (numTexUnitsRequired > numAvailTexUnits)
-                    {
-                        if (!autoManageTextureUnits)
-                        {
-                            // The user disabled auto pass split
-                            return String.Format("Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i);
-                        }
-                        else if (currPass.HasVertexProgram)
-                        {
-                            // Can't do this one, and can't split a programmable pass
-                            return String.Format("Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i);
-                        }
-                    }
-                }
+				// Don't trust getNumTextureUnits for programmable
+				if ( !currPass.HasFragmentProgram )
+				{
+					if ( numTexUnitsRequired > numAvailTexUnits )
+					{
+						if ( !autoManageTextureUnits )
+						{
+							// The user disabled auto pass split
+							return String.Format( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
+						}
+						else if ( currPass.HasVertexProgram )
+						{
+							// Can't do this one, and can't split a programmable pass
+							return String.Format( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
+						}
+					}
+				}
 
-                // if this has a vertex program, check the syntax code to be sure the hardware supports it
-                if (currPass.HasVertexProgram)
-                {
-                    // check vertex program version
-                    if (!currPass.VertexProgram.IsSupported)
-                    {
-                        // can't do this one
-                        return String.Format("Pass {0}: Fragment Program {1} cannot be used - {2}",
-                                              i,
-                                              currPass.VertexProgramName,
-                                              currPass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported.");
-                    }
-                }
+				// if this has a vertex program, check the syntax code to be sure the hardware supports it
+				if ( currPass.HasVertexProgram )
+				{
+					// check vertex program version
+					if ( !currPass.VertexProgram.IsSupported )
+					{
+						// can't do this one
+						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}",
+											  i,
+											  currPass.VertexProgramName,
+											  currPass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported." );
+					}
+				}
 
-                if (currPass.HasGeometryProgram)
-                {
-                    // check fragment program version
-                    if (!currPass.GeometryProgram.IsSupported)
-                    {
-                        // can't do this one
-                        return String.Format("Pass {0}: Geometry Program {1} cannot be used - {2}",
-                                              i,
-                                              currPass.GeometryProgramName,
-                                              currPass.GeometryProgram.HasCompileError ? "Compile Error." : "Not Supported.");
-                    }
-                }
-                else
-                {
-                    // check support for a few fixed function options while we are here
-                    for (int j = 0; j < currPass.TextureUnitStageCount; j++)
-                    {
-                        TextureUnitState texUnit = currPass.GetTextureUnitState(j);
+				if ( currPass.HasGeometryProgram )
+				{
+					// check fragment program version
+					if ( !currPass.GeometryProgram.IsSupported )
+					{
+						// can't do this one
+						return String.Format( "Pass {0}: Geometry Program {1} cannot be used - {2}",
+											  i,
+											  currPass.GeometryProgramName,
+											  currPass.GeometryProgram.HasCompileError ? "Compile Error." : "Not Supported." );
+					}
+				}
+				else
+				{
+					// check support for a few fixed function options while we are here
+					for ( int j = 0; j < currPass.TextureUnitStageCount; j++ )
+					{
+						TextureUnitState texUnit = currPass.GetTextureUnitState( j );
 
-                        // check to make sure we have some cube mapping support
-                        if (texUnit.Is3D && !caps.HasCapability(Capabilities.CubeMapping))
-                        {
-                            return String.Format("Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j);
-                        }
+						// check to make sure we have some cube mapping support
+						if ( texUnit.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
+						{
+							return String.Format( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
+						}
 
-                        // if this is a Dot3 blending layer, make sure we can support it
-                        if (texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability(Capabilities.Dot3))
-                        {
-                            return String.Format("Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j);
-                        }
-                    }
+						// if this is a Dot3 blending layer, make sure we can support it
+						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
+						{
+							return String.Format( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
+						}
+					}
 
-                    // keep splitting until the texture units required for this pass are available
-                    while (numTexUnitsRequired > numAvailTexUnits)
-                    {
-                        // split this pass up into more passes
-                        currPass = currPass.Split(numAvailTexUnits);
-                        numTexUnitsRequired = currPass.TextureUnitStageCount;
-                    }
-                }
-            }
-            // if we made it this far, we are good to go!
+					// keep splitting until the texture units required for this pass are available
+					while ( numTexUnitsRequired > numAvailTexUnits )
+					{
+						// split this pass up into more passes
+						currPass = currPass.Split( numAvailTexUnits );
+						numTexUnitsRequired = currPass.TextureUnitStageCount;
+					}
+				}
+			}
+			// if we made it this far, we are good to go!
 			_isSupported = true;
 
 			// CompileIlluminationPasses() used to be called here, but it is now done on
 			// demand since it the illumination passes are only needed for additive shadows
 			// Now compile for categorized illumination, in case we need it later
 			//CompileIlluminationPasses();
-		    return "";
+			return "";
 		}
 
 		/// <summary>
@@ -1242,7 +1242,7 @@ namespace Axiom.Graphics
 		{
 			//if ( illuminationPassesCompileStage != IlluminationPassesState.Disabled )
 			//{
-				_parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			//}
 		}
 
@@ -1297,14 +1297,14 @@ namespace Axiom.Graphics
 			// iterate through all passes and apply texture aliases
 			bool testResult = false;
 
-			foreach ( Pass p in _passes)
+			foreach ( Pass p in _passes )
 			{
 				if ( p.ApplyTextureAliases( aliasList, apply ) )
 					testResult = true;
 			}
 
 			return testResult;
-			
+
 		}
 
 		/// <summary>
@@ -1321,113 +1321,113 @@ namespace Axiom.Graphics
 
 		#endregion
 
-        #region Material Schemes
+		#region Material Schemes
 
-        /// <summary>
-        /// Get/Set the 'scheme name' for this technique. 
-        /// </summary>
-        /// <remarks>
-        /// Material schemes are used to control top-level switching from one
-        /// set of techniques to another. For example, you might use this to 
-        /// define 'high', 'medium' and 'low' complexity levels on materials
-        /// to allow a user to pick a performance / quality ratio. Another
-        /// possibility is that you have a fully HDR-enabled pipeline for top
-        /// machines, rendering all objects using unclamped shaders, and a 
-        /// simpler pipeline for others; this can be implemented using 
-        /// schemes.
-        /// <para>
-        /// Every technique belongs to a scheme - if you don't specify one, the
-        /// Technique belongs to the scheme called 'Default', which is also the
-        /// scheme used to render by default. The active scheme is set one of
-        /// two ways - either by calling <see ref="Viewport.MaterialScheme" />, or
-        /// by manually calling <see ref="MaterialManager.ActiveScheme" />.
-        /// </para>
-        /// </remarks>
-        public String SchemeName
-        {
-            get
-            {
-                return MaterialManager.Instance.GetSchemeName( SchemeIndex );
-            }
-            set
-            {
-                SchemeIndex = MaterialManager.Instance.GetSchemeIndex( value );
-                this.NotifyNeedsRecompile();
-            }
-        }
-		
-	    /// <summary>
-	    /// The material scheme index
-        /// </summary>
-        public ushort SchemeIndex
-        {
-            get; 
-            protected set;
-        }
+		/// <summary>
+		/// Get/Set the 'scheme name' for this technique. 
+		/// </summary>
+		/// <remarks>
+		/// Material schemes are used to control top-level switching from one
+		/// set of techniques to another. For example, you might use this to 
+		/// define 'high', 'medium' and 'low' complexity levels on materials
+		/// to allow a user to pick a performance / quality ratio. Another
+		/// possibility is that you have a fully HDR-enabled pipeline for top
+		/// machines, rendering all objects using unclamped shaders, and a 
+		/// simpler pipeline for others; this can be implemented using 
+		/// schemes.
+		/// <para>
+		/// Every technique belongs to a scheme - if you don't specify one, the
+		/// Technique belongs to the scheme called 'Default', which is also the
+		/// scheme used to render by default. The active scheme is set one of
+		/// two ways - either by calling <see ref="Viewport.MaterialScheme" />, or
+		/// by manually calling <see ref="MaterialManager.ActiveScheme" />.
+		/// </para>
+		/// </remarks>
+		public String SchemeName
+		{
+			get
+			{
+				return MaterialManager.Instance.GetSchemeName( SchemeIndex );
+			}
+			set
+			{
+				SchemeIndex = MaterialManager.Instance.GetSchemeIndex( value );
+				this.NotifyNeedsRecompile();
+			}
+		}
 
-	    #endregion
+		/// <summary>
+		/// The material scheme index
+		/// </summary>
+		public ushort SchemeIndex
+		{
+			get;
+			protected set;
+		}
 
-        #region Shadow Materials
+		#endregion
 
-        private Material _shadowCasterMaterial;
-        private string _shadowCasterMaterialName = string.Empty;
-        public Material ShadowCasterMaterial
-        {
-            get
-            {
-                return _shadowCasterMaterial;
-            }
-            set
-            {
-                if ( value != null )
-                {
-                    _shadowCasterMaterial = value;
-                    _shadowCasterMaterialName = _shadowCasterMaterial.Name;
-                }
-                else
-                {
-                    _shadowCasterMaterial = null;
-                    _shadowCasterMaterialName = String.Empty;
-                }
-            }
-        }
+		#region Shadow Materials
 
-        public void SetShadowCasterMaterial( string name )
-        {
-            _shadowCasterMaterialName = name;
-            _shadowCasterMaterial = (Material)MaterialManager.Instance[ name ];
-        }
+		private Material _shadowCasterMaterial;
+		private string _shadowCasterMaterialName = string.Empty;
+		public Material ShadowCasterMaterial
+		{
+			get
+			{
+				return _shadowCasterMaterial;
+			}
+			set
+			{
+				if ( value != null )
+				{
+					_shadowCasterMaterial = value;
+					_shadowCasterMaterialName = _shadowCasterMaterial.Name;
+				}
+				else
+				{
+					_shadowCasterMaterial = null;
+					_shadowCasterMaterialName = String.Empty;
+				}
+			}
+		}
+
+		public void SetShadowCasterMaterial( string name )
+		{
+			_shadowCasterMaterialName = name;
+			_shadowCasterMaterial = (Material)MaterialManager.Instance[ name ];
+		}
 
 
-        private Material _shadowReceiverMaterial;
-        private string _shadowReceiverMaterialName = string.Empty;
-        public Material ShadowReceiverMaterial
-        {
-            get
-            {
-                return _shadowReceiverMaterial;
-            }
-            set
-            {
-                if ( value != null )
-                {
-                    _shadowReceiverMaterial = value;
-                    _shadowReceiverMaterialName = _shadowReceiverMaterial.Name;
-                }
-                else
-                {
-                    _shadowReceiverMaterial = null;
-                    _shadowReceiverMaterialName = String.Empty;
-                }
-            }
-        }
+		private Material _shadowReceiverMaterial;
+		private string _shadowReceiverMaterialName = string.Empty;
+		public Material ShadowReceiverMaterial
+		{
+			get
+			{
+				return _shadowReceiverMaterial;
+			}
+			set
+			{
+				if ( value != null )
+				{
+					_shadowReceiverMaterial = value;
+					_shadowReceiverMaterialName = _shadowReceiverMaterial.Name;
+				}
+				else
+				{
+					_shadowReceiverMaterial = null;
+					_shadowReceiverMaterialName = String.Empty;
+				}
+			}
+		}
 
-        public void SetShadowReceiverMaterial( string name )
-        {
-            _shadowReceiverMaterialName = name;
-            _shadowReceiverMaterial = (Material)MaterialManager.Instance[ name ];
-        }
+		public void SetShadowReceiverMaterial( string name )
+		{
+			_shadowReceiverMaterialName = name;
+			_shadowReceiverMaterial = (Material)MaterialManager.Instance[ name ];
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

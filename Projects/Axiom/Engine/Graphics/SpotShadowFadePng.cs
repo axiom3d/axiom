@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -39,15 +39,15 @@ using System;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///		This exists so we don't have to be dependent on an external .png file
-    ///		for this core feature (PNG used to fade out the edges of spotlight shadows)
-    /// </summary>
-    public class SpotShadowFadePng
-    {
-        public const int SPOT_SHADOW_FADE_PNG_SIZE = 9728;
+	/// <summary>
+	///		This exists so we don't have to be dependent on an external .png file
+	///		for this core feature (PNG used to fade out the edges of spotlight shadows)
+	/// </summary>
+	public class SpotShadowFadePng
+	{
+		public const int SPOT_SHADOW_FADE_PNG_SIZE = 9728;
 
-        public static readonly byte[] SPOT_SHADOW_FADE_PNG = new byte[ SPOT_SHADOW_FADE_PNG_SIZE ] {
+		public static readonly byte[] SPOT_SHADOW_FADE_PNG = new byte[ SPOT_SHADOW_FADE_PNG_SIZE ] {
 			  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52  
 			, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x08, 0x02, 0x00, 0x00, 0x00, 0x4c, 0x5c, 0xf6  
 			, 0x9c, 0x00, 0x00, 0x00, 0x04, 0x67, 0x41, 0x4d, 0x41, 0x00, 0x00, 0xb1, 0x8e, 0x7c, 0xfb, 0x51  
@@ -656,5 +656,5 @@ namespace Axiom.Graphics
 			, 0x00, 0xe4, 0x18, 0x78, 0xd0, 0x19, 0xcc, 0xd0, 0x59, 0x69, 0xd8, 0x89, 0xcb, 0x88, 0x13, 0x98
 			, 0xa1, 0x43, 0x42, 0x83, 0xf9, 0xd4, 0x6b, 0x80, 0x00, 0x03, 0x00, 0x36, 0x48, 0x61, 0x8b, 0x2d
 			, 0x54, 0xbb, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82, 0x0a };
-    }
+	}
 }

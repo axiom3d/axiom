@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -76,13 +76,13 @@ namespace Axiom.Media
 			return rgba;
 		}
 
-		public static uint[] GetBitMasks(PixelFormat format)
+		public static uint[] GetBitMasks( PixelFormat format )
 		{
-			uint[] rgba = new uint[4];
-			rgba[0] = PixelConverter.GetDescriptionFor(format).rmask;
-			rgba[1] = PixelConverter.GetDescriptionFor(format).gmask;
-			rgba[2] = PixelConverter.GetDescriptionFor(format).bmask;
-			rgba[3] = PixelConverter.GetDescriptionFor(format).amask;
+			uint[] rgba = new uint[ 4 ];
+			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rmask;
+			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gmask;
+			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bmask;
+			rgba[ 3 ] = PixelConverter.GetDescriptionFor( format ).amask;
 			return rgba;
 		}
 
@@ -107,14 +107,12 @@ namespace Axiom.Media
 				switch ( format )
 				{
 					case PixelFormat.DXT1:
-						Debug.Assert( depth == 1 );
-						return ( ( width * 3 ) / 4 ) * ( ( height * 3 ) / 4 ) * 8;
+						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 8 * depth;
 					case PixelFormat.DXT2:
 					case PixelFormat.DXT3:
 					case PixelFormat.DXT4:
 					case PixelFormat.DXT5:
-						Debug.Assert( depth == 1 );
-						return ( ( width * 3 ) / 4 ) * ( ( height * 3 ) / 4 ) * 16;
+						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
 					default:
 						throw new Exception( "Invalid compressed pixel format" );
 				}
@@ -124,13 +122,14 @@ namespace Axiom.Media
 				return width * height * depth * GetNumElemBytes( format );
 			}
 		}
-        public static bool IsAccessible( PixelFormat format )
-        {
-            if ( format == PixelFormat.Unknown )
-                return false;
-            PixelFormatFlags flags = PixelConverter.GetDescriptionFor( format ).flags;
-            return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
-        }
+
+		public static bool IsAccessible( PixelFormat format )
+		{
+			if ( format == PixelFormat.Unknown )
+				return false;
+			PixelFormatFlags flags = PixelConverter.GetDescriptionFor( format ).flags;
+			return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
+		}
 
 		public static bool IsCompressed( PixelFormat format )
 		{
@@ -147,10 +146,10 @@ namespace Axiom.Media
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.HasAlpha ) > 0;
 		}
 
-        public static bool IsLuminance( PixelFormat format )
-        {
-            return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Luminance ) > 0;
-        }
+		public static bool IsLuminance( PixelFormat format )
+		{
+			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Luminance ) > 0;
+		}
 
 		public static bool IsNativeEndian( PixelFormat format )
 		{
@@ -167,31 +166,31 @@ namespace Axiom.Media
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
 
-        /// <summary>
-        /// Gets the format from given name.
-        /// </summary>
-        /// <param name="name">The string of format name</param>
-        /// <param name="accessibleOnly">If true, non-accessible format will treat as invalid format, otherwise, all supported formats are valid.</param>
-        /// <param name="caseSensitive">Should be set true if string match should use case sensitivity.</param>
-        /// <returns>The format match the format name, or <see cref="PixelFormat.Unknown"/> if is invalid name.</returns>
-        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly, bool caseSensitive)
-        {
-            // We are storing upper-case format names.
-            String tmp = caseSensitive ? name : name.ToUpper();
+		/// <summary>
+		/// Gets the format from given name.
+		/// </summary>
+		/// <param name="name">The string of format name</param>
+		/// <param name="accessibleOnly">If true, non-accessible format will treat as invalid format, otherwise, all supported formats are valid.</param>
+		/// <param name="caseSensitive">Should be set true if string match should use case sensitivity.</param>
+		/// <returns>The format match the format name, or <see cref="PixelFormat.Unknown"/> if is invalid name.</returns>
+		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly, bool caseSensitive )
+		{
+			// We are storing upper-case format names.
+			String tmp = caseSensitive ? name : name.ToUpper();
 
-            for ( int i = 0; i < (int)PixelFormat.Count; ++i )
-            {
-                PixelFormat pf = (PixelFormat)i;
-                if ( !accessibleOnly || IsAccessible( pf ) )
-                {
-                    if ( tmp == GetFormatName( pf ) )
-                        return pf;
-                }
-            }
-            return PixelFormat.Unknown;
-        }
+			for ( int i = 0; i < (int)PixelFormat.Count; ++i )
+			{
+				PixelFormat pf = (PixelFormat)i;
+				if ( !accessibleOnly || IsAccessible( pf ) )
+				{
+					if ( tmp == GetFormatName( pf ) )
+						return pf;
+				}
+			}
+			return PixelFormat.Unknown;
+		}
 
-	    public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
+		public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
 		{
 			switch ( integerBits )
 			{
@@ -290,5 +289,5 @@ namespace Axiom.Media
 
 			return format;
 		}
-    }
+	}
 }

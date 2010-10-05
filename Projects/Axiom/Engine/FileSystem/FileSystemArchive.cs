@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -119,23 +119,17 @@ namespace Axiom.FileSystem
 		{
 			if ( pattern == "" )
 				pattern = "*";
-			if ( currentDir == "" ) currentDir = _basePath;
+			if ( currentDir == "" )
+				currentDir = _basePath;
+
+			string[] files;
 
 #if !( XBOX || XBOX360 || ANDROID )
-			SearchOption so;
-			if ( recursive )
-			{
-				so = SearchOption.AllDirectories;
-			}
-			else
-			{
-				so = SearchOption.TopDirectoryOnly;
-			}
-
-			foreach ( string file in Directory.GetFiles( currentDir, pattern, so ) )
+			files = Directory.GetFiles( currentDir, pattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly );
 #else
-			foreach( string file in Directory.GetFiles( currentDir, pattern ) )
+			files = recursive ? this.getFilesRecursively(currentDir, pattern) : Directory.GetFiles(currentDir, pattern);
 #endif
+			foreach ( string file in files )
 			{
 				System.IO.FileInfo fi = new System.IO.FileInfo( file );
 				if ( simpleList != null )
@@ -155,6 +149,35 @@ namespace Axiom.FileSystem
 				}
 			}
 		}
+
+#if ( XBOX || XBOX360 ||ANDROID )
+		/// <summary>
+		/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+		/// </summary>
+		/// <param name="dir">The directory to search.</param>
+		/// <param name="pattern">The search string to match against the names of files in path.</param>
+		private string[] getFilesRecursively( string dir, string pattern )
+		{
+			List<string> searchResults = new List<string>();
+			string[] folders = Directory.GetDirectories( dir );
+			string[] files = Directory.GetFiles( dir );
+
+			foreach ( string folder in folders )
+			{
+				searchResults.AddRange( this.getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
+			}
+
+			foreach ( string file in files )
+			{
+				string ext = Path.GetExtension( file );
+
+				if ( pattern == "*" || pattern.Contains( ext ) )
+					searchResults.Add( file );
+			}
+
+			return searchResults.ToArray();
+		}
+#endif
 
 		/// <summary>Utility method to change the current directory </summary>
 		protected void changeDirectory( string dir )
@@ -230,7 +253,7 @@ namespace Axiom.FileSystem
 													File.Create(_basePath + @"__testWrite.Axiom", 1 );
 #endif
 												}
-												catch( Exception ex )
+												catch ( Exception ex )
 												{
 													IsReadOnly = true;
 												}
@@ -285,7 +308,7 @@ namespace Axiom.FileSystem
 												if ( File.Exists( _basePath + filename ) )
 												{
 													System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
-													strm = (Stream) fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+													strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
 												}
 											} );
 

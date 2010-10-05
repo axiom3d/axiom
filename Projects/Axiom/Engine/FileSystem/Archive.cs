@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -41,329 +41,332 @@ using System.IO;
 using Axiom.Core;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.FileSystem
 {
-    #region FileInfo Class and Collection
+	#region FileInfo Class and Collection
 
-    /// <summary>Information about a file/directory within the archive will be returned using a FileInfo struct.</summary>
-    /// <see cref="Archive"/>
-    /// <ogre name="FileInfo">
-    ///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
-    public struct FileInfo
-    {
-        /// The archive in which the file has been found (for info when performing
-        /// multi-Archive searches, note you should still open through ResourceGroupManager)
-        public Archive Archive;
-        /// The file's fully qualified name
-        public String Filename;
-        /// Path name; separated by '/' and ending with '/'
-        public String Path;
-        /// Base filename
-        public String Basename;
-        /// Compressed size
-        public long CompressedSize;
-        /// Uncompressed size
-        public long UncompressedSize;
-    };
+	/// <summary>Information about a file/directory within the archive will be returned using a FileInfo struct.</summary>
+	/// <see cref="Archive"/>
+	/// <ogre name="FileInfo">
+	///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	public struct FileInfo
+	{
+		/// The archive in which the file has been found (for info when performing
+		/// multi-Archive searches, note you should still open through ResourceGroupManager)
+		public Archive Archive;
+		/// The file's fully qualified name
+		public String Filename;
+		/// Path name; separated by '/' and ending with '/'
+		public String Path;
+		/// Base filename
+		public String Basename;
+		/// Compressed size
+		public long CompressedSize;
+		/// Uncompressed size
+		public long UncompressedSize;
+	};
 
-    /// <ogre name="FileInfoList">
-    ///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
-    public class FileInfoList : List<FileInfo>
-    {
-    }
+	/// <ogre name="FileInfoList">
+	///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	public class FileInfoList : List<FileInfo>
+	{
+	}
 
-    #endregion FileInfo Class and Collection
+	#endregion FileInfo Class and Collection
 
-    #region Archive Abstract Class and Factory
+	#region Archive Abstract Class and Factory
 
-    /// <summary>Archive-handling class.</summary>
-    /// <remarks>
-    /// An archive is a generic term for a container of files. This may be a
-    /// filesystem folder, it may be a compressed archive, it may even be 
-    /// a remote location shared on the web. This class is designed to be 
-    /// subclassed to provide access to a range of file locations. 
-    /// <para/>
-    /// Instances of this class are never constructed or even handled by end-user
-    /// applications. They are constructed by custom ArchiveFactory classes, 
-    /// which plugins can register new instances of using ArchiveManager. 
-    /// End-user applications will typically use ResourceManager or 
-    /// ResourceGroupManager to manage resources at a higher level, rather than 
-    /// reading files directly through this class. Doing it this way allows you
-    /// to benefit from OGRE's automatic searching of multiple file locations 
-    /// for the resources you are looking for.
-    /// </remarks>
-    /// <ogre name="FileInfo">
-    ///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
-    public abstract class Archive: IDisposable
-    {
-        #region Fields and Properties
+	/// <summary>Archive-handling class.</summary>
+	/// <remarks>
+	/// An archive is a generic term for a container of files. This may be a
+	/// filesystem folder, it may be a compressed archive, it may even be 
+	/// a remote location shared on the web. This class is designed to be 
+	/// subclassed to provide access to a range of file locations. 
+	/// <para/>
+	/// Instances of this class are never constructed or even handled by end-user
+	/// applications. They are constructed by custom ArchiveFactory classes, 
+	/// which plugins can register new instances of using ArchiveManager. 
+	/// End-user applications will typically use ResourceManager or 
+	/// ResourceGroupManager to manage resources at a higher level, rather than 
+	/// reading files directly through this class. Doing it this way allows you
+	/// to benefit from OGRE's automatic searching of multiple file locations 
+	/// for the resources you are looking for.
+	/// </remarks>
+	/// <ogre name="FileInfo">
+	///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	public abstract class Archive : IDisposable
+	{
+		#region Fields and Properties
 
-        #region Name Property
+		#region Name Property
 
-        private string _name;
-        /// Archive name
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            protected set
-            {
-                _name = value;
-            }
-        }
-        
-        #endregion Name Property
+		private string _name;
+		/// Archive name
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+			protected set
+			{
+				_name = value;
+			}
+		}
 
-        #region Type Property
+		#endregion Name Property
 
-        private string _type;
-        /// Archive type code
-        public string Type
-        {
-            get
-            {
-                return _type;
-            }
-            protected set
-            {
-                _type = value;
-            }
-        }
+		#region Type Property
 
-        #endregion Type Property
+		private string _type;
+		/// Archive type code
+		public string Type
+		{
+			get
+			{
+				return _type;
+			}
+			protected set
+			{
+				_type = value;
+			}
+		}
 
-        #region IsReadOnly Property
-        private bool _isReadOnly;
-        public bool IsReadOnly
-        {
-            get 
-            {
-                return _isReadOnly;
-            }
-            protected set 
-            {
-                _isReadOnly = value;
-            }
-        }
-        #endregion IsReadOnly Property
+		#endregion Type Property
 
-        /// Is this archive case sensitive in the way it matches files
-        public abstract bool IsCaseSensitive
-        {
-            get;
-        }
+		#region IsReadOnly Property
+		private bool _isReadOnly;
+		public bool IsReadOnly
+		{
+			get
+			{
+				return _isReadOnly;
+			}
+			protected set
+			{
+				_isReadOnly = value;
+			}
+		}
+		#endregion IsReadOnly Property
 
-        /// <summary>
-        /// Is this archive capable of being monitored for additions, changes and deletions
-        /// </summary>
-        public virtual bool IsMonitorable
-        {
-            get { return false; }
-        }
+		/// Is this archive case sensitive in the way it matches files
+		public abstract bool IsCaseSensitive
+		{
+			get;
+		}
 
-        #endregion Fields and Properties
+		/// <summary>
+		/// Is this archive capable of being monitored for additions, changes and deletions
+		/// </summary>
+		public virtual bool IsMonitorable
+		{
+			get
+			{
+				return false;
+			}
+		}
 
-        #region Construction and Destruction
+		#endregion Fields and Properties
 
-        /// <summary>
-        /// Constructor - don't call direct, used by IArchiveFactory.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="archType"></param>
-        public Archive( string name, string archType )
-        {
-            _name = name;
-            _type = archType;
-            _isReadOnly = true;
-        }
+		#region Construction and Destruction
+
+		/// <summary>
+		/// Constructor - don't call direct, used by IArchiveFactory.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="archType"></param>
+		public Archive( string name, string archType )
+		{
+			_name = name;
+			_type = archType;
+			_isReadOnly = true;
+		}
 
 		~Archive()
 		{
 			dispose( false );
 		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        /// Loads the archive
-        /// </summary>
-        /// <remarks>
-        /// This initializes all the internal data of the class.
-        /// <para/>
-        /// Do not call this function directly, it is meant to be used
-        /// only by the ArchiveManager class.
-        /// </remarks>
-        public abstract void Load();
+		/// <summary>
+		/// Loads the archive
+		/// </summary>
+		/// <remarks>
+		/// This initializes all the internal data of the class.
+		/// <para/>
+		/// Do not call this function directly, it is meant to be used
+		/// only by the ArchiveManager class.
+		/// </remarks>
+		public abstract void Load();
 
-        /// <summary>
-        /// Unloads the archive
-        /// </summary>
-        /// <remarks>
-        /// Do not call this function directly, it is meant to be used
-        /// only by the ArchiveManager class.
-        /// </remarks>
-        public abstract void Unload();
+		/// <summary>
+		/// Unloads the archive
+		/// </summary>
+		/// <remarks>
+		/// Do not call this function directly, it is meant to be used
+		/// only by the ArchiveManager class.
+		/// </remarks>
+		public abstract void Unload();
 
-        /// <summary>
-        /// Open a stream on a given file. 
-        /// </summary>
-        /// <remarks>
-        /// There is no equivalent 'close' method; the returned stream
-        /// controls the lifecycle of this file operation.
-        /// </remarks>
-        /// <param name="filename">The fully qualified name of the file</param>
-        /// <param name="readOnly">True to open for Read Access, false for Read/Write </param>
-        /// <returns>A reference to a Stream which can be used to read / write
-        ///  the file. If the file is not present, returns null.
-        /// </returns>
-        public abstract Stream Open(string filename, bool readOnly);
+		/// <summary>
+		/// Open a stream on a given file. 
+		/// </summary>
+		/// <remarks>
+		/// There is no equivalent 'close' method; the returned stream
+		/// controls the lifecycle of this file operation.
+		/// </remarks>
+		/// <param name="filename">The fully qualified name of the file</param>
+		/// <param name="readOnly">True to open for Read Access, false for Read/Write </param>
+		/// <returns>A reference to a Stream which can be used to read / write
+		///  the file. If the file is not present, returns null.
+		/// </returns>
+		public abstract Stream Open( string filename, bool readOnly );
 
-        /// <summary>
-        /// Open a stream on a given file. 
-        /// </summary>
-        /// <remarks>
-        /// There is no equivalent 'close' method; the returned stream
-        /// controls the lifecycle of this file operation.
-        /// </remarks>
-        /// <param name="filename">The fully qualified name of the file</param>
-        /// <returns>
-        /// A reference to a Stream which can be used to read the file. If the file is not present, returns null.
-        /// </returns>
-        public Stream Open(string filename)
-        {
-            return Open( filename, true );
-        }
-
-        /// <summary>
-        /// Create a new file (or overwrite one already there).
-        /// </summary>
-        /// <remarks>If the archive is read-only then this method will fail.</remarks>
-        /// <param name="filename">The fully qualified name of the file</param>
-        /// <returns>A Stream which can be used to read / write the file.</returns>
-		public Stream Create(string filename) 
+		/// <summary>
+		/// Open a stream on a given file. 
+		/// </summary>
+		/// <remarks>
+		/// There is no equivalent 'close' method; the returned stream
+		/// controls the lifecycle of this file operation.
+		/// </remarks>
+		/// <param name="filename">The fully qualified name of the file</param>
+		/// <returns>
+		/// A reference to a Stream which can be used to read the file. If the file is not present, returns null.
+		/// </returns>
+		public Stream Open( string filename )
 		{
-            return Create( filename, false );
+			return Open( filename, true );
 		}
 
-        /// <summary>
-        /// Create a new file (or overwrite one already there).
-        /// </summary>
-        /// <remarks>If the archive is read-only then this method will fail.</remarks>
-        /// <param name="filename">The fully qualified name of the file</param>
-        /// <param name="overwrite">True to overwrite an existing file.</param>
-        /// <returns>A Stream which can be used to read / write the file.</returns>
-        public virtual Stream Create(string filename, bool overwrite )
-        {
-            throw new AxiomException("This archive does not support creation of files.");
-        }
-
-        /// <summary>
-        /// Delete a named file.
-        /// </summary>
-        /// <remarks>If the archive is read-only then this method will fail.</remarks>
-        /// <param name="filename">The fully qualified name of the file</param>
-        public virtual void Remove(string filename)
+		/// <summary>
+		/// Create a new file (or overwrite one already there).
+		/// </summary>
+		/// <remarks>If the archive is read-only then this method will fail.</remarks>
+		/// <param name="filename">The fully qualified name of the file</param>
+		/// <returns>A Stream which can be used to read / write the file.</returns>
+		public Stream Create( string filename )
 		{
-            throw new AxiomException("This archive does not support removal of files.");
+			return Create( filename, false );
 		}
 
-        #region List Method
+		/// <summary>
+		/// Create a new file (or overwrite one already there).
+		/// </summary>
+		/// <remarks>If the archive is read-only then this method will fail.</remarks>
+		/// <param name="filename">The fully qualified name of the file</param>
+		/// <param name="overwrite">True to overwrite an existing file.</param>
+		/// <returns>A Stream which can be used to read / write the file.</returns>
+		public virtual Stream Create( string filename, bool overwrite )
+		{
+			throw new AxiomException( "This archive does not support creation of files." );
+		}
 
-        /// <overloads>
-        /// <summary>
-        /// List all file names in the archive.
-        /// </summary>
-        /// <remarks>    
-        /// This method only returns filenames, you can also retrieve other
-        /// information using listFileInfo.
-        /// </remarks>
-        /// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
-        /// </overloads>
-        public List<string> List()
-        {
-            return List( true );
-        }
+		/// <summary>
+		/// Delete a named file.
+		/// </summary>
+		/// <remarks>If the archive is read-only then this method will fail.</remarks>
+		/// <param name="filename">The fully qualified name of the file</param>
+		public virtual void Remove( string filename )
+		{
+			throw new AxiomException( "This archive does not support removal of files." );
+		}
 
-        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
-        public abstract List<string> List( bool recursive );
+		#region List Method
 
-        #endregion List Method
+		/// <overloads>
+		/// <summary>
+		/// List all file names in the archive.
+		/// </summary>
+		/// <remarks>    
+		/// This method only returns filenames, you can also retrieve other
+		/// information using listFileInfo.
+		/// </remarks>
+		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+		/// </overloads>
+		public List<string> List()
+		{
+			return List( true );
+		}
 
-        #region ListFileInfo Method
+		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+		public abstract List<string> List( bool recursive );
 
-        /// <summary>
-        /// List all files in the archive with accompanying information.
-        /// </summary>
-        /// <returns>A list of structures detailing quite a lot of information about all the files in the archive.</returns>
-        public FileInfoList ListFileInfo()
-        {
-            return ListFileInfo( true );
-        }
+		#endregion List Method
 
-        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
-        public abstract FileInfoList ListFileInfo( bool recursive );
+		#region ListFileInfo Method
 
-        #endregion ListFileInfo Method
+		/// <summary>
+		/// List all files in the archive with accompanying information.
+		/// </summary>
+		/// <returns>A list of structures detailing quite a lot of information about all the files in the archive.</returns>
+		public FileInfoList ListFileInfo()
+		{
+			return ListFileInfo( true );
+		}
 
-        #region Find Method
+		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+		public abstract FileInfoList ListFileInfo( bool recursive );
 
-        /// <overloads>
-        /// <summary>
-        /// Find all file names matching a given pattern in this archive.
-        /// </summary>
-        /// <remarks> 
-        /// This method only returns filenames, you can also retrieve other
-        /// information using findFileInfo.
-        /// </remarks>
-        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-        /// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
-        /// </overloads>
-        public List<string> Find( string pattern )
-        {
-            return Find( pattern );
-        }
+		#endregion ListFileInfo Method
 
-        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
-        public abstract List<string> Find( string pattern, bool recursive );
+		#region Find Method
 
-        #endregion Find Method
+		/// <overloads>
+		/// <summary>
+		/// Find all file names matching a given pattern in this archive.
+		/// </summary>
+		/// <remarks> 
+		/// This method only returns filenames, you can also retrieve other
+		/// information using findFileInfo.
+		/// </remarks>
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+		/// </overloads>
+		public List<string> Find( string pattern )
+		{
+			return Find( pattern );
+		}
 
-        /// <summary>
-        /// Find out if the named file exists
-        /// </summary>
-        /// <param name="filename">fully qualified filename</param>
-        /// <returns></returns>
-        public abstract bool Exists( string fileName );
+		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+		public abstract List<string> Find( string pattern, bool recursive );
 
-        #region FindFileInfo Method
+		#endregion Find Method
 
-        /// <overloads>
-        /// <summary>
-        /// Find all files matching a given pattern in this archive and get 
-        /// some detailed information about them.
-        /// </summary>
-        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-        /// <returns>A list of file information structures for all files matching the criteria.</returns>
-        /// </overloads>
-        public FileInfoList FindFileInfo( string pattern )
-        {
-            return FindFileInfo( pattern, true );
-        }
+		/// <summary>
+		/// Find out if the named file exists
+		/// </summary>
+		/// <param name="filename">fully qualified filename</param>
+		/// <returns></returns>
+		public abstract bool Exists( string fileName );
 
-        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
-        public abstract FileInfoList FindFileInfo( string pattern, bool recursive );
+		#region FindFileInfo Method
 
-        #endregion FindFileInfo Method
+		/// <overloads>
+		/// <summary>
+		/// Find all files matching a given pattern in this archive and get 
+		/// some detailed information about them.
+		/// </summary>
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <returns>A list of file information structures for all files matching the criteria.</returns>
+		/// </overloads>
+		public FileInfoList FindFileInfo( string pattern )
+		{
+			return FindFileInfo( pattern, true );
+		}
 
-        #endregion Methods
+		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+		public abstract FileInfoList FindFileInfo( string pattern, bool recursive );
+
+		#endregion FindFileInfo Method
+
+		#endregion Methods
 
 		#region IDisposable Implementation
 
@@ -386,7 +389,7 @@ namespace Axiom.FileSystem
 			}
 		}
 
-        #endregion isDisposed Property
+		#endregion isDisposed Property
 
 		/// <summary>
 		/// Class level dispose method
@@ -436,30 +439,30 @@ namespace Axiom.FileSystem
 		#endregion IDisposable Implementation
 	}
 
-    /// <summary>
-    /// 	abstract class for plugin developers to override to create 
+	/// <summary>
+	/// 	abstract class for plugin developers to override to create 
 	///		new types of archive to load resources from.
-    /// </summary>
-    /// <remarks>            
-    /// All access to 'archives' (collections of files, compressed or
-    /// just folders, maybe even remote) is managed via the abstract
-    /// Archive class. Plugins are expected to provide the
-    /// implementation for the actual codec itself, but because a
-    /// subclass of Archive has to be created for every archive, a
-    /// factory class is required to create the appropriate subclass.
-    /// <para/>
-    /// So archive plugins create a subclass of Archive AND a subclass
-    /// of ArchiveFactory which creates instances of the Archive
-    /// subclass. See the 'Zip' and 'FileSystem' plugins for examples.
-    /// Each Archive and ArchiveFactory subclass pair deal with a
-    /// single archive type (identified by a string).
-    /// </remarks>
-    /// <ogre name="ArchiveFactory">
-    ///     <file name="OgreArchiveFactory.h"   revision="1.11" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
-    public class ArchiveFactory : AbstractFactory<Archive>
-    {
-    }
+	/// </summary>
+	/// <remarks>            
+	/// All access to 'archives' (collections of files, compressed or
+	/// just folders, maybe even remote) is managed via the abstract
+	/// Archive class. Plugins are expected to provide the
+	/// implementation for the actual codec itself, but because a
+	/// subclass of Archive has to be created for every archive, a
+	/// factory class is required to create the appropriate subclass.
+	/// <para/>
+	/// So archive plugins create a subclass of Archive AND a subclass
+	/// of ArchiveFactory which creates instances of the Archive
+	/// subclass. See the 'Zip' and 'FileSystem' plugins for examples.
+	/// Each Archive and ArchiveFactory subclass pair deal with a
+	/// single archive type (identified by a string).
+	/// </remarks>
+	/// <ogre name="ArchiveFactory">
+	///     <file name="OgreArchiveFactory.h"   revision="1.11" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	public class ArchiveFactory : AbstractFactory<Archive>
+	{
+	}
 
-    #endregion Archive Abstract Class and Factory
+	#endregion Archive Abstract Class and Factory
 }

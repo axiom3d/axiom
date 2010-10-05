@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -49,56 +49,56 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 namespace Axiom.RenderSystems.Xna
 {
 
-    public class DefaultForm : SWF.Form
-    {
-        private RenderWindow renderWindow;
+	public class DefaultForm : SWF.Form
+	{
+		private RenderWindow renderWindow;
 
-        public DefaultForm()
-        {
-            InitializeComponent();
-        }
+		public DefaultForm()
+		{
+			InitializeComponent();
+		}
 
-        protected override void WndProc( ref SWF.Message m )
-        {
-            if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
-                base.WndProc( ref m );
-        }
+		protected override void WndProc( ref SWF.Message m )
+		{
+			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+				base.WndProc( ref m );
+		}
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // DefaultForm
-            // 
-            this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size( 292, 266 );
-            this.Name = "DefaultForm";
-            this.Load += new System.EventHandler( this.DefaultForm_Load );
-            this.ResumeLayout( false );
+		private void InitializeComponent()
+		{
+			this.SuspendLayout();
+			// 
+			// DefaultForm
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
+			this.BackColor = System.Drawing.Color.Black;
+			this.ClientSize = new System.Drawing.Size( 292, 266 );
+			this.Name = "DefaultForm";
+			this.Load += new System.EventHandler( this.DefaultForm_Load );
+			this.ResumeLayout( false );
 
-        }
+		}
 
-        private void DefaultForm_Load( object sender, System.EventArgs e )
-        {
-            System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" );
-            if ( strm != null )
-                this.Icon = new System.Drawing.Icon( strm );
-        }
+		private void DefaultForm_Load( object sender, System.EventArgs e )
+		{
+			System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" );
+			if ( strm != null )
+				this.Icon = new System.Drawing.Icon( strm );
+		}
 
-        /// <summary>
-        ///		Get/Set the RenderWindow associated with this form.
-        /// </summary>
-        public RenderWindow RenderWindow
-        {
-            get
-            {
-                return renderWindow;
-            }
-            set
-            {
-                renderWindow = value;
-            }
-        }
-    }
+		/// <summary>
+		///		Get/Set the RenderWindow associated with this form.
+		/// </summary>
+		public RenderWindow RenderWindow
+		{
+			get
+			{
+				return renderWindow;
+			}
+			set
+			{
+				renderWindow = value;
+			}
+		}
+	}
 }

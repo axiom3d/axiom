@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -126,10 +126,10 @@ namespace Axiom.Graphics
 		///    Inverse of the current view matrix.
 		/// </summary>
 		protected Matrix4 inverseViewMatrix;
-        /// <summary>
-        ///    Inverse Transpose of the current world view matrix.
-        /// </summary>
-        protected Matrix4 inverseTransposeWorldViewMatrix;
+		/// <summary>
+		///    Inverse Transpose of the current world view matrix.
+		/// </summary>
+		protected Matrix4 inverseTransposeWorldViewMatrix;
 
 		/// <summary>
 		///		Current texture view projection matrix.
@@ -171,8 +171,8 @@ namespace Axiom.Graphics
 		protected bool inverseWorldMatrixDirty;
 		protected bool inverseWorldViewMatrixDirty;
 		protected bool inverseViewMatrixDirty;
-        protected bool inverseTransposeWorldViewMatrixDirty;
-        protected bool cameraPositionObjectSpaceDirty;
+		protected bool inverseTransposeWorldViewMatrixDirty;
+		protected bool cameraPositionObjectSpaceDirty;
 		protected bool textureViewProjMatrixDirty;
 
 		protected Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -218,8 +218,8 @@ namespace Axiom.Graphics
 			cameraPositionObjectSpaceDirty = true;
 			// cameraPositionDirty = true;
 			textureViewProjMatrixDirty = true;
-            viewMatrixDirty = true;
-            projMatrixDirty = true;
+			viewMatrixDirty = true;
+			projMatrixDirty = true;
 
 			// defaults for the blank light
 			blankLight.Diffuse = ColorEx.Black;
@@ -231,9 +231,9 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-        #region Lights
+		#region Lights
 
-        /// <summary>
+		/// <summary>
 		///    Get the light which is 'index'th closest to the current object 
 		/// </summary>
 		/// <param name="index">Ordinal value signifying the light to retreive, with 0 being closest, 1 being next closest, etc.</param>
@@ -246,7 +246,7 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				return currentLightList[index];
+				return currentLightList[ index ];
 			}
 		}
 
@@ -256,21 +256,21 @@ namespace Axiom.Graphics
 		public void SetCurrentLightList( LightList lightList )
 		{
 			currentLightList = lightList;
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index">Ordinal value signifying the light to retreive. <see cref="GetLight"/></param>
-        /// <returns></returns>
-	    public Real GetLightPowerScale( int index )
-	    {
-            return this.GetLight( index ).PowerScale;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index">Ordinal value signifying the light to retreive. <see cref="GetLight"/></param>
+		/// <returns></returns>
+		public Real GetLightPowerScale( int index )
+		{
+			return this.GetLight( index ).PowerScale;
+		}
 
-	    #endregion Lights
+		#endregion Lights
 
-        /// <summary>
+		/// <summary>
 		///		Sets the constant extrusion distance for directional lights.
 		/// </summary>
 		/// <param name="distance"></param>
@@ -309,8 +309,8 @@ namespace Axiom.Graphics
 				// inverseTransposeWorldMatrixDirty = true;
 				// inverseTransposeWorldViewMatrixDirty = true;
 				cameraPositionObjectSpaceDirty = true;
-                viewMatrixDirty = true;
-                projMatrixDirty = true;
+				viewMatrixDirty = true;
+				projMatrixDirty = true;
 			}
 		}
 
@@ -337,8 +337,8 @@ namespace Axiom.Graphics
 				inverseWorldViewMatrixDirty = true;
 				// inverseTransposeWorldViewMatrixDirty = true;
 				cameraPositionObjectSpaceDirty = true;
-                viewMatrixDirty = true;
-                projMatrixDirty = true;
+				viewMatrixDirty = true;
+				projMatrixDirty = true;
 			}
 		}
 
@@ -543,36 +543,36 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-                return this.ViewMatrix.Inverse();
+				return this.ViewMatrix.Inverse();
 			}
 		}
 
-        /// <summary>
-        ///    Gets/Sets the inverse, transpose of current concatenated view matrices.
-        /// </summary>
-        public Matrix4 InverseTransposeViewMatrix
-        {
-            get
-            {
-                return this.InverseViewMatrix.Transpose();
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the inverse, transpose of current concatenated view matrices.
+		/// </summary>
+		public Matrix4 InverseTransposeViewMatrix
+		{
+			get
+			{
+				return this.InverseViewMatrix.Transpose();
+			}
+		}
 
-        /// <summary>
-        ///    Gets/Sets the inverse of current concatenated world and view matrices.
-        /// </summary>
-        public Matrix4 InverseTransposeWorldViewMatrix
-        {
-            get
-            {
-                if (inverseTransposeWorldViewMatrixDirty)
-                {
-                    inverseTransposeWorldViewMatrix = this.InverseWorldViewMatrix.Transpose();
-                    inverseTransposeWorldViewMatrixDirty = false;
-                }
-                return inverseTransposeWorldViewMatrix;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the inverse of current concatenated world and view matrices.
+		/// </summary>
+		public Matrix4 InverseTransposeWorldViewMatrix
+		{
+			get
+			{
+				if ( inverseTransposeWorldViewMatrixDirty )
+				{
+					inverseTransposeWorldViewMatrix = this.InverseWorldViewMatrix.Transpose();
+					inverseTransposeWorldViewMatrixDirty = false;
+				}
+				return inverseTransposeWorldViewMatrix;
+			}
+		}
 
 		/// <summary>
 		///    Gets/Sets the position of the current camera in object space relative to the current renderable.
@@ -620,12 +620,12 @@ namespace Axiom.Graphics
 					}
 					else
 					{
-				projectionMatrix = camera.ProjectionMatrixRSDepth;
+						projectionMatrix = camera.ProjectionMatrixRSDepth;
 					}
-				if ( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
-				{
+					if ( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
+					{
 						projectionMatrix.m10 = -projectionMatrix.m10;
-					projectionMatrix.m11 = -projectionMatrix.m11;
+						projectionMatrix.m11 = -projectionMatrix.m11;
 						projectionMatrix.m12 = -projectionMatrix.m12;
 						projectionMatrix.m13 = -projectionMatrix.m12;
 					}

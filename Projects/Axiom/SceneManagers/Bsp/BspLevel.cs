@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -249,15 +249,15 @@ namespace Axiom.SceneManagers.Bsp
 			if ( createParam.ContainsKey( "Scale" ) )
 				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );
 
-            Vector3 move = Vector3.Zero;
-            if (createParam.ContainsKey("MoveX"))
-                Real.TryParse(createParam["MoveX"], out move.x);
+			Vector3 move = Vector3.Zero;
+			if ( createParam.ContainsKey( "MoveX" ) )
+				Real.TryParse( createParam[ "MoveX" ], out move.x );
 
-            if (createParam.ContainsKey("MoveY"))
-                Real.TryParse(createParam["MoveY"], out move.y);
+			if ( createParam.ContainsKey( "MoveY" ) )
+				Real.TryParse( createParam[ "MoveY" ], out move.y );
 
-            if (createParam.ContainsKey("MoveZ"))
-                Real.TryParse(createParam["MoveZ"], out move.z);
+			if ( createParam.ContainsKey( "MoveZ" ) )
+				Real.TryParse( createParam[ "MoveZ" ], out move.z );
 
 			if ( createParam.ContainsKey( "UseLightmaps" ) )
 				bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -34,10 +34,10 @@ using Axiom.Collections;
 
 namespace Axiom.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="SceneManager">SceneManagers</see> that are sorted by name.
-    /// </summary>
-    public class SceneManagerCollection : AxiomCollection<SceneManager>
-    {
-    }
+	/// <summary>
+	/// Represents a collection of <see cref="SceneManager">SceneManagers</see> that are sorted by name.
+	/// </summary>
+	public class SceneManagerCollection : AxiomCollection<SceneManager>
+	{
+	}
 }

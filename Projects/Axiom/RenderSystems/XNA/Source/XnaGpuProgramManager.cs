@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -47,62 +47,62 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// 	Summary description for XnaGpuProgramManager.
-    /// </summary>
-    public class XnaGpuProgramManager : GpuProgramManager
-    {
+	/// <summary>
+	/// 	Summary description for XnaGpuProgramManager.
+	/// </summary>
+	public class XnaGpuProgramManager : GpuProgramManager
+	{
 		protected XFG.GraphicsDevice device;
 
 		internal XnaGpuProgramManager( XFG.GraphicsDevice device )
-        {
-            this.device = device;
-        }
+		{
+			this.device = device;
+		}
 
-        /// <summary>
-        ///    Create the specified type of GpuProgram.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        protected override Resource _create(string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
-        {
-            switch ( type )
-            {
-                case GpuProgramType.Vertex:
-                    return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+		/// <summary>
+		///    Create the specified type of GpuProgram.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		{
+			switch ( type )
+			{
+				case GpuProgramType.Vertex:
+					return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 
-                case GpuProgramType.Fragment:
-                    return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
-                default:
-                    throw new NotSupportedException( "The program type is not supported." );
-            }
-        }
+				case GpuProgramType.Fragment:
+					return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				default:
+					throw new NotSupportedException( "The program type is not supported." );
+			}
+		}
 
-        protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-        {
-            if ( !createParams.ContainsKey( "type" ) )
-            {
-                throw new Exception( "You must supply a 'type' parameter." );
-            }
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			if ( !createParams.ContainsKey( "type" ) )
+			{
+				throw new Exception( "You must supply a 'type' parameter." );
+			}
 
-            if ( createParams["type"] == "vertex_program" )
-            {
-                return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
-            }
-            else
-            {
-                return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
-            }
-        }
+			if ( createParams[ "type" ] == "vertex_program" )
+			{
+				return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+			}
+			else
+			{
+				return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+			}
+		}
 
-        /// <summary>
-        ///    Returns a specialized version of GpuProgramParameters.
-        /// </summary>
-        /// <returns></returns>
-        public override GpuProgramParameters CreateParameters()
-        {
-            return new GpuProgramParameters();
-        }
-    }
+		/// <summary>
+		///    Returns a specialized version of GpuProgramParameters.
+		/// </summary>
+		/// <returns></returns>
+		public override GpuProgramParameters CreateParameters()
+		{
+			return new GpuProgramParameters();
+		}
+	}
 }

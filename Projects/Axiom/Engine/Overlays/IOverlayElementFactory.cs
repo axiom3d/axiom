@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -39,45 +39,45 @@ using System;
 
 namespace Axiom.Overlays
 {
-    /// <summary>
-    /// 	Defines the interface which all components wishing to 
-    /// 	supply OverlayElement subclasses must implement.
-    /// </summary>
-    /// <remarks>
-    /// 	To allow the OverlayElement types available for inclusion on 
-    /// 	overlays to be extended, the engine allows external apps or plugins
-    /// 	to register their ability to create custom OverlayElements with
-    /// 	the GuiManager, using the AddOverlayElementFactory method. Classes
-    /// 	wanting to do this must implement this interface.
-    /// 	<p/>
-    /// 	Each OverlayElementFactory creates a single type of OverlayElement, 
-    /// 	identified by a 'type name' which must be unique.
-    /// </summary>
-    public interface IOverlayElementFactory
-    {
-        #region Methods
+	/// <summary>
+	/// 	Defines the interface which all components wishing to 
+	/// 	supply OverlayElement subclasses must implement.
+	/// </summary>
+	/// <remarks>
+	/// 	To allow the OverlayElement types available for inclusion on 
+	/// 	overlays to be extended, the engine allows external apps or plugins
+	/// 	to register their ability to create custom OverlayElements with
+	/// 	the GuiManager, using the AddOverlayElementFactory method. Classes
+	/// 	wanting to do this must implement this interface.
+	/// 	<p/>
+	/// 	Each OverlayElementFactory creates a single type of OverlayElement, 
+	/// 	identified by a 'type name' which must be unique.
+	/// </summary>
+	public interface IOverlayElementFactory
+	{
+		#region Methods
 
-        /// <summary>
-        ///    Classes that implement this interface will return an instance of a OverlayElement of their designated
-        ///    type.
-        /// </summary>
-        /// <param name="name">Name of the element to create.</param>
-        /// <returns>A new instance of a OverlayElement with the specified name.</returns>
-        OverlayElement Create( string name );
+		/// <summary>
+		///    Classes that implement this interface will return an instance of a OverlayElement of their designated
+		///    type.
+		/// </summary>
+		/// <param name="name">Name of the element to create.</param>
+		/// <returns>A new instance of a OverlayElement with the specified name.</returns>
+		OverlayElement Create( string name );
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///    Classes that implement this interface should return the name of the OverlayElement that it will be
-        ///    responsible for creating.
-        /// </summary>
-        string Type
-        {
-            get;
-        }
+		/// <summary>
+		///    Classes that implement this interface should return the name of the OverlayElement that it will be
+		///    responsible for creating.
+		/// </summary>
+		string Type
+		{
+			get;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

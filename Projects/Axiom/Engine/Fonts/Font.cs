@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -47,7 +47,7 @@ using Axiom.FileSystem;
 using ResourceHandle = System.UInt64;
 using Real = System.Single;
 using CodePoint = System.UInt32;
-using Image=Axiom.Media.Image;
+using Image = Axiom.Media.Image;
 using UVRect = Axiom.Core.RectangleF;
 
 #endregion Namespace Declarations
@@ -453,7 +453,7 @@ namespace Axiom.Fonts
 		/// </summary>
 		/// <param name="c"></param>
 		/// <returns></returns>
-		[Obsolete( "Use Glyphs property")]
+		[Obsolete( "Use Glyphs property" )]
 		public float GetGlyphAspectRatio( char c )
 		{
 			if ( codePoints.ContainsKey( c ) )
@@ -476,25 +476,25 @@ namespace Axiom.Fonts
 			// creating a new one. Allows more flexibility, but also specifically allows us to
 			// solve the problem of XNA not having fixed function support
 
-			_material = (Material)MaterialManager.Instance.GetByName("Fonts/" + _name);
+			_material = (Material)MaterialManager.Instance.GetByName( "Fonts/" + _name );
 
-			if (_material == null)
+			if ( _material == null )
 			{
 
 				// create a material for this font
-				_material = (Material)MaterialManager.Instance.Create("Fonts/" + _name, Group);
+				_material = (Material)MaterialManager.Instance.Create( "Fonts/" + _name, Group );
 
 				TextureUnitState unitState = null;
 				bool blendByAlpha = false;
 
-				if (_fontType == FontType.TrueType)
+				if ( _fontType == FontType.TrueType )
 				{
 #if !( XBOX || XBOX360 )
 					// create the font bitmap on the fly
 					createTexture();
 
 					// a texture layer was added in CreateTexture
-					unitState = _material.GetTechnique(0).GetPass(0).GetTextureUnitState(0);
+					unitState = _material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
 
 					blendByAlpha = true;
 #endif
@@ -503,25 +503,25 @@ namespace Axiom.Fonts
 				{
 					// load this texture
 					// TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-					_texture = TextureManager.Instance.Load(Source, Group, TextureType.TwoD, 0);
+					_texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
 
 					blendByAlpha = texture.HasAlpha;
 					// pre-created font images
-					unitState = Material.GetTechnique(0).GetPass(0).CreateTextureUnitState(Source);
+					unitState = Material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( Source );
 				}
 
 				// set texture addressing mode to Clamp to eliminate fuzzy edges
 				unitState.TextureAddressing = TextureAddressing.Clamp;
 
 				// set up blending mode
-				if (blendByAlpha)
+				if ( blendByAlpha )
 				{
-					_material.SetSceneBlending(SceneBlendType.TransparentAlpha);
+					_material.SetSceneBlending( SceneBlendType.TransparentAlpha );
 				}
 				else
 				{
 					// assume black background here
-					_material.SetSceneBlending(SceneBlendType.Add);
+					_material.SetSceneBlending( SceneBlendType.Add );
 				}
 			}
 		}
@@ -576,7 +576,7 @@ namespace Axiom.Fonts
 				{
 					using ( System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection() )
 					{
-						data = new byte[fileStream.Length];
+						data = new byte[ fileStream.Length ];
 						fileStream.Read( data, 0, data.Length );
 						pData = Memory.PinObject( data );
 

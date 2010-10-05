@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -43,30 +43,30 @@ using Axiom.Collections;
 
 namespace Axiom.Graphics.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="RenderSystem">RenderSystems</see> that are sorted by name.
-    /// </summary>
-    public class RenderSystemCollection : AxiomCollection<RenderSystem>
-    {
-        #region Instance Methods
+	/// <summary>
+	/// Represents a collection of <see cref="RenderSystem">RenderSystems</see> that are sorted by name.
+	/// </summary>
+	public class RenderSystemCollection : AxiomCollection<RenderSystem>
+	{
+		#region Instance Methods
 
-        /// <summary>
-        /// Adds the specified key.
-        /// </summary>
-        /// <param name="key">The name of the <see cref="RenderSystem"/> to add.</param>
-        /// <param name="item">A <see cref="RenderSystem"/>.</param>
-        public new void Add(string key, RenderSystem item)
-        {
-            if (!ContainsKey(key))
-            {
-                base.Add(key, item);
-            }
-            else
-            {
-                LogManager.Instance.Write("{0} rendering system has already been registered by {1}, skipping {2}.", key, this[key].Name, item.Name);
-            }
-        }
+		/// <summary>
+		/// Adds the specified key.
+		/// </summary>
+		/// <param name="key">The name of the <see cref="RenderSystem"/> to add.</param>
+		/// <param name="item">A <see cref="RenderSystem"/>.</param>
+		public new void Add( string key, RenderSystem item )
+		{
+			if ( !ContainsKey( key ) )
+			{
+				base.Add( key, item );
+			}
+			else
+			{
+				LogManager.Instance.Write( "{0} rendering system has already been registered by {1}, skipping {2}.", key, this[ key ].Name, item.Name );
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

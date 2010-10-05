@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -43,75 +43,75 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-    /// <summary>
-    ///     Predefined controller value for setting a single floating-
-    ///     point value in a constant paramter of a vertex or fragment program.
-    /// </summary>
-    /// <remarks>
-    ///     Any value is accepted, it is propagated into the 'x'
-    ///     component of the constant register identified by the index. If you
-    ///     need to use named parameters, retrieve the index from the param
-    ///     object before setting this controller up.
-    ///     <p/>
-    ///     Note: Retrieving a value from the program parameters is not currently 
-    ///     supported, therefore do not use this controller value as a source,
-    ///     only as a target.
-    /// </remarks>
+	/// <summary>
+	///     Predefined controller value for setting a single floating-
+	///     point value in a constant paramter of a vertex or fragment program.
+	/// </summary>
+	/// <remarks>
+	///     Any value is accepted, it is propagated into the 'x'
+	///     component of the constant register identified by the index. If you
+	///     need to use named parameters, retrieve the index from the param
+	///     object before setting this controller up.
+	///     <p/>
+	///     Note: Retrieving a value from the program parameters is not currently 
+	///     supported, therefore do not use this controller value as a source,
+	///     only as a target.
+	/// </remarks>
 	public class FloatGpuParamControllerValue : IControllerValue<float>
-    {
-        #region Fields
+	{
+		#region Fields
 
-        /// <summary>
-        ///     Gpu parameters to access.
-        /// </summary>
-        protected GpuProgramParameters parms;
-        /// <summary>
-        ///     The constant register index of the parameter to set.
-        /// </summary>
-        protected int index;
-        /// <summary>
-        ///     Member level Vector to use for returning.
-        /// </summary>
-        protected Vector4 vec4 = new Vector4( 0, 0, 0, 0 );
+		/// <summary>
+		///     Gpu parameters to access.
+		/// </summary>
+		protected GpuProgramParameters parms;
+		/// <summary>
+		///     The constant register index of the parameter to set.
+		/// </summary>
+		protected int index;
+		/// <summary>
+		///     Member level Vector to use for returning.
+		/// </summary>
+		protected Vector4 vec4 = new Vector4( 0, 0, 0, 0 );
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///     Constructor.
-        /// </summary>
-        /// <param name="parms">Params to set.</param>
-        /// <param name="index">Index of the parameter to set.</param>
-        public FloatGpuParamControllerValue( GpuProgramParameters parms, int index )
-        {
-            this.parms = parms;
-            this.index = index;
-        }
+		/// <summary>
+		///     Constructor.
+		/// </summary>
+		/// <param name="parms">Params to set.</param>
+		/// <param name="index">Index of the parameter to set.</param>
+		public FloatGpuParamControllerValue( GpuProgramParameters parms, int index )
+		{
+			this.parms = parms;
+			this.index = index;
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region IControllerValue Members
+		#region IControllerValue Members
 
-        /// <summary>
+		/// <summary>
 		/// Gets or Sets the value of the GPU parameter
-        /// </summary>
-        public float Value
-        {
-            get
-            {
+		/// </summary>
+		public float Value
+		{
+			get
+			{
 				return parms.GetFloatConstant( index ).val[ 0 ];
-            }
-            set
-            {
-                // set the x component, since this is a single value only
-                vec4.x = value;
+			}
+			set
+			{
+				// set the x component, since this is a single value only
+				vec4.x = value;
 
-                // send the vector along to the gpu program params
-                parms.SetConstant( index, vec4 );
-            }
-        }
+				// send the vector along to the gpu program params
+				parms.SetConstant( index, vec4 );
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

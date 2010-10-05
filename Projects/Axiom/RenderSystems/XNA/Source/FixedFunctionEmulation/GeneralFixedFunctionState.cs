@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			gffs.FogMode = FogMode.None;
 			gffs.Shading = Shading.Gouraud;
 			gffs.AlphaRejectFunction = CompareFunction.AlwaysPass;
-            gffs.lightTypeCount = new uint[(uint)(LightType.Spotlight) + 1];
+			gffs.lightTypeCount = new uint[ (uint)( LightType.Spotlight ) + 1 ];
 
 			return gffs;
 		}
@@ -153,31 +153,31 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		/// </remarks>
 		public Shading Shading;
 
-        private uint[] lightTypeCount;
+		private uint[] lightTypeCount;
 
 		#endregion Fields
 
-        internal void ResetLightTypeCounts()
-        {
-            for ( int index = 0; index < lightTypeCount.Length; index++ )
-                lightTypeCount[ index ] = 0;
-        }
+		internal void ResetLightTypeCounts()
+		{
+			for ( int index = 0; index < lightTypeCount.Length; index++ )
+				lightTypeCount[ index ] = 0;
+		}
 
-        internal void IncrementLightTypeCount( LightType lightType )
-        {
-            lightTypeCount[ (uint)lightType ]++;
-        }
+		internal void IncrementLightTypeCount( LightType lightType )
+		{
+			lightTypeCount[ (uint)lightType ]++;
+		}
 
-        #region Object Implementation
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		#region Object Implementation
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount[ 1 ].GetHashCode() ^ lightTypeCount[ 2 ].GetHashCode();
-        }
-        #endregion
-    }
+		public override int GetHashCode()
+		{
+			return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount[ 1 ].GetHashCode() ^ lightTypeCount[ 2 ].GetHashCode();
+		}
+		#endregion
+	}
 }

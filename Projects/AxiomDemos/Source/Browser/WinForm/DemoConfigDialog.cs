@@ -58,16 +58,16 @@ namespace Axiom.Demos
 			this.lstDemos.ItemHeight = 14;
 			this.lstDemos.Location = new System.Drawing.Point( 7, 20 );
 			this.lstDemos.Name = "lstDemos";
-			this.lstDemos.Size = new System.Drawing.Size( 200, 130 );
+			this.lstDemos.Size = new System.Drawing.Size( 200, 135 );
 			this.lstDemos.TabIndex = 0;
 
 			//
 			// picPreview
 			//
 			this.picPreview.BackColor = System.Drawing.Color.White;
-			this.picPreview.Location = new System.Drawing.Point( 205, 20 );
+			this.picPreview.Location = new System.Drawing.Point( 210, 20 );
 			this.picPreview.Name = "picPreview";
-			this.picPreview.Size = new System.Drawing.Size( 200, 130 );
+			this.picPreview.Size = new System.Drawing.Size( 200, 123 );
 			this.picPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.picPreview.TabIndex = 3;
 			this.picPreview.TabStop = false;
@@ -80,11 +80,11 @@ namespace Axiom.Demos
 			this.grpAvailableDemos.Controls.Add( this.lstDemos );
 			this.grpAvailableDemos.Controls.Add( this.picPreview );
 			this.grpAvailableDemos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.grpAvailableDemos.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.grpAvailableDemos.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.grpAvailableDemos.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.grpAvailableDemos.Location = new System.Drawing.Point( 12, 408 );
 			this.grpAvailableDemos.Name = "grpAvailableDemos";
-			this.grpAvailableDemos.Size = new System.Drawing.Size( 420, 157 );
+			this.grpAvailableDemos.Size = new System.Drawing.Size( 420, 155 );
 			this.grpAvailableDemos.TabIndex = 7;
 			this.grpAvailableDemos.TabStop = false;
 			this.grpAvailableDemos.Text = "Available Demos";

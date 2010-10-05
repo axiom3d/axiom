@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2007  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -81,11 +81,11 @@ namespace Axiom.Scripting.Compiler
 						{
 							string value = "";
 							if ( prop.values.Count != 0 && prop.values[ 0 ].Type == AbstractNodeType.Atom )
-									value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
+								value = ( (AtomAbstractNode)( prop.values[ 0 ] ) ).Value;
 							if ( CompilerListener != null )
 								CompilerListener.GetGpuProgramName( value );
 
-							customParameters.Add( new Pair<string>("delegate", value) );
+							customParameters.Add( new Pair<string>( "delegate", value ) );
 						}
 						else
 						{

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: MultiRenderTarget.cs 1658 2009-06-10 19:31:32Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
@@ -70,7 +70,7 @@ namespace Axiom.Graphics
 		public MultiRenderTarget( string name )
 		{
 			this.Priority = RenderTargetPriority.RenderToTexture;
-            this.Name = name;
+			this.Name = name;
 			// Width and height is unknown with no targets attached
 			this.Width = this.Height = 0;
 		}
@@ -89,13 +89,13 @@ namespace Axiom.Graphics
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format 
 		/// </remarks>
-        public abstract void BindSurface( int attachment, RenderTexture target );
+		public abstract void BindSurface( int attachment, RenderTexture target );
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
 		/// <param name="attachment"></param>
-        public abstract void UnbindSurface( int attachment );
+		public abstract void UnbindSurface( int attachment );
 
 		#endregion Methods
 
@@ -105,7 +105,7 @@ namespace Axiom.Graphics
 		/// Error throwing implementation, it's not possible to copy a MultiRenderTarget.
 		/// </summary>
 		/// <param name="pb"></param>	
-        /// <param name="buffer"></param>
+		/// <param name="buffer"></param>
 		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
 		{
 			throw new NotSupportedException( "It's not possible to copy a MultiRenderTarget." );

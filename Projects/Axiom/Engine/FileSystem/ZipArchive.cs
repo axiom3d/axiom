@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -69,9 +69,6 @@ namespace Axiom.FileSystem
 		private string _zipDir = "/";
 		private ZipInputStream _zipStream;
 		private List<FileInfo> _fileList = new List<FileInfo>();
-
-		/// <summary>Directory stack of previous directories </summary>
-		private Stack<string> _directoryStack;
 
 		#endregion Fields and Properties
 

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -44,34 +44,34 @@ using Axiom.Collections;
 
 namespace Axiom.Core.Collections
 {
-    /// <summary>
-    ///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
-    /// </summary>
+	/// <summary>
+	///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
+	/// </summary>
 #if !( SILVERLIGHT )
-    [Serializable]
+	[Serializable]
 #endif
-    public class NodeCollection : AxiomCollection<Node>
-    {
-        #region Instance Methods
+	public class NodeCollection : AxiomCollection<Node>
+	{
+		#region Instance Methods
 
-        /// <summary>
-        ///	Adds a <see cref="Node"/> to the collection and uses its name automatically as key.
-        /// </summary>
-        /// <param name="item">A <see cref="Node"/> to add to the collection.</param>
-        public override void Add( Node item )
-        {
-            Add( item.Name, item );
-        }
+		/// <summary>
+		///	Adds a <see cref="Node"/> to the collection and uses its name automatically as key.
+		/// </summary>
+		/// <param name="item">A <see cref="Node"/> to add to the collection.</param>
+		public override void Add( Node item )
+		{
+			Add( item.Name, item );
+		}
 
-        /// <summary>
-        /// Removes the specified <see cref="Node"/>.
-        /// </summary>
-        /// <param name="item">The <see cref="Node"/> to remove.</param>
-        public void Remove( Node item )
-        {
-            base.Remove( item.Name );
-        }
+		/// <summary>
+		/// Removes the specified <see cref="Node"/>.
+		/// </summary>
+		/// <param name="item">The <see cref="Node"/> to remove.</param>
+		public void Remove( Node item )
+		{
+			base.Remove( item.Name );
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

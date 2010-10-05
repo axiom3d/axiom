@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -307,23 +307,23 @@ namespace Axiom.Graphics
 			}
 		}
 
-	    #endregion DefaultParameters Property
+		#endregion DefaultParameters Property
 
-        #region HasDefaultParameters Property
+		#region HasDefaultParameters Property
 
-        public virtual bool HasDefaultParameters
-        {
-            get
-            {
-                return defaultParams != null;
-            }
-        }
+		public virtual bool HasDefaultParameters
+		{
+			get
+			{
+				return defaultParams != null;
+			}
+		}
 
-        #endregion HasDefaultParameters Property
+		#endregion HasDefaultParameters Property
 
-        #region PassSurfaceAndLightStates Property
+		#region PassSurfaceAndLightStates Property
 
-        /// <summary>
+		/// <summary>
 		///		Does this program want light states passed through fixed pipeline?
 		/// </summary>
 		protected bool passSurfaceAndLightStates;
@@ -360,7 +360,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _compileError || !IsRequiredCapabilitiesSupported())
+				if ( _compileError || !IsRequiredCapabilitiesSupported() )
 				{
 
 					return false;
@@ -385,155 +385,155 @@ namespace Axiom.Graphics
 
 		#endregion SamplerCount Property
 
-        #region CompilerError Property
+		#region CompilerError Property
 
-   		/// <summary>
+		/// <summary>
 		/// Did we encounter a compilation error?
 		/// </summary>
 		protected bool _compileError = false;
 
-        /// <summary>
-        /// Did this program encounter a compile error when loading?
-        /// </summary>
-        public bool HasCompileError
-        {
-            get
-            {
-                return _compileError;
-            }
-        }
+		/// <summary>
+		/// Did this program encounter a compile error when loading?
+		/// </summary>
+		public bool HasCompileError
+		{
+			get
+			{
+				return _compileError;
+			}
+		}
 
-        /// <summary>
-        /// Reset a compile error if it occurred, allowing the load to be retried.
-        /// </summary>
-        public void ResetCompileError()
-        {
-            _compileError = false;
-        }
+		/// <summary>
+		/// Reset a compile error if it occurred, allowing the load to be retried.
+		/// </summary>
+		public void ResetCompileError()
+		{
+			_compileError = false;
+		}
 
-        #endregion CompilerError Property
+		#endregion CompilerError Property
 
 		/// <summary>
 		/// Record of logical to physical buffer maps. Mandatory for low-level
 		/// programs or high-level programs which set their params the same way.
 		/// </summary>
 		//private GpuLogicalBufferStruct floatLogicalToPhysical = new GpuLogicalBufferStruct();
-        /// <summary>
-        /// Record of logical to physical buffer maps. Mandatory for low-level
-        /// programs or high-level programs which set their params the same way.
-        /// </summary>
+		/// <summary>
+		/// Record of logical to physical buffer maps. Mandatory for low-level
+		/// programs or high-level programs which set their params the same way.
+		/// </summary>
 		//private GpuLogicalBufferStruct intLogicalToPhysical = new GpuLogicalBufferStruct();
 
-        #region ConstantDefinitions Property
+		#region ConstantDefinitions Property
 
 		/// <summary>
-        /// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
+		/// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
 		/// </summary>
 		private GpuProgramParameters.GpuNamedConstants constantDefs;
-        /// <summary>
-        /// Get the full list of named constants.
-        /// </summary>
-        /// <note>
-        /// Only available if this parameters object has named parameters, which means either
-        /// a high-level program which loads them, or a low-level program which has them
-        /// specified manually.
-        /// </note>
-	    public GpuProgramParameters.GpuNamedConstants ConstantDefinitions
-	    {
-	        get
-	        {
-	            return constantDefs;
-	        }
-	    }
- 
-    	#endregion ConstantDefinitions Property
+		/// <summary>
+		/// Get the full list of named constants.
+		/// </summary>
+		/// <note>
+		/// Only available if this parameters object has named parameters, which means either
+		/// a high-level program which loads them, or a low-level program which has them
+		/// specified manually.
+		/// </note>
+		public GpuProgramParameters.GpuNamedConstants ConstantDefinitions
+		{
+			get
+			{
+				return constantDefs;
+			}
+		}
 
-        #region ManualNamedConstants Property
-		
-        /// <summary>
-        /// Allows you to manually provide a set of named parameter mappings
-        /// to a program which would not be able to derive named parameters itself.
-        /// </summary>
-        /// <remarks>
-        /// You may wish to use this if you have assembler programs that were compiled
-        /// from a high-level source, and want the convenience of still being able
-        /// to use the named parameters from the original high-level source.
-        /// <seealso cref="ManualNamedConstantsFile"/>
-        /// </remarks>
-	    public GpuProgramParameters.GpuNamedConstants ManualNamedConstants
-	    {
-	        get
-	        {
-	            return constantDefs;
-	        }
-            set
-            {
-                constantDefs = value;
+		#endregion ConstantDefinitions Property
 
-                /*
-                floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
-                intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
-                floatLogicalToPhysical.Map.Clear();
-                intLogicalToPhysical.Map.Clear();
+		#region ManualNamedConstants Property
 
-		        // need to set up logical mappings too for some rendersystems
-                foreach ( KeyValuePair<string, GpuProgramParameters.GpuConstantDefinition> pair in constantDefs.GpuConstantDefinitions )
-                {
-                    string name = pair.Key;
-                    GpuProgramParameters.GpuConstantDefinition def = pair.Value;
-                    // only consider non-array entries
-                    if ( name.Contains( "[" ) )
-                    {
-                        GpuLogicalIndexUse val = new GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
-                        if ( def.IsFloat )
-                        {
-                            floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
-                        }
-                        else
-                        {
-                            intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
-                        }
-                    }
-                }
-                */
-            }
-	    }
+		/// <summary>
+		/// Allows you to manually provide a set of named parameter mappings
+		/// to a program which would not be able to derive named parameters itself.
+		/// </summary>
+		/// <remarks>
+		/// You may wish to use this if you have assembler programs that were compiled
+		/// from a high-level source, and want the convenience of still being able
+		/// to use the named parameters from the original high-level source.
+		/// <seealso cref="ManualNamedConstantsFile"/>
+		/// </remarks>
+		public GpuProgramParameters.GpuNamedConstants ManualNamedConstants
+		{
+			get
+			{
+				return constantDefs;
+			}
+			set
+			{
+				constantDefs = value;
 
-	    #endregion
+				/*
+				floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
+				intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
+				floatLogicalToPhysical.Map.Clear();
+				intLogicalToPhysical.Map.Clear();
 
-        #region ManualNamedConstantsFile Property
+				// need to set up logical mappings too for some rendersystems
+				foreach ( KeyValuePair<string, GpuProgramParameters.GpuConstantDefinition> pair in constantDefs.GpuConstantDefinitions )
+				{
+					string name = pair.Key;
+					GpuProgramParameters.GpuConstantDefinition def = pair.Value;
+					// only consider non-array entries
+					if ( name.Contains( "[" ) )
+					{
+						GpuLogicalIndexUse val = new GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
+						if ( def.IsFloat )
+						{
+							floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+						}
+						else
+						{
+							intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+						}
+					}
+				}
+				*/
+			}
+		}
+
+		#endregion
+
+		#region ManualNamedConstantsFile Property
 
 		/// <summary>   
-        /// File from which to load named constants manually
+		/// File from which to load named constants manually
 		/// </summary>
 		private string manualNamedConstantsFile;
-        /// <summary>
-        /// Specifies the name of a file from which to load named parameters mapping
-        /// for a program which would not be able to derive named parameters itself.
-        /// </summary>
-        /// <remarks>
-        /// You may wish to use this if you have assembler programs that were compiled
-        /// from a high-level source, and want the convenience of still being able
-        /// to use the named parameters from the original high-level source. This
-        /// method will make a low-level program search in the resource group of the
-        /// program for the named file from which to load parameter names from. 
-        /// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
-        /// </remarks>
-	    public string ManualNamedConstantsFile
-	    {
-	        get
-	        {
-	            return ManualNamedConstantsFile;
-	        }
-            set
-            {
-                manualNamedConstantsFile = value;
-            }
-	    } 
+		/// <summary>
+		/// Specifies the name of a file from which to load named parameters mapping
+		/// for a program which would not be able to derive named parameters itself.
+		/// </summary>
+		/// <remarks>
+		/// You may wish to use this if you have assembler programs that were compiled
+		/// from a high-level source, and want the convenience of still being able
+		/// to use the named parameters from the original high-level source. This
+		/// method will make a low-level program search in the resource group of the
+		/// program for the named file from which to load parameter names from. 
+		/// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
+		/// </remarks>
+		public string ManualNamedConstantsFile
+		{
+			get
+			{
+				return ManualNamedConstantsFile;
+			}
+			set
+			{
+				manualNamedConstantsFile = value;
+			}
+		}
 
-	    #endregion ManualNamedConstantsFile Property
+		#endregion ManualNamedConstantsFile Property
 
-        private bool loadedManualNamedConstants;
+		private bool loadedManualNamedConstants;
 
 		#endregion Fields and Properties
 
@@ -551,7 +551,7 @@ namespace Axiom.Graphics
 
 			this.type = GpuProgramType.Vertex;
 			this.loadFromFile = true;
-		    this.loadedManualNamedConstants = false;
+			this.loadedManualNamedConstants = false;
 		}
 
 		#endregion Construction and Destruction
@@ -568,45 +568,45 @@ namespace Axiom.Graphics
 		///    they are appropriate.
 		/// </remarks>
 		/// <returns></returns>
-        public virtual GpuProgramParameters CreateParameters()
+		public virtual GpuProgramParameters CreateParameters()
 		{
-		    GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
 
-		    // optionally load manually supplied named constants
-		    if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !loadedManualNamedConstants )
-		    {
-		        try
-		        {
-		            GpuProgramParameters.GpuNamedConstants namedConstants = new GpuProgramParameters.GpuNamedConstants();
-		            Stream stream = ResourceGroupManager.Instance.OpenResource( manualNamedConstantsFile, Group, true, this );
-		            namedConstants.Load( stream );
-		            ManualNamedConstants = namedConstants;
-		        }
-		        catch ( Exception ex )
-		        {
-		            LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name, LogManager.BuildExceptionString( ex ) );
-		        }
-		        loadedManualNamedConstants = true;
-		    }
+			// optionally load manually supplied named constants
+			if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !loadedManualNamedConstants )
+			{
+				try
+				{
+					GpuProgramParameters.GpuNamedConstants namedConstants = new GpuProgramParameters.GpuNamedConstants();
+					Stream stream = ResourceGroupManager.Instance.OpenResource( manualNamedConstantsFile, Group, true, this );
+					namedConstants.Load( stream );
+					ManualNamedConstants = namedConstants;
+				}
+				catch ( Exception ex )
+				{
+					LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name, LogManager.BuildExceptionString( ex ) );
+				}
+				loadedManualNamedConstants = true;
+			}
 
-            /*
-		    // set up named parameters, if any
-		    if ( constantDefs.GpuConstantDefinitions.Count != 0 )
-		    {
-		        newParams._setNamedConstants( constantDefs );
-		    }
-		    // link shared logical / physical map for low-level use
-		    newParams._setLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
-            */
+			/*
+			// set up named parameters, if any
+			if ( constantDefs.GpuConstantDefinitions.Count != 0 )
+			{
+				newParams._setNamedConstants( constantDefs );
+			}
+			// link shared logical / physical map for low-level use
+			newParams._setLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
+			*/
 
-		    // Copy in default parameters if present
-		    if ( defaultParams != null )
-		        newParams.CopyConstantsFrom( defaultParams );
+			// Copy in default parameters if present
+			if ( defaultParams != null )
+				newParams.CopyConstantsFrom( defaultParams );
 
-		    return newParams;
+			return newParams;
 		}
 
-	    /// <summary>
+		/// <summary>
 		///    Loads this Gpu Program.
 		/// </summary>
 		protected override void load()
@@ -624,18 +624,18 @@ namespace Axiom.Graphics
 				// call polymorphic load to read source
 				LoadFromSource();
 
-                if (defaultParams != null)
-                {
-                    // Keep a reference to old ones to copy
-                    GpuProgramParameters savedParams = defaultParams;
+				if ( defaultParams != null )
+				{
+					// Keep a reference to old ones to copy
+					GpuProgramParameters savedParams = defaultParams;
 
-                    // Create new params
-                    defaultParams = this.CreateParameters();
+					// Create new params
+					defaultParams = this.CreateParameters();
 
-                    // Copy old (matching) values across
-                    // Don't use copyConstantsFrom since program may be different
-                    //defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
-                }
+					// Copy old (matching) values across
+					// Don't use copyConstantsFrom since program may be different
+					//defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
+				}
 
 			}
 			catch ( Exception ex )
@@ -645,9 +645,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-        protected override void unload()
-        {
-        }
+		protected override void unload()
+		{
+		}
 
 		/// <summary>
 		///    Method which must be implemented by subclasses, loads the program from source.
@@ -732,6 +732,6 @@ namespace Axiom.Graphics
 			#endregion IPropertyCommand Members
 		}
 
-		#endregion Custom Parameters	
-    }
+		#endregion Custom Parameters
+	}
 }

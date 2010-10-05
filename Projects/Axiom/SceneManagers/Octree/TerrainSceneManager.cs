@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -54,388 +54,391 @@ using Axiom.Media;
 
 namespace Axiom.SceneManagers.Octree
 {
-    /// <summary>
-    /// Summary description for TerrainSceneManager.
-    /// </summary>
-    public class TerrainSceneManager : OctreeSceneManager
-    {
-        #region Fields
+	/// <summary>
+	/// Summary description for TerrainSceneManager.
+	/// </summary>
+	public class TerrainSceneManager : OctreeSceneManager
+	{
+		#region Fields
 
-        protected TerrainRenderable[ , ] tiles;
-        protected int tileSize;
-        protected int numTiles;
-        protected Vector3 scale;
-        protected Material terrainMaterial;
-        protected SceneNode terrainRoot;
+		protected TerrainRenderable[ , ] tiles;
+		protected int tileSize;
+		protected int numTiles;
+		protected Vector3 scale;
+		protected Material terrainMaterial;
+		protected SceneNode terrainRoot;
 
-        protected TerrainOptions options; //needed for get HeightAt
-        public TerrainOptions TerrainOptions
-        {
-            get
-            {
-                return options;
-            }
-        }
+		protected TerrainOptions options; //needed for get HeightAt
+		public TerrainOptions TerrainOptions
+		{
+			get
+			{
+				return options;
+			}
+		}
 
-        #endregion Fields
+		#endregion Fields
 
-        public TerrainSceneManager( string name )
-            : base( name )
-        {
-        }
+		public TerrainSceneManager( string name )
+			: base( name )
+		{
+		}
 
-        #region SceneManager members
+		#region SceneManager members
 
-        public override string TypeName
-        {
-            get { return "TerrainSceneManager"; }
-        }
+		public override string TypeName
+		{
+			get
+			{
+				return "TerrainSceneManager";
+			}
+		}
 
-        public override void ClearScene()
-        {
-            base.ClearScene();
+		public override void ClearScene()
+		{
+			base.ClearScene();
 
-            tiles = null;
-            terrainMaterial = null;
-            terrainRoot = null;
-        }
+			tiles = null;
+			terrainMaterial = null;
+			terrainRoot = null;
+		}
 
-        public override void LoadWorldGeometry( string fileName )
-        {
-            XmlSerializer serializer = new XmlSerializer( typeof( TerrainOptions ) );
-            options = (TerrainOptions)serializer.Deserialize( ResourceGroupManager.Instance.OpenResource( fileName ) );
+		public override void LoadWorldGeometry( string fileName )
+		{
+			XmlSerializer serializer = new XmlSerializer( typeof( TerrainOptions ) );
+			options = (TerrainOptions)serializer.Deserialize( ResourceGroupManager.Instance.OpenResource( fileName ) );
 
-            scale = new Vector3( options.scalex, options.scaley, options.scalez );
-            tileSize = options.size;
-            // load the heightmap
-            {
-                Image image = Image.FromStream( ResourceGroupManager.Instance.OpenResource( options.Terrain ), options.Terrain.Split( '.' )[ 1 ] );
-                worldSize = options.worldSize = image.Width;
-                Real[] dest = new Real[ (int)worldSize * (int)worldSize ];
-                byte[] src = image.Data;
-                Real invScale;
+			scale = new Vector3( options.scalex, options.scaley, options.scalez );
+			tileSize = options.size;
+			// load the heightmap
+			{
+				Image image = Image.FromStream( ResourceGroupManager.Instance.OpenResource( options.Terrain ), options.Terrain.Split( '.' )[ 1 ] );
+				worldSize = options.worldSize = image.Width;
+				Real[] dest = new Real[ (int)worldSize * (int)worldSize ];
+				byte[] src = image.Data;
+				Real invScale;
 
-                //if ( image.Format != PixelFormat.L8 && image.Format != PixelFormat.L16 )
-                //    throw new AxiomException( "Heightmap is not a grey scale image!" );
+				//if ( image.Format != PixelFormat.L8 && image.Format != PixelFormat.L16 )
+				//    throw new AxiomException( "Heightmap is not a grey scale image!" );
 
-                bool is16bit = ( image.Format == PixelFormat.L16 );
+				bool is16bit = ( image.Format == PixelFormat.L16 );
 
-                // Determine mapping from fixed to floating
-                ulong rowSize;
-                if ( is16bit )
-                {
-                    invScale = 1.0f / 65535.0f;
-                    rowSize = (ulong)worldSize * 2;
-                }
-                else
-                {
-                    invScale = 1.0f;// / 255.0f;
-                    rowSize = (ulong)worldSize;
-                }
-                // Read the data
-                int srcIndex = 0;
-                int dstIndex = 0;
-                for ( ulong j = 0; j < (ulong)worldSize; ++j )
-                {
-                    for ( ulong i = 0; i < (ulong)worldSize; ++i )
-                    {
-                        if ( is16bit )
-                        {
+				// Determine mapping from fixed to floating
+				ulong rowSize;
+				if ( is16bit )
+				{
+					invScale = 1.0f / 65535.0f;
+					rowSize = (ulong)worldSize * 2;
+				}
+				else
+				{
+					invScale = 1.0f;// / 255.0f;
+					rowSize = (ulong)worldSize;
+				}
+				// Read the data
+				int srcIndex = 0;
+				int dstIndex = 0;
+				for ( ulong j = 0; j < (ulong)worldSize; ++j )
+				{
+					for ( ulong i = 0; i < (ulong)worldSize; ++i )
+					{
+						if ( is16bit )
+						{
 #if OGRE_ENDIAN_BIG
-                            ushort val = (ushort)(src[srcIndex++] << 8);
-                            val += src[srcIndex++];
+							ushort val = (ushort)(src[srcIndex++] << 8);
+							val += src[srcIndex++];
 #else
-                            ushort val = src[ srcIndex++ ];
-                            val += (ushort)( src[ srcIndex++ ] << 8 );
+							ushort val = src[ srcIndex++ ];
+							val += (ushort)( src[ srcIndex++ ] << 8 );
 #endif
-                            dest[ dstIndex++ ] = new Real( val ) * invScale;
-                        }
-                        else
-                        {
-                            dest[ dstIndex++ ] = new Real( src[ srcIndex++ ] );// *invScale;
+							dest[ dstIndex++ ] = new Real( val ) * invScale;
+						}
+						else
+						{
+							dest[ dstIndex++ ] = new Real( src[ srcIndex++ ] );// *invScale;
 #if (XBOX || XBOX360 )
 							srcIndex += 3;
 #endif
-                        }
-                    }
-                }
+						}
+					}
+				}
 
-                // get the data from the heightmap
-                options.data = dest;
-            }
+				// get the data from the heightmap
+				options.data = dest;
+			}
 
-            float maxx = options.scalex * options.worldSize;
-            float maxy = 255 * options.scaley;
-            float maxz = options.scalez * options.worldSize;
+			float maxx = options.scalex * options.worldSize;
+			float maxy = 255 * options.scaley;
+			float maxz = options.scalez * options.worldSize;
 
-            Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
+			Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
-            terrainMaterial = (Material)( MaterialManager.Instance.CreateOrRetrieve( !String.IsNullOrEmpty( options.MaterialName ) ? options.MaterialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName ).First );
+			terrainMaterial = (Material)( MaterialManager.Instance.CreateOrRetrieve( !String.IsNullOrEmpty( options.MaterialName ) ? options.MaterialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName ).First );
 
-            if ( options.WorldTexture != "" )
-            {
-                terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( options.WorldTexture, 0 );
-            }
+			if ( options.WorldTexture != "" )
+			{
+				terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( options.WorldTexture, 0 );
+			}
 
-            if ( options.DetailTexture != "" )
-            {
-                terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( options.DetailTexture, 1 );
-            }
+			if ( options.DetailTexture != "" )
+			{
+				terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( options.DetailTexture, 1 );
+			}
 
-            terrainMaterial.Lighting = options.isLit;
-            terrainMaterial.Load();
+			terrainMaterial.Lighting = options.isLit;
+			terrainMaterial.Load();
 
-            terrainRoot = (SceneNode)RootSceneNode.CreateChild( "TerrainRoot" );
+			terrainRoot = (SceneNode)RootSceneNode.CreateChild( "TerrainRoot" );
 
-            numTiles = ( options.worldSize - 1 ) / ( options.size - 1 );
+			numTiles = ( options.worldSize - 1 ) / ( options.size - 1 );
 
-            tiles = new TerrainRenderable[ numTiles, numTiles ];
+			tiles = new TerrainRenderable[ numTiles, numTiles ];
 
-            int p = 0, q = 0;
+			int p = 0, q = 0;
 
-            for ( int j = 0; j < options.worldSize - 1; j += ( options.size - 1 ) )
-            {
-                p = 0;
+			for ( int j = 0; j < options.worldSize - 1; j += ( options.size - 1 ) )
+			{
+				p = 0;
 
-                for ( int i = 0; i < options.worldSize - 1; i += ( options.size - 1 ) )
-                {
-                    options.startx = i;
-                    options.startz = j;
+				for ( int i = 0; i < options.worldSize - 1; i += ( options.size - 1 ) )
+				{
+					options.startx = i;
+					options.startz = j;
 
-                    string name = string.Format( "Tile[{0},{1}]", p, q );
+					string name = string.Format( "Tile[{0},{1}]", p, q );
 
-                    SceneNode node = (SceneNode)terrainRoot.CreateChild( name );
-                    TerrainRenderable tile = new TerrainRenderable();
-                    tile.Name = name;
+					SceneNode node = (SceneNode)terrainRoot.CreateChild( name );
+					TerrainRenderable tile = new TerrainRenderable();
+					tile.Name = name;
 
-                    tile.RenderQueueGroup = this.WorldGeometryRenderQueueId;
+					tile.RenderQueueGroup = this.WorldGeometryRenderQueueId;
 
-                    tile.SetMaterial( terrainMaterial );
-                    tile.Init( options );
+					tile.SetMaterial( terrainMaterial );
+					tile.Init( options );
 
-                    tiles[ p, q ] = tile;
+					tiles[ p, q ] = tile;
 
-                    node.AttachObject( tile );
+					node.AttachObject( tile );
 
-                    p++;
-                }
+					p++;
+				}
 
-                q++;
-            }
+				q++;
+			}
 
-            int size1 = tiles.GetLength( 0 );
-            int size2 = tiles.GetLength( 1 );
+			int size1 = tiles.GetLength( 0 );
+			int size2 = tiles.GetLength( 1 );
 
-            for ( int j = 0; j < size1; j++ )
-            {
-                for ( int i = 0; i < size2; i++ )
-                {
-                    if ( j != size1 - 1 )
-                    {
-                        tiles[ i, j ].SetNeighbor( Neighbor.South, tiles[ i, j + 1 ] );
-                        tiles[ i, j + 1 ].SetNeighbor( Neighbor.North, tiles[ i, j ] );
-                    }
+			for ( int j = 0; j < size1; j++ )
+			{
+				for ( int i = 0; i < size2; i++ )
+				{
+					if ( j != size1 - 1 )
+					{
+						tiles[ i, j ].SetNeighbor( Neighbor.South, tiles[ i, j + 1 ] );
+						tiles[ i, j + 1 ].SetNeighbor( Neighbor.North, tiles[ i, j ] );
+					}
 
-                    if ( i != size2 - 1 )
-                    {
-                        tiles[ i, j ].SetNeighbor( Neighbor.East, tiles[ i + 1, j ] );
-                        tiles[ i + 1, j ].SetNeighbor( Neighbor.West, tiles[ i, j ] );
-                    }
-                }
-            }
+					if ( i != size2 - 1 )
+					{
+						tiles[ i, j ].SetNeighbor( Neighbor.East, tiles[ i + 1, j ] );
+						tiles[ i + 1, j ].SetNeighbor( Neighbor.West, tiles[ i, j ] );
+					}
+				}
+			}
 
-            if ( options.isLit )
-            {
-                for ( int j = 0; j < size1; j++ )
-                {
-                    for ( int i = 0; i < size2; i++ )
-                    {
-                        tiles[ i, j ].CalculateNormals();
-                    }
-                }
-            }
-        }
+			if ( options.isLit )
+			{
+				for ( int j = 0; j < size1; j++ )
+				{
+					for ( int i = 0; i < size2; i++ )
+					{
+						tiles[ i, j ].CalculateNormals();
+					}
+				}
+			}
+		}
 
-        /// <summary>
-        ///     Updates all the TerrainRenderables LOD.
-        /// </summary>
-        /// <param name="camera"></param>
-        protected override void UpdateSceneGraph( Camera camera )
-        {
-            base.UpdateSceneGraph( camera );
-        }
+		/// <summary>
+		///     Updates all the TerrainRenderables LOD.
+		/// </summary>
+		/// <param name="camera"></param>
+		protected override void UpdateSceneGraph( Camera camera )
+		{
+			base.UpdateSceneGraph( camera );
+		}
 
-        /// <summary>
-        ///     Aligns TerrainRenderable neighbors, and renders them.
-        /// </summary>
-        protected override void RenderVisibleObjects()
-        {
-            if ( tiles == null )
-                return;
-            for ( int i = 0; i < tiles.GetLength( 0 ); i++ )
-            {
-                for ( int j = 0; j < tiles.GetLength( 1 ); j++ )
-                {
-                    tiles[ i, j ].AlignNeighbors();
-                }
-            }
+		/// <summary>
+		///     Aligns TerrainRenderable neighbors, and renders them.
+		/// </summary>
+		protected override void RenderVisibleObjects()
+		{
+			if ( tiles == null )
+				return;
+			for ( int i = 0; i < tiles.GetLength( 0 ); i++ )
+			{
+				for ( int j = 0; j < tiles.GetLength( 1 ); j++ )
+				{
+					tiles[ i, j ].AlignNeighbors();
+				}
+			}
 
-            base.RenderVisibleObjects();
-        }
+			base.RenderVisibleObjects();
+		}
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="camera"></param>
-        public override void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
-        {
-            base.FindVisibleObjects( camera, onlyShadowCasters );
-        }
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="camera"></param>
+		public override void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
+		{
+			base.FindVisibleObjects( camera, onlyShadowCasters );
+		}
 
-        /// <summary>
-        ///    Creates a query to return objects found along the ray.
-        /// </summary>
-        /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-        public virtual RaySceneQuery CreateRayQuery()
-        {
-            return this.CreateRayQuery( new Ray(), 0xffffffff );
-        }
+		/// <summary>
+		///    Creates a query to return objects found along the ray.
+		/// </summary>
+		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+		public virtual RaySceneQuery CreateRayQuery()
+		{
+			return this.CreateRayQuery( new Ray(), 0xffffffff );
+		}
 
-        /// <summary>
-        ///    Creates a query to return objects found along the ray.
-        /// </summary>
-        /// <param name="ray">Ray to use for the intersection query.</param>
-        /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-        public virtual RaySceneQuery CreateRayQuery( Ray ray )
-        {
-            return this.CreateRayQuery( ray, 0xffffffff );
-        }
+		/// <summary>
+		///    Creates a query to return objects found along the ray.
+		/// </summary>
+		/// <param name="ray">Ray to use for the intersection query.</param>
+		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+		public virtual RaySceneQuery CreateRayQuery( Ray ray )
+		{
+			return this.CreateRayQuery( ray, 0xffffffff );
+		}
 
-        /// <summary>
-        ///    Creates a query to return objects found along the ray.
-        /// </summary>
-        /// <param name="ray">Ray to use for the intersection query.</param>
-        /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-        public override RaySceneQuery CreateRayQuery( Ray ray, uint mask )
-        {
-            TerrainRaySceneQuery query = new TerrainRaySceneQuery( this );
-            query.Ray = ray;
-            query.QueryMask = mask;
-            return query;
-        }
+		/// <summary>
+		///    Creates a query to return objects found along the ray.
+		/// </summary>
+		/// <param name="ray">Ray to use for the intersection query.</param>
+		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+		public override RaySceneQuery CreateRayQuery( Ray ray, uint mask )
+		{
+			TerrainRaySceneQuery query = new TerrainRaySceneQuery( this );
+			query.Ray = ray;
+			query.QueryMask = mask;
+			return query;
+		}
 
-        public Vector3 IntersectSegment( Vector3 start, Vector3 end )
-        {
-            TerrainRenderable t = GetTerrainTile( start );
-            if ( t == null )
-            {
-                return new Vector3( -1, -1, -1 );
-            }
-            return t.IntersectSegment( start, end );
-        }
+		public Vector3 IntersectSegment( Vector3 start, Vector3 end )
+		{
+			TerrainRenderable t = GetTerrainTile( start );
+			if ( t == null )
+			{
+				return new Vector3( -1, -1, -1 );
+			}
+			return t.IntersectSegment( start, end );
+		}
 
-        /// <summary>
-        /// Get the height of a a point on the terrain under/over a givin 3d point. This is
-        /// very useful terrain collision testing, since you can simply select
-        /// a few locations you would like to test and see if the y value matches the one returned
-        /// by this function.
-        ///
-        /// Just to clarify this does not return the altitude of a generic xyz point,
-        /// rather it returns the y value (height) of a point with the same x and z values
-        /// as thoes passed in, that is on the surface of the terrain.
-        /// To get the Altitude you would do something like
-        /// float altitude = thePoint.y - GetHeightAt(thePoint, 0);
-        ///
-        /// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps
-        /// when testing 1000+ points, to inline it here rather than going through the extra function calls
-        /// </summary>
-        /// <param name="point">The point you would like to know the y value of the terrain at</param>
-        /// <param name="defaultheight">value to return if the point is not over/under the terrain</param>
-        /// <returns></returns>
-        public float GetHeightAt( Vector3 point, float defaultheight )
-        {
-            if ( options == null || tiles == null )
-                return defaultheight;
-            float worldsize = options.worldSize;
-            float scalex = options.scalex;
-            float scalez = options.scalez;
+		/// <summary>
+		/// Get the height of a a point on the terrain under/over a givin 3d point. This is
+		/// very useful terrain collision testing, since you can simply select
+		/// a few locations you would like to test and see if the y value matches the one returned
+		/// by this function.
+		///
+		/// Just to clarify this does not return the altitude of a generic xyz point,
+		/// rather it returns the y value (height) of a point with the same x and z values
+		/// as thoes passed in, that is on the surface of the terrain.
+		/// To get the Altitude you would do something like
+		/// float altitude = thePoint.y - GetHeightAt(thePoint, 0);
+		///
+		/// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps
+		/// when testing 1000+ points, to inline it here rather than going through the extra function calls
+		/// </summary>
+		/// <param name="point">The point you would like to know the y value of the terrain at</param>
+		/// <param name="defaultheight">value to return if the point is not over/under the terrain</param>
+		/// <returns></returns>
+		public float GetHeightAt( Vector3 point, float defaultheight )
+		{
+			if ( options == null || tiles == null )
+				return defaultheight;
+			float worldsize = options.worldSize;
+			float scalex = options.scalex;
+			float scalez = options.scalez;
 
-            int xdim = tiles.GetLength( 0 );
-            int zdim = tiles.GetLength( 1 );
+			int xdim = tiles.GetLength( 0 );
+			int zdim = tiles.GetLength( 1 );
 
-            float maxx = scalex * worldsize;
-            int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+			float maxx = scalex * worldsize;
+			int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
 
-            float maxz = scalez * worldsize;
-            int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+			float maxz = scalez * worldsize;
+			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
 
-            if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
-                return defaultheight; //point is not over a tile
-            return tiles[ xCoordIndex, zCoordIndex ].GetHeightAt( point.x, point.z );
-        }
+			if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+				return defaultheight; //point is not over a tile
+			return tiles[ xCoordIndex, zCoordIndex ].GetHeightAt( point.x, point.z );
+		}
 
-        /// <summary>
-        ///     Returns the TerrainRenderable that contains the given pt.
-        //      If no tile exists at the point, it returns 0
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public TerrainRenderable GetTerrainTile( Vector3 point )
-        {
-            if ( options == null || tiles == null )
-                return null;
-            float worldsize = options.worldSize;
-            float scalex = options.scalex;
-            float scalez = options.scalez;
+		/// <summary>
+		///     Returns the TerrainRenderable that contains the given pt.
+		//      If no tile exists at the point, it returns 0
+		/// </summary>
+		/// <param name="point"></param>
+		/// <returns></returns>
+		public TerrainRenderable GetTerrainTile( Vector3 point )
+		{
+			if ( options == null || tiles == null )
+				return null;
+			float worldsize = options.worldSize;
+			float scalex = options.scalex;
+			float scalez = options.scalez;
 
-            int xdim = tiles.GetLength( 0 );
-            int zdim = tiles.GetLength( 1 );
+			int xdim = tiles.GetLength( 0 );
+			int zdim = tiles.GetLength( 1 );
 
-            float maxx = scalex * worldsize;
-            int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+			float maxx = scalex * worldsize;
+			int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
 
-            float maxz = scalez * worldsize;
-            int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+			float maxz = scalez * worldsize;
+			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
 
-            if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
-                return null; //point is not over a tile
-            else
-                return tiles[ xCoordIndex, zCoordIndex ];
-        }
+			if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+				return null; //point is not over a tile
+			else
+				return tiles[ xCoordIndex, zCoordIndex ];
+		}
 
-        #endregion SceneManager members
-    }
+		#endregion SceneManager members
+	}
 
-    /// <summary>
-    ///		Factory for <see cref="TerrainSceneManager"/>.
-    /// </summary>
-    class TerrainSceneManagerFactory : SceneManagerFactory
-    {
-        public TerrainSceneManagerFactory()
-        {
-        }
+	/// <summary>
+	///		Factory for <see cref="TerrainSceneManager"/>.
+	/// </summary>
+	class TerrainSceneManagerFactory : SceneManagerFactory
+	{
+		public TerrainSceneManagerFactory()
+		{
+		}
 
-        #region Methods
+		#region Methods
 
-        protected override void InitMetaData()
-        {
-            metaData.sceneTypeMask = SceneType.ExteriorClose;
-            metaData.typeName = "TerrainSceneManager";
-            metaData.worldGeometrySupported = true;
-            metaData.description = "Scene manager which generally organises the scene on " +
-            "the basis of an octree, but also supports terrain world geometry. ";
-        }
+		protected override void InitMetaData()
+		{
+			metaData.sceneTypeMask = SceneType.ExteriorClose;
+			metaData.typeName = "TerrainSceneManager";
+			metaData.worldGeometrySupported = true;
+			metaData.description = "Scene manager which generally organises the scene on " +
+			"the basis of an octree, but also supports terrain world geometry. ";
+		}
 
-        public override SceneManager CreateInstance( string name )
-        {
-            return new TerrainSceneManager( name );
-        }
+		public override SceneManager CreateInstance( string name )
+		{
+			return new TerrainSceneManager( name );
+		}
 
-        public override void DestroyInstance( SceneManager instance )
-        {
-            instance.ClearScene();
-        }
+		public override void DestroyInstance( SceneManager instance )
+		{
+			instance.ClearScene();
+		}
 
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }

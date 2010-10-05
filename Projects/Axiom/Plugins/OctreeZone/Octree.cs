@@ -1,4 +1,39 @@
-﻿#region Namespace Declarations
+﻿#region LGPL License
+
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2010 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id:$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.Collections;
@@ -31,7 +66,7 @@ namespace OctreeZone
 		#region Member Variables
 
 		/** Returns the number of scene nodes attached to this octree
-        */
+		*/
 		protected int nunodeList;
 
 		/** Public list of SceneNodes attached to this particular octree
@@ -293,9 +328,11 @@ namespace OctreeZone
 		static Intersection intersect( Ray one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( two.IsNull ) return Intersection.OUTSIDE;
+			if ( two.IsNull )
+				return Intersection.OUTSIDE;
 			// Infinite box?
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 			bool inside = true;
 			Vector3 twoMin = two.Minimum;
@@ -363,9 +400,11 @@ namespace OctreeZone
 		private static Intersection intersect( PlaneBoundedVolume one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( two.IsNull ) return Intersection.OUTSIDE;
+			if ( two.IsNull )
+				return Intersection.OUTSIDE;
 			// Infinite box?
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 			// Get centre of the box
 			Vector3 centre = two.Center;
@@ -402,9 +441,12 @@ namespace OctreeZone
 		static Intersection intersect( AxisAlignedBox one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( one.IsNull || two.IsNull ) return Intersection.OUTSIDE;
-			if ( one.IsInfinite ) return Intersection.INSIDE;
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( one.IsNull || two.IsNull )
+				return Intersection.OUTSIDE;
+			if ( one.IsInfinite )
+				return Intersection.INSIDE;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 
 			Vector3 insideMin = two.Minimum;
@@ -443,8 +485,10 @@ namespace OctreeZone
 		static Intersection intersect( Sphere one, AxisAlignedBox two )
 		{
 			// Null box?
-			if ( two.IsNull ) return Intersection.OUTSIDE;
-			if ( two.IsInfinite ) return Intersection.INTERSECT;
+			if ( two.IsNull )
+				return Intersection.OUTSIDE;
+			if ( two.IsInfinite )
+				return Intersection.INTERSECT;
 
 			float sradius = one.Radius;
 
@@ -878,7 +922,8 @@ namespace OctreeZone
 		public bool _isIn( AxisAlignedBox box )
 		{
 			// Always fail if not in the scene graph or box is null
-			if ( !mAssociatedNode.IsVisible || box.IsNull ) return false;
+			if ( !mAssociatedNode.IsVisible || box.IsNull )
+				return false;
 
 			// Always succeed if AABB is infinite
 			if ( box.IsInfinite )

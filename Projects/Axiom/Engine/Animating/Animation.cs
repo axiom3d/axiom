@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -52,55 +52,55 @@ using Axiom.Graphics;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		Types of interpolation used in animation.
-    /// </summary>
-    public enum InterpolationMode
-    {
-        /// <summary>
-        ///		Values are interpolated along straight lines.  
-        ///		More robotic movement, not as realistic.
-        ///	 </summary>
-        Linear,
+	/// <summary>
+	///		Types of interpolation used in animation.
+	/// </summary>
+	public enum InterpolationMode
+	{
+		/// <summary>
+		///		Values are interpolated along straight lines.  
+		///		More robotic movement, not as realistic.
+		///	 </summary>
+		Linear,
 
-        /// <summary>
-        ///		Values are interpolated along a spline, resulting in smoother changes in direction.  
-        ///		Smooth movement between keyframes.
-        ///	 </summary>
-        Spline
-    }
+		/// <summary>
+		///		Values are interpolated along a spline, resulting in smoother changes in direction.  
+		///		Smooth movement between keyframes.
+		///	 </summary>
+		Spline
+	}
 
-    /// <summary>
-    /// The types of rotational interpolation available.
-    /// </summary>
-    public enum RotationInterpolationMode
-    {
-        /// <summary>
-        /// Values are interpolated linearly. This is faster but does not 
-        ///    necessarily give a completely accurate result.
-        /// </summary>
-        Linear,
+	/// <summary>
+	/// The types of rotational interpolation available.
+	/// </summary>
+	public enum RotationInterpolationMode
+	{
+		/// <summary>
+		/// Values are interpolated linearly. This is faster but does not 
+		///    necessarily give a completely accurate result.
+		/// </summary>
+		Linear,
 
-        /// <summary>
-        ///  Values are interpolated spherically. This is more accurate but
-        ///    has a higher cost.
-        /// </summary>
-        Spherical
-    };
+		/// <summary>
+		///  Values are interpolated spherically. This is more accurate but
+		///    has a higher cost.
+		/// </summary>
+		Spherical
+	};
 
-    /// <summary>
-    ///		An animation sequence. 
-    /// </summary>
-    /// <remarks>
-    ///		This class defines the interface for a sequence of animation, whether that
-    ///		be animation of a mesh, a path along a spline, or possibly more than one
-    ///		type of animation in one. An animation is made up of many 'tracks', which are
-    ///		the more specific types of animation.
-    ///		<p/>
-    ///		You should not create these animations directly. They will be created via a parent
-    ///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
-    /// </remarks>
-    public class Animation
+	/// <summary>
+	///		An animation sequence. 
+	/// </summary>
+	/// <remarks>
+	///		This class defines the interface for a sequence of animation, whether that
+	///		be animation of a mesh, a path along a spline, or possibly more than one
+	///		type of animation in one. An animation is made up of many 'tracks', which are
+	///		the more specific types of animation.
+	///		<p/>
+	///		You should not create these animations directly. They will be created via a parent
+	///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
+	/// </remarks>
+	public class Animation
 	{
 		#region Member variables
 

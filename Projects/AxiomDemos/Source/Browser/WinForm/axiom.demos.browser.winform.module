@@ -4,7 +4,7 @@
   <PropertyGroup>
     <RenderSystem>$(RenderSystem)</RenderSystem>
     <ProjectBase>Axiom.Demos.Browser.WinForm</ProjectBase>
-    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).csproj</ProjectFile>
+    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).$(RenderSystem).csproj</ProjectFile>
     <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
     <ImagePath>samples\$(RenderSystem)</ImagePath>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
@@ -34,6 +34,9 @@
     </File>
 
     <!-- Binary Dependencies -->
+
+    <!-- RenderSystem + Platform Manager -->
+
     <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.Win32.dll" Condition="'$(RenderSystem)'=='DirectX'" >
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
@@ -45,12 +48,43 @@
     <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.Xna.dll" Condition="'$(RenderSystem)'=='Xna'" >
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.Xna.Content.dll" Condition="'$(RenderSystem)'=='Xna'" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
 
     <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.OpenTK.dll" Condition="'$(RenderSystem)'=='OpenGL'" >
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
     <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.OpenGL.OpenTK.dll" Condition="'$(RenderSystem)'=='OpenGL'" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <!-- Scene Managers -->
+    
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.SceneManagers.Bsp.dll" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.SceneManagers.Octree.dll" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.SceneManagers.PortalConnected.dll" Condition="'$(Platform)'=='x86'" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <!-- Plugins -->
+
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Plugins.ParticleFX.dll" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Plugins.DeviLCodecs.dll" Condition="'$(Platform)'=='x86'" >
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Plugins.CgProgramManager.dll" Condition="'$(Platform)'=='x86'" >
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 

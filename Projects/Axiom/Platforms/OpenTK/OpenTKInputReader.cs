@@ -131,9 +131,10 @@ namespace Axiom.Platforms.OpenTK
 		/// </summary>
 		public override void Capture()
 		{
-			if ( mouse == null ) return;
+			if ( mouse == null )
+				return;
 
-			NativeWindow window = (NativeWindow)parent[ "window" ];
+			NativeWindow window = (NativeWindow)parent[ "nativewindow" ];
 
 			isVisible = window.WindowState != WindowState.Minimized && window.Focused;
 
@@ -190,20 +191,20 @@ namespace Axiom.Platforms.OpenTK
 
 			this.parent = parent;
 
-			INativeWindow window = (INativeWindow)parent[ "window" ];
+			INativeWindow window = (INativeWindow)parent[ "nativewindow" ];
 
 			if ( window == null )
 				return;
-            
-			keyboard = window.InputDriver.Keyboard[0];
+
+			keyboard = window.InputDriver.Keyboard[ 0 ];
 			//keyboard = window.Keyboard;
 
 			if ( useMouse )
 			{
-				mouse = window.InputDriver.Mouse[0];
+				mouse = window.InputDriver.Mouse[ 0 ];
 				if ( ownMouse )
 				{
-					this.ownMouse = true;                    
+					this.ownMouse = true;
 					System.Windows.Forms.Cursor.Hide();
 				}
 				// mouse starts out in the center of the window

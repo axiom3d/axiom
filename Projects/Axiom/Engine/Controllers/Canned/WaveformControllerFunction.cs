@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -41,138 +41,138 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-    /// <summary>
+	/// <summary>
 	/// A Controller representing a periodic waveform function ranging from Sine to InverseSawtooth
-    /// </summary>
+	/// </summary>
 	/// <remarks>Function take to form of BaseValue + Amplitude * ( F(time * freq) / 2 + .5 )
 	/// such as Base + A * ( Sin(t freq 2 pi) + .5) </remarks>
-    public class WaveformControllerFunction : BaseControllerFunction
-    {
-        #region Member variables
+	public class WaveformControllerFunction : BaseControllerFunction
+	{
+		#region Member variables
 
-        protected WaveformType type;
-        protected float baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
-        protected float frequency = 1.0f;
-        protected float phase; //[FXCop Optimization : Do not initialize unnecessarily]
-        protected float amplitude = 1.0f;
+		protected WaveformType type;
+		protected float baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
+		protected float frequency = 1.0f;
+		protected float phase; //[FXCop Optimization : Do not initialize unnecessarily]
+		protected float amplitude = 1.0f;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude, bool useDelta )
-            : base( useDelta )
-        {
-            this.type = type;
-            this.baseVal = baseVal;
-            this.frequency = frequency;
-            this.phase = phase;
-            this.amplitude = amplitude;
-        }
+		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude, bool useDelta )
+			: base( useDelta )
+		{
+			this.type = type;
+			this.baseVal = baseVal;
+			this.frequency = frequency;
+			this.phase = phase;
+			this.amplitude = amplitude;
+		}
 
-        public WaveformControllerFunction( WaveformType type, float baseVal )
-            : base( true )
-        {
-            this.type = type;
-            this.baseVal = baseVal;
-        }
+		public WaveformControllerFunction( WaveformType type, float baseVal )
+			: base( true )
+		{
+			this.type = type;
+			this.baseVal = baseVal;
+		}
 
-        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency )
-            : base( true )
-        {
-            this.type = type;
-            this.baseVal = baseVal;
-            this.frequency = frequency;
-        }
+		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency )
+			: base( true )
+		{
+			this.type = type;
+			this.baseVal = baseVal;
+			this.frequency = frequency;
+		}
 
-        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase )
-            : base( true )
-        {
-            this.type = type;
-            this.baseVal = baseVal;
-            this.frequency = frequency;
-            this.phase = phase;
-        }
+		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase )
+			: base( true )
+		{
+			this.type = type;
+			this.baseVal = baseVal;
+			this.frequency = frequency;
+			this.phase = phase;
+		}
 
-        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude )
-            : base( true )
-        {
-            this.type = type;
-            this.baseVal = baseVal;
-            this.frequency = frequency;
-            this.phase = phase;
-            this.amplitude = amplitude;
-        }
+		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude )
+			: base( true )
+		{
+			this.type = type;
+			this.baseVal = baseVal;
+			this.frequency = frequency;
+			this.phase = phase;
+			this.amplitude = amplitude;
+		}
 
-        public WaveformControllerFunction( WaveformType type )
-            : base( true )
-        {
-            this.type = type;
-        }
+		public WaveformControllerFunction( WaveformType type )
+			: base( true )
+		{
+			this.type = type;
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        public override float Execute( float sourceValue )
-        {
+		public override float Execute( float sourceValue )
+		{
 			float input = AdjustInput( sourceValue * frequency ) % 1f;
-            float output = 0.0f;
+			float output = 0.0f;
 
-            // first, get output in range [-1,1] (typical for waveforms)
-            switch ( type )
-            {
-                case WaveformType.Sine:
-                    output = Utility.Sin( input * Utility.TWO_PI );
-                    break;
+			// first, get output in range [-1,1] (typical for waveforms)
+			switch ( type )
+			{
+				case WaveformType.Sine:
+					output = Utility.Sin( input * Utility.TWO_PI );
+					break;
 
-                case WaveformType.Triangle:
-                    if ( input < 0.25f )
-                        output = input * 4;
-                    else if ( input >= 0.25f && input < 0.75f )
-                        output = 1.0f - ( ( input - 0.25f ) * 4 );
-                    else
-                        output = ( ( input - 0.75f ) * 4 ) - 1.0f;
+				case WaveformType.Triangle:
+					if ( input < 0.25f )
+						output = input * 4;
+					else if ( input >= 0.25f && input < 0.75f )
+						output = 1.0f - ( ( input - 0.25f ) * 4 );
+					else
+						output = ( ( input - 0.75f ) * 4 ) - 1.0f;
 
-                    break;
+					break;
 
-                case WaveformType.Square:
-                    if ( input <= 0.5f )
-                        output = 1.0f;
-                    else
-                        output = -1.0f;
-                    break;
+				case WaveformType.Square:
+					if ( input <= 0.5f )
+						output = 1.0f;
+					else
+						output = -1.0f;
+					break;
 
-                case WaveformType.Sawtooth:
-                    output = ( input * 2 ) - 1;
-                    break;
+				case WaveformType.Sawtooth:
+					output = ( input * 2 ) - 1;
+					break;
 
-                case WaveformType.InverseSawtooth:
-                    output = -( ( input * 2 ) - 1 );
-                    break;
+				case WaveformType.InverseSawtooth:
+					output = -( ( input * 2 ) - 1 );
+					break;
 
-            } // end switch
+			} // end switch
 
-            // scale final output to range [0,1], and then by base and amplitude
-            return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
-        }
+			// scale final output to range [0,1], and then by base and amplitude
+			return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
+		}
 
-        protected override float AdjustInput( float input )
-        {
-            float adjusted = base.AdjustInput( input );
+		protected override float AdjustInput( float input )
+		{
+			float adjusted = base.AdjustInput( input );
 
-            // if not using delta accumulation, adjust by phase value
-            if ( !useDeltaInput )
-                adjusted += phase;
+			// if not using delta accumulation, adjust by phase value
+			if ( !useDeltaInput )
+				adjusted += phase;
 
-            return adjusted;
-        }
+			return adjusted;
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        #endregion
+		#endregion
 
-    }
+	}
 }

@@ -24,13 +24,6 @@
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="$(OutputPath)\$(ProjectBase).dll" Condition="'$(Platform)'=='x86'" >
-      <ImagePath>samples\Win32</ImagePath>
-    </File>
-    <File Include="$(OutputPath)\$(ProjectBase).dll" Condition="'$(Platform)'=='x86'" >
-      <ImagePath>samples\Linux</ImagePath>
-    </File>
-
   </ItemGroup>
 
 </Project>

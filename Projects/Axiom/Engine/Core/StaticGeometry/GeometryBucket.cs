@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -55,7 +55,7 @@ namespace Axiom.Core
 
 		///<summary>
 		///    A GeometryBucket is a the lowest level bucket where geometry with
-		///    the same vertex & index format is stored. It also acts as the
+		///    the same vertex &amp; index format is stored. It also acts as the
 		///    renderable.
 		///</summary>
 		public class GeometryBucket : IRenderable, IDisposable
@@ -524,8 +524,8 @@ namespace Axiom.Core
 
 			public void SetCustomParameter( int index, Vector4 val )
 			{
-                while ( customParams.Count <= index )
-                    customParams.Add( Vector4.Zero );
+				while ( customParams.Count <= index )
+					customParams.Add( Vector4.Zero );
 				customParams[ index ] = val;
 			}
 

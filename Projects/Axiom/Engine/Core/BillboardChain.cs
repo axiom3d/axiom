@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -1019,9 +1019,9 @@ namespace Axiom.Core
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-            while ( customParams.Count <= index )
-                customParams.Add( Vector4.Zero );
-            this.customParams[ index ] = val;
+			while ( customParams.Count <= index )
+				customParams.Add( Vector4.Zero );
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
@@ -1036,26 +1036,6 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
-
-		private bool _disposed = false;
-
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
 
 		/// <summary>
 		/// Class level dispose method
@@ -1081,9 +1061,9 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -1103,13 +1083,6 @@ namespace Axiom.Core
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
-		}
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
 		}
 
 		#endregion IDisposable Implementation

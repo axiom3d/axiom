@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: AxiomException.cs 939 2006-12-06 01:39:38Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
@@ -42,7 +42,7 @@ namespace Axiom.Utilities
 	/// <summary>
 	/// Factory class for some exception classes that have variable constructors based on the 
 	/// framework that is targeted. Rather than use <c>#if</c> around the different constructors
-	/// use the least common demonitor, but wrap it in an easier to use method.
+	/// use the least common denominator, but wrap it in an easier to use method.
 	/// </summary>
 	internal static class ExceptionFactory
 	{

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -42,29 +42,29 @@ using Axiom.Collections;
 
 namespace Axiom.Graphics.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="ConfigOption">ConfigOptions</see> that are sorted by key.
-    /// </summary>
-    public class ConfigOptionCollection : AxiomCollection<ConfigOption>
-    {
-        #region Instance Methods
+	/// <summary>
+	/// Represents a collection of <see cref="ConfigOption">ConfigOptions</see> that are sorted by key.
+	/// </summary>
+	public class ConfigOptionCollection : AxiomCollection<ConfigOption>
+	{
+		#region Instance Methods
 
 
-        public override void Add(ConfigOption item)
-        {
-            base.Add(item.Name, item);
-        }
+		public override void Add( ConfigOption item )
+		{
+			base.Add( item.Name, item );
+		}
 
-        /// <summary>
-        /// Adds a <see cref="ConfigOption"/> with the specified key to the collection.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="item">A <see cref="ConfigOption"/>.</param>
-        public void Add(ushort key, ConfigOption item)
-        {
-            Add(key.ToString(), item);
-        }
+		/// <summary>
+		/// Adds a <see cref="ConfigOption"/> with the specified key to the collection.
+		/// </summary>
+		/// <param name="key">The key.</param>
+		/// <param name="item">A <see cref="ConfigOption"/>.</param>
+		public void Add( ushort key, ConfigOption item )
+		{
+			Add( key.ToString(), item );
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

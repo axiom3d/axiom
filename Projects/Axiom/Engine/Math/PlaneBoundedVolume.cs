@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -47,122 +47,123 @@ using Axiom.Math.Collections;
 
 namespace Axiom.Math
 {
-    /// <summary>
-    ///		Represents a convex volume bounded by planes.
-    /// </summary>
-    public class PlaneBoundedVolume
-    {
-        #region Fields
+	/// <summary>
+	///		Represents a convex volume bounded by planes.
+	/// </summary>
+	public class PlaneBoundedVolume
+	{
+		#region Fields
 
-        /// <summary>
-        ///		Publicly accessible plane list, you can modify this direct.
-        /// </summary>
-        public PlaneList planes = new PlaneList();
-        /// <summary>
-        ///		Side of the plane to be considered 'outside'.
-        /// </summary>
-        public PlaneSide outside;
+		/// <summary>
+		///		Publicly accessible plane list, you can modify this direct.
+		/// </summary>
+		public PlaneList planes = new PlaneList();
+		/// <summary>
+		///		Side of the plane to be considered 'outside'.
+		/// </summary>
+		public PlaneSide outside;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public PlaneBoundedVolume() : this( PlaneSide.Negative )
-        {
-        }
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public PlaneBoundedVolume()
+			: this( PlaneSide.Negative )
+		{
+		}
 
-        /// <summary>
-        ///		Constructor.
-        /// </summary>
-        /// <param name="outside">Side of the plane to be considered 'outside'.</param>
-        public PlaneBoundedVolume( PlaneSide outside )
-        {
-            this.outside = outside;
-        }
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="outside">Side of the plane to be considered 'outside'.</param>
+		public PlaneBoundedVolume( PlaneSide outside )
+		{
+			this.outside = outside;
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///		Intersection test with an <see cref="AxisAlignedBox"/>.
-        /// </summary>
-        /// <remarks>
-        ///		May return false positives but will never miss an intersection.
-        /// </remarks>
-        /// <param name="box">Box to test.</param>
-        /// <returns>True if interesecting, false otherwise.</returns>
-        public bool Intersects( AxisAlignedBox box )
-        {
-            if ( box.IsNull )
-            {
-                return false;
-            }
+		/// <summary>
+		///		Intersection test with an <see cref="AxisAlignedBox"/>.
+		/// </summary>
+		/// <remarks>
+		///		May return false positives but will never miss an intersection.
+		/// </remarks>
+		/// <param name="box">Box to test.</param>
+		/// <returns>True if interesecting, false otherwise.</returns>
+		public bool Intersects( AxisAlignedBox box )
+		{
+			if ( box.IsNull )
+			{
+				return false;
+			}
 
-            // If all points are on outside of any plane, we fail
-            Vector3[] points = box.Corners;
+			// If all points are on outside of any plane, we fail
+			Vector3[] points = box.Corners;
 
-            for ( int i = 0; i < planes.Count; i++ )
-            {
-                Plane plane = (Plane)planes[ i ];
+			for ( int i = 0; i < planes.Count; i++ )
+			{
+				Plane plane = (Plane)planes[ i ];
 
-                // Test which side of the plane the corners are
-                // Intersection fails when at all corners are on the
-                // outside of one plane
-                bool splittingPlane = true;
-                for ( int corner = 0; corner < 8; corner++ )
-                {
-                    if ( plane.GetSide( points[ corner ] ) != outside )
-                    {
-                        // this point is on the wrong side
-                        splittingPlane = false;
-                        break;
-                    }
-                }
-                if ( splittingPlane )
-                {
-                    // Found a splitting plane therefore return not intersecting
-                    return false;
-                }
-            }
+				// Test which side of the plane the corners are
+				// Intersection fails when at all corners are on the
+				// outside of one plane
+				bool splittingPlane = true;
+				for ( int corner = 0; corner < 8; corner++ )
+				{
+					if ( plane.GetSide( points[ corner ] ) != outside )
+					{
+						// this point is on the wrong side
+						splittingPlane = false;
+						break;
+					}
+				}
+				if ( splittingPlane )
+				{
+					// Found a splitting plane therefore return not intersecting
+					return false;
+				}
+			}
 
-            // couldn't find a splitting plane, assume intersecting
-            return true;
-        }
+			// couldn't find a splitting plane, assume intersecting
+			return true;
+		}
 
-        /// <summary>
-        ///		Intersection test with <see cref="Sphere"/>.
-        /// </summary>
-        /// <param name="sphere">Sphere to test.</param>
-        /// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
-        public bool Intersects( Sphere sphere )
-        {
-            for ( int i = 0; i < planes.Count; i++ )
-            {
-                Plane plane = (Plane)planes[ i ];
+		/// <summary>
+		///		Intersection test with <see cref="Sphere"/>.
+		/// </summary>
+		/// <param name="sphere">Sphere to test.</param>
+		/// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
+		public bool Intersects( Sphere sphere )
+		{
+			for ( int i = 0; i < planes.Count; i++ )
+			{
+				Plane plane = (Plane)planes[ i ];
 
-                // Test which side of the plane the sphere is
-                Real d = plane.GetDistance(sphere.Center);
+				// Test which side of the plane the sphere is
+				Real d = plane.GetDistance( sphere.Center );
 
-                // Negate d if planes point inwards
-                if ( outside == PlaneSide.Negative )
-                {
-                    d = -d;
-                }
+				// Negate d if planes point inwards
+				if ( outside == PlaneSide.Negative )
+				{
+					d = -d;
+				}
 
-                if ( ( d - sphere.Radius ) > 0 )
-                {
-                    return false;
-                }
-            }
+				if ( ( d - sphere.Radius ) > 0 )
+				{
+					return false;
+				}
+			}
 
-            // assume intersecting
-            return true;
-        }
+			// assume intersecting
+			return true;
+		}
 
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }

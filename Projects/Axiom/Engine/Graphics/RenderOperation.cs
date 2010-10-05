@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -40,50 +40,50 @@ using System.Collections;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///		Contains all the information required to render a set of vertices.  This includes
-    ///		a list of VertexBuffers. 
-    /// </summary>
-    /// <remarks>
-    ///		This class contains
-    /// </remarks>
-    public class RenderOperation
-    {
-        #region Member variables
+	/// <summary>
+	///		Contains all the information required to render a set of vertices.  This includes
+	///		a list of VertexBuffers. 
+	/// </summary>
+	/// <remarks>
+	///		This class contains
+	/// </remarks>
+	public class RenderOperation
+	{
+		#region Member variables
 
-        /// <summary>
-        ///		Type of operation to perform.
-        /// </summary>
-        public OperationType operationType;
+		/// <summary>
+		///		Type of operation to perform.
+		/// </summary>
+		public OperationType operationType;
 
-        /// <summary>
-        ///		Contains a list of hardware vertex buffers for this complete render operation.
-        /// </summary>
-        public VertexData vertexData;
+		/// <summary>
+		///		Contains a list of hardware vertex buffers for this complete render operation.
+		/// </summary>
+		public VertexData vertexData;
 
-        /// <summary>
-        ///		When <code>useIndices</code> is set to true, this must hold a reference to an index
-        ///		buffer containing indices into the vertices stored here. 
-        /// </summary>
-        public IndexData indexData;
+		/// <summary>
+		///		When <code>useIndices</code> is set to true, this must hold a reference to an index
+		///		buffer containing indices into the vertices stored here. 
+		/// </summary>
+		public IndexData indexData;
 
-        /// <summary>
-        ///		Specifies whether or not a list of indices should be used when rendering the vertices in
-        ///		the buffers.
-        /// </summary>
-        public bool useIndices;
+		/// <summary>
+		///		Specifies whether or not a list of indices should be used when rendering the vertices in
+		///		the buffers.
+		/// </summary>
+		public bool useIndices;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public RenderOperation()
-        {
-        }
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public RenderOperation()
+		{
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

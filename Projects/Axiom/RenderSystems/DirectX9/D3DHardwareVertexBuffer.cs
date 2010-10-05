@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// if discardable, keeping the software backing is expensive
 				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
 #else
-            d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
+			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
 			// Create the d3d vertex buffer
 			d3dBuffer = new D3D.VertexBuffer(

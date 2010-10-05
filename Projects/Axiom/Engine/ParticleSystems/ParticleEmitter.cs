@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -306,27 +306,27 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-        /// <summary>
-        ///		Gets/Sets the maximum angle away from the emitter direction which particle will be emitted.
-        /// </summary>
-        /// <remarks>
-        ///		Whilst the direction property defines the general direction of emission for particles, 
-        ///		this property defines how far the emission angle can deviate away from this base direction.
-        ///		This allows you to create a scatter effect - if set to 0, all particles will be emitted
-        ///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
-        ///		will be emitted in a sphere, i.e. in all directions.
-        /// </remarks>
-        public virtual float Angle
-        {
-            get
-            {
-                return Utility.RadiansToDegrees( (Real)angle );
-            }
-            set
-            {
-                angle = Utility.DegreesToRadians((Real)value);
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the maximum angle away from the emitter direction which particle will be emitted.
+		/// </summary>
+		/// <remarks>
+		///		Whilst the direction property defines the general direction of emission for particles, 
+		///		this property defines how far the emission angle can deviate away from this base direction.
+		///		This allows you to create a scatter effect - if set to 0, all particles will be emitted
+		///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
+		///		will be emitted in a sphere, i.e. in all directions.
+		/// </remarks>
+		public virtual float Angle
+		{
+			get
+			{
+				return Utility.RadiansToDegrees( (Real)angle );
+			}
+			set
+			{
+				angle = Utility.DegreesToRadians( (Real)value );
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets the initial velocity of particles emitted.
@@ -924,10 +924,10 @@ namespace Axiom.ParticleSystems
 		public virtual void CopyTo( ParticleEmitter emitter )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( string key  in commandTable.Keys )
+			foreach ( string key in commandTable.Keys )
 			{
 				// get the value of the param from this instance
-				string val = ( (IPropertyCommand)commandTable[key] ).Get( this );
+				string val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
 
 				// set the param on the target instance
 				emitter.SetParam( key, val );

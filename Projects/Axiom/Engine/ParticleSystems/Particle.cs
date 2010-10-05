@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -48,13 +48,13 @@ namespace Axiom.ParticleSystems
 		Visual
 	}
 
-    /// <summary>
+	/// <summary>
 	///		Class representing a single particle instance.
-    /// </summary>
+	/// </summary>
 	public class Particle
-    {
+	{
 
-        #region Member variables
+		#region Member variables
 
 		/// Does this particle have it's own dimensions?
 		public bool hasOwnDimensions;
@@ -73,12 +73,12 @@ namespace Axiom.ParticleSystems
 		/// Current colour
 		public ColorEx Color = ColorEx.White;
 
-        /// <summary>Time (in seconds) before this particle is destroyed.</summary>
-        public float timeToLive;
-        /// <summary>Total Time to live, number of seconds of particles natural life</summary>
-        public float totalTimeToLive;
-        /// <summary>Speed of rotation in radians</summary>
-        float rotationSpeed;
+		/// <summary>Time (in seconds) before this particle is destroyed.</summary>
+		public float timeToLive;
+		/// <summary>Total Time to live, number of seconds of particles natural life</summary>
+		public float totalTimeToLive;
+		/// <summary>Speed of rotation in radians</summary>
+		float rotationSpeed;
 
 		/// Parent ParticleSystem
 		protected ParticleSystem parentSystem;
@@ -87,21 +87,21 @@ namespace Axiom.ParticleSystems
 
 		protected ParticleType particleType = ParticleType.Visual;
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        public float RotationSpeed
-        {
-            get
-            {
-                return rotationSpeed;
-            }
-            set
-            {
-                rotationSpeed = value;
-            }
-        }
+		public float RotationSpeed
+		{
+			get
+			{
+				return rotationSpeed;
+			}
+			set
+			{
+				rotationSpeed = value;
+			}
+		}
 
 		public ParticleType ParticleType
 		{
@@ -114,17 +114,17 @@ namespace Axiom.ParticleSystems
 				particleType = value;
 			}
 		}
-        #endregion
+		#endregion
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public Particle()
-        {
-            timeToLive = 10;
-            totalTimeToLive = 10;
-            rotationSpeed = 0;
-        }
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public Particle()
+		{
+			timeToLive = 10;
+			totalTimeToLive = 10;
+			rotationSpeed = 0;
+		}
 
 
 		public void NotifyVisualData( ParticleVisualData vdata )

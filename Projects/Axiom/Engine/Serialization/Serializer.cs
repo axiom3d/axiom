@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -44,9 +44,9 @@ using Axiom.Math;
 
 namespace Axiom.Serialization
 {
-    /// <summary>
-    /// Summary description for Serializer.
-    /// </summary>
+	/// <summary>
+	/// Summary description for Serializer.
+	/// </summary>
 	public class Serializer
 	{
 		#region Fields
@@ -105,22 +105,22 @@ namespace Axiom.Serialization
 			unsafe
 			{
 				byte* pointer = (byte*)dest.ToPointer();
-                #if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				for ( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadByte();
 				}
-                #else
-                for ( int i =0; i <count ; i+=4 )
-                {
-                        pointer[i + 3] = reader.ReadByte();
-                        pointer[i + 2] = reader.ReadByte();
-                        pointer[i+1] = reader.ReadByte();
-                        pointer[i] = reader.ReadByte();
+#else
+				for ( int i =0; i <count ; i+=4 )
+				{
+						pointer[i + 3] = reader.ReadByte();
+						pointer[i + 2] = reader.ReadByte();
+						pointer[i+1] = reader.ReadByte();
+						pointer[i] = reader.ReadByte();
 			}
-                #endif
+#endif
+			}
 		}
-        }
 
 		/// <summary>
 		///		Writes a specified number of bytes.

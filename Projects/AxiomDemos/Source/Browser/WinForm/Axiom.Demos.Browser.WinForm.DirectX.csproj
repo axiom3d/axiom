@@ -73,6 +73,9 @@
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
       <HintPath>\System.Data.dll</HintPath>
@@ -105,9 +108,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.glsl">
@@ -1264,8 +1264,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
 if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"

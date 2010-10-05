@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
  
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -48,23 +48,23 @@ using System.Collections.Generic;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// Interface for custom composition passes, allowing custom operations (in addition to
-    /// the quad, scene and clear operations) in composition passes.
-    /// <seealso cref="CompositorManager.RegisterCustomCompositionPass"/>
-    /// </summary>
-    public interface ICustomCompositionPass
-    {
-        /// <summary>
-        /// Create a custom composition operation.
-        /// </summary>
-        /// <param name="instance">The compositor instance that this operation will be performed in</param>
-        /// <param name="pass">The CompositionPass that triggered the request</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This call only happens once during creation. The CompositeRenderSystemOperation will
-        /// get called each render.
-        /// </remarks>
-        CompositeRenderSystemOperation CreateOperation( CompositorInstance instance, CompositionPass pass );
-    }
+	/// <summary>
+	/// Interface for custom composition passes, allowing custom operations (in addition to
+	/// the quad, scene and clear operations) in composition passes.
+	/// <seealso cref="CompositorManager.RegisterCustomCompositionPass"/>
+	/// </summary>
+	public interface ICustomCompositionPass
+	{
+		/// <summary>
+		/// Create a custom composition operation.
+		/// </summary>
+		/// <param name="instance">The compositor instance that this operation will be performed in</param>
+		/// <param name="pass">The CompositionPass that triggered the request</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// This call only happens once during creation. The CompositeRenderSystemOperation will
+		/// get called each render.
+		/// </remarks>
+		CompositeRenderSystemOperation CreateOperation( CompositorInstance instance, CompositionPass pass );
+	}
 }

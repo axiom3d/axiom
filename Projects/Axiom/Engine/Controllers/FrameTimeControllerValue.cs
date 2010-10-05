@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -41,128 +41,128 @@ using Axiom.Core;
 
 namespace Axiom.Controllers
 {
-    /// <summary>
-    /// Summary description for FrameTimeControllerValue.
-    /// </summary>
-    public sealed class FrameTimeControllerValue : IControllerValue<float>
-    {
-        /// <summary>
-        ///		Stores the value of the time elapsed since the last frame.
-        /// </summary>
-        private float frameTime;
+	/// <summary>
+	/// Summary description for FrameTimeControllerValue.
+	/// </summary>
+	public sealed class FrameTimeControllerValue : IControllerValue<float>
+	{
+		/// <summary>
+		///		Stores the value of the time elapsed since the last frame.
+		/// </summary>
+		private float frameTime;
 
-        private float frameDelay;
-        /// <summary>
-        ///		Float value that should be used to scale controller time.
-        /// </summary>
-        private float timeFactor;
+		private float frameDelay;
+		/// <summary>
+		///		Float value that should be used to scale controller time.
+		/// </summary>
+		private float timeFactor;
 
-        private float elapsedTime;
+		private float elapsedTime;
 
-        public FrameTimeControllerValue()
-        {
-            // add a frame started event handler
-            Root.Instance.FrameStarted += RenderSystem_FrameStarted;
+		public FrameTimeControllerValue()
+		{
+			// add a frame started event handler
+			Root.Instance.FrameStarted += RenderSystem_FrameStarted;
 
-            //frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
+			//frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
 
-            // default to 1 for standard timing
-            timeFactor = 1;
-            frameDelay = 0;
-            elapsedTime = 0;
-        }
+			// default to 1 for standard timing
+			timeFactor = 1;
+			frameDelay = 0;
+			elapsedTime = 0;
+		}
 
-        #region IControllerValue Members
+		#region IControllerValue Members
 
-        /// <summary>
-        ///		Gets a time scaled value to use for controller functions.
-        /// </summary>
-        float IControllerValue<float>.Value
-        {
-            get
-            {
-                return frameTime;
-            }
-            set
-            {
-                // Do nothing			
-            }
-        }
+		/// <summary>
+		///		Gets a time scaled value to use for controller functions.
+		/// </summary>
+		float IControllerValue<float>.Value
+		{
+			get
+			{
+				return frameTime;
+			}
+			set
+			{
+				// Do nothing			
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Float value that should be used to scale controller time.  This could be used
-        ///		to either speed up or slow down controller functions independent of slowing
-        ///		down the render loop.
-        /// </summary>
-        public float TimeFactor
-        {
-            get
-            {
-                return timeFactor;
-            }
-            set
-            {
-                if ( value >= 0 )
-                {
-                    timeFactor = value;
-                    frameDelay = 0;
-                }
-            }
-        }
+		/// <summary>
+		///		Float value that should be used to scale controller time.  This could be used
+		///		to either speed up or slow down controller functions independent of slowing
+		///		down the render loop.
+		/// </summary>
+		public float TimeFactor
+		{
+			get
+			{
+				return timeFactor;
+			}
+			set
+			{
+				if ( value >= 0 )
+				{
+					timeFactor = value;
+					frameDelay = 0;
+				}
+			}
+		}
 
-        public float FrameDelay
-        {
-            get
-            {
-                return frameDelay;
-            }
-            set
-            {
-                timeFactor = 0;
-                frameDelay = value;
-            }
-        }
+		public float FrameDelay
+		{
+			get
+			{
+				return frameDelay;
+			}
+			set
+			{
+				timeFactor = 0;
+				frameDelay = value;
+			}
+		}
 
-        public float ElapsedTime
-        {
-            get
-            {
-                return elapsedTime;
-            }
-            set
-            {
-                elapsedTime = value;
-            }
-        }
+		public float ElapsedTime
+		{
+			get
+			{
+				return elapsedTime;
+			}
+			set
+			{
+				elapsedTime = value;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        ///		Event handler to the Frame Started event so that we can capture the
-        ///		time since last frame to use for controller functions.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
-        {
-            if ( frameDelay != 0 )
-            {
-                // Fixed frame time
-                frameTime = frameDelay;
-                timeFactor = frameDelay / e.TimeSinceLastFrame;
-            }
-            else
-            {
-                // Save the time value after applying time factor
-                frameTime = timeFactor * e.TimeSinceLastFrame;
-            }
-            // Accumulate the elapsed time
-            elapsedTime += frameTime;
-        }
-    }
+		/// <summary>
+		///		Event handler to the Frame Started event so that we can capture the
+		///		time since last frame to use for controller functions.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		/// <returns></returns>
+		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
+		{
+			if ( frameDelay != 0 )
+			{
+				// Fixed frame time
+				frameTime = frameDelay;
+				timeFactor = frameDelay / e.TimeSinceLastFrame;
+			}
+			else
+			{
+				// Save the time value after applying time factor
+				frameTime = timeFactor * e.TimeSinceLastFrame;
+			}
+			// Accumulate the elapsed time
+			elapsedTime += frameTime;
+		}
+	}
 }

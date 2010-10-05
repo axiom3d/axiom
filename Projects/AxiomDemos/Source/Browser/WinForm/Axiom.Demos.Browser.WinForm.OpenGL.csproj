@@ -109,9 +109,6 @@
     <Compile Include="Main.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Settings.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <None Include="..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll.config">
       <Link>OpenTK.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -232,6 +229,10 @@
       <Link>Media\PCZAppMedia\terrain2.cfg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\..\..\..\Media\Overlays\DP3.overlay">
+      <Link>Media\Overlays\DP3.overlay</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="axiom.demos.browser.winform.module" />
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1183,13 +1184,10 @@
       <Name>Axiom.Demos</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
-if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"
-if exist "Axiom.RenderSystems.DirectX9.dll.locked" del "Axiom.RenderSystems.DirectX9.dll.locked" 
-if not exist "Axiom.RenderSystems.DirectX9.dll.locked" if exist "Axiom.RenderSystems.DirectX9.dll" move "Axiom.RenderSystems.DirectX9.dll" "Axiom.RenderSystems.DirectX9.dll.locked"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>

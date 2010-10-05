@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Lists.cs -1   $"/>
 // </file>
 
@@ -43,17 +43,17 @@ using Axiom.Animating;
 
 namespace Axiom.Animating.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="KeyFrame">KeyFrames</see>.
-    /// </summary>
-    public class KeyFrameList : List<KeyFrame>
-    {
-    }
+	/// <summary>
+	/// Represents a collection of <see cref="KeyFrame">KeyFrames</see>.
+	/// </summary>
+	public class KeyFrameList : List<KeyFrame>
+	{
+	}
 
-    /// <summary>
-    /// Represents a collection of <see cref="Bone">Bones</see>.
-    /// </summary>
-    public class BoneList : List<Bone>
-    {
-    }
+	/// <summary>
+	/// Represents a collection of <see cref="Bone">Bones</see>.
+	/// </summary>
+	public class BoneList : List<Bone>
+	{
+	}
 }

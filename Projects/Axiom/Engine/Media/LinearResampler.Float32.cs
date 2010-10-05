@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
@@ -43,29 +43,29 @@ using Axiom.Math;
 
 namespace Axiom.Media
 {
-    partial class LinearResampler
-    {
-        /// <summary>
-        /// float32 linear resampler, converts FLOAT32_RGB/FLOAT32_RGBA only.
-        /// avoids overhead of pixel unpack/repack function calls
-        /// </summary>
-        public class Float32
-        {
-            private int _count;
+	partial class LinearResampler
+	{
+		/// <summary>
+		/// float32 linear resampler, converts FLOAT32_RGB/FLOAT32_RGBA only.
+		/// avoids overhead of pixel unpack/repack function calls
+		/// </summary>
+		public class Float32
+		{
+			private int _count;
 
-            public Float32()
-                : this( 1 )
-            {
-            }
+			public Float32()
+				: this( 1 )
+			{
+			}
 
-            public Float32( int count )
-            {
-                this._count = count;
-            }
+			public Float32( int count )
+			{
+				this._count = count;
+			}
 
-            public void Scale( PixelBox src, PixelBox dst )
-            {
-            }
-        }
-    }
+			public void Scale( PixelBox src, PixelBox dst )
+			{
+			}
+		}
+	}
 }
