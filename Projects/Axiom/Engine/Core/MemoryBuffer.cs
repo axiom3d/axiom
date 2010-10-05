@@ -1,5 +1,44 @@
-﻿using System;
+﻿#region LGPL License
+
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2010 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id:$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
+using System;
 using System.Collections.Generic;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Core
 {
@@ -16,15 +55,21 @@ namespace Axiom.Core
 	{
 		private readonly List<IMemoryBuffer> _memoryPool = new List<IMemoryBuffer>();
 		private readonly static Dictionary<Type, IBitConverter> _bitConverters;
-		public Dictionary<Type, IBitConverter> BitConverters { get { return _bitConverters; } }
+		public Dictionary<Type, IBitConverter> BitConverters
+		{
+			get
+			{
+				return _bitConverters;
+			}
+		}
 
 		static MemoryManager()
 		{
 			_bitConverters = new Dictionary<Type, IBitConverter>()
-                                 {
-                                     {typeof (int), new IntBitConverter()},
-                                     {typeof (float), new SingleBitConverter()}
-                                 };
+								 {
+									 {typeof (int), new IntBitConverter()},
+									 {typeof (float), new SingleBitConverter()}
+								 };
 		}
 
 		public MemoryBuffer<T> Allocate<T>( long size )
@@ -85,7 +130,11 @@ namespace Axiom.Core
 	{
 		private T[] _buffer;
 
-		public MemoryManager Owner { get; private set; }
+		public MemoryManager Owner
+		{
+			get;
+			private set;
+		}
 
 		public T this[ long index ]
 		{
@@ -112,11 +161,11 @@ namespace Axiom.Core
 			_buffer = new T[ size ];
 		}
 
-		public T[] AsArray<T>()
+		public TDestType[] AsArray<TDestType>()
 		{
-			if ( Owner.BitConverters.ContainsKey( typeof( T ) ) )
-				return (T[])( Owner.BitConverters[ typeof( T ) ].Convert( _buffer, 0 ) );
-			return new T[ 0 ];
+			if ( Owner.BitConverters.ContainsKey( typeof( TDestType ) ) )
+				return (TDestType[])( Owner.BitConverters[ typeof( TDestType ) ].Convert( _buffer, 0 ) );
+			return new TDestType[ 0 ];
 		}
 
 		#region IDisposable Implementation

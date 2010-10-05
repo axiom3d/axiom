@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -296,8 +296,8 @@ namespace Axiom.Graphics
 
 			BufferLocking method = BufferLocking.Normal;
 			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
-			     dstBox.Right == _width && dstBox.Bottom == _height &&
-			     dstBox.Back == _depth )
+				 dstBox.Right == _width && dstBox.Bottom == _height &&
+				 dstBox.Back == _depth )
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
 
@@ -305,7 +305,7 @@ namespace Axiom.Graphics
 			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
 				// Scaling desired
 				throw new Exception( "Image scaling not yet implemented." );
-				//Image.Scale(srclock, dstlock);
+			//Image.Scale(srclock, dstlock);
 			else
 				// No scaling needed
 				PixelConverter.BulkPixelConversion( srclock, dstlock );

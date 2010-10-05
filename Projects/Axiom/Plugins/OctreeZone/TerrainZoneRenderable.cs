@@ -1,3 +1,40 @@
+#region LGPL License
+
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2010 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id:$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +44,8 @@ using Axiom.Graphics;
 using Axiom.Math;
 using System.Collections;
 using Axiom.Core.Collections;
+
+#endregion Namespace Declarations
 
 namespace OctreeZone
 {
@@ -106,7 +145,10 @@ namespace OctreeZone
 		/// Bounding box of this tile
 		public override AxisAlignedBox BoundingBox
 		{
-			get { return mBounds; }
+			get
+			{
+				return mBounds;
+			}
 		}
 
 		/// <summary>
@@ -114,7 +156,10 @@ namespace OctreeZone
 		/// </summary>
 		public override float BoundingRadius
 		{
-			get { return boundingRadius; }
+			get
+			{
+				return boundingRadius;
+			}
 		}
 
 		/** Returns the index into the height array for the given coords. */
@@ -625,17 +670,23 @@ namespace OctreeZone
 						v.g = ambient.g + l;
 						v.b = ambient.b + l;
 
-						if ( v.r > 1 ) v.r = 1;
+						if ( v.r > 1 )
+							v.r = 1;
 
-						if ( v.g > 1 ) v.g = 1;
+						if ( v.g > 1 )
+							v.g = 1;
 
-						if ( v.b > 1 ) v.b = 1;
+						if ( v.b > 1 )
+							v.b = 1;
 
-						if ( v.r < 0 ) v.r = 0;
+						if ( v.r < 0 )
+							v.r = 0;
 
-						if ( v.g < 0 ) v.g = 0;
+						if ( v.g < 0 )
+							v.g = 0;
 
-						if ( v.b < 0 ) v.b = 0;
+						if ( v.b < 0 )
+							v.b = 0;
 
 						IntPtr colour = new IntPtr( Root.Instance.ConvertColor( v ) );
 						//Check: Should be a better way...
@@ -1271,19 +1322,24 @@ namespace OctreeZone
 						if ( i == mOptions.tileSize )
 						{
 							// Starter
-							*pIdx++ = (ushort)Index( x[ 0 ], y[ 0 ] ); numIndexes++;
+							*pIdx++ = (ushort)Index( x[ 0 ], y[ 0 ] );
+							numIndexes++;
 						}
-						*pIdx++ = (ushort)Index( x[ 1 ], y[ 1 ] ); numIndexes++;
-						*pIdx++ = (ushort)Index( x[ 2 ], y[ 2 ] ); numIndexes++;
+						*pIdx++ = (ushort)Index( x[ 1 ], y[ 1 ] );
+						numIndexes++;
+						*pIdx++ = (ushort)Index( x[ 2 ], y[ 2 ] );
+						numIndexes++;
 
 						if ( i == step )
 						{
 							// Emit extra index to finish row
-							*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] ); numIndexes++;
+							*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] );
+							numIndexes++;
 							if ( j < mOptions.tileSize - 1 - step )
 							{
 								// Emit this index once more (this is to turn around)
-								*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] ); numIndexes++;
+								*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] );
+								numIndexes++;
 							}
 						}
 					}
@@ -1332,13 +1388,19 @@ namespace OctreeZone
 				for ( int i = west; i < mOptions.tileSize - 1 - east; i += step )
 				{
 					//triangles
-					*pIdx++ = Index( i, j + step ); numIndexes++; // original order: 2
-					*pIdx++ = Index( i + step, j ); numIndexes++; // original order: 3
-					*pIdx++ = Index( i, j ); numIndexes++; // original order: 1
+					*pIdx++ = Index( i, j + step );
+					numIndexes++; // original order: 2
+					*pIdx++ = Index( i + step, j );
+					numIndexes++; // original order: 3
+					*pIdx++ = Index( i, j );
+					numIndexes++; // original order: 1
 
-					*pIdx++ = Index( i + step, j + step ); numIndexes++; // original order: 2
-					*pIdx++ = Index( i + step, j ); numIndexes++; // original order: 3
-					*pIdx++ = Index( i, j + step ); numIndexes++; // original order: 1
+					*pIdx++ = Index( i + step, j + step );
+					numIndexes++; // original order: 2
+					*pIdx++ = Index( i + step, j );
+					numIndexes++; // original order: 3
+					*pIdx++ = Index( i, j + step );
+					numIndexes++; // original order: 1
 				}
 			}
 
@@ -1505,15 +1567,21 @@ namespace OctreeZone
 					{
 						if ( horizontal )
 						{
-							*pIdx++ = Index( jk, starty + rowstep ); numIndexes++; // original order: 2
-							*pIdx++ = Index( jk + step, starty + rowstep ); numIndexes++; // original order: 3
-							*pIdx++ = Index( j, starty ); numIndexes++; // original order: 1
+							*pIdx++ = Index( jk, starty + rowstep );
+							numIndexes++; // original order: 2
+							*pIdx++ = Index( jk + step, starty + rowstep );
+							numIndexes++; // original order: 3
+							*pIdx++ = Index( j, starty );
+							numIndexes++; // original order: 1
 						}
 						else
 						{
-							*pIdx++ = Index( starty + rowstep, jk ); numIndexes++; // original order: 2
-							*pIdx++ = Index( starty + rowstep, jk + step ); numIndexes++; // original order: 3
-							*pIdx++ = Index( starty, j ); numIndexes++; // original order: 1
+							*pIdx++ = Index( starty + rowstep, jk );
+							numIndexes++; // original order: 2
+							*pIdx++ = Index( starty + rowstep, jk + step );
+							numIndexes++; // original order: 3
+							*pIdx++ = Index( starty, j );
+							numIndexes++; // original order: 1
 						}
 					}
 				}
@@ -1521,15 +1589,21 @@ namespace OctreeZone
 				// Middle tri
 				if ( horizontal )
 				{
-					*pIdx++ = Index( j + halfsuperstep, starty + rowstep ); numIndexes++; // original order: 2
-					*pIdx++ = Index( j + superstep, starty ); numIndexes++; // original order: 3
-					*pIdx++ = Index( j, starty ); numIndexes++; // original order: 1
+					*pIdx++ = Index( j + halfsuperstep, starty + rowstep );
+					numIndexes++; // original order: 2
+					*pIdx++ = Index( j + superstep, starty );
+					numIndexes++; // original order: 3
+					*pIdx++ = Index( j, starty );
+					numIndexes++; // original order: 1
 				}
 				else
 				{
-					*pIdx++ = Index( starty + rowstep, j + halfsuperstep ); numIndexes++; // original order: 2
-					*pIdx++ = Index( starty, j + superstep ); numIndexes++; // original order: 3
-					*pIdx++ = Index( starty, j ); numIndexes++; // original order: 1
+					*pIdx++ = Index( starty + rowstep, j + halfsuperstep );
+					numIndexes++; // original order: 2
+					*pIdx++ = Index( starty, j + superstep );
+					numIndexes++; // original order: 3
+					*pIdx++ = Index( starty, j );
+					numIndexes++; // original order: 1
 				}
 
 				for ( k = halfsuperstep; k != superstep; k += step )
@@ -1539,15 +1613,21 @@ namespace OctreeZone
 					{
 						if ( horizontal )
 						{
-							*pIdx++ = Index( jk, starty + rowstep ); numIndexes++; // original order: 2
-							*pIdx++ = Index( jk + step, starty + rowstep ); numIndexes++; // original order: 3
-							*pIdx++ = Index( j + superstep, starty ); numIndexes++; // original order: 1
+							*pIdx++ = Index( jk, starty + rowstep );
+							numIndexes++; // original order: 2
+							*pIdx++ = Index( jk + step, starty + rowstep );
+							numIndexes++; // original order: 3
+							*pIdx++ = Index( j + superstep, starty );
+							numIndexes++; // original order: 1
 						}
 						else
 						{
-							*pIdx++ = Index( starty + rowstep, jk ); numIndexes++; // original order: 2
-							*pIdx++ = Index( starty + rowstep, jk + step ); numIndexes++; // original order: 3
-							*pIdx++ = Index( starty, j + superstep ); numIndexes++; // original order: 1
+							*pIdx++ = Index( starty + rowstep, jk );
+							numIndexes++; // original order: 2
+							*pIdx++ = Index( starty + rowstep, jk + step );
+							numIndexes++; // original order: 3
+							*pIdx++ = Index( starty, j + superstep );
+							numIndexes++; // original order: 1
 						}
 					}
 				}
@@ -1603,7 +1683,10 @@ namespace OctreeZone
 		/// </summary>
 		public new bool NormalizeNormals
 		{
-			get { return normalizeNormals; }
+			get
+			{
+				return normalizeNormals;
+			}
 		}
 
 		/// <summary>
@@ -1618,7 +1701,10 @@ namespace OctreeZone
 		/// </remarks>
 		public new ushort NumWorldTransforms
 		{
-			get { return numWorldTransforms; }
+			get
+			{
+				return numWorldTransforms;
+			}
 		}
 
 		/// <summary>
@@ -1633,7 +1719,10 @@ namespace OctreeZone
 		/// </remarks>
 		public override bool UseIdentityProjection
 		{
-			get { return useIdentityProjection; }
+			get
+			{
+				return useIdentityProjection;
+			}
 		}
 
 		/// <summary>
@@ -1648,7 +1737,10 @@ namespace OctreeZone
 		/// </remarks>
 		public override bool UseIdentityView
 		{
-			get { return useIdentityView; }
+			get
+			{
+				return useIdentityView;
+			}
 		}
 
 		/// <summary>
@@ -1659,7 +1751,10 @@ namespace OctreeZone
 		/// </summary>
 		public override bool PolygonModeOverrideable
 		{
-			get { return polygonModeOverrideable; }
+			get
+			{
+				return polygonModeOverrideable;
+			}
 		}
 
 		/// <summary>
@@ -1671,7 +1766,10 @@ namespace OctreeZone
 		/// </summary>
 		public override Quaternion WorldOrientation
 		{
-			get { return worldOrientation; }
+			get
+			{
+				return worldOrientation;
+			}
 		}
 
 		/// <summary>
@@ -1683,7 +1781,10 @@ namespace OctreeZone
 		/// </summary>
 		public override Vector3 WorldPosition
 		{
-			get { return worldPosition; }
+			get
+			{
+				return worldPosition;
+			}
 		}
 
 		/// <summary>

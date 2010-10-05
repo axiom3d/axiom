@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -130,16 +130,16 @@ namespace Axiom.ParticleSystems
 		/// <param name="emitter"></param>
 		public virtual void CopyTo( ParticleAffector affector )
 		{
-            // loop through all registered commands and copy from this instance to the target instance
-            foreach ( string key in commandTable.Keys )
-            {
-                // get the value of the param from this instance
-                string val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
+			// loop through all registered commands and copy from this instance to the target instance
+			foreach ( string key in commandTable.Keys )
+			{
+				// get the value of the param from this instance
+				string val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
 
-                // set the param on the target instance
-                affector.SetParam( key, val );
-            }
-        }
+				// set the param on the target instance
+				affector.SetParam( key, val );
+			}
+		}
 
 		/// <summary>
 		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -42,14 +42,14 @@ using Axiom.Collections;
 
 namespace Axiom.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="Camera">Cameras</see> that are sorted by name.
-    /// </summary>
-    public class CameraCollection : AxiomCollection<Camera>
-    {
-        public override void Add( Camera item )
-        {
-            base.Add( item.Name, item );
-        }
-    }
+	/// <summary>
+	/// Represents a collection of <see cref="Camera">Cameras</see> that are sorted by name.
+	/// </summary>
+	public class CameraCollection : AxiomCollection<Camera>
+	{
+		public override void Add( Camera item )
+		{
+			base.Add( item.Name, item );
+		}
+	}
 }

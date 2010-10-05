@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -44,34 +44,34 @@ using Axiom.RenderSystems.Xna.Content;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// Summary description for Plugin.
-    /// </summary>
-    public sealed class Plugin : Axiom.Core.IPlugin
-    {
-        #region Fields
+	/// <summary>
+	/// Summary description for Plugin.
+	/// </summary>
+	public sealed class Plugin : Axiom.Core.IPlugin
+	{
+		#region Fields
 
-        /// <summary>
-        ///     Reference to the render system instance.
-        /// </summary>
-        private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
+		/// <summary>
+		///     Reference to the render system instance.
+		/// </summary>
+		private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Implementation of IPlugin
+		#region Implementation of IPlugin
 
-        public void Initialize()
-        {
-            // add an instance of this plugin to the list of available RenderSystems
-            Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
-        }
+		public void Initialize()
+		{
+			// add an instance of this plugin to the list of available RenderSystems
+			Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
+		}
 
-        public void Shutdown()
-        {
-            // nothing at the moment
-            //renderSystem.Shutdown();
-        }
+		public void Shutdown()
+		{
+			// nothing at the moment
+			//renderSystem.Shutdown();
+		}
 
-        #endregion Implementation of IPlugin
-    }
+		#endregion Implementation of IPlugin
+	}
 }

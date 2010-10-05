@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2009 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id $"/>
 // </file>
 #endregion SVN Version Information
@@ -45,33 +45,33 @@ using D3D = SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class HLSLIncludeHandler : D3D.Include
-    {
-        protected Resource program;
+	/// <summary>
+	/// 
+	/// </summary>
+	public class HLSLIncludeHandler : D3D.Include
+	{
+		protected Resource program;
 
-        public HLSLIncludeHandler( Resource sourceProgram )
-        {
-            this.program = sourceProgram;
-        }
+		public HLSLIncludeHandler( Resource sourceProgram )
+		{
+			this.program = sourceProgram;
+		}
 
-        public void Open( D3D.IncludeType type, string fileName, out Stream fileStream )
-        {
-            fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-        }
+		public void Open( D3D.IncludeType type, string fileName, out Stream fileStream )
+		{
+			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+		}
 
-        public void Open( D3D.IncludeType includeType, string fileName, Stream parentStream, out Stream stream )
-        {
-            stream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-        }
+		public void Open( D3D.IncludeType includeType, string fileName, Stream parentStream, out Stream stream )
+		{
+			stream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+		}
 
-        public void Close( Stream fileStream )
-        {
-            fileStream.Close();
-        }
+		public void Close( Stream fileStream )
+		{
+			fileStream.Close();
+		}
 
 
-    }
+	}
 }

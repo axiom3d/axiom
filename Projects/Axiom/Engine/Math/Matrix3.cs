@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -181,7 +181,7 @@ namespace Axiom.Math
 			{
 				fixed ( Real* pM = &m00 )
 					return new Vector3( *( pM + col ),        //m[0,col], 
-									    *( pM + 3 + col ),    //m[1,col], 
+										*( pM + 3 + col ),    //m[1,col], 
 										*( pM + 6 + col ) );  //m[2,col]);
 			}
 		}
@@ -237,38 +237,38 @@ namespace Axiom.Math
 			this = xMat * ( yMat * zMat );
 		}
 
-        public Vector3 ToEulerAnglesXYZ()
-        {
-            Real yAngle;
-            Real rAngle;
-            Real pAngle;
+		public Vector3 ToEulerAnglesXYZ()
+		{
+			Real yAngle;
+			Real rAngle;
+			Real pAngle;
 
-            pAngle = Utility.ASin( m01 );
-            if ( pAngle < Utility.PI / 2 )
-            {
-                if ( pAngle > -Utility.PI / 2 )
-                {
-                    yAngle = Utility.ATan2( m21, m11 );
-                    rAngle = Utility.ATan2( m02, m00 );
-                }
-                else
-                {
-                    // WARNING. Not a unique solution.
-                    Real fRmY = (Real)Utility.ATan2( -m20, m22 );
-                    rAngle = 0.0f; // any angle works
-                    yAngle = rAngle - fRmY;
-                }
-            }
-            else
-            {
-                // WARNING. Not a unique solution.
-                Real fRpY = Utility.ATan2( -m20, m22 );
-                rAngle = 0.0f; // any angle works
-                yAngle = fRpY - rAngle;
-            }
+			pAngle = Utility.ASin( m01 );
+			if ( pAngle < Utility.PI / 2 )
+			{
+				if ( pAngle > -Utility.PI / 2 )
+				{
+					yAngle = Utility.ATan2( m21, m11 );
+					rAngle = Utility.ATan2( m02, m00 );
+				}
+				else
+				{
+					// WARNING. Not a unique solution.
+					Real fRmY = (Real)Utility.ATan2( -m20, m22 );
+					rAngle = 0.0f; // any angle works
+					yAngle = rAngle - fRmY;
+				}
+			}
+			else
+			{
+				// WARNING. Not a unique solution.
+				Real fRpY = Utility.ATan2( -m20, m22 );
+				rAngle = 0.0f; // any angle works
+				yAngle = fRpY - rAngle;
+			}
 
-            return new Vector3( yAngle, rAngle, pAngle );
-        }
+			return new Vector3( yAngle, rAngle, pAngle );
+		}
 
 		#endregion
 

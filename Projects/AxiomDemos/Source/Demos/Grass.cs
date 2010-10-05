@@ -47,7 +47,10 @@ namespace Axiom.Demos
 
 		public float Value
 		{
-			get { return intensity; }
+			get
+			{
+				return intensity;
+			}
 			set
 			{
 				intensity = value;

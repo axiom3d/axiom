@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -41,65 +41,65 @@ using Axiom.Math;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///		Describes the graphics API independent functionality required by a hardware
-    ///		vertex buffer.  
-    /// </summary>
-    /// <remarks>
-    ///		
-    /// </remarks>
-    public abstract class HardwareVertexBuffer : HardwareBuffer
-    {
-        #region Member variables
+	/// <summary>
+	///		Describes the graphics API independent functionality required by a hardware
+	///		vertex buffer.  
+	/// </summary>
+	/// <remarks>
+	///		
+	/// </remarks>
+	public abstract class HardwareVertexBuffer : HardwareBuffer
+	{
+		#region Member variables
 
-        protected int numVertices;
-        protected int vertexSize;
+		protected int numVertices;
+		protected int vertexSize;
 		protected int useCount;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public HardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
-            : base( usage, useSystemMemory, useShadowBuffer )
-        {
-            this.vertexSize = vertexSize;
-            this.numVertices = numVertices;
+		public HardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+			: base( usage, useSystemMemory, useShadowBuffer )
+		{
+			this.vertexSize = vertexSize;
+			this.numVertices = numVertices;
 
-            // calculate the size in bytes of this buffer
-            sizeInBytes = vertexSize * numVertices;
+			// calculate the size in bytes of this buffer
+			sizeInBytes = vertexSize * numVertices;
 
-            // create a shadow buffer if required
-            if ( useShadowBuffer )
-            {
-                shadowBuffer = new SoftwareVertexBuffer( vertexSize, numVertices, BufferUsage.Dynamic );
-            }
+			// create a shadow buffer if required
+			if ( useShadowBuffer )
+			{
+				shadowBuffer = new SoftwareVertexBuffer( vertexSize, numVertices, BufferUsage.Dynamic );
+			}
 
 			useCount = 0;
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int VertexSize
-        {
-            get
-            {
-                return vertexSize;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public int VertexSize
+		{
+			get
+			{
+				return vertexSize;
+			}
+		}
 
-        public int VertexCount
-        {
-            get
-            {
-                return numVertices;
-            }
-        }
+		public int VertexCount
+		{
+			get
+			{
+				return numVertices;
+			}
+		}
 
 		public int UseCount
 		{
@@ -109,6 +109,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

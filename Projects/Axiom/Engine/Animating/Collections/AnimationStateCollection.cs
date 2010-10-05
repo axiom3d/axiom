@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -44,29 +44,29 @@ using Axiom.Collections;
 
 namespace Axiom.Animating.Collections
 {
-    /// <summary>
-    ///Represents a collection of <see cref="AnimationState">AnimationStates</see> that are sorted by name.
-    /// </summary>
-    public class AnimationStateCollection : AxiomCollection<AnimationState>
-    {
-        #region Instance Methods
+	/// <summary>
+	///Represents a collection of <see cref="AnimationState">AnimationStates</see> that are sorted by name.
+	/// </summary>
+	public class AnimationStateCollection : AxiomCollection<AnimationState>
+	{
+		#region Instance Methods
 
-        /// <summary>
-        /// Clones this instance.
-        /// </summary>
-        /// <returns></returns>
-        public AnimationStateCollection Clone()
-        {
-            AnimationStateCollection newCol = new AnimationStateCollection();
+		/// <summary>
+		/// Clones this instance.
+		/// </summary>
+		/// <returns></returns>
+		public AnimationStateCollection Clone()
+		{
+			AnimationStateCollection newCol = new AnimationStateCollection();
 
-            foreach (KeyValuePair<string, AnimationState> entry in this)
-            {
-                newCol.Add(entry.Key, entry.Value);
-            }
+			foreach ( KeyValuePair<string, AnimationState> entry in this )
+			{
+				newCol.Add( entry.Key, entry.Value );
+			}
 
-            return newCol;
-        }
+			return newCol;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

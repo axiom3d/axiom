@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -43,22 +43,22 @@ using Axiom.Collections;
 
 namespace Axiom.Animating.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by key.
-    /// </summary>
-    public class AnimationTrackCollection : AxiomSortedCollection<ushort, AnimationTrack>
-    {
-        #region Instance Methods
+	/// <summary>
+	/// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by key.
+	/// </summary>
+	public class AnimationTrackCollection : AxiomSortedCollection<ushort, AnimationTrack>
+	{
+		#region Instance Methods
 
-        /// <summary>
-        ///	Adds an <see cref="AnimationTrack"/> to the collection and uses its handle automatically as the key.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add(AnimationTrack item)
-        {
-            Add(item.Handle, item);
-        }
+		/// <summary>
+		///	Adds an <see cref="AnimationTrack"/> to the collection and uses its handle automatically as the key.
+		/// </summary>
+		/// <param name="item"></param>
+		public void Add( AnimationTrack item )
+		{
+			Add( item.Handle, item );
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

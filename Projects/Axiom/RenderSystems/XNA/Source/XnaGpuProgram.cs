@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     ShaderCode set externally, most likely from the HLSL compiler.
 		/// </summary>
-    
+
 		protected byte[] shaderCode;
 
 
@@ -90,15 +90,15 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-    
+
 		#endregion ShaderCode Property
 
 		#endregion Fields and Properties
 
 		#region Constructor
 
-        public XnaGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
-            : base( parent, name, handle, group, isManual, loader )
+		public XnaGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 			this.device = device;
 			this.shaderCode = null;
@@ -127,8 +127,8 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Overridden to allow for loading microcode from external sources.
 		/// </summary>
-        protected override void load()
-        {
+		protected override void load()
+		{
 			if ( shaderCode != null && shaderCode.Length > 0 )
 			{
 				// unload if needed
@@ -155,36 +155,36 @@ namespace Axiom.RenderSystems.Xna
 		protected override void LoadFromSource()
 		{
 			//we should never get here
-        }
+		}
 
 		#endregion GpuProgram Members
 
-        #region Properties
-        public override int SamplerCount
-        {
-            get
-            {
-                //switch (target)
-                //{
-                //    case "ps_1_1":
-                //    case "ps_1_2":
-                //    case "ps_1_3":
-                        return 4;
-                    //case "ps_1_4":
-                    //    return 6;
-                    //case "ps_2_0":
-                    //case "ps_2_x":
-                    //case "ps_3_0":
-                    //case "ps_3_x":
-                    //    return 16;
-                    //default:
-                    //    throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
-                //}
+		#region Properties
+		public override int SamplerCount
+		{
+			get
+			{
+				//switch (target)
+				//{
+				//    case "ps_1_1":
+				//    case "ps_1_2":
+				//    case "ps_1_3":
+				return 4;
+				//case "ps_1_4":
+				//    return 6;
+				//case "ps_2_0":
+				//case "ps_2_x":
+				//case "ps_3_0":
+				//case "ps_3_x":
+				//    return 16;
+				//default:
+				//    throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
+				//}
 
-                // return 0;
-            }
-        }
-        #endregion
+				// return 0;
+			}
+		}
+		#endregion
 
 	}
 
@@ -217,8 +217,8 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructor
 
-        internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
-            : base( parent, name, handle, group, isManual, loader, device )
+		internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+			: base( parent, name, handle, group, isManual, loader, device )
 		{
 		}
 
@@ -235,7 +235,7 @@ namespace Axiom.RenderSystems.Xna
 			vertexShader = new XFG.VertexShader( device, shaderCode );
 		}
 
-        #endregion XnaGpuProgram Memebers
+		#endregion XnaGpuProgram Memebers
 
 		#region GpuProgram Members
 
@@ -282,13 +282,13 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion PixelShader Property
-			
+
 		#endregion Fields and Properties
 
 		#region Constructors
 
-        internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
-            : base( parent, name, handle, group, isManual, loader, device )
+		internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+			: base( parent, name, handle, group, isManual, loader, device )
 		{
 		}
 

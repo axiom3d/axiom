@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -40,96 +40,96 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    ///		Xna implementation of a hardware occlusion query.
-    /// </summary>
-    // Original Author: Lee Sandberg
+	/// <summary>
+	///		Xna implementation of a hardware occlusion query.
+	/// </summary>
+	// Original Author: Lee Sandberg
 
-    public class XnaHardwareOcclusionQuery : HardwareOcclusionQuery
-    {
-        #region Fields
+	public class XnaHardwareOcclusionQuery : HardwareOcclusionQuery
+	{
+		#region Fields
 
-        /// <summary>
-        ///		Reference to the current Xna device object.
-        /// </summary>
-        private XFG.GraphicsDevice device;
-        /// <summary>
-        ///		Reference to the query object being used.
-        /// </summary>
-        private XFG.OcclusionQuery oQuery;
+		/// <summary>
+		///		Reference to the current Xna device object.
+		/// </summary>
+		private XFG.GraphicsDevice device;
+		/// <summary>
+		///		Reference to the query object being used.
+		/// </summary>
+		private XFG.OcclusionQuery oQuery;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        /// <param name="device">Reference to a Direct3D device.</param>
-        public XnaHardwareOcclusionQuery( XFG.GraphicsDevice device )
-        {
-            this.device = device;
-            oQuery = new XFG.OcclusionQuery(device);
-        }
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="device">Reference to a Direct3D device.</param>
+		public XnaHardwareOcclusionQuery( XFG.GraphicsDevice device )
+		{
+			this.device = device;
+			oQuery = new XFG.OcclusionQuery( device );
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region HardwareOcclusionQuery Members
+		#region HardwareOcclusionQuery Members
 
-        /// <summary>
-        /// Starts the hardware occlusion query
-        /// </summary>
-        public override void Begin()
-        {
-            // proceed if supported, or silently fail otherwise
-            if ( oQuery.IsSupported)
-            {
-                oQuery.Begin();
-            }
-        }
+		/// <summary>
+		/// Starts the hardware occlusion query
+		/// </summary>
+		public override void Begin()
+		{
+			// proceed if supported, or silently fail otherwise
+			if ( oQuery.IsSupported )
+			{
+				oQuery.Begin();
+			}
+		}
 
-        /// <summary>
-        /// Pulls the hardware occlusion query.
-        /// </summary>
-        /// <remarks>
-        /// Waits until the query result is available; use <see cref="HardwareOcclusionQuery.IsStillOutstanding"/>
-        /// if just want to test if the result is available.
-        /// </remarks>
-        /// <returns>the resulting number of fragments.</returns>
-        public override int PullResults()
-        {
-            // default to returning a high count.  will be set otherwise if the query runs
-            LastFragmentCount = 100000;
+		/// <summary>
+		/// Pulls the hardware occlusion query.
+		/// </summary>
+		/// <remarks>
+		/// Waits until the query result is available; use <see cref="HardwareOcclusionQuery.IsStillOutstanding"/>
+		/// if just want to test if the result is available.
+		/// </remarks>
+		/// <returns>the resulting number of fragments.</returns>
+		public override int PullResults()
+		{
+			// default to returning a high count.  will be set otherwise if the query runs
+			LastFragmentCount = 100000;
 
-            if ( oQuery.IsSupported && oQuery.IsComplete)
-            {
-                LastFragmentCount = oQuery.PixelCount;
-            }
+			if ( oQuery.IsSupported && oQuery.IsComplete )
+			{
+				LastFragmentCount = oQuery.PixelCount;
+			}
 
-            return LastFragmentCount;
-        }
+			return LastFragmentCount;
+		}
 
-        /// <summary>
-        /// Ends the hardware occlusion test
-        /// </summary>
-        public override void End()
-        {
-            // proceed if supported, or silently fail otherwise
-            if ( oQuery.IsSupported )
-            {
-                oQuery.End();
-            }
-        }
+		/// <summary>
+		/// Ends the hardware occlusion test
+		/// </summary>
+		public override void End()
+		{
+			// proceed if supported, or silently fail otherwise
+			if ( oQuery.IsSupported )
+			{
+				oQuery.End();
+			}
+		}
 
-        /// <summary>
-        /// Lets you know when query is done, or still be processed by the Hardware
-        /// </summary>
-        /// <returns>true if query isn't finished.</returns>
-        public override bool IsStillOutstanding()
-        {
-            return !oQuery.IsComplete;
-        }
+		/// <summary>
+		/// Lets you know when query is done, or still be processed by the Hardware
+		/// </summary>
+		/// <returns>true if query isn't finished.</returns>
+		public override bool IsStillOutstanding()
+		{
+			return !oQuery.IsComplete;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

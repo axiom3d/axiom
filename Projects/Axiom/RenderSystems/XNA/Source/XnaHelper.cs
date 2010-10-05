@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -42,10 +42,10 @@ using Axiom.Media;
 
 using Microsoft.Xna.Framework.Graphics;
 
-using BufferUsage=Axiom.Graphics.BufferUsage;
-using CompareFunction=Axiom.Graphics.CompareFunction;
-using FilterOptions=Axiom.Graphics.FilterOptions;
-using Rectangle=Microsoft.Xna.Framework.Rectangle;
+using BufferUsage = Axiom.Graphics.BufferUsage;
+using CompareFunction = Axiom.Graphics.CompareFunction;
+using FilterOptions = Axiom.Graphics.FilterOptions;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
@@ -66,39 +66,39 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public static DriverCollection GetDriverInfo()
 		{
-            DriverCollection driverList = new DriverCollection();
+			DriverCollection driverList = new DriverCollection();
 
-            foreach ( XFG.GraphicsAdapter adapterInfo in XFG.GraphicsAdapter.Adapters )
-            {
-                Driver driver = new Driver( adapterInfo );
+			foreach ( XFG.GraphicsAdapter adapterInfo in XFG.GraphicsAdapter.Adapters )
+			{
+				Driver driver = new Driver( adapterInfo );
 
-                int lastWidth = 0, lastHeight = 0;
-                XFG.SurfaceFormat lastFormat = 0;
+				int lastWidth = 0, lastHeight = 0;
+				XFG.SurfaceFormat lastFormat = 0;
 
-                foreach ( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
-                {
-                    // filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
-                    if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
-                        ( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
-                    {
-                        // add the video mode to the list
-                        driver.VideoModes.Add( new VideoMode( mode ) );
+				foreach ( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
+				{
+					// filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
+					if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
+						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
+					{
+						// add the video mode to the list
+						driver.VideoModes.Add( new VideoMode( mode ) );
 
-                        // save current mode settings for comparison on the next iteraion
-                        lastWidth = mode.Width;
-                        lastHeight = mode.Height;
-                        lastFormat = mode.Format;
-                    }
-                }
-                driverList.Add( driver );
-            }
+						// save current mode settings for comparison on the next iteraion
+						lastWidth = mode.Width;
+						lastHeight = mode.Height;
+						lastFormat = mode.Format;
+					}
+				}
+				driverList.Add( driver );
+			}
 
-            return driverList;
+			return driverList;
 		}
 
 		public static XFG.Color Convert( Axiom.Core.ColorEx color )
 		{
-			return new XFG.Color( (byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255), (byte)(color.a * 255) );
+			return new XFG.Color( (byte)( color.r * 255 ), (byte)( color.g * 255 ), (byte)( color.b * 255 ), (byte)( color.a * 255 ) );
 		}
 
 		public static Axiom.Core.ColorEx Convert( XFG.Color color )
@@ -277,7 +277,7 @@ namespace Axiom.RenderSystems.Xna
 				case LayerBlendOperationEx.Source2:
 					d3dTexOp = XFG.TextureOperation.SelectArg2;
 					break;
-                
+				
 				case LayerBlendOperationEx.Modulate:
 					d3dTexOp = BlendFunction.moXFG.TextureOperation.Modulate;
 					break;
@@ -470,7 +470,7 @@ namespace Axiom.RenderSystems.Xna
 					return XFG.VertexElementFormat.Color;
 
 				case VertexElementType.Float1:
-				   return XFG.VertexElementFormat.Single;
+					return XFG.VertexElementFormat.Single;
 
 				case VertexElementType.Float2:
 					return XFG.VertexElementFormat.Vector2;
@@ -589,7 +589,7 @@ namespace Axiom.RenderSystems.Xna
 					 d3dLockFlags |= XFG.LockFlags.ReadOnly;
 				 if ( locking == BufferLocking.NoOverwrite )
 					 d3dLockFlags |= XFG.LockFlags.NoOverwrite;
-            
+			
 				 return 0;
 			 }*/
 
@@ -848,123 +848,123 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-	    public static Rectangle ToRectangle( Core.Rectangle rectangle )
-	    {
-	        Rectangle retVal = new Rectangle();
-	        retVal.X = (int)rectangle.Left;
-	        retVal.Y = (int)rectangle.Top;
-	        retVal.Width = (int)rectangle.Width;
-	        retVal.Height = (int)rectangle.Height;
-	        return retVal;
-	    }
+		public static Rectangle ToRectangle( Core.Rectangle rectangle )
+		{
+			Rectangle retVal = new Rectangle();
+			retVal.X = (int)rectangle.Left;
+			retVal.Y = (int)rectangle.Top;
+			retVal.Width = (int)rectangle.Width;
+			retVal.Height = (int)rectangle.Height;
+			return retVal;
+		}
 
-        public static Rectangle ToRectangle( BasicBox rectangle )
-        {
-            Rectangle retVal = new Rectangle();
-            retVal.X = (int)rectangle.Left;
-            retVal.Y = (int)rectangle.Top;
-            retVal.Width = (int)rectangle.Width;
-            retVal.Height = (int)rectangle.Height;
-            return retVal;
-        }
+		public static Rectangle ToRectangle( BasicBox rectangle )
+		{
+			Rectangle retVal = new Rectangle();
+			retVal.X = (int)rectangle.Left;
+			retVal.Y = (int)rectangle.Top;
+			retVal.Width = (int)rectangle.Width;
+			retVal.Height = (int)rectangle.Height;
+			return retVal;
+		}
 
-	    public static PixelFormat Convert( SurfaceFormat semantic )
-	    {
-            switch(semantic)
-            {
-                case SurfaceFormat.Alpha8:
-                    return Axiom.Media.PixelFormat.A8;
-                case SurfaceFormat.Luminance8:
-                    return Axiom.Media.PixelFormat.L8;
-                case SurfaceFormat.Luminance16:
-                    return Axiom.Media.PixelFormat.L16;
-                case SurfaceFormat.LuminanceAlpha8:
-                    return Axiom.Media.PixelFormat.A4L4;
-                case SurfaceFormat.LuminanceAlpha16:	// Assume little endian here
-                    return Axiom.Media.PixelFormat.A8L8;
-                case SurfaceFormat.Bgra5551:
-                    return Axiom.Media.PixelFormat.A1R5G5B5;
-                case SurfaceFormat.Bgra4444:
-                    return Axiom.Media.PixelFormat.A4R4G4B4;
-                case SurfaceFormat.Bgr565:
-                    return Axiom.Media.PixelFormat.R5G6B5;
-                case XFG.SurfaceFormat.Bgr32:
-                    return Axiom.Media.PixelFormat.X8B8G8R8;
-                case SurfaceFormat.Bgra1010102:
-                    return Axiom.Media.PixelFormat.A2R10G10B10;
-                case SurfaceFormat.Rgba32:
-                case SurfaceFormat.Color:
-                    return Axiom.Media.PixelFormat.A8R8G8B8;
-                case XFG.SurfaceFormat.Bgr24:
-                    return Axiom.Media.PixelFormat.R8G8B8;
-                case SurfaceFormat.Dxt1:
-                    return Axiom.Media.PixelFormat.DXT1;
-                case SurfaceFormat.Dxt2:
-                    return Axiom.Media.PixelFormat.DXT2;
-                case SurfaceFormat.Dxt3:
-                    return Axiom.Media.PixelFormat.DXT3;
-                case SurfaceFormat.Dxt4:
-                    return Axiom.Media.PixelFormat.DXT4;
-                case SurfaceFormat.Dxt5:
-                    return Axiom.Media.PixelFormat.DXT5;
-                default:
-                    return Axiom.Media.PixelFormat.Unknown;
-            }
-	    }
+		public static PixelFormat Convert( SurfaceFormat semantic )
+		{
+			switch ( semantic )
+			{
+				case SurfaceFormat.Alpha8:
+					return Axiom.Media.PixelFormat.A8;
+				case SurfaceFormat.Luminance8:
+					return Axiom.Media.PixelFormat.L8;
+				case SurfaceFormat.Luminance16:
+					return Axiom.Media.PixelFormat.L16;
+				case SurfaceFormat.LuminanceAlpha8:
+					return Axiom.Media.PixelFormat.A4L4;
+				case SurfaceFormat.LuminanceAlpha16:	// Assume little endian here
+					return Axiom.Media.PixelFormat.A8L8;
+				case SurfaceFormat.Bgra5551:
+					return Axiom.Media.PixelFormat.A1R5G5B5;
+				case SurfaceFormat.Bgra4444:
+					return Axiom.Media.PixelFormat.A4R4G4B4;
+				case SurfaceFormat.Bgr565:
+					return Axiom.Media.PixelFormat.R5G6B5;
+				case XFG.SurfaceFormat.Bgr32:
+					return Axiom.Media.PixelFormat.X8B8G8R8;
+				case SurfaceFormat.Bgra1010102:
+					return Axiom.Media.PixelFormat.A2R10G10B10;
+				case SurfaceFormat.Rgba32:
+				case SurfaceFormat.Color:
+					return Axiom.Media.PixelFormat.A8R8G8B8;
+				case XFG.SurfaceFormat.Bgr24:
+					return Axiom.Media.PixelFormat.R8G8B8;
+				case SurfaceFormat.Dxt1:
+					return Axiom.Media.PixelFormat.DXT1;
+				case SurfaceFormat.Dxt2:
+					return Axiom.Media.PixelFormat.DXT2;
+				case SurfaceFormat.Dxt3:
+					return Axiom.Media.PixelFormat.DXT3;
+				case SurfaceFormat.Dxt4:
+					return Axiom.Media.PixelFormat.DXT4;
+				case SurfaceFormat.Dxt5:
+					return Axiom.Media.PixelFormat.DXT5;
+				default:
+					return Axiom.Media.PixelFormat.Unknown;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static XFG.SurfaceFormat Convert( PixelFormat format )
-        {
-            switch ( format )
-            {
-                case PixelFormat.BYTE_LA:
-                    return XFG.SurfaceFormat.LuminanceAlpha16;
-                case PixelFormat.L8:
-                    return XFG.SurfaceFormat.Luminance8;
-                case PixelFormat.A8:
-                    return XFG.SurfaceFormat.Alpha8;
-                case PixelFormat.R5G6B5:
-                    return XFG.SurfaceFormat.Bgr565;
-                case PixelFormat.A4R4G4B4:
-                    return XFG.SurfaceFormat.Bgra4444;
-                case PixelFormat.A8R8G8B8:
-                    return XFG.SurfaceFormat.Color;
-                //case PixelFormat.L4A4:
-                case PixelFormat.A4L4:
-                    return XFG.SurfaceFormat.LuminanceAlpha8;
-                //case PixelFormat.B10G10R10A2:
-                case PixelFormat.A2R10G10B10:
-                    return XFG.SurfaceFormat.Bgra1010102;
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public static XFG.SurfaceFormat Convert( PixelFormat format )
+		{
+			switch ( format )
+			{
+				case PixelFormat.BYTE_LA:
+					return XFG.SurfaceFormat.LuminanceAlpha16;
+				case PixelFormat.L8:
+					return XFG.SurfaceFormat.Luminance8;
+				case PixelFormat.A8:
+					return XFG.SurfaceFormat.Alpha8;
+				case PixelFormat.R5G6B5:
+					return XFG.SurfaceFormat.Bgr565;
+				case PixelFormat.A4R4G4B4:
+					return XFG.SurfaceFormat.Bgra4444;
+				case PixelFormat.A8R8G8B8:
+					return XFG.SurfaceFormat.Color;
+				//case PixelFormat.L4A4:
+				case PixelFormat.A4L4:
+					return XFG.SurfaceFormat.LuminanceAlpha8;
+				//case PixelFormat.B10G10R10A2:
+				case PixelFormat.A2R10G10B10:
+					return XFG.SurfaceFormat.Bgra1010102;
+			}
 
-            return XFG.SurfaceFormat.Unknown;
-        }
+			return XFG.SurfaceFormat.Unknown;
+		}
 
 
-        public static Axiom.Media.PixelFormat GetClosestSupported( Axiom.Media.PixelFormat format )
-        {
-            if ( Convert( format ) != XFG.SurfaceFormat.Unknown )
-                return format;
-            switch ( format )
-            {
-                case Axiom.Media.PixelFormat.B5G6R5:
-                    return Axiom.Media.PixelFormat.R5G6B5;
-                case Axiom.Media.PixelFormat.B8G8R8:
-                    return Axiom.Media.PixelFormat.A8R8G8B8; // Would be R8G8B8 normaly but MDX doesn't like that format.
-                case Axiom.Media.PixelFormat.B8G8R8A8:
-                    return Axiom.Media.PixelFormat.A8R8G8B8;
-                case Axiom.Media.PixelFormat.FLOAT16_RGB:
-                    return Axiom.Media.PixelFormat.FLOAT16_RGBA;
-                case Axiom.Media.PixelFormat.FLOAT32_RGB:
-                    return Axiom.Media.PixelFormat.FLOAT32_RGBA;
-                case Axiom.Media.PixelFormat.Unknown:
-                default:
-                    return Axiom.Media.PixelFormat.A8R8G8B8;
-            }
-        }
-    }
+		public static Axiom.Media.PixelFormat GetClosestSupported( Axiom.Media.PixelFormat format )
+		{
+			if ( Convert( format ) != XFG.SurfaceFormat.Unknown )
+				return format;
+			switch ( format )
+			{
+				case Axiom.Media.PixelFormat.B5G6R5:
+					return Axiom.Media.PixelFormat.R5G6B5;
+				case Axiom.Media.PixelFormat.B8G8R8:
+					return Axiom.Media.PixelFormat.A8R8G8B8; // Would be R8G8B8 normaly but MDX doesn't like that format.
+				case Axiom.Media.PixelFormat.B8G8R8A8:
+					return Axiom.Media.PixelFormat.A8R8G8B8;
+				case Axiom.Media.PixelFormat.FLOAT16_RGB:
+					return Axiom.Media.PixelFormat.FLOAT16_RGBA;
+				case Axiom.Media.PixelFormat.FLOAT32_RGB:
+					return Axiom.Media.PixelFormat.FLOAT32_RGBA;
+				case Axiom.Media.PixelFormat.Unknown:
+				default:
+					return Axiom.Media.PixelFormat.A8R8G8B8;
+			}
+		}
+	}
 }

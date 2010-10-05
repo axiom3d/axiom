@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2009 Axiom Project Team
+// Copyright (C) 2003-2010 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,7 +27,7 @@
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -44,42 +44,42 @@ using Axiom.Collections;
 
 namespace Axiom.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="MovableObject">MovableObjects</see> that are sorted by name.
-    /// </summary>
-    public class MovableObjectCollection : AxiomCollection<MovableObject>
-    {
-        public override void Add( MovableObject item )
-        {
-            base.Add(item.Name, item);
-        }
+	/// <summary>
+	/// Represents a collection of <see cref="MovableObject">MovableObjects</see> that are sorted by name.
+	/// </summary>
+	public class MovableObjectCollection : AxiomCollection<MovableObject>
+	{
+		public override void Add( MovableObject item )
+		{
+			base.Add( item.Name, item );
+		}
 
-        public new void Add( string key, MovableObject item )
-        {
-            base.Add( key, item );
-            item.ObjectRenamed += ObjectRenamed;
-        }
+		public new void Add( string key, MovableObject item )
+		{
+			base.Add( key, item );
+			item.ObjectRenamed += ObjectRenamed;
+		}
 
-        public new void Remove( string key )
-        {
-            this[key].ObjectRenamed -= ObjectRenamed;
-            base.Remove( key );
-        }
+		public new void Remove( string key )
+		{
+			this[ key ].ObjectRenamed -= ObjectRenamed;
+			base.Remove( key );
+		}
 
-        void ObjectRenamed( MovableObject obj, string oldName )
-        {
-            // do not use overridden Add methods otherwise
-            // the event handler will be attached again.
-            base.Remove( oldName );
-            base.Add( obj.Name, obj );
-        }
+		void ObjectRenamed( MovableObject obj, string oldName )
+		{
+			// do not use overridden Add methods otherwise
+			// the event handler will be attached again.
+			base.Remove( oldName );
+			base.Add( obj.Name, obj );
+		}
 
-    }
+	}
 
-    /// <summary>
-    /// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
-    /// </summary>
-    public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory>
-    {
-    }
+	/// <summary>
+	/// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
+	/// </summary>
+	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory>
+	{
+	}
 }

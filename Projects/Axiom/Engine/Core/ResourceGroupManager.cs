@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -1375,17 +1375,17 @@ namespace Axiom.Core
 		#region OpenResource Method
 
 		/** Open a single resource by name and return a DataStream
-            pointing at the source of the data.
-        @param resourceName The name of the resource to locate.
-            Even if resource locations are added recursively, you
-            must provide a fully qualified name to this method. You
-            can find out the matching fully qualified names by using the
-            find() method if you need to.
-        @param groupName The name of the resource group; this determines which
-            locations are searched.
-        @returns Shared pointer to data stream containing the data, will be
-            destroyed automatically when no longer referenced
-        */
+			pointing at the source of the data.
+		@param resourceName The name of the resource to locate.
+			Even if resource locations are added recursively, you
+			must provide a fully qualified name to this method. You
+			can find out the matching fully qualified names by using the
+			find() method if you need to.
+		@param groupName The name of the resource group; this determines which
+			locations are searched.
+		@returns Shared pointer to data stream containing the data, will be
+			destroyed automatically when no longer referenced
+		*/
 
 		public IO.Stream OpenResource( string resourceName )
 		{
@@ -1402,8 +1402,7 @@ namespace Axiom.Core
 			return OpenResource( resourceName, groupName, searchGroupsIfNotFound, null );
 		}
 
-		public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound,
-											   Resource resourceBeingLoaded )
+		public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
 		{
 			// Try to find in resource index first
 			ResourceGroup grp = getResourceGroup( groupName );
@@ -1417,7 +1416,24 @@ namespace Axiom.Core
 			{
 				// Found in the index
 				arch = grp.ResourceIndexCaseSensitive[ resourceName ];
-				return arch.Open( resourceName );
+				IO.Stream stream = arch.Open( resourceName );
+
+				//Maybe, the stream is null 'cause we added a resource location recursively, so 
+				//we try to find the wanted resource with the following search.
+				if ( stream == null )
+				{
+					FileInfoList fileList = FindResourceFileInfo( groupName, "*" + System.IO.Path.GetExtension( resourceName ) );
+					foreach ( FileInfo info in fileList )
+					{
+						if ( !info.Basename.Contains( resourceName ) )
+							continue;
+
+						stream = arch.Open( info.Basename );
+						break;
+					}
+				}
+
+				return stream;
 			}
 			else
 			{
@@ -1457,12 +1473,10 @@ namespace Axiom.Core
 				}
 				else
 				{
-					throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName +
-														" or any other group." );
+					throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + " or any other group." );
 				}
 			}
-			throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName +
-												"." );
+			throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + "." );
 		}
 
 		#endregion OpenResource Method

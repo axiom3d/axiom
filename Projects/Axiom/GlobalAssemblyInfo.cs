@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2009 Axiom Rendering Engine Project Team
+Copyright (C) 2003-2010 Axiom Rendering Engine Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -40,9 +40,9 @@ using System.Runtime.InteropServices;
 [assembly: ComVisibleAttribute(false)]
 [assembly: CLSCompliantAttribute(false)]
 [assembly: AssemblyConfiguration("https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug")]
-[assembly: AssemblyCompanyAttribute("Axiom Rendering Engine Project Team (http://axiomengine.sourceforge.net)")]
+[assembly: AssemblyCompanyAttribute("Axiom Rendering Engine Project Team (http://axiom3d.net)")]
 [assembly: AssemblyProductAttribute("Axiom Rendering Engine")]
-[assembly: AssemblyCopyrightAttribute("Copyright (C) 2003-2009 Axiom Rendering Engine Project Team.")]
+[assembly: AssemblyCopyrightAttribute("Copyright (C) 2003-2010 Axiom Rendering Engine Project Team.")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 

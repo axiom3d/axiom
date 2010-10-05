@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -300,25 +300,25 @@ namespace Axiom.Math
 
 		#endregion
 
-        #region Parse method, implemented for factories
+		#region Parse method, implemented for factories
 
-        /// <summary>
-        ///		Parses a string and returns Vector4.
-        /// </summary>
-        /// <param name="vector">
-        ///     A string representation of a Vector4. ( as its returned from Vector4.ToString() )
-        /// </param>
-        /// <returns>
-        ///     A new Vector4.
-        /// </returns>
-        public static Vector4 Parse(string vector)
-        {
-            string[] vals = vector.TrimStart('<').TrimEnd('>').Split(',');
+		/// <summary>
+		///		Parses a string and returns Vector4.
+		/// </summary>
+		/// <param name="vector">
+		///     A string representation of a Vector4. ( as its returned from Vector4.ToString() )
+		/// </param>
+		/// <returns>
+		///     A new Vector4.
+		/// </returns>
+		public static Vector4 Parse( string vector )
+		{
+			string[] vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
 
-            return new Vector4(Real.Parse(vals[0].Trim()), Real.Parse(vals[1].Trim()), Real.Parse(vals[2].Trim()), Real.Parse(vals[3].Trim()));
-        }
+			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
+		}
 
 
-        #endregion
-    }
+		#endregion
+	}
 }

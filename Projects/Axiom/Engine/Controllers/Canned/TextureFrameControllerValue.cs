@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -42,54 +42,54 @@ using Axiom.Graphics;
 
 namespace Axiom.Controllers.Canned
 {
-    /// <summary>
-    ///     Predefined controller value for getting/setting the frame number of a texture unit.
-    /// </summary>
+	/// <summary>
+	///     Predefined controller value for getting/setting the frame number of a texture unit.
+	/// </summary>
 	public class TextureFrameControllerValue : IControllerValue<float>
-    {
-        #region Fields
+	{
+		#region Fields
 
-        /// <summary>
-        ///     Reference to the texture unit state to target for the animation.
-        /// </summary>
-        protected TextureUnitState texUnit;
+		/// <summary>
+		///     Reference to the texture unit state to target for the animation.
+		/// </summary>
+		protected TextureUnitState texUnit;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///     Constructor.
-        /// </summary>
-        /// <param name="textureUnit">Reference to the texture unit state to target for the animation.</param>
-        public TextureFrameControllerValue( TextureUnitState textureUnit )
-        {
-            this.texUnit = textureUnit;
-        }
+		/// <summary>
+		///     Constructor.
+		/// </summary>
+		/// <param name="textureUnit">Reference to the texture unit state to target for the animation.</param>
+		public TextureFrameControllerValue( TextureUnitState textureUnit )
+		{
+			this.texUnit = textureUnit;
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region IControllerValue Members
+		#region IControllerValue Members
 
-        /// <summary>
-        ///     Gets/Sets the frame of animation for a texture unit.
-        /// </summary>
-        /// <remarks>
-        ///     Value is a parametric value in the range [0,1].
-        /// </remarks>
-        public float Value
-        {
-            get
-            {
-                return texUnit.CurrentFrame / texUnit.NumFrames;
-            }
-            set
-            {
-                texUnit.CurrentFrame = (int)( value * texUnit.NumFrames );
-            }
-        }
+		/// <summary>
+		///     Gets/Sets the frame of animation for a texture unit.
+		/// </summary>
+		/// <remarks>
+		///     Value is a parametric value in the range [0,1].
+		/// </remarks>
+		public float Value
+		{
+			get
+			{
+				return texUnit.CurrentFrame / texUnit.NumFrames;
+			}
+			set
+			{
+				texUnit.CurrentFrame = (int)( value * texUnit.NumFrames );
+			}
+		}
 
 
-        #endregion IControllerValue Members
-    }
+		#endregion IControllerValue Members
+	}
 }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -83,36 +83,36 @@ namespace Axiom.Math
 
 		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        /// Gets the position of a point t units along the ray.
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public Vector3 GetPoint(Real t)
-        {
-            return origin + ( direction * t );
-        }
+		/// <summary>
+		/// Gets the position of a point t units along the ray.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public Vector3 GetPoint( Real t )
+		{
+			return origin + ( direction * t );
+		}
 
-        /// <summary>
-        /// Gets the position of a point t units along the ray.
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public Vector3 this[Real t]
-        {
-            get
-            {
-                return origin + ( direction * t );
-            }
-        }
+		/// <summary>
+		/// Gets the position of a point t units along the ray.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public Vector3 this[ Real t ]
+		{
+			get
+			{
+				return origin + ( direction * t );
+			}
+		}
 
-        #endregion Methods
+		#endregion Methods
 
-        #region Intersection Methods
+		#region Intersection Methods
 
-        /// <summary>
+		/// <summary>
 		///    Tests whether this ray intersects the given box.
 		/// </summary>
 		/// <param name="box"></param>
@@ -174,7 +174,7 @@ namespace Axiom.Math
 		/// <param name="ray"></param>
 		/// <param name="t"></param>
 		/// <returns></returns>
-        public static Vector3 operator *(Ray ray, Real t)
+		public static Vector3 operator *( Ray ray, Real t )
 		{
 			return ray.origin + ( ray.direction * t );
 		}

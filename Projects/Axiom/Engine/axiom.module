@@ -20,15 +20,15 @@
     </CSharpProject>
 
     <!-- The path of a built file to be copied to the "image" directory. -->
-    <File Include="bin\$(Platform)\$(Configuration)\$(ProjectBase).dll">
+    <File Include="$(OutputPath)\$(ProjectBase).dll">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="bin\$(Platform)\$(Configuration)\$(ProjectBase).pdb" Condition="'$(Configuration)'=='Debug'">
+    <File Include="$(OutputPath)\$(ProjectBase).pdb" Condition="'$(Configuration)'=='Debug'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="bin\$(Platform)\$(Configuration)\$(ProjectBase).XML"  Condition="'$(Configuration)'=='Release'">
+    <File Include="$(OutputPath)\$(ProjectBase).XML"  Condition="'$(Configuration)'=='Release'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 

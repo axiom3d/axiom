@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -1360,9 +1360,9 @@ namespace Axiom.Overlays
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-            while ( customParams.Count <= index )
-                customParams.Add( Vector4.Zero );
-            customParams[ index ] = val;
+			while ( customParams.Count <= index )
+				customParams.Add( Vector4.Zero );
+			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
@@ -1376,27 +1376,6 @@ namespace Axiom.Overlays
 		#endregion IRenderable Members
 
 		#region IDisposable Implementation
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
 
 		/// <summary>
 		/// Class level dispose method
@@ -1422,9 +1401,9 @@ namespace Axiom.Overlays
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -1440,13 +1419,6 @@ namespace Axiom.Overlays
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
-		}
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
 		}
 
 		#endregion IDisposable Implementation

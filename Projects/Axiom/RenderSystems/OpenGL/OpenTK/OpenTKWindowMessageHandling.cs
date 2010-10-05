@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
@@ -44,38 +44,38 @@ using OpenTK;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    class WindowMessageHandling
-    {
+	class WindowMessageHandling
+	{
 
-        #region Fields and Properties
+		#region Fields and Properties
 
-        #endregion Fields and Properties
+		#endregion Fields and Properties
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        public WindowMessageHandling()
-        {
+		public WindowMessageHandling()
+		{
 
-        }
+		}
 
-        #endregion Construction and Destruction
+		#endregion Construction and Destruction
 
-        #region Methods
+		#region Methods
 
-        static public void MessagePump()
-        {
-            foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
-            {
-                var window = renderWindow[ "WINDOW" ];
-                if ( null != window && window is INativeWindow )
-                {
-                    ((INativeWindow)window).ProcessEvents();
-                }
-                
-            }
-            // TODO: implement MessagePump 
-        }
+		static public void MessagePump()
+		{
+			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
+			{
+				var window = renderWindow[ "WINDOW" ];
+				if ( null != window && window is INativeWindow )
+				{
+					( (INativeWindow)window ).ProcessEvents();
+				}
 
-        #endregion Methods
-    }
+			}
+			// TODO: implement MessagePump 
+		}
+
+		#endregion Methods
+	}
 }

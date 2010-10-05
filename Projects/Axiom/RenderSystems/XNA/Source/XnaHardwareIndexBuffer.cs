@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -48,145 +48,145 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// 	Summary description for XnaHardwareIndexBuffer.
-    /// </summary>
-    public class XnaHardwareIndexBuffer : HardwareIndexBuffer
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for XnaHardwareIndexBuffer.
+	/// </summary>
+	public class XnaHardwareIndexBuffer : HardwareIndexBuffer
+	{
+		#region Member variables
 
-        protected XFG.GraphicsDevice _device;
-        protected XFG.IndexBuffer _xnaBuffer;
-        protected System.Array data;
+		protected XFG.GraphicsDevice _device;
+		protected XFG.IndexBuffer _xnaBuffer;
+		protected System.Array data;
 
-        private byte[] _bufferBytes;
-        private XFG.IndexElementSize _bufferType;
-        private int _offset;
-        private int _length;
+		private byte[] _bufferBytes;
+		private XFG.IndexElementSize _bufferType;
+		private int _offset;
+		private int _length;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        unsafe public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
-            : base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
-        {
-            _bufferType = ( type == IndexType.Size16 ) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
+		unsafe public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
+			: base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
+		{
+			_bufferType = ( type == IndexType.Size16 ) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
 
-            // create the buffer
-            if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
-            {
-                _xnaBuffer = new XFG.DynamicIndexBuffer( device, sizeInBytes, XnaHelper.Convert( usage ), _bufferType );
-            }
-            else
-                _xnaBuffer = new XFG.IndexBuffer( device, sizeInBytes, XnaHelper.Convert( usage ), _bufferType );
+			// create the buffer
+			if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
+			{
+				_xnaBuffer = new XFG.DynamicIndexBuffer( device, sizeInBytes, XnaHelper.Convert( usage ), _bufferType );
+			}
+			else
+				_xnaBuffer = new XFG.IndexBuffer( device, sizeInBytes, XnaHelper.Convert( usage ), _bufferType );
 
-            _bufferBytes = new byte[ sizeInBytes ];
-            _bufferBytes.Initialize();
-        }
+			_bufferBytes = new byte[ sizeInBytes ];
+			_bufferBytes.Initialize();
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="locking"></param>
-        /// <returns></returns>
-        unsafe protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-        {
-            _offset = offset;
-            _length = length;
-            fixed ( byte* bytes = &_bufferBytes[ offset ] )
-            {
-                return new IntPtr( bytes );
-            }
-        }
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		unsafe protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		{
+			_offset = offset;
+			_length = length;
+			fixed ( byte* bytes = &_bufferBytes[ offset ] )
+			{
+				return new IntPtr( bytes );
+			}
+		}
 
-        /// <summary>
-        ///
-        /// </summary>
-        protected override void UnlockImpl()
-        {
-            //there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
-            // d3dBuffer.SetData<byte>(bufferBytes);
-            //this is a lot faster :)
-            _xnaBuffer.SetData<byte>( _offset, _bufferBytes, _offset, _length );
-        }
+		/// <summary>
+		///
+		/// </summary>
+		protected override void UnlockImpl()
+		{
+			//there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
+			// d3dBuffer.SetData<byte>(bufferBytes);
+			//this is a lot faster :)
+			_xnaBuffer.SetData<byte>( _offset, _bufferBytes, _offset, _length );
+		}
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="dest"></param>
-        unsafe public override void ReadData( int offset, int length, IntPtr dest )
-        {
-            // lock the buffer for reading
-            IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="dest"></param>
+		unsafe public override void ReadData( int offset, int length, IntPtr dest )
+		{
+			// lock the buffer for reading
+			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
-            // copy that data in there
-            Memory.Copy( src, dest, length );
+			// copy that data in there
+			Memory.Copy( src, dest, length );
 
-            this.Unlock();
-        }
+			this.Unlock();
+		}
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="src"></param>
-        /// <param name="discardWholeBuffer"></param>
-        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-        {
-            // lock the buffer re al quick
-            IntPtr dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="src"></param>
+		/// <param name="discardWholeBuffer"></param>
+		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		{
+			// lock the buffer re al quick
+			IntPtr dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
-            // copy that data in there
-            Memory.Copy( src, dest, length );
+			// copy that data in there
+			Memory.Copy( src, dest, length );
 
-            this.Unlock();
-        }
+			this.Unlock();
+		}
 
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
 
-                if ( _xnaBuffer != null )
-                {
-                    _xnaBuffer.Dispose();
-                    _xnaBuffer = null;
-                }
-            }
+				if ( _xnaBuffer != null )
+				{
+					_xnaBuffer.Dispose();
+					_xnaBuffer = null;
+				}
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose( disposeManagedResources );
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Gets the underlying Xna Vertex Buffer object.
-        /// </summary>
-        public XFG.IndexBuffer XnaIndexBuffer
-        {
-            get
-            {
-                return _xnaBuffer;
-            }
-        }
+		/// <summary>
+		///		Gets the underlying Xna Vertex Buffer object.
+		/// </summary>
+		public XFG.IndexBuffer XnaIndexBuffer
+		{
+			get
+			{
+				return _xnaBuffer;
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

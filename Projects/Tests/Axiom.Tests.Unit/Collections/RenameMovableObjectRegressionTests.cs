@@ -10,7 +10,6 @@ using Gallio.Framework;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
 
-using TypeMock;
 using TypeMock.ArrangeActAssert;
 
 namespace Axiom.UnitTests.Collections

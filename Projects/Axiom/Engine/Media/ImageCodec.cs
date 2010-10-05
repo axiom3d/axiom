@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -39,39 +39,39 @@ using System;
 
 namespace Axiom.Media
 {
-    /// <summary>
-    /// Summary description for ImageCodec.
-    /// </summary>
-    public abstract class ImageCodec : ICodec
-    {
-        public ImageCodec()
-        {
-        }
+	/// <summary>
+	/// Summary description for ImageCodec.
+	/// </summary>
+	public abstract class ImageCodec : ICodec
+	{
+		public ImageCodec()
+		{
+		}
 
-        #region ICodec Members
+		#region ICodec Members
 
-        // Note: Redefining as abstract to force subclasses to implement, since interface methods must still be included
-        // in abstract base classes
-        public abstract object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args );
-        public abstract void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args );
-        public abstract void EncodeToFile( System.IO.Stream input, string fileName, object codecData );
+		// Note: Redefining as abstract to force subclasses to implement, since interface methods must still be included
+		// in abstract base classes
+		public abstract object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args );
+		public abstract void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args );
+		public abstract void EncodeToFile( System.IO.Stream input, string fileName, object codecData );
 
-        public abstract String Type
-        {
-            get;
-        }
+		public abstract String Type
+		{
+			get;
+		}
 
-        #endregion
+		#endregion
 
-        public class ImageData
-        {
-            public int width;
-            public int height;
-            public int depth;
-            public int size;
-            public ImageFlags flags;
-            public int numMipMaps;
-            public PixelFormat format;
-        }
-    }
+		public class ImageData
+		{
+			public int width;
+			public int height;
+			public int depth;
+			public int size;
+			public ImageFlags flags;
+			public int numMipMaps;
+			public PixelFormat format;
+		}
+	}
 }

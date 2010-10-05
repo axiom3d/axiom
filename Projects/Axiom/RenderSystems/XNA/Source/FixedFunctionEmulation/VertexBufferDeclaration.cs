@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -46,7 +46,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class VertexBufferDeclaration 
+	class VertexBufferDeclaration
 	{
 		#region Fields and Properties
 
@@ -106,35 +106,35 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#endregion Methods
 
-        #region System.Object Implementation
+		#region System.Object Implementation
 
-        public override bool Equals( object obj )
-        {
-            return obj.GetHashCode() == GetHashCode();
-        }
+		public override bool Equals( object obj )
+		{
+			return obj.GetHashCode() == GetHashCode();
+		}
 
-        public override int GetHashCode()
-        {
-            int hashcode = 0;
-            foreach ( VertexBufferElement vbe in vertexBufferElements )
-            {
-                hashcode ^= vbe.GetHashCode();
-                //hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
-            }
-            return hashcode;
-        }
+		public override int GetHashCode()
+		{
+			int hashcode = 0;
+			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			{
+				hashcode ^= vbe.GetHashCode();
+				//hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
+			}
+			return hashcode;
+		}
 
-        public override string ToString()
-        {
-            System.Text.StringBuilder result = new System.Text.StringBuilder();
-            foreach ( VertexBufferElement vbe in vertexBufferElements )
-            {
-                result.Append( vbe.ToString() + ";\n" );
-            }
-            return result.ToString();
-        }
+		public override string ToString()
+		{
+			System.Text.StringBuilder result = new System.Text.StringBuilder();
+			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			{
+				result.Append( vbe.ToString() + ";\n" );
+			}
+			return result.ToString();
+		}
 
-        #endregion System.Object Implementation
+		#endregion System.Object Implementation
 
 	}
 }

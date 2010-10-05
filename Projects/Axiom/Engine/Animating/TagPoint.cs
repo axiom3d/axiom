@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -41,7 +41,7 @@ using Axiom.Collections;
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
-			
+
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="TagPoint.h"   revision="1.10.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
@@ -71,18 +71,18 @@ namespace Axiom.Animating
     {
         #region Fields and Properties
 
-        /// <summary>
-        ///		Reference to the entity that owns this tagpoint.
-        /// </summary>
-        protected Entity parentEntity;
-        /// <summary>
-        ///		Object attached to this tagpoint.
-        /// </summary>
-        protected MovableObject childObject;
-        /// <summary>
-        ///		Combined full local transform of this tagpoint.
-        /// </summary>
-        protected Matrix4 fullLocalTransform;
+		/// <summary>
+		///		Reference to the entity that owns this tagpoint.
+		/// </summary>
+		protected Entity parentEntity;
+		/// <summary>
+		///		Object attached to this tagpoint.
+		/// </summary>
+		protected MovableObject childObject;
+		/// <summary>
+		///		Combined full local transform of this tagpoint.
+		/// </summary>
+		protected Matrix4 fullLocalTransform;
 
 		/// <summary>
 		///		Gets/Sets the object attached to this tagpoint.
@@ -200,34 +200,34 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-        ///		Overridden to update parent entity.
-        /// </summary>
-        public override void NeedUpdate()
-        {
+		///		Overridden to update parent entity.
+		/// </summary>
+		public override void NeedUpdate()
+		{
 			needParentUpdate = true;
-            // // We need to tell parent entities node
+			// // We need to tell parent entities node
 			if ( parentEntity != null )
-            {
-                Node n = parentEntity.ParentNode;
+			{
+				Node n = parentEntity.ParentNode;
 
 				if ( n != null )
-                {
-                    n.NeedUpdate();
-                }
-            }
-        }
+				{
+					n.NeedUpdate();
+				}
+			}
+		}
 
-        protected override void UpdateFromParent()
-        {
-            base.UpdateFromParent();
+		protected override void UpdateFromParent()
+		{
+			base.UpdateFromParent();
 
-            // Save transform for local skeleton
+			// Save transform for local skeleton
 			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
 
-            // Include Entity transform
+			// Include Entity transform
 			if ( parentEntity != null )
-            {
-                Node entityParentNode = parentEntity.ParentNode;
+			{
+				Node entityParentNode = parentEntity.ParentNode;
 				if ( entityParentNode != null )
                 {
                     Quaternion parentQ = entityParentNode.DerivedOrientation;
@@ -246,8 +246,8 @@ namespace Axiom.Animating
 					// Change position vector based on parent's orientation
                     derivedPosition = parentQ * derivedPosition;
 
-                    // Add altered position vector to parents
-                    derivedPosition += entityParentNode.DerivedPosition;
+					// Add altered position vector to parents
+					derivedPosition += entityParentNode.DerivedPosition;
 
 					OnUpdatedFromParent();
                 }
@@ -259,7 +259,7 @@ namespace Axiom.Animating
 			}
         }
 
-        #endregion Bone Members
-    }
+		#endregion Bone Members
+	}
 
 }

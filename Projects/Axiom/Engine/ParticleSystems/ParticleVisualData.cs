@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: ParticleSystemManager.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
@@ -37,22 +37,24 @@ using System;
 
 namespace Axiom.ParticleSystems
 {
-    /// <summary>
-    /// Abstract class containing any additional data required to be associated
-    /// with a particle to perform the required rendering. 
-    /// </summary>
+	/// <summary>
+	/// Abstract class containing any additional data required to be associated
+	/// with a particle to perform the required rendering. 
+	/// </summary>
 	/// <remarks>
 	/// Because you can specialise the way that particles are renderered by supplying
 	/// custom ParticleSystemRenderer classes, you might well need some additional 
 	/// data for your custom rendering routine which is not held on the default particle
 	/// class. If that's the case, then you should define a subclass of this class, 
 	/// and construct it when asked in your custom ParticleSystemRenderer class.
-    /// </remarks>
+	/// </remarks>
 	public abstract class ParticleVisualData
 	{
-        /// <summary>
-        /// Default Constructor
-        /// </summary>
-	    public ParticleVisualData() {}
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		public ParticleVisualData()
+		{
+		}
 	};
 }

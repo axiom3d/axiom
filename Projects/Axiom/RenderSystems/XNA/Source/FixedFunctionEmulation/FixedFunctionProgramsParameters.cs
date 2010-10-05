@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
@@ -54,70 +54,70 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			#region Fields and Properties
 
-            protected ColorEx materialAmbient;
-            public ColorEx MaterialAmbient
-            {
-                get
-                {
-                    return materialAmbient;
-                }
-                set
-                {
-                    materialAmbient = value;
-                }
-            }
+			protected ColorEx materialAmbient;
+			public ColorEx MaterialAmbient
+			{
+				get
+				{
+					return materialAmbient;
+				}
+				set
+				{
+					materialAmbient = value;
+				}
+			}
 
-            protected ColorEx materialDiffuse;
-            public ColorEx MaterialDiffuse
-            {
-                get
-                {
-                    return materialDiffuse;
-                }
-                set
-                {
-                    materialDiffuse = value;
-                }
-            }
+			protected ColorEx materialDiffuse;
+			public ColorEx MaterialDiffuse
+			{
+				get
+				{
+					return materialDiffuse;
+				}
+				set
+				{
+					materialDiffuse = value;
+				}
+			}
 
-            protected ColorEx materialSpecular;
-            public ColorEx MaterialSpecular
-            {
-                get
-                {
-                    return materialSpecular;
-                }
-                set
-                {
-                    materialSpecular = value;
-                }
-            }
+			protected ColorEx materialSpecular;
+			public ColorEx MaterialSpecular
+			{
+				get
+				{
+					return materialSpecular;
+				}
+				set
+				{
+					materialSpecular = value;
+				}
+			}
 
-            protected ColorEx materialEmissive;
-            public ColorEx MaterialEmissive
-            {
-                get
-                {
-                    return materialEmissive;
-                }
-                set
-                {
-                    materialEmissive = value;
-                }
-            }
+			protected ColorEx materialEmissive;
+			public ColorEx MaterialEmissive
+			{
+				get
+				{
+					return materialEmissive;
+				}
+				set
+				{
+					materialEmissive = value;
+				}
+			}
 
-            protected float materialShininess;
-            public float MaterialShininess
-            {
-                get
-                {
-                    return materialShininess;
-                }
-                set
-                {
-                    materialShininess = value;
-                }
-            }
+			protected float materialShininess;
+			public float MaterialShininess
+			{
+				get
+				{
+					return materialShininess;
+				}
+				set
+				{
+					materialShininess = value;
+				}
+			}
 
 			protected Matrix4 worldMatrix;
 			public Matrix4 WorldMatrix
@@ -159,7 +159,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-			protected bool lightingEnabled=false;
+			protected bool lightingEnabled = false;
 			public bool LightingEnabled
 			{
 				get
@@ -173,7 +173,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-			protected List<Light> lights =new List<Light>();
+			protected List<Light> lights = new List<Light>();
 			public List<Light> Lights
 			{
 				get
@@ -274,13 +274,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 			protected List<bool> textureEnabled = new List<bool>();
-            public List<bool> TextureEnabled
-            {
-                get
-                {
-                    return textureEnabled;
-                }
-            }
+			public List<bool> TextureEnabled
+			{
+				get
+				{
+					return textureEnabled;
+				}
+			}
 
 			#endregion Fields and Properties
 

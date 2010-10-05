@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -40,7 +40,7 @@ using Axiom.Math;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
-			
+
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="KeyFrame.h"   revision="1.9" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
@@ -127,7 +127,8 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
-		public NumericKeyFrame( AnimationTrack parent, float time ) : base( parent, time )
+		public NumericKeyFrame( AnimationTrack parent, float time )
+			: base( parent, time )
 		{
 		}
 
@@ -357,7 +358,8 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
-		public VertexMorphKeyFrame( AnimationTrack parent, float time ) : base( parent, time )
+		public VertexMorphKeyFrame( AnimationTrack parent, float time )
+			: base( parent, time )
 		{
 		}
 
@@ -404,7 +406,8 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
-		public VertexPoseKeyFrame( AnimationTrack parent, float time ) : base( parent, time )
+		public VertexPoseKeyFrame( AnimationTrack parent, float time )
+			: base( parent, time )
 		{
 		}
 

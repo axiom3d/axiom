@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2010 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -45,29 +45,29 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// 	Summary description for XnaHardwareBufferManager.
-    /// </summary>
-    public class XnaHardwareBufferManager : HardwareBufferManager
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for XnaHardwareBufferManager.
+	/// </summary>
+	public class XnaHardwareBufferManager : HardwareBufferManager
+	{
+		#region Member variables
 
 		protected XFG.GraphicsDevice _device;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		
-        /// </summary>
-        /// <param name="device"></param>
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="device"></param>
 		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
-        {
-            this._device = device;
-        }
+		{
+			this._device = device;
+		}
 
-        #endregion
+		#endregion
 
 		#region HardwareBufferManager Implementation
 
@@ -78,39 +78,39 @@ namespace Axiom.RenderSystems.Xna
 		#region Methods
 
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-        {
-            // call overloaded method with no shadow buffer
-            return CreateIndexBuffer( type, numIndices, usage, false );
-        }
+		{
+			// call overloaded method with no shadow buffer
+			return CreateIndexBuffer( type, numIndices, usage, false );
+		}
 
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-        {
-            XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( type, numIndices, usage, _device, false, useShadowBuffer );
-            indexBuffers.Add( buffer );
-            return buffer;
-        }
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		{
+			XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( type, numIndices, usage, _device, false, useShadowBuffer );
+			indexBuffers.Add( buffer );
+			return buffer;
+		}
 
-        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
-        {
-            // call overloaded method with no shadow buffer
-            return CreateVertexBuffer( vertexSize, numVerts, usage, false );
-        }
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+		{
+			// call overloaded method with no shadow buffer
+			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+		}
 
-        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
-        {
-            XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( vertexSize, numVerts, usage, _device, false, useShadowBuffer );
-            vertexBuffers.Add( buffer );
-            return buffer;
-        }
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		{
+			XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( vertexSize, numVerts, usage, _device, false, useShadowBuffer );
+			vertexBuffers.Add( buffer );
+			return buffer;
+		}
 
-        public override VertexDeclaration CreateVertexDeclaration()
-        {
-            VertexDeclaration decl = new XnaVertexDeclaration( _device );
-            vertexDeclarations.Add( decl );
-            return decl;
-        }
+		public override VertexDeclaration CreateVertexDeclaration()
+		{
+			VertexDeclaration decl = new XnaVertexDeclaration( _device );
+			vertexDeclarations.Add( decl );
+			return decl;
+		}
 
-        #endregion
+		#endregion
 
 		#endregion HardwareBufferManager Implementation
 	}
