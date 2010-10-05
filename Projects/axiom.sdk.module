@@ -48,6 +48,9 @@
     <Module Include="AxiomDemos\axiom.samples.module">
       <Configuration>Release</Configuration>
       <Platform>Xbox</Platform>
+      <Properties>
+        RenderSystem=Xna
+      </Properties>
     </Module>
 
     <Module Include="Tests\axiom.tests.module">
