@@ -110,6 +110,12 @@
     <Compile Include="Main.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Content Include="freetype6.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="zlib1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.glsl">
       <Link>Media\GpuPrograms\Bloom2_ps20.glsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
