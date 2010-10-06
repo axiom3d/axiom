@@ -110,12 +110,6 @@
     <Compile Include="Main.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Content Include="freetype6.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="zlib1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.glsl">
       <Link>Media\GpuPrograms\Bloom2_ps20.glsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -204,6 +198,14 @@
       <Link>Media\Materials\smoke.particle</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\freetype6.dll">
+      <Link>freetype6.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\zlib1.dll">
+      <Link>zlib1.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Media\PCZAppMedia\building_exterior.mesh">
       <Link>Media\PCZAppMedia\building_exterior.mesh</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
