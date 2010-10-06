@@ -51,25 +51,25 @@ using Axiom.Core.Collections;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		A tagged point on a skeleton, which can be used to attach entities to on specific
-    ///		other entities.
-    /// </summary>
-    /// <remarks>
-    ///		A Skeleton, like a Mesh, is shared between Entity objects and simply updated as required
-    ///		when it comes to rendering. However there are times when you want to attach another object
-    ///		to an animated entity, and make sure that attachment follows the parent entity's animation
-    ///		(for example, a character holding a gun in his / her hand). This class simply identifies
-    ///		attachment points on a skeleton which can be used to attach child objects. 
-    ///		<p/>
-    ///		The child objects themselves are not physically attached to this class; as it's name suggests
-    ///		this class just 'tags' the area. The actual child objects are attached to the Entity using the
-    ///		skeleton which has this tag point. Use <see cref="Entity.AttachObjectToBone"/> to attach
-    ///		the objects, which creates a new TagPoint on demand.
-    /// </remarks>
-    public class TagPoint : Bone
-    {
-        #region Fields and Properties
+	/// <summary>
+	///		A tagged point on a skeleton, which can be used to attach entities to on specific
+	///		other entities.
+	/// </summary>
+	/// <remarks>
+	///		A Skeleton, like a Mesh, is shared between Entity objects and simply updated as required
+	///		when it comes to rendering. However there are times when you want to attach another object
+	///		to an animated entity, and make sure that attachment follows the parent entity's animation
+	///		(for example, a character holding a gun in his / her hand). This class simply identifies
+	///		attachment points on a skeleton which can be used to attach child objects. 
+	///		<p/>
+	///		The child objects themselves are not physically attached to this class; as it's name suggests
+	///		this class just 'tags' the area. The actual child objects are attached to the Entity using the
+	///		skeleton which has this tag point. Use <see cref="Entity.AttachObjectToBone"/> to attach
+	///		the objects, which creates a new TagPoint on demand.
+	/// </remarks>
+	public class TagPoint : Bone
+	{
+		#region Fields and Properties
 
 		/// <summary>
 		///		Reference to the entity that owns this tagpoint.
@@ -169,20 +169,20 @@ namespace Axiom.Animating
 
 		#endregion Fields and Properties
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        /// <summary>
-        ///		Constructor.
-        /// </summary>
-        /// <param name="handle">Handle to use.</param>
-        /// <param name="creator">Skeleton who created this tagpoint.</param>
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="handle">Handle to use.</param>
+		/// <param name="creator">Skeleton who created this tagpoint.</param>
 		public TagPoint( ushort handle, Skeleton creator )
 			: base( handle, creator )
-        {
+		{
 			suppressUpdateEvent = true;
 			InheritParentEntityOrientation = true;
 			InheritParentEntityScale = true;
-        }
+		}
 
 		#endregion Construction and Destruction
 
@@ -229,8 +229,8 @@ namespace Axiom.Animating
 			{
 				Node entityParentNode = parentEntity.ParentNode;
 				if ( entityParentNode != null )
-                {
-                    Quaternion parentQ = entityParentNode.DerivedOrientation;
+				{
+					Quaternion parentQ = entityParentNode.DerivedOrientation;
 					if ( InheritParentEntityOrientation )
 					{
 						derivedOrientation = parentQ * derivedOrientation;
@@ -244,20 +244,20 @@ namespace Axiom.Animating
 					}
 
 					// Change position vector based on parent's orientation
-                    derivedPosition = parentQ * derivedPosition;
+					derivedPosition = parentQ * ( parentScale * derivedPosition );
 
 					// Add altered position vector to parents
 					derivedPosition += entityParentNode.DerivedPosition;
 
 					OnUpdatedFromParent();
-                }
-            }
+				}
+			}
 
 			if ( childObject != null )
 			{
 				childObject.NotifyMoved();
 			}
-        }
+		}
 
 		#endregion Bone Members
 	}
