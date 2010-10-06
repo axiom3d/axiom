@@ -110,6 +110,7 @@
     <Compile Include="Main.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Content Include="zlib1.dll" />
     <None Include="..\..\..\..\..\Media\GpuPrograms\Bloom2_ps20.glsl">
       <Link>Media\GpuPrograms\Bloom2_ps20.glsl</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
