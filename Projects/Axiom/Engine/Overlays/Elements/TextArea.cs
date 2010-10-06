@@ -435,6 +435,11 @@ namespace Axiom.Overlays.Elements
 			UpdateGeometry();
 		}
 
+		protected override void UpdateTextureGeometry()
+		{
+			// Nothing to do, we combine positions and textures
+		}
+
 		#endregion
 
 		#region Properties
@@ -951,9 +956,5 @@ namespace Axiom.Overlays.Elements
 
 		#endregion ScriptableObject Interface Command Classes
 
-		protected override void UpdateTextureGeometry()
-		{
-			// Nothing to do, we combine positions and textures
-		}
 	}
 }
