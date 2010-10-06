@@ -134,6 +134,14 @@
       <Link>Media\Materials\smoke.particle</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\freetype6.dll">
+      <Link>freetype6.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\zlib1.dll">
+      <Link>zlib1.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Media\PCZAppMedia\building_exterior.mesh">
       <Link>Media\PCZAppMedia\building_exterior.mesh</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1162,7 +1170,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.2010.csproj">
       <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.2010</Name>
+      <Name>Axiom.RenderSystems.OpenGL.OpenTK.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
