@@ -800,8 +800,8 @@ namespace Axiom.Overlays.Elements
 
 		#region ScriptableObject Interface Command Classes
 
-		[ScriptableProperty( "border_left_uv", "", typeof( BorderPanel ) )]
-		private class BorderLeftUVAttributeCommand : IPropertyCommand
+		[ScriptableProperty( "border_size", "", typeof( BorderPanel ) )]
+		private class BorderSizeAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -815,9 +815,7 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					float u1, v1, u2, v2;
-					element.GetLeftBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.TopBorderSize, element.RightBorderSize, element.BottomBorderSize );
 				}
 				else
 				{
@@ -833,23 +831,22 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
+				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetLeftBorderUV( u1, v1, u2, v2 );
+					Real left = StringConverter.ParseFloat( parms[ 0 ] ),
+						 top = StringConverter.ParseFloat( parms[ 1 ] ),
+						 right = StringConverter.ParseFloat( parms[ 2 ] ),
+						 bottom = StringConverter.ParseFloat( parms[ 3 ] );
+					element.SetBorderSize( left, top, right, bottom );
 				}
 			}
 
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "border_right_uv", "", typeof( BorderPanel ) )]
-		private class BorderRightUVAttributeCommand : IPropertyCommand
+		[ScriptableProperty( "border_material", "", typeof( BorderPanel ) )]
+		private class BorderMaterialHeightAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -863,9 +860,7 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					float u1, v1, u2, v2;
-					element.GetRightBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+					return element.BorderMaterialName;
 				}
 				else
 				{
@@ -883,109 +878,7 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetRightBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_top_uv", "", typeof( BorderPanel ) )]
-		private class BorderTopUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetTopBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetTopBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_bottom_uv", "", typeof( BorderPanel ) )]
-		private class BorderBottomUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetBottomBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetBottomBorderUV( u1, v1, u2, v2 );
+					element.BorderMaterialName = val;
 				}
 			}
 
@@ -1184,8 +1077,8 @@ namespace Axiom.Overlays.Elements
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "border_size", "", typeof( BorderPanel ) )]
-		private class BorderSizeAttributeCommand : IPropertyCommand
+		[ScriptableProperty( "border_left_uv", "", typeof( BorderPanel ) )]
+		private class BorderLeftUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1199,7 +1092,9 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.TopBorderSize, element.RightBorderSize, element.BottomBorderSize );
+					float u1, v1, u2, v2;
+					element.GetLeftBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
 				}
 				else
 				{
@@ -1215,22 +1110,23 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
-				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					Real left = StringConverter.ParseFloat( parms[ 0 ] ),
-						 top = StringConverter.ParseFloat( parms[ 1 ] ),
-						 right = StringConverter.ParseFloat( parms[ 2 ] ),
-						 bottom = StringConverter.ParseFloat( parms[ 3 ] );
-					element.SetBorderSize( left, top, right, bottom );
+					var parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetLeftBorderUV( u1, v1, u2, v2 );
 				}
 			}
 
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "border_material", "", typeof( BorderPanel ) )]
-		private class BorderMaterialHeightAttributeCommand : IPropertyCommand
+		[ScriptableProperty( "border_right_uv", "", typeof( BorderPanel ) )]
+		private class BorderRightUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1244,7 +1140,9 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					return element.BorderMaterialName;
+					float u1, v1, u2, v2;
+					element.GetRightBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
 				}
 				else
 				{
@@ -1262,7 +1160,109 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					element.BorderMaterialName = val;
+					var parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetRightBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		[ScriptableProperty( "border_top_uv", "", typeof( BorderPanel ) )]
+		private class BorderTopUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetTopBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					var parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetTopBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		[ScriptableProperty( "border_bottom_uv", "", typeof( BorderPanel ) )]
+		private class BorderBottomUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetBottomBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					var parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetBottomBorderUV( u1, v1, u2, v2 );
 				}
 			}
 

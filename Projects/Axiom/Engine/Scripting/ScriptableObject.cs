@@ -155,6 +155,17 @@ namespace Axiom.Scripting
 
 		private static void _initializeTypeProperties( Type type, Dictionary<string, IPropertyCommand> list )
 		{
+			// Load the IPropertyCommands from the parent Type
+			Type parent = type.BaseType;
+			if ( parent != typeof( System.Object ) )
+			{
+				foreach ( KeyValuePair<string, IPropertyCommand> item in _getTypePropertyMap( parent ) )
+				{
+					list.Add( item.Key, item.Value );
+				}
+				parent = parent.BaseType;
+			}
+
 			foreach ( Type nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
 			{
 #if !(XBOX || XBOX360)
@@ -186,15 +197,6 @@ namespace Axiom.Scripting
 					}
 				}
 #endif
-			}
-			// Load the IPropertyCommands from the parent Type
-			if ( type.BaseType != typeof( System.Object ) )
-			{
-				foreach ( KeyValuePair<string, IPropertyCommand> item in _getTypePropertyMap( type.BaseType ) )
-				{
-					list.Add( item.Key, item.Value );
-				}
-				type = type.BaseType;
 			}
 		}
 

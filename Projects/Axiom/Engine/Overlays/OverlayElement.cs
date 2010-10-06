@@ -190,6 +190,7 @@ namespace Axiom.Overlays
 			{
 				string srcValue = command.Get( this );
 				command.Set( instance, srcValue );
+				LogManager.Instance.Write( "{2}.{0} = {1}.{0};", command.GetType().Name.Replace( "AttributeCommand", "" ), this.Name, instance.Name );
 			}
 		}
 
@@ -505,12 +506,12 @@ namespace Axiom.Overlays
 				// derive right position
 				if ( horzAlign == HorizontalAlignment.Center || horzAlign == HorizontalAlignment.Right )
 				{
-					parentRight = parentLeft + parent.Width;
+					parentRight = parentLeft + parent.width;
 				}
 				// derive bottom position
 				if ( vertAlign == VerticalAlignment.Center || vertAlign == VerticalAlignment.Bottom )
 				{
-					parentBottom = parentTop + parent.Height;
+					parentBottom = parentTop + parent.height;
 				}
 			}
 			else
