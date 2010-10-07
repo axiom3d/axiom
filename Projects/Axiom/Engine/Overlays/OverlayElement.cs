@@ -704,6 +704,14 @@ namespace Axiom.Overlays
 
 		#region Properties
 
+        /// <summary>
+        /// Usefuel to hold custom userdata.
+        /// </summary>
+        public object UserData
+        {
+            get;
+            set;
+        }
 		/// <summary>
 		/// Gets the SourceTemplate for this element
 		/// </summary>

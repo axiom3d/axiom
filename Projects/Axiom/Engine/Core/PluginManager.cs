@@ -41,6 +41,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 #endregion Namespace Declarations
 
@@ -91,9 +92,21 @@ namespace Axiom.Core
 
 		#endregion Fields
 
-		#region Methods
+        #region properties
 
-		/// <summary>
+        /// <summary>
+        /// Gets a read only collection with all known plugins.
+        /// </summary>
+        public ReadOnlyCollection<IPlugin> InstalledPlugins
+        {
+            get { return new ReadOnlyCollection<IPlugin>( _plugins ); }
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
 		///		Loads all plugins specified in the plugins section of the app.config file.
 		/// </summary>
 		public void LoadAll()
