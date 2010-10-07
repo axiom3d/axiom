@@ -190,7 +190,6 @@ namespace Axiom.Overlays
 			{
 				string srcValue = command.Get( this );
 				command.Set( instance, srcValue );
-				LogManager.Instance.Write( "{2}.{0} = {1}.{0};", command.GetType().Name.Replace( "AttributeCommand", "" ), this.Name, instance.Name );
 			}
 		}
 
