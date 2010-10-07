@@ -496,7 +496,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof( Panel ) )]
-		private class UVCoordinatesModeAttributeCommand : IPropertyCommand
+		private class UVCoordinatesAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
