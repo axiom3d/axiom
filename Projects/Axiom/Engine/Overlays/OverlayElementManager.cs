@@ -344,7 +344,7 @@ namespace Axiom.Overlays
 			{
 				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
 			}
-
+			elements[ name ].Dispose();
 			elements.Remove( name );
 		}
 
