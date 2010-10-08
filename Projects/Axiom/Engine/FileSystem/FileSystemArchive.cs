@@ -83,7 +83,7 @@ namespace Axiom.FileSystem
 			if ( Directory.Exists( directory ) )
 			{
 				// Check we can change to it
-				pushDirectory( _basePath );
+				pushDirectory( directory );
 
 				try
 				{
@@ -141,7 +141,7 @@ namespace Axiom.FileSystem
 					FileInfo fileInfo;
 					fileInfo.Archive = this;
 					fileInfo.Filename = fi.FullName;
-					fileInfo.Basename = fi.FullName.Substring( currentDir.Length );
+					fileInfo.Basename = fi.FullName.Substring( Path.GetFullPath(currentDir).Length );
 					fileInfo.Path = currentDir;
 					fileInfo.CompressedSize = fi.Length;
 					fileInfo.UncompressedSize = fi.Length;
