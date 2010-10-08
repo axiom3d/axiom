@@ -952,9 +952,12 @@ namespace Axiom.Core
 			// Now load for real
 			if ( loadMainResources )
 			{
-				foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrders )
+				float[] keys = new float[ grp.LoadResourceOrders.Count ];
+				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
+
+				for ( ushort i = 0; i < keys.Length; i++ )
 				{
-					LoadUnloadResourceList lurl = pair.Value;
+					LoadUnloadResourceList lurl = grp.LoadResourceOrders[ keys[ i ] ];
 					foreach ( Resource res in lurl )
 					{
 						// Fire resource events no matter whether resource is already
@@ -2374,17 +2377,15 @@ namespace Axiom.Core
 					// Iterate over each item in the list
 					foreach ( FileInfo fii in flli )
 					{
-						LogManager.Instance.Write( "Parsing script " + fii.Filename );
-						_fireScriptStarted( fii.Filename );
+						IO.Stream stream = fii.Archive.Open( fii.Basename );
+						if ( stream != null )
 						{
-							IO.Stream stream = fii.Archive.Open( fii.Basename );
-							if ( stream != null )
-							{
-								su.ParseScript( stream, grp.Name, fii.Filename );
-								stream.Close();
-							}
+							_fireScriptStarted( fii.Filename );
+							LogManager.Instance.Write( "Parsing script " + fii.Basename );
+							su.ParseScript( stream, grp.Name, fii.Filename );
+							stream.Close();
+							_fireScriptEnded();
 						}
-						_fireScriptEnded();
 					}
 				}
 			}
