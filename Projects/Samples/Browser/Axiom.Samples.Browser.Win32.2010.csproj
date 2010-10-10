@@ -19,6 +19,21 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,49 +87,49 @@
     <Compile Include="SampleBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.csproj">
+    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
+      <Name>Axiom.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.csproj">
+    <ProjectReference Include="..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.2010.csproj">
       <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
-      <Name>Axiom.Platforms.Win32</Name>
+      <Name>Axiom.Platforms.Win32.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
+    <ProjectReference Include="..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
-      <Name>Axiom.Plugins.CgProgramManager</Name>
+      <Name>Axiom.Plugins.CgProgramManager.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
+    <ProjectReference Include="..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.csproj">
       <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs</Name>
+      <Name>Axiom.Plugins.DevILCodecs.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
+    <ProjectReference Include="..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.csproj">
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>OctreeZone</Name>
+      <Name>Axiom.Plugins.OctreeZone.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
+    <ProjectReference Include="..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.csproj">
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
-      <Name>Axiom.Plugins.ParticleFX</Name>
+      <Name>Axiom.Plugins.ParticleFX.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj">
+    <ProjectReference Include="..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.2010.csproj">
       <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
-      <Name>Axiom.RenderSystems.DirectX9</Name>
+      <Name>Axiom.RenderSystems.DirectX9.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
+    <ProjectReference Include="..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
-      <Name>Axiom.SceneManagers.Bsp</Name>
+      <Name>Axiom.SceneManagers.Bsp.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
+    <ProjectReference Include="..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.csproj">
       <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
+      <Name>Axiom.SceneManagers.Octree.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+    <ProjectReference Include="..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.csproj">
       <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected</Name>
+      <Name>Axiom.SceneManagers.PortalConnected.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Axiom.Samples.Common.csproj">
+    <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
-      <Name>Axiom.Samples.Common</Name>
+      <Name>Axiom.Samples.Common.2010</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +154,23 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\AxiomIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
