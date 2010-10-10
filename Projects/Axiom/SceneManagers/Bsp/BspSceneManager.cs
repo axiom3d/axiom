@@ -885,7 +885,11 @@ namespace Axiom.SceneManagers.Bsp
 			// Check should we be rendering
 			if ( !SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( worldGeometryRenderQueueId ) )
 				return;
-
+            if ( level == null )
+            {
+                LogManager.Instance.Write( "BSPSceneManager [Warning]: Skip RenderStaticGeometry, no level was set!" );
+                return;
+            }
 			// no world transform required
 			targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
