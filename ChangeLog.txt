@@ -1,3 +1,9 @@
+2010.10.10 - borrillis
+Added Samples Browser
+
+2010.10.06 - bostich
+- modified Font to use FreeType for font generation.
+
 Global Changes:
 	* Some code reorgonizations ( Grouping fields and thier properties together, etc )
 	* Started removing Weak Type collections with Generics
