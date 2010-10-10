@@ -76,8 +76,9 @@
     <Compile Include="Tray\WidgetEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\..\..\SharpInput\bin\Release\DirectX\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=d1244a0b33714b38, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SharpInputSystem, Version=0.3.0.17339, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
