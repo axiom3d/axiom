@@ -21,9 +21,8 @@
 #endregion License
 
 using System;
-using Axiom.Samples.Primitives;
 
-namespace Axiom.Samples.Triangle
+namespace Axiom.Samples.Primitives
 {
 	public class Plugin : SamplePlugin
 	{
