@@ -511,21 +511,22 @@ namespace Axiom.Samples
 		{
 			//create and add Essential group
 			ResourceGroupManager.Instance.CreateResourceGroup( DefaultResourceGroupName );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Archives/SdkTrays.zip", "ZipFile", DefaultResourceGroupName );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Thumbnails", "Folder", DefaultResourceGroupName );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/SdkTrays.zip", "ZipFile", DefaultResourceGroupName );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/Sinbad.zip", "ZipFile", DefaultResourceGroupName );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Thumbnails", "Folder", DefaultResourceGroupName );
 
 			//create popular
 			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Archives/skybox.zip", "ZipFile", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Archives/cubemapsJS.zip", "ZipFile", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Icons", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Textures", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Materials", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Programs", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Meshes", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/skybox.zip", "ZipFile", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/cubemapsJS.zip", "ZipFile", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Icons", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Textures", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Materials", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Programs", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Meshes", "Folder", "Popular" );
 
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Archives/AxiomCore.zip", "ZipFile" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media", "Folder" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/AxiomCore.zip", "ZipFile" );
+			ResourceGroupManager.Instance.AddResourceLocation( "../Media", "Folder" );
 		}
 
 		/// <summary>
