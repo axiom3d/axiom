@@ -1136,7 +1136,7 @@ namespace Axiom.Core
 		{
 			float result = 0;
 
-			if ( type == FrameEventType.Start )
+			if ( type == FrameEventType.Start || type == FrameEventType.Queued)
 			{
 				result = (float)( time - this.lastStartTime ) / 1000;
 
