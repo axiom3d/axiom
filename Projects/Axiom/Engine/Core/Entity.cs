@@ -798,7 +798,7 @@ namespace Axiom.Core
 			//TODO: NO idea what this does!
 			this.skeletonInstance.FreeTagPoint( tagPoint );
 
-			pObject.NotifyAttached( tagPoint, true );
+			pObject.NotifyAttached( null, true );
 		}
 
 		protected void DetachAllObjectsImpl()
