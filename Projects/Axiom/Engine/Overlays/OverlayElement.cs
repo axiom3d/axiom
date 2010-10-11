@@ -457,7 +457,7 @@ namespace Axiom.Overlays
 			if ( isGeomUVsOutOfDate && this.isInitialized )
 			{
 				UpdateTextureGeometry();
-				isGeomPositionsOutOfDate = false;
+				isGeomUVsOutOfDate = false;
 			}
 		}
 
@@ -704,14 +704,14 @@ namespace Axiom.Overlays
 
 		#region Properties
 
-        /// <summary>
-        /// Usefuel to hold custom userdata.
-        /// </summary>
-        public object UserData
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// Usefuel to hold custom userdata.
+		/// </summary>
+		public object UserData
+		{
+			get;
+			set;
+		}
 		/// <summary>
 		/// Gets the SourceTemplate for this element
 		/// </summary>
