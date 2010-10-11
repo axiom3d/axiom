@@ -411,7 +411,7 @@ namespace Axiom.Samples
 			base.Shutdown();
 
 			if ( this.TrayManager != null )
-				this.TrayManager = null;
+				this.TrayManager.Dispose();
 			if ( this.CameraManager != null )
 				this.CameraManager = null;
 
