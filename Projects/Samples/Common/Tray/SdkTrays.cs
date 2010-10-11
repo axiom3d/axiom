@@ -1937,7 +1937,7 @@ namespace Axiom.Samples
 		/// <param name="scriptName">Name of the to be parsed</param>
 		public void ScriptParseStarted( string scriptName )
 		{
-			LoadBar.Comment = scriptName;
+			LoadBar.Comment = System.IO.Path.GetFileName( scriptName );
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
 			if ( WindowEventMonitor.Instance.MessagePump != null )
