@@ -56,8 +56,9 @@ namespace Axiom.Core
 	/// <typeparam name="T">a class</typeparam>
 	public abstract class Singleton<T> : IDisposable where T : class, new()
 	{
+
 		public Singleton()
-		{
+		{		
 			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
 				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
 		}
@@ -78,7 +79,13 @@ namespace Axiom.Core
 			{
 				try
 				{
-					return SingletonFactory.instance;
+					if ( SingletonFactory.instance != null )
+						return SingletonFactory.instance;
+					lock ( SingletonFactory.singletonLock )
+					{
+						SingletonFactory.instance = new T();
+						return SingletonFactory.instance;
+					}
 				}
 				catch ( /*TypeInitialization*/Exception )
 				{
@@ -89,6 +96,7 @@ namespace Axiom.Core
 
 		class SingletonFactory
 		{
+			internal static object singletonLock = new object();
 			static SingletonFactory()
 			{
 
@@ -102,6 +110,9 @@ namespace Axiom.Core
 			SingletonFactory.instance = null;
 		}
 
+		public static void Reinitialize()
+		{
+		}
 		#region IDisposable Implementation
 
 
