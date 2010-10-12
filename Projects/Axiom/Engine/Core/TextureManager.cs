@@ -582,7 +582,6 @@ namespace Axiom.Core
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			//isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

@@ -2576,6 +2576,8 @@ namespace Axiom.Core
 					}
 					resourceGroups.Clear();
 					_currentGroup = null;
+
+					ResourceGroupManager.instance = null;
 				}
 
 				// There are no unmanaged resources to release, but

@@ -317,26 +317,37 @@ namespace Axiom.Samples
 			{
 				bool reset = false;
 
-				Graphics.Collections.ConfigOptionCollection options =
-				Root.RenderSystems[ RendererMenu.SelectedItem ].ConfigOptions;
-				//NameValuePairList newOptions;
-				Axiom.Collections.NameValuePairList newOptions = new Collections.NameValuePairList();
-				// collect new settings and decide if a reset is needed
-
-				if ( RendererMenu.SelectedItem != Root.RenderSystem.Name )
-					reset = true;
-
-				for ( int i = 3; i < TrayManager.GetWidgetCount( RendererMenu.TrayLocation ); i++ )
+				string selectedRenderSystem = string.Empty;
+				switch ( RendererMenu.SelectedItem )
 				{
-					SelectMenu menu = (SelectMenu)TrayManager.GetWidget( RendererMenu.TrayLocation, i );
-					if ( menu.SelectedItem != options[ menu.Caption ].Value )
-						reset = true;
-					newOptions[ menu.Caption ] = menu.SelectedItem;
+					case "Axiom DirectX9 Rendering Subsystem":
+						selectedRenderSystem = "DirectX9";
+						break;
+					default:
+						throw new NotImplementedException();
 				}
+				if ( selectedRenderSystem != string.Empty )
+				{
+					Graphics.Collections.ConfigOptionCollection options = Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
+					//NameValuePairList newOptions;
+					Axiom.Collections.NameValuePairList newOptions = new Collections.NameValuePairList();
+					// collect new settings and decide if a reset is needed
 
-				// reset with new settings if necessary
-				if ( reset )
-					Reconfigure( RendererMenu.SelectedItem, newOptions );
+					if ( RendererMenu.SelectedItem != Root.RenderSystem.Name )
+						reset = true;
+
+					for ( int i = 3; i < TrayManager.GetWidgetCount( RendererMenu.TrayLocation ); i++ )
+					{
+						SelectMenu menu = (SelectMenu)TrayManager.GetWidget( RendererMenu.TrayLocation, i );
+						if ( menu.SelectedItem != options[ menu.Caption ].Value )
+							reset = true;
+						newOptions[ menu.Caption ] = menu.SelectedItem;
+					}
+
+					// reset with new settings if necessary
+					if ( reset )
+						Reconfigure( selectedRenderSystem, newOptions );
+				}
 			}
 			else
 				Root.QueueEndRendering();  // exit browser

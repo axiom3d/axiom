@@ -282,6 +282,8 @@ namespace Axiom.Fonts
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					// Unegister scripting with resource group manager
 					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+
+					Singleton<FontManager>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but
