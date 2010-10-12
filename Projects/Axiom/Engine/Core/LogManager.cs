@@ -305,6 +305,7 @@ namespace Axiom.Core
 			logList.Clear();
 
 			instance = null;
+			GC.SuppressFinalize( this );
 		}
 
 		#endregion IDisposable Members

@@ -419,6 +419,8 @@ namespace Axiom.Graphics
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					// Unegister scripting with resource group manager
 					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+
+					Singleton<MaterialManager>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but
