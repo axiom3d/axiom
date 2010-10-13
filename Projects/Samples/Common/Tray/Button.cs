@@ -144,10 +144,12 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( IsCursorOver( element, cursorPos, 4 ) )
-				this.State = ButtonState.Down;
-
-			base.OnCursorPressed( cursorPos );
+            if ( IsCursorOver( element, cursorPos, 4 ) )
+            {
+                this.State = ButtonState.Down;
+                base.OnCursorPressed( cursorPos );
+            }
+			
 		}
 
 		/// <summary>

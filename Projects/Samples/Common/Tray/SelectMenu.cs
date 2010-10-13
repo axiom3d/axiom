@@ -34,10 +34,27 @@ namespace Axiom.Samples
 	/// Basic selection menu widget.
 	/// </summary>
 	public class SelectMenu : Widget
-	{
+    {
+        #region events
+        /// <summary>
+        /// Occours when the selcted index has changed.
+        /// </summary>
+        public event EventHandler SelectedIndexChanged;
 
-		#region fields
-		/// <summary>
+        /// <summary>
+        /// Raises the Selected Index Changed event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnSelectedIndexChanged( object sender, EventArgs e )
+        {
+            if ( SelectedIndexChanged != null )
+                SelectedIndexChanged( sender, e );
+        }
+        #endregion
+
+        #region fields
+        /// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel smallBox;
@@ -408,6 +425,8 @@ namespace Axiom.Samples
 
 			if ( listener != null && notifyListener )
 				listener.ItemSelected( this );
+
+            OnSelectedIndexChanged( this, new EventArgs() );
 		}
 
 		/// <summary>
