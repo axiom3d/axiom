@@ -890,26 +890,24 @@ namespace Axiom.Core
 			// counter by one for minimise overhead
 			--lightListUpdated;
 
-			if ( parentChanged )
+			if ( parentChanged && this.parentNode != null )
 			{
-				if ( this.parentNode != null )
+				if ( ObjectAttached != null )
 				{
-					if ( ObjectAttached != null )
-					{
-						//Fire Event
-						ObjectAttached( this );
-					}
+					//Fire Event
+					ObjectAttached( this );
 				}
-				else
+			}
+			else
+			{
+				if ( ObjectDetached != null )
 				{
-					if ( ObjectDetached != null )
-					{
-						//Fire Event
-						ObjectDetached( this );
-					}
+					//Fire Event
+					ObjectDetached( this );
 				}
 			}
 		}
+		
 
 		/// <summary>
 		///		Internal method to notify the object of the camera to be used for the next rendering operation.

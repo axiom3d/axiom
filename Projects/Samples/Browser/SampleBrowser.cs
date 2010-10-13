@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Axiom.Core;
-//using Axiom.Framework.Configuration;
+using Axiom.Framework.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
@@ -70,7 +70,7 @@ namespace Axiom.Samples
 		int childIndex = 0;
 
 		public SampleBrowser()
-			: base( /*new DefaultConfigurationManager()*/ )
+			: base( new DefaultConfigurationManager() )
 		{
 			LastSampleIndex = -1;
 		}
@@ -161,9 +161,7 @@ namespace Axiom.Samples
 
 					Thumbs[ i ].SetDimensions( 128 * scale, 96 * scale );
 					frame.SetDimensions( Thumbs[ i ].Width + 16, Thumbs[ i ].Height + 16 );
-					Thumbs[ i ].SetPosition( (int)( left - 80 - Thumbs[ i ].Width / 2 ),
-						(int)( top - 5 - Thumbs[ i ].Height / 2 ) );
-					;
+					Thumbs[ i ].SetPosition( (int)( left - 80 - Thumbs[ i ].Width / 2 ), (int)( top - 5 - Thumbs[ i ].Height / 2 ) );
 
 					if ( i == SampleMenu.SelectionIndex )
 						frame.BorderMaterialName = "SdkTrays/Frame/Over";
@@ -328,8 +326,9 @@ namespace Axiom.Samples
 				}
 				if ( selectedRenderSystem != string.Empty )
 				{
-					Graphics.Collections.ConfigOptionCollection options = Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
-					//NameValuePairList newOptions;
+					Graphics.Collections.ConfigOptionCollection options =
+					Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
+
 					Axiom.Collections.NameValuePairList newOptions = new Collections.NameValuePairList();
 					// collect new settings and decide if a reset is needed
 
@@ -350,7 +349,7 @@ namespace Axiom.Samples
 				}
 			}
 			else
-				Root.QueueEndRendering();  // exit browser
+				Root.QueueEndRendering();  // exit browser	
 		}
 
 		/// <summary>
@@ -396,14 +395,13 @@ namespace Axiom.Samples
 						Material newMat = templateMat.Clone( name );
 
 						TextureUnitState tus = newMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
-						if ( ResourceGroupManager.Instance.ResourceExists( DefaultResourceGroupName, info[ "Thumbnail" ] == string.Empty ? "none" : info[ "Thumbnail" ] ) )
+						if ( ResourceGroupManager.Instance.ResourceExists( "Essential", info[ "Thumbnail" ] ) )
 							tus.SetTextureName( info[ "Thumbnail" ] );
 						else
 							tus.SetTextureName( "thumb_error.png" );
 
 						// create sample thumbnail overlay
-						Overlays.Elements.BorderPanel bp = (Overlays.Elements.BorderPanel)
-							om.Elements.CreateElementFromTemplate( "SdkTrays/Picture", "BorderPanel", name );
+						Overlays.Elements.BorderPanel bp = (Overlays.Elements.BorderPanel)om.Elements.CreateElementFromTemplate( "SdkTrays/Picture", "BorderPanel", name );
 						bp.HorizontalAlignment = HorizontalAlignment.Right;
 						bp.VerticalAlignment = VerticalAlignment.Center;
 						bp.MaterialName = name;
@@ -444,16 +442,15 @@ namespace Axiom.Samples
 				{
 					TrayManager.DestroyWidget( RendererMenu.TrayLocation, 3 );
 				}
-#warning INDEX is not correct
-				Graphics.Collections.ConfigOptionCollection options = Root.RenderSystems[ 0 ].ConfigOptions;
+
+				Graphics.Collections.ConfigOptionCollection options = Root.RenderSystems[ menu.SelectionIndex ].ConfigOptions;
 
 				int i = 0;
 
 				// create all the config option select menus
 				foreach ( Configuration.ConfigOption it in options )
 				{
-					SelectMenu optionMenu = TrayManager.CreateLongSelectMenu
-						( TrayLocation.Left, "ConfigOption" + i++, it.Name, 450, 240, 10 );
+					SelectMenu optionMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Left, "ConfigOption" + i++, it.Name, 450, 240, 10 );
 					optionMenu.Items = (List<string>)it.PossibleValues.Values.ToList();
 
 					// if the current config value is not in the menu, add it
@@ -689,14 +686,16 @@ namespace Axiom.Samples
 			SetupInput();
 			LocateResources();
 
-			ResourceGroupManager.Instance.InitializeResourceGroup( DefaultResourceGroupName );
+			ResourceGroupManager.Instance.InitializeResourceGroup( "Essential" );
+
 			TrayManager = new SdkTrayManager( "BrowserControls", RenderWindow, Mouse, this );
 			TrayManager.ShowBackdrop( "SdkTrays/Bands" );
 			TrayManager.TrayContainer[ (int)TrayLocation.None ].Hide();
 
 			CreateDummyScene();
-			Sample startupSample = LoadSamples();
 			LoadResources();
+
+			Sample startupSample = LoadSamples();
 
 			TextureManager.Instance.DefaultMipmapCount = 5;
 
@@ -705,14 +704,14 @@ namespace Axiom.Samples
 			this.Root.FrameEnded += this.FrameEnded;
 			this.Root.FrameRenderingQueued += this.FrameRenderingQueued;
 			WindowEventMonitor.Instance.RegisterListener( RenderWindow, this );
-			int[] data = new int[ 2 ];
-			IntPtr pnt = Memory.PinObject( data );
-			Memory.UnpinObject( data );
+
 			// create template material for sample thumbnails
-			Material thumbMat = (Material)MaterialManager.Instance.Create( "SampleThumbnail", DefaultResourceGroupName );//"Essential" );
+			Material thumbMat = (Material)MaterialManager.Instance.Create( "SampleThumbnail", "Essential" );
 			thumbMat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState();
+
 			SetupWidgets();
 			WindowResized( RenderWindow ); // adjust menus for resolution
+
 			if ( startupSample != null )
 				RunSample( startupSample );
 		}
@@ -722,9 +721,6 @@ namespace Axiom.Samples
 		/// </summary>
 		protected override void CreateWindow()
 		{
-			ResourceGroupManager.Instance.CreateResourceGroup( "IconGroup" );
-			ResourceGroupManager.Instance.AddResourceLocation( "./Media/Icons", "Folder", "IconGroup" );
-			ResourceGroupManager.Instance.InitializeResourceGroup( "IconGroup" );
 			base.RenderWindow = base.Root.Initialize( true, "Axiom Sample Browser" );
 		}
 
@@ -825,8 +821,7 @@ namespace Axiom.Samples
 			SampleMenu = TrayManager.CreateThickSelectMenu( TrayLocation.Left, "SampleMenu", "Select Sample", 250, 10 );
 			SampleSlider = TrayManager.CreateThickSlider( TrayLocation.Left, "SampleSlider", "Slide Samples", 250, 80, 0, 0, 0 );
 
-			/* Sliders do not notify their listeners on creation, so we manually call the callback here
-			to format the slider value correctly. */
+			/* Sliders do not notify their listeners on creation, so we manually call the callback here to format the slider value correctly. */
 			SliderMoved( SampleSlider );
 
 			// create configuration screen button tray

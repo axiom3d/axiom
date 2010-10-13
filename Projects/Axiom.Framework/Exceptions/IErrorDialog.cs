@@ -1,4 +1,4 @@
-﻿#region MIT/X11 License
+#region MIT/X11 License
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,38 +21,18 @@
 #endregion License
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Globalization;
-using System.Security.Permissions;
-using System.Threading;
-using Axiom.Framework.Exceptions;
 
-namespace Axiom.Samples
+namespace Axiom.Framework.Exceptions
 {
-	static class Program
-	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-			try
-			{
-				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( SampleBrowser sb = new SampleBrowser() )
-				{
-					sb.Go();
-				}
-			}
-			catch ( Exception ex )
-			{
-				IErrorDialog messageBox = new WinFormErrorDialog();
-				messageBox.Show( ex );
-			}
-
-		}
-	}
+    /// <summary>
+    /// Interface for a display of error
+    /// </summary>
+    public interface IErrorDialog
+    {
+        /// <summary>
+        /// Causes the exception to be displayed on the screen
+        /// </summary>
+        /// <param name="exception">The exception to display</param>
+        void Show( Exception exception );
+    }
 }

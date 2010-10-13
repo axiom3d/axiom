@@ -167,7 +167,7 @@ namespace Axiom.Core
 
 		#endregion Fields
 
-		#region Constructors
+		#region Construction and Destruction
 
 		/// <summary>
 		///		Basic constructor.  Takes a scene manager reference to record the creator.
@@ -201,7 +201,26 @@ namespace Axiom.Core
 			lightListDirty = true;
 		}
 
-		#endregion Constructors
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
+			{
+				foreach ( MovableObject item in objectList )
+				{
+					item.NotifyAttached( null );
+				}
+				objectList.Clear();
+
+				if ( wireBox != null )
+				{
+					wireBox.Dispose();
+					wireBox = null;
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion Construction and Destruction
 
 		#region Properties
 

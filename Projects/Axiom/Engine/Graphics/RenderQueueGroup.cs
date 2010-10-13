@@ -136,9 +136,17 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///		Clears all the priority groups within this group.
+		///	Clears all the priority groups within this group.
 		/// </summary>
 		public void Clear()
+		{
+			Clear( false );
+		}
+
+		/// <summary>
+		///	Clears all the priority groups within this group.
+		/// </summary>
+		public void Clear( bool dispose )
 		{
 			// loop through each priority group and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
@@ -147,6 +155,8 @@ namespace Axiom.Graphics
 				// clear the RenderPriorityGroup
 				group.Clear();
 			}
+			if ( dispose )
+				PriorityGroups.Clear();
 		}
 
 		#endregion

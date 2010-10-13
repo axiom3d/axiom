@@ -281,7 +281,7 @@ namespace Axiom.Overlays.Elements
 					// we need to add more buffers
 					int offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoordsInBuffer;
 
-					for ( int i = numTexCoordsInBuffer; i < numLayers; i++ )
+					for ( int i = numTexCoordsInBuffer; i < numLayers; ++i )
 					{
 						decl.AddElement( TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
 						offset += VertexElement.GetTypeSize( VertexElementType.Float2 );

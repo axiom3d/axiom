@@ -28,6 +28,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using SIS = SharpInputSystem;
+using Axiom.Framework.Configuration;
 
 namespace Axiom.Samples
 {
@@ -39,6 +40,7 @@ namespace Axiom.Samples
 	public class SampleContext : IWindowEventListener, SIS.IKeyboardListener, SIS.IMouseListener, IDisposable
 	{
 		public const string DefaultResourceGroupName = "Essential";
+
 		#region Fields and Properties
 
 		/// <summary>
@@ -48,7 +50,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Configuration Manager
 		/// </summary>
-		//protected IConfigurationManager ConfigurationManager;
+		protected IConfigurationManager ConfigurationManager;
 		/// <summary>
 		/// SharpInputSystem Input Manager
 		/// </summary>
@@ -118,10 +120,10 @@ namespace Axiom.Samples
 		/// Creates a new instance of the type <see cref="SampleContext"/>
 		/// </summary>
 		/// <param name="cfgManager"></param>
-		public SampleContext( /*IConfigurationManager cfgManager*/ )
+		public SampleContext( IConfigurationManager cfgManager )
 		{
 			this.Root = null;
-			// this.ConfigurationManager = cfgManager;
+			this.ConfigurationManager = cfgManager;
 			this.RenderWindow = null;
 			this.CurrentSample = null;
 			this.IsSamplePaused = false;
@@ -152,8 +154,7 @@ namespace Axiom.Samples
 			if ( s != null )
 			{
 				// retrieve sample's required plugins and currently installed plugins
-#warning Root.PluginInstanceList needs to be implemented
-				//Root.PluginInstanceList ip = Root.InstalledPlugins;
+				var ip = PluginManager.Instance.InstalledPlugins;
 				IList<String> rp = s.RequiredPlugins;
 
 				string errorMsg = String.Empty;
@@ -161,7 +162,7 @@ namespace Axiom.Samples
 				{
 					bool found = false;
 					//try to find the required plugin in the current installed plugins
-					foreach ( IPlugin plugin in PluginManager.Instance.InstalledPlugins )
+					foreach ( IPlugin plugin in ip )
 					{
 						//if(plugin.na
 						found = true;
@@ -234,8 +235,7 @@ namespace Axiom.Samples
 
 				this.Root.StartRendering(); // start the render loop
 
-#warning configManage.SaveConfiguration() mangles app.config file badly!
-				//ConfigurationManager.SaveConfiguration( Root );
+				ConfigurationManager.SaveConfiguration( Root );
 				Shutdown();
 				if ( this.Root != null )
 					this.Root.Dispose();
@@ -276,21 +276,11 @@ namespace Axiom.Samples
 		public virtual void FrameStarted( object sender, FrameEventArgs evt )
 		{
 			CaptureInputDevices();      // capture input
-			//bool paus = this.IsSamplePaused;
-			//bool sample = CurrentSample == null ? false : CurrentSample.FrameStarted( evt );
-
 			// manually call sample callback to ensure correct order
-			if ( this.IsSamplePaused && CurrentSample == null )
-				evt.StopRendering = true;
-			else if ( IsSamplePaused && CurrentSample != null )
-				evt.StopRendering = false;
-			else if ( CurrentSample != null && CurrentSample.FrameStarted( evt ) )
-				evt.StopRendering = true;
-			//evt.StopRendering = ( CurrentSample != null && this.IsSamplePaused ) ? CurrentSample.FrameStarted( evt ) : false;
-			if ( evt.StopRendering )
-			{
-			}
-			//evt.StopRendering = ( CurrentSample != null ) ? CurrentSample.FrameStarted( evt ) : false;
+			if ( CurrentSample != null  && !IsSamplePaused ) 
+			{ 
+				CurrentSample.FrameStarted( evt );
+			} 
 		}
 
 		/// <summary>
@@ -300,18 +290,11 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public virtual void FrameRenderingQueued( object sender, FrameEventArgs evt )
 		{
-			if ( this.IsSamplePaused && CurrentSample == null )
-				evt.StopRendering = true;
-			else if ( IsSamplePaused && CurrentSample != null )
-				evt.StopRendering = false;
-			else if ( CurrentSample != null && CurrentSample.FrameRenderingQueued( evt ) )
-				evt.StopRendering = true;
-
-			//evt.StopRendering = ( CurrentSample != null && this.IsSamplePaused ) ? CurrentSample.FrameRenderingQueued( evt ) : false;
-			if ( evt.StopRendering )
+			// manually call sample callback to ensure correct order
+			if ( CurrentSample != null && !IsSamplePaused )
 			{
+				CurrentSample.FrameStarted( evt );
 			}
-			//evt.StopRendering = ( CurrentSample != null ) ? CurrentSample.FrameStarted( evt ) : false;
 		}
 
 		/// <summary>
@@ -323,24 +306,17 @@ namespace Axiom.Samples
 		public virtual void FrameEnded( object sender, FrameEventArgs evt )
 		{
 			// manually call sample callback to ensure correct order
-			if ( this.IsSamplePaused && CurrentSample == null )
-				evt.StopRendering = true;
-			else if ( IsSamplePaused && CurrentSample != null )
-				evt.StopRendering = false;
-			else if ( CurrentSample != null && CurrentSample.FrameEnded( evt ) )
-				evt.StopRendering = true;
-			//if ( CurrentSample != null && !CurrentSample.FrameEnded( evt ) )
-			//    evt.StopRendering = false;
+			if ( CurrentSample != null && !IsSamplePaused )
+			{
+				CurrentSample.FrameStarted( evt );
+			}
+
 			// quit if window was closed
 			if ( RenderWindow.IsClosed )
 				evt.StopRendering = true;
 			// go into idle mode if current sample has ended
 			if ( CurrentSample != null && CurrentSample.IsDone )
 				RunSample( null );
-
-			if ( evt.StopRendering )
-			{
-			}
 		}
 
 		/// <summary>
@@ -428,7 +404,7 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void CreateRoot()
 		{
-			this.Root = new Root( /*this.ConfigurationManager.LogFilename*/ );
+			this.Root = new Root( this.ConfigurationManager.LogFilename );
 		}
 
 		/// <summary>
@@ -439,11 +415,10 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		protected virtual bool OneTimeConfig()
 		{
-			//if ( this.ConfigurationManager.RestoreConfiguration( this.Root ) )
-			//    return true;
+			if ( this.ConfigurationManager.RestoreConfiguration( this.Root ) )
+			    return true;
 
-			//return this.ConfigurationManager.ShowConfigDialog( this.Root );
-			return true;
+			return this.ConfigurationManager.ShowConfigDialog( this.Root );
 		}
 
 		/// <summary>
@@ -509,24 +484,24 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void LocateResources()
 		{
-			//create and add Essential group
-			ResourceGroupManager.Instance.CreateResourceGroup( DefaultResourceGroupName );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/SdkTrays.zip", "ZipFile", DefaultResourceGroupName );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/Sinbad.zip", "ZipFile", DefaultResourceGroupName );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Thumbnails", "Folder", DefaultResourceGroupName );
+			////create and add Essential group
+			//ResourceGroupManager.Instance.CreateResourceGroup( DefaultResourceGroupName );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/SdkTrays.zip", "ZipFile", DefaultResourceGroupName );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/Sinbad.zip", "ZipFile", DefaultResourceGroupName );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Thumbnails", "Folder", DefaultResourceGroupName );
 
-			//create popular
-			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/skybox.zip", "ZipFile", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/cubemapsJS.zip", "ZipFile", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Icons", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Textures", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Materials", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Programs", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Meshes", "Folder", "Popular" );
+			////create popular
+			//ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/skybox.zip", "ZipFile", "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/cubemapsJS.zip", "ZipFile", "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Icons", "Folder", "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Textures", "Folder", "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Materials", "Folder", "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Programs", "Folder", "Popular" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Meshes", "Folder", "Popular" );
 
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/AxiomCore.zip", "ZipFile" );
-			ResourceGroupManager.Instance.AddResourceLocation( "../Media", "Folder" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media/Archives/AxiomCore.zip", "ZipFile" );
+			//ResourceGroupManager.Instance.AddResourceLocation( "../Media", "Folder" );
 		}
 
 		/// <summary>

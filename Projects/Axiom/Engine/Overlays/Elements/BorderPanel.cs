@@ -145,8 +145,7 @@ namespace Axiom.Overlays.Elements
 
 			// No choice but to lock / unlock each time here, but lock only small sections
 
-			HardwareVertexBuffer vbuf =
-				renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
+			HardwareVertexBuffer vbuf =	renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
 			// Can't use discard since this discards whole buffer
 			IntPtr data = vbuf.Lock( BufferLocking.Discard );
 			int index = 0;
