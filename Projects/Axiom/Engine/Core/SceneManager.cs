@@ -1075,16 +1075,8 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ClearScene()
 		{
-			// Delete all SceneNodes, except root that is
-			if ( this.sceneNodeList != null )
-			{
-				this.sceneNodeList.Clear();
-			}
-
-			if ( this.autoTrackingSceneNodes != null )
-			{
-				this.autoTrackingSceneNodes.Clear();
-			}
+			DestroyAllStaticGeometry();
+			this.DestroyAllMovableObjects();
 
 			if ( this.rootSceneNode != null )
 			{
@@ -1092,7 +1084,17 @@ namespace Axiom.Core
 				this.rootSceneNode.DetachAllObjects();
 			}
 
-			this.DestroyAllMovableObjects();
+			// Delete all SceneNodes, except root that is
+			foreach ( Node node in sceneNodeList )
+			{
+				node.Dispose();
+			}
+			this.sceneNodeList.Clear();
+
+			if ( this.autoTrackingSceneNodes != null )
+			{
+				this.autoTrackingSceneNodes.Clear();
+			}
 
 			// Clear animations
 			this.DestroyAllAnimations();
@@ -1100,6 +1102,9 @@ namespace Axiom.Core
 			// Remove sky nodes since they've been deleted
 			this.skyBoxNode = this.skyPlaneNode = this.skyDomeNode = null;
 			this.isSkyBoxEnabled = this.isSkyPlaneEnabled = this.isSkyDomeEnabled = false;
+
+			if ( renderQueue != null )
+				renderQueue.Clear();
 		}
 
 		/// <summary>

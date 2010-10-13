@@ -23,36 +23,42 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using System.Globalization;
-using System.Security.Permissions;
-using System.Threading;
-using Axiom.Framework.Exceptions;
+using System.Text;
 
-namespace Axiom.Samples
+using Axiom.Core;
+
+namespace Axiom.Framework.Configuration
 {
-	static class Program
+	/// <summary>
+	/// Provides basic interface for loading and storing engine configuration
+	/// </summary>
+	public interface IConfigurationManager
 	{
 		/// <summary>
-		/// The main entry point for the application.
+		/// 
 		/// </summary>
-		[STAThread]
-		static void Main()
+		string LogFilename
 		{
-			try
-			{
-				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( SampleBrowser sb = new SampleBrowser() )
-				{
-					sb.Go();
-				}
-			}
-			catch ( Exception ex )
-			{
-				IErrorDialog messageBox = new WinFormErrorDialog();
-				messageBox.Show( ex );
-			}
-
+			get;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="engine"></param>
+		bool RestoreConfiguration( Root engine );
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="engine"></param>
+		void SaveConfiguration( Root engine );
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mRoot"></param>
+		/// <returns></returns>
+		bool ShowConfigDialog( Root mRoot );
 	}
 }

@@ -238,14 +238,17 @@ namespace Axiom.Samples
 		{
 			if ( this._sceneManager != null )
 				this._sceneManager.ClearScene();
+
 			if ( ContentSetup )
 				CleanupContent();
 			ContentSetup = false;
+
 			if ( ResourcesLoaded )
 				UnloadResources();
 			ResourcesLoaded = false;
+
 			if ( this._sceneManager != null )
-				Root.DestroySceneManager( this._sceneManager );
+				Root.DestroySceneManager( this._sceneManager );			
 			this._sceneManager = null;
 
 			this._done = true;

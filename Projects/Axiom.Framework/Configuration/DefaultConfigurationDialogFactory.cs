@@ -1,4 +1,4 @@
-﻿#region MIT/X11 License
+#region MIT/X11 License
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,39 +20,23 @@
 //THE SOFTWARE.
 #endregion License
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Globalization;
-using System.Security.Permissions;
-using System.Threading;
-using Axiom.Framework.Exceptions;
+using Axiom.Core;
 
-namespace Axiom.Samples
+namespace Axiom.Framework.Configuration
 {
-	static class Program
+	class DefaultConfigurationDialogFactory : ConfigurationDialogFactory
 	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-			try
-			{
-				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( SampleBrowser sb = new SampleBrowser() )
-				{
-					sb.Go();
-				}
-			}
-			catch ( Exception ex )
-			{
-				IErrorDialog messageBox = new WinFormErrorDialog();
-				messageBox.Show( ex );
-			}
+		#region Overrides of ConfigurationDialogFactory
 
+		/// <summary>
+		/// Create an instance of the ConfigurationDialog
+		/// </summary>
+		/// <returns></returns>
+		public override IConfigurationDialog CreateConfigurationDialog( Root engine, ResourceGroupManager resourceManager )
+		{
+			return new WinFormConfigurationDialog( engine, resourceManager );
 		}
+
+		#endregion
 	}
 }
