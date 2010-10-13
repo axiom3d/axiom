@@ -88,6 +88,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.CharacterSamp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Framework.2010", "Axiom.Framework\Axiom.Framework.2010.csproj", "{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Ocean.2010", "Samples\Ocean\Axiom.Samples.Ocean\Axiom.Samples.Ocean.2010.csproj", "{387ECF0B-1A87-478E-A826-5F74BDCCA215}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -514,6 +516,22 @@ Global
 		{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}.Xna Debug|x86.Build.0 = Debug|x86
 		{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}.Xna Release|x86.ActiveCfg = Release|x86
 		{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}.Xna Release|x86.Build.0 = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Debug|x86.ActiveCfg = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Debug|x86.Build.0 = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.DirectX Debug|x86.ActiveCfg = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.DirectX Debug|x86.Build.0 = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.DirectX Release|x86.ActiveCfg = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.DirectX Release|x86.Build.0 = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.OpenGL Debug|x86.ActiveCfg = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.OpenGL Debug|x86.Build.0 = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.OpenGL Release|x86.ActiveCfg = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.OpenGL Release|x86.Build.0 = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Release|x86.ActiveCfg = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Release|x86.Build.0 = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Xna Debug|x86.ActiveCfg = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Xna Debug|x86.Build.0 = Debug|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Xna Release|x86.ActiveCfg = Release|x86
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215}.Xna Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -552,11 +570,12 @@ Global
 		{A4C56A5A-BF67-4BEE-9CA5-B91CB53238E8} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{A9B352AA-24CF-42F6-9D2E-812382055F5E} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{D6DA8F0B-6858-4696-A58D-922C5BA4310B} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
+		{387ECF0B-1A87-478E-A826-5F74BDCCA215} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F} = {1DA4A67D-7B3A-4E4F-9854-D9C7FC67FF81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1

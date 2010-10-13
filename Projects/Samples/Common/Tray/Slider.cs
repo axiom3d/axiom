@@ -251,7 +251,7 @@ namespace Axiom.Samples
 			{
 				listener.SliderMoved( this );
 			}
-			OnSliderMoved( this, this );
+            OnSliderMoved( this, this );
 
 			if ( !this.isDragging )
 				this.handle.Left = (int)( ( this.value - this.minValue ) / ( this.maxValue - this.minValue ) *

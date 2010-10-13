@@ -357,7 +357,7 @@ namespace Axiom.Samples
 			// immediately after the null check and before the event is raised.
 			CursorPressedHandler handler = CursorPressed;
 			if ( handler != null )
-				handler( cursorPos );
+				handler(this, cursorPos );
 		}
 
 		/// <summary>
