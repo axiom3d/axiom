@@ -1,0 +1,20 @@
+material Examples/Aureola
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off			
+			diffuse vertexcolour
+			cull_hardware none
+
+			texture_unit
+			{
+				texture aureola.png PF_BYTE_LA
+				tex_address_mode clamp
+			}
+		}
+	}
+}
