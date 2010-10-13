@@ -145,9 +145,7 @@ Global
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.DirectX Release|x86.ActiveCfg = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.DirectX Release|x86.Build.0 = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.OpenGL Debug|x86.ActiveCfg = Debug|x86
-		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.OpenGL Debug|x86.Build.0 = Debug|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.OpenGL Release|x86.ActiveCfg = Release|x86
-		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.OpenGL Release|x86.Build.0 = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Release|x86.ActiveCfg = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Release|x86.Build.0 = Release|x86
 		{628E7ED7-EC58-4C93-B8AB-CB69087D381B}.Xna Debug|x86.ActiveCfg = Debug|x86
@@ -317,9 +315,7 @@ Global
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.DirectX Release|x86.ActiveCfg = Release|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.DirectX Release|x86.Build.0 = Release|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.OpenGL Debug|x86.ActiveCfg = Debug|x86
-		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.OpenGL Debug|x86.Build.0 = Debug|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.OpenGL Release|x86.ActiveCfg = Release|x86
-		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.OpenGL Release|x86.Build.0 = Release|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|x86.ActiveCfg = Release|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Release|x86.Build.0 = Release|x86
 		{6E5E6221-0235-49C9-9273-449F5F0E8EF6}.Xna Debug|x86.ActiveCfg = Debug|x86
@@ -565,8 +561,8 @@ Global
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F} = {1DA4A67D-7B3A-4E4F-9854-D9C7FC67FF81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_RulesLocation = 0
 		CodeStyleEnforcer_Active = -1
+		CodeStyleEnforcer_RulesLocation = 0
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1
