@@ -442,8 +442,8 @@ namespace Axiom.Samples.Ocean
             }
 
             // move the camera a bit right and make it look at the knot
-            Camera.MoveRelative( new Vector3( 50, 0, 100 ) );
-            Camera.LookAt( new Vector3( 0, 0, 0 ) );
+            Camera.MoveRelative( new Vector3( 50,0, 100 ) );
+            Camera.LookAt( new Vector3( 0, 10, 0 ) );
 
             // Define a plane mesh that will be used for the ocean surface
             Plane oceanSurface = new Plane( Vector3.UnitY, 20 );
@@ -468,7 +468,7 @@ namespace Axiom.Samples.Ocean
             SetupGUI();
 
             // Position it at 500 in Z direction
-            Camera.Position = Vector3.Zero;
+            Camera.Position = new Vector3( 0, 50, 0 );
             // Look back along -Z
             Camera.LookAt( new Vector3( 0, 0, -300 ) );
             Camera.Near = 1;
