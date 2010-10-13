@@ -849,6 +849,7 @@ namespace Axiom.Samples
 			List<string> categories = new List<string>();
 			foreach ( string i in SampleCategories )
 				categories.Add( i );
+			categories.Sort();
 			CategoryMenu.Items = categories;
 			if ( CategoryMenu.ItemsCount != 0 )
 				CategoryMenu.SelectItem( 0 );
