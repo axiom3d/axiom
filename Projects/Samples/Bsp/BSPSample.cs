@@ -48,7 +48,7 @@ namespace Axiom.Samples
 		protected override void LocateResources()
 		{
 			//string bspPath = "./Media/Archives/chiropteraDM.zip";
-			string bspPath = "./Media/Archives/chiropteraDM.pk3";
+			string bspPath = "../Media/Archives/chiropteraDM.pk3";
 			ResourceGroupManager.Instance.CreateResourceGroup( "BSPSAMPLE" );
 			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
 		}
