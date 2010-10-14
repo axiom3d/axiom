@@ -88,7 +88,7 @@ namespace Axiom.Samples.ParticleFX
         {
             // create check boxes to toggle the visibility of our particle systems
             TrayManager.CreateLabel( TrayLocation.TopLeft, "VisLabel", "Particles" );
-            CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "FireWorks", "FireWorks", 130 );
+            CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Fireworks", "Fireworks", 130 );
             box.CheckChanged += new CheckChangedHandler( box_CheckChanged );
             box.IsChecked = true;
             box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Fountain1", "Fountain A", 130 );
