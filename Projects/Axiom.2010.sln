@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.CharacterSamp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Framework.2010", "Axiom.Framework\Axiom.Framework.2010.csproj", "{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Ocean.2010", "Samples\Ocean\Axiom.Samples.Ocean\Axiom.Samples.Ocean.2010.csproj", "{387ECF0B-1A87-478E-A826-5F74BDCCA215}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Ocean.2010", "Samples\Ocean\Axiom.Samples.Ocean.2010.csproj", "{387ECF0B-1A87-478E-A826-5F74BDCCA215}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.ParticleFX", "Samples\ParticleFX\Axiom.Samples.ParticleFX.csproj", "{3782EF9E-008D-43AE-8E25-C974371BC250}"
 EndProject
