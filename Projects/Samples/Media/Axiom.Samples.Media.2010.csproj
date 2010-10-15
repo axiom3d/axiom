@@ -73,6 +73,7 @@
     <None Include="Materials\OgreHead.material" />
     <None Include="Materials\Rockwall.material" />
     <None Include="Materials\SphereMappedRustySteel.material" />
+    <None Include="Materials\VTDarkStuff.material" />
     <None Include="Meshes\ogrehead.mesh" />
     <None Include="Particles\Aureola.particle" />
     <None Include="Particles\Fireworks.particle" />
