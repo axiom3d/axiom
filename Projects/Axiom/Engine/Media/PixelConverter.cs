@@ -118,6 +118,7 @@ namespace Axiom.Media
 				this.rshift = rshift;
 				this.gshift = gshift;
 				this.bshift = bshift;
+                this.ashift = ashift;
 			}
 
 			#endregion Constructor
