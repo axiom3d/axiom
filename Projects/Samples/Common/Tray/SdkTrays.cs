@@ -830,7 +830,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Ray GetCursorRay( Camera cam )
 		{
-			return ScreenToScene( cam, new Vector2( cursor.Left, cursor.Top ) );
+			return ScreenToScene( cam, new Vector2( cursor.DerivedLeft, cursor.DerivedTop ) );
 		}
 
 		/// <summary>
