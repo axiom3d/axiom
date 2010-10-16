@@ -358,7 +358,7 @@ namespace Axiom.Samples
 		-----------------------------------------------------------------------------*/
 		protected virtual void CreateSceneManager()
 		{
-			this._sceneManager = Root.Instance.CreateSceneManager( SceneType.Generic );
+			this._sceneManager = Root.Instance.CreateSceneManager( "DefaultSceneManager" );
 		}
 
 		/*-----------------------------------------------------------------------------
