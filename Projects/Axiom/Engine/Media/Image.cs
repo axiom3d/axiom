@@ -606,7 +606,7 @@ namespace Axiom.Media
 			imgData.height = Height;
 			imgData.width = Width;
 			imgData.depth = Depth;
-
+            imgData.size = Size;
 			// Wrap memory, be sure not to delete when stream destroyed
 			MemoryStream wrapper = new MemoryStream( buffer );
 
