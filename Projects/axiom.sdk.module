@@ -1,16 +1,16 @@
 <Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
-  
+
   <ItemGroup>
-    
+
     <Module Include="Axiom\axiom.core.module">
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </Module>
-	<Module Include="Axiom\axiom.core.module">
-  	  <Configuration>Release</Configuration>
-  	  <Platform>x86</Platform>
-	</Module>
+    <Module Include="Axiom\axiom.core.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </Module>
 
     <Module Include="Axiom\axiom.core.module">
       <Configuration>Debug</Configuration>
@@ -21,7 +21,7 @@
       <Platform>Xbox</Platform>
     </Module>
 
-    <Module Include="AxiomDemos\axiom.samples.module">
+    <Module Include="AxiomDemos\axiom.demos.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
       <Properties>
@@ -29,7 +29,7 @@
       </Properties>
     </Module>
 
-    <Module Include="AxiomDemos\axiom.samples.module">
+    <Module Include="AxiomDemos\axiom.demos.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
       <Properties>
@@ -37,7 +37,7 @@
       </Properties>
     </Module>
 
-    <Module Include="AxiomDemos\axiom.samples.module">
+    <Module Include="AxiomDemos\axiom.demos.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
       <Properties>
@@ -45,11 +45,35 @@
       </Properties>
     </Module>
 
-    <Module Include="AxiomDemos\axiom.samples.module">
+    <Module Include="AxiomDemos\axiom.demos.module">
       <Configuration>Release</Configuration>
       <Platform>Xbox</Platform>
       <Properties>
         RenderSystem=Xna
+      </Properties>
+    </Module>
+
+    <Module Include="Samples\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+      <Properties>
+        Framework=DotNet
+      </Properties>
+    </Module>
+
+    <Module Include="Samples\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+      <Properties>
+        Framework=Mono
+      </Properties>
+    </Module>
+
+    <Module Include="Samples\axiom.samples.module">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox</Platform>
+      <Properties>
+        Framework=DotNet
       </Properties>
     </Module>
 
@@ -60,9 +84,9 @@
   </ItemGroup>
 
   <ItemGroup>
-	<File Include="..\Media\**\*" >
-      <ImagePath>$(ImagePath)\samples\media</ImagePath>
+    <File Include="..\Media\**\*" >
+      <ImagePath>$(ImagePath)\demos\media</ImagePath>
     </File>
   </ItemGroup>
-  
+
 </Project>

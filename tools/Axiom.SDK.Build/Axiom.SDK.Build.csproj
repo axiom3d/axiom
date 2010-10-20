@@ -48,6 +48,15 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="..\..\Projects\AxiomDemos\axiom.demos.module">
+      <Link>Demos\axiom.demos.module</Link>
+    </None>
+    <None Include="..\..\Projects\AxiomDemos\Source\Browser\WinForm\axiom.demos.browser.winform.module">
+      <Link>Demos\axiom.demos.browser.winform.module</Link>
+    </None>
+    <None Include="..\..\Projects\AxiomDemos\Source\Browser\Xbox\axiom.demos.browser.xbox.module">
+      <Link>Demos\axiom.demos.browser.xbox.module</Link>
+    </None>
     <None Include="..\..\Projects\Axiom\Engine\axiom.module">
       <Link>Core\axiom.module</Link>
     </None>
@@ -99,14 +108,17 @@
     <None Include="..\..\Projects\Axiom.msbuild">
       <Link>Axiom.msbuild</Link>
     </None>
-    <None Include="..\..\Projects\AxiomDemos\axiom.samples.module">
-      <Link>Samples\axiom.samples.module</Link>
-    </None>
     <None Include="..\..\Projects\axiom.sdk.module">
       <Link>SDK\axiom.sdk.module</Link>
     </None>
     <None Include="..\..\Projects\Axiom\Tools\Axiom.RenderSystems.Xna.Content\axiom.tool.xna.content.module">
       <Link>Core\Render Systems\axiom.tool.xna.content.module</Link>
+    </None>
+    <None Include="..\..\Projects\Samples\axiom.samples.module">
+      <Link>Samples\axiom.samples.module</Link>
+    </None>
+    <None Include="..\..\Projects\Samples\Browser\axiom.samples.browser.module">
+      <Link>Samples\axiom.samples.browser.module</Link>
     </None>
     <None Include="..\..\Projects\Tests\axiom.tests.module">
       <Link>Tests\axiom.tests.module</Link>

@@ -223,7 +223,8 @@ namespace Axiom.Samples
 
 				// if the context was reconfigured, set requested renderer
 				// if ( !firstRun )
-				this.Root.RenderSystem = this.Root.RenderSystems[ 0 ];
+				if ( this.Root.RenderSystem == null )
+					this.Root.RenderSystem = this.Root.RenderSystems[ 0 ];
 
 				Setup();
 
@@ -293,7 +294,7 @@ namespace Axiom.Samples
 			// manually call sample callback to ensure correct order
 			if ( CurrentSample != null && !IsSamplePaused )
 			{
-                CurrentSample.FrameRenderingQueued( evt );
+				CurrentSample.FrameRenderingQueued( evt );
 			}
 		}
 
@@ -416,7 +417,7 @@ namespace Axiom.Samples
 		protected virtual bool OneTimeConfig()
 		{
 			if ( this.ConfigurationManager.RestoreConfiguration( this.Root ) )
-			    return true;
+				return true;
 
 			return this.ConfigurationManager.ShowConfigDialog( this.Root );
 		}

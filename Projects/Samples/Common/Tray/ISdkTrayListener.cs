@@ -22,8 +22,6 @@
 
 using System;
 
-using SIS = SharpInputSystem;
-
 namespace Axiom.Samples
 {
 	/// <summary>

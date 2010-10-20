@@ -22,18 +22,10 @@
 
 #region Namespace Declarations
 using System;
-using System.Configuration;
-using System.Data;
-using System.Collections.Generic;
 using System.Linq;
-using Axiom;
 using Axiom.Core;
 using Axiom.Framework.Configuration;
 using Axiom.Graphics;
-using Axiom.Configuration;
-using Axiom.Overlays;
-using Axiom.Input;
-using RenderSystem=Axiom.Graphics.RenderSystem;
 using Vector3=Axiom.Math.Vector3;
 
 #endregion Namespace Declarations

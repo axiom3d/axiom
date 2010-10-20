@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public void Initialize()
 		{
-#if OPENGL_OTK
+#if !OPENGL_OTK
 			Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager",
 							   "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
 #endif
