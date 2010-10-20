@@ -2,11 +2,14 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <PropertyGroup>
-    <RenderSystem>$(RenderSystem)</RenderSystem>
-    <ProjectBase>Axiom.Demos.Browser.WinForm</ProjectBase>
-    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).$(RenderSystem).csproj</ProjectFile>
+    <Framework>$(Framework)</Framework>
+    <ProjectBase>Axiom.Samples.Browser</ProjectBase>
+    <ProjectFile Condition="'$(Framework)'=='DotNet'">$(ProjectBase).Win32.csproj</ProjectFile>
+    <ProjectFile Condition="'$(Framework)'=='Mono'">$(ProjectBase).Linux.csproj</ProjectFile>
     <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
-    <ImagePath>demos\$(RenderSystem)</ImagePath>
+    <ImagePath Condition="'$(Framework)'=='DotNet'">samples\Net35</ImagePath>
+    <ImagePath Condition="'$(Framework)'=='Mono'">samples\Mono</ImagePath>
+    <ImagePath Condition="'$(Platform)'=='Xbox'">samples\Xbox</ImagePath>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
   </PropertyGroup>
 
@@ -25,38 +28,32 @@
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
     
-    <File Include="$(OutputPath)\$(ProjectBase).exe" Condition="'$(Platform)'=='x86'" >
-      <ImagePath>$(ImagePath)</ImagePath>
-    </File>
-
-    <File Include="$(OutputPath)\Axiom.Demos.dll" Condition="'$(Platform)'=='x86'" >
-      <ImagePath>$(ImagePath)</ImagePath>
-    </File>
-
     <!-- Binary Dependencies -->
 
-    <!-- RenderSystem + Platform Manager -->
-
-    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.Win32.dll" Condition="'$(RenderSystem)'=='DirectX'" >
+    <!-- PLatform Manager -->
+    
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.Win32.dll" Condition="'$(Framework)'=='DotNet'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.DirectX9.dll" Condition="'$(RenderSystem)'=='DirectX'" >
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.OpenTK.dll" Condition="'$(Framework)'=='Mono'">
+      <ImagePath>$(ImagePath)</ImagePath>
+    </File>
+
+    <!-- RenderSystem  -->
+
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.DirectX9.dll" Condition="'$(Framework)'!='Mono'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
     
-    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.Xna.dll" Condition="'$(RenderSystem)'=='Xna'" >
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.Xna.dll" Condition="'$(Framework)'!='Mono'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
-    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.Xna.Content.dll" Condition="'$(RenderSystem)'=='Xna'" >
-      <ImagePath>$(ImagePath)</ImagePath>
-    </File>
-
-    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.OpenTK.dll" Condition="'$(RenderSystem)'=='OpenGL'" >
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.Xna.Content.dll" Condition="'$(Framework)'!='Mono'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.OpenGL.OpenTK.dll" Condition="'$(RenderSystem)'=='OpenGL'" >
+    <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.RenderSystems.OpenGL.OpenTK.dll" >
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 

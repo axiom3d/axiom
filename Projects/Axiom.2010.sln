@@ -100,6 +100,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Browser", "Browser", "{1DA4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.Win32.2010", "Samples\Browser\Axiom.Samples.Browser.Win32.2010.csproj", "{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.FreeImageCodecs", "Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.csproj", "{3FA3E842-91DE-4A78-99A8-DE3546763136}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -622,6 +624,22 @@ Global
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F}.Xna Debug|x86.Build.0 = Debug|x86
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F}.Xna Release|x86.ActiveCfg = Release|x86
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F}.Xna Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -646,6 +664,7 @@ Global
 		{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{7440613A-4487-46BE-998E-25F554ACE980} = {DC26813F-4527-477E-8068-272E10CF5C37}
+		{3FA3E842-91DE-4A78-99A8-DE3546763136} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{C7286349-8DBA-4A39-991C-3D848AB10CCE} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
@@ -669,8 +688,8 @@ Global
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F} = {1DA4A67D-7B3A-4E4F-9854-D9C7FC67FF81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1

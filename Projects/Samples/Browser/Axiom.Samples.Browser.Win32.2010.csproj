@@ -86,6 +86,7 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="SampleBrowser.cs" />
+    <None Include="axiom.samples.browser.module" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.2010.csproj">
@@ -100,13 +101,13 @@
       <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
       <Name>Axiom.Platforms.Win32.2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.csproj">
+      <Project>{3FA3E842-91DE-4A78-99A8-DE3546763136}</Project>
+      <Name>Axiom.Plugins.FreeImageCodecs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
       <Name>Axiom.Plugins.CgProgramManager.2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.csproj">
-      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.csproj">
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
@@ -115,6 +116,14 @@
     <ProjectReference Include="..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.2010.csproj">
       <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
       <Name>Axiom.RenderSystems.DirectX9.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.2010.csproj">
+      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
+      <Name>Axiom.RenderSystems.OpenGL.OpenTK.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj">
+      <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
+      <Name>Axiom.RenderSystems.Xna.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
@@ -130,10 +139,6 @@
       <Link>cg.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\DevIL.dll">
-      <Link>DevIL.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\freetype6.dll">
       <Link>freetype6.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -142,8 +147,8 @@
       <Link>zlib1.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\Lib\Native\Win32\ILU.dll">
-      <Link>ILU.dll</Link>
+    <Content Include="..\..\..\Lib\Native\Win32\FreeImage.dll">
+      <Link>FreeImage.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\AxiomIcon.ico" />
