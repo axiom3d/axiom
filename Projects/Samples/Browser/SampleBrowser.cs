@@ -321,6 +321,12 @@ namespace Axiom.Samples
 					case "Axiom DirectX9 Rendering Subsystem":
 						selectedRenderSystem = "DirectX9";
 						break;
+                    case "Axiom Xna Rendering Subsystem":
+                        selectedRenderSystem = "Xna";
+                        break;
+                    case "Axiom OpenGL (OpenTK) Rendering Subsystem":
+                        selectedRenderSystem = "OpenGL";
+                        break;
 					default:
 						throw new NotImplementedException();
 				}
