@@ -166,10 +166,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Math.Matrix4 value )
 		{
-			unsafe
-			{
-				_setProgramParameter( type, paramName, value, sizeof( Axiom.Math.Matrix4 ) );
-			}
+			_setProgramParameter( type, paramName, value, sizeof( float ) * 16);
 		}
 
 		protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Core.ColorEx value )
