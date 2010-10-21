@@ -76,7 +76,7 @@ namespace Axiom.Samples.VolumeTexture
 			Vector3 xVec = fixedAxis.Cross( zVec );
 			xVec.Normalize();
 
-			Vector3 yVec = fixedAxis.Cross( xVec );
+			Vector3 yVec = zVec.Cross( xVec );
 			yVec.Normalize();
 
 			Quaternion oriQuat = Quaternion.FromAxes( xVec, yVec, zVec );
@@ -91,7 +91,6 @@ namespace Axiom.Samples.VolumeTexture
 			rotMat.Translation = new Vector3( 0.5f, 0.5f, 0.5f );
 
 			unit.TextureMatrix = rotMat;
-			//unit.SetTextureTransform( rotMat );
 		}
 
 		
@@ -114,7 +113,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			destMatrix = fakeOrientation * scale3x3;
 			destMatrix.Translation = position;
-			matrices[ 0 ] = destMatrix;
+            matrices[ 0 ] = destMatrix;
 
 		}
 
@@ -148,25 +147,16 @@ namespace Axiom.Samples.VolumeTexture
 
 			IndexData indexData = new IndexData();
 			VertexData vertexData = new VertexData();
-			//vertexData = new VertexData();
-			//indexData = new IndexData();
 			float[] vertices = new float[ dsize ];
 
-			float[ , ] coords = new float[ 4, 2 ];
-			//{
-			//    {0.0f, 0.0f},
-			//    {0.0f, 1.0f},
-			//    {1.0f, 0.0f},
-			//    {1.0f, 1.0f}
-			//};
-			coords[ 0, 0 ] = 0;
-			coords[ 0, 1 ] = 0;
-			coords[ 1, 0 ] = 0;
-			coords[ 1, 1 ] = 1;
-			coords[ 2, 0 ] = 1;
-			coords[ 2, 1 ] = 0;
-			coords[ 2, 0 ] = 1;
-			coords[ 2, 1 ] = 1;
+			float[ , ] coords = new float[ 4, 2 ]
+			{
+			    {0.0f, 0.0f},
+			    {0.0f, 1.0f},
+			    {1.0f, 0.0f},
+			    {1.0f, 1.0f}
+			};
+
 			for ( x = 0; x < slices; x++ )
 			{
 				for ( int y = 0; y < 4; y++ )
@@ -225,7 +215,7 @@ namespace Axiom.Samples.VolumeTexture
 			indexData.indexStart = 0;
 
 			indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
-
+            vertexBuffer.WriteData( 0, vertexBuffer.Size, vertices );
 			vertices = null;
 			faces = null;
 
@@ -241,12 +231,7 @@ namespace Axiom.Samples.VolumeTexture
 				ResourceGroupManager.Instance.CreateResourceGroup( "VolumeRendable" );
 			}
 
-			Material material = null;
-			Axiom.Math.Tuple<Resource,bool> result = MaterialManager.Instance.CreateOrRetrieve( texture, "VolumeRendable", false, null, null );
-			if ( result.Second )
-			{
-				material = (Material)result.First;
-			}
+            Material material = (Material)MaterialManager.Instance.Create( texture, "VolumeRendable" );
 			// Remove pre-created technique from defaults
 			material.RemoveAllTechniques();
 
@@ -259,11 +244,13 @@ namespace Axiom.Samples.VolumeTexture
 			pass.SetSceneBlending( SceneBlendType.TransparentAlpha );
 			pass.DepthWrite = false;
 			pass.CullingMode = CullingMode.None;
-			pass.TextureFiltering = TextureFiltering.Trilinear;
+            pass.LightingEnabled = false;
+            textureUnit.TextureAddressing = TextureAddressing.Clamp;
+            textureUnit.SetTextureName( texture, TextureType.ThreeD );
+            textureUnit.SetTextureFiltering( TextureFiltering.Trilinear );
 
 			unit = textureUnit;
-			Material = material;
-			materialName = texture;
+			base.material = material;
 		}
 	}
 }

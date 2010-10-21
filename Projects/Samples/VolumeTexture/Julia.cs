@@ -23,7 +23,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// </summaRy>
 		/// <paRam name="a"></paRam>
 		/// <paRam name="b"></paRam>
-		public void QAdd( Quat a, Quat b )
+		public void QAdd(ref Quat a, Quat b )
 		{
 			a.R += b.R;
 			a.I += b.I;
@@ -37,7 +37,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// <paRam name="c"></paRam>
 		/// <paRam name="a"></paRam>
 		/// <paRam name="b"></paRam>
-		public void QMult( Quat c, Quat a, Quat b )
+		public void QMult( ref Quat c, Quat a, Quat b )
 		{
 			c.R = a.R * b.R - a.I * b.I - a.J * b.J - a.K * b.K;
 			c.I = a.R * b.I + a.I * b.R + a.J * b.K - a.K * b.J;
@@ -50,7 +50,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// </summaRy>
 		/// <paRam name="b"></paRam>
 		/// <paRam name="a"></paRam>
-		public void QSqr( Quat b, Quat a )
+		public void QSqr( ref Quat b, Quat a )
 		{
 			b.R = a.R * a.R - a.I * a.I - a.J * a.J - a.K * a.K;
 			b.I = 2.0f * a.R * a.I;
@@ -82,7 +82,12 @@ namespace Axiom.Samples.VolumeTexture
 			eio.I = Utility.Sin( globalTheta );
 			eio.J = eio.K = 0;
 
-			QMult( c, eio, oc );
+            emio = new Quat();
+            emio.R = Utility.Cos( -globalTheta );
+            emio.I = Utility.Sin( -globalTheta );
+            emio.J = eio.K = 0;
+
+			QMult( ref c, eio, oc );
 		}
 
 		/// <summary>
@@ -105,9 +110,9 @@ namespace Axiom.Samples.VolumeTexture
 
 			for (i = 30; i > 0; i-- )
 			{
-				QSqr( q, tmp );
-				QMult( q, emio, tmp );
-				QAdd( q, c );
+				QSqr( ref tmp, q );
+				QMult( ref q, emio, tmp );
+				QAdd( ref q, c );
 
 				if ( q.R * q.R + q.I * q.I + q.J * q.J + q.K * q.K > 8.0 )
 					break;

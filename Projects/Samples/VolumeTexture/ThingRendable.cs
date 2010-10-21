@@ -38,7 +38,6 @@ namespace Axiom.Samples.VolumeTexture
 			this.qSize = qSize;
 
 			box = new AxisAlignedBox( new Vector3( -radius, -radius, -radius ), new Vector3( radius, radius, radius ) );
-
 			Initialize();
 			FillBuffer();
 		}
@@ -128,8 +127,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			IndexData indexData  = new IndexData();
 			VertexData vertexData = new VertexData();
-			//indexData = new IndexData();
-			//vertexData = new VertexData();
+
 			//Quads
 			short[] faces = new short[ count * 6 ];
 			for ( x = 0; x < count; x++ )
@@ -152,16 +150,15 @@ namespace Axiom.Samples.VolumeTexture
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position ).Size;
 
 			vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				offset, nVertices, BufferUsage.DynamicWriteOnly );
+				decl.GetVertexSize(0), nVertices, BufferUsage.DynamicWriteOnly );
 
 			bind.SetBinding( 0, vertexBuffer );
-
 
 			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, count * 6, BufferUsage.StaticWriteOnly );
 			indexData.indexBuffer = indexBuffer;
 			indexData.indexStart = 0;
 			indexData.indexCount = count * 6;
-
+            
 			indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
 
 			faces = null;
@@ -169,7 +166,7 @@ namespace Axiom.Samples.VolumeTexture
 			renderOperation.operationType = OperationType.TriangleList;
 			renderOperation.indexData = indexData;
 			renderOperation.vertexData = vertexData;
-
+            renderOperation.useIndices = true;
 		}
 
 		/// <summary>
