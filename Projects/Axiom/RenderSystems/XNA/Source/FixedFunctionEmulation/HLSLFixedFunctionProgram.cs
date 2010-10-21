@@ -63,10 +63,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			_setProgramParameter( GpuProgramType.Vertex, "Projection", parameters.ProjectionMatrix );
 
 			//maybe we could do an inverse function in shader
-			_setProgramParameter( GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse() );
-			Axiom.Math.Matrix4 WorldViewIT = parameters.ViewMatrix * parameters.WorldMatrix;
-			WorldViewIT = WorldViewIT.Inverse();
-			_setProgramParameter( GpuProgramType.Vertex, "WorldViewIT", WorldViewIT );
+			//_setProgramParameter( GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse() );
+			//Axiom.Math.Matrix4 WorldViewIT = parameters.ViewMatrix * parameters.WorldMatrix;
+			//WorldViewIT = WorldViewIT.Inverse();
+			//_setProgramParameter( GpuProgramType.Vertex, "WorldViewIT", WorldViewIT );
 
 
 			_setProgramParameter( GpuProgramType.Vertex, "MaterialAmbient", parameters.MaterialAmbient );

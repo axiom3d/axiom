@@ -1098,16 +1098,20 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
+		bool VertexShaderIsSet = false;
+		bool PixelShaderIsSet = false;
 		public override void BindGpuProgram( GpuProgram program )
 		{
 			switch ( program.Type )
 			{
 				case GpuProgramType.Vertex:
 					_device.VertexShader = ( (XnaVertexProgram)program ).VertexShader;
+					VertexShaderIsSet = true;
 					break;
 
 				case GpuProgramType.Fragment:
 					_device.PixelShader = ( (XnaFragmentProgram)program ).PixelShader;
+					PixelShaderIsSet = true;
 					break;
 			}
 		}
@@ -1689,6 +1693,9 @@ namespace Axiom.RenderSystems.Xna
 			throw new NotImplementedException();
 		}
 
+		bool needToUnmapVS = false;
+		bool needToUnmapFS = false;
+
 		public override void Render( RenderOperation op )
 		{
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
@@ -1703,13 +1710,11 @@ namespace Axiom.RenderSystems.Xna
 
 			/*---------------shaders generator part------*/
 #if !(XBOX || XBOX360 || SILVERLIGHT )
-			bool needToUnmapVS = false;
-			bool needToUnmapFS = false;
 
 			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
 			{
 
-				if ( _device.VertexShader == null || _device.PixelShader == null )
+				if ( !VertexShaderIsSet || !PixelShaderIsSet )
 				{
 					FixedFunctionEmulation.VertexBufferDeclaration vbd = new FixedFunctionEmulation.VertexBufferDeclaration();
 					List<FixedFunctionEmulation.VertexBufferElement> lvbe = new List<FixedFunctionEmulation.VertexBufferElement>( op.vertexData.vertexDeclaration.ElementCount );
@@ -1799,7 +1804,7 @@ namespace Axiom.RenderSystems.Xna
 						_fixedFunctionProgram.SetFixedFunctionProgramParameters( _ffProgramParameters );
 
 						//Bind Vertex Program
-						if ( _device.VertexShader == null )
+						if ( !VertexShaderIsSet )
 						{
 							_device.VertexShader = ( (XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate ).VertexShader;
 							BindGpuProgramParameters( GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params );
@@ -1807,7 +1812,7 @@ namespace Axiom.RenderSystems.Xna
 
 						}
 						// Bind Fragment Program 
-						if ( _device.PixelShader == null )
+						if ( !PixelShaderIsSet )
 						{
 							_device.PixelShader = ( (XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate ).PixelShader;
 							BindGpuProgramParameters( GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params );
@@ -2384,7 +2389,7 @@ namespace Axiom.RenderSystems.Xna
 					depth = _getDepthStencilFor( back[ 0 ].Format, back[ 0 ].MultiSampleType, back[ 0 ].Width, back[ 0 ].Height );
 				}
 
-				//if (depth.Format == _device.DepthStencilBuffer.Format)
+				if (depth.Format == _device.DepthStencilBuffer.Format)
 				{
 					/*MessageBox.Show("same:\n" + 
 									depth.Width.ToString() + "-" + depth.Height.ToString() +"\n"+
@@ -2531,10 +2536,12 @@ namespace Axiom.RenderSystems.Xna
 			{
 				case GpuProgramType.Vertex:
 					_device.VertexShader = null;
+					VertexShaderIsSet = false;
 					break;
 
 				case GpuProgramType.Fragment:
 					_device.PixelShader = null;
+					PixelShaderIsSet = false;
 					break;
 			}
 		}
