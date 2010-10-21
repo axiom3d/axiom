@@ -3,7 +3,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Animating;
 using Axiom.Media;
-
+using Axiom.Overlays;
 namespace Axiom.Samples.VolumeTexture
 {
 	public class VolumeTextureSample : SdkSample
@@ -42,6 +42,7 @@ namespace Axiom.Samples.VolumeTexture
 			Camera.Position = new Vector3( 220, -2, 176 );
 			Camera.LookAt( Vector3.Zero );
 			Camera.Near = 5;
+            Camera.PolygonMode = PolygonMode.Wireframe;
 		}
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
@@ -77,6 +78,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			trend = new ThingRendable( 90, 32, 7.5f );
 			trend.Material = (Material)MaterialManager.Instance.GetByName( "Examples/VTDarkStuff" );
+            trend.Material.Load();
 			snode.AttachObject( trend );
 
 			fnode = SceneManager.RootSceneNode.CreateChildSceneNode();
@@ -108,9 +110,39 @@ namespace Axiom.Samples.VolumeTexture
 		}
 
 
+
 		protected void CreateControls()
 		{
+            TrayManager.CreateLabel( TrayLocation.TopLeft, "JuliaParamLabel", "Julia Parameters", 200 );
+            Slider sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "RealSlider", "Real", 200, 80, -1, 1, 50 );
+            sl.SetValue( globalReal, false );
+            sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
+            sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ImagSlider", "Imag", 200, 80, -1, 1, 50 );
+            sl.SetValue( globalImag, false );
+            sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
+            sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ThetaSlider", "Theta", 200, 80, -1, 1, 50 );
+            sl.SetValue( globalTheta, false );
+            sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
+
+            TrayManager.ShowCursor();
 		}
+
+        void sl_SliderMoved( object sender, Slider slider )
+        {
+            switch ( slider.Name )
+            {
+                case "RealSlider":
+                    globalReal = slider.Value;
+                    break;
+                case "ImagSlider":
+                    globalImag = slider.Value;
+                    break;
+                case "ThetaSlider":
+                    globalTheta = slider.Value;
+                    break;
+            }
+            Generate();
+        }
 
 		protected void Generate()
 		{
@@ -130,7 +162,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			unsafe
 			{
-				int* pbptr = (int*)pb.Data;
+				uint* pbptr = (uint*)pb.Data;
 				for ( int z = pb.Front; z < pb.Back; z++ )
 				{
 					for ( int y = pb.Top; y < pb.Bottom; y++ )
@@ -150,7 +182,7 @@ namespace Axiom.Samples.VolumeTexture
 								if ( val > vcut )
 									val = vcut;
 
-								PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, (System.IntPtr)(pbptr + x) );
+                                PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, (System.IntPtr)(&pbptr[ x ]) );
 							}
 						}
 						pbptr += pb.RowPitch;
