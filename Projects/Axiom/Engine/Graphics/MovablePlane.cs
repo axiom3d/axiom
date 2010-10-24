@@ -107,8 +107,8 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name">Name of this plane.</param>
 		public MovablePlane( string name )
+			: base( name )
 		{
-			this.name = name;
 			lastTranslate = Vector3.Zero;
 			lastRotate = Quaternion.Identity;
 			isDirty = true;

@@ -867,7 +867,7 @@ namespace Axiom.Core
 		#region Constructors
 
 		public Camera( string name, SceneManager sceneManager )
-			: base()
+			: base(name)
 		{
 			// Init camera location & direction
 
@@ -886,7 +886,6 @@ namespace Axiom.Core
 			this.FixedYawAxis = Vector3.UnitY;
 
 			// Record name & SceneManager
-			this.name = name;
 			this.sceneManager = sceneManager;
 
 			InvalidateFrustum();

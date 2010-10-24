@@ -167,7 +167,10 @@ namespace Axiom.Core
 		protected MovableObject( string name )
 			: this()
 		{
-			this.name = name;
+			if ( string.IsNullOrEmpty( name ) )
+				this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
+			else
+				this.name = name;
 		}
 
 		/// <summary>
@@ -183,7 +186,6 @@ namespace Axiom.Core
 			this.visibilityFlags = DefaultVisibilityFlags;
 			this.worldAABB = AxisAlignedBox.Null;
 			this.castShadows = true;
-			this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
 		}
 
 		#endregion Constructors
@@ -907,7 +909,7 @@ namespace Axiom.Core
 				}
 			}
 		}
-		
+
 
 		/// <summary>
 		///		Internal method to notify the object of the camera to be used for the next rendering operation.

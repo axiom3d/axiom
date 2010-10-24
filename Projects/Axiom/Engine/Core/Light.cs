@@ -174,7 +174,7 @@ namespace Axiom.Core
 		///		Default constructor.
 		/// </summary>
 		public Light()
-			: this( "" )
+			: this( string.Empty )
 		{
 		}
 
@@ -183,9 +183,8 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		public Light( string name )
+			: base( name )
 		{
-			this.name = name;
-
 			// Default to point light, white diffuse light, linear attenuation, fair range
 			this.type = LightType.Point;
 			this.diffuse = ColorEx.White;
@@ -890,19 +889,19 @@ namespace Axiom.Core
 		#region IAnimable Implementation
 
 		public static string[] animableAttributes = {
-                                                            "diffuseColour",
-                                                            "specularColour",
-                                                            "attenuation",
-                                                            "AttenuationRange",
-                                                            "AttenuationConstant",
-                                                            "AttenuationLinear",
-                                                            "AttenuationQuadratic",
-                                                            "spotlightInner",
-                                                            "spotlightOuter",
-                                                            "spotlightFalloff",
-                                                            "Diffuse",
-                                                            "Specular"
-                                                    };
+															"diffuseColour",
+															"specularColour",
+															"attenuation",
+															"AttenuationRange",
+															"AttenuationConstant",
+															"AttenuationLinear",
+															"AttenuationQuadratic",
+															"spotlightInner",
+															"spotlightOuter",
+															"spotlightFalloff",
+															"Diffuse",
+															"Specular"
+													};
 
 		/// <summary>
 		///     Part of the IAnimableObject interface.

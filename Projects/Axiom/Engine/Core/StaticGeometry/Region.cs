@@ -232,10 +232,10 @@ namespace Axiom.Core
 			#region Constructors
 
 			public Region( StaticGeometry parent, string name, SceneManager mgr, UInt32 regionID, Vector3 center )
+				: base( name )
 			{
 				this.MovableType = "StaticGeometry";
 				this.parent = parent;
-				this.name = name;
 				this.sceneMgr = mgr;
 				this.regionID = regionID;
 				this.center = center;
