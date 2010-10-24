@@ -298,8 +298,8 @@ namespace Axiom.Core
 		/// <param name="mesh"></param>
 		/// <param name="creator"></param>
 		internal Entity( string name, Mesh mesh )
+			: base( name )
 		{
-			this.name = name;
 			this.SetMesh( mesh );
 		}
 

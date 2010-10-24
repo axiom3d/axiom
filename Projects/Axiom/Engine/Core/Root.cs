@@ -168,6 +168,8 @@ namespace Axiom.Core
 				this.AddMovableObjectFactory( this.billboardChainFactory, true );
 				this.ribbonTrailFactory = new RibbonTrailFactory();
 				this.AddMovableObjectFactory( this.ribbonTrailFactory, true );
+				this.movableTextFactory = new MovableTextFactory();
+				this.AddMovableObjectFactory( this.movableTextFactory, true );
 			}
 		}
 
@@ -304,6 +306,7 @@ namespace Axiom.Core
 		private ManualObjectFactory manualObjectFactory;
 		private uint nextMovableObjectTypeFlag;
 		private RibbonTrailFactory ribbonTrailFactory;
+		private MovableTextFactory movableTextFactory;
 
 		#endregion MovableObjectFactory fields
 

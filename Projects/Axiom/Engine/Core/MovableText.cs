@@ -40,6 +40,7 @@ using System.Text;
 using Axiom.Graphics;
 using Axiom.Fonts;
 using Axiom.Math;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -635,4 +636,47 @@ namespace Axiom.Core
 		}
 		#endregion Implementation of SimpleRenderable
 	}
+
+	#region MovableObjectFactory implementation
+
+	public class MovableTextFactory : MovableObjectFactory
+	{
+		public new const string TypeName = "MovableText";
+
+		public MovableTextFactory()
+		{
+			base.Type = MovableTextFactory.TypeName;
+			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
+		}
+
+		protected override MovableObject _createInstance( string name, NamedParameterList param )
+		{
+			// must have mesh parameter
+			string caption = null;
+			if ( param != null )
+			{
+				if ( param.ContainsKey( "caption" ) )
+				{
+					caption = (string)param[ "caption" ];
+				}
+			}
+			if ( caption == null )
+			{
+				throw new AxiomException( "'caption' parameter required when constructing MovableText." );
+			}
+
+			MovableText text = new MovableText( name, caption );
+			text.MovableType = this.Type;
+			return text;
+		}
+
+		public override void DestroyInstance( ref MovableObject obj )
+		{
+			( (MovableText)obj ).Dispose();
+			obj = null;
+		}
+	}
+
+	#endregion MovableObjectFactory implementation
+
 }
