@@ -876,7 +876,7 @@ namespace Axiom.Media
 
 		public static ColorEx UnpackColor( PixelFormat pf, IntPtr src )
 		{
-			ColorEx val = new ColorEx();
+			ColorEx val;
 			unsafe
 			{
 				UnpackColor( out val.r, out val.g, out val.b, out val.a, pf, (byte*)src.ToPointer() );

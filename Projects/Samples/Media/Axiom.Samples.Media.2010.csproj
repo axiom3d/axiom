@@ -62,6 +62,7 @@
     <None Include="Archives\skybox.zip" />
     <None Include="Materials\Aurora.material" />
     <None Include="Materials\BumpyMetal.material" />
+    <None Include="Materials\EveningSkyBox.material" />
     <None Include="Materials\Droplet.material" />
     <None Include="Materials\Examples-DynTex.material" />
     <None Include="Materials\Examples.program" />
@@ -85,6 +86,7 @@
     <None Include="Particles\GreenyNimbus.particle" />
     <None Include="Particles\PurpleFountain.particle" />
     <None Include="Particles\Rain.particle" />
+    <None Include="Particles\smoke.particle" />
     <None Include="Particles\Snow.particle" />
     <None Include="Programs\AmbientOneTexture.glsl" />
     <None Include="Programs\ASCIIFP.cg" />
@@ -184,6 +186,7 @@
     <None Include="Programs\varianceshadowcastervp.cg" />
     <None Include="Programs\varianceshadowreceiverfp.cg" />
     <None Include="Programs\varianceshadowreceivervp.cg" />
+    <None Include="Materials\smoke.material" />
     <None Include="Textures\NoiseVolume.dds" />
     <None Include="Textures\rockwall.tga" />
     <None Include="Textures\rockwall_NH.tga" />
@@ -203,6 +206,8 @@
     <Content Include="Textures\GreenSkin.jpg" />
     <Content Include="Textures\penguin.jpg" />
     <Content Include="Textures\RustySteel.jpg" />
+    <Content Include="Textures\smoke.png" />
+    <Content Include="Textures\smokecolors.png" />
     <Content Include="Textures\spheremap.png" />
     <Content Include="Textures\tusk.jpg" />
     <Content Include="Thumbnails\thumb_bezier.png" />
