@@ -69,14 +69,16 @@ namespace Axiom.Core
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal TextureManager()
+            : base()
 		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
-
-			ResourceType = "Texture";
-			LoadingOrder = 75.0f;
+            if (instance == null)
+            {
+                instance = this;
+                ResourceType = "Texture";
+                LoadingOrder = 75.0f;
+            }
+            else
+                throw new AxiomException("Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name);
 		}
 
 		/// <summary>
@@ -564,7 +566,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -575,14 +577,14 @@ namespace Axiom.Core
 
 					foreach ( Texture texture in Resources )
 					{
-						texture.Dispose();
+                        if (!texture.IsDisposed)
+						    texture.Dispose();
 					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			//isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

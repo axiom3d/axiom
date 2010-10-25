@@ -2747,6 +2747,12 @@ namespace Axiom.Graphics
 			{
 				( (TextureUnitState)textureUnitStates[ i ] ).Unload();
 			}
+
+            if (this.HasFragmentProgram)
+                this._fragmentProgramUsage.Program.Unload();
+
+            if (this.HasVertexProgram)
+                this._vertexProgramUsage.Program.Unload();
 		}
 
 		/// <summary>

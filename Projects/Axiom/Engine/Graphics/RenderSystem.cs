@@ -70,7 +70,7 @@ namespace Axiom.Graphics
 	///		methods are marked as internal, and are not accessible outside
 	///		of the Core library.
 	///	</remarks>
-	public abstract class RenderSystem : IDisposable
+	public abstract class RenderSystem : DisposableObject
 	{
 		#region Constants
 
@@ -176,6 +176,7 @@ namespace Axiom.Graphics
 		///		Base constructor.
 		/// </summary>
 		public RenderSystem()
+            : base()
 		{
 			// default to true
 			isVSync = true;
@@ -1932,17 +1933,44 @@ namespace Axiom.Graphics
 
 		#endregion Object overrides
 
-		#region IDisposable Members
+		#region DisposableObject Members
 
-		/// <summary>
-		///		Override to dispose of resources on shutdown if needed.
-		/// </summary>
-		public virtual void Dispose()
-		{
-			// no default implementation
-		}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.hardwareBufferManager != null)
+                    {
+                        if (!this.hardwareBufferManager.IsDisposed)
+                            this.hardwareBufferManager.Dispose();
 
-		#endregion IDisposable Members
-	}
+                        this.hardwareBufferManager = null;
+                    }
+
+                    if (this.textureManager != null)
+                    {
+                        if (!textureManager.IsDisposed)
+                            textureManager.Dispose();
+
+                        this.textureManager = null;
+                    }
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
+
+        #endregion DisposableObject Members
+    }
 
 }

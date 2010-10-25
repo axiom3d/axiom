@@ -70,10 +70,10 @@ namespace Axiom.Core
 			List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
 
 			objectList.Add( new ObjectEntry
-								{
-									Instance = new WeakReference( instance ),
-									ConstructionStack = stackTrace
-								} );
+			{
+				Instance = new WeakReference( instance ),
+				ConstructionStack = stackTrace
+			} );
 		}
 
 		private List<ObjectEntry> GetOrCreateObjectList( Type type )
@@ -104,6 +104,7 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					long objectCount = 0;
+					Dictionary<string, int> perTypeCount = new Dictionary<string, int>();
 					StringBuilder msg = new StringBuilder();
 					// Dispose managed resources.
 					foreach ( KeyValuePair<Type, List<ObjectEntry>> item in this._objects )
@@ -114,16 +115,31 @@ namespace Axiom.Core
 						{
 							if ( objectEntry.Instance.IsAlive && !( (DisposableObject)objectEntry.Instance.Target ).IsDisposed )
 							{
+								if ( perTypeCount.ContainsKey( typeName ) )
+									perTypeCount[ typeName ]++;
+								else
+									perTypeCount.Add( typeName, 1 );
+
 								objectCount++;
 								msg.AppendFormat( "\nAn instance of {0} was not disposed properly, creation stacktrace :\n{1}", typeName, objectEntry.ConstructionStack );
 							}
 						}
 					}
+
+					LogManager.Instance.Write( "[ObjectManager] Disposal Report:" );
+
 					if ( objectCount > 0 )
 					{
-						System.Diagnostics.Debug.WriteLine( String.Format( "[ObjectManager] Total of {0} objects still alive.", objectCount ) );
-						System.Diagnostics.Debug.WriteLine( msg );
+						LogManager.Instance.Write( "Total of {0} objects still alive.", objectCount );
+						LogManager.Instance.Write( "Types of not disposed objects count: " + perTypeCount.Count );
+
+						foreach ( KeyValuePair<string, int> currentPair in perTypeCount )
+							LogManager.Instance.Write( "{0} occurrence of type {1}", currentPair.Value, currentPair.Key );
+
+						LogManager.Instance.Write( "Creation Stacktraces:\n" + msg.ToString() );
 					}
+					else
+						LogManager.Instance.Write( "Everything went right! Congratulations!!" );
 				}
 
 				// There are no unmanaged resources to release, but
@@ -143,7 +159,7 @@ namespace Axiom.Core
 		protected DisposableObject()
 		{
 			IsDisposed = false;
-#if !(XBOX || XBOX360 || WINDOWS_PHONE || ANDROID)
+#if !(XBOX || XBOX360 || WINDOWS_PHONE)
 			ObjectManager.Instance.Add( this, Environment.StackTrace );
 #else
 			ObjectManager.Instance.Add( this, String.Empty );

@@ -55,9 +55,31 @@ namespace Axiom.RenderSystems.Xna
 		protected XFG.GraphicsDevice device;
 
 		internal XnaGpuProgramManager( XFG.GraphicsDevice device )
+            : base()
 		{
 			this.device = device;
 		}
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    this.device = null;
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
 
 		/// <summary>
 		///    Create the specified type of GpuProgram.

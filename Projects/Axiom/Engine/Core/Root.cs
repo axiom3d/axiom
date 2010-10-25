@@ -1003,8 +1003,6 @@ namespace Axiom.Core
 
 			// ResourceBackGroundPool.Instance.Shutdown();
 			ResourceGroupManager.Instance.ShutdownAll();
-
-			PluginManager.Instance.UnloadAll();
 		}
 
 		/// <summary>

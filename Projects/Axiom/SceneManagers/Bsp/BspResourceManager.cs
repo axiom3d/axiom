@@ -93,16 +93,18 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		static BspResourceManager()
-		{
-			instance = new BspResourceManager();
-		}
-
 		protected BspResourceManager()
+            : base()
 		{
-			ResourceType = "BspLevel";
-			shaderManager = Quake3ShaderManager.Instance;
-			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+            if (instance == null)
+            {
+                instance = this;
+                ResourceType = "BspLevel";
+                shaderManager = Quake3ShaderManager.Instance;
+                ResourceGroupManager.Instance.RegisterResourceManager(ResourceType, this);
+            }
+            else
+                throw new AxiomException("Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name);
 		}
 
 		public bool Initialize( params object[] args )
@@ -112,19 +114,19 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					shaderManager.Dispose();
 					ResourceGroupManager.Instance.UnregisterResourceManager( "BspLevel" );
+                    instance = null;
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

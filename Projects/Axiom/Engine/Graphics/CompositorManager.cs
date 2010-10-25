@@ -326,6 +326,7 @@ namespace Axiom.Graphics
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public CompositorManager()
+            : base()
 		{
 			// OGRE initializes this manager here in the constructor. For consistency Axiom calls Initialize() directly
 			// in Root.ctor(), this does change the order in which things are initialized.
@@ -812,7 +813,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

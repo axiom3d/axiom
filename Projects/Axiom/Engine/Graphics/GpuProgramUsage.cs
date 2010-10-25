@@ -134,6 +134,8 @@ namespace Axiom.Graphics
 		internal void Unload()
 		{
 			// TODO: Anything needed here?  The program cannot be destroyed since it is shared.
+            if (program.IsLoaded)
+                program.Unload();
 		}
 
 		#endregion
