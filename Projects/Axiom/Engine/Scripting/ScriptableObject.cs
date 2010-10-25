@@ -131,6 +131,7 @@ namespace Axiom.Scripting
 		///
 		/// </summary>
 		protected ScriptableObject()
+            : base()
 		{
 			_classParameters = _getTypePropertyMap( this.GetType() );
 			_properties = new ScriptableProperties( this );

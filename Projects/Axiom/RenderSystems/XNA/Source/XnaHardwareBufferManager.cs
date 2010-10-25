@@ -63,6 +63,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="device"></param>
 		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
+            : base()
 		{
 			this._device = device;
 		}
@@ -76,6 +77,27 @@ namespace Axiom.RenderSystems.Xna
 		#endregion
 
 		#region Methods
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    this._device = null;
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
 
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
 		{

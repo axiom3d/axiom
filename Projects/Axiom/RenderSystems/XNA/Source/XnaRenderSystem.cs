@@ -122,6 +122,7 @@ namespace Axiom.RenderSystems.Xna
 		#region Construction and Destruction
 
 		public XnaRenderSystem()
+            : base()
 		{
 			_initConfigOptions();
 			// init the texture stage descriptions
@@ -1295,20 +1296,18 @@ namespace Axiom.RenderSystems.Xna
 			// dispose of the device
 			if ( _device != null )
 			{
-				_device.Dispose();
+                if (!_device.IsDisposed)
+				    _device.Dispose();
+
+                _device = null;
 			}
 
 			if ( gpuProgramMgr != null )
 			{
-				gpuProgramMgr.Dispose();
-			}
-			if ( hardwareBufferManager != null )
-			{
-				hardwareBufferManager.Dispose();
-			}
-			if ( textureManager != null )
-			{
-				textureManager.Dispose();
+                if (!gpuProgramMgr.IsDisposed)
+				    gpuProgramMgr.Dispose();
+
+                gpuProgramMgr = null;
 			}
 
 			base.Shutdown();

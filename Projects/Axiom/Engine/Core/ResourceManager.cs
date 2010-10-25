@@ -83,7 +83,7 @@ namespace Axiom.Core
 	///     <file name="OgreResourceManager.cpp" revision="1.17.2.2" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre>
 	///
-	public abstract class ResourceManager : IDisposable, IScriptLoader
+	public abstract class ResourceManager : DisposableObject, IScriptLoader
 	{
 		#region Fields and Properties
 
@@ -279,15 +279,11 @@ namespace Axiom.Core
 		///		Default constructor
 		/// </summary>
 		protected ResourceManager()
+            : base()
 		{
 			_memoryBudget = long.MaxValue;
 			_memoryUsage = 0;
 			_loadingOrder = 0;
-		}
-
-		~ResourceManager()
-		{
-			dispose( false );
 		}
 
 		#endregion Constructors and Destructors
@@ -605,7 +601,8 @@ namespace Axiom.Core
 		{
 			foreach ( Resource resource in _resources.Values )
 			{
-				resource.Dispose();
+                if (!resource.IsDisposed)
+				    resource.Dispose();
 			}
 			_resources.Clear();
 			_resourceHandleMap.Clear();
@@ -735,27 +732,7 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-		#region IDisposable Implementation
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
+		#region DisposableObject Implementation
 
 		/// <summary>
 		/// Class level dispose method
@@ -781,34 +758,30 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
+                    UnloadAll();
 					RemoveAll();
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
+
+            base.dispose(disposeManagedResources);
 		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
+        #endregion DisposableObject Implementation
 
-		#endregion IDisposable Implementation
+        #region IScriptLoader Members
 
-		#region IScriptLoader Members
+        #region ScriptPatterns Property
 
-		#region ScriptPatterns Property
-
-		private List<string> _scriptPatterns = new List<string>();
+        private List<string> _scriptPatterns = new List<string>();
 		/// <summary>
 		/// Gets the file patterns which should be used to find scripts for this class.
 		/// </summary>

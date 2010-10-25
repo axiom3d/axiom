@@ -101,6 +101,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		public SubMesh( /*string name*/ )
+            : base()
 		{
 			//this.name = name;
 
@@ -351,29 +352,40 @@ namespace Axiom.Core
 
 		#endregion Properties
 
-		#region IDisposable Implementation
+        #region DisposableObject Implementation
 
-		protected override void dispose( bool disposeManagedResources )
+        protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( indexData != null )
-						indexData.Dispose();
-					if ( vertexData != null )
-						vertexData.Dispose();
-					foreach ( IndexData data in lodFaceList )
+                    if (indexData != null)
+                    {
+                        if (!indexData.IsDisposed)
+                            indexData.Dispose();
+                    }
+
+                    if (vertexData != null)
+                    {
+                        if (!vertexData.IsDisposed)
+                            vertexData.Dispose();
+                    }
+					
+                    foreach ( IndexData data in lodFaceList )
 					{
-						data.Dispose();
+                        if (!data.IsDisposed)
+						    data.Dispose();
 					}
 				}
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-		}
 
-		#endregion IDisposable Implementation
-	}
+            base.dispose(disposeManagedResources);
+        }
+
+        #endregion DisposableObject Implementation
+    }
 }

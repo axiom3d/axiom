@@ -1385,6 +1385,8 @@ namespace Axiom.Graphics
 			{
 				( (Technique)this.SupportedTechniques[ i ] ).Unload();
 			}
+
+            this.RemoveAllTechniques();
 		}
 
 		/// <summary>
@@ -1420,7 +1422,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					this.RemoveAllTechniques();
+                    this.unload();
 				}
 
 				// There are no unmanaged resources to release, but

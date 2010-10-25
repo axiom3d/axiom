@@ -47,7 +47,7 @@ namespace Axiom.Graphics
 	/// 	Abstract singleton class for managing hardware buffers, a concrete instance
 	///		of this will be created by the RenderSystem.
 	/// </summary>
-	public abstract class HardwareBufferManager : IDisposable
+	public abstract class HardwareBufferManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -64,6 +64,7 @@ namespace Axiom.Graphics
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal HardwareBufferManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -544,40 +545,46 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Destroy all necessary objects
 
-		/// <summary>
-		///     Called when the engine is shutting down.
-		/// </summary>
-		public virtual void Dispose()
-		{
-			// Destroy all necessary objects
+                    foreach (VertexDeclaration buffer in vertexDeclarations)
+                    {
+                        buffer.Dispose();
+                    }
+                    vertexDeclarations.Clear();
 
-			foreach ( VertexDeclaration buffer in vertexDeclarations )
-			{
-				buffer.Dispose();
-			}
-			vertexDeclarations.Clear();
+                    vertexBufferBindings.Clear();
 
-			vertexBufferBindings.Clear();
+                    // destroy all vertex buffers
+                    foreach (HardwareBuffer buffer in vertexBuffers)
+                    {
+                        buffer.Dispose();
+                    }
+                    vertexBuffers.Clear();
 
-			// destroy all vertex buffers
-			foreach ( HardwareBuffer buffer in vertexBuffers )
-			{
-				buffer.Dispose();
-			}
-			vertexBuffers.Clear();
+                    // destroy all index buffers
+                    foreach (HardwareBuffer buffer in indexBuffers)
+                    {
+                        buffer.Dispose();
+                    }
+                    indexBuffers.Clear();
 
-			// destroy all index buffers
-			foreach ( HardwareBuffer buffer in indexBuffers )
-			{
-				buffer.Dispose();
-			}
-			indexBuffers.Clear();
+                    instance = null;
+                }
+            }
 
-			instance = null;
-		}
-
+            base.dispose(disposeManagedResources);
+        }
 		#endregion IDisposable Implementation
 
 		public void DisposeVertexBuffer( HardwareBuffer buffer )

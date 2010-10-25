@@ -113,13 +113,6 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		protected abstract void LoadFromShaderCode();
 
-
-
-
-
-
-
-
 		#endregion Methods
 
 		#region GpuProgram Members
@@ -248,7 +241,10 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( vertexShader != null )
 			{
-				vertexShader.Dispose();
+                if (!vertexShader.IsDisposed)
+				    vertexShader.Dispose();
+
+                vertexShader = null;
 			}
 		}
 
@@ -318,7 +314,10 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( pixelShader != null )
 			{
-				pixelShader.Dispose();
+                if (!pixelShader.IsDisposed)
+				    pixelShader.Dispose();
+
+                pixelShader = null;
 			}
 		}
 
