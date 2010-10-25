@@ -69,7 +69,7 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class TagPoint : Bone
 	{
-		#region Fields
+        #region Fields and Properties
 
 		/// <summary>
 		///		Reference to the entity that owns this tagpoint.
@@ -84,28 +84,6 @@ namespace Axiom.Animating
 		/// </summary>
 		protected Matrix4 fullLocalTransform;
 
-		#endregion Fields
-
-		#region Constructor
-
-		/// <summary>
-		///		Constructor.
-		/// </summary>
-		/// <param name="handle">Handle to use.</param>
-		/// <param name="creator">Skeleton who created this tagpoint.</param>
-		public TagPoint( ushort handle, Skeleton creator )
-			: base( handle, creator )
-		{
-			suppressUpdateEvent = true;
-		}
-
-		#endregion Constructor
-
-		#region Methods
-
-		#endregion
-
-		#region Properties
 		/// <summary>
 		///		Gets/Sets the object attached to this tagpoint.
 		/// </summary>
@@ -170,7 +148,43 @@ namespace Axiom.Animating
 			}
 		}
 
-		#endregion Properties
+		/// <summary>
+		///  Tells the TagPoint whether it should inherit orientation from it's parent entity.
+		/// </summary>
+		/// <remarks>
+		/// If true, this TagPoint's orientation will be affected by
+		/// its parent entity's orientation. If false, it will not be affected.
+		/// </remarks>
+		public bool InheritParentEntityOrientation
+		{
+			get;
+			set;
+		}
+
+		public bool InheritParentEntityScale
+		{
+			get;
+			set;
+		}
+
+		#endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        /// <summary>
+        ///		Constructor.
+        /// </summary>
+        /// <param name="handle">Handle to use.</param>
+        /// <param name="creator">Skeleton who created this tagpoint.</param>
+		public TagPoint( ushort handle, Skeleton creator )
+			: base( handle, creator )
+        {
+			suppressUpdateEvent = true;
+			InheritParentEntityOrientation = true;
+			InheritParentEntityScale = true;
+        }
+
+		#endregion Construction and Destruction
 
 		#region Bone Members
 
@@ -217,10 +231,20 @@ namespace Axiom.Animating
 				if ( entityParentNode != null )
 				{
 					Quaternion parentQ = entityParentNode.DerivedOrientation;
+					if ( InheritParentEntityOrientation )
+					{
 					derivedOrientation = parentQ * derivedOrientation;
+					}
+
+					// Incorporate parent entity scale
+					Vector3 parentScale = entityParentNode.Scale;
+					if ( InheritParentEntityScale )
+					{
+						derivedScale *= parentScale;
+					}
 
 					// Change position vector based on parent's orientation
-					derivedPosition = parentQ * derivedPosition;
+					derivedPosition = parentQ * ( parentScale * derivedPosition );
 
 					// Add altered position vector to parents
 					derivedPosition += entityParentNode.DerivedPosition;
@@ -228,8 +252,12 @@ namespace Axiom.Animating
 					OnUpdatedFromParent();
 				}
 			}
-		}
 
+			if ( childObject != null )
+			{
+				childObject.NotifyMoved();
+		}
+        }
 
 		#endregion Bone Members
 	}

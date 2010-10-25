@@ -1679,6 +1679,13 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
+                    if (this.skeletonInstance != null)
+                    {
+                        if (!this.skeletonInstance.IsDisposed)
+                            this.skeletonInstance.Dispose();
+
+                        this.skeletonInstance = null;
+				}
 				}
 
 				// There are no unmanaged resources to release, but

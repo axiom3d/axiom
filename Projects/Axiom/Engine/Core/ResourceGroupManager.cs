@@ -1120,7 +1120,7 @@ namespace Axiom.Core
 			}
 			// set current group
 			_currentGroup = grp;
-			UnloadResourceGroup( groupName ); // will throw an exception if name not valid
+			UnloadResourceGroup( groupName, false ); // will throw an exception if name not valid
 			_dropGroupContents( grp );
 			_deleteGroup( grp );
 			resourceGroups.Remove( groupName );
@@ -2021,6 +2021,7 @@ namespace Axiom.Core
 			foreach ( KeyValuePair<string, ResourceManager> pair in _resourceManagers )
 			{
 				ResourceManager rm = pair.Value;
+				rm.UnloadAll();
 				rm.RemoveAll();
 			}
 		}

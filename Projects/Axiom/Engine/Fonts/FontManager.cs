@@ -87,6 +87,7 @@ namespace Axiom.Fonts
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
+            : base()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
@@ -274,7 +275,7 @@ namespace Axiom.Fonts
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -411,7 +411,7 @@ namespace Axiom.Graphics
 		/// <ogre name="~MaterialManager" />
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

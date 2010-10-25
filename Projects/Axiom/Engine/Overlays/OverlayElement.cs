@@ -938,7 +938,10 @@ namespace Axiom.Overlays
 				{
 					throw new Exception( string.Format( "Could not find material '{0}'.", materialName ) );
 				}
+
+                if (!material.IsLoaded)
 				material.Load();
+
 				// Set some prerequisites to be sure
 				material.Lighting = false;
 				material.DepthCheck = false;

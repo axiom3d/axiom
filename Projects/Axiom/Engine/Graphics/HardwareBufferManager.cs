@@ -47,7 +47,7 @@ namespace Axiom.Graphics
 	/// 	Abstract singleton class for managing hardware buffers, a concrete instance
 	///		of this will be created by the RenderSystem.
 	/// </summary>
-	public abstract class HardwareBufferManager : IDisposable
+	public abstract class HardwareBufferManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -64,6 +64,7 @@ namespace Axiom.Graphics
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal HardwareBufferManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -540,15 +541,18 @@ namespace Axiom.Graphics
 		#endregion
 
 		#region IDisposable Implementation
-
 		/// <summary>
-		///     Called when the engine is shutting down.
+        /// Class level dispose method
 		/// </summary>
-		public virtual void Dispose()
+        protected override void dispose(bool disposeManagedResources)
 		{
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
 			// Destroy all necessary objects
 
-			foreach ( VertexDeclaration buffer in vertexDeclarations )
+                    foreach (VertexDeclaration buffer in vertexDeclarations)
 			{
 				buffer.Dispose();
 			}
@@ -557,14 +561,14 @@ namespace Axiom.Graphics
 			vertexBufferBindings.Clear();
 
 			// destroy all vertex buffers
-			foreach ( HardwareBuffer buffer in vertexBuffers )
+                    foreach (HardwareBuffer buffer in vertexBuffers)
 			{
 				buffer.Dispose();
 			}
 			vertexBuffers.Clear();
 
 			// destroy all index buffers
-			foreach ( HardwareBuffer buffer in indexBuffers )
+                    foreach (HardwareBuffer buffer in indexBuffers)
 			{
 				buffer.Dispose();
 			}
@@ -572,7 +576,10 @@ namespace Axiom.Graphics
 
 			instance = null;
 		}
+            }
 
+            base.dispose(disposeManagedResources);
+        }
 		#endregion IDisposable Implementation
 
 		public void DisposeVertexBuffer( HardwareBuffer buffer )

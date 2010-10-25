@@ -65,6 +65,7 @@ namespace Axiom.Serialization
 		///		Target mesh for importing/exporting.
 		/// </summary>
 		protected Mesh mesh;
+
 		/// <summary>
 		///		Is this mesh animated with a skeleton?
 		/// </summary>
@@ -73,15 +74,13 @@ namespace Axiom.Serialization
 		#endregion Fields
 
 		#region Constructor
-
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
 		public MeshSerializerImpl()
 		{
-			version = "[MeshSerializer_v1.40]";
+			version = "[MeshSerializer_v1.41]";
 		}
-
 		#endregion Constructor
 
 		#region Methods
@@ -702,10 +701,7 @@ namespace Axiom.Serialization
 		protected void WriteMeshLodInfo( BinaryWriter writer )
 		{
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
-			WriteString( writer, mesh.LodStrategy.Name );
-			WriteShort( writer, (short)mesh.LodLevelCount );
-			WriteBool( writer, mesh.IsLodManual );
+			this.WriteMeshLodSummary( writer );
 
 			// Start from 1 to skip the LOD 0 entry
 			for ( int i = 1; i < mesh.LodLevelCount; ++i )
@@ -718,6 +714,14 @@ namespace Axiom.Serialization
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, MeshChunkID.MeshLOD, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+		}
+
+		protected virtual void WriteMeshLodSummary( BinaryWriter writer )
+		{
+			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
+			WriteString( writer, mesh.LodStrategy.Name );
+			WriteShort( writer, (short)mesh.LodLevelCount );
+			WriteBool( writer, mesh.IsLodManual );
 		}
 
 		protected void WriteMeshLodUsage( BinaryWriter writer, MeshLodUsage usage, int usageIndex )
@@ -1007,6 +1011,9 @@ namespace Axiom.Serialization
 
 			// get the material name
 			string materialName = ReadString( reader );
+
+			MeshManager.Instance.FireProcessMaterialName( this.mesh, materialName );
+
 			subMesh.MaterialName = materialName;
 
 			// use shared vertices?
@@ -1263,6 +1270,8 @@ namespace Axiom.Serialization
 		protected virtual void ReadSkeletonLink( BinaryReader reader )
 		{
 			mesh.SkeletonName = ReadString( reader );
+
+			MeshManager.Instance.FireProcessSkeletonName( this.mesh, this.mesh.SkeletonName );
 		}
 
 		protected virtual void ReadMeshBoneAssignment( BinaryReader reader )
@@ -1293,58 +1302,57 @@ namespace Axiom.Serialization
 
 		protected virtual void ReadMeshLodInfo( BinaryReader reader )
 		{
-			MeshChunkID chunkId;
+			// Read the strategy to be used for this mesh
+			string strategyName = this.ReadString( reader );
+			LodStrategy strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
+			this.mesh.LodStrategy = strategy;
 
 			// number of lod levels
 			short lodLevelCount = ReadShort( reader );
+			// bool manual;  (true for manual alternate meshes, false for generated)
+			this.mesh.IsLodManual = this.ReadBool( reader ); //readBools(stream, &(pMesh->mIsLodManual), 1);
 
-			// load manual?
-			mesh.IsLodManual = ReadBool( reader );
-
-			// preallocate submesh lod face data if not manual
-			if ( !mesh.IsLodManual )
+			// Preallocate submesh lod face data if not manual
+			if ( !this.mesh.IsLodManual )
 			{
-				for ( int i = 0; i < mesh.SubMeshCount; i++ )
+				for ( ushort i = 0; i < this.mesh.SubMeshCount; ++i )
 				{
-					SubMesh sub = mesh.GetSubMesh( i );
+					SubMesh sm = this.mesh.GetSubMesh( i );
 
 					// TODO: Create typed collection and implement resize
-					for ( int j = 1; j < lodLevelCount; j++ )
-					{
-						sub.lodFaceList.Add( null );
-					}
-					//sub.lodFaceList.Resize(mesh.lodCount - 1);
-				}
-			}
+					for ( ushort j = 1; j < lodLevelCount; j++ )
+						sm.lodFaceList.Add( null );
 
+					//sm.lodFaceList.resize(pMesh->mNumLods-1);
+					}
+				}
+
+			MeshChunkID chunkId;
 			// Loop from 1 rather than 0 (full detail index is not in file)
-			for ( int i = 1; i < lodLevelCount; i++ )
+			for ( ushort i = 1; i < lodLevelCount; ++i )
 			{
-				chunkId = ReadChunk( reader );
+				chunkId = this.ReadChunk( reader );
 
 				if ( chunkId != MeshChunkID.MeshLODUsage )
-				{
-					throw new AxiomException( "Missing MeshLodUsage chunk in mesh '{0}'", mesh.Name );
-				}
+					throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", this.mesh.Name );
 
-				// camera depth
+				// Read depth
 				MeshLodUsage usage = new MeshLodUsage();
-				usage.Value = ReadFloat( reader );
-				usage.UserValue = Utility.Sqrt( usage.Value );
+				usage.UserValue = this.ReadFloat( reader );
 
-				if ( mesh.IsLodManual )
+				if ( this.mesh.IsLodManual )
 				{
-					ReadMeshLodUsageManual( reader, i, ref usage );
+					this.ReadMeshLodUsageManual( reader, i, ref usage );
 				}
-				else
+				else //(!pMesh->isLodManual)
 				{
-					ReadMeshLodUsageGenerated( reader, i, ref usage );
+					this.ReadMeshLodUsageGenerated( reader, i, ref usage );
 				}
+				usage.EdgeData = null;
 
-				// push lod usage onto the mesh lod list
-				mesh.MeshLodUsageList.Add( usage );
+				// Save usage
+				this.mesh.MeshLodUsageList.Add( usage );
 			}
-			Debug.Assert( mesh.LodLevelCount == lodLevelCount );
 		}
 
 		protected virtual void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
@@ -1579,7 +1587,6 @@ namespace Axiom.Serialization
 			mesh.IsEdgeListBuilt = true;
 		}
 
-
 		protected virtual void ReadPoses( BinaryReader reader )
 		{
 			if ( !IsEOF( reader ) )
@@ -1784,9 +1791,93 @@ namespace Axiom.Serialization
 	/// <summary>
 	/// Summary description for MeshSerializerImpl.
 	/// </summary>
-	public class MeshSerializerImplv13 : MeshSerializerImpl
+	public class MeshSerializerImplv14 : MeshSerializerImpl
 	{
+		#region Constructor
 
+		/// <summary>
+		///	Default constructor.
+		/// </summary>
+		public MeshSerializerImplv14()
+		{
+			version = "[MeshSerializer_v1.40]";
+		}
+
+		#endregion Constructor
+
+		#region Methods
+
+		protected override void ReadMeshLodInfo( BinaryReader reader )
+		{
+			MeshChunkID chunkId;
+
+			// number of lod levels
+			short lodLevelCount = ReadShort( reader );
+
+			// load manual?
+			mesh.IsLodManual = ReadBool( reader );
+
+			// preallocate submesh lod face data if not manual
+			if ( !mesh.IsLodManual )
+			{
+				for ( int i = 0; i < mesh.SubMeshCount; i++ )
+				{
+					SubMesh sub = mesh.GetSubMesh( i );
+
+					// TODO: Create typed collection and implement resize
+					for ( int j = 1; j < lodLevelCount; j++ )
+					{
+						sub.lodFaceList.Add( null );
+					}
+					//sub.lodFaceList.Resize(mesh.lodCount - 1);
+				}
+			}
+
+			// Loop from 1 rather than 0 (full detail index is not in file)
+			for ( int i = 1; i < lodLevelCount; i++ )
+			{
+				chunkId = ReadChunk( reader );
+
+				if ( chunkId != MeshChunkID.MeshLODUsage )
+				{
+					throw new AxiomException( "Missing MeshLodUsage chunk in mesh '{0}'", mesh.Name );
+				}
+
+				// camera depth
+				MeshLodUsage usage = new MeshLodUsage();
+				usage.Value = ReadFloat( reader );
+				usage.UserValue = Utility.Sqrt( usage.Value );
+
+				if ( mesh.IsLodManual )
+				{
+					ReadMeshLodUsageManual( reader, i, ref usage );
+				}
+				else
+				{
+					ReadMeshLodUsageGenerated( reader, i, ref usage );
+				}
+
+				// push lod usage onto the mesh lod list
+				mesh.MeshLodUsageList.Add( usage );
+			}
+			Debug.Assert( mesh.LodLevelCount == lodLevelCount );
+		}
+
+		protected override void WriteMeshLodSummary( BinaryWriter writer )
+		{
+			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
+			WriteShort( writer, (short)mesh.LodLevelCount );
+			WriteBool( writer, mesh.IsLodManual );
+		}
+
+		#endregion Methods
+	}
+
+	/// <summary>
+	/// Summary description for MeshSerializerImpl.
+	/// </summary>
+	public class MeshSerializerImplv13 : MeshSerializerImplv14
+	{
 		#region Constructor
 
 		/// <summary>

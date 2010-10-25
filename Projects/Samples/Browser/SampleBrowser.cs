@@ -321,12 +321,12 @@ namespace Axiom.Samples
 					case "Axiom DirectX9 Rendering Subsystem":
 						selectedRenderSystem = "DirectX9";
 						break;
-                    case "Axiom Xna Rendering Subsystem":
-                        selectedRenderSystem = "Xna";
-                        break;
-                    case "Axiom OpenGL (OpenTK) Rendering Subsystem":
-                        selectedRenderSystem = "OpenGL";
-                        break;
+					case "Axiom Xna Rendering Subsystem":
+						selectedRenderSystem = "Xna";
+						break;
+					case "Axiom OpenGL (OpenTK) Rendering Subsystem":
+						selectedRenderSystem = "OpenGL";
+						break;
 					default:
 						throw new NotImplementedException();
 				}
@@ -552,23 +552,23 @@ namespace Axiom.Samples
 					int h = int.Parse( vals[ 1 ].Remove( vals[ 1 ].IndexOf( '@' ) ) );
 					//RenderWindow.IsFullScreen = ...;
 					break;
-                case SIS.KeyCode.Key_R:
-                    if ( CurrentSample != null )
-                    {
-                        switch ( RenderWindow.GetViewport( 0 ).Camera.PolygonMode )
-                        {
-                            case PolygonMode.Points:
-                                RenderWindow.GetViewport( 0 ).Camera.PolygonMode = PolygonMode.Solid;
-                                break;
-                            case PolygonMode.Solid:
-                                RenderWindow.GetViewport( 0 ).Camera.PolygonMode = PolygonMode.Wireframe;
-                                break;
-                            case PolygonMode.Wireframe:
-                                RenderWindow.GetViewport( 0 ).Camera.PolygonMode = PolygonMode.Points;
-                                break;
-                        }
-                    }
-                    break;
+				case SIS.KeyCode.Key_R:
+					if ( CurrentSample != null )
+					{
+						switch ( RenderWindow.GetViewport( 0 ).Camera.PolygonMode )
+						{
+							case PolygonMode.Points:
+								RenderWindow.GetViewport( 0 ).Camera.PolygonMode = PolygonMode.Solid;
+								break;
+							case PolygonMode.Solid:
+								RenderWindow.GetViewport( 0 ).Camera.PolygonMode = PolygonMode.Wireframe;
+								break;
+							case PolygonMode.Wireframe:
+								RenderWindow.GetViewport( 0 ).Camera.PolygonMode = PolygonMode.Points;
+								break;
+						}
+					}
+					break;
 			}
 			try
 			{
