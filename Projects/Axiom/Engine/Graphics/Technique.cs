@@ -921,7 +921,7 @@ namespace Axiom.Graphics
 			// demand since it the illumination passes are only needed for additive shadows
 			// Now compile for categorized illumination, in case we need it later
 			//CompileIlluminationPasses();
-			return "";
+			return string.Empty;
 		}
 
 		/// <summary>

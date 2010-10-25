@@ -63,16 +63,19 @@ namespace Axiom.Graphics
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal GpuProgramManager()
+            : base()
 		{
-			if ( _instance == null )
+            if (_instance == null)
 			{
 				_instance = this;
-			}
 
 			// Loading order
 			LoadingOrder = 50.0f;
 			// Resource type
 			ResourceType = "GpuProgram";
+            }
+            else
+                throw new AxiomException("Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name);
 
 			// subclasses should register with resource group manager
 		}
@@ -355,7 +358,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

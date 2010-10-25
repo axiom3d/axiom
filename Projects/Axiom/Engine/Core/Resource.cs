@@ -755,6 +755,8 @@ namespace Axiom.Core
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
+
+            base.dispose(disposeManagedResources);
 		}
 
 

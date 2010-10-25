@@ -69,7 +69,8 @@ namespace Axiom.RenderSystems.Xna
 		public void Shutdown()
 		{
 			// nothing at the moment
-			//renderSystem.Shutdown();
+			renderSystem.Shutdown();
+            renderSystem = null;
 		}
 
 		#endregion Implementation of IPlugin

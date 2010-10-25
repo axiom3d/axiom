@@ -80,6 +80,7 @@ namespace Axiom.Animating
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public SkeletonManager()
+            : base()
 		{
 			LoadingOrder = 300.0f;
 			ResourceType = "Skeleton";
@@ -103,7 +104,7 @@ namespace Axiom.Animating
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

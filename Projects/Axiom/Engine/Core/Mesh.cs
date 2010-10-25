@@ -2836,11 +2836,34 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void unload()
 		{
+            // Dispose managed resources.
+            if (_skeleton != null)
+            {
+                if (!this.Skeleton.IsDisposed)
+                    this._skeleton.Dispose();
+
+                this._skeleton = null;
+            }
+
+            foreach (SubMesh subMesh in _subMeshList)
+            {
+                if (!subMesh.IsDisposed)
+                    subMesh.Dispose();
+            }
 			_subMeshList.Clear();
-			_sharedVertexData = null;
-			// TODO: SubMeshNameCount
-			// TODO: Remove LOD levels
+
+            if (this._sharedVertexData != null)
+            {
+                if (!this._sharedVertexData.IsDisposed)
+                    this._sharedVertexData.Dispose();
+
+                this._sharedVertexData = null;
+            }
+
 			_isPreparedForShadowVolumes = false;
+			
+            //// TODO: SubMeshNameCount
+            //// TODO: Remove LOD levels
 		}
 
 		#endregion Implementation of Resource
@@ -2853,20 +2876,14 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					// Dispose managed resources.
-					if ( _skeleton != null )
-						this._skeleton.Dispose();
-					foreach ( SubMesh subMesh in _subMeshList )
-					{
-						subMesh.Dispose();
+                    this.unload();
 					}
-					if ( this._sharedVertexData != null )
-						this._sharedVertexData.Dispose();
-				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
+
+            base.dispose(disposeManagedResources);
 		}
 
 
