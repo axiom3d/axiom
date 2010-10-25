@@ -17,7 +17,7 @@ namespace Axiom.Demos.Browser.Xna
         partial void _loadPlugins()
         {
 #if ( XBOX || XBOX360 )
-            ( new Axiom.ParticleFX.ParticleFX() ).Initialize();
+
 #endif
         }
 
