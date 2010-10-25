@@ -124,34 +124,34 @@ namespace Axiom.Demos
 			( (System.ComponentModel.ISupportInitialize)( this.picLogo ) ).BeginInit();
 			this.grpVideoOptions.SuspendLayout();
 			this.SuspendLayout();
-			//
+			// 
 			// picLogo
-			//
+			// 
 			this.picLogo.BackColor = System.Drawing.Color.White;
-			this.picLogo.Location = new System.Drawing.Point( 12, 3 );
+			this.picLogo.Location = new System.Drawing.Point( 3, 3 );
 			this.picLogo.Name = "picLogo";
-			this.picLogo.Size = new System.Drawing.Size( 420, 174 );
+			this.picLogo.Size = new System.Drawing.Size( 435, 131 );
 			this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.picLogo.TabIndex = 3;
 			this.picLogo.TabStop = false;
-			//
+			// 
 			// grpVideoOptions
-			//
+			// 
 			this.grpVideoOptions.Controls.Add( this.lblOption );
 			this.grpVideoOptions.Controls.Add( this.cboOptionValues );
 			this.grpVideoOptions.Controls.Add( this.lstOptions );
 			this.grpVideoOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.grpVideoOptions.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.grpVideoOptions.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.grpVideoOptions.Location = new System.Drawing.Point( 12, 215 );
+			this.grpVideoOptions.Location = new System.Drawing.Point( 12, 173 );
 			this.grpVideoOptions.Name = "grpVideoOptions";
 			this.grpVideoOptions.Size = new System.Drawing.Size( 420, 187 );
 			this.grpVideoOptions.TabIndex = 6;
 			this.grpVideoOptions.TabStop = false;
 			this.grpVideoOptions.Text = "Rendering System Options";
-			//
+			// 
 			// lblOption
-			//
+			// 
 			this.lblOption.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.lblOption.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblOption.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
@@ -162,84 +162,84 @@ namespace Axiom.Demos
 			this.lblOption.Text = "Option Name:";
 			this.lblOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.lblOption.Visible = false;
-			//
+			// 
 			// cboOptionValues
-			//
+			// 
 			this.cboOptionValues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboOptionValues.Font = new System.Drawing.Font( "Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboOptionValues.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
 			this.cboOptionValues.Location = new System.Drawing.Point( 238, 158 );
 			this.cboOptionValues.Name = "cboOptionValues";
-			this.cboOptionValues.Size = new System.Drawing.Size( 176, 24 );
+			this.cboOptionValues.Size = new System.Drawing.Size( 176, 22 );
 			this.cboOptionValues.TabIndex = 8;
 			this.cboOptionValues.Visible = false;
 			this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
-			//
+			// 
 			// lstOptions
-			//
-			this.lstOptions.ItemHeight = 14;
+			// 
+			this.lstOptions.ItemHeight = 15;
 			this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
 			this.lstOptions.Name = "lstOptions";
-			this.lstOptions.Size = new System.Drawing.Size( 407, 165 );
+			this.lstOptions.Size = new System.Drawing.Size( 407, 124 );
 			this.lstOptions.TabIndex = 0;
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-			//
+			// 
 			// lblRenderer
-			//
+			// 
 			this.lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.lblRenderer.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.lblRenderer.Location = new System.Drawing.Point( 10, 185 );
+			this.lblRenderer.Location = new System.Drawing.Point( 3, 143 );
 			this.lblRenderer.Name = "lblRenderer";
-			this.lblRenderer.Size = new System.Drawing.Size( 128, 24 );
+			this.lblRenderer.Size = new System.Drawing.Size( 135, 24 );
 			this.lblRenderer.TabIndex = 9;
 			this.lblRenderer.Text = "Rendering Subsystem:";
 			this.lblRenderer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			//
+			// 
 			// cboRenderSystems
-			//
+			// 
 			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboRenderSystems.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
+			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 143 );
 			this.cboRenderSystems.Name = "cboRenderSystems";
-			this.cboRenderSystems.Size = new System.Drawing.Size( 285, 24 );
+			this.cboRenderSystems.Size = new System.Drawing.Size( 285, 23 );
 			this.cboRenderSystems.TabIndex = 8;
 			this.cboRenderSystems.SelectedIndexChanged += new System.EventHandler( this.RenderSystems_SelectedIndexChanged );
-			//
+			// 
 			// cmdCancel
-			//
+			// 
 			this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point( 355, 408 );
+			this.cmdCancel.Location = new System.Drawing.Point( 355, 366 );
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size( 75, 23 );
 			this.cmdCancel.TabIndex = 10;
 			this.cmdCancel.Text = "Cancel";
 			this.cmdCancel.Click += new System.EventHandler( this.cmdCancel_Click );
-			//
+			// 
 			// cmdOk
-			//
+			// 
 			this.cmdOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.cmdOk.Location = new System.Drawing.Point( 261, 408 );
+			this.cmdOk.Location = new System.Drawing.Point( 261, 366 );
 			this.cmdOk.Name = "cmdOk";
 			this.cmdOk.Size = new System.Drawing.Size( 75, 23 );
 			this.cmdOk.TabIndex = 11;
 			this.cmdOk.Text = "Ok";
 			this.cmdOk.Click += new System.EventHandler( this.cmdOk_Click );
-			//
+			// 
 			// pnlBackground
-			//
+			// 
 			this.pnlBackground.BackColor = System.Drawing.Color.White;
 			this.pnlBackground.Location = new System.Drawing.Point( -2, 3 );
 			this.pnlBackground.Name = "pnlBackground";
-			this.pnlBackground.Size = new System.Drawing.Size( 446, 174 );
+			this.pnlBackground.Size = new System.Drawing.Size( 446, 131 );
 			this.pnlBackground.TabIndex = 12;
-			//
+			// 
 			// ConfigDialog
-			//
-			this.ClientSize = new System.Drawing.Size( 442, 436 );
+			// 
+			this.ClientSize = new System.Drawing.Size( 442, 401 );
 			this.ControlBox = false;
 			this.Controls.Add( this.cmdOk );
 			this.Controls.Add( this.cmdCancel );
@@ -291,10 +291,13 @@ namespace Axiom.Demos
 			Application.AddMessageFilter( this );
 			cmdOk.NotifyDefault( true );
 
-			foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
+			if ( Root.Instance != null )
 			{
-				LoadRenderSystemConfig( this, renderSystem );
-				cboRenderSystems.Items.Add( renderSystem );
+				foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
+				{
+					LoadRenderSystemConfig( this, renderSystem );
+					cboRenderSystems.Items.Add( renderSystem );
+				}
 			}
 
 			if ( cboRenderSystems.Items.Count > 0 )

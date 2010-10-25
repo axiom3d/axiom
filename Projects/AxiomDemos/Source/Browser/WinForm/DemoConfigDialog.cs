@@ -82,7 +82,7 @@ namespace Axiom.Demos
 			this.grpAvailableDemos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.grpAvailableDemos.Font = new System.Drawing.Font( "Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.grpAvailableDemos.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.grpAvailableDemos.Location = new System.Drawing.Point( 12, 408 );
+			this.grpAvailableDemos.Location = new System.Drawing.Point( 12, 365 );
 			this.grpAvailableDemos.Name = "grpAvailableDemos";
 			this.grpAvailableDemos.Size = new System.Drawing.Size( 420, 155 );
 			this.grpAvailableDemos.TabIndex = 7;
@@ -97,7 +97,7 @@ namespace Axiom.Demos
 
 			///
 			/// DemoConfigDialog
-			this.ClientSize = new System.Drawing.Size( 442, 595 );
+			this.ClientSize = new System.Drawing.Size( 442, 564 );
 			this.Controls.Add( grpAvailableDemos );
 
 		}
