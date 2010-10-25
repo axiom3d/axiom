@@ -44,7 +44,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem, Version=0.3.0.20005, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpInputSystem, Version=0.3.0.20113, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.dll</HintPath>
     </Reference>
@@ -72,6 +72,10 @@
     <Compile Include="SampleBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.csproj">
+      <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
+      <Name>Axiom.Framework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
@@ -103,14 +107,6 @@
     <ProjectReference Include="..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>

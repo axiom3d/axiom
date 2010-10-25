@@ -47,7 +47,7 @@ namespace Axiom.Samples.Smoke
 			Metadata[ "Description" ] = "Demonstrates depth-sorting of particles in particle systems.";
 			Metadata[ "Thumbnail" ] = "thumb_smoke.png";
 			Metadata[ "Category" ] = "Effects";
-			Metadata[ "Help" ] = "Proof that OGRE is just the hottest thing. Bleh. So there. ^_^";
+			Metadata[ "Help" ] = "Proof that Axiom is just the hottest thing. Bleh. So there. ^_^";
 		}
 
 		/// <summary>
