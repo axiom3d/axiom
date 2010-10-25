@@ -85,9 +85,8 @@ namespace Axiom.SceneManagers.Octree
 		///     Default constructor.
 		/// </summary>
 		public TerrainRenderable()
+            : this(string.Empty)
 		{
-			renderLevel = 1;
-			forcedRenderLevel = -1;
 		}
 
 		public TerrainRenderable( string name )
