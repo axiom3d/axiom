@@ -98,8 +98,8 @@
       <Name>Axiom.Framework.Xbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xbox.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
+      <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
+      <Name>Axiom.Xbox</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
