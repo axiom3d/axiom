@@ -458,6 +458,8 @@ namespace Axiom.Samples
 		{
 			SIS.ParameterList pl = new SIS.ParameterList();
 			pl.Add( new SIS.Parameter( "WINDOW", RenderWindow[ "WINDOW" ] ) );
+			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
+			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
 			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
 
 			CreateInputDevices();      // create the specific input devices

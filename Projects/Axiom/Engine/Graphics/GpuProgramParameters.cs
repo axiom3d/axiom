@@ -948,6 +948,12 @@ namespace Axiom.Graphics
 					case AutoConstantType.LightPowerScale:
 						SetConstant( entry.PhysicalIndex, source.GetLightPowerScale( entry.Data ) );
 						break;
+					case AutoConstantType.WorldMatrix:
+						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
+						break;
+					case AutoConstantType.ViewProjMatrix:
+						SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
+						break;
 				}
 			}
 		}
