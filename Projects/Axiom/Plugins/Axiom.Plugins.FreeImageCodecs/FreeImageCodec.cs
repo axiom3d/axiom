@@ -390,6 +390,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 								requiredFormat = PixelFormat.BYTE_RGB;
 							}
 						}
+						imageType = FI.FREE_IMAGE_TYPE.FIT_BITMAP;
 						break;
 					case PixelFormat.L8:
 					case PixelFormat.A8:
@@ -516,7 +517,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				int dstPitch = (int)FI.FreeImage.GetPitch( ret );
 				int srcPitch = imgData.width * PixelUtil.GetNumElemBytes( requiredFormat );
 				// Copy data, invert scanlines and respect FreeImage pitch
-				IntPtr pSrc = IntPtr.Zero;
+				IntPtr pSrc = srcDataPtr;
 				IntPtr pDest = FI.FreeImage.GetBits( ret );
 				unsafe
 				{
@@ -524,7 +525,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 					byte* byteDstData = (byte*)( pDest );
 					for ( int y = 0; y < imgData.height; y++ )
 					{
-						byteDstData = byteSrcData + ( imgData.height - y - 1 ) * srcPitch;
+						byteSrcData = byteSrcData + ( imgData.height - y - 1 ) * srcPitch;
 						Memory.Copy( pSrc, pDest, srcPitch );
 						byteDstData += dstPitch;
 					}
@@ -556,7 +557,6 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FreeImageEngine.Message += new FI.OutputMessageFunction( FreeImageSaveErrorHandler );
 
 			FI.FIBITMAP fiBitMap = Encode( input, codecData );
-
 			FI.FreeImage.Save( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiBitMap, fileName, FI.FREE_IMAGE_SAVE_FLAGS.DEFAULT );
 			FI.FreeImage.Unload( fiBitMap );
 		}
