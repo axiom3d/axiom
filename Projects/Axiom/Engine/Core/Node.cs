@@ -73,7 +73,7 @@ namespace Axiom.Core
 	///		e.g. SceneNode, Bone
 	///	</remarks>
 	///	<ogre headerVersion="1.39" sourceVersion="1.53" />
-	public abstract class Node : IRenderable
+	public abstract class Node : DisposableObject, IRenderable
 	{
 		#region Events
 
@@ -187,6 +187,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		public Node( string name )
+            : base()
 		{
 			this.name = name;
 
@@ -325,8 +326,13 @@ namespace Axiom.Core
 			CancelUpdate( child );
 			child.NotifyOfNewParent( null );
 
-			if ( removeFromInternalList )
-				childNodes.Remove( child.Name );
+            if (removeFromInternalList)
+            {
+                childNodes.Remove(child.Name);
+                
+                if (!child.IsDisposed)
+                    child.Dispose();
+            }
 		}
 
 		/// <summary>
@@ -1590,27 +1596,6 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
-
-		private bool _disposed = false;
-
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -1635,33 +1620,43 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
+                        if (!this.renderOperation.IsDisposed)
+                            this.renderOperation.Dispose();
+
 						renderOperation = null;
 					}
-					if ( this.nodeSubMesh != null )
-						this.nodeSubMesh.Dispose();
+
+                    if (this.nodeSubMesh != null)
+                    {
+                        if (!this.nodeSubMesh.IsDisposed)
+                            this.nodeSubMesh.Dispose();
+
+                        this.nodeSubMesh = null;
+                    }
+
+                    foreach (Node currentChild in this.childNodes.Values)
+                    {
+                        if (!currentChild.IsDisposed)
+                            currentChild.Dispose();
+                    }
+                    this.childNodes.Clear();
+                    this.childNodes = null;
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
-		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+            base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation

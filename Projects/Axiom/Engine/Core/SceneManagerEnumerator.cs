@@ -209,6 +209,8 @@ namespace Axiom.Core
 				{
 					fact.DestroyInstance( sm );
 					_instances.Remove( sm.Name );
+                    if (!sm.IsDisposed)
+                        sm.Dispose();
 				}
 			}
 
@@ -354,6 +356,8 @@ namespace Axiom.Core
 				}
 			}
 
+            if (!sm.IsDisposed)
+                sm.Dispose();
 		}
 
 		/// <summary>
@@ -407,8 +411,12 @@ namespace Axiom.Core
 		///</summary>
 		public void ShutdownAll()
 		{
-			foreach ( SceneManager instance in _instances.Values )
-				instance.ClearScene();
+            foreach (SceneManager instance in _instances.Values)
+            {
+                if (!instance.IsDisposed)
+                    instance.Dispose();
+            }
+            _instances.Clear();
 		}
 
 		#endregion Public Methods

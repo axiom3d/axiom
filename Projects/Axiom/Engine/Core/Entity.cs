@@ -85,7 +85,7 @@ namespace Axiom.Core
 	///		to associate them with a scene node.
 	///		</para>
 	/// </remarks>
-	public class Entity : MovableObject, IDisposable
+	public class Entity : MovableObject
 	{
 		#region Fields
 
@@ -1679,13 +1679,20 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-                    if (this.skeletonInstance != null)
-                    {
-                        if (!this.skeletonInstance.IsDisposed)
-                            this.skeletonInstance.Dispose();
+					if ( this.skeletonInstance != null )
+					{
+						if ( !this.skeletonInstance.IsDisposed )
+							this.skeletonInstance.Dispose();
 
-                        this.skeletonInstance = null;
-                    }
+						this.skeletonInstance = null;
+					}
+
+					foreach ( SubEntity se in this.subEntityList )
+					{
+						if ( !se.IsDisposed )
+							se.Dispose();
+					}
+					this.subEntityList.Clear();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -2546,15 +2553,56 @@ namespace Axiom.Core
 
 			#region Implementation of IDisposable
 
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="disposeManagedResources"></param>
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !isDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
 						if ( this.lightCap != null )
-							this.lightCap.Dispose();
+						{
+							if ( !this.lightCap.IsDisposed )
+								this.lightCap.Dispose();
+
+							this.lightCap = null;
+						}
+
+						if ( this.wBuffer != null )
+						{
+							if ( !this.wBuffer.IsDisposed )
+								this.wBuffer.Dispose();
+
+							this.wBuffer = null;
+						}
+
+						if ( this.positionBuffer != null )
+						{
+							if ( !this.positionBuffer.IsDisposed )
+								this.positionBuffer.Dispose();
+
+							this.positionBuffer = null;
+						}
+
+						if ( this.subEntity != null )
+						{
+							if ( !this.subEntity.IsDisposed )
+								this.subEntity.Dispose();
+
+							this.subEntity = null;
+						}
+
+						if ( this.currentVertexData != null )
+						{
+							if ( !this.currentVertexData.IsDisposed )
+								this.currentVertexData.Dispose();
+
+							this.currentVertexData = null;
+						}
 					}
 
 					// There are no unmanaged resources to release, but

@@ -112,7 +112,7 @@ namespace Axiom.Core
 	///	 </remarks>
 	/// TODO: Thoroughly review node removal/cleanup.
 	/// TODO: Review of method visibility/virtuality to ensure consistency.
-	public abstract class SceneManager
+	public abstract class SceneManager : DisposableObject
 	{
 		#region Fields
 
@@ -137,7 +137,7 @@ namespace Axiom.Core
 		protected static float oldFogEnd;
 		protected static FogMode oldFogMode;
 		protected static float oldFogStart;
-		protected static RenderOperation op = new RenderOperation();
+		protected static RenderOperation op;
 
 		/// <summary>The ambient color, cached from the RenderSystem</summary>
 		/// <remarks>Default to a semi-bright white (gray) light to prevent being null</remarks>
@@ -709,6 +709,7 @@ namespace Axiom.Core
 		#region Constructors
 
 		public SceneManager( string name )
+			: base()
 		{
 			this.cameraList = new CameraCollection();
 			this.sceneNodeList = new SceneNodeCollection();
@@ -751,13 +752,49 @@ namespace Axiom.Core
 			this.shadowUseInfiniteFarPlane = true;
 		}
 
-		~SceneManager()
-		{
-			this.ClearScene();
-			this.RemoveAllCameras();
-		}
-
 		#endregion Constructors
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					this.ClearScene();
+					this.RemoveAllCameras();
+
+					if ( op != null )
+					{
+						if ( !op.IsDisposed )
+							op.Dispose();
+
+						op = null;
+					}
+
+					if ( this.autoParamDataSource != null )
+					{
+						if ( !this.autoParamDataSource.IsDisposed )
+							this.autoParamDataSource.Dispose();
+
+						this.autoParamDataSource = null;
+					}
+
+					if ( this.rootSceneNode != null )
+					{
+						if ( !this.rootSceneNode.IsDisposed )
+							this.rootSceneNode.Dispose();
+
+						this.rootSceneNode = null;
+					}
+				}
+			}
+
+			base.dispose( disposeManagedResources );
+		}
 
 		#region Virtual methods
 
@@ -1079,6 +1116,12 @@ namespace Axiom.Core
 			// Delete all SceneNodes, except root that is
 			if ( this.sceneNodeList != null )
 			{
+				foreach ( SceneNode currentNode in this.sceneNodeList.Values )
+				{
+					if ( !currentNode.IsDisposed )
+						currentNode.Dispose();
+				}
+
 				this.sceneNodeList.Clear();
 			}
 
@@ -3284,6 +3327,9 @@ namespace Axiom.Core
 				foreach ( Camera cam in this.cameraList.Values )
 				{
 					this.targetRenderSystem.NotifyCameraRemoved( cam );
+
+					if ( !cam.IsDisposed )
+						cam.Dispose();
 				}
 
 				// clear the list
@@ -5105,7 +5151,9 @@ namespace Axiom.Core
 				TextureManager.Instance.Remove( shadowTex.Name );
 				// destroy texture
 				// TODO: Should I really destroy this texture here?
-				shadowTex.Dispose();
+				if ( !shadowTex.IsDisposed )
+					shadowTex.Dispose();
+
 				this.DestroyCamera( this.shadowTextureCameras[ i ] );
 			}
 			this.shadowTextures.Clear();
@@ -5116,6 +5164,9 @@ namespace Axiom.Core
 		{
 			cameraList.Remove( camera.Name );
 			this.targetRenderSystem.NotifyCameraRemoved( camera );
+
+			if ( !camera.IsDisposed )
+				camera.Dispose();
 		}
 
 		/// <summary>
@@ -5129,6 +5180,9 @@ namespace Axiom.Core
 			foreach ( Camera camera in this.cameraList.Values )
 			{
 				this.targetRenderSystem.NotifyCameraRemoved( camera );
+
+				if ( !camera.IsDisposed )
+					camera.Dispose();
 			}
 
 			this.cameraList.Clear();

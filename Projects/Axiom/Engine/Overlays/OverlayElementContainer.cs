@@ -116,6 +116,38 @@ namespace Axiom.Overlays
 
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    foreach (OverlayElement currentChild in children.Values)
+                    {
+                        if (!currentChild.IsDisposed)
+                            currentChild.Dispose();
+                    }
+                    children.Clear();
+                    children = null;
+
+                    foreach (OverlayElement currentChild in childContainers.Values)
+                    {
+                        if (!currentChild.IsDisposed)
+                            currentChild.Dispose();
+                    }
+                    childContainers.Clear();
+                    childContainers = null;
+
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
 		/// <summary>
 		///    Adds another OverlayElement to this container.
 		/// </summary>
@@ -231,7 +263,6 @@ namespace Axiom.Overlays
 
 			return zOrder;
 		}
-
 
 		public override void NotifyWorldTransforms( Matrix4[] xform )
 		{

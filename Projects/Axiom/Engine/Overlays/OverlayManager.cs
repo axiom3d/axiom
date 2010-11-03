@@ -226,12 +226,14 @@ namespace Axiom.Overlays
 			if ( !_overlays.ContainsValue( overlay ) )
 			{
 				LogManager.Instance.Write( "Overlay '" + overlay.Name + "' not found to destroy." );
-				overlay.Dispose();
+                if (!overlay.IsDisposed)
+				    overlay.Dispose();
 				return;
 			}
 
 			_overlays.Remove( overlay.Name );
-			overlay.Dispose();
+            if (!overlay.IsDisposed)
+			    overlay.Dispose();
 		}
 
 		/// <summary>
@@ -241,7 +243,8 @@ namespace Axiom.Overlays
 		{
 			foreach ( KeyValuePair<string, Overlay> entry in _overlays )
 			{
-				entry.Value.Dispose();
+                if (!entry.Value.IsDisposed)
+				    entry.Value.Dispose();
 			}
 			_overlays.Clear();
 		}

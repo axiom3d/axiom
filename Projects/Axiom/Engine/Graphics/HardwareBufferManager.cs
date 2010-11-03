@@ -562,22 +562,33 @@ namespace Axiom.Graphics
                         buffer.Dispose();
                     }
                     vertexDeclarations.Clear();
+                    vertexDeclarations = null;
 
+                    foreach (VertexBufferBinding bind in vertexBufferBindings)
+                    {
+                        if (!bind.IsDisposed)
+                            bind.Dispose();
+                    }
                     vertexBufferBindings.Clear();
+                    vertexBufferBindings = null;
 
                     // destroy all vertex buffers
                     foreach (HardwareBuffer buffer in vertexBuffers)
                     {
-                        buffer.Dispose();
+                        if (!buffer.IsDisposed)
+                            buffer.Dispose();
                     }
                     vertexBuffers.Clear();
+                    vertexBuffers = null;
 
                     // destroy all index buffers
                     foreach (HardwareBuffer buffer in indexBuffers)
                     {
-                        buffer.Dispose();
+                        if (!buffer.IsDisposed)
+                            buffer.Dispose();
                     }
                     indexBuffers.Clear();
+                    indexBuffers = null;
 
                     instance = null;
                 }
@@ -590,13 +601,17 @@ namespace Axiom.Graphics
 		public void DisposeVertexBuffer( HardwareBuffer buffer )
 		{
 			vertexBuffers.Remove( buffer );
-			buffer.Dispose();
+            
+            if (!buffer.IsDisposed)
+			    buffer.Dispose();
 		}
 
 		public void DisposeIndexBuffer( HardwareBuffer buffer )
 		{
 			indexBuffers.Remove( buffer );
-			buffer.Dispose();
+
+            if (!buffer.IsDisposed)
+			    buffer.Dispose();
 		}
 
 		/// <summary>

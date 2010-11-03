@@ -269,7 +269,6 @@ namespace Axiom.Overlays
 
 		protected void Initialize()
 		{
-
 			// add 2d elements
 			for ( int i = 0; i < elementList.Count; i++ )
 			{
@@ -278,6 +277,41 @@ namespace Axiom.Overlays
 			}
 			this.isInitialised = true;
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    //dispose 2D elements
+                    for (int i = 0; i < elementList.Count; i++)
+                    {
+                        OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+
+                        if (!container.IsDisposed)
+                            container.Dispose();
+                    }
+
+                    elementList.Clear();
+                    elementLookup.Clear();
+
+                    if (this.rootNode != null)
+                    {
+                        if (!this.rootNode.IsDisposed)
+                            this.rootNode.Dispose();
+
+                        this.rootNode = null;
+                    }
+                }
+            }
+            base.dispose(disposeManagedResources);
+        }
+
 		/// <summary>
 		///    Internal method to put the overlay contents onto the render queue.
 		/// </summary>
@@ -364,7 +398,8 @@ namespace Axiom.Overlays
 			}
 			return ret;
 		}
-		/// <summary>
+	
+        /// <summary>
 		///    Gets a child container of this overlay by name.
 		/// </summary>
 		/// <param name="name"></param>

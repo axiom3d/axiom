@@ -48,7 +48,7 @@ namespace Axiom.ParticleSystems
 	/// <param name="renderer">Target particle system renderer.</param>
 	delegate void ParticleSystemRendererAttributeParser( string[] values, ParticleSystemRenderer renderer );
 
-	public abstract class ParticleSystemRenderer
+	public abstract class ParticleSystemRenderer : DisposableObject
 	{
 		/// Constructor
 		public ParticleSystemRenderer()
@@ -209,6 +209,13 @@ namespace Axiom.ParticleSystems
 
 	public class ParticleSystemRendererFactory : AbstractFactory<ParticleSystemRenderer>
 	{
+        public override void DestroyInstance(ref ParticleSystemRenderer obj)
+        {
+            if (!obj.IsDisposed)
+                obj.Dispose();
+
+            //base.DestroyInstance(ref obj);
+        }
 	}
 
 }

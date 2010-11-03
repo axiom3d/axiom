@@ -65,13 +65,40 @@ namespace Axiom.ParticleSystems
 		BillboardSet billboardSet;
 
 		public BillboardParticleRenderer()
+            : base()
 		{
-			billboardSet = new BillboardSet( "", 0, true );
+			billboardSet = new BillboardSet( string.Empty, 0, true );
 			billboardSet.SetBillboardsInWorldSpace( true );
 
 			// TODO: Is this the right way to do this?
 			RegisterParsers();
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.billboardSet != null)
+                    {
+                        if (!this.billboardSet.IsDisposed)
+                            this.billboardSet.Dispose();
+
+                        this.billboardSet = null;
+                    }
+
+                    this.attribParsers.Clear();
+
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
 
 		#region Attribute Parsers
 		[ParserCommand( "billboard_type", PARTICLE )]
@@ -467,11 +494,6 @@ namespace Axiom.ParticleSystems
 		public override ParticleSystemRenderer CreateInstance( string name )
 		{
 			return new BillboardParticleRenderer();
-		}
-
-		/// @copydoc FactoryObj::destroyInstance
-		public override void DestroyInstance( ref ParticleSystemRenderer inst )
-		{
 		}
 
 		#endregion IParticleSystemRendererFactory Members

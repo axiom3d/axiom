@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -47,7 +48,7 @@ namespace Axiom.Graphics
 	/// <remarks>
 	///		This class contains
 	/// </remarks>
-	public class RenderOperation
+	public class RenderOperation : DisposableObject
 	{
 		#region Member variables
 
@@ -81,9 +82,41 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public RenderOperation()
+            : base()
 		{
 		}
 
 		#endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.vertexData != null)
+                    {
+                        if (!this.vertexData.IsDisposed)
+                            this.vertexData.Dispose();
+
+                        this.vertexData = null;
+                    }
+
+                    if (this.indexData != null)
+                    {
+                        if (!this.indexData.IsDisposed)
+                            this.indexData.Dispose();
+
+                        this.indexData = null;
+                    }
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
 	}
 }

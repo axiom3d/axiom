@@ -175,6 +175,10 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -184,13 +188,14 @@ namespace Axiom.Graphics
 					// Dispose managed resources.
 					if ( this.bindingMap != null )
 					{
-						foreach ( KeyValuePair<short, HardwareVertexBuffer> item in bindingMap )
+						foreach ( HardwareVertexBuffer item in bindingMap.Values )
 						{
-							item.Value.Dispose();
+                            if (!item.IsDisposed)
+							    item.Dispose();
 						}
 						bindingMap.Clear();
+                        bindingMap = null;
 					}
-					bindingMap = null;
 				}
 
 				// There are no unmanaged resources to release, but
