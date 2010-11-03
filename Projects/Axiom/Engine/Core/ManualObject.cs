@@ -226,6 +226,29 @@ namespace Axiom.Core
 
 		#region Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    foreach (ShadowRenderable current in shadowRenderables)
+                    {
+                        if (!current.IsDisposed)
+                            current.Dispose();
+                    }
+                    shadowRenderables.Clear();
+                    shadowRenderables = null;
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
 		/// <summary>
 		/// Delete temp buffers and reset init counts
 		/// </summary>
@@ -1728,6 +1751,7 @@ namespace Axiom.Core
 														VertexData vertexData,
 														bool createSeparateLightCap,
 														bool isLightCap )
+                : base()
 			{
 				this.parent = parent;
 				// Initialise render op
@@ -1837,13 +1861,34 @@ namespace Axiom.Core
 
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !isDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
-						if ( this.lightCap != null )
-							this.lightCap.Dispose();
+                        if (this.lightCap != null)
+                        {
+                            if (!this.lightCap.IsDisposed)
+                                this.lightCap.Dispose();
+
+                            this.lightCap = null;
+                        }
+
+                        if (this.positionBuffer != null)
+                        {
+                            if (!this.positionBuffer.IsDisposed)
+                                this.positionBuffer.Dispose();
+
+                            this.positionBuffer = null;
+                        }
+
+                        if (this.wBuffer != null)
+                        {
+                            if (!this.wBuffer.IsDisposed)
+                                this.wBuffer.Dispose();
+
+                            this.wBuffer = null;
+                        }
 					}
 
 					// There are no unmanaged resources to release, but
@@ -1878,6 +1923,7 @@ namespace Axiom.Core
 		public new const string TypeName = "ManualObject";
 
 		public ManualObjectFactory()
+            : base()
 		{
 			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;

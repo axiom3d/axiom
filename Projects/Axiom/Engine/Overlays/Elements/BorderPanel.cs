@@ -131,6 +131,29 @@ namespace Axiom.Overlays.Elements
 
 		#region Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.renderOp2 != null)
+                    {
+                        if (!this.renderOp2.IsDisposed)
+                            this.renderOp2.Dispose();
+
+                        this.renderOp2 = null;
+                    }
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
 		protected override void UpdateTextureGeometry()
 		{
 			base.UpdateTextureGeometry();

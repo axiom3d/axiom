@@ -530,14 +530,12 @@ namespace Axiom.Fonts
 		{
 			if ( _material != null )
 			{
-				MaterialManager.Instance.Remove( _material );
 				_material.Unload();
 				_material = null;
 			}
 
 			if ( _texture != null )
 			{
-				TextureManager.Instance.Remove( _texture );
 				_texture.Unload();
 				_texture = null;
 			}

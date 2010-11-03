@@ -68,7 +68,7 @@ namespace Axiom.Core
 	///		CreateEntity.
 	///		</para>
 	/// </remarks>
-	public class SubEntity : IRenderable
+	public class SubEntity : DisposableObject, IRenderable
 	{
 		#region Fields
 
@@ -146,6 +146,7 @@ namespace Axiom.Core
 		///		Internal constructor, only allows creation of SubEntities within the engine core.
 		/// </summary>
 		internal SubEntity()
+            : base()
 		{
 			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
@@ -767,27 +768,6 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
-
-		private bool _disposed = false;
-
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -812,33 +792,43 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
-						renderOperation = null;
+                        if (!this.renderOperation.IsDisposed)
+                            this.renderOperation.Dispose();
+
+						this.renderOperation = null;
 					}
-					if ( this.subMesh != null )
-						this.subMesh.Dispose();
+
+                    if (this.skelAnimVertexData != null)
+                    {
+                        if (!this.skelAnimVertexData.IsDisposed)
+                            this.skelAnimVertexData.Dispose();
+
+                        this.skelAnimVertexData = null;
+                    }
+                    
+                    if (this.subMesh != null)
+                    {
+                        if (!this.subMesh.IsDisposed)
+                            this.subMesh.Dispose();
+
+                        this.subMesh = null;
+                    }
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
-		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+            base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation

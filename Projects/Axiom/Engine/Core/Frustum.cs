@@ -2112,18 +2112,44 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation = null;
+                        if (!this.renderOperation.IsDisposed)
+                            this.renderOperation.Dispose();
+
+						this.renderOperation = null;
 					}
-					if ( _vertexData != null )
-						_vertexData.Dispose();
+
+                    if (_vertexData != null)
+                    {
+                        if (!_vertexData.IsDisposed)
+                            _vertexData.Dispose();
+
+                        _vertexData = null;
+                    }
+
+                    if (this._material != null)
+                    {
+                        if (!this._material.IsDisposed)
+                            this._material.Dispose();
+
+                        this._material = null;
+                    }
+
+                    foreach (Light currentLight in dummyLightList)
+                    {
+                        if (!currentLight.IsDisposed)
+                            currentLight.Dispose();
+                    }
+                    dummyLightList.Clear();
+
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
+
+            base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation

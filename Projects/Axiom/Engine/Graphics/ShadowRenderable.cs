@@ -58,7 +58,7 @@ namespace Axiom.Graphics
 	///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry
 	///		should come from one buffer if possible)
 	/// </remarks>
-	public abstract class ShadowRenderable : IRenderable
+	public abstract class ShadowRenderable : DisposableObject, IRenderable
 	{
 		#region Fields and Properties
 
@@ -283,28 +283,6 @@ namespace Axiom.Graphics
 		#endregion IRenderable Members
 
 		#region IDisposable Implementation
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -329,31 +307,35 @@ namespace Axiom.Graphics
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
+                        if (!this.renderOperation.IsDisposed)
+                            this.renderOperation.Dispose();
+
 						renderOperation = null;
 					}
+
+                    if (this.material != null)
+                    {
+                        if (!this.material.IsDisposed)
+                            this.material.Dispose();
+
+                        this.material = null;
+                    }
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
-		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+            base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation

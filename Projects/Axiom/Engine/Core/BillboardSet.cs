@@ -203,9 +203,32 @@ namespace Axiom.Core
 			this.SetTextureStacksAndSlices( 1, 1 );
 		}
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.renderOperation != null)
+                    {
+                        if (!this.renderOperation.IsDisposed)
+                            this.renderOperation.Dispose();
+
+                        this.renderOperation = null;
+                    }
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
+        #region Methods
 
 		/// <summary>
 		///     Generate the vertices for all the billboards relative to the camera
@@ -1926,6 +1949,7 @@ namespace Axiom.Core
 		public new const string TypeName = "BillboardSet";
 
 		public BillboardSetFactory()
+			: base()
 		{
 			base.Type = BillboardSetFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
@@ -1965,11 +1989,6 @@ namespace Axiom.Core
 			bSet.MovableType = TypeName;
 
 			return bSet;
-		}
-
-		public override void DestroyInstance( ref MovableObject obj )
-		{
-			obj = null;
 		}
 	}
 

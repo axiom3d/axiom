@@ -818,7 +818,19 @@ namespace Axiom.Animating
 		{
 			// clear the internal lists
 			animationList.Clear();
+
+            foreach (Bone currentBone in this.boneList.Values)
+            {
+                if (!currentBone.IsDisposed)
+                    currentBone.Dispose();
+            }
 			boneList.Clear();
+
+            foreach (Bone currentBone in this.namedBoneList.Values)
+            {
+                if (!currentBone.IsDisposed)
+                    currentBone.Dispose();
+            }
 			namedBoneList.Clear();
 
 			//base.Unload();

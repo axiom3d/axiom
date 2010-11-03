@@ -386,12 +386,8 @@ namespace Axiom.Core
 		///	Protected unnamed constructor to prevent default construction.
 		/// </summary>
 		protected Resource()
+            : this(null, string.Empty, 0, string.Empty, false, null)
 		{
-			_creator = null;
-			_handle = 0;
-			_size = 0;
-			_isManuallyLoaded = false;
-			_loader = null;
 		}
 
 		/// <overloads>
@@ -422,7 +418,7 @@ namespace Axiom.Core
 		///     IManualResourceLoader instance is strongly recommended.
 		/// </param>
 		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: this()
+            : base()
 		{
 			_creator = parent;
 			_name = name;

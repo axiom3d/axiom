@@ -157,12 +157,30 @@ namespace Axiom.Graphics
 				usage = BufferUsage.StaticWriteOnly;
 		}
 
-		~HardwareBuffer()
-		{
-			dispose( false );
-		}
-
 		#endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.shadowBuffer != null)
+                    {
+                        if (!this.shadowBuffer.IsDisposed)
+                            this.shadowBuffer.Dispose();
+
+                        this.shadowBuffer = null;
+                    }
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
 
 		#region Methods
 

@@ -2876,7 +2876,8 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-                    this.unload();
+                    if (this.IsLoaded)
+                        this.unload();
 				}
 
 				// There are no unmanaged resources to release, but

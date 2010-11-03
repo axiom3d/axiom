@@ -106,6 +106,29 @@ namespace Axiom.Overlays.Elements
 
 		#region Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.font != null)
+                    {
+                        if (!font.IsDisposed)
+                            font.Dispose();
+
+                        font = null;
+                    }
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
 		/// <summary>
 		///    
 		/// </summary>

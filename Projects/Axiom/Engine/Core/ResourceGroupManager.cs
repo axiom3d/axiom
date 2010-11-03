@@ -1031,6 +1031,7 @@ namespace Axiom.Core
 					if ( !reloadableOnly || res.IsReloadable )
 					{
 						res.Unload();
+                        res.Dispose();
 					}
 				}
 			}

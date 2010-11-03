@@ -234,6 +234,10 @@ namespace Axiom.ParticleSystems
 			RegisterParsers();
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -249,13 +253,18 @@ namespace Axiom.ParticleSystems
 					RemoveAllAffectors();
 
 					DestroyVisualParticles( 0, particlePool.Count );
-					if ( renderer != null )
+					
+                    if ( renderer != null )
 					{
-						// renderer.Dispose();
+                        if (!renderer.IsDisposed)
+                            renderer.Dispose();
+
 						renderer = null;
 					}
 				}
 			}
+
+            base.dispose(disposeManagedResources);
 		}
 
 		/// <summary>
@@ -288,8 +297,8 @@ namespace Axiom.ParticleSystems
 
 		public void RemoveAllEmitters()
 		{
-			// foreach (ParticleEmitter emitter in emitterList)
-			//      ParticleSystemManager.Instance.DestroyEmitter(emitter);
+            //foreach (ParticleEmitter emitter in emitterList)
+            //    ParticleSystemManager.Instance.DestroyEmitter(emitter);
 			emitterList.Clear();
 		}
 
