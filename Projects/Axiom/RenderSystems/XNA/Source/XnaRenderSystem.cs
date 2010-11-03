@@ -1805,15 +1805,14 @@ namespace Axiom.RenderSystems.Xna
 						//Bind Vertex Program
 						if ( !VertexShaderIsSet )
 						{
-							_device.VertexShader = ( (XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate ).VertexShader;
+							BindGpuProgram( _fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate );
 							BindGpuProgramParameters( GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params );
 							needToUnmapVS = true;
-
 						}
 						// Bind Fragment Program 
 						if ( !PixelShaderIsSet )
 						{
-							_device.PixelShader = ( (XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate ).PixelShader;
+							BindGpuProgram( _fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate );
 							BindGpuProgramParameters( GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params );
 							needToUnmapFS = true;
 						}

@@ -3,7 +3,7 @@ vertex_program RobotVP hlsl
 {
    source RobotVP.hlsl
    entry_point hardwareSkinningOneWeight_vp
-   target vs_1_1
+   target vs_2_0
    includes_skeletal_animation true
 }
 

@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	/// Usually you will get better performance if you use the PP and not the FFP shader emulation.
 	/// The second common use for this class is to generate the base code for a new shader.
 	/// </remarks>
-	class FixedFunctionState
+	class FixedFunctionState: IComparable<FixedFunctionState>
 	{
 		#region Fields and Properties
 
@@ -153,5 +153,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		#endregion
+
+		public int CompareTo( FixedFunctionState other )
+		{
+			return this.GetHashCode() - other.GetHashCode();
+		}
 	}
 }

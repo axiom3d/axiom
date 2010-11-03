@@ -951,9 +951,9 @@ namespace Axiom.Graphics
 					case AutoConstantType.WorldMatrix:
 						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
 						break;
-					case AutoConstantType.ViewProjMatrix:
-						SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
-						break;
+					//case AutoConstantType.ViewProjMatrix:
+					//    SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
+					//    break;
 				}
 			}
 		}
