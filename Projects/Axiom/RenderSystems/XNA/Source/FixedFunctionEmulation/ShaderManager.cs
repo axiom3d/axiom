@@ -38,6 +38,7 @@ using System.Collections.Generic;
 
 using Axiom.Graphics;
 using Axiom.Core;
+using System.Collections;
 
 #endregion Namespace Declarations
 
@@ -59,7 +60,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator>
 		{
 		}
-		protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms>
+
+		protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Hashtable /* SortedDictionary<VertexBufferDeclaration, FixedFunctionPrograms> */
 		{
 			public new FixedFunctionPrograms this[ VertexBufferDeclaration key ]
 			{
@@ -69,7 +71,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					{
 						Add( key, null );
 					}
-					return base[ key ];
+					return (FixedFunctionPrograms)base[ key ];
 				}
 				set
 				{
@@ -81,7 +83,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 		}
 
-		protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap>
+		protected class State2Declaration2ProgramsMap : Hashtable /* SortedDictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap>*/
 		{
 			public new VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
 			{
@@ -91,12 +93,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					{
 						Add( key, new VertexBufferDeclaration2FixedFunctionProgramsMap() );
 					}
-					return base[ key ];
+					return (VertexBufferDeclaration2FixedFunctionProgramsMap)base[ key ];
 				}
 			}
 		}
 
-		protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap>
+		protected class Language2State2Declaration2ProgramsMap : Hashtable /* SortedDictionary<String, State2Declaration2ProgramsMap>*/
 		{
 			public new State2Declaration2ProgramsMap this[ String key ]
 			{
@@ -106,7 +108,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					{
 						Add( key, new State2Declaration2ProgramsMap() );
 					}
-					return base[ key ];
+					return (State2Declaration2ProgramsMap)base[ key ];
 				}
 			}
 		}
@@ -151,22 +153,35 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
 		{
+			/*
 			// Search the maps for a matching program
-			State2Declaration2ProgramsMap languageMaps;
-			language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
+			State2Declaration2ProgramsMap languageMaps = null;
+			//language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
+			//if ( language2State2Declaration2ProgramsMap.ContainsKey( generatorName ) )
+			languageMaps = language2State2Declaration2ProgramsMap[ generatorName ];
 			if ( languageMaps != null )
 			{
-				VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
-				languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
+				VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps = null;
+				//				languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
+				//if ( languageMaps.ContainsKey( state ) )
+				fixedFunctionStateMaps = languageMaps[ state ];
 				if ( fixedFunctionStateMaps != null )
 				{
-					FixedFunctionPrograms programs;
-					fixedFunctionStateMaps.TryGetValue( vertexBufferDeclaration, out programs );
+					FixedFunctionPrograms programs = null;
+					//fixedFunctionStateMaps.TryGetValue( vertexBufferDeclaration, out programs );
+					//if ( fixedFunctionStateMaps.ContainsKey( vertexBufferDeclaration ) )
+					programs = fixedFunctionStateMaps[ vertexBufferDeclaration ];
 					if ( programs != null )
 					{
 						return programs;
 					}
 				}
+			}
+			*/
+			FixedFunctionPrograms programs = language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ];
+			if ( programs != null )
+			{
+				return programs;
 			}
 			// If we are here, then one did not exist.
 			// Create it.
