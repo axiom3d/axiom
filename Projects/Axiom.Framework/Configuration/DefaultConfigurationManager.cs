@@ -145,6 +145,11 @@ namespace Axiom.Framework.Configuration
 				throw new AxiomException( "At least one RenderSystem must be loaded." );
 			}
 
+			if ( this.ConfigurationSection == null )
+			{
+				return false;
+			}
+
 			if ( engine.RenderSystems.ContainsKey( this.ConfigurationSection.RenderSystems.DefaultRenderSystem ) )
 			{
 				engine.RenderSystem = engine.RenderSystems[ this.ConfigurationSection.RenderSystems.DefaultRenderSystem ];
@@ -180,19 +185,23 @@ namespace Axiom.Framework.Configuration
 		/// <param name="engine"></param>
 		public override void SaveConfiguration( Root engine )
 		{
+			SaveConfiguration( engine, engine.RenderSystem.Name );
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="engine"></param>
+		/// <param name="defaultRenderer"></param>
+		public override void SaveConfiguration( Root engine, string defaultRenderer )
+		{
 			for ( int index = 0; index < this.ConfigurationSection.RenderSystems.Count; index++ )
 			{
 				this.ConfigurationSection.RenderSystems.Remove( this.ConfigurationSection.RenderSystems[ 0 ] );
 			}
 
-			string rsName = string.Empty;
 			foreach ( var key in engine.RenderSystems.Keys )
 			{
-				if ( engine.RenderSystems[ key ] == engine.RenderSystem )
-				{
-					rsName = key;
-				}
-
 				this.ConfigurationSection.RenderSystems.Add( new RenderSystem
 				{
 					Name = key,
@@ -209,8 +218,8 @@ namespace Axiom.Framework.Configuration
 				}
 			}
 
-			if ( rsName != this.ConfigurationSection.RenderSystems.DefaultRenderSystem )
-				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = rsName;
+			if ( defaultRenderer != this.ConfigurationSection.RenderSystems.DefaultRenderSystem )
+				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
 
 			this.Configuration.Save( ConfigurationSaveMode.Modified );
 		}

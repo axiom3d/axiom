@@ -83,6 +83,13 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="engine"></param>
+		/// <param name="defaultRenderer"></param>
+		public abstract void SaveConfiguration( Root engine, string defaultRenderer );
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public abstract bool ShowConfigDialog( Root engine );
 
 		#endregion IConfigurationManager Implementation

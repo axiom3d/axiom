@@ -22,11 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 using System.Globalization;
 using System.Security.Permissions;
 using System.Threading;
+using Axiom.Core;
 using Axiom.Framework.Exceptions;
 
 namespace Axiom.Samples
@@ -36,22 +37,32 @@ namespace Axiom.Samples
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
+#if !(XBOX || XBOX360)
 		[STAThread]
-		static void Main()
+#endif
+        static void Main()
 		{
 			try
 			{
-				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
+#if !(XBOX || XBOX360)
+                Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
 				using ( SampleBrowser sb = new SampleBrowser() )
+#else
+                using (SampleBrowser sb = new XBox.SampleBrowser())
+#endif
 				{
 					sb.Go();
 				}
 			}
 			catch ( Exception ex )
 			{
+#if !(XBOX || XBOX360)
 				IErrorDialog messageBox = new WinFormErrorDialog();
 				messageBox.Show( ex );
-			}
+#else
+                Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
+#endif
+            }
 
 		}
 	}

@@ -580,7 +580,7 @@ namespace Axiom.Core
 		///		a bit on these flags is set, will it be included in a query asking for that flag. The
 		///		meaning of the bits is application-specific.
 		/// </remarks>
-		public uint QueryFlags
+		public virtual uint QueryFlags
 		{
 			get
 			{

@@ -8,8 +8,8 @@
     <ProjectGuid>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OctreeZone</RootNamespace>
-    <AssemblyName>OctreeZone</AssemblyName>
+    <RootNamespace>Axiom.Plugins.OctreeZone</RootNamespace>
+    <AssemblyName>Axiom.Plugins.OctreeZone</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

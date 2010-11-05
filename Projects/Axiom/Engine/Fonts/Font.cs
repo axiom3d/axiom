@@ -744,22 +744,22 @@ namespace Axiom.Fonts
 			tex.LoadImages( images );
 			FT.FT_Done_FreeType( ftLibrary );
 
-			img.Save( "C:\\" + Name + ".png" );
-			FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
-			StreamWriter str = new StreamWriter( file );
-			str.WriteLine( Name );
-			str.WriteLine( "{" );
-			str.WriteLine( "\ttype\timage" );
-			str.WriteLine( "\tsource\t{0}.png\n", Name );
+            //img.Save( "C:\\" + Name + ".png" );
+            //FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
+            //StreamWriter str = new StreamWriter( file );
+            //str.WriteLine( Name );
+            //str.WriteLine( "{" );
+            //str.WriteLine( "\ttype\timage" );
+            //str.WriteLine( "\tsource\t{0}.png\n", Name );
 
-			for ( uint i = 0; i < (uint)( END_CHAR - START_CHAR ); i++ )
-			{
-				char c = (char)( i + START_CHAR );
-				str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
-			}
-			str.WriteLine( "}" );
-			str.Close();
-			file.Close();
+            //for ( uint i = 0; i < (uint)( END_CHAR - START_CHAR ); i++ )
+            //{
+            //    char c = (char)( i + START_CHAR );
+            //    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
+            //}
+            //str.WriteLine( "}" );
+            //str.Close();
+            //file.Close();
 
 #endif
 		}

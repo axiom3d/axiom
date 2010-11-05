@@ -62,6 +62,7 @@
     <None Include="Archives\skybox.zip" />
     <None Include="Materials\Aurora.material" />
     <None Include="Materials\BumpyMetal.material" />
+    <None Include="Materials\CloudySkyBox.material" />
     <None Include="Materials\EveningSkyBox.material" />
     <None Include="Materials\Droplet.material" />
     <None Include="Materials\Examples-DynTex.material" />

@@ -26,71 +26,53 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System.IO;
-
-using Axiom.Core;
-
-using ResourceHandle = System.UInt64;
-using DX = SlimDX;
-using D3D = SlimDX.Direct3D9;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
 	/// <summary>
-	/// Specialized Include Handler for DX
+	/// Shader optimization level
 	/// </summary>
-	public class HLSLIncludeHandler : D3D.Include
+	public enum OptimizationLevel
 	{
-		protected Resource program;
-
 		/// <summary>
-		/// Creates a new instance of <see cref="HLSLIncludeHandler"/>
+		/// Default optimization - no optimization in debug mode, LevelOne in release
 		/// </summary>
-		/// <param name="sourceProgram"></param>
-		public HLSLIncludeHandler( Resource sourceProgram )
-		{
-			this.program = sourceProgram;
-		}
-
+		[ScriptEnum( "default" )]
+		Default,
 		/// <summary>
-		/// Opens a requested include file
+		/// No optimization
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="fileName"></param>
-		/// <param name="fileStream"></param>
-		public void Open( D3D.IncludeType type, string fileName, out Stream fileStream )
-		{
-			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-		}
-
+		[ScriptEnum( "none" )]
+		None,
 		/// <summary>
-		/// Opens a requested include file
+		/// Optimization level 0
 		/// </summary>
-		/// <param name="includeType"></param>
-		/// <param name="fileName"></param>
-		/// <param name="parentStream"></param>
-		/// <param name="stream"></param>
-		public void Open( D3D.IncludeType includeType, string fileName, Stream parentStream, out Stream stream )
-		{
-			stream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-		}
-
+		[ScriptEnum( "0" )]
+		LevelZero,
 		/// <summary>
-		/// Closes the include file
+		/// Optimization level 1
 		/// </summary>
-		/// <param name="fileStream"></param>
-		public void Close( Stream fileStream )
-		{
-			fileStream.Close();
-		}
+		[ScriptEnum( "1" )]
+		LevelOne,
+		/// <summary>
+		/// Optimization level 2
+		/// </summary>
+		[ScriptEnum( "2" )]
+		LevelTwo,
+		/// <summary>
+		/// Optimization level 3
+		/// </summary>
+		[ScriptEnum( "3" )]
+		LevelThree
 	}
 }
