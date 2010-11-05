@@ -89,12 +89,14 @@
     </Compile>
     <Compile Include="Configuration\ConfigurationDialogFactory.cs" />
     <Compile Include="Configuration\ConfigurationManagerBase.cs" />
+    <Compile Include="Configuration\ConfigurationManagerFactory.cs" />
     <Compile Include="Configuration\DefaultConfigurationDialogFactory.cs" />
     <Compile Include="Configuration\DefaultConfigurationManager.cs" />
     <Compile Include="Configuration\DialogResult.cs" />
     <Compile Include="Configuration\IConfigurationDialog.cs" />
     <Compile Include="Configuration\IConfigurationDialogFactory.cs" />
     <Compile Include="Configuration\IConfigurationManager.cs" />
+    <Compile Include="Configuration\XBoxConfigurationManager.cs" />
     <Compile Include="Exceptions\IErrorDialog.cs" />
     <Compile Include="Configuration\WinFormConfigurationDialog.cs">
       <SubType>Form</SubType>

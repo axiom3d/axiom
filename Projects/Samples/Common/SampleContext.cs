@@ -236,7 +236,8 @@ namespace Axiom.Samples
 
 				this.Root.StartRendering(); // start the render loop
 
-				ConfigurationManager.SaveConfiguration( Root );
+				ConfigurationManager.SaveConfiguration( Root, this.NextRenderer );
+
 				Shutdown();
 				if ( this.Root != null )
 					this.Root.Dispose();
@@ -330,10 +331,12 @@ namespace Axiom.Samples
 			// manually call sample callback to ensure correct order
 			if ( CurrentSample != null && !this.IsSamplePaused )
 				CurrentSample.WindowResized( rw );
-
-			SIS.MouseState ms = this.Mouse.MouseState;
-			ms.Width = rw.Width;
-			ms.Height = rw.Height;
+			if ( Mouse != null )
+			{
+				SIS.MouseState ms = this.Mouse.MouseState;
+				ms.Width = rw.Width;
+				ms.Height = rw.Height;
+			}
 		}
 
 		// window event callbacks which manually call their respective sample callbacks to ensure correct order
@@ -458,8 +461,10 @@ namespace Axiom.Samples
 		{
 			SIS.ParameterList pl = new SIS.ParameterList();
 			pl.Add( new SIS.Parameter( "WINDOW", RenderWindow[ "WINDOW" ] ) );
+#if !(XBOX || XBOX360 )
 			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
 			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+#endif
 			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
 
 			CreateInputDevices();      // create the specific input devices
@@ -474,11 +479,13 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void CreateInputDevices()
 		{
+#if !(XBOX || XBOX360 )
 			this.Keyboard = this.InputManager.CreateInputObject<SIS.Keyboard>( true, "" );
 			this.Mouse = this.InputManager.CreateInputObject<SIS.Mouse>( true, String.Empty );
 
 			this.Keyboard.EventListener = this;
 			this.Mouse.EventListener = this;
+#endif
 		}
 
 		/// <summary>
@@ -590,8 +597,10 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void CaptureInputDevices()
 		{
-			this.Keyboard.Capture();
-			this.Mouse.Capture();
+			if ( this.Keyboard != null )
+				this.Keyboard.Capture();
+			if ( this.Mouse != null )
+				this.Mouse.Capture();
 		}
 
 		/// <summary>

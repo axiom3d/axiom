@@ -539,12 +539,31 @@ namespace Axiom.Core
 		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( string name )
 		{
-			foreach ( MovableObject obj in this.objectList.Values )
+			if ( this.objectList.ContainsKey( name ) )
 			{
-				if ( obj.Name == name )
-					return obj;
+				return this.objectList[ name ];
 			}
+
 			throw new IndexOutOfRangeException( "Invalid key specified." );
+		}
+
+		/// <summary>
+		/// Returns a movable object attached to this node by index. Node that this method
+		/// is O(n), whereas the string overload of this method is O(1). Use the string
+		/// version of this method if speed is important.
+		/// </summary>
+		/// <param name="name">The name of the object to return.</param>
+		/// <returns>MovableObject if found. Throws exception of not found.</returns>
+		public MovableObject GetObject( int index )
+		{
+			int i = 0;
+			foreach ( MovableObject mo in this.objectList.Values )
+			{
+				if ( i == index )
+					return mo;
+				i++;
+			}
+			throw new IndexOutOfRangeException( "Invalid index specified." );
 		}
 
 		/// <summary>

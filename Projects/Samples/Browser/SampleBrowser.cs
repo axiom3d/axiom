@@ -70,7 +70,7 @@ namespace Axiom.Samples
 		int childIndex = 0;
 
 		public SampleBrowser()
-			: base( new DefaultConfigurationManager() )
+			: base( ConfigurationManagerFactory.CreateDefault() )
 		{
 			LastSampleIndex = -1;
 		}
@@ -249,8 +249,9 @@ namespace Axiom.Samples
 						CategoryMenu.SelectItem( LastViewCategory );
 						SampleMenu.SelectItem( LastViewTitle );
 					}
-					catch ( Exception e )
+					catch ( Exception )
 					{
+						// swallowing Exception on purpose
 					}
 				}
 			}
@@ -464,7 +465,7 @@ namespace Axiom.Samples
 					{
 						optionMenu.SelectItem( it.Value );
 					}
-					catch ( Exception e )
+					catch ( Exception )
 					{
 						optionMenu.AddItem( it.Value );
 						optionMenu.SelectItem( it.Value );
@@ -549,7 +550,11 @@ namespace Axiom.Samples
 					Configuration.ConfigOption option = Root.RenderSystem.ConfigOptions[ "Video Mode" ];
 					string[] vals = option.Value.Split( 'x' );
 					int w = int.Parse( vals[ 0 ] );
+#if !(XBOX || XBOX360)
 					int h = int.Parse( vals[ 1 ].Remove( vals[ 1 ].IndexOf( '@' ) ) );
+#else
+					int h = int.Parse(vals[1].Remove(vals[1].IndexOf('@'), 1));
+#endif
 					//RenderWindow.IsFullScreen = ...;
 					break;
 				case SIS.KeyCode.Key_R:
@@ -577,7 +582,9 @@ namespace Axiom.Samples
 			catch ( Exception ex )
 			{
 				RunSample( null );
-				TrayManager.ShowOkDialog( "Error!", ex.ToString() + "\nSource: " + ex.InnerException );
+				string msg = ex.Message + "\nSource: " + ex.InnerException;
+				LogManager.Instance.Write( "[Samples] Error! " + msg );
+				TrayManager.ShowOkDialog( "Error!", msg );
 			}
 			return true;
 		}
@@ -612,7 +619,9 @@ namespace Axiom.Samples
 			catch ( Exception ex )
 			{
 				RunSample( null );
-				TrayManager.ShowOkDialog( "Error!", ex.Message + "\nSource: " + ex.Source );
+				string msg = ex.Message + "\nSource: " + ex.InnerException;
+				LogManager.Instance.Write( "[Samples] Error! " + msg );
+				TrayManager.ShowOkDialog( "Error!", msg );
 			}
 			return true;
 		}
@@ -635,7 +644,9 @@ namespace Axiom.Samples
 			catch ( Exception ex )
 			{
 				RunSample( null );
-				TrayManager.ShowOkDialog( "Error!", ex.Message + "\nSource: " + ex.Source );
+				string msg = ex.Message + "\nSource: " + ex.InnerException;
+				LogManager.Instance.Write( "[Samples] Error! " + msg );
+				TrayManager.ShowOkDialog( "Error!", msg );
 			}
 			return true;
 		}
@@ -664,7 +675,9 @@ namespace Axiom.Samples
 			catch ( Exception ex )   // show error and fall back to menu
 			{
 				RunSample( null );
-				TrayManager.ShowOkDialog( "Error!", ex.Message + "\nSource: " + ex.Source );
+				string msg = ex.Message + "\nSource: " + ex.InnerException;
+				LogManager.Instance.Write( "[Samples] Error! " + msg );
+				TrayManager.ShowOkDialog( "Error!", msg );
 			}
 
 			return true;
@@ -776,9 +789,10 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		protected virtual Sample LoadSamples()
 		{
-			Sample startupSample = null;
-			string dir = "./samples";
+			string dir = "../samples";
 			SampleSet samples = new SampleSet();
+
+			PluginManager.Instance.LoadDirectory( dir );
 
 			foreach ( IPlugin plugin in PluginManager.Instance.InstalledPlugins )
 			{

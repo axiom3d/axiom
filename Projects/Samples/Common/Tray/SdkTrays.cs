@@ -677,7 +677,13 @@ namespace Axiom.Samples
 		/// </summary>
 		public void RefreshCursor()
 		{
-			cursor.SetPosition( Mouse.MouseState.X.Absolute, Mouse.MouseState.Y.Absolute );
+            int cursorX = 0, cursorY = 0;
+            if (Mouse != null)
+            { 
+                cursorX = Mouse.MouseState.X.Absolute;
+                cursorY = Mouse.MouseState.Y.Absolute;
+            }
+            cursor.SetPosition( cursorX , cursorY );
 		}
 
 		/// <summary>

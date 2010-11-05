@@ -107,9 +107,11 @@ namespace Axiom.Core
 		{
 			this.creator = creator;
 
+			this.queryMask = 0xFFFFFFFF;
+
 			// default type mask to everything except lights & fx (previous behaviour)
 			this.queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
-
+ 
 			// default to no world fragments queried
 			AddWorldFragmentType( WorldFragmentType.None );
 		}

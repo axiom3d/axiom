@@ -82,16 +82,23 @@ namespace Axiom.Math
 		{
 		}
 
-		///// <summary>
-		/////		Converts degrees to radians.
-		///// </summary>
-		///// <param name="degrees"></param>
-		///// <returns></returns>
-		//public static Radian DegreesToRadians( Degree degrees )
-		//{
-		//    return degrees;
-		//}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="aabb"></param>
+		/// <returns></returns>
+		public static Real BoundingRadiusFromAABB( AxisAlignedBox aabb )
+		{
+			Vector3 max = aabb.Maximum;
+			Vector3 min = aabb.Minimum;
 
+			Vector3 magnitude = max;
+			magnitude.Ceil( -max );
+			magnitude.Ceil( min );
+			magnitude.Ceil( -min );
+
+			return magnitude.Length;
+		}
 
 		/// <summary>
 		///		Converts radians to degrees.
@@ -1150,6 +1157,102 @@ namespace Axiom.Math
 			Contract.RequiresNotNull( sphere, "sphere" );
 
 			return Utility.Abs( plane.Normal.Dot( sphere.Center ) ) <= sphere.Radius;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="box"></param>
+		/// <param name="d1"></param>
+		/// <param name="d2"></param>
+		/// <returns></returns>
+		public static Tuple<bool, Real, Real> Intersect( Ray ray, AxisAlignedBox box )
+		{
+			if ( box.IsNull )
+				return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+
+			if ( box.IsInfinite )
+			{
+				return new Tuple<bool, Real, Real>( true, Real.NaN, Real.PositiveInfinity );
+			}
+
+			Vector3 min = box.Minimum;
+			Vector3 max = box.Maximum;
+			Vector3 rayorig = ray.origin;
+			Vector3 rayDir = ray.Direction;
+
+			Vector3 absDir = Vector3.Zero;
+			absDir[ 0 ] = Abs( rayDir[ 0 ] );
+			absDir[ 1 ] = Abs( rayDir[ 1 ] );
+			absDir[ 2 ] = Abs( rayDir[ 2 ] );
+
+			// Sort the axis, ensure check minimise floating error axis first
+			int imax = 0, imid = 1, imin = 2;
+			if ( absDir[ 0 ] < absDir[ 2 ] )
+			{
+				imax = 2;
+				imin = 0;
+			}
+			if ( absDir[ 1 ] < absDir[ imin ] )
+			{
+				imid = imin;
+				imin = 1;
+			}
+			else if ( absDir[ 1 ] > absDir[ imax ] )
+			{
+				imid = imax;
+				imax = 1;
+			}
+
+			Real start = 0, end = Real.PositiveInfinity;
+			// Check each axis in turn
+
+			if ( !CalcAxis( imax, rayDir, rayorig, min, max, ref end, ref start ) )
+				return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+
+			if ( absDir[ imid ] < Real.Epsilon )
+			{
+				// Parallel with middle and minimise axis, check bounds only
+				if ( rayorig[ imid ] < min[ imid ] || rayorig[ imid ] > max[ imid ] ||
+					rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
+					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+			}
+			else
+			{
+				if ( !CalcAxis( imid, rayDir, rayorig, min, max, ref end, ref start ) )
+					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+
+				if ( absDir[ imin ] < Real.Epsilon )
+				{
+					// Parallel with minimise axis, check bounds only
+					if ( rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
+						return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+				}
+				else
+				{
+					if ( !CalcAxis( imin, rayDir, rayorig, min, max, ref end, ref start ) )
+						return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+				}
+			}
+			return new Tuple<bool, Real, Real>( true, start, end );
+		}
+
+		private static bool CalcAxis( int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max, ref Real end, ref Real start )
+		{
+			Real denom = 1 / raydir[ i ];
+			Real newstart = ( min[ i ] - rayorig[ i ] ) * denom;
+			Real newend = ( max[ i ] - rayorig[ i ] ) * denom;
+			if ( newstart > newend )
+				Swap<Real>( ref newstart, ref newend );
+			if ( newstart > end || newend < start )
+				return false;
+			if ( newstart > start )
+				start = newstart;
+			if ( newend < end )
+				end = newend;
+
+			return true;
 		}
 
 		/// <summary>
