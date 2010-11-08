@@ -1014,6 +1014,40 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
+		///     Create MovableText, 3D floating text which can me moved around your scene
+		/// </summary>
+		/// <param name="name">
+		///     The name to be given to the object (must be unique).
+		/// </param>
+		/// <param name="caption">
+		/// The text tyo display
+		/// </param>
+		/// <param name="fontName">
+		/// The font to use for the text, must be already loaded as a resource.
+		/// </param>
+		public MovableText CreateMovableText( string name, string caption, string fontName )
+		{
+			return (MovableText)this.CreateMovableObject( name, MovableTextFactory.TypeName, new NamedParameterList() { { "caption", caption }, { "fontName", fontName } } );
+		}
+
+		/// <summary>
+		///     Retrieves the named MovableText.
+		/// </summary>
+		/// <param name="name">
+		///     The name of the object to retrieve.
+		/// </param>
+		/// <returns>
+		///     An instance of MovablText.
+		/// </returns>
+		/// <exception cref="AxiomException">
+		///     Thrown if the names does not exists in the collection.
+		/// </exception>
+		public MovableText GetMovableText( string name )
+		{
+			return (MovableText)this.GetMovableObject( name, MovableTextFactory.TypeName );
+		}
+
+		/// <summary>
 		///     Create a ManualObject, an object which you populate with geometry
 		///     manually through a GL immediate-mode style interface.
 		/// </summary>
