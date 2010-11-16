@@ -341,26 +341,41 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
+                        if (!this.renderOperation.IsDisposed)
+                            this.renderOperation.Dispose();
+
 						renderOperation = null;
 					}
-					if ( indexData != null )
-						indexData.Dispose();
-					if ( vertexData != null )
-						vertexData.Dispose();
+
+                    if (indexData != null)
+                    {
+                        if (!this.indexData.IsDisposed)
+                            indexData.Dispose();
+
+                        this.indexData = null;
+                    }
+                    
+                    if (vertexData != null)
+                    {
+                        if (!this.vertexData.IsDisposed)
+                            vertexData.Dispose();
+
+                        this.vertexData = null;
+                    }
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
+
+            base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation

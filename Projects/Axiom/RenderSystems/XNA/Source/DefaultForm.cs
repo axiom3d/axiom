@@ -54,14 +54,31 @@ namespace Axiom.RenderSystems.Xna
 		private RenderWindow renderWindow;
 
 		public DefaultForm()
+            : base()
 		{
 			InitializeComponent();
 		}
 
+        protected override void Dispose(bool disposing)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposing)
+                {
+                    this.renderWindow = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
 		protected override void WndProc( ref SWF.Message m )
 		{
-			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
-				base.WndProc( ref m );
+            if (this.renderWindow != null)
+            {
+                if (!Win32MessageHandling.WndProc(renderWindow, ref m))
+                    base.WndProc(ref m);
+            }
 		}
 
 		private void InitializeComponent()

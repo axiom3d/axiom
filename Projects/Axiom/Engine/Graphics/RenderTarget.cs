@@ -117,7 +117,7 @@ namespace Axiom.Graphics
 	///		render target could be a window on a screen, or another
 	///		offscreen surface like a render texture.
 	///	</remarks>
-	public abstract class RenderTarget : IDisposable
+	public abstract class RenderTarget : DisposableObject
 	{
 		#region Enumerations and Structures
 
@@ -351,7 +351,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isActive && !isDisposed;
+				return _isActive && !this.IsDisposed;
 			}
 			set
 			{
@@ -475,11 +475,13 @@ namespace Axiom.Graphics
 		#endregion Fields and Properties
 
 		public RenderTarget()
+            : base()
 		{
 
 		}
 
 		public RenderTarget( string name )
+            : base()
 		{
 			_name = name;
 		}
@@ -1052,27 +1054,6 @@ namespace Axiom.Graphics
 		#endregion Methods
 
 		#region IDisposable Implementation
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -1097,38 +1078,28 @@ namespace Axiom.Graphics
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Delete viewports
-					while ( _viewportList.Count > 0 )
-					{
-						Viewport vp = _viewportList.Values[ 0 ];
-						OnViewportRemoved( vp );
-						this._viewportList.Remove( vp.ZOrder );
-					}
+                    if (_viewportList != null)
+                    {
+                        this.RemoveAllViewports();
+                        _viewportList = null;
+                    }
+
+
 					// Write final performance stats
 					if ( LogManager.Instance != null )
 						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 				}
 			}
-			isDisposed = true;
-		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+            base.dispose(disposeManagedResources);
 		}
-
-		~RenderTarget()
-		{
-			dispose( false );
-		}
-
 		#endregion IDisposable Implementation
 
 	}

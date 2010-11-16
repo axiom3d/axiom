@@ -52,9 +52,8 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Base class for classes that iterate over the vertices in a mesh
 	/// </summary>
-	public class AnyBuilder : IDisposable
+	public class AnyBuilder : DisposableObject
 	{
-
 		#region Fields
 
 		/// <summary>
@@ -277,14 +276,27 @@ namespace Axiom.Graphics
 		#endregion Methods
 
 		#region IDisposable Implementation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    foreach (SoftwareIndexBuffer buf in customIndexBufferList)
+                    {
+                        SoftwareBufferManager.Instance.DisposeIndexBuffer(buf);
+                    }
+                    this.customIndexBufferList.Clear();
+                    this.customIndexBufferList = null;
+                }
+            }
 
-		public void Dispose()
-		{
-			foreach ( SoftwareIndexBuffer buf in customIndexBufferList )
-			{
-				SoftwareBufferManager.Instance.DisposeIndexBuffer( buf );
-			}
-		}
+            base.dispose(disposeManagedResources);
+        }
 
 		#endregion
 

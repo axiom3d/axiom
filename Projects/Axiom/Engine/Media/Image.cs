@@ -34,11 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
-using System.Diagnostics;
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -65,7 +64,7 @@ namespace Axiom.Media
 	///    image data decoding themselves by the means of locating the correct 
 	///    ICodec implementation for each data type.
 	/// </remarks>
-	public class Image : IDisposable
+	public class Image : DisposableObject
 	{
 		#region Fields and Properties
 
@@ -239,14 +238,9 @@ namespace Axiom.Media
 		#region Construction and Destruction
 
 		public Image()
+            : base()
 		{
 		}
-
-		~Image()
-		{
-			dispose( false );
-		}
-
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -901,27 +895,6 @@ namespace Axiom.Media
 		#endregion Methods
 
 		#region IDisposable Implementation
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -947,9 +920,9 @@ namespace Axiom.Media
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -966,15 +939,9 @@ namespace Axiom.Media
 				bufPtr = IntPtr.Zero;
 				buffer = null;
 			}
-			isDisposed = true;
-		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+            base.dispose(disposeManagedResources);
 		}
-
 		#endregion IDisposable Implementation
 	}
 }

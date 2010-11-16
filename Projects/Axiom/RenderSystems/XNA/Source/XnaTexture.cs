@@ -523,10 +523,9 @@ namespace Axiom.RenderSystems.Xna
 
 					// Call internal LoadImages, not LoadImage since that's external and
 					// will determine load status etc again
-					LoadImages( new Image[]
-							{
-								Image.FromStream( stream, ext )
-							} );
+					var image = Image.FromStream( stream, ext );
+					LoadImages( new Image[] { image } );
+					image.Dispose();
 				}
 
 				stream.Close();
@@ -570,7 +569,8 @@ namespace Axiom.RenderSystems.Xna
 					for ( int i = 0; i < 6; i++ )
 					{
 						Stream strm = ResourceGroupManager.Instance.OpenResource( cubeFaceNames[ i ], Group, true, this );
-						images.Add( Image.FromStream( strm, ext ) );
+						var image = Image.FromStream( strm, ext );
+						images.Add( image );
 						strm.Close();
 					}
 

@@ -1113,12 +1113,26 @@ namespace Axiom.Core
 				ResourceGroupManager.Instance.Dispose();
 			}
 
+			if (CodecManager.Instance != null)
+			{
+				if (!CodecManager.Instance.IsDisposed)
+					CodecManager.Instance.Dispose();
+			}
+
 #if !XBOX360
 			if ( PlatformManager.Instance != null )
 			{
 				PlatformManager.Instance.Dispose();
 			}
 #endif
+
+			this.activeRenderSystem = null;
+
+			if ( WindowEventMonitor.Instance != null )
+			{
+				WindowEventMonitor.Instance.Dispose();
+			}
+
 			if ( ObjectManager.Instance != null )
 			{
 				ObjectManager.Instance.Dispose();

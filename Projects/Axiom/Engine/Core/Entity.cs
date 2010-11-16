@@ -2627,6 +2627,7 @@ namespace Axiom.Core
 		public new const string TypeName = "Entity";
 
 		public EntityFactory()
+            : base()
 		{
 			base.Type = EntityFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
@@ -2657,12 +2658,6 @@ namespace Axiom.Core
 			Entity ent = new Entity( name, pMesh );
 			ent.MovableType = this.Type;
 			return ent;
-		}
-
-		public override void DestroyInstance( ref MovableObject obj )
-		{
-			( (Entity)obj ).Dispose();
-			obj = null;
 		}
 	}
 

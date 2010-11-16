@@ -35,12 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Configuration;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Xml;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -49,7 +46,7 @@ namespace Axiom.Core
 	/// <summary>
 	/// Summary description for PluginManager.
 	/// </summary>
-	public class PluginManager : IDisposable
+	public class PluginManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -62,6 +59,7 @@ namespace Axiom.Core
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal PluginManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -213,15 +211,22 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		public void Dispose()
-		{
-			if ( instance != null )
-			{
-				instance = null;
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (instance != null)
+                    {
+                        UnloadAll();
+                        instance = null;
+                    }
+                }
+            }
 
-				UnloadAll();
-			}
-		}
+            base.dispose(disposeManagedResources);
+        }
 
 		#endregion IDisposable Implementation
 	}

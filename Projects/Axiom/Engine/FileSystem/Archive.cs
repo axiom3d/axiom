@@ -98,7 +98,7 @@ namespace Axiom.FileSystem
 	/// <ogre name="FileInfo">
 	///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
-	public abstract class Archive : IDisposable
+	public abstract class Archive : DisposableObject
 	{
 		#region Fields and Properties
 
@@ -180,15 +180,11 @@ namespace Axiom.FileSystem
 		/// <param name="name"></param>
 		/// <param name="archType"></param>
 		public Archive( string name, string archType )
+            : base()
 		{
 			_name = name;
 			_type = archType;
 			_isReadOnly = true;
-		}
-
-		~Archive()
-		{
-			dispose( false );
 		}
 
 		#endregion Constructors
@@ -369,28 +365,6 @@ namespace Axiom.FileSystem
 		#endregion Methods
 
 		#region IDisposable Implementation
-
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -415,9 +389,9 @@ namespace Axiom.FileSystem
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -427,16 +401,11 @@ namespace Axiom.FileSystem
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
+
+            base.dispose(disposeManagedResources);
 		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
-
-		#endregion IDisposable Implementation
+        #endregion IDisposable Implementation
 	}
 
 	/// <summary>

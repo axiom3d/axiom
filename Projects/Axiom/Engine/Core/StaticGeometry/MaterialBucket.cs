@@ -55,7 +55,7 @@ namespace Axiom.Core
 		/// A MaterialBucket is a collection of smaller buckets with the same 
 		/// Material (and implicitly the same LOD).
 		/// </summary>
-		public class MaterialBucket : IDisposable
+		public class MaterialBucket : DisposableObject
 		{
 			#region Fields and Properties
 
@@ -112,6 +112,7 @@ namespace Axiom.Core
 			#region Constructors
 
 			public MaterialBucket( LODBucket parent, string materialName )
+                : base()
 			{
 				this.parent = parent;
 				this.materialName = materialName;
@@ -220,10 +221,42 @@ namespace Axiom.Core
 			/// <summary>
 			///     Dispose the geometry buckets
 			/// </summary>
-			public virtual void Dispose()
+			protected override void  dispose(bool disposeManagedResources)
 			{
-				foreach ( GeometryBucket gbucket in geometryBucketList )
-					gbucket.Dispose();
+                if (!this.IsDisposed)
+                {
+                    if (disposeManagedResources)
+                    {
+                        if (geometryBucketList != null)
+                        {
+                            foreach (GeometryBucket gbucket in geometryBucketList)
+                            {
+                                if (!gbucket.IsDisposed)
+                                    gbucket.Dispose();
+                            }
+                            geometryBucketList.Clear();
+                            geometryBucketList = null;
+                        }
+
+                        if (this.parent != null)
+                        {
+                            if (!this.parent.IsDisposed)
+                                this.parent.Dispose();
+
+                            this.parent = null;
+                        }
+
+                        if (this.material != null)
+                        {
+                            if (!this.material.IsDisposed)
+                                this.material.Dispose();
+
+                            this.material = null;
+                        }
+                    }
+                }
+
+                base.dispose(disposeManagedResources);
 			}
 
 			#endregion

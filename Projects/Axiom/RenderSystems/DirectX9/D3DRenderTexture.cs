@@ -145,7 +145,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

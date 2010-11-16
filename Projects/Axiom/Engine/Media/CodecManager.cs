@@ -46,7 +46,7 @@ namespace Axiom.Media
 	/// <summary>
 	///    Manages registering/fulfilling requests for codecs that handle various types of media.
 	/// </summary>
-	public sealed class CodecManager : IDisposable
+	public sealed class CodecManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -59,6 +59,7 @@ namespace Axiom.Media
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal CodecManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -79,13 +80,18 @@ namespace Axiom.Media
 
 		#endregion Singleton implementation
 
-		public void Dispose()
-		{
-			if ( instance == this )
-			{
-				instance = null;
-			}
-		}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    instance = null;
+                }
+            }
+
+            base.dispose(disposeManagedResources);
+        }
 
 		#region Fields
 
