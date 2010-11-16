@@ -252,13 +252,12 @@ namespace Axiom.Core
 			: base( name )
 		{
 
-			if ( name == "" )
+			if (string.IsNullOrEmpty(name))
 				throw new AxiomException( "Trying to create MovableText without name." );
-			if ( caption == "" )
+			if (string.IsNullOrEmpty(caption))
 				throw new AxiomException( "Trying to create MovableText without caption." );
 
-			//this.name = name;
-			_caption = caption;
+            _caption = caption;
 			_characterHeight = charHeight;
 			_color = color;
 			_timeUntilNextToggle = 0;

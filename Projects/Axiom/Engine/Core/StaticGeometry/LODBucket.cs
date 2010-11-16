@@ -57,7 +57,7 @@ namespace Axiom.Core
 		/// LOD refers to Mesh LOD here. Material LOD can change separately
 		/// at the next bucket down from this.
 		/// </remarks>
-		public class LODBucket : IDisposable
+		public class LODBucket : DisposableObject
 		{
 			#region Fields and Properties
 
@@ -104,6 +104,7 @@ namespace Axiom.Core
 			#region Constructors
 
 			public LODBucket( Region parent, ushort lod, float lodDist )
+                : base()
 			{
 				this.parent = parent;
 				this.lod = lod;
@@ -175,11 +176,27 @@ namespace Axiom.Core
 			/// <summary>
 			///     Dispose the material buckets
 			/// </summary>
-			public virtual void Dispose()
-			{
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
-					mbucket.Dispose();
-			}
+            protected override void dispose(bool disposeManagedResources)
+            {
+                if (!this.IsDisposed)
+                {
+                    if (disposeManagedResources)
+                    {
+                        if (materialBucketMap != null)
+                        {
+                            foreach (MaterialBucket mbucket in materialBucketMap.Values)
+                            {
+                                if (!mbucket.IsDisposed)
+                                    mbucket.Dispose();
+                            }
+                            materialBucketMap.Clear();
+                            materialBucketMap = null;
+                        }
+                    }
+                }
+
+                base.dispose(disposeManagedResources);
+            }
 
 			#endregion
 		}

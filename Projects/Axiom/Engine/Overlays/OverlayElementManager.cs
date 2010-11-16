@@ -34,12 +34,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Diagnostics;
-
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Overlays.Elements;
-using System.Collections.Generic;
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -60,7 +57,7 @@ namespace Axiom.Overlays
 	///    OverlayElementManager's job is to manage the lifecycle of OverlayElement (subclass)
 	///    instances, and also to register plugin suppliers of new components.
 	/// </remarks>
-	public sealed class OverlayElementManager : IDisposable
+	public sealed class OverlayElementManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -73,6 +70,7 @@ namespace Axiom.Overlays
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal OverlayElementManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -398,11 +396,18 @@ namespace Axiom.Overlays
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-		public void Dispose()
-		{
-			instance = null;
-		}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    instance = null;
+                }
+            }
 
+            base.dispose(disposeManagedResources);
+        }
 		#endregion IDisposable Implementation
 	}
 }

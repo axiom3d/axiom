@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -44,7 +45,7 @@ namespace Axiom.Graphics
 	///		of fragments rendered by the last render operation.
 	/// </summary>
 	/// Original Author: Lee Sandberg.
-	public abstract class HardwareOcclusionQuery : IDisposable
+	public abstract class HardwareOcclusionQuery : DisposableObject
 	{
 		/// <summary>
 		/// Let's you get the last pixel count with out doing the hardware occlusion test
@@ -85,32 +86,6 @@ namespace Axiom.Graphics
 		public abstract bool IsStillOutstanding();
 
 		#region IDisposable Implementation
-
-		~HardwareOcclusionQuery()
-		{
-			dispose( false );
-		}
-
-		#region isDisposed Property
-
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -135,9 +110,9 @@ namespace Axiom.Graphics
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -147,15 +122,9 @@ namespace Axiom.Graphics
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
-		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+            base.dispose(disposeManagedResources);
 		}
-
 		#endregion IDisposable Implementation
 	}
 }

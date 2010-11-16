@@ -60,19 +60,27 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Constructors
 
 		public D3DVertexDeclaration( D3D.Device device )
+            : base()
 		{
 			this.device = device;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( d3dVertexDecl != null && !d3dVertexDecl.Disposed )
-						d3dVertexDecl.Dispose();
+                    if (d3dVertexDecl != null)
+                    {
+                        if (!d3dVertexDecl.Disposed)
+                            d3dVertexDecl.Dispose();
+
+                        d3dVertexDecl = null;
+                    }
+
+                    this.device = null;
 				}
 
 				// There are no unmanaged resources to release, but

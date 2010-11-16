@@ -259,7 +259,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// Call internal LoadImages, not LoadImage since that's external and
 				// will determine load status etc again
-				LoadImages( new Image[] { Image.FromStream( strm, ext ) } );
+				var image = Image.FromStream( strm, ext );
+				LoadImages( new Image[] { image } );
+				image.Dispose();
 				strm.Close();
 
 			}
@@ -325,7 +327,8 @@ namespace Axiom.RenderSystems.DirectX9
 					string fullName = baseName + postfixes[ i ] + "." + ext;
 
 					Stream strm = ResourceGroupManager.Instance.OpenResource( fullName, Group, true, this );
-					images.Add( Image.FromStream( strm, ext ) );
+					var image = Image.FromStream( strm, ext );
+					images.Add( image );
 					strm.Close();
 				}
 
@@ -388,7 +391,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// Call internal LoadImages, not LoadImage since that's external and
 				// will determine load status etc again
-				LoadImages( new Image[] { Image.FromStream( strm, ext ) } );
+				var image = Image.FromStream( strm, ext );
+				LoadImages( new Image[] { image } );
+				image.Dispose();
 
 				strm.Close();
 			}

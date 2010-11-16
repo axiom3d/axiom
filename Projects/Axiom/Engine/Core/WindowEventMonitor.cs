@@ -71,7 +71,7 @@ namespace Axiom.Core
 		void WindowFocusChange( RenderWindow rw );
 	}
 
-	public class WindowEventMonitor : IDisposable // Singleton<WindowMonitor>
+	public class WindowEventMonitor : DisposableObject // Singleton<WindowMonitor>
 	{
 		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
 		private List<RenderWindow> _windows = new List<RenderWindow>();
@@ -84,6 +84,7 @@ namespace Axiom.Core
 		}
 
 		private WindowEventMonitor()
+            : base()
 		{
 		}
 
@@ -265,20 +266,35 @@ namespace Axiom.Core
 			}
 		}
 
-		#region Singleton<WindowManager> Members
+		#region DisposableObject Members
 
-		public void Dispose()
-		{
-			foreach ( List<IWindowEventListener> list in _listeners.Values )
-			{
-				list.Clear();
-			}
-			_listeners.Clear();
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (_listeners != null)
+                    {
+                        foreach (List<IWindowEventListener> list in _listeners.Values)
+                        {
+                            list.Clear();
+                        }
+                        _listeners.Clear();
+                        _listeners = null;
+                    }
 
-			_windows.Clear();
+                    if (_windows != null)
+                    {
+                        _windows.Clear();
+                        _windows = null;
+                    }
+                }
+            }
 
-			//base.Dispose();
-		}
-		#endregion Singleton<WindowManager> Members
-	}
+            base.dispose(disposeManagedResources);
+        }
+
+        #endregion DisposableObject Members
+    }
 }

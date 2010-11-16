@@ -147,7 +147,7 @@ namespace Axiom.RenderSystems.Xna
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

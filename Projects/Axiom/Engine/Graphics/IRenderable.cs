@@ -60,7 +60,7 @@ namespace Axiom.Graphics
 	///		classes e.g. entities. Only once it is decided that the specific class is to be rendered is the abstract version
 	///		created (could be more than one per visible object) and pushed onto the rendering queue.
 	/// </remarks>
-	public interface IRenderable : IDisposable
+	public interface IRenderable
 	{
 		#region Properties
 

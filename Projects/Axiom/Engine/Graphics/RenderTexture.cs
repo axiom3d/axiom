@@ -68,13 +68,8 @@ namespace Axiom.Graphics
 		}
 
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
+            :this(string.Empty, buffer, zOffset)
 		{
-			pixelBuffer = buffer;
-			this.zOffset = zOffset;
-			Priority = RenderTargetPriority.RenderToTexture;
-			Width = buffer.Width;
-			Height = buffer.Height;
-			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		#endregion Constructors
@@ -103,7 +98,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

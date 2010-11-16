@@ -58,7 +58,7 @@ namespace Axiom.Core
 		///    the same vertex &amp; index format is stored. It also acts as the
 		///    renderable.
 		///</summary>
-		public class GeometryBucket : IRenderable, IDisposable
+		public class GeometryBucket : DisposableObject, IRenderable
 		{
 			#region Fields and Properties
 
@@ -162,6 +162,7 @@ namespace Axiom.Core
 
 			public GeometryBucket( MaterialBucket parent, string formatString,
 								  VertexData vData, IndexData iData )
+                : base()
 			{
 				// Clone the structure from the example
 				this.parent = parent;
@@ -540,13 +541,31 @@ namespace Axiom.Core
 			/// <summary>
 			///     Dispose the hardware index and vertex buffers
 			/// </summary>
-			public virtual void Dispose()
-			{
-				indexData.indexBuffer.Dispose();
-				VertexBufferBinding bindings = vertexData.vertexBufferBinding;
-				for ( short b = 0; b < bindings.BindingCount; ++b )
-					bindings.GetBuffer( b ).Dispose();
-			}
+            protected override void dispose(bool disposeManagedResources)
+            {
+                if (!this.IsDisposed)
+                {
+                    if (disposeManagedResources)
+                    {
+                        if (indexData != null)
+                        {
+                            if (!indexData.IsDisposed)
+                                indexData.Dispose();
+
+                            indexData = null;
+                        }
+
+                        if (vertexData != null)
+                        {
+                            if (!vertexData.IsDisposed)
+                                this.vertexData.Dispose();
+
+                            vertexData = null;
+                        }
+                    }
+                }
+                base.dispose(disposeManagedResources);
+            }
 
 			#endregion IRenderable members
 

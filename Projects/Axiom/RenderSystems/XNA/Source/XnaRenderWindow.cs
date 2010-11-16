@@ -186,6 +186,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="driver">The root driver</param>
 		public XnaRenderWindow( Driver driver )
+            : base()
 		{
 			_driver = driver;
 		}
@@ -685,22 +686,38 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					// dispose of our back buffer if need be
-					if ( this._renderSurface != null && !this._renderSurface.IsDisposed )
+					if ( this._renderSurface != null)
 					{
-						this._renderSurface.Dispose();
+                        if (!this._renderSurface.IsDisposed)
+						    this._renderSurface.Dispose();
+
+                        this._renderSurface = null;
 					}
 
 					// dispose of our stencil buffer if need be
-					if ( this._stencilBuffer != null && !this._stencilBuffer.IsDisposed )
+					if ( this._stencilBuffer != null)
 					{
-						this._stencilBuffer.Dispose();
+                        if (!this._stencilBuffer.IsDisposed)
+						    this._stencilBuffer.Dispose();
+
+                        this._stencilBuffer = null;
 					}
+
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+                    WindowEventMonitor.Instance.UnregisterWindow(this);
+                    DefaultForm winForm = (DefaultForm)SWF.Control.FromHandle(_windowHandle);
+                    
+                    if (!winForm.IsDisposed)
+                        winForm.Dispose();
+#endif
+
+                    this._windowHandle = IntPtr.Zero;
 				}
 
 				// There are no unmanaged resources to release, but
@@ -710,9 +727,6 @@ namespace Axiom.RenderSystems.Xna
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
-
-			// make sure this window is no longer active
-			IsActive = false;
 		}
 
 		public override void Reposition( int left, int right )

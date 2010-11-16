@@ -84,9 +84,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.0.0.201, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\opentk-1.0.0-rc1\Binaries\OpenTK\Debug\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

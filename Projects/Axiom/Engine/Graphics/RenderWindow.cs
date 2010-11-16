@@ -66,8 +66,8 @@ namespace Axiom.Graphics
 		#region Protected member variables
 
 		protected bool isFullScreen;
-		protected IntPtr targetHandle;
-		#region top Property
+		
+        #region top Property
 
 		private int _top;
 		/// <summary>
@@ -196,6 +196,7 @@ namespace Axiom.Graphics
 		#region Constructor
 
 		protected RenderWindow()
+            : base()
 		{
 
 			// render windows are low priority
@@ -203,6 +204,25 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposeManagedResources"></param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                }
+            }
+
+            // make sure this window is no longer active
+            IsActive = false;
+
+            base.dispose(disposeManagedResources);
+        }
 
 		#region Abstract methods and properties
 

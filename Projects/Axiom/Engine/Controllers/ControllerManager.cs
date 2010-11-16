@@ -47,7 +47,7 @@ namespace Axiom.Controllers
 	/// <summary>
 	/// Summary description for ControllerManager.
 	/// </summary>
-	public sealed class ControllerManager : IDisposable
+	public sealed class ControllerManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -60,6 +60,7 @@ namespace Axiom.Controllers
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal ControllerManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -372,15 +373,22 @@ namespace Axiom.Controllers
 
 		#region IDisposable Implementation
 
-		/// <summary>
-		///     Called when the engine is shutting down.
-		/// </summary>
-		public void Dispose()
-		{
-			controllers.Clear();
-
-			instance = null;
-		}
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    controllers.Clear();
+                    controllers = null;
+                    instance = null;
+                }
+            }
+            base.dispose(disposeManagedResources);
+        }
 
 		#endregion IDisposable Implementation
 	}

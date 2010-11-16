@@ -144,7 +144,7 @@ namespace Axiom.Serialization
 	/// The 'Chunk data' section will contain chunk-specific data, which may include
 	/// other nested chunks.
 	/// </remarks>
-	public class StreamSerializer : IDisposable
+	public class StreamSerializer : DisposableObject
 	{
 		#region Constants and Enumerations 
 
@@ -373,6 +373,7 @@ namespace Axiom.Serialization
 		/// and can only be changed if autoHeader is true, since real format is stored in the header. 
 		/// Defaults to float unless you're using AXIOM_DOUBLE_PRECISION.</param>
 		public StreamSerializer( Stream stream, Endian endianMode, bool autoHeader, RealStorageFormat realFormat )
+            : base()
 		{
 			mStream = stream;
 			mEndian = endianMode;
@@ -1001,35 +1002,27 @@ namespace Axiom.Serialization
 
 		#region IDisposable Implementation
 
-		private bool _isDisposed;
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    lock (this)
+                    {
+                        if (this.mChunkStack.Count != 0)
+                        {
+                            Debug.WriteLine("Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated.");
+                        }
+                        mChunkStack.Clear();
+                        mStream.Dispose();
+                        mStream = null;
+                    }
+                }
+            }
 
-		public bool IsDisposed
-		{
-			get
-			{
-				return _isDisposed;
-			}
-		}
-
-		public void Dispose()
-		{
-			if ( _isDisposed == false )
-			{
-				lock ( this )
-				{
-					_isDisposed = true;
-				}
-
-				if ( this.mChunkStack.Count != 0 )
-				{
-					Debug.WriteLine( "Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated." );
-				}
-				mChunkStack.Clear();
-				mStream.Dispose();
-				mStream = null;
-			}
-		}
-
+            base.dispose(disposeManagedResources);
+        }
 		#endregion IDisposable Implementation
 	}
 }

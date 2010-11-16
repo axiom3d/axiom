@@ -380,7 +380,7 @@ namespace Axiom.Core
 		} ;
 
 		/// Resource group entry
-		public class ResourceGroup : IDisposable
+		public class ResourceGroup : DisposableObject
 		{
 			//OGRE_AUTO_MUTEX
 			/// <summary>Group name </summary>
@@ -475,21 +475,26 @@ namespace Axiom.Core
 
 			#region IDisposable Members
 
-			public void Dispose()
-			{
-				if ( Initialized )
-				{
-					Initialized = false;
-					LocationList.Clear();
-					ResourceIndexCaseInsensitive.Clear();
-					ResourceIndexCaseSensitive.Clear();
-					ResourceDeclarations.Clear();
-					LoadResourceOrders.Clear();
-					WorldGeometrySceneManager = null;
-					WorldGeometry = "";
-					Name = "";
-				}
-			}
+            protected override void dispose(bool disposeManagedResources)
+            {
+                if (!this.IsDisposed)
+                {
+                    if (disposeManagedResources)
+                    {
+                        Initialized = false;
+                        LocationList.Clear();
+                        ResourceIndexCaseInsensitive.Clear();
+                        ResourceIndexCaseSensitive.Clear();
+                        ResourceDeclarations.Clear();
+                        LoadResourceOrders.Clear();
+                        WorldGeometrySceneManager = null;
+                        WorldGeometry = "";
+                        Name = "";
+                    }
+                }
+
+                base.dispose(disposeManagedResources);
+            }
 
 			#endregion IDisposable Members
 		} ;
