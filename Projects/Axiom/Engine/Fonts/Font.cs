@@ -554,8 +554,8 @@ namespace Axiom.Fonts
 		public void LoadResource( Resource resource )
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
-
-#if !( XBOX || XBOX360 || ANDROID )
+			
+#if !( XBOX || XBOX360 || ANDROID || IPHONE)
 			// create a new bitamp with the size defined
 			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap( BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
 

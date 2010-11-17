@@ -328,10 +328,9 @@ namespace Axiom.Graphics
 		/// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
 		public FloatConstantEntry GetNamedFloatConstant( string name )
 		{
-			if ( namedParams[ name ] != null )
+			int index;
+			if ( namedParams.TryGetValue(name, out index) )
 			{
-				int index = (int)namedParams[ name ];
-
 				return GetFloatConstant( index );
 			}
 
@@ -346,13 +345,11 @@ namespace Axiom.Graphics
 
 		public IntConstantEntry GetNamedIntConstant( string name )
 		{
-			if ( namedParams[ name ] != null )
+			int index;
+			if ( namedParams.TryGetValue(name, out index) )
 			{
-				int index = (int)namedParams[ name ];
-
 				return GetIntConstant( index );
 			}
-
 			return null;
 		}
 

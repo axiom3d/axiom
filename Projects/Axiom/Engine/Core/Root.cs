@@ -144,7 +144,7 @@ namespace Axiom.Core
 				MeshManager mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
-#if !(XBOX || XBOX360 || SILVERLIGHT || ANDROID )
+#if !(XBOX || XBOX360 || SILVERLIGHT || ANDROID || IPHONE)
 				new PlatformManager();
 #endif
 
@@ -208,6 +208,18 @@ namespace Axiom.Core
 		///     Auto created window (if one was created).
 		/// </summary>
 		private RenderWindow autoWindow;
+		
+		        //TODO: NRSC Added
+        /// <summary>
+        ///     Gets the Auto created window (if one was created).
+        /// </summary>
+        public RenderWindow AutoWindow
+        {
+            get
+            {
+                return this.autoWindow;
+            }
+        }
 
 		/// <summary>
 		///     Average frames per second.

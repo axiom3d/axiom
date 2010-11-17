@@ -98,11 +98,19 @@ namespace Axiom.Core
 				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 				for ( int index = 0; index < assemblies.Length && instance == null; index++ )
 				{
+					//TODO: NRSC Added: Deal with Dynamic Assemblies not having a Location
+                    //if (assemblies[index].IsDynamic)
+                    //    continue;
+					try {
 					DynamicLoader platformMgr = new DynamicLoader( assemblies[ index ].Location );
 					IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
 					if ( platforms.Count != 0 )
 					{
 						instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
+					}
+					} catch (Exception e)
+					{
+					System.Diagnostics.Debug.WriteLine( String.Format( "Failed to load assembly: {0}.", assemblies[index].FullName ) );	
 					}
 				}
 			}

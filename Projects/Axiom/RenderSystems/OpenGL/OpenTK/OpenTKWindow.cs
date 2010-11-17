@@ -83,8 +83,8 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					case "glcontext":
 						return glContext;
-					case "window":
-						return _window.WindowInfo.WindowHandle;
+					//case "window":
+					//	return _window.WindowInfo.WindowHandle;
 					case "nativewindow":
 						return _window;
 					default:

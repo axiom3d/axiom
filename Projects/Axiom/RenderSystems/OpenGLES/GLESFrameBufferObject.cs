@@ -294,7 +294,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 				else
 				{
-					bufs[ x ] = All.NoneOes;
+					bufs[ x ] = All.Never;
 				}
 			}//end for x
 
