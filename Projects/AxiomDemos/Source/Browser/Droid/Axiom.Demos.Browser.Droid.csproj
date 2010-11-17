@@ -78,9 +78,9 @@
       <Project>{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}</Project>
       <Name>Axiom.Platform.Android</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGLES\Axiom.RenderSystems.OpenGLES.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGLES\Axiom.RenderSystems.OpenGLES.Droid.csproj">
       <Project>{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}</Project>
-      <Name>Axiom.RenderSystems.OpenGLES</Name>
+      <Name>Axiom.RenderSystems.OpenGLES.Droid</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.Droid.csproj">
       <Project>{2851B1D7-F1B1-4647-A952-20569116299A}</Project>

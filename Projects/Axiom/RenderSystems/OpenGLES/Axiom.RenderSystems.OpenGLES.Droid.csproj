@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -76,10 +76,10 @@
     <Compile Include="GLESTexture.cs" />
     <Compile Include="GLESTextureBuffer.cs" />
     <Compile Include="GLESTextureManager.cs" />
-    <Compile Include="OpenTKGLES\OpenTKGLESWindow.cs" />
-    <Compile Include="OpenTKGLES\OpenTKGLESContext.cs" />
-    <Compile Include="OpenTKGLES\OpenTKGLESSupport.cs" />
-    <Compile Include="OpenTKGLES\OpenTKGLESUtil.cs" />
+    <Compile Include="Android\AndroidWindow.cs" />
+    <Compile Include="Android\AndroidContext.cs" />
+    <Compile Include="Android\AndroidSupport.cs" />
+    <Compile Include="GLESUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

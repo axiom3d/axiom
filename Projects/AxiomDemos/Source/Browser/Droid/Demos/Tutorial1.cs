@@ -21,7 +21,7 @@ namespace Droid.Demos
 		public override void SetupResources()
 		{
 			ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Archives/AxiomCore.zip", "ZipFile" );
-			ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Textures", "Folder" );
+			//ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Textures", "Folder" );
 		}
 
 		public bool Setup( IGraphicsContext glContext, int width, int height )
@@ -73,7 +73,7 @@ namespace Droid.Demos
 		}
 
 		protected override void OnFrameRenderingQueued( object source, FrameEventArgs evt )
-		{
+		{			
 			if ( evt.StopRendering )
 				return;
 

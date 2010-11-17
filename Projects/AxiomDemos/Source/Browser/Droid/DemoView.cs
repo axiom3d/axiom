@@ -11,6 +11,7 @@ using Android.Content;
 using Axiom.Core;
 using System.Reflection;
 using Android.App;
+using Axiom.Platform.Android;
 
 namespace Droid
 {
@@ -40,7 +41,7 @@ namespace Droid
 		{
 			try
 			{
-				//new AndroidResourceGroupManager();
+				//new AndroidAssetArchive( this.Context.Assets );
 
 				// instantiate the Root singleton
 				_engine = new Root( "AxiomDemos.log" );

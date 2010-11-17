@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -47,21 +47,99 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
+using Axiom.FileSystem;
+
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
+namespace Axiom.Platform.Android
 {
-	public class OpenTKGLESUtil
+	public class AndroidAssetArchive : Archive
 	{
-		/// <summary>
-		/// 
-		/// </summary>
-		public static OpenTKGLESSupport GLESSupport
+		private string _type;
+
+		public AndroidAssetArchive( string name, string type )
+			: base( name, type )
+		{
+		}
+
+		#region Archive Implementation
+
+		public override bool IsCaseSensitive
 		{
 			get
 			{
-				return new OpenTKGLESSupport();
+				return true;
 			}
 		}
+
+		public override void Load()
+		{
+			
+		}
+
+		public override void Unload()
+		{
+		}
+
+		public override System.IO.Stream Open( string filename, bool readOnly )
+		{
+			return null;
+		}
+
+		public override List<string> List( bool recursive )
+		{
+			return new List<string>();
+		}
+
+		public override FileInfoList ListFileInfo( bool recursive )
+		{
+			return new FileInfoList();
+		}
+
+		public override List<string> Find( string pattern, bool recursive )
+		{
+			return new List<string>();
+		}
+
+		public override bool Exists( string fileName )
+		{
+			return false;
+		}
+
+		public override FileInfoList FindFileInfo( string pattern, bool recursive )
+		{
+			return new FileInfoList();
+		}
+
+		#endregion Archive Implementation
+	}
+
+	public class AndroidArchiveFactory : ArchiveFactory
+	{
+
+		private const string _type = "AndroidAsset";
+
+		#region ArchiveFactory Implementation
+
+		public override string Type
+		{
+			get
+			{
+				return _type;
+			}
+		}
+
+		public override Archive CreateInstance( string name )
+		{
+			return new AndroidAssetArchive( name, _type );
+		}
+
+		public override void DestroyInstance( ref Archive obj )
+		{
+			obj.Dispose();
+		}
+
+		#endregion ArchiveFactory Implementation
+
 	}
 }

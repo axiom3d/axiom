@@ -43,7 +43,7 @@ using Axiom.Media;
 using Axiom.Math;
 using Axiom.Configuration;
 using OpenTK.Graphics.ES11;
-using Axiom.RenderSystems.OpenGLES.OpenTKGLES;
+using Axiom.RenderSystems.OpenGLES.Android;
 using System.Text;
 using System.Collections.Generic;
 using OpenGL = OpenTK.Graphics.ES11.GL;
@@ -1368,9 +1368,20 @@ namespace Axiom.RenderSystems.OpenGLES
 			base.DisableTextureUnitsFrom( texUnit );
 		}
 
-		public override void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			base.Dispose();
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		public override void EnableClipPlane( ushort index, bool enable )
@@ -2549,7 +2560,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			GLESConfig.GlCheckError( this );
 
-			ActivateGLTextureUnit( 1 );
+			ActivateGLTextureUnit( 0 );
 		}
 		/// <summary>
 		/// 
@@ -2764,7 +2775,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			LogManager.Instance.Write( string.Format( "{0} created.", Name ) );
 
-			_glSupport = OpenTKGLESUtil.GLESSupport;
+			_glSupport = GLESUtil.GLESSupport;
 
 			for ( i = 0; i < MaxLights; i++ )
 				_lights[ i ] = null;

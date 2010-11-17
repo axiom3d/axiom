@@ -2,10 +2,12 @@
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
+This file is part of Axiom.RenderSystems.OpenGLES
+C# version developed by bostich.
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -22,11 +24,11 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -34,15 +36,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
 
 #endregion Namespace Declarations
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-[assembly: AssemblyTitle("Axiom OpenGLES Rendering Subsystem")]
-[assembly: AssemblyDescription("Rendering system implementation which implements the 3D graphics API abstraction layer using OpenGLES.")]
+namespace Axiom.RenderSystems.OpenGLES
+{
+	class GLESUtil
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public static GLESSupport GLESSupport
+		{
+			get
+			{
+				GLESSupport support = null;
+#if ANDROID
+				support = new Android.AndroidSupport();
+#endif
+				return support;
+			}
+		}
+	}
+}

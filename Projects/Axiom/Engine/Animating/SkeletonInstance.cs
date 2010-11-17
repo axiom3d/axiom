@@ -173,8 +173,9 @@ namespace Axiom.Animating
 			TagPoint tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
 			tagPointList[ nextTagPointAutoHandle ] = tagPoint;
 
-			tagPoint.Translate( offsetPosition );
-			tagPoint.Rotate( offsetOrientation );
+			tagPoint.Position = offsetPosition;
+			tagPoint.Orientation = offsetOrientation;
+			tagPoint.Scale = Vector3.UnitScale;
 			tagPoint.SetBindingPose();
 			bone.AddChild( tagPoint );
 

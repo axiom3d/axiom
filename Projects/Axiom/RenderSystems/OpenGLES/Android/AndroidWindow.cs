@@ -46,9 +46,9 @@ using OpenTK.Platform.Android;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
+namespace Axiom.RenderSystems.OpenGLES.Android
 {
-	class OpenTKGLESWindow : RenderWindow
+	class AndroidWindow : RenderWindow
 	{
 		private bool _isClosed;
 		private bool _isVisible;
@@ -56,8 +56,8 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		private bool _isExternal;
 		private bool _isGLControl;
 
-		private OpenTKGLESContext _glContext;
-		private OpenTKGLESSupport _glSupport;
+		private AndroidContext _glContext;
+		private AndroidSupport _glSupport;
 		private EGLContext _context;
 		private NativeWindowType _window;
 		private NativeDisplayType _nativeDisplay;
@@ -76,7 +76,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 			throw new NotImplementedException();
 		}
 
-		public OpenTKGLESWindow()
+		public AndroidWindow()
 		{
 			//OpenTK.Platform.Utilities.CreateGraphicsContext(new OpenTK.Graphics.GraphicsMode(), null, 1, 1, OpenTK.Graphics.GraphicsContextFlags.Default);
 		}
@@ -180,7 +180,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 
 						case "externalWindowInfo":
 							var androidContext = (AndroidGraphicsContext)entry.Value;
-							_glContext = new OpenTKGLESContext( androidContext, _glSupport );
+							_glContext = new AndroidContext( androidContext, _glSupport );
 							break;
 
 						case "externalWindowHandle":
@@ -227,7 +227,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
