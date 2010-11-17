@@ -22,7 +22,7 @@ namespace Axiom.Demos.Configuration {
 	[global::System.ComponentModel.ToolboxItem(true)]
 	[global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedDataSetSchema")]
 	[global::System.Xml.Serialization.XmlRootAttribute("EngineConfig")]
-#if ( !ANDROID )
+#if ( !(ANDROID || IPHONE))
 	[global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.DataSet")]
 #endif
 	public partial class EngineConfig : global::System.Data.DataSet {

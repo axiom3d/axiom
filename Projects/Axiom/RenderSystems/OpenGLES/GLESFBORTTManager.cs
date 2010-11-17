@@ -69,7 +69,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public static readonly All[] StencilFormats = new All[]
 		{
 			//no stencil
-			All.NoneOes,
+			All.Zero,
 			All.StencilIndex8Oes,
 		};
 
@@ -87,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		public static readonly All[] DepthFormats = new All[]
 		{
-			All.NoneOes,
+			All.Zero,
 			All.DepthComponent16Oes,
 			All.DepthComponent24Oes,
 			All.Depth24Stencil8Oes
@@ -332,7 +332,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public GLESSurfaceDescription RequestRenderbuffer( All format, int width, int height, int fsaa )
 		{
 			GLESSurfaceDescription retval = new GLESSurfaceDescription();
-			if ( format != All.NoneOes )
+			if ( format != All.Zero )
 			{
 				RBFormat key = new RBFormat( format, width, height, fsaa );
 				RBRef iter;
@@ -426,7 +426,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				// Fetch GL format token
 				All fmt = GLESPixelUtil.GetClosestGLInternalFormat( (Media.PixelFormat)x );
 				LogManager.Instance.Write( "[GLES] [DEBUG] fmt={0}", fmt );
-				if ( fmt == All.NoneOes && x != 0 )
+				if ( fmt == All.Zero && x != 0 )
 					continue;
 
 				// No test for compressed formats
@@ -439,7 +439,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				OpenGLOES.BindFramebuffer( All.FramebufferOes, fb );
 				GLESConfig.GlCheckError( this );
 
-				if ( fmt != All.NoneOes )
+				if ( fmt != All.Zero )
 				{
 					// Create and attach texture
 					OpenGL.GenTextures( 1, ref tid );
@@ -494,7 +494,7 @@ namespace Axiom.RenderSystems.OpenGLES
 									mode.Stencil = stencil;
 									_props[ x ].Modes.Add( mode );
 
-								}
+								}								
 							}//end for stencil
 						}//end if
 						else
@@ -551,14 +551,15 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				/// Generate depth renderbuffer
 				OpenGLOES.GenRenderbuffers( 1, ref depthRB );
-
-				/// Bind it to FBO
+												
+				/// Bind it to FBO;
 				OpenGLOES.RenderbufferStorage( All.RenderbufferOes, depthFormat,
 					ProbeSize, ProbeSize );
 
 				/// Attach depth
 				OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, All.DepthAttachmentOes,
 					All.RenderbufferOes, depthRB );
+				
 			}
 			// Stencil buffers aren't available on iPhone
 			if ( stencilFormat != 0 )
@@ -579,16 +580,19 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			status = (int)OpenGLOES.CheckFramebufferStatus( All.FramebufferOes );
-
-			OpenGLOES.FramebufferRenderbuffer( All.RenderbufferOes, All.DepthAttachmentOes, All.RenderbufferOes, 0 );
-			OpenGLOES.FramebufferRenderbuffer( All.RenderbufferOes, All.StencilAttachmentOes, All.RenderbufferOes, 0 );
+			
+			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, All.DepthAttachmentOes, All.RenderbufferOes, depthRB );
+			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, All.StencilAttachmentOes, All.RenderbufferOes, stencilRB );
 
 			if ( depthRB != 0 )
 				OpenGLOES.DeleteRenderbuffers( 1, ref depthRB );
 
 			if ( stencilRB != 0 )
 				OpenGLOES.DeleteRenderbuffers( 1, ref stencilRB );
-
+			
+			//Clear OpenGL Errors create because of the evaluation
+			while ( OpenGL.GetError() != All.NoError);
+			
 			return status == (int)All.FramebufferCompleteOes;
 		}
 

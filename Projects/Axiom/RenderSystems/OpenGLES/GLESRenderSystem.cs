@@ -43,7 +43,7 @@ using Axiom.Media;
 using Axiom.Math;
 using Axiom.Configuration;
 using OpenTK.Graphics.ES11;
-using Axiom.RenderSystems.OpenGLES.Android;
+//using Axiom.RenderSystems.OpenGLES.Android;
 using System.Text;
 using System.Collections.Generic;
 using OpenGL = OpenTK.Graphics.ES11.GL;
@@ -1367,7 +1367,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			base.DisableTextureUnitsFrom( texUnit );
 		}
-
+		/*
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -1383,7 +1383,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
-
+		*/
 		public override void EnableClipPlane( ushort index, bool enable )
 		{
 			throw new NotImplementedException();

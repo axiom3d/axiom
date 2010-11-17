@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGLES
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract class GLESSupport : OpenTK.Graphics.GraphicsBindingsBase
+	public abstract class GLESSupport //: OpenTK.Graphics.GraphicsBindingsBase
 	{
 		private string _version;
 		private string _vendor;

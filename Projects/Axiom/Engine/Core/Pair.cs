@@ -50,7 +50,7 @@ namespace Axiom.Core
 	/// <typeparam name="T"></typeparam>
 	public class Pair<T> : IEquatable<Pair<T>>
 	{
-		private Tuple<T, T> data;
+		private Axiom.Math.Tuple<T, T> data;
 
 		public T First
 		{
