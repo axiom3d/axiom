@@ -43,7 +43,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AndroidImageCodec.cs" />
-    <Compile Include="AndroidResourceArchive.cs" />
+    <Compile Include="AndroidAssetArchive.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -54,9 +54,9 @@ using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
+namespace Axiom.RenderSystems.OpenGLES.Android
 {
-	public class OpenTKGLESSupport : GLESSupport
+	class AndroidSupport : GLESSupport
 	{
 		protected EGLDisplay _glDisplay;
 		protected NativeDisplayType _nativeDislpay;
@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// <summary>
 		/// 
 		/// </summary>
-		public OpenTKGLESSupport()
+		public AndroidSupport()
 			: base()
 		{
 			_videoModes = new List<KeyValuePair<Size, short>>();
@@ -379,7 +379,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 
 		public override Graphics.RenderWindow NewWindow( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams = null )
 		{
-			OpenTKGLESWindow window = new OpenTKGLESWindow();
+			AndroidWindow window = new AndroidWindow();
 			window.Create( name, width, height, fullScreen, miscParams );
 			return window;
 		}

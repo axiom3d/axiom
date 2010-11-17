@@ -193,7 +193,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 			else
 			{
-				LogManager.Instance.Write( "ELSE" );
 				if ( data.Width != data.RowPitch )
 				{
 					//TODO

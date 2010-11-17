@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				ResourceGroupManager.Instance.UnregisterResourceManager( base.ResourceType );
 			}

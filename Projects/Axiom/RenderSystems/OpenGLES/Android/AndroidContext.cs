@@ -45,15 +45,15 @@ using OpenTK.Platform.Android;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
+namespace Axiom.RenderSystems.OpenGLES.Android
 {
 	/// <summary>
 	/// 
 	/// </summary>
-	public class OpenTKGLESContext : GLESContext
+	class AndroidContext : GLESContext
 	{
 		protected EGLConfig _config;
-		protected OpenTKGLESSupport _glSupport;
+		protected AndroidSupport _glSupport;
 		protected EGLSurface _drawable;
 		protected IGraphicsContext _context;
 		protected EGLDisplay _eglDisplay;
@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGLES.OpenTKGLES
 		/// <param name="support"></param>
 		/// <param name="fbconfig"></param>
 		/// <param name="drawable"></param>
-		public OpenTKGLESContext( AndroidGraphicsContext glContext, OpenTKGLESSupport support )
+		public AndroidContext( AndroidGraphicsContext glContext, AndroidSupport support )
 		{
 			_glSupport = support;
 			//_drawable = drawable;

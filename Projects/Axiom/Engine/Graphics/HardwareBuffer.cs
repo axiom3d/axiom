@@ -391,7 +391,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Updates the real buffer from the shadow buffer, if required.
 		/// </summary>
-		protected void UpdateFromShadow()
+		protected virtual void UpdateFromShadow()
 		{
 			if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
 			{
@@ -399,8 +399,7 @@ namespace Axiom.Graphics
 				IntPtr src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
 
 				// Lock with discard if the whole buffer was locked, otherwise normal
-				BufferLocking locking =
-					( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
+				BufferLocking locking = ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
 
 				IntPtr dest = this.LockImpl( lockStart, lockSize, locking );
 
