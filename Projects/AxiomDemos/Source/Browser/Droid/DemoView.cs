@@ -12,6 +12,7 @@ using Axiom.Core;
 using System.Reflection;
 using Android.App;
 using Axiom.Platform.Android;
+using Axiom.FileSystem;
 
 namespace Droid
 {
@@ -32,7 +33,7 @@ namespace Droid
 		protected override void OnLoad( EventArgs e )
 		{
 			base.OnLoad( e );
-			// this.GLContextVersion = GLContextVersion.Gles1_1;
+			this.GLContextVersion = GLContextVersion.Gles1_1;
 			// Run the render loop
 			Run();
 		}
@@ -107,10 +108,13 @@ namespace Droid
 
 		private void _setupResources()
 		{
+			ResourceGroupManager.Instance.AddResourceLocation( @"Media/Archives/AxiomCore.zip", "AndroidZipAsset" );
 		}
 
 		private void _loadPlugins()
 		{
+			ArchiveManager.Instance.AddArchiveFactory( new AndroidZipAssetArchiveFactory( this.Context.Assets ) );
+			ArchiveManager.Instance.AddArchiveFactory( new AndroidFolderAssetArchiveFactory( this.Context.Assets ) );
 		}
 
 		private static string BuildExceptionString( Exception exception )

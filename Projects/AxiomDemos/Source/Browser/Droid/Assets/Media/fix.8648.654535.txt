@@ -1,0 +1,1 @@
+﻿This file is needed to fix Bug 654535 in r8648 ( Preview 7 ) of MonoDroid. It can be removed for Preview 8.

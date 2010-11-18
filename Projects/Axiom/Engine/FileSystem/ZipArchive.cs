@@ -65,10 +65,10 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// root location of the zip file.
 		/// </summary>
-		private string _zipFile;
-		private string _zipDir = "/";
-		private ZipInputStream _zipStream;
-		private List<FileInfo> _fileList = new List<FileInfo>();
+		protected string _zipFile;
+		protected string _zipDir = "/";
+		protected ZipInputStream _zipStream;
+		protected List<FileInfo> _fileList = new List<FileInfo>();
 
 		#endregion Fields and Properties
 
@@ -91,8 +91,8 @@ namespace Axiom.FileSystem
 		{
 			if ( currentDir == "" )
 				currentDir = _zipDir;
-			FileStream fs = File.OpenRead( _zipFile );
-			_zipStream = new ZipInputStream( fs );
+
+			Load();
 
 			ZipEntry entry = _zipStream.GetNextEntry();
 			if ( pattern[ 0 ] == '*' )
@@ -206,8 +206,8 @@ namespace Axiom.FileSystem
 
 			// we will put the decompressed data into a memory stream
 			MemoryStream output = new MemoryStream();
-			FileStream fs = File.OpenRead( _zipFile );
-			_zipStream = new ZipInputStream( fs );
+
+			Load();
 
 			// get the first entry 
 			entry = _zipStream.GetNextEntry();

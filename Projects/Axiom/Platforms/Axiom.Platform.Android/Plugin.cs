@@ -45,20 +45,16 @@ namespace Axiom.Platform.Android
 {
 	public class Plugin : IPlugin
 	{
-		AndroidArchiveFactory _archiveFactory;
 
 		#region Axiom.Core.IPlugin Implementation
 
 		public void Initialize()
 		{
-			//_archiveFactory = new AndroidArchiveFactory();
-			//ArchiveManager.Instance.AddArchiveFactory( _archiveFactory );
 			CodecManager.Instance.RegisterCodec( new AndroidImageCodec( "png" ) );
 		}
 
 		public void Shutdown()
-		{
-			throw new System.NotImplementedException();
+		{			
 		}
 
 		#endregion Axiom.Core.IPlugin Implementation
