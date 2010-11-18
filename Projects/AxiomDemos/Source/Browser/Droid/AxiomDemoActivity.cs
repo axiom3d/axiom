@@ -17,11 +17,6 @@ namespace Droid
 	{
 		DemoView view;
 
-		public AxiomDemoActivity( IntPtr handle )
-			: base( handle )
-		{
-		}
-
 		protected override void OnCreate( Bundle bundle )
 		{
 			base.OnCreate( bundle );
