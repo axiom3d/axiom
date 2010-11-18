@@ -23,11 +23,6 @@ namespace Droid
 
 			view = new DemoView( this );
 			SetContentView( view );
-			//// Inflate our UI from its XML layout description
-			//SetContentView( R.layout.demo );
-
-			//// Load the view
-			//FindViewById( R.id.paintingview );
 		}
 
 		protected override void OnDestroy()

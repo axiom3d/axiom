@@ -20,8 +20,6 @@ namespace Droid.Demos
 	{
 		public override void SetupResources()
 		{
-			ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Archives/AxiomCore.zip", "ZipFile" );
-			//ResourceGroupManager.Instance.AddResourceLocation( @"/sdcard/axiom.demos.droid/Media/Textures", "Folder" );
 		}
 
 		public bool Setup( IGraphicsContext glContext, int width, int height )
