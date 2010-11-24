@@ -76,20 +76,25 @@ namespace Axiom.Platform.Android
 
 		private Media.PixelFormat Convert( Bitmap.Config config )
 		{
-			switch ( config.Name().ToLower() )
+			if ( config != null && config.Name() != null )
 			{
-				case "alpha_8":
-					return Media.PixelFormat.A8;
-				case "rgb_565":
-					return Media.PixelFormat.R5G6B5;
-				case "argb_4444":
-					return Media.PixelFormat.A4R4G4B4;
-				case "argb_8888":
-					return Media.PixelFormat.A8R8G8B8;
-				default:
-					LogManager.Instance.Write( "[AndroidImageCodec] Failed to find conversion for Bitmap.Config.{0}.", config.Name() );
-					return Media.PixelFormat.Unknown;
+				switch ( config.Name().ToLower() )
+				{
+					case "alpha_8":
+						return Media.PixelFormat.A8;
+					case "rgb_565":
+						return Media.PixelFormat.R5G6B5;
+					case "argb_4444":
+						return Media.PixelFormat.A4R4G4B4;
+					case "argb_8888":
+						return Media.PixelFormat.A8R8G8B8;
+					default:
+						LogManager.Instance.Write( "[AndroidImageCodec] Failed to find conversion for Bitmap.Config.{0}.", config.Name() );
+						return Media.PixelFormat.Unknown;
+				}
 			}
+			return Media.PixelFormat.Unknown;
+
 		}
 
 		#endregion Methods
@@ -104,19 +109,36 @@ namespace Axiom.Platform.Android
 
 			try
 			{
-				global::Android.Runtime.JavaInputStream jis = new global::Android.Runtime.JavaInputStream( input );
+				global::Android.Runtime.InputStreamAdapter jis = new global::Android.Runtime.InputStreamAdapter( input );
 				bitmap = BitmapFactory.DecodeStream( jis );
 
 				Bitmap.Config config = bitmap.GetConfig();
+				int[] pixels;
 
 				data.height = bitmap.Height;
 				data.width = bitmap.Width;
 				data.depth = 1;
-				data.format = Convert( config );
 				data.numMipMaps = 0;
 
-				int[] pixels = new int[ bitmap.Width * bitmap.Height ];
+				if ( config != null )
+				{
+					data.format = Convert( config );
 
+					pixels = new int[ bitmap.Width * bitmap.Height ];
+				}
+				else
+				{
+					data.format = Media.PixelFormat.A8R8G8B8;
+
+					pixels = new int[ bitmap.Width * bitmap.Height ];
+
+					for( int x = 0; x < bitmap.Width; x++)
+						for ( int y = 0; y < bitmap.Height; y++ )
+						{
+							int color = x % 2 * y % 2;
+							pixels[ x * y + x ] = color * Int32.MaxValue;
+						}
+				}
 				// Start writing from bottom row, to effectively flip it in Y-axis
 				bitmap.GetPixels( pixels, pixels.Length - bitmap.Width, -bitmap.Width, 0, 0, bitmap.Width, bitmap.Height );
 

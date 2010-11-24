@@ -82,10 +82,6 @@
       <Name>Axiom.Demos.Droid</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\fix.8648.654535.txt" />
-    <AndroidAsset Include="Assets\Media\fix.8648.654535.txt" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.
