@@ -86,7 +86,7 @@ namespace Axiom.Platform.Android
 				ms.Position = 0;
 
 				// get a input stream from the zip file
-				_zipStream = new ZipInputStream( ms );
+				_zipStream = new ZipInputStream( ms );				
 			//}
 		}
 

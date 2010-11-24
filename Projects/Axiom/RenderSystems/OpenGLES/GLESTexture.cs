@@ -396,6 +396,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		protected override void unload()
 		{
 			base.unload();
+			foreach ( var image in _loadedImages )
+			{
+				if ( !image.IsDisposed ) image.Dispose();
+			}
 			_loadedImages.Clear();
 		}
 
