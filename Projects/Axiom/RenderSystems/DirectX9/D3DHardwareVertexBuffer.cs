@@ -63,8 +63,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructors
 
-		public D3DHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
-			D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+		public D3DHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,	D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
 			: base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
@@ -82,14 +81,6 @@ namespace Axiom.RenderSystems.DirectX9
 				D3DHelper.ConvertEnum( usage ),
 				D3D.VertexFormat.None,
 				d3dPool );
-		}
-
-		~D3DHardwareVertexBuffer()
-		{
-			if ( d3dBuffer != null )
-			{
-				d3dBuffer.Dispose();
-			}
 		}
 
 		#endregion Constructors
@@ -158,7 +149,7 @@ namespace Axiom.RenderSystems.DirectX9
 		//---------------------------------------------------------------------
 		public bool ReleaseIfDefaultPool()
 		{
-			if ( d3dPool == D3D.Pool.Default )
+			if ( d3dPool == D3D.Pool.Default || d3dBuffer.IsDefaultPool || d3dBuffer.Description.Pool == D3D.Pool.Default )
 			{
 				if ( d3dBuffer != null )
 				{

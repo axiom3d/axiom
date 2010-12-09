@@ -141,7 +141,6 @@ namespace Axiom.RenderSystems.DirectX9
 		#region RenderSurface Property
 
 		private D3D.Surface _renderSurface;
-		private bool isDeviceLost;
 
 		public D3D.Surface RenderSurface
 		{
@@ -907,9 +906,12 @@ namespace Axiom.RenderSystems.DirectX9
 			DX.Result result;
 			D3D.Device device = _driver.D3DDevice;
 
+			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem ;
+
 			// Skip if the device is already lost
-			if ( isDeviceLost || testLostDevice() )
+			if ( rs.IsDeviceLost || testLostDevice() )
 			{
+				rs.IsDeviceLost = true;
 				return;
 			}
 
@@ -918,9 +920,7 @@ namespace Axiom.RenderSystems.DirectX9
 				result = this._isSwapChain ? this._swapChain.Present( D3D.Present.None ) : device.Present();
 				if ( result.Code == D3D.ResultCode.DeviceLost.Code )
 				{
-					_renderSurface.ReleaseDC( _renderSurface.GetDC() );
-					isDeviceLost = true;
-					( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
+					rs.IsDeviceLost = true;
 				}
 				else if ( result.IsFailure )
 				{
@@ -1090,24 +1090,10 @@ namespace Axiom.RenderSystems.DirectX9
 				DX.Result result = device.TestCooperativeLevel();
 				if ( result.Code == D3D.ResultCode.DeviceLost.Code  )
 				{
-					// device lost, and we can't reset
-					// can't do anything about it here, wait until we get
-					// D3DERR_DEVICENOTRESET; rendering calls will silently fail until
-					// then (except Present, but we ignore device lost there too)
-					_renderSurface.ReleaseDC( _renderSurface.GetDC() );
-					// need to release if swap chain
-					if ( !_isSwapChain )
-					{
-						_renderZBuffer = null;
-					}
-					else
-					{
-						_renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
-					}
 					System.Threading.Thread.Sleep( 50 );
 					return;
 				}
-				else if ( result.Code == D3D.ResultCode.DeviceNotReset.Code )
+				else /* if ( result.Code == D3D.ResultCode.DeviceNotReset.Code ) */
 				{
 					// device lost, and we can reset
 					rs.RestoreLostDevice();
@@ -1137,8 +1123,8 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 					}
 				}
-				else if ( result.Code != D3D.ResultCode.Success.Code )
-					return;
+				//else if ( result.Code != D3D.ResultCode.Success.Code )
+				//    return;
 			}
 
 			base.Update( swapBuffers );

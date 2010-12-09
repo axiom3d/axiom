@@ -650,7 +650,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// call superclass method
 
 			// Configure SlimDX
-			DX.Configuration.ThrowOnError = true;
+			DX.Configuration.ThrowOnError = false;
 			DX.Configuration.AddResultWatch( D3D.ResultCode.DeviceLost, DX.ResultWatchFlags.AlwaysIgnore );
 			DX.Configuration.AddResultWatch( D3D.ResultCode.WasStillDrawing, DX.ResultWatchFlags.AlwaysIgnore );
 
@@ -2877,6 +2877,7 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				SlimDX.Result result = device.Reset( _primaryWindow.PresentationParameters );
+				//SlimDX.Result result = device.TestCooperativeLevel();
 				if ( result.Code == D3D.ResultCode.DeviceLost.Code )
 					return;
 			}
