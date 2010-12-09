@@ -16,6 +16,7 @@
     <AssemblyName>Axiom.Framework</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>Resources\AxiomIcon.ico</ApplicationIcon>
+    <XnaCrossPlatformGroupID>8ebc5830-6fe2-4875-9130-d4be00abbf98</XnaCrossPlatformGroupID>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,10 +56,12 @@
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationDialogFactory.cs" />
     <Compile Include="Configuration\ConfigurationManagerBase.cs" />
+    <Compile Include="Configuration\ConfigurationManagerFactory.cs" />
     <Compile Include="Configuration\DialogResult.cs" />
     <Compile Include="Configuration\IConfigurationDialog.cs" />
     <Compile Include="Configuration\IConfigurationDialogFactory.cs" />
     <Compile Include="Configuration\IConfigurationManager.cs" />
+    <Compile Include="Configuration\XBoxConfigurationManager.cs" />
     <Compile Include="Exceptions\IErrorDialog.cs" />
     <Compile Include="Graphics\SpriteManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
