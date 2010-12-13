@@ -24,9 +24,11 @@
     <RootNamespace>Axiom.Plugins.ParticleFX</RootNamespace>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <UpgradeBackupLocation>C:\Projects\Axiom\Xna4_update\Projects\Backup\</UpgradeBackupLocation>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <ProjectGuid>{BA9B1CA4-6329-4B02-AF47-B77749DFCBB7}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaUpgrade>
