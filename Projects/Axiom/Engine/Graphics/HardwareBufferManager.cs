@@ -281,10 +281,8 @@ namespace Axiom.Graphics
 		///     expires.
 		/// </param>
 		/// <returns></returns>
-		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer,
-			BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee )
+		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee )
 		{
-
 			return AllocateVertexBufferCopy( sourceBuffer, licenseType, licensee, false );
 		}
 
@@ -310,10 +308,8 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="copyData">If true, the current data is copied as well as the structure of the buffer.</param>
 		/// <returns></returns>
-		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer,
-			BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee, bool copyData )
+		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee, bool copyData )
 		{
-
 			HardwareVertexBuffer vbuf = null;
 
 			// Locate existing buffer copy in free list
@@ -346,8 +342,7 @@ namespace Axiom.Graphics
 				vbuf.CopyData( sourceBuffer, 0, 0, sourceBuffer.Size, true );
 			}
 			// Insert copy into licensee list
-			tempVertexBufferLicenses.Add( new VertexBufferLicense( sourceBuffer, licenseType,
-																 expiredDelayFrameThreshold, vbuf, licensee ) );
+			tempVertexBufferLicenses.Add( new VertexBufferLicense( sourceBuffer, licenseType, expiredDelayFrameThreshold, vbuf, licensee ) );
 
 			return vbuf;
 		}

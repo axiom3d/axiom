@@ -350,12 +350,12 @@ namespace Axiom.Core
 			return ret;
 		}
 
-		public Tuple<Resource, bool> CreateOrRetrieve( string name, string group )
+		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group )
 		{
 			return CreateOrRetrieve( name, group, false, null, null );
 		}
 
-		public Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
+		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
 		{
 			Resource res = this[ name ];
 			bool created = false;
@@ -365,7 +365,7 @@ namespace Axiom.Core
 				res = Create( name, group, isManual, loader, paramaters );
 			}
 
-			return new Tuple<Resource, bool>( res, created );
+			return new Axiom.Math.Tuple<Resource, bool>( res, created );
 		}
 
 		#endregion Create Method

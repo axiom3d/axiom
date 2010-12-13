@@ -258,11 +258,12 @@ namespace Axiom.Overlays
 
 			foreach ( OverlayElement child in children.Values )
 			{
-				child.NotifyZOrder( zOrder );
+				zOrder = child.NotifyZOrder( zOrder );
 			}
 
 			return zOrder;
 		}
+
 
 		public override void NotifyWorldTransforms( Matrix4[] xform )
 		{

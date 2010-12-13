@@ -38,6 +38,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Collections.ObjectModel;
 
 #endregion Namespace Declarations
 
@@ -89,6 +90,18 @@ namespace Axiom.Core
 
 		#endregion Fields
 
+		#region properties
+
+		/// <summary>
+		/// Gets a read only collection with all known plugins.
+		/// </summary>
+		public ReadOnlyCollection<IPlugin> InstalledPlugins
+		{
+			get { return new ReadOnlyCollection<IPlugin>( _plugins ); }
+		}
+
+		#endregion
+
 		#region Methods
 
 		/// <summary>
@@ -97,6 +110,20 @@ namespace Axiom.Core
 		public void LoadAll()
 		{
 			IList<ObjectCreator> newPlugins = ScanForPlugins();
+
+			foreach ( ObjectCreator pluginCreator in newPlugins )
+			{
+				IPlugin plugin = LoadPlugin( pluginCreator );
+				if ( plugin != null )
+				{
+					_plugins.Add( plugin );
+				}
+			}
+		}
+
+		public void LoadDirectory( string path )
+		{
+			IList<ObjectCreator> newPlugins = ScanForPlugins( path );
 
 			foreach ( ObjectCreator pluginCreator in newPlugins )
 			{
@@ -125,27 +152,31 @@ namespace Axiom.Core
 		///<returns></returns>
 		protected IList<ObjectCreator> ScanForPlugins( string folder )
 		{
-			string[] files = Directory.GetFiles( folder, "*.dll" );
-			Assembly assembly = null;
 			List<ObjectCreator> pluginFactories = new List<ObjectCreator>();
 
-			foreach ( string file in files )
+            if (Directory.Exists(folder))
 			{
-				// TODO: allow exlusions in the app.config
-				if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" )
+                string[] files = Directory.GetFiles(folder);
+                string assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
+
+                foreach (string file in files)
 				{
-					string fullPath = Path.GetFullPath( file );
+                    string currentFile = Path.GetFileName(file);
 
-					DynamicLoader loader = new DynamicLoader( fullPath );
+                    if (Path.GetExtension(file) != ".dll" || currentFile == assemblyName)
+                        continue;
+                    string fullPath = Path.GetFullPath(file);
 
-					foreach ( ObjectCreator factory in loader.Find( typeof( IPlugin ) ) )
+                    DynamicLoader loader = new DynamicLoader(fullPath);
+
+                    foreach (ObjectCreator factory in loader.Find(typeof(IPlugin)))
 					{
-						pluginFactories.Add( factory );
+                        pluginFactories.Add(factory);
 					}
 
 				}
+            }
 
-			}
 			return pluginFactories;
 		}
 

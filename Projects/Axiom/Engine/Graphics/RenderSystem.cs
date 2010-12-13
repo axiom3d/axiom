@@ -498,7 +498,7 @@ namespace Axiom.Graphics
                 {
                     DisableTextureUnit( i );
                 }
-                catch( Exception )
+				catch ( Exception )
                 {
                 }
             }

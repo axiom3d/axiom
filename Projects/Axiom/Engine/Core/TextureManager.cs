@@ -474,7 +474,7 @@ namespace Axiom.Core
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
-			Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
+			Axiom.Math.Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
 
 			Texture texture = (Texture)result.First;
 

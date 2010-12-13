@@ -53,7 +53,7 @@ namespace Axiom.FileSystem
 
 		#region Construction and Destruction
 
-		public Watcher(string path, bool recurse)
+		public Watcher( string path, bool recurse )
 		{
 #if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE)
 			// Initialize FileSystemWatcher
@@ -84,7 +84,7 @@ namespace Axiom.FileSystem
 		private static void OnChanged( object source, FileSystemEventArgs e )
 		{
 			// Specify what is done when a file is changed, created, or deleted.
-		  LogManager.Instance.Write("File: " +  e.FullPath + " " + e.ChangeType);
+			LogManager.Instance.Write( "File: " + e.FullPath + " " + e.ChangeType );
 		}
 
 		private static void OnRenamed( object source, RenamedEventArgs e )

@@ -180,6 +180,8 @@ namespace Axiom.Core
 				this.AddMovableObjectFactory( this.billboardChainFactory, true );
 				this.ribbonTrailFactory = new RibbonTrailFactory();
 				this.AddMovableObjectFactory( this.ribbonTrailFactory, true );
+				this.movableTextFactory = new MovableTextFactory();
+				this.AddMovableObjectFactory( this.movableTextFactory, true );
 			}
 		}
 
@@ -262,6 +264,11 @@ namespace Axiom.Core
 		private long lastEndTime;
 
 		/// <summary>
+		///     Start queued stage of last frame.
+		/// </summary>
+		private long lastQueuedTime;
+
+		/// <summary>
 		///     Start time of last frame.
 		/// </summary>
 		private long lastStartTime;
@@ -323,6 +330,7 @@ namespace Axiom.Core
 		private ManualObjectFactory manualObjectFactory;
 		private uint nextMovableObjectTypeFlag;
 		private RibbonTrailFactory ribbonTrailFactory;
+		private MovableTextFactory movableTextFactory;
 
 		#endregion MovableObjectFactory fields
 
@@ -980,7 +988,7 @@ namespace Axiom.Core
 			this.activeRenderSystem.InitRenderTargets();
 
 			// initialize the vars
-			this.lastStartTime = this.lastEndTime = this.timer.Milliseconds;
+			this.lastStartTime = this.lastQueuedTime = this.lastEndTime = this.timer.Milliseconds;
 
 			// reset to false so that rendering can begin
 			this.queuedEnd = false;
@@ -1178,6 +1186,12 @@ namespace Axiom.Core
 
 				// update the last start time before the render targets are rendered
 				this.lastStartTime = time;
+			}
+			else if ( type == FrameEventType.End )
+			{
+				result = (float)( time - this.lastQueuedTime ) / 1000;
+				// update the last queued time before the render targets are rendered
+				this.lastQueuedTime = time;
 			}
 			else if ( type == FrameEventType.End )
 			{

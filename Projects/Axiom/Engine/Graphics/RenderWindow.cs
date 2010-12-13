@@ -66,8 +66,8 @@ namespace Axiom.Graphics
 		#region Protected member variables
 
 		protected bool isFullScreen;
-		
-        #region top Property
+		protected IntPtr targetHandle;
+		#region top Property
 
 		private int _top;
 		/// <summary>
@@ -268,7 +268,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <param name="colorDepth"></param>
+		/// <param name="colourDepth"></param>
 		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );

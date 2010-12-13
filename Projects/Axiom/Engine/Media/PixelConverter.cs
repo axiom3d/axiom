@@ -118,6 +118,7 @@ namespace Axiom.Media
 				this.rshift = rshift;
 				this.gshift = gshift;
 				this.bshift = bshift;
+                this.ashift = ashift;
 			}
 
 			#endregion Constructor
@@ -863,7 +864,7 @@ namespace Axiom.Media
         /// <returns>The color is returned here</returns>
 		public static ColorEx UnpackColor( PixelFormat pf, IntPtr src )
 		{
-			ColorEx val = new ColorEx();
+			ColorEx val;
 
 			UnpackColor( out val.r, out val.g, out val.b, out val.a, pf, src );
 			

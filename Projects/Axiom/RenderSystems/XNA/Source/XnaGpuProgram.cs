@@ -181,15 +181,15 @@ namespace Axiom.RenderSystems.Xna
 
 	}
 
+#if XNA31
 	/// <summary>
 	///    Xna implementation of low-level vertex programs.
 	/// </summary>
 	public class XnaVertexProgram : XnaGpuProgram
 	{
-		#region Fields and Properties
+	#region Fields and Properties
 
-		#region VertexShader Property
-
+	#region VertexShader Property
 		/// <summary>
 		///    Reference to the current Xna VertexShader object.
 		/// </summary>
@@ -208,7 +208,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Fields and Properties
 
-		#region Constructor
+	#region Constructor
 
 		internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
 			: base( parent, name, handle, group, isManual, loader, device )
@@ -217,7 +217,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Constructor
 
-		#region XnaGpuProgram Members
+	#region XnaGpuProgram Members
 
 		/// <summary>
 		///     Loads a vertex shader from shaderCode member variable
@@ -230,7 +230,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion XnaGpuProgram Memebers
 
-		#region GpuProgram Members
+	#region GpuProgram Members
 
 		/// <summary>
 		///     Unloads the VertexShader object.
@@ -241,10 +241,10 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( vertexShader != null )
 			{
-                if (!vertexShader.IsDisposed)
-				    vertexShader.Dispose();
+				if (!vertexShader.IsDisposed)
+					vertexShader.Dispose();
 
-                vertexShader = null;
+				vertexShader = null;
 			}
 		}
 
@@ -257,9 +257,9 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaFragmentProgram : XnaGpuProgram
 	{
-		#region Fields and Properties
+	#region Fields and Properties
 
-		#region PixelShader Property
+	#region PixelShader Property
 
 		/// <summary>
 		///    Reference to the current Xna PixelShader object.
@@ -281,7 +281,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Fields and Properties
 
-		#region Constructors
+	#region Constructors
 
 		internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
 			: base( parent, name, handle, group, isManual, loader, device )
@@ -290,7 +290,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Constructors
 
-		#region XnaGpuProgram Members
+	#region XnaGpuProgram Members
 
 		/// <summary>
 		///     Loads a pixel shader from shaderCode member variable
@@ -303,7 +303,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion XnaGpuProgram Members
 
-		#region GpuProgram Members
+	#region GpuProgram Members
 
 		/// <summary>
 		///     Unloads the PixelShader object.
@@ -314,14 +314,16 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( pixelShader != null )
 			{
-                if (!pixelShader.IsDisposed)
-				    pixelShader.Dispose();
+				if (!pixelShader.IsDisposed)
+					pixelShader.Dispose();
 
-                pixelShader = null;
+				pixelShader = null;
 			}
 		}
 
 		#endregion GpuProgram Members
 
 	}
+#endif
+
 }

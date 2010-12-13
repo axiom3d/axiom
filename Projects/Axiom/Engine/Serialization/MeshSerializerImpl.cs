@@ -1324,38 +1324,37 @@ namespace Axiom.Serialization
 					{
 						sm.lodFaceList.Add( null );
 					}
-					//sub.lodFaceList.Resize(mesh.lodCount - 1);
 				}
-			}
 
-			MeshChunkID chunkId;
-			// Loop from 1 rather than 0 (full detail index is not in file)
-			for ( int i = 1; i < lodLevelCount; i++ )
-			{
-				chunkId = this.ReadChunk( reader );
-
-				if ( chunkId != MeshChunkID.MeshLODUsage )
-					throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", this.mesh.Name );
-
-				// Read depth
-				MeshLodUsage usage = new MeshLodUsage();
-				usage.Value = ReadFloat( reader );
-				usage.UserValue = Utility.Sqrt( usage.Value );
-
-				if ( this.mesh.IsLodManual )
+				MeshChunkID chunkId;
+				// Loop from 1 rather than 0 (full detail index is not in file)
+				for ( int i = 1; i < lodLevelCount; i++ )
 				{
-					this.ReadMeshLodUsageManual( reader, i, ref usage );
-				}
-				else //(!pMesh->isLodManual)
-				{
-					this.ReadMeshLodUsageGenerated( reader, i, ref usage );
-				}
-				usage.EdgeData = null;
+					chunkId = this.ReadChunk( reader );
 
-				// Save usage
-				this.mesh.MeshLodUsageList.Add( usage );
+					if ( chunkId != MeshChunkID.MeshLODUsage )
+						throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", this.mesh.Name );
+
+					// Read depth
+					MeshLodUsage usage = new MeshLodUsage();
+					usage.Value = ReadFloat( reader );
+					usage.UserValue = Utility.Sqrt( usage.Value );
+
+					if ( this.mesh.IsLodManual )
+					{
+						this.ReadMeshLodUsageManual( reader, i, ref usage );
+					}
+					else //(!pMesh->isLodManual)
+					{
+						this.ReadMeshLodUsageGenerated( reader, i, ref usage );
+					}
+					usage.EdgeData = null;
+
+					// Save usage
+					this.mesh.MeshLodUsageList.Add( usage );
+				}
+				Debug.Assert( mesh.LodLevelCount == lodLevelCount );
 			}
-			Debug.Assert( mesh.LodLevelCount == lodLevelCount );
 		}
 
 		protected virtual void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )

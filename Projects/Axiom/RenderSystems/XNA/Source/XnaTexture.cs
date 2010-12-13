@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.Xna
 	{
 		#region Fields
 
-		private XFG.RenderTarget renderTarget;
+		private XFG.RenderTarget2D renderTarget;
 		/// <summary>
 		///     Direct3D device reference.
 		/// </summary>
@@ -141,7 +141,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Properties
 
-		public XFG.RenderTarget RenderTarget
+		public XFG.RenderTarget2D RenderTarget
 		{
 			get
 			{

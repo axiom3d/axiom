@@ -780,8 +780,6 @@ namespace Axiom.Core
 		/// <param name="name">The name to give the resource group.</param>
 		public void CreateResourceGroup( string name )
 		{
-			name = name;
-
 			LogManager.Instance.Write( "Creating resource group " + name );
 			if ( getResourceGroup( name ) != null )
 			{
@@ -957,9 +955,12 @@ namespace Axiom.Core
 			// Now load for real
 			if ( loadMainResources )
 			{
-				foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrders )
+				float[] keys = new float[ grp.LoadResourceOrders.Count ];
+				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
+
+				for ( ushort i = 0; i < keys.Length; i++ )
 				{
-					LoadUnloadResourceList lurl = pair.Value;
+					LoadUnloadResourceList lurl = grp.LoadResourceOrders[ keys[ i ] ];
 					foreach ( Resource res in lurl )
 					{
 						// Fire resource events no matter whether resource is already
@@ -2077,7 +2078,6 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected ResourceGroup getResourceGroup( string name )
 		{
-			name = name;
 			if ( _resourceGroups.ContainsKey( name ) )
 			{
 				return _resourceGroups[ name ];
@@ -2344,8 +2344,7 @@ namespace Axiom.Core
 			LogManager.Instance.Write( "Parsing scripts for resource group " + grp.Name );
 
 			// Count up the number of scripts we have to parse
-			List<Tuple<IScriptLoader, List<FileInfoList>>> scriptLoaderFileList =
-				new List<Tuple<IScriptLoader, List<FileInfoList>>>();
+			List<Axiom.Math.Tuple<IScriptLoader, List<FileInfoList>>> scriptLoaderFileList = new List<Axiom.Math.Tuple<IScriptLoader, List<FileInfoList>>>();
 
 			int scriptCount = 0;
 			// Iterate over script users in loading order and get streams
@@ -2364,7 +2363,7 @@ namespace Axiom.Core
 						scriptCount += fileList.Count;
 						fileListList.Add( fileList );
 					}
-					scriptLoaderFileList.Add( new Tuple<IScriptLoader, List<FileInfoList>>( isl, fileListList ) );
+					scriptLoaderFileList.Add( new Axiom.Math.Tuple<IScriptLoader, List<FileInfoList>>( isl, fileListList ) );
 				}
 			}
 			// Fire scripting event
@@ -2372,7 +2371,7 @@ namespace Axiom.Core
 
 			// Iterate over scripts and parse
 			// Note we respect original ordering
-			foreach ( Tuple<IScriptLoader, List<FileInfoList>> slfli in scriptLoaderFileList )
+			foreach ( Axiom.Math.Tuple<IScriptLoader, List<FileInfoList>> slfli in scriptLoaderFileList )
 			{
 				IScriptLoader su = slfli.First;
 				// Iterate over each list
@@ -2381,20 +2380,18 @@ namespace Axiom.Core
 					// Iterate over each item in the list
 					foreach ( FileInfo fii in flli )
 					{
-						LogManager.Instance.Write( "Parsing script " + fii.Filename );
-						_fireScriptStarted( fii.Filename );
-						{
 							IO.Stream stream = fii.Archive.Open( fii.Basename );
 							if ( stream != null )
 							{
+							_fireScriptStarted( fii.Filename );
+							LogManager.Instance.Write( "Parsing script " + fii.Basename );
 								su.ParseScript( stream, grp.Name, fii.Filename );
 								stream.Close();
+							_fireScriptEnded();
 							}
 						}
-						_fireScriptEnded();
 					}
 				}
-			}
 
 			_fireResourceGroupScriptingEnded( grp.Name );
 			LogManager.Instance.Write( "Finished parsing scripts for resource group " + grp.Name );
@@ -2582,6 +2579,8 @@ namespace Axiom.Core
 					}
 					resourceGroups.Clear();
 					_currentGroup = null;
+
+					ResourceGroupManager.instance = null;
 				}
 
 				// There are no unmanaged resources to release, but

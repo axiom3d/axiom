@@ -202,7 +202,7 @@ namespace Axiom.RenderSystems.Xna
 				CreateRenderTextures( update );
 		}
 
-		public void Bind( XFG.GraphicsDevice device, XFG.RenderTarget surface, bool update )
+		public void Bind( XFG.GraphicsDevice device, XFG.RenderTarget2D surface, bool update )
 		{
 			this.device = device;
 			this.renderTarget = (XFG.RenderTarget2D)surface;
@@ -334,7 +334,7 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( surface != null )
 			{
-				surface.SetData<byte>( mipLevel, XnaHelper.ToRectangle( dstBox ), newBuffer, 0, bufSize, XFG.SetDataOptions.None );
+				surface.SetData<byte>( mipLevel, XnaHelper.ToRectangle( dstBox ), newBuffer, 0, bufSize );
 			}
 			else
 			{
@@ -374,9 +374,7 @@ namespace Axiom.RenderSystems.Xna
 			int sizeInBytes = PixelUtil.GetMemorySize( lockBox.Width, lockBox.Height, lockBox.Depth, XnaHelper.Convert( surface.Format ) );
 			_bufferBytes = new byte[ sizeInBytes ];
 
-			surface.GetData( mipLevel,
-							new Microsoft.Xna.Framework.Rectangle( lockBox.Left, lockBox.Top, lockBox.Right, lockBox.Bottom ),
-						   _bufferBytes, 0, _bufferBytes.Length );
+			surface.GetData( mipLevel, XnaHelper.ToRectangle( lockBox  ), _bufferBytes, 0, _bufferBytes.Length );
 
 			fixed ( byte* bytes = &_bufferBytes[ 0 ] )
 			{
@@ -392,11 +390,7 @@ namespace Axiom.RenderSystems.Xna
 		protected override void UnlockImpl()
 		{
 			//set the bytes array inside the texture
-			surface.SetData( mipLevel,
-							new Microsoft.Xna.Framework.Rectangle( _lockedBox.Left, _lockedBox.Top, _lockedBox.Right, _lockedBox.Bottom ),
-							_bufferBytes, 0,
-							_bufferBytes.Length,
-							Microsoft.Xna.Framework.Graphics.SetDataOptions.None );
+			surface.SetData( mipLevel, XnaHelper.ToRectangle( _lockedBox ),	_bufferBytes, 0, _bufferBytes.Length );
 		}
 
 		public override RenderTexture GetRenderTarget( int slice )

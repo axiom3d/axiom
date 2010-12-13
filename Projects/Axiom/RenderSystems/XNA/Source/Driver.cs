@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.Xna
 			this._name = adapterDetails.DeviceName;
 			this._description = adapterDetails.Description;
 			this._adapterNum = adapterDetails.DeviceId;
-			this._adapterIdentifier = adapterDetails.DeviceIdentifier;
+			//this._adapterIdentifier = adapterDetails.VendorId;
 			this._adapter = adapterDetails;
 
 			_videoModeList = new VideoModeCollection();

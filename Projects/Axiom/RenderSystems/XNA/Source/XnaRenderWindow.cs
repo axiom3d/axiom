@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.Xna
 		private bool _isSwapChain;			// Is this a secondary window?
 
 		/// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-		private XFG.RenderTarget _renderSurface;
+		private XFG.RenderTarget2D _renderSurface;
 		private XFG.DepthStencilBuffer _stencilBuffer;
 
 		private XFG.MultiSampleType _fsaaType;

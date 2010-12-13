@@ -146,7 +146,7 @@ namespace Axiom.Serialization
 	/// </remarks>
 	public class StreamSerializer : DisposableObject
 	{
-		#region Constants and Enumerations 
+		#region Constants and Enumerations
 
 		public const uint HEADER_ID = 0x0001;
 		public const uint REVERSE_HEADER_ID = 0x1000;
@@ -259,7 +259,7 @@ namespace Axiom.Serialization
 					long diff = curPos - mChunkStack.PeekTail().offset;
 					if ( diff >= CHUNK_HEADER_SIZE )
 					{
-						return (int)(diff - CHUNK_HEADER_SIZE);
+						return (int)( diff - CHUNK_HEADER_SIZE );
 					}
 					else
 					{
@@ -287,7 +287,7 @@ namespace Axiom.Serialization
 					this.ReadHeader();
 				}
 
-				if ( this.mEndian == Endian.Auto)
+				if ( this.mEndian == Endian.Auto )
 				{
 					throw new Exception( "Endian mode has not been determined, did you disable header without setting?" );
 				}
@@ -636,7 +636,7 @@ namespace Axiom.Serialization
 
 			// seek to 'length' position in stream for this chunk
 			// skip id (32) and version (16)
-			mStream.Position = ( c.offset + sizeof ( uint ) + sizeof ( ushort ) );
+			mStream.Position = ( c.offset + sizeof( uint ) + sizeof( ushort ) );
 			Write( c.length );
 			// write updated checksum
 			Write( c.GetHashCode() );
@@ -652,7 +652,7 @@ namespace Axiom.Serialization
 		/// <returns>new instance of type T</returns>
 		public T Read<T>()
 		{
-			byte[] buffer = new byte[Memory.SizeOf( typeof ( T ) )];
+			byte[] buffer = new byte[ Memory.SizeOf( typeof( T ) ) ];
 			ReadData( buffer, buffer.Length, 1 );
 			return BitConverterEx.SetBytes<T>( buffer );
 		}
@@ -664,7 +664,7 @@ namespace Axiom.Serialization
 		/// <param name="data">new instance of type T</param>
 		public void Read<T>( out T data )
 		{
-			byte[] buffer = new byte[Memory.SizeOf( typeof ( T ) )];
+			byte[] buffer = new byte[ Memory.SizeOf( typeof( T ) ) ];
 			ReadData( buffer, buffer.Length, 1 );
 			data = BitConverterEx.SetBytes<T>( buffer );
 		}
@@ -679,7 +679,7 @@ namespace Axiom.Serialization
 			int length;
 			byte[] buffer = new byte[ Memory.SizeOf( typeof( int ) ) ];
 			ReadData( buffer, buffer.Length, 1 );
-			length = BitConverterEx.SetBytes<int>( buffer);
+			length = BitConverterEx.SetBytes<int>( buffer );
 			buffer = new byte[ Memory.SizeOf( typeof( T ) ) * length ];
 			ReadData( buffer, buffer.Length, 1 );
 			BitConverterEx.SetBytes<T>( buffer, out data );
@@ -693,7 +693,7 @@ namespace Axiom.Serialization
 		{
 			int length = Read<int>();
 			System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-			byte[] buffer = new byte[length];
+			byte[] buffer = new byte[ length ];
 			this.ReadData( buffer, buffer.Length, 1 );
 			data = encoding.GetString( buffer, 0, buffer.Length );
 		}
@@ -781,8 +781,8 @@ namespace Axiom.Serialization
 		protected void ReadHeader()
 		{
 			uint headerid;
-			byte[] mtp = new byte[4];
-			int actually_read = mStream.Read( mtp, 0, sizeof ( uint ) );
+			byte[] mtp = new byte[ 4 ];
+			int actually_read = mStream.Read( mtp, 0, sizeof( uint ) );
 			mStream.Position -= actually_read;
 
 			headerid = BitConverter.ToUInt32( mtp, 0 );
@@ -803,14 +803,14 @@ namespace Axiom.Serialization
 
 			Chunk chunk = ReadChunkBegin();
 			// endian should be flipped now
-			Debug.Assert(chunk.id == HEADER_ID);
+			Debug.Assert( chunk.id == HEADER_ID );
 
 			// read real storage format
 			bool realIsDouble;
-			Read(out realIsDouble);
-			mRealFormat = realIsDouble? RealStorageFormat.Double : RealStorageFormat.Float;
+			Read( out realIsDouble );
+			mRealFormat = realIsDouble ? RealStorageFormat.Double : RealStorageFormat.Float;
 
-			ReadChunkEnd(HEADER_ID);
+			ReadChunkEnd( HEADER_ID );
 		}
 
 		/// <summary>

@@ -52,6 +52,9 @@ namespace Axiom.ParticleFX
 	{
 		protected Image colorImage;
 		protected String colorImageName;
+		protected bool colorImageLoaded;
+
+		const float div_255 = 1.0f / 255.0f;
 
 		public ColorImageAffector()
 		{
@@ -67,32 +70,28 @@ namespace Axiom.ParticleFX
 			set
 			{
 				colorImageName = value;
-				colorImage = Image.FromFile( value );
-
-				PixelFormat format = colorImage.Format;
-
-				if ( format != PixelFormat.A8B8G8R8 )
-				{
-					throw new NotSupportedException( "Error: Image is not a rgba image.  ColorImageAffector.ColorImageName property set" );
 				}
 			}
-		}
 
 		public override void InitParticle( ref Particle particle )
 		{
-			const float div_255 = 1.0f / 255.0f;
+			if ( !colorImageLoaded )
+			{
+				loadImage();
+			}
 
-			particle.Color.r = colorImage.Data[ 0 ] * div_255;
-			particle.Color.g = colorImage.Data[ 1 ] * div_255;
-			particle.Color.b = colorImage.Data[ 2 ] * div_255;
-			particle.Color.a = colorImage.Data[ 3 ] * div_255;
+			particle.Color = colorImage.GetColorAt( 0, 0, 0 );
 		}
 
 		public override void AffectParticles( ParticleSystem system, float timeElapsed )
 		{
-			float width = colorImage.Width - 1;
+			if ( !colorImageLoaded )
+			{
+				loadImage();
+			}
+
+			int width = colorImage.Width - 1;
 			float height = colorImage.Height - 1;
-			const float div_255 = 1.0f / 255.0f;
 
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
@@ -118,26 +117,45 @@ namespace Axiom.ParticleFX
 				int index = (int)float_index;
 				int position = index * 4;
 
-				if ( index <= 0 || index >= width )
+				if ( index <= 0 )
 				{
-					p.Color.r = ( colorImage.Data[ position + 0 ] * div_255 );
-					p.Color.g = ( colorImage.Data[ position + 1 ] * div_255 );
-					p.Color.b = ( colorImage.Data[ position + 2 ] * div_255 );
-					p.Color.a = ( colorImage.Data[ position + 3 ] * div_255 );
+					p.Color = colorImage.GetColorAt( 0, 0, 0 );
+				}
+					else if ( index >= width )
+				{
+					p.Color = colorImage.GetColorAt( width, 0, 0 );
 				}
 				else
 				{
 					// fract, to_color and from_color are CONST in OGRE, but errors here
 					float fract = float_index - (float)index;
-					float toColor = fract * div_255;
-					float fromColor = ( div_255 - toColor );
+					float toColor = fract;
+					float fromColor = (1 - toColor );
 
-					p.Color.r = ( colorImage.Data[ position + 0 ] * fromColor ) + ( colorImage.Data[ position + 4 ] * toColor );
-					p.Color.g = ( colorImage.Data[ position + 1 ] * fromColor ) + ( colorImage.Data[ position + 5 ] * toColor );
-					p.Color.b = ( colorImage.Data[ position + 2 ] * fromColor ) + ( colorImage.Data[ position + 6 ] * toColor );
-					p.Color.a = ( colorImage.Data[ position + 3 ] * fromColor ) + ( colorImage.Data[ position + 7 ] * toColor );
+					ColorEx from = colorImage.GetColorAt( index, 0, 0 ),
+							to = colorImage.GetColorAt( index + 1, 0, 0 );
+
+					p.Color.r = ( from.r * fromColor ) + ( to.r * toColor );
+					p.Color.g = ( from.g * fromColor ) + ( to.g * toColor );
+					p.Color.b = ( from.b * fromColor ) + ( to.b * toColor );
+					p.Color.a = ( from.a * fromColor ) + ( to.a * toColor );
 				}
 			}
+
+		}
+
+		private void loadImage()
+		{
+			colorImage = Image.FromFile( colorImageName );
+
+			PixelFormat format = colorImage.Format;
+
+			if ( !PixelUtil.IsAccessible( format ) )
+			{
+				throw new NotSupportedException( "Error: Image is not accessible (rgba) image." );
+			}
+
+			colorImageLoaded = true;
 		}
 
 		#region Command definition classes

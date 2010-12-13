@@ -82,7 +82,7 @@ namespace Axiom.Media
 
         protected override void dispose(bool disposeManagedResources)
         {
-            if (!this.IsDisposed)
+			if ( instance == this )
             {
                 if (disposeManagedResources)
                 {
@@ -138,6 +138,26 @@ namespace Axiom.Media
 			}
 
 			return (ICodec)codecs[ extension ];
+		}
+
+		/// <summary>
+		/// Checks whether a codec is aviable or not.
+		/// </summary>
+		/// <param name="extension">codec to check for</param>
+		/// <returns></returns>
+		public bool IsCodecAviable( string extension )
+		{
+			return codecs.ContainsKey( extension );
+	}
+
+		/// <summary>
+		///  URegisters a new codec that can handle a particular type of media files.
+		/// </summary>
+		/// <param name="codec">codec to unrerigster</param>
+		public void UnregisterCodec( ICodec codec )
+		{
+			if ( codecs.ContainsKey( codec.Type ) )
+				codecs.Remove( codec.Type );
 		}
 	}
 
