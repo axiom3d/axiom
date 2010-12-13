@@ -109,8 +109,7 @@ namespace Axiom.Platform.Android
 
 			try
 			{
-				global::Android.Runtime.InputStreamAdapter jis = new global::Android.Runtime.InputStreamAdapter( input );
-				bitmap = BitmapFactory.DecodeStream( jis );
+				bitmap = BitmapFactory.DecodeStream( input );
 
 				Bitmap.Config config = bitmap.GetConfig();
 				int[] pixels;

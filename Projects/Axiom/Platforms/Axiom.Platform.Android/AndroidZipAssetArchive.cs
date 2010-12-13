@@ -78,8 +78,8 @@ namespace Axiom.Platform.Android
 
 				// read the open the zip archive
 				var stream = _assets.Open( Name );
-				byte[] buffer = new byte[ stream.Available() ];
-				stream.Read( buffer );
+				byte[] buffer = new byte[ stream.Length ];
+				stream.Read( buffer, 0, buffer.Length );
 				stream.Close();
 
 				ms = new MemoryStream( buffer );
