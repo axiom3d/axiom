@@ -458,7 +458,7 @@ namespace Axiom.Overlays
 			if ( isGeomUVsOutOfDate && this.isInitialized )
 			{
 				UpdateTextureGeometry();
-				isGeomPositionsOutOfDate = false;
+				isGeomUVsOutOfDate = false;
 			}
 		}
 
@@ -506,12 +506,12 @@ namespace Axiom.Overlays
 				// derive right position
 				if ( horzAlign == HorizontalAlignment.Center || horzAlign == HorizontalAlignment.Right )
 				{
-					parentRight = parentLeft + parent.Width;
+					parentRight = parentLeft + parent.width;
 				}
 				// derive bottom position
 				if ( vertAlign == VerticalAlignment.Center || vertAlign == VerticalAlignment.Bottom )
 				{
-					parentBottom = parentTop + parent.Height;
+					parentBottom = parentTop + parent.height;
 				}
 			}
 			else
@@ -706,6 +706,14 @@ namespace Axiom.Overlays
 
 		#region Properties
 
+		/// <summary>
+		/// Usefuel to hold custom userdata.
+		/// </summary>
+		public object UserData
+		{
+			get;
+			set;
+		}
 		/// <summary>
 		/// Gets the SourceTemplate for this element
 		/// </summary>
@@ -935,6 +943,7 @@ namespace Axiom.Overlays
 
                 if (!material.IsLoaded)
 				    material.Load();
+
 
 				// Set some prerequisites to be sure
 				material.Lighting = false;

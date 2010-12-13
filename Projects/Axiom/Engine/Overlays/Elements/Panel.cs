@@ -281,7 +281,7 @@ namespace Axiom.Overlays.Elements
 					// we need to add more buffers
 					int offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoordsInBuffer;
 
-					for ( int i = numTexCoordsInBuffer; i < numLayers; i++ )
+					for ( int i = numTexCoordsInBuffer; i < numLayers; ++i )
 					{
 						decl.AddElement( TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
 						offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
@@ -496,7 +496,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof( Panel ) )]
-		private class UVCoordinatesModeAttributeCommand : IPropertyCommand
+		private class UVCoordinatesAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 

@@ -297,6 +297,14 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Clear()
 		{
+			Clear( false );
+		}
+
+		/// <summary>
+		///		Clears all 
+		/// </summary>
+		public void Clear( bool dispose )
+		{
 			// loop through each queue and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
 			for ( int i = 0; i < renderGroups.Count; i++ )
@@ -304,11 +312,17 @@ namespace Axiom.Graphics
 				RenderQueueGroup group = (RenderQueueGroup)renderGroups.GetByIndex( i );
 
 				// clear the RenderQueueGroup
-				group.Clear();
+				group.Clear( dispose );
 			}
 
 			// trigger the pending pass updates
 			Pass.ProcessPendingUpdates();
+
+			// NB this leaves the items present (but empty)
+			// We're assuming that frame-by-frame, the same groups are likely to 
+			//  be used, so no point destroying the vectors and incurring the overhead
+			//  that would cause, let them be destroyed in the destructor.
+
 		}
 
 		/// <summary>

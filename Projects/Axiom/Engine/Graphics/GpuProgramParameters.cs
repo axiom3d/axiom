@@ -111,7 +111,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Flag to indicate if names not found will be automatically added.
 		/// </summary>
-		protected bool autoAddParamName;
+		protected bool autoAddParamName = true;
 
 		protected List<ParameterEntry> paramTypeList = new List<ParameterEntry>();
 		//protected ArrayList paramIndexTypes = new ArrayList();
@@ -945,6 +945,12 @@ namespace Axiom.Graphics
 					case AutoConstantType.LightPowerScale:
 						SetConstant( entry.PhysicalIndex, source.GetLightPowerScale( entry.Data ) );
 						break;
+					case AutoConstantType.WorldMatrix:
+						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
+						break;
+					//case AutoConstantType.ViewProjMatrix:
+					//    SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
+					//    break;
 				}
 			}
 		}

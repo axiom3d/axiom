@@ -1255,6 +1255,23 @@ namespace Axiom.Core
 		}
 
 		#endregion IManualResourceLoader Implementation
+
+		#region IDisposable Implementation
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Unregister with resource group manager
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+
+					Singleton<MeshManager>.Destroy();
+				}
+			}
+		}
+		#endregion IDisposable Implementation
 	}
 
 	#region MeshSerializer Events

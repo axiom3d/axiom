@@ -89,7 +89,7 @@ namespace Axiom.Fonts
 
 		#region Internal Classes and Structures
 
-		public struct GlyphInfo 
+		public struct GlyphInfo
 		{
 			public CodePoint codePoint;
 			public UVRect uvRect;
@@ -116,6 +116,12 @@ namespace Axiom.Fonts
 
 		#region Fields and Properties
 
+		#region MaxBearingY
+		/// <summary>
+		///  Max distance to baseline of this (truetype) font
+		/// </summary>
+		private int maxBearingY = 0;
+		#endregion MaxBearingY
 		#region FontType Property
 
 		/// <summary>
@@ -441,7 +447,7 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
-			GlyphInfo glyph = new GlyphInfo( c, new UVRect(v1, u1, v2, u2), aspect );
+			GlyphInfo glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect * ( u2 - u1 ) / ( v2 - v1 ) );
 			if ( codePoints.ContainsKey( c ) )
 				codePoints[ c ] = glyph;
 			else
@@ -530,12 +536,14 @@ namespace Axiom.Fonts
 		{
 			if ( _material != null )
 			{
+				MaterialManager.Instance.Remove( _material );
 				_material.Unload();
 				_material = null;
 			}
 
 			if ( _texture != null )
 			{
+				TextureManager.Instance.Remove( _texture );
 				_texture.Unload();
 				_texture = null;
 			}
@@ -550,164 +558,213 @@ namespace Axiom.Fonts
 		#endregion Implementation of Resource
 
 		#region Implementation of IManualResourceLoader
-
 		public void LoadResource( Resource resource )
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
 			
 #if !( XBOX || XBOX360 || ANDROID || IPHONE)
-			// create a new bitamp with the size defined
-			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap( BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
+			string current = Environment.CurrentDirectory;
 
-			// get a handles to the graphics context of the bitmap
-			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bitmap );
+			IntPtr ftLibrary = IntPtr.Zero;
+			if ( FT.FT_Init_FreeType( out ftLibrary ) != 0 )
+				throw new AxiomException( "Could not init FreeType library!" );
 
-			// load the font from file into a private collection to make sure
-			// this works even if the font is not installed
-			System.Drawing.FontFamily fontFamily;
-			string fontFile = String.Empty;
-			IntPtr pData = IntPtr.Zero;
-			byte[] data = null;
-			try
+			IntPtr face = IntPtr.Zero;
+			int char_space = 5;
+
+			Stream fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group );
+
+			byte[] data = new byte[ fileStream.Length ];
+			fileStream.Read( data, 0, data.Length );
+			//Load font
+			int success = FT.FT_New_Memory_Face( ftLibrary, data, data.Length, 0, out face );
+			if ( success != 0 )
 			{
-				using ( Stream fileStream = Singleton<ResourceGroupManager>.Instance.OpenResource( this.Source, Group ) )
+				throw new AxiomException( "Could not open font face!" );
+			}
+
+			// Convert our point size to freetype 26.6 fixed point format
+			int ttfSize = _ttfSize * ( 1 << 6 );
+
+			success = FT.FT_Set_Char_Size( face, ttfSize, 0, (uint)_ttfResolution, (uint)_ttfResolution );
+			if ( success != 0 )
+			{
 				{
-					using ( System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection() )
+					throw new AxiomException( "Could not set char size!" );
+				}
+			}
+			int max_height = 0, max_width = 0;
+			List<KeyValuePair<int, int>> codePointRange = new List<KeyValuePair<int, int>>();
+			// Backwards compatibility - if codepoints not supplied, assume 33-166
+			if ( codePointRange.Count == 0 )
+			{
+				codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
+			}
+
+			int glyphCount = 0;
+			foreach ( KeyValuePair<int, int> r in codePointRange )
+			{
+				KeyValuePair<int, int> range = r;
+				for ( int cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
+				{
+					FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
+					FT_FaceRec rec = (FT_FaceRec)Marshal.PtrToStructure( face, typeof( FT_FaceRec ) );
+					FT_GlyphSlotRec glyp = (FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( FT_GlyphSlotRec ) );
+					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
+					if ( glyp.metrics.horiBearingY > maxBearingY )
+						maxBearingY = glyp.metrics.horiBearingY;
+
+					if ( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
+						max_width = ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 );
+
+				}
+			}
+
+			// Now work out how big our texture needs to be
+			int rawSize = ( max_width + char_space ) *
+				( ( max_height >> 6 ) + char_space ) * glyphCount;
+
+			int tex_side = (int)System.Math.Sqrt( (Real)rawSize );
+
+			// just in case the size might chop a glyph in half, add another glyph width/height
+			tex_side += System.Math.Max( max_width, ( max_height >> 6 ) );
+			// Now round up to nearest power of two
+			int roundUpSize = (int)Bitwise.FirstPO2From( (uint)tex_side );
+			// Would we benefit from using a non-square texture (2X width(
+			int finalWidth = 0, finalHeight = 0;
+			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
+			{
+				finalHeight = (int)( roundUpSize * 0.5 );
+			}
+			else
+			{
+				finalHeight = roundUpSize;
+			}
+			finalWidth = roundUpSize;
+
+			Real textureAspec = (Real)finalWidth / (Real)finalHeight;
+			int pixelBytes = 2;
+			int dataWidth = finalWidth * pixelBytes;
+			int data_size = finalWidth * finalHeight * pixelBytes;
+
+			LogManager.Instance.Write( "Font " + _name + " using texture size " + finalWidth.ToString() + "x" + finalHeight.ToString() );
+
+			byte[] imageData = new byte[ data_size ];
+			for ( int i = 0; i < data_size; i += pixelBytes )
+			{
+				imageData[ i + 0 ] = 0xff;// luminance
+				imageData[ i + 1 ] = 0x00;// alpha
+			}
+
+
+			int l = 0, m = 0;
+			foreach ( KeyValuePair<int, int> r in codePointRange )
+			{
+				KeyValuePair<int, int> range = r;
+				for ( int cp = range.Key; cp <= range.Value; ++cp )
+				{
+					int result = FT.FT_Load_Char( face, (uint)cp, 4 );//4 == FT_LOAD_RENDER
+					if ( result != 0 )
 					{
-						data = new byte[ fileStream.Length ];
-						fileStream.Read( data, 0, data.Length );
-						pData = Memory.PinObject( data );
+						// problem loading this glyph, continue
+						LogManager.Instance.Write( "Info: cannot load character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
+						continue;
+					}
 
-						fontCollection.AddMemoryFont( pData, data.Length );
+					FT_FaceRec rec = (FT_FaceRec)Marshal.PtrToStructure( face, typeof( FT_FaceRec ) );
+					FT_GlyphSlotRec glyp = (FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( FT_GlyphSlotRec ) );
+					int advance = glyp.advance.x >> 6;
+					unsafe
+					{
+						if ( glyp.bitmap.buffer == IntPtr.Zero )
+						{
+							LogManager.Instance.Write( "Info: Freetype returned null for character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
+							continue;
+						}
+						byte* buffer = (byte*)glyp.bitmap.buffer;
+						byte* imageDataPtr = (byte*)Memory.PinObject( imageData );
+						int y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
+						int x_bearing = glyp.metrics.horiBearingX >> 6;
 
-						fontFamily = fontCollection.Families[ 0 ];
+						for ( int j = 0; j < glyp.bitmap.rows; j++ )
+						{
+							int row = j + m + y_bearing;
+							byte* pDest = &imageDataPtr[ ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes ];
+							for ( int k = 0; k < glyp.bitmap.width; k++ )
+							{
+								if ( AntialiasColor )
+								{
+									// Use the same greyscale pixel for all components RGBA
+									*pDest++ = *buffer;
+								}
+								else
+								{
+									// Always white whether 'on' or 'off' pixel, since alpha
+									// will turn off
+									*pDest++ = (byte)0xFF;
+								}
+								// Always use the greyscale value for alpha
+								*pDest++ = *buffer++;
+							}//end k
+						}//end j
+						//
+						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth,//u1
+							(Real)m / (Real)finalHeight,//v1
+							(Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+							( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
+						//    textureAspec );
+						//SetGlyphTexCoords( c, u1, v1, u2, v2 );
+						//Glyphs.Add( new KeyValuePair<CodePoint, GlyphInfo>( (uint)cp,
+						//    new GlyphInfo( (uint)cp,
+						//        new UVRect(
+						//            (Real)l / (Real)finalWidth,//u1
+						//    (Real)m / (Real)finalHeight,//v1
+						//    (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+						//    ( m + ( max_height >> 6 ) ) / (Real)finalHeight //v2
+						//    ), textureAspec ) ) );
+
+						// Advance a column
+						l += ( advance + char_space );
+
+						// If at end of row
+						if ( finalWidth - 1 < l + ( advance ) )
+						{
+							m += ( max_height >> 6 ) + char_space;
+							l = 0;
+						}
 					}
 				}
-			}
-			catch ( Exception e )
-			{
-				string error = String.Format( "Error loading font file: {0}\n{1}. Setting font to GenericSansSerif", fontFile, e.Message );
-				LogManager.Instance.Write( error );
+			}//end foreach
 
-				fontFamily = System.Drawing.FontFamily.GenericSansSerif;
-			}
-			finally
-			{
-				if ( data != null )
-				{
-					Memory.UnpinObject( data );
-				}
-			}
-
-			// get a font object for the specified font
-			System.Drawing.Font font = new System.Drawing.Font( fontFamily, 18 );
-
-			// create a pen for the grid lines
-			System.Drawing.Pen linePen = new System.Drawing.Pen( System.Drawing.Color.Red );
-
-			// clear the image to transparent
-			g.Clear( System.Drawing.Color.Transparent );
-
-			// nice smooth text
-			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-
-			// used for calculating position in the image for rendering the characters
-			int x, y, maxHeight;
-			x = y = maxHeight = 0;
-
-			// loop through each character in the glyph string and draw it to the bitmap
-			for ( int i = START_CHAR; i < END_CHAR; i++ )
-			{
-				char c = (char)i;
-
-				// are we gonna wrap?
-				if ( x + font.Size > BITMAP_WIDTH - 5 )
-				{
-					// increment the y coord and reset x to move to the beginning of next line
-					y += maxHeight;
-					x = 0;
-					maxHeight = 0;
-
-					if ( showLines )
-					{
-						// draw a horizontal line underneath this row
-						g.DrawLine( linePen, 0, y, BITMAP_WIDTH, y );
-					}
-				}
-
-				// draw the character
-				g.DrawString( c.ToString(), font, System.Drawing.Brushes.White, x - 3, y );
-
-				// measure the width and height of the character
-				System.Drawing.SizeF metrics = g.MeasureString( c.ToString(), font );
-
-				// calculate the texture coords for the character
-				// note: flip the y coords by subtracting from 1
-				float u1 = (float)x / (float)BITMAP_WIDTH;
-				float v1 = (float)y / (float)BITMAP_HEIGHT;
-
-				float u2 = (float)( x + ( metrics.Width - 4 ) ) / (float)BITMAP_WIDTH;
-				float v2 = (float)( y + metrics.Height ) / (float)BITMAP_HEIGHT;
-				SetGlyphTexCoords( c, u1, v1, u2, v2 );
-
-				// increment X by the width of the current char
-				x += (int)metrics.Width - 3;
-
-				// keep track of the tallest character on this line
-				if ( maxHeight < (int)metrics.Height )
-					maxHeight = (int)metrics.Height;
-
-				if ( showLines )
-				{
-					// draw a vertical line after this char
-					g.DrawLine( linePen, x, y, x, y + font.Height );
-				}
-			}  // for
-
-			if ( showLines )
-			{
-				// draw the last horizontal line
-				g.DrawLine( linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height );
-			}
-
-			System.Drawing.Imaging.BitmapData bmd = bitmap.LockBits( new System.Drawing.Rectangle( 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT ), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
-
-			byte[] imgData = new byte[ PixelUtil.GetNumElemBytes( PixelFormat.A8R8G8B8 ) * BITMAP_WIDTH * BITMAP_HEIGHT ];
-
-			GCHandle hBuff = GCHandle.Alloc( imgData, GCHandleType.Pinned );
-
-			Memory.Copy( bmd.Scan0, hBuff.AddrOfPinnedObject(), imgData.Length );
-
-			hBuff.Free();
-
-			Image img = new Image();
-			img.FromDynamicImage( imgData, BITMAP_WIDTH, BITMAP_HEIGHT, PixelFormat.A8R8G8B8 );
+			MemoryStream memStream = new MemoryStream( imageData );
+			Image img = Image.FromRawStream( memStream, finalWidth, finalHeight, PixelFormat.BYTE_LA );
 
 			Texture tex = (Texture)resource;
+			Image[] images = new Image[ 1 ];
+			images[ 0 ] = img;
+			tex.LoadImages( images );
+			FT.FT_Done_FreeType( ftLibrary );
 
-			tex.LoadImages( new Image[] { img } );
+            //img.Save( "C:\\" + Name + ".png" );
+            //FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
+            //StreamWriter str = new StreamWriter( file );
+            //str.WriteLine( Name );
+            //str.WriteLine( "{" );
+            //str.WriteLine( "\ttype\timage" );
+            //str.WriteLine( "\tsource\t{0}.png\n", Name );
 
-			//bitmap.Save( "C:\\" + Name + ".png" );
-			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
-			//StreamWriter str = new StreamWriter( file );
-			//str.WriteLine( Name );
-			//str.WriteLine( "{" );
-			//str.WriteLine( "\ttype\timage" );
-			//str.WriteLine( "\tsource\t{0}.png\n", Name );
+            //for ( uint i = 0; i < (uint)( END_CHAR - START_CHAR ); i++ )
+            //{
+            //    char c = (char)( i + START_CHAR );
+            //    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
+            //}
+            //str.WriteLine( "}" );
+            //str.Close();
+            //file.Close();
 
-			//for ( uint i = 0; i < (uint)(END_CHAR - START_CHAR); i++ )
-			//{
-			//    char c = (char)( i + START_CHAR );
-			//    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
-			//}
-			//str.WriteLine( "}" );
-			//str.Close();
-			//file.Close();
 #endif
 		}
-
 		#endregion Implementation of IManualResourceLoader
 	}
 }

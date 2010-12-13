@@ -103,7 +103,7 @@ namespace Axiom.RenderSystems.Xna
 		private int _lastVertexSourceCount;
 
 		// Fixed Function Emulation
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 		FixedFunctionEmulation.ShaderManager _shaderManager = new FixedFunctionEmulation.ShaderManager();
 		FixedFunctionEmulation.HLSLShaderGenerator _hlslShaderGenerator = new FixedFunctionEmulation.HLSLShaderGenerator();
 		FixedFunctionEmulation.FixedFunctionState _fixedFunctionState = new FixedFunctionEmulation.FixedFunctionState();
@@ -133,7 +133,7 @@ namespace Axiom.RenderSystems.Xna
 				texStageDesc[ i ].texType = TextureType.OneD;
 				texStageDesc[ i ].tex = null;
 			}
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 			_shaderManager.RegisterGenerator( _hlslShaderGenerator );
 #endif
 		}
@@ -783,7 +783,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_ambientLight = value;
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightAmbient = value;
 #endif
 			}
@@ -871,7 +871,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_lightingEnabled = value;
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightingEnabled = value;
 #endif
 			}
@@ -909,7 +909,7 @@ namespace Axiom.RenderSystems.Xna
 
 
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
 
@@ -989,7 +989,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 				_ffProgramParameters.ViewMatrix = _viewMatrix;
 #endif
 			}
@@ -1005,7 +1005,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_worldMatrix = value;
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if AXIOM_FF_EMULATION
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
 #endif
 			}
@@ -1099,16 +1099,20 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
+		bool VertexShaderIsSet = false;
+		bool PixelShaderIsSet = false;
 		public override void BindGpuProgram( GpuProgram program )
 		{
 			switch ( program.Type )
 			{
 				case GpuProgramType.Vertex:
 					_device.VertexShader = ( (XnaVertexProgram)program ).VertexShader;
+					VertexShaderIsSet = true;
 					break;
 
 				case GpuProgramType.Fragment:
 					_device.PixelShader = ( (XnaFragmentProgram)program ).PixelShader;
+					PixelShaderIsSet = true;
 					break;
 			}
 		}
@@ -1346,7 +1350,7 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				//could not create depth24stencil8 with "Color"
-				presentParams.BackBufferFormat = XFG.SurfaceFormat.Bgr32;
+				presentParams.BackBufferFormat = XFG.SurfaceFormat.Rgba1010102;
 			}
 
 			if ( colorDepth > 16 )
@@ -1688,6 +1692,9 @@ namespace Axiom.RenderSystems.Xna
 			throw new NotImplementedException();
 		}
 
+		bool needToUnmapVS = false;
+		bool needToUnmapFS = false;
+
 		public override void Render( RenderOperation op )
 		{
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
@@ -1701,14 +1708,12 @@ namespace Axiom.RenderSystems.Xna
 
 
 			/*---------------shaders generator part------*/
-#if !(XBOX || XBOX360 || SILVERLIGHT )
-			bool needToUnmapVS = false;
-			bool needToUnmapFS = false;
+#if AXIOM_FF_EMULATION
 
 			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
 			{
 
-				if ( _device.VertexShader == null || _device.PixelShader == null )
+				if ( !VertexShaderIsSet || !PixelShaderIsSet )
 				{
 					FixedFunctionEmulation.VertexBufferDeclaration vbd = new FixedFunctionEmulation.VertexBufferDeclaration();
 					List<FixedFunctionEmulation.VertexBufferElement> lvbe = new List<FixedFunctionEmulation.VertexBufferElement>( op.vertexData.vertexDeclaration.ElementCount );
@@ -1798,17 +1803,16 @@ namespace Axiom.RenderSystems.Xna
 						_fixedFunctionProgram.SetFixedFunctionProgramParameters( _ffProgramParameters );
 
 						//Bind Vertex Program
-						if ( _device.VertexShader == null )
+						if ( !VertexShaderIsSet )
 						{
-							_device.VertexShader = ( (XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate ).VertexShader;
+							BindGpuProgram( _fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate );
 							BindGpuProgramParameters( GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params );
 							needToUnmapVS = true;
-
 						}
 						// Bind Fragment Program 
-						if ( _device.PixelShader == null )
+						if ( !PixelShaderIsSet )
 						{
-							_device.PixelShader = ( (XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate ).PixelShader;
+							BindGpuProgram( _fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate );
 							BindGpuProgramParameters( GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params );
 							needToUnmapFS = true;
 						}
@@ -1881,7 +1885,7 @@ namespace Axiom.RenderSystems.Xna
 			_device.Indices = null;
 
 
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if AXIOM_FF_EMULATION
 			/*---------------shaders generator part------*/
 			if ( needToUnmapVS )
 			{
@@ -1952,7 +1956,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetFog( Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end )
 		{
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if AXIOM_FF_EMULATION
 			_ffProgramParameters.FogColor = color;
 			_ffProgramParameters.FogDensity = density;
 			_ffProgramParameters.FogEnd = end;
@@ -2078,7 +2082,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
 		{
-#if (!(XBOX||XBOX360))
+#if AXIOM_FF_EMULATION
 			if (//ambient == ColorEx.White &&
 				diffuse == ColorEx.Black //&&
 				//emissive == ColorEx.Black &&
@@ -2180,7 +2184,7 @@ namespace Axiom.RenderSystems.Xna
 				texStageDesc[ stage ].coordIndex = 0;
 				texStageDesc[ stage ].texType = TextureType.OneD;
 			}
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if AXIOM_FF_EMULATION
 			_ffProgramParameters.SetTextureEnabled( stage, enabled );
 #endif
 		}
@@ -2321,7 +2325,7 @@ namespace Axiom.RenderSystems.Xna
 				 xform= xform * newMat;
 				 */
 			}
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if AXIOM_FF_EMULATION
 			_ffProgramParameters.SetTextureMatrix( stage, xform.Transpose() );
 #endif
 		}
@@ -2383,7 +2387,7 @@ namespace Axiom.RenderSystems.Xna
 					depth = _getDepthStencilFor( back[ 0 ].Format, back[ 0 ].MultiSampleType, back[ 0 ].Width, back[ 0 ].Height );
 				}
 
-				//if (depth.Format == _device.DepthStencilBuffer.Format)
+				if (depth.Format == _device.DepthStencilBuffer.Format)
 				{
 					/*MessageBox.Show("same:\n" + 
 									depth.Width.ToString() + "-" + depth.Height.ToString() +"\n"+
@@ -2530,10 +2534,12 @@ namespace Axiom.RenderSystems.Xna
 			{
 				case GpuProgramType.Vertex:
 					_device.VertexShader = null;
+					VertexShaderIsSet = false;
 					break;
 
 				case GpuProgramType.Fragment:
 					_device.PixelShader = null;
+					PixelShaderIsSet = false;
 					break;
 			}
 		}
@@ -2543,7 +2549,7 @@ namespace Axiom.RenderSystems.Xna
 			int currentLightCount = lights.Count < limit ? lights.Count : limit;
 
 			List<Light> lightList = new List<Light>();
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if AXIOM_FF_EMULATION
 			_fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
 			for ( int index = 0; index < currentLightCount; index++ )
 			{

@@ -167,6 +167,9 @@ namespace Axiom.Core
 		protected MovableObject( string name )
 			: this()
 		{
+			if ( string.IsNullOrEmpty( name ) )
+				this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
+			else
 			this.name = name;
 		}
 
@@ -183,7 +186,6 @@ namespace Axiom.Core
 			this.visibilityFlags = DefaultVisibilityFlags;
 			this.worldAABB = AxisAlignedBox.Null;
 			this.castShadows = true;
-			this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
 		}
 
 		#endregion Constructors
@@ -578,7 +580,7 @@ namespace Axiom.Core
 		///		a bit on these flags is set, will it be included in a query asking for that flag. The
 		///		meaning of the bits is application-specific.
 		/// </remarks>
-		public uint QueryFlags
+		public virtual uint QueryFlags
 		{
 			get
 			{
@@ -851,10 +853,8 @@ namespace Axiom.Core
 			// counter by one for minimise overhead
 			--lightListUpdated;
 
-			if ( parentChanged )
+			if ( parentChanged && this.parentNode != null )
 			{
-				if ( this.parentNode != null )
-				{
 					if ( ObjectAttached != null )
 					{
 						//Fire Event
@@ -870,7 +870,7 @@ namespace Axiom.Core
 					}
 				}
 			}
-		}
+
 
 		/// <summary>
 		///		Internal method to notify the object of the camera to be used for the next rendering operation.

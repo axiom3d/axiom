@@ -1,3 +1,10 @@
+
+2010.10.10 - borrillis
+Added Samples Browser
+
+2010.10.06 - bostich
+- modified Font to use FreeType for font generation.
+
 2010/03/03 - borrillis
 Updated TagPoint class to OGRE r9083
 

@@ -154,7 +154,7 @@ namespace Axiom.Serialization
 
 				for ( int i = 0; i < count; i++ )
 				{
-					pointer[ i ] = reader.ReadSingle();
+					pointer[ i ] = ReadFloat(reader);
 				}
 			}
 		}
@@ -193,7 +193,7 @@ namespace Axiom.Serialization
 
 				for ( int i = 0; i < count; i++ )
 				{
-					float val = reader.ReadSingle();
+					float val = ReadFloat( reader );
 					pointer[ i ] = val;
 					destArray[ i ] = val;
 				}
@@ -212,6 +212,12 @@ namespace Axiom.Serialization
 
 		protected float ReadFloat( BinaryReader reader )
 		{
+            byte[] inputdata = new byte[4];
+            reader.Read(inputdata, 0, 4);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(inputdata, 0, 4);
+            return BitConverter.ToSingle(inputdata, 0);
 			return reader.ReadSingle();
 		}
 
@@ -220,8 +226,14 @@ namespace Axiom.Serialization
 			writer.Write( val );
 		}
 
-		protected int ReadInt( BinaryReader reader )
+        protected int ReadInt(BinaryReader reader)
 		{
+            byte[] inputdata = new byte[4];
+            reader.Read(inputdata, 0, 4);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(inputdata, 0, 4);
+            return BitConverter.ToInt32(inputdata, 0);
 			return reader.ReadInt32();
 		}
 
@@ -232,6 +244,13 @@ namespace Axiom.Serialization
 
 		protected uint ReadUInt( BinaryReader reader )
 		{
+            byte[] inputdata = new byte[4];
+            reader.Read(inputdata, 0, 4);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(inputdata, 0, 4);
+            return BitConverter.ToUInt32(inputdata, 0);
+
 			return reader.ReadUInt32();
 		}
 
@@ -242,6 +261,13 @@ namespace Axiom.Serialization
 
 		protected long ReadLong( BinaryReader reader )
 		{
+            byte[] inputdata = new byte[8];
+            reader.Read(inputdata, 0, 8);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(inputdata, 0, 8);
+            return BitConverter.ToInt64(inputdata, 0);
+
 			return reader.ReadInt64();
 		}
 
@@ -252,6 +278,13 @@ namespace Axiom.Serialization
 
 		protected ulong ReadULong( BinaryReader reader )
 		{
+            byte[] inputdata = new byte[8];
+            reader.Read(inputdata, 0, 8);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(inputdata, 0, 8);
+            return BitConverter.ToUInt64(inputdata, 0);
+
 			return reader.ReadUInt64();
 		}
 
@@ -262,6 +295,13 @@ namespace Axiom.Serialization
 
 		protected short ReadShort( BinaryReader reader )
 		{
+            byte[] inputdata = new byte[2];
+            reader.Read(inputdata, 0, 2);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse( inputdata, 0, 2);
+            return BitConverter.ToInt16(inputdata,0);
+
 			return reader.ReadInt16();
 		}
 
@@ -272,6 +312,13 @@ namespace Axiom.Serialization
 
 		protected ushort ReadUShort( BinaryReader reader )
 		{
+            byte[] inputdata = new byte[2];
+            reader.Read(inputdata, 0, 2);
+            // The file format store integral types in little endian order
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(inputdata, 0, 2);
+            return BitConverter.ToUInt16(inputdata, 0);
+
 			return reader.ReadUInt16();
 		}
 
@@ -294,7 +341,7 @@ namespace Axiom.Serialization
 
 				for ( int i = 0; i < count; i++ )
 				{
-					pointer[ i ] = reader.ReadInt32();
+					pointer[ i ] = ReadInt( reader );
 				}
 			}
 		}
@@ -331,7 +378,7 @@ namespace Axiom.Serialization
 				short* pointer = (short*)dest.ToPointer();
 				for ( int i = 0; i < count; i++ )
 				{
-					pointer[ i ] = reader.ReadInt16();
+					pointer[ i ] = ReadShort( reader );
 				}
 			}
 		}
@@ -414,10 +461,10 @@ namespace Axiom.Serialization
 		{
 			Quaternion quat = new Quaternion();
 
-			quat.x = reader.ReadSingle();
-			quat.y = reader.ReadSingle();
-			quat.z = reader.ReadSingle();
-			quat.w = reader.ReadSingle();
+			quat.x = ReadFloat( reader );
+            quat.y = ReadFloat(reader);
+            quat.z = ReadFloat(reader);
+            quat.w = ReadFloat(reader);
 
 			return quat;
 		}
@@ -492,10 +539,16 @@ namespace Axiom.Serialization
 		protected short ReadFileChunk( BinaryReader reader )
 		{
 			// get the chunk id
-			short id = reader.ReadInt16();
-
+			short id = ReadShort( reader );
+#if ( XBOX || XBOX360 )
+            if (id == 0)
+            {
+                reader.BaseStream.Position -= 2;
+                id = ReadShort(reader);
+            }
+#endif
 			// read the length for this chunk
-			currentChunkLength = reader.ReadInt32();
+			currentChunkLength = ReadInt( reader );
 
 			return id;
 		}
@@ -528,7 +581,7 @@ namespace Axiom.Serialization
 			short headerID = 0;
 
 			// read the header ID
-			headerID = reader.ReadInt16();
+			headerID = ReadShort( reader );
 
 			// better hope this is the header
 			if ( headerID == (short)MeshChunkID.Header )

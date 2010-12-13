@@ -254,10 +254,11 @@ namespace Axiom.Core
 		{
 			foreach ( Node child in Children )
 			{
-				RemoveChild( child, false );
+				child.NotifyOfNewParent( null );
 			}
 
-			Clear();
+			childNodes.Clear();
+			childrenToUpdate.Clear();
 		}
 
 		/// <summary>

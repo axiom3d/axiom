@@ -1,0 +1,619 @@
+vertex_program OverlayVP hlsl
+{
+	source overlay_vp.hlsl
+	entry_point main_vp
+	target vs_2_0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program OverlayFP hlsl
+{
+	source overlay_fp.hlsl
+	entry_point main_fp
+	target ps_2_0
+}
+
+// a template for most widget materials
+material SdkTrays/Base
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+            }
+        }
+    }
+}
+
+material SdkTrays/Cursor 
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_cursor.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Shade
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+		    texture_unit
+			{
+                tex_address_mode clamp
+			    texture sdk_shade.png
+			}
+        }
+    }
+}
+
+material SdkTrays/Bands
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+		    texture_unit
+			{
+			    texture sdk_bands.png
+				scale 8 8
+				rotate_anim 0.1
+			}
+			texture_unit
+			{
+			    texture sdk_bands.png
+				scale 16  16
+				rotate_anim -0.1
+			}
+			texture_unit
+			{
+			    texture sdk_bands.png
+				scale 32 32
+				rotate_anim -0.05
+			}
+			texture_unit
+			{
+			    texture sdk_bands.png
+				scale 64 64
+				rotate_anim 0.05
+			}
+        }
+    }
+}
+
+material SdkTrays/Tray
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_tray.png
+            }
+        }
+    }
+}
+
+material SdkTrays/MiniTray
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_mini_tray.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Button/Up
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_button_up.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Button/Over
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_button_over.png
+            }
+			
+	    texture_unit
+	    {
+	        texture sdk_pulse.png
+		colour_op add
+		scroll_anim 1 0
+		scale 100 1
+	    }
+        }
+    }
+}
+
+material SdkTrays/Button/Down 
+{
+    technique
+    {
+        pass
+        {
+             lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+               texture sdk_button_down.png
+            }
+        }
+    }
+}
+
+material SdkTrays/TextBox
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_text_box.png
+            }
+        }
+    }
+}
+
+material SdkTrays/MiniTextBox
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_mini_text_box.png
+            }
+        }
+    }
+}
+
+material SdkTrays/MiniTextBox/Over
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_mini_text_box_over.png
+            }
+			
+		    texture_unit
+			{
+			  texture sdk_pulse.png
+			colour_op add
+			scroll_anim 1 0
+			scale 100 1
+			}
+        }
+    }
+}
+
+material SdkTrays/ScrollTrack
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_track.png
+            }
+        }
+    }
+}
+
+material SdkTrays/SliderTrack
+{
+    technique
+    {
+        pass
+        {
+             lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+               texture sdk_track.png
+                rotate 90
+            }
+        }
+    }
+}
+
+material SdkTrays/Handle
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_handle.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Label
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_label.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Separator 
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_separator.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Logo
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_logo.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Frame 
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_frame.png
+            }
+        }
+    }
+}
+
+material SdkTrays/Frame/Over 
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_check off
+            
+			vertex_program_ref OverlayVP 
+			{
+			}
+			
+			fragment_program_ref OverlayFP 
+			{
+			}
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering linear linear none
+                texture sdk_frame.png
+            }
+			
+		    texture_unit
+			{
+			    texture sdk_bands.png
+			    colour_op_ex modulate_x2 src_current src_texture
+				scroll_anim 0 0.5
+			}
+        }
+    }
+}

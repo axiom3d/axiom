@@ -600,7 +600,7 @@ namespace Axiom.Media
 			imgData.height = Height;
 			imgData.width = Width;
 			imgData.depth = Depth;
-
+			imgData.size = Size;
 			// Wrap memory, be sure not to delete when stream destroyed
 			MemoryStream wrapper = new MemoryStream( buffer );
 
@@ -609,7 +609,7 @@ namespace Axiom.Media
 
 		public ColorEx GetColorAt( int x, int y, int z )
 		{
-			return PixelConverter.UnpackColor( Format, new IntPtr( this.bufPtr.ToInt32() + BitsPerPixel * ( z * Width * Height + Width * y + x ) ) );
+			return PixelConverter.UnpackColor( Format, new IntPtr( this.bufPtr.ToInt32() + PixelUtil.GetNumElemBytes( format ) * ( z * Width * Height + Width * y + x ) ) );
 		}
 
 		/// <summary>

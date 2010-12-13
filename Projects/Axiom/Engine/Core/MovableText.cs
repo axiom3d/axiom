@@ -40,6 +40,7 @@ using System.Text;
 using Axiom.Graphics;
 using Axiom.Fonts;
 using Axiom.Math;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -243,8 +244,8 @@ namespace Axiom.Core
 
 		#region Construction and Destruction
 
-		public MovableText( string name, string caption )
-			: this( name, caption, "TrebuchetMSBold", 12, ColorEx.White )
+		public MovableText( string name, string caption, string fontName )
+			: this( name, caption, fontName, 12, ColorEx.White )
 		{
 		}
 
@@ -634,4 +635,57 @@ namespace Axiom.Core
 		}
 		#endregion Implementation of SimpleRenderable
 	}
+
+	#region MovableObjectFactory implementation
+
+	public class MovableTextFactory : MovableObjectFactory
+	{
+		public new const string TypeName = "MovableText";
+
+		public MovableTextFactory()
+		{
+			base.Type = MovableTextFactory.TypeName;
+			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
+		}
+
+		protected override MovableObject _createInstance( string name, NamedParameterList param )
+		{
+			// must have mesh parameter
+			string caption = null;
+			string fontName = null;
+
+			if ( param != null )
+			{
+				if ( param.ContainsKey( "caption" ) )
+				{
+					caption = (string)param[ "caption" ];
+				}
+				if ( param.ContainsKey( "fontName" ) )
+				{
+					fontName = (string)param[ "fontName" ];
+				}
+			}
+			if ( caption == null )
+			{
+				throw new AxiomException( "'caption' parameter required when constructing MovableText." );
+			}
+			if ( fontName == null )
+			{
+				throw new AxiomException( "'fontName' parameter required when constructing MovableText." );
+			}
+
+			MovableText text = new MovableText( name, caption, fontName );
+			text.MovableType = this.Type;
+			return text;
+		}
+
+		public override void DestroyInstance( ref MovableObject obj )
+		{
+			( (MovableText)obj ).Dispose();
+			obj = null;
+		}
+	}
+
+	#endregion MovableObjectFactory implementation
+
 }

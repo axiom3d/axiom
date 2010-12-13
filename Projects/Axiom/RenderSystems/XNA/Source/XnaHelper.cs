@@ -51,8 +51,6 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
-//big mess, tried to implement as much as possible but a lot of fixed pipeline function have disapeared.
-
 namespace Axiom.RenderSystems.Xna
 {
 	/// <summary>
@@ -96,12 +94,12 @@ namespace Axiom.RenderSystems.Xna
 			return driverList;
 		}
 
-		public static XFG.Color Convert( Axiom.Core.ColorEx color )
+		public static XNA.Color Convert( Axiom.Core.ColorEx color )
 		{
-			return new XFG.Color( (byte)( color.r * 255 ), (byte)( color.g * 255 ), (byte)( color.b * 255 ), (byte)( color.a * 255 ) );
+			return new XNA.Color( (byte)( color.r * 255 ), (byte)( color.g * 255 ), (byte)( color.b * 255 ), (byte)( color.a * 255 ) );
 		}
 
-		public static Axiom.Core.ColorEx Convert( XFG.Color color )
+		public static Axiom.Core.ColorEx Convert( XNA.Color color )
 		{
 			return new Axiom.Core.ColorEx( color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f );
 		}
@@ -139,23 +137,9 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="caps"></param>
 		/// <param name="texType"></param>
 		/// <returns></returns>
-		public static XFG.TextureFilter Convert( FilterType type, FilterOptions options, XFG.GraphicsDeviceCapabilities devCaps, XnaTextureType texType )
+		public static XFG.TextureFilter Convert( FilterType type, FilterOptions options, XFG.GraphicsProfile profile, XnaTextureType texType )
 		{
 			// setting a default val here to keep compiler from complaining about using unassigned value types
-			XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps = devCaps.TextureFilterCapabilities;
-
-			switch ( texType )
-			{
-				case XnaTextureType.Normal:
-					filterCaps = devCaps.TextureFilterCapabilities;
-					break;
-				case XnaTextureType.Cube:
-					filterCaps = devCaps.CubeTextureFilterCapabilities;
-					break;
-				case XnaTextureType.Volume:
-					filterCaps = devCaps.VolumeTextureFilterCapabilities;
-					break;
-			}
 
 			switch ( type )
 			{
@@ -164,24 +148,10 @@ namespace Axiom.RenderSystems.Xna
 						switch ( options )
 						{
 							case FilterOptions.Anisotropic:
-								if ( filterCaps.SupportsMinifyAnisotropic )
-								{
 									return XFG.TextureFilter.Anisotropic;
-								}
-								else
-								{
-									return XFG.TextureFilter.Linear;
-								}
 
 							case FilterOptions.Linear:
-								if ( filterCaps.SupportsMinifyLinear )
-								{
 									return XFG.TextureFilter.Linear;
-								}
-								else
-								{
-									return XFG.TextureFilter.Point;
-								}
 
 							case FilterOptions.Point:
 							case FilterOptions.None:
@@ -194,24 +164,10 @@ namespace Axiom.RenderSystems.Xna
 						switch ( options )
 						{
 							case FilterOptions.Anisotropic:
-								if ( filterCaps.SupportsMagnifyAnisotropic )
-								{
 									return XFG.TextureFilter.Anisotropic;
-								}
-								else
-								{
-									return XFG.TextureFilter.Linear;
-								}
 
 							case FilterOptions.Linear:
-								if ( filterCaps.SupportsMagnifyLinear )
-								{
 									return XFG.TextureFilter.Linear;
-								}
-								else
-								{
-									return XFG.TextureFilter.Point;
-								}
 
 							case FilterOptions.Point:
 							case FilterOptions.None:
@@ -225,27 +181,13 @@ namespace Axiom.RenderSystems.Xna
 						{
 							case FilterOptions.Anisotropic:
 							case FilterOptions.Linear:
-								if ( filterCaps.SupportsMipMapLinear )
-								{
 									return XFG.TextureFilter.Linear;
-								}
-								else
-								{
-									return XFG.TextureFilter.Point;
-								}
 
 							case FilterOptions.Point:
-								if ( filterCaps.SupportsMipMapPoint )
-								{
 									return XFG.TextureFilter.Point;
-								}
-								else
-								{
-									return XFG.TextureFilter.None;
-								}
 
 							case FilterOptions.None:
-								return XFG.TextureFilter.None;
+								return XFG.TextureFilter.Point;
 						}
 						break;
 					}
@@ -416,48 +358,6 @@ namespace Axiom.RenderSystems.Xna
 			return xnaBlend;
 		}
 
-		public static XFG.ShaderProfile Convert( string shaderVersion )
-		{
-			switch ( shaderVersion )
-			{
-				case "PS_1_1":
-					return XFG.ShaderProfile.PS_1_1;
-				case "PS_1_2":
-					return XFG.ShaderProfile.PS_1_2;
-				case "PS_1_3":
-					return XFG.ShaderProfile.PS_1_3;
-				case "PS_1_4":
-					return XFG.ShaderProfile.PS_1_4;
-				case "PS_2_0":
-					return XFG.ShaderProfile.PS_2_0;
-				case "PS_2_A":
-					return XFG.ShaderProfile.PS_2_A;
-				case "PS_2_B":
-					return XFG.ShaderProfile.PS_2_B;
-				case "PS_2_SW":
-					return XFG.ShaderProfile.PS_2_SW;
-				case "PS_3_0":
-					return XFG.ShaderProfile.PS_3_0;
-				case "Unknown":
-					return XFG.ShaderProfile.Unknown;
-				case "VS_1_1":
-					return XFG.ShaderProfile.VS_1_1;
-				case "VS_2_0":
-					return XFG.ShaderProfile.VS_2_0;
-				case "VS_2_A":
-					return XFG.ShaderProfile.VS_2_A;
-				case "VS_2_SW":
-					return XFG.ShaderProfile.VS_2_SW;
-				case "VS_3_0":
-					return XFG.ShaderProfile.VS_3_0;
-				case "XPS_3_0":
-					return XFG.ShaderProfile.XPS_3_0;
-				case "XVS_3_0":
-					return XFG.ShaderProfile.XVS_3_0;
-			}
-			return XFG.ShaderProfile.Unknown;
-		}
-
 		public static XFG.VertexElementFormat Convert( VertexElementType type, bool tex )
 		{
 			// if (tex)
@@ -553,6 +453,7 @@ namespace Axiom.RenderSystems.Xna
 			return xnaUsage;
 		}
 
+/*
 		/// <summary>
 		/// 
 		/// </summary>
@@ -577,7 +478,7 @@ namespace Axiom.RenderSystems.Xna
 			return 0;
 		}
 #endif
-
+*/
 		/*     public static XFG.LockFlags Convert( BufferLocking locking )
 			 {
 				 //no lock in xna
@@ -593,7 +494,7 @@ namespace Axiom.RenderSystems.Xna
 				 return 0;
 			 }*/
 
-		public static int Convert( TexCoordCalcMethod method, XFG.GraphicsDeviceCapabilities caps )
+		public static int Convert( TexCoordCalcMethod method )
 		{
 			/*
 			switch ( method )
@@ -874,37 +775,37 @@ namespace Axiom.RenderSystems.Xna
 			{
 				case SurfaceFormat.Alpha8:
 					return Axiom.Media.PixelFormat.A8;
-				case SurfaceFormat.Luminance8:
-					return Axiom.Media.PixelFormat.L8;
-				case SurfaceFormat.Luminance16:
-					return Axiom.Media.PixelFormat.L16;
-				case SurfaceFormat.LuminanceAlpha8:
-					return Axiom.Media.PixelFormat.A4L4;
-				case SurfaceFormat.LuminanceAlpha16:	// Assume little endian here
-					return Axiom.Media.PixelFormat.A8L8;
+				//case SurfaceFormat.Luminance8:
+				//    return Axiom.Media.PixelFormat.L8;
+				//case SurfaceFormat.Luminance16:
+				//    return Axiom.Media.PixelFormat.L16;
+				//case SurfaceFormat.LuminanceAlpha8:
+				//    return Axiom.Media.PixelFormat.A4L4;
+				//case SurfaceFormat.LuminanceAlpha16:	// Assume little endian here
+					//return Axiom.Media.PixelFormat.A8L8;
 				case SurfaceFormat.Bgra5551:
 					return Axiom.Media.PixelFormat.A1R5G5B5;
 				case SurfaceFormat.Bgra4444:
 					return Axiom.Media.PixelFormat.A4R4G4B4;
 				case SurfaceFormat.Bgr565:
 					return Axiom.Media.PixelFormat.R5G6B5;
-				case XFG.SurfaceFormat.Bgr32:
-					return Axiom.Media.PixelFormat.X8B8G8R8;
-				case SurfaceFormat.Bgra1010102:
-					return Axiom.Media.PixelFormat.A2R10G10B10;
-				case SurfaceFormat.Rgba32:
+				//case XFG.SurfaceFormat.Bgr32:
+				//    return Axiom.Media.PixelFormat.X8B8G8R8;
+				//case SurfaceFormat.Bgra1010102:
+				//    return Axiom.Media.PixelFormat.A2R10G10B10;
+				//case SurfaceFormat.Rgba32:
 				case SurfaceFormat.Color:
 					return Axiom.Media.PixelFormat.A8R8G8B8;
-				case XFG.SurfaceFormat.Bgr24:
-					return Axiom.Media.PixelFormat.R8G8B8;
+				//case XFG.SurfaceFormat.Bgr24:
+				//    return Axiom.Media.PixelFormat.R8G8B8;
 				case SurfaceFormat.Dxt1:
 					return Axiom.Media.PixelFormat.DXT1;
-				case SurfaceFormat.Dxt2:
-					return Axiom.Media.PixelFormat.DXT2;
+				//case SurfaceFormat.Dxt2:
+				//    return Axiom.Media.PixelFormat.DXT2;
 				case SurfaceFormat.Dxt3:
 					return Axiom.Media.PixelFormat.DXT3;
-				case SurfaceFormat.Dxt4:
-					return Axiom.Media.PixelFormat.DXT4;
+				//case SurfaceFormat.Dxt4:
+				//    return Axiom.Media.PixelFormat.DXT4;
 				case SurfaceFormat.Dxt5:
 					return Axiom.Media.PixelFormat.DXT5;
 				default:
@@ -922,9 +823,9 @@ namespace Axiom.RenderSystems.Xna
 			switch ( format )
 			{
 				case PixelFormat.BYTE_LA:
-					return XFG.SurfaceFormat.LuminanceAlpha16;
+				    return XFG.SurfaceFormat.Alpha8;
 				case PixelFormat.L8:
-					return XFG.SurfaceFormat.Luminance8;
+				    return XFG.SurfaceFormat.Alpha8;
 				case PixelFormat.A8:
 					return XFG.SurfaceFormat.Alpha8;
 				case PixelFormat.R5G6B5:
@@ -933,21 +834,20 @@ namespace Axiom.RenderSystems.Xna
 					return XFG.SurfaceFormat.Bgra4444;
 				case PixelFormat.A8R8G8B8:
 					return XFG.SurfaceFormat.Color;
-				//case PixelFormat.L4A4:
 				case PixelFormat.A4L4:
-					return XFG.SurfaceFormat.LuminanceAlpha8;
+					return XFG.SurfaceFormat.Alpha8;
 				//case PixelFormat.B10G10R10A2:
-				case PixelFormat.A2R10G10B10:
-					return XFG.SurfaceFormat.Bgra1010102;
+				//case PixelFormat.A2R10G10B10:
+				//    return XFG.SurfaceFormat.Bgra1010102;
 			}
 
-			return XFG.SurfaceFormat.Unknown;
+			return (XFG.SurfaceFormat)( -1 );
 		}
 
 
 		public static Axiom.Media.PixelFormat GetClosestSupported( Axiom.Media.PixelFormat format )
 		{
-			if ( Convert( format ) != XFG.SurfaceFormat.Unknown )
+			if ( Convert( format ) != (XFG.SurfaceFormat)( -1 ) )
 				return format;
 			switch ( format )
 			{

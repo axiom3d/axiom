@@ -178,22 +178,16 @@ namespace Axiom.Core
 		///		Public constructor.  Should not be created manually, must be created using a SceneManager.
 		/// </summary>
 		internal BillboardSet( string name, int poolSize )
+			: this( name, poolSize, false )
 		{
-			this.name = name;
-			this.PoolSize = poolSize;
-
-			this.SetDefaultDimensions( 100, 100 );
-			this.MaterialName = "BaseWhite";
-			this.castShadows = false;
-			this.SetTextureStacksAndSlices( 1, 1 );
 		}
 
 		/// <summary>
 		///		Public constructor.  Should not be created manually, must be created using a SceneManager.
 		/// </summary>
 		internal BillboardSet( string name, int poolSize, bool externalData )
+			: base( name )
 		{
-			this.name = name;
 			this.PoolSize = poolSize;
 			this.externalData = externalData;
 

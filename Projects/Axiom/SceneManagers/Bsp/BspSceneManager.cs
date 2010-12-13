@@ -885,7 +885,11 @@ namespace Axiom.SceneManagers.Bsp
 			// Check should we be rendering
 			if ( !SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( worldGeometryRenderQueueId ) )
 				return;
-
+            if ( level == null )
+            {
+                LogManager.Instance.Write( "BSPSceneManager [Warning]: Skip RenderStaticGeometry, no level was set!" );
+                return;
+            }
 			// no world transform required
 			targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
@@ -1356,6 +1360,8 @@ namespace Axiom.SceneManagers.Bsp
 					if ( ( QueryTypeMask & (uint)SceneQueryTypeMask.WorldGeometry ) != 0 )
 					{
 						// check object against brushes
+						if ( ( QueryTypeMask & (ulong)SceneQueryTypeMask.WorldGeometry ) != 0 )
+						{
 						foreach ( BspBrush brush in leaf.SolidBrushes )
 						{
 							if ( brush == null )
@@ -1375,6 +1381,7 @@ namespace Axiom.SceneManagers.Bsp
 								}
 							}
 						}
+					}
 					}
 					objectsDone.Add( aObj );
 				}
@@ -1484,6 +1491,8 @@ namespace Axiom.SceneManagers.Bsp
 			if ( ( QueryTypeMask & (ulong)SceneQueryTypeMask.WorldGeometry ) != 0 )
 			{
 				// Check ray against brushes
+				if ( ( QueryTypeMask & (ulong)SceneQueryTypeMask.WorldGeometry ) != 0 )
+				{
 				for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )
 				{
 					BspBrush brush = leaf.SolidBrushes[ brushPoint ];
@@ -1504,6 +1513,13 @@ namespace Axiom.SceneManagers.Bsp
 							intersectBrush = brush;
 						}
 					}
+				}
+
+					if ( intersectBrush != null )
+					{
+						listener.OnQueryResult( intersectBrush.Fragment, intersectBrushDist + traceDistance );
+						StopRayTracing = true;
+			}
 				}
 			}
 

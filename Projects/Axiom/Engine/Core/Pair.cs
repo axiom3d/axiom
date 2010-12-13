@@ -60,7 +60,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				data = new Tuple<T, T>( value, data.Second );
+				data = new Axiom.Math.Tuple<T, T>( value, data.Second );
 			}
 		}
 
@@ -72,13 +72,13 @@ namespace Axiom.Core
 			}
 			set
 			{
-				data = new Tuple<T, T>( data.First, value );
+				data = new Axiom.Math.Tuple<T, T>( data.First, value );
 			}
 		}
 
 		public Pair( T first, T second )
 		{
-			data = new Tuple<T, T>( first, second );
+			data = new Axiom.Math.Tuple<T, T>( first, second );
 		}
 
 
