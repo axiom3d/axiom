@@ -472,9 +472,18 @@ namespace Axiom.RenderSystems.Xna
 			// max active lights
 			HardwareCapabilities.MaxLights = 8;
 
-			XFG.DepthStencilBuffer surface = device.DepthStencilBuffer;
+            XFG.RenderTargetBinding rtb = null;
 
-			if ( surface.Format == XFG.DepthFormat.Depth24Stencil8 || surface.Format == XFG.DepthFormat.Depth24 )
+            //KLUDGE to get the first item
+            foreach (var item in _device.GetRenderTargets())
+            {
+                rtb = item;
+                break;
+            }
+
+            XFG.RenderTarget2D surface = (XFG.RenderTarget2D)rtb.RenderTarget;
+
+			if ( surface.DepthStencilFormat == XFG.DepthFormat.Depth24Stencil8 || surface.DepthStencilFormat == XFG.DepthFormat.Depth24 )
 			{
 				HardwareCapabilities.SetCapability( Capabilities.StencilBuffer );
 				// always 8 here
@@ -542,10 +551,10 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// Hardware Occlusion, new!
-			XFG.OcclusionQuery oQuery = new Microsoft.Xna.Framework.Graphics.OcclusionQuery( device );
-			if ( oQuery.IsSupported )
-				HardwareCapabilities.SetCapability( Capabilities.HardwareOcculusion );
-			oQuery.Dispose();
+            if (_device.GraphicsProfile == XFG.GraphicsProfile.HiDef)
+            {
+                HardwareCapabilities.SetCapability(Capabilities.HardwareOcculusion);
+            }
 
 
 			if ( _capabilities.MaxUserClipPlanes > 0 )
@@ -824,7 +833,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.RenderState.DepthBufferEnable = value;
+				_device.DepthStencilState.DepthBufferEnable = value;
 			}
 		}
 
@@ -1094,7 +1103,7 @@ namespace Axiom.RenderSystems.Xna
 				// enable alpha blending and specular materials
 				_device.RenderState.AlphaBlendEnable = true;
 				//_device.RenderState.SpecularEnable = true;
-				_device.RenderState.DepthBufferEnable = true;
+				_device.DepthStencilState.DepthBufferEnable = true;
 				_isFirstFrame = false;
 			}
 		}
@@ -1196,7 +1205,7 @@ namespace Axiom.RenderSystems.Xna
 
 				flags |= XFG.ClearOptions.Stencil;
 			}
-			XFG.Color col = new XFG.Color( (byte)( color.r * 255.0f ), (byte)( color.g * 255.0f ), (byte)( color.b * 255.0f ), (byte)( color.a * 255.0f ) );
+			XNA.Color col = new XNA.Color( (byte)( color.r * 255.0f ), (byte)( color.g * 255.0f ), (byte)( color.b * 255.0f ), (byte)( color.a * 255.0f ) );
 
 			// clear the device using the specified params
 			_device.Clear( flags, col, depth, stencil );
@@ -1949,9 +1958,9 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction )
 		{
-			_device.RenderState.DepthBufferEnable = depthTest;
-			_device.RenderState.DepthBufferWriteEnable = depthWrite;
-			_device.RenderState.DepthBufferFunction = XnaHelper.Convert( depthFunction );
+			_device.DepthStencilState.DepthBufferEnable = depthTest;
+			_device.DepthStencilState.DepthBufferWriteEnable = depthWrite;
+			_device.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( depthFunction );
 		}
 
 		public override void SetFog( Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end )
