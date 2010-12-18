@@ -1268,6 +1268,16 @@ namespace Axiom.Core
 			}
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        internal override void NotifyMoved()
+        {
+            //TODO
+            //mDerivedTransformDirty = true;
+
+            base.NotifyMoved();
+        }
 
 		public override void NotifyCurrentCamera( Camera camera )
 		{
