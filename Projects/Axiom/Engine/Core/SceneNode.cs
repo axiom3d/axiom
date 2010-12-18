@@ -213,7 +213,9 @@ namespace Axiom.Core
 
 				if ( wireBox != null )
 				{
-					wireBox.Dispose();
+                    if (!wireBox.IsDisposed)
+					    wireBox.Dispose();
+
 					wireBox = null;
 				}
 			}
@@ -651,6 +653,18 @@ namespace Axiom.Core
 
 			lightListDirty = true;
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void UpdateFromParent()
+        {
+            base.UpdateFromParent();
+
+            // Notify objects that it has been moved
+            foreach(MovableObject currentObject in this.objectList.Values)
+                currentObject.NotifyMoved();
+        }
 
 		/// <summary>
 		///		Overloaded method.
