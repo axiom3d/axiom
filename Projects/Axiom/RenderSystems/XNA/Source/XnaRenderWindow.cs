@@ -447,12 +447,13 @@ namespace Axiom.RenderSystems.Xna
 				_renderSurface = null;
 			}
 
+            XFG.GraphicsAdapter.UseReferenceDevice = false;
+
 			if ( _driver.Description.ToLower().Contains( "nvperfhud" ) )
 			{
 				_useNVPerfHUD = true;
+                XFG.GraphicsAdapter.UseReferenceDevice = true;
 			}
-
-			XFG.DeviceType devType = XFG.DeviceType.Hardware;
 
 			_xnapp = new XFG.PresentationParameters();
 
@@ -589,10 +590,10 @@ namespace Axiom.RenderSystems.Xna
 							if ( adapter.Description.ToLower().Contains( "perfhud" ) )
 							{
 								LogManager.Instance.Write( "[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName, adapter.Description );
-								adapterToUse = adapter;
-								devType = XFG.DeviceType.Reference;
-								break;
-							}
+                                adapterToUse = adapter;
+                                XFG.GraphicsAdapter.UseReferenceDevice = true;
+                                break;
+                            }
 						}
 					}
 
@@ -639,7 +640,7 @@ namespace Axiom.RenderSystems.Xna
 				_renderSurface = device.GetRenderTarget( 0 );
 				_stencilBuffer = device.DepthStencilBuffer;
 
-				device.DeviceReset += new EventHandler( OnResetDevice );
+				device.DeviceReset += this.OnResetDevice;
 			}
 		}
 
@@ -887,7 +888,7 @@ namespace Axiom.RenderSystems.Xna
 			XFG.GraphicsDevice resetDevice = (XFG.GraphicsDevice)sender;
 
 			// Turn off culling, so we see the front and back of the triangle
-			resetDevice.RenderState.CullMode = XFG.CullMode.None;
+			resetDevice.RasterizerState.CullMode = XFG.CullMode.None;
 			// Turn on the ZBuffer
 			//resetDevice.RenderState.ZBufferEnable = true;
 			//resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
