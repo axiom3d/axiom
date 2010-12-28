@@ -76,7 +76,7 @@ namespace Axiom.Samples.ParticleFX
             fountainPivot.CreateChildSceneNode( new Vector3( 200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
             ps = ParticleSystemManager.Instance.CreateSystem( "Fountain2", "Examples/PurpleFountain" );  // create fountain 2
             // attach the fountain to a child node of the pivot at a distance and angle
-            fountainPivot.CreateChildSceneNode( new Vector3( 200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
+            fountainPivot.CreateChildSceneNode( new Vector3( -200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
 
 
         }
