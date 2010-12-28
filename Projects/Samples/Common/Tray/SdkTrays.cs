@@ -1880,10 +1880,7 @@ namespace Axiom.Samples
 			}
 			mWidgetDeathRow.Clear();
 
-			RenderTarget.FrameStatistics stats;
-			mWindow.GetStatistics( out stats.LastFPS, out stats.AvgerageFPS, out stats.BestFPS, out stats.WorstFPS );
-			stats.TriangleCount = 0;
-			stats.BatchCount = 0;
+			RenderTarget.FrameStatistics stats = mWindow.Statistics;
 
 			if ( IsFrameStatsVisible )
 			{
@@ -1896,7 +1893,7 @@ namespace Axiom.Samples
 				{
 					List<String> values = new List<string>();
 
-					s = String.Format( "{0:#.##}", stats.AvgerageFPS );
+					s = String.Format( "{0:#.##}", stats.AverageFPS );
 					values.Add( s );
 
 					s = String.Format( "{0:#.##}", stats.BestFPS );
