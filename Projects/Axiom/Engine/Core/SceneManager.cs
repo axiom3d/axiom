@@ -5256,17 +5256,11 @@ namespace Axiom.Core
 				Material mat = (Material)MaterialManager.Instance[ matName ];
 				if ( mat == null )
 				{
-					mat =
-						(Material)
-						MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
+					mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
 				}
-				else
-				{
-					mat.GetTechnique( 0 ).GetPass( 0 ).RemoveAllTextureUnitStates();
-				}
+
 				// create texture unit referring to render target texture
-				TextureUnitState texUnit =
-					mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
+				TextureUnitState texUnit = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
 				// set projective based on camera
 				texUnit.SetProjectiveTexturing( true, cam );
 				texUnit.TextureAddressing = TextureAddressing.Border;
