@@ -313,6 +313,8 @@ namespace Axiom.Samples.CharacterSample
 			// create swords and attach to sheath
 			sword1 = sceneMgr.CreateEntity( "SinbadSword1", "Sword.mesh" );
 			sword2 = sceneMgr.CreateEntity( "SinbadSword2", "Sword.mesh" );
+			bodyEnt.AttachObjectToBone( "Sheath.L", sword1 );
+			bodyEnt.AttachObjectToBone( "Sheath.R", sword2 );
 
 			// create a couple of ribbon trails for the swords, just for fun
 			NamedParameterList paras = new NamedParameterList();
@@ -470,27 +472,28 @@ namespace Axiom.Samples.CharacterSample
 				if ( timer >= anims[ (int)topAnimID ].Length / 2 &&
 					 timer - deltaTime < anims[ (int)topAnimID ].Length / 2 )
 				{
-					// so transfer the swords from the sheaths to the hands
-					bodyEnt.DetachAllObjectsFromBone();
-					bodyEnt.AttachObjectToBone( swordsDrawn ? "Sheath.L" : "Handle.L", sword1 );
-					bodyEnt.AttachObjectToBone( swordsDrawn ? "Sheath.R" : "Handle.R", sword2 );
-					// change the hand state to grab or let go
-					anims[ (int)AnimationID.HandsClosed ].IsEnabled = !swordsDrawn;
-					anims[ (int)AnimationID.HandsRelaxed ].IsEnabled = !swordsDrawn;
-
 					// toggle sword trails
+					swordTrail.IsVisible = !swordsDrawn;
+
+					// so transfer the swords from the sheaths to the hands
 					if ( swordsDrawn )
 					{
-						swordTrail.IsVisible = false;
 						swordTrail.RemoveNode( sword1.ParentNode );
 						swordTrail.RemoveNode( sword2.ParentNode );
 					}
-					else
+					bodyEnt.DetachAllObjectsFromBone();
+					bodyEnt.AttachObjectToBone( swordsDrawn ? "Sheath.L" : "Handle.L", sword1 );
+					bodyEnt.AttachObjectToBone( swordsDrawn ? "Sheath.R" : "Handle.R", sword2 );
+
+					if ( !swordsDrawn )
 					{
-						swordTrail.IsVisible = true;
 						swordTrail.AddNode( sword1.ParentNode );
 						swordTrail.AddNode( sword2.ParentNode );
 					}
+					// change the hand state to grab or let go
+					anims[ (int)AnimationID.HandsClosed ].IsEnabled = !swordsDrawn;
+					anims[ (int)AnimationID.HandsRelaxed ].IsEnabled = swordsDrawn;
+
 				}//end if
 
 				if ( timer >= anims[ (int)topAnimID ].Length )
