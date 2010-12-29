@@ -57,7 +57,7 @@ namespace Axiom.Graphics
 	{
 		#region Constants and Enumerations
 		// illumination pass state type
-		protected enum IlluminationPassesState
+		protected enum IlluminationPassesCompilationPhase
 		{
 			Disabled = -1,
 			NotCompiled = 0,
@@ -73,10 +73,31 @@ namespace Axiom.Graphics
 		/// </summary>
 		private List<Pass> _passes = new List<Pass>();
 
+		#region IlluminationPasses Property
+		IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
 		/// <summary>
 		///		List of derived passes, categorized (and ordered) into illumination stages.
 		/// </summary>
 		private List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
+		public IEnumerable<IlluminationPass> IlluminationPasses
+		{
+			get
+			{
+				IlluminationPassesCompilationPhase targetState = IlluminationPassesCompilationPhase.Compiled;
+				if ( _illuminationPassesCompilationPhase != targetState )
+				{
+					// prevents parent->_notifyNeedsRecompile() call during compile
+					_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.Disabled;
+					// Splitting the passes into illumination passes
+					CompileIlluminationPasses();
+					// Mark that illumination passes compilation finished
+					_illuminationPassesCompilationPhase = targetState;
+				}
+
+				return _illuminationPasses;
+			}
+		}
+		#endregion IlluminationPasses Property
 
 		#region Parent Property
 
@@ -797,11 +818,10 @@ namespace Axiom.Graphics
 				target._passes.Add( newPass );
 			}
 
-			// recompile illumination passes
-			if ( _compiledIlluminationPasses )
-			{
-				target.CompileIlluminationPasses();
-			}
+			// Compile for categorized illumination on demand
+			ClearIlluminationPasses();
+			_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+
 		}
 
 		/// <summary>
@@ -828,7 +848,7 @@ namespace Axiom.Graphics
 				Pass currPass = _passes[ i ];
 
 				// Adjust pass index
-				// TODO: currPass.Index = passNum;
+				currPass.Index = passNum;
 
 				// Check for advanced blending operation support
 #warning Capabilities.AdvancedBlendOperation implementation required
@@ -849,12 +869,12 @@ namespace Axiom.Graphics
 						if ( !autoManageTextureUnits )
 						{
 							// The user disabled auto pass split
-							return String.Format( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
+							compileErrors.AppendFormat( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
 						}
 						else if ( currPass.HasVertexProgram )
 						{
 							// Can't do this one, and can't split a programmable pass
-							return String.Format( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
+							compileErrors.AppendFormat( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
 						}
 					}
 				}
@@ -866,7 +886,7 @@ namespace Axiom.Graphics
 					if ( !currPass.VertexProgram.IsSupported )
 					{
 						// can't do this one
-						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}",
+						compileErrors.AppendFormat( "Pass {0}: Fragment Program {1} cannot be used - {2}",
 											  i,
 											  currPass.VertexProgramName,
 											  currPass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported." );
@@ -879,7 +899,7 @@ namespace Axiom.Graphics
 					if ( !currPass.GeometryProgram.IsSupported )
 					{
 						// can't do this one
-						return String.Format( "Pass {0}: Geometry Program {1} cannot be used - {2}",
+						compileErrors.AppendFormat( "Pass {0}: Geometry Program {1} cannot be used - {2}",
 											  i,
 											  currPass.GeometryProgramName,
 											  currPass.GeometryProgram.HasCompileError ? "Compile Error." : "Not Supported." );
@@ -895,13 +915,13 @@ namespace Axiom.Graphics
 						// check to make sure we have some cube mapping support
 						if ( texUnit.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
 						{
-							return String.Format( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
+							compileErrors.AppendFormat( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
 						}
 
 						// if this is a Dot3 blending layer, make sure we can support it
 						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
 						{
-							return String.Format( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
+							compileErrors.AppendFormat( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
 						}
 					}
 
@@ -917,11 +937,11 @@ namespace Axiom.Graphics
 			// if we made it this far, we are good to go!
 			_isSupported = true;
 
-			// CompileIlluminationPasses() used to be called here, but it is now done on
-			// demand since it the illumination passes are only needed for additive shadows
-			// Now compile for categorized illumination, in case we need it later
-			//CompileIlluminationPasses();
-			return string.Empty;
+			// Compile for categorized illumination on demand
+			ClearIlluminationPasses();
+			_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+
+			return compileErrors.ToString();
 		}
 
 		/// <summary>
@@ -1240,10 +1260,10 @@ namespace Axiom.Graphics
 		/// </remarks>
 		internal void NotifyNeedsRecompile()
 		{
-			//if ( illuminationPassesCompileStage != IlluminationPassesState.Disabled )
-			//{
-			_parent.NotifyNeedsRecompile();
-			//}
+			if ( _illuminationPassesCompilationPhase != IlluminationPassesCompilationPhase.Disabled )
+			{
+				_parent.NotifyNeedsRecompile();
+			}
 		}
 
 		/// <summary>
