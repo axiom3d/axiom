@@ -3700,13 +3700,8 @@ namespace Axiom.Core
 				// set up the dome (5 planes)
 				for ( int i = 0; i < 5; ++i )
 				{
-					Mesh planeMesh = this.CreateSkyDomePlane( (BoxPlane)i,
-															  curvature,
-															  tiling,
-															  distance,
-															  orientation,
-															  groupName );
-					string entityName = String.Format( "SkyDomePlame{0}", i );
+					Mesh planeMesh = this.CreateSkyDomePlane( (BoxPlane)i, curvature, tiling, distance, orientation, groupName );
+					string entityName = String.Format( "SkyDomePlane{0}", i );
 
 					// create entity
 					if ( this.skyDomeEntities[ i ] != null )
