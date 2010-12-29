@@ -680,12 +680,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -701,7 +698,19 @@ namespace Axiom.RenderSystems.Xna
 					{
 						this._stencilBuffer.Dispose();
 					}
+
+					// Dispose Other resources
+					if ( _windowHandle != IntPtr.Zero && !_isExternal && SWF.Control.FromHandle( _windowHandle ) != null )
+					{
+						WindowEventMonitor.Instance.UnregisterWindow( this );
+						SWF.Control.FromHandle( _windowHandle ).Dispose();
+					}
+
 				}
+				// make sure this window is no longer active
+				_windowHandle = IntPtr.Zero;
+				IsActive = false;
+				_isClosed = true;
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
@@ -710,9 +719,6 @@ namespace Axiom.RenderSystems.Xna
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
-
-			// make sure this window is no longer active
-			IsActive = false;
 		}
 
 		public override void Reposition( int left, int right )

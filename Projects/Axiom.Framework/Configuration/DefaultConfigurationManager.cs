@@ -218,7 +218,7 @@ namespace Axiom.Framework.Configuration
 				}
 			}
 
-			if ( defaultRenderer != this.ConfigurationSection.RenderSystems.DefaultRenderSystem )
+			if ( !string.IsNullOrEmpty( defaultRenderer ) && this.ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
 				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
 
 			this.Configuration.Save( ConfigurationSaveMode.Modified );

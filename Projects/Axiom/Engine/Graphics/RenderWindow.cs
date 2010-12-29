@@ -248,7 +248,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <param name="colourDepth"></param>
+		/// <param name="colorDepth"></param>
 		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
