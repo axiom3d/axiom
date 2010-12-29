@@ -64,7 +64,7 @@ namespace Axiom.Graphics
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal HardwareBufferManager()
-            : base()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -542,44 +542,44 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 		/// <summary>
-        /// Class level dispose method
+		/// Class level dispose method
 		/// </summary>
-        protected override void dispose(bool disposeManagedResources)
+		protected override void dispose( bool disposeManagedResources )
 		{
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-			// Destroy all necessary objects
-
-                    foreach (VertexDeclaration buffer in vertexDeclarations)
+			if ( !this.IsDisposed )
 			{
-				buffer.Dispose();
+				if ( disposeManagedResources )
+				{
+					// Destroy all necessary objects
+
+					foreach ( VertexDeclaration buffer in vertexDeclarations )
+					{
+						buffer.Dispose();
+					}
+					vertexDeclarations.Clear();
+
+					vertexBufferBindings.Clear();
+
+					// destroy all vertex buffers
+					foreach ( HardwareBuffer buffer in vertexBuffers )
+					{
+						buffer.Dispose();
+					}
+					vertexBuffers.Clear();
+
+					// destroy all index buffers
+					foreach ( HardwareBuffer buffer in indexBuffers )
+					{
+						buffer.Dispose();
+					}
+					indexBuffers.Clear();
+
+					instance = null;
+				}
 			}
-			vertexDeclarations.Clear();
 
-			vertexBufferBindings.Clear();
-
-			// destroy all vertex buffers
-                    foreach (HardwareBuffer buffer in vertexBuffers)
-			{
-				buffer.Dispose();
-			}
-			vertexBuffers.Clear();
-
-			// destroy all index buffers
-                    foreach (HardwareBuffer buffer in indexBuffers)
-			{
-				buffer.Dispose();
-			}
-			indexBuffers.Clear();
-
-			instance = null;
+			base.dispose( disposeManagedResources );
 		}
-            }
-
-            base.dispose(disposeManagedResources);
-        }
 		#endregion IDisposable Implementation
 
 		public void DisposeVertexBuffer( HardwareBuffer buffer )

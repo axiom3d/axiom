@@ -69,16 +69,16 @@ namespace Axiom.Core
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal TextureManager()
-            : base()
+			: base()
 		{
-            if (instance == null)
+			if ( instance == null )
 			{
 				instance = this;
-			ResourceType = "Texture";
-			LoadingOrder = 75.0f;
-		}
-            else
-                throw new AxiomException("Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name);
+				ResourceType = "Texture";
+				LoadingOrder = 75.0f;
+			}
+			else
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 		}
 
 		/// <summary>
@@ -577,8 +577,8 @@ namespace Axiom.Core
 
 					foreach ( Texture texture in Resources )
 					{
-                        if (!texture.IsDisposed)
-						texture.Dispose();
+						if ( !texture.IsDisposed )
+							texture.Dispose();
 					}
 				}
 

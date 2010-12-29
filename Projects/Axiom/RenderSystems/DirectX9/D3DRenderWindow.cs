@@ -750,7 +750,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -773,8 +773,6 @@ namespace Axiom.RenderSystems.DirectX9
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
-
-			isDisposed = true;
 		}
 
 		public override void Reposition( int left, int right )

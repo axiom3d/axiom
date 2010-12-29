@@ -117,7 +117,7 @@ namespace Axiom.Graphics
 	///		render target could be a window on a screen, or another
 	///		offscreen surface like a render texture.
 	///	</remarks>
-	public abstract class RenderTarget : IDisposable
+	public abstract class RenderTarget : DisposableObject
 	{
 		#region Enumerations and Structures
 
@@ -351,7 +351,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isActive && !isDisposed;
+				return _isActive && !IsDisposed;
 			}
 			set
 			{
@@ -1050,53 +1050,13 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
-
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		/// 
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base._dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -1112,18 +1072,7 @@ namespace Axiom.Graphics
 						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AverageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 				}
 			}
-			isDisposed = true;
-		}
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
-
-		~RenderTarget()
-		{
-			dispose( false );
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

@@ -122,7 +122,7 @@ namespace Axiom.RenderSystems.Xna
 		#region Construction and Destruction
 
 		public XnaRenderSystem()
-            : base()
+			: base()
 		{
 			_initConfigOptions();
 			// init the texture stage descriptions
@@ -1300,18 +1300,34 @@ namespace Axiom.RenderSystems.Xna
 			// dispose of the device
 			if ( _device != null )
 			{
-                if (!_device.IsDisposed)
-				_device.Dispose();
+				if ( !_device.IsDisposed )
+					_device.Dispose();
 
-                _device = null;
+				_device = null;
 			}
 
 			if ( gpuProgramMgr != null )
 			{
-                if (!gpuProgramMgr.IsDisposed)
-				gpuProgramMgr.Dispose();
+				if ( !gpuProgramMgr.IsDisposed )
+					gpuProgramMgr.Dispose();
 
-                gpuProgramMgr = null;
+				gpuProgramMgr = null;
+			}
+
+			if ( hardwareBufferManager != null )
+			{
+				if ( !hardwareBufferManager.IsDisposed )
+					hardwareBufferManager.Dispose();
+
+				hardwareBufferManager = null;
+			}
+
+			if ( textureManager != null )
+			{
+				if ( !textureManager.IsDisposed )
+					textureManager.Dispose();
+
+				textureManager = null;
 			}
 
 			base.Shutdown();
@@ -2387,7 +2403,7 @@ namespace Axiom.RenderSystems.Xna
 					depth = _getDepthStencilFor( back[ 0 ].Format, back[ 0 ].MultiSampleType, back[ 0 ].Width, back[ 0 ].Height );
 				}
 
-				if (depth.Format == _device.DepthStencilBuffer.Format)
+				if ( depth.Format == _device.DepthStencilBuffer.Format )
 				{
 					/*MessageBox.Show("same:\n" + 
 									depth.Width.ToString() + "-" + depth.Height.ToString() +"\n"+
