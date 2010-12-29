@@ -84,7 +84,7 @@ namespace Axiom.Core
 		/// <param name="baseName">the base of the name for the type</param>
 		public NameGenerator( string baseName )
 		{
-			if ( _baseName != null )
+			if ( string.IsNullOrEmpty( _baseName ) )
 				_baseName = baseName;
 		}
 
