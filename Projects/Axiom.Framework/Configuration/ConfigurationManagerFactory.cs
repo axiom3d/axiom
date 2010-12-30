@@ -1,5 +1,5 @@
 #region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ namespace Axiom.Framework.Configuration
 			var platform = Environment.OSVersion.Platform;
 			switch ( platform )
 			{
-                case PlatformID.Xbox:
+				case PlatformID.Xbox:
 					return new XBoxConfigurationManager();
 #if !(XBOX || XBOX360)
 				case PlatformID.MacOSX:
@@ -41,11 +41,11 @@ namespace Axiom.Framework.Configuration
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
 				case PlatformID.WinCE:
-                default:
+				default:
 #if !(XBOX || XBOX360)
 					return new DefaultConfigurationManager();
 #else
-                    return null;
+					return null;
 #endif
 			}
 		}
