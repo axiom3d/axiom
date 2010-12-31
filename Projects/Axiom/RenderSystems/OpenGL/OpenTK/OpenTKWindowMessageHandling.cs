@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
 			{
-				var window = renderWindow[ "WINDOW" ];
+				var window = renderWindow[ "nativewindow" ];
 				if ( null != window && window is INativeWindow )
 				{
 					( (INativeWindow)window ).ProcessEvents();
