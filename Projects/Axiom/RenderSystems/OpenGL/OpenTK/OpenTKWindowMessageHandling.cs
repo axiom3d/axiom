@@ -39,6 +39,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using System.Runtime.InteropServices;
 using OpenTK;
+using System.ComponentModel;
 
 #endregion Namespace Declarations
 
@@ -61,7 +62,7 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion Construction and Destruction
 
 		#region Methods
-
+		static bool firstTime = true;
 		static public void MessagePump()
 		{
 			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
@@ -70,9 +71,14 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( null != window && window is INativeWindow )
 				{
 					( (INativeWindow)window ).ProcessEvents();
+					if ( firstTime){
+					   ((INativeWindow)window).Closing += delegate(object sender, CancelEventArgs e) {
+						WindowEventMonitor.Instance.WindowClosed( renderWindow );	
+					};
+					}
 				}
-
 			}
+			firstTime = false;	
 			// TODO: implement MessagePump 
 		}
 
