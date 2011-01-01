@@ -155,7 +155,7 @@ namespace Axiom.FileSystem
 
 		public override void Load()
 		{
-			if ( _zipFile == null || _zipFile.Length == 0 )
+			if ( _zipFile == null || _zipFile.Length == 0 || _zipStream.Available == 0)
 			{
 				_zipFile = Path.GetFullPath( Name );
 
