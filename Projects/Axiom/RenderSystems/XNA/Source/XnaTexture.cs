@@ -87,7 +87,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Render surface depth/stencil buffer.
 		/// </summary>
-		private XFG.DepthStencilBuffer depthBuffer;
+		//private XFG.DepthStencilBuffer depthBuffer;
 		/// <summary>
 		///     Back buffer pixel format.
 		/// </summary>
@@ -95,11 +95,11 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Direct3D device creation parameters.
 		/// </summary>
-		private XFG.GraphicsDeviceCreationParameters _devParms;
+		//private XFG.GraphicsDeviceCreationParameters _devParms;
 		/// <summary>
 		///     Direct3D device capability structure.
 		/// </summary>
-		private XFG.GraphicsDeviceCapabilities _devCaps;
+		//private XFG.GraphicsDeviceCapabilities _devCaps;
 		/// <summary>
 		///     Array to hold texture names used for loading cube textures.
 		/// </summary>
@@ -193,13 +193,13 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public XFG.DepthStencilBuffer DepthStencil
-		{
-			get
-			{
-				return depthBuffer;
-			}
-		}
+		//public XFG.DepthStencilBuffer DepthStencil
+		//{
+		//    get
+		//    {
+		//        return depthBuffer;
+		//    }
+		//}
 
 		#endregion Properties
 
@@ -491,13 +491,13 @@ namespace Axiom.RenderSystems.Xna
 					stream = ResourceGroupManager.Instance.OpenResource( Name );
 
 					// use Xna to load the image directly from the stream
-                    //XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
-                    //tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
-                    //tcp.MipLevels = MipmapCount;
+					//XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
+					//tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
+					//tcp.MipLevels = MipmapCount;
 
-                    //Not sure how to set MipLevels. _normTexture.LevelCount is get-only...
-                    _normTexture = XFG.Texture2D.FromStream(_device, stream);//.FromFile( _device, stream, tcp );
-                  
+					//Not sure how to set MipLevels. _normTexture.LevelCount is get-only...
+					_normTexture = XFG.Texture2D.FromStream(_device, stream);//.FromFile( _device, stream, tcp );
+				  
 					// store a ref for the base texture interface
 					_texture = _normTexture;
 
@@ -505,14 +505,14 @@ namespace Axiom.RenderSystems.Xna
 					////stream.Position = 0;
 
 					// set the image data attributes
-                    
-                    //Not sure if these lines accomplish the same thing as the below commented-out ones.
-                   SetSrcAttributes(_normTexture.Width, _normTexture.Height, 1, XnaHelper.Convert(_normTexture.Format));
-                   SetFinalAttributes(_normTexture.Width, _normTexture.Height, 1, XnaHelper.Convert(_normTexture.Format));
+					
+					//Not sure if these lines accomplish the same thing as the below commented-out ones.
+				   SetSrcAttributes(_normTexture.Width, _normTexture.Height, 1, XnaHelper.Convert(_normTexture.Format));
+				   SetFinalAttributes(_normTexture.Width, _normTexture.Height, 1, XnaHelper.Convert(_normTexture.Format));
 
-                    //XFG.TextureInformation info = XFG.Texture2D.GetTextureInformation( stream );
-                    //SetSrcAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
-                    //SetFinalAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
+					//XFG.TextureInformation info = XFG.Texture2D.GetTextureInformation( stream );
+					//SetSrcAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
+					//SetFinalAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
 
 					internalResourcesCreated = true;
 				}
@@ -607,7 +607,7 @@ namespace Axiom.RenderSystems.Xna
 				tcp.MipLevels = MipmapCount;
 				// load the cube texture from the image data stream directly
 				_volumeTexture = XFG.Texture3D.FromFile( _device, stream );
-                
+				
 				// store off a base reference
 				_texture = _volumeTexture;
 
@@ -643,7 +643,7 @@ namespace Axiom.RenderSystems.Xna
 			MipmapsHardwareGenerated = false;
 			if ( _devCaps.TextureCapabilities.SupportsMipCubeMap )
 			{
-				MipmapsHardwareGenerated = this.CanAutoGenMipMaps( xnaUsage, XFG.ResourceType.TextureCube, xnaPixelFormat );
+				MipmapsHardwareGenerated = true /*this.CanAutoGenMipMaps( xnaUsage, XFG.ResourceType.TextureCube, xnaPixelFormat ) */;
 				if ( MipmapsHardwareGenerated )
 				{
 					xnaUsage |= XFG.TextureUsage.AutoGenerateMipMap;
@@ -816,21 +816,21 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="type"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		private bool CanAutoGenMipMaps( XFG.TextureUsage srcUsage, XFG.ResourceType srcType, XFG.SurfaceFormat srcFormat )
-		{
-			Debug.Assert( _device != null );
+		//private bool CanAutoGenMipMaps( XFG.TextureUsage srcUsage, XFG.ResourceType srcType, XFG.SurfaceFormat srcFormat )
+		//{
+		//    Debug.Assert( _device != null );
 
-			if ( _device.GraphicsDeviceCapabilities.DriverCapabilities.CanAutoGenerateMipMap )
-			{
-				// make sure we can do it!
-				return _device.CreationParameters.Adapter.CheckDeviceFormat( XFG.DeviceType.Hardware,
-					_device.CreationParameters.Adapter.CurrentDisplayMode.Format, //rahhh
-					 Microsoft.Xna.Framework.Graphics.TextureUsage.AutoGenerateMipMap,
-					  Microsoft.Xna.Framework.Graphics.QueryUsages.None,
-					   srcType, srcFormat );
-			}
-			return false;
-		}
+		//    if ( _device.GraphicsDeviceCapabilities.DriverCapabilities.CanAutoGenerateMipMap )
+		//    {
+		//        // make sure we can do it!
+		//        return _device.CreationParameters.Adapter.CheckDeviceFormat( XFG.DeviceType.Hardware,
+		//            _device.CreationParameters.Adapter.CurrentDisplayMode.Format, //rahhh
+		//             Microsoft.Xna.Framework.Graphics.TextureUsage.AutoGenerateMipMap,
+		//              Microsoft.Xna.Framework.Graphics.QueryUsages.None,
+		//               srcType, srcFormat );
+		//    }
+		//    return false;
+		//}
 
 		public void CopyToTexture( Axiom.Core.Texture target )
 		{
@@ -846,10 +846,10 @@ namespace Axiom.RenderSystems.Xna
 			}
 			else if ( target.TextureType == TextureType.CubeMap )
 			{
-                /* Alright RenderTarget2D inheritence path: Texture-Texture2D->RenderTarget2D
-                 * ......RenderTargetCube inheritance path: Texture-TextureCube->RenderTargetCube
-                 * ??
-                 */
+				/* Alright RenderTarget2D inheritence path: Texture-Texture2D->RenderTarget2D
+				 * ......RenderTargetCube inheritance path: Texture-TextureCube->RenderTargetCube
+				 * ??
+				 */
 				texture._cubeTexture = ( (XFG.RenderTargetCube)renderTarget );
 				texture._texture = _cubeTexture;
 			}

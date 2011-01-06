@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="caps"></param>
 		/// <param name="texType"></param>
 		/// <returns></returns>
-		public static XFG.TextureFilter Convert( FilterType type, FilterOptions options, XFG.GraphicsProfile profile, XnaTextureType texType )
+		public static XFG.TextureFilter Convert( FilterType type, FilterOptions options, XnaTextureType texType )
 		{
 			// setting a default val here to keep compiler from complaining about using unassigned value types
 

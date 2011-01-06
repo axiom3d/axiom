@@ -114,7 +114,7 @@ namespace Axiom.RenderSystems.Xna
 		private bool _vSync;
 		//private XFG.MultiSampleType _fsaaType = XFG.MultiSampleType.None;
 		private int _fsaaQuality = 0;
-
+		private XFG.RasterizerState _rasterizerState = new XFG.RasterizerState();
 
 		protected int primCount;
 		// protected int renderCount = 0;
@@ -359,6 +359,8 @@ namespace Axiom.RenderSystems.Xna
 
 		private void _refreshFSAAOptions()
 		{
+			return;
+			/*
 			// Reset FSAA Options
 			ConfigOption optFSAA = ConfigOptions[ "Anti aliasing" ];
 			string curFSAA = optFSAA.Value;
@@ -399,12 +401,12 @@ namespace Axiom.RenderSystems.Xna
 					}
 				}
 			}
-
+			*/
 			// Reset FSAA to none if previous doesn't avail in new possible values
-			if ( optFSAA.PossibleValues.Values.Contains( curFSAA ) == false )
-			{
-				optFSAA.Value = "None";
-			}
+			//if ( optFSAA.PossibleValues.Values.Contains( curFSAA ) == false )
+			//{
+			//    optFSAA.Value = "None";
+			//}
 		}
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
@@ -768,7 +770,7 @@ namespace Axiom.RenderSystems.Xna
 				cullingMode = value;
 
 				bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
-				_device.RenderState.CullMode = XnaHelper.Convert( value, flip );
+				_device.RasterizerState.CullMode = XnaHelper.Convert( value, flip );
 			}
 		}
 
@@ -780,7 +782,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.RenderState.DepthBufferWriteEnable = value;
+				_device.DepthStencilState.DepthBufferWriteEnable = value;
 			}
 		}
 
@@ -804,7 +806,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.RenderState.DepthBufferFunction = XnaHelper.Convert( value );
+				_device.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( value );
 			}
 		}
 
@@ -816,7 +818,8 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.RenderState.DepthBias = (float)value;
+				throw new Exception( "The method or operation is not implemented." );
+				//_device.DepthStencilState.DepthBias = (float)value;
 			}
 		}
 
@@ -868,15 +871,6 @@ namespace Axiom.RenderSystems.Xna
 			{
 				_projectionMatrix = value;
 
-				/*XNA.Matrix mat = XnaHelper.Convert(value);
-
-				if (activeRenderTarget.RequiresTextureFlipping)
-				{
-					mat.M22 = -mat.M22;
-				}*/
-
-
-
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
@@ -895,13 +889,16 @@ namespace Axiom.RenderSystems.Xna
 				switch ( value )
 				{
 					case PolygonMode.Points:
-						_device.RenderState.FillMode = XFG.FillMode.Point;
+						throw new Exception( "Xna does not implement Point rendering." );
+						//_device.RenderState.FillMode = XFG.FillMode.Point;
 						break;
 					case PolygonMode.Wireframe:
-						_device.RenderState.FillMode = XFG.FillMode.WireFrame;
+						_rasterizerState.FillMode = XFG.FillMode.WireFrame;
+						_device.RasterizerState = _rasterizerState;
 						break;
 					case PolygonMode.Solid:
-						_device.RenderState.FillMode = XFG.FillMode.Solid;
+						_rasterizerState.FillMode = XFG.FillMode.WireFrame;
+						_device.RasterizerState = _rasterizerState;
 						break;
 				}
 			}
@@ -928,7 +925,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.RenderState.StencilEnable = value;
+				_device.DepthStencilState.StencilEnable = value;
 			}
 		}
 
@@ -1060,9 +1057,9 @@ namespace Axiom.RenderSystems.Xna
 			if ( _isFirstFrame )
 			{
 				// enable alpha blending and specular materials
-				_device.RenderState.AlphaBlendEnable = true;
+				_device.BlendState = XFG.BlendState.AlphaBlend;
 				//_device.RenderState.SpecularEnable = true;
-				_device.DepthStencilState.DepthBufferEnable = true;
+				_device.DepthStencilState = XFG.DepthStencilState.DepthRead;
 				_isFirstFrame = false;
 			}
 		}
@@ -1071,6 +1068,7 @@ namespace Axiom.RenderSystems.Xna
 		bool PixelShaderIsSet = false;
 		public override void BindGpuProgram( GpuProgram program )
 		{
+			/*
 			switch ( program.Type )
 			{
 				case GpuProgramType.Vertex:
@@ -1083,10 +1081,12 @@ namespace Axiom.RenderSystems.Xna
 					PixelShaderIsSet = true;
 					break;
 			}
+			 */
 		}
 
 		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
 		{
+			/*
 			switch ( type )
 			{
 				case GpuProgramType.Vertex:
@@ -1143,6 +1143,7 @@ namespace Axiom.RenderSystems.Xna
 					}
 					break;
 			}
+			 */
 		}
 
 		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
@@ -1246,7 +1247,7 @@ namespace Axiom.RenderSystems.Xna
 
 
 				// Initialize the capabilities structures
-				this._checkHardwareCapabilities( _device );
+				this._checkHardwareCapabilities( XFG.GraphicsProfile.HiDef );
 			}
 			else
 			{
@@ -1287,150 +1288,6 @@ namespace Axiom.RenderSystems.Xna
 			LogManager.Instance.Write( "[XNA] : " + Name + " shutdown." );
 		}
 
-
-		private XFG.GraphicsDevice InitDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, IntPtr target )
-		{
-			if ( _device != null )
-			{
-				return _device;
-			}
-
-			XFG.GraphicsDevice newDevice;
-
-			// if this is the first window, get the device and do other initialization
-			XFG.PresentationParameters presentParams = new XFG.PresentationParameters();
-			presentParams.IsFullScreen = isFullscreen;
-			presentParams.BackBufferCount = 1;
-			presentParams.EnableAutoDepthStencil = depthBuffer;
-			presentParams.BackBufferWidth = width;
-			presentParams.BackBufferHeight = height;
-			presentParams.MultiSampleType = XFG.MultiSampleType.None;
-			presentParams.SwapEffect = XFG.SwapEffect.Copy;
-
-			// TODO: Check vsync setting
-			presentParams.PresentationInterval = XFG.PresentInterval.Immediate;
-
-			// supports 16 and 32 bit color
-			if ( colorDepth == 16 )
-			{
-				presentParams.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
-			}
-			else
-			{
-				//could not create depth24stencil8 with "Color"
-				presentParams.BackBufferFormat = XFG.SurfaceFormat.Rgba1010102;
-			}
-
-			if ( colorDepth > 16 )
-			{
-				if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch( XFG.DeviceType.Hardware, presentParams.BackBufferFormat, presentParams.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8 ) )
-				{
-					presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
-				}
-				// check for 24 bit Z buffer with 8 bit stencil (optimal choice)
-				if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-					 XFG.DeviceType.Hardware,
-					 XFG.GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Format,
-					 XFG.TextureUsage.None,
-					 XFG.QueryUsages.None,
-					 XFG.ResourceType.DepthStencilBuffer,
-					 XFG.DepthFormat.Depth24Stencil8 ) )
-				{
-					// doh, check for 32 bit Z buffer then
-
-					if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-						 XFG.DeviceType.Hardware,
-						 XFG.GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Format,
-						 XFG.TextureUsage.None,
-						 XFG.QueryUsages.None,
-						 XFG.ResourceType.DepthStencilBuffer,
-						 XFG.DepthFormat.Depth32 ) )
-					{
-						// float doh, just use 16 bit Z buffer
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
-					}
-					else
-					{
-						// use 32 bit Z buffer
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth32;
-					}
-				}
-				else
-				{
-					// <flair>Woooooooooo!</flair>
-					if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch(
-							XFG.DeviceType.Hardware,
-							XFG.GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Format,
-							presentParams.BackBufferFormat,
-							XFG.DepthFormat.Depth24Stencil8 ) )
-					{
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
-					}
-					else
-					{
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24;
-					}
-				}
-			}
-			else
-			{
-				// use 16 bit Z buffer if they arent using true color
-				presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
-			}
-
-			// create the D3D Device, trying for the best vertex support first, and settling for less if necessary
-			try
-			{
-				// hardware vertex processing
-				newDevice = new XFG.GraphicsDevice( XFG.GraphicsAdapter.DefaultAdapter,
-													XFG.DeviceType.Hardware,
-													target,
-													presentParams
-												);
-			}
-			catch ( Exception )
-			{
-				try
-				{
-					// doh, how bout mixed vertex processing
-					newDevice = new XFG.GraphicsDevice(
-														XFG.GraphicsAdapter.DefaultAdapter,
-														XFG.DeviceType.Hardware,
-														target,
-														presentParams
-													   );
-				}
-				catch ( XFG.DeviceNotSupportedException )
-				{
-					// what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
-					// anything at all since they obviously don't have a video card installed
-					newDevice = new XFG.GraphicsDevice(
-														XFG.GraphicsAdapter.DefaultAdapter,
-														XFG.DeviceType.Hardware,
-														target,
-														presentParams
-													   );
-				}
-			}
-
-			// CMH - end
-			// save the device capabilites
-			_capabilities = newDevice.GraphicsDeviceCapabilities;
-
-			// by creating our texture manager, singleton TextureManager will hold our implementation
-			this.textureManager = new XnaTextureManager( newDevice );
-
-			// by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
-			gpuProgramMgr = new XnaGpuProgramManager( newDevice );
-
-			// intializes the HardwareBufferManager singleton
-			hardwareBufferManager = new XnaHardwareBufferManager( newDevice );
-
-			this._checkHardwareCapabilities( newDevice );
-
-			return newDevice;
-		}
-
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
 			return new XnaHardwareOcclusionQuery( _device );
@@ -1457,7 +1314,7 @@ namespace Axiom.RenderSystems.Xna
 			RenderWindow renderWindow = null;
 
 			// register the HLSL program manager
-			HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
+			//HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
 
 			if ( autoCreateWindow )
 			{
@@ -1479,7 +1336,7 @@ namespace Axiom.RenderSystems.Xna
 				NamedParameterList miscParams = new NamedParameterList();
 				miscParams.Add( "title", windowTitle );
 				miscParams.Add( "colorDepth", bpp );
-				miscParams.Add( "FSAA", this._fsaaType );
+				//miscParams.Add( "FSAA", this._fsaaType );
 				miscParams.Add( "FSAAQuality", _fsaaQuality );
 				miscParams.Add( "vsync", _vSync );
 				miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
@@ -1808,7 +1665,7 @@ namespace Axiom.RenderSystems.Xna
 			switch ( op.operationType )
 			{
 				case OperationType.PointList:
-					primType = XFG.PrimitiveType.PointList;
+					primType = XFG.PrimitiveType.LineList; /* XNA 4.0 doesn't support PointList so using LineList instead */
 					primCount = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
 					break;
 				case OperationType.LineList:
@@ -1847,9 +1704,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
-			_device.Vertices[ 0 ].SetSource( null, 0, 0 );
-			_device.Vertices[ 1 ].SetSource( null, 0, 0 );
-			_device.Vertices[ 2 ].SetSource( null, 0, 0 );
+			_device.SetVertexBuffer( null );
 			_device.Indices = null;
 
 
@@ -1871,19 +1726,6 @@ namespace Axiom.RenderSystems.Xna
 		private bool lasta2c = false;
 		public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
 		{
-			bool a2c = false;
-			if ( func != Axiom.Graphics.CompareFunction.AlwaysPass )
-			{
-				_device.RenderState.AlphaTestEnable = true;
-				a2c = alphaToCoverage;
-			}
-			else
-			{
-				_device.RenderState.AlphaTestEnable = false;
-			}
-
-			_device.RenderState.AlphaFunction = XnaHelper.Convert( func );
-			_device.RenderState.ReferenceAlpha = val;
 
 			// Alpha to coverage
 			if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
@@ -1959,17 +1801,17 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
-			if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
-			{
-				_device.RenderState.AlphaBlendEnable = false;
-			}
-			else
-			{
-				_device.RenderState.AlphaBlendEnable = true;
-				_device.RenderState.SeparateAlphaBlendEnabled = false;
-				_device.RenderState.SourceBlend = XnaHelper.Convert( src );
-				_device.RenderState.DestinationBlend = XnaHelper.Convert( dest );
-			}
+			//if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
+			//{
+			//    _device.RenderState.AlphaBlendEnable = false;
+			//}
+			//else
+			//{
+			//    _device.RenderState.AlphaBlendEnable = true;
+			//    _device.RenderState.SeparateAlphaBlendEnabled = false;
+			//    _device.RenderState.SourceBlend = XnaHelper.Convert( src );
+			//    _device.RenderState.DestinationBlend = XnaHelper.Convert( dest );
+			//}
 		}
 
 		/// <summary>
@@ -1985,33 +1827,33 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
 		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
-			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
-				sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
-			{
-				_device.RenderState.AlphaBlendEnable = false;
-			}
-			else
-			{
-				_device.RenderState.AlphaBlendEnable = true;
-				_device.RenderState.SeparateAlphaBlendEnabled = true;
-				_device.RenderState.SourceBlend = XnaHelper.Convert( sourceFactor );
-				_device.RenderState.DestinationBlend = XnaHelper.Convert( destFactor );
-				_device.RenderState.AlphaSourceBlend = XnaHelper.Convert( sourceFactorAlpha );
-				_device.RenderState.AlphaDestinationBlend = XnaHelper.Convert( destFactorAlpha );
-			}
+			//if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+			//    sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+			//{
+			//    _device.RenderState.AlphaBlendEnable = false;
+			//}
+			//else
+			//{
+			//    _device.RenderState.AlphaBlendEnable = true;
+			//    _device.RenderState.SeparateAlphaBlendEnabled = true;
+			//    _device.RenderState.SourceBlend = XnaHelper.Convert( sourceFactor );
+			//    _device.RenderState.DestinationBlend = XnaHelper.Convert( destFactor );
+			//    _device.RenderState.AlphaSourceBlend = XnaHelper.Convert( sourceFactorAlpha );
+			//    _device.RenderState.AlphaDestinationBlend = XnaHelper.Convert( destFactorAlpha );
+			//}
 		}
 
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
-			if ( enable )
-			{
-				_device.ScissorRectangle = new XNA.Rectangle( left, top, right - left, bottom - top );
-				_device.RenderState.ScissorTestEnable = true;
-			}
-			else
-			{
-				_device.RenderState.ScissorTestEnable = false;
-			}
+			//if ( enable )
+			//{
+			//    _device.ScissorRectangle = new XNA.Rectangle( left, top, right - left, bottom - top );
+			//    _device.RenderState.ScissorTestEnable = true;
+			//}
+			//else
+			//{
+			//    _device.RenderState.ScissorTestEnable = false;
+			//}
 		}
 
 		public override void SetStencilBufferParams( Axiom.Graphics.CompareFunction function, int refValue, int mask, Axiom.Graphics.StencilOperation stencilFailOp, Axiom.Graphics.StencilOperation depthFailOp, Axiom.Graphics.StencilOperation passOp, bool twoSidedOperation )
@@ -2084,7 +1926,8 @@ namespace Axiom.RenderSystems.Xna
 		{
 			set
 			{
-				_device.RenderState.PointSpriteEnable = value;
+				//if ( value )
+				//    throw new AxiomException( "XNA does not support PointSprites." );
 			}
 		}
 
@@ -2105,28 +1948,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="maxSize"></param>
 		public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
 		{
-			if ( attenuationEnabled )
-			{
-				//scaling required
-				_device.RenderState.PointSpriteEnable = true;
-				// NOTE: PointSize scaling is FFP and Xna doesn't support them anymore
-				// http://social.msdn.microsoft.com/forums/en-US/xnagamestudioexpress/thread/8adc396e-f7b6-47a9-98a9-7f94e840cd3b/
-				// The constant, linear, and quadratic parameters need to be cached and passed into the ShaderGenerator
-				// The ShaderGenerator will then need to generate the approtiate values in the vertex shader
-			}
-			else
-			{
-				//no scaling required
-				_device.RenderState.PointSpriteEnable = false;
-			}
-
-			_device.RenderState.PointSize = size;
-			_device.RenderState.PointSizeMin = minSize;
-			if ( maxSize == 0.0f )
-			{
-				maxSize = HardwareCapabilities.MaxPointSize;
-			}
-			_device.RenderState.PointSizeMax = maxSize;
+			// throw new AxiomException( "XNA does not support PointSprites." );
 		}
 
 		public override void SetTexture( int stage, bool enabled, Texture texture )
@@ -2318,7 +2140,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		XFG.DepthStencilBuffer oriDSB;
+		//XFG.DepthStencilBuffer oriDSB;
 		public override void SetViewport( Axiom.Core.Viewport viewport )
 		{
 			if ( oriDSB == null )
@@ -2337,14 +2159,14 @@ namespace Axiom.RenderSystems.Xna
 					//the back buffer is null so it's not a render to texture,
 					//we render directly to the screen,
 					//set the original depth stencil buffer
-					_device.DepthStencilBuffer = oriDSB;
+					//_device.DepthStencilBuffer = oriDSB;
 					return;
 				}
 				else
 				{
 
 				}
-
+				/*
 				XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget[ "XNAZBUFFER" ];
 				if ( depth == null )
 				{
@@ -2357,17 +2179,9 @@ namespace Axiom.RenderSystems.Xna
 
 				if ( depth.Format == _device.DepthStencilBuffer.Format )
 				{
-					/*MessageBox.Show("same:\n" + 
-									depth.Width.ToString() + "-" + depth.Height.ToString() +"\n"+
-									_device.DepthStencilBuffer.Width.ToString() + "-" + _device.DepthStencilBuffer.Height.ToString() + "\n"+
-									depth.MultiSampleType.ToString() + " = "+_device.DepthStencilBuffer.MultiSampleType.ToString() + "\n" +
-									depth.MultiSampleQuality.ToString() + " = " + _device.DepthStencilBuffer.MultiSampleQuality.ToString()+"\n"+
-									depth.Format.ToString() + " = " + _device.DepthStencilBuffer.Format.ToString()
-									);
-					*/
 					_device.DepthStencilBuffer = depth;
 				}
-
+				*/
 
 
 				// Bind render targets
@@ -2402,27 +2216,27 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public struct ZBufferFormat
-		{
-			public ZBufferFormat( XFG.DepthFormat f, XFG.MultiSampleType m )
-			{
-				this.format = f;
-				this.multisample = m;
-			}
-			public XFG.DepthFormat format;
-			public XFG.MultiSampleType multisample;
-		}
-		protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
-		protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
+		//public struct ZBufferFormat
+		//{
+		//    public ZBufferFormat( XFG.DepthFormat f, XFG.MultiSampleType m )
+		//    {
+		//        this.format = f;
+		//        this.multisample = m;
+		//    }
+		//    public XFG.DepthFormat format;
+		//    public XFG.MultiSampleType multisample;
+		//}
+		//protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
+		//protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
 
 		private static XFG.DepthFormat[] _preferredStencilFormats = {
-			XFG.DepthFormat.Depth24Stencil8Single,
+			//XFG.DepthFormat.Depth24Stencil8Single,
 			XFG.DepthFormat.Depth24Stencil8,
-			XFG.DepthFormat.Depth24Stencil4,
+			//XFG.DepthFormat.Depth24Stencil4,
 			XFG.DepthFormat.Depth24,
-			XFG.DepthFormat.Depth15Stencil1,
+			//XFG.DepthFormat.Depth15Stencil1,
 			XFG.DepthFormat.Depth16,
-			XFG.DepthFormat.Depth32
+			//XFG.DepthFormat.Depth32
 		};
 
 		private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt )
@@ -2460,41 +2274,41 @@ namespace Axiom.RenderSystems.Xna
 			return dsfmt;
 		}
 
-		private XFG.DepthStencilBuffer _getDepthStencilFor( XFG.SurfaceFormat fmt, XFG.MultiSampleType multisample, int width, int height )
-		{
-			XFG.DepthStencilBuffer zbuffer = null;
+		//private XFG.DepthStencilBuffer _getDepthStencilFor( XFG.SurfaceFormat fmt, XFG.MultiSampleType multisample, int width, int height )
+		//{
+		//    XFG.DepthStencilBuffer zbuffer = null;
 
-			XFG.DepthFormat dsfmt = _getDepthStencilFormatFor( fmt );
-			if ( dsfmt == XFG.DepthFormat.Unknown )
-				return null;
+		//    XFG.DepthFormat dsfmt = _getDepthStencilFormatFor( fmt );
+		//    if ( dsfmt == XFG.DepthFormat.Unknown )
+		//        return null;
 
-			/// Check if result is cached
-			ZBufferFormat zbfmt = new ZBufferFormat( dsfmt, multisample );
-			XFG.DepthStencilBuffer cachedzBuffer;
-			if ( zBufferCache.TryGetValue( zbfmt, out cachedzBuffer ) )
-			{
-				/// Check if size is larger or equal
-				if ( cachedzBuffer.Width >= width &&
-					cachedzBuffer.Height >= height )
-				{
-					zbuffer = cachedzBuffer;
-				}
-				else
-				{
-					zBufferCache.Remove( zbfmt );
-					cachedzBuffer.Dispose();
-				}
-			}
+		//    /// Check if result is cached
+		//    ZBufferFormat zbfmt = new ZBufferFormat( dsfmt, multisample );
+		//    XFG.DepthStencilBuffer cachedzBuffer;
+		//    if ( zBufferCache.TryGetValue( zbfmt, out cachedzBuffer ) )
+		//    {
+		//        /// Check if size is larger or equal
+		//        if ( cachedzBuffer.Width >= width &&
+		//            cachedzBuffer.Height >= height )
+		//        {
+		//            zbuffer = cachedzBuffer;
+		//        }
+		//        else
+		//        {
+		//            zBufferCache.Remove( zbfmt );
+		//            cachedzBuffer.Dispose();
+		//        }
+		//    }
 
-			if ( zbuffer == null )
-			{
-				// If not, create the depthstencil surface
-				zbuffer = new XFG.DepthStencilBuffer( _device, width, height, dsfmt, multisample, 0 );
-				zBufferCache[ zbfmt ] = zbuffer;
-			}
+		//    if ( zbuffer == null )
+		//    {
+		//        // If not, create the depthstencil surface
+		//        zbuffer = new XFG.DepthStencilBuffer( _device, width, height, dsfmt, multisample, 0 );
+		//        zBufferCache[ zbfmt ] = zbuffer;
+		//    }
 
-			return zbuffer;
-		}
+		//    return zbuffer;
+		//}
 
 		public override void UnbindGpuProgram( GpuProgramType type )
 		{

@@ -100,6 +100,7 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -124,6 +125,7 @@
     <Compile Include="Source\Plugin.cs" />
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
+    <Compile Include="Source\Win32MessageHandling.cs" />
     <Compile Include="Source\XnaCodec.cs" />
     <Compile Include="Source\XnaGamerServices.cs" />
     <Compile Include="Source\XnaGpuProgram.cs" />
