@@ -68,9 +68,9 @@ namespace Axiom.RenderSystems.Xna
 
 		/// <summary>Used to provide support for multiple RenderWindows per device.</summary>
 		private XFG.RenderTarget2D _renderSurface;
-		private XFG.DepthStencilBuffer _stencilBuffer;
+		//private XFG.DepthStencilBuffer _stencilBuffer;
 
-		private XFG.MultiSampleType _fsaaType;
+		//private XFG.MultiSampleType _fsaaType;
 		private int _fsaaQuality;
 		private int _displayFrequency;
 		private bool _vSync;
@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="driver">The root driver</param>
 		public XnaRenderWindow( Driver driver )
-            : base()
+			: base()
 		{
 			_driver = driver;
 		}
@@ -458,13 +458,13 @@ namespace Axiom.RenderSystems.Xna
 			_xnapp = new XFG.PresentationParameters();
 
 			this._xnapp.IsFullScreen = IsFullScreen;
-			this._xnapp.SwapEffect = XFG.SwapEffect.Discard;
-			this._xnapp.BackBufferCount = _vSync ? 2 : 1;
-			this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
+			this._xnapp.RenderTargetUsage = XFG.RenderTargetUsage.DiscardContents;
+			//this._xnapp.BackBufferCount = _vSync ? 2 : 1;
+			//this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
 			this._xnapp.DeviceWindowHandle = _windowHandle;
 			this._xnapp.BackBufferHeight = Height;
 			this._xnapp.BackBufferWidth = Width;
-			this._xnapp.FullScreenRefreshRateInHz = IsFullScreen ? _displayFrequency : 0;
+			//this._xnapp.FullScreenRefreshRateInHz = IsFullScreen ? _displayFrequency : 0;
 
 			if ( _vSync )
 			{
@@ -486,47 +486,46 @@ namespace Axiom.RenderSystems.Xna
 			this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
 			if ( ColorDepth > 16 )
 			{
-				this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr32;
+				this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Color;
 			}
 
 			XFG.GraphicsAdapter currentAdapter = _driver.Adapter;
 			if ( ColorDepth > 16 )
 			{
 				// Try to create a 32-bit depth, 8-bit stencil
-				if ( currentAdapter.CheckDeviceFormat( devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth24Stencil8 ) == false )
+				if ( currentAdapter.QueryBackBufferFormat( devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth24Stencil8 ) == false )
 				{
 					// Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
-					if ( currentAdapter.CheckDeviceFormat( devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth32 ) == false )
+					if ( currentAdapter.QueryBackBufferFormat( devType, this._xnapp.BackBufferFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, XFG.DepthFormat.Depth24Stencil8 ) == false )
 					{
 						// Jeez, what a naff card. Fall back on 16-bit depth buffering
-						this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
+						this._xnapp.DepthStencilFormat = XFG.DepthFormat.Depth16;
 					}
 					else
 					{
-						this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth32;
+						this._xnapp.DepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
 					}
 				}
 				else
 				{
 					// Woohoo!
-					if ( currentAdapter.CheckDepthStencilMatch( devType, this._xnapp.BackBufferFormat, this._xnapp.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8 ) == true )
+					if ( currentAdapter.QueryBackBufferFormat( devType, this._xnapp.BackBufferFormat, this._xnapp.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8 ) == true )
 					{
-						this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
+						this._xnapp.DepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
 					}
 					else
 					{
-						this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth24;
+						this._xnapp.DepthStencilFormat = XFG.DepthFormat.Depth24;
 					}
 				}
 			}
 			else
 			{
 				// 16-bit depth, software stencil
-				this._xnapp.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
+				this._xnapp.DepthStencilFormat = XFG.DepthFormat.Depth16;
 			}
 
-			this._xnapp.MultiSampleType = _fsaaType;
-			this._xnapp.MultiSampleQuality = _fsaaQuality;
+			this._xnapp.MultiSampleCount =_fsaaQuality;
 
 			if ( _isSwapChain )
 			{
@@ -597,11 +596,13 @@ namespace Axiom.RenderSystems.Xna
 						}
 					}
 
+					XFG.GraphicsProfile _profile =  adapterToUse.IsProfileSupported( XFG.GraphicsProfile.HiDef ) ? XFG.GraphicsProfile.HiDef : XFG.GraphicsProfile.Reach;
 					// create the XNA GraphicsDevice, trying for the best vertex support first, and settling for less if necessary
 					try
 					{
 						// hardware vertex processing
-						device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
+						this._xnapp.DeviceWindowHandle = _windowHandle;
+						device = new XFG.GraphicsDevice( adapterToUse, _profile, this._xnapp );
 					}
 					catch ( Exception )
 					{
@@ -609,38 +610,18 @@ namespace Axiom.RenderSystems.Xna
 						{
 							// Try a second time, may fail the first time due to back buffer count,
 							// which will be corrected down to 1 by the runtime
-							device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
+							device = new XFG.GraphicsDevice( adapterToUse, _profile, this._xnapp );
 						}
 						catch ( Exception )
 						{
-							try
-							{
-								// doh, how bout mixed vertex processing
-								device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
-							}
-							catch ( Exception )
-							{
-								try
-								{
-									// what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
-									// anything at all since they obviously don't have a video card installed
-									device = new XFG.GraphicsDevice( adapterToUse, devType, _windowHandle, this._xnapp );
-								}
-								catch ( Exception ex )
-								{
-									throw new Exception( "Failed to create XNA GraphicsDevice", ex );
-								}
-							}
+							throw new Exception( "Failed to create XNA GraphicsDevice", ex );
 						}
 					}
 				}
 				// update device in driver
 				Driver.XnaDevice = device;
-				// Store references to buffers for convenience
-				_renderSurface = device.GetRenderTarget( 0 );
-				_stencilBuffer = device.DepthStencilBuffer;
 
-				device.DeviceReset += this.OnResetDevice;
+				device.DeviceReset += new EventHandler<EventArgs>( OnResetDevice );
 			}
 		}
 
@@ -662,7 +643,7 @@ namespace Axiom.RenderSystems.Xna
 						return this._windowHandle;
 
 					case "XNAZBUFFER":
-						return this._stencilBuffer;
+						//return this._stencilBuffer;
 
 					case "XNABACKBUFFER":
 						return this._renderSurface;
@@ -693,32 +674,32 @@ namespace Axiom.RenderSystems.Xna
 				{
 					// Dispose managed resources.
 					// dispose of our back buffer if need be
-					if ( this._renderSurface != null)
+					if ( this._renderSurface != null )
 					{
-                        if (!this._renderSurface.IsDisposed)
-						    this._renderSurface.Dispose();
+						if ( !this._renderSurface.IsDisposed )
+							this._renderSurface.Dispose();
 
-                        this._renderSurface = null;
+						this._renderSurface = null;
 					}
 
 					// dispose of our stencil buffer if need be
-					if ( this._stencilBuffer != null)
-					{
-                        if (!this._stencilBuffer.IsDisposed)
-						    this._stencilBuffer.Dispose();
+					//if ( this._stencilBuffer != null )
+					//{
+					//    if ( !this._stencilBuffer.IsDisposed )
+					//        this._stencilBuffer.Dispose();
 
-                        this._stencilBuffer = null;
-					}
+					//    this._stencilBuffer = null;
+					//}
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                    WindowEventMonitor.Instance.UnregisterWindow(this);
-                    DefaultForm winForm = (DefaultForm)SWF.Control.FromHandle(_windowHandle);
-                    
-                    if (!winForm.IsDisposed)
-                        winForm.Dispose();
+					WindowEventMonitor.Instance.UnregisterWindow( this );
+					DefaultForm winForm = (DefaultForm)SWF.Control.FromHandle( _windowHandle );
+
+					if ( !winForm.IsDisposed )
+						winForm.Dispose();
 #endif
 
-                    this._windowHandle = IntPtr.Zero;
+					this._windowHandle = IntPtr.Zero;
 				}
 
 				// There are no unmanaged resources to release, but
@@ -950,13 +931,53 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public event EventHandler DeviceCreated;
+		public event EventHandler<EventArgs> DeviceCreated
+		{
+			add
+			{
+				throw new NotImplementedException();
+			}
+			remove
+			{
+				throw new NotImplementedException();
+			}
+		}
 
-		public event EventHandler DeviceDisposing;
+		public event EventHandler<EventArgs> DeviceDisposing
+		{
+			add
+			{
+				throw new NotImplementedException();
+			}
+			remove
+			{
+				throw new NotImplementedException();
+			}
+		}
 
-		public event EventHandler DeviceReset;
+		public event EventHandler<EventArgs> DeviceReset
+		{
+			add
+			{
+				throw new NotImplementedException();
+			}
+			remove
+			{
+				throw new NotImplementedException();
+			}
+		}
 
-		public event EventHandler DeviceResetting;
+		public event EventHandler<EventArgs> DeviceResetting
+		{
+			add
+			{
+				throw new NotImplementedException();
+			}
+			remove
+			{
+				throw new NotImplementedException();
+			}
+		}
 
 		public XFG.GraphicsDevice GraphicsDevice
 		{
@@ -967,5 +988,6 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion IGraphicsDeviceService Members
+
 	}
 }
