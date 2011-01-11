@@ -336,7 +336,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///    Allows showing the bounding box of an invidual SceneObject.
+		///    Allows showing the bounding box of an individual SceneObject.
 		/// </summary>
 		/// <remarks>
 		///    This shows the bounding box of the SceneNode that the SceneObject is currently attached to.
