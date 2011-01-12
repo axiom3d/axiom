@@ -99,6 +99,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.SphereMapping
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.MousePicking", "Samples\MousePicking\Axiom.Samples.MousePicking.csproj", "{41A3615D-DCBC-4AD3-8E5E-19B6A263F426}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.Linux", "Samples\Browser\Axiom.Samples.Browser.Linux.csproj", "{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -641,6 +643,22 @@ Global
 		{41A3615D-DCBC-4AD3-8E5E-19B6A263F426}.Xna Debug|x86.Build.0 = Debug|x86
 		{41A3615D-DCBC-4AD3-8E5E-19B6A263F426}.Xna Release|x86.ActiveCfg = Release|x86
 		{41A3615D-DCBC-4AD3-8E5E-19B6A263F426}.Xna Release|x86.Build.0 = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Debug|x86.ActiveCfg = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Debug|x86.Build.0 = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Debug|x86.ActiveCfg = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Debug|x86.Build.0 = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Release|x86.ActiveCfg = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Release|x86.Build.0 = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.OpenGL Debug|x86.ActiveCfg = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.OpenGL Debug|x86.Build.0 = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.OpenGL Release|x86.ActiveCfg = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.OpenGL Release|x86.Build.0 = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Release|x86.ActiveCfg = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Release|x86.Build.0 = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Xna Debug|x86.ActiveCfg = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Xna Debug|x86.Build.0 = Debug|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Xna Release|x86.ActiveCfg = Release|x86
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Xna Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -686,6 +704,7 @@ Global
 		{A4A4146B-AA5E-4262-8370-DFC148C423B3} = {18237B5F-596D-4381-B32A-D48BD0D55040}
 		{41A3615D-DCBC-4AD3-8E5E-19B6A263F426} = {18237B5F-596D-4381-B32A-D48BD0D55040}
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F} = {912C326A-AA3F-4F9F-B470-862246CCF684}
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF} = {912C326A-AA3F-4F9F-B470-862246CCF684}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = AxiomDemos\Source\Browser\WinForm\Axiom.Demos.Browser.WinForm.Linux.csproj
