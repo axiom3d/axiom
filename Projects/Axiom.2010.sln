@@ -721,7 +721,6 @@ Global
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Debug|x86.ActiveCfg = Debug|x86
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Debug|x86.Build.0 = Debug|x86
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Debug|x86.ActiveCfg = Debug|x86
-		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Debug|x86.Build.0 = Debug|x86
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Release|x86.ActiveCfg = Release|x86
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.DirectX Release|x86.Build.0 = Release|x86
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.OpenGL Debug|x86.ActiveCfg = Debug|x86
@@ -804,7 +803,6 @@ Global
 		{89C3D207-913D-4BCB-BD6E-F8673E20D8EA} = {47B1A6E3-B79C-481B-9A52-10E561745651}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
