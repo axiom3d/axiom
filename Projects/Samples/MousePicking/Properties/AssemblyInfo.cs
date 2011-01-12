@@ -27,12 +27,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "Axiom.Samples.Smoke" )]
+[assembly: AssemblyTitle( "Axiom.Samples.MousePicking" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyProduct( "Axiom.Samples.Smoke" )]
-[assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyCopyrightAttribute( "Copyright (C) 2003-2009 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyProduct( "Axiom.Samples.MousePicking" )]
+[assembly: AssemblyCompany( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
+[assembly: AssemblyCopyright( "Copyright © 2003-2011 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible( false )]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid( "2D6A13D9-AD0E-497B-BFFD-7EC489BDAC12" )]
+[assembly: Guid( "DF2DCE07-D096-4572-B20A-28548790BE24" )]
 
 // Version information for an assembly consists of the following four values:
 //

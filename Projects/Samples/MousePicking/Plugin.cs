@@ -28,10 +28,10 @@ namespace Axiom.Samples.MousePicking
 {
 	public class Plugin : SamplePlugin
 	{
-        private MousePickingSample sample;
+		private MousePickingSample sample;
 		public override void Initialize()
 		{
-            sample = new MousePickingSample();
+			sample = new MousePickingSample();
 			Name = sample.Metadata[ "Title" ] + " Sample";
 			AddSample( sample );
 		}
