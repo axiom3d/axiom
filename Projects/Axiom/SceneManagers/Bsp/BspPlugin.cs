@@ -47,6 +47,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			_bspSMFactory = new BspSceneManagerFactory();
 			Root.Instance.AddSceneManagerFactory( _bspSMFactory );
+            new BspResourceManager();
 		}
 
 		public void Shutdown()

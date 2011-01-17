@@ -34,11 +34,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
@@ -365,15 +363,21 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			Quake3Shader s = new Quake3Shader( this, name, nextHandle, ResourceGroupManager.Instance.WorldResourceGroupName );
 
-			Load( name, ResourceGroupManager.Instance.WorldResourceGroupName );
+            s.Load();
 
 			return s;
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="groupName"></param>
+        /// <param name="fileName"></param>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
 			StreamReader file = new StreamReader( stream, Encoding.ASCII );
@@ -434,21 +438,21 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		protected Quake3ShaderManager()
+        internal Quake3ShaderManager()
             : base()
-		{
+        {
             if (instance == null)
             {
                 instance = this;
-			LoadingOrder = 110.0f;
+                LoadingOrder = 110.0f;
                 ScriptPatterns.Add("*.shader");
                 ResourceGroupManager.Instance.RegisterScriptLoader(this);
-		}
+            }
             else
                 throw new AxiomException("Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name);
-		}
+        }
 
-		public bool Initialize( params object[] args )
+        public bool Initialize(params object[] args)
 		{
 			return true;
 		}
