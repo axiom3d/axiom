@@ -148,6 +148,8 @@ namespace Axiom.SceneManagers.Bsp
 			isSkyDomeEnabled = false;
 
 			level = null;
+
+            new BspResourceManager();
 		}
 
 		#endregion Constructor
