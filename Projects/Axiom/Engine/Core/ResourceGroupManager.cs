@@ -2343,23 +2343,22 @@ namespace Axiom.Core
 
 			int scriptCount = 0;
 			// Iterate over script users in loading order and get streams
-            foreach (KeyValuePair<float, List<IScriptLoader>> pairsl in _scriptLoaderOrders)
-            {
-                List<IScriptLoader> sl = pairsl.Value;
+			foreach ( KeyValuePair<float, List<IScriptLoader>> pairsl in _scriptLoaderOrders )
+			{
+				List<IScriptLoader> sl = pairsl.Value;
 
-                foreach (IScriptLoader isl in sl)
-                {
-                    List <FileInfoList> fileListList = new List<FileInfoList>();
-                    // Get all the patterns and search them
-                    List<string> patterns = isl.ScriptPatterns;
-                    foreach (string p in patterns)
+				foreach ( IScriptLoader isl in sl )
+				{
+					List<FileInfoList> fileListList = new List<FileInfoList>();
+					// Get all the patterns and search them
+					List<string> patterns = isl.ScriptPatterns;
+					foreach ( string p in patterns )
 					{
 						FileInfoList fileList = FindResourceFileInfo( grp.Name, p );
 						scriptCount += fileList.Count;
 						fileListList.Add( fileList );
 					}
-
-                    scriptLoaderFileList.Add(new Tuple<IScriptLoader, List<FileInfoList>>(isl, new List<FileInfoList>(fileListList)));
+					scriptLoaderFileList.Add( new Tuple<IScriptLoader, List<FileInfoList>>( isl, fileListList ) );
 				}
 			}
 			// Fire scripting event
