@@ -54,7 +54,7 @@ using Android.Content.Res;
 
 namespace Axiom.Platform.Android
 {
-	public class AndroidFolderAssetArchive : Archive
+	public class AndroidFolderAssetArchive : FileSystemArchive
 	{
 		private string _type;
 		private AssetManager _assets;
@@ -91,6 +91,7 @@ namespace Axiom.Platform.Android
 
 		public override List<string> List( bool recursive )
 		{
+			_assets.List( Name );
 			return new List<string>();
 		}
 
