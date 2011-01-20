@@ -1028,10 +1028,12 @@ namespace Axiom.Core
 			// Set current group
 			_currentGroup = grp;
 
-			// TODO: unload in reverse order
-			foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrders )
+			float [] grpKeys = new float[grp.LoadResourceOrders.Count];
+            grp.LoadResourceOrders.Keys.CopyTo(grpKeys, 0);
+			
+            for (int i = grp.LoadResourceOrders.Count - 1; i >= 0; i--)
 			{
-				LoadUnloadResourceList lurl = pair.Value;
+                LoadUnloadResourceList lurl = grp.LoadResourceOrders[grpKeys[i]];
 				foreach ( Resource res in lurl )
 				{
 					if ( !reloadableOnly || res.IsReloadable )
