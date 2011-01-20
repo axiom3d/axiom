@@ -118,6 +118,7 @@ namespace Axiom.FileSystem
 						fileInfo.Path = Path.GetDirectoryName( entry.Name ) + Path.DirectorySeparatorChar;
 						fileInfo.CompressedSize = entry.CompressedSize;
 						fileInfo.UncompressedSize = entry.Size;
+                        fileInfo.ModifiedTime = entry.DateTime;
 						detailList.Add( fileInfo );
 					}
 
@@ -145,6 +146,9 @@ namespace Axiom.FileSystem
 
 		#region Archive Implementation
 
+        /// <summary>
+        /// 
+        /// </summary>
 		public override bool IsCaseSensitive
 		{
 			get
@@ -153,6 +157,9 @@ namespace Axiom.FileSystem
 			}
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
 		public override void Load()
 		{
 			if ( _zipFile == null || _zipFile.Length == 0 )
@@ -190,6 +197,9 @@ namespace Axiom.FileSystem
 			}
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
 		public override void Unload()
 		{
 			if ( _zipStream != null )
@@ -200,6 +210,12 @@ namespace Axiom.FileSystem
 			}
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="readOnly"></param>
+        /// <returns></returns>
 		public override Stream Open( string filename, bool readOnly )
 		{
 			ZipEntry entry;
@@ -250,16 +266,32 @@ namespace Axiom.FileSystem
 			return output;
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
 		public override List<string> List( bool recursive )
 		{
 			return Find( "*", recursive );
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
 		public override FileInfoList ListFileInfo( bool recursive )
 		{
 			return FindFileInfo( "*", recursive );
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
 		public override List<string> Find( string pattern, bool recursive )
 		{
 			List<string> ret = new List<string>();
@@ -269,6 +301,12 @@ namespace Axiom.FileSystem
 			return ret;
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
 		public override FileInfoList FindFileInfo( string pattern, bool recursive )
 		{
 			FileInfoList ret = new FileInfoList();
@@ -278,6 +316,11 @@ namespace Axiom.FileSystem
 			return ret;
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
 		public override bool Exists( string fileName )
 		{
 			List<string> ret = new List<string>();

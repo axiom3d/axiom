@@ -145,6 +145,7 @@ namespace Axiom.FileSystem
 					fileInfo.Path = currentDir;
 					fileInfo.CompressedSize = fi.Length;
 					fileInfo.UncompressedSize = fi.Length;
+                    fileInfo.ModifiedTime = fi.LastWriteTime;
 					detailList.Add( fileInfo );
 				}
 			}

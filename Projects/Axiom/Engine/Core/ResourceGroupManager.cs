@@ -1798,6 +1798,63 @@ namespace Axiom.Core
 			return vec;
 		}
 
+        /// <summary>
+        /// Retrieve the modification time of a given file
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="resourceName"></param>
+        /// <returns></returns>
+        public DateTime ResourceModifiedTime(string groupName, string resourceName)
+        {
+            // Try to find in resource index first
+            ResourceGroup grp = this.getResourceGroup(groupName);
+            if (grp == null)
+            {
+                throw new AxiomException("Cannot find a group named {0}", groupName);
+            }
+
+            return this.ResourceModifiedTime(grp, resourceName);
+        }
+
+        /// <summary>
+        /// Retrieve the modification time of a given file
+        /// </summary>
+        /// <param name="group"></param>
+        /// <param name="resourceName"></param>
+        /// <returns></returns>
+        public DateTime ResourceModifiedTime(ResourceGroup group, string resourceName)
+        {
+            if (group.ResourceIndexCaseSensitive.ContainsKey(resourceName))
+            {
+                return group.ResourceIndexCaseSensitive[resourceName].GetModifiedTime(resourceName);
+            }
+            else
+            {
+                // try case insensitive
+                string lcResourceName = resourceName.ToLower();
+                if (group.ResourceIndexCaseInsensitive.ContainsKey(lcResourceName))
+                {
+                    return group.ResourceIndexCaseInsensitive[lcResourceName].GetModifiedTime(resourceName);
+                }
+                else
+                {
+                    // Search the hard way
+                    foreach (ResourceLocation rl in group.LocationList)
+                    {
+                        Archive arch = rl.Archive;
+                        DateTime testTime = arch.GetModifiedTime(resourceName);
+
+                        if (testTime > DateTime.MinValue)
+                        {
+                            return testTime;
+                        }
+                    }
+                }
+            }
+
+            return DateTime.MinValue;
+        }
+
 		/// <summary>
 		/// Find all file names matching a given pattern in a resource group.
 		/// </summary>
@@ -2588,5 +2645,5 @@ namespace Axiom.Core
 		}
 
 		#endregion IDisposable Members
-	} ;
+    } ;
 }
