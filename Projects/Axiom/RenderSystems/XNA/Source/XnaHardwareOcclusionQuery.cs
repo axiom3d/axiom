@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void Begin()
 		{
 			// proceed if supported, or silently fail otherwise
-			if ( oQuery.IsSupported )
+			if ( device.GraphicsProfile == XFG.GraphicsProfile.HiDef )
 			{
 				oQuery.Begin();
 			}
@@ -101,7 +101,7 @@ namespace Axiom.RenderSystems.Xna
 			// default to returning a high count.  will be set otherwise if the query runs
 			LastFragmentCount = 100000;
 
-			if ( oQuery.IsSupported && oQuery.IsComplete )
+			if ( device.GraphicsProfile == XFG.GraphicsProfile.HiDef && oQuery.IsComplete )
 			{
 				LastFragmentCount = oQuery.PixelCount;
 			}
@@ -115,7 +115,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void End()
 		{
 			// proceed if supported, or silently fail otherwise
-			if ( oQuery.IsSupported )
+			if ( device.GraphicsProfile == XFG.GraphicsProfile.HiDef )
 			{
 				oQuery.End();
 			}
