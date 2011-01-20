@@ -889,8 +889,12 @@ namespace Axiom.RenderSystems.Xna
 				switch ( value )
 				{
 					case PolygonMode.Points:
+
+                        throw new NotSupportedException("Point geometry is no longer supported on the XNA RenderSystem");
+
 						throw new Exception( "Xna does not implement Point rendering." );
 						//_device.RenderState.FillMode = XFG.FillMode.Point;
+
 						break;
 					case PolygonMode.Wireframe:
 						_rasterizerState.FillMode = XFG.FillMode.WireFrame;
@@ -1656,7 +1660,7 @@ namespace Axiom.RenderSystems.Xna
 #endif
 
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
-			// set the vertex declaration and buffer binding
+			// set the vertex declaration and buffer binding 
 			_device.VertexDeclaration = vertDecl.XnaVertexDecl;
 			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
@@ -1685,7 +1689,7 @@ namespace Axiom.RenderSystems.Xna
 					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
 					break;
 				case OperationType.TriangleFan:
-					primType = XFG.PrimitiveType.TriangleFan;
+                    throw new Exception("XNA 4.0 doesn't support TriangleFan");
 					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
 					break;
 			} // switch(primType)
@@ -1754,7 +1758,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				val |= XFG.ColorWriteChannels.Alpha;
 			}
-			_device.RenderState.ColorWriteChannels = val;
+			_device.BlendState.ColorWriteChannels = val;
 		}
 
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction )
@@ -1866,27 +1870,27 @@ namespace Axiom.RenderSystems.Xna
 				{
 					throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
 				}
-				_device.RenderState.TwoSidedStencilMode = true;
+				_device.DepthStencilState.TwoSidedStencilMode = true;
 				flip = ( invertVertexWinding && activeRenderTarget.RequiresTextureFlipping ) ||
 						( !invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping );
 
-				_device.RenderState.StencilFail = XnaHelper.Convert( stencilFailOp, !flip );
-				_device.RenderState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, !flip );
-				_device.RenderState.StencilPass = XnaHelper.Convert( passOp, !flip );
+				_device.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, !flip );
+				_device.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, !flip );
+				_device.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, !flip );
 			}
 			else
 			{
-				_device.RenderState.TwoSidedStencilMode = false;
+				_device.DepthStencilState.TwoSidedStencilMode = false;
 				flip = false;
 			}
 
 			// configure standard version of the stencil operations
-			_device.RenderState.StencilFunction = XnaHelper.Convert( function );
-			_device.RenderState.ReferenceStencil = refValue;
-			_device.RenderState.StencilMask = mask;
-			_device.RenderState.StencilFail = XnaHelper.Convert( stencilFailOp, flip );
-			_device.RenderState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, flip );
-			_device.RenderState.StencilPass = XnaHelper.Convert( passOp, flip );
+			_device.DepthStencilState.StencilFunction = XnaHelper.Convert( function );
+			_device.DepthStencilState.ReferenceStencil = refValue;
+			_device.DepthStencilState.StencilMask = mask;
+			_device.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, flip );
+			_device.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, flip );
+			_device.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, flip );
 			//_device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
 		}
 
@@ -2123,21 +2127,29 @@ namespace Axiom.RenderSystems.Xna
 		public override void SetTextureUnitFiltering( int stage, FilterType type, Axiom.Graphics.FilterOptions filter )
 		{
 			XnaTextureType texType = XnaHelper.Convert( texStageDesc[ stage ].texType );
-			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, _capabilities, texType );
-			switch ( type )
-			{
-				case FilterType.Min:
-					_device.SamplerStates[ stage ].MinFilter = texFilter;
-					break;
+			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, texType );
 
-				case FilterType.Mag:
-					_device.SamplerStates[ stage ].MagFilter = texFilter;
-					break;
+            _device.SamplerStates[stage].Filter = texFilter;
 
-				case FilterType.Mip:
-					_device.SamplerStates[ stage ].MipFilter = texFilter;
-					break;
-			}
+            /*
+             * TextureFilter enumeration now combines FilterType and TextureType in 4.0, so this is no longer necessary.
+             */
+            //switch ( type )
+            //{
+            //    case FilterType.Min:
+            //        {
+            //          
+            //        }
+            //        break;
+
+            //    case FilterType.Mag:
+            //        _device.SamplerStates[ stage ].MagFilter = texFilter;
+            //        break;
+
+            //    case FilterType.Mip:
+            //        _device.SamplerStates[ stage ].MipFilter = texFilter;
+            //        break;
+            //}
 		}
 
 		//XFG.DepthStencilBuffer oriDSB;
@@ -2216,6 +2228,18 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
+		public struct ZBufferFormat
+		{
+			public ZBufferFormat( XFG.DepthFormat f)
+			{
+				this.format = f;
+			}
+			public XFG.DepthFormat format;
+		}
+        protected Dictionary<ZBufferFormat, XFG.RenderTarget2D> zBufferCache = new Dictionary<ZBufferFormat, XFG.RenderTarget2D>();
+        //protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
+        protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
+
 		//public struct ZBufferFormat
 		//{
 		//    public ZBufferFormat( XFG.DepthFormat f, XFG.MultiSampleType m )
@@ -2228,6 +2252,7 @@ namespace Axiom.RenderSystems.Xna
 		//}
 		//protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
 		//protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
+
 
 		private static XFG.DepthFormat[] _preferredStencilFormats = {
 			//XFG.DepthFormat.Depth24Stencil8Single,
@@ -2242,13 +2267,13 @@ namespace Axiom.RenderSystems.Xna
 		private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt )
 		{
 			XFG.DepthFormat dsfmt;
-
+            
 			// Check if result is cached
 			if ( depthStencilCache.TryGetValue( fmt, out dsfmt ) )
 				return dsfmt;
 
 			// If not, probe with CheckDepthStencilMatch
-			dsfmt = XFG.DepthFormat.Unknown;
+            dsfmt = XFG.DepthFormat.None;
 
 			// Get description of primary render target
 			XFG.SurfaceFormat targetFormat = _primaryWindow.RenderSurfaceFormat;
