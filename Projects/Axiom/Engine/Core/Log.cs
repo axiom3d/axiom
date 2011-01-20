@@ -169,12 +169,15 @@ namespace Axiom.Core
 			{
 				try
 				{
+#if !( ANDROID )
+
 					// create the log file, or open
 					log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
 
 					// get a stream writer using the file stream
 					writer = new StreamWriter( log );
 					writer.AutoFlush = true;	//always flush after write
+#endif
 				}
 				catch
 				{
