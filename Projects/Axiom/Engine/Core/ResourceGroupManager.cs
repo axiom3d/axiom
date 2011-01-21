@@ -78,8 +78,12 @@ namespace Axiom.Core
 	///     <li>worldGeometryStageStarted (*)</li>
 	///     <li>worldGeometryStageEnded (*)</li>
 	///     <li>resourceGroupLoadEnded</li>
-	/// </ul>
-	/// </remarks>
+    /// 	<li>resourceGroupPrepareStarted</li>
+    ///	    <li>resourcePrepareStarted (*)</li>
+    ///     <li>resourcePrepareEnded (*)</li>
+    ///	    <li>resourceGroupPrepareEnded</li>
+    /// </ul>
+    /// </remarks>
 	public interface IResourceGroupListener
 	{
 		/// <summary>
@@ -93,18 +97,50 @@ namespace Axiom.Core
 		/// This event is fired when a script is about to be parsed.
 		/// </summary>
 		/// <param name="scriptName">Name of the to be parsed</param>
-		void ScriptParseStarted( string scriptName );
+        /// <param name="skipThisScript">A boolean passed by reference which is by default set to 
+		///	false. If the event sets this to true, the script will be skipped and not
+		///	parsed. Note that in this case the scriptParseEnded event will not be raised
+		///	for this script.</param>
+		void ScriptParseStarted( string scriptName, ref bool skipThisScript );
 
 		/// <summary>
-		/// This event is fired when the script has been fully parsed.
+        /// This event is fired when the script has been fully parsed.
 		/// </summary>
-		void ScriptParseEnded();
+		/// <param name="scriptName"></param>
+		/// <param name="skipped"></param>
+		void ScriptParseEnded(string scriptName, bool skipped);
 
 		/// <summary>
 		/// This event is fired when a resource group finished parsing scripts.
 		/// </summary>
 		/// <param name="groupName">The name of the group</param>
 		void ResourceGroupScriptingEnded( string groupName );
+
+        /// <summary>
+        /// This event is fired  when a resource group begins preparing.
+        /// </summary>
+        /// <param name="groupName">The name of the group being prepared</param>
+        /// <param name="resourceCount">The number of resources which will be prepared, including
+        /// a number of stages required to prepare any linked world geometry.
+        /// </param>
+        void ResourceGroupPrepareStarted( string groupName, int resourceCount );
+
+        /// <summary>
+        /// This event is fired when a declared resource is about to be prepared. 
+        /// </summary>
+        /// <param name="resource">Weak reference to the resource prepared.</param>
+        void ResourcePrepareStarted( Resource resource );
+
+        /// <summary>
+        /// This event is fired when the resource has been prepared. 
+        /// </summary>
+        void ResourcePrepareEnded();
+
+        /// <summary>
+        /// This event is fired when a resource group finished preparing.
+        /// </summary>
+        /// <param name="groupName">The name of the group has been prepared.</param>
+        void ResourceGroupPrepareEnded( string groupName );
 
 		/// <summary>
 		/// This event is fired  when a resource group begins loading.
@@ -144,8 +180,9 @@ namespace Axiom.Core
 		void WorldGeometryStageEnded();
 
 		/// <summary>
-		/// This event is fired when a resource group finished loading.
+        /// This event is fired when a resource group finished loading.
 		/// </summary>
+        /// <param name="groupName">The name of the group has been loaded.</param>
 		void ResourceGroupLoadEnded( string groupName );
 	}
 
@@ -209,20 +246,27 @@ namespace Axiom.Core
 		/// <param name="scriptCount">The number of scripts which will be parsed</param>
 		private delegate void ResourceGroupScriptingStarted( string groupName, int scriptCount );
 
+        /// <summary>
+        /// 
+        /// </summary>
 		private ResourceGroupScriptingStarted _resourceGroupScriptingStarted;
 
-		/// <summary>
-		/// This event is fired when a script is about to be parsed.
-		/// </summary>
-		/// <param name="scriptName">Name of the to be parsed</param>
-		private delegate void ScriptParseStarted( string scriptName );
+        /// <summary>
+        /// This event is fired when a script is about to be parsed.
+        /// </summary>
+        /// <param name="scriptName">Name of the to be parsed</param>
+        /// <param name="skipThisScript">A boolean passed by reference which is by default set to 
+        ///	false. If the event sets this to true, the script will be skipped and not
+        ///	parsed. Note that in this case the scriptParseEnded event will not be raised
+        ///	for this script.</param>
+		private delegate void ScriptParseStarted( string scriptName, ref bool skipThisScript );
 
 		private ScriptParseStarted _scriptParseStarted;
 
 		/// <summary>
 		/// This event is fired when the script has been fully parsed.
 		/// </summary>
-		private delegate void ScriptParseEnded();
+        private delegate void ScriptParseEnded( string scriptName, bool skipped );
 
 		private ScriptParseEnded _scriptParseEnded;
 
@@ -276,7 +320,6 @@ namespace Axiom.Core
 		/// has been completed. The number of stages required will have been
 		/// included in the resourceCount passed in resourceGroupLoadStarted.
 		/// </summary>
-		/// <param name="description">Text description of what was just loaded</param>
 		private delegate void WorldGeometryStageEnded();
 
 		private WorldGeometryStageEnded _worldGeometryStageEnded;
@@ -287,6 +330,38 @@ namespace Axiom.Core
 		private delegate void ResourceGroupLoadEnded( string groupName );
 
 		private ResourceGroupLoadEnded _resourceGroupLoadEnded;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="resourceCount"></param>
+        private delegate void ResourceGroupPrepareStarted( string groupName, int resourceCount );
+
+        private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resource"></param>
+        private delegate void ResourcePrepareStarted( Resource resource );
+
+        private ResourcePrepareStarted _resourcePrepareStarted;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private delegate void ResourcePrepareEnded();
+
+        private ResourcePrepareEnded _resourcePrepareEnded;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupName"></param>
+        private delegate void ResourceGroupPrepareEnded( string groupName );
+
+        private ResourceGroupPrepareEnded _resourceGroupPrepareEnded;
 
 		#endregion Delegates
 
@@ -670,26 +745,35 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal event firing method </summary>
+		/// <summary>
+        /// Internal event firing method 
+		/// </summary>
 		/// <param name="scriptName"></param>
-		private void _fireScriptStarted( string scriptName )
+		/// <param name="skipThisScript"></param>
+		private void _fireScriptStarted( string scriptName, ref bool skipThisScript )
 		{
 			if ( _scriptParseStarted != null )
 			{
-				_scriptParseStarted( scriptName );
+				_scriptParseStarted( scriptName, ref skipThisScript);
 			}
 		}
 
-		/// <summary>Internal event firing method</summary>
-		private void _fireScriptEnded()
+		/// <summary>
+        /// Internal event firing method 
+		/// </summary>
+		/// <param name="scriptName"></param>
+		/// <param name="skipped"></param>
+		private void _fireScriptEnded(string scriptName, bool skipped)
 		{
 			if ( _scriptParseEnded != null )
 			{
-				_scriptParseEnded();
+				_scriptParseEnded(scriptName, skipped);
 			}
 		}
 
-		/// <summary>Internal event firing method </summary>
+		/// <summary>
+        /// Internal event firing method 
+		/// </summary>
 		/// <param name="groupName"></param>
 		private void _fireResourceGroupScriptingEnded( string groupName )
 		{
@@ -710,7 +794,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal event firing method </summary>
+		/// <summary>
+        /// Internal event firing method 
+		/// </summary>
 		/// <param name="resource"></param>
 		private void _fireResourceStarted( Resource resource )
 		{
@@ -720,7 +806,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal event firing method </summary>
+		/// <summary>
+        /// Internal event firing method 
+		/// </summary>
 		private void _fireResourceEnded()
 		{
 			if ( _resourceLoadEnded != null )
@@ -729,7 +817,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal event firing method </summary>
+		/// <summary>
+        /// Internal event firing method 
+		/// </summary>
 		/// <param name="groupName"></param>
 		private void _fireResourceGroupLoadEnded( string groupName )
 		{
@@ -738,6 +828,54 @@ namespace Axiom.Core
 				_resourceGroupLoadEnded( groupName );
 			}
 		}
+
+        /// <summary>
+        /// Internal event firing method 
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="resourceCount"></param>
+        private void _fireResourceGroupPrepareStarted( string groupName, int resourceCount )
+        {
+            if ( _resourceGroupPrepareStarted != null )
+            {
+                _resourceGroupPrepareStarted( groupName, resourceCount );
+            }
+        }
+
+        /// <summary>
+        /// Internal event firing method 
+        /// </summary>
+        /// <param name="resource"></param>
+        private void _fireResourcePrepareStarted( Resource resource )
+        {
+            if ( _resourcePrepareStarted != null )
+            {
+                _resourcePrepareStarted( resource );
+            }
+        }
+
+        /// <summary>
+        /// Internal event firing method 
+        /// </summary>
+        private void _fireResourcePrepareEnded()
+        {
+            if ( _resourcePrepareEnded != null )
+            {
+                _resourcePrepareEnded();
+            }
+        }
+
+        /// <summary>
+        /// Internal event firing method 
+        /// </summary>
+        /// <param name="groupName"></param>
+        private void _fireResourceGroupPrepareEnded( string groupName )
+        {
+            if ( _resourceGroupPrepareEnded != null )
+            {
+                _resourceGroupPrepareEnded( groupName );
+            }
+        }
 
 		#endregion Event Firing Methods
 
@@ -828,7 +966,7 @@ namespace Axiom.Core
 		///	method for the groups you create after this.
 		/// </para>
 		/// </remarks>
-		/// <param name="name">The name of the resource group to initialise</param>
+        /// <param name="groupName">The name of the resource group to initialise</param>
 		public void InitializeResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Initializing resource group {0}.", groupName );
@@ -855,7 +993,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Initialize all resource groups which are yet to be initialised.
 		/// </summary>
-		/// <see cref="ResourceGroupManager.initializeResourceGroup"/>
+		/// <see cref="ResourceGroupManager.InitializeResourceGroup"/>
 		public void InitializeAllResourceGroups()
 		{
 			LogManager.Instance.Write( "Initializing all resource groups:" );
@@ -888,9 +1026,118 @@ namespace Axiom.Core
 			}
 		}
 
-		#region LoadResourceGroup Method
+        #region PrepareResourceGroup
+        /// <summary>
+        /// Prepares a resource group.
+        /// </summary>
+        /// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
+        public void PrepareResourceGroup( string name )
+        {
+            this.PrepareResourceGroup( name, true, true );
+        }
 
-		/// <overloads>
+        /// <summary>
+        /// Prepares a resource group.
+        /// </summary>
+        /// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
+        public void PrepareResourceGroup( string name, bool prepareMainResources )
+        {
+            this.PrepareResourceGroup( name, prepareMainResources, true );
+        }
+
+        /// <summary>
+        /// Prepares a resource group.
+        /// </summary>
+        /// <remarks>Prepares any created resources which are part of the named group.
+		///	Note that resources must have already been created by calling
+		///	ResourceManager::create, or declared using declareResource() or
+		///	in a script (such as .material and .overlay). The latter requires
+		///	that initialiseResourceGroup has been called. 
+		///
+		///	When this method is called, this class will callback any ResourceGroupListeners
+		///	which have been registered to update them on progress.
+        ///	</remarks>
+        /// <param name="name">The name of the resource group to prepare.</param>
+        /// <param name="prepareMainResources">If true, prepares normal resources associated 
+		///	with the group (you might want to set this to false if you wanted
+		///	to just prepare world geometry in bulk)</param>
+        /// <param name="prepareWorldGeom">If true, prepares any linked world geometry
+        ///	<see cref="ResourceGroupManager.LinkWorldGeometryToResourceGroup"/></param>
+        public void PrepareResourceGroup( string name, bool prepareMainResources, bool prepareWorldGeom )
+        {
+            LogManager.Instance.Write( "Preparing resource group '{0}' - Resources: {1}, World Geometry: {2}", name, prepareMainResources, prepareWorldGeom );
+            
+            // load all created resources
+            ResourceGroup grp = this.getResourceGroup( name );
+            if ( grp == null )
+            {
+                throw new AxiomException( "Cannot find a group named {0}", name );
+            }
+
+            // Set current group
+            this._currentGroup = grp;
+
+            // Count up resources for starting event
+            int resourceCount = 0;
+            if ( prepareMainResources )
+            {
+                foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrders )
+                {
+                    LoadUnloadResourceList lurl = pair.Value;
+                    resourceCount += lurl.Count;
+                }
+            }
+            // Estimate world geometry size
+            if ( grp.WorldGeometrySceneManager != null && prepareWorldGeom )
+            {
+                resourceCount += grp.WorldGeometrySceneManager.EstimateWorldGeometry( grp.WorldGeometry );
+            }
+
+            _fireResourceGroupPrepareStarted( name, resourceCount );
+
+            // Now load for real
+            if ( prepareMainResources )
+            {
+                float[] keys = new float[ grp.LoadResourceOrders.Count ];
+                grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
+
+                for ( ushort i = 0; i < keys.Length; i++ )
+                {
+                    LoadUnloadResourceList lurl = grp.LoadResourceOrders[ keys[ i ] ];
+                    foreach ( Resource res in lurl )
+                    {
+                        // Fire resource events no matter whether resource needs preparing
+                        // or not. This ensures that the number of callbacks
+                        // matches the number originally estimated, which is important
+                        // for progress bars.
+                        _fireResourcePrepareStarted( res );
+
+                        // If preparing one of these resources cascade-prepares another resource, 
+                        // the list will get longer! But these should be prepared immediately
+                        // Call prepare regardless, already prepared or loaded resources will be skipped
+                        res.Prepare();
+
+                        _fireResourcePrepareEnded();
+                    }
+                }
+            }
+            // Load World Geometry
+            if ( grp.WorldGeometrySceneManager != null && prepareWorldGeom )
+            {
+                grp.WorldGeometrySceneManager.PrepareWorldGeometry( grp.WorldGeometry );
+            }
+            _fireResourceGroupPrepareEnded( name );
+
+            // reset current group
+            this._currentGroup = null;
+
+            LogManager.Instance.Write( "Finished preparing resource group " + name );
+        }
+        #endregion PrepareResourceGroup
+
+        #region LoadResourceGroup Method
+
+        /// <overloads>
 		/// <summary>Loads a resource group.</summary>
 		/// <remarks>
 		/// Loads any created resources which are part of the named group.
@@ -912,6 +1159,7 @@ namespace Axiom.Core
 		/// <param name="loadMainResources">If true, loads normal resources associated
 		/// with the group (you might want to set this to false if you wanted
 		/// to just load world geometry in bulk)</param>
+        /// <param name="name"></param>
 		/// <param name="loadWorldGeom">If true, loads any linked world geometry <see>ResourceGroupManager.LinkWorldGeometryToResourceGroup</see></param>
 		public void LoadResourceGroup( string name, bool loadMainResources, bool loadWorldGeom )
 		{
@@ -979,6 +1227,10 @@ namespace Axiom.Core
 				grp.WorldGeometrySceneManager.SetWorldGeometry( grp.WorldGeometry );
 			}
 			_fireResourceGroupLoadEnded( name );
+
+            #warning TODO
+            // group is loaded
+		    //grp->groupStatus = ResourceGroup::LOADED;
 
 			// reset current group
 			_currentGroup = null;
@@ -1801,9 +2053,7 @@ namespace Axiom.Core
         /// <summary>
         /// Retrieve the modification time of a given file
         /// </summary>
-        /// <param name="groupName"></param>
-        /// <param name="resourceName"></param>
-        /// <returns></returns>
+        /// <see cref="ResourceGroupManager.ResourceModifiedTime(ResourceGroup, string)"/>
         public DateTime ResourceModifiedTime(string groupName, string resourceName)
         {
             // Try to find in resource index first
@@ -1886,7 +2136,7 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>Find out if the named file exists in a group. /summary>
+		/// <summary>Find out if the named file exists in a group. </summary>
 		/// <param name="group">The name of the resource group</param>
 		/// <param name="filename">Fully qualified name of the file to test for</param>
 		public bool ResourceExists( string group, string filename )
@@ -1901,7 +2151,7 @@ namespace Axiom.Core
 			return ResourceExists( grp, filename );
 		}
 
-		/// <summary>Find out if the named file exists in a group. /summary>
+		/// <summary>Find out if the named file exists in a group. </summary>
 		/// <param name="group">the resource group</param>
 		/// <param name="filename">Fully qualified name of the file to test for</param>
 		public bool ResourceExists( ResourceGroup group, string filename )
@@ -2430,18 +2680,29 @@ namespace Axiom.Core
 				foreach ( FileInfoList flli in slfli.Second )
 				{
 					// Iterate over each item in the list
-					foreach ( FileInfo fii in flli )
-					{
-						IO.Stream stream = fii.Archive.Open( fii.Basename );
-						if ( stream != null )
-						{
-							_fireScriptStarted( fii.Filename );
-							LogManager.Instance.Write( "Parsing script " + fii.Basename );
-							su.ParseScript( stream, grp.Name, fii.Filename );
-							stream.Close();
-							_fireScriptEnded();
-						}
-					}
+                    foreach ( FileInfo fii in flli )
+                    {
+                        bool skipScript = false;
+                        _fireScriptStarted( fii.Basename, ref skipScript );
+                        if ( skipScript )
+                        {
+                            LogManager.Instance.Write( "Skipping script " + fii.Basename );
+                        }
+                        else
+                        {
+                            IO.Stream stream = fii.Archive.Open( fii.Basename );
+                            if ( stream != null )
+                            {
+                                LogManager.Instance.Write( "Parsing script " + fii.Basename );
+                                #warning TODO
+                                //if ( mLoadingListener )
+                                //    mLoadingListener->resourceStreamOpened( fii->filename, grp->name, 0, stream );
+                                su.ParseScript( stream, grp.Name, fii.Filename );
+                                stream.Close();
+                            }
+                        }
+                        _fireScriptEnded( fii.Basename, skipScript );
+                    }
 				}
 			}
 
