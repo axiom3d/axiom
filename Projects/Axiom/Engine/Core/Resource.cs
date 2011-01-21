@@ -136,7 +136,7 @@ namespace Axiom.Core
 		protected string _group;
 
 		/// <summary>
-		///		Name of this resource.
+        ///	Gets the group which this resource is a member of
 		/// </summary>
 		public string Group
 		{
@@ -498,6 +498,37 @@ namespace Axiom.Core
 
 		#endregion Load/Unload Stage Notifiers
 
+        /// <summary>
+        /// Prepares the resource for load, if it is not already.
+        /// </summary>
+        /// <see cref="Resource.Prepare(bool)"/>
+        public void Prepare()
+        {
+            this.Prepare( false );
+        }
+
+        /// <summary>
+        /// Prepares the resource for load, if it is not already.
+        /// </summary>
+        /// <remarks>
+        /// One can call prepare() before load(), but this is not required as load() will call prepare() 
+        /// itself, if needed.  When OGRE_THREAD_SUPPORT==1 both load() and prepare() 
+        /// are thread-safe.  When OGRE_THREAD_SUPPORT==2 however, only prepare() 
+        /// is thread-safe.  The reason for this function is to allow a background 
+        /// thread to do some of the loading work, without requiring the whole render
+        /// system to be thread-safe.  The background thread would call
+        /// prepare() while the main render loop would later call load().  So long as
+        /// prepare() remains thread-safe, subclasses can arbitrarily split the work of
+        /// loading a resource between load() and prepare().  It is best to try and
+        /// do as much work in prepare(), however, since this will leave less work for
+        /// the main render thread to do and thus increase FPS.
+        /// </remarks>
+        /// <param name="background">Whether this is occurring in a background thread</param>
+        public virtual void Prepare( bool background )
+        {
+            throw new NotImplementedException();
+        }
+
 		/// <summary>
 		/// Escalates the loading of a background loaded resource.
 		/// </summary>
@@ -761,7 +792,7 @@ namespace Axiom.Core
 
 
 		#endregion IDisposable Implementation
-	}
+    }
 
 	/// <summary>
 	/// Interface describing a manual resource loader.

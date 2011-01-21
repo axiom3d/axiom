@@ -6901,6 +6901,53 @@ namespace Axiom.Core
 			return 0;
 		}
 
+        /// <summary>
+        /// Sets the source of the 'world' geometry, i.e. the large, mainly static geometry
+        /// making up the world e.g. rooms, landscape etc.
+        /// This function can be called before setWorldGeometry in a background thread, do to
+        /// some slow tasks (e.g. IO) that do not involve the backend render system.
+        /// </summary>
+        /// <remarks>
+        /// Depending on the type of SceneManager (subclasses will be specialised
+        /// for particular world geometry types) you have requested via the Root or
+        /// SceneManagerEnumerator classes, you can pass a filename to this method and it
+        /// will attempt to load the world-level geometry for use. If you try to load
+        /// an inappropriate type of world data an exception will be thrown. The default
+        /// SceneManager cannot handle any sort of world geometry and so will always
+        /// throw an exception. However subclasses like BspSceneManager can load
+        /// particular types of world geometry e.g. "q3dm1.bsp".
+        /// </remarks>
+        /// <param name="filename"></param>
+        public virtual void PrepareWorldGeometry( string filename )
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the source of the 'world' geometry, i.e. the large, mainly static geometry
+        /// making up the world e.g. rooms, landscape etc.
+        /// This function can be called before setWorldGeometry in a background thread, do to
+        /// some slow tasks (e.g. IO) that do not involve the backend render system.
+        /// </summary>
+        /// <remarks>
+        /// Depending on the type of SceneManager (subclasses will be 
+        ///	specialised for particular world geometry types) you have 
+        ///	requested via the Root or SceneManagerEnumerator classes, you 
+        ///	can pass a stream to this method and it will attempt to load 
+        ///	the world-level geometry for use. If the manager can only 
+        ///	handle one input format the typeName parameter is not required.
+        ///	The stream passed will be read (and it's state updated). 
+        /// </remarks>
+        /// <param name="stream">Data stream containing data to load</param>
+        /// <param name="typeName">String identifying the type of world geometry
+        ///	contained in the stream - not required if this manager only 
+        ///	supports one type of world geometry.
+        ///	</param>
+        public virtual void PrepareWorldGeometry( Stream stream, string typeName )
+        {
+            throw new NotImplementedException();
+        }
+
 		public virtual void SetWorldGeometry( string filename )
 		{
 		}
@@ -6913,7 +6960,7 @@ namespace Axiom.Core
 		{
 		}
 
-		#endregion WorldGeometry
+        #endregion WorldGeometry
 
 		#region MovableObjectFactory methods
 
@@ -7117,7 +7164,7 @@ namespace Axiom.Core
 		}
 
 		#endregion MovableObjectFactory methods
-	}
+    }
 
 	#region Default SceneQuery Implementations
 
