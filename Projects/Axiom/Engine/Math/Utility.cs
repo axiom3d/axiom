@@ -39,7 +39,7 @@ using System.Diagnostics;
 
 using Axiom.Math.Collections;
 
-//using Real = System.Single;
+//
 //using Radian = System.Single;
 //using Degree = System.Single;
 using Axiom.Utilities;

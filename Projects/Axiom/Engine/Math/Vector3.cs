@@ -44,7 +44,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-//using Axiom.Math;//using Real = System.Single;
+//using Axiom.Math;//
 
 #endregion Namespace Declarations
 

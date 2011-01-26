@@ -34,13 +34,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Axiom.Core;
-
-using Real = System.Single;
-using System.Collections.Generic;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -65,35 +63,18 @@ namespace Axiom.Graphics
 		}
 
         /// <summary>
-        /// Directive used to manually control technique support based on the
-        /// inclusion or exclusion of some factor.
-        /// </summary>
-        public enum IncludeOrExclude
-        {
-            /// <summary>
-            /// Inclusive - only support if present
-            /// </summary>
-            INCLUDE = 0,
-
-            /// <summary>
-            /// Exclusive - do not support if present
-            /// </summary>
-            EXCLUDE = 1
-        };
-
-        /// <summary>
         /// Rule controlling whether technique is deemed supported based on GPU vendor
         /// </summary>
         public struct GPUVendorRule
         {
             public GPUVendor Vendor { get; set; }
-            public IncludeOrExclude IncludeOrExclude { get; set; }
+            public bool Include { get; set; }
 
-            public GPUVendorRule( GPUVendor v, IncludeOrExclude ie )
+            public GPUVendorRule( GPUVendor v, bool ie )
                 : this()
             {
                 Vendor = v;
-                IncludeOrExclude = ie;
+                Include = ie;
             }
         };
 
@@ -103,14 +84,14 @@ namespace Axiom.Graphics
         public struct GPUDeviceNameRule
         {
             public string DevicePattern { get; set; }
-            public IncludeOrExclude IncludeOrExclude { get; set; }
+            public bool Include { get; set; }
             public bool CaseSensitive { get; set; }
 
-            public GPUDeviceNameRule( string pattern, IncludeOrExclude ie, bool caseSen )
+            public GPUDeviceNameRule( string pattern, bool ie, bool caseSen )
                 : this()
             {
                 DevicePattern = pattern;
-                IncludeOrExclude = ie;
+                Include = ie;
                 CaseSensitive = caseSen;
             }
         };

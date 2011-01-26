@@ -38,14 +38,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using IO = System.IO;
-
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.FileSystem;
 using Axiom.Math;
 using Axiom.Scripting;
-
-using Real = System.Single;
 using System.Text;
 using Axiom.Media;
 using Axiom.Graphics;

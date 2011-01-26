@@ -42,12 +42,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Scripting;
 
-using Real = System.Single;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations

@@ -39,17 +39,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Axiom.Collections;
-using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Math;
 using Axiom.Scripting;
 using IO = System.IO;
-using Real = System.Single;
 
 #endregion Namespace Declarations
 

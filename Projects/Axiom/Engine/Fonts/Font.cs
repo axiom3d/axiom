@@ -37,17 +37,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Media;
-using Axiom.FileSystem;
-
-using ResourceHandle = System.UInt64;
-using Real = System.Single;
 using CodePoint = System.UInt32;
 using Image = Axiom.Media.Image;
+using ResourceHandle = System.UInt64;
 using UVRect = Axiom.Core.RectangleF;
 
 #endregion Namespace Declarations

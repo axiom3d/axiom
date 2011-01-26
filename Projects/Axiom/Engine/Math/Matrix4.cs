@@ -44,7 +44,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-//using Real = System.Single;
+//
 
 #endregion Namespace Declarations
 
