@@ -76,6 +76,51 @@ namespace Axiom.Graphics
                 Vendor = v;
                 Include = ie;
             }
+
+            #region System.Object overrides
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
+            public override bool Equals( object obj )
+            {
+                if ( obj == null )
+                    return false;
+
+                if ( !( obj is GPUVendorRule ) )
+                    return false;
+
+                GPUVendorRule v = (GPUVendorRule)obj;
+
+                return ( v.Vendor == Vendor ) && ( v.Include == Include );
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                if ( Vendor != null )
+                    return Vendor.GetHashCode();
+
+                return base.GetHashCode();
+            }
+            #endregion System.Object overrides
+
+            public static bool operator ==( GPUVendorRule a, GPUVendorRule b )
+            {
+                if ( Object.ReferenceEquals( a, b ) )
+                    return true;
+
+                return ( a.Vendor == b.Vendor ) && ( a.Include == b.Include );
+            }
+
+            public static bool operator !=( GPUVendorRule a, GPUVendorRule b )
+            {
+                return !( a == b );
+            }
         };
 
         /// <summary>
@@ -93,6 +138,51 @@ namespace Axiom.Graphics
                 DevicePattern = pattern;
                 Include = ie;
                 CaseSensitive = caseSen;
+            }
+
+            #region System.Object overrides
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="obj"></param>
+            /// <returns></returns>
+            public override bool Equals( object obj )
+            {
+                if ( obj == null )
+                    return false;
+
+                if ( !( obj is GPUDeviceNameRule ) )
+                    return false;
+
+                GPUDeviceNameRule d = (GPUDeviceNameRule)obj;
+
+                return ( d.DevicePattern == DevicePattern ) && ( d.Include == Include ) && ( d.CaseSensitive == CaseSensitive );
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                if ( DevicePattern != null )
+                    return DevicePattern.GetHashCode();
+
+                return base.GetHashCode();
+            }
+            #endregion System.Object overrides
+
+            public static bool operator ==( GPUDeviceNameRule a, GPUDeviceNameRule b )
+            {
+                if ( Object.ReferenceEquals( a, b ) )
+                    return true;
+
+                return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) && ( a.CaseSensitive == b.CaseSensitive );
+            }
+
+            public static bool operator !=( GPUDeviceNameRule a, GPUDeviceNameRule b )
+            {
+                return !( a == b );
             }
         };
 
