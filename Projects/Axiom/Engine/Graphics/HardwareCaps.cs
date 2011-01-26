@@ -33,8 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
 using Axiom.Core;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -45,17 +45,39 @@ namespace Axiom.Graphics
     /// </summary>
     public enum GPUVendor
     {
-        GPU_UNKNOWN = 0,
-        GPU_NVIDIA = 1,
-        GPU_ATI = 2,
-        GPU_INTEL = 3,
-        GPU_S3 = 4,
-        GPU_MATROX = 5,
-        GPU_3DLABS = 6,
-        GPU_SIS = 7,
-        GPU_IMAGINATION_TECHNOLOGIES = 8,
-        GPU_APPLE = 9,  // Apple Software Renderer
-        GPU_NOKIA = 10,
+        [ScriptEnum( "Unknown" )]
+        Unknown = 0,
+
+        [ScriptEnum( "Nvidia" )]
+        Nvidia = 1,
+
+        [ScriptEnum( "Ati" )]
+        Ati = 2,
+
+        [ScriptEnum( "Intel" )]
+        Intel = 3,
+
+        [ScriptEnum( "S3" )]
+        S3 = 4,
+
+        [ScriptEnum( "Matrox" )]
+        Matrox = 5,
+        
+        [ScriptEnum( "3DLabs" )]
+        _3DLabs = 6,
+
+        [ScriptEnum( "Sis" )]
+        Sis = 7,
+
+        [ScriptEnum( "Imagination Technologies" )]
+        ImaginationTechnologies = 8,
+
+        // Apple Software Renderer
+        [ScriptEnum( "Apple" )]
+        Apple = 9,
+
+        [ScriptEnum( "Nokia" )]
+        Nokia = 10,
     };
 
 	/// <summary>
@@ -71,8 +93,6 @@ namespace Axiom.Graphics
 		///    Flag enum holding the bits that identify each supported feature.
 		/// </summary>
 		private Capabilities _caps;
-
-        private static Dictionary<GPUVendor, string> _sGPUVendorStrings = new Dictionary<GPUVendor, string>();
 
 		#region TextureUnitCount Property
 
@@ -378,7 +398,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// name of the GPU vendor
 		/// </summary>
-        private GPUVendor _vendor = GPUVendor.GPU_UNKNOWN;
+        private GPUVendor _vendor = GPUVendor.Unknown;
 		
         /// <summary>
         /// name of the GPU vendor
@@ -658,22 +678,11 @@ namespace Axiom.Graphics
         /// <returns></returns>
         internal static GPUVendor VendorFromString( string vendorString )
         {
-            InitVendorStrings();
-            GPUVendor ret = GPUVendor.GPU_UNKNOWN;
-            string cmpString = vendorString.ToLower();
+            GPUVendor ret = GPUVendor.Unknown;
+            object lookUpResult = ScriptEnumAttribute.Lookup( vendorString, typeof( GPUVendor ) );
 
-            if ( _sGPUVendorStrings.ContainsValue( cmpString ) )
-            {
-                foreach ( GPUVendor currentVendor in _sGPUVendorStrings.Keys )
-                {
-                    // case insensitive (lower case)
-                    if ( _sGPUVendorStrings[ currentVendor ] == cmpString )
-                    {
-                        ret = currentVendor;
-                        break;
-                    }
-                }
-            }
+            if ( lookUpResult != null )
+                ret = (GPUVendor)lookUpResult;
 
             return ret;
         }
@@ -685,29 +694,7 @@ namespace Axiom.Graphics
         /// <returns></returns>
         internal static string VendorToString( GPUVendor v )
         {
-            InitVendorStrings();
-            return _sGPUVendorStrings[ v ];
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private static void InitVendorStrings()
-        {
-            if ( _sGPUVendorStrings.Count == 0 )
-            {
-                _sGPUVendorStrings.Add( GPUVendor.GPU_UNKNOWN, "unknown" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_NVIDIA, "nvidia" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_ATI, "ati" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_INTEL, "intel" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_3DLABS, "3dlabs" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_S3, "s3" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_MATROX, "matrox" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_SIS, "sis" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_IMAGINATION_TECHNOLOGIES, "imagination technologies" );
-                _sGPUVendorStrings.Add( GPUVendor.GPU_APPLE, "apple" );    // iPhone Simulator
-                _sGPUVendorStrings.Add( GPUVendor.GPU_NOKIA, "nokia" );
-            }
+            return ScriptEnumAttribute.GetScriptAttribute( (int)v, typeof( GPUVendor ) );
         }
 
 		#endregion Methods

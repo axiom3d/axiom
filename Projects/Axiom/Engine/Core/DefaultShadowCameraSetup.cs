@@ -33,13 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Diagnostics;
-using System.Collections.Generic;
-using Axiom.Math;
-using Axiom.Math.Collections;
 using Axiom.Graphics;
-
-using Real = System.Single;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 

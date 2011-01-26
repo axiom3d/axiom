@@ -114,7 +114,7 @@ namespace Axiom.Scripting
 						ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ index ];
 
 						// if the values match
-						if ( scriptAtt.ScriptValue == val )
+						if ( scriptAtt.ScriptValue.ToLower() == val.ToLower() )
 						{
 							// return the enum value for this script equivalent
 							return Enum.Parse( type, field.Name, true );
