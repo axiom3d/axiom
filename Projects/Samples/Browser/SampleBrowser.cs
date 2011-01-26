@@ -30,8 +30,6 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
 
-using System.IO;
-using System.Reflection;
 using SIS = SharpInputSystem;
 
 namespace Axiom.Samples

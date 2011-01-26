@@ -64,6 +64,57 @@ namespace Axiom.Graphics
 			Compiled = 1
 		}
 
+        /// <summary>
+        /// Directive used to manually control technique support based on the
+        /// inclusion or exclusion of some factor.
+        /// </summary>
+        public enum IncludeOrExclude
+        {
+            /// <summary>
+            /// Inclusive - only support if present
+            /// </summary>
+            INCLUDE = 0,
+
+            /// <summary>
+            /// Exclusive - do not support if present
+            /// </summary>
+            EXCLUDE = 1
+        };
+
+        /// <summary>
+        /// Rule controlling whether technique is deemed supported based on GPU vendor
+        /// </summary>
+        public struct GPUVendorRule
+        {
+            public GPUVendor Vendor { get; set; }
+            public IncludeOrExclude IncludeOrExclude { get; set; }
+
+            public GPUVendorRule( GPUVendor v, IncludeOrExclude ie )
+                : this()
+            {
+                Vendor = v;
+                IncludeOrExclude = ie;
+            }
+        };
+
+        /// <summary>
+        /// Rule controlling whether technique is deemed supported based on GPU device name
+        /// </summary>
+        public struct GPUDeviceNameRule
+        {
+            public string DevicePattern { get; set; }
+            public IncludeOrExclude IncludeOrExclude { get; set; }
+            public bool CaseSensitive { get; set; }
+
+            public GPUDeviceNameRule( string pattern, IncludeOrExclude ie, bool caseSen )
+                : this()
+            {
+                DevicePattern = pattern;
+                IncludeOrExclude = ie;
+                CaseSensitive = caseSen;
+            }
+        };
+
 		#endregion Constants and Enumerations
 
 		#region Fields and Properties
@@ -72,6 +123,9 @@ namespace Axiom.Graphics
 		///    The list of passes (fixed function or programmable) contained in this technique.
 		/// </summary>
 		private List<Pass> _passes = new List<Pass>();
+
+        protected List<GPUVendorRule> _GPUVendorRules = new List<GPUVendorRule>();
+        protected List<GPUDeviceNameRule> _GPUDeviceNameRules = new List<GPUDeviceNameRule>();
 
 		#region IlluminationPasses Property
 		IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
@@ -1449,5 +1503,72 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
-	}
+
+        /// <summary>
+        /// Add a rule which manually influences the support for this technique based
+	    /// on a GPU vendor.
+        /// </summary>
+        /// <remarks>
+        /// You can use this facility to manually control whether a technique is
+	    /// considered supported, based on a GPU vendor. You can add inclusive
+		/// or exclusive rules, and you can add as many of each as you like. If
+		///	at least one inclusive rule is added, a	technique is considered 
+		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
+		///	added, the technique is considered unsupported if it matches any of
+		///	those inclusive rules.
+        ///	Note that any rule for the same vendor will be removed before adding this one.
+        ///	/// </remarks>
+        /// <param name="rule"></param>
+        internal void AddGPUVenderRule( GPUVendorRule rule )
+        {
+            // remove duplicates
+            RemoveGPUVendorRule( rule );
+            _GPUVendorRules.Add( rule );
+        }
+
+        /// <summary>
+        /// Removes a matching vendor rule.
+        /// </summary>
+        /// <see cref="AddGPUVenderRule"/>
+        /// <param name="rule"></param>
+        internal void RemoveGPUVendorRule( GPUVendor rule )
+        {
+            if ( _GPUVendorRules.Contains( rule ) )
+                _GPUVendorRules.Remove( rule );
+        }
+
+        /// <summary>
+        /// Add a rule which manually influences the support for this technique based
+		///	on a pattern that matches a GPU device name (e.g. '*8800*').
+        /// </summary>
+        /// <remarks>
+        /// You can use this facility to manually control whether a technique is
+		///	considered supported, based on a GPU device name pattern. You can add inclusive
+		///	or exclusive rules, and you can add as many of each as you like. If
+		///	at least one inclusive rule is added, a	technique is considered 
+		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
+		///	added, the technique is considered unsupported if it matches any of
+		///	those inclusive rules. The pattern you supply can include wildcard
+		///	characters ('*') if you only want to match part of the device name.
+        ///	Note that any rule for the same device pattern will be removed before adding this one.
+        /// </remarks>
+        /// <param name="rule"></param>
+        internal void AddGPUDeviceNameRule( GPUDeviceNameRule rule )
+        {
+            // remove duplicates
+            RemoveGPUDeviceNameRule( rule );
+            _GPUDeviceNameRules.Add( rule );
+        }
+
+        /// <summary>
+        /// Removes a matching device name rule.
+        /// </summary>
+        /// <see cref="AddGPUDeviceNameRule"/>
+        /// <param name="rule"></param>
+        internal void RemoveGPUDeviceNameRule( GPUDeviceNameRule rule )
+        {
+            if ( _GPUDeviceNameRules.Contains( rule ) )
+                _GPUDeviceNameRules.Remove( rule );
+        }
+    }
 }

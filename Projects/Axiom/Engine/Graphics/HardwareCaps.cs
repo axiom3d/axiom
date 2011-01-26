@@ -33,16 +33,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
-using System.Reflection;
-
+using System.Collections.Generic;
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
+    /// <summary>
+    /// Enumeration of GPU vendors.
+    /// </summary>
+    public enum GPUVendor
+    {
+        GPU_UNKNOWN = 0,
+        GPU_NVIDIA = 1,
+        GPU_ATI = 2,
+        GPU_INTEL = 3,
+        GPU_S3 = 4,
+        GPU_MATROX = 5,
+        GPU_3DLABS = 6,
+        GPU_SIS = 7,
+        GPU_IMAGINATION_TECHNOLOGIES = 8,
+        GPU_APPLE = 9,  // Apple Software Renderer
+        GPU_NOKIA = 10,
+    };
+
 	/// <summary>
 	/// 	This serves as a way to query information about the capabilies of a 3D API and the
 	/// 	users hardware configuration.  A RenderSystem should create and initialize an instance
@@ -56,6 +71,8 @@ namespace Axiom.Graphics
 		///    Flag enum holding the bits that identify each supported feature.
 		/// </summary>
 		private Capabilities _caps;
+
+        private static Dictionary<GPUVendor, string> _sGPUVendorStrings = new Dictionary<GPUVendor, string>();
 
 		#region TextureUnitCount Property
 
@@ -359,21 +376,22 @@ namespace Axiom.Graphics
 		#region VendorName Property
 
 		/// <summary>
-		/// name of the adapter
+		/// name of the GPU vendor
 		/// </summary>
-		private string _vendorName = "";
-		/// <summary>
-		/// Name of the display adapter
+        private GPUVendor _vendor = GPUVendor.GPU_UNKNOWN;
+		
+        /// <summary>
+        /// name of the GPU vendor
 		/// </summary>
 		public string VendorName
 		{
 			get
 			{
-				return _vendorName;
+                return VendorToString( _vendor );
 			}
 			set
 			{
-				_vendorName = value;
+                _vendor = VendorFromString( value );
 			}
 		}
 
@@ -405,22 +423,25 @@ namespace Axiom.Graphics
 		#region DeviceVersion Property
 
 		/// <summary>
-		/// version number of the driver
+        /// This is used to build a database of RSC's
+        /// if a RSC with same name, but newer version is introduced, the older one 
+        /// will be removed
 		/// </summary>
-		private string _driverVersion = "";
-		/// <summary>
+		private DriverVersion _driverVersion = new DriverVersion() ;
+		
+        /// <summary>
 		/// The driver version string
-		/// </summary>
-		public string DriverVersion
-		{
-			get
-			{
-				return _driverVersion;
-			}
-			set
-			{
-				_driverVersion = value;
-			}
+        /// </summary>
+        public DriverVersion DriverVersion
+        {
+            get
+            {
+                return _driverVersion;
+            }
+            set
+            {
+                _driverVersion = value;
+            }
 		}
 
 		#endregion DeviceVersion Property
@@ -560,8 +581,9 @@ namespace Axiom.Graphics
 			LogManager logMgr = LogManager.Instance;
 
 			logMgr.Write( "---RenderSystem capabilities---" );
-			logMgr.Write( "\t-Adapter Name: {0}", _deviceName );
-			logMgr.Write( "\t-Driver Version: {0}", _driverVersion );
+            logMgr.Write( "\t-GPU Vendor: {0}", VendorName );
+			logMgr.Write( "\t-Device Name: {0}", _deviceName );
+			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
 			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
 			logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
 			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
@@ -629,6 +651,65 @@ namespace Axiom.Graphics
 			return val ? "yes" : "no";
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vendorString"></param>
+        /// <returns></returns>
+        internal static GPUVendor VendorFromString( string vendorString )
+        {
+            InitVendorStrings();
+            GPUVendor ret = GPUVendor.GPU_UNKNOWN;
+            string cmpString = vendorString.ToLower();
+
+            if ( _sGPUVendorStrings.ContainsValue( cmpString ) )
+            {
+                foreach ( GPUVendor currentVendor in _sGPUVendorStrings.Keys )
+                {
+                    // case insensitive (lower case)
+                    if ( _sGPUVendorStrings[ currentVendor ] == cmpString )
+                    {
+                        ret = currentVendor;
+                        break;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        internal static string VendorToString( GPUVendor v )
+        {
+            InitVendorStrings();
+            return _sGPUVendorStrings[ v ];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void InitVendorStrings()
+        {
+            if ( _sGPUVendorStrings.Count == 0 )
+            {
+                _sGPUVendorStrings.Add( GPUVendor.GPU_UNKNOWN, "unknown" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_NVIDIA, "nvidia" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_ATI, "ati" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_INTEL, "intel" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_3DLABS, "3dlabs" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_S3, "s3" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_MATROX, "matrox" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_SIS, "sis" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_IMAGINATION_TECHNOLOGIES, "imagination technologies" );
+                _sGPUVendorStrings.Add( GPUVendor.GPU_APPLE, "apple" );    // iPhone Simulator
+                _sGPUVendorStrings.Add( GPUVendor.GPU_NOKIA, "nokia" );
+            }
+        }
+
 		#endregion Methods
-	}
+    }
 }

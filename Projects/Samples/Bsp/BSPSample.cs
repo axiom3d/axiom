@@ -20,9 +20,8 @@
 //THE SOFTWARE.
 #endregion License
 
-using System;
-using Axiom.Math;
 using Axiom.Core;
+using Axiom.Math;
 
 namespace Axiom.Samples
 {

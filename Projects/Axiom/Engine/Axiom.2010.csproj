@@ -170,6 +170,7 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
