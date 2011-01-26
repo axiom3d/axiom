@@ -107,14 +107,14 @@ namespace Axiom.Core
 				info.AppendFormat( ".Net Framework: {0}\n", Environment.Version.ToString() );
 
 				// Initializes the Log Manager singleton
-				this.logMgr = new LogManager();
+				this.logMgr = LogManager.Instance;
 
 				//if logFileName is null, then just the Diagnostics (debug) writes will be made
 				// create a new default log
 				this.logMgr.CreateLog( logFilename, true, true );
 
 				this.logMgr.Write( info.ToString() );
-				this.logMgr.Write( "*-*-* Axiom Intializing" );
+				this.logMgr.Write( "*-*-* Axiom Initializing" );
 
 				ArchiveManager.Instance.Initialize();
 				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
