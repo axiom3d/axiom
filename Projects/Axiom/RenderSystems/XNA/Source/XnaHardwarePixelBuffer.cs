@@ -321,13 +321,13 @@ namespace Axiom.RenderSystems.Xna
 			bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
 			byte[] newBuffer = new byte[ bufSize ];
 			bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
-			// convert to pixelbuffer's native format if necessary
-			if ( XnaHelper.Convert( src.Format ) == XFG.SurfaceFormat.Unknown )
-			{
-				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
-				PixelConverter.BulkPixelConversion( src, converted );
-			}
-			else
+            //XnaHelper.Convert(XFG.SurfaceFormat) would never have returned SurfaceFormat.Unknown anyway...
+            //if ( XnaHelper.Convert( src.Format ) == XFG.SurfaceFormat.Unknown )
+            //{
+            //    converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
+            //    PixelConverter.BulkPixelConversion( src, converted );
+            //}
+			//else
 			{
 				Memory.Copy( converted.Data, bufGCHandle.AddrOfPinnedObject(), bufSize );
 			}
