@@ -601,10 +601,6 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
-				XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
-				tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;//??
-				tcp.MipFilter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
-				tcp.MipLevels = MipmapCount;
 				// load the cube texture from the image data stream directly
 				_volumeTexture = XFG.Texture3D.FromFile( _device, stream );
 				
@@ -613,9 +609,8 @@ namespace Axiom.RenderSystems.Xna
 
 				// set src and dest attributes to the same, we can't know
 				stream.Position = 0;
-				XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation( stream );
-				SetSrcAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
-				SetFinalAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
+                SetSrcAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
+                SetFinalAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
 				stream.Close();
 				internalResourcesCreated = true;
 			}
@@ -659,12 +654,8 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( Usage == TextureUsage.RenderTarget )
 			{
-				renderTarget = new XFG.RenderTargetCube( _device, SrcWidth, numMips, xnaPixelFormat );
-				// This is stooopid. XNA doesn't create the RT Texture until after it's been on the device
-				XFG.RenderTarget old = _device.GetRenderTarget( 0 );
-				_device.SetRenderTarget( 0, (XFG.RenderTarget2D)renderTarget );
-				_device.SetRenderTarget( 0, (XFG.RenderTarget2D)old );
-				_cubeTexture = ( (XFG.RenderTargetCube)renderTarget ).GetTexture();
+				renderTarget = new XFG.RenderTargetCube( _device, SrcWidth, numMips > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8 );
+				_cubeTexture = ( (XFG.RenderTargetCube)renderTarget );
 
 				CreateDepthStencil();
 			}
@@ -690,22 +681,13 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		/// <summary>
-		///
+		///Depth Stencil buffers are actually created whenever a RenderTarget is created.
+        ///This method is used as a layover from xna 3.1
 		/// </summary>
 		private void CreateDepthStencil()
 		{
-			// Get the format of the depth stencil surface of our main render target.
-			XFG.DepthStencilBuffer surface = _device.DepthStencilBuffer;
-			// Create a depth buffer for our render target, it must be of
-			// the same format as other targets !!!
-			depthBuffer = new XFG.DepthStencilBuffer(
-				_device,
-				SrcWidth,
-				SrcHeight,
-				// TODO: Verify this goes through, this is ridiculous
-				surface.Format,
-				surface.MultiSampleType, surface.MultiSampleQuality );
-			Debug.Assert( depthBuffer != null );
+			
+			Debug.Assert( renderTarget.DepthStencilFormat != null );
 		}
 
 		private void CreateNormalTexture()
@@ -743,13 +725,8 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( Usage == TextureUsage.RenderTarget )
 			{
-				renderTarget = new XFG.RenderTarget2D( _device, SrcWidth, SrcHeight, numMips, xnaPixelFormat );
-				// This is stooopid. XNA doesn't create the RT Texture until after it's been on the device
-				XFG.RenderTarget old = _device.GetRenderTarget( 0 );
-				_device.SetRenderTarget( 0, (XFG.RenderTarget2D)renderTarget );
-				_device.SetRenderTarget( 0, (XFG.RenderTarget2D)old );
-
-				_normTexture = ( (XFG.RenderTarget2D)renderTarget ).GetTexture();
+				renderTarget = new XFG.RenderTarget2D( _device, SrcWidth, SrcHeight, numMips > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8 );
+				_normTexture = renderTarget;
 				CreateDepthStencil();
 			}
 			else
@@ -975,10 +952,6 @@ namespace Axiom.RenderSystems.Xna
 				if ( _volumeTexture != null )
 				{
 					_volumeTexture.Dispose();
-				}
-				if ( depthBuffer != null )
-				{
-					depthBuffer.Dispose();
 				}
 			}
 		}
