@@ -2152,11 +2152,8 @@ namespace Axiom.RenderSystems.Xna
             //}
 		}
 
-		//XFG.DepthStencilBuffer oriDSB;
 		public override void SetViewport( Axiom.Core.Viewport viewport )
 		{
-			if ( oriDSB == null )
-				oriDSB = _device.DepthStencilBuffer;
 			if ( activeViewport != viewport || viewport.IsUpdated )
 			{
 				// store this viewport and it's target
@@ -2167,7 +2164,7 @@ namespace Axiom.RenderSystems.Xna
 				XFG.RenderTarget2D[] back = (XFG.RenderTarget2D[])activeRenderTarget[ "XNABACKBUFFER" ];
 				if ( back == null )
 				{
-					_device.SetRenderTarget( 0, null );
+                    _device.SetRenderTarget(null);
 					//the back buffer is null so it's not a render to texture,
 					//we render directly to the screen,
 					//set the original depth stencil buffer
@@ -2198,9 +2195,10 @@ namespace Axiom.RenderSystems.Xna
 
 				// Bind render targets
 				int count = back.Length;
+                
 				for ( int i = 0; i < count && back[ i ] != null; ++i )
 				{
-					_device.SetRenderTarget( i, back[ i ] );
+					_device.SetRenderTarget(back[ i ] );
 				}
 
 				// set the culling mode, to make adjustments required for viewports
@@ -2264,7 +2262,7 @@ namespace Axiom.RenderSystems.Xna
 			//XFG.DepthFormat.Depth32
 		};
 
-		private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt )
+		private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt, int multiSampleCount )
 		{
 			XFG.DepthFormat dsfmt;
             
@@ -2283,15 +2281,21 @@ namespace Axiom.RenderSystems.Xna
 			foreach ( XFG.DepthFormat df in _preferredStencilFormats )
 			{
 				// Verify that the depth format exists
-				if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat( XFG.DeviceType.Hardware, targetFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, df ) )
-					continue;
+                //if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat( XFG.DeviceType.Hardware, targetFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, df ) )
+                //    continue;
 
+                XFG.SurfaceFormat suggestedSurfaceFormat;
+                XFG.DepthFormat suggestedDepthFormat;
+                int suggestedNumMultiSamples;
+
+                XFG.GraphicsAdapter.DefaultAdapter.QueryRenderTargetFormat(_device.GraphicsProfile, targetFormat, df, multiSampleCount, out suggestedSurfaceFormat, out suggestedDepthFormat, out suggestedNumMultiSamples);
+                dsfmt = suggestedDepthFormat;
 				// Verify that the depth format is compatible
-				if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch( XFG.DeviceType.Hardware, targetFormat, fmt, df ) )
-				{
-					dsfmt = df;
-					break;
-				}
+                //if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch( XFG.DeviceType.Hardware, targetFormat, fmt, df ) )
+                //{
+                //    dsfmt = df;
+                //    break;
+                //}
 			}
 
 			// Cache result
