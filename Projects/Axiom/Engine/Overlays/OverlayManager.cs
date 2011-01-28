@@ -41,8 +41,6 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
 
-
-
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
@@ -625,7 +623,7 @@ namespace Axiom.Overlays
 			}
 		}
 
-		public float LoadingOrder
+		public Real LoadingOrder
 		{
 			get
 			{

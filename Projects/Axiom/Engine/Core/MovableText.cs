@@ -405,7 +405,7 @@ namespace Axiom.Core
 					}
 
 					float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
-					float u1, u2, v1, v2;
+					Real u1, u2, v1, v2;
 					_font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
 
 					// each vert is (x, y, z, u, v)

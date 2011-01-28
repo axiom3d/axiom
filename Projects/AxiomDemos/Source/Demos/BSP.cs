@@ -53,7 +53,7 @@ namespace Axiom.Demos
 
 		public override void SetupResources()
 		{
-			bspPath = "../Media/Archives/chiropteraDM.zip";
+			bspPath = "Media/Archives/chiropteraDM.zip";
 			bspMap = "maps/chiropteradm.bsp";
 
 			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );

@@ -39,6 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 using Axiom.Core;
 using Axiom.Scripting.Compiler.AST;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -127,7 +128,7 @@ namespace Axiom.Scripting.Compiler
 
 		}
 
-		public float LoadingOrder
+		public Real LoadingOrder
 		{
 			get
 			{
