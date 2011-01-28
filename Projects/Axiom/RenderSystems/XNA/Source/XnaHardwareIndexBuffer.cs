@@ -68,8 +68,8 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructors
 
-		unsafe public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
-			: base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
+		unsafe public XnaHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer )
 		{
 			_bufferType = ( type == IndexType.Size16 ) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
 

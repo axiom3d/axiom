@@ -47,6 +47,7 @@ namespace Axiom.Graphics
 	public abstract class HardwareIndexBuffer : HardwareBuffer
 	{
 		#region Fields
+		protected HardwareBufferManagerBase Manager;
 
 		/// <summary>
 		///		Type of index (16 or 32 bit).
@@ -73,12 +74,12 @@ namespace Axiom.Graphics
 		/// <param name="usage">Buffer usage.</param>
 		/// <param name="useSystemMemory">Create in system memory?</param>
 		/// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
-		public HardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.type = type;
 			this.numIndices = numIndices;
-
+			this.Manager =  manager;
 			// calc the index buffer size
 			sizeInBytes = numIndices;
 
@@ -96,7 +97,7 @@ namespace Axiom.Graphics
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-				shadowBuffer = new SoftwareIndexBuffer( type, numIndices, BufferUsage.Dynamic );
+				shadowBuffer = new DefaultHardwareIndexBuffer( Manager, type, numIndices, BufferUsage.Dynamic );
 			}
 		}
 
