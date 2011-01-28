@@ -189,7 +189,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				return depthBuffer.Format;
+                return renderTarget.DepthStencilFormat;
 			}
 		}
 
@@ -676,7 +676,9 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( MipmapsHardwareGenerated )
 			{
-				_texture.GenerateMipMaps( GetBestFilterMethod() );
+                //Generating mip maps API is no longer exposed. RenderTargets will auto-generate their mipmaps
+                //but for other textures you're S.O.L. -DoubleA. See Shawn Hargreaves response to this thread: http://forums.create.msdn.com/forums/p/71559/436835.aspx
+				//_texture.GenerateMipMaps( GetBestFilterMethod() );
 			}
 		}
 
@@ -687,7 +689,7 @@ namespace Axiom.RenderSystems.Xna
 		private void CreateDepthStencil()
 		{
 			
-			Debug.Assert( renderTarget.DepthStencilFormat != null );
+			Debug.Assert( renderTarget.DepthStencilFormat != XFG.DepthFormat.None );
 		}
 
 		private void CreateNormalTexture()
@@ -699,9 +701,6 @@ namespace Axiom.RenderSystems.Xna
 			XFG.SurfaceFormat xnaPixelFormat =
 				( Usage == TextureUsage.RenderTarget ) ? _bbPixelFormat : ChooseXnaFormat();
 
-			// set the appropriate usage based on the usage of this texture
-			XFG.TextureUsage xnaUsage =
-				( Usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled : 0;
 
 			// how many mips to use?  make sure its at least one
 			int numMips = ( MipmapCount > 0 ) ? MipmapCount : 1;
@@ -725,19 +724,13 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( Usage == TextureUsage.RenderTarget )
 			{
-				renderTarget = new XFG.RenderTarget2D( _device, SrcWidth, SrcHeight, numMips > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8 );
+				renderTarget = new XFG.RenderTarget2D(_device, SrcWidth, SrcHeight, numMips > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8 );
 				_normTexture = renderTarget;
 				CreateDepthStencil();
 			}
 			else
 			{
-				_normTexture = new XFG.Texture2D(
-							 _device,
-							 SrcWidth,
-							 SrcHeight,
-							 numMips,
-							 xnaUsage,
-							 xnaPixelFormat );
+				_normTexture = new XFG.Texture2D(_device, SrcWidth, SrcHeight, numMips > 0 ? true : false,xnaPixelFormat);
 			}
 			_texture = _normTexture;
 
@@ -745,46 +738,49 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( MipmapsHardwareGenerated )
 			{
-				_texture.GenerateMipMaps( GetBestFilterMethod() );
+                //Generating mip maps API is no longer exposed. RenderTargets will auto-generate their mipmaps
+                //but for other textures you're S.O.L. -DoubleA. See Shawn Hargreaves response to this thread: http://forums.create.msdn.com/forums/p/71559/436835.aspx
+				//_texture.GenerateMipMaps( GetBestFilterMethod() );
 			}
 		}
 
-		private XFG.TextureFilter GetBestFilterMethod()
-		{
-			// those MUST be initialized !!!
-			Debug.Assert( _device != null );
-			Debug.Assert( _texture != null );
+        //Was used to generate mipmaps, which is no longer supported for non-RenderTarget textures.
+        //private XFG.TextureFilter GetBestFilterMethod()
+        //{
+        //    // those MUST be initialized !!!
+        //    Debug.Assert( _device != null );
+        //    Debug.Assert( _texture != null );
 
-			XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps;
-			// Minification filter is used for mipmap generation
-			// Pick the best one supported for this tex type
-			switch ( this.TextureType )
-			{
-				case TextureType.OneD: // Same as 2D
-				case TextureType.TwoD:
-					filterCaps = _devCaps.TextureFilterCapabilities;
-					break;
-				case TextureType.ThreeD:
-					filterCaps = _devCaps.VertexTextureFilterCapabilities;
-					break;
-				case TextureType.CubeMap:
-					filterCaps = _devCaps.CubeTextureFilterCapabilities;
-					break;
-				default:
-					return XFG.TextureFilter.Point;
-			}
-			if ( filterCaps.SupportsMinifyGaussianQuad )
-				return XFG.TextureFilter.GaussianQuad;
-			if ( filterCaps.SupportsMinifyPyramidalQuad )
-				return XFG.TextureFilter.PyramidalQuad;
-			if ( filterCaps.SupportsMinifyAnisotropic )
-				return XFG.TextureFilter.Anisotropic;
-			if ( filterCaps.SupportsMinifyLinear )
-				return XFG.TextureFilter.Linear;
-			if ( filterCaps.SupportsMinifyPoint )
-				return XFG.TextureFilter.Point;
-			return XFG.TextureFilter.Point;
-		}
+        //    XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps;
+        //    // Minification filter is used for mipmap generation
+        //    // Pick the best one supported for this tex type
+        //    switch ( this.TextureType )
+        //    {
+        //        case TextureType.OneD: // Same as 2D
+        //        case TextureType.TwoD:
+        //            filterCaps = _devCaps.TextureFilterCapabilities;
+        //            break;
+        //        case TextureType.ThreeD:
+        //            filterCaps = _devCaps.VertexTextureFilterCapabilities;
+        //            break;
+        //        case TextureType.CubeMap:
+        //            filterCaps = _devCaps.CubeTextureFilterCapabilities;
+        //            break;
+        //        default:
+        //            return XFG.TextureFilter.Point;
+        //    }
+        //    if ( filterCaps.SupportsMinifyGaussianQuad )
+        //        return XFG.TextureFilter.GaussianQuad;
+        //    if ( filterCaps.SupportsMinifyPyramidalQuad )
+        //        return XFG.TextureFilter.PyramidalQuad;
+        //    if ( filterCaps.SupportsMinifyAnisotropic )
+        //        return XFG.TextureFilter.Anisotropic;
+        //    if ( filterCaps.SupportsMinifyLinear )
+        //        return XFG.TextureFilter.Linear;
+        //    if ( filterCaps.SupportsMinifyPoint )
+        //        return XFG.TextureFilter.Point;
+        //    return XFG.TextureFilter.Point;
+        //}
 
 		/// <summary>
 		///
