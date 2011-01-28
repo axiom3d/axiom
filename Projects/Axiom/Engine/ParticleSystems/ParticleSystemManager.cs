@@ -43,6 +43,7 @@ using System.Text;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Scripting;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -723,7 +724,7 @@ namespace Axiom.ParticleSystems
 			} // while
 		}
 
-		public float LoadingOrder
+		public Real LoadingOrder
 		{
 			get
 			{

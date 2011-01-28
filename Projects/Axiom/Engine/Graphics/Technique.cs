@@ -1602,7 +1602,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <see cref="AddGPUVenderRule"/>
         /// <param name="rule"></param>
-        internal void RemoveGPUVendorRule( GPUVendor rule )
+        internal void RemoveGPUVendorRule( GPUVendorRule rule )
         {
             if ( _GPUVendorRules.Contains( rule ) )
                 _GPUVendorRules.Remove( rule );

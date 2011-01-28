@@ -361,7 +361,7 @@ namespace Axiom.Fonts
 		Pair<int> StrBBox( string text, float char_height, RenderWindow window )
 		{
 			int height = 0, width = 0;
-			float vsX, vsY, veX, veY;
+			Real vsX, vsY, veX, veY;
 			int w, h;
 
 			w = window.Width;

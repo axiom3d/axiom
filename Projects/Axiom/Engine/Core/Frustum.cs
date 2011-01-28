@@ -1164,7 +1164,7 @@ namespace Axiom.Core
 			_recalculateWorldSpaceCorners = true;
 		}
 
-		protected void CalculateProjectionParameters( out float vpLeft, out float vpRight, out float vpBottom, out float vpTop )
+		protected void CalculateProjectionParameters( out Real vpLeft, out Real vpRight, out Real vpBottom, out Real vpTop )
 		{
 			if ( _customProjectionMatrix )
 			{
@@ -1245,7 +1245,7 @@ namespace Axiom.Core
 
 		protected virtual void _updateFrustum()
 		{
-			float vpTop, vpRight, vpBottom, vpLeft;
+			Real vpTop, vpRight, vpBottom, vpLeft;
 
 			CalculateProjectionParameters( out vpLeft, out vpRight, out vpBottom, out vpTop );
 

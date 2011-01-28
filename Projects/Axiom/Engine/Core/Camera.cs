@@ -1496,7 +1496,7 @@ namespace Axiom.Core
 			}
 
 			// Calculate general projection parameters
-			float vpLeft, vpRight, vpBottom, vpTop;
+			Real vpLeft, vpRight, vpBottom, vpTop;
 			CalculateProjectionParameters( out vpLeft, out vpRight, out vpBottom, out vpTop );
 
 			float vpWidth = vpRight - vpLeft;

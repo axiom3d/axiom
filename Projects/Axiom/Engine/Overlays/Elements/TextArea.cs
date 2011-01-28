@@ -41,6 +41,7 @@ using Axiom.Fonts;
 using Axiom.Scripting;
 using Axiom.Graphics;
 using Font = Axiom.Fonts.Font;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -336,7 +337,7 @@ namespace Axiom.Overlays.Elements
 				}
 
 				float horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
-				float u1, u2, v1, v2;
+				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
 				font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
