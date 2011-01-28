@@ -46,7 +46,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// 	Summary description for GLHardwareBufferManager.
 	/// </summary>
-	public class GLHardwareBufferManager : HardwareBufferManager
+	public class GLHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
 		#region Member variables
 
@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareBufferManager()
+		public GLHardwareBufferManagerBase()
 		{
 		}
 
@@ -84,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-			GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer( type, numIndices, usage, useShadowBuffer );
+			GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
 			indexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -111,7 +111,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( vertexSize, numVerts, usage, useShadowBuffer );
+			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( this, vertexSize, numVerts, usage, useShadowBuffer );
 			vertexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -120,7 +120,26 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion
 	}
 
-	public class GLSoftwareBufferManager : SoftwareBufferManager
+	public class GLHardwareBufferManager : HardwareBufferManager
+	{
+		public GLHardwareBufferManager()
+			: base( new GLHardwareBufferManagerBase() )
+		{
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
+			{
+				_baseInstance.Dispose();
+				_baseInstance = null;
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+	}
+
+	public class GLSoftwareBufferManager : DefaultHardwareBufferManager
 	{
 	}
 }

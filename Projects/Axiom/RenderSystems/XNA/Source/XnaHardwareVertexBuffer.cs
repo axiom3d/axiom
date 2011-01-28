@@ -69,8 +69,8 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructors
 
-		public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
-			: base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
+		public XnaHardwareVertexBuffer( HardwareBufferManagerBase manager,  int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 			_device = dev;
 			// Create the Xna vertex buffer

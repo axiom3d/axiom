@@ -52,6 +52,7 @@ namespace Axiom.Graphics
 	{
 		#region Member variables
 
+		protected HardwareBufferManagerBase Manager;
 		protected int numVertices;
 		protected int vertexSize;
 		protected int useCount;
@@ -60,11 +61,12 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public HardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.vertexSize = vertexSize;
 			this.numVertices = numVertices;
+			this.Manager = manager;
 
 			// calculate the size in bytes of this buffer
 			sizeInBytes = vertexSize * numVertices;
@@ -72,7 +74,7 @@ namespace Axiom.Graphics
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-				shadowBuffer = new SoftwareVertexBuffer( vertexSize, numVertices, BufferUsage.Dynamic );
+				shadowBuffer = new DefaultHardwareVertexBuffer( Manager, vertexSize, numVertices, BufferUsage.Dynamic );
 			}
 
 			useCount = 0;

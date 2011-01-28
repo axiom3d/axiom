@@ -170,12 +170,17 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
+    <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwareOcclusionQuery.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
     <Compile Include="Graphics\ICompositorLogic.cs" />
@@ -545,9 +550,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\SimpleRenderable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Graphics\SoftwareBufferManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\SpotShadowFadePng.cs">
