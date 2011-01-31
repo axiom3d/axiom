@@ -1658,10 +1658,10 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
-
+           
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 			// set the vertex declaration and buffer binding 
-			_device.VertexDeclaration = vertDecl.XnaVertexDecl;
+			//_device.VertexDeclaration = vertDecl.XnaVertexDecl;
 			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
 			XFG.PrimitiveType primType = 0;
@@ -1730,6 +1730,14 @@ namespace Axiom.RenderSystems.Xna
 		private bool lasta2c = false;
 		public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
 		{
+			bool a2c = false;
+			if ( func != Axiom.Graphics.CompareFunction.AlwaysPass )
+			{
+				a2c = alphaToCoverage;
+			}
+
+            //_device.RenderState.AlphaFunction = XnaHelper.Convert( func );
+            //_device.RenderState.ReferenceAlpha = val;
 
 			// Alpha to coverage
 			if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
@@ -2086,10 +2094,12 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
 		{
-			if ( maxAnisotropy > _capabilities.MaxAnisotropy )
-			{
-				maxAnisotropy = _capabilities.MaxAnisotropy;
-			}
+            //-if maxAnisotropy is higher than what the graphics device is capapble of
+            //Xna 4.0 should magically clamp the value for us.
+            //if ( maxAnisotropy > _capabilities.MaxAnisotropy )
+            //{
+            //    maxAnisotropy = _capabilities.MaxAnisotropy;
+            //}
 
 			if ( _device.SamplerStates[ stage ].MaxAnisotropy != maxAnisotropy )
 			{
@@ -2344,12 +2354,12 @@ namespace Axiom.RenderSystems.Xna
 			switch ( type )
 			{
 				case GpuProgramType.Vertex:
-					_device.VertexShader = null;
+					//_device.VertexShader = null;
 					VertexShaderIsSet = false;
 					break;
 
 				case GpuProgramType.Fragment:
-					_device.PixelShader = null;
+					//_device.PixelShader = null;
 					PixelShaderIsSet = false;
 					break;
 			}
