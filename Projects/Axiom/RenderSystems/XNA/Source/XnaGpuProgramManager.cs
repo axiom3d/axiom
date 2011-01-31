@@ -92,10 +92,10 @@ namespace Axiom.RenderSystems.Xna
 			switch ( type )
 			{
 				case GpuProgramType.Vertex:
-					return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+				//	return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 
 				case GpuProgramType.Fragment:
-					return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				//	return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
 				default:
 					throw new NotSupportedException( "The program type is not supported." );
 			}
@@ -107,14 +107,14 @@ namespace Axiom.RenderSystems.Xna
 			{
 				throw new Exception( "You must supply a 'type' parameter." );
 			}
-
+            return null;
 			if ( createParams[ "type" ] == "vertex_program" )
 			{
-				return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+				//return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 			}
 			else
 			{
-				return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				//return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
 			}
 		}
 
