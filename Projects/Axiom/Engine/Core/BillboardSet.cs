@@ -1759,7 +1759,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.parentNode.Lights;
+				return this.QueryLights();
 			}
 		}
 

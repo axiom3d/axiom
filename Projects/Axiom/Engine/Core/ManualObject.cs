@@ -1495,7 +1495,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.parent.ParentNode.Lights;
+					return parent.QueryLights();
 				}
 			}
 

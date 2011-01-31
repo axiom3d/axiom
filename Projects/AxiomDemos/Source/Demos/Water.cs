@@ -182,7 +182,6 @@ namespace Axiom.Demos
 			// Clear Current Lights and start over
 			// TODO: Add ClearLights
 			//this.scene.ClearLights();
-			lightNode.Lights.Clear();
 			lightSet.Clear();
 
 

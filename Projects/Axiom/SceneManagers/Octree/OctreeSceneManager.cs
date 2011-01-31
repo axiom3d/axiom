@@ -493,7 +493,7 @@ namespace Axiom.SceneManagers.Octree
 
 							if ( DisplayNodes )
 							{
-								GetRenderQueue().AddRenderable( node );
+								GetRenderQueue().AddRenderable( node.GetDebugRenderable() );
 							}
 
 							// check if the scene manager or this node wants the bounding box shown.

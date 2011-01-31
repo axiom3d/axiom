@@ -481,7 +481,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						// if we are displaying nodes, add the node renderable to the queue
 						if ( displayNodes )
 						{
-							queue.AddRenderable( pczsn );
+							queue.AddRenderable( pczsn.GetDebugRenderable() );
 						}
 						// if the scene manager or the node wants the bounding box shown, add it to the queue
 						if ( pczsn.ShowBoundingBox || showBoundingBoxes )
@@ -514,7 +514,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						// if we are displaying nodes, add the node renderable to the queue
 						if ( displayNodes )
 						{
-							queue.AddRenderable( pczsn );
+							queue.AddRenderable( pczsn.GetDebugRenderable() );
 						}
 						// if the scene manager or the node wants the bounding box shown, add it to the queue
 						if ( pczsn.ShowBoundingBox || showBoundingBoxes )

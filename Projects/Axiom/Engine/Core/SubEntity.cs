@@ -641,12 +641,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				// get the parent entitie's parent node
-				Node node = parent.ParentNode;
-
-				Debug.Assert( node != null );
-
-				return parent.ParentNode.Lights;
+				return parent.QueryLights();
 			}
 		}
 
