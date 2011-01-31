@@ -727,7 +727,7 @@ namespace Axiom.Core
 			if ( displayNodes )
 			{
 				// hey, lets just add ourself right to the render queue
-				queue.AddRenderable( this );
+				queue.AddRenderable( GetDebugRenderable() );
 			}
 
 			// do we wanna show our beautiful bounding box?
@@ -736,6 +736,15 @@ namespace Axiom.Core
 			{
 				AddBoundingBoxToQueue( queue );
 			}
+		}
+
+		public override Node.DebugRenderable GetDebugRenderable()
+		{
+			Vector3 hs = this.worldAABB.HalfSize;
+			Real sz = Utility.Min( hs.x, hs.y );
+			sz = Utility.Min( sz, hs.z );
+			sz = Utility.Max( sz, (Real)1.0 );
+			return base.GetDebugRenderable( sz );
 		}
 
 		/// <summary>
@@ -1118,24 +1127,6 @@ namespace Axiom.Core
 		{
 			SceneNode newNode = creator.CreateSceneNode( name );
 			return newNode;
-		}
-
-		/// <summary>
-		///    Allows retrieval of the nearest lights to the center of this SceneNode.
-		/// </summary>
-		/// <remarks>
-		///    This method allows a list of lights, ordered by proximity to the center of
-		///    this SceneNode, to be retrieved. Multiple access to this method when neither
-		///    the node nor the lights have moved will result in the same list being returned
-		///    without recalculation. Can be useful when implementing IRenderable.Lights.
-		/// </remarks>
-		/// <returns></returns>
-		public override LightList Lights
-		{
-			get
-			{
-				return FindLights( 0 );
-			}
 		}
 
 		#endregion Implementation of Node

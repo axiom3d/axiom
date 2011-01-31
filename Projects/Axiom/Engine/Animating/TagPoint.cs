@@ -137,18 +137,6 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///	   Pass on any requests for the lights list to
-		///	   to the parent entity
-		/// </summary>
-		public override LightList Lights
-		{
-			get
-			{
-				return parentEntity.ParentNode.Lights;
-			}
-		}
-
-		/// <summary>
 		///  Tells the TagPoint whether it should inherit orientation from it's parent entity.
 		/// </summary>
 		/// <remarks>

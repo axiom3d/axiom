@@ -433,7 +433,7 @@ namespace Axiom.Core
 		internal virtual void NotifyMoved()
 		{
 			// Mark light list being dirty, simply decrease
-			// counter by one for minimise overhead
+			// counter by one for minimize overhead
 			--lightListUpdated;
 
 			// Notify listener if exists
@@ -541,6 +541,7 @@ namespace Axiom.Core
 
 			return this.worldBoundingSphere;
 		}
+
 
 		#endregion Methods
 

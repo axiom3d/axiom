@@ -953,7 +953,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return parentNode.Lights;
+				return QueryLights();
 			}
 		}
 

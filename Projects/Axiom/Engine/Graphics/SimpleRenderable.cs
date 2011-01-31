@@ -273,14 +273,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( parentNode != null )
-				{
-					return parentNode.Lights;
-				}
-				else
-				{
-					return dummyLightList;
-				}
+				return QueryLights();
 			}
 		}
 

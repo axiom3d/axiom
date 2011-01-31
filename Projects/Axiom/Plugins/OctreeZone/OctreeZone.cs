@@ -580,7 +580,7 @@ namespace OctreeZone
 							// if we are displaying nodes, add the node renderable to the queue
 							if ( displayNodes )
 							{
-								queue.AddRenderable( sn );
+								queue.AddRenderable( sn.GetDebugRenderable() );
 							}
 							// if the scene manager or the node wants the bounding box shown, add it to the queue
 							if ( sn.ShowBoundingBox || showBoundingBoxes )
