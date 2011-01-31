@@ -915,53 +915,13 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public event EventHandler<EventArgs> DeviceCreated
-		{
-			add
-			{
-				throw new NotImplementedException();
-			}
-			remove
-			{
-				throw new NotImplementedException();
-			}
-		}
+        public event EventHandler<EventArgs> DeviceCreated;
 
-		public event EventHandler<EventArgs> DeviceDisposing
-		{
-			add
-			{
-				throw new NotImplementedException();
-			}
-			remove
-			{
-				throw new NotImplementedException();
-			}
-		}
+        public event EventHandler<EventArgs> DeviceDisposing;
 
-		public event EventHandler<EventArgs> DeviceReset
-		{
-			add
-			{
-				throw new NotImplementedException();
-			}
-			remove
-			{
-				throw new NotImplementedException();
-			}
-		}
+        public event EventHandler<EventArgs> DeviceReset;
 
-		public event EventHandler<EventArgs> DeviceResetting
-		{
-			add
-			{
-				throw new NotImplementedException();
-			}
-			remove
-			{
-				throw new NotImplementedException();
-			}
-		}
+        public event EventHandler<EventArgs> DeviceResetting;
 
 		public XFG.GraphicsDevice GraphicsDevice
 		{
