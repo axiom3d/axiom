@@ -135,11 +135,12 @@ namespace Axiom.RenderSystems.Xna
 						Axiom.Graphics.VertexElement element =
 							(Axiom.Graphics.VertexElement)elements[ i ];
 
-
-						xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
-
+                        //No hardware could actually use this property: http://blogs.msdn.com/b/shawnhar/archive/2010/04/19/vertex-data-in-xna-game-studio-4-0.aspx
+						//xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
+                        //the above link also explains why this property's unnecessary.
+                        //xnaElements[ i ].Stream = (short)element.Source; 
 						xnaElements[ i ].Offset = (short)element.Offset;
-						xnaElements[ i ].Stream = (short)element.Source;
+						
 
 						xnaElements[ i ].VertexElementFormat = XnaHelper.Convert( element.Type, true );
 
@@ -165,7 +166,7 @@ namespace Axiom.RenderSystems.Xna
 
 					// create the new declaration
 
-					_xnaVertexDecl = new XFG.VertexDeclaration( _device, xnaElements );
+					_xnaVertexDecl =  new XFG.VertexDeclaration( xnaElements );
 
 
 					// reset the flag

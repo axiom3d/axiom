@@ -292,7 +292,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			Debug.Assert( mipTex != null );
 			// Mipmapping
-			mipTex.GenerateMipMaps( XFG.TextureFilter.Linear );
+			//mipTex.GenerateMipMaps( XFG.TextureFilter.Linear );
 		}
 
 		#endregion Methods
