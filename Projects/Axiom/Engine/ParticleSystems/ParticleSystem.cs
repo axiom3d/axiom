@@ -1357,6 +1357,10 @@ namespace Axiom.ParticleSystems
 			{
 				return origin;
 			}
+            set
+            {
+                origin = value;
+            }
 		}
 
 		#endregion

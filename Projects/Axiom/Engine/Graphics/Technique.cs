@@ -54,7 +54,9 @@ namespace Axiom.Graphics
 	public class Technique
 	{
 		#region Constants and Enumerations
-		// illumination pass state type
+		/// <summary>
+        /// illumination pass state type
+		/// </summary>
 		protected enum IlluminationPassesCompilationPhase
 		{
 			Disabled = -1,
@@ -78,11 +80,7 @@ namespace Axiom.Graphics
             }
 
             #region System.Object overrides
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="obj"></param>
-            /// <returns></returns>
+
             public override bool Equals( object obj )
             {
                 if ( obj == null )
@@ -96,16 +94,9 @@ namespace Axiom.Graphics
                 return ( v.Vendor == Vendor ) && ( v.Include == Include );
             }
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <returns></returns>
             public override int GetHashCode()
             {
-                if ( Vendor != null )
-                    return Vendor.GetHashCode();
-
-                return base.GetHashCode();
+                return Vendor.GetHashCode();
             }
             #endregion System.Object overrides
 
@@ -128,9 +119,11 @@ namespace Axiom.Graphics
         /// </summary>
         public struct GPUDeviceNameRule
         {
-            public string DevicePattern { get; set; }
-            public bool Include { get; set; }
-            public bool CaseSensitive { get; set; }
+            public string DevicePattern;
+
+            public bool Include;
+
+            public bool CaseSensitive;
 
             public GPUDeviceNameRule( string pattern, bool ie, bool caseSen )
                 : this()
@@ -141,11 +134,7 @@ namespace Axiom.Graphics
             }
 
             #region System.Object overrides
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="obj"></param>
-            /// <returns></returns>
+
             public override bool Equals( object obj )
             {
                 if ( obj == null )
@@ -159,10 +148,6 @@ namespace Axiom.Graphics
                 return ( d.DevicePattern == DevicePattern ) && ( d.Include == Include ) && ( d.CaseSensitive == CaseSensitive );
             }
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <returns></returns>
             public override int GetHashCode()
             {
                 if ( DevicePattern != null )

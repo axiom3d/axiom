@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -35,8 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -47,7 +44,9 @@ namespace Axiom.Scripting.Compiler.AST
 	/// </summary>
 	class ImportAbstractNode : AbstractNode
 	{
-		public String source, target;
+        public String Source;
+
+        public string Target;
 
 		public ImportAbstractNode()
 			: base( null )
@@ -57,26 +56,28 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
+        /// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			ImportAbstractNode node = new ImportAbstractNode();
 			node.File = File;
 			node.Line = Line;
 			node.Type = Type;
-			node.target = target;
-			node.source = source;
+			node.Target = Target;
+			node.Source = Source;
 			return node;
 		}
 
+        /// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get
 			{
-				throw new NotImplementedException();
+                return Target;
 			}
-			protected internal set
+			set
 			{
-				throw new NotImplementedException();
+                Target = value;
 			}
 		}
 

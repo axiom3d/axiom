@@ -88,8 +88,8 @@ namespace Axiom.Scripting.Compiler
 					ImportAbstractNode impl = new ImportAbstractNode();
 					impl.Line = node.Line;
 					impl.File = node.File;
-					impl.target = node.Children[ 0 ].Token;
-					impl.source = node.Children[ 1 ].Token;
+					impl.Target = node.Children[ 0 ].Token;
+					impl.Source = node.Children[ 1 ].Token;
 
 					asn = impl;
 				}
@@ -137,7 +137,7 @@ namespace Axiom.Scripting.Compiler
 					VariableAccessAbstractNode impl = new VariableAccessAbstractNode( _current );
 					impl.Line = node.Line;
 					impl.File = node.File;
-					impl.name = node.Token;
+					impl.Name = node.Token;
 
 					asn = impl;
 				}
@@ -202,7 +202,7 @@ namespace Axiom.Scripting.Compiler
 								var.File = iter.Current.File;
 								var.Line = iter.Current.Line;
 								var.Type = AbstractNodeType.VariableGet;
-								var.name = iter.Current.Token;
+								var.Name = iter.Current.Token;
 								impl.Values.Add( var );
 							}
 							else
@@ -220,12 +220,11 @@ namespace Axiom.Scripting.Compiler
 						// Find the base
 						if ( validNode && iter.Current.Type == ConcreteNodeType.Colon )
 						{
-							if ( iter.Current.Children.Count == 0 )
-							{
-								_compiler.AddError( CompileErrorCode.StringExpected, iter.Current.File, iter.Current.Line );
-								return;
-							}
-							impl.BaseClass = iter.Current.Children[ 0 ].Token;
+                            // Children of the ':' are bases
+                            foreach ( ConcreteNode j in iter.Current.Children )
+                                impl.Bases.Add( j.Token );
+                            
+                            validNode = iter.MoveNext();
 						}
 
 						// Finally try to map the cls to an id
@@ -249,11 +248,11 @@ namespace Axiom.Scripting.Compiler
 						PropertyAbstractNode impl = new PropertyAbstractNode( _current );
 						impl.Line = node.Line;
 						impl.File = node.File;
-						impl.name = node.Token;
+						impl.Name = node.Token;
 
-						if ( _compiler.KeywordMap.ContainsKey( impl.name ) )
+						if ( _compiler.KeywordMap.ContainsKey( impl.Name ) )
 						{
-							impl.id = _compiler.KeywordMap[ impl.name ];
+							impl.Id = _compiler.KeywordMap[ impl.Name ];
 						}
 
 						asn = (AbstractNode)impl;
@@ -289,7 +288,7 @@ namespace Axiom.Scripting.Compiler
 						if ( _current.Type == AbstractNodeType.Property )
 						{
 							PropertyAbstractNode impl = (PropertyAbstractNode)_current;
-							impl.values.Add( asn );
+							impl.Values.Add( asn );
 						}
 						else
 						{
@@ -311,6 +310,5 @@ namespace Axiom.Scripting.Compiler
 			}
 
 		}
-
-	}
+    }
 }

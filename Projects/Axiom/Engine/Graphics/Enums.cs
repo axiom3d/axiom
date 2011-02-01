@@ -564,79 +564,84 @@ namespace Axiom.Graphics
 	///		Full and complete list of valid texture blending operations.  Fallbacks will be required on older hardware
 	///		that does not supports some of these multitexturing techniques.
 	/// </summary>
-	public enum LayerBlendOperationEx
-	{
-		/// <summary>
-		///		Use source 1 as is.
-		/// </summary>
-		[ScriptEnum( "source1" )]
-		Source1,
-		/// <summary>
-		///		Use source 2 as is.
-		/// </summary>
-		[ScriptEnum( "source2" )]
-		Source2,
-		/// <summary>
-		///		Multiply source 1 and source 2 together.
-		/// </summary>
-		[ScriptEnum( "modulate" )]
-		Modulate,
-		/// <summary>
-		///		Same as Modulate, but brightens as a result.
-		/// </summary>
-		[ScriptEnum( "modulate_x2" )]
-		ModulateX2,
-		/// <summary>
-		///		Same as ModuleX2, but brightens even more as a result.
-		/// </summary>
-		[ScriptEnum( "modulate_x4" )]
-		ModulateX4,
-		/// <summary>
-		///		Add source 1 and source 2 together.
-		/// </summary>
-		[ScriptEnum( "add" )]
-		Add,
-		/// <summary>
-		///		Same as Add, but subtracts 0.5 from the result.
-		/// </summary>
-		[ScriptEnum( "add_signed" )]
-		AddSigned,
-		/// <summary>
-		///		Same as Add, but subtracts the product from the sum.
-		/// </summary>
-		[ScriptEnum( "add_smooth" )]
-		AddSmooth,
-		/// <summary>
-		///		Subtract source 2 from source 1.
-		/// </summary>
-		[ScriptEnum( "subtract" )]
-		Subtract,
-		/// <summary>
-		///		Use interpolated alpha value from vertices to scale source 1, then add source 2 scaled by 1 - alpha
-		/// </summary>
-		[ScriptEnum( "blend_diffuse_alpha" )]
-		BlendDiffuseAlpha,
-		/// <summary>
-		///		Same as BlendDiffuseAlpha, but uses current alpha from the texture.
-		/// </summary>
-		[ScriptEnum( "blend_texture_alpha" )]
-		BlendTextureAlpha,
-		/// <summary>
-		///		Same as BlendDiffuseAlpha, but uses current alpha from previous stages.
-		/// </summary>
-		[ScriptEnum( "blend_current_alpha" )]
-		BlendCurrentAlpha,
-		/// <summary>
-		///		Sames as BlendDiffuseAlpha, but uses a constant manual blend value from [0.0,1.0]
-		/// </summary>
-		[ScriptEnum( "blend_manual" )]
-		BlendManual,
-		/// <summary>
-		///		Takes the dot product of color 1 and color 2.
-		/// </summary>
-		[ScriptEnum( "dotproduct" )]
-		DotProduct
-	}
+    public enum LayerBlendOperationEx
+    {
+        /// <summary>
+        ///		Use source 1 as is.
+        /// </summary>
+        [ScriptEnum( "source1" )]
+        Source1,
+        /// <summary>
+        ///		Use source 2 as is.
+        /// </summary>
+        [ScriptEnum( "source2" )]
+        Source2,
+        /// <summary>
+        ///		Multiply source 1 and source 2 together.
+        /// </summary>
+        [ScriptEnum( "modulate" )]
+        Modulate,
+        /// <summary>
+        ///		Same as Modulate, but brightens as a result.
+        /// </summary>
+        [ScriptEnum( "modulate_x2" )]
+        ModulateX2,
+        /// <summary>
+        ///		Same as ModuleX2, but brightens even more as a result.
+        /// </summary>
+        [ScriptEnum( "modulate_x4" )]
+        ModulateX4,
+        /// <summary>
+        ///		Add source 1 and source 2 together.
+        /// </summary>
+        [ScriptEnum( "add" )]
+        Add,
+        /// <summary>
+        ///		Same as Add, but subtracts 0.5 from the result.
+        /// </summary>
+        [ScriptEnum( "add_signed" )]
+        AddSigned,
+        /// <summary>
+        ///		Same as Add, but subtracts the product from the sum.
+        /// </summary>
+        [ScriptEnum( "add_smooth" )]
+        AddSmooth,
+        /// <summary>
+        ///		Subtract source 2 from source 1.
+        /// </summary>
+        [ScriptEnum( "subtract" )]
+        Subtract,
+        /// <summary>
+        ///		Use interpolated alpha value from vertices to scale source 1, then add source 2 scaled by 1 - alpha
+        /// </summary>
+        [ScriptEnum( "blend_diffuse_alpha" )]
+        BlendDiffuseAlpha,
+        /// <summary>
+        ///		Same as BlendDiffuseAlpha, but uses current alpha from the texture.
+        /// </summary>
+        [ScriptEnum( "blend_texture_alpha" )]
+        BlendTextureAlpha,
+        /// <summary>
+        ///		Same as BlendDiffuseAlpha, but uses current alpha from previous stages.
+        /// </summary>
+        [ScriptEnum( "blend_current_alpha" )]
+        BlendCurrentAlpha,
+        /// <summary>
+        ///		Sames as BlendDiffuseAlpha, but uses a constant manual blend value from [0.0,1.0]
+        /// </summary>
+        [ScriptEnum( "blend_manual" )]
+        BlendManual,
+        /// <summary>
+        ///		Takes the dot product of color 1 and color 2.
+        /// </summary>
+        [ScriptEnum( "dotproduct" )]
+        DotProduct,
+        /// <summary>
+        /// use interpolated color values from vertices to scale source1, then add source2 scaled by (1-color)
+        /// </summary>
+        [ScriptEnum("blend_diffuse_colour")]
+        BlendDiffuseColour
+    }
 
 	/// <summary>
 	///		Valid sources of values for texture layer blending operations.
@@ -1347,10 +1352,31 @@ namespace Axiom.Graphics
 	/// </summary>
 	public enum CompositorPassType
 	{
-		Clear,           // Clear target to one colour
-		Stencil,		 // Set stencil operation
-		RenderScene,     // Render the scene or part of it
-		RenderQuad,       // Render a full screen quad
+        /// <summary>
+        /// Clear target to one colour
+        /// </summary>
+        [ScriptEnum("clear")]
+		Clear,
+
+        /// <summary>
+        /// Set stencil operation
+        /// </summary>
+        [ScriptEnum("stencil")]
+		Stencil,
+
+        /// <summary>
+        /// Render the scene or part of it
+        /// </summary>
+        [ScriptEnum("render_scene")]
+		RenderScene,
+
+        /// <summary>
+        /// Render a full screen quad
+        /// </summary>
+        [ScriptEnum("render_quad")]
+		RenderQuad,
+
+        [ScriptEnum("render_custom")]
 		RenderCustom
 	}
 

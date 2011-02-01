@@ -90,6 +90,7 @@ namespace Axiom.Core
 		/// Default constructor.
 		/// </summary>
 		public LodStrategyManager()
+            : base()
 		{
 			// Add default (distance) strategy
 			DistanceLodStrategy distanceStrategy = new DistanceLodStrategy();

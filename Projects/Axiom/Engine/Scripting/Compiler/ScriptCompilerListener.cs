@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Axiom.Graphics;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
@@ -62,79 +61,158 @@ namespace Axiom.Scripting.Compiler
 			return null;
 		}
 
-		/// Allows for responding to and overriding behavior before a CST is translated into an AST
-		public virtual void PreASTConversion( IList<ConcreteNode> nodes, Dictionary<string, uint> ids )
-		{
-		}
+        /// <summary>
+        /// Allows for responding to and overriding behavior before a CST is translated into an AST
+        /// </summary>
+        /// <param name="compiler"></param>
+        /// <param name="nodes"></param>
+        public virtual void PreConversion(ScriptCompiler compiler, IList<ConcreteNode> nodes)
+        {
+        }
 
-		/// Allows for overriding the translation of the given node into the concrete resource.
+        /// <summary>
+        /// Allows vetoing of continued compilation after the entire AST conversion process finishes
+        /// </summary>
+        /// <remarks>
+        /// Once the script is turned completely into an AST, including import
+        /// and override handling, this function allows a listener to exit
+        /// the compilation process.
+        ///</remarks>
+        /// <param name="compiler"></param>
+        /// <param name="nodes"></param>
+        /// <returns>True continues compilation, false aborts</returns>
+        public virtual bool PostConversion(ScriptCompiler compiler, IList<AbstractNode> nodes)
+        {
+            return true;
+        }
+
+
+		/// <summary>
+        /// Allows for overriding the translation of the given node into the concrete resource.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
 		public virtual ScriptCompiler.Translator PreObjectTranslation( ObjectAbstractNode obj )
 		{
 			return null;
 		}
 
-		/// Allows for overriding the translation of the given node into the concrete resource.
+		/// <summary>
+        /// Allows for overriding the translation of the given node into the concrete resource.
+		/// </summary>
+		/// <param name="prop"></param>
+		/// <returns></returns>
 		public virtual ScriptCompiler.Translator PrePropertyTranslation( PropertyAbstractNode prop )
 		{
 			return null;
 		}
 
-		/// Called when an error occurred
+		/// <summary>
+        /// Called when an error occurred
+		/// </summary>
+		/// <param name="err"></param>
 		public virtual void Error( ScriptCompiler.CompileError err )
 		{
 		}
 
-		/// Must return the requested material
+		/// <summary>
+        /// Must return the requested material
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <returns></returns>
 		public virtual Material CreateMaterial( String name, String group )
 		{
 			return null;
 		}
 
-		/// Called before texture aliases are applied to a material
+		/// <summary>
+        /// Called before texture aliases are applied to a material
+		/// </summary>
+		/// <param name="aliases"></param>
 		public virtual void PreApplyTextureAliases( Dictionary<String, String> aliases )
 		{
 		}
 
-		/// Called before texture names are used
+		/// <summary>
+        /// Called before texture names are used
+		/// </summary>
+		/// <param name="names"></param>
 		public virtual void GetTextureNames( String names )
 		{
 			GetTextureNames( names, 0 );
 		}
 
-		/// Called before texture names are used
+		/// <summary>
+        /// Called before texture names are used
+		/// </summary>
+		/// <param name="names"></param>
+		/// <param name="count"></param>
 		public virtual void GetTextureNames( String names, int count )
 		{
 		}
 
-		/// Called before a gpu program name is used
+		/// <summary>
+        /// Called before a gpu program name is used
+		/// </summary>
+		/// <param name="name"></param>
 		public virtual void GetGpuProgramName( String name )
 		{
 		}
 
-		/// Called to return the requested GpuProgram
+		/// <summary>
+        /// Called to return the requested GpuProgram
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <param name="source"></param>
+		/// <param name="type"></param>
+		/// <param name="syntax"></param>
+		/// <returns></returns>
 		public virtual GpuProgram CreateGpuProgram( String name, String group, String source, GpuProgramType type, String syntax )
 		{
 			return null;
 		}
 
-		/// Called to return a HighLevelGpuProgram
+		/// <summary>
+        /// Called to return a HighLevelGpuProgram
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <param name="language"></param>
+		/// <param name="type"></param>
+		/// <param name="source"></param>
+		/// <returns></returns>
 		public virtual HighLevelGpuProgram CreateHighLevelGpuProgram( String name, String group, String language, GpuProgramType type, String source )
 		{
 			return null;
 		}
 
-		/// Returns the requested particle system template
+		/// <summary>
+        /// Returns the requested particle system template
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <returns></returns>
 		public virtual ParticleSystem CreateParticleSystem( String name, String group )
 		{
 			return null;
 		}
 
-		/// Processes the name of the material
+		/// <summary>
+        /// Processes the name of the material
+		/// </summary>
+		/// <param name="name"></param>
 		public virtual void GetMaterialName( String name )
 		{
 		}
 
-		/// Returns the compositor that is created
+		/// <summary>
+        /// Returns the compositor that is created
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <returns></returns>
 		public virtual Compositor CreateCompositor( String name, String group )
 		{
 			return null;

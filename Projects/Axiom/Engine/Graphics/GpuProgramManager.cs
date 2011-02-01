@@ -374,5 +374,21 @@ namespace Axiom.Graphics
 			base.dispose( disposeManagedResources );
 		}
 		#endregion  ResourceManager Implementation
-	}
+
+        public bool SaveMicrocodesToCache 
+        {
+            get { throw new System.NotImplementedException(); }
+            set { throw new System.NotImplementedException(); }
+        }
+
+        public void LoadMicrocodeCache(System.IO.Stream stream)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SaveMicrocodeCache(System.IO.Stream stream)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }

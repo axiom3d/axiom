@@ -87,7 +87,7 @@ namespace Axiom.Demos
 
             Material waterMat = (Material)MaterialManager.Instance.GetByName( "SimpleWaterMesh_Material" );
             TextureUnitState tus = waterMat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RefractionMap" );
-            tus.TextureAddressing = TextureAddressing.Clamp;
+            tus.SetTextureAddressingMode( TextureAddressing.Clamp );
         }
         /// <summary>
         /// 
@@ -177,7 +177,7 @@ namespace Axiom.Demos
             reflTarget.AfterUpdate += new RenderTargetEventHandler( PostRenderTargetUpdate );
             Material waterMat = (Material)MaterialManager.Instance.GetByName( "SimpleWaterMesh_Material" );
             TextureUnitState tus = waterMat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "ReflectionMap" );
-            tus.TextureAddressing = TextureAddressing.Clamp;
+            tus.SetTextureAddressingMode( TextureAddressing.Clamp );
 
             mReflectCamera.EnableReflection( mMovablePlane.DerivedPlane );
             mReflectCamera.EnableCustomNearClipPlane( mMovablePlane.DerivedPlane );

@@ -591,14 +591,14 @@ namespace Axiom.SceneManagers.Bsp
 				tex.SetAlphaOperation( LayerBlendOperationEx.Modulate );
 				tex.AlphaBlendMode.source2 = LayerBlendSource.Diffuse;
 				tex.TextureCoordSet = 2;
-				tex.TextureAddressing = TextureAddressing.Clamp;
+                tex.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				// The geometry texture without lightmap. Use the light texture on this
 				// pass, the appropriate texture will be rendered at RenderTextureLighting
 				tex = textureLightPass.CreateTextureUnitState( texLight.Name );
 				tex.SetColorOperation( LayerBlendOperation.Modulate );
 				tex.SetAlphaOperation( LayerBlendOperationEx.Modulate );
-				tex.TextureAddressing = TextureAddressing.Wrap;
+                tex.SetTextureAddressingMode( TextureAddressing.Wrap );
 
 				textureLightPass.SetSceneBlending( SceneBlendType.TransparentAlpha );
 
@@ -1132,7 +1132,7 @@ namespace Axiom.SceneManagers.Bsp
 
 				targetRenderSystem.SetTexture( 1, true, geometryTex.TextureName );
 				// OpenGL requires the addressing mode to be set before every render operation
-				targetRenderSystem.SetTextureAddressingMode( 0, TextureAddressing.Clamp );
+                targetRenderSystem.SetTextureAddressingMode( 0, new UVWAddressing( TextureAddressing.Clamp ) );
 				targetRenderSystem.Render( renderOp );
 			}
 		}

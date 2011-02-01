@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -35,42 +34,87 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Math;
-
 using Axiom.Scripting.Compiler.AST;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		class CompositorTranslator : Translator
-		{
-			public CompositorTranslator( ScriptCompiler compiler )
-				: base( compiler )
-			{
-			}
+    public partial class ScriptCompiler
+    {
+        public class CompositorTranslator : Translator
+        {
+            protected Compositor _Compositor;
 
-			#region Translator Implementation
+            public CompositorTranslator()
+                : base()
+            {
+                _Compositor = null;
+            }
 
-			protected override void ProcessObject( ObjectAbstractNode node )
-			{
-			}
+            #region Translator Implementation
 
-			protected override void ProcessProperty( PropertyAbstractNode node )
-			{
-			}
+            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+            {
+                return nodeId == Keywords.ID_COMPOSITOR;
+            }
 
-			#endregion Translator Implementation
-		}
-	}
+            /// <see cref="Translator.Translate"/>
+            public override void Translate( ScriptCompiler compiler, AbstractNode node )
+            {
+                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+
+                if ( obj != null )
+                {
+                    if ( string.IsNullOrEmpty( obj.Name ) )
+                    {
+                        compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+                        return;
+                    }
+                }
+                else
+                {
+                    compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+                    return;
+                }
+
+                // Create the compositor
+                throw new NotImplementedException();
+                //CreateCompositorScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup());
+                bool processed = false; //compiler->_fireEvent(&evt, (void*)&mCompositor);
+
+                if ( !processed )
+                {
+                    _Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                }
+
+                if ( _Compositor == null )
+                {
+                    compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
+                    return;
+                }
+
+                // Prepare the compositor
+                _Compositor.RemoveAllTechniques();
+                _Compositor.Origin = obj.File;
+                obj.Context = _Compositor;
+
+                foreach ( AbstractNode i in obj.Children )
+                {
+                    if ( i.Type == AbstractNodeType.Object )
+                    {
+                        _processNode( compiler, i );
+                    }
+                    else
+                    {
+                        compiler.AddError( CompileErrorCode.UnexpectedToken, i.File, i.Line, "token not recognized" );
+                    }
+                }
+            }
+
+            #endregion Translator Implementation
+        }
+    }
 }
 

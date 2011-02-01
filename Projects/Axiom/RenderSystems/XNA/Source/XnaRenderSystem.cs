@@ -2205,13 +2205,12 @@ namespace Axiom.RenderSystems.Xna
 #endif
 		}
 
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
+		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
-			XFG.TextureAddressMode xnaMode = XnaHelper.Convert( texAddressingMode );
 			// set the device sampler states accordingly
-			_device.SamplerStates[ stage ].AddressU = xnaMode;
-			_device.SamplerStates[ stage ].AddressV = xnaMode;
-			_device.SamplerStates[ stage ].AddressW = xnaMode;
+            _device.SamplerStates[ stage ].AddressU = XnaHelper.Convert( uvw.U );
+            _device.SamplerStates[ stage ].AddressV = XnaHelper.Convert( uvw.V );
+            _device.SamplerStates[ stage ].AddressW = XnaHelper.Convert( uvw.W );
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
