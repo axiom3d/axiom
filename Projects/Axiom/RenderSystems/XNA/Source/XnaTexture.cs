@@ -542,7 +542,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			Debug.Assert( this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap" );
 
-			if ( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
+			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" )
 			{
 				AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
 				_cubeTexture = acm.Load<XFG.TextureCube>( Name );
@@ -591,7 +591,7 @@ namespace Axiom.RenderSystems.Xna
 		private void LoadVolumeTexture()
 		{
 			Debug.Assert( this.TextureType == TextureType.ThreeD );
-			if ( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
+			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" )
 			{
 				AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
 				_volumeTexture = acm.Load<XFG.Texture3D>( Name );
@@ -599,22 +599,24 @@ namespace Axiom.RenderSystems.Xna
 				internalResourcesCreated = true;
 			}
 #if !( XBOX || XBOX360 )
-			else
-			{
-				Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
-				// load the cube texture from the image data stream directly
-				_volumeTexture = XFG.Texture3D.FromFile( _device, stream );
-                
-				// store off a base reference
-				_texture = _volumeTexture;
+			//TODO: XNA40 removed Texture3D.FromFile
 
-				// set src and dest attributes to the same, we can't know
-				stream.Position = 0;
-                SetSrcAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
-                SetFinalAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
-				stream.Close();
-				internalResourcesCreated = true;
-			}
+			//else
+			//{
+			//    Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
+			//    // load the cube texture from the image data stream directly
+			//    _volumeTexture = XFG.Texture3D.FromFile( _device, stream );
+                
+			//    // store off a base reference
+			//    _texture = _volumeTexture;
+
+			//    // set src and dest attributes to the same, we can't know
+			//    stream.Position = 0;
+			//    SetSrcAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
+			//    SetFinalAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
+			//    stream.Close();
+			//    internalResourcesCreated = true;
+			//}
 #endif
 		}
 
