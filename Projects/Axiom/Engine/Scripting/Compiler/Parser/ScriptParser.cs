@@ -413,9 +413,9 @@ namespace Axiom.Scripting.Compiler.Parser
 			return nodes;
 		}
 
-		public List<ConcreteNode> ParseChunk( List<ScriptToken> tokens )
+		public IList<ConcreteNode> ParseChunk( IList<ScriptToken> tokens )
 		{
-			List<ConcreteNode> nodes = new List<ConcreteNode>();
+			IList<ConcreteNode> nodes = new List<ConcreteNode>();
 			ConcreteNode node = null;
 			foreach ( ScriptToken token in tokens )
 			{

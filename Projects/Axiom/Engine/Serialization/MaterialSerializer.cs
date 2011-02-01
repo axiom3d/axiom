@@ -2042,7 +2042,7 @@ namespace Axiom.Serialization
 			// if a value was found, assign it
 			if ( val != null )
 			{
-				context.textureUnit.TextureAddressing = (TextureAddressing)val;
+                context.textureUnit.SetTextureAddressingMode( (TextureAddressing)val );
 			}
 			else
 			{

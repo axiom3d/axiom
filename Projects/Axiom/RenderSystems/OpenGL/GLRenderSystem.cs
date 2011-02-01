@@ -1070,49 +1070,50 @@ namespace Axiom.RenderSystems.OpenGL
 			//}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="texAddressingMode"></param>
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
-		{
-			if ( lastAddressingMode[ stage ] == texAddressingMode )
-			{
-				//return;
-			}
 
-			lastAddressingMode[ stage ] = texAddressingMode;
+        private int _getTextureAddressingMode( TextureAddressing tam )
+        {
+            int type = 0;
 
-			int type = 0;
+            switch ( tam )
+            {
+                case TextureAddressing.Wrap:
+                    type = Gl.GL_REPEAT;
+                    break;
 
-			// find out the GL equivalent of out TextureAddressing enum
-			switch ( texAddressingMode )
-			{
-				case TextureAddressing.Wrap:
-					type = Gl.GL_REPEAT;
-					break;
+                case TextureAddressing.Mirror:
+                    type = Gl.GL_MIRRORED_REPEAT;
+                    break;
 
-				case TextureAddressing.Mirror:
-					type = Gl.GL_MIRRORED_REPEAT;
-					break;
+                case TextureAddressing.Clamp:
+                    type = Gl.GL_CLAMP_TO_EDGE;
+                    break;
 
-				case TextureAddressing.Clamp:
-					type = Gl.GL_CLAMP_TO_EDGE;
-					break;
+                case TextureAddressing.Border:
+                    type = Gl.GL_CLAMP_TO_BORDER;
+                    break;
+            }
 
-				case TextureAddressing.Border:
-					type = Gl.GL_CLAMP_TO_BORDER;
-					break;
-			} // end switch
+            return type;
+        }
 
-			// set the GL texture wrap params for the specified unit
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
-			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, type );
-			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, type );
-			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, type );
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
-		}
+		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
+        {
+            //if ( lastAddressingMode[ stage ] == uvw )
+            //{
+            //    //return;
+            //}
+
+            //lastAddressingMode[ stage ] = uvw;
+
+            if ( !activateGLTextureUnit( stage ) )
+                return;
+
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, _getTextureAddressingMode( uvw.U ) );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, _getTextureAddressingMode( uvw.V ) );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, _getTextureAddressingMode( uvw.W ) );
+            activateGLTextureUnit( 0 );
+        }
 
 		/// <summary>
 		///

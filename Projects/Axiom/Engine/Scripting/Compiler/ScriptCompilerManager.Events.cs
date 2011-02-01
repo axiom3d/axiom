@@ -34,11 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Axiom.Graphics;
-using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -83,7 +79,7 @@ namespace Axiom.Scripting.Compiler
 		public event PostConversionHandler OnPostConversion;
 
 		/// Called when an error occurred
-		public delegate void CompilerErrorHandler( ScriptCompiler compiler, ScriptCompiler.CompileError err );
+        public delegate void CompilerErrorHandler( ScriptCompiler compiler, ScriptCompiler.CompileError err );
 		/// Called when an error occurred
 		public event CompilerErrorHandler OnCompileError;
 

@@ -278,7 +278,7 @@ namespace Axiom.Demos
             pass.CullingMode = CullingMode.None;
             pass.LightingEnabled = false;
 
-            textureUnit.TextureAddressing = TextureAddressing.Clamp;
+            textureUnit.SetTextureAddressingMode( TextureAddressing.Clamp );
             textureUnit.SetTextureName( mTexture, TextureType.ThreeD );
             textureUnit.SetTextureFiltering( TextureFiltering.Trilinear );
 

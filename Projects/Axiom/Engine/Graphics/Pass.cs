@@ -1698,7 +1698,7 @@ namespace Axiom.Graphics
 		#region PointMinSize Property
 
 		private float _pointMinSize;
-		public float PointMixSize
+		public float PointMinSize
 		{
 			get
 			{

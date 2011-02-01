@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -35,42 +34,164 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
-
+using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		class ParticleSystemTranslator : Translator
-		{
-			public ParticleSystemTranslator( ScriptCompiler compiler )
-				: base( compiler )
-			{
-			}
+    public partial class ScriptCompiler
+    {
+        public class ParticleSystemTranslator : Translator
+        {
+            protected ParticleSystem _System;
 
-			#region Translator Implementation
+            public ParticleSystemTranslator()
+                : base()
+            {
+                _System = null;
+            }
 
-			protected override void ProcessObject( ObjectAbstractNode node )
-			{
-			}
+            #region Translator Implementation
 
-			protected override void ProcessProperty( PropertyAbstractNode node )
-			{
-			}
+            /// <see cref="Translator.CheckFor"/>
+            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+            {
+                return nodeId == Keywords.ID_PARTICLE_SYSTEM;
+            }
 
-			#endregion Translator Implementation
-		}
-	}
+            /// <see cref="Translator.Translate"/>
+            public override void Translate( ScriptCompiler compiler, AbstractNode node )
+            {
+                throw new NotImplementedException();
+                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+
+                // Find the name
+                if ( obj != null )
+                {
+                    if ( string.IsNullOrEmpty( obj.Name ) )
+                    {
+                        compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+                        return;
+                    }
+                }
+                else
+                {
+                    compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+                    return;
+                }
+
+                // Allocate the particle system
+                throw new NotImplementedException();
+                //CreateParticleSystemScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup());
+                bool processed = false; // compiler->_fireEvent(&evt, (void*)&mSystem);
+
+                if ( !processed )
+                {
+                    _System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
+                }
+
+                if ( _System == null )
+                {
+                    compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
+                    return;
+                }
+
+                _System.Origin = obj.File;
+
+                _System.RemoveAllEmitters(); ;
+                _System.RemoveAllAffectors();
+
+                obj.Context = _System;
+
+                foreach ( AbstractNode i in obj.Children )
+                {
+                    if ( i.Type == AbstractNodeType.Property )
+                    {
+                        PropertyAbstractNode prop = (PropertyAbstractNode)i;
+                        switch ( (Keywords)prop.Id )
+                        {
+                            case Keywords.ID_MATERIAL:
+                                if ( prop.Values.Count == 0 )
+                                {
+                                    compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+                                    return;
+                                }
+                                else
+                                {
+                                    if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+                                    {
+                                        string name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
+
+                                        throw new NotImplementedException();
+                                        string locEvtName = string.Empty;
+                                        //ProcessResourceNameScriptCompilerEvent locEvt(ProcessResourceNameScriptCompilerEvent::MATERIAL, name);
+                                        //compiler->_fireEvent(&locEvt, 0);
+
+                                        if ( !_System.SetParameter( "material", locEvtName ) )
+                                        {
+                                            if ( _System.Renderer != null )
+                                            {
+                                                if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
+                                                {
+                                                    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                        "material property could not be set with material \"" + locEvtName + "\"" );
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+
+                            default:
+                                if ( prop.Values.Count == 0 )
+                                {
+                                    compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+                                    return;
+                                }
+                                else
+                                {
+                                    string name = prop.Name, value = string.Empty;
+
+                                    // Glob the values together
+                                    foreach ( AbstractNode it in prop.Values )
+                                    {
+                                        if ( it.Type == AbstractNodeType.Atom )
+                                        {
+                                            if ( string.IsNullOrEmpty( value ) )
+                                                value = ( (AtomAbstractNode)it ).Value;
+                                            else
+                                                value = value + " " + ( (AtomAbstractNode)it ).Value;
+                                        }
+                                        else
+                                        {
+                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+                                            return;
+                                        }
+                                    }
+
+                                    if ( !_System.SetParameter( name, value ) )
+                                    {
+                                        if ( _System.Renderer != null )
+                                        {
+                                            if ( !_System.Renderer.SetParameter( name, value ) )
+                                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+                                        }
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        _processNode( compiler, i );
+                    }
+                }
+            }
+
+            #endregion Translator Implementation
+        }
+    }
 }
 

@@ -620,14 +620,13 @@ namespace Axiom.Graphics
 			// this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
 			// output window when debugging with high verbosity), so there is no harm
 			// TODO: Implement UVWTextureAddressMode
-			/* UVWAdressingMode uvw = unitState.TextureAddressing; */
-			SetTextureAddressingMode( unit, unitState.TextureAddressing );
+            UVWAddressing uvw = unitState.TextureAddressingMode;
+			SetTextureAddressingMode( unit, uvw );
 			// Set the texture border color only if needed.
-			/*
-			if (    uvw.u == TextureAddressing.Border
-				 || uvw.v == TextureAddressing.Border
-				 || uvw.w == TextureAddressing.Border )
-			*/
+			
+			if (    uvw.U == TextureAddressing.Border
+				 || uvw.V == TextureAddressing.Border
+				 || uvw.W == TextureAddressing.Border )
 			{
 				SetTextureBorderColor( unit, unitState.TextureBorderColor );
 			}
@@ -1520,7 +1519,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="texAddressingMode"></param>
-		public abstract void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode );
+        public abstract void SetTextureAddressingMode( int stage, UVWAddressing uvw );
 
 		/// <summary>
 		///    Tells the hardware what border color to use when texture addressing mode is set to Border

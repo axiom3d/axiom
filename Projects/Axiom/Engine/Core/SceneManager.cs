@@ -42,21 +42,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Animating;
+using Axiom.Animating.Collections;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
+using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.Media;
 using Axiom.Overlays;
-
 using ResourceHandle = System.UInt64;
-using Axiom.Graphics.Collections;
-using Axiom.Animating.Collections;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -1787,7 +1785,7 @@ namespace Axiom.Core
 				this.shadowReceiverPass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
 				// Don't set lighting and blending modes here, depends on additive / modulative
 				TextureUnitState t = this.shadowReceiverPass.CreateTextureUnitState();
-				t.TextureAddressing = TextureAddressing.Clamp;
+                t.SetTextureAddressingMode( TextureAddressing.Clamp );
 			}
 			else
 			{
@@ -3572,7 +3570,7 @@ namespace Axiom.Core
 				m.Load();
 
 				// ensure texture clamping to reduce fuzzy edges when using filtering
-				m.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).TextureAddressing = TextureAddressing.Clamp;
+                m.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				this.isSkyBoxDrawnFirst = drawFirst;
 
@@ -3805,7 +3803,7 @@ namespace Axiom.Core
 						// set projective based on camera
 						texUnit.SetProjectiveTexturing( !p.HasVertexProgram, cam );
 						// clamp to border colour
-						texUnit.TextureAddressing = TextureAddressing.Border;
+                        texUnit.SetTextureAddressingMode( TextureAddressing.Border );
 						texUnit.TextureBorderColor = ColorEx.White;
 						mat.Touch();
 					}
@@ -5258,7 +5256,7 @@ namespace Axiom.Core
 				TextureUnitState texUnit = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
 				// set projective based on camera
 				texUnit.SetProjectiveTexturing( true, cam );
-				texUnit.TextureAddressing = TextureAddressing.Border;
+                texUnit.SetTextureAddressingMode( TextureAddressing.Border );
 				texUnit.TextureBorderColor = ColorEx.White;
 				mat.Touch();
 			}
@@ -5934,7 +5932,7 @@ namespace Axiom.Core
 					textureUnit.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
 
 					// clamp to border color in case this is a custom material
-					textureUnit.TextureAddressing = TextureAddressing.Border;
+                    textureUnit.SetTextureAddressingMode( TextureAddressing.Border );
 					textureUnit.TextureBorderColor = ColorEx.White;
 
 					this.autoParamDataSource.TextureProjector = cam;
@@ -5970,7 +5968,7 @@ namespace Axiom.Core
 							TextureUnitState tex = targetPass.CreateTextureUnitState( "spot_shadow_fade.png" );
 							tex.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
 							tex.SetColorOperation( LayerBlendOperation.Add );
-							tex.TextureAddressing = TextureAddressing.Clamp;
+                            tex.SetTextureAddressingMode( TextureAddressing.Clamp );
 						}
 					}
 					else

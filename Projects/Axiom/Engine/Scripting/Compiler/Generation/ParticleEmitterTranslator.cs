@@ -26,51 +26,100 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
-
+using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		class ParticleEmitterTranslator : Translator
-		{
-			public ParticleEmitterTranslator( ScriptCompiler compiler )
-				: base( compiler )
-			{
-			}
+    public partial class ScriptCompiler
+    {
+        public class ParticleEmitterTranslator : Translator
+        {
+            protected ParticleEmitter _Emitter;
 
-			#region Translator Implementation
+            public ParticleEmitterTranslator()
+                : base()
+            {
+                _Emitter = null;
+            }
 
-			protected override void ProcessObject( ObjectAbstractNode node )
-			{
-			}
+            #region Translator Implementation
 
-			protected override void ProcessProperty( PropertyAbstractNode node )
-			{
-			}
+            /// <see cref="Translator.CheckFor"/>
+            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+            {
+                return nodeId == Keywords.ID_EMITTER;
+            }
 
-			#endregion Translator Implementation
-		}
-	}
+            /// <see cref="Translator.Translate"/>
+            public override void Translate( ScriptCompiler compiler, AbstractNode node )
+            {
+                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+
+                // Must have a type as the first value
+                if ( obj.Values.Count == 0 )
+                {
+                    compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
+                    return;
+                }
+
+                string type = string.Empty;
+                if ( !getString( obj.Values[ 0 ], out type ) )
+                {
+                    compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
+                    return;
+                }
+
+                ParticleSystem system = (ParticleSystem)obj.Parent.Context;
+                _Emitter = system.AddEmitter( type );
+
+                foreach ( AbstractNode i in obj.Children )
+                {
+                    if ( i.Type == AbstractNodeType.Property )
+                    {
+                        PropertyAbstractNode prop = (PropertyAbstractNode)i;
+                        string value = string.Empty;
+
+                        // Glob the values together
+                        foreach ( AbstractNode it in prop.Values )
+                        {
+                            if ( it.Type == AbstractNodeType.Atom )
+                            {
+                                if ( string.IsNullOrEmpty( value ) )
+                                    value = ( (AtomAbstractNode)it ).Value;
+                                else
+                                    value = value + " " + ( (AtomAbstractNode)it ).Value;
+                            }
+                            else
+                            {
+                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+                                break;
+                            }
+                        }
+
+                        if ( !_Emitter.SetParam( prop.Name, value ) )
+                        {
+                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+                        }
+                    }
+                    else
+                    {
+                        _processNode( compiler, i );
+                    }
+                }
+            }
+
+            #endregion Translator Implementation
+        }
+    }
 }
 

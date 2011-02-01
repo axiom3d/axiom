@@ -26,17 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -45,7 +40,7 @@ namespace Axiom.Scripting.Compiler.AST
 	/// <summary>
 	///  This is an abstract node which cannot be broken down further
 	/// </summary>
-	class AtomAbstractNode : AbstractNode
+	public class AtomAbstractNode : AbstractNode
 	{
 		#region Fields and Properties
 
@@ -55,6 +50,7 @@ namespace Axiom.Scripting.Compiler.AST
 		public uint Id;
 
 		private bool _isNumber = false;
+
 		public bool IsNumber
 		{
 			get
@@ -66,6 +62,7 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		private float _number;
+
 		public float Number
 		{
 			get
@@ -103,6 +100,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
+        /// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			AtomAbstractNode node = new AtomAbstractNode( Parent );
@@ -114,6 +112,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
+        /// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get
@@ -121,7 +120,7 @@ namespace Axiom.Scripting.Compiler.AST
 				return _value;
 			}
 
-			protected internal set
+			set
 			{
 				_value = value;
 			}

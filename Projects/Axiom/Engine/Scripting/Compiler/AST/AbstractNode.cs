@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -35,8 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -61,10 +58,18 @@ namespace Axiom.Scripting.Compiler.AST
 	/// </summary>
 	public abstract class AbstractNode : ICloneable
 	{
-		public String File;
+		public string File;
+
 		public uint Line;
+
 		public AbstractNodeType Type;
+
 		public AbstractNode Parent;
+
+        /// <summary>
+        /// An holder for translation context data
+        /// </summary>
+        public object Context;
 
 		/// <summary>
 		/// Constructor
@@ -78,12 +83,12 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		/// <summary>
-		/// returns a string value depending on the tpe of the node.
+        /// Returns a string value depending on the type of the AbstractNode.
 		/// </summary>
 		public abstract string Value
 		{
 			get;
-			protected internal set;
+			set;
 		}
 
 		#region ICloneable Implementation

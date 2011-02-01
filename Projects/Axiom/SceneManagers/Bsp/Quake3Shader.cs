@@ -472,7 +472,7 @@ namespace Axiom.SceneManagers.Bsp
 					}
 				}
 				// Address mode
-				t.TextureAddressing = _pass[ p ].addressMode;
+                t.SetTextureAddressingMode( _pass[ p ].addressMode );
 
 			}
 

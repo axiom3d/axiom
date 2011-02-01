@@ -309,20 +309,20 @@ namespace Axiom.Components.Terrain
                     //global normal map
                     TextureUnitState tu = pass.CreateTextureUnitState();
                     tu.SetTextureName(terrain.TerrainNormalMap.Name);
-                    tu.TextureAddressing = TextureAddressing.Clamp;
+                    tu.SetTextureAddressingMode( TextureAddressing.Clamp );
 
                     //global color map
                     if (terrain.GlobalColorMapEnabled && IsGlobalColorMapEnabled)
                     {
                         tu = pass.CreateTextureUnitState(terrain.GlobalColorMap.Name);
-                        tu.TextureAddressing = TextureAddressing.Clamp;
+                        tu.SetTextureAddressingMode( TextureAddressing.Clamp );
                     }
 
                     //light map
                     if (IsLightMapEnabled)
                     {
                         tu = pass.CreateTextureUnitState(terrain.LightMap.Name);
-                        tu.TextureAddressing = TextureAddressing.Clamp;
+                        tu.SetTextureAddressingMode( TextureAddressing.Clamp );
                     }
 
                     //blend maps
@@ -333,7 +333,7 @@ namespace Axiom.Components.Terrain
                     for (uint i = 0; i < numBlendTextures; ++i)
                     {
                         tu = pass.CreateTextureUnitState(terrain.GetBlendTextureName((byte)i));
-                        tu.TextureAddressing = TextureAddressing.Clamp;
+                        tu.SetTextureAddressingMode( TextureAddressing.Clamp );
                     }
 
                     //layer textures
@@ -352,7 +352,7 @@ namespace Axiom.Components.Terrain
                     // composite map
                     TextureUnitState tu = pass.CreateTextureUnitState();
                     tu.SetTextureName(terrain.CompositeMap.Name);
-                    tu.TextureAddressing = TextureAddressing.Clamp;
+                    tu.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 
                     // That's it!

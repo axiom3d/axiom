@@ -245,7 +245,7 @@ namespace Axiom.Samples.VolumeTexture
 			pass.DepthWrite = false;
 			pass.CullingMode = CullingMode.None;
             pass.LightingEnabled = false;
-            textureUnit.TextureAddressing = TextureAddressing.Clamp;
+            textureUnit.SetTextureAddressingMode( TextureAddressing.Clamp );
             textureUnit.SetTextureName( texture, TextureType.ThreeD );
             textureUnit.SetTextureFiltering( TextureFiltering.Trilinear );
 

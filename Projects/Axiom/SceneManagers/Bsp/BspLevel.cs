@@ -589,7 +589,7 @@ namespace Axiom.SceneManagers.Bsp
 						{
 							// Set replace on all first layer textures for now
 							tex.SetColorOperation( LayerBlendOperation.Replace );
-							tex.TextureAddressing = TextureAddressing.Wrap;
+                            tex.SetTextureAddressingMode( TextureAddressing.Wrap );
 							// for ambient lighting
 							tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
 						}
@@ -606,7 +606,7 @@ namespace Axiom.SceneManagers.Bsp
 							tex.TextureCoordSet = 1;
 
 							// Clamp
-							tex.TextureAddressing = TextureAddressing.Clamp;
+                            tex.SetTextureAddressingMode( TextureAddressing.Clamp );
 						}
 
 						shadMat.CullingMode = CullingMode.None;

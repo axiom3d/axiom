@@ -318,10 +318,7 @@ namespace Axiom.Framework.Graphics
             colorBlendMode.source1 = LayerBlendSource.Texture;
             colorBlendMode.operation = LayerBlendOperationEx.Source1;
 
-            //TextureUnitState.UVWAddressingMode uvwAddressMode;
-            //uvwAddressMode.u = TextureAddressing.Clamp;
-            //uvwAddressMode.v = TextureAddressing.Clamp;
-            //uvwAddressMode.w = TextureAddressing.Clamp;
+            UVWAddressing uvwAddressMode = new UVWAddressing( TextureAddressing.Clamp );
 
             rs.WorldMatrix = Matrix4.Identity;
             rs.ViewMatrix = Matrix4.Identity;
@@ -330,7 +327,7 @@ namespace Axiom.Framework.Graphics
             rs.SetTextureCoordSet( 0, 0 );
             rs.SetTextureCoordCalculation( 0, TexCoordCalcMethod.None );
             rs.SetTextureBlendMode( 0, colorBlendMode );
-            rs.SetTextureAddressingMode( 0, TextureAddressing.Clamp );
+            rs.SetTextureAddressingMode( 0, uvwAddressMode );
             rs.DisableTextureUnitsFrom( 1 );
             rs.LightingEnabled = false;
             rs.SetFog( FogMode.None );
