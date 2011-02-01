@@ -2586,6 +2586,19 @@ namespace Axiom.RenderSystems.DirectX9
 				_rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.Texture3D );
 			}
 
+			// Power of 2
+			if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.Pow2 ) != 0 )
+			{
+				if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.NonPow2Conditional ) != 0 )
+				{
+					_rsCapabilities.NonPOW2TexturesLimited = true;
+				}
+				else
+				{
+					_rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.NonPowerOf2Textures );
+				}
+			}
+
 			int vpMajor = d3dCaps.VertexShaderVersion.Major;
 			int vpMinor = d3dCaps.VertexShaderVersion.Minor;
 			int fpMajor = d3dCaps.PixelShaderVersion.Major;
