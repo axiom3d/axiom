@@ -497,16 +497,8 @@ namespace Axiom.RenderSystems.Xna
                 XFG.DepthFormat bestDepthStencilFormat;
                 int bestMultiSampleCount;
 
-                currentAdapter.QueryBackBufferFormat(GraphicsDevice.GraphicsProfile, this._renderSurface.Format, this._renderSurface.DepthStencilFormat, this._renderSurface.MultiSampleCount, out bestSurfaceFormat, out bestDepthStencilFormat, out bestMultiSampleCount);
 
-                this._xnapp.DepthStencilFormat = bestDepthStencilFormat;
-
-
-                //bestMultiSampleCount holds a value that xna thinks would be best for Anti-Aliasing,
-                //but fsaaQuality was chosen by the user, so I'm leaving this the same -DoubleA
-                this._xnapp.MultiSampleCount = _fsaaQuality;
-
-                if (_isSwapChain)
+                if ( false /* _isSwapChain */ )
                 {
                     /*
                     // Create swap chain
@@ -576,6 +568,15 @@ namespace Axiom.RenderSystems.Xna
                         }
 
                         XFG.GraphicsProfile _profile = adapterToUse.IsProfileSupported(XFG.GraphicsProfile.HiDef) ? XFG.GraphicsProfile.HiDef : XFG.GraphicsProfile.Reach;
+						currentAdapter.QueryBackBufferFormat( _profile, this._xnapp.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8, _fsaaQuality, out bestSurfaceFormat, out bestDepthStencilFormat, out bestMultiSampleCount );
+
+						this._xnapp.DepthStencilFormat = bestDepthStencilFormat;
+
+
+						//bestMultiSampleCount holds a value that xna thinks would be best for Anti-Aliasing,
+						//but fsaaQuality was chosen by the user, so I'm leaving this the same -DoubleA
+						this._xnapp.MultiSampleCount = _fsaaQuality;
+
                         // create the XNA GraphicsDevice, trying for the best vertex support first, and settling for less if necessary
                         try
                         {

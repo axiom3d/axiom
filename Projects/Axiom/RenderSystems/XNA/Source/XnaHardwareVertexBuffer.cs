@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -69,17 +70,85 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructors
 
+		protected struct VertexPosition : XFG.IVertexType
+		{
+			Microsoft.Xna.Framework.Vector3 vertexPosition;
+
+			readonly static XFG.VertexDeclaration _vertexDeclaration = new XFG.VertexDeclaration
+																		(
+																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Vector3, XFG.VertexElementUsage.Position, 0 )
+																		);
+			public XFG.VertexDeclaration VertexDeclaration
+			{
+				get
+				{
+					return _vertexDeclaration;
+				}
+			}
+		}
+
+		protected struct VertexSingle : XFG.IVertexType
+		{
+			float vertexPosition;
+
+			readonly static XFG.VertexDeclaration _vertexDeclaration = new XFG.VertexDeclaration
+																		(
+																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Single, XFG.VertexElementUsage.Position, 0 )
+																		);
+			public XFG.VertexDeclaration VertexDeclaration
+			{
+				get
+				{
+					return _vertexDeclaration;
+				}
+			}
+		}
+
+		protected struct VertexTexture : XFG.IVertexType
+		{
+			float textureU;
+			float textureV;
+
+			readonly static XFG.VertexDeclaration _vertexDeclaration = new XFG.VertexDeclaration
+																		(
+																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Vector2, XFG.VertexElementUsage.TextureCoordinate, 0 )
+																		);
+			public XFG.VertexDeclaration VertexDeclaration
+			{
+				get
+				{
+					return _vertexDeclaration;
+				}
+			}
+		}
+
+		private List<KeyValuePair<int, Type>> _vertexDeclarationSizeMap = new List<KeyValuePair<int, Type>>()
+																				{
+																					new KeyValuePair<int,Type>( 4, typeof(VertexSingle) ),
+																					new KeyValuePair<int,Type>( 8, typeof(VertexTexture) ),
+																					new KeyValuePair<int,Type>( 12, typeof(VertexPosition) ),
+																					new KeyValuePair<int,Type>( 28, typeof(XFG.VertexPositionColor) ),
+																					new KeyValuePair<int,Type>( 36, typeof(XFG.VertexPositionColorTexture) ),
+																					new KeyValuePair<int,Type>( 32, typeof(XFG.VertexPositionNormalTexture) ),
+																					new KeyValuePair<int,Type>( 20, typeof(XFG.VertexPositionTexture) ),
+																				};
+
 		public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
 			: base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 			_device = dev;
 			// Create the Xna vertex buffer
+			Type vertexType = _vertexDeclarationSizeMap.Find( ( item ) =>
+			{
+				return item.Key == VertexSize;
+			} ).Value;
+
             if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
             {
-                _buffer = new XFG.DynamicVertexBuffer(_device, typeof(Microsoft.Xna.Framework.Graphics.VertexPositionColor), numVertices, XnaHelper.Convert(usage));
+                _buffer = new XFG.DynamicVertexBuffer(_device, vertexType, numVertices, XnaHelper.Convert(usage));
             }
             else
-                _buffer = new XFG.VertexBuffer(_device, typeof(Microsoft.Xna.Framework.Graphics.VertexPositionColor), numVertices, XnaHelper.Convert(usage));
+                _buffer = new XFG.VertexBuffer(_device, vertexType, numVertices, XnaHelper.Convert(usage));
 
 			_bufferBytes = new byte[ vertexSize * numVertices ];
 			_bufferBytes.Initialize();
