@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using Axiom.Core;
 using Axiom.Input;
+using Axiom.Demos;
 using Axiom.RenderSystems.Xna;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Storage;
@@ -58,7 +59,7 @@ namespace Axiom.Demos.Browser.Xna
             _setupResources();
 
             engine.FrameStarted += engine_FrameStarted;
-
+			
             return true;
         }
 

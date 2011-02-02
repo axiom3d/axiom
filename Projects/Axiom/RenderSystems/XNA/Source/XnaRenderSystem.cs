@@ -487,6 +487,7 @@ namespace Axiom.RenderSystems.Xna
 			HardwareCapabilities.SetCapability( Capabilities.MultiTexturing );
 
 		}
+
 		private void _setCapabilitiesForHiDefProfile()
 		{
 			// Fill in the HiDef profile requirements.
@@ -530,6 +531,7 @@ namespace Axiom.RenderSystems.Xna
 			//MaxTextureAspectRatio = 2048;
 			//MaxVertexSamplers = 4;
 			//MaxRenderTargets = 4;
+			HardwareCapabilities.TextureUnitCount = 16;
 			HardwareCapabilities.MultiRenderTargetCount = 4;
 
 			//NonPow2Unconditional = true;
@@ -2103,7 +2105,9 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( _device.SamplerStates[ stage ].MaxAnisotropy != maxAnisotropy )
 			{
-				_device.SamplerStates[ stage ].MaxAnisotropy = maxAnisotropy;
+				XFG.SamplerState sampler = new XFG.SamplerState();
+				sampler.MaxAnisotropy = maxAnisotropy;
+				_device.SamplerStates[ stage ] = sampler;
 			}
 		}
 
@@ -2138,8 +2142,9 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XnaTextureType texType = XnaHelper.Convert( texStageDesc[ stage ].texType );
 			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, texType );
-
-            _device.SamplerStates[stage].Filter = texFilter;
+			XFG.SamplerState sampler = new XFG.SamplerState();
+			sampler.Filter = texFilter; 
+			_device.SamplerStates[ stage ] = sampler;
 
             /*
              * TextureFilter enumeration now combines FilterType and TextureType in 4.0, so this is no longer necessary.

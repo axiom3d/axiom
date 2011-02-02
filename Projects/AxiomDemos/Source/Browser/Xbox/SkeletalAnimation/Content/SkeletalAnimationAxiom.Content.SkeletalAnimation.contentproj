@@ -78,25 +78,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\..\..\media\gpuprograms\overlay_fp.hlsl">
-      <Link>Materials\Programs\overlay_fp.hlsl</Link>
-      <Name>overlay_fp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_EntryPoint>main_fp</ProcessorParameters_EntryPoint>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\..\..\..\..\media\gpuprograms\overlay_vp.hlsl">
-      <Link>Materials\Programs\overlay_vp.hlsl</Link>
-      <Name>overlay_vp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_EntryPoint>main_vp</ProcessorParameters_EntryPoint>
-      <ProcessorParameters_Profile>VS_1_1</ProcessorParameters_Profile>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\common\content\materials\scripts\Core.material">
       <Link>Materials\Scripts\Core.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -185,23 +166,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Materials\Programs\RobotVP.hlsl">
-      <Name>RobotVP</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ProcessorParameters_EntryPoint>hardwareSkinningOneWeight_vp</ProcessorParameters_EntryPoint>
-      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
-    </Compile>
-    <Compile Include="Materials\Programs\RobotFP.hlsl">
-      <Name>RobotFP</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ProcessorParameters_EntryPoint>main_fp</ProcessorParameters_EntryPoint>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\..\..\..\..\..\..\Media\Textures\r2skin.jpg">
       <Link>Materials\Textures\r2skin.jpg</Link>
       <Name>r2skin</Name>
@@ -231,6 +195,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Materials\Programs\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

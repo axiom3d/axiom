@@ -46,7 +46,7 @@
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xbox\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XNA</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -273,8 +273,6 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
-    <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
-    <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
     <Compile Include="Graphics\EdgeData.cs" />
     <Compile Include="Graphics\EdgeListBuilder.cs" />
     <Compile Include="Graphics\Enums.cs" />

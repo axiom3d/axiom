@@ -277,6 +277,8 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
     <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
     <Compile Include="Graphics\EdgeData.cs" />
@@ -293,6 +295,7 @@
     <Compile Include="Graphics\GpuProgramUsage.cs" />
     <Compile Include="Graphics\HardwareBuffer.cs" />
     <Compile Include="Graphics\HardwareBufferManager.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwareCaps.cs" />
     <Compile Include="Graphics\HardwareIndexBuffer.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
@@ -326,7 +329,9 @@
     <Compile Include="Graphics\ShadowRenderable.cs" />
     <Compile Include="Graphics\ShadowVolumeExtrudeProgram.cs" />
     <Compile Include="Graphics\SimpleRenderable.cs" />
-    <Compile Include="Graphics\SoftwareBufferManager.cs" />
+    <Compile Include="Graphics\SoftwareBufferManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Graphics\SpotShadowFadePng.cs" />
     <Compile Include="Graphics\StaticFaceGroup.cs" />
     <Compile Include="Graphics\Technique.cs" />

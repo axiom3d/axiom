@@ -164,10 +164,6 @@
       <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Demos\Axiom.Demos.csproj">
-      <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
-      <Name>Axiom.Demos</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Common\Game.cs">
