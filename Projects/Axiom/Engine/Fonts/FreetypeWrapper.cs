@@ -55,6 +55,7 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Collections.Generic;
 
 namespace Axiom.Fonts
 {
@@ -1270,10 +1271,10 @@ namespace Axiom.Fonts
         /// <summary>
         /// 
         /// </summary>
-        public static Hashtable ErrorStrings;
+        public static Dictionary<int,string> ErrorStrings;
         static FT()
         {
-            ErrorStrings = new Hashtable();
+			ErrorStrings = new Dictionary<int, string>();
             ErrorStrings[ 0x00 ] = "no error";
 
 
@@ -2156,7 +2157,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="alibrary">A handle to a new library object.</param>
         /// <returns>FreeType error code. 0 means success.</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+		[DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Init_FreeType( out IntPtr /*IntPtr LibraryRec_*/ alibrary );
 
         /// <summary>
@@ -2166,7 +2170,10 @@ namespace Axiom.Fonts
         /// <param name="amajor">The major version number.</param>
         /// <param name="aminor">The minor version number</param>
         /// <param name="apatch">The patch version number</param>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern void FT_Library_Version( IntPtr /*LibraryRec_*/ library, ref int amajor, ref int aminor, ref int apatch );
 
         /// <summary>
@@ -2174,7 +2181,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="library">A handle to the target library object</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Done_FreeType( IntPtr /*LibraryRec_*/ library );
 
         /// <summary>
@@ -2185,7 +2195,10 @@ namespace Axiom.Fonts
         /// <param name="face_index">The index of the face within the font. The first face has index 0</param>
         /// <param name="aface"> A handle to a new face object. If �face_index� is greater than or equal to zero, it must be non-NULL. See FT_Open_Face for more details.</param>
         /// <returns>FreeType error code. 0 means success.</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_New_Face( IntPtr /*LibraryRec_*/ library, string filepathname, int face_index, out IntPtr /*IntPtr FaceRec*/ aface );
 
         /// <summary>
@@ -2198,7 +2211,10 @@ namespace Axiom.Fonts
         /// <param name="face_index">The index of the face within the font. The first face has index 0</param>
         /// <param name="aface">A handle to a new face object. If �face_index� is greater than or equal to zero, it must be non-NULL. See FT_Open_Face for more details.</param>
         /// <returns>FreeType error code. 0 means success.</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_New_Memory_Face( IntPtr /*LibraryRec_*/ library, [In] byte[] file_base, int file_size, int face_index, out IntPtr /*IntPtr FaceRec*/ aface );
 
         /// <summary>
@@ -2212,7 +2228,10 @@ namespace Axiom.Fonts
         /// <param name="face_index">The index of the face within the font. The first face has index 0</param>
         /// <param name="aface">A handle to a new face object. If �face_index� is greater than or equal to zero, it must be non-NULL. See note below</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Open_Face( IntPtr /*LibraryRec_*/ library, FT_Open_Args args, int face_index, IntPtr /*IntPtr FaceRec*/ aface );
 
         /// <summary>
@@ -2221,7 +2240,10 @@ namespace Axiom.Fonts
         /// <param name="face">The target face object.</param>
         /// <param name="filepathname">The pathname</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Attach_File( IntPtr /*FaceRec*/ face, string filepathname );
 
         /// <summary>
@@ -2230,7 +2252,10 @@ namespace Axiom.Fonts
         /// <param name="face">The target face object</param>
         /// <param name="parameters">A pointer to FT_Open_Args which must be filled by the caller</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Attach_Stream( IntPtr /*FaceRec*/ face, ref FT_Open_Args parameters );
 
         /// <summary>
@@ -2238,7 +2263,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="face">A handle to a target face object.</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Done_Face( IntPtr /*FaceRec*/ face );
 
         /// <summary>
@@ -2253,7 +2281,10 @@ namespace Axiom.Fonts
         /// <param name="horz_resolution">The horizontal resolution in dpi</param>
         /// <param name="vert_resolution">The vertical resolution in dpi</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Set_Char_Size( IntPtr /*FaceRec*/ face, int char_width, int char_height, uint horz_resolution, uint vert_resolution );
 
         /// <summary>
@@ -2263,7 +2294,10 @@ namespace Axiom.Fonts
         /// <param name="pixel_width">The nominal width, in pixels.</param>
         /// <param name="pixel_height">The nominal height, in pixels</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Set_Pixel_Sizes( IntPtr /*FaceRec*/ face, uint pixel_width, uint pixel_height );
 
         /// <summary>
@@ -2274,7 +2308,10 @@ namespace Axiom.Fonts
         /// <param name="glyph_index">The index of the glyph in the font file. For CID-keyed fonts (either in PS or in CFF format) this argument specifies the CID value.</param>
         /// <param name="load_flags">A flag indicating what to load for this glyph. The FT_LOAD_XXX constants can be used to control the glyph loading process (e.g., whether the outline should be scaled, whether to load bitmaps or not, whether to hint the outline, etc).</param>
         /// <returns>FreeType error code. 0 means success.</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Load_Glyph( IntPtr /*FaceRec*/ face, uint glyph_index, int load_flags );
 
         /// <summary>
@@ -2285,7 +2322,10 @@ namespace Axiom.Fonts
         /// <param name="char_code">The glyph's character code, according to the current charmap used in the face</param>
         /// <param name="load_flags">A flag indicating what to load for this glyph. The FT_LOAD_XXX constants can be used to control the glyph loading process (e.g., whether the outline should be scaled, whether to load bitmaps or not, whether to hint the outline, etc).</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Load_Char( IntPtr /*FaceRec*/ face, uint char_code, int load_flags );
 
         /// <summary>
@@ -2296,7 +2336,10 @@ namespace Axiom.Fonts
         /// <param name="face">A handle to the source face object</param>
         /// <param name="matrix">A pointer to the transformation's 2x2 matrix. Use 0 for the identity matrix</param>
         /// <param name="delta">A pointer to the translation vector. Use 0 for the null vector</param>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern void FT_Set_Transform( IntPtr /*FaceRec*/ face, ref FT_Matrix matrix, ref FT_Vector delta );
 
         /// <summary>
@@ -2305,7 +2348,10 @@ namespace Axiom.Fonts
         /// <param name="slot">A handle to the glyph slot containing the image to convert</param>
         /// <param name="render_mode">This is the render mode used to render the glyph image into a bitmap. See FT_Render_Mode for a list of possible values</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Render_Glyph( ref FT_GlyphSlotRec slot, FT_Render_Mode render_mode );
 
         /// <summary>
@@ -2317,11 +2363,14 @@ namespace Axiom.Fonts
         /// <param name="kern_mode">See FT_Kerning_Mode for more information. Determines the scale and dimension of the returned kerning vector</param>
         /// <param name="akerning">The kerning vector. This is either in font units or in pixels (26.6 format) for scalable formats, and in pixels for fixed-sizes formats</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Get_Kerning( IntPtr /*FaceRec*/ face, uint left_glyph, uint right_glyph, uint kern_mode, out FT_Vector akerning );
 
         /// <summary>
-        /// Retrieve the ASCII name of a given glyph in a face. This only works for those faces where FT_HAS_GLYPH_NAMES(face) returns 1
+        /// Retrieve the UTF8 name of a given glyph in a face. This only works for those faces where FT_HAS_GLYPH_NAMES(face) returns 1
         /// An error is returned if the face doesn't provide glyph names or if the glyph index is invalid. In all cases of failure, the first byte of �buffer� is set to 0 to indicate an empty name.
         /// The glyph name is truncated to fit within the buffer if it is too long. The returned string is always zero-terminated.
         /// This function is not compiled within the library if the config macro �FT_CONFIG_OPTION_NO_GLYPH_NAMES� is defined in �include/freetype/config/ftoptions.h�
@@ -2331,16 +2380,22 @@ namespace Axiom.Fonts
         /// <param name="buffer">A pointer to a target buffer where the name is copied to</param>
         /// <param name="buffer_max">The maximal number of bytes available in the buffer</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Get_Glyph_Name( IntPtr /*FaceRec*/ face, uint glyph_index, IntPtr buffer, uint buffer_max );
 
         /// <summary>
-        /// Retrieve the ASCII Postscript name of a given face, if available. This only works with Postscript and TrueType fonts
+        /// Retrieve the UTF8 Postscript name of a given face, if available. This only works with Postscript and TrueType fonts
         /// The returned pointer is owned by the face and is destroyed with it
         /// </summary>
         /// <param name="face">A handle to the source face object</param>
         /// <returns>A pointer to the face's Postscript name. NULL if unavailable</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern IntPtr /*sbyte*/ FT_Get_Postscript_Name( IntPtr /*FaceRec*/ face );
 
         /// <summary>
@@ -2351,7 +2406,10 @@ namespace Axiom.Fonts
         /// <param name="face">A handle to the source face object</param>
         /// <param name="encoding">A handle to the selected encoding</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Select_Charmap( IntPtr /*FaceRec*/ face, FT_Encoding encoding );
 
         /// <summary>
@@ -2361,7 +2419,10 @@ namespace Axiom.Fonts
         /// <param name="face">A handle to the source face object</param>
         /// <param name="charmap">A handle to the selected charmap</param>
         /// <returns>FreeType error code. 0 means success</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Set_Charmap( IntPtr /*FaceRec*/ face, ref FT_CharMapRec charmap );
 
         /// <summary>
@@ -2369,7 +2430,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="charmap">A handle to a charmap</param>
         /// <returns>The index into the array of character maps within the face to which �charmap� belongs</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_Get_Charmap_Index( ref FT_CharMapRec charmap );
 
         /// <summary>
@@ -2379,7 +2443,10 @@ namespace Axiom.Fonts
         /// <param name="face">A handle to the source face object</param>
         /// <param name="charcode">The character code</param>
         /// <returns>The glyph index. 0 means �undefined character code�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern uint FT_Get_Char_Index( IntPtr /*FaceRec*/ face, uint charcode );
 
         /// <summary>
@@ -2390,7 +2457,10 @@ namespace Axiom.Fonts
         /// <param name="face">A handle to the source face object</param>
         /// <param name="agindex">Glyph index of first character code. 0 if charmap is empty</param>
         /// <returns>The charmap's first character code</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern uint FT_Get_First_Char( IntPtr /*FaceRec*/ face, [In, Out] uint[] agindex );
 
         /// <summary>
@@ -2402,7 +2472,10 @@ namespace Axiom.Fonts
         /// <param name="char_code">The starting character code</param>
         /// <param name="agindex">Glyph index of first character code. 0 if charmap is empty</param>
         /// <returns>The charmap's next character code</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern uint FT_Get_Next_Char( IntPtr /*FaceRec*/ face, uint char_code, [In, Out] uint[] agindex );
 
         /// <summary>
@@ -2411,7 +2484,10 @@ namespace Axiom.Fonts
         /// <param name="face">A handle to the source face object</param>
         /// <param name="glyph_name">The glyph name</param>
         /// <returns>The glyph index. 0 means �undefined character code�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern uint FT_Get_Name_Index( IntPtr /*FaceRec*/ face, [In, Out] sbyte[] glyph_name );
 
         /// <summary>
@@ -2422,7 +2498,10 @@ namespace Axiom.Fonts
         /// <param name="b">The second multiplier</param>
         /// <param name="c">The divisor</param>
         /// <returns>The result of �(a*b)/c�. This function never traps when trying to divide by zero; it simply returns �MaxInt� or �MinInt� depending on the signs of �a� and �b�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_MulDiv( int a, int b, int c );
 
         /// <summary>
@@ -2433,7 +2512,10 @@ namespace Axiom.Fonts
         /// <param name="a">The first multiplier</param>
         /// <param name="b">The second multiplier. Use a 16.16 factor here whenever possible</param>
         /// <returns>The result of �(a*b)/0x10000�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_MulFix( int a, int b );
 
         /// <summary>
@@ -2443,7 +2525,10 @@ namespace Axiom.Fonts
         /// <param name="a">The first multiplier</param>
         /// <param name="b">The second multiplier. Use a 16.16 factor here whenever possible</param>
         /// <returns>The result of �(a*0x10000)/b�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_DivFix( int a, int b );
 
         /// <summary>
@@ -2451,7 +2536,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="a">The number to be rounded</param>
         /// <returns>The result of �(a + 0x8000) &amp; -0x10000�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_RoundFix( int a );
 
         /// <summary>
@@ -2459,7 +2547,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="a">The number for which the ceiling function is to be computed</param>
         /// <returns>The result of �(a + 0x10000 - 1) &amp;-0x10000�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_CeilFix( int a );
 
         /// <summary>
@@ -2467,7 +2558,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="a">The number for which the floor function is to be computed</param>
         /// <returns>The result of �a &amp; -0x10000�</returns>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern int FT_FloorFix( int a );
 
         /// <summary>
@@ -2476,7 +2570,10 @@ namespace Axiom.Fonts
         /// </summary>
         /// <param name="vec">The target vector to transform</param>
         /// <param name="matrix">A pointer to the source 2x2 matrix</param>
-        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION ), SuppressUnmanagedCodeSecurity]
+        [DllImport( FT_NATIVE_LIBRARY, CallingConvention = CALLING_CONVENTION )]
+#if ( !(XBOX || XBOX360) ) 
+		[SuppressUnmanagedCodeSecurity] 
+#endif
         public static extern void FT_Vector_Transform( ref FT_Vector vec, ref FT_Matrix matrix );
 
 

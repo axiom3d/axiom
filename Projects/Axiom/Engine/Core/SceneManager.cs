@@ -5680,7 +5680,7 @@ namespace Axiom.Core
 		///		Renders a set of solid objects.
 		/// </summary>
 		/// <param name="list">List of solid objects.</param>
-		protected virtual void RenderSolidObjects( SortedList list,
+		protected virtual void RenderSolidObjects( System.Collections.SortedList list,
 												   bool doLightIteration,
 												   LightList manualLightList )
 		{
@@ -5723,7 +5723,7 @@ namespace Axiom.Core
 			}
 		}
 
-		protected void RenderSolidObjects( SortedList list, bool doLightIteration )
+		protected void RenderSolidObjects( System.Collections.SortedList list, bool doLightIteration )
 		{
 			this.RenderSolidObjects( list, doLightIteration, null );
 		}

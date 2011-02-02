@@ -179,23 +179,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Media\GpuPrograms\overlay_fp.hlsl">
-      <Link>SdkTrays\Materials\Programs\overlay_fp.hlsl</Link>
-      <Name>overlay_fp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_EntryPoint>main_fp</ProcessorParameters_EntryPoint>
-    </Compile>
-    <Compile Include="..\..\..\..\Media\GpuPrograms\overlay_vp.hlsl">
-      <Link>SdkTrays\Materials\Programs\overlay_vp.hlsl</Link>
-      <Name>overlay_vp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_EntryPoint>main_vp</ProcessorParameters_EntryPoint>
-      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
@@ -216,6 +199,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SdkTrays\Materials\Programs\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

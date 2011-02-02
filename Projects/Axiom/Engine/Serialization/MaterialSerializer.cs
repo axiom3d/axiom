@@ -2415,7 +2415,7 @@ namespace Axiom.Serialization
 		public void ParseScript( Stream stream, string groupName, string fileName )
 		{
 #if !(WINDOWS_PHONE)
-			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 #else
 			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 #endif

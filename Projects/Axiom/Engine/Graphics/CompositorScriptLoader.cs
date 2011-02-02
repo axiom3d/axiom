@@ -90,7 +90,7 @@ namespace Axiom.Graphics
 			context.filename = file;
 			context.lineNo = 0;
 
-			StreamReader script = new StreamReader( data, System.Text.Encoding.ASCII );
+			StreamReader script = new StreamReader( data, System.Text.Encoding.UTF8 );
 
 			// parse through the data to the end
 			while ( ( line = ParseHelper.ReadLine( script ) ) != null )

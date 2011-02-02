@@ -148,6 +148,7 @@
     <Compile Include="Collections\NameValuePairList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
     <Compile Include="Collections\ReadOnlyDictionary~2.cs" />
+    <Compile Include="Collections\SortedList.cs" />
     <Compile Include="Collections\SubEntityCollection.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigOption.cs" />
@@ -377,6 +378,12 @@
     <Compile Include="Media\PixelBox.cs" />
     <Compile Include="Media\PixelConverter.cs" />
     <Compile Include="Media\PixelUtil.cs" />
+    <Compile Include="mono\Comparer.cs" />
+    <Compile Include="mono\Hashtable.cs" />
+    <Compile Include="mono\ICloneable.cs" />
+    <Compile Include="mono\Locale.cs" />
+    <Compile Include="mono\SortedList.cs" />
+    <Compile Include="mono\SortedList~2.cs" />
     <Compile Include="Overlays\Elements\BorderPanel.cs" />
     <Compile Include="Overlays\Elements\Factories.cs" />
     <Compile Include="Overlays\Elements\Panel.cs" />

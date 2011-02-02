@@ -35,15 +35,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Linq;
 
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
-using System.Collections.Generic;
 using Axiom.Media;
 using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
@@ -448,10 +449,9 @@ namespace Axiom.Graphics
 		/// <returns>the render target that was detached</returns>
 		public RenderTarget DetachRenderTarget( string name )
 		{
-			RenderTarget target = prioritizedRenderTargets.Find( delegate( RenderTarget item )
-			{
-				return item.Name == name;
-			} );
+			var target = (from item in prioritizedRenderTargets
+						  where item.Name == name
+						  select item).First();
 
 			return DetachRenderTarget( target );
 		}
