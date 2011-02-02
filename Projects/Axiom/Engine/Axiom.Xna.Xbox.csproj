@@ -46,7 +46,7 @@
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xbox\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XBOX;XBOX360;XNA</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>

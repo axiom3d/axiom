@@ -144,8 +144,8 @@ namespace Axiom.Core
 				MeshManager mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
-#if !(XBOX || XBOX360 || SILVERLIGHT || ANDROID || IPHONE)
-				new PlatformManager();
+#if !(XNA || SILVERLIGHT || ANDROID || IPHONE)
+                new PlatformManager();
 #endif
 
 				// create a new timer
