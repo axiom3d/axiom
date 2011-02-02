@@ -7,10 +7,11 @@ namespace Axiom.Collections
 {
 	public class SortedList : SortedList<object, object>
 	{
-		public SortedList( System.Collections.IComparer comparer, int capacity )
+		public SortedList( System.Collections.Generic.IComparer<object> comparer, int capacity )
 			: base( capacity, comparer )
 		{
 
 		}
 	}
+
 }

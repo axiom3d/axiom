@@ -91,8 +91,10 @@ namespace Axiom.Math.Collections
     /// <summary>
     ///		A strongly-typed collection of <see cref="Quaternion"/> objects.
     /// </summary>
+#if !( XBOX || XBOX360 || SILVERLIGHT )
     [Serializable]
-    public class QuaternionCollection : ICollection, IList, IEnumerable, ICloneable
+#endif
+	public class QuaternionCollection : ICollection, IList, IEnumerable, ICloneable
     {
         #region Interfaces
         /// <summary>

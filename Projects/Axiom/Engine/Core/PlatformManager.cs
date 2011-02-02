@@ -92,6 +92,7 @@ namespace Axiom.Core
 				}
 			}
 
+#if !( XBOX || XBOX360 )
 			// Then look in loaded assemblies
 			if ( instance == null )
 			{
@@ -114,6 +115,7 @@ namespace Axiom.Core
 					}
 				}
 			}
+#endif
 
 			// Then look in external assemblies
 			if ( instance == null )

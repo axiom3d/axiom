@@ -72,7 +72,7 @@ namespace Axiom.Serialization
 			// store a local reference to the mesh for modification
 			this.skeleton = skeleton;
 
-			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.ASCII );
+			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.UTF8 );
 
 			// start off by taking a look at the header
 			ReadFileHeader( reader );

@@ -228,7 +228,7 @@ namespace Axiom.Fonts
 		/// <param name="groupName"></param>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 
 			Font font = null;
 

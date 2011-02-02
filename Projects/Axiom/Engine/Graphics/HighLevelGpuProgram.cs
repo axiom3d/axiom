@@ -148,7 +148,7 @@ namespace Axiom.Graphics
 				if ( loadFromFile )
 				{
 					Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
-					StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
+					StreamReader reader = new StreamReader( stream, System.Text.Encoding.UTF8 );
 					source = reader.ReadToEnd();
 					stream.Close();
 				}

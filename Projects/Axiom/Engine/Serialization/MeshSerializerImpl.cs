@@ -133,7 +133,7 @@ namespace Axiom.Serialization
 		/// <returns></returns>
 		public DependencyInfo GetDependencyInfo( Stream stream, Mesh mesh )
 		{
-			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.ASCII );
+			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.UTF8 );
 
 			// check header
 			ReadFileHeader( reader );
@@ -167,7 +167,7 @@ namespace Axiom.Serialization
 		{
 			this.mesh = mesh;
 
-			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.ASCII );
+			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.UTF8 );
 
 			// check header
 			ReadFileHeader( reader );

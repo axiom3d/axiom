@@ -89,8 +89,10 @@ namespace Axiom.Math.Collections
     /// <summary>
     ///		A strongly-typed collection of <see cref="Vector3"/> objects.
     /// </summary>
+#if !( XBOX || XBOX360 || SILVERLIGHT )
     [Serializable]
-    public class Vector3List : ICollection, IList, IEnumerable, ICloneable
+#endif
+	public class Vector3List : ICollection, IList, IEnumerable, ICloneable
     {
         #region Interfaces
         /// <summary>

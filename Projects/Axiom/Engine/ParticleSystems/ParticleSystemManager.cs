@@ -689,7 +689,7 @@ namespace Axiom.ParticleSystems
 			string line = "";
 			ParticleSystem system = null;
 
-			TextReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+			TextReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 
 			// parse through the data to the end
 			while ( ( line = ParseHelper.ReadLine( script ) ) != null )

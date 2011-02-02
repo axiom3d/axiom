@@ -544,7 +544,7 @@ namespace Axiom.Overlays
 			}
 
 			// parse the overlay script
-			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 
 			// keep reading the file until we hit the end
 			while ( ( line = ParseHelper.ReadLine( script ) ) != null )

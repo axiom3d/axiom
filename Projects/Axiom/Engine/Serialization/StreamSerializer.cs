@@ -692,7 +692,7 @@ namespace Axiom.Serialization
 		public void Read( out string data )
 		{
 			int length = Read<int>();
-			System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+			System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
 			byte[] buffer = new byte[ length ];
 			this.ReadData( buffer, buffer.Length, 1 );
 			data = encoding.GetString( buffer, 0, buffer.Length );
@@ -739,7 +739,7 @@ namespace Axiom.Serialization
 		/// <param name="data"></param>
 		public void Write( string data )
 		{
-			System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+			System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
 			byte[] buffer = encoding.GetBytes( data );
 			this.Write( buffer.Length );
 			this.WriteData( buffer, buffer.Length, 1 );
