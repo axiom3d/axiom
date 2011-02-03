@@ -209,11 +209,11 @@ namespace Axiom.Scripting.Compiler
 
             // Process object inheritance
             if ( doObjects )
-                _processObjects( nodes, ref nodes );
+                _processObjects( ref nodes, nodes );
 
             // Process variable expansion
             if ( doVariables )
-                _processVariables( nodes );
+                _processVariables( ref nodes );
 
             // Translate the nodes
             foreach ( AbstractNode currentNode in nodes )
@@ -256,9 +256,9 @@ namespace Axiom.Scripting.Compiler
             // Processes the imports for this script
             _processImports( ref ast );
             // Process object inheritance
-            _processObjects( ast, ref ast );
+            _processObjects( ref ast, ast );
             // Process variable expansion
-            _processVariables( ast );
+            _processVariables( ref ast );
 
             // Allows early bail-out through the listener
             if ( this.OnPostConversion != null && !this.OnPostConversion( this, ast ) )
@@ -350,6 +350,71 @@ namespace Axiom.Scripting.Compiler
         }
 
         /// <summary>
+        /// Returns true if the given class is name excluded
+        /// </summary>
+        /// <param name="cls"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        private bool _isNameExcluded( string cls, AbstractNode parent )
+        {
+            // Run past the listener
+            object excludeObj;
+            bool excludeName = false;
+            ScriptCompilerEvent evt = new ProcessNameExclusionScriptCompilerEvent( cls, parent );
+            bool processed = _fireEvent( ref evt, out excludeObj );
+
+            if ( !processed )
+            {
+                // Process the built-in name exclusions
+                if ( cls == "emitter" || cls == "affector" )
+                {
+                    // emitters or affectors inside a particle_system are excluded
+                    while ( parent != null && parent.Type == AbstractNodeType.Object )
+                    {
+                        ObjectAbstractNode obj = (ObjectAbstractNode)parent;
+                        if ( obj.Cls == "particle_system" )
+                            return true;
+
+                        parent = obj.Parent;
+                    }
+                    return false;
+                }
+                else if ( cls == "pass" )
+                {
+                    // passes inside compositors are excluded
+                    while ( parent != null && parent.Type == AbstractNodeType.Object )
+                    {
+                        ObjectAbstractNode obj = (ObjectAbstractNode)parent;
+                        if ( obj.Cls == "compositor" )
+                            return true;
+
+                        parent = obj.Parent;
+                    }
+                    return false;
+                }
+                else if ( cls == "texture_source" )
+                {
+                    // Parent must be texture_unit
+                    while ( parent != null && parent.Type == AbstractNodeType.Object )
+                    {
+                        ObjectAbstractNode obj = (ObjectAbstractNode)parent;
+                        if ( obj.Cls == "texture_unit" )
+                            return true;
+
+                        parent = obj.Parent;
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                excludeObj = (bool)excludeObj;
+                return excludeName;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// This built-in function processes import nodes
         /// </summary>
         /// <param name="nodes"></param>
@@ -372,7 +437,7 @@ namespace Axiom.Scripting.Compiler
                         if ( importedNodes != null && importedNodes.Count != 0 )
                         {
                             _processImports( ref importedNodes );
-                            _processObjects( importedNodes, ref importedNodes );
+                            _processObjects( ref importedNodes, importedNodes );
                         }
 
                         if ( importedNodes != null && importedNodes.Count != 0 )
@@ -409,9 +474,9 @@ namespace Axiom.Scripting.Compiler
             // All import nodes are removed
             // We have cached the code blocks from all the imported scripts
             // We can process all import requests now
-            foreach (KeyValuePair<string, IList<AbstractNode>> it in _imports)
+            foreach ( KeyValuePair<string, IList<AbstractNode>> it in _imports )
             {
-                if ( _importRequests.ContainsKey(it.Key))
+                if ( _importRequests.ContainsKey( it.Key ) )
                 {
                     string j = _importRequests[ it.Key ];
 
@@ -436,7 +501,7 @@ namespace Axiom.Scripting.Compiler
         /// Handles processing the variables
         /// </summary>
         /// <param name="nodes"></param>
-        private void _processVariables( IList<AbstractNode> nodes )
+        private void _processVariables( ref IList<AbstractNode> nodes )
         {
             for ( int i = 0; i < nodes.Count; ++i )
             {
@@ -448,14 +513,14 @@ namespace Axiom.Scripting.Compiler
                     ObjectAbstractNode obj = (ObjectAbstractNode)cur;
                     if ( !obj.IsAbstract )
                     {
-                        _processVariables( obj.Children );
-                        _processVariables( obj.Values );
+                        _processVariables( ref obj.Children );
+                        _processVariables( ref obj.Values );
                     }
                 }
                 else if ( cur.Type == AbstractNodeType.Property )
                 {
                     PropertyAbstractNode prop = (PropertyAbstractNode)cur;
-                    _processVariables( prop.Values );
+                    _processVariables( ref prop.Values );
                 }
                 else if ( cur.Type == AbstractNodeType.VariableGet )
                 {
@@ -502,7 +567,7 @@ namespace Axiom.Scripting.Compiler
                             currentNode.Parent = var.Parent;
 
                         // Recursively handle variable accesses within the variable expansion
-                        _processVariables( ast );
+                        _processVariables( ref ast );
 
                         // Insert the nodes in place of the variable
                         for ( int j = 0; j < ast.Count; j++ )
@@ -526,7 +591,7 @@ namespace Axiom.Scripting.Compiler
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="top"></param>
-        private void _processObjects( IList<AbstractNode> nodes, ref IList<AbstractNode> top )
+        private void _processObjects( ref IList<AbstractNode> nodes, IList<AbstractNode> top )
         {
             foreach ( AbstractNode node in nodes )
             {
@@ -555,7 +620,7 @@ namespace Axiom.Scripting.Compiler
                     }
 
                     // Recurse into children
-                    _processObjects( obj.Children, ref top );
+                    _processObjects( ref obj.Children, top );
 
                     // Overrides now exist in obj's overrides list. These are non-object nodes which must now
                     // Be placed in the children section of the object node such that overriding from parents

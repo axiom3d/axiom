@@ -36,8 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -176,9 +174,8 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							temp.Add( node );
-						}
-						foreach ( ConcreteNode cn in node.Children )
-							temp.Add( cn );
+                        }
+                        temp.AddRange( node.Children );
 
 						// Get the type of object
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
@@ -187,7 +184,9 @@ namespace Axiom.Scripting.Compiler
 						bool validNode = iter.MoveNext();
 
 						// Get the name
-						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) )
+                        // Unless the type is in the exclusion list
+                        if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) &&
+                            !_compiler._isNameExcluded( impl.Cls, _current ) )
 						{
 							impl.Name = iter.Current.Token;
 							validNode = iter.MoveNext();

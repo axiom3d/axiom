@@ -88,7 +88,19 @@ namespace Axiom.Scripting.Compiler
 
                 if ( !processed )
                 {
-                    _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                    //TODO
+                    // The original translated implementation of this code block was simply the following:
+                    // _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                    // but sometimes it generates an excepiton due to a duplicate resource.
+                    // In order to avoid the above mentioned exception, the implementation was changed, but
+                    // it need to be checked when ResourceManager._add will be updated to the lastest version
+
+                    Material checkForExistingMat = (Material)MaterialManager.Instance.GetByName( obj.Name );
+
+                    if ( checkForExistingMat == null )
+                        _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                    else
+                        _material = checkForExistingMat;
                 }
                 else
                 {

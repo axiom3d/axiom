@@ -1,5 +1,5 @@
 // A downpour
-Examples/Rain
+particle_system Examples/Rain
 {
     material        Examples/Droplet
     particle_width  20

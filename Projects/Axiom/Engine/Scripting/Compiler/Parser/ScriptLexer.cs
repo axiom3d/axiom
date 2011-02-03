@@ -51,14 +51,20 @@ namespace Axiom.Scripting.Compiler.Parser
 			MultiComment,
 			Word,
 			Quote,
-			Var
+			Var,
+            PossibleComment
 		}
 
 		public ScriptLexer()
 		{
 		}
 
-		/** Tokenizes the given input and returns the list of tokens found */
+		/// <summary>
+        /// Tokenizes the given input and returns the list of tokens found
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="source"></param>
+		/// <returns></returns>
 		public IList<ScriptToken> Tokenize( String str, String source )
 		{
 			const char varOpener = '$', quote = '"', slash = '/', backslash = '\\', openbrace = '{', closebrace = '}', colon = ':', star = '*';
@@ -80,8 +86,9 @@ namespace Axiom.Scripting.Compiler.Parser
 					lastQuote = line;
 
 				switch ( state )
-				{
-					case ScriptState.Ready:
+                {
+                    #region Ready
+                    case ScriptState.Ready:
 						if ( c == slash && lastChar == slash )
 						{
 							// Comment start, clear out the lexeme
@@ -111,27 +118,53 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme = new StringBuilder( c.ToString() );
 							SetToken( lexeme, line, source, tokens );
 						}
-						else if ( !IsWhitespace( c ) && c != slash )
+                        else if ( !IsWhitespace( c ) )
 						{
 							lexeme = new StringBuilder( c.ToString() );
-							state = ScriptState.Word;
+                            if ( c == slash )
+                                state = ScriptState.PossibleComment;
+                            else
+							    state = ScriptState.Word;
 						}
 						break;
+                    #endregion Ready
 
-					case ScriptState.Comment:
+                    #region Comment
+                    case ScriptState.Comment:
 						// This newline happens to be ignored automatically
 						if ( IsNewline( c ) )
 							state = ScriptState.Ready;
-						lexeme.Append( c );
 						break;
+                    #endregion Comment
 
-					case ScriptState.MultiComment:
+                    #region MultiComment
+                    case ScriptState.MultiComment:
 						if ( c == slash && lastChar == star )
 							state = ScriptState.Ready;
-						lexeme.Append( c );
 						break;
+                    #endregion MultiComment
 
-					case ScriptState.Word:
+                    #region PossibleComment
+                    case ScriptState.PossibleComment:
+                        if ( c == slash && lastChar == slash )
+                        {
+                            lexeme = new StringBuilder();
+                            state = ScriptState.Comment;
+                            break;
+                        }
+                        else if ( c == star && lastChar == slash )
+                        {
+                            lexeme = new StringBuilder();
+                            state = ScriptState.MultiComment;
+                            break;
+                        }
+                        else
+                            state = ScriptState.Word;
+                        break;
+                    #endregion PossibleComment
+
+                    #region Word
+                    case ScriptState.Word:
 						if ( IsNewline( c ) )
 						{
 							SetToken( lexeme, line, source, tokens );
@@ -156,8 +189,10 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
+                    #endregion Word
 
-					case ScriptState.Quote:
+                    #region Quote
+                    case ScriptState.Quote:
 						if ( c != backslash )
 						{
 							// Allow embedded quotes with escaping
@@ -184,8 +219,10 @@ namespace Axiom.Scripting.Compiler.Parser
 							}
 						}
 						break;
+                    #endregion Quote
 
-					case ScriptState.Var:
+                    #region Var
+                    case ScriptState.Var:
 						if ( IsNewline( c ) )
 						{
 							SetToken( lexeme, line, source, tokens );
@@ -210,7 +247,8 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
-				}
+                    #endregion Var
+                }
 
 				// Separate check for newlines just to track line numbers
 				if ( IsNewline( c ) )

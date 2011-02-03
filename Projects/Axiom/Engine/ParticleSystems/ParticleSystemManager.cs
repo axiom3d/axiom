@@ -679,7 +679,16 @@ namespace Axiom.ParticleSystems
                 {
                     if ( system == null )
                     {
+                        // No current system
+                        // So first valid data should be a system name
+                        if ( line.StartsWith( "particle_system " ) )
+                        {
+                            // chop off the 'particle_system ' needed by new compilers
+                            line = line.Substring( 16 );
+                        }
+
                         system = CreateTemplate( line, groupName );
+                        system.Origin = fileName;
                         // read another line to skip the beginning brace of the current particle system
                         script.ReadLine();
                     }

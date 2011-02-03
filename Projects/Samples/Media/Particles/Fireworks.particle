@@ -1,5 +1,5 @@
 // Example emitted emitters
-Examples/Fireworks
+particle_system Examples/Fireworks
 {
     material Examples/Flare
     point_rendering            false

@@ -576,6 +576,13 @@ namespace Axiom.Overlays
 						}
 						else
 						{
+                            // So first valid data should be overlay name
+                            if ( line.StartsWith( "overlay " ) )
+                            {
+                                // chop off the 'particle_system ' needed by new compilers
+                                line = line.Substring( 8 );
+                            }
+
 							// the line in this case should be the name of the overlay
 							overlay = Create( line );
 							//this is just telling the file name of the overlay
@@ -619,6 +626,9 @@ namespace Axiom.Overlays
 					}
 				}
 			}
+
+            // record as parsed
+            _loadedScripts.Add( fileName );
 		}
 
 		public Real LoadingOrder

@@ -51,14 +51,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public uint Id;
 
-		private List<AbstractNode> _values = new List<AbstractNode>();
-		public IList<AbstractNode> Values
-		{
-			get
-			{
-				return _values;
-			}
-		}
+		public IList<AbstractNode> Values = new List<AbstractNode>();
 
 		#endregion Fields and Properties
 

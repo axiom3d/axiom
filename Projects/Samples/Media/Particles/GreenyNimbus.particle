@@ -1,5 +1,5 @@
 // Exudes greeny particles which float upwards
-Examples/GreenyNimbus
+particle_system Examples/GreenyNimbus
 {
     material        Examples/FlarePointSprite
     particle_width	35
