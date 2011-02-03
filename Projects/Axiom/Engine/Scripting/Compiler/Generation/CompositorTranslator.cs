@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
 
@@ -80,14 +79,16 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Create the compositor
-                throw new NotImplementedException();
-                //CreateCompositorScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup());
-                bool processed = false; //compiler->_fireEvent(&evt, (void*)&mCompositor);
+                object compObject;
+                ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
+                bool processed = compiler._fireEvent( ref evt, out compObject );
 
                 if ( !processed )
                 {
                     _Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
                 }
+                else
+                    _Compositor = (Compositor)compObject;
 
                 if ( _Compositor == null )
                 {

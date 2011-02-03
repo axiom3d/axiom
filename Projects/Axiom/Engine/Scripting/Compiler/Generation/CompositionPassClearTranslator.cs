@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -66,7 +65,6 @@ namespace Axiom.Scripting.Compiler
             /// <see cref="Translator.Translate"/>
             public override void Translate( ScriptCompiler compiler, AbstractNode node )
             {
-                throw new NotImplementedException();
                 ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
                 _Pass = (CompositionPass)obj.Parent.Context;

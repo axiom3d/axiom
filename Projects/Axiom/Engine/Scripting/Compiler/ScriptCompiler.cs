@@ -284,11 +284,19 @@ namespace Axiom.Scripting.Compiler
             return _errors.Count == 0;
         }
 
+        /// <see cref="ScriptCompiler.AddError(CompilerErrorCode, string, uint, string)"/>
         internal void AddError( CompileErrorCode code, string file, uint line )
         {
             this.AddError( code, file, line, string.Empty );
         }
 
+        /// <summary>
+        /// Adds the given error to the compiler's list of errors
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <param name="msg"></param>
         internal void AddError( CompileErrorCode code, string file, uint line, string msg )
         {
             CompileError error = new CompileError( code, file, line, msg );
@@ -311,6 +319,29 @@ namespace Axiom.Scripting.Compiler
             _errors.Add( error );
         }
 
+        /// <see cref="ScriptCompiler._fireEvent(ref ScriptCompilerEvent, out object)"/>
+        internal bool _fireEvent( ref ScriptCompilerEvent evt )
+        {
+            object o;
+            return _fireEvent( ref evt, out o );
+        }
+
+        /// <summary>
+        /// Internal method for firing the handleEvent method
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <param name="retVal"></param>
+        /// <returns></returns>
+        internal bool _fireEvent( ref ScriptCompilerEvent evt, out object retVal )
+        {
+            retVal = null;
+
+            if ( this.OnCompilerEvent != null )
+                return this.OnCompilerEvent( this, ref evt, out retVal );
+
+            return false;
+        }
+
         private IList<AbstractNode> _convertToAST( IList<ConcreteNode> nodes )
         {
             AbstractTreeBuilder builder = new AbstractTreeBuilder( this );
@@ -324,8 +355,6 @@ namespace Axiom.Scripting.Compiler
         /// <param name="nodes"></param>
         private void _processImports( ref IList<AbstractNode> nodes )
         {
-            throw new NotImplementedException();
-
             // We only need to iterate over the top-level of nodes
             for ( int i = 1; i < nodes.Count; i++ )
             {
@@ -355,6 +384,7 @@ namespace Axiom.Scripting.Compiler
                     // Otherwise, ensure '*' isn't already registered and register our request
                     if ( import.Target == "*" )
                     {
+                        throw new NotImplementedException();
                         //_importRequests.Remove(
                         //        mImportRequests.erase(mImportRequests.lower_bound(import->source),
                         //            mImportRequests.upper_bound(import->source));
@@ -362,6 +392,7 @@ namespace Axiom.Scripting.Compiler
                     }
                     else
                     {
+                        throw new NotImplementedException();
                         //        ImportRequestMap::iterator iter = mImportRequests.lower_bound(import->source),
                         //            end = mImportRequests.upper_bound(import->source);
                         //        if(iter == end || iter->second != "*")
@@ -378,29 +409,26 @@ namespace Axiom.Scripting.Compiler
             // All import nodes are removed
             // We have cached the code blocks from all the imported scripts
             // We can process all import requests now
-            for ( int i = 0; i < _imports.Count; ++i )
+            foreach (KeyValuePair<string, IList<AbstractNode>> it in _imports)
             {
-                //    ImportRequestMap::iterator j = mImportRequests.lower_bound( it->first ),
-                //        end = mImportRequests.upper_bound( it->first );
-                //    if ( j != end )
-                //    {
-                //        if ( j->second == "*" )
-                //        {
-                //            // Insert the entire AST into the import table
-                //            mImportTable.insert( mImportTable.begin(), it->second->begin(), it->second->end() );
-                //            continue; // Skip ahead to the next file
-                //        }
-                //        else
-                //        {
-                //            for ( ; j != end; ++j )
-                //            {
-                //                // Locate this target and insert it into the import table
-                //                AbstractNodeListPtr newNodes = locateTarget( it->second.get(), j->second );
-                //                if ( !newNodes.isNull() && !newNodes->empty() )
-                //                    mImportTable.insert( mImportTable.begin(), newNodes->begin(), newNodes->end() );
-                //            }
-                //        }
-                //    }
+                if ( _importRequests.ContainsKey(it.Key))
+                {
+                    string j = _importRequests[ it.Key ];
+
+                    if ( j == "*" )
+                    {
+                        // Insert the entire AST into the import table
+                        _importTable.InsertRange( 0, it.Value );
+                        continue; // Skip ahead to the next file
+                    }
+                    else
+                    {
+                        // Locate this target and insert it into the import table
+                        IList<AbstractNode> newNodes = _locateTarget( it.Value, j );
+                        if ( newNodes != null && newNodes.Count > 0 )
+                            _importTable.InsertRange( 0, newNodes );
+                    }
+                }
             }
         }
 

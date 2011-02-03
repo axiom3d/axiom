@@ -149,6 +149,7 @@
     <Compile Include="Graphics\ICompositorLogic.cs" />
     <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
     <Compile Include="Graphics\RenderQueueInvocationSequence.cs" />

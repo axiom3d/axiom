@@ -74,7 +74,7 @@ namespace Axiom.Scripting.Compiler
         public ScriptCompilerManager()
             : base()
         {
-#if AXIOM_USENEWCOMPILER
+#if AXIOM_USENEWCOMPILERS
 			this._scriptPatterns.Add( "*.program" );
 			this._scriptPatterns.Add( "*.material" );
 			this._scriptPatterns.Add( "*.particle" );
@@ -88,7 +88,6 @@ namespace Axiom.Scripting.Compiler
 
             this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
             this._translatorManagers.Add( this._builtinTranslatorManager );
-
         }
         #endregion Construction and Destruction
 
@@ -104,11 +103,14 @@ namespace Axiom.Scripting.Compiler
             ScriptCompiler.Translator translator = null;
 
             // Start looking from the back
-            for ( int i = _translatorManagers.Count - 1; i >= 0; i++ )
+            if ( _translatorManagers.Count > 0 )
             {
-                translator = _translatorManagers[ i ].GetTranslator( node );
-                if ( translator != null )
-                    break;
+                for ( int i = _translatorManagers.Count - 1; i >= 0; i-- )
+                {
+                    translator = _translatorManagers[ i ].GetTranslator( node );
+                    if ( translator != null )
+                        break;
+                }
             }
 
             return translator;

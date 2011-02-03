@@ -149,7 +149,7 @@ namespace Axiom.Scripting.Compiler
                                                     }
                                                     // advance to next to get scaling
                                                     it = getNodeAt( prop.Values, atomIndex++ );
-                                                    if ( it == prop.Values[ prop.Values.Count - 1 ] || it.Type != AbstractNodeType.Atom )
+                                                    if ( it == null || it.Type != AbstractNodeType.Atom )
                                                     {
                                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
                                                         return;

@@ -33,6 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Globalization;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler.AST
@@ -43,6 +46,13 @@ namespace Axiom.Scripting.Compiler.AST
 	public class AtomAbstractNode : AbstractNode
 	{
 		#region Fields and Properties
+
+        private CultureInfo _culture = new CultureInfo( "en-US" );
+        private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
+                                        NumberStyles.AllowLeadingWhite |
+                                        NumberStyles.AllowTrailingWhite |
+                                        NumberStyles.AllowDecimalPoint;
+
 
 		private bool _parsed = false;
 		private string _value;
@@ -80,23 +90,19 @@ namespace Axiom.Scripting.Compiler.AST
 			Type = AbstractNodeType.Atom;
 		}
 
-		private void _parse()
-		{
-#if !(XBOX || XBOX360)
-			_isNumber = float.TryParse( _value, out _number );
-#else
-			try
-			{
-				_number = float.Parse(_value);
-				_isNumber = true;
-			}
-			catch (Exception)
-			{
-				_isNumber =  false;
-			}
-#endif
-			_parsed = true;
-		}
+        private void _parse()
+        {
+            try
+            {
+                _number = float.Parse( _value, _parseStyle, _culture );
+                _isNumber = true;
+            }
+            catch
+            {
+                _isNumber = false;
+            }
+            _parsed = true;
+        }
 
 		#region AbstractNode Implementation
 

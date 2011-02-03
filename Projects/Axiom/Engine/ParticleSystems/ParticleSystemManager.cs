@@ -661,68 +661,72 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		public void ParseScript( Stream stream, string groupName, string fileName )
-		{
-			string line = "";
-			ParticleSystem system = null;
+        public void ParseScript( Stream stream, string groupName, string fileName )
+        {
+#if AXIOM_USENEWCOMPILERS
+            Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
+#else
+            string line = "";
+            ParticleSystem system = null;
 
-			TextReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+            TextReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
 
-			// parse through the data to the end
-			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-			{
-				// ignore blank lines and comments
-				if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
-				{
-					if ( system == null )
-					{
-						system = CreateTemplate( line, groupName );
-						// read another line to skip the beginning brace of the current particle system
-						script.ReadLine();
-					}
-					else if ( line == "}" )
-					{
-						// end of current particle template
-						system = null;
-					}
-					else if ( line.StartsWith( "emitter" ) )
-					{
-						string[] values = line.Split( ' ' );
+            // parse through the data to the end
+            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
+            {
+                // ignore blank lines and comments
+                if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
+                {
+                    if ( system == null )
+                    {
+                        system = CreateTemplate( line, groupName );
+                        // read another line to skip the beginning brace of the current particle system
+                        script.ReadLine();
+                    }
+                    else if ( line == "}" )
+                    {
+                        // end of current particle template
+                        system = null;
+                    }
+                    else if ( line.StartsWith( "emitter" ) )
+                    {
+                        string[] values = line.Split( ' ' );
 
-						if ( values.Length < 2 )
-						{
-							// Oops, bad emitter
-							LogManager.Instance.Write( "Bad particle system emitter line: '" + line + "' in " + system.Name );
-							script.ReadLine();
-						}
-						// read another line to skip the brace on the next line
-						script.ReadLine();
-						// new emitter
-						ParseEmitter( values[ 1 ], script, system );
-					}
-					else if ( line.StartsWith( "affector" ) )
-					{
-						string[] values = line.Split( ' ' );
-						if ( values.Length < 2 )
-						{
-							// Oops, bad affector
-							LogManager.Instance.Write( "Bad particle system affector line: '" + line + "' in " + system.Name );
-							script.ReadLine();
-						}
+                        if ( values.Length < 2 )
+                        {
+                            // Oops, bad emitter
+                            LogManager.Instance.Write( "Bad particle system emitter line: '" + line + "' in " + system.Name );
+                            script.ReadLine();
+                        }
+                        // read another line to skip the brace on the next line
+                        script.ReadLine();
+                        // new emitter
+                        ParseEmitter( values[ 1 ], script, system );
+                    }
+                    else if ( line.StartsWith( "affector" ) )
+                    {
+                        string[] values = line.Split( ' ' );
+                        if ( values.Length < 2 )
+                        {
+                            // Oops, bad affector
+                            LogManager.Instance.Write( "Bad particle system affector line: '" + line + "' in " + system.Name );
+                            script.ReadLine();
+                        }
 
-						// read another line to skip the brace on the next line
-						script.ReadLine();
-						// new affector
-						ParseAffector( values[ 1 ], script, system );
-					}
-					else
-					{
-						// attribute line
-						ParseAttrib( line.ToLower(), system );
-					} // if
-				} // if
-			} // while
-		}
+                        // read another line to skip the brace on the next line
+                        script.ReadLine();
+                        // new affector
+                        ParseAffector( values[ 1 ], script, system );
+                    }
+                    else
+                    {
+                        // attribute line
+                        ParseAttrib( line.ToLower(), system );
+                    } // if
+                } // if
+            } // while
+#endif // AXIOM_USENEWCOMPILERS
+        }
 
 		public Real LoadingOrder
 		{

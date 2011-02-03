@@ -36,8 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using Axiom.Graphics;
-using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -51,12 +49,13 @@ namespace Axiom.Scripting.Compiler
 	/// </summary>
 	public abstract class ScriptCompilerListener
 	{
-		public ScriptCompilerListener()
-		{
-		}
-
-		/// Returns the concrete node list from the given file
-		public virtual IList<ConcreteNode> ImportFile( String name )
+		/// <summary>
+        /// Returns the concrete node list from the given file
+		/// </summary>
+        /// <param name="compiler">A reference to the compiler</param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+        public virtual IList<ConcreteNode> ImportFile( ScriptCompiler compiler, String name )
 		{
 			return null;
 		}
@@ -64,7 +63,7 @@ namespace Axiom.Scripting.Compiler
         /// <summary>
         /// Allows for responding to and overriding behavior before a CST is translated into an AST
         /// </summary>
-        /// <param name="compiler"></param>
+        /// <param name="compiler">A reference to the compiler</param>
         /// <param name="nodes"></param>
         public virtual void PreConversion(ScriptCompiler compiler, IList<ConcreteNode> nodes)
         {
@@ -78,7 +77,7 @@ namespace Axiom.Scripting.Compiler
         /// and override handling, this function allows a listener to exit
         /// the compilation process.
         ///</remarks>
-        /// <param name="compiler"></param>
+        /// <param name="compiler">A reference to the compiler</param>
         /// <param name="nodes"></param>
         /// <returns>True continues compilation, false aborts</returns>
         public virtual bool PostConversion(ScriptCompiler compiler, IList<AbstractNode> nodes)
@@ -86,137 +85,31 @@ namespace Axiom.Scripting.Compiler
             return true;
         }
 
-
-		/// <summary>
-        /// Allows for overriding the translation of the given node into the concrete resource.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public virtual ScriptCompiler.Translator PreObjectTranslation( ObjectAbstractNode obj )
-		{
-			return null;
-		}
-
-		/// <summary>
-        /// Allows for overriding the translation of the given node into the concrete resource.
-		/// </summary>
-		/// <param name="prop"></param>
-		/// <returns></returns>
-		public virtual ScriptCompiler.Translator PrePropertyTranslation( PropertyAbstractNode prop )
-		{
-			return null;
-		}
-
 		/// <summary>
         /// Called when an error occurred
 		/// </summary>
+        /// <param name="compiler">A reference to the compiler</param>
 		/// <param name="err"></param>
-		public virtual void Error( ScriptCompiler.CompileError err )
+		public virtual void HandleError( ScriptCompiler compiler,  ScriptCompiler.CompileError err )
 		{
 		}
 
-		/// <summary>
-        /// Must return the requested material
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <returns></returns>
-		public virtual Material CreateMaterial( String name, String group )
-		{
-			return null;
-		}
-
-		/// <summary>
-        /// Called before texture aliases are applied to a material
-		/// </summary>
-		/// <param name="aliases"></param>
-		public virtual void PreApplyTextureAliases( Dictionary<String, String> aliases )
-		{
-		}
-
-		/// <summary>
-        /// Called before texture names are used
-		/// </summary>
-		/// <param name="names"></param>
-		public virtual void GetTextureNames( String names )
-		{
-			GetTextureNames( names, 0 );
-		}
-
-		/// <summary>
-        /// Called before texture names are used
-		/// </summary>
-		/// <param name="names"></param>
-		/// <param name="count"></param>
-		public virtual void GetTextureNames( String names, int count )
-		{
-		}
-
-		/// <summary>
-        /// Called before a gpu program name is used
-		/// </summary>
-		/// <param name="name"></param>
-		public virtual void GetGpuProgramName( String name )
-		{
-		}
-
-		/// <summary>
-        /// Called to return the requested GpuProgram
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <param name="source"></param>
-		/// <param name="type"></param>
-		/// <param name="syntax"></param>
-		/// <returns></returns>
-		public virtual GpuProgram CreateGpuProgram( String name, String group, String source, GpuProgramType type, String syntax )
-		{
-			return null;
-		}
-
-		/// <summary>
-        /// Called to return a HighLevelGpuProgram
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <param name="language"></param>
-		/// <param name="type"></param>
-		/// <param name="source"></param>
-		/// <returns></returns>
-		public virtual HighLevelGpuProgram CreateHighLevelGpuProgram( String name, String group, String language, GpuProgramType type, String source )
-		{
-			return null;
-		}
-
-		/// <summary>
-        /// Returns the requested particle system template
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <returns></returns>
-		public virtual ParticleSystem CreateParticleSystem( String name, String group )
-		{
-			return null;
-		}
-
-		/// <summary>
-        /// Processes the name of the material
-		/// </summary>
-		/// <param name="name"></param>
-		public virtual void GetMaterialName( String name )
-		{
-		}
-
-		/// <summary>
-        /// Returns the compositor that is created
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <returns></returns>
-		public virtual Compositor CreateCompositor( String name, String group )
-		{
-			return null;
-		}
-
+        /// <summary>
+        /// Called when an event occurs during translation, return true if handled
+        /// </summary>
+        /// <remarks>
+        /// This function is called from the translators when an event occurs that
+		/// that can be responded to. Often this is overriding names, or it can be a request for
+		///	custom resource creation.
+        /// </remarks>
+        /// <param name="compiler">A reference to the compiler</param>
+        /// <param name="evt">The event object holding information about the event to be processed</param>
+        /// <param name="retVal">A possible return value from handlers</param>
+        /// <returns>True if the handler processed the event</returns>
+        public virtual bool HandleEvent( ScriptCompiler compiler, ref ScriptCompilerEvent evt, out object retVal )
+        {
+            retVal = null;
+            return false;
+        }
 	}
 }

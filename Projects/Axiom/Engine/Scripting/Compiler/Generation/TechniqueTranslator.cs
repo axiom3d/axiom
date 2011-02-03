@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
 
@@ -148,11 +147,12 @@ namespace Axiom.Scripting.Compiler
                                     {
                                         string evtMatName = string.Empty;
 
-                                        throw new NotImplementedException();
+                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( 
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
 
-                                        //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::MATERIAL, matName);
-							            //compiler->_fireEvent(&evt, 0);
-							            //mTechnique->setShadowCasterMaterial(evt.mName); // Use the processed name
+                                        compiler._fireEvent( ref evt );
+                                        evtMatName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+                                        _technique.ShadowCasterMaterial = (Material)MaterialManager.Instance[ evtMatName ]; // Use the processed name
                                     }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -174,14 +174,18 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     AbstractNode i0 = getNodeAt(prop.Values, 0);
-                                    string matName;
+                                    string matName = string.Empty;
                                     if(getString(i0, out matName))
                                     {
-                                    //    ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::MATERIAL, matName);
-                                    //    compiler->_fireEvent(&evt, 0);
-                                    //    mTechnique->setShadowReceiverMaterial(evt.mName);
+                                        string evtName = string.Empty;
+
+                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
+
+                                        compiler._fireEvent( ref evt );
+                                        evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+                                        _technique.ShadowReceiverMaterial = (Material)MaterialManager.Instance[ evtName ];
                                     }
                                     else
                                         compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -326,8 +330,6 @@ namespace Axiom.Scripting.Compiler
                         _processNode( compiler, i );
                     }
                 }
-
-                throw new NotImplementedException();
             }
 
 			#endregion Translator Implementation

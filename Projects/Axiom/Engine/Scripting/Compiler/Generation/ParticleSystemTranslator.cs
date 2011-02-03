@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
 
@@ -64,7 +63,6 @@ namespace Axiom.Scripting.Compiler
             /// <see cref="Translator.Translate"/>
             public override void Translate( ScriptCompiler compiler, AbstractNode node )
             {
-                throw new NotImplementedException();
                 ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
                 // Find the name
@@ -83,14 +81,16 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Allocate the particle system
-                throw new NotImplementedException();
-                //CreateParticleSystemScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup());
-                bool processed = false; // compiler->_fireEvent(&evt, (void*)&mSystem);
+                object sysObject;
+                ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
+                bool processed = compiler._fireEvent( ref evt, out sysObject );
 
                 if ( !processed )
                 {
                     _System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
                 }
+                else
+                    _System = (ParticleSystem)sysObject;
 
                 if ( _System == null )
                 {
@@ -124,10 +124,11 @@ namespace Axiom.Scripting.Compiler
                                     {
                                         string name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
-                                        throw new NotImplementedException();
-                                        string locEvtName = string.Empty;
-                                        //ProcessResourceNameScriptCompilerEvent locEvt(ProcessResourceNameScriptCompilerEvent::MATERIAL, name);
-                                        //compiler->_fireEvent(&locEvt, 0);
+                                        ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent(
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
+
+                                        compiler._fireEvent( ref locEvt );
+                                        string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
                                         if ( !_System.SetParameter( "material", locEvtName ) )
                                         {
