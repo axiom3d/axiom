@@ -122,7 +122,7 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    AbstractNode j = prop.Values[ 1 ];
+                                    AbstractNode j = getNodeAt( prop.Values, 0 );
                                     int index = 1;
                                     string val;
                                     if ( getString( j, out val ) )
@@ -133,7 +133,7 @@ namespace Axiom.Scripting.Compiler
                                         PixelFormat format = PixelFormat.Unknown;
                                         int mipmaps = -1;//MIP_DEFAULT;
 
-                                        while ( j != prop.Values[ prop.Values.Count - 1 ] )
+                                        while ( j != null )
                                         {
                                             if ( j.Type == AbstractNodeType.Atom )
                                             {
@@ -181,14 +181,16 @@ namespace Axiom.Scripting.Compiler
                                                 compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                                     j.Value + " is not a supported argument to the texture property" );
                                             }
-                                            ++index;
-                                            j = prop.Values[ index ];
+
+                                            j = getNodeAt( prop.Values, index++ );
                                         }
 
-                                        throw new NotImplementedException();
-                                        string textureName;
-                                        //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::TEXTURE, val);
-                                        //compiler->_fireEvent(&evt, 0);
+                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val );
+
+                                        compiler._fireEvent( ref evt );
+
+                                        string textureName = ((ProcessResourceNameScriptCompilerEvent)evt).Name;
 
                                         _textureunit.SetTextureName( textureName, texType );
                                         _textureunit.DesiredFormat = format;
@@ -223,10 +225,11 @@ namespace Axiom.Scripting.Compiler
                                             Real val2;
                                             if ( getString( i0, out val0 ) && getInt( i1, out val1 ) && getReal( i2, out val2 ) )
                                             {
-                                                throw new NotImplementedException();
-                                                //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::TEXTURE, val0);
-                                                //compiler->_fireEvent(&evt, 0);
-                                                string evtName = string.Empty;
+                                                ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                                    ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val0 );
+
+                                                compiler._fireEvent( ref evt );
+                                                string evtName = ((ProcessResourceNameScriptCompilerEvent)evt).Name;
 
                                                 _textureunit.SetAnimatedTextureName( evtName, val1, val2 );
                                             }
@@ -259,14 +262,16 @@ namespace Axiom.Scripting.Compiler
                                                 if ( j.Type == AbstractNodeType.Atom )
                                                 {
                                                     string name = ( (AtomAbstractNode)j ).Value;
+
+                                                    #warning check this if statement
                                                     // Run the name through the listener
                                                     if ( compiler.Listener != null )
                                                     {
-                                                        throw new NotImplementedException();
-                                                        string evtName;
-                                                        //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::TEXTURE, name);
-                                                        //compiler->_fireEvent(&evt, 0);
-                                                        names[ n++ ] = evtName;
+                                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, name );
+
+                                                        compiler._fireEvent( ref evt );
+                                                        names[ n++ ] = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
                                                     }
                                                     else
                                                     {
@@ -306,10 +311,11 @@ namespace Axiom.Scripting.Compiler
                                     {
                                         AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 
-                                        throw new NotImplementedException();
-                                        //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::TEXTURE, atom0->value);
-                                        //compiler->_fireEvent(&evt, 0);
-                                        string evtName;
+                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, atom0.Value );
+
+                                        compiler._fireEvent( ref evt );
+                                        string evtName = ((ProcessResourceNameScriptCompilerEvent)evt).Name;
 
                                         _textureunit.SetCubicTextureName( evtName, atom1.Id == (uint)Keywords.ID_COMBINED_UVW );
                                     }
@@ -350,11 +356,11 @@ namespace Axiom.Scripting.Compiler
                                             // Run each name through the listener
                                             for ( int j = 0; j < 6; ++j )
                                             {
-                                                throw new NotImplementedException();
-                                                string evtName;
-                                                //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::TEXTURE, names[j]);
-                                                //compiler->_fireEvent(&evt, 0);
-                                                names[ j ] = evtName;
+                                                ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                                    ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, names[ j ] );
+
+                                                compiler._fireEvent( ref evt );
+                                                names[ j ] = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
                                             }
                                         }
 
@@ -407,7 +413,7 @@ namespace Axiom.Scripting.Compiler
 
                                     UVWAddressing mode = new UVWAddressing( TextureAddressing.Wrap );
 
-                                    if ( i0 != prop.Values[ prop.Values.Count - 1 ] && i0.Type == AbstractNodeType.Atom )
+                                    if ( i0 != null && i0.Type == AbstractNodeType.Atom )
                                     {
                                         AtomAbstractNode atom = (AtomAbstractNode)i0;
                                         switch ( (Keywords)atom.Id )
@@ -437,7 +443,7 @@ namespace Axiom.Scripting.Compiler
                                     mode.V = mode.U;
                                     mode.W = mode.U;
 
-                                    if ( i1 != prop.Values[ prop.Values.Count - 1 ] && i1.Type == AbstractNodeType.Atom )
+                                    if ( i1 != null && i1.Type == AbstractNodeType.Atom )
                                     {
                                         AtomAbstractNode atom = (AtomAbstractNode)i1;
                                         switch ( (Keywords)atom.Id )
@@ -465,7 +471,7 @@ namespace Axiom.Scripting.Compiler
                                         }
                                     }
 
-                                    if ( i2 != prop.Values[ prop.Values.Count - 1 ] && i2.Type == AbstractNodeType.Atom )
+                                    if ( i2 != null && i2.Type == AbstractNodeType.Atom )
                                     {
                                         AtomAbstractNode atom = (AtomAbstractNode)i2;
                                         switch ( (Keywords)atom.Id )
@@ -909,7 +915,7 @@ namespace Axiom.Scripting.Compiler
                                         if ( op == LayerBlendOperationEx.BlendManual )
                                         {
                                             AbstractNode i3 = getNodeAt( prop.Values, 3 );
-                                            if ( i3 != prop.Values[ prop.Values.Count - 1 ] )
+                                            if ( i3 != null )
                                             {
                                                 if ( !getReal( i3, out manualBlend ) )
                                                     compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -929,7 +935,7 @@ namespace Axiom.Scripting.Compiler
 
                                         if ( source1 == LayerBlendSource.Manual )
                                         {
-                                            if ( j != prop.Values[ prop.Values.Count - 1 ] )
+                                            if ( j != null )
                                             {
                                                 if ( !getColor( prop.Values, 3, out arg1, 3 ) )
                                                     compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -944,7 +950,7 @@ namespace Axiom.Scripting.Compiler
 
                                         if ( source2 == LayerBlendSource.Manual )
                                         {
-                                            if ( j != prop.Values[ prop.Values.Count - 1 ] )
+                                            if ( j != null )
                                             {
                                                 if ( !getColor( prop.Values, 3, out arg2, 3 ) )
                                                     compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -1186,7 +1192,7 @@ namespace Axiom.Scripting.Compiler
                                         if ( op == LayerBlendOperationEx.BlendManual )
                                         {
                                             AbstractNode i3 = getNodeAt( prop.Values, 3 );
-                                            if ( i3 != prop.Values[ prop.Values.Count - 1 ] )
+                                            if ( i3 != null )
                                             {
                                                 if ( !getReal( i3, out manualBlend ) )
                                                     compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -1206,7 +1212,7 @@ namespace Axiom.Scripting.Compiler
 
                                         if ( source1 == LayerBlendSource.Manual )
                                         {
-                                            if ( j != prop.Values[ prop.Values.Count - 1 ] )
+                                            if ( j != null )
                                             {
                                                 if ( !getReal( j, out arg1 ) )
                                                     compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -1223,7 +1229,7 @@ namespace Axiom.Scripting.Compiler
 
                                         if ( source2 == LayerBlendSource.Manual )
                                         {
-                                            if ( j != prop.Values[ prop.Values.Count - 1 ] )
+                                            if ( j != null )
                                             {
                                                 if ( !getReal( j, out arg2 ) )
                                                     compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -1362,6 +1368,7 @@ namespace Axiom.Scripting.Compiler
                                 {
                                     Real angle;
                                     if ( getReal( prop.Values[ 0 ], out angle ) )
+#warning check this statement
                                         //mUnit->setTextureRotate(Degree(angle));
                                         _textureunit.SetTextureRotate( angle );
                                     else
@@ -1648,8 +1655,6 @@ namespace Axiom.Scripting.Compiler
                         _processNode( compiler, i );
                     }
                 }
-
-                throw new NotImplementedException();
             }
 
             #endregion Translator Implementation

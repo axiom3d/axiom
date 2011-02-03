@@ -38,11 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using Axiom.Collections;
 using Axiom.Core;
 using ResourceHandle = System.UInt64;
-using Axiom.Collections;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -68,6 +66,8 @@ namespace Axiom.Graphics
 	{
 		#region Singleton implementation
 
+        public const string NullLang = "null";
+
 		/// <summary>
 		///     Singleton instance of this class.
 		/// </summary>
@@ -86,7 +86,7 @@ namespace Axiom.Graphics
 				ResourceType = "HighLevelGpuProgram";
 
 				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
-				//AddFactory( new NullGpuProgramFactory() );
+				AddFactory( new NullProgramFactory() );
 				AddFactory( new UnifiedHighLevelGpuProgramFactory() );
 			}
 		}
@@ -166,10 +166,14 @@ namespace Axiom.Graphics
 		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
 		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
-			if ( factories.ContainsKey( language ) )
+			if ( !factories.ContainsKey( language ) )
 			{
-				return (HighLevelGpuProgramFactory)factories[ language ];
+                // use the null factory to create programs that will never be supported
+                if ( factories.ContainsKey( NullLang ) )
+                    return (HighLevelGpuProgramFactory)factories[ NullLang ];
 			}
+            else
+                return (HighLevelGpuProgramFactory)factories[ language ];
 
 			// wasn't found, so return null
 			return null;

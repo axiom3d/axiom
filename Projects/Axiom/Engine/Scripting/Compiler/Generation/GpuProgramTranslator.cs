@@ -129,8 +129,6 @@ namespace Axiom.Scripting.Compiler
 
             public static void TranslateProgramParameters( ScriptCompiler compiler, /*it should be GpuProgramParametersShared*/ GpuProgramParameters parameters, ObjectAbstractNode obj )
             {
-                throw new NotImplementedException();
-
                 int animParametricsCount = 0;
 
                 foreach ( AbstractNode i in obj.Children )
@@ -159,8 +157,10 @@ namespace Axiom.Scripting.Compiler
                                     }
                                     AtomAbstractNode atom0 = (AtomAbstractNode)i0;
 
+                                    throw new NotImplementedException();
                                     try
                                     {
+                                        //TODO
                                         //parameters->addSharedParameters(atom0->value);
                                     }
                                     catch ( AxiomException e )
@@ -264,6 +264,8 @@ namespace Axiom.Scripting.Compiler
 
                                             if ( isValid )
                                             {
+                                                throw new NotImplementedException();
+
                                                 // First, clear out any offending auto constants
                                                 if ( named )
                                                 { /*parameters->clearNamedAutoConstant(name);*/}
@@ -302,6 +304,7 @@ namespace Axiom.Scripting.Compiler
                                                     {
                                                         try
                                                         {
+                                                            //TODO
                                                             if ( named )
                                                             { /*parameters.SetNamedConstant(name, vals, count, 1);*/}
                                                             else
@@ -365,6 +368,8 @@ namespace Axiom.Scripting.Compiler
 
                                         // Look up the auto constant
                                         atom1.Value = atom1.Value.ToLower();
+
+#warning TODO
                                         GpuProgramParameters.AutoConstantDefinition def = new GpuProgramParameters.AutoConstantDefinition(); //= GpuProgramParameters::getAutoConstantDefinition(atom1->value);
 
                                         //if ( def != null )
@@ -375,6 +380,7 @@ namespace Axiom.Scripting.Compiler
                                                 // Set the auto constant
                                                 try
                                                 {
+                                                    //TODO
                                                     if ( named )
                                                     { /*parameters.SetNamedAutoConstant(name, def.AutoConstantType);*/}
                                                     else
@@ -407,7 +413,7 @@ namespace Axiom.Scripting.Compiler
                                                 {
                                                     // Only certain texture projection auto params will assume 0
                                                     // Otherwise we will expect that 3rd parameter
-                                                    if ( i2 == prop.Values[ prop.Values.Count - 1 ] )
+                                                    if ( i2 == null )
                                                     {
                                                         if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureViewProjMatrix ||
                                                             def.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureWorldViewProjMatrix ||
@@ -437,7 +443,7 @@ namespace Axiom.Scripting.Compiler
                                                     {
                                                         bool success = false;
                                                         int extraInfo = 0;
-                                                        if ( i3 == prop.Values[ prop.Values.Count - 1 ] )
+                                                        if ( i3 == null )
                                                         { // Handle only one extra value
                                                             if ( getInt( i2, out extraInfo ) )
                                                             {
@@ -483,11 +489,12 @@ namespace Axiom.Scripting.Compiler
                                                     def.AutoConstantType == GpuProgramParameters.AutoConstantType.FrameTime )
                                                 {
                                                     Real f = 1.0f;
-                                                    if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+                                                    if ( i2 != null )
                                                         getReal( i2, out f );
 
                                                     try
                                                     {
+                                                        //TODO
                                                         if ( named )
                                                         { /*parameters->setNamedAutoConstantReal(name, def->acType, f);*/}
                                                         else
@@ -501,13 +508,14 @@ namespace Axiom.Scripting.Compiler
                                                 }
                                                 else
                                                 {
-                                                    if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+                                                    if ( i2 != null )
                                                     {
                                                         Real extraInfo = 0.0f;
                                                         if ( getReal( i2, out extraInfo ) )
                                                         {
                                                             try
                                                             {
+                                                                //TODO
                                                                 if ( named )
                                                                 { /*parameters->setNamedAutoConstantReal(name, def->acType, extraInfo);*/}
                                                                 else
@@ -639,14 +647,20 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Allocate the program
+                object progObj;
                 GpuProgram prog = null;
-                //CreateGpuProgramScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup(), source, syntax, _translateIDToGpuProgramType(obj.Id));
-                bool processed = false;// compiler->_fireEvent(&evt, (void*)&prog);
+
+                ScriptCompilerEvent evt = new CreateGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, syntax,
+                    _translateIDToGpuProgramType( obj.Id ) );
+
+                bool processed = compiler._fireEvent( ref evt, out progObj );
                 if ( !processed )
                 {
                     prog = (GpuProgram)GpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, source,
                         _translateIDToGpuProgramType( obj.Id ), syntax );
                 }
+                else
+                    prog = (GpuProgram)progObj;
 
                 // Check that allocation worked
                 if ( prog == null )
@@ -659,6 +673,7 @@ namespace Axiom.Scripting.Compiler
                 obj.Context = prog;
 
                 prog.IsMorphAnimationIncluded = false;
+                //TODO
                 //prog->setPoseAnimationIncluded(0);
                 prog.IsSkeletalAnimationIncluded = false;
                 prog.IsVertexTextureFetchRequired = false;
@@ -670,7 +685,7 @@ namespace Axiom.Scripting.Compiler
                 // Set up default parameters
                 if ( prog.IsSupported && customParameters != null )
                 {
-                    throw new NotImplementedException();
+#warning this need GpuProgramParametersShared implementation
                     //GpuProgramParametersShared ptr = prog.DefaultParameters;
                     //GpuProgramTranslator.TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
                 }
@@ -731,11 +746,11 @@ namespace Axiom.Scripting.Compiler
 
                                     if ( prop.Name == "attach" )
                                     {
-                                        throw new NotImplementedException();
-                                        string evtName = string.Empty;
-                                        //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::GPU_PROGRAM, ((AtomAbstractNode*)(*it).get())->value);
-                                        //compiler->_fireEvent(&evt, 0);
-                                        value += evtName;
+                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, ( (AtomAbstractNode)it ).Value );
+
+                                        compiler._fireEvent( ref evt );
+                                        value += ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
                                     }
                                     else
                                     {
@@ -756,12 +771,13 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Allocate the program
+                object progObj;
                 HighLevelGpuProgram prog = null;
 
-                throw new NotImplementedException();
-                //CreateHighLevelGpuProgramScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup(), source, language, 
-                //    translateIDToGpuProgramType(obj->id));
-                bool processed = false; // = compiler->_fireEvent(&evt, (void*)&prog);
+                ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, language,
+                        _translateIDToGpuProgramType( obj.Id ) );
+
+                bool processed = compiler._fireEvent( ref evnt, out progObj );
                 if ( !processed )
                 {
                     prog = (HighLevelGpuProgram)(
@@ -769,6 +785,8 @@ namespace Axiom.Scripting.Compiler
 
                     prog.SourceFile = source;
                 }
+                else
+                    prog = (HighLevelGpuProgram)progObj;
 
                 // Check that allocation worked
                 if ( prog == null )
@@ -781,6 +799,7 @@ namespace Axiom.Scripting.Compiler
                 obj.Context = prog;
 
                 prog.IsMorphAnimationIncluded = false;
+                //TODO
                 //prog->setPoseAnimationIncluded(0);
                 prog.IsSkeletalAnimationIncluded = false;
                 prog.IsVertexTextureFetchRequired = false;
@@ -792,7 +811,7 @@ namespace Axiom.Scripting.Compiler
                 // Set up default parameters
                 if ( prog.IsSupported && parameters != null )
                 {
-                    throw new NotImplementedException();
+#warning this need GpuProgramParametersShared implementation
                     //GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
                     //GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
                 }
@@ -814,11 +833,11 @@ namespace Axiom.Scripting.Compiler
                             if ( prop.Values.Count != 0 && prop.Values[ 0 ].Type == AbstractNodeType.Atom )
                                 value = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
-                            throw new NotImplementedException();
-                            string evtName = string.Empty;
-                            //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::GPU_PROGRAM, value);
-                            //compiler->_fireEvent(&evt, 0);
-                            customParameters.Add( "delegate", evtName );
+                            ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, value );
+
+                            compiler._fireEvent( ref evt );
+                            customParameters[ "delegate" ] = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
                         }
                         else
                         {
@@ -835,7 +854,7 @@ namespace Axiom.Scripting.Compiler
                                     value += ( (AtomAbstractNode)it ).Value;
                                 }
                             }
-                            customParameters.Add( name, value );
+                            customParameters[ name ] = value;
                         }
                     }
                     else if ( i.Type == AbstractNodeType.Object )
@@ -847,18 +866,23 @@ namespace Axiom.Scripting.Compiler
                     }
                 }
 
-                throw new NotImplementedException();
 
                 // Allocate the program
+                Object progObj;
                 HighLevelGpuProgram prog = null;
-                //CreateHighLevelGpuProgramScriptCompilerEvent evt(obj->file, obj->name, compiler->getResourceGroup(), "", "unified", translateIDToGpuProgramType(obj->id));
-                bool processed = false;// compiler->_fireEvent(&evt, (void*)&prog);
+
+                ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, string.Empty, "unified",
+                    _translateIDToGpuProgramType( obj.Id ) );
+
+                bool processed = compiler._fireEvent( ref evnt, out progObj );
 
                 if ( !processed )
                 {
                     prog = (HighLevelGpuProgram)(
                         HighLevelGpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, "unified", _translateIDToGpuProgramType( obj.Id ) ) );
                 }
+                else
+                    prog = (HighLevelGpuProgram)progObj;
 
                 // Check that allocation worked
                 if ( prog == null )
@@ -871,6 +895,7 @@ namespace Axiom.Scripting.Compiler
                 obj.Context = prog;
 
                 prog.IsMorphAnimationIncluded = false;
+                //TODO
                 //prog->setPoseAnimationIncluded(0);
                 prog.IsSkeletalAnimationIncluded = false;
                 prog.IsVertexTextureFetchRequired = false;
@@ -882,7 +907,7 @@ namespace Axiom.Scripting.Compiler
                 // Set up default parameters
                 if ( prog.IsSupported && parameters != null )
                 {
-                    throw new NotImplementedException();
+#warning this need GpuProgramParametersShared implementation
                     //GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
                     //GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
                 }

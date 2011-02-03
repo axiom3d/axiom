@@ -97,10 +97,16 @@ namespace Axiom.Scripting.Compiler
             /// <param name="nodes"></param>
             /// <param name="index"></param>
             /// <returns></returns>
-			protected static AbstractNode getNodeAt( IList<AbstractNode> nodes, int index )
-			{
-				return nodes[ index ];
-			}
+            protected static AbstractNode getNodeAt( IList<AbstractNode> nodes, int index )
+            {
+                if ( nodes == null )
+                    return null;
+
+                if ( index < 0 || index >= nodes.Count )
+                    return null;
+
+                return nodes[ index ];
+            }
 
             /// <summary>
             /// Converts the node to a boolean and returns true if successful
@@ -111,6 +117,9 @@ namespace Axiom.Scripting.Compiler
 			protected static bool getBoolean( AbstractNode node, out bool result )
 			{
 				result = false;
+
+                if ( node == null )
+                    return false;
 
                 if ( node.Type != AbstractNodeType.Atom )
                     return false;
@@ -133,6 +142,9 @@ namespace Axiom.Scripting.Compiler
 			{
 				result = string.Empty;
 
+                if ( node == null )
+                    return false;
+
 				if ( node.Type != AbstractNodeType.Atom )
 					return false;
 
@@ -150,6 +162,9 @@ namespace Axiom.Scripting.Compiler
             protected static bool getReal( AbstractNode node, out Real result )
             {
                 result = 0.0f;
+
+                if ( node == null )
+                    return false;
 
                 if ( node.Type != AbstractNodeType.Atom )
                     return false;
@@ -173,6 +188,9 @@ namespace Axiom.Scripting.Compiler
                 result = 0f;
                 Real rResult;
 
+                if ( node == null )
+                    return false;
+
                 if ( getReal( node, out rResult ) )
                 {
                     result = rResult;
@@ -192,6 +210,9 @@ namespace Axiom.Scripting.Compiler
             {
                 result = 0;
                 Real rResult;
+
+                if ( node == null )
+                    return false;
                 
                 if ( getReal( node, out rResult ) )
                 {
@@ -212,6 +233,9 @@ namespace Axiom.Scripting.Compiler
             {
                 result = 0;
                 Real fResult;
+
+                if ( node == null )
+                    return false;
 
                 if ( getReal( node, out fResult ) )
                 {
@@ -240,6 +264,9 @@ namespace Axiom.Scripting.Compiler
 			{
                 Real[] vals = new Real[ 4 ] { 0, 0, 0, 0 };
                 result = ColorEx.White;
+
+                if ( nodes == null )
+                    return false;
                 
                 int n = 0;
                 while ( i != nodes.Count && n < maxEntries )
@@ -272,6 +299,9 @@ namespace Axiom.Scripting.Compiler
 			{
 				m = new Matrix4();
 
+                if ( nodes == null )
+                    return false;
+
 				int n = 0;
 				while ( i != nodes.Count && n < 16 )
 				{
@@ -302,6 +332,10 @@ namespace Axiom.Scripting.Compiler
 			{
 				bool success = true;
 				vals = new int[ count ];
+
+                if ( nodes == null )
+                    return false;
+
 				int n = 0;
 				while ( n < count )
 				{
@@ -336,6 +370,9 @@ namespace Axiom.Scripting.Compiler
 			{
 				bool success = true;
 				vals = new float[ count ];
+
+                if ( nodes == null )
+                    return false;
 
 				int n = 0;
 				while ( n < count )
@@ -373,6 +410,9 @@ namespace Axiom.Scripting.Compiler
 			{
 				// Set default
 				property = default( T );
+
+                if ( node == null )
+                    return false;
 
 				// Verify Parameters
 				if ( node.Type != AbstractNodeType.Atom )

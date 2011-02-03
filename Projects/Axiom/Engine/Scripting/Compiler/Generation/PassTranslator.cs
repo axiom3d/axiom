@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -70,6 +69,7 @@ namespace Axiom.Scripting.Compiler
 
                 Technique technique = (Technique)obj.Parent.Context;
                 _pass = technique.CreatePass();
+                obj.Context = _pass;
 
                 // Get the name of the technique
                 if ( !string.IsNullOrEmpty( obj.Name ) )
@@ -404,7 +404,7 @@ namespace Axiom.Scripting.Compiler
                                                 return;
                                         }
 
-                                        throw new NotImplementedException();
+                                        //TODO
                                         //mPass->setSeparateSceneBlending(sbt0, sbt1);
                                     }
                                     else
@@ -425,7 +425,7 @@ namespace Axiom.Scripting.Compiler
                                         if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 )
                                             && getEnumeration<SceneBlendFactor>( i2, compiler, out sbf2 ) && getEnumeration<SceneBlendFactor>( i3, compiler, out sbf3 ) )
                                         {
-                                            throw new NotImplementedException();
+                                            //TODO
                                             //mPass->setSeparateSceneBlending(sbf0, sbf1, sbf2, sbf3);
                                         }
                                         else
@@ -459,28 +459,31 @@ namespace Axiom.Scripting.Compiler
                                     if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
                                     {
                                         AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-                                        throw new NotImplementedException();
+                                        
                                         switch ( (Keywords)atom.Id )
                                         {
                                             case Keywords.ID_ADD:
-                                                //_pass.SetSceneBlending( SceneBlendType.Add );
+                                                //TODO
                                                 //mPass->setSceneBlendingOperation(SBO_ADD);
                                                 break;
 
                                             case Keywords.ID_SUBTRACT:
-                                                //_pass.SetSceneBlending(SceneBlendType.
+                                                //TODO
                                                 //mPass->setSceneBlendingOperation(SBO_SUBTRACT);
                                                 break;
 
                                             case Keywords.ID_REVERSE_SUBTRACT:
+                                                //TODO
                                                 //mPass->setSceneBlendingOperation(SBO_REVERSE_SUBTRACT);
                                                 break;
 
                                             case Keywords.ID_MIN:
+                                                //TODO
                                                 //mPass->setSceneBlendingOperation(SBO_MIN);
                                                 break;
 
                                             case Keywords.ID_MAX:
+                                                //TODO
                                                 //mPass->setSceneBlendingOperation(SBO_MAX);
                                                 break;
 
@@ -518,27 +521,32 @@ namespace Axiom.Scripting.Compiler
                                         AtomAbstractNode atom0 = (AtomAbstractNode)i0,
                                             atom1 = (AtomAbstractNode)i1;
 
-                                        throw new NotImplementedException();
+                                        //TODO
                                         //SceneBlendOperation op = SBO_ADD, alphaOp = SBO_ADD;
                                         switch ( (Keywords)atom0.Id )
                                         {
                                             case Keywords.ID_ADD:
+                                                //TODO
                                                 //op = SBO_ADD;
                                                 break;
 
                                             case Keywords.ID_SUBTRACT:
+                                                //TODO
                                                 //op = SBO_SUBTRACT;
                                                 break;
 
                                             case Keywords.ID_REVERSE_SUBTRACT:
+                                                //TODO
                                                 //op = SBO_REVERSE_SUBTRACT;
                                                 break;
 
                                             case Keywords.ID_MIN:
+                                                //TODO
                                                 //op = SBO_MIN;
                                                 break;
 
                                             case Keywords.ID_MAX:
+                                                //TODO
                                                 //op = SBO_MAX;
                                                 break;
 
@@ -551,22 +559,27 @@ namespace Axiom.Scripting.Compiler
                                         switch ( (Keywords)atom1.Id )
                                         {
                                             case Keywords.ID_ADD:
+                                                //TODO
                                                 //alphaOp = SBO_ADD;
                                                 break;
 
                                             case Keywords.ID_SUBTRACT:
+                                                //TODO
                                                 //alphaOp = SBO_SUBTRACT;
                                                 break;
 
                                             case Keywords.ID_REVERSE_SUBTRACT:
+                                                //TODO
                                                 //alphaOp = SBO_REVERSE_SUBTRACT;
                                                 break;
 
                                             case Keywords.ID_MIN:
+                                                //TODO
                                                 //alphaOp = SBO_MIN;
                                                 break;
 
                                             case Keywords.ID_MAX:
+                                                //TODO
                                                 //alphaOp = SBO_MAX;
                                                 break;
 
@@ -576,6 +589,7 @@ namespace Axiom.Scripting.Compiler
                                                 break;
                                         }
 
+                                        //TODO
                                         //mPass->setSeparateSceneBlendingOperation(op, alphaOp);
                                     }
                                     else
@@ -650,7 +664,7 @@ namespace Axiom.Scripting.Compiler
                                     float val0, val1 = 0.0f;
                                     if ( getFloat( i0, out val0 ) )
                                     {
-                                        if ( i1 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i1 != null )
                                             getFloat( i1, out val1 );
                                         
                                         _pass.SetDepthBias( val0, val1 );
@@ -700,10 +714,12 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     float val = 0.0f;
                                     if ( getFloat( prop.Values[ 0 ], out val ) )
-                                    { /*mPass->setIterationDepthBias(val);*/}
+                                    {
+                                        //TODO
+                                        /*mPass->setIterationDepthBias(val);*/
+                                    }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                             prop.Values[ 0 ].Value + " is not a valid float value" );
@@ -728,7 +744,7 @@ namespace Axiom.Scripting.Compiler
                                     CompareFunction func;
                                     if ( getEnumeration<CompareFunction>( i0, compiler, out func ) )
                                     {
-                                        if ( i1 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i1 != null )
                                         {
                                             int val = 0;
                                             if ( getInt( i1, out val ) )
@@ -783,10 +799,12 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     bool val = false;
                                     if ( getBoolean( prop.Values[ 0 ], out val ) )
-                                    { /*mPass->setLightScissoringEnabled(val);*/}
+                                    {
+                                        //TODO
+                                        /*mPass->setLightScissoringEnabled(val);*/
+                                    }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                             prop.Values[ 0 ].Value + " is not a valid boolean" );
@@ -807,10 +825,12 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     bool val = false;
                                     if ( getBoolean( prop.Values[ 0 ], out val ) )
-                                    { /*mPass->setLightClipPlanesEnabled(val);*/}
+                                    {
+                                        //TODO
+                                        /*mPass->setLightClipPlanesEnabled(val);*/
+                                    }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                             prop.Values[ 0 ].Value + " is not a valid boolean" );
@@ -834,7 +854,7 @@ namespace Axiom.Scripting.Compiler
                                     bool val = true;
                                     if ( getBoolean( prop.Values[ 0 ], out val ) )
                                     {
-                                        throw new NotImplementedException();
+                                        //TODO
                                         //mPass->setTransparentSortingEnabled(val);
                                         //mPass->setTransparentSortingForced(false);
                                     }
@@ -843,7 +863,7 @@ namespace Axiom.Scripting.Compiler
                                         string val2;
                                         if ( getString( prop.Values[ 0 ], out val2 ) && val2 == "force" )
                                         {
-                                            throw new NotImplementedException();
+                                            //TODO
                                             //mPass->setTransparentSortingEnabled(true);
                                             //mPass->setTransparentSortingForced(true);
                                         }
@@ -872,19 +892,21 @@ namespace Axiom.Scripting.Compiler
                                 {
                                     if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
                                     {
-                                        throw new NotImplementedException();
                                         AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
                                         switch ( (Keywords)atom.Id )
                                         {
                                             case Keywords.ID_AMBIENT:
+                                                //TODO
                                                 //mPass->setIlluminationStage(IS_AMBIENT);
                                                 break;
 
                                             case Keywords.ID_PER_LIGHT:
+                                                //TODO
                                                 //mPass->setIlluminationStage(IS_PER_LIGHT);
                                                 break;
 
                                             case Keywords.ID_DECAL:
+                                                //TODO
                                                 //mPass->setIlluminationStage(IS_DECAL);
                                                 break;
 
@@ -918,7 +940,6 @@ namespace Axiom.Scripting.Compiler
                                 {
                                     if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
                                     {
-                                        throw new NotImplementedException();
                                         AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
                                         switch ( (Keywords)atom.Id )
                                         {
@@ -928,7 +949,6 @@ namespace Axiom.Scripting.Compiler
 
                                             case Keywords.ID_ANTICLOCKWISE:
                                                 _pass.CullingMode = CullingMode.CounterClockwise;
-                                                //mPass->setCullingMode(CULL_ANTICLOCKWISE); not sure about the above "translation"
                                                 break;
 
                                             case Keywords.ID_NONE:
@@ -1008,10 +1028,12 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     bool val = false;
                                     if ( getBoolean( prop.Values[ 0 ], out val ) )
-                                    { /*mPass->setNormaliseNormals(val);*/}
+                                    {
+                                        //TODO
+                                        /*mPass->setNormaliseNormals(val);*/
+                                    }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                             prop.Values[ 0 ].Value + " is not a valid boolean" );
@@ -1145,10 +1167,12 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     bool val = false;
                                     if ( getBoolean( prop.Values[ 0 ], out val ) )
-                                    { /*mPass->setPolygonModeOverrideable(val);*/}
+                                    {
+                                        //TODO
+                                        /*mPass->setPolygonModeOverrideable(val);*/
+                                    }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                             prop.Values[ 0 ].Value + " is not a valid boolean" );
@@ -1178,7 +1202,7 @@ namespace Axiom.Scripting.Compiler
 
                                         Real dens = 0.001, start = 0.0f, end = 1.0f;
 
-                                        if ( i1 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i1 != null )
                                         {
                                             if ( i1.Type == AbstractNodeType.Atom )
                                             {
@@ -1215,20 +1239,20 @@ namespace Axiom.Scripting.Compiler
                                             }
                                         }
 
-                                        if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i2 != null )
                                         {
                                             // following line code was if(!getColour(i2, prop->values.end(), &clr, 3))
                                             if ( !getColor( prop.Values, 2, out clr, 3 ) )
                                             {
                                                 compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                i2.Value + " is not a valid colour" );
+                                                    i2.Value + " is not a valid colour" );
                                                 break;
                                             }
 
                                             i2 = getNodeAt( prop.Values, 5 );
                                         }
 
-                                        if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i2 != null )
                                         {
                                             if ( !getReal( i2, out dens ) )
                                             {
@@ -1240,7 +1264,7 @@ namespace Axiom.Scripting.Compiler
                                             i2 = getNodeAt( prop.Values, 6 );
                                         }
 
-                                        if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i2 != null )
                                         {
                                             if ( !getReal( i2, out start ) )
                                             {
@@ -1252,7 +1276,7 @@ namespace Axiom.Scripting.Compiler
                                             i2 = getNodeAt( prop.Values, 7 );
                                         }
 
-                                        if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+                                        if ( i2 != null )
                                         {
                                             if ( !getReal( i2, out end ) )
                                             {
@@ -1332,10 +1356,12 @@ namespace Axiom.Scripting.Compiler
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException();
                                     uint val = 0;
                                     if ( getUInt( prop.Values[ 0 ], out val ) )
-                                    { /*mPass->setStartLight(static_cast<unsigned short>(val));*/}
+                                    {
+                                        //TODO
+                                        /*mPass->setStartLight(static_cast<unsigned short>(val));*/
+                                    }
                                     else
                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                             prop.Values[ 0 ].Value + " is not a valid integer" );
@@ -1361,9 +1387,8 @@ namespace Axiom.Scripting.Compiler
                                         }
                                         else if ( atom.Id == (uint)Keywords.ID_ONCE_PER_LIGHT )
                                         {
-                                            throw new NotImplementedException();
                                             AbstractNode i1 = getNodeAt( prop.Values, 1 );
-                                            if ( i1 != prop.Values[ prop.Values.Count - 1 ] && i1.Type == AbstractNodeType.Atom )
+                                            if ( i1 != null && i1.Type == AbstractNodeType.Atom )
                                             {
                                                 atom = (AtomAbstractNode)i1;
                                                 switch ( (Keywords)atom.Id )
@@ -1373,10 +1398,12 @@ namespace Axiom.Scripting.Compiler
                                                         break;
 
                                                     case Keywords.ID_DIRECTIONAL:
+                                                        //TODO
                                                         //mPass->setIteratePerLight(true, true, Light::LT_DIRECTIONAL);
                                                         break;
 
                                                     case Keywords.ID_SPOT:
+                                                        //TODO
                                                         //mPass->setIteratePerLight(true, true, Light::LT_SPOTLIGHT);
                                                         break;
 
@@ -1388,25 +1415,25 @@ namespace Axiom.Scripting.Compiler
                                             }
                                             else
                                             {
-                                                throw new NotImplementedException();
+                                                //TODO
                                                 //mPass->setIteratePerLight(true, false);
                                             }
 
                                         }
                                         else if ( atom.IsNumber )
                                         {
+                                            //TODO
                                             //mPass->setPassIterationCount(Ogre::StringConverter::parseInt(atom->value));
 
                                             AbstractNode i1 = getNodeAt( prop.Values, 1 );
-                                            if ( i1 != prop.Values[ prop.Values.Count - 1 ] && i1.Type == AbstractNodeType.Atom )
+                                            if ( i1 != null && i1.Type == AbstractNodeType.Atom )
                                             {
                                                 atom = (AtomAbstractNode)i1;
                                                 if ( atom.Id == (uint)Keywords.ID_PER_LIGHT )
                                                 {
                                                     AbstractNode i2 = getNodeAt( prop.Values, 2 );
-                                                    if ( i2 != prop.Values[ prop.Values.Count - 1 ] && i2.Type == AbstractNodeType.Atom )
+                                                    if ( i2 != null && i2.Type == AbstractNodeType.Atom )
                                                     {
-                                                        throw new NotImplementedException();
                                                         atom = (AtomAbstractNode)i2;
                                                         switch ( (Keywords)atom.Id )
                                                         {
@@ -1415,10 +1442,12 @@ namespace Axiom.Scripting.Compiler
                                                                 break;
 
                                                             case Keywords.ID_DIRECTIONAL:
+                                                                //TODO
                                                                 //mPass->setIteratePerLight(true, true, Light::LT_DIRECTIONAL);
                                                                 break;
 
                                                             case Keywords.ID_SPOT:
+                                                                //TODO
                                                                 //mPass->setIteratePerLight(true, true, Light::LT_SPOTLIGHT);
                                                                 break;
 
@@ -1430,24 +1459,24 @@ namespace Axiom.Scripting.Compiler
                                                     }
                                                     else
                                                     {
-                                                        throw new NotImplementedException();
+                                                        //TODO
                                                         //mPass->setIteratePerLight(true, false);
                                                     }
                                                 }
                                                 else if ( atom.Id == (uint)Keywords.ID_PER_N_LIGHTS )
                                                 {
                                                     AbstractNode i2 = getNodeAt( prop.Values, 2 );
-                                                    if ( i2 != prop.Values[ prop.Values.Count - 1 ] && i2.Type == AbstractNodeType.Atom )
+                                                    if ( i2 != null && i2.Type == AbstractNodeType.Atom )
                                                     {
                                                         atom = (AtomAbstractNode)i2;
                                                         if ( atom.IsNumber )
                                                         {
-                                                            throw new NotImplementedException();
+                                                            //TODO
                                                             //mPass->setLightCountPerIteration(
                                                             //    static_cast<unsigned short>(StringConverter::parseInt(atom->value)));
 
                                                             AbstractNode i3 = getNodeAt( prop.Values, 3 );
-                                                            if ( i3 != prop.Values[ prop.Values.Count - 1 ] && i3.Type == AbstractNodeType.Atom )
+                                                            if ( i3 != null && i3.Type == AbstractNodeType.Atom )
                                                             {
                                                                 atom = (AtomAbstractNode)i3;
                                                                 switch ( (Keywords)atom.Id )
@@ -1457,10 +1486,12 @@ namespace Axiom.Scripting.Compiler
                                                                         break;
 
                                                                     case Keywords.ID_DIRECTIONAL:
+                                                                        //TODO
                                                                         //mPass->setIteratePerLight(true, true, Light::LT_DIRECTIONAL);
                                                                         break;
 
                                                                     case Keywords.ID_SPOT:
+                                                                        //TODO
                                                                         //mPass->setIteratePerLight(true, true, Light::LT_SPOTLIGHT);
                                                                         break;
 
@@ -1472,7 +1503,7 @@ namespace Axiom.Scripting.Compiler
                                                             }
                                                             else
                                                             {
-                                                                throw new NotImplementedException();
+                                                                //TODO
                                                                 //mPass->setIteratePerLight(true, false);
                                                             }
                                                         }
@@ -1574,7 +1605,7 @@ namespace Axiom.Scripting.Compiler
                                             {
                                                 Real constant = 0.0f, linear = 1.0f, quadratic = 0.0f;
 
-                                                if ( i1 != prop.Values[ prop.Values.Count - 1 ] && i1.Type == AbstractNodeType.Atom )
+                                                if ( i1 != null && i1.Type == AbstractNodeType.Atom )
                                                 {
                                                     AtomAbstractNode atom = (AtomAbstractNode)i1;
                                                     if ( atom.IsNumber )
@@ -1588,7 +1619,7 @@ namespace Axiom.Scripting.Compiler
                                                         i1.Value + " is not a valid number" );
                                                 }
 
-                                                if ( i2 != prop.Values[ prop.Values.Count - 1 ] && i2.Type == AbstractNodeType.Atom )
+                                                if ( i2 != null && i2.Type == AbstractNodeType.Atom )
                                                 {
                                                     AtomAbstractNode atom = (AtomAbstractNode)i2;
                                                     if ( atom.IsNumber )
@@ -1602,7 +1633,7 @@ namespace Axiom.Scripting.Compiler
                                                         i2.Value + " is not a valid number" );
                                                 }
 
-                                                if ( i3 != prop.Values[ prop.Values.Count - 1 ] && i3.Type == AbstractNodeType.Atom )
+                                                if ( i3 != null && i3.Type == AbstractNodeType.Atom )
                                                 {
                                                     AtomAbstractNode atom = (AtomAbstractNode)i3;
                                                     if ( atom.IsNumber )
@@ -1616,18 +1647,18 @@ namespace Axiom.Scripting.Compiler
                                                         i3.Value + " is not a valid number" );
                                                 }
 
-                                                throw new NotImplementedException();
+                                                //TODO
                                                 //mPass->setPointAttenuation(true, constant, linear, quadratic);
                                             }
                                             else
                                             {
-                                                throw new NotImplementedException();
+                                                //TODO
                                                 //mPass->setPointAttenuation(true);
                                             }
                                         }
                                         else
                                         {
-                                            throw new NotImplementedException();
+                                            //TODO
                                             //mPass->setPointAttenuation(false);
                                         }
                                     }
@@ -1740,7 +1771,7 @@ namespace Axiom.Scripting.Compiler
                 pass.SetFragmentProgram( createdProgramName );
                 if ( pass.FragmentProgram.IsSupported )
                 {
-                    throw new NotImplementedException();
+#warning this need GpuProgramParametersShared implementation
                     //GpuProgramParametersShared parameters = pass.FragmentProgramParameters;
                     //GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
                 }
@@ -1757,7 +1788,7 @@ namespace Axiom.Scripting.Compiler
                 pass.SetVertexProgram( createdProgramName );
                 if ( pass.VertexProgram.IsSupported )
                 {
-                    throw new NotImplementedException();
+#warning this need GpuProgramParametersShared implementation
                     //GpuProgramParametersShared parameters = pass.VertexProgramParameters;
                     //GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
                 }
@@ -1774,7 +1805,7 @@ namespace Axiom.Scripting.Compiler
                 pass.SetGeometryProgram( createdProgramName );
                 if ( pass.GeometryProgram.IsSupported )
                 {
-                    throw new NotImplementedException();
+#warning this need GpuProgramParametersShared implementation
                     //GpuProgramParametersShared parameters = pass.GeometryProgramParameters;
                     //GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
                 }
@@ -1789,13 +1820,13 @@ namespace Axiom.Scripting.Compiler
                     return;
 
                 pass.SetShadowCasterVertexProgram( createdProgramName );
-                //if(pass->getShadowCasterVertexProgram()->isSupported())
-                //{
-                //    GpuProgramParametersSharedPtr params = pass->getShadowCasterVertexProgramParameters();
-                //    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
-                //}
 
-                throw new NotImplementedException();
+                if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
+                {
+#warning this need GpuProgramParametersShared implementation
+                    //    GpuProgramParametersSharedPtr params = pass->getShadowCasterVertexProgramParameters();
+                    //    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
+                }
             }
 
             protected void _translateShadowReceiverVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
@@ -1807,13 +1838,13 @@ namespace Axiom.Scripting.Compiler
                     return;
 
                 pass.SetShadowReceiverVertexProgram( createdProgramName );
-                //if(pass->getShadowReceiverVertexProgram()->isSupported())
-                //{
-                //    GpuProgramParametersSharedPtr params = pass->getShadowReceiverVertexProgramParameters();
-                //    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
-                //}
 
-                throw new NotImplementedException();
+                if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
+                {
+#warning this need GpuProgramParametersShared implementation
+                    //    GpuProgramParametersSharedPtr params = pass->getShadowReceiverVertexProgramParameters();
+                    //    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
+                }
             }
 
             protected void _translateShadowReceiverFragmentProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
@@ -1825,13 +1856,13 @@ namespace Axiom.Scripting.Compiler
                     return;
 
                 pass.SetShadowReceiverFragmentProgram( createdProgramName );
-                //if(pass->getShadowReceiverFragmentProgram()->isSupported())
-                //{
-                //    GpuProgramParametersSharedPtr params = pass->getShadowReceiverFragmentProgramParameters();
-                //    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
-                //}
 
-                throw new NotImplementedException();
+                if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
+                {
+#warning this need GpuProgramParametersShared implementation
+                    //    GpuProgramParametersSharedPtr params = pass->getShadowReceiverFragmentProgramParameters();
+                    //    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
+                }
             }
 
             private Pass _commonProgramChecks( ScriptCompiler compiler, ObjectAbstractNode node, out string createdProgramName )
@@ -1844,9 +1875,11 @@ namespace Axiom.Scripting.Compiler
                     return null;
                 }
 
-                //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::GPU_PROGRAM, node->name);
-                //compiler->_fireEvent(&evt, 0);
-                createdProgramName = "something that will be set by the above fired event";
+                ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( 
+                    ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, node.Name );
+                
+                compiler._fireEvent( ref evt );
+                createdProgramName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
                 if ( GpuProgramManager.Instance.GetByName( createdProgramName ) == null )
                 {
@@ -1856,7 +1889,6 @@ namespace Axiom.Scripting.Compiler
 
                 Pass pass = (Pass)node.Parent.Context;
                 return pass;
-                throw new NotImplementedException();
             }
         }
     }

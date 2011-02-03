@@ -2219,11 +2219,23 @@ namespace Axiom.Graphics
 			parent.NotifyNeedsRecompile();
 		}
 
+        /// <summary>
+        /// Applies texture names to Texture Unit State with matching texture name aliases.
+        /// If no matching aliases are found then the TUS state does not change.
+        /// </summary>
+        /// <remarks>
+        /// Cubic, 1d, 2d, and 3d textures are determined from current state of the Texture Unit.
+        /// Assumes animated frames are sequentially numbered in the name.
+        /// If matching texture aliases are found then true is returned.
+        /// </remarks>
+        /// <param name="aliasList">is a map container of texture alias, texture name pairs</param>
+        /// <param name="apply">set true to apply the texture aliases else just test to see if texture alias matches are found.</param>
+        /// <returns>True if matching texture aliases were found in the Texture Unit State.</returns>
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
 			bool testResult = false;
 			// if TUS has an alias, see if it's in the alias container
-			if ( textureNameAlias.Length > 0 )
+            if ( !string.IsNullOrEmpty( textureNameAlias ) )
 			{
 				if ( aliasList.ContainsKey( textureNameAlias ) )
 				{

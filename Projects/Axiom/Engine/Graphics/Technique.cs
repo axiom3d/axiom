@@ -807,8 +807,8 @@ namespace Axiom.Graphics
 
 			set
 			{
+                _schemeName = value;
 				_schemeIndex = MaterialManager.Instance.GetSchemeIndex( _schemeName );
-				_schemeName = value;
 			}
 		}
 		#endregion Scheme Property

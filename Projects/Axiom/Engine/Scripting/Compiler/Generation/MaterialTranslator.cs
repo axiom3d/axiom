@@ -82,15 +82,23 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Create a material with the given name
-                if ( compiler.Listener != null )
-                    _material = compiler.Listener.CreateMaterial( obj.Name, compiler.ResourceGroup );
-                else
-                    _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                object mat;
+                ScriptCompilerEvent evt = new CreateMaterialScriptCompilerEvent( node.File, obj.Name, compiler.ResourceGroup );
+                bool processed = compiler._fireEvent( ref evt, out mat );
 
-                if ( _material == null )
+                if ( !processed )
                 {
-                    compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
-                    return;
+                    _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                }
+                else
+                {
+                    _material = (Material)mat;
+
+                    if ( _material == null )
+                    {
+                        compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
+                            "failed to find or create material \"" + obj.Name + "\"" );
+                    }
                 }
 
                 _material.RemoveAllTechniques();
@@ -260,11 +268,10 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Apply the texture aliases
-                if ( compiler.Listener != null )
-                    compiler.Listener.PreApplyTextureAliases( _textureAliases );
+                ScriptCompilerEvent locEvt = new PreApplyTextureAliasesScriptCompilerEvent( _material, ref _textureAliases );
+                compiler._fireEvent( ref locEvt );
                 
                 _material.ApplyTextureAliases( _textureAliases );
-
                 _textureAliases.Clear();
             }
 

@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
@@ -131,11 +130,11 @@ namespace Axiom.Scripting.Compiler
                                     string val = string.Empty;
                                     if ( getString( prop.Values[ 0 ], out val ) )
                                     {
-                                        throw new NotImplementedException();
-                                        string evtName = string.Empty;
-                                        //ProcessResourceNameScriptCompilerEvent evt(ProcessResourceNameScriptCompilerEvent::MATERIAL, val);
-                                        //compiler->_fireEvent(&evt, 0);
-                                        _Pass.MaterialName = evtName;
+                                        ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
+                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
+
+                                        compiler._fireEvent( ref evt );
+                                        _Pass.MaterialName = ((ProcessResourceNameScriptCompilerEvent)evt).Name;
                                     }
                                     else
                                     {
@@ -165,13 +164,11 @@ namespace Axiom.Scripting.Compiler
                                     if ( getInt( i0, out id ) && getString( i1, out name ) )
                                     {
                                         int index = 0;
-                                        if ( i2 != prop.Values[ prop.Values.Count - 1 ] )
+
+                                        if ( !getInt( i2, out index ) )
                                         {
-                                            if ( !getInt( i2, out index ) )
-                                            {
-                                                compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-                                                return;
-                                            }
+                                            compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
+                                            return;
                                         }
 
                                         _Pass.SetInput( id, name, index );

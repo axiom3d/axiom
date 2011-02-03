@@ -805,9 +805,9 @@ namespace Axiom.Graphics
 		public override void ParseScript( Stream data, string groupName, string fileName )
 		{
 #if AXIOM_USENEWCOMPILERS
-			Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( data, groupName, fileName );
+            Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( data, groupName, fileName );
 #else
-			CompositorScriptLoader.ParseScript( this, data, groupName, fileName );
+            CompositorScriptLoader.ParseScript( this, data, groupName, fileName );
 #endif
 		}
 

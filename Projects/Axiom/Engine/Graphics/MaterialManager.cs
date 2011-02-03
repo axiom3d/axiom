@@ -215,7 +215,7 @@ namespace Axiom.Graphics
 		///     parameters by the application.
 		/// </summary>
 		/// </overload> 
-		/// <param name="options">Default options to use.</param>
+		/// <param name="filtering"></param>
 		public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
 		{
 			this._filtering = filtering;
@@ -395,11 +395,15 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Parse a .material script passed in as a chunk.
 		/// </summary>
-		/// <param name="script"></param>
-		public override void ParseScript( Stream stream, string groupName, string fileName )
-		{
-			_serializer.ParseScript( stream, groupName, fileName );
-		}
+        /// <param name="script"></param>
+        public override void ParseScript( Stream stream, string groupName, string fileName )
+        {
+#if AXIOM_USENEWCOMPILERS
+            Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
+#else
+            _serializer.ParseScript( stream, groupName, fileName );
+#endif
+        }
 
 		#endregion IScriptLoader Implementation
 
