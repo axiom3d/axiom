@@ -64,23 +64,9 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public bool IsAbstract;
 
-		public IList<AbstractNode> Children
-		{
-			get
-			{
-				return _children;
-			}
-		}
-        private List<AbstractNode> _children = new List<AbstractNode>();
+        public IList<AbstractNode> Children = new List<AbstractNode>();
 
-		public IList<AbstractNode> Values
-		{
-			get
-			{
-				return _values;
-			}
-		}
-        private List<AbstractNode> _values = new List<AbstractNode>();
+        public IList<AbstractNode> Values = new List<AbstractNode>();
 
         /// <summary>
         /// For use when processing object inheritance and overriding

@@ -231,38 +231,44 @@ namespace Axiom.Fonts
 
 			string line;
 
-			// parse through the data to the end
-			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-			{
-				// ignore blank lines and comments
-				if ( line.Length == 0 || line.StartsWith( "//" ) )
-				{
-					continue;
-				}
-				else
-				{
-					if ( font == null )
-					{
-						// first valid data should be the font name
-						font = (Font)Create( line, groupName );
+            // parse through the data to the end
+            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
+            {
+                // ignore blank lines and comments
+                if ( line.Length == 0 || line.StartsWith( "//" ) )
+                {
+                    continue;
+                }
+                else
+                {
+                    if ( font == null )
+                    {
+                        // No current font
+                        // So first valid data should be font name
+                        if ( line.StartsWith( "font " ) )
+                        {
+                            // chop off the 'particle_system ' needed by new compilers
+                            line = line.Substring( 5 );
+                        }
+                        font = (Font)Create( line, groupName );
 
-						ParseHelper.SkipToNextOpenBrace( script );
-					}
-					else
-					{
-						// currently in a font
-						if ( line == "}" )
-						{
-							// finished
-							font = null;
-							// NB font isn't loaded until required
-						}
-						else
-						{
-							parseAttribute( line, font );
-						}
-					}
-				}
+                        ParseHelper.SkipToNextOpenBrace( script );
+                    }
+                    else
+                    {
+                        // currently in a font
+                        if ( line == "}" )
+                        {
+                            // finished
+                            font = null;
+                            // NB font isn't loaded until required
+                        }
+                        else
+                        {
+                            parseAttribute( line, font );
+                        }
+                    }
+                }
 			}
 		}
 
