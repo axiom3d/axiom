@@ -39,6 +39,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -95,7 +96,7 @@ namespace Axiom.Scripting.Compiler
                 {
                     compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line,
                         "gpu program object must have names" );
-                    
+
                     return;
                 }
 
@@ -369,68 +370,172 @@ namespace Axiom.Scripting.Compiler
                                         // Look up the auto constant
                                         atom1.Value = atom1.Value.ToLower();
 
-#warning TODO
-                                        GpuProgramParameters.AutoConstantDefinition def = new GpuProgramParameters.AutoConstantDefinition(); //= GpuProgramParameters::getAutoConstantDefinition(atom1->value);
+                                        GpuProgramParameters.AutoConstantDefinition def;
+                                        bool defFound = GpuProgramParameters.GetAutoConstantDefinition( atom1.Value, out def );
 
-                                        //if ( def != null )
-                                        //{
-                                        switch ( def.DataType )
+                                        if ( defFound )
                                         {
-                                            case GpuProgramParameters.AutoConstantDataType.None:
-                                                // Set the auto constant
-                                                try
-                                                {
-                                                    //TODO
-                                                    if ( named )
-                                                    { /*parameters.SetNamedAutoConstant(name, def.AutoConstantType);*/}
-                                                    else
-                                                    { /*parameters.SetAutoConstant(index, def.AutoConstantType);*/}
-                                                }
-                                                catch
-                                                {
-                                                    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                        "setting of constant failed" );
-                                                }
-                                                break;
-
-                                            case GpuProgramParameters.AutoConstantDataType.Int:
-                                                if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.AnimationParametric )
-                                                {
+                                            switch ( def.DataType )
+                                            {
+                                                #region None
+                                                case GpuProgramParameters.AutoConstantDataType.None:
+                                                    // Set the auto constant
                                                     try
                                                     {
                                                         if ( named )
-                                                            parameters.SetNamedAutoConstant( name, def.AutoConstantType, animParametricsCount++ );
+                                                            parameters.SetNamedAutoConstant( name, def.AutoConstantType );
                                                         else
-                                                            parameters.SetAutoConstant( index, def.AutoConstantType, animParametricsCount++ );
+                                                            parameters.SetAutoConstant( index, def.AutoConstantType );
                                                     }
                                                     catch
                                                     {
                                                         compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
                                                             "setting of constant failed" );
                                                     }
-                                                }
-                                                else
-                                                {
-                                                    // Only certain texture projection auto params will assume 0
-                                                    // Otherwise we will expect that 3rd parameter
-                                                    if ( i2 == null )
+                                                    break;
+                                                #endregion None
+
+                                                #region Int
+                                                case GpuProgramParameters.AutoConstantDataType.Int:
+                                                    if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.AnimationParametric )
                                                     {
-                                                        if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureViewProjMatrix ||
-                                                            def.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureWorldViewProjMatrix ||
-                                                            def.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightViewProjMatrix ||
-                                                            def.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightWorldViewProjMatrix )
+                                                        try
                                                         {
-                                                            try
+                                                            if ( named )
+                                                                parameters.SetNamedAutoConstant( name, def.AutoConstantType, animParametricsCount++ );
+                                                            else
+                                                                parameters.SetAutoConstant( index, def.AutoConstantType, animParametricsCount++ );
+                                                        }
+                                                        catch
+                                                        {
+                                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                                "setting of constant failed" );
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // Only certain texture projection auto params will assume 0
+                                                        // Otherwise we will expect that 3rd parameter
+                                                        if ( i2 == null )
+                                                        {
+                                                            if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureViewProjMatrix ||
+                                                                def.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureWorldViewProjMatrix ||
+                                                                def.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightViewProjMatrix ||
+                                                                def.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightWorldViewProjMatrix )
                                                             {
-                                                                if ( named )
-                                                                    parameters.SetNamedAutoConstant( name, def.AutoConstantType, 0 );
-                                                                else
-                                                                    parameters.SetAutoConstant( index, def.AutoConstantType, 0 );
+                                                                try
+                                                                {
+                                                                    if ( named )
+                                                                        parameters.SetNamedAutoConstant( name, def.AutoConstantType, 0 );
+                                                                    else
+                                                                        parameters.SetAutoConstant( index, def.AutoConstantType, 0 );
+                                                                }
+                                                                catch
+                                                                {
+                                                                    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                                        "setting of constant failed" );
+                                                                }
                                                             }
-                                                            catch
+                                                            else
+                                                            {
+                                                                compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
+                                                                    "extra parameters required by constant definition " + atom1.Value );
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            bool success = false;
+                                                            int extraInfo = 0;
+                                                            if ( i3 == null )
+                                                            { // Handle only one extra value
+                                                                if ( getInt( i2, out extraInfo ) )
+                                                                {
+                                                                    success = true;
+                                                                }
+                                                            }
+                                                            else
+                                                            { // Handle two extra values
+                                                                int extraInfo1 = 0, extraInfo2 = 0;
+                                                                if ( getInt( i2, out extraInfo1 ) && getInt( i3, out extraInfo2 ) )
+                                                                {
+                                                                    extraInfo = extraInfo1 | ( extraInfo2 << 16 );
+                                                                    success = true;
+                                                                }
+                                                            }
+
+                                                            if ( success )
+                                                            {
+                                                                try
+                                                                {
+                                                                    if ( named )
+                                                                        parameters.SetNamedAutoConstant( name, def.AutoConstantType, extraInfo );
+                                                                    else
+                                                                        parameters.SetAutoConstant( index, def.AutoConstantType, extraInfo );
+                                                                }
+                                                                catch
+                                                                {
+                                                                    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                                        "setting of constant failed" );
+                                                                }
+                                                            }
+                                                            else
                                                             {
                                                                 compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                                    "setting of constant failed" );
+                                                                    "invalid auto constant extra info parameter" );
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                                #endregion Int
+
+                                                #region Real
+                                                case GpuProgramParameters.AutoConstantDataType.Real:
+                                                    if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.Time ||
+                                                        def.AutoConstantType == GpuProgramParameters.AutoConstantType.FrameTime )
+                                                    {
+                                                        Real f = 1.0f;
+                                                        if ( i2 != null )
+                                                            getReal( i2, out f );
+
+                                                        try
+                                                        {
+                                                            //TODO
+                                                            if ( named )
+                                                            { /*parameters->setNamedAutoConstantReal(name, def->acType, f);*/}
+                                                            else
+                                                                parameters.SetAutoConstant( index, def.AutoConstantType, f );
+                                                        }
+                                                        catch
+                                                        {
+                                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                                "setting of constant failed" );
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if ( i2 != null )
+                                                        {
+                                                            Real extraInfo = 0.0f;
+                                                            if ( getReal( i2, out extraInfo ) )
+                                                            {
+                                                                try
+                                                                {
+                                                                    //TODO
+                                                                    if ( named )
+                                                                    { /*parameters->setNamedAutoConstantReal(name, def->acType, extraInfo);*/}
+                                                                    else
+                                                                        parameters.SetAutoConstant( index, def.AutoConstantType, extraInfo );
+                                                                }
+                                                                catch
+                                                                {
+                                                                    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                                        "setting of constant failed" );
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                                    "incorrect float argument definition in extra parameters" );
                                                             }
                                                         }
                                                         else
@@ -439,113 +544,14 @@ namespace Axiom.Scripting.Compiler
                                                                 "extra parameters required by constant definition " + atom1.Value );
                                                         }
                                                     }
-                                                    else
-                                                    {
-                                                        bool success = false;
-                                                        int extraInfo = 0;
-                                                        if ( i3 == null )
-                                                        { // Handle only one extra value
-                                                            if ( getInt( i2, out extraInfo ) )
-                                                            {
-                                                                success = true;
-                                                            }
-                                                        }
-                                                        else
-                                                        { // Handle two extra values
-                                                            int extraInfo1 = 0, extraInfo2 = 0;
-                                                            if ( getInt( i2, out extraInfo1 ) && getInt( i3, out extraInfo2 ) )
-                                                            {
-                                                                extraInfo = extraInfo1 | ( extraInfo2 << 16 );
-                                                                success = true;
-                                                            }
-                                                        }
-
-                                                        if ( success )
-                                                        {
-                                                            try
-                                                            {
-                                                                if ( named )
-                                                                    parameters.SetNamedAutoConstant( name, def.AutoConstantType, extraInfo );
-                                                                else
-                                                                    parameters.SetAutoConstant( index, def.AutoConstantType, extraInfo );
-                                                            }
-                                                            catch
-                                                            {
-                                                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                                    "setting of constant failed" );
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                                "invalid auto constant extra info parameter" );
-                                                        }
-                                                    }
-                                                }
-                                                break;
-
-                                            case GpuProgramParameters.AutoConstantDataType.Real:
-                                                if ( def.AutoConstantType == GpuProgramParameters.AutoConstantType.Time ||
-                                                    def.AutoConstantType == GpuProgramParameters.AutoConstantType.FrameTime )
-                                                {
-                                                    Real f = 1.0f;
-                                                    if ( i2 != null )
-                                                        getReal( i2, out f );
-
-                                                    try
-                                                    {
-                                                        //TODO
-                                                        if ( named )
-                                                        { /*parameters->setNamedAutoConstantReal(name, def->acType, f);*/}
-                                                        else
-                                                        { /*parameters->setAutoConstantReal(index, def->acType, f);*/}
-                                                    }
-                                                    catch
-                                                    {
-                                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                            "setting of constant failed" );
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if ( i2 != null )
-                                                    {
-                                                        Real extraInfo = 0.0f;
-                                                        if ( getReal( i2, out extraInfo ) )
-                                                        {
-                                                            try
-                                                            {
-                                                                //TODO
-                                                                if ( named )
-                                                                { /*parameters->setNamedAutoConstantReal(name, def->acType, extraInfo);*/}
-                                                                else
-                                                                { /*parameters->setAutoConstantReal(index, def->acType, extraInfo);*/}
-                                                            }
-                                                            catch
-                                                            {
-                                                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                                    "setting of constant failed" );
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                                "incorrect float argument definition in extra parameters" );
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-                                                            "extra parameters required by constant definition " + atom1.Value );
-                                                    }
-                                                }
-                                                break;
+                                                    break;
+                                                #endregion Real
+                                            }
                                         }
-                                        //}
-                                        //else
-                                        //{
-                                        //    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                        //}
+                                        else
+                                        {
+                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+                                        }
                                     }
                                     else
                                     {
@@ -673,8 +679,7 @@ namespace Axiom.Scripting.Compiler
                 obj.Context = prog;
 
                 prog.IsMorphAnimationIncluded = false;
-                //TODO
-                //prog->setPoseAnimationIncluded(0);
+                prog.PoseAnimationCount = 0;
                 prog.IsSkeletalAnimationIncluded = false;
                 prog.IsVertexTextureFetchRequired = false;
                 prog.Origin = obj.File;
@@ -799,14 +804,22 @@ namespace Axiom.Scripting.Compiler
                 obj.Context = prog;
 
                 prog.IsMorphAnimationIncluded = false;
-                //TODO
-                //prog->setPoseAnimationIncluded(0);
+                prog.PoseAnimationCount = 0;
                 prog.IsSkeletalAnimationIncluded = false;
                 prog.IsVertexTextureFetchRequired = false;
                 prog.Origin = obj.File;
 
                 // Set the custom parameters
-                prog.SetParameters( customParameters );
+                foreach ( KeyValuePair<string, string> currentParam in customParameters )
+                {
+                    string param = currentParam.Key;
+                    string val = currentParam.Value;
+
+                    if ( !prog.SetParam( param, val ) )
+                    {
+                        LogManager.Instance.Write( "Error in program {0} parameter {1} is not valid.", source, param );
+                    }
+                }
 
                 // Set up default parameters
                 if ( prog.IsSupported && parameters != null )
@@ -895,14 +908,22 @@ namespace Axiom.Scripting.Compiler
                 obj.Context = prog;
 
                 prog.IsMorphAnimationIncluded = false;
-                //TODO
-                //prog->setPoseAnimationIncluded(0);
+                prog.PoseAnimationCount = 0;
                 prog.IsSkeletalAnimationIncluded = false;
                 prog.IsVertexTextureFetchRequired = false;
                 prog.Origin = obj.File;
 
                 // Set the custom parameters
-                prog.SetParameters( customParameters );
+                foreach ( KeyValuePair<string, string> currentParam in customParameters )
+                {
+                    string param = currentParam.Key;
+                    string val = currentParam.Value;
+
+                    if ( !prog.SetParam( param, val ) )
+                    {
+                        LogManager.Instance.Write( "Error in program {0} parameter {1} is not valid.", string.Empty, param );
+                    }
+                }
 
                 // Set up default parameters
                 if ( prog.IsSupported && parameters != null )
