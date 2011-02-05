@@ -64,6 +64,11 @@ namespace Axiom.Graphics
         {
         }
 
+        protected override void load()
+        {
+            // do nothing
+        }
+
         /// <summary>
         /// always silently ignore all parameters so as not to report errors on
         /// unsupported platforms
