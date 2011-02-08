@@ -122,15 +122,35 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
+		protected struct VertexPositionNormal : XFG.IVertexType
+		{
+			Microsoft.Xna.Framework.Vector3 position0;
+			Microsoft.Xna.Framework.Vector3 normal0;
+
+			readonly static XFG.VertexDeclaration _vertexDeclaration = new XFG.VertexDeclaration
+																		(
+																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Vector3, XFG.VertexElementUsage.Position, 0 ),
+																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Vector3, XFG.VertexElementUsage.Normal, 0 )
+																		);
+			public XFG.VertexDeclaration VertexDeclaration
+			{
+				get
+				{
+					return _vertexDeclaration;
+				}
+			}
+		}
+
 		private List<KeyValuePair<int, Type>> _vertexDeclarationSizeMap = new List<KeyValuePair<int, Type>>()
 																				{
 																					new KeyValuePair<int,Type>( 4, typeof(VertexSingle) ),
 																					new KeyValuePair<int,Type>( 8, typeof(VertexTexture) ),
 																					new KeyValuePair<int,Type>( 12, typeof(VertexPosition) ),
+																					new KeyValuePair<int,Type>( 20, typeof(XFG.VertexPositionTexture) ),
+																					new KeyValuePair<int,Type>( 24, typeof(VertexPositionNormal) ),
 																					new KeyValuePair<int,Type>( 28, typeof(XFG.VertexPositionColor) ),
 																					new KeyValuePair<int,Type>( 36, typeof(XFG.VertexPositionColorTexture) ),
 																					new KeyValuePair<int,Type>( 32, typeof(XFG.VertexPositionNormalTexture) ),
-																					new KeyValuePair<int,Type>( 20, typeof(XFG.VertexPositionTexture) ),
 																				};
 
 		public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
