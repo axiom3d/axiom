@@ -130,7 +130,7 @@ namespace Axiom.RenderSystems.Xna
 			readonly static XFG.VertexDeclaration _vertexDeclaration = new XFG.VertexDeclaration
 																		(
 																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Vector3, XFG.VertexElementUsage.Position, 0 ),
-																			new XFG.VertexElement( 0, XFG.VertexElementFormat.Vector3, XFG.VertexElementUsage.Normal, 0 )
+																			new XFG.VertexElement( 12, XFG.VertexElementFormat.Vector3, XFG.VertexElementUsage.Normal, 0 )
 																		);
 			public XFG.VertexDeclaration VertexDeclaration
 			{
