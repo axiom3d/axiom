@@ -74,10 +74,10 @@ namespace Axiom.Scripting.Compiler
                 }
 
                 // Set the value of the source
-                //ExternalTextureSourceManager::getSingleton().setCurrentPlugIn(obj->values.front()->getValue());
+                //TODO: ExternalTextureSourceManager::getSingleton().setCurrentPlugIn(obj->values.front()->getValue());
 
                 // Set up the technique, pass, and texunit levels
-                if ( true/*ExternalTextureSourceManager::getSingleton().getCurrentPlugIn() != 0*/)
+                if ( true/*TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn() != 0*/)
                 {
                     TextureUnitState texunit = (TextureUnitState)obj.Parent.Context;
                     Pass pass = texunit.Parent;
@@ -112,7 +112,7 @@ namespace Axiom.Scripting.Compiler
 
                     string tps = string.Format( "{0} {1} {2}", techniqueIndex, passIndex, texUnitIndex );
 
-                    //ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter( "set_T_P_S", tps );
+                    //TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter( "set_T_P_S", tps );
 
                     foreach ( AbstractNode i in obj.Children )
                     {
@@ -129,7 +129,7 @@ namespace Axiom.Scripting.Compiler
 
                                 str = str + j.Value;
                             }
-                            //ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter(prop->name, str);
+                            //TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter(prop->name, str);
                         }
                         else if ( i.Type == AbstractNodeType.Object )
                         {
@@ -137,7 +137,7 @@ namespace Axiom.Scripting.Compiler
                         }
                     }
 
-                    //ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->createDefinedTexture(material->getName(), material->getGroup());
+                    //TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->createDefinedTexture(material->getName(), material->getGroup());
                 }
             }
 

@@ -39,10 +39,36 @@ namespace Axiom.Samples
 	public class SdkSample : Sample
 	{
 		#region Fields and Properties
+
+		private bool dragLook;
+
 		/// <summary>
 		/// click and drag to free-look
 		/// </summary>
-		protected bool DragLook;
+		protected virtual bool DragLook
+		{
+			get
+			{
+				return dragLook;
+			}
+
+			set
+			{
+				if ( value )
+				{
+					CameraManager.setStyle( CameraStyle.Manual );
+					TrayManager.ShowCursor();
+					dragLook = true;
+				}
+				else
+				{
+					CameraManager.setStyle( CameraStyle.FreeLook );
+					TrayManager.HideCursor();
+					dragLook = false;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Main Viewport
 		/// </summary>
@@ -264,7 +290,7 @@ namespace Axiom.Samples
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_F5 ) // refresh all textures
 			{
-				//TextureManager.Instance.ReloadAll();
+				TextureManager.Instance.ReloadAll();
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_F9 ) // take a screenshot
 			{

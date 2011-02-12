@@ -700,10 +700,16 @@ namespace Axiom.RenderSystems.Xna
 					}
 
 					// Dispose Other resources
-					if ( _windowHandle != IntPtr.Zero && !_isExternal && SWF.Control.FromHandle( _windowHandle ) != null )
+#if !(XBOX || XBOX360)
+                    if ( _windowHandle != IntPtr.Zero && !_isExternal && SWF.Control.FromHandle( _windowHandle ) != null )
+#else
+                    if (_windowHandle != IntPtr.Zero && !_isExternal )
+#endif
 					{
 						WindowEventMonitor.Instance.UnregisterWindow( this );
+#if !(XBOX || XBOX360)
 						SWF.Control.FromHandle( _windowHandle ).Dispose();
+#endif
 					}
 
 				}
