@@ -177,7 +177,7 @@ namespace Axiom.Graphics
 		///     in the GPU or AGP memory is very expensive, and is in fact impossible if you
 		///     specify <see cref="BufferUsage.WriteOnly"/> for the main buffer. If you use this option, all 
 		///     reads and writes will be done to the shadow buffer, and the shadow buffer will
-		///     be synchronised with the real buffer at an appropriate time.
+		///     be synchronized with the real buffer at an appropriate time.
 		/// </param>
 		/// <returns></returns>
 		public abstract HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer );

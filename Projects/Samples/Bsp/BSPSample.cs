@@ -35,12 +35,6 @@ namespace Axiom.Samples
 			Metadata[ "Thumbnail" ] = "thumb_bsp.png";
 			Metadata[ "Help" ] = "";
 
-			// TrayManager = null;
-			CameraManager = null;
-			Viewport = null;
-			DetailsPanel = null;
-			CursorWasVisible = false;
-			DragLook = false;
 			RequiredPlugins.Add( "BSP Scene Manager" );
 		}
 
@@ -59,7 +53,7 @@ namespace Axiom.Samples
 
 		protected override void LoadResources()
 		{
-			/* NOTE: The browser initialises everything at the beginning already, so we use a 0 init proportion.
+			/* NOTE: The browser initializes everything at the beginning already, so we use a 0 init proportion.
 			If you're not compiling this sample for use with the browser, then leave the init proportion at 0.7. */
 			TrayManager.ShowLoadingBar( 1, 1, 0 );
 			// associate the world geometry with the world resource group, and then load the group
