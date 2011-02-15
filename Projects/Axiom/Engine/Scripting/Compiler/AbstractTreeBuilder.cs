@@ -132,7 +132,7 @@ namespace Axiom.Scripting.Compiler
 						return;
 					}
 
-					VariableAccessAbstractNode impl = new VariableAccessAbstractNode( _current );
+					VariableGetAbstractNode impl = new VariableGetAbstractNode( _current );
 					impl.Line = node.Line;
 					impl.File = node.File;
 					impl.Name = node.Token;
@@ -197,7 +197,7 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( iter.Current.Type == ConcreteNodeType.Variable )
 							{
-								VariableAccessAbstractNode var = new VariableAccessAbstractNode( impl );
+								VariableGetAbstractNode var = new VariableGetAbstractNode( impl );
 								var.File = iter.Current.File;
 								var.Line = iter.Current.Line;
 								var.Type = AbstractNodeType.VariableGet;
