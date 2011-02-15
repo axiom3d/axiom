@@ -767,7 +767,7 @@ namespace Axiom.Scripting.Compiler
 							if ( temp.Cls == node.Cls && !string.IsNullOrEmpty( node.Name ) && ( temp.Name == node.Name || wildcardMatch ) )
 							{
 								// Pair these two together unless it's already paired
-								if ( overrides[ j ].Value == dest.Children[ dest.Children.Count - 1 ] )
+								if ( overrides[ j ].Value == null )
 								{
 									int currentIterator = i;
 									ObjectAbstractNode currentNode = node;
