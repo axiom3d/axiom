@@ -524,7 +524,7 @@ namespace Axiom.Scripting.Compiler
 				}
 				else if ( cur.Type == AbstractNodeType.VariableGet )
 				{
-					VariableAccessAbstractNode var = (VariableAccessAbstractNode)cur;
+					VariableGetAbstractNode var = (VariableGetAbstractNode)cur;
 
 					// Look up the enclosing scope
 					ObjectAbstractNode scope = null;
