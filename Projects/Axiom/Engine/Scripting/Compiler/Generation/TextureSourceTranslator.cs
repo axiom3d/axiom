@@ -41,107 +41,107 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-    public partial class ScriptCompiler
-    {
-        public class TextureSourceTranslator : Translator
-        {
-            public TextureSourceTranslator()
-                : base()
-            {
-            }
+	public partial class ScriptCompiler
+	{
+		public class TextureSourceTranslator : Translator
+		{
+			public TextureSourceTranslator()
+				: base()
+			{
+			}
 
-            #region Translator Implementation
+			#region Translator Implementation
 
-            /// <see cref="Translator.CheckFor"/>
-            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
-            {
-                return nodeId == Keywords.ID_TEXTURE_SOURCE && parentId == Keywords.ID_TEXTURE_UNIT;
-            }
+			/// <see cref="Translator.CheckFor"/>
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+			{
+				return nodeId == Keywords.ID_TEXTURE_SOURCE && parentId == Keywords.ID_TEXTURE_UNIT;
+			}
 
-            /// <see cref="Translator.Translate"/>
-            public override void Translate( ScriptCompiler compiler, AbstractNode node )
-            {
-                throw new NotImplementedException();
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				throw new NotImplementedException();
 
-                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-                // It has to have one value identifying the texture source name
-                if ( obj.Values.Count == 0 )
-                {
-                    compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line,
-                        "texture_source requires a type value" );
-                    return;
-                }
+				// It has to have one value identifying the texture source name
+				if ( obj.Values.Count == 0 )
+				{
+					compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line,
+						"texture_source requires a type value" );
+					return;
+				}
 
-                // Set the value of the source
-                //TODO: ExternalTextureSourceManager::getSingleton().setCurrentPlugIn(obj->values.front()->getValue());
+				// Set the value of the source
+				//TODO: ExternalTextureSourceManager::getSingleton().setCurrentPlugIn(obj->values.front()->getValue());
 
-                // Set up the technique, pass, and texunit levels
-                if ( true/*TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn() != 0*/)
-                {
-                    TextureUnitState texunit = (TextureUnitState)obj.Parent.Context;
-                    Pass pass = texunit.Parent;
-                    Technique technique = pass.Parent;
-                    Material material = technique.Parent;
+				// Set up the technique, pass, and texunit levels
+				if ( true/*TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn() != 0*/)
+				{
+					TextureUnitState texunit = (TextureUnitState)obj.Parent.Context;
+					Pass pass = texunit.Parent;
+					Technique technique = pass.Parent;
+					Material material = technique.Parent;
 
-                    ushort techniqueIndex = 0, passIndex = 0, texUnitIndex = 0;
-                    for ( ushort i = 0; i < material.TechniqueCount; i++ )
-                    {
-                        if ( material.GetTechnique( i ) == technique )
-                        {
-                            techniqueIndex = i;
-                            break;
-                        }
-                    }
-                    for ( ushort i = 0; i < technique.PassCount; i++ )
-                    {
-                        if ( technique.GetPass( i ) == pass )
-                        {
-                            passIndex = i;
-                            break;
-                        }
-                    }
-                    for ( ushort i = 0; i < pass.TextureUnitStageCount; i++ )
-                    {
-                        if ( pass.GetTextureUnitState( i ) == texunit )
-                        {
-                            texUnitIndex = i;
-                            break;
-                        }
-                    }
+					ushort techniqueIndex = 0, passIndex = 0, texUnitIndex = 0;
+					for ( ushort i = 0; i < material.TechniqueCount; i++ )
+					{
+						if ( material.GetTechnique( i ) == technique )
+						{
+							techniqueIndex = i;
+							break;
+						}
+					}
+					for ( ushort i = 0; i < technique.PassCount; i++ )
+					{
+						if ( technique.GetPass( i ) == pass )
+						{
+							passIndex = i;
+							break;
+						}
+					}
+					for ( ushort i = 0; i < pass.TextureUnitStageCount; i++ )
+					{
+						if ( pass.GetTextureUnitState( i ) == texunit )
+						{
+							texUnitIndex = i;
+							break;
+						}
+					}
 
-                    string tps = string.Format( "{0} {1} {2}", techniqueIndex, passIndex, texUnitIndex );
+					string tps = string.Format( "{0} {1} {2}", techniqueIndex, passIndex, texUnitIndex );
 
-                    //TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter( "set_T_P_S", tps );
+					//TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter( "set_T_P_S", tps );
 
-                    foreach ( AbstractNode i in obj.Children )
-                    {
-                        if ( i.Type == AbstractNodeType.Property )
-                        {
-                            PropertyAbstractNode prop = (PropertyAbstractNode)i;
-                            // Glob the property values all together
-                            string str = string.Empty;
+					foreach ( AbstractNode i in obj.Children )
+					{
+						if ( i.Type == AbstractNodeType.Property )
+						{
+							PropertyAbstractNode prop = (PropertyAbstractNode)i;
+							// Glob the property values all together
+							string str = string.Empty;
 
-                            foreach ( AbstractNode j in prop.Values )
-                            {
-                                if ( j != prop.Values[ 0 ] )
-                                    str += " ";
+							foreach ( AbstractNode j in prop.Values )
+							{
+								if ( j != prop.Values[ 0 ] )
+									str += " ";
 
-                                str = str + j.Value;
-                            }
-                            //TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter(prop->name, str);
-                        }
-                        else if ( i.Type == AbstractNodeType.Object )
-                        {
-                            _processNode( compiler, i );
-                        }
-                    }
+								str = str + j.Value;
+							}
+							//TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter(prop->name, str);
+						}
+						else if ( i.Type == AbstractNodeType.Object )
+						{
+							_processNode( compiler, i );
+						}
+					}
 
-                    //TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->createDefinedTexture(material->getName(), material->getGroup());
-                }
-            }
+					//TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->createDefinedTexture(material->getName(), material->getGroup());
+				}
+			}
 
-            #endregion Translator Implementation
-        }
-    }
+			#endregion Translator Implementation
+		}
+	}
 }

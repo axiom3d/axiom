@@ -44,70 +44,86 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		public enum CompileErrorCode
 		{
-            [ScriptEnum("Unknown error")]
-            UnknownError = 0,
+			[ScriptEnum( "Unknown error" )]
+			UnknownError = 0,
 
-            [ScriptEnum("String expected")]
+			[ScriptEnum( "String expected" )]
 			StringExpected,
 
-            [ScriptEnum("Number expected")]
+			[ScriptEnum( "Number expected" )]
 			NumberExpected,
 
-            [ScriptEnum("Fewer parameters expected")]
+			[ScriptEnum( "Fewer parameters expected" )]
 			FewerParametersExpected,
 
-            [ScriptEnum("Variable expected")]
+			[ScriptEnum( "Variable expected" )]
 			VariableExpected,
 
-            [ScriptEnum("Undefined variable")]
+			[ScriptEnum( "Undefined variable" )]
 			UndefinedVariable,
 
-            [ScriptEnum("Object name expected")]
+			[ScriptEnum( "Object name expected" )]
 			ObjectNameExpected,
 
-            [ScriptEnum("Object allocation error")]
+			[ScriptEnum( "Object allocation error" )]
 			ObjectAllocationError,
 
-            [ScriptEnum("Invalid parameters")]
+			[ScriptEnum( "Invalid parameters" )]
 			InvalidParameters,
 
-            [ScriptEnum("Duplicate override")]
-            DuplicateOverride,
+			[ScriptEnum( "Duplicate override" )]
+			DuplicateOverride,
 
-            [ScriptEnum("Unexpected token")]
-            UnexpectedToken,
+			[ScriptEnum( "Unexpected token" )]
+			UnexpectedToken,
 
-            [ScriptEnum("Object base not found")]
-            ObjectBaseNotFound,
+			[ScriptEnum( "Object base not found" )]
+			ObjectBaseNotFound,
 
-            [ScriptEnum("Unsupported by RenderSystem")]
-            UnsupportedByRenderSystem,
+			[ScriptEnum( "Unsupported by RenderSystem" )]
+			UnsupportedByRenderSystem,
 
-            [ScriptEnum("Reference to a non existing object")]
-            ReferenceToaNonExistingObject
+			[ScriptEnum( "Reference to a non existing object" )]
+			ReferenceToaNonExistingObject
 		}
 
 		public struct CompileError
 		{
 
-			public CompileError( CompileErrorCode code, string file, uint line , string msg)
-                : this()
+			public CompileError( CompileErrorCode code, string file, uint line, string msg )
+				: this()
 			{
 				this.Code = code;
 				this.File = file;
 				this.Line = line;
-                this.Message = msg;
+				this.Message = msg;
 			}
 
-            public string File { get; private set; }
-            public string Message { get; private set; }
-            public uint Line { get; private set; }
-            public CompileErrorCode Code { get; private set; }
+			public string File
+			{
+				get;
+				private set;
+			}
+			public string Message
+			{
+				get;
+				private set;
+			}
+			public uint Line
+			{
+				get;
+				private set;
+			}
+			public CompileErrorCode Code
+			{
+				get;
+				private set;
+			}
 		}
 	}
 }

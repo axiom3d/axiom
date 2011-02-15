@@ -174,8 +174,8 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							temp.Add( node );
-                        }
-                        temp.AddRange( node.Children );
+						}
+						temp.AddRange( node.Children );
 
 						// Get the type of object
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
@@ -184,9 +184,9 @@ namespace Axiom.Scripting.Compiler
 						bool validNode = iter.MoveNext();
 
 						// Get the name
-                        // Unless the type is in the exclusion list
-                        if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) &&
-                            !_compiler._isNameExcluded( impl.Cls, _current ) )
+						// Unless the type is in the exclusion list
+						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) &&
+							!_compiler._isNameExcluded( impl.Cls, _current ) )
 						{
 							impl.Name = iter.Current.Token;
 							validNode = iter.MoveNext();
@@ -219,11 +219,11 @@ namespace Axiom.Scripting.Compiler
 						// Find the base
 						if ( validNode && iter.Current.Type == ConcreteNodeType.Colon )
 						{
-                            // Children of the ':' are bases
-                            foreach ( ConcreteNode j in iter.Current.Children )
-                                impl.Bases.Add( j.Token );
-                            
-                            validNode = iter.MoveNext();
+							// Children of the ':' are bases
+							foreach ( ConcreteNode j in iter.Current.Children )
+								impl.Bases.Add( j.Token );
+
+							validNode = iter.MoveNext();
 						}
 
 						// Finally try to map the cls to an id
@@ -309,5 +309,5 @@ namespace Axiom.Scripting.Compiler
 			}
 
 		}
-    }
+	}
 }

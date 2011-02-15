@@ -47,38 +47,38 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-        public string Name;
+		public string Name;
 
-        public string Cls;
+		public string Cls;
 
-        public IList<string> Bases
-        {
-            get
-            {
-                return _bases;
-            }
-        }
-        private List<string> _bases = new List<string>();
+		public IList<string> Bases
+		{
+			get
+			{
+				return _bases;
+			}
+		}
+		private List<string> _bases = new List<string>();
 
-        public uint Id;
+		public uint Id;
 
 		public bool IsAbstract;
 
-        public IList<AbstractNode> Children = new List<AbstractNode>();
+		public IList<AbstractNode> Children = new List<AbstractNode>();
 
-        public IList<AbstractNode> Values = new List<AbstractNode>();
+		public IList<AbstractNode> Values = new List<AbstractNode>();
 
-        /// <summary>
-        /// For use when processing object inheritance and overriding
-        /// </summary>
-        public IList<AbstractNode> Overrides
-        {
-            get
-            {
-                return _overrides;
-            }
-        }
-        private List<AbstractNode> _overrides = new List<AbstractNode>();
+		/// <summary>
+		/// For use when processing object inheritance and overriding
+		/// </summary>
+		public IList<AbstractNode> Overrides
+		{
+			get
+			{
+				return _overrides;
+			}
+		}
+		private List<AbstractNode> _overrides = new List<AbstractNode>();
 
 		private Dictionary<String, String> _environment = new Dictionary<string, string>();
 
@@ -96,7 +96,7 @@ namespace Axiom.Scripting.Compiler.AST
 			: base( parent )
 		{
 			Type = AbstractNodeType.Object;
-            IsAbstract = false;
+			IsAbstract = false;
 		}
 
 		#region Methods
@@ -111,28 +111,28 @@ namespace Axiom.Scripting.Compiler.AST
 			_environment[ name ] = value;
 		}
 
-        public KeyValuePair<bool, string> GetVariable( string inName )
-        {
-            if ( _environment.ContainsKey( inName ) )
-                return new KeyValuePair<bool, string>( true, _environment[ inName ] );
+		public KeyValuePair<bool, string> GetVariable( string inName )
+		{
+			if ( _environment.ContainsKey( inName ) )
+				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
 
-            ObjectAbstractNode parentNode = (ObjectAbstractNode)this.Parent;
-            while ( parentNode != null )
-            {
-                if ( parentNode._environment.ContainsKey( inName ) )
-                    return new KeyValuePair<bool, string>( true, parentNode._environment[ inName ] );
+			ObjectAbstractNode parentNode = (ObjectAbstractNode)this.Parent;
+			while ( parentNode != null )
+			{
+				if ( parentNode._environment.ContainsKey( inName ) )
+					return new KeyValuePair<bool, string>( true, parentNode._environment[ inName ] );
 
-                parentNode = (ObjectAbstractNode)parentNode.Parent;
-            }
+				parentNode = (ObjectAbstractNode)parentNode.Parent;
+			}
 
-            return new KeyValuePair<bool, string>( false, string.Empty );
-        }
+			return new KeyValuePair<bool, string>( false, string.Empty );
+		}
 
 		#endregion Methods
 
 		#region AbstractNode Implementation
 
-        /// <see cref="AbstractNode.Clone"/>
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			ObjectAbstractNode node = new ObjectAbstractNode( Parent );
@@ -159,7 +159,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-        /// <see cref="AbstractNode.Value"/>
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get

@@ -105,5 +105,19 @@ namespace Axiom.Scripting.Compiler.AST
 		public abstract AbstractNode Clone();
 
 		#endregion ICloneable Implementation
+
+		#region System.Object Implementation
+
+		public override bool Equals( object obj )
+		{
+			return this.GetHashCode() == obj.GetHashCode();
+		}
+
+		public override int GetHashCode()
+		{
+			return File.GetHashCode() | Line.GetHashCode();
+		}
+
+		#endregion System.Object Implementation
 	}
 }

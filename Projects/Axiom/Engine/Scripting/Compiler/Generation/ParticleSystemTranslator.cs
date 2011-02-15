@@ -40,159 +40,160 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-    public partial class ScriptCompiler
-    {
-        public class ParticleSystemTranslator : Translator
-        {
-            protected ParticleSystem _System;
+	public partial class ScriptCompiler
+	{
+		public class ParticleSystemTranslator : Translator
+		{
+			protected ParticleSystem _System;
 
-            public ParticleSystemTranslator()
-                : base()
-            {
-                _System = null;
-            }
+			public ParticleSystemTranslator()
+				: base()
+			{
+				_System = null;
+			}
 
-            #region Translator Implementation
+			#region Translator Implementation
 
-            /// <see cref="Translator.CheckFor"/>
-            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
-            {
-                return nodeId == Keywords.ID_PARTICLE_SYSTEM;
-            }
+			/// <see cref="Translator.CheckFor"/>
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+			{
+				return nodeId == Keywords.ID_PARTICLE_SYSTEM;
+			}
 
-            /// <see cref="Translator.Translate"/>
-            public override void Translate( ScriptCompiler compiler, AbstractNode node )
-            {
-                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-                // Find the name
-                if ( obj != null )
-                {
-                    if ( string.IsNullOrEmpty( obj.Name ) )
-                    {
-                        compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
-                        return;
-                    }
-                }
-                else
-                {
-                    compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
-                    return;
-                }
+				// Find the name
+				if ( obj != null )
+				{
+					if ( string.IsNullOrEmpty( obj.Name ) )
+					{
+						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+						return;
+					}
+				}
+				else
+				{
+					compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+					return;
+				}
 
-                // Allocate the particle system
-                object sysObject;
-                ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-                bool processed = compiler._fireEvent( ref evt, out sysObject );
+				// Allocate the particle system
+				object sysObject;
+				ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
+				bool processed = compiler._fireEvent( ref evt, out sysObject );
 
-                if ( !processed )
-                {
-                    _System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
-                }
-                else
-                    _System = (ParticleSystem)sysObject;
+				if ( !processed )
+				{
+					_System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
+				}
+				else
+					_System = (ParticleSystem)sysObject;
 
-                if ( _System == null )
-                {
-                    compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
-                    return;
-                }
+				if ( _System == null )
+				{
+					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
+					return;
+				}
 
-                _System.Origin = obj.File;
+				_System.Origin = obj.File;
 
-                _System.RemoveAllEmitters(); ;
-                _System.RemoveAllAffectors();
+				_System.RemoveAllEmitters();
+				;
+				_System.RemoveAllAffectors();
 
-                obj.Context = _System;
+				obj.Context = _System;
 
-                foreach ( AbstractNode i in obj.Children )
-                {
-                    if ( i.Type == AbstractNodeType.Property )
-                    {
-                        PropertyAbstractNode prop = (PropertyAbstractNode)i;
-                        switch ( (Keywords)prop.Id )
-                        {
-                            case Keywords.ID_MATERIAL:
-                                if ( prop.Values.Count == 0 )
-                                {
-                                    compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                    return;
-                                }
-                                else
-                                {
-                                    if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
-                                    {
-                                        string name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
+				foreach ( AbstractNode i in obj.Children )
+				{
+					if ( i.Type == AbstractNodeType.Property )
+					{
+						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						switch ( (Keywords)prop.Id )
+						{
+							case Keywords.ID_MATERIAL:
+								if ( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+									return;
+								}
+								else
+								{
+									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									{
+										string name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
-                                        ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent(
-                                            ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
+										ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent(
+											ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
 
-                                        compiler._fireEvent( ref locEvt );
-                                        string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
+										compiler._fireEvent( ref locEvt );
+										string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
-                                        if ( !_System.SetParameter( "material", locEvtName ) )
-                                        {
-                                            if ( _System.Renderer != null )
-                                            {
-                                                if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
-                                                {
-                                                    compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-                                                        "material property could not be set with material \"" + locEvtName + "\"" );
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
+										if ( !_System.SetParameter( "material", locEvtName ) )
+										{
+											if ( _System.Renderer != null )
+											{
+												if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
+												{
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+														"material property could not be set with material \"" + locEvtName + "\"" );
+												}
+											}
+										}
+									}
+								}
+								break;
 
-                            default:
-                                if ( prop.Values.Count == 0 )
-                                {
-                                    compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                    return;
-                                }
-                                else
-                                {
-                                    string name = prop.Name, value = string.Empty;
+							default:
+								if ( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+									return;
+								}
+								else
+								{
+									string name = prop.Name, value = string.Empty;
 
-                                    // Glob the values together
-                                    foreach ( AbstractNode it in prop.Values )
-                                    {
-                                        if ( it.Type == AbstractNodeType.Atom )
-                                        {
-                                            if ( string.IsNullOrEmpty( value ) )
-                                                value = ( (AtomAbstractNode)it ).Value;
-                                            else
-                                                value = value + " " + ( (AtomAbstractNode)it ).Value;
-                                        }
-                                        else
-                                        {
-                                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                            return;
-                                        }
-                                    }
+									// Glob the values together
+									foreach ( AbstractNode it in prop.Values )
+									{
+										if ( it.Type == AbstractNodeType.Atom )
+										{
+											if ( string.IsNullOrEmpty( value ) )
+												value = ( (AtomAbstractNode)it ).Value;
+											else
+												value = value + " " + ( (AtomAbstractNode)it ).Value;
+										}
+										else
+										{
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+											return;
+										}
+									}
 
-                                    if ( !_System.SetParameter( name, value ) )
-                                    {
-                                        if ( _System.Renderer != null )
-                                        {
-                                            if ( !_System.Renderer.SetParameter( name, value ) )
-                                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                        }
-                                    }
-                                }
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        _processNode( compiler, i );
-                    }
-                }
-            }
+									if ( !_System.SetParameter( name, value ) )
+									{
+										if ( _System.Renderer != null )
+										{
+											if ( !_System.Renderer.SetParameter( name, value ) )
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+										}
+									}
+								}
+								break;
+						}
+					}
+					else
+					{
+						_processNode( compiler, i );
+					}
+				}
+			}
 
-            #endregion Translator Implementation
-        }
-    }
+			#endregion Translator Implementation
+		}
+	}
 }
 

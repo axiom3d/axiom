@@ -40,203 +40,203 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-    public partial class ScriptCompiler
-    {
-        public class CompositionPassStencilTranslator : Translator
-        {
-            protected CompositionPass _Pass;
+	public partial class ScriptCompiler
+	{
+		public class CompositionPassStencilTranslator : Translator
+		{
+			protected CompositionPass _Pass;
 
-            public CompositionPassStencilTranslator()
-                : base()
-            {
-                _Pass = null;
-            }
+			public CompositionPassStencilTranslator()
+				: base()
+			{
+				_Pass = null;
+			}
 
-            #region Translator Implementation
+			#region Translator Implementation
 
-            /// <see cref="Translator.CheckFor"/>
-            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
-            {
-                return nodeId == Keywords.ID_STENCIL && parentId == Keywords.ID_PASS;
-            }
+			/// <see cref="Translator.CheckFor"/>
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+			{
+				return nodeId == Keywords.ID_STENCIL && parentId == Keywords.ID_PASS;
+			}
 
-            /// <see cref="Translator.Translate"/>
-            public override void Translate( ScriptCompiler compiler, AbstractNode node )
-            {
-                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-                _Pass = (CompositionPass)obj.Parent.Context;
+				_Pass = (CompositionPass)obj.Parent.Context;
 
-                // Should be no parameters, just children
-                if ( obj.Values.Count != 0 )
-                {
-                    compiler.AddError( CompileErrorCode.UnexpectedToken, obj.File, obj.Line );
-                }
+				// Should be no parameters, just children
+				if ( obj.Values.Count != 0 )
+				{
+					compiler.AddError( CompileErrorCode.UnexpectedToken, obj.File, obj.Line );
+				}
 
-                foreach ( AbstractNode i in obj.Children )
-                {
-                    if ( i.Type == AbstractNodeType.Object )
-                    {
-                        _processNode( compiler, i );
-                    }
-                    else if ( i.Type == AbstractNodeType.Property )
-                    {
-                        PropertyAbstractNode prop = (PropertyAbstractNode)i;
-                        switch ( (Keywords)prop.Id )
-                        {
-                            #region ID_CHECK
-                            case Keywords.ID_CHECK:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+				foreach ( AbstractNode i in obj.Children )
+				{
+					if ( i.Type == AbstractNodeType.Object )
+					{
+						_processNode( compiler, i );
+					}
+					else if ( i.Type == AbstractNodeType.Property )
+					{
+						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						switch ( (Keywords)prop.Id )
+						{
+							#region ID_CHECK
+							case Keywords.ID_CHECK:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    bool val = false;
-                                    if ( getBoolean( prop.Values[ 0 ], out val ) )
-                                        _Pass.StencilCheck = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_CHECK
+									bool val = false;
+									if ( getBoolean( prop.Values[ 0 ], out val ) )
+										_Pass.StencilCheck = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_CHECK
 
-                            #region ID_COMP_FUNC
-                            case Keywords.ID_COMP_FUNC:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+							#region ID_COMP_FUNC
+							case Keywords.ID_COMP_FUNC:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    CompareFunction func;
-                                    if ( getEnumeration<CompareFunction>( prop.Values[ 0 ], compiler, out func ) )
-                                        _Pass.StencilFunc = func;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_COMP_FUNC
+									CompareFunction func;
+									if ( getEnumeration<CompareFunction>( prop.Values[ 0 ], compiler, out func ) )
+										_Pass.StencilFunc = func;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_COMP_FUNC
 
-                            #region ID_REF_VALUE
-                            case Keywords.ID_REF_VALUE:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+							#region ID_REF_VALUE
+							case Keywords.ID_REF_VALUE:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    int val;
-                                    if ( getInt( prop.Values[ 0 ], out val ) )
-                                        _Pass.StencilRefValue = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_REF_VALUE
+									int val;
+									if ( getInt( prop.Values[ 0 ], out val ) )
+										_Pass.StencilRefValue = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_REF_VALUE
 
-                            #region ID_MASK
-                            case Keywords.ID_MASK:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-                                        return;
-                                    }
-                                    int val;
-                                    if ( getInt( prop.Values[ 0 ], out val ) )
-                                        _Pass.StencilMask = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_MASK
+							#region ID_MASK
+							case Keywords.ID_MASK:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
+										return;
+									}
+									int val;
+									if ( getInt( prop.Values[ 0 ], out val ) )
+										_Pass.StencilMask = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_MASK
 
-                            #region ID_FAIL_OP
-                            case Keywords.ID_FAIL_OP:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+							#region ID_FAIL_OP
+							case Keywords.ID_FAIL_OP:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    StencilOperation val;
-                                    if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
-                                        _Pass.StencilFailOp = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_FAIL_OP
+									StencilOperation val;
+									if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
+										_Pass.StencilFailOp = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_FAIL_OP
 
-                            #region ID_DEPTH_FAIL_OP
-                            case Keywords.ID_DEPTH_FAIL_OP:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+							#region ID_DEPTH_FAIL_OP
+							case Keywords.ID_DEPTH_FAIL_OP:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    StencilOperation val;
-                                    if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
-                                        _Pass.StencilDepthFailOp = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_DEPTH_FAIL_OP
+									StencilOperation val;
+									if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
+										_Pass.StencilDepthFailOp = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_DEPTH_FAIL_OP
 
-                            #region ID_PASS_OP
-                            case Keywords.ID_PASS_OP:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+							#region ID_PASS_OP
+							case Keywords.ID_PASS_OP:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    StencilOperation val;
-                                    if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
-                                        _Pass.StencilPassOp = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_PASS_OP
+									StencilOperation val;
+									if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
+										_Pass.StencilPassOp = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_PASS_OP
 
-                            #region ID_TWO_SIDED
-                            case Keywords.ID_TWO_SIDED:
-                                {
-                                    if ( prop.Values.Count == 0 )
-                                    {
-                                        compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-                                        return;
-                                    }
+							#region ID_TWO_SIDED
+							case Keywords.ID_TWO_SIDED:
+								{
+									if ( prop.Values.Count == 0 )
+									{
+										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+										return;
+									}
 
-                                    bool val;
-                                    if ( getBoolean( prop.Values[ 0 ], out val ) )
-                                        _Pass.StencilTwoSidedOperation = val;
-                                    else
-                                        compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                }
-                                break;
-                            #endregion ID_TWO_SIDED
+									bool val;
+									if ( getBoolean( prop.Values[ 0 ], out val ) )
+										_Pass.StencilTwoSidedOperation = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+								break;
+							#endregion ID_TWO_SIDED
 
-                            default:
-                                compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-                                    "token \"" + prop.Name + "\" is not recognized" );
-                                break;
-                        }
-                    }
-                }
-            }
+							default:
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+									"token \"" + prop.Name + "\" is not recognized" );
+								break;
+						}
+					}
+				}
+			}
 
-            #endregion Translator Implementation
-        }
-    }
+			#endregion Translator Implementation
+		}
+	}
 }

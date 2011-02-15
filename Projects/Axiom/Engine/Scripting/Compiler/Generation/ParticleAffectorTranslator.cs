@@ -40,86 +40,86 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-    public partial class ScriptCompiler
-    {
-        public class ParticleAffectorTranslator : Translator
-        {
-            protected ParticleAffector _Affector;
+	public partial class ScriptCompiler
+	{
+		public class ParticleAffectorTranslator : Translator
+		{
+			protected ParticleAffector _Affector;
 
-            public ParticleAffectorTranslator()
-                : base()
-            {
-                _Affector = null;
-            }
+			public ParticleAffectorTranslator()
+				: base()
+			{
+				_Affector = null;
+			}
 
-            #region Translator Implementation
+			#region Translator Implementation
 
-            /// <see cref="Translator.CheckFor"/>
-            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
-            {
-                return nodeId == Keywords.ID_AFFECTOR;
-            }
+			/// <see cref="Translator.CheckFor"/>
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+			{
+				return nodeId == Keywords.ID_AFFECTOR;
+			}
 
-            /// <see cref="Translator.Translate"/>
-            public override void Translate( ScriptCompiler compiler, AbstractNode node )
-            {
-                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-                // Must have a type as the first value
-                if ( obj.Values.Count == 0 )
-                {
-                    compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
-                    return;
-                }
+				// Must have a type as the first value
+				if ( obj.Values.Count == 0 )
+				{
+					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
+					return;
+				}
 
-                string type = string.Empty;
-                if ( !getString( obj.Values[ 0 ], out type ) )
-                {
-                    compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
-                    return;
-                }
+				string type = string.Empty;
+				if ( !getString( obj.Values[ 0 ], out type ) )
+				{
+					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
+					return;
+				}
 
-                ParticleSystem system = (ParticleSystem)obj.Parent.Context;
-                _Affector = system.AddAffector( type );
+				ParticleSystem system = (ParticleSystem)obj.Parent.Context;
+				_Affector = system.AddAffector( type );
 
-                foreach ( AbstractNode i in obj.Children )
-                {
-                    if ( i.Type == AbstractNodeType.Property )
-                    {
-                        PropertyAbstractNode prop = (PropertyAbstractNode)i;
-                        string value = string.Empty;
+				foreach ( AbstractNode i in obj.Children )
+				{
+					if ( i.Type == AbstractNodeType.Property )
+					{
+						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						string value = string.Empty;
 
-                        // Glob the values together
-                        foreach ( AbstractNode it in prop.Values )
-                        {
-                            if ( it.Type == AbstractNodeType.Atom )
-                            {
-                                if ( string.IsNullOrEmpty( value ) )
-                                    value = ( (AtomAbstractNode)it ).Value;
-                                else
-                                    value = value + " " + ( (AtomAbstractNode)it ).Value;
-                            }
-                            else
-                            {
-                                compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                                break;
-                            }
-                        }
+						// Glob the values together
+						foreach ( AbstractNode it in prop.Values )
+						{
+							if ( it.Type == AbstractNodeType.Atom )
+							{
+								if ( string.IsNullOrEmpty( value ) )
+									value = ( (AtomAbstractNode)it ).Value;
+								else
+									value = value + " " + ( (AtomAbstractNode)it ).Value;
+							}
+							else
+							{
+								compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								break;
+							}
+						}
 
-                        if ( !_Affector.SetParam( prop.Name, value ) )
-                        {
-                            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-                        }
-                    }
-                    else
-                    {
-                        _processNode( compiler, i );
-                    }
-                }
-            }
+						if ( !_Affector.SetParam( prop.Name, value ) )
+						{
+							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+						}
+					}
+					else
+					{
+						_processNode( compiler, i );
+					}
+				}
+			}
 
-            #endregion Translator Implementation
-        }
-    }
+			#endregion Translator Implementation
+		}
+	}
 }
 

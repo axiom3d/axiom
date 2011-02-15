@@ -52,7 +52,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
-        /// <see cref="AbstractNode.Clone"/>
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			VariableAccessAbstractNode node = new VariableAccessAbstractNode( Parent );
@@ -63,16 +63,16 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-        /// <see cref="AbstractNode.Value"/>
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get
 			{
-                return Name;
+				return Name;
 			}
 			set
 			{
-                Name = value;
+				Name = value;
 			}
 		}
 
