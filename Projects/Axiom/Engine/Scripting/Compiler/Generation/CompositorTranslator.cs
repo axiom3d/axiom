@@ -40,94 +40,94 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-    public partial class ScriptCompiler
-    {
-        public class CompositorTranslator : Translator
-        {
-            protected Compositor _Compositor;
+	public partial class ScriptCompiler
+	{
+		public class CompositorTranslator : Translator
+		{
+			protected Compositor _Compositor;
 
-            public CompositorTranslator()
-                : base()
-            {
-                _Compositor = null;
-            }
+			public CompositorTranslator()
+				: base()
+			{
+				_Compositor = null;
+			}
 
-            #region Translator Implementation
+			#region Translator Implementation
 
-            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
-            {
-                return nodeId == Keywords.ID_COMPOSITOR;
-            }
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+			{
+				return nodeId == Keywords.ID_COMPOSITOR;
+			}
 
-            /// <see cref="Translator.Translate"/>
-            public override void Translate( ScriptCompiler compiler, AbstractNode node )
-            {
-                ObjectAbstractNode obj = (ObjectAbstractNode)node;
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-                if ( obj != null )
-                {
-                    if ( string.IsNullOrEmpty( obj.Name ) )
-                    {
-                        compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
-                        return;
-                    }
-                }
-                else
-                {
-                    compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
-                    return;
-                }
+				if ( obj != null )
+				{
+					if ( string.IsNullOrEmpty( obj.Name ) )
+					{
+						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+						return;
+					}
+				}
+				else
+				{
+					compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+					return;
+				}
 
-                // Create the compositor
-                object compObject;
-                ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-                bool processed = compiler._fireEvent( ref evt, out compObject );
+				// Create the compositor
+				object compObject;
+				ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
+				bool processed = compiler._fireEvent( ref evt, out compObject );
 
-                if ( !processed )
-                {
-                    //TODO
-                    // The original translated implementation of this code block was simply the following:
-                    // _Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
-                    // but sometimes it generates an excepiton due to a duplicate resource.
-                    // In order to avoid the above mentioned exception, the implementation was changed, but
-                    // it need to be checked when ResourceManager._add will be updated to the lastest version
+				if ( !processed )
+				{
+					//TODO
+					// The original translated implementation of this code block was simply the following:
+					// _Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					// but sometimes it generates an excepiton due to a duplicate resource.
+					// In order to avoid the above mentioned exception, the implementation was changed, but
+					// it need to be checked when ResourceManager._add will be updated to the lastest version
 
-                    Compositor checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
+					Compositor checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
 
-                    if ( checkForExistingComp == null )
-                        _Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
-                    else
-                        _Compositor = checkForExistingComp;
-                }
-                else
-                    _Compositor = (Compositor)compObject;
+					if ( checkForExistingComp == null )
+						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					else
+						_Compositor = checkForExistingComp;
+				}
+				else
+					_Compositor = (Compositor)compObject;
 
-                if ( _Compositor == null )
-                {
-                    compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
-                    return;
-                }
+				if ( _Compositor == null )
+				{
+					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
+					return;
+				}
 
-                // Prepare the compositor
-                _Compositor.RemoveAllTechniques();
-                _Compositor.Origin = obj.File;
-                obj.Context = _Compositor;
+				// Prepare the compositor
+				_Compositor.RemoveAllTechniques();
+				_Compositor.Origin = obj.File;
+				obj.Context = _Compositor;
 
-                foreach ( AbstractNode i in obj.Children )
-                {
-                    if ( i.Type == AbstractNodeType.Object )
-                    {
-                        _processNode( compiler, i );
-                    }
-                    else
-                    {
-                        compiler.AddError( CompileErrorCode.UnexpectedToken, i.File, i.Line, "token not recognized" );
-                    }
-                }
-            }
+				foreach ( AbstractNode i in obj.Children )
+				{
+					if ( i.Type == AbstractNodeType.Object )
+					{
+						_processNode( compiler, i );
+					}
+					else
+					{
+						compiler.AddError( CompileErrorCode.UnexpectedToken, i.File, i.Line, "token not recognized" );
+					}
+				}
+			}
 
-            #endregion Translator Implementation
-        }
-    }
+			#endregion Translator Implementation
+		}
+	}
 }
 

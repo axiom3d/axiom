@@ -47,11 +47,11 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-        private CultureInfo _culture = new CultureInfo( "en-US" );
-        private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
-                                        NumberStyles.AllowLeadingWhite |
-                                        NumberStyles.AllowTrailingWhite |
-                                        NumberStyles.AllowDecimalPoint;
+		private CultureInfo _culture = new CultureInfo( "en-US" );
+		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
+										   NumberStyles.AllowLeadingWhite |
+										   NumberStyles.AllowTrailingWhite |
+										   NumberStyles.AllowDecimalPoint;
 
 
 		private bool _parsed = false;
@@ -90,23 +90,23 @@ namespace Axiom.Scripting.Compiler.AST
 			Type = AbstractNodeType.Atom;
 		}
 
-        private void _parse()
-        {
-            try
-            {
-                _number = float.Parse( _value, _parseStyle, _culture );
-                _isNumber = true;
-            }
-            catch
-            {
-                _isNumber = false;
-            }
-            _parsed = true;
-        }
+		private void _parse()
+		{
+			try
+			{
+				_number = float.Parse( _value, _parseStyle, _culture );
+				_isNumber = true;
+			}
+			catch
+			{
+				_isNumber = false;
+			}
+			_parsed = true;
+		}
 
 		#region AbstractNode Implementation
 
-        /// <see cref="AbstractNode.Clone"/>
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			AtomAbstractNode node = new AtomAbstractNode( Parent );
@@ -118,7 +118,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-        /// <see cref="AbstractNode.Value"/>
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get

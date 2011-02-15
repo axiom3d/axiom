@@ -49,27 +49,27 @@ namespace Axiom.Scripting.Compiler
 			private GpuProgramParameters _parameters;
 			private int _animParametricsCount;
 
-            public GpuProgramParametersTranslator()
+			public GpuProgramParametersTranslator()
 				: base()
 			{
-                _parameters = null;
+				_parameters = null;
 				_animParametricsCount = 0;
 			}
 
 			#region Translator Implementation
 
-            internal override bool CheckFor( Keywords nodeId, Keywords parentId )
-            {
-                throw new NotImplementedException();
-            }
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+			{
+				throw new NotImplementedException();
+			}
 
-            /// <see cref="Translator.Translate"/>
-            public override void Translate( ScriptCompiler compiler, AbstractNode node )
-            {
-                throw new NotImplementedException();
-            }
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				throw new NotImplementedException();
+			}
 
-            #endregion Translator Implementation
+			#endregion Translator Implementation
 		}
 	}
 }

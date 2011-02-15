@@ -59,12 +59,12 @@ namespace Axiom.Scripting.Compiler.AST
 			: base( parent )
 		{
 			Type = AbstractNodeType.Property;
-            Id = 0;
+			Id = 0;
 		}
 
 		#region AbstractNode Implementation
 
-        /// <see cref="AbstractNode.Clone"/>
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			PropertyAbstractNode node = new PropertyAbstractNode( Parent );
@@ -82,16 +82,16 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-        /// <see cref="AbstractNode.Value"/>
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get
 			{
-                return Name;
+				return Name;
 			}
-            set
+			set
 			{
-                Name = value;
+				Name = value;
 			}
 
 		}
