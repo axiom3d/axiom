@@ -134,7 +134,7 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
@@ -150,7 +150,7 @@ namespace Axiom.Scripting.Compiler
 									}
 
 									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									if ( i0.Type != AbstractNodeType.Atom )
+									if ( !(i0 is AtomAbstractNode) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 											"shared parameter set name expected" );
@@ -182,7 +182,7 @@ namespace Axiom.Scripting.Compiler
 										AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ),
 											k = getNodeAt( prop.Values, 2 );
 
-										if ( i0.Type != AbstractNodeType.Atom || i1.Type != AbstractNodeType.Atom )
+										if ( !(i0 is AtomAbstractNode) || !(i1 is AtomAbstractNode) )
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 												"name or index and parameter type expected" );
@@ -354,7 +354,7 @@ namespace Axiom.Scripting.Compiler
 										AbstractNode i0 = getNodeAt( prop.Values, 0 ),
 											i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 ), i3 = getNodeAt( prop.Values, 3 );
 
-										if ( i0.Type != AbstractNodeType.Atom || i1.Type != AbstractNodeType.Atom )
+										if ( !(i0 is AtomAbstractNode) || !(i1 is AtomAbstractNode) )
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 												"name or index and auto constant type expected" );
@@ -586,14 +586,14 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						if ( prop.Id == (uint)Keywords.ID_SOURCE )
 						{
 							if ( prop.Values.Count != 0 )
 							{
-								if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+								if ( prop.Values[ 0 ] is AtomAbstractNode )
 									source = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 								else
 									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -609,7 +609,7 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( prop.Values.Count != 0 )
 							{
-								if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+								if ( prop.Values[ 0 ] is AtomAbstractNode )
 									syntax = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 								else
 									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -627,7 +627,7 @@ namespace Axiom.Scripting.Compiler
 							bool first = true;
 							foreach ( AbstractNode it in prop.Values )
 							{
-								if ( it.Type == AbstractNodeType.Atom )
+								if ( it is AtomAbstractNode )
 								{
 									if ( !first )
 										value += " ";
@@ -640,7 +640,7 @@ namespace Axiom.Scripting.Compiler
 							customParameters.Add( name, value );
 						}
 					}
-					else if ( i.Type == AbstractNodeType.Object )
+					else if ( i is ObjectAbstractNode )
 					{
 						if ( ( (ObjectAbstractNode)i ).Id == (uint)Keywords.ID_DEFAULT_PARAMS )
 							parameters = i;
@@ -725,14 +725,14 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						if ( prop.Id == (uint)Keywords.ID_SOURCE )
 						{
 							if ( prop.Values.Count != 0 )
 							{
-								if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+								if ( prop.Values[ 0 ] is AtomAbstractNode )
 									source = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 								else
 									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -750,7 +750,7 @@ namespace Axiom.Scripting.Compiler
 							bool first = true;
 							foreach ( AbstractNode it in prop.Values )
 							{
-								if ( it.Type == AbstractNodeType.Atom )
+								if ( it is AtomAbstractNode )
 								{
 									if ( !first )
 										value += " ";
@@ -774,7 +774,7 @@ namespace Axiom.Scripting.Compiler
 							customParameters.Add( name, value );
 						}
 					}
-					else if ( i.Type == AbstractNodeType.Object )
+					else if ( i is ObjectAbstractNode )
 					{
 						if ( ( (ObjectAbstractNode)i ).Id == (uint)Keywords.ID_DEFAULT_PARAMS )
 							parameters = i;
@@ -845,13 +845,13 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						if ( prop.Name == "delegate" )
 						{
 							string value = string.Empty;
-							if ( prop.Values.Count != 0 && prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+							if ( prop.Values.Count != 0 && prop.Values[ 0 ] is AtomAbstractNode )
 								value = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
 							ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
@@ -866,7 +866,7 @@ namespace Axiom.Scripting.Compiler
 							bool first = true;
 							foreach ( AbstractNode it in prop.Values )
 							{
-								if ( it.Type == AbstractNodeType.Atom )
+								if ( it is AtomAbstractNode )
 								{
 									if ( !first )
 										value += " ";
@@ -878,7 +878,7 @@ namespace Axiom.Scripting.Compiler
 							customParameters[ name ] = value;
 						}
 					}
-					else if ( i.Type == AbstractNodeType.Object )
+					else if ( i is ObjectAbstractNode )
 					{
 						if ( ( (ObjectAbstractNode)i ).Id == (uint)Keywords.ID_DEFAULT_PARAMS )
 							parameters = i;

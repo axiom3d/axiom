@@ -81,7 +81,7 @@ namespace Axiom.Scripting.Compiler
 				// Set the properties for the material
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
@@ -135,7 +135,7 @@ namespace Axiom.Scripting.Compiler
 
 										while ( j != null )
 										{
-											if ( j.Type == AbstractNodeType.Atom )
+											if ( j is AtomAbstractNode )
 											{
 												AtomAbstractNode atom = (AtomAbstractNode)j;
 												switch ( (Keywords)atom.Id )
@@ -214,11 +214,11 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									AbstractNode i1 = getNodeAt( prop.Values, 1 );
-									if ( i1.Type == AbstractNodeType.Atom && ( (AtomAbstractNode)i ).IsNumber )
+									if ( i1 is AtomAbstractNode && ( (AtomAbstractNode)i ).IsNumber )
 									{
 										// Short form
 										AbstractNode i0 = getNodeAt( prop.Values, 0 ), i2 = getNodeAt( prop.Values, 2 );
-										if ( i0.Type == AbstractNodeType.Atom )
+										if ( i0 is AtomAbstractNode )
 										{
 											string val0;
 											int val1;
@@ -259,7 +259,7 @@ namespace Axiom.Scripting.Compiler
 											int index = 0;
 											while ( j != inNode )
 											{
-												if ( j.Type == AbstractNodeType.Atom )
+												if ( j is AtomAbstractNode )
 												{
 													string name = ( (AtomAbstractNode)j ).Value;
 
@@ -307,7 +307,7 @@ namespace Axiom.Scripting.Compiler
 								else if ( prop.Values.Count == 2 )
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
-									if ( i0.Type == AbstractNodeType.Atom && i1.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 
@@ -334,9 +334,9 @@ namespace Axiom.Scripting.Compiler
 										i5 = getNodeAt( prop.Values, 5 ),
 										i6 = getNodeAt( prop.Values, 6 );
 
-									if ( i0.Type == AbstractNodeType.Atom && i1.Type == AbstractNodeType.Atom && i2.Type == AbstractNodeType.Atom &&
-										i3.Type == AbstractNodeType.Atom && i4.Type == AbstractNodeType.Atom && i5.Type == AbstractNodeType.Atom &&
-										i6.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode &&
+										i3 is AtomAbstractNode && i4 is AtomAbstractNode && i5 is AtomAbstractNode &&
+										i6 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1,
 											atom2 = (AtomAbstractNode)i2, atom3 = (AtomAbstractNode)i3,
@@ -413,7 +413,7 @@ namespace Axiom.Scripting.Compiler
 
 									UVWAddressing mode = new UVWAddressing( TextureAddressing.Wrap );
 
-									if ( i0 != null && i0.Type == AbstractNodeType.Atom )
+									if ( i0 != null && i0 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)i0;
 										switch ( (Keywords)atom.Id )
@@ -443,7 +443,7 @@ namespace Axiom.Scripting.Compiler
 									mode.V = mode.U;
 									mode.W = mode.U;
 
-									if ( i1 != null && i1.Type == AbstractNodeType.Atom )
+									if ( i1 != null && i1 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)i1;
 										switch ( (Keywords)atom.Id )
@@ -471,7 +471,7 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 
-									if ( i2 != null && i2.Type == AbstractNodeType.Atom )
+									if ( i2 != null && i2 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)i2;
 										switch ( (Keywords)atom.Id )
@@ -530,7 +530,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count == 1 )
 								{
-									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
@@ -569,7 +569,7 @@ namespace Axiom.Scripting.Compiler
 										i1 = getNodeAt( prop.Values, 1 ),
 										i2 = getNodeAt( prop.Values, 2 );
 
-									if ( i0.Type == AbstractNodeType.Atom && i1.Type == AbstractNodeType.Atom && i2.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0,
 											atom1 = (AtomAbstractNode)i1,
@@ -724,7 +724,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
@@ -778,7 +778,7 @@ namespace Axiom.Scripting.Compiler
 										i1 = getNodeAt( prop.Values, 1 ),
 										i2 = getNodeAt( prop.Values, 2 );
 
-									if ( i0.Type == AbstractNodeType.Atom && i1.Type == AbstractNodeType.Atom && i2.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0,
 											atom1 = (AtomAbstractNode)i1,
@@ -987,7 +987,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count == 1 )
 								{
-									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
@@ -1055,7 +1055,7 @@ namespace Axiom.Scripting.Compiler
 										i1 = getNodeAt( prop.Values, 1 ),
 										i2 = getNodeAt( prop.Values, 2 );
 
-									if ( i0.Type == AbstractNodeType.Atom && i1.Type == AbstractNodeType.Atom && i2.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0,
 											atom1 = (AtomAbstractNode)i1,
@@ -1266,7 +1266,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( atom.Id )
@@ -1443,8 +1443,8 @@ namespace Axiom.Scripting.Compiler
 										i2 = getNodeAt( prop.Values, 2 ), i3 = getNodeAt( prop.Values, 3 ),
 										i4 = getNodeAt( prop.Values, 4 ), i5 = getNodeAt( prop.Values, 5 );
 
-									if ( i0.Type == AbstractNodeType.Atom && i1.Type == AbstractNodeType.Atom && i2.Type == AbstractNodeType.Atom &&
-										i3.Type == AbstractNodeType.Atom && i4.Type == AbstractNodeType.Atom && i5.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode &&
+										i3 is AtomAbstractNode && i4 is AtomAbstractNode && i5 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 										TextureTransform type = TextureTransform.Rotate;
@@ -1548,7 +1548,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
@@ -1589,7 +1589,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									if ( prop.Values[ 0 ].Type == AbstractNodeType.Atom )
+									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										throw new NotImplementedException();
 
@@ -1652,7 +1652,7 @@ namespace Axiom.Scripting.Compiler
 								break;
 						}
 					}
-					else if ( i.Type == AbstractNodeType.Object )
+					else if ( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}

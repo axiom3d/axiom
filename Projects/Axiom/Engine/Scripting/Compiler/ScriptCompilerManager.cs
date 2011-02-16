@@ -232,7 +232,7 @@ namespace Axiom.Scripting.Compiler
 		/// <returns>Returns a manager for the given object abstract node, or null if it is not supported</returns>
 		public ScriptCompiler.Translator GetTranslator( AbstractNode node )
 		{
-			if ( node.Type == AbstractNodeType.Object )
+			if ( node is ObjectAbstractNode )
 			{
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 				ObjectAbstractNode parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;

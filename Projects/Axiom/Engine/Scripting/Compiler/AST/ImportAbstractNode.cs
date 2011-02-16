@@ -51,7 +51,6 @@ namespace Axiom.Scripting.Compiler.AST
 		public ImportAbstractNode()
 			: base( null )
 		{
-			Type = AbstractNodeType.Import;
 		}
 
 		#region AbstractNode Implementation
@@ -62,7 +61,6 @@ namespace Axiom.Scripting.Compiler.AST
 			ImportAbstractNode node = new ImportAbstractNode();
 			node.File = File;
 			node.Line = Line;
-			node.Type = Type;
 			node.Target = Target;
 			node.Source = Source;
 			return node;

@@ -62,8 +62,6 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public uint Line;
 
-		public AbstractNodeType Type;
-
 		public AbstractNode Parent;
 
         /// <summary>
@@ -79,7 +77,6 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			this.Parent = parent;
 			this.Line = 0;
-			this.Type = AbstractNodeType.Unknown;
 		}
 
 		/// <summary>

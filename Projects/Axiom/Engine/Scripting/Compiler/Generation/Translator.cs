@@ -70,7 +70,7 @@ namespace Axiom.Scripting.Compiler
 			/// <param name="node"></param>
 			protected void _processNode( ScriptCompiler compiler, AbstractNode node )
 			{
-				if ( node.Type != AbstractNodeType.Object )
+				if ( !(node is ObjectAbstractNode) )
 					return;
 
 				ObjectAbstractNode objNode = (ObjectAbstractNode)node;
@@ -121,7 +121,7 @@ namespace Axiom.Scripting.Compiler
 				if ( node == null )
 					return false;
 
-				if ( node.Type != AbstractNodeType.Atom )
+				if ( !(node is AtomAbstractNode) )
 					return false;
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
@@ -145,7 +145,7 @@ namespace Axiom.Scripting.Compiler
 				if ( node == null )
 					return false;
 
-				if ( node.Type != AbstractNodeType.Atom )
+				if ( !(node is AtomAbstractNode) )
 					return false;
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
@@ -166,7 +166,7 @@ namespace Axiom.Scripting.Compiler
 				if ( node == null )
 					return false;
 
-				if ( node.Type != AbstractNodeType.Atom )
+				if ( !(node is AtomAbstractNode) )
 					return false;
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;
@@ -271,7 +271,7 @@ namespace Axiom.Scripting.Compiler
 				int n = 0;
 				while ( i != nodes.Count && n < maxEntries )
 				{
-					if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+					if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 					{
 						vals[ n ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 					}
@@ -307,7 +307,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i != nodes.Count )
 					{
-						if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+						if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 							m[ n / 4, n % 4 ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 						else
 							return false;
@@ -341,7 +341,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i != nodes.Count )
 					{
-						if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+						if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 							vals[ n ] = (int)( (AtomAbstractNode)nodes[ i ] ).Number;
 						else
 							break;
@@ -379,7 +379,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i != nodes.Count )
 					{
-						if ( nodes[ i ].Type == AbstractNodeType.Atom && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
+						if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 							vals[ n ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 						else
 							break;
@@ -415,7 +415,7 @@ namespace Axiom.Scripting.Compiler
 					return false;
 
 				// Verify Parameters
-				if ( node.Type != AbstractNodeType.Atom )
+				if ( !(node is AtomAbstractNode) )
 					return false;
 
 				AtomAbstractNode atom = (AtomAbstractNode)node;

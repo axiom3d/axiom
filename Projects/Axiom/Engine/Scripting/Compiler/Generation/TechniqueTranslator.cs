@@ -77,7 +77,7 @@ namespace Axiom.Scripting.Compiler
 				// Set the properties for the technique
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 
@@ -212,7 +212,7 @@ namespace Axiom.Scripting.Compiler
 									AbstractNode i1 = getNodeAt( prop.Values, 1 );
 
 									Technique.GPUVendorRule rule = new Technique.GPUVendorRule();
-									if ( i0.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0;
 										Keywords atom0Id = (Keywords)atom0.Id;
@@ -272,7 +272,7 @@ namespace Axiom.Scripting.Compiler
 									AbstractNode i1 = getNodeAt( prop.Values, 1 );
 
 									Technique.GPUDeviceNameRule rule = new Technique.GPUDeviceNameRule();
-									if ( i0.Type == AbstractNodeType.Atom )
+									if ( i0 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0;
 										Keywords atom0Id = (Keywords)atom0.Id;
@@ -323,8 +323,8 @@ namespace Axiom.Scripting.Compiler
 								break;
 
 						} //end of switch statement
-					} // end of if ( i.Type == AbstractNodeType.Property )
-					else if ( i.Type == AbstractNodeType.Object )
+					} // end of if ( i is PropertyAbstractNode )
+					else if ( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}

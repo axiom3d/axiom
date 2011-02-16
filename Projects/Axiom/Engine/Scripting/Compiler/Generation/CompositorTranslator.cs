@@ -115,7 +115,7 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Object )
+					if ( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}

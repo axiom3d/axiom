@@ -87,7 +87,6 @@ namespace Axiom.Scripting.Compiler.AST
 		public AtomAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.Atom;
 		}
 
 		private void _parse()
@@ -113,7 +112,6 @@ namespace Axiom.Scripting.Compiler.AST
 			node.File = File;
 			node.Line = Line;
 			node.Id = this.Id;
-			node.Type = Type;
 			node._value = Value;
 			return node;
 		}
