@@ -113,7 +113,7 @@ namespace Axiom.Scripting.Compiler
 					String name = node.Children[ 0 ].Token;
 					String value = node.Children[ 1 ].Token;
 
-					if ( _current != null && _current.Type == AbstractNodeType.Object )
+					if ( _current != null && _current is ObjectAbstractNode )
 					{
 						ObjectAbstractNode ptr = (ObjectAbstractNode)_current;
 						ptr.SetVariable( name, value );
@@ -200,7 +200,6 @@ namespace Axiom.Scripting.Compiler
 								VariableGetAbstractNode var = new VariableGetAbstractNode( impl );
 								var.File = iter.Current.File;
 								var.Line = iter.Current.Line;
-								var.Type = AbstractNodeType.VariableGet;
 								var.Name = iter.Current.Token;
 								impl.Values.Add( var );
 							}
@@ -209,7 +208,6 @@ namespace Axiom.Scripting.Compiler
 								AtomAbstractNode atom = new AtomAbstractNode( impl );
 								atom.File = iter.Current.File;
 								atom.Line = iter.Current.Line;
-								atom.Type = AbstractNodeType.Atom;
 								atom.Value = iter.Current.Token;
 								impl.Values.Add( atom );
 							}
@@ -284,7 +282,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( _current != null )
 					{
-						if ( _current.Type == AbstractNodeType.Property )
+						if ( _current is PropertyAbstractNode )
 						{
 							PropertyAbstractNode impl = (PropertyAbstractNode)_current;
 							impl.Values.Add( asn );

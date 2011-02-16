@@ -77,11 +77,11 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Object )
+					if ( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}
-					else if ( i.Type == AbstractNodeType.Property )
+					else if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
@@ -92,7 +92,7 @@ namespace Axiom.Scripting.Compiler
 									FrameBufferType buffers = 0;
 									foreach ( AbstractNode k in prop.Values )
 									{
-										if ( k.Type == AbstractNodeType.Atom )
+										if ( k is AtomAbstractNode )
 										{
 											switch ( (Keywords)( (AtomAbstractNode)k ).Id )
 											{

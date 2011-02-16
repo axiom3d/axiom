@@ -116,7 +116,7 @@ namespace Axiom.Scripting.Compiler
 
 					foreach ( AbstractNode i in obj.Children )
 					{
-						if ( i.Type == AbstractNodeType.Property )
+						if ( i is PropertyAbstractNode )
 						{
 							PropertyAbstractNode prop = (PropertyAbstractNode)i;
 							// Glob the property values all together
@@ -131,7 +131,7 @@ namespace Axiom.Scripting.Compiler
 							}
 							//TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->setParameter(prop->name, str);
 						}
-						else if ( i.Type == AbstractNodeType.Object )
+						else if ( i is ObjectAbstractNode )
 						{
 							_processNode( compiler, i );
 						}

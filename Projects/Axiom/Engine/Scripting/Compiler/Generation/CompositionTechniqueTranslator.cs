@@ -73,11 +73,11 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Object )
+					if ( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}
-					else if ( i.Type == AbstractNodeType.Property )
+					else if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
@@ -89,7 +89,7 @@ namespace Axiom.Scripting.Compiler
 
 									AbstractNode it = getNodeAt( prop.Values, 0 );
 
-									if ( it.Type == AbstractNodeType.Atom )
+									if ( it is AtomAbstractNode )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 										return;
@@ -110,7 +110,7 @@ namespace Axiom.Scripting.Compiler
 									while ( atomIndex < prop.Values.Count )
 									{
 										it = getNodeAt( prop.Values, atomIndex++ );
-										if ( it.Type != AbstractNodeType.Atom )
+										if ( !(it is AtomAbstractNode) )
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 											return;
@@ -149,7 +149,7 @@ namespace Axiom.Scripting.Compiler
 													}
 													// advance to next to get scaling
 													it = getNodeAt( prop.Values, atomIndex++ );
-													if ( it == null || it.Type != AbstractNodeType.Atom )
+													if ( it == null || !(it is AtomAbstractNode) )
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 														return;

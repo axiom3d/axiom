@@ -47,7 +47,6 @@ namespace Axiom.Scripting.Compiler.AST
 		public VariableSetAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.VariableSet;
 		}
 
 		#region AbstractNode Implementation
@@ -58,7 +57,6 @@ namespace Axiom.Scripting.Compiler.AST
 			VariableSetAbstractNode node = new VariableSetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Type = Type;
 			node.Name = Name;
 			return node;
 		}

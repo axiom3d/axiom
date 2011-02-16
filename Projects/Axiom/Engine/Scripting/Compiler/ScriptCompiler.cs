@@ -219,7 +219,7 @@ namespace Axiom.Scripting.Compiler
 			foreach ( AbstractNode currentNode in nodes )
 			{
 				//logAST(0, *i);
-				if ( currentNode.Type == AbstractNodeType.Object && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+				if ( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
 					continue;
 
 				ScriptCompiler.Translator translator = ScriptCompilerManager.Instance.GetTranslator( currentNode );
@@ -268,7 +268,7 @@ namespace Axiom.Scripting.Compiler
 			foreach ( AbstractNode currentNode in ast )
 			{
 				//logAST(0, *i);
-				if ( currentNode.Type == AbstractNodeType.Object && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+				if ( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
 					continue;
 
 				ScriptCompiler.Translator translator = ScriptCompilerManager.Instance.GetTranslator( currentNode );
@@ -369,7 +369,7 @@ namespace Axiom.Scripting.Compiler
 				if ( cls == "emitter" || cls == "affector" )
 				{
 					// emitters or affectors inside a particle_system are excluded
-					while ( parent != null && parent.Type == AbstractNodeType.Object )
+					while ( parent != null && parent is ObjectAbstractNode )
 					{
 						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
 						if ( obj.Cls == "particle_system" )
@@ -382,7 +382,7 @@ namespace Axiom.Scripting.Compiler
 				else if ( cls == "pass" )
 				{
 					// passes inside compositors are excluded
-					while ( parent != null && parent.Type == AbstractNodeType.Object )
+					while ( parent != null && parent is ObjectAbstractNode )
 					{
 						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
 						if ( obj.Cls == "compositor" )
@@ -395,7 +395,7 @@ namespace Axiom.Scripting.Compiler
 				else if ( cls == "texture_source" )
 				{
 					// Parent must be texture_unit
-					while ( parent != null && parent.Type == AbstractNodeType.Object )
+					while ( parent != null && parent is ObjectAbstractNode )
 					{
 						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
 						if ( obj.Cls == "texture_unit" )
@@ -425,7 +425,7 @@ namespace Axiom.Scripting.Compiler
 			{
 				AbstractNode cur = nodes[ i ];
 
-				if ( cur.Type == AbstractNodeType.Import )
+				if ( cur is ImportAbstractNode )
 				{
 					ImportAbstractNode import = (ImportAbstractNode)cur;
 
@@ -507,7 +507,7 @@ namespace Axiom.Scripting.Compiler
 			{
 				AbstractNode cur = nodes[ i ];
 
-				if ( cur.Type == AbstractNodeType.Object )
+				if ( cur is ObjectAbstractNode )
 				{
 					// Only process if this object is not abstract
 					ObjectAbstractNode obj = (ObjectAbstractNode)cur;
@@ -517,12 +517,12 @@ namespace Axiom.Scripting.Compiler
 						_processVariables( ref obj.Values );
 					}
 				}
-				else if ( cur.Type == AbstractNodeType.Property )
+				else if ( cur is PropertyAbstractNode )
 				{
 					PropertyAbstractNode prop = (PropertyAbstractNode)cur;
 					_processVariables( ref prop.Values );
 				}
-				else if ( cur.Type == AbstractNodeType.VariableGet )
+				else if ( cur is VariableGetAbstractNode )
 				{
 					VariableGetAbstractNode var = (VariableGetAbstractNode)cur;
 
@@ -531,7 +531,7 @@ namespace Axiom.Scripting.Compiler
 					AbstractNode temp = var.Parent;
 					while ( temp != null )
 					{
-						if ( temp.Type == AbstractNodeType.Object )
+						if ( temp is ObjectAbstractNode )
 						{
 							scope = (ObjectAbstractNode)temp;
 							break;
@@ -595,7 +595,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			foreach ( AbstractNode node in nodes )
 			{
-				if ( node.Type == AbstractNodeType.Object )
+				if ( node is ObjectAbstractNode )
 				{
 					ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
@@ -681,7 +681,7 @@ namespace Axiom.Scripting.Compiler
 			// Search for a top-level object node
 			foreach ( AbstractNode node in nodes )
 			{
-				if ( node.Type == AbstractNodeType.Object )
+				if ( node is ObjectAbstractNode )
 				{
 					ObjectAbstractNode impl = (ObjectAbstractNode)node;
 					if ( impl.Name == target )
@@ -699,7 +699,7 @@ namespace Axiom.Scripting.Compiler
 
 		private void _overlayObject( AbstractNode source, ObjectAbstractNode dest )
 		{
-			if ( source.Type == AbstractNodeType.Object )
+			if ( source is ObjectAbstractNode )
 			{
 				ObjectAbstractNode src = (ObjectAbstractNode)source;
 
@@ -725,7 +725,7 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in src.Children )
 				{
-					if ( i.Type == AbstractNodeType.Object )
+					if ( i is ObjectAbstractNode )
 					{
 						overrides.Add( new KeyValuePair<AbstractNode, AbstractNode>( i, null ) );
 					}
@@ -743,7 +743,7 @@ namespace Axiom.Scripting.Compiler
 				// Loop through destination children searching for name-matching overrides
 				for ( int i = 0; i < dest.Children.Count; i++ )
 				{
-					if ( dest.Children[ i ].Type == AbstractNodeType.Object )
+					if ( dest.Children[ i ] is ObjectAbstractNode )
 					{
 						// Start tracking the override index position for this object
 						int overrideIndex = 0;
@@ -809,7 +809,7 @@ namespace Axiom.Scripting.Compiler
 				// Loop through destination children searching for name-matching overrides
 				foreach ( AbstractNode i in dest.Children )
 				{
-					if ( i.Type == AbstractNodeType.Object )
+					if ( i is ObjectAbstractNode )
 					{
 						ObjectAbstractNode node = (ObjectAbstractNode)i;
 						if ( !overridden[ node ] )

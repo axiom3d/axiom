@@ -47,7 +47,6 @@ namespace Axiom.Scripting.Compiler.AST
 		public VariableGetAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.VariableGet;
 		}
 
 		#region AbstractNode Implementation
@@ -58,7 +57,6 @@ namespace Axiom.Scripting.Compiler.AST
 			VariableGetAbstractNode node = new VariableGetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Type = Type;
 			node.Name = Name;
 			return node;
 		}

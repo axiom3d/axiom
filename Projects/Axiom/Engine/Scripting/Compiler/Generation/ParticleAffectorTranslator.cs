@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						string value = string.Empty;
@@ -92,7 +92,7 @@ namespace Axiom.Scripting.Compiler
 						// Glob the values together
 						foreach ( AbstractNode it in prop.Values )
 						{
-							if ( it.Type == AbstractNodeType.Atom )
+							if ( it is AtomAbstractNode )
 							{
 								if ( string.IsNullOrEmpty( value ) )
 									value = ( (AtomAbstractNode)it ).Value;

@@ -95,7 +95,6 @@ namespace Axiom.Scripting.Compiler.AST
 		public ObjectAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.Object;
 			IsAbstract = false;
 		}
 
@@ -138,7 +137,6 @@ namespace Axiom.Scripting.Compiler.AST
 			ObjectAbstractNode node = new ObjectAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Type = Type;
 			node.Name = this.Name;
 			node.Cls = this.Cls;
 			node.Id = this.Id;

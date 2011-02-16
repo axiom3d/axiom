@@ -118,7 +118,7 @@ namespace Axiom.Scripting.Compiler
 
 				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( i.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 
@@ -273,7 +273,7 @@ namespace Axiom.Scripting.Compiler
 								break;
 						} //end of switch statement
 					}
-					else if ( i.Type == AbstractNodeType.Object )
+					else if ( i is ObjectAbstractNode )
 						_processNode( compiler, i );
 				}
 

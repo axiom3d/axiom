@@ -58,7 +58,6 @@ namespace Axiom.Scripting.Compiler.AST
 		public PropertyAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.Property;
 			Id = 0;
 		}
 
@@ -70,7 +69,6 @@ namespace Axiom.Scripting.Compiler.AST
 			PropertyAbstractNode node = new PropertyAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Type = Type;
 			node.Name = Name;
 			node.Id = Id;
 			foreach ( AbstractNode an in Values )
