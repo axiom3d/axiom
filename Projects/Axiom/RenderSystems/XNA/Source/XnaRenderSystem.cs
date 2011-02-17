@@ -52,6 +52,7 @@ using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 using Axiom.Collections;
 using Axiom.Core.Collections;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -1983,6 +1984,23 @@ namespace Axiom.RenderSystems.Xna
 		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
 			XnaTexture xnaTexture = (XnaTexture)texture;
+			bool compensateNPOT = false;
+			if ( !Bitwise.IsPow2( texture.Width ) || !Bitwise.IsPow2( texture.Height ) )
+			{
+				if ( HardwareCapabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
+				{
+					if ( HardwareCapabilities.NonPOW2TexturesLimited )
+						compensateNPOT = true;
+				}
+				else
+					compensateNPOT = true;
+
+				if ( compensateNPOT )
+				{
+					SetTextureAddressingMode( stage, TextureAddressing.Clamp );
+				}
+			}
+
 			texStageDesc[ stage ].Enabled = enabled;
 			if ( enabled && xnaTexture != null )
 			{
