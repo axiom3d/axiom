@@ -383,7 +383,8 @@
     <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
