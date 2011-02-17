@@ -64,6 +64,16 @@ namespace Axiom.Media
 			return result - 1;
 		}
 
+		/// <summary>
+		/// checks if a number is a power of 2
+		/// </summary>
+		/// <param name="number"></param>
+		/// <returns>true if the number is a power of two otherwise false</returns>
+		public static bool IsPow2( int number )
+		{
+			return ( number & ( number - 1 ) ) == 0;
+		}
+
 		///<summary>
 		///    Returns the closest power-of-two number greater or equal to value.
 		///</summary>
