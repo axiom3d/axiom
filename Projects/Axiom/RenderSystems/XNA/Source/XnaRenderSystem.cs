@@ -1985,7 +1985,8 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XnaTexture xnaTexture = (XnaTexture)texture;
 			bool compensateNPOT = false;
-			if ( !Bitwise.IsPow2( texture.Width ) || !Bitwise.IsPow2( texture.Height ) )
+			
+			if ( (texture != null ) && ( !Bitwise.IsPow2( texture.Width ) || !Bitwise.IsPow2( texture.Height ) ) )
 			{
 				if ( HardwareCapabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
 				{
