@@ -102,7 +102,7 @@
     <Compile Include="Core\BillboardChain.cs" />
     <Compile Include="Core\BitConverterEx.cs" />
     <Compile Include="Core\DisposableObject.cs" />
-    <Compile Include="Core\InstanceGeometry\InstancedGeometry.cs"/>
+    <Compile Include="Core\InstanceGeometry\InstancedGeometry.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\MemoryBuffer.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
@@ -702,9 +702,8 @@
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs">
       <SubType>Code</SubType>
     </Compile>
