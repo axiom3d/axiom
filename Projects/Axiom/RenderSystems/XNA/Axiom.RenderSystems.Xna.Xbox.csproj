@@ -121,6 +121,7 @@
     <Compile Include="Source\HLSL\HLSLProgram.cs" />
     <Compile Include="Source\HLSL\HLSLProgramFactory.cs" />
     <Compile Include="Source\Plugin.cs" />
+    <Compile Include="Source\StateManagement.cs" />
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
     <Compile Include="Source\Win32MessageHandling.cs" />

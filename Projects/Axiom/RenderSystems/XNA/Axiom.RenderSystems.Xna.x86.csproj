@@ -123,6 +123,9 @@
     <Compile Include="Source\Driver.cs" />
     <Compile Include="Source\DriverCollection.cs" />
     <Compile Include="Source\Plugin.cs" />
+    <Compile Include="Source\StateManagement.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
     <Compile Include="Source\Win32MessageHandling.cs" />
