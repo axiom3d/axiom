@@ -772,7 +772,7 @@ namespace Axiom.RenderSystems.Xna
 				cullingMode = value;
 
 				bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
-				_device.RasterizerState.CullMode = XnaHelper.Convert( value, flip );
+				StateManager.RasterizerState.CullMode = XnaHelper.Convert( value, flip );
 			}
 		}
 
@@ -784,7 +784,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.DepthStencilState.DepthBufferWriteEnable = value;
+				StateManager.DepthStencilState.DepthBufferWriteEnable = value;
 			}
 		}
 
@@ -796,7 +796,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.DepthStencilState.DepthBufferEnable = value;
+				StateManager.DepthStencilState.DepthBufferEnable = value;
 			}
 		}
 
@@ -808,7 +808,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( value );
+				StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( value );
 			}
 		}
 
@@ -820,8 +820,8 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				throw new Exception( "The method or operation is not implemented." );
-				//_device.DepthStencilState.DepthBias = (float)value;
+				//throw new Exception( "The method or operation is not implemented." );
+				//StateManager.DepthStencilState.DepthBias = (float)value;
 			}
 		}
 
@@ -899,12 +899,10 @@ namespace Axiom.RenderSystems.Xna
 
 						break;
 					case PolygonMode.Wireframe:
-						_rasterizerState.FillMode = XFG.FillMode.WireFrame;
-						_device.RasterizerState = _rasterizerState;
+						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
 						break;
 					case PolygonMode.Solid:
-						_rasterizerState.FillMode = XFG.FillMode.WireFrame;
-						_device.RasterizerState = _rasterizerState;
+						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
 						break;
 				}
 			}
@@ -931,7 +929,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_device.DepthStencilState.StencilEnable = value;
+				StateManager.DepthStencilState.StencilEnable = value;
 			}
 		}
 
@@ -1060,12 +1058,18 @@ namespace Axiom.RenderSystems.Xna
 
 			// set initial render states if this is the first frame. we only want to do 
 			//	this once since renderstate changes are expensive
+
 			if ( _isFirstFrame )
 			{
+
 				// enable alpha blending and specular materials
-				_device.BlendState = XFG.BlendState.AlphaBlend;
+				var alphaBlend = new ManagedBlendState() ;
+				alphaBlend.Reset( XFG.BlendState.AlphaBlend );
+				StateManager.BlendState = alphaBlend;
 				//_device.RenderState.SpecularEnable = true;
-				_device.DepthStencilState = XFG.DepthStencilState.DepthRead;
+				var depthRead = new ManagedDepthStencilState();
+				depthRead.Reset( XFG.DepthStencilState.DepthRead );
+				StateManager.DepthStencilState = depthRead;
 				_isFirstFrame = false;
 			}
 		}
@@ -1351,6 +1355,8 @@ namespace Axiom.RenderSystems.Xna
 				renderWindow = CreateRenderWindow( "Main Window", width, height, fullScreen, miscParams );
 			}
 
+			StateManager = new StateManagement();
+
 			LogManager.Instance.Write( "[XNA] : Subsystem Initialized successfully." );
 			return renderWindow;
 		}
@@ -1526,8 +1532,16 @@ namespace Axiom.RenderSystems.Xna
 		bool needToUnmapVS = false;
 		bool needToUnmapFS = false;
 
+
 		public override void Render( RenderOperation op )
 		{
+			StateManager.CommitState( _device );
+			StateManager.ResetState( _device );
+
+			XFG.BasicEffect effect = new XFG.BasicEffect( _device );
+			//effect.EnableDefaultLighting();
+
+			effect.CurrentTechnique.Passes[0].Apply();
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
 			{
@@ -1727,6 +1741,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/*--------------------------------------------*/
 #endif
+
 		}
 
 		private bool lasta2c = false;
@@ -1738,8 +1753,8 @@ namespace Axiom.RenderSystems.Xna
 				a2c = alphaToCoverage;
 			}
 
-            //_device.RenderState.AlphaFunction = XnaHelper.Convert( func );
-            //_device.RenderState.ReferenceAlpha = val;
+			//_device.BlendState.AlphaBlendFunction = XnaHelper.Convert( func );
+			//_device.BlendState.ReferenceAlpha = val;
 
 			// Alpha to coverage
 			if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
@@ -1768,14 +1783,14 @@ namespace Axiom.RenderSystems.Xna
 			{
 				val |= XFG.ColorWriteChannels.Alpha;
 			}
-			_device.BlendState.ColorWriteChannels = val;
+			StateManager.BlendState.ColorWriteChannels = val;
 		}
 
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction )
 		{
-			_device.DepthStencilState.DepthBufferEnable = depthTest;
-			_device.DepthStencilState.DepthBufferWriteEnable = depthWrite;
-			_device.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( depthFunction );
+			StateManager.DepthStencilState.DepthBufferEnable = depthTest;
+			StateManager.DepthStencilState.DepthBufferWriteEnable = depthWrite;
+			StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( depthFunction );
 		}
 
 		public override void SetFog( Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end )
@@ -1880,28 +1895,28 @@ namespace Axiom.RenderSystems.Xna
 				{
 					throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
 				}
-				_device.DepthStencilState.TwoSidedStencilMode = true;
+				StateManager.DepthStencilState.TwoSidedStencilMode = true;
 				flip = ( invertVertexWinding && activeRenderTarget.RequiresTextureFlipping ) ||
 						( !invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping );
 
-				_device.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, !flip );
-				_device.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, !flip );
-				_device.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, !flip );
+				StateManager.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, !flip );
+				StateManager.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, !flip );
+				StateManager.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, !flip );
 			}
 			else
 			{
-				_device.DepthStencilState.TwoSidedStencilMode = false;
+				StateManager.DepthStencilState.TwoSidedStencilMode = false;
 				flip = false;
 			}
 
 			// configure standard version of the stencil operations
-			_device.DepthStencilState.StencilFunction = XnaHelper.Convert( function );
-			_device.DepthStencilState.ReferenceStencil = refValue;
-			_device.DepthStencilState.StencilMask = mask;
-			_device.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, flip );
-			_device.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, flip );
-			_device.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, flip );
-			//_device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
+			StateManager.DepthStencilState.StencilFunction = XnaHelper.Convert( function );
+			StateManager.DepthStencilState.ReferenceStencil = refValue;
+			StateManager.DepthStencilState.StencilMask = mask;
+			StateManager.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, flip );
+			StateManager.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, flip );
+			StateManager.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, flip );
+			StateManager.BlendState.ColorWriteChannels = XFG.ColorWriteChannels.None;
 		}
 
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
@@ -1997,9 +2012,9 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XFG.TextureAddressMode xnaMode = XnaHelper.Convert( texAddressingMode );
 			// set the device sampler states accordingly
-			_device.SamplerStates[ stage ].AddressU = xnaMode;
-			_device.SamplerStates[ stage ].AddressV = xnaMode;
-			_device.SamplerStates[ stage ].AddressW = xnaMode;
+			StateManager.SamplerStates[ stage ].AddressU = xnaMode;
+			StateManager.SamplerStates[ stage ].AddressV = xnaMode;
+			StateManager.SamplerStates[ stage ].AddressW = xnaMode;
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
@@ -2103,12 +2118,7 @@ namespace Axiom.RenderSystems.Xna
             //    maxAnisotropy = _capabilities.MaxAnisotropy;
             //}
 
-			if ( _device.SamplerStates[ stage ].MaxAnisotropy != maxAnisotropy )
-			{
-				XFG.SamplerState sampler = new XFG.SamplerState();
-				sampler.MaxAnisotropy = maxAnisotropy;
-				_device.SamplerStates[ stage ] = sampler;
-			}
+			StateManager.SamplerStates[ stage ].MaxAnisotropy = maxAnisotropy;
 		}
 
 		public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
@@ -2142,9 +2152,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XnaTextureType texType = XnaHelper.Convert( texStageDesc[ stage ].texType );
 			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, texType );
-			XFG.SamplerState sampler = new XFG.SamplerState();
-			sampler.Filter = texFilter; 
-			_device.SamplerStates[ stage ] = sampler;
+			StateManager.SamplerStates[ stage ].Filter = texFilter; 
 
             /*
              * TextureFilter enumeration now combines FilterType and TextureType in 4.0, so this is no longer necessary.
@@ -2276,6 +2284,7 @@ namespace Axiom.RenderSystems.Xna
 			XFG.DepthFormat.Depth16,
 			//XFG.DepthFormat.Depth32
 		};
+		private StateManagement StateManager;
 
 		private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt, int multiSampleCount )
 		{
