@@ -40,11 +40,11 @@ namespace Axiom.Scripting.Compiler.AST
 	/// <summary>
 	/// This abstract node represents a variable assignment
 	/// </summary>
-	class VariableGetAbstractNode : AbstractNode
+	class VariableSetAbstractNode : AbstractNode
 	{
 		public string Name;
 
-		public VariableGetAbstractNode( AbstractNode parent )
+		public VariableSetAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
 		}
@@ -54,7 +54,7 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
-			VariableGetAbstractNode node = new VariableGetAbstractNode( Parent );
+			VariableSetAbstractNode node = new VariableSetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
 			node.Name = Name;
