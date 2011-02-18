@@ -1071,6 +1071,11 @@ namespace Axiom.RenderSystems.Xna
 				var depthRead = new ManagedDepthStencilState();
 				depthRead.Reset( XFG.DepthStencilState.DepthRead );
 				StateManager.DepthStencilState = depthRead;
+
+				var raster = new ManagedRasterizerState();
+				raster.Reset( XFG.RasterizerState.CullCounterClockwise );
+				StateManager.RasterizerState = raster;
+
 				_isFirstFrame = false;
 			}
 		}
@@ -1540,8 +1545,8 @@ namespace Axiom.RenderSystems.Xna
 			StateManager.ResetState( _device );
 
 			XFG.BasicEffect effect = new XFG.BasicEffect( _device );
-			//effect.EnableDefaultLighting();
-
+			effect.View = XnaHelper.Convert(this.ViewMatrix);
+			effect.World = XnaHelper.Convert(this.WorldMatrix);
 			effect.CurrentTechnique.Passes[0].Apply();
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
