@@ -86,6 +86,7 @@ namespace Axiom.RenderSystems.Xna
 		bool _isFirstFrame = true;
 		private int _primCount;
 		private int _renderCount = 0;
+        XFG.BasicEffect basicEffect;
 		/// <summary>
 		/// The one used to crfeate the device.
 		/// </summary>
@@ -874,6 +875,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				_projectionMatrix = value;
 
+                basicEffect.Projection = XnaHelper.Convert(_projectionMatrix);
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
@@ -959,6 +961,9 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
+                basicEffect.View = XnaHelper.Convert(_viewMatrix);
+
+
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ViewMatrix = _viewMatrix;
 #endif
@@ -975,6 +980,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_worldMatrix = value;
+                basicEffect.World = XnaHelper.Convert(this.WorldMatrix);
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
 #endif
@@ -1249,6 +1255,7 @@ namespace Axiom.RenderSystems.Xna
 				_primaryWindow = (XnaRenderWindow)window;
 				_device = (XFG.GraphicsDevice)window[ "XNADEVICE" ];
 
+                basicEffect = new XFG.BasicEffect(_device);
 				// Create the texture manager for use by others
 				textureManager = new XnaTextureManager( _device );
 				// Also create hardware buffer manager
@@ -1544,10 +1551,9 @@ namespace Axiom.RenderSystems.Xna
 			StateManager.CommitState( _device );
 			StateManager.ResetState( _device );
 
-			XFG.BasicEffect effect = new XFG.BasicEffect( _device );
-			effect.View = XnaHelper.Convert(this.ViewMatrix);
-			effect.World = XnaHelper.Convert(this.WorldMatrix);
-			effect.CurrentTechnique.Passes[0].Apply();
+			
+
+			basicEffect.CurrentTechnique.Passes[0].Apply();
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
 			{
