@@ -277,6 +277,7 @@
     <Compile Include="Graphics\MaterialManager.cs" />
     <Compile Include="Graphics\MovablePlane.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\Pass.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\Rectangle2D.cs" />
@@ -387,22 +388,45 @@
     <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\Translator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassStencilTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\TextureSourceTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\Translator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Scripting\Compiler\Keywords.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs" />
