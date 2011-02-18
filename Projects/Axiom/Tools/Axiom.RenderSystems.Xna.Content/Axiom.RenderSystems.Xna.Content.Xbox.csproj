@@ -53,7 +53,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=51c3bfb2db46012c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\Microsoft.Xna.Framework.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>
