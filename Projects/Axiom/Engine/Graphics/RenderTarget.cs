@@ -963,17 +963,20 @@ namespace Axiom.Graphics
 		/// <param name="camera"></param>
 		internal void NotifyCameraRemoved( Camera camera )
 		{
-			for ( int i = 0; i < _viewportList.Count; i++ )
-			{
-				Viewport viewport = _viewportList.Values[ i ];
+            if ( _viewportList == null )
+                return;
 
-				// remove the link to this camera
-				if ( viewport.Camera == camera )
-				{
-					viewport.Camera = null;
-				}
-			}
-		}
+            for ( int i = 0; i < _viewportList.Count; i++ )
+            {
+                Viewport viewport = _viewportList.Values[ i ];
+
+                // remove the link to this camera
+                if ( viewport.Camera == camera )
+                {
+                    viewport.Camera = null;
+                }
+            }
+        }
 
 		/// <summary>
 		/// Retrieve information about the render target.
