@@ -905,7 +905,7 @@ namespace Axiom.RenderSystems.Xna
 						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
 						break;
 					case PolygonMode.Solid:
-						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
+						StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 						break;
 				}
 			}
@@ -1079,7 +1079,8 @@ namespace Axiom.RenderSystems.Xna
 				StateManager.DepthStencilState = depthRead;
 
 				var raster = new ManagedRasterizerState();
-				raster.Reset( XFG.RasterizerState.CullCounterClockwise );
+				raster.Reset( XFG.RasterizerState.CullClockwise );
+				raster.FillMode = XFG.FillMode.Solid;
 				StateManager.RasterizerState = raster;
 
 				_isFirstFrame = false;
@@ -1548,10 +1549,9 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void Render( RenderOperation op )
 		{
+			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState( _device );
 			StateManager.ResetState( _device );
-
-			
 
 			basicEffect.CurrentTechnique.Passes[0].Apply();
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
@@ -2017,6 +2017,8 @@ namespace Axiom.RenderSystems.Xna
 			if ( enabled && xnaTexture != null )
 			{
 				_device.Textures[ stage ] = xnaTexture.DXTexture;
+				basicEffect.Texture = (XFG.Texture2D)xnaTexture.DXTexture;
+				basicEffect.TextureEnabled = enabled;
 				// set stage description
 				texStageDesc[ stage ].tex = xnaTexture.DXTexture;
 				texStageDesc[ stage ].texType = xnaTexture.TextureType;
@@ -2058,6 +2060,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				texStageDesc[ stage ].layerBlendMode = blendMode;
 			}
+			/* TODO: use StateManager.BlendState */
 
 			/*if (blendMode.operation == LayerBlendOperationEx.BlendManual)
 			{

@@ -785,7 +785,7 @@ namespace Axiom.RenderSystems.Xna
 			this.StencilPass = depthStencilState.StencilPass;
 			this.StencilWriteMask = depthStencilState.StencilWriteMask;
 			this.TwoSidedStencilMode = depthStencilState.TwoSidedStencilMode;
-
+			IsDirty = true;
 		}
 
 		public void Commit( GraphicsDevice device )
@@ -796,7 +796,10 @@ namespace Axiom.RenderSystems.Xna
 		public void Commit( GraphicsDevice device, int index )
 		{
 			if ( IsDirty )
+			{
 				device.DepthStencilState = _internalState;
+				IsDirty = false;
+			}
 		}
 		#endregion IManagedState Implementation
 
@@ -814,6 +817,9 @@ namespace Axiom.RenderSystems.Xna
 		public ManagedRasterizerState()
 		{
 			_internalState = new RasterizerState();
+			_internalState.FillMode = FillMode.Solid;
+			_internalState.CullMode = CullMode.CullClockwiseFace;
+
 		}
 
 		// Summary:
@@ -942,6 +948,7 @@ namespace Axiom.RenderSystems.Xna
 			this.MultiSampleAntiAlias = rasterizerState.MultiSampleAntiAlias;
 			this.ScissorTestEnable = rasterizerState.ScissorTestEnable;
 			this.SlopeScaleDepthBias = rasterizerState.SlopeScaleDepthBias;
+			IsDirty = true;
 		}
 
 		public void Commit( GraphicsDevice device )
@@ -952,7 +959,10 @@ namespace Axiom.RenderSystems.Xna
 		public void Commit( GraphicsDevice device, int index )
 		{
 			if ( IsDirty )
+			{
 				device.RasterizerState = _internalState;
+				IsDirty = false;
+			}
 		}
 
 		#endregion IManagedState Implementation
@@ -1108,6 +1118,7 @@ namespace Axiom.RenderSystems.Xna
 			this.MaxAnisotropy = samplerState.MaxAnisotropy;
 			this.MaxMipLevel = samplerState.MaxMipLevel;
 			this.MipMapLevelOfDetailBias = samplerState.MipMapLevelOfDetailBias;
+			IsDirty = true;
 		}
 
 		public void Commit( GraphicsDevice device )
@@ -1118,7 +1129,10 @@ namespace Axiom.RenderSystems.Xna
 		public void Commit( GraphicsDevice device, int index )
 		{
 			if ( IsDirty )
-				device.SamplerStates[index] = _internalState;
+			{
+				device.SamplerStates[ index ] = _internalState;
+				IsDirty = false;
+			}
 		}
 
 		#endregion IManagedState Implementation
