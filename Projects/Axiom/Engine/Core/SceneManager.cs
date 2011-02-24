@@ -2606,7 +2606,7 @@ namespace Axiom.Core
 		///		A Pass object that was used instead of the one passed in, can
 		///		happen when rendering shadow passes
 		///	</returns>
-		protected virtual Pass SetPass( Pass pass, bool evenIfSuppressed, bool shadowDerivation )
+		public virtual Pass SetPass( Pass pass, bool evenIfSuppressed, bool shadowDerivation )
 		{
 			if ( !this.suppressRenderStateChanges || evenIfSuppressed )
 			{
@@ -2816,7 +2816,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		If only the first parameter is supplied
 		/// </summary>
-		protected virtual Pass SetPass( Pass pass )
+		public virtual Pass SetPass( Pass pass )
 		{
 			return this.SetPass( pass, false, true );
 		}
@@ -2824,7 +2824,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		If only the first two parameters are supplied
 		/// </summary>
-		protected virtual Pass SetPass( Pass pass, bool evenIfSuppressed )
+		public virtual Pass SetPass( Pass pass, bool evenIfSuppressed )
 		{
 			return this.SetPass( pass, evenIfSuppressed, true );
 		}
