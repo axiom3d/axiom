@@ -1,5 +1,5 @@
 #region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -83,7 +83,7 @@ namespace Axiom.Samples
 
 		protected bool mOrbiting;
 		protected bool mZooming;
-		protected Real mTopSpeed;
+
 		/// <summary>
 		/// Gets/Sets the camera's top speed. Only applies for free-look style.
 		/// </summary>
@@ -106,7 +106,7 @@ namespace Axiom.Samples
 			mOrbiting = false;
 			mZooming = false;
 			mCamera = null;
-			mTopSpeed = 150;
+			TopSpeed = 150;
 			mGoingForward = false;
 			mGoingBack = false;
 			mGoingLeft = false;
@@ -208,17 +208,17 @@ namespace Axiom.Samples
 				if ( accel.LengthSquared != 0 )
 				{
 					accel.Normalize();
-					mVelocity += accel * mTopSpeed * evt.TimeSinceLastFrame * 10;
+					mVelocity += accel * TopSpeed * evt.TimeSinceLastFrame * 10;
 				}
 				// if not accelerating, try to stop in a certain time
 				else
 					mVelocity -= mVelocity * evt.TimeSinceLastFrame * 10;
 
 				// keep camera velocity below top speed and above zero
-				if ( mVelocity.LengthSquared > mTopSpeed * mTopSpeed )
+				if ( mVelocity.LengthSquared > TopSpeed * TopSpeed )
 				{
 					mVelocity.Normalize();
-					mVelocity *= mTopSpeed;
+					mVelocity *= TopSpeed;
 				}
 				else if ( mVelocity.LengthSquared < 0.1 )
 					mVelocity = Vector3.Zero;

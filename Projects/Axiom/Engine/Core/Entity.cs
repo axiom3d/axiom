@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -1686,13 +1686,6 @@ namespace Axiom.Core
 
 						this.skeletonInstance = null;
 					}
-
-					foreach ( SubEntity se in this.subEntityList )
-					{
-						if ( !se.IsDisposed )
-							se.Dispose();
-					}
-					this.subEntityList.Clear();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -2658,6 +2651,12 @@ namespace Axiom.Core
 			Entity ent = new Entity( name, pMesh );
 			ent.MovableType = this.Type;
 			return ent;
+		}
+
+		public override void DestroyInstance( ref MovableObject obj )
+		{
+			( (Entity)obj ).Dispose();
+			obj = null;
 		}
 	}
 

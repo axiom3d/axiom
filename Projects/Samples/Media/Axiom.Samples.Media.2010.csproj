@@ -78,7 +78,6 @@
     <None Include="Materials\Rockwall.material" />
     <None Include="Materials\SphereMappedRustySteel.material" />
     <None Include="Materials\StormySkyBox.material" />
-    <None Include="Materials\VTDarkStuff.material" />
     <None Include="Meshes\ogrehead.mesh" />
     <None Include="Meshes\penguin.mesh" />
     <None Include="Meshes\penguin.skeleton" />
@@ -231,6 +230,7 @@
     <Content Include="Thumbnails\thumb_ocean.png" />
     <Content Include="Thumbnails\thumb_particlegs.png" />
     <Content Include="Thumbnails\thumb_particles.png" />
+    <Content Include="Thumbnails\thumb_picking.png" />
     <Content Include="Thumbnails\thumb_playpen.png" />
     <Content Include="Thumbnails\thumb_shadersystem.png" />
     <Content Include="Thumbnails\thumb_shadows.png" />

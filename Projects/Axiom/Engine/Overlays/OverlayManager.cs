@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -34,17 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
-using Axiom.FileSystem;
-using Axiom.Scripting;
 using Axiom.Graphics;
-
-using Real = System.Single;
+using Axiom.Math;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -154,11 +149,9 @@ namespace Axiom.Overlays
 
 		public OverlayManager()
 		{
-#if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.overlay" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
-#endif // AXIOM_USENEWCOMPILERS
 		}
 
 		#endregion Construction and Destruction
@@ -586,6 +579,13 @@ namespace Axiom.Overlays
 						}
 						else
 						{
+                            // So first valid data should be overlay name
+                            if ( line.StartsWith( "overlay " ) )
+                            {
+                                // chop off the 'particle_system ' needed by new compilers
+                                line = line.Substring( 8 );
+                            }
+
 							// the line in this case should be the name of the overlay
 							overlay = Create( line );
 							//this is just telling the file name of the overlay
@@ -629,9 +629,12 @@ namespace Axiom.Overlays
 					}
 				}
 			}
+
+            // record as parsed
+            _loadedScripts.Add( fileName );
 		}
 
-		public float LoadingOrder
+		public Real LoadingOrder
 		{
 			get
 			{

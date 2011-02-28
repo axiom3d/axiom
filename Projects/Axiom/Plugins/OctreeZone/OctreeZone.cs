@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -580,7 +580,7 @@ namespace OctreeZone
 							// if we are displaying nodes, add the node renderable to the queue
 							if ( displayNodes )
 							{
-								queue.AddRenderable( sn );
+								queue.AddRenderable( sn.GetDebugRenderable() );
 							}
 							// if the scene manager or the node wants the bounding box shown, add it to the queue
 							if ( sn.ShowBoundingBox || showBoundingBoxes )

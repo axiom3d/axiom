@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -43,6 +43,7 @@ using System.Text;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Scripting;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -684,70 +685,83 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		public void ParseScript( Stream stream, string groupName, string fileName )
-		{
-			string line = "";
-			ParticleSystem system = null;
+        public void ParseScript( Stream stream, string groupName, string fileName )
+        {
+#if AXIOM_USENEWCOMPILERS
+            Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
+#else
+            string line = "";
+            ParticleSystem system = null;
 
 			TextReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 
-			// parse through the data to the end
-			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-			{
-				// ignore blank lines and comments
-				if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
-				{
-					if ( system == null )
-					{
-						system = CreateTemplate( line, groupName );
-						// read another line to skip the beginning brace of the current particle system
-						script.ReadLine();
-					}
-					else if ( line == "}" )
-					{
-						// end of current particle template
-						system = null;
-					}
-					else if ( line.StartsWith( "emitter" ) )
-					{
-						string[] values = line.Split( ' ' );
+            // parse through the data to the end
+            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
+            {
+                // ignore blank lines and comments
+                if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
+                {
+                    if ( system == null )
+                    {
+                        // No current system
+                        // So first valid data should be a system name
+                        if ( line.StartsWith( "particle_system " ) )
+                        {
+                            // chop off the 'particle_system ' needed by new compilers
+                            line = line.Substring( 16 );
+                        }
 
-						if ( values.Length < 2 )
-						{
-							// Oops, bad emitter
-							LogManager.Instance.Write( "Bad particle system emitter line: '" + line + "' in " + system.Name );
-							script.ReadLine();
-						}
-						// read another line to skip the brace on the next line
-						script.ReadLine();
-						// new emitter
-						ParseEmitter( values[ 1 ], script, system );
-					}
-					else if ( line.StartsWith( "affector" ) )
-					{
-						string[] values = line.Split( ' ' );
-						if ( values.Length < 2 )
-						{
-							// Oops, bad affector
-							LogManager.Instance.Write( "Bad particle system affector line: '" + line + "' in " + system.Name );
-							script.ReadLine();
-						}
+                        system = CreateTemplate( line, groupName );
+                        system.Origin = fileName;
+                        // read another line to skip the beginning brace of the current particle system
+                        script.ReadLine();
+                    }
+                    else if ( line == "}" )
+                    {
+                        // end of current particle template
+                        system = null;
+                    }
+                    else if ( line.StartsWith( "emitter" ) )
+                    {
+                        string[] values = line.Split( ' ' );
 
-						// read another line to skip the brace on the next line
-						script.ReadLine();
-						// new affector
-						ParseAffector( values[ 1 ], script, system );
-					}
-					else
-					{
-						// attribute line
-						ParseAttrib( line.ToLower(), system );
-					} // if
-				} // if
-			} // while
-		}
+                        if ( values.Length < 2 )
+                        {
+                            // Oops, bad emitter
+                            LogManager.Instance.Write( "Bad particle system emitter line: '" + line + "' in " + system.Name );
+                            script.ReadLine();
+                        }
+                        // read another line to skip the brace on the next line
+                        script.ReadLine();
+                        // new emitter
+                        ParseEmitter( values[ 1 ], script, system );
+                    }
+                    else if ( line.StartsWith( "affector" ) )
+                    {
+                        string[] values = line.Split( ' ' );
+                        if ( values.Length < 2 )
+                        {
+                            // Oops, bad affector
+                            LogManager.Instance.Write( "Bad particle system affector line: '" + line + "' in " + system.Name );
+                            script.ReadLine();
+                        }
 
-		public float LoadingOrder
+                        // read another line to skip the brace on the next line
+                        script.ReadLine();
+                        // new affector
+                        ParseAffector( values[ 1 ], script, system );
+                    }
+                    else
+                    {
+                        // attribute line
+                        ParseAttrib( line.ToLower(), system );
+                    } // if
+                } // if
+            } // while
+#endif // AXIOM_USENEWCOMPILERS
+        }
+
+		public Real LoadingOrder
 		{
 			get
 			{

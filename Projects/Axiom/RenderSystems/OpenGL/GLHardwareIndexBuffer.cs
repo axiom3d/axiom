@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -71,8 +71,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="numIndices">Number of indices in the buffer.</param>
 		/// <param name="usage">Usage flags.</param>
 		/// <param name="useShadowBuffer">Should this buffer be backed by a software shadow buffer?</param>
-		public GLHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-			: base( type, numIndices, usage, false, useShadowBuffer )
+		public GLHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+			: base( manager, type, numIndices, usage, false, useShadowBuffer )
 		{
 			// generate the buffer
 			Gl.glGenBuffersARB( 1, out bufferID );

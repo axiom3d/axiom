@@ -1,13 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Core;
 using Axiom.Demos;
-using Axiom.Math;
-using Axiom.SceneManagers.PortalConnected;
 using Axiom.Graphics;
 using Axiom.Input;
+using Axiom.Math;
+using Axiom.SceneManagers.PortalConnected;
 
 namespace PCZDemo
 {

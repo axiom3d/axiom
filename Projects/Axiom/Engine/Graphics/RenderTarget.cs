@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -145,7 +145,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// The average number of Frames per second since Root.StartRendering was called.
 			/// </summary>
-			public float AvgerageFPS;
+			public float AverageFPS;
 			/// <summary>
 			/// The highest number of Frames per second since Root.StartRendering was called.
 			/// </summary>
@@ -351,7 +351,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isActive && !this.IsDisposed;
+				return _isActive && !IsDisposed;
 			}
 			set
 			{
@@ -699,10 +699,11 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="bestFPS">The best FPS rating that has been achieved since rendering began.</param>
 		/// <param name="worstFPS">The worst FPS rating seen so far</param>
+		[Obsolete("The RenderTarget.Statistics Property provides complete access to all statistical data.")]
 		public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
 		{
 			lastFPS = _statistics.LastFPS;
-			avgFPS = _statistics.AvgerageFPS;
+			avgFPS = _statistics.AverageFPS;
 			bestFPS = _statistics.BestFPS;
 			worstFPS = _statistics.WorstFPS;
 		}
@@ -735,7 +736,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _statistics.AvgerageFPS;
+				return _statistics.AverageFPS;
 			}
 		}
 
@@ -810,7 +811,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void ResetStatistics()
 		{
-			_statistics.AvgerageFPS = 0.0F;
+			_statistics.AverageFPS = 0.0F;
 			_statistics.BestFPS = 0.0F;
 			_statistics.LastFPS = 0.0F;
 			_statistics.WorstFPS = 999.0F;
@@ -842,10 +843,10 @@ namespace Axiom.Graphics
 				// new second - not 100% precise
 				_statistics.LastFPS = (float)_frameCount / (float)( thisTime - _lastSecond ) * 1000;
 
-				if ( _statistics.AvgerageFPS == 0 )
-					_statistics.AvgerageFPS = _statistics.LastFPS;
+				if ( _statistics.AverageFPS == 0 )
+					_statistics.AverageFPS = _statistics.LastFPS;
 				else
-					_statistics.AvgerageFPS = ( _statistics.AvgerageFPS + _statistics.LastFPS ) / 2; // not strictly correct, but good enough
+					_statistics.AverageFPS = ( _statistics.AverageFPS + _statistics.LastFPS ) / 2; // not strictly correct, but good enough
 
 				_statistics.BestFPS = Math.Utility.Max( _statistics.BestFPS, _statistics.LastFPS );
 				_statistics.WorstFPS = Math.Utility.Min( _statistics.WorstFPS, _statistics.LastFPS );
@@ -1057,33 +1058,14 @@ namespace Axiom.Graphics
 		#endregion Methods
 
 		#region IDisposable Implementation
+
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		/// 
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base._dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -1097,12 +1079,12 @@ namespace Axiom.Graphics
 
 					// Write final performance stats
 					if ( LogManager.Instance != null )
-						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
+						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AverageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 				}
 			}
-
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
+
 		#endregion IDisposable Implementation
 
 	}

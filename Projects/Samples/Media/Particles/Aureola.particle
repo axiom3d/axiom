@@ -1,5 +1,5 @@
 // Exudes aureola particles which around the model float upwards
-Examples/Aureola
+particle_system Examples/Aureola
 {
     material        Examples/Aureola
     particle_width  200

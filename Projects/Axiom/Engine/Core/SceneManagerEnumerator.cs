@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -209,8 +209,6 @@ namespace Axiom.Core
 				{
 					fact.DestroyInstance( sm );
 					_instances.Remove( sm.Name );
-                    if (!sm.IsDisposed)
-                        sm.Dispose();
 				}
 			}
 
@@ -356,8 +354,6 @@ namespace Axiom.Core
 				}
 			}
 
-            if (!sm.IsDisposed)
-                sm.Dispose();
 		}
 
 		/// <summary>
@@ -412,11 +408,7 @@ namespace Axiom.Core
 		public void ShutdownAll()
 		{
             foreach (SceneManager instance in _instances.Values)
-            {
-                if (!instance.IsDisposed)
-                    instance.Dispose();
-            }
-            _instances.Clear();
+				instance.ClearScene();
 		}
 
 		#endregion Public Methods

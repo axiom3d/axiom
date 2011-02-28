@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -33,14 +33,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using Axiom.Math;
-using Axiom.Math.Collections;
+using System.Diagnostics;
 using Axiom.Graphics;
-
-using Real = System.Single;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -1500,7 +1496,7 @@ namespace Axiom.Core
 			}
 
 			// Calculate general projection parameters
-			float vpLeft, vpRight, vpBottom, vpTop;
+			Real vpLeft, vpRight, vpBottom, vpTop;
 			CalculateProjectionParameters( out vpLeft, out vpRight, out vpBottom, out vpTop );
 
 			float vpWidth = vpRight - vpLeft;

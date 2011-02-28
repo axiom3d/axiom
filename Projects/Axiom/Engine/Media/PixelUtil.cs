@@ -1,7 +1,7 @@
 ﻿#region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -35,10 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.IO;
-
-using Axiom.Core;
-using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -165,6 +161,18 @@ namespace Axiom.Media
 		{
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
+
+        /// <see cref="GetFormatFromName(string, bool, bool)"/>
+        public static PixelFormat GetFormatFromName( string name )
+        {
+            return GetFormatFromName( name, false, false );
+        }
+
+        /// <see cref="GetFormatFromName(string, bool, bool)"/>
+        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
+        {
+            return GetFormatFromName( name, accessibleOnly, false );
+        }
 
 		/// <summary>
 		/// Gets the format from given name.

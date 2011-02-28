@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -36,9 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Axiom.Graphics;
-using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -52,93 +49,67 @@ namespace Axiom.Scripting.Compiler
 	/// </summary>
 	public abstract class ScriptCompilerListener
 	{
-		public ScriptCompilerListener()
-		{
-		}
-
+		/// <summary>
 		/// Returns the concrete node list from the given file
-		public virtual IList<ConcreteNode> ImportFile( String name )
+		/// </summary>
+		/// <param name="compiler">A reference to the compiler</param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public virtual IList<ConcreteNode> ImportFile( ScriptCompiler compiler, String name )
 		{
 			return null;
 		}
 
+		/// <summary>
 		/// Allows for responding to and overriding behavior before a CST is translated into an AST
-		public virtual void PreASTConversion( IList<ConcreteNode> nodes, Dictionary<string, uint> ids )
+		/// </summary>
+		/// <param name="compiler">A reference to the compiler</param>
+		/// <param name="nodes"></param>
+		public virtual void PreConversion( ScriptCompiler compiler, IList<ConcreteNode> nodes )
 		{
 		}
 
-		/// Allows for overriding the translation of the given node into the concrete resource.
-		public virtual ScriptCompiler.Translator PreObjectTranslation( ObjectAbstractNode obj )
+		/// <summary>
+		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
+		/// </summary>
+		/// <remarks>
+		/// Once the script is turned completely into an AST, including import
+		/// and override handling, this function allows a listener to exit
+		/// the compilation process.
+		///</remarks>
+		/// <param name="compiler">A reference to the compiler</param>
+		/// <param name="nodes"></param>
+		/// <returns>True continues compilation, false aborts</returns>
+		public virtual bool PostConversion( ScriptCompiler compiler, IList<AbstractNode> nodes )
 		{
-			return null;
+			return true;
 		}
 
-		/// Allows for overriding the translation of the given node into the concrete resource.
-		public virtual ScriptCompiler.Translator PrePropertyTranslation( PropertyAbstractNode prop )
-		{
-			return null;
-		}
-
+		/// <summary>
 		/// Called when an error occurred
-		public virtual void Error( ScriptCompiler.CompileError err )
+		/// </summary>
+		/// <param name="compiler">A reference to the compiler</param>
+		/// <param name="err"></param>
+		public virtual void HandleError( ScriptCompiler compiler, ScriptCompiler.CompileError err )
 		{
 		}
 
-		/// Must return the requested material
-		public virtual Material CreateMaterial( String name, String group )
+		/// <summary>
+		/// Called when an event occurs during translation, return true if handled
+		/// </summary>
+		/// <remarks>
+		/// This function is called from the translators when an event occurs that
+		/// that can be responded to. Often this is overriding names, or it can be a request for
+		///	custom resource creation.
+		/// </remarks>
+		/// <param name="compiler">A reference to the compiler</param>
+		/// <param name="evt">The event object holding information about the event to be processed</param>
+		/// <param name="retVal">A possible return value from handlers</param>
+		/// <returns>True if the handler processed the event</returns>
+		public virtual bool HandleEvent( ScriptCompiler compiler, ref ScriptCompilerEvent evt, out object retVal )
 		{
-			return null;
+			retVal = null;
+			return false;
 		}
-
-		/// Called before texture aliases are applied to a material
-		public virtual void PreApplyTextureAliases( Dictionary<String, String> aliases )
-		{
-		}
-
-		/// Called before texture names are used
-		public virtual void GetTextureNames( String names )
-		{
-			GetTextureNames( names, 0 );
-		}
-
-		/// Called before texture names are used
-		public virtual void GetTextureNames( String names, int count )
-		{
-		}
-
-		/// Called before a gpu program name is used
-		public virtual void GetGpuProgramName( String name )
-		{
-		}
-
-		/// Called to return the requested GpuProgram
-		public virtual GpuProgram CreateGpuProgram( String name, String group, String source, GpuProgramType type, String syntax )
-		{
-			return null;
-		}
-
-		/// Called to return a HighLevelGpuProgram
-		public virtual HighLevelGpuProgram CreateHighLevelGpuProgram( String name, String group, String language, GpuProgramType type, String source )
-		{
-			return null;
-		}
-
-		/// Returns the requested particle system template
-		public virtual ParticleSystem CreateParticleSystem( String name, String group )
-		{
-			return null;
-		}
-
-		/// Processes the name of the material
-		public virtual void GetMaterialName( String name )
-		{
-		}
-
-		/// Returns the compositor that is created
-		public virtual Compositor CreateCompositor( String name, String group )
-		{
-			return null;
-		}
-
 	}
 }

@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -103,23 +103,12 @@ namespace Axiom.Core
 				info.AppendFormat( "*********Axiom 3D Engine Log *************\n" );
 				info.AppendFormat( "Copyright {0}\n", this.Copyright );
 				info.AppendFormat( "Version: {0}\n", this.Version );
-				//string platform = Environment.OSVersion.Platform.ToString();
-				//int p = (int)Environment.OSVersion.Platform;
-				//if ((p == 4) || (p == 6) || (p == 128))
-				//{
-				//    platform = "Unix";
-				//}
-				//else
-				//{
-				//    platform = "Windows";
-				//}
-
-				//info.AppendFormat( "Operating System: {0} {1}\n", platform, Environment.OSVersion.ToString() );
+				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion.ToString() );
 				bool isMono = Type.GetType("Mono.Runtime") != null;
 				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version.ToString(), isMono ? "Mono": ".Net" );
 
 				// Initializes the Log Manager singleton
-				this.logMgr = new LogManager();
+				this.logMgr = LogManager.Instance;
 
 				//if logFileName is null, then just the Diagnostics (debug) writes will be made
 				// create a new default log
@@ -160,9 +149,7 @@ namespace Axiom.Core
 
 				LodStrategyManager.Instance.Initialize();
 
-#if !AXIOM_USENEWCOMPILERS
 				ScriptCompilerManager.Instance.Initialize();
-#endif // AXIOM_USENEWCOMPILERS
 
 				new PluginManager();
 				PluginManager.Instance.LoadAll();
@@ -1187,7 +1174,7 @@ namespace Axiom.Core
 				// update the last start time before the render targets are rendered
 				this.lastStartTime = time;
 			}
-			else if ( type == FrameEventType.End )
+			if ( type == FrameEventType.Queued )
 			{
 				result = (float)( time - this.lastQueuedTime ) / 1000;
 				// update the last queued time before the render targets are rendered

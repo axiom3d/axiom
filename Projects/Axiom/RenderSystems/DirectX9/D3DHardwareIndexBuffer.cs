@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -63,9 +63,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructors
 
-		public D3DHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
-			D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
-			: base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
+		public D3DHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer )
 		{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :

@@ -1,7 +1,7 @@
 // Example particle systems
 
 // Exudes greeny particles which float upwards
-ParticleSystems/GreenyNimbus
+particle_system ParticleSystems/GreenyNimbus
 {
     material             Particles/Flare
     particle_width 30
@@ -42,7 +42,7 @@ ParticleSystems/GreenyNimbus
 }
 
 // A downpour
-ParticleSystems/Rain
+particle_system ParticleSystems/Rain
 {
     material        Particles/Rain
     particle_width  20
@@ -77,7 +77,7 @@ ParticleSystems/Rain
 }
 
 // A sparkly fountain
-ParticleSystems/Fountain
+particle_system ParticleSystems/Fountain
 {
     material        Particles/Flare2
     particle_width  20
@@ -116,7 +116,7 @@ ParticleSystems/Fountain
 }
 
 // Exudes aureola particles which around the model float upwards
-ParticleSystems/Aureola
+particle_system ParticleSystems/Aureola
 {
     material        Particles/Aureola
     particle_width  200
@@ -177,7 +177,7 @@ ParticleSystems/Aureola
     }
 }
 
-ParticleSystems/Fireworks
+particle_system ParticleSystems/Fireworks
 {
     material Particles/Flare
     point_rendering            false
@@ -233,7 +233,7 @@ ParticleSystems/Fireworks
     }
 }
 
-Examples/Swarm
+particle_system Examples/Swarm
 {
 	quota	3000
 	material	Examples/Flare2
@@ -328,7 +328,7 @@ Examples/Swarm
 }
 
 
-Examples/Snow
+particle_system Examples/Snow
 {
 	quota	2000
 	material	Examples/Flare

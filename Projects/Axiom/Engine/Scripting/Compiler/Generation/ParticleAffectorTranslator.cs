@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,25 +26,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
-
+using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler.AST;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
@@ -52,21 +42,80 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		class ParticleAffectorTranslator : Translator
+		public class ParticleAffectorTranslator : Translator
 		{
-			public ParticleAffectorTranslator( ScriptCompiler compiler )
-				: base( compiler )
+			protected ParticleAffector _Affector;
+
+			public ParticleAffectorTranslator()
+				: base()
 			{
+				_Affector = null;
 			}
 
 			#region Translator Implementation
 
-			protected override void ProcessObject( ObjectAbstractNode node )
+			/// <see cref="Translator.CheckFor"/>
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
+				return nodeId == Keywords.ID_AFFECTOR;
 			}
 
-			protected override void ProcessProperty( PropertyAbstractNode node )
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+
+				// Must have a type as the first value
+				if ( obj.Values.Count == 0 )
+				{
+					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
+					return;
+				}
+
+				string type = string.Empty;
+				if ( !getString( obj.Values[ 0 ], out type ) )
+				{
+					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
+					return;
+				}
+
+				ParticleSystem system = (ParticleSystem)obj.Parent.Context;
+				_Affector = system.AddAffector( type );
+
+				foreach ( AbstractNode i in obj.Children )
+				{
+					if ( i is PropertyAbstractNode )
+					{
+						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						string value = string.Empty;
+
+						// Glob the values together
+						foreach ( AbstractNode it in prop.Values )
+						{
+							if ( it is AtomAbstractNode )
+							{
+								if ( string.IsNullOrEmpty( value ) )
+									value = ( (AtomAbstractNode)it ).Value;
+								else
+									value = value + " " + ( (AtomAbstractNode)it ).Value;
+							}
+							else
+							{
+								compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								break;
+							}
+						}
+
+						if ( !_Affector.SetParam( prop.Name, value ) )
+						{
+							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+						}
+					}
+					else
+					{
+						_processNode( compiler, i );
+					}
+				}
 			}
 
 			#endregion Translator Implementation

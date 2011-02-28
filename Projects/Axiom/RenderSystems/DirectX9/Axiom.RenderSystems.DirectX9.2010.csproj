@@ -173,6 +173,7 @@
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="DriverCollection.cs" />
     <Compile Include="hlsl\HLSLIncludeHandler.cs" />
+    <Compile Include="hlsl\OptimizationLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

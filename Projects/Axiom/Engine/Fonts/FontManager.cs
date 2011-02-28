@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -92,13 +92,10 @@ namespace Axiom.Fonts
 			// Loading order
 			LoadingOrder = 200.0f;
 
-#if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.fontdef" );
 			// Register scripting with resource group manager
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
-#endif // AXIOM_USE_NEWCOMPILERS
-
 
 			// Resource type
 			ResourceType = "Font";
@@ -234,38 +231,44 @@ namespace Axiom.Fonts
 
 			string line;
 
-			// parse through the data to the end
-			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-			{
-				// ignore blank lines and comments
-				if ( line.Length == 0 || line.StartsWith( "//" ) )
-				{
-					continue;
-				}
-				else
-				{
-					if ( font == null )
-					{
-						// first valid data should be the font name
-						font = (Font)Create( line, groupName );
+            // parse through the data to the end
+            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
+            {
+                // ignore blank lines and comments
+                if ( line.Length == 0 || line.StartsWith( "//" ) )
+                {
+                    continue;
+                }
+                else
+                {
+                    if ( font == null )
+                    {
+                        // No current font
+                        // So first valid data should be font name
+                        if ( line.StartsWith( "font " ) )
+                        {
+                            // chop off the 'particle_system ' needed by new compilers
+                            line = line.Substring( 5 );
+                        }
+                        font = (Font)Create( line, groupName );
 
-						ParseHelper.SkipToNextOpenBrace( script );
-					}
-					else
-					{
-						// currently in a font
-						if ( line == "}" )
-						{
-							// finished
-							font = null;
-							// NB font isn't loaded until required
-						}
-						else
-						{
-							parseAttribute( line, font );
-						}
-					}
-				}
+                        ParseHelper.SkipToNextOpenBrace( script );
+                    }
+                    else
+                    {
+                        // currently in a font
+                        if ( line == "}" )
+                        {
+                            // finished
+                            font = null;
+                            // NB font isn't loaded until required
+                        }
+                        else
+                        {
+                            parseAttribute( line, font );
+                        }
+                    }
+                }
 			}
 		}
 

@@ -1,5 +1,5 @@
 ﻿#region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,8 @@
 //THE SOFTWARE.
 #endregion License
 
-using System;
-using Axiom.Math;
 using Axiom.Core;
+using Axiom.Math;
 
 namespace Axiom.Samples
 {
@@ -36,19 +35,13 @@ namespace Axiom.Samples
 			Metadata[ "Thumbnail" ] = "thumb_bsp.png";
 			Metadata[ "Help" ] = "";
 
-			// TrayManager = null;
-			CameraManager = null;
-			Viewport = null;
-			DetailsPanel = null;
-			CursorWasVisible = false;
-			DragLook = false;
 			RequiredPlugins.Add( "BSP Scene Manager" );
 		}
 
 		protected override void LocateResources()
 		{
 			//string bspPath = "./Media/Archives/chiropteraDM.zip";
-			string bspPath = "../Media/Archives/chiropteraDM.pk3";
+			string bspPath = "../../Media/Archives/chiropteraDM.pk3";
 			ResourceGroupManager.Instance.CreateResourceGroup( "BSPSAMPLE" );
 			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
 		}
@@ -60,7 +53,7 @@ namespace Axiom.Samples
 
 		protected override void LoadResources()
 		{
-			/* NOTE: The browser initialises everything at the beginning already, so we use a 0 init proportion.
+			/* NOTE: The browser initializes everything at the beginning already, so we use a 0 init proportion.
 			If you're not compiling this sample for use with the browser, then leave the init proportion at 0.7. */
 			TrayManager.ShowLoadingBar( 1, 1, 0 );
 			// associate the world geometry with the world resource group, and then load the group

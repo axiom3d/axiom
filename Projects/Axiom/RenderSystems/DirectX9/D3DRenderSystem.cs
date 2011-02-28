@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -2118,15 +2118,13 @@ namespace Axiom.RenderSystems.DirectX9
 		///
 		/// </summary>
 		/// <param name="stage"></param>
-		/// <param name="texAddressingMode"></param>
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
+		/// <param name="uvw"></param>
+		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
-			D3D.TextureAddress d3dMode = D3DHelper.ConvertEnum( texAddressingMode );
-
 			// set the device sampler states accordingly
-			device.SetSamplerState( stage, D3D.SamplerState.AddressU, d3dMode );
-			device.SetSamplerState( stage, D3D.SamplerState.AddressV, d3dMode );
-			device.SetSamplerState( stage, D3D.SamplerState.AddressW, d3dMode );
+            device.SetSamplerState( stage, D3D.SamplerState.AddressU, D3DHelper.ConvertEnum( uvw.U ) );
+            device.SetSamplerState( stage, D3D.SamplerState.AddressV, D3DHelper.ConvertEnum( uvw.V ) );
+            device.SetSamplerState( stage, D3D.SamplerState.AddressW, D3DHelper.ConvertEnum( uvw.W ) );
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
@@ -2584,6 +2582,17 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.VolumeMap ) != 0 )
 			{
 				_rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.Texture3D );
+			}
+
+			// Power of 2
+			if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.Pow2 ) == 0 )
+			{
+				if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.NonPow2Conditional ) != 0 )
+				{
+					_rsCapabilities.NonPOW2TexturesLimited = true;
+				}
+
+				_rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.NonPowerOf2Textures );
 			}
 
 			int vpMajor = d3dCaps.VertexShaderVersion.Major;

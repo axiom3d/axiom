@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -106,17 +104,17 @@ namespace Axiom.Demos
 			mWindow.Update();
 		}
 
-		public void ScriptParseStarted( string scriptName )
-		{
-			mLoadingCommentElement.Text = scriptName;
-			mWindow.Update();
-		}
+        public void ScriptParseStarted( string scriptName, ref bool skipThisScript )
+        {
+            mLoadingCommentElement.Text = scriptName;
+            mWindow.Update();
+        }
 
-		public void ScriptParseEnded()
-		{
-			mLoadingBarElement.Width += mProgressBarInc;
-			mWindow.Update();
-		}
+        public void ScriptParseEnded( string scriptName, bool skipped )
+        {
+            mLoadingBarElement.Width += mProgressBarInc;
+            mWindow.Update();
+        }
 
 		public void ResourceGroupScriptingEnded( string groupName )
 		{
@@ -157,6 +155,22 @@ namespace Axiom.Demos
 		{
 		}
 
+        public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
+        {
+        }
+
+        public void ResourcePrepareStarted( Resource resource )
+        {
+        }
+
+        public void ResourcePrepareEnded()
+        {
+        }
+
+        public void ResourceGroupPrepareEnded( string groupName )
+        {
+        }
+
 		#endregion IResourceGroupListener Members
-	}
+    }
 }

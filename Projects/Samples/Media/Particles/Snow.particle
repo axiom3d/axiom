@@ -1,4 +1,4 @@
-Examples/Snow
+particle_system Examples/Snow
 {
 	quota	2000
 	material	Examples/Flare

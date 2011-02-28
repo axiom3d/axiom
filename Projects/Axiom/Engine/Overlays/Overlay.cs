@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -277,41 +277,6 @@ namespace Axiom.Overlays
 			}
 			this.isInitialised = true;
 		}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    //dispose 2D elements
-                    for (int i = 0; i < elementList.Count; i++)
-                    {
-                        OverlayElementContainer container = (OverlayElementContainer)elementList[i];
-
-                        if (!container.IsDisposed)
-                            container.Dispose();
-                    }
-
-                    elementList.Clear();
-                    elementLookup.Clear();
-
-                    if (this.rootNode != null)
-                    {
-                        if (!this.rootNode.IsDisposed)
-                            this.rootNode.Dispose();
-
-                        this.rootNode = null;
-                    }
-                }
-            }
-            base.dispose(disposeManagedResources);
-        }
-
 		/// <summary>
 		///    Internal method to put the overlay contents onto the render queue.
 		/// </summary>

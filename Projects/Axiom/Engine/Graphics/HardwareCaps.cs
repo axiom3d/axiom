@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -33,16 +33,53 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
-using System.Reflection;
-
 using Axiom.Core;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
+    /// <summary>
+    /// Enumeration of GPU vendors.
+    /// </summary>
+    public enum GPUVendor
+    {
+        [ScriptEnum( "Unknown" )]
+        Unknown = 0,
+
+        [ScriptEnum( "Nvidia" )]
+        Nvidia = 1,
+
+        [ScriptEnum( "Ati" )]
+        Ati = 2,
+
+        [ScriptEnum( "Intel" )]
+        Intel = 3,
+
+        [ScriptEnum( "S3" )]
+        S3 = 4,
+
+        [ScriptEnum( "Matrox" )]
+        Matrox = 5,
+        
+        [ScriptEnum( "3DLabs" )]
+        _3DLabs = 6,
+
+        [ScriptEnum( "Sis" )]
+        Sis = 7,
+
+        [ScriptEnum( "Imagination Technologies" )]
+        ImaginationTechnologies = 8,
+
+        // Apple Software Renderer
+        [ScriptEnum( "Apple" )]
+        Apple = 9,
+
+        [ScriptEnum( "Nokia" )]
+        Nokia = 10,
+    };
+
 	/// <summary>
 	/// 	This serves as a way to query information about the capabilies of a 3D API and the
 	/// 	users hardware configuration.  A RenderSystem should create and initialize an instance
@@ -376,21 +413,22 @@ namespace Axiom.Graphics
 		#region VendorName Property
 
 		/// <summary>
-		/// name of the adapter
+		/// name of the GPU vendor
 		/// </summary>
-		private string _vendorName = "";
-		/// <summary>
-		/// Name of the display adapter
+        private GPUVendor _vendor = GPUVendor.Unknown;
+		
+        /// <summary>
+        /// name of the GPU vendor
 		/// </summary>
 		public string VendorName
 		{
 			get
 			{
-				return _vendorName;
+                return VendorToString( _vendor );
 			}
 			set
 			{
-				_vendorName = value;
+                _vendor = VendorFromString( value );
 			}
 		}
 
@@ -422,22 +460,25 @@ namespace Axiom.Graphics
 		#region DeviceVersion Property
 
 		/// <summary>
-		/// version number of the driver
+        /// This is used to build a database of RSC's
+        /// if a RSC with same name, but newer version is introduced, the older one 
+        /// will be removed
 		/// </summary>
-		private string _driverVersion = "";
-		/// <summary>
+		private DriverVersion _driverVersion = new DriverVersion() ;
+		
+        /// <summary>
 		/// The driver version string
-		/// </summary>
-		public string DriverVersion
-		{
-			get
-			{
-				return _driverVersion;
-			}
-			set
-			{
-				_driverVersion = value;
-			}
+        /// </summary>
+        public DriverVersion DriverVersion
+        {
+            get
+            {
+                return _driverVersion;
+            }
+            set
+            {
+                _driverVersion = value;
+            }
 		}
 
 		#endregion DeviceVersion Property
@@ -577,8 +618,9 @@ namespace Axiom.Graphics
 			LogManager logMgr = LogManager.Instance;
 
 			logMgr.Write( "---RenderSystem capabilities---" );
-			logMgr.Write( "\t-Adapter Name: {0}", _deviceName );
-			logMgr.Write( "\t-Driver Version: {0}", _driverVersion );
+            logMgr.Write( "\t-GPU Vendor: {0}", VendorName );
+			logMgr.Write( "\t-Device Name: {0}", _deviceName );
+			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
 			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
 			logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
 			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
@@ -646,6 +688,32 @@ namespace Axiom.Graphics
 			return val ? "yes" : "no";
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vendorString"></param>
+        /// <returns></returns>
+        internal static GPUVendor VendorFromString( string vendorString )
+        {
+            GPUVendor ret = GPUVendor.Unknown;
+            object lookUpResult = ScriptEnumAttribute.Lookup( vendorString, typeof( GPUVendor ) );
+
+            if ( lookUpResult != null )
+                ret = (GPUVendor)lookUpResult;
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        internal static string VendorToString( GPUVendor v )
+        {
+            return ScriptEnumAttribute.GetScriptAttribute( (int)v, typeof( GPUVendor ) );
+        }
+
 		#endregion Methods
-	}
+    }
 }

@@ -38,9 +38,12 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Scripting;
+
 using ResourceHandle = System.UInt64;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using ResourceManager = Axiom.Core.ResourceManager;
 
 #endregion Namespace Declarations
 
@@ -58,9 +61,39 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected string target;
 		/// <summary>
+		/// Gets/Sets the shader profile to target for the compile (i.e. vs1.1, etc).
+		/// </summary>
+		public string Target
+		{
+			get
+			{
+				return target;
+			}
+			set
+			{
+				target = value;
+			}
+		}
+
+		/// <summary>
 		///     Entry point to compile from the program.
 		/// </summary>
 		protected string entry;
+		/// <summary>
+		/// Gets/Sets the entry point to compile from the program.
+		/// </summary>
+		public string EntryPoint
+		{
+			get
+			{
+				return entry;
+			}
+			set
+			{
+				entry = value;
+			}
+		}
+
 		/// <summary>
 		///     Holds the low level program instructions after the compile.
 		/// </summary>
@@ -69,18 +102,86 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		///     Holds information about shader constants.
 		/// </summary>
 		protected D3D.ConstantTable constantTable;
+
 		/// <summary>
-		/// preprocessor defines used to compile the program.
+		/// the preprocessor definitions to use to compile the program
 		/// </summary>
-		protected string preprocessorDefines;
+		protected string preprocessorDefines = string.Empty;
+		/// <summary>
+		/// Get/Sets the preprocessor definitions to use to compile the program
+		/// </summary>
+		public string PreprocessorDefinitions
+		{
+			get
+			{
+				return preprocessorDefines;
+			}
+			set
+			{
+				preprocessorDefines = value;
+			}
+		}
+
+		/// <summary>
+		/// the optimization level to use.
+		/// </summary>
+		protected OptimizationLevel optimizationLevel;
+		/// <summary>
+		/// Gets/Sets the optimization level to use.
+		/// </summary>
+		public OptimizationLevel OptimizationLevel
+		{
+			get
+			{
+				return optimizationLevel;
+			}
+			set
+			{
+				optimizationLevel = value;
+			}
+		}
+
+		/// <summary>
+		/// determines which packing order to use for matrices
+		/// </summary>
+		protected bool columnMajorMatrices;
+		/// <summary>
+		/// Gets/Sets which packing order to use for matrices
+		/// </summary>
+		public bool UseColumnMajorMatrices
+		{
+			get
+			{
+				return columnMajorMatrices;
+			}
+			set
+			{
+				columnMajorMatrices = value;
+			}
+		}
+
+		/// <summary>
+		/// Include handler to load additional files from <see cref="ResourceGroupManager"/>
+		/// </summary>
+		private HLSLIncludeHandler includeHandler;
+
 		#endregion Fields
 
 		#region Construction and Destruction
 
+		/// <summary>
+		/// Creates a new instance of <see cref="HLSLProgram"/>
+		/// </summary>
+		/// <param name="parent">the ResourceManager that owns this resource</param>
+		/// <param name="name">Name of the program</param>
+		/// <param name="handle">The resource id of the program</param>
+		/// <param name="group">the resource group</param>
+		/// <param name="isManual">is the program manually loaded?</param>
+		/// <param name="loader">the loader responsible for this program</param>
 		public HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			preprocessorDefines = string.Empty;
+			includeHandler = new HLSLIncludeHandler( this );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -124,6 +225,16 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
+		/// <summary>
+		///    Creates a new parameters object compatible with this program definition.
+		/// </summary>
+		/// <remarks>
+		///    Unlike low-level assembly programs, parameters objects are specific to the
+		///    program and therefore must be created from it rather than by the 
+		///    HighLevelGpuProgramManager. This method creates a new instance of a parameters
+		///    object containing the definition of the parameters this program understands.
+		/// </remarks>
+		/// <returns>A new set of program parameters.</returns>
 		public override GpuProgramParameters CreateParameters()
 		{
 			GpuProgramParameters parms = base.CreateParameters();
@@ -138,41 +249,55 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void LoadFromSource()
 		{
-			// Populate preprocessor defines
-			string stringBuffer = string.Empty;
-			List<D3D.Macro> defines = new List<D3D.Macro>();
-			if ( preprocessorDefines != string.Empty )
-			{
-				stringBuffer = preprocessorDefines;
-
-				// Split preprocessor defines and build up macro array
-
-				if ( stringBuffer.Contains( "," ) )
-				{
-					string[] definesArr = stringBuffer.Split( ',' );
-					foreach ( string def in definesArr )
-					{
-						D3D.Macro macro = new D3D.Macro();
-						macro.Definition = "1\0";
-						macro.Name = def + "\0";
-						defines.Add( macro );
-					}
-				}
-			}
-
 			string errors = null;
+			List<D3D.Macro> defines = buildDefines( preprocessorDefines );
+
+			D3D.ShaderFlags compileFlags = D3D.ShaderFlags.None;
+			D3D.ShaderFlags parseFlags = D3D.ShaderFlags.None;
+
+			parseFlags |= columnMajorMatrices ? D3D.ShaderFlags.PackMatrixColumnMajor : D3D.ShaderFlags.PackMatrixRowMajor;
+
+#if DEBUG
+			compileFlags |= D3D.ShaderFlags.Debug;
+			parseFlags |= D3D.ShaderFlags.Debug;
+#endif
+			switch ( optimizationLevel )
+			{
+				case OptimizationLevel.Default:
+					compileFlags |= D3D.ShaderFlags.OptimizationLevel1;
+					parseFlags |= D3D.ShaderFlags.OptimizationLevel1;
+					break;
+				case OptimizationLevel.None:
+					compileFlags |= D3D.ShaderFlags.SkipOptimization;
+					parseFlags |= D3D.ShaderFlags.SkipOptimization;
+					break;
+				case OptimizationLevel.LevelZero:
+					compileFlags |= D3D.ShaderFlags.OptimizationLevel0;
+					parseFlags |= D3D.ShaderFlags.OptimizationLevel0;
+					break;
+				case OptimizationLevel.LevelOne:
+					compileFlags |= D3D.ShaderFlags.OptimizationLevel1;
+					parseFlags |= D3D.ShaderFlags.OptimizationLevel1;
+					break;
+				case OptimizationLevel.LevelTwo:
+					compileFlags |= D3D.ShaderFlags.OptimizationLevel2;
+					parseFlags |= D3D.ShaderFlags.OptimizationLevel2;
+					break;
+				case OptimizationLevel.LevelThree:
+					compileFlags |= D3D.ShaderFlags.OptimizationLevel3;
+					parseFlags |= D3D.ShaderFlags.OptimizationLevel3;
+					break;
+			}
 
 			// compile the high level shader to low level microcode
 			// note, we need to pack matrices in row-major format for HLSL
-			HLSLIncludeHandler include = new HLSLIncludeHandler( this );
-
-			D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), include, D3D.ShaderFlags.PackMatrixRowMajor );
+			D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), includeHandler, parseFlags );
 
 			try
 			{
 				microcode = effectCompiler.CompileShader( new D3D.EffectHandle( entry ),
 														  target,
-														  D3D.ShaderFlags.None,
+														  compileFlags,
 														  out errors,
 														  out constantTable );
 			}
@@ -237,6 +362,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
+		/// <summary>
+		/// Returns whether this program can be supported on the current renderer and hardware.
+		/// </summary>
 		public override bool IsSupported
 		{
 			get
@@ -250,6 +378,34 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
+		/// <summary>
+		/// Returns the maximum number of samplers that this fragment program has access
+		/// to, based on the fragment program profile it uses.
+		/// </summary>
+		public override int SamplerCount
+		{
+			get
+			{
+				switch ( target )
+				{
+					case "ps_1_1":
+					case "ps_1_2":
+					case "ps_1_3":
+						return 4;
+					case "ps_1_4":
+						return 6;
+					case "ps_2_0":
+					case "ps_2_x":
+					case "ps_3_0":
+					case "ps_3_x":
+						return 16;
+					default:
+						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", target );
+				}
+
+				// return 0;
+			}
+		}
 		#endregion GpuProgram Members
 
 		#region Methods
@@ -323,35 +479,30 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
-		#endregion Methods
-
-		#region Properties
-
-		public override int SamplerCount
+		private List<D3D.Macro> buildDefines( string defines )
 		{
-			get
+			List<D3D.Macro> definesList = new List<D3D.Macro>();
+			D3D.Macro macro;
+			string[] tmp = defines.Split( ' ', ',', ';' );
+			foreach ( string define in tmp )
 			{
-				switch ( target )
+				macro = new D3D.Macro();
+				if ( define.Contains( "=" ) )
 				{
-					case "ps_1_1":
-					case "ps_1_2":
-					case "ps_1_3":
-						return 4;
-					case "ps_1_4":
-						return 6;
-					case "ps_2_0":
-					case "ps_2_x":
-					case "ps_3_0":
-					case "ps_3_x":
-						return 16;
-					default:
-						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", target );
+					macro.Name = define.Split( '=' )[ 0 ];
+					macro.Definition = define.Split( '=' )[ 1 ];
 				}
-
-				// return 0;
+				else
+				{
+					macro.Name = define;
+					macro.Definition = "1";
+				}
+				definesList.Add( macro );
 			}
+			return definesList;
 		}
-		#endregion Properties
+
+		#endregion Methods
 
 		#region IConfigurable Members
 
@@ -377,6 +528,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 				case "preprocessor_defines":
 					preprocessorDefines = val;
+					break;
+
+				case "column_major_matrices":
+					columnMajorMatrices = StringConverter.ParseBool( val );
+					break;
+
+				case "optimisation_level":
+				case "optimization_level":
+					optimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof( OptimizationLevel ) );
 					break;
 
 				default:

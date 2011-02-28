@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,25 +26,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Math;
-
 using Axiom.Scripting.Compiler.AST;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
@@ -52,21 +42,88 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		class CompositorTranslator : Translator
+		public class CompositorTranslator : Translator
 		{
-			public CompositorTranslator( ScriptCompiler compiler )
-				: base( compiler )
+			protected Compositor _Compositor;
+
+			public CompositorTranslator()
+				: base()
 			{
+				_Compositor = null;
 			}
 
 			#region Translator Implementation
 
-			protected override void ProcessObject( ObjectAbstractNode node )
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
+				return nodeId == Keywords.ID_COMPOSITOR;
 			}
 
-			protected override void ProcessProperty( PropertyAbstractNode node )
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+
+				if ( obj != null )
+				{
+					if ( string.IsNullOrEmpty( obj.Name ) )
+					{
+						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+						return;
+					}
+				}
+				else
+				{
+					compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+					return;
+				}
+
+				// Create the compositor
+				object compObject;
+				ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
+				bool processed = compiler._fireEvent( ref evt, out compObject );
+
+				if ( !processed )
+				{
+					//TODO
+					// The original translated implementation of this code block was simply the following:
+					// _Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					// but sometimes it generates an excepiton due to a duplicate resource.
+					// In order to avoid the above mentioned exception, the implementation was changed, but
+					// it need to be checked when ResourceManager._add will be updated to the lastest version
+
+					Compositor checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
+
+					if ( checkForExistingComp == null )
+						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					else
+						_Compositor = checkForExistingComp;
+				}
+				else
+					_Compositor = (Compositor)compObject;
+
+				if ( _Compositor == null )
+				{
+					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
+					return;
+				}
+
+				// Prepare the compositor
+				_Compositor.RemoveAllTechniques();
+				_Compositor.Origin = obj.File;
+				obj.Context = _Compositor;
+
+				foreach ( AbstractNode i in obj.Children )
+				{
+					if ( i is ObjectAbstractNode )
+					{
+						_processNode( compiler, i );
+					}
+					else
+					{
+						compiler.AddError( CompileErrorCode.UnexpectedToken, i.File, i.Line, "token not recognized" );
+					}
+				}
 			}
 
 			#endregion Translator Implementation

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -133,18 +133,6 @@ namespace Axiom.Animating
 			get
 			{
 				return parentEntity.ParentNodeFullTransform;
-			}
-		}
-
-		/// <summary>
-		///	   Pass on any requests for the lights list to
-		///	   to the parent entity
-		/// </summary>
-		public override LightList Lights
-		{
-			get
-			{
-				return parentEntity.ParentNode.Lights;
 			}
 		}
 

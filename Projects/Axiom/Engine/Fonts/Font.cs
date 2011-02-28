@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -37,17 +37,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Media;
-using Axiom.FileSystem;
-
-using ResourceHandle = System.UInt64;
-using Real = System.Single;
 using CodePoint = System.UInt32;
 using Image = Axiom.Media.Image;
+using ResourceHandle = System.UInt64;
 using UVRect = Axiom.Core.RectangleF;
 
 #endregion Namespace Declarations
@@ -365,7 +361,7 @@ namespace Axiom.Fonts
 		Pair<int> StrBBox( string text, float char_height, RenderWindow window )
 		{
 			int height = 0, width = 0;
-			float vsX, vsY, veX, veY;
+			Real vsX, vsY, veX, veY;
 			int w, h;
 
 			w = window.Width;
@@ -517,7 +513,7 @@ namespace Axiom.Fonts
 				}
 
 				// set texture addressing mode to Clamp to eliminate fuzzy edges
-				unitState.TextureAddressing = TextureAddressing.Clamp;
+                unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				// set up blending mode
 				if ( blendByAlpha )

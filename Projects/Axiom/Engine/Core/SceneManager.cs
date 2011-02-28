@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -42,21 +42,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Animating;
+using Axiom.Animating.Collections;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
+using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.Media;
 using Axiom.Overlays;
-
 using ResourceHandle = System.UInt64;
-using Axiom.Graphics.Collections;
-using Axiom.Animating.Collections;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -81,8 +79,7 @@ namespace Axiom.Core
 
 	/// <summary>
 	///		Manages the organization and rendering of a 'scene' i.e. a collection
-	///		of objects and potentiall
-	///		y world geometry.
+	///		of objects and potentially world geometry.
 	/// </summary>
 	/// <remarks>
 	///		This class defines the interface and the basic behaviour of a
@@ -137,7 +134,7 @@ namespace Axiom.Core
 		protected static float oldFogEnd;
 		protected static FogMode oldFogMode;
 		protected static float oldFogStart;
-		protected static RenderOperation op;
+		protected static RenderOperation op = new RenderOperation();
 
 		/// <summary>The ambient color, cached from the RenderSystem</summary>
 		/// <remarks>Default to a semi-bright white (gray) light to prevent being null</remarks>
@@ -1829,7 +1826,7 @@ namespace Axiom.Core
 				this.shadowReceiverPass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
 				// Don't set lighting and blending modes here, depends on additive / modulative
 				TextureUnitState t = this.shadowReceiverPass.CreateTextureUnitState();
-				t.TextureAddressing = TextureAddressing.Clamp;
+                t.SetTextureAddressingMode( TextureAddressing.Clamp );
 			}
 			else
 			{
@@ -2650,7 +2647,7 @@ namespace Axiom.Core
 		///		A Pass object that was used instead of the one passed in, can
 		///		happen when rendering shadow passes
 		///	</returns>
-		protected virtual Pass SetPass( Pass pass, bool evenIfSuppressed, bool shadowDerivation )
+		public virtual Pass SetPass( Pass pass, bool evenIfSuppressed, bool shadowDerivation )
 		{
 			if ( !this.suppressRenderStateChanges || evenIfSuppressed )
 			{
@@ -2860,7 +2857,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		If only the first parameter is supplied
 		/// </summary>
-		protected virtual Pass SetPass( Pass pass )
+		public virtual Pass SetPass( Pass pass )
 		{
 			return this.SetPass( pass, false, true );
 		}
@@ -2868,7 +2865,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		If only the first two parameters are supplied
 		/// </summary>
-		protected virtual Pass SetPass( Pass pass, bool evenIfSuppressed )
+		public virtual Pass SetPass( Pass pass, bool evenIfSuppressed )
 		{
 			return this.SetPass( pass, evenIfSuppressed, true );
 		}
@@ -3617,7 +3614,7 @@ namespace Axiom.Core
 				m.Load();
 
 				// ensure texture clamping to reduce fuzzy edges when using filtering
-				m.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).TextureAddressing = TextureAddressing.Clamp;
+                m.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				this.isSkyBoxDrawnFirst = drawFirst;
 
@@ -3745,13 +3742,8 @@ namespace Axiom.Core
 				// set up the dome (5 planes)
 				for ( int i = 0; i < 5; ++i )
 				{
-					Mesh planeMesh = this.CreateSkyDomePlane( (BoxPlane)i,
-															  curvature,
-															  tiling,
-															  distance,
-															  orientation,
-															  groupName );
-					string entityName = String.Format( "SkyDomePlame{0}", i );
+					Mesh planeMesh = this.CreateSkyDomePlane( (BoxPlane)i, curvature, tiling, distance, orientation, groupName );
+					string entityName = String.Format( "SkyDomePlane{0}", i );
 
 					// create entity
 					if ( this.skyDomeEntities[ i ] != null )
@@ -3855,7 +3847,7 @@ namespace Axiom.Core
 						// set projective based on camera
 						texUnit.SetProjectiveTexturing( !p.HasVertexProgram, cam );
 						// clamp to border colour
-						texUnit.TextureAddressing = TextureAddressing.Border;
+                        texUnit.SetTextureAddressingMode( TextureAddressing.Border );
 						texUnit.TextureBorderColor = ColorEx.White;
 						mat.Touch();
 					}
@@ -5309,20 +5301,14 @@ namespace Axiom.Core
 				Material mat = (Material)MaterialManager.Instance[ matName ];
 				if ( mat == null )
 				{
-					mat =
-						(Material)
-						MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
+					mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
 				}
-				else
-				{
-					mat.GetTechnique( 0 ).GetPass( 0 ).RemoveAllTextureUnitStates();
-				}
+
 				// create texture unit referring to render target texture
-				TextureUnitState texUnit =
-					mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
+				TextureUnitState texUnit = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
 				// set projective based on camera
 				texUnit.SetProjectiveTexturing( true, cam );
-				texUnit.TextureAddressing = TextureAddressing.Border;
+                texUnit.SetTextureAddressingMode( TextureAddressing.Border );
 				texUnit.TextureBorderColor = ColorEx.White;
 				mat.Touch();
 			}
@@ -5998,7 +5984,7 @@ namespace Axiom.Core
 					textureUnit.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
 
 					// clamp to border color in case this is a custom material
-					textureUnit.TextureAddressing = TextureAddressing.Border;
+                    textureUnit.SetTextureAddressingMode( TextureAddressing.Border );
 					textureUnit.TextureBorderColor = ColorEx.White;
 
 					this.autoParamDataSource.TextureProjector = cam;
@@ -6034,7 +6020,7 @@ namespace Axiom.Core
 							TextureUnitState tex = targetPass.CreateTextureUnitState( "spot_shadow_fade.png" );
 							tex.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
 							tex.SetColorOperation( LayerBlendOperation.Add );
-							tex.TextureAddressing = TextureAddressing.Clamp;
+                            tex.SetTextureAddressingMode( TextureAddressing.Clamp );
 						}
 					}
 					else
@@ -6965,6 +6951,53 @@ namespace Axiom.Core
 			return 0;
 		}
 
+        /// <summary>
+        /// Sets the source of the 'world' geometry, i.e. the large, mainly static geometry
+        /// making up the world e.g. rooms, landscape etc.
+        /// This function can be called before setWorldGeometry in a background thread, do to
+        /// some slow tasks (e.g. IO) that do not involve the backend render system.
+        /// </summary>
+        /// <remarks>
+        /// Depending on the type of SceneManager (subclasses will be specialised
+        /// for particular world geometry types) you have requested via the Root or
+        /// SceneManagerEnumerator classes, you can pass a filename to this method and it
+        /// will attempt to load the world-level geometry for use. If you try to load
+        /// an inappropriate type of world data an exception will be thrown. The default
+        /// SceneManager cannot handle any sort of world geometry and so will always
+        /// throw an exception. However subclasses like BspSceneManager can load
+        /// particular types of world geometry e.g. "q3dm1.bsp".
+        /// </remarks>
+        /// <param name="filename"></param>
+        public virtual void PrepareWorldGeometry( string filename )
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the source of the 'world' geometry, i.e. the large, mainly static geometry
+        /// making up the world e.g. rooms, landscape etc.
+        /// This function can be called before setWorldGeometry in a background thread, do to
+        /// some slow tasks (e.g. IO) that do not involve the backend render system.
+        /// </summary>
+        /// <remarks>
+        /// Depending on the type of SceneManager (subclasses will be 
+        ///	specialised for particular world geometry types) you have 
+        ///	requested via the Root or SceneManagerEnumerator classes, you 
+        ///	can pass a stream to this method and it will attempt to load 
+        ///	the world-level geometry for use. If the manager can only 
+        ///	handle one input format the typeName parameter is not required.
+        ///	The stream passed will be read (and it's state updated). 
+        /// </remarks>
+        /// <param name="stream">Data stream containing data to load</param>
+        /// <param name="typeName">String identifying the type of world geometry
+        ///	contained in the stream - not required if this manager only 
+        ///	supports one type of world geometry.
+        ///	</param>
+        public virtual void PrepareWorldGeometry( Stream stream, string typeName )
+        {
+            throw new NotImplementedException();
+        }
+
 		public virtual void SetWorldGeometry( string filename )
 		{
 		}
@@ -6977,7 +7010,7 @@ namespace Axiom.Core
 		{
 		}
 
-		#endregion WorldGeometry
+        #endregion WorldGeometry
 
 		#region MovableObjectFactory methods
 
@@ -7181,7 +7214,7 @@ namespace Axiom.Core
 		}
 
 		#endregion MovableObjectFactory methods
-	}
+    }
 
 	#region Default SceneQuery Implementations
 

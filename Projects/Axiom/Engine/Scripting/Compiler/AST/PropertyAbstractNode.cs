@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -36,7 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -49,54 +47,49 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		public String name;
-		public uint id;
+		public String Name;
 
-		private List<AbstractNode> _values = new List<AbstractNode>();
-		public IList<AbstractNode> values
-		{
-			get
-			{
-				return _values;
-			}
-		}
+		public uint Id;
+
+		public IList<AbstractNode> Values = new List<AbstractNode>();
 
 		#endregion Fields and Properties
 
 		public PropertyAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.Property;
+			Id = 0;
 		}
 
 		#region AbstractNode Implementation
 
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			PropertyAbstractNode node = new PropertyAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Type = Type;
-			node.name = name;
-			node.id = id;
-			foreach ( AbstractNode an in values )
+			node.Name = Name;
+			node.Id = Id;
+			foreach ( AbstractNode an in Values )
 			{
 				AbstractNode newNode = (AbstractNode)( an.Clone() );
-				newNode.Parent = an;
-				node.values.Add( newNode );
+				newNode.Parent = node;
+				node.Values.Add( newNode );
 			}
 			return node;
 		}
 
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return Name;
 			}
-			protected internal set
+			set
 			{
-				throw new NotImplementedException();
+				Name = value;
 			}
 
 		}

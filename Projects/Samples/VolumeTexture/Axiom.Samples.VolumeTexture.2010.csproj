@@ -8,8 +8,8 @@
     <ProjectGuid>{0EDB7324-39CB-4BED-866C-1340037CFD5A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VolumeTexture</RootNamespace>
-    <AssemblyName>VolumeTexture</AssemblyName>
+    <RootNamespace>Axiom.Samples.VolumeTexture</RootNamespace>
+    <AssemblyName>Axiom.Samples.VolumeTexture</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

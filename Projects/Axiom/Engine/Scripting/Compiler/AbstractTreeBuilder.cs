@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -36,8 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -88,8 +86,8 @@ namespace Axiom.Scripting.Compiler
 					ImportAbstractNode impl = new ImportAbstractNode();
 					impl.Line = node.Line;
 					impl.File = node.File;
-					impl.target = node.Children[ 0 ].Token;
-					impl.source = node.Children[ 1 ].Token;
+					impl.Target = node.Children[ 0 ].Token;
+					impl.Source = node.Children[ 1 ].Token;
 
 					asn = impl;
 				}
@@ -115,7 +113,7 @@ namespace Axiom.Scripting.Compiler
 					String name = node.Children[ 0 ].Token;
 					String value = node.Children[ 1 ].Token;
 
-					if ( _current != null && _current.Type == AbstractNodeType.Object )
+					if ( _current != null && _current is ObjectAbstractNode )
 					{
 						ObjectAbstractNode ptr = (ObjectAbstractNode)_current;
 						ptr.SetVariable( name, value );
@@ -134,10 +132,10 @@ namespace Axiom.Scripting.Compiler
 						return;
 					}
 
-					VariableAccessAbstractNode impl = new VariableAccessAbstractNode( _current );
+					VariableGetAbstractNode impl = new VariableGetAbstractNode( _current );
 					impl.Line = node.Line;
 					impl.File = node.File;
-					impl.name = node.Token;
+					impl.Name = node.Token;
 
 					asn = impl;
 				}
@@ -177,8 +175,7 @@ namespace Axiom.Scripting.Compiler
 						{
 							temp.Add( node );
 						}
-						foreach ( ConcreteNode cn in node.Children )
-							temp.Add( cn );
+						temp.AddRange( node.Children );
 
 						// Get the type of object
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
@@ -187,7 +184,9 @@ namespace Axiom.Scripting.Compiler
 						bool validNode = iter.MoveNext();
 
 						// Get the name
-						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) )
+						// Unless the type is in the exclusion list
+						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) &&
+							!_compiler._isNameExcluded( impl.Cls, _current ) )
 						{
 							impl.Name = iter.Current.Token;
 							validNode = iter.MoveNext();
@@ -198,11 +197,10 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( iter.Current.Type == ConcreteNodeType.Variable )
 							{
-								VariableAccessAbstractNode var = new VariableAccessAbstractNode( impl );
+								VariableGetAbstractNode var = new VariableGetAbstractNode( impl );
 								var.File = iter.Current.File;
 								var.Line = iter.Current.Line;
-								var.Type = AbstractNodeType.VariableGet;
-								var.name = iter.Current.Token;
+								var.Name = iter.Current.Token;
 								impl.Values.Add( var );
 							}
 							else
@@ -210,7 +208,6 @@ namespace Axiom.Scripting.Compiler
 								AtomAbstractNode atom = new AtomAbstractNode( impl );
 								atom.File = iter.Current.File;
 								atom.Line = iter.Current.Line;
-								atom.Type = AbstractNodeType.Atom;
 								atom.Value = iter.Current.Token;
 								impl.Values.Add( atom );
 							}
@@ -220,12 +217,11 @@ namespace Axiom.Scripting.Compiler
 						// Find the base
 						if ( validNode && iter.Current.Type == ConcreteNodeType.Colon )
 						{
-							if ( iter.Current.Children.Count == 0 )
-							{
-								_compiler.AddError( CompileErrorCode.StringExpected, iter.Current.File, iter.Current.Line );
-								return;
-							}
-							impl.BaseClass = iter.Current.Children[ 0 ].Token;
+							// Children of the ':' are bases
+							foreach ( ConcreteNode j in iter.Current.Children )
+								impl.Bases.Add( j.Token );
+
+							validNode = iter.MoveNext();
 						}
 
 						// Finally try to map the cls to an id
@@ -249,11 +245,11 @@ namespace Axiom.Scripting.Compiler
 						PropertyAbstractNode impl = new PropertyAbstractNode( _current );
 						impl.Line = node.Line;
 						impl.File = node.File;
-						impl.name = node.Token;
+						impl.Name = node.Token;
 
-						if ( _compiler.KeywordMap.ContainsKey( impl.name ) )
+						if ( _compiler.KeywordMap.ContainsKey( impl.Name ) )
 						{
-							impl.id = _compiler.KeywordMap[ impl.name ];
+							impl.Id = _compiler.KeywordMap[ impl.Name ];
 						}
 
 						asn = (AbstractNode)impl;
@@ -286,10 +282,10 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( _current != null )
 					{
-						if ( _current.Type == AbstractNodeType.Property )
+						if ( _current is PropertyAbstractNode )
 						{
 							PropertyAbstractNode impl = (PropertyAbstractNode)_current;
-							impl.values.Add( asn );
+							impl.Values.Add( asn );
 						}
 						else
 						{
@@ -311,6 +307,5 @@ namespace Axiom.Scripting.Compiler
 			}
 
 		}
-
 	}
 }

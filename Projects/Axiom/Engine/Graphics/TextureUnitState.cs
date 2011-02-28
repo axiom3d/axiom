@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -38,15 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-
 using Axiom.Controllers;
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Graphics.Collections;
+using Axiom.Math;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -67,6 +65,65 @@ namespace Axiom.Graphics
 		/// </summary>
 		Vertex
 	}
+
+    /// <summary>
+    /// Texture addressing mode for each texture coordinate.
+    /// </summary>
+    public struct UVWAddressing
+    {
+        public TextureAddressing U;
+        public TextureAddressing V;
+        public TextureAddressing W;
+
+        public UVWAddressing( TextureAddressing u, TextureAddressing v, TextureAddressing w )
+            : this()
+        {
+            U = u;
+            V = v;
+            W = w;
+        }
+
+        public UVWAddressing( TextureAddressing commonAddressing )
+            : this()
+        {
+            U = V = W = commonAddressing;
+        }
+
+        public override bool Equals( object obj )
+        {
+            if ( obj == null )
+                return false;
+
+            if ( !( obj is UVWAddressing ) )
+                return false;
+
+            UVWAddressing a = (UVWAddressing)obj;
+
+            return ( a.U == U ) && ( a.V == V ) && ( a.W == W );
+        }
+
+        public override int GetHashCode()
+        {
+            return U.GetHashCode() ^ V.GetHashCode() ^ W.GetHashCode();
+        }
+
+        #region Operators
+
+        public static bool operator ==( UVWAddressing a, UVWAddressing b )
+        {
+            if ( Object.ReferenceEquals( a, b ) )
+                return true;
+
+            return ( a.U == b.U ) && ( a.V == b.V ) && ( a.W == b.W );
+        }
+
+        public static bool operator !=( UVWAddressing a, UVWAddressing b )
+        {
+            return !( a == b );
+        }
+
+        #endregion Operators
+    }
 
 	/// <summary>
 	/// 	Class representing the state of a single texture unit during a Pass of a
@@ -152,21 +209,21 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Addressing mode to use for texture coordinates.
 		/// </summary>
-		private TextureAddressing texAddressingMode;
+		protected UVWAddressing texAddressingMode;
 
+        /// <summary>
+        /// Gets the texture addressing mode for a given coordinate, 
+		///	i.e. what happens at uv values above 1.0.
+        /// </summary>
 		/// <remarks>
 		///    The default is <code>TextureAddressing.Wrap</code> i.e. the texture repeats over values of 1.0.
 		///    This applies for both the fixed-function and programmable pipelines.
 		/// </remarks>
-		public TextureAddressing TextureAddressing
+        public UVWAddressing TextureAddressingMode
 		{
 			get
 			{
 				return texAddressingMode;
-			}
-			set
-			{
-				texAddressingMode = value;
 			}
 		}
 
@@ -260,9 +317,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		private LayerBlendOperation colorOp;
 
-		/// <summary>
-		/// 
-		/// </summary>
 		public LayerBlendOperation ColorOperation
 		{
 			get
@@ -437,11 +491,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		private bool recalcTexMatrix;
 
-		/// <summary>
-		///    U coord of the texture transformation.
-		/// </summary>
 		private float transU;
 
+        /// <summary>
+        ///    U coord of the texture transformation.
+        /// </summary>
 		public float TextureScrollU
 		{
 			get
@@ -454,11 +508,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///    V coord of the texture transformation.
-		/// </summary>
 		private float transV;
 
+        /// <summary>
+        ///    V coord of the texture transformation.
+        /// </summary>
 		public float TextureScrollV
 		{
 			get
@@ -471,11 +525,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///    U coord of the texture scroll animation
-		/// </summary>
 		private float scrollU;
 
+        /// <summary>
+        ///    U coord of the texture scroll animation
+        /// </summary>
 		public float TextureAnimU
 		{
 			get
@@ -488,11 +542,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///    V coord of the texture scroll animation
-		/// </summary>
 		private float scrollV;
 
+        /// <summary>
+        ///    V coord of the texture scroll animation
+        /// </summary>
 		public float TextureAnimV
 		{
 			get
@@ -505,11 +559,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///    U scale value of the texture transformation.
-		/// </summary>
 		private float scaleU;
 
+        /// <summary>
+        ///    U scale value of the texture transformation.
+        /// </summary>
 		public float ScaleU
 		{
 			get
@@ -522,11 +576,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///    V scale value of the texture transformation.
-		/// </summary>
+		
 		private float scaleV;
 
+        /// <summary>
+        ///    V scale value of the texture transformation.
+        /// </summary>
 		public float ScaleV
 		{
 			get
@@ -873,7 +928,7 @@ namespace Axiom.Graphics
 
 			colorBlendMode.blendType = LayerBlendType.Color;
 			SetColorOperation( LayerBlendOperation.Modulate );
-			this.TextureAddressing = TextureAddressing.Wrap;
+            this.SetTextureAddressingMode( TextureAddressing.Wrap );
 
 			// set alpha blending options
 			alphaBlendMode.operation = LayerBlendOperationEx.Modulate;
@@ -910,6 +965,50 @@ namespace Axiom.Graphics
 		#endregion
 
 		#region Methods
+
+        /// <summary>
+        /// Sets the texture addressing mode, i.e. what happens at uv values above 1.0.
+        /// </summary>
+        /// <remarks>
+        /// The default is TAM_WRAP i.e. the texture repeats over values of 1.0.
+		/// This is a shortcut method which sets the addressing mode for all
+		///	coordinates at once; you can also call the more specific method
+		///	to set the addressing mode per coordinate.
+        /// This applies for both the fixed-function and programmable pipelines.
+        /// </remarks>
+        /// <param name="tam"></param>
+        public void SetTextureAddressingMode( TextureAddressing tam )
+        {
+            texAddressingMode = new UVWAddressing( tam );
+        }
+
+        /// <summary>
+        /// Sets the texture addressing mode, i.e. what happens at uv values above 1.0.
+        /// </summary>
+        /// <remarks>
+        /// The default is TAM_WRAP i.e. the texture repeats over values of 1.0.
+        /// This applies for both the fixed-function and programmable pipelines.
+        /// </remarks>
+        /// <param name="u"></param>
+        /// <param name="v"></param>
+        /// <param name="W"></param>
+        public void SetTextureAddressingMode( TextureAddressing u, TextureAddressing v, TextureAddressing w )
+        {
+            texAddressingMode = new UVWAddressing( u, v, w );
+        }
+
+        /// <summary>
+        /// Sets the texture addressing mode, i.e. what happens at uv values above 1.0.
+        /// </summary>
+        /// <remarks>
+        /// The default is TAM_WRAP i.e. the texture repeats over values of 1.0.
+        /// This applies for both the fixed-function and programmable pipelines.
+        /// </remarks>
+        /// <param name="uvw"></param>
+        public void SetTextureAddressingMode( UVWAddressing uvw )
+        {
+            texAddressingMode = uvw;
+        }
 
 		/// <summary>
 		///    Enables or disables projective texturing on this texture unit.
@@ -2120,11 +2219,23 @@ namespace Axiom.Graphics
 			parent.NotifyNeedsRecompile();
 		}
 
+        /// <summary>
+        /// Applies texture names to Texture Unit State with matching texture name aliases.
+        /// If no matching aliases are found then the TUS state does not change.
+        /// </summary>
+        /// <remarks>
+        /// Cubic, 1d, 2d, and 3d textures are determined from current state of the Texture Unit.
+        /// Assumes animated frames are sequentially numbered in the name.
+        /// If matching texture aliases are found then true is returned.
+        /// </remarks>
+        /// <param name="aliasList">is a map container of texture alias, texture name pairs</param>
+        /// <param name="apply">set true to apply the texture aliases else just test to see if texture alias matches are found.</param>
+        /// <returns>True if matching texture aliases were found in the Texture Unit State.</returns>
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
 			bool testResult = false;
 			// if TUS has an alias, see if it's in the alias container
-			if ( textureNameAlias.Length > 0 )
+            if ( !string.IsNullOrEmpty( textureNameAlias ) )
 			{
 				if ( aliasList.ContainsKey( textureNameAlias ) )
 				{

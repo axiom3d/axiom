@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -75,7 +75,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// List of software index buffers that were created and to be disposed by this class.
 		/// </summary>
-		protected List<SoftwareIndexBuffer> customIndexBufferList = new List<SoftwareIndexBuffer>();
+		protected List<DefaultHardwareIndexBuffer> customIndexBufferList = new List<DefaultHardwareIndexBuffer>();
 
 		#endregion Fields
 
@@ -160,9 +160,7 @@ namespace Axiom.Graphics
 				IndexType itype = vertexCount > UInt16.MaxValue ?
 				IndexType.Size32 : IndexType.Size16;
 
-				SoftwareIndexBuffer ibuf = (SoftwareIndexBuffer)
-				SoftwareBufferManager.Instance.CreateIndexBuffer( itype,
-				vertexCount, BufferUsage.Static );
+				DefaultHardwareIndexBuffer ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
 				customIndexBufferList.Add( ibuf ); //to be disposed later
 
 				indexData = new IndexData();
@@ -282,21 +280,17 @@ namespace Axiom.Graphics
         /// <param name="disposeManagedResources"></param>
         protected override void dispose(bool disposeManagedResources)
         {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    foreach (SoftwareIndexBuffer buf in customIndexBufferList)
-                    {
-                        SoftwareBufferManager.Instance.DisposeIndexBuffer(buf);
-                    }
-                    this.customIndexBufferList.Clear();
-                    this.customIndexBufferList = null;
-                }
-            }
-
-            base.dispose(disposeManagedResources);
-        }
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					foreach ( DefaultHardwareIndexBuffer buf in customIndexBufferList )
+					{
+						DefaultHardwareBufferManager.Instance.DisposeIndexBuffer( buf );
+					}
+				}
+			}
+		}
 
 		#endregion
 

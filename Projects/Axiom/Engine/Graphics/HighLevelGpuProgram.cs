@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -36,9 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
-using Axiom.Graphics;
 
 using ResourceHandle = System.UInt64;
 
@@ -301,7 +299,9 @@ namespace Axiom.Graphics
 
 		public virtual void DestroyInstance( HighLevelGpuProgram obj )
 		{
-			obj.Dispose();
+            if (!obj.IsDisposed)
+			    obj.Dispose();
+
 			obj = null;
 		}
 

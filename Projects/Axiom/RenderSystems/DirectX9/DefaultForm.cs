@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using IO = System.IO;
-using System.Windows.Forms;
+using SWF = System.Windows.Forms;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -45,7 +45,7 @@ using Axiom.Graphics;
 namespace Axiom.RenderSystems.DirectX9
 {
 
-	public class DefaultForm : System.Windows.Forms.Form
+	public class DefaultForm : SWF.Form
 	{
 		private RenderWindow renderWindow;
 
@@ -59,7 +59,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
 		}
 
-		protected override void WndProc( ref Message m )
+		protected override void WndProc( ref SWF.Message m )
 		{
 			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
 				base.WndProc( ref m );
@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private void DefaultForm_Resize( object sender, System.EventArgs e )
 		{
-			Root.Instance.SuspendRendering = this.WindowState == FormWindowState.Minimized;
+			Root.Instance.SuspendRendering = this.WindowState == SWF.FormWindowState.Minimized;
 		}
 
 		/// <summary>
