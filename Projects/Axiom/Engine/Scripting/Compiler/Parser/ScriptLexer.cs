@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -51,14 +51,20 @@ namespace Axiom.Scripting.Compiler.Parser
 			MultiComment,
 			Word,
 			Quote,
-			Var
+			Var,
+			PossibleComment
 		}
 
 		public ScriptLexer()
 		{
 		}
 
-		/** Tokenizes the given input and returns the list of tokens found */
+		/// <summary>
+		/// Tokenizes the given input and returns the list of tokens found
+		/// </summary>
+		/// <param name="str"></param>
+		/// <param name="source"></param>
+		/// <returns></returns>
 		public IList<ScriptToken> Tokenize( String str, String source )
 		{
 			const char varOpener = '$', quote = '"', slash = '/', backslash = '\\', openbrace = '{', closebrace = '}', colon = ':', star = '*';
@@ -81,6 +87,7 @@ namespace Axiom.Scripting.Compiler.Parser
 
 				switch ( state )
 				{
+					#region Ready
 					case ScriptState.Ready:
 						if ( c == slash && lastChar == slash )
 						{
@@ -111,26 +118,52 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme = new StringBuilder( c.ToString() );
 							SetToken( lexeme, line, source, tokens );
 						}
-						else if ( !IsWhitespace( c ) && c != slash )
+						else if ( !IsWhitespace( c ) )
 						{
 							lexeme = new StringBuilder( c.ToString() );
-							state = ScriptState.Word;
+							if ( c == slash )
+								state = ScriptState.PossibleComment;
+							else
+								state = ScriptState.Word;
 						}
 						break;
+					#endregion Ready
 
+					#region Comment
 					case ScriptState.Comment:
 						// This newline happens to be ignored automatically
 						if ( IsNewline( c ) )
 							state = ScriptState.Ready;
-						lexeme.Append( c );
 						break;
+					#endregion Comment
 
+					#region MultiComment
 					case ScriptState.MultiComment:
 						if ( c == slash && lastChar == star )
 							state = ScriptState.Ready;
-						lexeme.Append( c );
 						break;
+					#endregion MultiComment
 
+					#region PossibleComment
+					case ScriptState.PossibleComment:
+						if ( c == slash && lastChar == slash )
+						{
+							lexeme = new StringBuilder();
+							state = ScriptState.Comment;
+							break;
+						}
+						else if ( c == star && lastChar == slash )
+						{
+							lexeme = new StringBuilder();
+							state = ScriptState.MultiComment;
+							break;
+						}
+						else
+							state = ScriptState.Word;
+						break;
+					#endregion PossibleComment
+
+					#region Word
 					case ScriptState.Word:
 						if ( IsNewline( c ) )
 						{
@@ -156,7 +189,9 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
+					#endregion Word
 
+					#region Quote
 					case ScriptState.Quote:
 						if ( c != backslash )
 						{
@@ -184,7 +219,9 @@ namespace Axiom.Scripting.Compiler.Parser
 							}
 						}
 						break;
+					#endregion Quote
 
+					#region Var
 					case ScriptState.Var:
 						if ( IsNewline( c ) )
 						{
@@ -210,6 +247,7 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
+					#endregion Var
 				}
 
 				// Separate check for newlines just to track line numbers

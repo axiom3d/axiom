@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -33,13 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Graphics;
 using Axiom.Math;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
@@ -144,8 +139,8 @@ namespace Axiom.Core
 			const int NUM_VERTEX_ENTRIES = NUM_VERTICES * NUM_ENTRIES_PER_VERTEX;
 			const int NUM_INDICES = 3 * 2 * 6; // 3 indices per face * 2 faces per side * 6 sides
 
-			const Real CUBE_SIZE = 100.0f;
-			const Real CUBE_HALF_SIZE = CUBE_SIZE / 2.0f;
+			const float CUBE_SIZE = 100.0f;
+			const float CUBE_HALF_SIZE = CUBE_SIZE / 2.0f;
 
 			// Create 4 vertices per side instead of 6 that are shared for the whole cube.
 			// The reason for this is with only 6 vertices the normals will look bad
@@ -305,7 +300,7 @@ namespace Axiom.Core
 
 			const int NUM_SEGMENTS = 16;
 			const int NUM_RINGS = 16;
-			const Real SPHERE_RADIUS = 50.0f;
+			const float SPHERE_RADIUS = 50.0f;
 
 			mesh.SharedVertexData = new VertexData();
 			VertexData vertexData = mesh.SharedVertexData;

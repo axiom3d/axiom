@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -36,16 +35,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Scripting.Compiler.Parser;
+using System.IO;
+using System.Text.RegularExpressions;
+using Axiom.Core;
 using Axiom.Scripting.Compiler.AST;
+using Axiom.Scripting.Compiler.Parser;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler
 {
-
 	/// <summary>
 	/// This is the main class for the compiler. It calls the parser
 	/// and processes the CST into an AST and then uses translators
@@ -57,11 +56,11 @@ namespace Axiom.Scripting.Compiler
 		enum BuiltIn : uint
 		{
 			ID_ON = 1,
-			ID_OFF = 0,
+			ID_OFF = 2,
 			ID_TRUE = 1,
-			ID_FALSE = 0,
+			ID_FALSE = 2,
 			ID_YES = 1,
-			ID_NO = 0
+			ID_NO = 2
 		};
 
 		private List<CompileError> _errors = new List<CompileError>();
@@ -72,19 +71,6 @@ namespace Axiom.Scripting.Compiler
 			get
 			{
 				return _resourceGroup;
-			}
-		}
-
-		object _context = null;
-		public object Context
-		{
-			get
-			{
-				return _context;
-			}
-			set
-			{
-				_context = value;
 			}
 		}
 
@@ -106,6 +92,19 @@ namespace Axiom.Scripting.Compiler
 			}
 		}
 
+		/// <summary>
+		/// The set of imported scripts to avoid circular dependencies
+		/// </summary>
+		private Dictionary<string, IList<AbstractNode>> _imports = new Dictionary<string, IList<AbstractNode>>();
+
+		/// <summary>
+		/// This holds the target objects for each script to be imported
+		/// </summary>
+		private Dictionary<string, string> _importRequests = new Dictionary<string, string>();
+
+		/// <summary>
+		/// This stores the imports of the scripts, so they are separated and can be treated specially
+		/// </summary>
 		private List<AbstractNode> _importTable = new List<AbstractNode>();
 
 		private ScriptCompilerListener _listener;
@@ -121,11 +120,34 @@ namespace Axiom.Scripting.Compiler
 			}
 		}
 
+		#region Events
+
+		/// <see cref="ScriptCompilerManager.OnImportFile"/>
+		public event ScriptCompilerManager.ImportFileHandler OnImportFile;
+
+		/// <see cref="ScriptCompilerManager.OnPreConversion"/>
+		public event ScriptCompilerManager.PreConversionHandler OnPreConversion;
+
+		/// <see cref="ScriptCompilerManager.OnPostConversion"/>
+		public event ScriptCompilerManager.PostConversionHandler OnPostConversion;
+
+		/// <see cref="ScriptCompilerManager.OnCompileError"/>
+		public event ScriptCompilerManager.CompilerErrorHandler OnCompileError;
+
+		/// <see cref="ScriptCompilerManager.OnCompilerEvent"/>
+		public event ScriptCompilerManager.TransationEventHandler OnCompilerEvent;
+
+		#endregion Events
+
 		public ScriptCompiler()
 		{
 			InitializeWordMap();
+			this.OnPreConversion = null;
+			this.OnPostConversion = null;
+			this.OnImportFile = null;
+			this.OnCompileError = null;
+			this.OnCompilerEvent = null;
 		}
-
 
 		/// <summary>
 		/// Takes in a string of script code and compiles it into resources
@@ -141,6 +163,72 @@ namespace Axiom.Scripting.Compiler
 			IList<ScriptToken> tokens = lexer.Tokenize( script, source );
 			IList<ConcreteNode> nodes = parser.Parse( tokens );
 			return Compile( nodes, group );
+		}
+
+		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
+		public bool Compile( IList<AbstractNode> nodes, string group )
+		{
+			return this.Compile( nodes, group, true, true, true );
+		}
+
+		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
+		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports )
+		{
+			return this.Compile( nodes, group, doImports, true, true );
+		}
+
+		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
+		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports, bool doObjects )
+		{
+			return this.Compile( nodes, group, doImports, doObjects, true );
+		}
+
+		/// <summary>
+		/// Compiles the given abstract syntax tree
+		/// </summary>
+		/// <param name="nodes"></param>
+		/// <param name="group"></param>
+		/// <param name="doImports"></param>
+		/// <param name="doObjects"></param>
+		/// <param name="doVariables"></param>
+		/// <returns></returns>
+		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports, bool doObjects, bool doVariables )
+		{
+			// Save the group
+			_resourceGroup = group;
+
+			// Clear the past errors
+			_errors.Clear();
+
+			// Clear the environment
+			_environment.Clear();
+
+			// Processes the imports for this script
+			if ( doImports )
+				_processImports( ref nodes );
+
+			// Process object inheritance
+			if ( doObjects )
+				_processObjects( ref nodes, nodes );
+
+			// Process variable expansion
+			if ( doVariables )
+				_processVariables( ref nodes );
+
+			// Translate the nodes
+			foreach ( AbstractNode currentNode in nodes )
+			{
+				//logAST(0, *i);
+				if ( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+					continue;
+
+				ScriptCompiler.Translator translator = ScriptCompilerManager.Instance.GetTranslator( currentNode );
+
+				if ( translator != null )
+					translator.Translate( this, currentNode );
+			}
+
+			return _errors.Count == 0;
 		}
 
 		/// <summary>
@@ -160,95 +248,98 @@ namespace Axiom.Scripting.Compiler
 			// Clear the environment
 			_environment.Clear();
 
+			if ( this.OnPreConversion != null )
+				this.OnPreConversion( this, nodes );
+
 			// Convert our nodes to an AST
 			IList<AbstractNode> ast = _convertToAST( nodes );
 			// Processes the imports for this script
-			//_processImports( ast );
+			_processImports( ref ast );
 			// Process object inheritance
-			_processObjects( ast, ast );
+			_processObjects( ref ast, ast );
 			// Process variable expansion
-			//_processVariables( ast );
+			_processVariables( ref ast );
+
+			// Allows early bail-out through the listener
+			if ( this.OnPostConversion != null && !this.OnPostConversion( this, ast ) )
+				return _errors.Count == 0;
 
 			// Translate the nodes
-			int iter = 0;
-			int end = ast.Count;
-			while ( iter != end )
+			foreach ( AbstractNode currentNode in ast )
 			{
-				if ( ast[ iter ].Type == AbstractNodeType.Object )
-				{
-					ObjectAbstractNode obj = (ObjectAbstractNode)( ast[ iter ] );
-					switch ( (Keywords)obj.Id )
-					{
-						case Keywords.ID_MATERIAL:
-							{
-								MaterialTranslator translator = new MaterialTranslator( this );
-								Translator.Translate( translator, ast[ iter ] );
-							}
-							break;
+				//logAST(0, *i);
+				if ( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+					continue;
 
-						case Keywords.ID_PARTICLE_SYSTEM:
-							{
-								ParticleSystemTranslator translator = new ParticleSystemTranslator( this );
-								Translator.Translate( translator, ast[ iter ] );
-							}
-							break;
+				ScriptCompiler.Translator translator = ScriptCompilerManager.Instance.GetTranslator( currentNode );
 
-						case Keywords.ID_COMPOSITOR:
-							{
-								CompositorTranslator translator = new CompositorTranslator( this );
-								Translator.Translate( translator, ast[ iter ] );
-							}
-							break;
-
-						case Keywords.ID_VERTEX_PROGRAM:
-						case Keywords.ID_FRAGMENT_PROGRAM:
-							{
-								if ( obj.Values.Count != 0 )
-								{
-									if ( obj.Values[ 0 ].Type == AbstractNodeType.Atom )
-									{
-										String language = ( (AtomAbstractNode)( obj.Values[ 0 ] ) ).Value;
-										Translator translator = null;
-										switch ( language )
-										{
-											case "asm":
-												translator = new GpuProgramTranslator( this );
-												break;
-											case "unified":
-												translator = new UnifiedGpuProgramTranslator( this );
-												break;
-											default:
-												translator = new HighLevelGpuProgramTranslator( this );
-												break;
-										}
-										if ( translator != null )
-										{
-											Translator.Translate( translator, ast[ iter ] );
-										}
-									}
-									else
-									{
-										AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
-									}
-								}
-								else
-								{
-									AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
-								}
-							}
-							break;
-					}
-				}
-				iter++;
+				if ( translator != null )
+					translator.Translate( this, currentNode );
 			}
-			return true;
+
+			_imports.Clear();
+			_importRequests.Clear();
+			_importTable.Clear();
+
+			return _errors.Count == 0;
 		}
 
+		/// <see cref="ScriptCompiler.AddError(CompilerErrorCode, string, uint, string)"/>
 		internal void AddError( CompileErrorCode code, string file, uint line )
 		{
-			CompileError error = new CompileError( code, file, line );
-			// OnError ( error );
+			this.AddError( code, file, line, string.Empty );
+		}
+
+		/// <summary>
+		/// Adds the given error to the compiler's list of errors
+		/// </summary>
+		/// <param name="code"></param>
+		/// <param name="file"></param>
+		/// <param name="line"></param>
+		/// <param name="msg"></param>
+		internal void AddError( CompileErrorCode code, string file, uint line, string msg )
+		{
+			CompileError error = new CompileError( code, file, line, msg );
+
+			if ( this.OnCompileError != null )
+			{
+				this.OnCompileError( this, error );
+			}
+			else
+			{
+				string str = string.Format( "Compiler error: {0} in {1}({2})",
+					ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof( CompileErrorCode ) ), file, line );
+
+				if ( !string.IsNullOrEmpty( msg ) )
+					str += ": " + msg;
+
+				LogManager.Instance.Write( str );
+			}
+
 			_errors.Add( error );
+		}
+
+		/// <see cref="ScriptCompiler._fireEvent(ref ScriptCompilerEvent, out object)"/>
+		internal bool _fireEvent( ref ScriptCompilerEvent evt )
+		{
+			object o;
+			return _fireEvent( ref evt, out o );
+		}
+
+		/// <summary>
+		/// Internal method for firing the handleEvent method
+		/// </summary>
+		/// <param name="evt"></param>
+		/// <param name="retVal"></param>
+		/// <returns></returns>
+		internal bool _fireEvent( ref ScriptCompilerEvent evt, out object retVal )
+		{
+			retVal = null;
+
+			if ( this.OnCompilerEvent != null )
+				return this.OnCompilerEvent( this, ref evt, out retVal );
+
+			return false;
 		}
 
 		private IList<AbstractNode> _convertToAST( IList<ConcreteNode> nodes )
@@ -258,35 +349,331 @@ namespace Axiom.Scripting.Compiler
 			return builder.Result;
 		}
 
-		private void _processObjects( IList<AbstractNode> nodes, IList<AbstractNode> top )
+		/// <summary>
+		/// Returns true if the given class is name excluded
+		/// </summary>
+		/// <param name="cls"></param>
+		/// <param name="parent"></param>
+		/// <returns></returns>
+		private bool _isNameExcluded( string cls, AbstractNode parent )
+		{
+			// Run past the listener
+			object excludeObj;
+			bool excludeName = false;
+			ScriptCompilerEvent evt = new ProcessNameExclusionScriptCompilerEvent( cls, parent );
+			bool processed = _fireEvent( ref evt, out excludeObj );
+
+			if ( !processed )
+			{
+				// Process the built-in name exclusions
+				if ( cls == "emitter" || cls == "affector" )
+				{
+					// emitters or affectors inside a particle_system are excluded
+					while ( parent != null && parent is ObjectAbstractNode )
+					{
+						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
+						if ( obj.Cls == "particle_system" )
+							return true;
+
+						parent = obj.Parent;
+					}
+					return false;
+				}
+				else if ( cls == "pass" )
+				{
+					// passes inside compositors are excluded
+					while ( parent != null && parent is ObjectAbstractNode )
+					{
+						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
+						if ( obj.Cls == "compositor" )
+							return true;
+
+						parent = obj.Parent;
+					}
+					return false;
+				}
+				else if ( cls == "texture_source" )
+				{
+					// Parent must be texture_unit
+					while ( parent != null && parent is ObjectAbstractNode )
+					{
+						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
+						if ( obj.Cls == "texture_unit" )
+							return true;
+
+						parent = obj.Parent;
+					}
+					return false;
+				}
+			}
+			else
+			{
+				excludeObj = (bool)excludeObj;
+				return excludeName;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// This built-in function processes import nodes
+		/// </summary>
+		/// <param name="nodes"></param>
+		private void _processImports( ref IList<AbstractNode> nodes )
+		{
+			// We only need to iterate over the top-level of nodes
+			for ( int i = 1; i < nodes.Count; i++ )
+			{
+				AbstractNode cur = nodes[ i ];
+
+				if ( cur is ImportAbstractNode )
+				{
+					ImportAbstractNode import = (ImportAbstractNode)cur;
+
+					// Only process if the file's contents haven't been loaded
+					if ( !_imports.ContainsKey( import.Source ) )
+					{
+						// Load the script
+						IList<AbstractNode> importedNodes = _loadImportPath( import.Source );
+						if ( importedNodes != null && importedNodes.Count != 0 )
+						{
+							_processImports( ref importedNodes );
+							_processObjects( ref importedNodes, importedNodes );
+						}
+
+						if ( importedNodes != null && importedNodes.Count != 0 )
+							_imports.Add( import.Source, importedNodes );
+					}
+
+					// Handle the target request now
+					// If it is a '*' import we remove all previous requests and just use the '*'
+					// Otherwise, ensure '*' isn't already registered and register our request
+					if ( import.Target == "*" )
+					{
+						throw new NotImplementedException();
+						//_importRequests.Remove(
+						//        mImportRequests.erase(mImportRequests.lower_bound(import->source),
+						//            mImportRequests.upper_bound(import->source));
+						_importRequests.Add( import.Source, "*" );
+					}
+					else
+					{
+						throw new NotImplementedException();
+						//        ImportRequestMap::iterator iter = mImportRequests.lower_bound(import->source),
+						//            end = mImportRequests.upper_bound(import->source);
+						//        if(iter == end || iter->second != "*")
+						{
+							_importRequests.Add( import.Source, import.Target );
+						}
+					}
+
+					nodes.RemoveAt( i );
+					i--;
+				}
+			}
+
+			// All import nodes are removed
+			// We have cached the code blocks from all the imported scripts
+			// We can process all import requests now
+			foreach ( KeyValuePair<string, IList<AbstractNode>> it in _imports )
+			{
+				if ( _importRequests.ContainsKey( it.Key ) )
+				{
+					string j = _importRequests[ it.Key ];
+
+					if ( j == "*" )
+					{
+						// Insert the entire AST into the import table
+						_importTable.InsertRange( 0, it.Value );
+						continue; // Skip ahead to the next file
+					}
+					else
+					{
+						// Locate this target and insert it into the import table
+						IList<AbstractNode> newNodes = _locateTarget( it.Value, j );
+						if ( newNodes != null && newNodes.Count > 0 )
+							_importTable.InsertRange( 0, newNodes );
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles processing the variables
+		/// </summary>
+		/// <param name="nodes"></param>
+		private void _processVariables( ref IList<AbstractNode> nodes )
+		{
+			for ( int i = 0; i < nodes.Count; ++i )
+			{
+				AbstractNode cur = nodes[ i ];
+
+				if ( cur is ObjectAbstractNode )
+				{
+					// Only process if this object is not abstract
+					ObjectAbstractNode obj = (ObjectAbstractNode)cur;
+					if ( !obj.IsAbstract )
+					{
+						_processVariables( ref obj.Children );
+						_processVariables( ref obj.Values );
+					}
+				}
+				else if ( cur is PropertyAbstractNode )
+				{
+					PropertyAbstractNode prop = (PropertyAbstractNode)cur;
+					_processVariables( ref prop.Values );
+				}
+				else if ( cur is VariableGetAbstractNode )
+				{
+					VariableGetAbstractNode var = (VariableGetAbstractNode)cur;
+
+					// Look up the enclosing scope
+					ObjectAbstractNode scope = null;
+					AbstractNode temp = var.Parent;
+					while ( temp != null )
+					{
+						if ( temp is ObjectAbstractNode )
+						{
+							scope = (ObjectAbstractNode)temp;
+							break;
+						}
+						temp = temp.Parent;
+					}
+
+					// Look up the variable in the environment
+					KeyValuePair<bool, string> varAccess = new KeyValuePair<bool, string>( false, string.Empty );
+					if ( scope != null )
+						varAccess = scope.GetVariable( var.Name );
+
+					if ( scope == null || !varAccess.Key )
+					{
+						bool found = _environment.ContainsKey( var.Name );
+						if ( found )
+							varAccess = new KeyValuePair<bool, string>( true, _environment[ var.Name ] );
+						else
+							varAccess = new KeyValuePair<bool, string>( false, varAccess.Value );
+					}
+
+					if ( varAccess.Key )
+					{
+						// Found the variable, so process it and insert it into the tree
+						ScriptLexer lexer = new ScriptLexer();
+						IList<ScriptToken> tokens = lexer.Tokenize( varAccess.Value, var.File );
+						ScriptParser parser = new ScriptParser();
+						IList<ConcreteNode> cst = parser.ParseChunk( tokens );
+						IList<AbstractNode> ast = _convertToAST( cst );
+
+						// Set up ownership for these nodes
+						foreach ( AbstractNode currentNode in ast )
+							currentNode.Parent = var.Parent;
+
+						// Recursively handle variable accesses within the variable expansion
+						_processVariables( ref ast );
+
+						// Insert the nodes in place of the variable
+						for ( int j = 0; j < ast.Count; j++ )
+							nodes.Insert( j, ast[ j ] );
+					}
+					else
+					{
+						// Error
+						AddError( CompileErrorCode.UndefinedVariable, var.File, var.Line );
+					}
+
+					// Remove the variable node
+					nodes.RemoveAt( i );
+					i--;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Handles object inheritance and variable expansion
+		/// </summary>
+		/// <param name="nodes"></param>
+		/// <param name="top"></param>
+		private void _processObjects( ref IList<AbstractNode> nodes, IList<AbstractNode> top )
 		{
 			foreach ( AbstractNode node in nodes )
 			{
-				if ( node.Type == AbstractNodeType.Object )
+				if ( node is ObjectAbstractNode )
 				{
 					ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-					// Check if it is inheriting anything
-					if ( obj.BaseClass != null )
+					// Overlay base classes in order.
+					foreach ( string currentBase in obj.Bases )
 					{
 						// Check the top level first, then check the import table
-						List<AbstractNode> newNodes = _locateTarget( top, obj.BaseClass );
+						List<AbstractNode> newNodes = _locateTarget( top, currentBase );
+
 						if ( newNodes.Count == 0 )
-							newNodes = _locateTarget( _importTable, obj.BaseClass );
+							newNodes = _locateTarget( _importTable, currentBase );
 
 						if ( newNodes.Count != 0 )
 						{
 							foreach ( AbstractNode j in newNodes )
 								_overlayObject( j, obj );
 						}
+						else
+						{
+							AddError( CompileErrorCode.ObjectBaseNotFound, obj.File, obj.Line );
+						}
 					}
 
 					// Recurse into children
-					_processObjects( obj.Children, top );
+					_processObjects( ref obj.Children, top );
+
+					// Overrides now exist in obj's overrides list. These are non-object nodes which must now
+					// Be placed in the children section of the object node such that overriding from parents
+					// into children works properly.
+					for ( int i = 0; i < obj.Overrides.Count; i++ )
+						obj.Children.Insert( i, obj.Overrides[ i ] );
 				}
 			}
 		}
 
+		/// <summary>
+		/// Loads the requested script and converts it to an AST
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		private IList<AbstractNode> _loadImportPath( string name )
+		{
+			IList<AbstractNode> retval = null;
+			IList<ConcreteNode> nodes = null;
+
+			if ( this.OnImportFile != null )
+				this.OnImportFile( this, name );
+
+			if ( nodes != null && ResourceGroupManager.Instance != null )
+			{
+				using ( Stream stream = ResourceGroupManager.Instance.OpenResource( name, _resourceGroup ) )
+				{
+					if ( stream != null )
+					{
+						ScriptLexer lexer = new ScriptLexer();
+						ScriptParser parser = new ScriptParser();
+						IList<ScriptToken> tokens = null;
+						using ( StreamReader reader = new StreamReader( stream ) )
+						{
+							tokens = lexer.Tokenize( reader.ReadToEnd(), name );
+						}
+						nodes = parser.Parse( tokens );
+					}
+				}
+			}
+
+			if ( nodes != null )
+				retval = _convertToAST( nodes );
+
+			return retval;
+		}
+
+		/// <summary>
+		/// Returns the abstract nodes from the given tree which represent the target
+		/// </summary>
+		/// <param name="nodes"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
 		private List<AbstractNode> _locateTarget( IList<AbstractNode> nodes, string target )
 		{
 			AbstractNode iter = null;
@@ -294,7 +681,7 @@ namespace Axiom.Scripting.Compiler
 			// Search for a top-level object node
 			foreach ( AbstractNode node in nodes )
 			{
-				if ( node.Type == AbstractNodeType.Object )
+				if ( node is ObjectAbstractNode )
 				{
 					ObjectAbstractNode impl = (ObjectAbstractNode)node;
 					if ( impl.Name == target )
@@ -310,11 +697,169 @@ namespace Axiom.Scripting.Compiler
 			return newNodes;
 		}
 
-		private void _overlayObject( AbstractNode source, ObjectAbstractNode destination )
+		private void _overlayObject( AbstractNode source, ObjectAbstractNode dest )
 		{
-			if ( source.Type == AbstractNodeType.Object )
+			if ( source is ObjectAbstractNode )
 			{
 				ObjectAbstractNode src = (ObjectAbstractNode)source;
+
+				// Overlay the environment of one on top the other first
+				foreach ( KeyValuePair<string, string> i in src.Variables )
+				{
+					KeyValuePair<bool, string> var = dest.GetVariable( i.Key );
+					if ( !var.Key )
+						dest.SetVariable( i.Key, i.Value );
+				}
+
+				// Create a vector storing each pairing of override between source and destination
+				List<KeyValuePair<AbstractNode, AbstractNode>> overrides = new List<KeyValuePair<AbstractNode, AbstractNode>>();
+				// A list of indices for each destination node tracks the minimum
+				// source node they can index-match against
+				Dictionary<ObjectAbstractNode, int> indices = new Dictionary<ObjectAbstractNode, int>();
+				// A map storing which nodes have overridden from the destination node
+				Dictionary<ObjectAbstractNode, bool> overridden = new Dictionary<ObjectAbstractNode, bool>();
+
+				// Fill the vector with objects from the source node (base)
+				// And insert non-objects into the overrides list of the destination
+				int insertPos = 0;
+
+				foreach ( AbstractNode i in src.Children )
+				{
+					if ( i is ObjectAbstractNode )
+					{
+						overrides.Add( new KeyValuePair<AbstractNode, AbstractNode>( i, null ) );
+					}
+					else
+					{
+						AbstractNode newNode = i.Clone();
+						newNode.Parent = dest;
+						dest.Overrides.Add( newNode );
+					}
+				}
+
+				// Track the running maximum override index in the name-matching phase
+				int maxOverrideIndex = 0;
+
+				// Loop through destination children searching for name-matching overrides
+				for ( int i = 0; i < dest.Children.Count; i++ )
+				{
+					if ( dest.Children[ i ] is ObjectAbstractNode )
+					{
+						// Start tracking the override index position for this object
+						int overrideIndex = 0;
+
+						ObjectAbstractNode node = (ObjectAbstractNode)dest.Children[ i ];
+						indices[ node ] = maxOverrideIndex;
+						overridden[ node ] = false;
+
+						// special treatment for materials with * in their name
+						bool nodeHasWildcard = ( !string.IsNullOrEmpty( node.Name ) && node.Name.Contains( "*" ) );
+
+						// Find the matching name node
+						for ( int j = 0; j < overrides.Count; ++j )
+						{
+							ObjectAbstractNode temp = (ObjectAbstractNode)overrides[ j ].Key;
+							// Consider a match a node that has a wildcard and matches an input name
+							bool wildcardMatch = nodeHasWildcard &&
+								( ( new Regex( node.Name ) ).IsMatch( temp.Name ) ||
+									( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
+
+							if ( temp.Cls == node.Cls && !string.IsNullOrEmpty( node.Name ) && ( temp.Name == node.Name || wildcardMatch ) )
+							{
+								// Pair these two together unless it's already paired
+								if ( overrides[ j ].Value == null )
+								{
+									int currentIterator = i;
+									ObjectAbstractNode currentNode = node;
+									if ( wildcardMatch )
+									{
+										//If wildcard is matched, make a copy of current material and put it before the iterator, matching its name to the parent. Use same reinterpret cast as above when node is set
+										AbstractNode newNode = dest.Children[ i ].Clone();
+										dest.Children.Insert( currentIterator, newNode );
+										currentNode = (ObjectAbstractNode)dest.Children[ currentIterator ];
+										currentNode.Name = temp.Name;//make the regex match its matcher
+									}
+									overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key, dest.Children[ currentIterator ] );
+									// Store the max override index for this matched pair
+									overrideIndex = j;
+									overrideIndex = maxOverrideIndex = System.Math.Max( overrideIndex, maxOverrideIndex );
+									indices[ currentNode ] = overrideIndex;
+									overridden[ currentNode ] = true;
+								}
+								else
+								{
+									AddError( CompileErrorCode.DuplicateOverride, node.File, node.Line );
+								}
+
+								if ( !wildcardMatch )
+									break;
+							}
+						}
+
+						if ( nodeHasWildcard )
+						{
+							//if the node has a wildcard it will be deleted since it was duplicated for every match
+							dest.Children.RemoveAt( i );
+							i--;
+						}
+					}
+				}
+
+				// Now make matches based on index
+				// Loop through destination children searching for name-matching overrides
+				foreach ( AbstractNode i in dest.Children )
+				{
+					if ( i is ObjectAbstractNode )
+					{
+						ObjectAbstractNode node = (ObjectAbstractNode)i;
+						if ( !overridden[ node ] )
+						{
+							// Retrieve the minimum override index from the map
+							int overrideIndex = indices[ node ];
+
+							if ( overrideIndex < overrides.Count )
+							{
+								// Search for minimum matching override
+								for ( int j = overrideIndex; j < overrides.Count; ++j )
+								{
+									ObjectAbstractNode temp = (ObjectAbstractNode)overrides[ j ].Key;
+									if ( string.IsNullOrEmpty( temp.Name ) && temp.Cls == node.Cls && overrides[ j ].Value == null )
+									{
+										overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key, i );
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				// Loop through overrides, either inserting source nodes or overriding
+				for ( int i = 0; i < overrides.Count; ++i )
+				{
+					if ( overrides[ i ].Value != null )
+					{
+						// Override the destination with the source (base) object
+						_overlayObject( overrides[ i ].Key, (ObjectAbstractNode)overrides[ i ].Value );
+						insertPos = dest.Children.IndexOf( overrides[ i ].Value );
+						insertPos++;
+					}
+					else
+					{
+						// No override was possible, so insert this node at the insert position
+						// into the destination (child) object
+						AbstractNode newNode = overrides[ i ].Key.Clone();
+						newNode.Parent = dest;
+						if ( insertPos != dest.Children.Count - 1 )
+						{
+							dest.Children.Insert( insertPos, newNode );
+						}
+						else
+						{
+							dest.Children.Add( newNode );
+						}
+					}
+				}
 			}
 		}
 
@@ -330,16 +875,20 @@ namespace Axiom.Scripting.Compiler
 			// Material ids
 			_keywordMap[ "material" ] = (uint)Keywords.ID_MATERIAL;
 			_keywordMap[ "vertex_program" ] = (uint)Keywords.ID_VERTEX_PROGRAM;
+			_keywordMap[ "geometry_program" ] = (uint)Keywords.ID_GEOMETRY_PROGRAM;
 			_keywordMap[ "fragment_program" ] = (uint)Keywords.ID_FRAGMENT_PROGRAM;
 			_keywordMap[ "technique" ] = (uint)Keywords.ID_TECHNIQUE;
 			_keywordMap[ "pass" ] = (uint)Keywords.ID_PASS;
 			_keywordMap[ "texture_unit" ] = (uint)Keywords.ID_TEXTURE_UNIT;
 			_keywordMap[ "vertex_program_ref" ] = (uint)Keywords.ID_VERTEX_PROGRAM_REF;
+			_keywordMap[ "geometry_program_ref" ] = (uint)Keywords.ID_GEOMETRY_PROGRAM_REF;
 			_keywordMap[ "fragment_program_ref" ] = (uint)Keywords.ID_FRAGMENT_PROGRAM_REF;
 			_keywordMap[ "shadow_caster_vertex_program_ref" ] = (uint)Keywords.ID_SHADOW_CASTER_VERTEX_PROGRAM_REF;
 			_keywordMap[ "shadow_receiver_vertex_program_ref" ] = (uint)Keywords.ID_SHADOW_RECEIVER_VERTEX_PROGRAM_REF;
 			_keywordMap[ "shadow_receiver_fragment_program_ref" ] = (uint)Keywords.ID_SHADOW_RECEIVER_FRAGMENT_PROGRAM_REF;
 
+			_keywordMap[ "lod_values" ] = (uint)Keywords.ID_LOD_VALUES;
+			_keywordMap[ "lod_strategy" ] = (uint)Keywords.ID_LOD_STRATEGY;
 			_keywordMap[ "lod_distances" ] = (uint)Keywords.ID_LOD_DISTANCES;
 			_keywordMap[ "receive_shadows" ] = (uint)Keywords.ID_RECEIVE_SHADOWS;
 			_keywordMap[ "transparency_casts_shadows" ] = (uint)Keywords.ID_TRANSPARENCY_CASTS_SHADOWS;
@@ -355,12 +904,20 @@ namespace Axiom.Scripting.Compiler
 
 			_keywordMap[ "scheme" ] = (uint)Keywords.ID_SCHEME;
 			_keywordMap[ "lod_index" ] = (uint)Keywords.ID_LOD_INDEX;
+			_keywordMap[ "shadow_caster_material" ] = (uint)Keywords.ID_SHADOW_CASTER_MATERIAL;
+			_keywordMap[ "shadow_receiver_material" ] = (uint)Keywords.ID_SHADOW_RECEIVER_MATERIAL;
+			_keywordMap[ "gpu_vendor_rule" ] = (uint)Keywords.ID_GPU_VENDOR_RULE;
+			_keywordMap[ "gpu_device_rule" ] = (uint)Keywords.ID_GPU_DEVICE_RULE;
+			_keywordMap[ "include" ] = (uint)Keywords.ID_INCLUDE;
+			_keywordMap[ "exclude" ] = (uint)Keywords.ID_EXCLUDE;
+
+
 
 			_keywordMap[ "ambient" ] = (uint)Keywords.ID_AMBIENT;
 			_keywordMap[ "diffuse" ] = (uint)Keywords.ID_DIFFUSE;
 			_keywordMap[ "specular" ] = (uint)Keywords.ID_SPECULAR;
 			_keywordMap[ "emissive" ] = (uint)Keywords.ID_EMISSIVE;
-			_keywordMap[ "vertex_colour" ] = (uint)Keywords.ID_VERTEX_COLOUR;
+			_keywordMap[ "vertexcolour" ] = (uint)Keywords.ID_VERTEX_COLOUR;
 			_keywordMap[ "scene_blend" ] = (uint)Keywords.ID_SCENE_BLEND;
 			_keywordMap[ "colour_blend" ] = (uint)Keywords.ID_COLOUR_BLEND;
 			_keywordMap[ "one" ] = (uint)Keywords.ID_ONE;
@@ -374,6 +931,11 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "one_minus_dest_alpha" ] = (uint)Keywords.ID_ONE_MINUS_DEST_ALPHA;
 			_keywordMap[ "one_minus_src_alpha" ] = (uint)Keywords.ID_ONE_MINUS_SRC_ALPHA;
 			_keywordMap[ "separate_scene_blend" ] = (uint)Keywords.ID_SEPARATE_SCENE_BLEND;
+			_keywordMap[ "scene_blend_op" ] = (uint)Keywords.ID_SCENE_BLEND_OP;
+			_keywordMap[ "reverse_subtract" ] = (uint)Keywords.ID_REVERSE_SUBTRACT;
+			_keywordMap[ "min" ] = (uint)Keywords.ID_MIN;
+			_keywordMap[ "max" ] = (uint)Keywords.ID_MAX;
+			_keywordMap[ "separate_scene_blend_op" ] = (uint)Keywords.ID_SEPARATE_SCENE_BLEND_OP;
 			_keywordMap[ "depth_check" ] = (uint)Keywords.ID_DEPTH_CHECK;
 			_keywordMap[ "depth_write" ] = (uint)Keywords.ID_DEPTH_WRITE;
 			_keywordMap[ "depth_func" ] = (uint)Keywords.ID_DEPTH_FUNC;
@@ -388,8 +950,10 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "greater_equal" ] = (uint)Keywords.ID_GREATER_EQUAL;
 			_keywordMap[ "greater" ] = (uint)Keywords.ID_GREATER;
 			_keywordMap[ "alpha_rejection" ] = (uint)Keywords.ID_ALPHA_REJECTION;
+			_keywordMap[ "alpha_to_coverage" ] = (uint)Keywords.ID_ALPHA_TO_COVERAGE;
 			_keywordMap[ "light_scissor" ] = (uint)Keywords.ID_LIGHT_SCISSOR;
 			_keywordMap[ "light_clip_planes" ] = (uint)Keywords.ID_LIGHT_CLIP_PLANES;
+			_keywordMap[ "transparent_sorting" ] = (uint)Keywords.ID_TRANSPARENT_SORTING;
 			_keywordMap[ "illumination_stage" ] = (uint)Keywords.ID_ILLUMINATION_STAGE;
 			_keywordMap[ "decal" ] = (uint)Keywords.ID_DECAL;
 			_keywordMap[ "cull_hardware" ] = (uint)Keywords.ID_CULL_HARDWARE;
@@ -405,6 +969,9 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "gouraud" ] = (uint)Keywords.ID_GOURAUD;
 			_keywordMap[ "phong" ] = (uint)Keywords.ID_PHONG;
 			_keywordMap[ "polygon_mode" ] = (uint)Keywords.ID_POLYGON_MODE;
+			_keywordMap[ "solid" ] = (uint)Keywords.ID_SOLID;
+			_keywordMap[ "wireframe" ] = (uint)Keywords.ID_WIREFRAME;
+			_keywordMap[ "points" ] = (uint)Keywords.ID_POINTS;
 			_keywordMap[ "polygon_mode_overrideable" ] = (uint)Keywords.ID_POLYGON_MODE_OVERRIDEABLE;
 			_keywordMap[ "fog_override" ] = (uint)Keywords.ID_FOG_OVERRIDE;
 			_keywordMap[ "none" ] = (uint)Keywords.ID_NONE;
@@ -426,6 +993,7 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "point_sprites" ] = (uint)Keywords.ID_POINT_SPRITES;
 			_keywordMap[ "point_size_min" ] = (uint)Keywords.ID_POINT_SIZE_MIN;
 			_keywordMap[ "point_size_max" ] = (uint)Keywords.ID_POINT_SIZE_MAX;
+			_keywordMap[ "point_size_attenuation" ] = (uint)Keywords.ID_POINT_SIZE_ATTENUATION;
 
 			_keywordMap[ "texture_alias" ] = (uint)Keywords.ID_TEXTURE_ALIAS;
 			_keywordMap[ "texture" ] = (uint)Keywords.ID_TEXTURE;
@@ -435,6 +1003,7 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "cubic" ] = (uint)Keywords.ID_CUBIC;
 			_keywordMap[ "unlimited" ] = (uint)Keywords.ID_UNLIMITED;
 			_keywordMap[ "alpha" ] = (uint)Keywords.ID_ALPHA;
+			_keywordMap[ "gamma" ] = (uint)Keywords.ID_GAMMA;
 			_keywordMap[ "anim_texture" ] = (uint)Keywords.ID_ANIM_TEXTURE;
 			_keywordMap[ "cubic_texture" ] = (uint)Keywords.ID_CUBIC_TEXTURE;
 			_keywordMap[ "separateUV" ] = (uint)Keywords.ID_SEPARATE_UV;
@@ -445,6 +1014,7 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "clamp" ] = (uint)Keywords.ID_CLAMP;
 			_keywordMap[ "mirror" ] = (uint)Keywords.ID_MIRROR;
 			_keywordMap[ "border" ] = (uint)Keywords.ID_BORDER;
+			_keywordMap[ "tex_border_colour" ] = (uint)Keywords.ID_TEX_BORDER_COLOUR;
 			_keywordMap[ "filtering" ] = (uint)Keywords.ID_FILTERING;
 			_keywordMap[ "bilinear" ] = (uint)Keywords.ID_BILINEAR;
 			_keywordMap[ "trilinear" ] = (uint)Keywords.ID_TRILINEAR;
@@ -462,8 +1032,10 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "modulate" ] = (uint)Keywords.ID_MODULATE;
 			_keywordMap[ "modulate_x2" ] = (uint)Keywords.ID_MODULATE_X2;
 			_keywordMap[ "modulate_x4" ] = (uint)Keywords.ID_MODULATE_X4;
+			_keywordMap[ "add" ] = (uint)Keywords.ID_ADD;
 			_keywordMap[ "add_signed" ] = (uint)Keywords.ID_ADD_SIGNED;
 			_keywordMap[ "add_smooth" ] = (uint)Keywords.ID_ADD_SMOOTH;
+			_keywordMap[ "subtract" ] = (uint)Keywords.ID_SUBTRACT;
 			_keywordMap[ "blend_diffuse_alpha" ] = (uint)Keywords.ID_BLEND_DIFFUSE_ALPHA;
 			_keywordMap[ "blend_texture_alpha" ] = (uint)Keywords.ID_BLEND_TEXTURE_ALPHA;
 			_keywordMap[ "blend_current_alpha" ] = (uint)Keywords.ID_BLEND_CURRENT_ALPHA;
@@ -504,6 +1076,11 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "content_type" ] = (uint)Keywords.ID_CONTENT_TYPE;
 			_keywordMap[ "named" ] = (uint)Keywords.ID_NAMED;
 			_keywordMap[ "shadow" ] = (uint)Keywords.ID_SHADOW;
+			_keywordMap[ "texture_source" ] = (uint)Keywords.ID_TEXTURE_SOURCE;
+			_keywordMap[ "shared_params" ] = (uint)Keywords.ID_SHARED_PARAMS;
+			_keywordMap[ "shared_param_named" ] = (uint)Keywords.ID_SHARED_PARAM_NAMED;
+			_keywordMap[ "shared_params_ref" ] = (uint)Keywords.ID_SHARED_PARAMS_REF;
+
 
 			// Particle system
 			_keywordMap[ "particle_system" ] = (uint)Keywords.ID_PARTICLE_SYSTEM;
@@ -520,10 +1097,23 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "previous" ] = (uint)Keywords.ID_PREVIOUS;
 			_keywordMap[ "target_width" ] = (uint)Keywords.ID_TARGET_WIDTH;
 			_keywordMap[ "target_height" ] = (uint)Keywords.ID_TARGET_HEIGHT;
+			_keywordMap[ "target_width_scaled" ] = (uint)Keywords.ID_TARGET_WIDTH_SCALED;
+			_keywordMap[ "target_height_scaled" ] = (uint)Keywords.ID_TARGET_HEIGHT_SCALED;
+			_keywordMap[ "pooled" ] = (uint)Keywords.ID_POOLED;
+			//mIds["gamma"] = ID_GAMMA; - already registered
+			_keywordMap[ "no_fsaa" ] = (uint)Keywords.ID_NO_FSAA;
+
+			_keywordMap[ "texture_ref" ] = (uint)Keywords.ID_TEXTURE_REF;
+			_keywordMap[ "local_scope" ] = (uint)Keywords.ID_SCOPE_LOCAL;
+			_keywordMap[ "chain_scope" ] = (uint)Keywords.ID_SCOPE_CHAIN;
+			_keywordMap[ "global_scope" ] = (uint)Keywords.ID_SCOPE_GLOBAL;
+			_keywordMap[ "compositor_logic" ] = (uint)Keywords.ID_COMPOSITOR_LOGIC;
+
 			_keywordMap[ "only_initial" ] = (uint)Keywords.ID_ONLY_INITIAL;
 			_keywordMap[ "visibility_mask" ] = (uint)Keywords.ID_VISIBILITY_MASK;
 			_keywordMap[ "lod_bias" ] = (uint)Keywords.ID_LOD_BIAS;
 			_keywordMap[ "material_scheme" ] = (uint)Keywords.ID_MATERIAL_SCHEME;
+			_keywordMap[ "shadows" ] = (uint)Keywords.ID_SHADOWS_ENABLED;
 
 			_keywordMap[ "clear" ] = (uint)Keywords.ID_CLEAR;
 			_keywordMap[ "stencil" ] = (uint)Keywords.ID_STENCIL;
@@ -532,6 +1122,9 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "identifier" ] = (uint)Keywords.ID_IDENTIFIER;
 			_keywordMap[ "first_render_queue" ] = (uint)Keywords.ID_FIRST_RENDER_QUEUE;
 			_keywordMap[ "last_render_queue" ] = (uint)Keywords.ID_LAST_RENDER_QUEUE;
+			_keywordMap[ "quad_normals" ] = (uint)Keywords.ID_QUAD_NORMALS;
+			_keywordMap[ "camera_far_corners_view_space" ] = (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE;
+			_keywordMap[ "camera_far_corners_world_space" ] = (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE;
 
 			_keywordMap[ "buffers" ] = (uint)Keywords.ID_BUFFERS;
 			_keywordMap[ "colour" ] = (uint)Keywords.ID_COLOUR;

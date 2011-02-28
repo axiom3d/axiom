@@ -113,7 +113,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;AXIOM_USENEWCOMPILERS</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
@@ -246,16 +246,23 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
+    <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwareOcclusionQuery.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
     <Compile Include="Graphics\ICompositorLogic.cs" />
     <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
     <Compile Include="Graphics\RenderQueueInvocationSequence.cs" />
@@ -622,9 +629,6 @@
     <Compile Include="Graphics\SimpleRenderable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Graphics\SoftwareBufferManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Graphics\SpotShadowFadePng.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -825,25 +829,27 @@
     <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassStencilTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\TextureSourceTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\Translator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Keywords.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs" />

@@ -1,5 +1,5 @@
-﻿#region License
-//Copyright (c) 2009 Michael Cummings
+﻿#region MIT/X11 License
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 #endregion License
+
 
 #region Namespace Declarations
 
@@ -317,10 +318,7 @@ namespace Axiom.Framework.Graphics
             colorBlendMode.source1 = LayerBlendSource.Texture;
             colorBlendMode.operation = LayerBlendOperationEx.Source1;
 
-            //TextureUnitState.UVWAddressingMode uvwAddressMode;
-            //uvwAddressMode.u = TextureAddressing.Clamp;
-            //uvwAddressMode.v = TextureAddressing.Clamp;
-            //uvwAddressMode.w = TextureAddressing.Clamp;
+            UVWAddressing uvwAddressMode = new UVWAddressing( TextureAddressing.Clamp );
 
             rs.WorldMatrix = Matrix4.Identity;
             rs.ViewMatrix = Matrix4.Identity;
@@ -329,7 +327,7 @@ namespace Axiom.Framework.Graphics
             rs.SetTextureCoordSet( 0, 0 );
             rs.SetTextureCoordCalculation( 0, TexCoordCalcMethod.None );
             rs.SetTextureBlendMode( 0, colorBlendMode );
-            rs.SetTextureAddressingMode( 0, TextureAddressing.Clamp );
+            rs.SetTextureAddressingMode( 0, uvwAddressMode );
             rs.DisableTextureUnitsFrom( 1 );
             rs.LightingEnabled = false;
             rs.SetFog( FogMode.None );

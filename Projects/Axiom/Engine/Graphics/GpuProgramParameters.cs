@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -35,12 +35,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
-using System.Collections.Generic;
-using Axiom.Graphics.Collections;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -83,6 +83,7 @@ namespace Axiom.Graphics
 		#endregion Structs
 
 		#region Fields
+
 		/// <summary>
 		///    Packed list of integer constants
 		/// </summary>
@@ -342,7 +343,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name">Name of the constant to retreive.</param>
 		/// <returns>A reference to the int constant entry with the specified name, else null if not found.</returns>
-
 		public IntConstantEntry GetNamedIntConstant( string name )
 		{
 			int index;
@@ -605,6 +605,12 @@ namespace Axiom.Graphics
 		}
 
 		#region Named parameters
+
+        /// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
+        public void SetNamedAutoConstant( string name, AutoConstantType type )
+        {
+            SetNamedAutoConstant( name, type, 0 );
+        }
 
 		/// <summary>
 		///    Sets up a constant which will automatically be updated by the engine.

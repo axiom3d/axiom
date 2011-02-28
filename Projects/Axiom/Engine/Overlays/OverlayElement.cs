@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -1429,21 +1429,6 @@ namespace Axiom.Overlays
 
 						renderOperation = null;
 					}
-
-                    if (this.material != null)
-                    {
-                        if (!this.material.IsDisposed)
-                            this.material.Dispose();
-
-                        this.material = null;
-                    }
-
-                    foreach (Light currentLight in this.Lights)
-                    {
-                        if (!currentLight.IsDisposed)
-                            currentLight.Dispose();
-                    }
-                    this.Lights.Clear();
 				}
 
 				// There are no unmanaged resources to release, but

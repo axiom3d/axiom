@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -41,15 +41,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 
 using Axiom.Core;
 
-using ResourceHandle = System.UInt64;
-using Real = System.Single;
+
 using Axiom.Core.Collections;
 using Axiom.Graphics.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -1019,6 +1018,20 @@ namespace Axiom.Graphics
 			this._compilationRequired = true;
 		}
 
+        /// <see cref="ApplyTextureAliases(Dictionary&lt;string,string&gt, bool)"/>
+        public bool ApplyTextureAliases( Dictionary<string, string> aliasList )
+        {
+            return ApplyTextureAliases( aliasList, true );
+        }
+
+        /// <summary>
+        /// Applies texture names to Texture Unit State with matching texture name aliases.
+        /// All techniques, passes, and Texture Unit States within the material are checked.
+        /// If matching texture aliases are found then true is returned.
+        /// </summary>
+        /// <param name="aliasList">is a map container of texture alias, texture name pairs</param>
+        /// <param name="apply">set true to apply the texture aliases else just test to see if texture alias matches are found.</param>
+        /// <returns>True if matching texture aliases were found in the material.</returns>
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
 			// iterate through all techniques and apply texture aliases
@@ -1457,5 +1470,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Object overloads
-	}
+    }
 }

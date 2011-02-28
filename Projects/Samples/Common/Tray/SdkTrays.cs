@@ -1,5 +1,5 @@
 #region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,13 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
-using Axiom.Overlays.Elements;
-
 using DisplayString = System.String;
-using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
-
 using SIS = SharpInputSystem;
+using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
 
 namespace Axiom.Samples
 {
@@ -68,7 +64,6 @@ namespace Axiom.Samples
 	/// </summary>
 	public class SdkTrayManager : ISdkTrayListener, IResourceGroupListener
 	{
-
 		#region events
 		public event ButtonHitDelegate ButtonHit;
 		#endregion
@@ -1279,8 +1274,6 @@ namespace Axiom.Samples
 			}
 		}
 
-
-
 		///<summary>
 		/// Shows loading bar. Also takes job settings: the number of resource groups
 		/// to be initialised, the number of resource groups to be loaded, and the
@@ -1880,10 +1873,7 @@ namespace Axiom.Samples
 			}
 			mWidgetDeathRow.Clear();
 
-			RenderTarget.FrameStatistics stats;
-			mWindow.GetStatistics( out stats.LastFPS, out stats.AvgerageFPS, out stats.BestFPS, out stats.WorstFPS );
-			stats.TriangleCount = 0;
-			stats.BatchCount = 0;
+			RenderTarget.FrameStatistics stats = mWindow.Statistics;
 
 			if ( IsFrameStatsVisible )
 			{
@@ -1896,7 +1886,7 @@ namespace Axiom.Samples
 				{
 					List<String> values = new List<string>();
 
-					s = String.Format( "{0:#.##}", stats.AvgerageFPS );
+					s = String.Format( "{0:#.##}", stats.AverageFPS );
 					values.Add( s );
 
 					s = String.Format( "{0:#.##}", stats.BestFPS );
@@ -1941,7 +1931,7 @@ namespace Axiom.Samples
 		/// This event is fired when a script is about to be parsed.
 		/// </summary>
 		/// <param name="scriptName">Name of the to be parsed</param>
-		public void ScriptParseStarted( string scriptName )
+		public void ScriptParseStarted( string scriptName, ref bool skipThisScript )
 		{
 			LoadBar.Comment = System.IO.Path.GetFileName( scriptName );
 			mWindow.Update();
@@ -1955,7 +1945,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// This event is fired when the script has been fully parsed.
 		/// </summary>
-		public void ScriptParseEnded()
+		public void ScriptParseEnded(string scriptName, bool skipped)
 		{
 			LoadBar.Progress = LoadBar.Progress + loadInc;
 			mWindow.Update();
@@ -2063,6 +2053,38 @@ namespace Axiom.Samples
 		public void ResourceGroupLoadEnded( string groupName )
 		{
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupName"></param>
+        public void ResourceGroupPrepareEnded( string groupName )
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ResourcePrepareEnded()
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resource"></param>
+        public void ResourcePrepareStarted( Resource resource )
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="resourceCount"></param>
+        public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
+        {
+        }
 
 		#endregion
 

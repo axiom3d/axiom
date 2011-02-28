@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -49,7 +49,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// 	Summary description for D3DHardwareBufferManager.
 	/// </summary>
-	public class D3DHardwareBufferManager : HardwareBufferManager
+	public class D3DHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
 		#region Member variables
 
@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///
 		/// </summary>
 		/// <param name="device"></param>
-		public D3DHardwareBufferManager( D3D.Device device )
+		public D3DHardwareBufferManagerBase( D3D.Device device )
 		{
 			this.device = device;
 		}
@@ -80,7 +80,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-			D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
+			D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( this, type, numIndices, usage, device, false, useShadowBuffer );
 			indexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -93,7 +93,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( vertexSize, numVerts, usage, device, false, useShadowBuffer );
+			D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( this, vertexSize, numVerts, usage, device, false, useShadowBuffer );
 			vertexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -158,6 +158,35 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Properties
 
 		#endregion Properties
+
+	}
+
+	public class D3DHardwareBufferManager : HardwareBufferManager
+	{
+		public D3DHardwareBufferManager(  D3D.Device device )
+			: base( new D3DHardwareBufferManagerBase( device ) )
+		{
+		}
+
+		public void ReleaseDefaultPoolResources()
+		{
+			( (D3DHardwareBufferManagerBase)_baseInstance ).ReleaseDefaultPoolResources();
+		}
+
+		public void RecreateDefaultPoolResources()
+		{
+			( (D3DHardwareBufferManagerBase)_baseInstance ).RecreateDefaultPoolResources();
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
+			{
+				_baseInstance.Dispose();
+				_baseInstance = null;
+			}
+			base.dispose( disposeManagedResources );
+		}
 
 	}
 }

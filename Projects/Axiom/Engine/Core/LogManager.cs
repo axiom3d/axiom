@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -46,45 +46,9 @@ namespace Axiom.Core
 	/// <summary>
 	/// Summary description for LogManager.
 	/// </summary>
-	public sealed class LogManager : IDisposable
+	public sealed class LogManager : Singleton<LogManager>
 	{
-		#region Singleton implementation
-
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static LogManager instance;
-
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal LogManager()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
-		}
-
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static LogManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
-
-		~LogManager()
-		{
-			instance = null;
-		}
-
-		#endregion Singleton implementation
-
-		#region Fields
+		#region Fields and Properties
 
 		/// <summary>
 		///     List of logs created by the log manager.
@@ -94,10 +58,6 @@ namespace Axiom.Core
 		///     The default log to which output is done.
 		/// </summary>
 		private Log defaultLog;
-
-		#endregion Fields
-
-		#region Properties
 
 		/// <summary>
 		///     Gets/Sets the default log to use for writing.
@@ -135,7 +95,7 @@ namespace Axiom.Core
 			}
 		}
 
-		#endregion Properties
+		#endregion Fields and Properties
 
 		#region Methods
 
@@ -288,26 +248,38 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-		#region IDisposable Members
+		#region Singleton implementation
 
-		/// <summary>
-		///     Destroys all the logs owned by the log manager.
-		/// </summary>
-		public void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
 			Write( "*-*-* Axiom Shutdown Complete." );
-			// dispose of all the logs
-			foreach ( IDisposable o in logList.Values )
+
+			if ( !isDisposed )
 			{
-				o.Dispose();
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					// dispose of all the logs
+					foreach ( IDisposable o in logList.Values )
+					{
+						o.Dispose();
+					}
+
+					logList.Clear();
+
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
 
-			logList.Clear();
-
-			instance = null;
-			GC.SuppressFinalize( this );
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
-		#endregion IDisposable Members
+
+		#endregion Singleton implementation
+
 	}
 }

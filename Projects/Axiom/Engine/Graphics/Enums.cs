@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -655,11 +655,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "blend_manual" )]
 		BlendManual,
-        /// <summary>
-        /// 
-        /// </summary>
-        [ScriptEnum( "blend_diffuse_color" )]
-        BlendDiffuseColor,
+		/// <summary>
+		/// 
+		/// </summary>
+		[ScriptEnum( "blend_diffuse_color" )]
+		BlendDiffuseColor,
 		/// <summary>
 		///		Takes the dot product of color 1 and color 2.
 		/// </summary>
@@ -1376,10 +1376,31 @@ namespace Axiom.Graphics
 	/// </summary>
 	public enum CompositorPassType
 	{
-		Clear,           // Clear target to one colour
-		Stencil,		 // Set stencil operation
-		RenderScene,     // Render the scene or part of it
-		RenderQuad,       // Render a full screen quad
+        /// <summary>
+        /// Clear target to one colour
+        /// </summary>
+        [ScriptEnum("clear")]
+		Clear,
+
+        /// <summary>
+        /// Set stencil operation
+        /// </summary>
+        [ScriptEnum("stencil")]
+		Stencil,
+
+        /// <summary>
+        /// Render the scene or part of it
+        /// </summary>
+        [ScriptEnum("render_scene")]
+		RenderScene,
+
+        /// <summary>
+        /// Render a full screen quad
+        /// </summary>
+        [ScriptEnum("render_quad")]
+		RenderQuad,
+
+        [ScriptEnum("render_custom")]
 		RenderCustom
 	}
 

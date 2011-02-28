@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -36,16 +35,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-
 using Axiom.Scripting.Compiler.AST;
-
-using Real = System.Single;
 
 #endregion Namespace Declarations
 
@@ -53,138 +47,242 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		class MaterialTranslator : Translator
+		public class MaterialTranslator : Translator
 		{
-			private Material _material;
-			Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
+			protected Material _material;
 
-			public MaterialTranslator( ScriptCompiler compiler )
-				: base( compiler )
+			protected Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
+
+			public MaterialTranslator()
+				: base()
 			{
 			}
 
 			#region Translator Implementation
 
-			protected override void ProcessObject( ObjectAbstractNode obj )
+			/// <see cref="Translator.CheckFor"/>
+			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
-				if ( obj.Name == null || obj.Name.Length == 0 )
-					Compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+				return nodeId == Keywords.ID_MATERIAL;
+			}
 
-				// Create a material with the given name
-				if ( CompilerListener != null )
-					_material = CompilerListener.CreateMaterial( obj.Name, Compiler.ResourceGroup );
-				else
-					_material = (Material)MaterialManager.Instance.Create( obj.Name, Compiler.ResourceGroup );
-
-				if ( _material == null )
+			/// <see cref="Translator.Translate"/>
+			public override void Translate( ScriptCompiler compiler, AbstractNode node )
+			{
+				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				if ( obj != null )
 				{
-					Compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
+					if ( string.IsNullOrEmpty( obj.Name ) )
+						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
+				}
+				else
+				{
+					compiler.AddError( CompileErrorCode.ObjectNameExpected, node.File, node.Line );
 					return;
 				}
 
+				// Create a material with the given name
+				object mat;
+				ScriptCompilerEvent evt = new CreateMaterialScriptCompilerEvent( node.File, obj.Name, compiler.ResourceGroup );
+				bool processed = compiler._fireEvent( ref evt, out mat );
+
+				if ( !processed )
+				{
+					//TODO
+					// The original translated implementation of this code block was simply the following:
+					// _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					// but sometimes it generates an exception due to a duplicate resource.
+					// In order to avoid the above mentioned exception, the implementation was changed, but
+					// it need to be checked when ResourceManager._add will be updated to the latest version
+
+					Material checkForExistingMat = (Material)MaterialManager.Instance.GetByName( obj.Name );
+
+					if ( checkForExistingMat == null )
+						_material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					else
+						_material = checkForExistingMat;
+				}
+				else
+				{
+					_material = (Material)mat;
+
+					if ( _material == null )
+					{
+						compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line, "failed to find or create material \"" + obj.Name + "\"" );
+					}
+				}
+
 				_material.RemoveAllTechniques();
-				Compiler.Context = _material;
+				obj.Context = _material;
+				_material.Origin = obj.File;
 
-				// Set the properties for the material
-				foreach ( AbstractNode node in obj.Children )
+				foreach ( AbstractNode i in obj.Children )
 				{
-					if ( node.Type == AbstractNodeType.Property )
+					if ( i is PropertyAbstractNode )
 					{
-						Translator.Translate( this, node );
-					}
-					else if ( node.Type == AbstractNodeType.Object )
-					{
-						ObjectAbstractNode child = (ObjectAbstractNode)node;
-						if ( (Keywords)child.Id == Keywords.ID_TECHNIQUE )
+						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+
+						switch ( (Keywords)prop.Id )
 						{
-							// Compile the technique
-							Technique tec = _material.CreateTechnique();
-							TechniqueTranslator translator = new TechniqueTranslator( Compiler, tec );
-							Translator.Translate( translator, child );
-						}
-					}
-				}
+							#region ID_LOD_VALUES
+							case Keywords.ID_LOD_VALUES:
+								{
+									LodValueList lods = new LodValueList();
+									foreach ( AbstractNode j in prop.Values )
+									{
+										Real v = 0;
+										if ( getReal( j, out v ) )
+											lods.Add( v );
+										else
+											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
+												"lod_values expects only numbers as arguments" );
+									}
+									_material.SetLodLevels( lods );
+								}
+								break;
+							#endregion ID_LOD_VALUES
 
-				// TODO : Apply the texture aliases
-				if ( CompilerListener != null )
-					CompilerListener.PreApplyTextureAliases( _textureAliases );
-				//_material.ApplyTextureAliases( _textureAliases );
+							#region ID_LOD_DISTANCES
+							case Keywords.ID_LOD_DISTANCES:
+								{
+									// Set strategy to distance strategy
+									LodStrategy strategy = DistanceLodStrategy.Instance;
+									_material.LodStrategy = strategy;
 
-			}
+									// Real in lod distances
+									LodValueList lods = new LodValueList();
+									foreach ( AbstractNode j in prop.Values )
+									{
+										Real v = 0;
+										if ( getReal( j, out v ) )
+											lods.Add( v );
+										else
+											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
+												"lod_values expects only numbers as arguments" );
+									}
+									_material.SetLodLevels( lods );
+								}
+								break;
+							#endregion ID_LOD_DISTANCES
 
-			protected override void ProcessProperty( PropertyAbstractNode property )
-			{
-				switch ( (Keywords)property.id )
-				{
-					case Keywords.ID_LOD_DISTANCES:
-						{
-							LodValueList lods = new LodValueList();
-							foreach ( AbstractNode node in property.values )
-							{
-								if ( node.Type == AbstractNodeType.Atom && ( (AtomAbstractNode)node ).IsNumber )
-									lods.Add( ( (AtomAbstractNode)node ).Number );
+							#region ID_LOD_STRATEGY
+							case Keywords.ID_LOD_STRATEGY:
+								if ( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+								}
+								else if ( prop.Values.Count > 1 )
+								{
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+										"lod_strategy only supports 1 argument" );
+								}
 								else
-									Compiler.AddError( CompileErrorCode.NumberExpected, node.File, node.Line );
-							}
-							_material.SetLodLevels( lods );
-						}
-						break;
-					case Keywords.ID_RECEIVE_SHADOWS:
-						if ( property.values.Count == 0 )
-						{
-							Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
-						}
-						else if ( property.values.Count > 1 )
-						{
-							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
-						}
-						else
-						{
-							bool val = true;
-							if ( getBoolean( property.values[ 0 ], out val ) )
-								_material.ReceiveShadows = val;
-							else
-								Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
-						}
-						break;
-					case Keywords.ID_TRANSPARENCY_CASTS_SHADOWS:
-						if ( property.values.Count == 0 )
-						{
-							Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
-						}
-						else if ( property.values.Count > 1 )
-						{
-							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
-						}
-						else
-						{
-							bool val = true;
-							if ( getBoolean( property.values[ 0 ], out val ) )
-								_material.TransparencyCastsShadows = val;
-							else
-								Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
-						}
-						break;
-					case Keywords.ID_SET_TEXTURE_ALIAS:
-						if ( property.values.Count == 0 )
-						{
-							Compiler.AddError( CompileErrorCode.StringExpected, property.File, property.Line );
-						}
-						else if ( property.values.Count > 3 )
-						{
-							Compiler.AddError( CompileErrorCode.FewerParametersExpected, property.File, property.Line );
-						}
-						else
-						{
-							AbstractNode i0 = getNodeAt( property.values, 0 ), i1 = getNodeAt( property.values, 1 );
-							String name, value;
-							if ( getString( i0, out name ) && getString( i1, out value ) )
-								_textureAliases.Add( name, value );
-							else
-								Compiler.AddError( CompileErrorCode.InvalidParameters, property.File, property.Line );
-						}
-						break;
+								{
+									string strategyName = string.Empty;
+									bool result = getString( prop.Values[ 0 ], out strategyName );
+									if ( result )
+									{
+										LodStrategy strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
+
+										result = strategy != null;
+
+										if ( result )
+											_material.LodStrategy = strategy;
+									}
+
+									if ( !result )
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"lod_strategy argument must be a valid lod strategy" );
+									}
+								}
+								break;
+							#endregion ID_LOD_STRATEGY
+
+							#region ID_RECEIVE_SHADOWS
+							case Keywords.ID_RECEIVE_SHADOWS:
+								if ( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+								}
+								else if ( prop.Values.Count > 1 )
+								{
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+										"receive_shadows only supports 1 argument" );
+								}
+								else
+								{
+									bool val = true;
+									if ( getBoolean( prop.Values[ 0 ], out val ) )
+										_material.ReceiveShadows = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"receive_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+								}
+								break;
+							#endregion ID_RECEIVE_SHADOWS
+
+							#region ID_TRANSPARENCY_CASTS_SHADOWS
+							case Keywords.ID_TRANSPARENCY_CASTS_SHADOWS:
+								if ( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+								}
+								else if ( prop.Values.Count > 1 )
+								{
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+										"transparency_casts_shadows only supports 1 argument" );
+								}
+								else
+								{
+									bool val = true;
+									if ( getBoolean( prop.Values[ 0 ], out val ) )
+										_material.TransparencyCastsShadows = val;
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"transparency_casts_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+								}
+								break;
+							#endregion ID_TRANSPARENCY_CASTS_SHADOWS
+
+							#region ID_SET_TEXTURE_ALIAS
+							case Keywords.ID_SET_TEXTURE_ALIAS:
+								if ( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+								}
+								else if ( prop.Values.Count > 3 )
+								{
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
+								}
+								else
+								{
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
+									String name, value;
+									if ( getString( i0, out name ) && getString( i1, out value ) )
+										_textureAliases.Add( name, value );
+									else
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"set_texture_alias must have 2 string argument" );
+								}
+								break;
+							#endregion ID_SET_TEXTURE_ALIAS
+
+							default:
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
+								break;
+						} //end of switch statement
+					}
+					else if ( i is ObjectAbstractNode )
+						_processNode( compiler, i );
 				}
+
+				// Apply the texture aliases
+				ScriptCompilerEvent locEvt = new PreApplyTextureAliasesScriptCompilerEvent( _material, ref _textureAliases );
+				compiler._fireEvent( ref locEvt );
+
+				_material.ApplyTextureAliases( _textureAliases );
+				_textureAliases.Clear();
 			}
 
 			#endregion Translator Implementation

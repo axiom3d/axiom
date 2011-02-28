@@ -1,5 +1,5 @@
 ﻿#region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,6 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
 
-using System.IO;
-using System.Reflection;
 using SIS = SharpInputSystem;
 
 namespace Axiom.Samples

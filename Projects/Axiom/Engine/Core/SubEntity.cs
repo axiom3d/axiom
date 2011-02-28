@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -642,12 +642,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				// get the parent entitie's parent node
-				Node node = parent.ParentNode;
-
-				Debug.Assert( node != null );
-
-				return parent.ParentNode.Lights;
+				return parent.QueryLights();
 			}
 		}
 
@@ -801,8 +796,8 @@ namespace Axiom.Core
 					// Dispose managed resources.
 					if ( this.renderOperation != null )
 					{
-                        if (!this.renderOperation.IsDisposed)
-                            this.renderOperation.Dispose();
+						//if (!this.renderOperation.IsDisposed)
+						//    this.renderOperation.Dispose();
 
 						this.renderOperation = null;
 					}
@@ -814,15 +809,7 @@ namespace Axiom.Core
 
                         this.skelAnimVertexData = null;
                     }
-                    
-                    if (this.subMesh != null)
-                    {
-                        if (!this.subMesh.IsDisposed)
-                            this.subMesh.Dispose();
-
-                        this.subMesh = null;
-                    }
-				}
+   				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.

@@ -1,5 +1,5 @@
 ﻿#region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "Sample_DynamicTexture" )]
+[assembly: AssemblyTitle( "Axiom.Samples.DynamicTexture" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyProduct( "Sample_DynamicTexture" )]
-[assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyCopyrightAttribute( "Copyright (C) 2003-2009 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyProduct( "Axiom.Samples.DynamicTexture" )]
+[assembly: AssemblyCompany( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
+[assembly: AssemblyCopyright( "Copyright © 2003-2011 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -55,4 +55,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion( "1.0.0.0" )]
+#if !( XBOX || XBOX360 )
 [assembly: AssemblyFileVersion( "1.0.0.0" )]
+#endif

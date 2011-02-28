@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -35,8 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 
 #endregion Namespace Declarations
 
@@ -45,9 +43,16 @@ namespace Axiom.Scripting.Compiler.AST
 	/// <summary>
 	///  This is an abstract node which cannot be broken down further
 	/// </summary>
-	class AtomAbstractNode : AbstractNode
+	public class AtomAbstractNode : AbstractNode
 	{
 		#region Fields and Properties
+
+		private CultureInfo _culture = new CultureInfo( "en-US" );
+		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
+										   NumberStyles.AllowLeadingWhite |
+										   NumberStyles.AllowTrailingWhite |
+										   NumberStyles.AllowDecimalPoint;
+
 
 		private bool _parsed = false;
 		private string _value;
@@ -55,6 +60,7 @@ namespace Axiom.Scripting.Compiler.AST
 		public uint Id;
 
 		private bool _isNumber = false;
+
 		public bool IsNumber
 		{
 			get
@@ -66,6 +72,7 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		private float _number;
+
 		public float Number
 		{
 			get
@@ -80,40 +87,36 @@ namespace Axiom.Scripting.Compiler.AST
 		public AtomAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Type = AbstractNodeType.Atom;
 		}
 
 		private void _parse()
 		{
-#if !(XBOX || XBOX360)
-			_isNumber = float.TryParse( _value, out _number );
-#else
 			try
 			{
-				_number = float.Parse(_value);
+				_number = float.Parse( _value, _parseStyle, _culture );
 				_isNumber = true;
 			}
-			catch (Exception)
+			catch
 			{
-				_isNumber =  false;
+				_isNumber = false;
 			}
-#endif
 			_parsed = true;
 		}
 
 		#region AbstractNode Implementation
 
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			AtomAbstractNode node = new AtomAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
 			node.Id = this.Id;
-			node.Type = Type;
 			node._value = Value;
 			return node;
 		}
 
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get
@@ -121,7 +124,7 @@ namespace Axiom.Scripting.Compiler.AST
 				return _value;
 			}
 
-			protected internal set
+			set
 			{
 				_value = value;
 			}

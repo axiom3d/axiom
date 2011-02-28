@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -103,23 +103,29 @@ namespace Axiom.CgPrograms
 
 		#region Methods
 
+        /// <summary>
+        /// Internal method which works out which profile to use for this program
+        /// </summary>
 		protected void SelectProfile()
 		{
 			selectedProfile = "";
 			selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
 
-			for ( int i = 0; i < profiles.Length; i++ )
-			{
-				if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
-				{
-					selectedProfile = profiles[ i ];
-					selectedCgProfile = Cg.cgGetProfile( selectedProfile );
+            if ( profiles != null )
+            {
+                for ( int i = 0; i < profiles.Length; i++ )
+                {
+                    if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
+                    {
+                        selectedProfile = profiles[ i ];
+                        selectedCgProfile = Cg.cgGetProfile( selectedProfile );
 
-					CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
+                        CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
 
-					break;
-				}
-			}
+                        break;
+                    }
+                }
+            }
 		}
 
 		/// <summary>
@@ -290,13 +296,16 @@ namespace Axiom.CgPrograms
 				}
 
 				// see if any profiles are supported
-				for ( int i = 0; i < profiles.Length; i++ )
-				{
-					if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
-					{
-						return true;
-					}
-				}
+                if ( profiles != null )
+                {
+                    for ( int i = 0; i < profiles.Length; i++ )
+                    {
+                        if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
+                        {
+                            return true;
+                        }
+                    }
+                }
 
 				// nope, SOL
 				return false;

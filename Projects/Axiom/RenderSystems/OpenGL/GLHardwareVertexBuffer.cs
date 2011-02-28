@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -62,8 +62,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
-			: base( vertexSize, numVertices, usage, false, useShadowBuffer )
+		public GLHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
+			: base( manager, vertexSize, numVertices, usage, false, useShadowBuffer )
 		{
 			bufferID = 0;
 

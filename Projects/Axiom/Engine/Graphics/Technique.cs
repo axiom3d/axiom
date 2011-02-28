@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -34,13 +34,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Axiom.Core;
-
-using Real = System.Single;
-using System.Collections.Generic;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -56,13 +54,122 @@ namespace Axiom.Graphics
 	public class Technique
 	{
 		#region Constants and Enumerations
-		// illumination pass state type
-		protected enum IlluminationPassesState
+		/// <summary>
+        /// illumination pass state type
+		/// </summary>
+		protected enum IlluminationPassesCompilationPhase
 		{
 			Disabled = -1,
 			NotCompiled = 0,
 			Compiled = 1
 		}
+
+        /// <summary>
+        /// Rule controlling whether technique is deemed supported based on GPU vendor
+        /// </summary>
+        public struct GPUVendorRule
+        {
+            public GPUVendor Vendor { get; set; }
+            public bool Include { get; set; }
+
+            public GPUVendorRule( GPUVendor v, bool ie )
+                : this()
+            {
+                Vendor = v;
+                Include = ie;
+            }
+
+            #region System.Object overrides
+
+            public override bool Equals( object obj )
+            {
+                if ( obj == null )
+                    return false;
+
+                if ( !( obj is GPUVendorRule ) )
+                    return false;
+
+                GPUVendorRule v = (GPUVendorRule)obj;
+
+                return ( v.Vendor == Vendor ) && ( v.Include == Include );
+            }
+
+            public override int GetHashCode()
+            {
+                return Vendor.GetHashCode();
+            }
+            #endregion System.Object overrides
+
+            public static bool operator ==( GPUVendorRule a, GPUVendorRule b )
+            {
+                if ( Object.ReferenceEquals( a, b ) )
+                    return true;
+
+                return ( a.Vendor == b.Vendor ) && ( a.Include == b.Include );
+            }
+
+            public static bool operator !=( GPUVendorRule a, GPUVendorRule b )
+            {
+                return !( a == b );
+            }
+        };
+
+        /// <summary>
+        /// Rule controlling whether technique is deemed supported based on GPU device name
+        /// </summary>
+        public struct GPUDeviceNameRule
+        {
+            public string DevicePattern;
+
+            public bool Include;
+
+            public bool CaseSensitive;
+
+            public GPUDeviceNameRule( string pattern, bool ie, bool caseSen )
+                : this()
+            {
+                DevicePattern = pattern;
+                Include = ie;
+                CaseSensitive = caseSen;
+            }
+
+            #region System.Object overrides
+
+            public override bool Equals( object obj )
+            {
+                if ( obj == null )
+                    return false;
+
+                if ( !( obj is GPUDeviceNameRule ) )
+                    return false;
+
+                GPUDeviceNameRule d = (GPUDeviceNameRule)obj;
+
+                return ( d.DevicePattern == DevicePattern ) && ( d.Include == Include ) && ( d.CaseSensitive == CaseSensitive );
+            }
+
+            public override int GetHashCode()
+            {
+                if ( DevicePattern != null )
+                    return DevicePattern.GetHashCode();
+
+                return base.GetHashCode();
+            }
+            #endregion System.Object overrides
+
+            public static bool operator ==( GPUDeviceNameRule a, GPUDeviceNameRule b )
+            {
+                if ( Object.ReferenceEquals( a, b ) )
+                    return true;
+
+                return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) && ( a.CaseSensitive == b.CaseSensitive );
+            }
+
+            public static bool operator !=( GPUDeviceNameRule a, GPUDeviceNameRule b )
+            {
+                return !( a == b );
+            }
+        };
 
 		#endregion Constants and Enumerations
 
@@ -73,10 +180,34 @@ namespace Axiom.Graphics
 		/// </summary>
 		private List<Pass> _passes = new List<Pass>();
 
+        protected List<GPUVendorRule> _GPUVendorRules = new List<GPUVendorRule>();
+        protected List<GPUDeviceNameRule> _GPUDeviceNameRules = new List<GPUDeviceNameRule>();
+
+		#region IlluminationPasses Property
+		IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
 		/// <summary>
 		///		List of derived passes, categorized (and ordered) into illumination stages.
 		/// </summary>
 		private List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
+		public IEnumerable<IlluminationPass> IlluminationPasses
+		{
+			get
+			{
+				IlluminationPassesCompilationPhase targetState = IlluminationPassesCompilationPhase.Compiled;
+				if ( _illuminationPassesCompilationPhase != targetState )
+				{
+					// prevents parent->_notifyNeedsRecompile() call during compile
+					_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.Disabled;
+					// Splitting the passes into illumination passes
+					CompileIlluminationPasses();
+					// Mark that illumination passes compilation finished
+					_illuminationPassesCompilationPhase = targetState;
+				}
+
+				return _illuminationPasses;
+			}
+		}
+		#endregion IlluminationPasses Property
 
 		#region Parent Property
 
@@ -676,8 +807,8 @@ namespace Axiom.Graphics
 
 			set
 			{
+                _schemeName = value;
 				_schemeIndex = MaterialManager.Instance.GetSchemeIndex( _schemeName );
-				_schemeName = value;
 			}
 		}
 		#endregion Scheme Property
@@ -797,11 +928,10 @@ namespace Axiom.Graphics
 				target._passes.Add( newPass );
 			}
 
-			// recompile illumination passes
-			if ( _compiledIlluminationPasses )
-			{
-				target.CompileIlluminationPasses();
-			}
+			// Compile for categorized illumination on demand
+			ClearIlluminationPasses();
+			_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+
 		}
 
 		/// <summary>
@@ -828,7 +958,7 @@ namespace Axiom.Graphics
 				Pass currPass = _passes[ i ];
 
 				// Adjust pass index
-				// TODO: currPass.Index = passNum;
+				currPass.Index = passNum;
 
 				// Check for advanced blending operation support
 #warning Capabilities.AdvancedBlendOperation implementation required
@@ -849,12 +979,12 @@ namespace Axiom.Graphics
 						if ( !autoManageTextureUnits )
 						{
 							// The user disabled auto pass split
-							return String.Format( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
+							compileErrors.AppendFormat( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
 						}
 						else if ( currPass.HasVertexProgram )
 						{
 							// Can't do this one, and can't split a programmable pass
-							return String.Format( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
+							compileErrors.AppendFormat( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
 						}
 					}
 				}
@@ -866,7 +996,7 @@ namespace Axiom.Graphics
 					if ( !currPass.VertexProgram.IsSupported )
 					{
 						// can't do this one
-						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}",
+						compileErrors.AppendFormat( "Pass {0}: Fragment Program {1} cannot be used - {2}",
 											  i,
 											  currPass.VertexProgramName,
 											  currPass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported." );
@@ -879,7 +1009,7 @@ namespace Axiom.Graphics
 					if ( !currPass.GeometryProgram.IsSupported )
 					{
 						// can't do this one
-						return String.Format( "Pass {0}: Geometry Program {1} cannot be used - {2}",
+						compileErrors.AppendFormat( "Pass {0}: Geometry Program {1} cannot be used - {2}",
 											  i,
 											  currPass.GeometryProgramName,
 											  currPass.GeometryProgram.HasCompileError ? "Compile Error." : "Not Supported." );
@@ -895,13 +1025,13 @@ namespace Axiom.Graphics
 						// check to make sure we have some cube mapping support
 						if ( texUnit.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
 						{
-							return String.Format( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
+							compileErrors.AppendFormat( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
 						}
 
 						// if this is a Dot3 blending layer, make sure we can support it
 						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
 						{
-							return String.Format( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
+							compileErrors.AppendFormat( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
 						}
 					}
 
@@ -917,11 +1047,11 @@ namespace Axiom.Graphics
 			// if we made it this far, we are good to go!
 			_isSupported = true;
 
-			// CompileIlluminationPasses() used to be called here, but it is now done on
-			// demand since it the illumination passes are only needed for additive shadows
-			// Now compile for categorized illumination, in case we need it later
-			//CompileIlluminationPasses();
-			return string.Empty;
+			// Compile for categorized illumination on demand
+			ClearIlluminationPasses();
+			_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+
+			return compileErrors.ToString();
 		}
 
 		/// <summary>
@@ -1240,10 +1370,10 @@ namespace Axiom.Graphics
 		/// </remarks>
 		internal void NotifyNeedsRecompile()
 		{
-			//if ( illuminationPassesCompileStage != IlluminationPassesState.Disabled )
-			//{
-			_parent.NotifyNeedsRecompile();
-			//}
+			if ( _illuminationPassesCompilationPhase != IlluminationPassesCompilationPhase.Disabled )
+			{
+				_parent.NotifyNeedsRecompile();
+			}
 		}
 
 		/// <summary>
@@ -1429,5 +1559,72 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
-	}
+
+        /// <summary>
+        /// Add a rule which manually influences the support for this technique based
+	    /// on a GPU vendor.
+        /// </summary>
+        /// <remarks>
+        /// You can use this facility to manually control whether a technique is
+	    /// considered supported, based on a GPU vendor. You can add inclusive
+		/// or exclusive rules, and you can add as many of each as you like. If
+		///	at least one inclusive rule is added, a	technique is considered 
+		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
+		///	added, the technique is considered unsupported if it matches any of
+		///	those inclusive rules.
+        ///	Note that any rule for the same vendor will be removed before adding this one.
+        ///	/// </remarks>
+        /// <param name="rule"></param>
+        internal void AddGPUVenderRule( GPUVendorRule rule )
+        {
+            // remove duplicates
+            RemoveGPUVendorRule( rule );
+            _GPUVendorRules.Add( rule );
+        }
+
+        /// <summary>
+        /// Removes a matching vendor rule.
+        /// </summary>
+        /// <see cref="AddGPUVenderRule"/>
+        /// <param name="rule"></param>
+        internal void RemoveGPUVendorRule( GPUVendorRule rule )
+        {
+            if ( _GPUVendorRules.Contains( rule ) )
+                _GPUVendorRules.Remove( rule );
+        }
+
+        /// <summary>
+        /// Add a rule which manually influences the support for this technique based
+		///	on a pattern that matches a GPU device name (e.g. '*8800*').
+        /// </summary>
+        /// <remarks>
+        /// You can use this facility to manually control whether a technique is
+		///	considered supported, based on a GPU device name pattern. You can add inclusive
+		///	or exclusive rules, and you can add as many of each as you like. If
+		///	at least one inclusive rule is added, a	technique is considered 
+		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
+		///	added, the technique is considered unsupported if it matches any of
+		///	those inclusive rules. The pattern you supply can include wildcard
+		///	characters ('*') if you only want to match part of the device name.
+        ///	Note that any rule for the same device pattern will be removed before adding this one.
+        /// </remarks>
+        /// <param name="rule"></param>
+        internal void AddGPUDeviceNameRule( GPUDeviceNameRule rule )
+        {
+            // remove duplicates
+            RemoveGPUDeviceNameRule( rule );
+            _GPUDeviceNameRules.Add( rule );
+        }
+
+        /// <summary>
+        /// Removes a matching device name rule.
+        /// </summary>
+        /// <see cref="AddGPUDeviceNameRule"/>
+        /// <param name="rule"></param>
+        internal void RemoveGPUDeviceNameRule( GPUDeviceNameRule rule )
+        {
+            if ( _GPUDeviceNameRules.Contains( rule ) )
+                _GPUDeviceNameRules.Remove( rule );
+        }
+    }
 }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -35,13 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
-using Axiom.Math;
 using Axiom.Graphics;
-
-using Real = System.Single;
+using Axiom.Math;
 using ResourceHandle = System.UInt64;
-using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
@@ -1269,7 +1265,14 @@ namespace Axiom.Core
 
 					Singleton<MeshManager>.Destroy();
 				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 		#endregion IDisposable Implementation
 	}

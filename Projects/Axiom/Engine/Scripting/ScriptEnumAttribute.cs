@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -114,7 +114,7 @@ namespace Axiom.Scripting
 						ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ index ];
 
 						// if the values match
-						if ( scriptAtt.ScriptValue == val )
+						if ( scriptAtt.ScriptValue.ToLower() == val.ToLower() )
 						{
 							// return the enum value for this script equivalent
 							return Enum.Parse( type, field.Name, true );

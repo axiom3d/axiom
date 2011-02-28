@@ -2,9 +2,9 @@
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Components.Terrain;
-
 using Axiom.Media;
 using Axiom.Graphics;
+
 namespace Axiom.Samples.Terrain
 {
 	/// <summary>
@@ -28,6 +28,7 @@ namespace Axiom.Samples.Terrain
 		Depth = 2,
 		Count = 3
 	}
+
 	public class TerrainSample : SdkSample
 	{
 		const int TerrainSize = 513;

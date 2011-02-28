@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -41,6 +41,7 @@ using Axiom.Fonts;
 using Axiom.Scripting;
 using Axiom.Graphics;
 using Font = Axiom.Fonts.Font;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -109,29 +110,6 @@ namespace Axiom.Overlays.Elements
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.font != null)
-                    {
-                        if (!font.IsDisposed)
-                            font.Dispose();
-
-                        font = null;
-                    }
-                }
-            }
-
-            base.dispose(disposeManagedResources);
-        }
-
-		/// <summary>
-		///    
-		/// </summary>
 		/// <param name="size"></param>
 		protected void CheckMemoryAllocation( int numChars )
 		{
@@ -359,7 +337,7 @@ namespace Axiom.Overlays.Elements
 				}
 
 				float horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
-				float u1, u2, v1, v2;
+				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
 				font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );

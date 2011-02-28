@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -1698,7 +1698,7 @@ namespace Axiom.Graphics
 		#region PointMinSize Property
 
 		private float _pointMinSize;
-		public float PointMixSize
+		public float PointMinSize
 		{
 			get
 			{
@@ -1936,8 +1936,8 @@ namespace Axiom.Graphics
 
 			target._depthCheck = _depthCheck;
 			target._depthWrite = _depthWrite;
-			// target.alphaRejectFunc = alphaRejectFunc;
-			// target.alphaRejectVal = alphaRejectVal;
+			target._alphaRejectFunction = _alphaRejectFunction;
+			target._alphaRejectValue = _alphaRejectValue;
 			target._colorWriteEnabled = _colorWriteEnabled;
 			target._depthFunction = _depthFunction;
 			target._depthBiasConstant = _depthBiasConstant;
@@ -1950,8 +1950,8 @@ namespace Axiom.Graphics
 			target._runOnlyForOneLightType = _runOnlyForOneLightType;
 			target._onlyLightType = _onlyLightType;
 			target._shadingMode = _shadingMode;
-			// target.polygonMode = polygonMode
-			// target.passIterationCount = passIterationCount;
+			target._polygonMode = _polygonMode;
+			//target._passIterationCount = _passIterationCount;
 
 			// vertex program
 			if ( _vertexProgramUsage != null )
@@ -2013,8 +2013,12 @@ namespace Axiom.Graphics
 				target._shadowReceiverFragmentProgramUsage = null;
 			}
 
-			// texture units
-			target.RemoveAllTextureUnitStates();
+
+			// Clear texture units but doesn't notify need recompilation in the case
+			// we are cloning, The parent material will take care of this.
+			target.textureUnitStates.Clear();
+
+			// Copy texture units
 
 			for ( int i = 0; i < textureUnitStates.Count; i++ )
 			{
@@ -2748,11 +2752,11 @@ namespace Axiom.Graphics
 				( (TextureUnitState)textureUnitStates[ i ] ).Unload();
 			}
 
-            if (this.HasFragmentProgram)
-                this._fragmentProgramUsage.Program.Unload();
+			if ( this.HasFragmentProgram )
+				this._fragmentProgramUsage.Program.Unload();
 
-            if (this.HasVertexProgram)
-                this._vertexProgramUsage.Program.Unload();
+			if ( this.HasVertexProgram )
+				this._vertexProgramUsage.Program.Unload();
 		}
 
 		/// <summary>

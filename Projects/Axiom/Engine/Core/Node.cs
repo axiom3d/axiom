@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -73,8 +73,324 @@ namespace Axiom.Core
 	///		e.g. SceneNode, Bone
 	///	</remarks>
 	///	<ogre headerVersion="1.39" sourceVersion="1.53" />
-	public abstract class Node : DisposableObject, IRenderable
+	public abstract class Node : DisposableObject
 	{
+		public class DebugRenderable : DisposableObject, IRenderable
+		{
+			private Node _parent;
+			private Material _material;
+			private Mesh _mesh;
+			private LightList _emptyLightList = new LightList();
+
+			public DebugRenderable( Node parent )
+			{
+				_parent = parent;
+
+				string materialName = "Axiom/Debug/AxesMat";
+				_material = (Material)MaterialManager.Instance[ materialName ];
+				if ( _material == null )
+				{
+					_material = (Material)MaterialManager.Instance.Create( materialName, ResourceGroupManager.InternalResourceGroupName );
+					Pass p = _material.GetTechnique( 0 ).GetPass( 0 );
+					p.LightingEnabled = false;
+					//TODO: p.PolygonModeOverrideable = false;
+					p.VertexColorTracking = TrackVertexColor.Ambient;
+					p.SetSceneBlending( SceneBlendType.TransparentAlpha );
+					p.CullingMode = CullingMode.None;
+					p.DepthWrite = false;
+				}
+
+				string meshName = "Axiom/Debug/AxesMesh";
+				_mesh = MeshManager.Instance[ meshName ];
+				if ( _mesh == null )
+				{
+					ManualObject mo = new ManualObject( "tmp" );
+					mo.Begin( Material.Name, OperationType.TriangleList );
+					/* 3 axes, each made up of 2 of these (base plane = XY)
+					 *   .------------|\
+					 *   '------------|/
+					 */
+					mo.EstimateVertexCount( 7 * 2 * 3 );
+					mo.EstimateIndexCount( 3 * 2 * 3 );
+					Quaternion[] quat = new Quaternion[ 6 ];
+					ColorEx[] col = new ColorEx[ 3 ];
+
+					// x-axis
+					quat[ 0 ] = Quaternion.Identity;
+					quat[ 1 ] = Quaternion.FromAxes( Vector3.UnitX, Vector3.NegativeUnitZ, Vector3.UnitY );
+					col[ 0 ] = ColorEx.Red;
+					col[ 0 ].a = 0.8f;
+					// y-axis
+					quat[ 2 ] = Quaternion.FromAxes( Vector3.UnitY, Vector3.NegativeUnitX, Vector3.UnitZ );
+					quat[ 3 ] = Quaternion.FromAxes( Vector3.UnitY, Vector3.UnitZ, Vector3.UnitX );
+					col[ 1 ] = ColorEx.Green;
+					col[ 1 ].a = 0.8f;
+					// z-axis
+					quat[ 4 ] = Quaternion.FromAxes( Vector3.UnitZ, Vector3.UnitY, Vector3.NegativeUnitX );
+					quat[ 5 ] = Quaternion.FromAxes( Vector3.UnitZ, Vector3.UnitX, Vector3.UnitY );
+					col[ 2 ] = ColorEx.Blue;
+					col[ 2 ].a = 0.8f;
+
+					Vector3[] basepos = new Vector3[ 7 ]  
+										{
+											// stalk
+											new Vector3(0f, 0.05f, 0f), 
+											new Vector3(0f, -0.05f, 0f),
+											new Vector3(0.7f, -0.05f, 0f),
+											new Vector3(0.7f, 0.05f, 0f),
+											// head
+											new Vector3(0.7f, -0.15f, 0f),
+											new Vector3(1f, 0f, 0f),
+											new Vector3(0.7f, 0.15f, 0f)
+										};
+
+
+					// vertices
+					// 6 arrows
+					for ( int i = 0; i < 6; ++i )
+					{
+						// 7 points
+						for ( int p = 0; p < 7; ++p )
+						{
+							Vector3 pos = quat[ i ] * basepos[ p ];
+							mo.Position( pos );
+							mo.Color( col[ i / 2 ] );
+						}
+					}
+
+					// indices
+					// 6 arrows
+					for ( int i = 0; i < 6; ++i )
+					{
+						ushort baseIndex = (ushort)( i * 7 );
+						mo.Triangle( (ushort)( baseIndex + 0 ), (ushort)( baseIndex + 1 ), (ushort)( baseIndex + 2 ) );
+						mo.Triangle( (ushort)( baseIndex + 0 ), (ushort)( baseIndex + 2 ), (ushort)( baseIndex + 3 ) );
+						mo.Triangle( (ushort)( baseIndex + 4 ), (ushort)( baseIndex + 5 ), (ushort)( baseIndex + 6 ) );
+					}
+
+					mo.End();
+
+					_mesh = mo.ConvertToMesh( meshName, ResourceGroupManager.InternalResourceGroupName );
+				}
+			}
+
+			private float _scaling;
+			public float Scaling
+			{
+				get
+				{
+					return _scaling;
+				}
+				set
+				{
+					_scaling = value;
+				}
+			}
+
+			#region IRenderable implementation
+
+			public bool CastsShadows
+			{
+				get
+				{
+					return false;
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			Quaternion IRenderable.WorldOrientation
+			{
+				get
+				{
+					return Quaternion.Identity;
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			Vector3 IRenderable.WorldPosition
+			{
+				get
+				{
+					return Vector3.Zero;
+				}
+			}
+
+			protected RenderOperation renderOperation = new RenderOperation();
+			/// <summary>
+			///		This is only used if the SceneManager chooses to render the node. This option can be set
+			///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal
+			///		models using Entity.DisplaySkeleton = true.
+			///	 </summary>
+			public RenderOperation RenderOperation
+			{
+				get
+				{
+					_mesh.GetSubMesh( 0 ).GetRenderOperation( renderOperation );
+					return renderOperation;
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			/// <remarks>
+			///		This is only used if the SceneManager chooses to render the node. This option can be set
+			///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal
+			///		models using Entity.DisplaySkeleton = true.
+			/// </remarks>
+			public Material Material
+			{
+				get
+				{
+					return _material;
+				}
+			}
+
+			public bool NormalizeNormals
+			{
+				get
+				{
+					return false;
+				}
+			}
+
+			public Technique Technique
+			{
+				get
+				{
+					return this.Material.GetBestTechnique();
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			public ushort NumWorldTransforms
+			{
+				get
+				{
+					return 1;
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			public bool UseIdentityProjection
+			{
+				get
+				{
+					return false;
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			public bool UseIdentityView
+			{
+				get
+				{
+					return false;
+				}
+			}
+
+			public virtual bool PolygonModeOverrideable
+			{
+				get
+				{
+					return true;
+				}
+			}
+
+			/// <summary>
+			///
+			/// </summary>
+			public virtual LightList Lights
+			{
+				get
+				{					
+					return _emptyLightList;
+				}
+			}
+
+			public void GetWorldTransforms( Matrix4[] matrices )
+			{
+				// Assumes up to date
+				matrices[0] = _parent.cachedTransform;
+				if (!Utility.RealEqual(_scaling, 1.0))
+				{
+					Matrix4 m = Matrix4.Identity;
+					Vector3 s = new Vector3(_scaling, _scaling, _scaling);
+					m.Scale = s;
+					matrices[0] = matrices[0] * m;
+				}
+			}
+
+			public float GetSquaredViewDepth( Camera camera )
+			{
+				return _parent.GetSquaredViewDepth( camera );
+			}
+
+			private List<Vector4> customParams = new List<Vector4>();
+
+			public Vector4 GetCustomParameter( int index )
+			{
+				if ( customParams[ index ] == null )
+				{
+					throw new Exception( "A parameter was not found at the given index" );
+				}
+				else
+				{
+					return (Vector4)customParams[ index ];
+				}
+			}
+
+			public void SetCustomParameter( int index, Vector4 val )
+			{
+				while ( customParams.Count <= index )
+					customParams.Add( Vector4.Zero );
+				customParams[ index ] = val;
+			}
+
+			public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+			{
+				if ( customParams[ entry.Data ] != null )
+				{
+					gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				}
+			}
+
+			#endregion IRenderable implementation
+
+			#region DisposableObject Implementation
+
+			protected override void dispose( bool disposeManagedResources )
+			{
+				if ( !IsDisposed )
+				{
+					if ( disposeManagedResources )
+					{
+
+						// Dispose managed resources.
+						if ( renderOperation != null )
+						{
+							renderOperation.vertexData = null;
+							renderOperation.indexData = null;
+							renderOperation = null;
+						}
+					}
+				}
+				base.dispose( disposeManagedResources );
+			}
+
+			#endregion  DisposableObject Implementation
+		}
+
 		#region Events
 
 		/// <summary>
@@ -156,6 +472,8 @@ namespace Axiom.Core
 		protected List<Vector4> customParams = new List<Vector4>();
 
 		protected bool suppressUpdateEvent = false;
+
+		private DebugRenderable _debugRenderable;
 
 		#endregion Protected member variables
 
@@ -330,9 +648,6 @@ namespace Axiom.Core
             if (removeFromInternalList)
             {
                 childNodes.Remove(child.Name);
-                
-                if (!child.IsDisposed)
-                    child.Dispose();
             }
 		}
 
@@ -667,6 +982,21 @@ namespace Axiom.Core
 			return newChild;
 		}
 
+		public virtual Node.DebugRenderable GetDebugRenderable()
+		{
+			return GetDebugRenderable( 0.0f );
+		}
+
+		public virtual Node.DebugRenderable GetDebugRenderable( Real scaling )
+		{
+			if (_debugRenderable == null)
+			{
+				_debugRenderable = new DebugRenderable(this);
+			}
+			_debugRenderable.Scaling = scaling;
+			return _debugRenderable;
+
+		}
 		/// <summary>
 		///
 		/// </summary>
@@ -1416,185 +1746,6 @@ namespace Axiom.Core
 
 		#endregion Internal engine methods
 
-		#region IRenderable implementation
-
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		Quaternion IRenderable.WorldOrientation
-		{
-			get
-			{
-				return this.DerivedOrientation;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		Vector3 IRenderable.WorldPosition
-		{
-			get
-			{
-				return this.DerivedPosition;
-			}
-		}
-
-		protected RenderOperation renderOperation = new RenderOperation();
-		/// <summary>
-		///		This is only used if the SceneManager chooses to render the node. This option can be set
-		///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal
-		///		models using Entity.DisplaySkeleton = true.
-		///	 </summary>
-		public RenderOperation RenderOperation
-		{
-			get
-			{
-				if ( this.nodeSubMesh == null )
-				{
-					Mesh nodeMesh = (Mesh)MeshManager.Instance.Load( "axes.mesh", ResourceGroupManager.BootstrapResourceGroupName );
-					this.nodeSubMesh = nodeMesh.GetSubMesh( 0 );
-				}
-				// return the render operation of the submesh itself
-				this.nodeSubMesh.GetRenderOperation( renderOperation );
-				return renderOperation;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <remarks>
-		///		This is only used if the SceneManager chooses to render the node. This option can be set
-		///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal
-		///		models using Entity.DisplaySkeleton = true.
-		/// </remarks>
-		public Material Material
-		{
-			get
-			{
-				if ( nodeMaterial == null )
-				{
-					nodeMaterial = (Material)MaterialManager.Instance[ "Core/NodeMaterial" ];
-
-					if ( nodeMaterial == null )
-					{
-						throw new Exception( "Could not find material 'Core/NodeMaterial'" );
-					}
-
-					// load, will ignore if already loaded
-					nodeMaterial.Load();
-				}
-
-				return nodeMaterial;
-			}
-		}
-
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public Technique Technique
-		{
-			get
-			{
-				return this.Material.GetBestTechnique();
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		public bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		public virtual LightList Lights
-		{
-			get
-			{
-				return emptyLightList;
-			}
-		}
-
-		public Vector4 GetCustomParameter( int index )
-		{
-			if ( customParams[ index ] == null )
-			{
-				throw new Exception( "A parameter was not found at the given index" );
-			}
-			else
-			{
-				return (Vector4)customParams[ index ];
-			}
-		}
-
-		public void SetCustomParameter( int index, Vector4 val )
-		{
-			while ( customParams.Count <= index )
-				customParams.Add( Vector4.Zero );
-			customParams[ index ] = val;
-		}
-
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
-		{
-			if ( customParams[ entry.Data ] != null )
-			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
-			}
-		}
-
-		#endregion IRenderable implementation
-
 		#region IDisposable Implementation
 
 		/// <summary>
@@ -1627,37 +1778,24 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					// Dispose managed resources.
-					if ( renderOperation != null )
-					{
-                        if (!this.renderOperation.IsDisposed)
-                            this.renderOperation.Dispose();
 
-						renderOperation = null;
+					if ( this._debugRenderable != null )
+					{
+						if ( !this._debugRenderable.IsDisposed )
+							this._debugRenderable.Dispose();
+
+						this._debugRenderable = null;
 					}
 
-                    if (this.nodeSubMesh != null)
-                    {
-                        if (!this.nodeSubMesh.IsDisposed)
-                            this.nodeSubMesh.Dispose();
-
-                        this.nodeSubMesh = null;
-                    }
-
-                    foreach (Node currentChild in this.childNodes.Values)
-                    {
-                        if (!currentChild.IsDisposed)
-                            currentChild.Dispose();
-                    }
-                    this.childNodes.Clear();
-                    this.childNodes = null;
+					this.childNodes.Clear();
+					this.childNodes = null;
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

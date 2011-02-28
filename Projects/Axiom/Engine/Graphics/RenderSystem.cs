@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -177,7 +177,7 @@ namespace Axiom.Graphics
 		///		Base constructor.
 		/// </summary>
 		public RenderSystem()
-            : base()
+			: base()
 		{
 			// default to true
 			isVSync = true;
@@ -697,14 +697,13 @@ namespace Axiom.Graphics
 			// this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
 			// output window when debugging with high verbosity), so there is no harm
 			// TODO: Implement UVWTextureAddressMode
-			/* UVWAdressingMode uvw = unitState.TextureAddressing; */
-			SetTextureAddressingMode( unit, unitState.TextureAddressing );
+            UVWAddressing uvw = unitState.TextureAddressingMode;
+			SetTextureAddressingMode( unit, uvw );
 			// Set the texture border color only if needed.
-			/*
-			if (    uvw.u == TextureAddressing.Border
-				 || uvw.v == TextureAddressing.Border
-				 || uvw.w == TextureAddressing.Border )
-			*/
+			
+			if (    uvw.U == TextureAddressing.Border
+				 || uvw.V == TextureAddressing.Border
+				 || uvw.W == TextureAddressing.Border )
 			{
 				SetTextureBorderColor( unit, unitState.TextureBorderColor );
 			}
@@ -1597,7 +1596,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="texAddressingMode"></param>
-		public abstract void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode );
+        public abstract void SetTextureAddressingMode( int stage, UVWAddressing uvw );
 
 		/// <summary>
 		///    Tells the hardware what border color to use when texture addressing mode is set to Border
@@ -1935,42 +1934,42 @@ namespace Axiom.Graphics
 
 		#region DisposableObject Members
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.hardwareBufferManager != null)
-                    {
-                        if (!this.hardwareBufferManager.IsDisposed)
-                            this.hardwareBufferManager.Dispose();
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.hardwareBufferManager != null )
+					{
+						if ( !this.hardwareBufferManager.IsDisposed )
+							this.hardwareBufferManager.Dispose();
 
-                        this.hardwareBufferManager = null;
-                    }
+						this.hardwareBufferManager = null;
+					}
 
-                    if (this.textureManager != null)
-                    {
-                        if (!textureManager.IsDisposed)
-                            textureManager.Dispose();
+					if ( this.textureManager != null )
+					{
+						if ( !textureManager.IsDisposed )
+							textureManager.Dispose();
 
-                        this.textureManager = null;
-                    }
-                }
+						this.textureManager = null;
+					}
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose(disposeManagedResources);
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-        #endregion DisposableObject Members
-    }
+		#endregion DisposableObject Members
+	}
 
 }

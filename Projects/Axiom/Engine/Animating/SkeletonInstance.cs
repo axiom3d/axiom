@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -173,9 +173,8 @@ namespace Axiom.Animating
 			TagPoint tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
 			tagPointList[ nextTagPointAutoHandle ] = tagPoint;
 
-			tagPoint.Position = offsetPosition;
-			tagPoint.Orientation = offsetOrientation;
-			tagPoint.Scale = Vector3.UnitScale;
+			tagPoint.Translate( offsetPosition );
+			tagPoint.Rotate( offsetOrientation );
 			tagPoint.SetBindingPose();
 			bone.AddChild( tagPoint );
 

@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -336,7 +336,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///    Allows showing the bounding box of an invidual SceneObject.
+		///    Allows showing the bounding box of an individual SceneObject.
 		/// </summary>
 		/// <remarks>
 		///    This shows the bounding box of the SceneNode that the SceneObject is currently attached to.
@@ -433,7 +433,7 @@ namespace Axiom.Core
 		internal virtual void NotifyMoved()
 		{
 			// Mark light list being dirty, simply decrease
-			// counter by one for minimise overhead
+			// counter by one for minimize overhead
 			--lightListUpdated;
 
 			// Notify listener if exists
@@ -541,6 +541,7 @@ namespace Axiom.Core
 
 			return this.worldBoundingSphere;
 		}
+
 
 		#endregion Methods
 
@@ -808,11 +809,44 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
+		#region IsDisposed Property
+
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool IsDisposed
+		{
+			get;
+			set;
+		}
+
+		#endregion IsDisposed Property
+
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected override void dispose( bool disposeManagedResources )
+		protected virtual void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
@@ -824,7 +858,13 @@ namespace Axiom.Core
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			base.dispose( disposeManagedResources );
+			IsDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
 		}
 
 		#endregion IDisposable Implementation

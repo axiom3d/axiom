@@ -1,5 +1,5 @@
 #region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -218,7 +218,7 @@ namespace Axiom.Framework.Configuration
 				}
 			}
 
-			if ( defaultRenderer != this.ConfigurationSection.RenderSystems.DefaultRenderSystem )
+			if ( !string.IsNullOrEmpty( defaultRenderer ) && this.ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
 				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
 
 			this.Configuration.Save( ConfigurationSaveMode.Modified );

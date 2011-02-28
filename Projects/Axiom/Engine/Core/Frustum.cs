@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -38,15 +38,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-
-using Real = System.Single;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -1168,7 +1164,7 @@ namespace Axiom.Core
 			_recalculateWorldSpaceCorners = true;
 		}
 
-		protected void CalculateProjectionParameters( out float vpLeft, out float vpRight, out float vpBottom, out float vpTop )
+		protected void CalculateProjectionParameters( out Real vpLeft, out Real vpRight, out Real vpBottom, out Real vpTop )
 		{
 			if ( _customProjectionMatrix )
 			{
@@ -1249,7 +1245,7 @@ namespace Axiom.Core
 
 		protected virtual void _updateFrustum()
 		{
-			float vpTop, vpRight, vpBottom, vpLeft;
+			Real vpTop, vpRight, vpBottom, vpLeft;
 
 			CalculateProjectionParameters( out vpLeft, out vpRight, out vpBottom, out vpTop );
 
@@ -2130,17 +2126,9 @@ namespace Axiom.Core
 
                     if (this._material != null)
                     {
-                        if (!this._material.IsDisposed)
-                            this._material.Dispose();
-
                         this._material = null;
                     }
 
-                    foreach (Light currentLight in dummyLightList)
-                    {
-                        if (!currentLight.IsDisposed)
-                            currentLight.Dispose();
-                    }
                     dummyLightList.Clear();
 
 				}

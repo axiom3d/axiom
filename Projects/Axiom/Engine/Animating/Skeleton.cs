@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -818,19 +818,7 @@ namespace Axiom.Animating
 		{
 			// clear the internal lists
 			animationList.Clear();
-
-            foreach (Bone currentBone in this.boneList.Values)
-            {
-                if (!currentBone.IsDisposed)
-                    currentBone.Dispose();
-            }
 			boneList.Clear();
-
-            foreach (Bone currentBone in this.namedBoneList.Values)
-            {
-                if (!currentBone.IsDisposed)
-                    currentBone.Dispose();
-            }
 			namedBoneList.Clear();
 
 			//base.Unload();

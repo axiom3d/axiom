@@ -1,5 +1,5 @@
 // A sparkly purple fountain
-Examples/PurpleFountain
+particle_system Examples/PurpleFountain
 {
     material        Examples/Flare2
     particle_width  20

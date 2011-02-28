@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -1070,49 +1070,50 @@ namespace Axiom.RenderSystems.OpenGL
 			//}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="texAddressingMode"></param>
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
-		{
-			if ( lastAddressingMode[ stage ] == texAddressingMode )
-			{
-				//return;
-			}
 
-			lastAddressingMode[ stage ] = texAddressingMode;
+        private int _getTextureAddressingMode( TextureAddressing tam )
+        {
+            int type = 0;
 
-			int type = 0;
+            switch ( tam )
+            {
+                case TextureAddressing.Wrap:
+                    type = Gl.GL_REPEAT;
+                    break;
 
-			// find out the GL equivalent of out TextureAddressing enum
-			switch ( texAddressingMode )
-			{
-				case TextureAddressing.Wrap:
-					type = Gl.GL_REPEAT;
-					break;
+                case TextureAddressing.Mirror:
+                    type = Gl.GL_MIRRORED_REPEAT;
+                    break;
 
-				case TextureAddressing.Mirror:
-					type = Gl.GL_MIRRORED_REPEAT;
-					break;
+                case TextureAddressing.Clamp:
+                    type = Gl.GL_CLAMP_TO_EDGE;
+                    break;
 
-				case TextureAddressing.Clamp:
-					type = Gl.GL_CLAMP_TO_EDGE;
-					break;
+                case TextureAddressing.Border:
+                    type = Gl.GL_CLAMP_TO_BORDER;
+                    break;
+            }
 
-				case TextureAddressing.Border:
-					type = Gl.GL_CLAMP_TO_BORDER;
-					break;
-			} // end switch
+            return type;
+        }
 
-			// set the GL texture wrap params for the specified unit
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
-			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, type );
-			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, type );
-			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, type );
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
-		}
+		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
+        {
+            //if ( lastAddressingMode[ stage ] == uvw )
+            //{
+            //    //return;
+            //}
+
+            //lastAddressingMode[ stage ] = uvw;
+
+            if ( !activateGLTextureUnit( stage ) )
+                return;
+
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, _getTextureAddressingMode( uvw.U ) );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, _getTextureAddressingMode( uvw.V ) );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, _getTextureAddressingMode( uvw.W ) );
+            activateGLTextureUnit( 0 );
+        }
 
 		/// <summary>
 		///
@@ -1946,7 +1947,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// the GC from moving the byte[] on us while we are still accessing it
 					// Lock() the buffer which pins the byte[] in memory. We must remember to unlock it
 					// when we are done so the GC can compact the managed heap around us.
-					bufferData = ( (SoftwareVertexBuffer)vertexBuffer ).Lock( element.Offset, vertexBuffer.VertexSize, BufferLocking.ReadOnly );
+					bufferData = ( (DefaultHardwareVertexBuffer)vertexBuffer ).Lock( element.Offset, vertexBuffer.VertexSize, BufferLocking.ReadOnly );
 				}
 
 				// get the type of this buffer
@@ -2059,7 +2060,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// If using Software Buffers, unlock it.
 				if ( !_rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 				{
-					( (SoftwareVertexBuffer)vertexBuffer ).Unlock();
+					( (DefaultHardwareVertexBuffer)vertexBuffer ).Unlock();
 				}
 			} // for
 
@@ -2129,7 +2130,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// get the index data as a direct pointer to the software buffer data
 					int bufOffset = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
-					indexPtr = ( (SoftwareIndexBuffer)op.indexData.indexBuffer )
+					indexPtr = ( (DefaultHardwareIndexBuffer)op.indexData.indexBuffer )
 						.Lock( bufOffset, op.indexData.indexBuffer.Size - bufOffset, BufferLocking.ReadOnly );
 
 					// draw the indexed vertex data
@@ -2144,7 +2145,7 @@ namespace Axiom.RenderSystems.OpenGL
 						Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
 					} while ( UpdatePassIterationRenderState() );
 
-					( (SoftwareIndexBuffer)op.indexData.indexBuffer ).Unlock();
+					( (DefaultHardwareIndexBuffer)op.indexData.indexBuffer ).Unlock();
 				}
 			}
 			else

@@ -1,5 +1,5 @@
 ﻿#region MIT/X11 License
-//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -40,15 +40,15 @@ namespace Axiom.Samples
 #if !(XBOX || XBOX360)
 		[STAThread]
 #endif
-        static void Main()
+		static void Main()
 		{
 			try
 			{
 #if !(XBOX || XBOX360)
-                Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
+				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
 				using ( SampleBrowser sb = new SampleBrowser() )
 #else
-                using (SampleBrowser sb = new XBox.SampleBrowser())
+				using (SampleBrowser sb = new XBox.SampleBrowser())
 #endif
 				{
 					sb.Go();
@@ -60,9 +60,9 @@ namespace Axiom.Samples
 				IErrorDialog messageBox = new WinFormErrorDialog();
 				messageBox.Show( ex );
 #else
-                Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
+				Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
 #endif
-            }
+			}
 
 		}
 	}

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -66,6 +66,8 @@ namespace Axiom.FileSystem
 		public long CompressedSize;
 		/// Uncompressed size
 		public long UncompressedSize;
+        /// Last modification time
+        public DateTime ModifiedTime;
 	};
 
 	/// <ogre name="FileInfoList">
@@ -338,9 +340,29 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// Find out if the named file exists
 		/// </summary>
-		/// <param name="filename">fully qualified filename</param>
+        /// <param name="fileName">fully qualified filename</param>
 		/// <returns></returns>
 		public abstract bool Exists( string fileName );
+
+        /// <summary>
+        /// Retrieve the modification time of a given file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public virtual DateTime GetModifiedTime(string fileName)
+        {
+            FileInfoList list = this.ListFileInfo();
+
+            foreach (FileInfo currentInfo in list)
+            {
+                if (currentInfo.Basename.ToLower() != fileName.ToLower())
+                    continue;
+
+                return currentInfo.ModifiedTime;
+            }
+
+            return DateTime.MinValue;
+        }
 
 		#region FindFileInfo Method
 
@@ -406,7 +428,7 @@ namespace Axiom.FileSystem
 		}
 
         #endregion IDisposable Implementation
-	}
+    }
 
 	/// <summary>
 	/// 	abstract class for plugin developers to override to create 

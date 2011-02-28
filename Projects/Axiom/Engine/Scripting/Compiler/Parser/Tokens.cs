@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -42,6 +42,11 @@ using System.Text;
 
 namespace Axiom.Scripting.Compiler.Parser
 {
+	/// <summary>
+	/// These codes represent token IDs which are numerical translations of
+	/// specific lexemes. Specific compilers using the lexer can register their
+	/// own token IDs which are given precedence over these built-in ones
+	/// </summary>
 	public enum Tokens
 	{
 		LeftBrace = 0, // {

@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -63,9 +63,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructors
 
-		public D3DHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
-			D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
-			: base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
+		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
