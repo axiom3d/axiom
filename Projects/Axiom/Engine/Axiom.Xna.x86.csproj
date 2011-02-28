@@ -274,6 +274,15 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
+    <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\EdgeData.cs" />
     <Compile Include="Graphics\EdgeListBuilder.cs" />
     <Compile Include="Graphics\Enums.cs" />
@@ -288,6 +297,7 @@
     <Compile Include="Graphics\GpuProgramUsage.cs" />
     <Compile Include="Graphics\HardwareBuffer.cs" />
     <Compile Include="Graphics\HardwareBufferManager.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwareCaps.cs" />
     <Compile Include="Graphics\HardwareIndexBuffer.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
@@ -303,6 +313,7 @@
     <Compile Include="Graphics\MaterialManager.cs" />
     <Compile Include="Graphics\MovablePlane.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\Pass.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\Rectangle2D.cs" />
@@ -321,7 +332,6 @@
     <Compile Include="Graphics\ShadowRenderable.cs" />
     <Compile Include="Graphics\ShadowVolumeExtrudeProgram.cs" />
     <Compile Include="Graphics\SimpleRenderable.cs" />
-    <Compile Include="Graphics\SoftwareBufferManager.cs" />
     <Compile Include="Graphics\SpotShadowFadePng.cs" />
     <Compile Include="Graphics\StaticFaceGroup.cs" />
     <Compile Include="Graphics\Technique.cs" />
@@ -378,12 +388,6 @@
     <Compile Include="Media\PixelBox.cs" />
     <Compile Include="Media\PixelConverter.cs" />
     <Compile Include="Media\PixelUtil.cs" />
-    <Compile Include="mono\Comparer.cs" />
-    <Compile Include="mono\Hashtable.cs" />
-    <Compile Include="mono\ICloneable.cs" />
-    <Compile Include="mono\Locale.cs" />
-    <Compile Include="mono\SortedList.cs" />
-    <Compile Include="mono\SortedList~2.cs" />
     <Compile Include="Overlays\Elements\BorderPanel.cs" />
     <Compile Include="Overlays\Elements\Factories.cs" />
     <Compile Include="Overlays\Elements\Panel.cs" />
@@ -416,25 +420,27 @@
     <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassStencilTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\TextureSourceTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\Translator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Keywords.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs" />

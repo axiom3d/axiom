@@ -75,7 +75,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\Managed\CompactFramework\ICSharpCode.SharpZipLib\0.85.4.369\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -154,6 +153,11 @@
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\Frustum.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\DriverVersion.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="mono\Comparer.cs" />
     <Compile Include="mono\ICloneable.cs" />
     <Compile Include="Core\IConfigurable.cs" />
@@ -289,9 +293,6 @@
     <Compile Include="Graphics\ShadowRenderable.cs" />
     <Compile Include="Graphics\ShadowVolumeExtrudeProgram.cs" />
     <Compile Include="Graphics\SimpleRenderable.cs" />
-    <Compile Include="Graphics\SoftwareBufferManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Graphics\SpotShadowFadePng.cs" />
     <Compile Include="Graphics\StaticFaceGroup.cs" />
     <Compile Include="Graphics\Technique.cs" />
@@ -382,25 +383,27 @@
     <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassStencilTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleSystemTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\PassTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\TextureSourceTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\Translator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Keywords.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs" />
@@ -471,8 +474,8 @@
     <Reference Include="System.Xml.Linq">
       <Private>False</Private>
     </Reference>
-    </ItemGroup>
-    <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
@@ -499,7 +502,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" Condition="" />
 </Project>

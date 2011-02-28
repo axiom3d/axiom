@@ -1,4 +1,4 @@
-﻿#region LGPL License
+#region LGPL License
 
 /*
 Axiom Graphics Engine Library
