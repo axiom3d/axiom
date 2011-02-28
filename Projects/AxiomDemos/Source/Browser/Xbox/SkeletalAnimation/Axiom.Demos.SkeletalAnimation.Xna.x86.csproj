@@ -176,7 +176,7 @@
       <Project>{3DADBC6D-4756-44D5-8032-C65AE5812F82}</Project>
       <Name>Axiom.Demos.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="Content\SkeletalAnimationAxiom.Content.SkeletalAnimation.contentproj">
+    <ProjectReference Include="Content\Axiom.Content.SkeletalAnimation.contentproj">
       <Project>{BF8E6CB2-6D99-4A56-AE2C-CF568EB5381D}</Project>
       <Name>SkeletalAnimationAxiom.Content.SkeletalAnimation %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>

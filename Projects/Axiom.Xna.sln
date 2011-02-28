@@ -92,7 +92,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Common.Xna.x8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.Xna.x86", "Samples\Browser\Axiom.Samples.Browser.Xna.x86.csproj", "{63F37B01-7EDD-47B5-B3FC-A91D823CBA51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkeletalAnimationAxiom.Content.SkeletalAnimation", "AxiomDemos\Source\Browser\Xbox\SkeletalAnimation\Content\SkeletalAnimationAxiom.Content.SkeletalAnimation.contentproj", "{BF8E6CB2-6D99-4A56-AE2C-CF568EB5381D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Content.SkeletalAnimation", "AxiomDemos\Source\Browser\Xbox\SkeletalAnimation\Content\Axiom.Content.SkeletalAnimation.contentproj", "{BF8E6CB2-6D99-4A56-AE2C-CF568EB5381D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserContent", "Samples\Browser\Content\BrowserContent.contentproj", "{21A8413B-B5BF-46F2-9F1B-61C363BF3C41}"
 EndProject
