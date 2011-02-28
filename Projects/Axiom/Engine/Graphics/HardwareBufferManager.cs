@@ -151,8 +151,8 @@ namespace Axiom.Graphics
 			_baseInstance.ReleaseBufferCopies( forceFreeUnused );
 		}
 
-		public override void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer)
-        {
+		public override void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer )
+		{
 			_baseInstance.ForceReleaseBufferCopies( sourceBuffer );
 		}
 
