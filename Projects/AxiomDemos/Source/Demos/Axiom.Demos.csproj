@@ -119,9 +119,6 @@
     <Compile Include="BezierPatch.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bsp.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CameraTrack.cs">
       <SubType>Code</SubType>
     </Compile>
