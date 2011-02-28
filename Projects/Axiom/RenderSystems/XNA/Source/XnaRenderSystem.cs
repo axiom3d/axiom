@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -1307,6 +1307,22 @@ namespace Axiom.RenderSystems.Xna
 				gpuProgramMgr = null;
 			}
 
+			if ( hardwareBufferManager != null )
+			{
+				if ( !hardwareBufferManager.IsDisposed )
+					hardwareBufferManager.Dispose();
+
+				hardwareBufferManager = null;
+			}
+
+			if ( textureManager != null )
+			{
+				if ( !textureManager.IsDisposed )
+					textureManager.Dispose();
+
+				textureManager = null;
+			}
+
 			base.Shutdown();
 
 			LogManager.Instance.Write( "[XNA] : " + Name + " shutdown." );
@@ -2040,13 +2056,12 @@ namespace Axiom.RenderSystems.Xna
 #endif
 		}
 
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
+		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
-			XFG.TextureAddressMode xnaMode = XnaHelper.Convert( texAddressingMode );
 			// set the device sampler states accordingly
-			StateManager.SamplerStates[ stage ].AddressU = xnaMode;
-			StateManager.SamplerStates[ stage ].AddressV = xnaMode;
-			StateManager.SamplerStates[ stage ].AddressW = xnaMode;
+			_device.SamplerStates[ stage ].AddressU = XnaHelper.Convert( uvw.U );
+			_device.SamplerStates[ stage ].AddressV = XnaHelper.Convert( uvw.V );
+			_device.SamplerStates[ stage ].AddressW = XnaHelper.Convert( uvw.W );
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )

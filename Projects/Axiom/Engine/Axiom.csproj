@@ -102,9 +102,7 @@
     <Compile Include="Core\BillboardChain.cs" />
     <Compile Include="Core\BitConverterEx.cs" />
     <Compile Include="Core\DisposableObject.cs" />
-    <Compile Include="Core\InstancedGeometry\InstancedGeometry.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Core\InstanceGeometry\InstancedGeometry.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\MemoryBuffer.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
@@ -126,6 +124,9 @@
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />
     <Compile Include="Graphics\CompositionTargetPass.cs" />
@@ -140,10 +141,12 @@
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
     <Compile Include="Graphics\ICompositorLogic.cs" />
     <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
     <Compile Include="Graphics\RenderQueueInvocationSequence.cs" />
@@ -501,9 +504,6 @@
     <Compile Include="Graphics\SimpleRenderable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Graphics\SoftwareBufferManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Graphics\SpotShadowFadePng.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -701,24 +701,19 @@
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripting\Compiler\ConcreteNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassStencilTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -726,9 +721,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs">
@@ -749,13 +741,11 @@
     <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Scripting\Compiler\Generation\TextureSourceTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripting\Compiler\Generation\Translator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripting\Compiler\Keywords.cs">

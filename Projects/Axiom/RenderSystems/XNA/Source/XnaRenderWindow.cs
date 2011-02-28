@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -645,12 +645,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -682,7 +679,25 @@ namespace Axiom.RenderSystems.Xna
 #endif
 
 					this._windowHandle = IntPtr.Zero;
+
+					// Dispose Other resources
+#if !(XBOX || XBOX360)
+                    if ( _windowHandle != IntPtr.Zero && !_isExternal && SWF.Control.FromHandle( _windowHandle ) != null )
+#else
+                    if (_windowHandle != IntPtr.Zero && !_isExternal )
+#endif
+					{
+						WindowEventMonitor.Instance.UnregisterWindow( this );
+#if !(XBOX || XBOX360)
+						SWF.Control.FromHandle( _windowHandle ).Dispose();
+#endif
+					}
+
 				}
+				// make sure this window is no longer active
+				_windowHandle = IntPtr.Zero;
+				IsActive = false;
+				_isClosed = true;
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.

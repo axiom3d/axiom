@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -48,7 +48,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// 	Summary description for XnaHardwareBufferManager.
 	/// </summary>
-	public class XnaHardwareBufferManager : HardwareBufferManager
+	public class XnaHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
 		#region Member variables
 
@@ -62,8 +62,8 @@ namespace Axiom.RenderSystems.Xna
 		///		
 		/// </summary>
 		/// <param name="device"></param>
-		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
-            : base()
+		public XnaHardwareBufferManagerBase( XFG.GraphicsDevice device )
+			: base()
 		{
 			this._device = device;
 		}
@@ -78,26 +78,26 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Methods
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    this._device = null;
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					this._device = null;
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose(disposeManagedResources);
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
 		{
@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-			XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( type, numIndices, usage, _device, false, useShadowBuffer );
+			XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( this, type, numIndices, usage, _device, false, useShadowBuffer );
 			indexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -120,7 +120,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( vertexSize, numVerts, usage, _device, false, useShadowBuffer );
+			XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( this, vertexSize, numVerts, usage, _device, false, useShadowBuffer );
 			vertexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -135,5 +135,34 @@ namespace Axiom.RenderSystems.Xna
 		#endregion
 
 		#endregion HardwareBufferManager Implementation
+	}
+
+	public class XnaHardwareBufferManager : HardwareBufferManager
+	{
+		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
+			: base( new XnaHardwareBufferManagerBase( device ) )
+		{
+		}
+
+		public void ReleaseDefaultPoolResources()
+		{
+			//( (D3DHardwareBufferManagerBase)_baseInstance ).ReleaseDefaultPoolResources();
+		}
+
+		public void RecreateDefaultPoolResources()
+		{
+			//( (D3DHardwareBufferManagerBase)_baseInstance ).RecreateDefaultPoolResources();
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
+			{
+				_baseInstance.Dispose();
+				_baseInstance = null;
+			}
+			base.dispose( disposeManagedResources );
+		}
+
 	}
 }
