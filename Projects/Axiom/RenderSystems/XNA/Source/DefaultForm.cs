@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using IO = System.IO;
 using SWF = System.Windows.Forms;
 
 using Axiom.Core;
@@ -57,6 +58,11 @@ namespace Axiom.RenderSystems.Xna
             : base()
 		{
 			InitializeComponent();
+
+			this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
+			this.Activated += new System.EventHandler( this.DefaultForm_Activated );
+			this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
+			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
 		}
 
         protected override void Dispose(bool disposing)
@@ -81,26 +87,79 @@ namespace Axiom.RenderSystems.Xna
             }
 		}
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Deactivate( object source, System.EventArgs e )
+		{
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Activated( object source, System.EventArgs e )
+		{
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = true;
+			}
+		}
+
 		private void InitializeComponent()
 		{
 			this.SuspendLayout();
-			// 
+			//
 			// DefaultForm
-			// 
+			//
 			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
 			this.BackColor = System.Drawing.Color.Black;
-			this.ClientSize = new System.Drawing.Size( 292, 266 );
+			this.ClientSize = new System.Drawing.Size( 640, 480 );
 			this.Name = "DefaultForm";
 			this.Load += new System.EventHandler( this.DefaultForm_Load );
 			this.ResumeLayout( false );
 
 		}
 
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
+		{
+			// set the window to inactive
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
+		}
+
 		private void DefaultForm_Load( object sender, System.EventArgs e )
 		{
-			System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" );
-			if ( strm != null )
-				this.Icon = new System.Drawing.Icon( strm );
+			try
+			{
+				IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+				if ( strm != null )
+				{
+					this.Icon = new System.Drawing.Icon( strm );
+				}
+			}
+			catch ( IO.FileNotFoundException )
+			{
+			}
+		}
+
+		private void DefaultForm_Resize( object sender, System.EventArgs e )
+		{
+			Root.Instance.SuspendRendering = this.WindowState == SWF.FormWindowState.Minimized;
 		}
 
 		/// <summary>

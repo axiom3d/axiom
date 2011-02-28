@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -68,8 +68,8 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructors
 
-		unsafe public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
-			: base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
+		unsafe public XnaHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer )
 		{
 			_bufferType = ( type == IndexType.Size16 ) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
 
