@@ -46,7 +46,7 @@
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xbox\Debug</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XNA</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XNA;AXIOM_USENEWCOMPILERS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>

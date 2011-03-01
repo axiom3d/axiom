@@ -163,17 +163,6 @@ namespace Axiom.RenderSystems.Xna
 			_device.SetVertexBuffers( xnaBindings );
 		}
 
-		/// <summary>
-		///		Helper method for setting the current vertex declaration.
-		/// </summary>
-		private void _setVertexDeclaration( VertexDeclaration decl )
-		{
-			// TODO: Check for duplicate setting and avoid setting if dupe
-			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)decl;
-
-			//_device.VertexDeclaration = vertDecl.XnaVertexDecl;
-		}
-
 		public override void SetConfigOption( string name, string value )
 		{
 			if ( ConfigOptions.ContainsKey( name ) )
@@ -2025,7 +2014,7 @@ namespace Axiom.RenderSystems.Xna
 
 				if ( compensateNPOT )
 				{
-					SetTextureAddressingMode( stage, TextureAddressing.Clamp );
+					SetTextureAddressingMode( stage, new UVWAddressing( TextureAddressing.Clamp ) );
 				}
 			}
 
@@ -2054,14 +2043,6 @@ namespace Axiom.RenderSystems.Xna
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.SetTextureEnabled( stage, enabled );
 #endif
-		}
-
-		public void SetTextureAddressingMode( int stage, TextureAddressing textureAddressing )
-		{
-			// set the device sampler states accordingly
-			StateManager.SamplerStates[ stage ].AddressU = XnaHelper.Convert( textureAddressing );
-			StateManager.SamplerStates[ stage ].AddressV = XnaHelper.Convert( textureAddressing );
-			StateManager.SamplerStates[ stage ].AddressW = XnaHelper.Convert( textureAddressing );
 		}
 
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
@@ -2190,14 +2171,14 @@ namespace Axiom.RenderSystems.Xna
 				// To do this, we need to undo the camera view matrix, then 
 				// apply the projector view & projection matrices
 
-				/* Matrix4 newMat =_viewMatrix.Inverse();
-				 texStageDesc[stage].frustum.ViewMatrix = texStageDesc[stage].frustum.ViewMatrix.Transpose();
-				 //texStageDesc[stage].frustum.ProjectionMatrix = texStageDesc[stage].frustum.ProjectionMatrix.Transpose();
-				 newMat = texStageDesc[stage].frustum.ViewMatrix * newMat;
-				 newMat = texStageDesc[stage].frustum.ProjectionMatrix * newMat;
-				 newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
-				 xform= xform * newMat;
-				 */
+				//Matrix4 newMat = _viewMatrix.Inverse();
+				//texStageDesc[ stage ].frustum.ViewMatrix = texStageDesc[ stage ].frustum.ViewMatrix.Transpose();
+				//texStageDesc[stage].frustum.ProjectionMatrix = texStageDesc[stage].frustum.ProjectionMatrix.Transpose();
+				//newMat = texStageDesc[ stage ].frustum.ViewMatrix * newMat;
+				//newMat = texStageDesc[ stage ].frustum.ProjectionMatrix * newMat;
+				//newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
+				//xform = xform * newMat;
+
 			}
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.SetTextureMatrix( stage, xform.Transpose() );
@@ -2206,29 +2187,12 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureUnitFiltering( int stage, FilterType type, Axiom.Graphics.FilterOptions filter )
 		{
+			/*
+			 * TextureFilter enumeration now combines FilterType and TextureType in 4.0, 
+			 */
 			XnaTextureType texType = XnaHelper.Convert( texStageDesc[ stage ].texType );
 			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, texType );
-			StateManager.SamplerStates[ stage ].Filter = texFilter; 
-
-            /*
-             * TextureFilter enumeration now combines FilterType and TextureType in 4.0, so this is no longer necessary.
-             */
-            //switch ( type )
-            //{
-            //    case FilterType.Min:
-            //        {
-            //          
-            //        }
-            //        break;
-
-            //    case FilterType.Mag:
-            //        _device.SamplerStates[ stage ].MagFilter = texFilter;
-            //        break;
-
-            //    case FilterType.Mip:
-            //        _device.SamplerStates[ stage ].MipFilter = texFilter;
-            //        break;
-            //}
+			StateManager.SamplerStates[ stage ].Filter = texFilter;
 		}
 
 		public override void SetViewport( Axiom.Core.Viewport viewport )
@@ -2243,7 +2207,7 @@ namespace Axiom.RenderSystems.Xna
 				XFG.RenderTarget2D[] back = (XFG.RenderTarget2D[])activeRenderTarget[ "XNABACKBUFFER" ];
 				if ( back == null )
 				{
-                    _device.SetRenderTarget(null);
+					_device.SetRenderTarget( null );
 					//the back buffer is null so it's not a render to texture,
 					//we render directly to the screen,
 					//set the original depth stencil buffer
@@ -2274,10 +2238,10 @@ namespace Axiom.RenderSystems.Xna
 
 				// Bind render targets
 				int count = back.Length;
-                
+
 				for ( int i = 0; i < count && back[ i ] != null; ++i )
 				{
-					_device.SetRenderTarget(back[ i ] );
+					_device.SetRenderTarget( back[ i ] );
 				}
 
 				// set the culling mode, to make adjustments required for viewports
@@ -2313,6 +2277,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			public XFG.DepthFormat format;
 		}
+
         protected Dictionary<ZBufferFormat, XFG.RenderTarget2D> zBufferCache = new Dictionary<ZBufferFormat, XFG.RenderTarget2D>();
         //protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
         protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
