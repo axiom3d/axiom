@@ -2798,7 +2798,7 @@ namespace Axiom.Core
 
 				// set all required texture units for this pass, and disable ones not being used
 				int numTextureUnits = this.targetRenderSystem.HardwareCapabilities.TextureUnitCount;
-				if ( pass.HasFragmentProgram )
+				if ( pass.HasFragmentProgram  && pass.FragmentProgram.IsSupported )
 				{
 					numTextureUnits = pass.FragmentProgram.SamplerCount;
 				}
