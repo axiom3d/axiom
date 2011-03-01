@@ -91,15 +91,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		private void _parse()
 		{
-			try
-			{
-				_number = float.Parse( _value, _parseStyle, _culture );
-				_isNumber = true;
-			}
-			catch
-			{
-				_isNumber = false;
-			}
+			_isNumber = float.TryParse( _value, _parseStyle, _culture, out _number );
 			_parsed = true;
 		}
 

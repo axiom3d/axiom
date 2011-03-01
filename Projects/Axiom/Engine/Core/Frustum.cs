@@ -383,7 +383,7 @@ namespace Axiom.Core
 
 				return _projectionMatrix;
 			}
-			protected set
+			set
 			{
 				{
 					_projectionMatrix = value;
