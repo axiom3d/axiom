@@ -969,7 +969,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_worldMatrix = value;
-                basicEffect.World = XnaHelper.Convert(this.WorldMatrix);
+                basicEffect.World = XnaHelper.Convert(_worldMatrix);
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
 #endif
@@ -1557,8 +1557,9 @@ namespace Axiom.RenderSystems.Xna
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState( _device );
 			StateManager.ResetState( _device );
-
+            
 			basicEffect.CurrentTechnique.Passes[0].Apply();
+            
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
 			{
@@ -2024,6 +2025,7 @@ namespace Axiom.RenderSystems.Xna
 				_device.Textures[ stage ] = xnaTexture.DXTexture;
 				basicEffect.Texture = (XFG.Texture2D)xnaTexture.DXTexture;
 				basicEffect.TextureEnabled = enabled;
+                
 				// set stage description
 				texStageDesc[ stage ].tex = xnaTexture.DXTexture;
 				texStageDesc[ stage ].texType = xnaTexture.TextureType;
@@ -2047,7 +2049,21 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
-			// set the device sampler states accordingly
+            XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
+			bool compensateNPOT = false;
+
+            if (xnaTexture != null)
+            {
+                if (Bitwise.IsPow2(xnaTexture.Width) == false || Bitwise.IsPow2(xnaTexture.Height) == false) //we're going to have to compensate for that
+                {
+                    compensateNPOT = true;
+                }
+            }
+            if (compensateNPOT)
+            {
+                uvw = new UVWAddressing(TextureAddressing.Clamp);
+            }
+
 			StateManager.SamplerStates[ stage ].AddressU = XnaHelper.Convert( uvw.U );
 			StateManager.SamplerStates[ stage ].AddressV = XnaHelper.Convert( uvw.V );
 			StateManager.SamplerStates[ stage ].AddressW = XnaHelper.Convert( uvw.W );
