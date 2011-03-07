@@ -158,11 +158,19 @@ namespace Axiom.RenderSystems.Xna
 		{
 			_device = dev;
 			// Create the Xna vertex buffer
-			Type vertexType = _vertexDeclarationSizeMap.Find( ( item ) =>
-			{
-				return item.Key == VertexSize;
-			} ).Value;
-
+            Type vertexType = null;
+            for (int i = 0; i < _vertexDeclarationSizeMap.Count; i++)
+            {
+                if (_vertexDeclarationSizeMap[i].Key == VertexSize)
+                {
+                    vertexType = _vertexDeclarationSizeMap[i].Value;
+                    break;
+                }
+            }
+            if (vertexType == null)
+            {
+                throw new AxiomException("VertexSize did not match with any VertexTypes");
+            }
             if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
             {
                 _buffer = new XFG.DynamicVertexBuffer(_device, vertexType, numVertices, XnaHelper.Convert(usage));
