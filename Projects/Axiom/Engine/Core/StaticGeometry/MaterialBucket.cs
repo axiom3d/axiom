@@ -238,13 +238,6 @@ namespace Axiom.Core
                             geometryBucketList = null;
                         }
 
-                        if (this.parent != null)
-                        {
-                            if (!this.parent.IsDisposed)
-                                this.parent.Dispose();
-
-                            this.parent = null;
-                        }
 
                         if (this.material != null)
                         {
