@@ -65,7 +65,6 @@ namespace Axiom.Graphics
 	{
 		#region Protected member variables
 
-		protected bool isFullScreen;
 		protected IntPtr targetHandle;
 		#region top Property
 
