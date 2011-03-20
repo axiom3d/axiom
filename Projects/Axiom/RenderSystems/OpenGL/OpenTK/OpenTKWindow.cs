@@ -250,7 +250,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					displayDevice.ChangeResolution( width, height, ColorDepth, displayFrequency );
 					_window.WindowState = WindowState.Fullscreen;
-					isFullScreen = true;
+					IsFullScreen = true;
 				}
 				else
 				{

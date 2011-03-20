@@ -294,7 +294,7 @@ namespace Axiom.RenderSystems.Xna
 				// colourDepth
 				if ( miscParams.ContainsKey( "colorDepth" ) )
 				{
-					this.ColorDepth = Int32.Parse( miscParams[ "colorDepth" ].ToString() );
+					colourDepth = Int32.Parse( miscParams[ "colorDepth" ].ToString() );
 				}
 
 				// depthBuffer [parseBool]
@@ -342,8 +342,8 @@ namespace Axiom.RenderSystems.Xna
 			{
 				Width = width;
 				Height = height;
-				top = top;
-				left = left;
+				this.top = top;
+				this.left = left;
 
 				_isExternal = false;
 				DefaultForm newWin = new DefaultForm();
@@ -353,7 +353,7 @@ namespace Axiom.RenderSystems.Xna
 				 * If we're in windowed mode, we'll want our own.
 				 * get references to the render target and depth stencil surface
 				 */
-				if ( !isFullScreen )
+				if ( !fullScreen )
 				{
 					newWin.StartPosition = SWF.FormStartPosition.CenterScreen;
 					if ( parentHWnd != IntPtr.Zero )
@@ -412,10 +412,10 @@ namespace Axiom.RenderSystems.Xna
 
 			// set the params of the window
 			this.Name = name;
-			this.ColorDepth = ColorDepth;
+            this.ColorDepth = colourDepth;
 			this.Width = width;
 			this.Height = height;
-			this.IsFullScreen = isFullScreen;
+			this.IsFullScreen = fullScreen;
 			this.isDepthBuffered = depthBuffer;
 			this.top = top;
 			this.left = left;
@@ -726,7 +726,7 @@ namespace Axiom.RenderSystems.Xna
 			this.Height = height;
 			this.Width = width;
 
-			if ( !isFullScreen )
+			if ( !IsFullScreen )
 			{
 				XFG.PresentationParameters p = new XFG.PresentationParameters();// (_device.PresentationParameters);//swapchain
 				p.BackBufferHeight = height;
