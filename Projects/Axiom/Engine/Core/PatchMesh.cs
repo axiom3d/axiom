@@ -120,11 +120,7 @@ namespace Axiom.Core
 			sm.vertexData.vertexDeclaration = vertexDeclaration;
 
 			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-					vertexDeclaration.GetVertexSize( 0 ),
-					sm.vertexData.vertexCount,
-					VertexBufferUsage,
-					UseVertexShadowBuffer );
+				HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.Clone( 0 ), sm.vertexData.vertexCount,	VertexBufferUsage, UseVertexShadowBuffer );
 
 			// bind the vertex buffer
 			sm.vertexData.vertexBufferBinding.SetBinding( 0, buffer );

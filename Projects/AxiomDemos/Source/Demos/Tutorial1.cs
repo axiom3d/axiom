@@ -131,10 +131,7 @@ namespace Axiom.Demos
 
 			// create a vertex buffer for the position
 			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			Vector3[] pos = new Vector3[] { startPoint, endPoint };
 
@@ -145,10 +142,7 @@ namespace Axiom.Demos
 			binding.SetBinding( POSITION, buffer );
 
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
@@ -236,11 +230,7 @@ namespace Axiom.Demos
 
 			// POSITIONS
 			// create a vertex buffer for the position
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			Vector3[] positions = new Vector3[] { v1, v2, v3 };
 
@@ -252,10 +242,7 @@ namespace Axiom.Demos
 
 			// COLORS
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's

@@ -102,11 +102,7 @@ namespace Axiom.Core
 			decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// create a new hardware vertex buffer for the position data
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance
-															   .CreateVertexBuffer(
-																	decl.GetVertexSize( PositionBinding ),
-																	vertexData.vertexCount,
-																	BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );

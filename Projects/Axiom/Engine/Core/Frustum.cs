@@ -743,8 +743,7 @@ namespace Axiom.Core
 			_vertexData.vertexDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 			_vertexData.vertexStart = 0;
 			_vertexData.vertexCount = 32;
-			_vertexData.vertexBufferBinding.SetBinding( 0,
-													   HardwareBufferManager.Instance.CreateVertexBuffer( 4 * 3, _vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
+            _vertexData.vertexBufferBinding.SetBinding(0, HardwareBufferManager.Instance.CreateVertexBuffer( _vertexData.vertexDeclaration, _vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
 
 			_material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 

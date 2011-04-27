@@ -1089,10 +1089,7 @@ namespace Axiom.Core
 			}
 
 			this.mainBuffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-							decl.GetVertexSize( 0 ),
-							this.vertexData.vertexCount,
-							BufferUsage.DynamicWriteOnlyDiscardable );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnlyDiscardable );
 
 			// bind position and diffuses
 			binding.SetBinding( 0, this.mainBuffer );

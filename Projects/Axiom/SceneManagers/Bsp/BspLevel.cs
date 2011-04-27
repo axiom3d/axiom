@@ -413,21 +413,10 @@ namespace Axiom.SceneManagers.Bsp
 
 			rgm.notifyWorldGeometryStageStarted( "Setting up vertex data" );
 			// Create the vertex buffer, allow space for patches
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer(
-				Marshal.SizeOf( typeof( BspVertex ) ),
-				q3lvl.NumVertices + patchVertexCount,
-				BufferUsage.StaticWriteOnly,
-				// the vertices will be read often for texture lighting, use shadow buffer
-				true
-				);
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(0), q3lvl.NumVertices + patchVertexCount,	BufferUsage.StaticWriteOnly /* the vertices will be read often for texture lighting, use shadow buffer */, true );
 
 			// Create the vertex buffer for texture lighting, allow space for patches
-			HardwareVertexBuffer texLightBuf = HardwareBufferManager.Instance.CreateVertexBuffer(
-				Marshal.SizeOf( typeof( TextureLightMap ) ),
-				q3lvl.NumVertices + patchVertexCount,
-				BufferUsage.DynamicWriteOnly,
-				false
-				);
+			HardwareVertexBuffer texLightBuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(1), q3lvl.NumVertices + patchVertexCount, BufferUsage.DynamicWriteOnly, false );
 
 			// COPY static vertex data - Note that we can't just block-copy the vertex data because we have to reorder
 			// our vertex elements; this is to ensure compatibility with older cards when using
