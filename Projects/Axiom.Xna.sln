@@ -112,10 +112,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Content.CameraTrack",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Content.ParticleFX", "AxiomDemos\Source\Browser\Xbox\ParticleFX\Content\Axiom.Content.ParticleFX.contentproj", "{DD044FE7-FF87-4498-AB23-95FAFE0DC668}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArmadilloScenarios", "ArmadilloScenarios", "{13AD0323-5C15-4FE4-BB1B-2BE7A5F267F9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmadilloScenarios1", "ArmadilloScenarios1\ArmadilloScenarios1.csproj", "{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -556,18 +552,6 @@ Global
 		{DD044FE7-FF87-4498-AB23-95FAFE0DC668}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{DD044FE7-FF87-4498-AB23-95FAFE0DC668}.Release|x86.ActiveCfg = Release|x86
 		{DD044FE7-FF87-4498-AB23-95FAFE0DC668}.Release|Xbox 360.ActiveCfg = Release|x86
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Debug|Xbox 360.ActiveCfg = Debug|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Release|x86.ActiveCfg = Release|Any CPU
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E}.Release|Xbox 360.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -620,6 +604,5 @@ Global
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0} = {698DA630-FDF2-4218-BEA8-DE0664099A76}
 		{DDA71F57-CA27-4CEA-9FCB-E49E334EAB0A} = {698DA630-FDF2-4218-BEA8-DE0664099A76}
 		{BF8E6CB2-6D99-4A56-AE2C-CF568EB5381D} = {698DA630-FDF2-4218-BEA8-DE0664099A76}
-		{E27E0EF9-68D1-4B7A-B215-B6C5F5761D5E} = {13AD0323-5C15-4FE4-BB1B-2BE7A5F267F9}
 	EndGlobalSection
 EndGlobal
