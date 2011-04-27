@@ -157,12 +157,8 @@ namespace Axiom.Samples.Primitives
 
 			// create a vertex buffer for the position
 			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
-
-			Vector3[] pos = new Vector3[] { startPoint, endPoint };
+				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+            Vector3[] pos = new Vector3[] { startPoint, endPoint };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, pos, true );
@@ -171,10 +167,7 @@ namespace Axiom.Samples.Primitives
 			binding.SetBinding( POSITION, buffer );
 
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
@@ -263,10 +256,7 @@ namespace Axiom.Samples.Primitives
 			// POSITIONS
 			// create a vertex buffer for the position
 			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			Vector3[] positions = new Vector3[] { v1, v2, v3 };
 
@@ -278,10 +268,7 @@ namespace Axiom.Samples.Primitives
 
 			// COLORS
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's

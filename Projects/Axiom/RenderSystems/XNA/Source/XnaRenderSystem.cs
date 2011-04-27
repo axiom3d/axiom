@@ -1728,19 +1728,26 @@ namespace Axiom.RenderSystems.Xna
 					break;
 			} // switch(primType)
 
-			// are we gonna use indices?
-			if ( op.useIndices )
+			try
 			{
-				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
-				_device.Indices = idxBuffer.XnaIndexBuffer;
-				_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
-			}
-			else
-			{
-				// draw vertices without indices
-				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
-			}
 
+				// are we gonna use indices?
+				if ( op.useIndices )
+				{
+					XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
+					_device.Indices = idxBuffer.XnaIndexBuffer;
+					_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+				}
+				else
+				{
+					// draw vertices without indices
+					_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+				}
+			}
+			catch ( InvalidOperationException ioe )
+			{
+				LogManager.Instance.Write( "Failed to draw RenderOperation : ", LogManager.BuildExceptionString( ioe ) );
+			}
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
 			_device.SetVertexBuffer( null );
 			_device.Indices = null;
@@ -2047,26 +2054,31 @@ namespace Axiom.RenderSystems.Xna
 #endif
 		}
 
-		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
+		public override void SetTextureAddressingMode( int stage, UVWAddressing texAddressingMode )
 		{
-            XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
+			XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
 			bool compensateNPOT = false;
 
-            if (xnaTexture != null)
-            {
-                if (Bitwise.IsPow2(xnaTexture.Width) == false || Bitwise.IsPow2(xnaTexture.Height) == false) //we're going to have to compensate for that
-                {
-                    compensateNPOT = true;
-                }
-            }
-            if (compensateNPOT)
-            {
-                uvw = new UVWAddressing(TextureAddressing.Clamp);
-            }
+			if ( ( xnaTexture != null ) && ( !Bitwise.IsPow2( xnaTexture.Width ) || !Bitwise.IsPow2( xnaTexture.Height ) ) )
+			{
+				if ( HardwareCapabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
+				{
+					if ( HardwareCapabilities.NonPOW2TexturesLimited )
+						compensateNPOT = true;
+				}
+				else
+					compensateNPOT = true;
 
-			StateManager.SamplerStates[ stage ].AddressU = XnaHelper.Convert( uvw.U );
-			StateManager.SamplerStates[ stage ].AddressV = XnaHelper.Convert( uvw.V );
-			StateManager.SamplerStates[ stage ].AddressW = XnaHelper.Convert( uvw.W );
+				if ( compensateNPOT )
+				{
+					texAddressingMode =  new UVWAddressing( TextureAddressing.Clamp );
+				}
+			}
+
+			// set the device sampler states accordingly
+			StateManager.SamplerStates[ stage ].AddressU = XnaHelper.Convert( texAddressingMode.U );
+			StateManager.SamplerStates[ stage ].AddressV = XnaHelper.Convert( texAddressingMode.V );
+			StateManager.SamplerStates[ stage ].AddressW = XnaHelper.Convert( texAddressingMode.W );
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )

@@ -346,10 +346,7 @@ namespace Axiom.Overlays.Elements
 
 				// position buffer
 				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-						decl.GetVertexSize( POSITION ),
-						renderOp2.vertexData.vertexCount,
-						BufferUsage.StaticWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind position
 				VertexBufferBinding binding = renderOp2.vertexData.vertexBufferBinding;
@@ -357,10 +354,7 @@ namespace Axiom.Overlays.Elements
 
 				// texcoord buffer
 				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( TEXCOORDS ),
-					renderOp2.vertexData.vertexCount,
-						BufferUsage.StaticWriteOnly, true );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly, true );
 
 				// bind texcoords
 				binding = renderOp2.vertexData.vertexBufferBinding;

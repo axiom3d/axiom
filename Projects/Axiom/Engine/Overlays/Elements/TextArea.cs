@@ -128,20 +128,14 @@ namespace Axiom.Overlays.Elements
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
 				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-						decl.GetVertexSize( POSITION_TEXCOORD_BINDING ),
-						renderOperation.vertexData.vertexCount,
-						BufferUsage.DynamicWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
 
 				// colors
 				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( COLOR_BINDING ),
-					renderOperation.vertexData.vertexCount,
-					BufferUsage.DynamicWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
 
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );

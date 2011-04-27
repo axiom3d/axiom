@@ -89,9 +89,9 @@ namespace Axiom.Graphics
 
 		protected HardwareBufferManagerBase _baseInstance;
 
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer(  VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			return _baseInstance.CreateVertexBuffer( vertexSize, numVerts, usage, useShadowBuffer );
+			return _baseInstance.CreateVertexBuffer( vertexDeclaration, numVerts, usage, useShadowBuffer );
 		}
 
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )

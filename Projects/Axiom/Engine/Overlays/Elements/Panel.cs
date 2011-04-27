@@ -130,10 +130,7 @@ namespace Axiom.Overlays.Elements
 
 				// create the first vertex buffer, mostly static except during resizing
 				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-						 decl.GetVertexSize( POSITION ),
-						 renderOperation.vertexData.vertexCount,
-						 BufferUsage.StaticWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind the vertex buffer
 				renderOperation.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
@@ -292,10 +289,7 @@ namespace Axiom.Overlays.Elements
 				if ( numTexCoordsInBuffer != numLayers )
 				{
 					HardwareVertexBuffer newBuffer =
-						HardwareBufferManager.Instance.CreateVertexBuffer(
-							decl.GetVertexSize( TEXTURE_COORDS ),
-							renderOperation.vertexData.vertexCount,
-							BufferUsage.StaticWriteOnly );
+						HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXTURE_COORDS ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 					// Bind buffer, note this will unbind the old one and destroy the buffer it had
 					renderOperation.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );

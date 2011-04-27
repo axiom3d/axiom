@@ -48,14 +48,14 @@ namespace Axiom.Graphics
 	{
 		byte[] mpData = null;
 
-		public DefaultHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
-			: base( null, vertexSize, numVertices, usage, true, false )// always software, never shadowed
+        public DefaultHardwareVertexBuffer(VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
+            : base(null, vertexDeclaration, numVertices, usage, true, false)// always software, never shadowed
 		{
 			mpData = new byte[ base.sizeInBytes ];
 		}
 
-		public DefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage )
-			: base( manager, vertexSize, numVertices, usage, true, false )// always software, never shadowed
+        public DefaultHardwareVertexBuffer(HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
+            : base(manager, vertexDeclaration, numVertices, usage, true, false)// always software, never shadowed
 		{
 			mpData = new byte[ base.sizeInBytes ];
 		}

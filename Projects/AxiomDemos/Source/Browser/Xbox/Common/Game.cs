@@ -44,11 +44,6 @@ namespace Axiom.Demos.Browser.Xna
             ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
 #endif
 
-            XnaResourceGroupManager.Instance.Initialize( new string[]
-                                                         {
-                                                             "png", "jpg", "bmp", "dds", "jpeg", "tiff"
-                                                         } );
-
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
 
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
