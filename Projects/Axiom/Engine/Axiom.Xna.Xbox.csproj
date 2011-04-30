@@ -62,7 +62,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.XML</DocumentationFile>
-    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360;NET_2_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
