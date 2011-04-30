@@ -68,11 +68,8 @@ namespace Axiom.Demos.Browser.Xna
 
         public void Run()
         {
-#if !( XBOX || XBOX360 )
-            titleLocation = String.Empty;
-#else
-            titleLocation = StorageContainer.TitleLocation + "\\";
-#endif
+            //TODO: remove all references to titleLocation
+            titleLocation = string.Empty;
 
             try
             {
