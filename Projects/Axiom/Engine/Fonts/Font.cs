@@ -116,7 +116,7 @@ namespace Axiom.Fonts
 		/// <summary>
 		///  Max distance to baseline of this (truetype) font
 		/// </summary>
-		private int maxBearingY = 0;
+		private long maxBearingY = 0;
 		#endregion MaxBearingY
 		#region FontType Property
 
@@ -556,7 +556,20 @@ namespace Axiom.Fonts
 		#region Implementation of IManualResourceLoader
 		public void LoadResource( Resource resource )
 		{
+			if ( IntPtr.Size == 8 && !PlatformManager.IsWindowsOS )
+			{
+				LoadResource64( resource );				
+			}
+			else
+			{
+				LoadResource32( resource );
+			}
+		}
+		
+		private void LoadResource32( Resource resource )
+		{
 #if !( XBOX || XBOX360 )
+
 			string current = Environment.CurrentDirectory;
 
 			IntPtr ftLibrary = IntPtr.Zero;
@@ -587,7 +600,7 @@ namespace Axiom.Fonts
 					throw new AxiomException( "Could not set char size!" );
 				}
 			}
-			int max_height = 0, max_width = 0;
+			long max_height = 0, max_width = 0;
 			List<KeyValuePair<int, int>> codePointRange = new List<KeyValuePair<int, int>>();
 			// Backwards compatibility - if codepoints not supplied, assume 33-166
 			if ( codePointRange.Count == 0 )
@@ -616,10 +629,10 @@ namespace Axiom.Fonts
 			}
 
 			// Now work out how big our texture needs to be
-			int rawSize = ( max_width + char_space ) *
+			long rawSize = ( max_width + char_space ) *
 				( ( max_height >> 6 ) + char_space ) * glyphCount;
 
-			int tex_side = (int)System.Math.Sqrt( (Real)rawSize );
+			long tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
 			// just in case the size might chop a glyph in half, add another glyph width/height
 			tex_side += System.Math.Max( max_width, ( max_height >> 6 ) );
@@ -652,7 +665,7 @@ namespace Axiom.Fonts
 			}
 
 
-			int l = 0, m = 0;
+			long l = 0, m = 0;
 			foreach ( KeyValuePair<int, int> r in codePointRange )
 			{
 				KeyValuePair<int, int> range = r;
@@ -668,7 +681,7 @@ namespace Axiom.Fonts
 
 					FT_FaceRec rec = (FT_FaceRec)Marshal.PtrToStructure( face, typeof( FT_FaceRec ) );
 					FT_GlyphSlotRec glyp = (FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( FT_GlyphSlotRec ) );
-					int advance = glyp.advance.x >> 6;
+					long advance = glyp.advance.x >> 6;
 					unsafe
 					{
 						if ( glyp.bitmap.buffer == IntPtr.Zero )
@@ -678,12 +691,12 @@ namespace Axiom.Fonts
 						}
 						byte* buffer = (byte*)glyp.bitmap.buffer;
 						byte* imageDataPtr = (byte*)Memory.PinObject( imageData );
-						int y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
-						int x_bearing = glyp.metrics.horiBearingX >> 6;
+						long y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
+						long x_bearing = glyp.metrics.horiBearingX >> 6;
 
 						for ( int j = 0; j < glyp.bitmap.rows; j++ )
 						{
-							int row = j + m + y_bearing;
+							long row = j + m + y_bearing;
 							byte* pDest = &imageDataPtr[ ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes ];
 							for ( int k = 0; k < glyp.bitmap.width; k++ )
 							{
@@ -757,6 +770,185 @@ namespace Axiom.Fonts
             //str.Close();
             //file.Close();
 
+#endif
+		}
+		
+		private void LoadResource64( Resource resource )
+		{
+#if !( XBOX || XBOX360 )
+
+			string current = Environment.CurrentDirectory;
+
+			IntPtr ftLibrary = IntPtr.Zero;
+			if ( x64.FT.FT_Init_FreeType( out ftLibrary ) != 0 )
+				throw new AxiomException( "Could not init FreeType library!" );
+
+			IntPtr face = IntPtr.Zero;
+			int char_space = 5;
+
+			Stream fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group );
+
+			byte[] data = new byte[ fileStream.Length ];
+			fileStream.Read( data, 0, data.Length );
+			//Load font
+			int success = x64.FT.FT_New_Memory_Face( ftLibrary, data, data.Length, 0, out face );
+			if ( success != 0 )
+			{
+				throw new AxiomException( "Could not open font face!" );
+			}
+
+			// Convert our point size to freetype 26.6 fixed point format
+			int ttfSize = _ttfSize * ( 1 << 6 );
+
+			success = x64.FT.FT_Set_Char_Size( face, ttfSize, 0, (uint)_ttfResolution, (uint)_ttfResolution );
+			if ( success != 0 )
+			{
+				{
+					throw new AxiomException( "Could not set char size!" );
+				}
+			}
+			long max_height = 0, max_width = 0;
+			List<KeyValuePair<int, int>> codePointRange = new List<KeyValuePair<int, int>>();
+			// Backwards compatibility - if codepoints not supplied, assume 33-166
+			if ( codePointRange.Count == 0 )
+			{
+				codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
+			}
+
+			int glyphCount = 0;
+			foreach ( KeyValuePair<int, int> r in codePointRange )
+			{
+				KeyValuePair<int, int> range = r;
+				for ( int cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
+				{
+					x64.FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
+					x64.FT_FaceRec rec = (x64.FT_FaceRec)Marshal.PtrToStructure( face, typeof( x64.FT_FaceRec ) );
+					x64.FT_GlyphSlotRec glyp = (x64.FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( x64.FT_GlyphSlotRec ) );
+					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
+					if ( glyp.metrics.horiBearingY > maxBearingY )
+						maxBearingY = glyp.metrics.horiBearingY;
+
+					if ( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
+						max_width = ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 );
+
+				}
+			}
+
+			// Now work out how big our texture needs to be
+			long rawSize = ( max_width + char_space ) *
+				( ( max_height >> 6 ) + char_space ) * glyphCount;
+
+			long tex_side = (int)System.Math.Sqrt( (Real)rawSize );
+
+			// just in case the size might chop a glyph in half, add another glyph width/height
+			tex_side += System.Math.Max( max_width, ( max_height >> 6 ) );
+			// Now round up to nearest power of two
+			int roundUpSize = (int)Bitwise.FirstPO2From( (uint)tex_side );
+			// Would we benefit from using a non-square texture (2X width(
+			int finalWidth = 0, finalHeight = 0;
+			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
+			{
+				finalHeight = (int)( roundUpSize * 0.5 );
+			}
+			else
+			{
+				finalHeight = roundUpSize;
+			}
+			finalWidth = roundUpSize;
+
+			Real textureAspec = (Real)finalWidth / (Real)finalHeight;
+			int pixelBytes = 2;
+			int dataWidth = finalWidth * pixelBytes;
+			int data_size = finalWidth * finalHeight * pixelBytes;
+
+			LogManager.Instance.Write( "Font " + _name + " using texture size " + finalWidth.ToString() + "x" + finalHeight.ToString() );
+
+			byte[] imageData = new byte[ data_size ];
+			for ( int i = 0; i < data_size; i += pixelBytes )
+			{
+				imageData[ i + 0 ] = 0xff;// luminance
+				imageData[ i + 1 ] = 0x00;// alpha
+			}
+
+
+			long l = 0, m = 0;
+			foreach ( KeyValuePair<int, int> r in codePointRange )
+			{
+				KeyValuePair<int, int> range = r;
+				for ( int cp = range.Key; cp <= range.Value; ++cp )
+				{
+					int result = x64.FT.FT_Load_Char( face, (uint)cp, 4 );//4 == FT_LOAD_RENDER
+					if ( result != 0 )
+					{
+						// problem loading this glyph, continue
+						LogManager.Instance.Write( "Info: cannot load character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
+						continue;
+					}
+
+					x64.FT_FaceRec rec = (x64.FT_FaceRec)Marshal.PtrToStructure( face, typeof( x64.FT_FaceRec ) );
+					x64.FT_GlyphSlotRec glyp = (x64.FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( x64.FT_GlyphSlotRec ) );
+					long advance = glyp.advance.x >> 6;
+					unsafe
+					{
+						if ( glyp.bitmap.buffer == IntPtr.Zero )
+						{
+							LogManager.Instance.Write( "Info: Freetype returned null for character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
+							continue;
+						}
+						byte* buffer = (byte*)glyp.bitmap.buffer;
+						byte* imageDataPtr = (byte*)Memory.PinObject( imageData );
+						long y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
+						long x_bearing = glyp.metrics.horiBearingX >> 6;
+
+						for ( int j = 0; j < glyp.bitmap.rows; j++ )
+						{
+							long row = j + m + y_bearing;
+							byte* pDest = &imageDataPtr[ ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes ];
+							for ( int k = 0; k < glyp.bitmap.width; k++ )
+							{
+								if ( AntialiasColor )
+								{
+									// Use the same greyscale pixel for all components RGBA
+									*pDest++ = *buffer;
+								}
+								else
+								{
+									// Always white whether 'on' or 'off' pixel, since alpha
+									// will turn off
+									*pDest++ = (byte)0xFF;
+								}
+								// Always use the greyscale value for alpha
+								*pDest++ = *buffer++;
+							}//end k
+						}//end j
+						//
+						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth,//u1
+							(Real)m / (Real)finalHeight,//v1
+							(Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+							( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
+
+						// Advance a column
+						l += ( advance + char_space );
+
+						// If at end of row
+						if ( finalWidth - 1 < l + ( advance ) )
+						{
+							m += ( max_height >> 6 ) + char_space;
+							l = 0;
+						}
+					}
+				}
+			}//end foreach
+
+			MemoryStream memStream = new MemoryStream( imageData );
+			Image img = Image.FromRawStream( memStream, finalWidth, finalHeight, PixelFormat.BYTE_LA );
+
+			Texture tex = (Texture)resource;
+			Image[] images = new Image[ 1 ];
+			images[ 0 ] = img;
+			tex.LoadImages( images );
+			x64.FT.FT_Done_FreeType( ftLibrary );
 #endif
 		}
 		#endregion Implementation of IManualResourceLoader

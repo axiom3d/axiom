@@ -1117,7 +1117,7 @@ namespace Axiom.Core
 			}
 
 			// Delete all SceneNodes, except root that is
-			foreach ( Node node in sceneNodeList )
+			foreach ( Node node in sceneNodeList.Values )
 			{
 				node.Dispose();
 			}
