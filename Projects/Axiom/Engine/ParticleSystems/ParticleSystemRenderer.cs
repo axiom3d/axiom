@@ -48,13 +48,15 @@ namespace Axiom.ParticleSystems
 	/// <param name="renderer">Target particle system renderer.</param>
 	delegate void ParticleSystemRendererAttributeParser( string[] values, ParticleSystemRenderer renderer );
 
-	public abstract class ParticleSystemRenderer
+	public abstract class ParticleSystemRenderer : DisposableObject
 	{
 		/// Constructor
 		public ParticleSystemRenderer()
+            : this( string.Empty )
 		{
 		}
 		public ParticleSystemRenderer( string name )
+            : base()
 		{
 		}
 

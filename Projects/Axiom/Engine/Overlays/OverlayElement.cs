@@ -141,6 +141,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		/// <param name="name"></param>
 		protected internal OverlayElement( string name )
+            : base()
 		{
 			this.name = name;
 			isVisible = true;
@@ -1419,17 +1420,20 @@ namespace Axiom.Overlays
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
-					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
-						renderOperation = null;
-					}
+                    if ( renderOperation != null )
+                    {
+                        if ( !renderOperation.IsDisposed )
+                            renderOperation.Dispose();
+
+                        renderOperation = null;
+                    }
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
+
+            base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

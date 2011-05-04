@@ -46,7 +46,7 @@ namespace Axiom.Media
 	/// <summary>
 	///    Manages registering/fulfilling requests for codecs that handle various types of media.
 	/// </summary>
-	public sealed class CodecManager : IDisposable
+	public sealed class CodecManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -59,6 +59,7 @@ namespace Axiom.Media
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal CodecManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -79,13 +80,46 @@ namespace Axiom.Media
 
 		#endregion Singleton implementation
 
-		public void Dispose()
-		{
-			if ( instance == this )
-			{
-				instance = null;
-			}
-		}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    instance = null;
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#region Fields
 

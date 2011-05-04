@@ -60,7 +60,7 @@ namespace Axiom.Overlays
 	///    OverlayElementManager's job is to manage the lifecycle of OverlayElement (subclass)
 	///    instances, and also to register plugin suppliers of new components.
 	/// </remarks>
-	public sealed class OverlayElementManager : IDisposable
+	public sealed class OverlayElementManager : DisposableObject
 	{
 		#region Singleton implementation
 
@@ -73,6 +73,7 @@ namespace Axiom.Overlays
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal OverlayElementManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -344,8 +345,11 @@ namespace Axiom.Overlays
 			{
 				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
 			}
-			elements[ name ].Dispose();
-			elements.Remove( name );
+
+            if ( !elements[ name ].IsDisposed )
+			    elements[ name ].Dispose();
+
+            elements.Remove( name );
 		}
 
 		/// <summary>
@@ -370,6 +374,9 @@ namespace Axiom.Overlays
 				throw new Exception( "OverlayElement with the name '" + element.Name + "' not found to destroy." );
 			}
 
+            if ( !element.IsDisposed )
+                element.Dispose();
+
 			elements.Remove( element.Name );
 		}
 
@@ -386,7 +393,15 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void DestroyAllElements( bool isTemplate )
 		{
-			( isTemplate ? _elementTemplates : _elementInstances ).Clear();
+            Dictionary<string, OverlayElement> elements = isTemplate ? _elementTemplates : _elementInstances;
+
+            foreach ( OverlayElement element in elements.Values )
+            {
+                if ( !element.IsDisposed )
+                    element.Dispose();
+            }
+
+            elements.Clear();
 		}
 
 		#endregion Destroy*OverlayElement
@@ -398,10 +413,18 @@ namespace Axiom.Overlays
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-		public void Dispose()
-		{
-			instance = null;
-		}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    instance = null;
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion IDisposable Implementation
 	}

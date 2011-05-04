@@ -52,7 +52,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		This class defines the interface that must be implemented by shadow casters.
 	/// </summary>
-	public abstract class ShadowCaster
+	public abstract class ShadowCaster : DisposableObject
 	{
 		#region Properties
 

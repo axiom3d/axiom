@@ -33,8 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -47,7 +46,7 @@ namespace Axiom.Graphics
 	/// <remarks>
 	///		This class contains
 	/// </remarks>
-	public class RenderOperation
+	public class RenderOperation : DisposableObject
 	{
 		#region Member variables
 
@@ -81,9 +80,61 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public RenderOperation()
+            : base()
 		{
 		}
 
 		#endregion
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( this.vertexData != null )
+                    {
+                        if ( !this.vertexData.IsDisposed )
+                            this.vertexData.Dispose();
+
+                        this.vertexData = null;
+                    }
+
+                    if ( this.indexData != null )
+                    {
+                        if ( !this.indexData.IsDisposed )
+                            this.indexData.Dispose();
+
+                        this.indexData = null;
+                    }
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 	}
 }

@@ -65,6 +65,7 @@ namespace Axiom.ParticleSystems
 		BillboardSet billboardSet;
 
 		public BillboardParticleRenderer()
+            : base()
 		{
 			billboardSet = new BillboardSet( "", 0, true );
 			billboardSet.SetBillboardsInWorldSpace( true );
@@ -72,6 +73,55 @@ namespace Axiom.ParticleSystems
 			// TODO: Is this the right way to do this?
 			RegisterParsers();
 		}
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    if ( this.billboardSet != null )
+                    {
+                        if ( !this.billboardSet.IsDisposed )
+                            this.billboardSet.Dispose();
+
+                        this.billboardSet = null;
+                    }
+
+                    this.attribParsers.Clear();
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#region Attribute Parsers
 		[ParserCommand( "billboard_type", PARTICLE )]
