@@ -123,6 +123,7 @@
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\FreetypeWrapper.cs" />
+    <Compile Include="Fonts\FreetypeWrapper.x64.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
