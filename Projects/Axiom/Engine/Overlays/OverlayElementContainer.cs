@@ -100,19 +100,22 @@ namespace Axiom.Overlays
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
-			{
-				// remove from parent overlay if root
-				if (this.overlay != null && parent == null)
-				{
-					overlay.RemoveElement( this );
-				}
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // remove from parent overlay if root
+                    if ( this.overlay != null && parent == null )
+                    {
+                        overlay.RemoveElement( this );
+                    }
 
-				foreach ( var child in this.Children )
-				{
-					child.Value.NotifyParent( null, null );					
-				}
-			}
+                    foreach ( var child in this.Children )
+                    {
+                        child.Value.NotifyParent( null, null );
+                    }
+                }
+            }
 
 			base.dispose( disposeManagedResources );
 		}

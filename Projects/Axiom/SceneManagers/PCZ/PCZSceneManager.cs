@@ -140,18 +140,50 @@ namespace Axiom.SceneManagers.PortalConnected
 			defaultRootNode = rootSceneNode;
 		}
 
-		~PCZSceneManager()
-		{
-			// we don't delete the root scene node here because the
-			// base scene manager class does that.
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // we don't delete the root scene node here because the
+                    // base scene manager class does that.
 
-			// delete ALL portals
-			portals.Clear();
+                    // delete ALL portals
+                    portals.Clear();
 
-			// delete all the zones
-			zones.Clear();
-			defaultZone = null;
-		}
+                    // delete all the zones
+                    zones.Clear();
+                    defaultZone = null;
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		/* Get the default zone */
 
@@ -215,7 +247,6 @@ namespace Axiom.SceneManagers.PortalConnected
 		public void DestroyPortal( String portalName )
 		{
 			// find the portal from the master portal list
-			Portal p;
 			Portal thePortal = null;
 			foreach ( Portal portal in portals )
 			{
@@ -378,31 +409,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		//-----------------------------------------------------------------------
 		public override void ClearScene()
 		{
-			DestroyAllStaticGeometry();
-
-			// Clear root node of all children
-			RootSceneNode.RemoveAllChildren();
-			RootSceneNode.DetachAllObjects();
-
-			sceneNodeList.Clear();
-			autoTrackingSceneNodes.Clear();
+            base.ClearScene();
 
 			// delete all the zones
 			zones.Clear();
 			defaultZone = null;
-
-			// Clear animations
-			DestroyAllAnimations();
-
-			// Remove sky nodes since they've been deleted
-			skyBoxNode = skyPlaneNode = skyDomeNode = null;
-			isSkyBoxEnabled = isSkyPlaneEnabled = isSkyDomeEnabled = false;
-
-			// Clear render queue, empty completely
-			if ( null != renderQueue )
-			{
-				renderQueue.Clear();
-			}
 
 			// re-initialize
 			Init( defaultZoneTypeName, defaultZoneFileName );

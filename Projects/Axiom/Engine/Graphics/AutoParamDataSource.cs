@@ -59,7 +59,7 @@ namespace Axiom.Graphics
 	/// 	matrices when they are requested more than once when the underlying information has
 	/// 	not altered.
 	/// </remarks>
-	public class AutoParamDataSource
+	public class AutoParamDataSource : DisposableObject
 	{
 		#region Fields
 
@@ -203,6 +203,7 @@ namespace Axiom.Graphics
 		///    Default constructor.
 		/// </summary>
 		public AutoParamDataSource()
+            : base()
 		{
 			worldMatrixDirty = true;
 			viewMatrixDirty = true;
@@ -230,6 +231,49 @@ namespace Axiom.Graphics
 		#endregion
 
 		#region Methods
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( this.blankLight != null )
+                    {
+                        if ( !this.blankLight.IsDisposed )
+                            this.blankLight.Dispose();
+
+                        this.blankLight = null;
+                    }
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#region Lights
 

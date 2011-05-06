@@ -1324,7 +1324,7 @@ namespace Axiom.Core
 		///<summary>
 		/// Built, renderable section of geometry
 		///</summary>
-		public class ManualObjectSection : IRenderable
+		public class ManualObjectSection : DisposableObject, IRenderable
 		{
 			#region Protected fields
 
@@ -1340,6 +1340,7 @@ namespace Axiom.Core
 			public ManualObjectSection( ManualObject parent,
 										string materialName,
 										OperationType opType )
+                : base()
 			{
 				this.parent = parent;
 				this.materialName = materialName;
@@ -1566,28 +1567,6 @@ namespace Axiom.Core
 			#endregion Properties
 
 			#region IDisposable Implementation
-
-			#region isDisposed Property
-
-			private bool _disposed = false;
-
-			/// <summary>
-			/// Determines if this instance has been disposed of already.
-			/// </summary>
-			protected bool isDisposed
-			{
-				get
-				{
-					return _disposed;
-				}
-				set
-				{
-					_disposed = value;
-				}
-			}
-
-			#endregion isDisposed Property
-
 			/// <summary>
 			/// Class level dispose method
 			/// </summary>
@@ -1612,25 +1591,18 @@ namespace Axiom.Core
 			/// }
 			/// </remarks>
 			/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-			protected virtual void dispose( bool disposeManagedResources )
+			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !isDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
 						if ( renderOperation != null )
 						{
-							if ( renderOperation.vertexData != null )
-							{
-								renderOperation.vertexData.Dispose();
-								renderOperation.vertexData = null;
-							}
-							if ( renderOperation.indexData != null )
-							{
-								renderOperation.indexData.Dispose();
-								renderOperation.indexData = null;
-							}
+                            if ( !renderOperation.IsDisposed )
+                                renderOperation.Dispose();
+
 							renderOperation = null;
 						}
 					}
@@ -1638,15 +1610,9 @@ namespace Axiom.Core
 					// There are no unmanaged resources to release, but
 					// if we add them, they need to be released here.
 				}
-				isDisposed = true;
-			}
 
-			public void Dispose()
-			{
-				dispose( true );
-				GC.SuppressFinalize( this );
+                base.dispose( disposeManagedResources );
 			}
-
 			#endregion IDisposable Implementation
 		}
 
@@ -1676,6 +1642,7 @@ namespace Axiom.Core
 														VertexData vertexData,
 														bool createSeparateLightCap,
 														bool isLightCap )
+                : base()
 			{
 				this.parent = parent;
 				// Initialise render op
@@ -1785,13 +1752,18 @@ namespace Axiom.Core
 
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !isDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
-						if ( this.lightCap != null )
-							this.lightCap.Dispose();
+                        if ( this.lightCap != null )
+                        {
+                            if ( !lightCap.IsDisposed )
+                                this.lightCap.Dispose();
+
+                            this.lightCap = null;
+                        }
 					}
 
 					// There are no unmanaged resources to release, but

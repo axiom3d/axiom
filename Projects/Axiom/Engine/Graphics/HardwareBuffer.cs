@@ -141,6 +141,7 @@ namespace Axiom.Graphics
 		/// <param name="useSystemMemory"></param>
 		/// <param name="useShadowBuffer">Use a software shadow buffer?</param>
 		internal HardwareBuffer( BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+            : base()
 		{
 			this.usage = usage;
 			this.useSystemMemory = useSystemMemory;
@@ -157,12 +158,47 @@ namespace Axiom.Graphics
 				usage = BufferUsage.StaticWriteOnly;
 		}
 
-		~HardwareBuffer()
-		{
-			dispose( false );
-		}
-
 		#endregion
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( shadowBuffer != null )
+                {
+                    if ( !shadowBuffer.IsDisposed )
+                        shadowBuffer.Dispose();
+
+                    shadowBuffer = null;
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#region Methods
 

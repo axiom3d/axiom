@@ -32,10 +32,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
-using Axiom.Graphics;
-using Axiom.Core;
 using System.Collections.Generic;
+using Axiom.Core;
+using Axiom.Graphics;
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
@@ -52,11 +51,6 @@ namespace Axiom.ParticleSystems
 	{
 		/// Constructor
 		public ParticleSystemRenderer()
-            : this( string.Empty )
-		{
-		}
-		public ParticleSystemRenderer( string name )
-            : base()
 		{
 		}
 

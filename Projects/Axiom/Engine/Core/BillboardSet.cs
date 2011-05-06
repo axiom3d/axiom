@@ -1178,10 +1178,31 @@ namespace Axiom.Core
 			//                     vertexData == null ? "null" : vertexData.ToString(),
 			//                     indexData == null ? "null" : indexData.ToString(),
 			//                     mainBuffer == null ? "null" : mainBuffer.ToString()));
-			this.vertexData = null;
-			this.indexData = null;
-			this.mainBuffer = null;
-			this.buffersCreated = false;
+            if ( this.vertexData != null )
+            {
+                if ( !this.vertexData.IsDisposed )
+                    this.vertexData.Dispose();
+
+                this.vertexData = null;
+            }
+
+            if ( this.indexData != null )
+            {
+                if ( !this.indexData.IsDisposed )
+                    this.indexData.Dispose();
+
+                this.indexData = null;
+            }
+
+            if ( this.mainBuffer != null )
+            {
+                if ( !this.mainBuffer.IsDisposed )
+                    this.mainBuffer.Dispose();
+
+                this.mainBuffer = null;
+            }
+
+            this.buffersCreated = false;
 		}
 
 		// Warn if user requested an invalid setup

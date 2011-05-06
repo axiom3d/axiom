@@ -1685,7 +1685,19 @@ namespace Axiom.Core
                             this.skeletonInstance.Dispose();
 
                         this.skeletonInstance = null;
-				}
+                    }
+
+                    if ( subEntityList != null )
+                    {
+                        foreach ( SubEntity sub in subEntityList )
+                        {
+                            if ( !sub.IsDisposed )
+                                sub.Dispose();
+                        }
+
+                        subEntityList.Clear();
+                        subEntityList = null;
+                    }
 				}
 
 				// There are no unmanaged resources to release, but
@@ -2548,13 +2560,18 @@ namespace Axiom.Core
 
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !isDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
-						if ( this.lightCap != null )
-							this.lightCap.Dispose();
+                        if ( this.lightCap != null )
+                        {
+                            if ( !this.lightCap.IsDisposed )
+                                this.lightCap.Dispose();
+
+                            this.lightCap = null;
+                        }
 					}
 
 					// There are no unmanaged resources to release, but
@@ -2579,6 +2596,7 @@ namespace Axiom.Core
 		public new const string TypeName = "Entity";
 
 		public EntityFactory()
+            : base()
 		{
 			base.Type = EntityFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
@@ -2609,12 +2627,6 @@ namespace Axiom.Core
 			Entity ent = new Entity( name, pMesh );
 			ent.MovableType = this.Type;
 			return ent;
-		}
-
-		public override void DestroyInstance( ref MovableObject obj )
-		{
-			( (Entity)obj ).Dispose();
-			obj = null;
 		}
 	}
 

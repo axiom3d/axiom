@@ -133,6 +133,49 @@ namespace Axiom.Overlays
 
 		#region Methods
 
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( rootNode != null )
+                    {
+                        if ( !rootNode.IsDisposed )
+                            rootNode.Dispose();
+
+                        rootNode = null;
+                    }
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
+
 		/// <summary>
 		///    Adds a 2d element to this overlay.
 		/// </summary>

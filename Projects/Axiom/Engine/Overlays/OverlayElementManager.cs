@@ -340,14 +340,14 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		public void DestroyElement( string name, bool isTemplate )
 		{
-			Dictionary<string, OverlayElement> elements = isTemplate ? _elementTemplates : _elementInstances;
+            Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 			if ( !elements.ContainsKey( name ) )
 			{
 				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
 			}
 
             if ( !elements[ name ].IsDisposed )
-			    elements[ name ].Dispose();
+                elements[ name ].Dispose();
 
             elements.Remove( name );
 		}
@@ -368,7 +368,7 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		public void DestroyElement( OverlayElement element, bool isTemplate )
 		{
-			Dictionary<string, OverlayElement> elements = isTemplate ? _elementTemplates : _elementInstances;
+            Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 			if ( !elements.ContainsValue( element ) )
 			{
 				throw new Exception( "OverlayElement with the name '" + element.Name + "' not found to destroy." );
@@ -393,7 +393,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void DestroyAllElements( bool isTemplate )
 		{
-            Dictionary<string, OverlayElement> elements = isTemplate ? _elementTemplates : _elementInstances;
+            Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 
             foreach ( OverlayElement element in elements.Values )
             {
@@ -419,6 +419,24 @@ namespace Axiom.Overlays
             {
                 if ( disposeManagedResources )
                 {
+                    if ( _elementFactories != null )
+                    {
+                        _elementFactories.Clear();
+                        _elementFactories = null;
+                    }
+
+                    if ( _elementInstances != null )
+                    {
+                        DestroyAllElements();
+                        _elementInstances = null;
+                    }
+
+                    if ( _elementTemplates != null )
+                    {
+                        DestroyAllElements( true );
+                        _elementTemplates = null;
+                    }
+
                     instance = null;
                 }
             }

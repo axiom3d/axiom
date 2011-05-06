@@ -547,13 +547,15 @@ namespace Axiom.Graphics
 		public void DisposeVertexBuffer( HardwareVertexBuffer buffer )
 		{
 			vertexBuffers.Remove( buffer );
-			buffer.Dispose();
+            if (!buffer.IsDisposed)
+			    buffer.Dispose();
 		}
 
 		public void DisposeIndexBuffer( HardwareIndexBuffer buffer )
 		{
 			indexBuffers.Remove( buffer );
-			buffer.Dispose();
+            if ( !buffer.IsDisposed )
+			    buffer.Dispose();
 		}
 
 		/// Notification that a hardware vertex buffer has been destroyed

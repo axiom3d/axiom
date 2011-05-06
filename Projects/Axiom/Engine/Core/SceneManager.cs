@@ -109,7 +109,7 @@ namespace Axiom.Core
 	///	 </remarks>
 	/// TODO: Thoroughly review node removal/cleanup.
 	/// TODO: Review of method visibility/virtuality to ensure consistency.
-	public abstract class SceneManager
+	public abstract class SceneManager : DisposableObject
 	{
 		#region Fields
 
@@ -706,6 +706,7 @@ namespace Axiom.Core
 		#region Constructors
 
 		public SceneManager( string name )
+            : base()
 		{
 			this.cameraList = new CameraCollection();
 			this.sceneNodeList = new SceneNodeCollection();
@@ -748,11 +749,59 @@ namespace Axiom.Core
 			this.shadowUseInfiniteFarPlane = true;
 		}
 
-		~SceneManager()
-		{
-			this.ClearScene();
-			this.RemoveAllCameras();
-		}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    this.ClearScene();
+                    this.RemoveAllCameras();
+
+                    if ( this.autoParamDataSource != null )
+                    {
+                        if ( !this.autoParamDataSource.IsDisposed )
+                            this.autoParamDataSource.Dispose();
+
+                        this.autoParamDataSource = null;
+                    }
+
+                    if ( this.rootSceneNode != null )
+                    {
+                        if ( !this.rootSceneNode.IsDisposed )
+                            this.rootSceneNode.Dispose();
+
+                        this.rootSceneNode = null;
+                    }
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion Constructors
 
@@ -1119,7 +1168,8 @@ namespace Axiom.Core
 			// Delete all SceneNodes, except root that is
 			foreach ( Node node in sceneNodeList.Values )
 			{
-				node.Dispose();
+                if (!node.IsDisposed)
+				    node.Dispose();
 			}
 			this.sceneNodeList.Clear();
 
@@ -3314,17 +3364,20 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void RemoveAllCameras()
 		{
-			if ( this.cameraList != null )
-			{
-				// notify the render system of each camera being removed
-				foreach ( Camera cam in this.cameraList.Values )
-				{
-					this.targetRenderSystem.NotifyCameraRemoved( cam );
-				}
+            if ( this.cameraList != null )
+            {
+                // notify the render system of each camera being removed
+                foreach ( Camera cam in this.cameraList.Values )
+                {
+                    this.targetRenderSystem.NotifyCameraRemoved( cam );
 
-				// clear the list
-				this.cameraList.Clear();
-			}
+                    if ( !cam.IsDisposed )
+                        cam.Dispose();
+                }
+
+                // clear the list
+                this.cameraList.Clear();
+            }
 		}
 
 		/// <summary>
@@ -5147,6 +5200,9 @@ namespace Axiom.Core
 		{
 			cameraList.Remove( camera.Name );
 			this.targetRenderSystem.NotifyCameraRemoved( camera );
+
+            if ( !camera.IsDisposed )
+                camera.Dispose();
 		}
 
 		/// <summary>
@@ -5160,6 +5216,9 @@ namespace Axiom.Core
 			foreach ( Camera camera in this.cameraList.Values )
 			{
 				this.targetRenderSystem.NotifyCameraRemoved( camera );
+
+                if ( !camera.IsDisposed )
+                    camera.Dispose();
 			}
 
 			this.cameraList.Clear();
