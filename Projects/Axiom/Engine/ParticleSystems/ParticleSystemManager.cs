@@ -74,7 +74,7 @@ namespace Axiom.ParticleSystems
 	///		describing named particle system templates. Instances of particle systems using these templates can
 	///		then be created easily through the CreateParticleSystem method.
 	/// </remarks>
-	public sealed class ParticleSystemManager : IScriptLoader, IDisposable
+	public sealed class ParticleSystemManager : DisposableObject, IScriptLoader
 	{
 		#region Singleton implementation
 
@@ -87,6 +87,7 @@ namespace Axiom.ParticleSystems
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal ParticleSystemManager()
+            : base()
 		{
 			if ( instance == null )
 			{
@@ -544,10 +545,31 @@ namespace Axiom.ParticleSystems
 		public void Clear()
 		{
 			// clear all collections
-			emitterFactoryList.Clear();
-			affectorFactoryList.Clear();
-			systemList.Clear();
-			systemTemplateList.Clear();
+            emitterFactoryList.Clear();
+            affectorFactoryList.Clear();
+
+            if ( systemList != null )
+            {
+                foreach ( ParticleSystem system in this.systemList.Values )
+                {
+                    if ( !system.IsDisposed )
+                        system.Dispose();
+                }
+                systemList.Clear();
+                systemList = null;
+            }
+
+            if ( systemTemplateList != null )
+            {
+                foreach ( ParticleSystem system in this.systemTemplateList.Values )
+                {
+                    if ( !system.IsDisposed )
+                        system.Dispose();
+                }
+
+                systemTemplateList.Clear();
+                systemTemplateList = null;
+            }
 		}
 
 		#endregion Methods
@@ -638,15 +660,30 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-		public void Dispose()
-		{
-			//clear all the collections
-			Clear();
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    //clear all the collections
+                    Clear();
 
-			//TODO : MovableObjectFactory : Root.Instance.UnregisterMovableObjectFactory( _psFactory );
-			//TODO : MovableObjectFactory : _psFactory = null;
-			instance = null;
-		}
+                    if ( rendererFactoryList != null )
+                    {
+                        rendererFactoryList.Clear();
+                        rendererFactoryList = null;
+                    }
+
+
+                    //TODO : MovableObjectFactory : Root.Instance.UnregisterMovableObjectFactory( _psFactory );
+                    //TODO : MovableObjectFactory : _psFactory = null;
+                    instance = null;
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion IDisposable Members
 

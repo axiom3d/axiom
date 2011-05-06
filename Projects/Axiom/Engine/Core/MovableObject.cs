@@ -1031,6 +1031,10 @@ namespace Axiom.Core
 		/// </param>
 		public override void DestroyInstance( ref MovableObject obj )
 		{
+            if ( !obj.IsDisposed )
+                obj.Dispose();
+
+            obj = null;
 		}
 
 		public override string Type

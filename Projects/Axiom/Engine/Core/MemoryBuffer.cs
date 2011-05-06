@@ -150,8 +150,8 @@ namespace Axiom.Core
 		}
 
 		internal MemoryBuffer( MemoryManager owner )
+            : base()
 		{
-			IsDisposed = false;
 			this.Owner = owner;
 		}
 

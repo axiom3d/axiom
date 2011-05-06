@@ -1070,14 +1070,27 @@ namespace Axiom.Core
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
+                        if ( !renderOperation.IsDisposed )
+                            renderOperation.Dispose();
+
 						renderOperation = null;
 					}
-					if ( indexData != null )
-						indexData.Dispose();
-					if ( vertexData != null )
-						vertexData.Dispose();
+
+                    if ( indexData != null )
+                    {
+                        if ( !indexData.IsDisposed )
+                            indexData.Dispose();
+
+                        indexData = null;
+                    }
+
+                    if ( vertexData != null )
+                    {
+                        if ( !vertexData.IsDisposed )
+                            vertexData.Dispose();
+
+                        vertexData = null;
+                    }
 				}
 
 				// There are no unmanaged resources to release, but

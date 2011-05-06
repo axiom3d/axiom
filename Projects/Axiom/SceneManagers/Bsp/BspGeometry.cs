@@ -395,8 +395,9 @@ namespace Axiom.SceneManagers.Bsp
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
+                        if ( !renderOperation.IsDisposed )
+                            renderOperation.Dispose();
+
 						renderOperation = null;
 					}
 				}

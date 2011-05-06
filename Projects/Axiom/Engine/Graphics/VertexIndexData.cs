@@ -139,6 +139,7 @@ namespace Axiom.Graphics
 		///		Default constructor.  Calls on the current buffer manager to initialize the bindings and declarations.
 		/// </summary>
 		public VertexData()
+            : base()
 		{
 			vertexDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
 			vertexBufferBinding = HardwareBufferManager.Instance.CreateVertexBufferBinding();
@@ -541,7 +542,30 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 
-
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -552,11 +576,13 @@ namespace Axiom.Graphics
 					if ( vertexDeclaration != null )
 					{
 						vertexDeclaration.Dispose();
+                        vertexDeclaration = null;
 					}
 
 					if ( vertexBufferBinding != null )
 					{
 						vertexBufferBinding.Dispose();
+                        vertexBufferBinding = null;
 					}
 				}
 

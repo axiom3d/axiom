@@ -452,7 +452,7 @@ namespace Axiom.Core
 		} ;
 
 		/// Resource group entry
-		public class ResourceGroup : IDisposable
+		public class ResourceGroup : DisposableObject
 		{
 			//OGRE_AUTO_MUTEX
 			/// <summary>Group name </summary>
@@ -547,21 +547,50 @@ namespace Axiom.Core
 
 			#region IDisposable Members
 
-			public void Dispose()
-			{
-				if ( Initialized )
-				{
-					Initialized = false;
-					LocationList.Clear();
-					ResourceIndexCaseInsensitive.Clear();
-					ResourceIndexCaseSensitive.Clear();
-					ResourceDeclarations.Clear();
-					LoadResourceOrders.Clear();
-					WorldGeometrySceneManager = null;
-					WorldGeometry = "";
-					Name = "";
-				}
-			}
+            /// <summary>
+            /// Class level dispose method
+            /// </summary>
+            /// <remarks>
+            /// When implementing this method in an inherited class the following template should be used;
+            /// protected override void dispose( bool disposeManagedResources )
+            /// {
+            /// 	if ( !isDisposed )
+            /// 	{
+            /// 		if ( disposeManagedResources )
+            /// 		{
+            /// 			// Dispose managed resources.
+            /// 		}
+            ///
+            /// 		// There are no unmanaged resources to release, but
+            /// 		// if we add them, they need to be released here.
+            /// 	}
+            ///
+            /// 	// If it is available, make the call to the
+            /// 	// base class's Dispose(Boolean) method
+            /// 	base.dispose( disposeManagedResources );
+            /// }
+            /// </remarks>
+            /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+            protected override void dispose( bool disposeManagedResources )
+            {
+                if ( !this.IsDisposed )
+                {
+                    if ( disposeManagedResources )
+                    {
+                        Initialized = false;
+                        LocationList.Clear();
+                        ResourceIndexCaseInsensitive.Clear();
+                        ResourceIndexCaseSensitive.Clear();
+                        ResourceDeclarations.Clear();
+                        LoadResourceOrders.Clear();
+                        WorldGeometrySceneManager = null;
+                        WorldGeometry = "";
+                        Name = "";
+                    }
+                }
+
+                base.dispose( disposeManagedResources );
+            }
 
 			#endregion IDisposable Members
 		} ;

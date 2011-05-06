@@ -234,6 +234,30 @@ namespace Axiom.ParticleSystems
 			RegisterParsers();
 		}
 
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -249,13 +273,18 @@ namespace Axiom.ParticleSystems
 					RemoveAllAffectors();
 
 					DestroyVisualParticles( 0, particlePool.Count );
-					if ( renderer != null )
-					{
-						// renderer.Dispose();
-						renderer = null;
-					}
+
+                    if ( renderer != null )
+                    {
+                        if ( !renderer.IsDisposed )
+                            renderer.Dispose();
+
+                        renderer = null;
+                    }
 				}
 			}
+
+            base.dispose( disposeManagedResources );
 		}
 
 		/// <summary>

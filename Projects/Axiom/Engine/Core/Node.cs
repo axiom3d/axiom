@@ -73,7 +73,7 @@ namespace Axiom.Core
 	///		e.g. SceneNode, Bone
 	///	</remarks>
 	///	<ogre headerVersion="1.39" sourceVersion="1.53" />
-	public abstract class Node
+	public abstract class Node : DisposableObject
 	{
 		public class DebugRenderable : DisposableObject, IRenderable
 		{
@@ -379,8 +379,9 @@ namespace Axiom.Core
 						// Dispose managed resources.
 						if ( renderOperation != null )
 						{
-							renderOperation.vertexData = null;
-							renderOperation.indexData = null;
+                            if ( !renderOperation.IsDisposed )
+                                renderOperation.Dispose();
+
 							renderOperation = null;
 						}
 					}
@@ -492,19 +493,13 @@ namespace Axiom.Core
 
 		#region Constructors
 
-		/// <summary>
-		///
-		/// </summary>
 		public Node()
 			: this( "Unnamed_" + nextUnnamedNodeExtNum++ )
 		{
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="name"></param>
 		public Node( string name )
+            : base()
 		{
 			this.name = name;
 
@@ -1745,72 +1740,55 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
 
-		private bool _disposed = false;
+                    if ( _debugRenderable != null )
+                    {
+                        if ( !_debugRenderable.IsDisposed )
+                            _debugRenderable.Dispose();
 
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+                        _debugRenderable = null;
+                    }
 
-		#endregion isDisposed Property
+                    this.childNodes.Clear();
+                    this.childNodes = null;
+                }
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( this.nodeSubMesh != null )
-						this.nodeSubMesh.Dispose();
-				}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-			isDisposed = true;
-		}
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion IDisposable Implementation
 	}

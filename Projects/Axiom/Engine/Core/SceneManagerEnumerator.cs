@@ -344,6 +344,9 @@ namespace Axiom.Core
 		public void DestroySceneManager( SceneManager sm )
 		{
 			// erase instance from list
+            if ( !sm.IsDisposed )
+                sm.Dispose();
+
 			_instances.Remove( sm.Name );
 
 			foreach ( SceneManagerFactory factory in _factories )
@@ -407,8 +410,12 @@ namespace Axiom.Core
 		///</summary>
 		public void ShutdownAll()
 		{
-			foreach ( SceneManager instance in _instances.Values )
-				instance.ClearScene();
+            foreach ( SceneManager instance in _instances.Values )
+            {
+                instance.ClearScene();
+                if (!instance.IsDisposed)
+                    instance.Dispose();
+            }
 		}
 
 		#endregion Public Methods

@@ -1325,6 +1325,7 @@ namespace Axiom.Core
 		public new const string TypeName = "Light";
 
 		public LightFactory()
+            : base()
 		{
 			base.Type = LightFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Light;
@@ -1423,11 +1424,6 @@ namespace Axiom.Core
 			}
 
 			return light;
-		}
-
-		public override void DestroyInstance( ref MovableObject obj )
-		{
-			obj = null;
 		}
 	}
 

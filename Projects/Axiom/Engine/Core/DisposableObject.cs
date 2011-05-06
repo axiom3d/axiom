@@ -180,7 +180,7 @@ namespace Axiom.Core
 		public bool IsDisposed
 		{
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
@@ -222,11 +222,11 @@ namespace Axiom.Core
 			IsDisposed = true;
 		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
+        public void Dispose()
+        {
+            dispose( true );
+            GC.SuppressFinalize( this );
+        }
 
 		#endregion IDisposable Implementation
 	}
