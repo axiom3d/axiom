@@ -1083,10 +1083,18 @@ namespace Axiom.RenderSystems.Xna
         bool useSkinnedEffect = false;
 		public override void BindGpuProgram( GpuProgram program )
 		{
-            if (program != null && program.IsSkeletalAnimationIncluded)
+            switch (program.Type)
             {
-                useSkinnedEffect = true;
-                LogManager.Instance.Write("Using Skinning Effect.");
+                case GpuProgramType.Vertex:
+
+                    if (program != null && program.IsSkeletalAnimationIncluded)
+                    {
+                        useSkinnedEffect = true;
+                        //LogManager.Instance.Write("Using Skinning Effect.");
+                    }
+                    else
+                        useSkinnedEffect = false;
+                    break;
             }
 			/*
 			switch ( program.Type )
