@@ -748,6 +748,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				_ambientLight = value;
                 basicEffect.AmbientLightColor = XnaHelper.Convert(_ambientLight).ToVector3();
+                skinnedEffect.AmbientLightColor = basicEffect.AmbientLightColor;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightAmbient = value;
 #endif
@@ -868,6 +869,7 @@ namespace Axiom.RenderSystems.Xna
 				_projectionMatrix = value;
 
                 basicEffect.Projection = XnaHelper.Convert(_projectionMatrix);
+                skinnedEffect.Projection = basicEffect.Projection;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
@@ -950,7 +952,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
                 basicEffect.View = XnaHelper.Convert(_viewMatrix);
-
+                skinnedEffect.View = basicEffect.View;
 
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ViewMatrix = _viewMatrix;
@@ -969,6 +971,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				_worldMatrix = value;
                 basicEffect.World = XnaHelper.Convert(_worldMatrix);
+                basicEffect.World = basicEffect.World;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
 #endif
@@ -1077,10 +1080,12 @@ namespace Axiom.RenderSystems.Xna
 
 		bool VertexShaderIsSet = false;
 		bool PixelShaderIsSet = false;
+        bool useSkinnedEffect = false;
 		public override void BindGpuProgram( GpuProgram program )
 		{
             if (program != null && program.IsSkeletalAnimationIncluded)
             {
+                useSkinnedEffect = true;
                 LogManager.Instance.Write("Using Skinning Effect.");
             }
 			/*
@@ -1559,14 +1564,31 @@ namespace Axiom.RenderSystems.Xna
 			StateManager.CommitState( _device );
 			StateManager.ResetState( _device );
 
-            basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
-            
+            XFG.Effect effectToUse;
+
+            if (useSkinnedEffect)
+            {
+                XNA.Matrix[] boneMatrices = new XNA.Matrix[Root.Instance.SceneManager.AutoParamData.WorldMatrixArray.Length];
+                for (int i = 0; i < Root.Instance.SceneManager.AutoParamData.WorldMatrixArray.Length; i++)
+                {
+                    boneMatrices[i] = XnaHelper.Convert(Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i]);
+                }
+                skinnedEffect.SetBoneTransforms(boneMatrices);
+                effectToUse = skinnedEffect;
+
+            }
+            else
+            {
+                basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
+                effectToUse = basicEffect;
+            }
+ 
             VertexElement ve = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
             if (ve != null) //this operation has Normals
             {
                 basicEffect.LightingEnabled = false; //turn off lighting
             }
-            basicEffect.CurrentTechnique.Passes[0].Apply();
+            effectToUse.CurrentTechnique.Passes[0].Apply();
             
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
@@ -1832,6 +1854,10 @@ namespace Axiom.RenderSystems.Xna
             basicEffect.FogStart = start;
             basicEffect.FogEnd = end;
 
+            skinnedEffect.FogEnabled = basicEffect.FogEnabled;
+            skinnedEffect.FogColor = basicEffect.FogColor;
+            skinnedEffect.FogStart = start;
+            skinnedEffect.FogEnd = end;
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.FogColor = color;
 			_ffProgramParameters.FogDensity = density;
@@ -2026,6 +2052,8 @@ namespace Axiom.RenderSystems.Xna
 				_device.Textures[ stage ] = xnaTexture.DXTexture;
 				basicEffect.Texture = (XFG.Texture2D)xnaTexture.DXTexture;
 				basicEffect.TextureEnabled = enabled;
+
+                skinnedEffect.Texture = (XFG.Texture2D)xnaTexture.DXTexture;
                 
 				// set stage description
 				texStageDesc[ stage ].tex = xnaTexture.DXTexture;
@@ -2408,6 +2436,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void UnbindGpuProgram( GpuProgramType type )
 		{
+            useSkinnedEffect = false;
 			switch ( type )
 			{
 				case GpuProgramType.Vertex:
