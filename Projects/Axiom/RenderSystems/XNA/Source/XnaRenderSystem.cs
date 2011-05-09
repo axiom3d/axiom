@@ -1254,6 +1254,7 @@ namespace Axiom.RenderSystems.Xna
 				_device = (XFG.GraphicsDevice)window[ "XNADEVICE" ];
 
                 basicEffect = new XFG.BasicEffect(_device);
+                skinnedEffect = new XFG.SkinnedEffect(_device);
 				// Create the texture manager for use by others
 				textureManager = new XnaTextureManager( _device );
 				// Also create hardware buffer manager
@@ -1568,8 +1569,8 @@ namespace Axiom.RenderSystems.Xna
 
             if (useSkinnedEffect)
             {
-                XNA.Matrix[] boneMatrices = new XNA.Matrix[Root.Instance.SceneManager.AutoParamData.WorldMatrixArray.Length];
-                for (int i = 0; i < Root.Instance.SceneManager.AutoParamData.WorldMatrixArray.Length; i++)
+                XNA.Matrix[] boneMatrices = new XNA.Matrix[Root.Instance.SceneManager.AutoParamData.WorldMatrixCount];
+                for (int i = 0; i < Root.Instance.SceneManager.AutoParamData.WorldMatrixCount; i++)
                 {
                     boneMatrices[i] = XnaHelper.Convert(Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i]);
                 }
