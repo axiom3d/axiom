@@ -18,7 +18,7 @@ namespace Axiom.Demos
 	{
 		#region Fields
 
-		const int NumRobots = 10;
+		const int NumRobots = 1;
 		AnimationState[] animState = new AnimationState[ NumRobots ];
 		float[] animationSpeed = new float[ NumRobots ];
 

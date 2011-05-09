@@ -705,7 +705,15 @@ namespace Axiom.Core
 
 		#region Constructors
 
-		public SceneManager( string name )
+        public AutoParamDataSource AutoParamData
+        {
+            get
+            {
+                return this.autoParamDataSource;
+            }
+        }
+
+        public SceneManager( string name )
 			: base()
 		{
 			this.cameraList = new CameraCollection();
