@@ -105,8 +105,8 @@
     <Compile Include="..\Common\XnaInput.cs">
       <Link>XnaInput.cs</Link>
     </Compile>
-    <Compile Include="..\Common\XnaInput.XBox.cs">
-      <Link>XnaInput.XBox.cs</Link>
+    <Compile Include="..\Common\XnaInput.x86.cs">
+      <Link>XnaInput.x86.cs</Link>
     </Compile>
     <Compile Include="Game.Xbox.SkeletalAnimation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

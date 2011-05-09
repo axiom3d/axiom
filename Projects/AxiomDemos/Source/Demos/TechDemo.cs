@@ -423,6 +423,7 @@ namespace Axiom.Demos
 			{
 				//Root.Instance.QueueEndRendering();
 				evt.StopRendering = true;
+                return;
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.A ) )

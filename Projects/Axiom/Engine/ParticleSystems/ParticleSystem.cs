@@ -1457,7 +1457,7 @@ namespace Axiom.ParticleSystems
 					ConfigureRenderer();
 			}
 
-			// Initialise emitted emitters list if not done already
+			// Initialize emitted emitters list if not done already
 			initializeEmittedEmitters();
 
 			float _iterationInterval = iterationIntervalSet ? iterationInterval : defaultIterationInterval;
@@ -1494,13 +1494,13 @@ namespace Axiom.ParticleSystems
 
 		private void initializeEmittedEmitters()
 		{
-			// Initialise the pool if needed
+			// Initialize the pool if needed
 			int currSize = 0;
 			if ( emittedEmitterPool.Count == 0 )
 			{
 				if ( emittedEmitterPoolInitialized )
 				{
-					// It was already initialised, but apparently no emitted emitters were used
+					// It was already initialized, but apparently no emitted emitters were used
 					return;
 				}
 				else

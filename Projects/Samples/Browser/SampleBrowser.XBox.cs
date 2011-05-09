@@ -27,8 +27,15 @@ namespace Axiom.Samples.XBox
             ResourceGroupManager.Instance.AddResourceLocation("Content/SdkTrays/Materials/Textures", "Folder", "Essential");
             ResourceGroupManager.Instance.AddResourceLocation("Content/SdkTrays/Fonts", "Folder", "Essential");
             ResourceGroupManager.Instance.AddResourceLocation("Content/SdkTrays/Overlays", "Folder", "Essential");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Thumbnails", "Folder", "Essential");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Icons", "Folder", "Essential");
 
             ResourceGroupManager.Instance.CreateResourceGroup("Popular");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Programs", "Folder", "Popular");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Scripts", "Folder", "Popular");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Textures", "Folder", "Popular");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Models", "Folder", "Popular");
+            ResourceGroupManager.Instance.AddResourceLocation("Content/Particles", "Folder", "Popular");
 
         }
 

@@ -87,8 +87,10 @@ namespace Axiom.RenderSystems.Xna
 		private int _primCount;
 		private int _renderCount = 0;
         XFG.BasicEffect basicEffect;
+        XFG.SkinnedEffect skinnedEffect;
+        XFG.Effect effect;
 		/// <summary>
-		/// The one used to crfeate the device.
+		/// The one used to create the device.
 		/// </summary>
 		private XnaRenderWindow _primaryWindow;
 
@@ -1077,6 +1079,10 @@ namespace Axiom.RenderSystems.Xna
 		bool PixelShaderIsSet = false;
 		public override void BindGpuProgram( GpuProgram program )
 		{
+            if (program != null && program.IsSkeletalAnimationIncluded)
+            {
+                LogManager.Instance.Write("Using Skinning Effect.");
+            }
 			/*
 			switch ( program.Type )
 			{
@@ -1251,9 +1257,7 @@ namespace Axiom.RenderSystems.Xna
 				// Create the GPU program manager
 				gpuProgramMgr = new XnaGpuProgramManager( _device );
 				// create & register HLSL factory
-				//HLSLProgramFactory = new D3D9HLSLProgramFactory();
-				//HighLevelGpuProgramManager::getSingleton().addFactory(mHLSLProgramFactory);
-				gpuProgramMgr.PushSyntaxCode( "hlsl" );
+                gpuProgramMgr.PushSyntaxCode("hlsl");
 
 
 				// Initialize the capabilities structures
@@ -1340,7 +1344,7 @@ namespace Axiom.RenderSystems.Xna
 			RenderWindow renderWindow = null;
 
 			// register the HLSL program manager
-			//HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
+			HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
 
 			if ( autoCreateWindow )
 			{
@@ -1372,6 +1376,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			StateManager = new StateManagement();
+            new XnaMaterialManager();
 
 			LogManager.Instance.Write( "[XNA] : Subsystem Initialized successfully." );
 			return renderWindow;
@@ -1555,7 +1560,7 @@ namespace Axiom.RenderSystems.Xna
 			StateManager.ResetState( _device );
 
             basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
-
+            
             VertexElement ve = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
             if (ve != null) //this operation has Normals
             {
@@ -1822,6 +1827,11 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetFog( Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end )
 		{
+            basicEffect.FogEnabled = mode != FogMode.None;
+            basicEffect.FogColor = XnaHelper.Convert(color).ToVector3();
+            basicEffect.FogStart = start;
+            basicEffect.FogEnd = end;
+
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.FogColor = color;
 			_ffProgramParameters.FogDensity = density;
