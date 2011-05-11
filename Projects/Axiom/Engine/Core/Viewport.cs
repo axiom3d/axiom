@@ -507,9 +507,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				//TODO : Implement Camera.RenderedBatchCount
-				//return Camera.RenderedBatchCount;
-				return 0;
+				return Camera.RenderedBatchCount;
 			}
 		}
 

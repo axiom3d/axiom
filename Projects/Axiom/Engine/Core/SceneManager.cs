@@ -5617,6 +5617,7 @@ namespace Axiom.Core
 						{
 							this.targetRenderSystem.UseLights( lightListToUse, pass.MaxSimultaneousLights );
 						}
+                        this.targetRenderSystem.CurrentPassIterationCount = pass.IterationCount;
 						// issue the render op
 						this.targetRenderSystem.Render( op );
 					} // iterate per light
@@ -5654,7 +5655,7 @@ namespace Axiom.Core
 					{
 						this.targetRenderSystem.UseLights( manualLightList, pass.MaxSimultaneousLights );
 					}
-
+                    this.targetRenderSystem.CurrentPassIterationCount = pass.IterationCount;
 					// issue the render op
 					this.targetRenderSystem.Render( op );
 				}
@@ -5663,6 +5664,7 @@ namespace Axiom.Core
 			{
 				// suppressRenderStateChanges
 				// Just render
+                this.targetRenderSystem.CurrentPassIterationCount = 1;
 				this.targetRenderSystem.Render( op );
 			}
 
