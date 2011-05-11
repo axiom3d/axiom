@@ -1752,10 +1752,23 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected bool queuedForDeletion;
 
-		#region PassIterationCount Property
+		#region IterationCount Property
+        /// <summary>
+        /// the number of iterations that this pass should perform when doing fast multi pass operation.
+        /// </summary>
+        /// <remarks>
+        /// Only applicable for programmable passes.
+        /// A value greater than 1 will cause the pass to be executed count number of
+        /// times without changing the render state.  This is very usefull for passes
+        /// that use programmable shaders that have to iterate more than once but don't
+        /// need a render state change.  Using multi pass can dramatically speed up rendering
+        /// for materials that do things like fur, blur.
+        /// A value of 1 turns off multi pass operation and the pass does
+        /// the normal pass operation.
+        /// </remarks>
+        public int IterationCount { get; set; }
 
-
-		#endregion PassIterationCount Property
+        #endregion IterationCount Property
 
 		/// <summary>
 		///		Gets a flag indicating whether this pass is ambient only.
@@ -1860,6 +1873,8 @@ namespace Axiom.Graphics
 
 			_name = index.ToString();
 
+            IterationCount = 1;
+
 			DirtyHash();
 		}
 
@@ -1951,7 +1966,7 @@ namespace Axiom.Graphics
 			target._onlyLightType = _onlyLightType;
 			target._shadingMode = _shadingMode;
 			target._polygonMode = _polygonMode;
-			//target._passIterationCount = _passIterationCount;
+			target.IterationCount = IterationCount;
 
 			// vertex program
 			if ( _vertexProgramUsage != null )
@@ -2875,8 +2890,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Object overrides
-
-	}
+    }
 
 	/// <summary>
 	///		Struct recording a pass which can be used for a specific illumination stage.
