@@ -11,7 +11,7 @@
   		<Configuration>Release</Configuration>
   		<Platform>x86</Platform>
 	  </Module>
-
+	  
     <Module Include="Axiom\axiom.core.module">
       <Configuration>Debug</Configuration>
       <Platform>Xbox</Platform>
