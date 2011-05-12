@@ -106,7 +106,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Components.Terrain.20
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Components.Paging.2010", "Components\Paging\Axiom.Components.Paging.2010.csproj", "{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Terrain.2010", "Samples\Axiom.Samples.Terrain\Axiom.Samples.Terrain.2010.csproj", "{B99D3D2B-0DF1-43D3-8542-04B3AD5BFAE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Terrain.2010", "Samples\Terrain\Axiom.Samples.Terrain.2010.csproj", "{B99D3D2B-0DF1-43D3-8542-04B3AD5BFAE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.Linux.2010", "Samples\Browser\Axiom.Samples.Browser.Linux.2010.csproj", "{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}"
 EndProject
