@@ -34,16 +34,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Text;
-
-using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Scripting;
 using Axiom.Math;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -318,6 +313,9 @@ namespace Axiom.ParticleSystems
 
 		public void RemoveSystem( string name )
 		{
+            if ( !systemList[ name ].IsDisposed )
+                systemList[ name ].Dispose();
+
 			systemList.Remove( name );
 		}
 

@@ -42,9 +42,17 @@ namespace Axiom.Samples.ParticleFX
             base.SetupContent();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        protected override void CleanupContent()
+        {
+            ParticleSystemManager.Instance.RemoveSystem( "Fireworks" );
+            ParticleSystemManager.Instance.RemoveSystem( "Nimbus" );
+            ParticleSystemManager.Instance.RemoveSystem( "Rain" );
+            ParticleSystemManager.Instance.RemoveSystem( "Aureola" );
+            ParticleSystemManager.Instance.RemoveSystem( "Fountain1" );
+            ParticleSystemManager.Instance.RemoveSystem( "Fountain2" );
+            base.CleanupContent();
+        }
+
         protected void SetupParticles()
         {
             // create some nice fireworks and place it at the origin
@@ -81,9 +89,6 @@ namespace Axiom.Samples.ParticleFX
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         protected void SetupTogglers()
         {
             // create check boxes to toggle the visibility of our particle systems
