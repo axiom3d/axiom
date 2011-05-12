@@ -772,11 +772,6 @@ namespace Axiom.Graphics
 			this.ApplyDefaults();
 		}
 
-		~Material()
-		{
-			this.Dispose();
-		}
-
 		#endregion Constructors and Destructor
 
 		#region Methods
@@ -1435,7 +1430,8 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-                    this.unload();
+                    if ( this.IsLoaded )
+                        this.unload();
 				}
 
 				// There are no unmanaged resources to release, but

@@ -37,14 +37,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using ResourceHandle = System.UInt64;
-
-using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -719,7 +716,8 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			foreach ( D3DHardwarePixelBuffer buf in _surfaceList )
 			{
-				buf.Dispose();
+                if ( !buf.IsDisposed )
+                    buf.Dispose();
 			}
 			this._surfaceList.Clear();
 		}
@@ -935,8 +933,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override void Unload()
 		{
-			base.Unload();
-
 			if ( IsLoaded )
 			{
 				if ( this._texture != null )
@@ -964,6 +960,8 @@ namespace Axiom.RenderSystems.DirectX9
 					this._volumeTexture = null;
 				}
 			}
+
+            base.Unload();
 		}
 
 		public bool ReleaseIfDefaultPool()

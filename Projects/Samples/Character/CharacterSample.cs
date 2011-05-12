@@ -115,9 +115,6 @@ namespace Axiom.Samples.CharacterSample
 			return base.MousePressed( evt, id );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void SetupContent()
 		{
 			// set background and some fog
