@@ -21,6 +21,24 @@
       <Platform>Xbox</Platform>
     </Module>
 
+    <Module Include="Axiom.Framework\axiom.framework.module">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </Module>
+    <Module Include="Axiom.Framework\axiom.framework.module">
+	  <Configuration>Release</Configuration>
+	  <Platform>x86</Platform>
+	</Module>
+	  
+    <Module Include="Axiom.Framework\axiom.framework.module">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox</Platform>
+    </Module>
+    <Module Include="Axiom.Framework\axiom.framework.module">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox</Platform>
+    </Module>
+	
     <Module Include="AxiomDemos\axiom.demos.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
