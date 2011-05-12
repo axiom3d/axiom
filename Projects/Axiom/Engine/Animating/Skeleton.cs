@@ -276,9 +276,9 @@ namespace Axiom.Animating
 
 		#region Construction and Destruction
 
-		internal Skeleton()
-		{
-		}
+        internal Skeleton()
+        {
+        }
 
 		/// <summary>
 		/// Constructor, don't call directly, use SkeletonManager.
@@ -639,10 +639,6 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="animSet"></param>
 		public virtual void SetAnimationState( AnimationStateSet animSet )
 		{
 			/*
@@ -710,10 +706,6 @@ namespace Axiom.Animating
 			return ap;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="fileName"></param>
 		public void DumpContents( string fileName )
 		{
 			FileStream fs = File.Open( fileName, FileMode.Create );
@@ -818,10 +810,16 @@ namespace Axiom.Animating
 		{
 			// clear the internal lists
 			animationList.Clear();
+
+            foreach ( Bone currentBone in boneList.Values )
+            {
+                if ( !currentBone.IsDisposed )
+                    currentBone.Dispose();
+            }
 			boneList.Clear();
 			namedBoneList.Clear();
 
-			//base.Unload();
+			base.Unload();
 		}
 
 		#endregion Implementation of Resource

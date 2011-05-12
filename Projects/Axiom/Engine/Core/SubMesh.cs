@@ -356,34 +356,39 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-                    if (indexData != null)
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    if ( indexData != null )
                     {
-                        if (!indexData.IsDisposed)
-						indexData.Dispose();
+                        if ( !indexData.IsDisposed )
+                            indexData.Dispose();
+
+                        indexData = null;
                     }
 
-                    if (vertexData != null)
+                    if ( vertexData != null )
                     {
-                        if (!vertexData.IsDisposed)
-						vertexData.Dispose();
-                    }
-					
-					foreach ( IndexData data in lodFaceList )
-					{
-                        if (!data.IsDisposed)
-						data.Dispose();
-					}
-				}
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                        if ( !vertexData.IsDisposed )
+                            vertexData.Dispose();
 
-            base.dispose(disposeManagedResources);
+                        vertexData = null;
+                    }
+
+                    foreach ( IndexData data in lodFaceList )
+                    {
+                        if ( !data.IsDisposed )
+                            data.Dispose();
+                    }
+                    lodFaceList.Clear();
+                }
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            base.dispose( disposeManagedResources );
 		}
 
         #endregion DisposableObject Implementation

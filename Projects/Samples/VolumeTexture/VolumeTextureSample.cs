@@ -1,9 +1,9 @@
-﻿using Axiom.Math;
+﻿using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Animating;
+using Axiom.Math;
 using Axiom.Media;
-using Axiom.Overlays;
+
 namespace Axiom.Samples.VolumeTexture
 {
 	public class VolumeTextureSample : SdkSample
@@ -22,19 +22,12 @@ namespace Axiom.Samples.VolumeTexture
 			Metadata[ "Category" ] = "Unsorted";
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="capabilities"></param>
 		public override void TestCapabilities( RenderSystemCapabilities capabilities )
 		{
 			if ( !capabilities.HasCapability( Capabilities.Texture3D ) )
 				throw new AxiomException( "Your card does not support 3D textures, so cannot run this demo. Sorry!" );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void SetupView()
 		{
 			base.SetupView();
@@ -53,9 +46,7 @@ namespace Axiom.Samples.VolumeTexture
 			animState.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
-		/// <summary>
-		/// 
-		/// </summary>
+
 		protected override void SetupContent()
 		{
 			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName,
@@ -109,7 +100,32 @@ namespace Axiom.Samples.VolumeTexture
 			Generate();
 		}
 
+        protected override void CleanupContent()
+        {
+            if ( vrend != null )
+            {
+                if ( !vrend.IsDisposed )
+                    vrend.Dispose();
 
+                vrend = null;
+            }
+
+            if ( trend != null )
+            {
+                if ( !trend.IsDisposed )
+                    trend.Dispose();
+
+                trend = null;
+            }
+
+            if ( ptex != null )
+            {
+                TextureManager.Instance.Remove( "DynaTex" );
+                ptex = null;
+            }
+
+            base.CleanupContent();
+        }
 
 		protected void CreateControls()
 		{

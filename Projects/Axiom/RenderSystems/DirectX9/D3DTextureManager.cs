@@ -33,14 +33,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
-using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -60,6 +56,7 @@ namespace Axiom.RenderSystems.DirectX9
 		private D3D.Direct3D manager;
 
 		public D3DTextureManager( D3D.Direct3D manager, D3D.Device device )
+            : base()
 		{
 			this.device = device;
 			this.manager = manager;

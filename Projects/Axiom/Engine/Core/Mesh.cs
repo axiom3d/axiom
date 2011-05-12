@@ -2839,22 +2839,22 @@ namespace Axiom.Core
             // Dispose managed resources.
             if (_skeleton != null)
             {
-                if (!this.Skeleton.IsDisposed)
+                if (!this._skeleton.IsDisposed)
                     this._skeleton.Dispose();
 
                 this._skeleton = null;
             }
 
-            foreach (SubMesh subMesh in _subMeshList)
+            foreach ( SubMesh subMesh in _subMeshList )
             {
-                if (!subMesh.IsDisposed)
+                if ( !subMesh.IsDisposed )
                     subMesh.Dispose();
             }
 			_subMeshList.Clear();
 
-            if (this._sharedVertexData != null)
+            if ( this._sharedVertexData != null )
             {
-                if (!this._sharedVertexData.IsDisposed)
+                if ( !this._sharedVertexData.IsDisposed )
                     this._sharedVertexData.Dispose();
 
                 this._sharedVertexData = null;
@@ -2876,8 +2876,9 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-                    this.unload();
-					}
+                    if (this.IsLoaded)
+                        this.unload();
+                }
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.

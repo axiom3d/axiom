@@ -59,6 +59,7 @@ namespace Axiom.Serialization
 		#region Constructors
 
 		public OgreSkeletonSerializer()
+            : base()
 		{
 			version = "[Serializer_v1.10]";
 		}

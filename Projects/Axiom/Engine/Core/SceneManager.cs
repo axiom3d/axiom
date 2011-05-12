@@ -5306,20 +5306,27 @@ namespace Axiom.Core
 
 				// Also create corresponding Material used for rendering this shadow
 				Material mat = (Material)MaterialManager.Instance[ matName ];
-				if ( mat == null )
-				{
-					mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
-				}
+                if ( mat == null )
+                {
+                    mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
+                }
 
-				// create texture unit referring to render target texture
-				TextureUnitState texUnit = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
-				// set projective based on camera
-				texUnit.SetProjectiveTexturing( true, cam );
-                texUnit.SetTextureAddressingMode( TextureAddressing.Border );
-				texUnit.TextureBorderColor = ColorEx.White;
-				mat.Touch();
-			}
-		}
+                Pass p = mat.GetTechnique( 0 ).GetPass( 0 );
+                if ( p.TextureUnitStageCount != 1 || p.GetTextureUnitState( 0 ).TextureName != targName )
+                {
+                    mat.GetTechnique( 0 ).GetPass( 0 ).RemoveAllTextureUnitStates();
+                    // create texture unit referring to render target texture
+                    TextureUnitState texUnit = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( targName );
+
+                    // set projective based on camera
+                    texUnit.SetProjectiveTexturing( true, cam );
+                    // clamp to border colour
+                    texUnit.SetTextureAddressingMode( TextureAddressing.Border );
+                    texUnit.TextureBorderColor = ColorEx.White;
+                    mat.Touch();
+                }
+            }
+        }
 
 		/// <summary>
 		/// Internal method for preparing shadow textures ready for use in a regular render
