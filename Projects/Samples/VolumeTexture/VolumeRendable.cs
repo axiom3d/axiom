@@ -31,6 +31,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// <param name="size"></param>
 		/// <param name="texture"></param>
 		public VolumeRendable( int slices, int size, string texture )
+            : base()
 		{
 			this.slices = slices;
 			this.size = size;
@@ -134,9 +135,6 @@ namespace Axiom.Samples.VolumeTexture
 			return dist.LengthSquared;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected void Initialize()
 		{
 			// Create geometry

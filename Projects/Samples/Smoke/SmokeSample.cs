@@ -62,9 +62,6 @@ namespace Axiom.Samples.Smoke
 			return base.FrameRenderingQueued( evt );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void SetupContent()
 		{
 
@@ -90,5 +87,11 @@ namespace Axiom.Samples.Smoke
 
 			base.SetupContent();
 		}
+
+        protected override void CleanupContent()
+        {
+            ParticleSystemManager.Instance.RemoveSystem( "Smoke" );
+            base.CleanupContent();
+        }
 	}
 }

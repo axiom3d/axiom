@@ -793,21 +793,7 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-                    if ( renderOperation != null )
-                    {
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
-
-                        renderOperation = null;
-                    }
-
-                    if ( this.subMesh != null )
-                    {
-                        if ( !this.subMesh.IsDisposed )
-                            this.subMesh.Dispose();
-
-                        this.subMesh = null;
-                    }
+                    renderOperation = null;
 				}
 
 				// There are no unmanaged resources to release, but
