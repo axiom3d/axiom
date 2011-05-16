@@ -831,9 +831,9 @@ namespace Axiom.Core
 					// Left-top
 					// Positions
 					pt = rotation * offsets[ 0 ];
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
+					posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
+					posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
+					posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
 					// Color
 					colPtr[ this.ptrOffset++ ] = color;
 					// Texture coords
