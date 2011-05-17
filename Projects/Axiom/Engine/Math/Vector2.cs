@@ -230,7 +230,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector2 operator +( Vector2 left, Vector2 right )
 		{
-			return new Vector2( left.x + right.x, left.y + right.y );
+            left.x += right.x;
+            left.y += right.y;
+            return left;
+			//return new Vector2( left.x + right.x, left.y + right.y );
 		}
 
 		/// <summary>
