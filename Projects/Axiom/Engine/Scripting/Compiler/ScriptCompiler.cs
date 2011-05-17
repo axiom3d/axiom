@@ -100,7 +100,7 @@ namespace Axiom.Scripting.Compiler
 		/// <summary>
 		/// This holds the target objects for each script to be imported
 		/// </summary>
-		private Dictionary<string, string> _importRequests = new Dictionary<string, string>();
+		private Dictionary<string, IList<string>> _importRequests = new Dictionary<string, IList<string>>();
 
 		/// <summary>
 		/// This stores the imports of the scripts, so they are separated and can be treated specially
@@ -307,8 +307,7 @@ namespace Axiom.Scripting.Compiler
 			}
 			else
 			{
-				string str = string.Format( "Compiler error: {0} in {1}({2})",
-					ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof( CompileErrorCode ) ), file, line );
+				string str = string.Format( "Compiler error: {0} in {1}({2})", ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof( CompileErrorCode ) ), file, line );
 
 				if ( !string.IsNullOrEmpty( msg ) )
 					str += ": " + msg;
@@ -449,21 +448,22 @@ namespace Axiom.Scripting.Compiler
 					// Otherwise, ensure '*' isn't already registered and register our request
 					if ( import.Target == "*" )
 					{
-						throw new NotImplementedException();
-						//_importRequests.Remove(
-						//        mImportRequests.erase(mImportRequests.lower_bound(import->source),
-						//            mImportRequests.upper_bound(import->source));
-						_importRequests.Add( import.Source, "*" );
+						if ( _importRequests.ContainsKey( import.Source ) )
+						{
+							_importRequests.Remove( import.Source );
+						}
+						_importRequests.Add( import.Source, new List<string>() { "*" } );
 					}
 					else
 					{
-						throw new NotImplementedException();
-						//        ImportRequestMap::iterator iter = mImportRequests.lower_bound(import->source),
-						//            end = mImportRequests.upper_bound(import->source);
-						//        if(iter == end || iter->second != "*")
+						if ( _importRequests.ContainsKey( import.Source ) )
 						{
-							_importRequests.Add( import.Source, import.Target );
+							if ( _importRequests[ import.Source ][ 0 ] != "*" )
+							_importRequests[ import.Source].Add( import.Target );
 						}
+						else
+							_importRequests.Add( import.Source, new List<string>() {import.Target });
+
 					}
 
 					nodes.RemoveAt( i );
@@ -478,20 +478,22 @@ namespace Axiom.Scripting.Compiler
 			{
 				if ( _importRequests.ContainsKey( it.Key ) )
 				{
-					string j = _importRequests[ it.Key ];
+					foreach ( string j in _importRequests[ it.Key ] )
+					{
 
-					if ( j == "*" )
-					{
-						// Insert the entire AST into the import table
-						_importTable.InsertRange( 0, it.Value );
-						continue; // Skip ahead to the next file
-					}
-					else
-					{
-						// Locate this target and insert it into the import table
-						IList<AbstractNode> newNodes = _locateTarget( it.Value, j );
-						if ( newNodes != null && newNodes.Count > 0 )
-							_importTable.InsertRange( 0, newNodes );
+						if ( j == "*" )
+						{
+							// Insert the entire AST into the import table
+							_importTable.InsertRange( 0, it.Value );
+							continue; // Skip ahead to the next file
+						}
+						else
+						{
+							// Locate this target and insert it into the import table
+							IList<AbstractNode> newNodes = _locateTarget( it.Value, j );
+							if ( newNodes != null && newNodes.Count > 0 )
+								_importTable.InsertRange( 0, newNodes );
+						}
 					}
 				}
 			}
