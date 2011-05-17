@@ -103,6 +103,7 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
+#if DEBUG
 					long objectCount = 0;
 					Dictionary<string, int> perTypeCount = new Dictionary<string, int>();
 					StringBuilder msg = new StringBuilder();
@@ -140,6 +141,8 @@ namespace Axiom.Core
 					}
 					else
 						LogManager.Instance.Write( "Everything went right! Congratulations!!" );
+#endif
+
 				}
 
 				// There are no unmanaged resources to release, but
