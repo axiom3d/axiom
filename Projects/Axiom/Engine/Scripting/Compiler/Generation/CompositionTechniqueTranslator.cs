@@ -89,7 +89,7 @@ namespace Axiom.Scripting.Compiler
 
 									AbstractNode it = getNodeAt( prop.Values, 0 );
 
-									if ( it is AtomAbstractNode )
+									if ( !(it is AtomAbstractNode) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 										return;
