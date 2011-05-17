@@ -1193,7 +1193,7 @@ namespace Axiom.RenderSystems.Xna
 
 				flags |= XFG.ClearOptions.Stencil;
 			}
-			XNA.Color col = new XNA.Color( (byte)( color.r * 255.0f ), (byte)( color.g * 255.0f ), (byte)( color.b * 255.0f ), (byte)( color.a * 255.0f ) );
+			XNA.Color col = XnaHelper.Convert( color );
 
 			// clear the device using the specified params
 			_device.Clear( flags, col, depth, stencil );
@@ -1580,7 +1580,12 @@ namespace Axiom.RenderSystems.Xna
                 XNA.Matrix[] boneMatrices = new XNA.Matrix[Root.Instance.SceneManager.AutoParamData.WorldMatrixCount];
                 for (int i = 0; i < Root.Instance.SceneManager.AutoParamData.WorldMatrixCount; i++)
                 {
+#if!(XBOX || XBOX360)
                     boneMatrices[i] = XnaHelper.Convert(Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i]);
+#else
+                    Axiom.Math.Matrix4 matrix = Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i];
+                    boneMatrices[i] = XnaHelper.Convert( matrix  );
+#endif
                 }
                 skinnedEffect.SetBoneTransforms(boneMatrices);
                 effectToUse = skinnedEffect;
