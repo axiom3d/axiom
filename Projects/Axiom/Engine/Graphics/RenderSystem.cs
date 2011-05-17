@@ -503,6 +503,7 @@ namespace Axiom.Graphics
 			{
 				val = op.vertexData.vertexCount;
 			}
+			val *= op.NumberOfInstances;
 
 			// account for a pass having multiple iterations
 			if ( currentPassIterationCount > 1 )
