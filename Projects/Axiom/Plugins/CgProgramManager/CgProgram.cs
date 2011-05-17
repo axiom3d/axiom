@@ -40,6 +40,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.Cg;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -357,26 +358,60 @@ namespace Axiom.CgPrograms
 		public override bool SetParam( string name, string val )
 		{
 			bool handled = true;
-
-			switch ( name )
+			try
 			{
-				case "entry_point":
-					entry = val;
-					break;
-
-				case "profiles":
-					profiles = val.Split( ' ' );
-					break;
-
-				default:
-					LogManager.Instance.Write( "CgProgram: Unrecognized parameter '{0}'", name );
-					handled = false;
-					break;
+				this.Properties[ name ] = val;
+			}
+			catch ( Exception ex )
+			{
+				LogManager.Instance.Write( "CgProgram: Unrecognized parameter '{0}'", name );
+				handled = false;
 			}
 
 			return handled;
 		}
 
 		#endregion IConfigurable Members
+
+		#region Custom Parameters
+
+		[ScriptableProperty( "entry_point" )]
+		private class EntryPointPropertyCommand : Scripting.IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				return ( (CgProgram)target ).entry.ToString();
+			}
+
+			public void Set( object target, string val )
+			{
+				( (CgProgram)target ).entry = val ;
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		[ScriptableProperty( "profiles" )]
+		private class IncludesMorphAnimationPropertyCommand : Scripting.IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				return ( (CgProgram)target ).profiles.ToString();
+			}
+
+			public void Set( object target, string val )
+			{
+				( (CgProgram)target ).profiles = val.Split( ' ' );
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		#endregion Custom Parameters
+
 	}
 }
