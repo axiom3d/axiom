@@ -130,23 +130,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											case Keywords.ID_TARGET_WIDTH_SCALED:
-											case Keywords.ID_TARGET_HEIGHT_SCALED:
 												{
-													bool pSetFlag = false;
-													int pSize = 0;
-													float pFactor = 0;
-													if ( atom.Id == (uint)Keywords.ID_TARGET_WIDTH_SCALED )
-													{
-														pSetFlag = widthSet;
-														pSize = width;
-														pFactor = widthFactor;
-													}
-													else
-													{
-														pSetFlag = heightSet;
-														pSize = height;
-														pFactor = heightFactor;
-													}
 													// advance to next to get scaling
 													it = getNodeAt( prop.Values, atomIndex++ );
 													if ( it == null || !(it is AtomAbstractNode) )
@@ -161,9 +145,30 @@ namespace Axiom.Scripting.Compiler
 														return;
 													}
 
-													pSize = 0;
-													pFactor = atom.Number;
-													pSetFlag = true;
+													widthSet = true;
+													width = 0;
+													widthFactor = atom.Number;
+												}
+												break;
+											case Keywords.ID_TARGET_HEIGHT_SCALED:
+												{
+													// advance to next to get scaling
+													it = getNodeAt( prop.Values, atomIndex++ );
+													if ( it == null || !(it is AtomAbstractNode) )
+													{
+														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+														return;
+													}
+													atom = (AtomAbstractNode)it;
+													if ( !atom.IsNumber )
+													{
+														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+														return;
+													}
+
+													heightSet = true;
+													height = 0;
+													heightFactor = atom.Number;
 												}
 												break;
 

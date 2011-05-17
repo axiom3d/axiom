@@ -178,8 +178,7 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													j.Value + " is not a supported argument to the texture property" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, j.Value + " is not a supported argument to the texture property" );
 											}
 
 											j = getNodeAt( prop.Values, index++ );
@@ -199,8 +198,7 @@ namespace Axiom.Scripting.Compiler
 										_textureunit.IsHardwareGammaEnabled = sRGBRead;
 									}
 									else
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											j.Value + " is not a valid texture name" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, j.Value + " is not a valid texture name" );
 								}
 								break;
 							#endregion ID_TEXTURE
@@ -719,8 +717,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"colour_op must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "colour_op must have at most 1 argument" );
 								}
 								else
 								{
@@ -746,15 +743,13 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													prop.Values[ 0 ].Value + " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
 									}
 								}
 								break;

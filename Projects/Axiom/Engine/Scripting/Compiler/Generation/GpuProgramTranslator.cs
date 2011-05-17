@@ -86,16 +86,14 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( string.IsNullOrEmpty( obj.Name ) )
 					{
-						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line,
-							"gpu program object must have names" );
+						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line,	"gpu program object must have name" );
 
 						return;
 					}
 				}
 				else
 				{
-					compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line,
-						"gpu program object must have names" );
+					compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line,	"gpu program object must have name" );
 
 					return;
 				}
@@ -103,8 +101,7 @@ namespace Axiom.Scripting.Compiler
 				// Must have a language type
 				if ( obj.Values.Count == 0 )
 				{
-					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line,
-						"gpu program object require language declarations" );
+					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line,	"gpu program object require language declarations" );
 					return;
 				}
 
@@ -144,16 +141,14 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values.Count != 1 )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"shared_params_ref requires a single parameter" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "shared_params_ref requires a single parameter" );
 										continue;
 									}
 
 									AbstractNode i0 = getNodeAt( prop.Values, 0 );
 									if ( !(i0 is AtomAbstractNode) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"shared parameter set name expected" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "shared parameter set name expected" );
 										continue;
 									}
 									AtomAbstractNode atom0 = (AtomAbstractNode)i0;
@@ -184,16 +179,14 @@ namespace Axiom.Scripting.Compiler
 
 										if ( !(i0 is AtomAbstractNode) || !(i1 is AtomAbstractNode) )
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												"name or index and parameter type expected" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "name or index and parameter type expected" );
 											return;
 										}
 
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 										if ( !named && !atom0.IsNumber )
 										{
-											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												"parameter index expected" );
+											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "parameter index expected" );
 											return;
 										}
 
@@ -220,14 +213,12 @@ namespace Axiom.Scripting.Compiler
 												}
 												catch
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-														"setting matrix4x4 parameter failed" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "setting matrix4x4 parameter failed" );
 												}
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-													"incorrect matrix4x4 declaration" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "incorrect matrix4x4 declaration" );
 											}
 										}
 										else
@@ -258,8 +249,7 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													"incorrect type specified; only variants of int and float allowed" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "incorrect type specified; only variants of int and float allowed" );
 												isValid = false;
 											}
 
@@ -292,14 +282,12 @@ namespace Axiom.Scripting.Compiler
 														}
 														catch
 														{
-															compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-																"setting of constant failed" );
+															compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "setting of constant failed" );
 														}
 													}
 													else
 													{
-														compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-															"incorrect integer constant declaration" );
+														compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "incorrect integer constant declaration" );
 													}
 												}
 												else
@@ -319,14 +307,12 @@ namespace Axiom.Scripting.Compiler
 														}
 														catch
 														{
-															compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-																"setting of constant failed" );
+															compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "setting of constant failed" );
 														}
 													}
 													else
 													{
-														compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-															"incorrect float constant declaration" );
+														compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "incorrect float constant declaration" );
 													}
 												}
 											}
@@ -334,8 +320,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"param_named and param_indexed properties requires at least 3 arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "param_named and param_indexed properties requires at least 3 arguments" );
 									}
 								}
 								break;
@@ -356,15 +341,13 @@ namespace Axiom.Scripting.Compiler
 
 										if ( !(i0 is AtomAbstractNode) || !(i1 is AtomAbstractNode) )
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												"name or index and auto constant type expected" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "name or index and auto constant type expected" );
 											return;
 										}
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 										if ( !named && !atom0.IsNumber )
 										{
-											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												"parameter index expected" );
+											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "parameter index expected" );
 											return;
 										}
 
@@ -570,8 +553,7 @@ namespace Axiom.Scripting.Compiler
 							#endregion ID_PARAM_INDEXED_AUTO || ID_PARAM_NAMED_AUTO
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}
@@ -596,13 +578,11 @@ namespace Axiom.Scripting.Compiler
 								if ( prop.Values[ 0 ] is AtomAbstractNode )
 									source = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 								else
-									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"source file expected" );
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "source file expected" );
 							}
 							else
 							{
-								compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-									"source file expected" );
+								compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "source file expected" );
 							}
 						}
 						else if ( prop.Id == (uint)Keywords.ID_SYNTAX )
@@ -612,13 +592,11 @@ namespace Axiom.Scripting.Compiler
 								if ( prop.Values[ 0 ] is AtomAbstractNode )
 									syntax = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 								else
-									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"syntax string expected" );
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "syntax string expected" );
 							}
 							else
 							{
-								compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-									"syntax string expected" );
+								compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "syntax string expected" );
 							}
 						}
 						else
@@ -654,8 +632,7 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.UnsupportedByRenderSystem, obj.File, obj.Line );
 					//Register the unsupported program so that materials that use it know that
 					//it exists but is unsupported
-					GpuProgram unsupportedProg = GpuProgramManager.Instance.Create( obj.Name, compiler.ResourceGroup,
-						_translateIDToGpuProgramType( obj.Id ), syntax );
+					GpuProgram unsupportedProg = GpuProgramManager.Instance.Create( obj.Name, compiler.ResourceGroup, _translateIDToGpuProgramType( obj.Id ), syntax );
 
 					return;
 				}
@@ -664,14 +641,12 @@ namespace Axiom.Scripting.Compiler
 				object progObj;
 				GpuProgram prog = null;
 
-				ScriptCompilerEvent evt = new CreateGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, syntax,
-					_translateIDToGpuProgramType( obj.Id ) );
+				ScriptCompilerEvent evt = new CreateGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, syntax, _translateIDToGpuProgramType( obj.Id ) );
 
 				bool processed = compiler._fireEvent( ref evt, out progObj );
 				if ( !processed )
 				{
-					prog = (GpuProgram)GpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, source,
-						_translateIDToGpuProgramType( obj.Id ), syntax );
+					prog = (GpuProgram)GpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, source, _translateIDToGpuProgramType( obj.Id ), syntax );
 				}
 				else
 					prog = (GpuProgram)progObj;
@@ -679,8 +654,7 @@ namespace Axiom.Scripting.Compiler
 				// Check that allocation worked
 				if ( prog == null )
 				{
-					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
-						"gpu program \"" + obj.Name + "\" could not be created" );
+					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line, "gpu program \"" + obj.Name + "\" could not be created" );
 					return;
 				}
 
@@ -735,13 +709,11 @@ namespace Axiom.Scripting.Compiler
 								if ( prop.Values[ 0 ] is AtomAbstractNode )
 									source = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 								else
-									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"source file expected" );
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "source file expected" );
 							}
 							else
 							{
-								compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-									"source file expected" );
+								compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "source file expected" );
 							}
 						}
 						else
@@ -759,8 +731,7 @@ namespace Axiom.Scripting.Compiler
 
 									if ( prop.Name == "attach" )
 									{
-										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
-											ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, ( (AtomAbstractNode)it ).Value );
+										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, ( (AtomAbstractNode)it ).Value );
 
 										compiler._fireEvent( ref evt );
 										value += ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -787,14 +758,12 @@ namespace Axiom.Scripting.Compiler
 				object progObj;
 				HighLevelGpuProgram prog = null;
 
-				ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, language,
-						_translateIDToGpuProgramType( obj.Id ) );
+				ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, language, _translateIDToGpuProgramType( obj.Id ) );
 
 				bool processed = compiler._fireEvent( ref evnt, out progObj );
 				if ( !processed )
 				{
-					prog = (HighLevelGpuProgram)(
-						HighLevelGpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, language, _translateIDToGpuProgramType( obj.Id ) ) );
+					prog = (HighLevelGpuProgram)( HighLevelGpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, language, _translateIDToGpuProgramType( obj.Id ) ) );
 
 					prog.SourceFile = source;
 				}
@@ -804,8 +773,7 @@ namespace Axiom.Scripting.Compiler
 				// Check that allocation worked
 				if ( prog == null )
 				{
-					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
-						"gpu program \"" + obj.Name + "\" could not be created" );
+					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line, "gpu program \"" + obj.Name + "\" could not be created" );
 					return;
 				}
 
@@ -854,8 +822,7 @@ namespace Axiom.Scripting.Compiler
 							if ( prop.Values.Count != 0 && prop.Values[ 0 ] is AtomAbstractNode )
 								value = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
-							ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
-								ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, value );
+							ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.GpuProgram, value );
 
 							compiler._fireEvent( ref evt );
 							customParameters[ "delegate" ] = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -892,15 +859,13 @@ namespace Axiom.Scripting.Compiler
 				Object progObj;
 				HighLevelGpuProgram prog = null;
 
-				ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, string.Empty, "unified",
-					_translateIDToGpuProgramType( obj.Id ) );
+				ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, string.Empty, "unified", _translateIDToGpuProgramType( obj.Id ) );
 
 				bool processed = compiler._fireEvent( ref evnt, out progObj );
 
 				if ( !processed )
 				{
-					prog = (HighLevelGpuProgram)(
-						HighLevelGpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, "unified", _translateIDToGpuProgramType( obj.Id ) ) );
+					prog = (HighLevelGpuProgram)( HighLevelGpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, "unified", _translateIDToGpuProgramType( obj.Id ) ) );
 				}
 				else
 					prog = (HighLevelGpuProgram)progObj;
@@ -908,8 +873,7 @@ namespace Axiom.Scripting.Compiler
 				// Check that allocation worked
 				if ( prog == null )
 				{
-					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
-						"gpu program \"" + obj.Name + "\" could not be created" );
+					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line, "gpu program \"" + obj.Name + "\" could not be created" );
 					return;
 				}
 
