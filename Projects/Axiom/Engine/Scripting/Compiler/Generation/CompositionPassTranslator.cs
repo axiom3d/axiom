@@ -82,8 +82,15 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
 					return;
 				}
-
-				_Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof( CompositorPassType ) );
+				try
+				{
+					_Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof( CompositorPassType ) );
+				}
+				catch ( System.Exception ex )
+				{
+					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line, "pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\"." );
+					return;
+				}
 				if ( _Pass.Type == CompositorPassType.RenderCustom )
 				{
 					string customType = string.Empty;
@@ -94,12 +101,6 @@ namespace Axiom.Scripting.Compiler
 						return;
 					}
 					_Pass.CustomType = customType;
-				}
-				else
-				{
-					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line,
-						"pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\"." );
-					return;
 				}
 
 				foreach ( AbstractNode i in obj.Children )
