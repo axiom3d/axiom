@@ -265,8 +265,7 @@ namespace Axiom.Scripting.Compiler
 							#endregion ID_SHADOWS_ENABLED
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

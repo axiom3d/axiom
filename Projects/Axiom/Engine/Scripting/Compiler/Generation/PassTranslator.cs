@@ -277,8 +277,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 2 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"scene_blend supports at most 2 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scene_blend supports at most 2 arguments" );
 								}
 								else if ( prop.Values.Count == 1 )
 								{
@@ -305,15 +304,13 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													"scene_blend does not support \"" + prop.Values[ 0 ].Value + "\" for argument 1" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "scene_blend does not support \"" + prop.Values[ 0 ].Value + "\" for argument 1" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"scene_blend does not support \"" + prop.Values[ 0 ].Value + "\" for argument 1" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "scene_blend does not support \"" + prop.Values[ 0 ].Value + "\" for argument 1" );
 									}
 								}
 								else
@@ -326,8 +323,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"scene_blend does not support \"" + i0.Value + "\" and \"" + i1.Value + "\" as arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "scene_blend does not support \"" + i0.Value + "\" and \"" + i1.Value + "\" as arguments" );
 									}
 								}
 								break;
@@ -375,8 +371,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													"separate_scene_blend does not support \"" + atom0.Value + "\" as argument 1" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "separate_scene_blend does not support \"" + atom0.Value + "\" as argument 1" );
 												return;
 										}
 
@@ -399,8 +394,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													"separate_scene_blend does not support \"" + atom1.Value + "\" as argument 2" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "separate_scene_blend does not support \"" + atom1.Value + "\" as argument 2" );
 												return;
 										}
 
@@ -409,8 +403,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"separate_scene_blend does not support \"" + i0.Value + "\" as argument 1" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "separate_scene_blend does not support \"" + i0.Value + "\" as argument 1" );
 									}
 								}
 								else
@@ -430,14 +423,12 @@ namespace Axiom.Scripting.Compiler
 										}
 										else
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												"one of the arguments to separate_scene_blend is not a valid scene blend factor directive" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "one of the arguments to separate_scene_blend is not a valid scene blend factor directive" );
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"one of the arguments to separate_scene_blend is not a valid scene blend factor directive" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "one of the arguments to separate_scene_blend is not a valid scene blend factor directive" );
 									}
 								}
 								break;

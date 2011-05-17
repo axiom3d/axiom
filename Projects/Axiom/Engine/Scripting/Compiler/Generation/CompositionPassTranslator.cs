@@ -166,7 +166,7 @@ namespace Axiom.Scripting.Compiler
 									{
 										int index = 0;
 
-										if ( !getInt( i2, out index ) )
+										if ( i2 != null && !getInt( i2, out index ) )
 										{
 											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 											return;
