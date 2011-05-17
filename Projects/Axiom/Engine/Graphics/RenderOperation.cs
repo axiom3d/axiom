@@ -51,26 +51,42 @@ namespace Axiom.Graphics
 		#region Member variables
 
 		/// <summary>
-		///		Type of operation to perform.
+		///	Type of operation to perform.
 		/// </summary>
-		public OperationType operationType;
+		public OperationType operationType = OperationType.TriangleList;
 
 		/// <summary>
-		///		Contains a list of hardware vertex buffers for this complete render operation.
+		///	Contains a list of hardware vertex buffers for this complete render operation.
 		/// </summary>
 		public VertexData vertexData;
 
 		/// <summary>
-		///		When <code>useIndices</code> is set to true, this must hold a reference to an index
-		///		buffer containing indices into the vertices stored here. 
+		///	When <code>useIndices</code> is set to true, this must hold a reference to an index
+		///	buffer containing indices into the vertices stored here. 
 		/// </summary>
 		public IndexData indexData;
 
 		/// <summary>
-		///		Specifies whether or not a list of indices should be used when rendering the vertices in
-		///		the buffers.
+		///	Specifies whether or not a list of indices should be used when rendering the vertices in
+		///	the buffers.
 		/// </summary>
-		public bool useIndices;
+		public bool useIndices = true;
+
+		/// <summary>
+		/// Debug pointer back to renderable which created this
+		/// </summary>
+		public IRenderable SourceRenderable;
+
+		/// <summary>
+		/// The number of instances for the render operation - this option is supported 
+		/// in only a part of the render systems.
+		/// </summary>
+		public int NumberOfInstances = 1;
+
+		/// <summary>
+		/// Flag to indicate that it is possible for this operation to use a global vertex instance buffer if available.
+		/// </summary>
+		public bool UseGlobalInstancingVertexBufferIfAvailable = true;
 
 		#endregion
 
@@ -80,61 +96,61 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public RenderOperation()
-            : base()
+			: base()
 		{
 		}
 
 		#endregion
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( this.vertexData != null )
-                    {
-                        if ( !this.vertexData.IsDisposed )
-                            this.vertexData.Dispose();
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.vertexData != null )
+					{
+						if ( !this.vertexData.IsDisposed )
+							this.vertexData.Dispose();
 
-                        this.vertexData = null;
-                    }
+						this.vertexData = null;
+					}
 
-                    if ( this.indexData != null )
-                    {
-                        if ( !this.indexData.IsDisposed )
-                            this.indexData.Dispose();
+					if ( this.indexData != null )
+					{
+						if ( !this.indexData.IsDisposed )
+							this.indexData.Dispose();
 
-                        this.indexData = null;
-                    }
-                }
-            }
+						this.indexData = null;
+					}
+				}
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 	}
 }
