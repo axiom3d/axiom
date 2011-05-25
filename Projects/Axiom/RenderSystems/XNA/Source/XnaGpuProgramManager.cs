@@ -34,14 +34,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using ResourceHandle = System.UInt64;
-
-using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
-using Axiom.Collections;
 
 #endregion Namespace Declarations
 
