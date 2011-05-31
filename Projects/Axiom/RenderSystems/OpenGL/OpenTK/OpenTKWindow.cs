@@ -286,11 +286,18 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Resize( int width, int height )
 		{
-			if ( _window == null )
-				return;
-			_window.Width = width;
-			_window.Height = height;
-			WindowEventMonitor.Instance.WindowResized( this );
+            if (_window == null)
+            {
+                this.Width = width;
+                this.Height = height;
+                this.WindowMovedOrResized();
+            }
+            else
+            {
+                _window.Width = width;
+                _window.Height = height;
+                WindowEventMonitor.Instance.WindowResized(this);
+            }
 		}
 
 		public override void WindowMovedOrResized()
