@@ -1234,6 +1234,7 @@ namespace Axiom.Core
 			return result;
 		}
 
+		FrameEventArgs frameEventArgs = new FrameEventArgs();
 		/// <summary>
 		///    Method for raising frame started events.
 		/// </summary>
@@ -1250,12 +1251,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameStarted()
 		{
-			FrameEventArgs e = new FrameEventArgs();
+			//FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
+			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameStarted( e );
+			return this.OnFrameStarted( frameEventArgs );
 		}
 
 		/// <summary>
@@ -1272,12 +1273,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameRenderingQueued()
 		{
-			FrameEventArgs e = new FrameEventArgs();
+			//FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
+			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameRenderingQueued( e );
+			return this.OnFrameRenderingQueued( frameEventArgs );
 		}
 
 		/// <summary>
@@ -1296,12 +1297,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameEnded()
 		{
-			FrameEventArgs e = new FrameEventArgs();
+			//FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
+			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameEnded( e );
+			return this.OnFrameEnded( frameEventArgs );
 		}
 
 		/// <summary>
