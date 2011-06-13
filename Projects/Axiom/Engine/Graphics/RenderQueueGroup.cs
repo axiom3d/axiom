@@ -225,9 +225,9 @@ namespace Axiom.Graphics
 				splitPassesByLightingType = value;
 
 				// set the value for all priority groups as well
-				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+				foreach ( KeyValuePair<ushort, RenderPriorityGroup> item in PriorityGroups )
 				{
-					group.SplitPassesByLightingType = splitPassesByLightingType;
+					item.Value.SplitPassesByLightingType = splitPassesByLightingType;
 				}
 			}
 		}

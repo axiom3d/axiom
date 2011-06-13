@@ -51,7 +51,7 @@ namespace Axiom.Core
 
 		public bool Equals( string x, string y )
 		{
-			return x.ToLower() == y.ToLower();
+			return string.Equals( x, y, StringComparison.CurrentCultureIgnoreCase );
 		}
 
 		public int GetHashCode( string obj )

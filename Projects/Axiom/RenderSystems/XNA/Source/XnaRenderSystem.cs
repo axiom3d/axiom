@@ -38,7 +38,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
+
 #if !(XBOX || XBOX360 || SILVERLIGHT )
 using System.Windows.Forms;
 #endif
@@ -1603,7 +1605,8 @@ namespace Axiom.RenderSystems.Xna
                 basicEffect.LightingEnabled = false; //turn off lighting
             }
             effectToUse.CurrentTechnique.Passes[0].Apply();
-            
+			XFG.DualTextureEffect dualTextureEffect;
+			
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
 			{
@@ -1742,7 +1745,6 @@ namespace Axiom.RenderSystems.Xna
 			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
 			XFG.PrimitiveType primType = 0;
-
 			switch ( op.operationType )
 			{
 				case OperationType.PointList:
@@ -1767,7 +1769,7 @@ namespace Axiom.RenderSystems.Xna
 					break;
 				case OperationType.TriangleFan:
                     throw new Exception("XNA 4.0 doesn't support TriangleFan");
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
+					//primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
 					break;
 			} // switch(primType)
 
@@ -1794,7 +1796,7 @@ namespace Axiom.RenderSystems.Xna
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
 			_device.SetVertexBuffer( null );
 			_device.Indices = null;
-
+			_device.Textures[ 0 ] = null;
 
 #if AXIOM_FF_EMULATION
 			/*---------------shaders generator part------*/
@@ -1868,10 +1870,10 @@ namespace Axiom.RenderSystems.Xna
             basicEffect.FogStart = start;
             basicEffect.FogEnd = end;
 
-            skinnedEffect.FogEnabled = basicEffect.FogEnabled;
-            skinnedEffect.FogColor = basicEffect.FogColor;
-            skinnedEffect.FogStart = start;
-            skinnedEffect.FogEnd = end;
+			skinnedEffect.FogEnabled = mode != FogMode.None;
+			skinnedEffect.FogColor = XnaHelper.Convert( color ).ToVector3();
+			skinnedEffect.FogStart = start;
+			skinnedEffect.FogEnd = end;
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.FogColor = color;
 			_ffProgramParameters.FogDensity = density;
@@ -2092,6 +2094,17 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureAddressingMode( int stage, UVWAddressing texAddressingMode )
 		{
+			if ( _device.GetVertexBuffers().Length == 0 )
+			{
+				return;
+			}
+			if( !( from XFG.VertexElement vde in _device.GetVertexBuffers()[ 0 ].VertexBuffer.VertexDeclaration.GetVertexElements()
+				   where vde.VertexElementUsage == XFG.VertexElementUsage.Normal
+				   select vde ).Any() )
+			{
+				return;
+			}
+
 			XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
 			bool compensateNPOT = false;
 
@@ -2124,6 +2137,9 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
 		{
+			basicEffect.Alpha = 1.0f;
+			skinnedEffect.Alpha = 1.0f;
+
 			if ( blendMode.blendType == LayerBlendType.Color )
 			{
 				texStageDesc[ stage ].layerBlendMode = blendMode;
@@ -2177,12 +2193,15 @@ namespace Axiom.RenderSystems.Xna
 				{
 					if (i == 0)
 					{
-						   texStageDesc[stage].layerBlendMode.alphaArg1 = blendMode.alphaArg1; 
+						texStageDesc[stage].layerBlendMode.alphaArg1 = blendMode.alphaArg1;
+						basicEffect.Alpha = blendMode.alphaArg1;
 					}
 					else if (i == 1)
 					{
-						texStageDesc[stage].layerBlendMode.alphaArg2 = blendMode.alphaArg2; 
+						texStageDesc[stage].layerBlendMode.alphaArg2 = blendMode.alphaArg2;
+						//basicEffect.Alpha = blendMode.alphaArg2;
 					}
+					skinnedEffect.Alpha = basicEffect.Alpha;
 				}
 				// Source2
 				blendSource = blendMode.source2;
