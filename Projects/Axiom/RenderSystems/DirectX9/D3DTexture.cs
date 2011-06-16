@@ -181,6 +181,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3DTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device, D3D.Direct3D manager )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+            device = D3DRenderSystem.ActiveD3D9Device; // temp hack till 1.7 upgrade
 			Debug.Assert( device != null, "Cannot create a texture without a valid D3D Device." );
 			this._device = device;
 			this._manager = manager;

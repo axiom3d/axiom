@@ -558,9 +558,10 @@ namespace Axiom.RenderSystems.DirectX9
 			                            mLeft, mTop, winWidth, winHeight, parentHWnd, 0, hInst, this );
                 */
 
-                hWnd = new DefaultForm(classStyle, dwStyleEx, title, GetWindowStyle(fullScreen),
+                var wnd = new DefaultForm(classStyle, dwStyleEx, title, GetWindowStyle(fullScreen),
                     this.left, this.top, winWidth, winHeight, parentHWnd);
-
+		        hWnd = wnd;
+                wnd.RenderWindow = this;
                 WindowEventMonitor.Instance.RegisterWindow( this );
 			}
 			else

@@ -17,6 +17,12 @@ namespace Axiom.RenderSystems.DirectX9
         {
         }
 
+        public enum ResourceCreationPolicy
+        {
+            CreateOnActiveDevice,
+            CreateOnAllDevices
+        }
+
         #endregion
 
         private readonly object _resourcesMutex = new object();
@@ -24,6 +30,11 @@ namespace Axiom.RenderSystems.DirectX9
         protected new readonly ResourceContainer Resources = new ResourceContainer();
 
         private int _deviceAccessLockCount;
+
+        public ResourceCreationPolicy CreationPolicy;
+
+        [OgreVersion(1, 7)]
+        public bool AutoHardwareBufferManagement { get; set; }
 
         protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {

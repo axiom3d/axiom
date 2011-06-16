@@ -22,9 +22,7 @@ namespace Axiom.Core.Collections
             foreach (var values in this)
             {
                 var key = values.Key;
-                var erased = values.Value.Where( v => !predicate( key, v ) );
-                if (erased.Count() < values.Value.Count)
-                    this[key] = erased.ToList();
+                values.Value.RemoveAll( v => predicate(key, v) );
             }
         }
     }

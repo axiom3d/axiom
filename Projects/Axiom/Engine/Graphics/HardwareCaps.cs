@@ -441,11 +441,6 @@ namespace Axiom.Graphics
             }
         }
 
-        /// <summary>
-	    /// name of the GPU vendor
-	    /// </summary>
-        public string VendorName { get; set; }
-
 		#endregion DeviceName Property
 
 		#region DeviceName Property
@@ -638,7 +633,7 @@ namespace Axiom.Graphics
         public void Log(Log logMgr)
 		{
 			logMgr.Write( "---RenderSystem capabilities---" );
-            logMgr.Write( "\t-GPU Vendor: {0}", VendorName );
+            logMgr.Write( "\t-GPU Vendor: {0}", VendorToString(Vendor) );
 			logMgr.Write( "\t-Device Name: {0}", _deviceName );
 			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
 			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );

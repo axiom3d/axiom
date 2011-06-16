@@ -175,7 +175,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             set
             {
-                device.SetTransform(TransformState.World, MakeD3DMatrix(value));
+                ActiveD3D9Device.SetTransform(TransformState.World, MakeD3DMatrix(value));
             }
         }
 
@@ -203,7 +203,7 @@ namespace Axiom.RenderSystems.DirectX9
                 viewMatrix.m23 = -viewMatrix.m23;
 
                 var dxView = MakeD3DMatrix(value);
-                device.SetTransform(TransformState.View, dxView);
+                ActiveD3D9Device.SetTransform(TransformState.View, dxView);
 
                 // also mark clip planes dirty
                 if (clipPlanes.Count != 0)
@@ -230,7 +230,7 @@ namespace Axiom.RenderSystems.DirectX9
                     mat.M42 = -mat.M42;
                 }
 
-                device.SetTransform(TransformState.Projection, mat);
+                ActiveD3D9Device.SetTransform(TransformState.Projection, mat);
 
                 // also mark clip planes dirty
                 if (clipPlanes.Count != 0)
@@ -255,13 +255,13 @@ namespace Axiom.RenderSystems.DirectX9
             if (vertexProgramBound)
             {
 
-                device.SetTextureStageState(stage, TextureStage.TextureTransformFlags, TextureTransform.Disable);
+                SetTextureStageState(stage, TextureStage.TextureTransformFlags, (int)TextureTransform.Disable);
                 return;
             }
 
             if (autoTexCoordType == TexCoordCalcMethod.EnvironmentMap)
             {
-                if ((d3dCaps.VertexProcessingCaps & VertexProcessingCaps.TexGenSphereMap) == VertexProcessingCaps.TexGenSphereMap)
+                if ((_deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps & VertexProcessingCaps.TexGenSphereMap) == VertexProcessingCaps.TexGenSphereMap)
                 {
                     // inverts the texture for a spheremap
                     var matEnvMap = Matrix4.Identity;
@@ -436,15 +436,15 @@ namespace Axiom.RenderSystems.DirectX9
 
                 // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
-                device.SetTextureStageState(stage, TextureStage.TextureTransformFlags, texCoordDim);
+                SetTextureStageState(stage, TextureStage.TextureTransformFlags, (int)texCoordDim);
 
                 // set the manually calculated texture matrix
-                device.SetTransform(d3DTransType, d3dMat);
+                ActiveD3D9Device.SetTransform(d3DTransType, d3dMat);
             }
             else
             {
                 // disable texture transformation
-                device.SetTextureStageState(stage, TextureStage.TextureTransformFlags, TextureTransform.Disable);
+                SetTextureStageState(stage, TextureStage.TextureTransformFlags, (int)TextureTransform.Disable);
             }
         }
 

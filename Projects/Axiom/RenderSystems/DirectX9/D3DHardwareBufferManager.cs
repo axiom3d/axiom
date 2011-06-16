@@ -100,7 +100,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
 		{
-			VertexDeclaration decl = new D3DVertexDeclaration( device );
+			VertexDeclaration decl = new D3DVertexDeclaration();
 			vertexDeclarations.Add( decl );
 			return decl;
 		}
