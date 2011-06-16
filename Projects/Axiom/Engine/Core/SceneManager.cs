@@ -88,8 +88,8 @@ namespace Axiom.Core
 	///		to be extended through subclassing in order to provide more specialized
 	///		scene organization structures for particular needs. The default
 	///		SceneManager culls based on a hierarchy of node bounding boxes, other
-	///		implementations can use an octree (<see cref="OctreeSceneManager"/>), a BSP
-	///		tree (<see cref="BspSceneManager"/>), and many other options. New SceneManager
+	///		implementations can use an octree (<see name="OctreeSceneManager"/>), a BSP
+    ///		tree (<see name="BspSceneManager"/>), and many other options. New SceneManager
 	///		implementations can be added at runtime by plugins, see <see cref="SceneManagerEnumerator"/>
 	///		for the interfaces for adding new SceneManager types.
 	///   <p/>
@@ -845,7 +845,6 @@ namespace Axiom.Core
 		///		Note that this method takes a name parameter, which makes the node easier to
 		///		retrieve directly again later.
 		/// </remarks>
-		/// <param name="pName"></param>
 		/// <returns></returns>
 		public virtual SceneNode CreateSceneNode( string name )
 		{
@@ -1022,7 +1021,7 @@ namespace Axiom.Core
 		///		Create an Entity (instance of a discrete mesh).
 		/// </summary>
 		/// <param name="name">The name to be given to the entity (must be unique).</param>
-		/// <param name="meshName">The name of the mesh to load.  Will be loaded if not already.</param>
+        /// <param name="prefab">The name of the mesh to load.  Will be loaded if not already.</param>
 		/// <returns></returns>
 		public virtual Entity CreateEntity( string name, PrefabEntity prefab )
 		{
@@ -1405,7 +1404,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Returns the material with the specified handle.
 		/// </summary>
-		/// <param name="name">Handle of the material to retrieve.</param>
+        /// <param name="handle">Handle of the material to retrieve.</param>
 		/// <returns>A reference to a Material.</returns>
 		public virtual Material GetMaterial( ResourceHandle handle )
 		{
@@ -3441,7 +3440,7 @@ namespace Axiom.Core
 		/// <remarks>
 		///		This method removes a previously added light from the scene.
 		/// </remarks>
-		/// <param name="camera">Reference to the light to remove.</param>
+        /// <param name="light">Reference to the light to remove.</param>
 		public virtual void RemoveLight( Light light )
 		{
 			this.DestroyMovableObject( light );
@@ -3465,7 +3464,7 @@ namespace Axiom.Core
 		/// <remarks>
 		///		This method removes a previously added BillboardSet from the scene.
 		/// </remarks>
-		/// <param name="camera">Reference to the BillboardSet to remove.</param>
+        /// <param name="billboardSet">Reference to the BillboardSet to remove.</param>
 		public virtual void RemoveBillboardSet( BillboardSet billboardSet )
 		{
 			this.DestroyMovableObject( billboardSet );
@@ -3495,7 +3494,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Removes the entity with the specified name from the scene.
 		/// </summary>
-		/// <param name="entity">Entity to remove from the scene.</param>
+		/// <param name="name">Entity to remove from the scene.</param>
 		public virtual void RemoveEntity( string name )
 		{
 			this.DestroyMovableObject( name, EntityFactory.TypeName );
@@ -4504,7 +4503,7 @@ namespace Axiom.Core
 		///		vertex program capable cards on Direct3D7) does not
 		///		support it</LI>
 		///		<LI>Direct3D on GeForce3 and GeForce4 Ti does not seem to support
-		///		infinite projection<LI>
+		///		infinite projection</LI>
 		///		</UL>
 		///		Therefore in the RenderSystem implementation, we may veto the use
 		///		of an infinite far plane based on these heuristics.
@@ -4676,7 +4675,7 @@ namespace Axiom.Core
 		///     <li>specular = ColourEx.Black</li>
 		///     <li>emmissive = ColourEx.Black</li>
 		///     <li>shininess = 0</li>
-		///     <li>No texture unit settings (& hence no textures)</li>
+		///     <li>No texture unit settings (&amp; hence no textures)</li>
 		///     <li>SourceBlendFactor = SBF_ONE</li>
 		///     <li>DestBlendFactor = SBF_ZERO (no blend, replace with new colour)</li>
 		///     <li>Depth buffer checking on</li>
@@ -6771,7 +6770,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Remove & destroy a StaticGeometry instance.
+		///     Remove &amp; destroy a StaticGeometry instance.
 		/// </summary>
 		public void DestroyStaticGeometry( StaticGeometry geom )
 		{
@@ -6779,7 +6778,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Remove & destroy a StaticGeometry instance.
+		///     Remove &amp; destroy a StaticGeometry instance.
 		/// </summary>
 		public void DestroyStaticGeometry( string name )
 		{
@@ -6939,7 +6938,7 @@ namespace Axiom.Core
 		/// custom world geometry that can take some time to load. They should
 		/// return from this method a count of the number of stages of progress
 		/// they can report on whilst loading. During real loading (setWorldGeomtry),
-		/// they should call <see cref="ResourceGroupManager.notifyWorlGeometryProgress"/> exactly
+		/// they should call <see name="ResourceGroupManager.notifyWorlGeometryProgress"/> exactly
 		/// that number of times when loading the geometry for real.
 		/// </remarks>
 		/// <param name="fileName">Name of the file.</param>
@@ -7536,7 +7535,7 @@ namespace Axiom.Core
 	#endregion Default SceneQuery Implementations
 
 	/// <summary>
-	///     Structure for holding a position & orientation pair.
+	///     Structure for holding a position &amp; orientation pair.
 	/// </summary>
 	public struct ViewPoint
 	{

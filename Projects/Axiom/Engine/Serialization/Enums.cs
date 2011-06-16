@@ -89,16 +89,16 @@ namespace Axiom.Serialization
 		/// <summary>
 		///		Repeating section.
 		///		ushort source:		buffer bind source
-		//		ushort type:		VertexElementType
-		//		ushort semantic:	VertexElementSemantic
-		//		ushort offset:		start offset in buffer in bytes
-		//		ushort index:		index of the semantic (for colours and texture coords)
+		///		ushort type:		VertexElementType
+		///		ushort semantic:	VertexElementSemantic
+		///		ushort offset:		start offset in buffer in bytes
+		///		ushort index:		index of the semantic (for colours and texture coords)
 		/// </summary>
 		GeometryVertexElement = 0x5110,
 		/// <summary>
 		///		Repeating section.
 		///		ushort bindIndex:	Index to bind this buffer to
-		//		ushort vertexSize:	Per-vertex size, must agree with declaration at this index
+		///		ushort vertexSize:	Per-vertex size, must agree with declaration at this index
 		/// </summary>
 		GeometryVertexBuffer = 0x5200,
 		/// <summary>
@@ -120,51 +120,51 @@ namespace Axiom.Serialization
 		MeshSkeletonLink = 0x6000,
 		/// <summary>
 		///		Optional bone weights (repeating section)
-		//		uint vertexIndex;
-		//		ushort boneIndex;
-		//		float weight;
+		///		uint vertexIndex;
+		///		ushort boneIndex;
+		///		float weight;
 		/// </summary>
 		MeshBoneAssignment = 0x7000,
 		/// <summary>
 		///		Optional LOD information
-		//		ushort numLevels;
-		//		bool manual;  (true for manual alternate meshes, false for generated)
+		///		ushort numLevels;
+		///		bool manual;  (true for manual alternate meshes, false for generated)
 		/// </summary>
 		MeshLOD = 0x8000,
 		/// <summary>
 		///		Repeating section, ordered in increasing depth
-		//		LOD 0 (full detail from 0 depth) is omitted
-		//		float fromSquaredDepth;
+		///		LOD 0 (full detail from 0 depth) is omitted
+		///		float fromSquaredDepth;
 		/// </summary>
 		MeshLODUsage = 0x8100,
 		/// <summary>
 		///		Required if MeshLOD section manual = true
-		//		string manualMeshName;
+		///		string manualMeshName;
 		/// </summary>
 		MeshLODManual = 0x8110,
 		/// <summary>
 		///		Required if MeshLOD section manual = false
-		//		Repeating section (1 per submesh)
-		//		uint indexCount;
-		//		bool indexes32Bit
-		//		ushort[indexCount]/uint[indexCount] faceIndexes;
+		///		Repeating section (1 per submesh)
+		///		uint indexCount;
+		///		bool indexes32Bit
+		///		ushort[indexCount]/uint[indexCount] faceIndexes;
 		/// </summary>
 		MeshLODGenerated = 0x8120,
 		/// <summary>
 		///		float minx, miny, minz;
-		//		float maxx, maxy, maxz;
-		//		float radius;
+		///		float maxx, maxy, maxz;
+		///		float radius;
 		/// </summary>
 		MeshBounds = 0x9000,
 		/// <summary>
 		///		Added By DrEvil
-		//		Optional chunk that contains a table of submesh indexes and the names of
-		//		the sub-meshes.
+		///		Optional chunk that contains a table of submesh indexes and the names of
+		///		the sub-meshes.
 		/// </summary>
 		SubMeshNameTable = 0xA000,
 		/// <summary>
 		///		short index;
-		//		string name;
+		///		string name;
 		/// </summary>
 		SubMeshNameTableElement = 0xA100,
 		/// <summary>
@@ -174,25 +174,25 @@ namespace Axiom.Serialization
 		/// <summary>
 		///		Each LOD has a seperate edge list.
 		///		ushort		lodIndex;
-		//		bool		isManual:	If manual, no edge data here, loaded from manual mesh
-		//		ulong		numTriangles
-		//		ulong		numEdgeGroups
-		//		Triangle	triangleList[numTriangles];
-		//		ulong		indexSet
-		//		ulong		vertexSet
-		//		ulong		vertIndex[3]
-		//		ulong		sharedVertIndex[3] 
-		//		float		normal[4]
+		///		bool		isManual:	If manual, no edge data here, loaded from manual mesh
+		///		ulong		numTriangles
+		///		ulong		numEdgeGroups
+		///		Triangle	triangleList[numTriangles];
+		///		ulong		indexSet
+		///		ulong		vertexSet
+		///		ulong		vertIndex[3]
+		///		ulong		sharedVertIndex[3] 
+		///		float		normal[4]
 		/// </summary>
 		EdgeListLOD = 0xB100,
 		/// <summary>
 		///		ulong	vertexSet;
-		//		ulong	numEdges;
-		//		Edge	edgeList[numEdges];
-		//		ulong	triIndex[2];
-		//		ulong	vertIndex[2];
-		//		ulong	sharedVertIndex[2];
-		//		bool	degenerate;
+		///		ulong	numEdges;
+		///		Edge	edgeList[numEdges];
+		///		ulong	triIndex[2];
+		///		ulong	vertIndex[2];
+		///		ulong	sharedVertIndex[2];
+		///		bool	degenerate;
 		/// </summary>
 		EdgeListGroup = 0xB110,
 

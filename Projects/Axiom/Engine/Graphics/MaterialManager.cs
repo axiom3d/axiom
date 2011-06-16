@@ -411,7 +411,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Parse a .material script passed in as a chunk.
 		/// </summary>
-        /// <param name="script"></param>
         public override void ParseScript( Stream stream, string groupName, string fileName )
         {
 #if AXIOM_USENEWCOMPILERS

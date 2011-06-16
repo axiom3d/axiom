@@ -229,10 +229,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Sets the normals of the rectangle
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="right"></param>
-		/// <param name="bottom"></param>
 		public void SetNormals( Vector3 topLeft, Vector3 bottomLeft, Vector3 topRight, Vector3 bottomRight )
 		{
 			HardwareVertexBuffer vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
