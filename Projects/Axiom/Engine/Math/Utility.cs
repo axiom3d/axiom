@@ -1160,13 +1160,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="box"></param>
-		/// <param name="d1"></param>
-		/// <param name="d2"></param>
-		/// <returns></returns>
 		public static Tuple<bool, Real, Real> Intersect( Ray ray, AxisAlignedBox box )
 		{
 			if ( box.IsNull )

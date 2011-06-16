@@ -14,7 +14,7 @@ namespace Axiom.Graphics
 
     /// <summary>
     /// An abstract class that contains a depth/stencil buffer.
-    /// Depth Buffers can be attached to render targets. Note we handle Depth & Stencil together.
+    /// Depth Buffers can be attached to render targets. Note we handle Depth &amp; Stencil together.
     /// DepthBuffer sharing is handled automatically for you. However, there are times where you want
     /// to specifically control depth buffers to achieve certain effects or increase performance.
     /// You can control this by hinting Ogre with POOL IDs. Created depth buffers can live in different
@@ -28,7 +28,7 @@ namespace Axiom.Graphics
     /// with other RTs (such as shadows maps).
     /// Setting an RT to POOL_MANUAL_USAGE means Ogre won't manage the DepthBuffer for you (not recommended)
     /// RTs with POOL_NO_DEPTH are very useful when you don't want to create a DepthBuffer for it. You can
-    /// still manually attach a depth buffer though as internally POOL_NO_DEPTH & POOL_MANUAL_USAGE are
+    /// still manually attach a depth buffer though as internally POOL_NO_DEPTH &amp; POOL_MANUAL_USAGE are
     /// handled in the same way.
     /// 
     /// Behavior is consistent across all render systems, if, and only if, the same RSC flags are set
@@ -46,7 +46,7 @@ namespace Axiom.Graphics
     /// resolution less or equal than the depth buffer's.
     /// </summary>
     /// <remarks>
-    /// Design discussion http://www.ogre3d.org/forums/viewtopic.php?f=4&t=53534&p=365582
+    /// Design discussion <a href="http://www.ogre3d.org/forums/viewtopic.php?f=4&amp;t=53534&amp;p=365582" />
     /// </remarks>    
     public class DepthBuffer : DisposableObject
     {
@@ -163,7 +163,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <remarks>
         /// Most APIs impose the following restrictions:
-        /// Width & height must be equal or higher than the render target's
+        /// Width &amp; height must be equal or higher than the render target's
         /// They must be of the same bit depth.
         /// They need to have the same FSAA setting
         /// </remarks>

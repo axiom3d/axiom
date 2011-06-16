@@ -64,7 +64,7 @@ namespace Axiom.Graphics
             [ScriptEnum( "transpose_world_matrix" )]
             TransposeWorldMatrix,
             /// <summary>
-            /// The current world matrix, inverted & transposed
+            /// The current world matrix, inverted &amp; transposed
             /// </summary>
             [ScriptEnum( "inverse_transpose_world_matrix" )]
             InverseTransposeWorldMatrix,
@@ -136,7 +136,7 @@ namespace Axiom.Graphics
 
 
             /// <summary>
-            ///    The current view & projection matrices concatenated.
+            ///    The current view &amp; projection matrices concatenated.
             /// </summary>
             [ScriptEnum( "viewproj_matrix" )]
             ViewProjMatrix,
@@ -167,7 +167,7 @@ namespace Axiom.Graphics
             [ScriptEnum( "worldview_matrix" )]
             WorldViewMatrix,
             /// <summary>
-            /// The current world & view matrices concatenated, then inverted
+            /// The current world &amp; view matrices concatenated, then inverted
             /// </summary>
             [ScriptEnum( "inverse_worldview_matrix" )]
             InverseWorldViewMatrix,
@@ -178,7 +178,7 @@ namespace Axiom.Graphics
             [ScriptEnum( "transpose_worldview_matrix" )]
             TransposeWorldViewMatrix,
             /// <summary>
-            /// The current world & view matrices concatenated, then inverted & transposed
+            /// The current world &amp; view matrices concatenated, then inverted &amp; transposed
             /// </summary>
             [ScriptEnum( "inverse_transpose_worldview_matrix" )]
             InverseTransposeWorldViewMatrix,

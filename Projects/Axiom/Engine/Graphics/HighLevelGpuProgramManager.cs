@@ -232,7 +232,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets a HighLevelGpuProgram with the specified handle.
 		/// </summary>
-		/// <param name="name">Handle of the program to retrieve.</param>
+        /// <param name="handle">Handle of the program to retrieve.</param>
 		/// <returns>The high level gpu program with the specified handle.</returns>
 		public new HighLevelGpuProgram this[ ResourceHandle handle ]
 		{
