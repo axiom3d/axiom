@@ -75,6 +75,8 @@ namespace Axiom.RenderSystems.DirectX9
 			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
 
+		    device = D3DRenderSystem.ActiveD3D9Device; // temp hack (update to 1.7)
+
 			// create the buffer
 			d3dBuffer = new D3D.IndexBuffer(
 				device,

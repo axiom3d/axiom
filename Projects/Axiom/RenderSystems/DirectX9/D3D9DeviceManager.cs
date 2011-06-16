@@ -10,7 +10,7 @@ using Capabilities = SlimDX.Direct3D9.Capabilities;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    public class D3D9DeviceManager: IEnumerable<D3D9Device>
+    public class D3D9DeviceManager : DisposableObject, IEnumerable<D3D9Device>
     {
         #region inner classes
 

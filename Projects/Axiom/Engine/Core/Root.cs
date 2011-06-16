@@ -1259,7 +1259,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameRenderingQueued()
 		{
-			//FrameEventArgs e = new FrameEventArgs();
+            // Increment next frame number
+            NextFrameNumber++;
+
+			FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
 			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
 
@@ -1496,13 +1499,7 @@ namespace Axiom.Core
 			}
 		}
 
-	    public int NextFrameNumber
-	    {
-	        get
-	        {
-	            throw new NotImplementedException();
-	        }
-	    }
+        public int NextFrameNumber { get; private set; }
 
 	    #endregion MovableObjectFactory methods
 	}
