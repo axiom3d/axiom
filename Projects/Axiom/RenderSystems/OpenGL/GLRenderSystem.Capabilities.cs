@@ -20,7 +20,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             var rsc = new RenderSystemCapabilities();
 
-            // rsc.SetCategoryRelevant(CAPS_CATEGORY_GL, true);
+            rsc.SetCategoryRelevant(CapabilitiesCategory.GL, true);
             rsc.DriverVersion = driverVersion;
             var deviceName = Gl.glGetString( Gl.GL_RENDERER );
             var vendorName = Gl.glGetString( Gl.GL_VENDOR );
