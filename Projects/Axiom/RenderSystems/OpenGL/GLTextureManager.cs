@@ -101,7 +101,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
 			// Adjust requested parameters to capabilities
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
 
 			// Check compressed texture support
 			// if a compressed format not supported, revert to PF_A8R8G8B8
