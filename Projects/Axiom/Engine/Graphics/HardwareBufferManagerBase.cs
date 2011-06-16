@@ -315,7 +315,8 @@ namespace Axiom.Graphics
 		///     Manually release a vertex buffer copy for others to subsequently use.
 		/// </summary>
 		/// <remarks>
-		///     Only required if the original call to <see cref="AllocateVertexBufferCopy"/>
+		///     Only required if the original call to 
+        ///     <see cref="AllocateVertexBufferCopy(HardwareVertexBuffer, BufferLicenseRelease, IHardwareBufferLicensee, bool)"/>
 		///     included a licenseType of <see cref="BufferLicenseRelease.Manual"/>. 
 		/// </remarks>
 		/// <param name="bufferCopy">

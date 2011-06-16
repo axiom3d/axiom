@@ -221,7 +221,6 @@ namespace Axiom.ParticleSystems
 		/// <remarks>
 		///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
 		/// </remarks>
-		/// <param name="name"></param>
 		internal ParticleSystem( string name, string resourceGroup )
 			: base( name )
 		{

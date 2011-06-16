@@ -356,15 +356,16 @@ namespace Axiom.Graphics
 			return AddCompositor( filter, addPosition, technique, string.Empty );
 		}
 
-		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
-		///</summary>
-		///<param name="filter">Filter to apply</param>
-		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-		///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
-		///                        available (first technique supported)
-		///</param>
-		CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique, string scheme )
+	    ///<summary>
+	    ///    Apply a compositor. Initially, the filter is enabled.
+	    ///</summary>
+	    ///<param name="filter">Filter to apply</param>
+	    ///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+	    ///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
+	    ///                        available (first technique supported)
+	    ///</param>
+	    ///<param name="scheme"></param>
+	    CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique, string scheme )
 		{
 			// Init on demand
 			if ( originalScene == null )

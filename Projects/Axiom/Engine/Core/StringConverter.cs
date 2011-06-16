@@ -401,7 +401,7 @@ namespace Axiom.Core
 			{
 				num = Int32.Parse( value );
 			}
-			catch ( Exception e )
+			catch ( Exception )
 			{
 				num = 0;
 				retVal = false;

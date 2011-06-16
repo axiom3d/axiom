@@ -114,10 +114,6 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Get the list of enabled animation states
 		/// </summary>
-
-		/// <summary>
-		///     Get the list of all animation states
-		/// </summary>
 		public List<AnimationState> EnabledAnimationStates
 		{
 			get

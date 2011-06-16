@@ -80,15 +80,16 @@ namespace Axiom.Scripting
 			get;
 		}
 
-		/// <summary>
-		/// Parse a script file.
-		/// </summary>
-		/// <param name="stream">reference to a data stream which is the source of the script</param>
-		/// <param name="groupName">
-		/// The name of a resource group which should be used if any resources
-		/// are created during the parse of this script.
-		/// </param>
-		void ParseScript( Stream stream, string groupName, string fileName );
+	    /// <summary>
+	    /// Parse a script file.
+	    /// </summary>
+	    /// <param name="stream">reference to a data stream which is the source of the script</param>
+	    /// <param name="groupName">
+	    /// The name of a resource group which should be used if any resources
+	    /// are created during the parse of this script.
+	    /// </param>
+	    /// <param name="fileName"></param>
+	    void ParseScript( Stream stream, string groupName, string fileName );
 
 		/// <summary>
 		/// Gets the relative loading order of scripts of this type.

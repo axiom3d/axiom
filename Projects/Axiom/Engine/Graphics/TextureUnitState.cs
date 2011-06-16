@@ -1268,7 +1268,9 @@ namespace Axiom.Graphics
 		///    if single-pass multitexturing hardware is available, and another for if it is not and the blending must
 		///    be achieved through multiple rendering passes. It is, however, quite limited and does not expose
 		///    the more flexible multitexturing operations, simply because these can't be automatically supported in
-		///    multipass fallback mode. If want to use the fancier options, use <see cref="TextureUnitState.SetColorOperationEx"/>,
+		///    multipass fallback mode. If want to use the fancier options, use 
+        ///    <see cref="TextureUnitState.SetColorOperationEx(LayerBlendOperationEx, LayerBlendSource, LayerBlendSource,
+        ///    ColorEx, ColorEx, float)"/>,
 		///    but you'll either have to be sure that enough multitexturing units will be available, or you should
 		///    explicitly set a fallback using <see cref="TextureUnitState.SetColorOpMultipassFallback"/>.
 		///    <p/>
@@ -1909,15 +1911,17 @@ namespace Axiom.Graphics
 			isDefaultFiltering = false;
 		}
 
-		/// <summary>
-		///    Sets this texture layer to use a single texture, given the name of the texture to use on this layer.
-		/// </summary>
-		/// <remarks>
-		///    Applies to both fixed-function and programmable pipeline.
-		/// </remarks>
-		/// <param name="name">Name of the texture.</param>
-		/// <param name="type">Type of texture this is.</param>
-		public void SetTextureName( string name, TextureType type, int mipmaps, bool alpha )
+	    /// <summary>
+	    ///    Sets this texture layer to use a single texture, given the name of the texture to use on this layer.
+	    /// </summary>
+	    /// <remarks>
+	    ///    Applies to both fixed-function and programmable pipeline.
+	    /// </remarks>
+	    /// <param name="name">Name of the texture.</param>
+	    /// <param name="type">Type of texture this is.</param>
+	    /// <param name="mipmaps"></param>
+	    /// <param name="alpha"></param>
+	    public void SetTextureName( string name, TextureType type, int mipmaps, bool alpha )
 		{
 			if ( type == TextureType.CubeMap )
 			{

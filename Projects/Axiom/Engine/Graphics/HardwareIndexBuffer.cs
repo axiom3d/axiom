@@ -66,15 +66,16 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		/// <summary>
-		///		Constructor.
-		/// </summary>
-		/// <param name="type">Type of index (16 or 32 bit).</param>
-		/// <param name="numIndices">Number of indices to create in this buffer.</param>
-		/// <param name="usage">Buffer usage.</param>
-		/// <param name="useSystemMemory">Create in system memory?</param>
-		/// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
-		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+	    /// <summary>
+	    ///		Constructor.
+	    /// </summary>
+	    ///<param name="manager"></param>
+	    ///<param name="type">Type of index (16 or 32 bit).</param>
+	    /// <param name="numIndices">Number of indices to create in this buffer.</param>
+	    /// <param name="usage">Buffer usage.</param>
+	    /// <param name="useSystemMemory">Create in system memory?</param>
+	    /// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
+	    public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.type = type;

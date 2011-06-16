@@ -76,21 +76,24 @@ namespace Axiom.Input
 
 		#region Methods
 
-		/// <summary>
-		///		Subclasses should initialize the underlying input subsystem using this
-		///		method.
-		/// </summary>
-		/// <param name="parent">Parent window that the input belongs to.</param>
-		/// <param name="ownMouse">
-		///		If true, input will be taken over from the OS and exclusive to the window.
-		///		If false, input will still be shared with other apps.
-		///	</param>
-		public abstract void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse );
+	    /// <summary>
+	    ///		Subclasses should initialize the underlying input subsystem using this
+	    ///		method.
+	    /// </summary>
+	    /// <param name="parent">Parent window that the input belongs to.</param>
+	    /// <param name="useGamepad"></param>
+	    /// <param name="ownMouse">
+	    ///		If true, input will be taken over from the OS and exclusive to the window.
+	    ///		If false, input will still be shared with other apps.
+	    ///	</param>
+	    /// <param name="useKeyboard"></param>
+	    /// <param name="useMouse"></param>
+	    public abstract void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse );
 
 		/// <summary>
 		///		Captures the state of all the input devices.
 		///	</summary>
-		///	 <remarks>
+		///	<remarks>
 		///		This method captures the state of all input devices and
 		///		stores it internally for use when the enquiry methods are
 		///		next called. This is done to ensure that all input is
@@ -205,8 +208,6 @@ namespace Axiom.Input
 		/// <summary>
 		///		Given a key code enum value, the corresponding character is returned.
 		/// </summary>
-		/// <param name="keyCode"></param>
-		/// <returns></returns>
 		public static char GetKeyChar( KeyCodes keyCode, ModifierKeys modifiers )
 		{
 			bool isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;

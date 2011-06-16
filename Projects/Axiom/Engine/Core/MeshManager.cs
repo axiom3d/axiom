@@ -222,8 +222,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Creates a barebones Mesh object that can be used to manually define geometry later on.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public Mesh CreateManual( string name, string group, IManualResourceLoader loader )
 		{
 			return (Mesh)Create( name, group, true, loader, null );
@@ -270,15 +268,16 @@ namespace Axiom.Core
 
 		#region CreatePlane Method
 
-		/// <summary>
-		///		Overloaded method.
-		/// </summary>
-		/// <param name="name">Name of the plane mesh.</param>
-		/// <param name="plane">Plane to use for distance and orientation of the mesh.</param>
-		/// <param name="width">Width in world coordinates.</param>
-		/// <param name="height">Height in world coordinates.</param>
-		/// <returns></returns>
-		public Mesh CreatePlane( string name, string group, Plane plane, int width, int height )
+	    /// <summary>
+	    ///		Overloaded method.
+	    /// </summary>
+	    /// <param name="name">Name of the plane mesh.</param>
+	    ///<param name="group"></param>
+	    ///<param name="plane">Plane to use for distance and orientation of the mesh.</param>
+	    /// <param name="width">Width in world coordinates.</param>
+	    /// <param name="height">Height in world coordinates.</param>
+	    /// <returns></returns>
+	    public Mesh CreatePlane( string name, string group, Plane plane, int width, int height )
 		{
 			return CreatePlane( name, group, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
 		}
@@ -452,19 +451,6 @@ namespace Axiom.Core
 		/// <summary>
 		///     Creates a Bezier patch based on an array of control vertices.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="controlPointBuffer"></param>
-		/// <param name="declaration"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="uMaxSubdivisionLevel"></param>
-		/// <param name="vMaxSubdivisionLevel"></param>
-		/// <param name="visibleSide"></param>
-		/// <param name="vbUsage"></param>
-		/// <param name="ibUsage"></param>
-		/// <param name="vbUseShadow"></param>
-		/// <param name="ibUseShadow"></param>
-		/// <returns></returns>
 		public PatchMesh CreateBezierPatch( string name, string group, Array controlPointBuffer, VertexDeclaration declaration,
 			int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
 			BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
@@ -728,8 +714,8 @@ namespace Axiom.Core
 			Real cameraPosition;      // Camera position relative to sphere center
 
 			// Derive sphere radius
-			Vector3 vertPos;  // position relative to camera
-			Real sphDist;      // Distance from camera to sphere along box vertex vector
+			//Vector3 vertPos;  // position relative to camera
+			//Real sphDist;      // Distance from camera to sphere along box vertex vector
 			// Vector3 camToSph; // camera position to sphere
 			Real sphereRadius;// Sphere radius
 			// Actual values irrelevant, it's the relation between sphere radius and camera position that's important

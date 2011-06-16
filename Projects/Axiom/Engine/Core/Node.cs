@@ -399,7 +399,9 @@ namespace Axiom.Core
 		public event NodeUpdateHandler UpdatedFromParent;
 
 		public event NodeUpdated NodeUpdated;
+#pragma warning disable 67
 		public event NodeDestroyed NodeDestroyed;
+#pragma warning restore 67
 
 		#endregion Events
 
@@ -737,22 +739,23 @@ namespace Axiom.Core
 			Translate( derived, TransformSpace.Parent );
 		}
 
-		/// <summary>
-		/// Moves the node along arbitrary axes.
-		/// </summary>
-		/// <remarks>
-		///	This method translates the node by a vector which is relative to
-		///	a custom set of axes.
-		///	</remarks>
-		/// <param name="axes">3x3 Matrix containg 3 column vectors each representing the
-		///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
-		///		1 0 0
-		///		0 1 0
-		///		0 0 1
-		///		i.e. The Identity matrix.
-		///	</param>
-		/// <param name="move">Vector relative to the supplied axes.</param>
-		public virtual void Translate( Matrix3 axes, Vector3 move, TransformSpace relativeTo )
+	    /// <summary>
+	    /// Moves the node along arbitrary axes.
+	    /// </summary>
+	    /// <remarks>
+	    ///	This method translates the node by a vector which is relative to
+	    ///	a custom set of axes.
+	    ///	</remarks>
+	    /// <param name="axes">3x3 Matrix containg 3 column vectors each representing the
+	    ///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
+	    ///		1 0 0
+	    ///		0 1 0
+	    ///		0 0 1
+	    ///		i.e. The Identity matrix.
+	    ///	</param>
+	    /// <param name="move">Vector relative to the supplied axes.</param>
+	    /// <param name="relativeTo"></param>
+	    public virtual void Translate( Matrix3 axes, Vector3 move, TransformSpace relativeTo )
 		{
 			Vector3 derived = axes * move;
 			Translate( derived, relativeTo );
@@ -761,7 +764,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Rotate the node around the X-axis.
 		/// </summary>
-		/// <param name="degrees"></param>
 		public virtual void Pitch( float degrees, TransformSpace relativeTo )
 		{
 			Rotate( Vector3.UnitX, degrees, relativeTo );
@@ -776,11 +778,10 @@ namespace Axiom.Core
 			Rotate( Vector3.UnitX, degrees, TransformSpace.Local );
 		}
 
-		/// <summary>
-		/// Rotate the node around the Z-axis.
-		/// </summary>
-		/// <param name="degrees"></param>
-		public virtual void Roll( float degrees, TransformSpace relativeTo )
+	    /// <summary>
+	    /// Rotate the node around the Z-axis.
+	    /// </summary>
+	    public virtual void Roll( float degrees, TransformSpace relativeTo )
 		{
 			Rotate( Vector3.UnitZ, degrees, relativeTo );
 		}
@@ -797,7 +798,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Rotate the node around the Y-axis.
 		/// </summary>
-		/// <param name="degrees"></param>
 		public virtual void Yaw( float degrees, TransformSpace relativeTo )
 		{
 			Rotate( Vector3.UnitY, degrees, relativeTo );
@@ -1391,10 +1391,6 @@ namespace Axiom.Core
 		///	of orientation axes, scale does not affect size of translation, rotation and scaling are always
 		///	centered on the origin.
 		///	</remarks>
-		/// <param name="position"></param>
-		/// <param name="scale"></param>
-		/// <param name="orientation"></param>
-		/// <returns></returns>
 		protected void MakeTransform( Vector3 position, Vector3 scale, Quaternion orientation, ref Matrix4 destMatrix )
 		{
 			// Ordering:
@@ -1423,10 +1419,6 @@ namespace Axiom.Core
 		///	As makeTransform except it build the inverse given the same data as makeTransform, so
 		///	performing -translation, 1/scale, -rotate in that order.
 		/// </remarks>
-		/// <param name="position"></param>
-		/// <param name="scale"></param>
-		/// <param name="orientation"></param>
-		/// <returns></returns>
 		protected void MakeInverseTransform( Vector3 position, Vector3 scale, Quaternion orientation, ref Matrix4 destMatrix )
 		{
 			// Invert the parameters
@@ -1705,10 +1697,6 @@ namespace Axiom.Core
 		/// on their relative weight. This method should not be used in
 		///	combination with the unweighted rotate, translate etc methods.
 		/// </summary>
-		/// <param name="weight"></param>
-		/// <param name="translate"></param>
-		/// <param name="rotate"></param>
-		/// <param name="scale"></param>
 		internal virtual void WeightedTransform( float weight, Vector3 translate, Quaternion rotate, Vector3 scale, bool lookInMovementDirection )
 		{
 			// If no previous transforms, we can just apply

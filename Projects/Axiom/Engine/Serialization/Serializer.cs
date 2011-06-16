@@ -94,12 +94,13 @@ namespace Axiom.Serialization
 			Seek( reader, currentChunkLength - ChunkOverheadSize );
 		}
 
-		/// <summary>
-		///		Reads a specified number of floats and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
-		protected void ReadBytes( BinaryReader reader, int count, IntPtr dest )
+	    /// <summary>
+	    ///		Reads a specified number of floats and copies them into the destination pointer.
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    /// <param name="count">Number of values to read.</param>
+	    /// <param name="dest">Pointer to copy the values into.</param>
+	    protected void ReadBytes( BinaryReader reader, int count, IntPtr dest )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -122,12 +123,13 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of bytes.
-		/// </summary>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
-		protected void WriteBytes( BinaryWriter writer, int count, IntPtr src )
+	    /// <summary>
+	    ///		Writes a specified number of bytes.
+	    /// </summary>
+	    /// <param name="writer"></param>
+	    /// <param name="count">Number of values to write.</param>
+	    /// <param name="src">Pointer that holds the values.</param>
+	    protected void WriteBytes( BinaryWriter writer, int count, IntPtr src )
 		{
 			unsafe
 			{
@@ -140,12 +142,13 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads a specified number of floats and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
-		protected void ReadFloats( BinaryReader reader, int count, IntPtr dest )
+	    /// <summary>
+	    ///		Reads a specified number of floats and copies them into the destination pointer.
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    /// <param name="count">Number of values to read.</param>
+	    /// <param name="dest">Pointer to copy the values into.</param>
+	    protected void ReadFloats( BinaryReader reader, int count, IntPtr dest )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -159,12 +162,13 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of floats.
-		/// </summary>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
-		protected void WriteFloats( BinaryWriter writer, int count, IntPtr src )
+	    /// <summary>
+	    ///		Writes a specified number of floats.
+	    /// </summary>
+	    /// <param name="writer"></param>
+	    /// <param name="count">Number of values to write.</param>
+	    /// <param name="src">Pointer that holds the values.</param>
+	    protected void WriteFloats( BinaryWriter writer, int count, IntPtr src )
 		{
 			unsafe
 			{
@@ -177,14 +181,15 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads a specified number of floats and copies them into the destination pointer.
-		/// </summary>
-		/// <remarks>This overload will also copy the values into the specified destination array.</remarks>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
-		/// <param name="destArray">A float array that is to have the values copied into it at the same time as 'dest'.</param>
-		protected void ReadFloats( BinaryReader reader, int count, IntPtr dest, float[] destArray )
+	    /// <summary>
+	    ///		Reads a specified number of floats and copies them into the destination pointer.
+	    /// </summary>
+	    /// <remarks>This overload will also copy the values into the specified destination array.</remarks>
+	    /// <param name="reader"></param>
+	    /// <param name="count">Number of values to read.</param>
+	    /// <param name="dest">Pointer to copy the values into.</param>
+	    /// <param name="destArray">A float array that is to have the values copied into it at the same time as 'dest'.</param>
+	    protected void ReadFloats( BinaryReader reader, int count, IntPtr dest, float[] destArray )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -218,7 +223,7 @@ namespace Axiom.Serialization
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(inputdata, 0, 4);
             return BitConverter.ToSingle(inputdata, 0);
-			return reader.ReadSingle();
+			//return reader.ReadSingle();
 		}
 
 		protected void WriteFloat( BinaryWriter writer, float val )
@@ -234,7 +239,7 @@ namespace Axiom.Serialization
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(inputdata, 0, 4);
             return BitConverter.ToInt32(inputdata, 0);
-			return reader.ReadInt32();
+			//return reader.ReadInt32();
 		}
 
 		protected void WriteInt( BinaryWriter writer, int val )
@@ -251,7 +256,7 @@ namespace Axiom.Serialization
                 Array.Reverse(inputdata, 0, 4);
             return BitConverter.ToUInt32(inputdata, 0);
 
-			return reader.ReadUInt32();
+			//return reader.ReadUInt32();
 		}
 
 		protected void WriteUInt( BinaryWriter writer, uint val )
@@ -268,7 +273,7 @@ namespace Axiom.Serialization
                 Array.Reverse(inputdata, 0, 8);
             return BitConverter.ToInt64(inputdata, 0);
 
-			return reader.ReadInt64();
+			//return reader.ReadInt64();
 		}
 
 		protected void WriteLong( BinaryWriter writer, long val )
@@ -285,7 +290,7 @@ namespace Axiom.Serialization
                 Array.Reverse(inputdata, 0, 8);
             return BitConverter.ToUInt64(inputdata, 0);
 
-			return reader.ReadUInt64();
+			//return reader.ReadUInt64();
 		}
 
 		protected void WriteULong( BinaryWriter writer, ulong val )
@@ -302,7 +307,7 @@ namespace Axiom.Serialization
                 Array.Reverse( inputdata, 0, 2);
             return BitConverter.ToInt16(inputdata,0);
 
-			return reader.ReadInt16();
+			//return reader.ReadInt16();
 		}
 
 		protected void WriteShort( BinaryWriter writer, short val )
@@ -319,7 +324,7 @@ namespace Axiom.Serialization
                 Array.Reverse(inputdata, 0, 2);
             return BitConverter.ToUInt16(inputdata, 0);
 
-			return reader.ReadUInt16();
+			//return reader.ReadUInt16();
 		}
 
 		protected void WriteUShort( BinaryWriter writer, ushort val )
@@ -327,12 +332,13 @@ namespace Axiom.Serialization
 			writer.Write( val );
 		}
 
-		/// <summary>
-		///		Reads a specified number of integers and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
-		protected void ReadInts( BinaryReader reader, int count, IntPtr dest )
+	    /// <summary>
+	    ///		Reads a specified number of integers and copies them into the destination pointer.
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    /// <param name="count">Number of values to read.</param>
+	    /// <param name="dest">Pointer to copy the values into.</param>
+	    protected void ReadInts( BinaryReader reader, int count, IntPtr dest )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -346,12 +352,13 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of integers.
-		/// </summary>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
-		protected void WriteInts( BinaryWriter writer, int count, IntPtr src )
+	    /// <summary>
+	    ///		Writes a specified number of integers.
+	    /// </summary>
+	    /// <param name="writer"></param>
+	    /// <param name="count">Number of values to write.</param>
+	    /// <param name="src">Pointer that holds the values.</param>
+	    protected void WriteInts( BinaryWriter writer, int count, IntPtr src )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -365,12 +372,13 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads a specified number of shorts and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
-		protected void ReadShorts( BinaryReader reader, int count, IntPtr dest )
+	    /// <summary>
+	    ///		Reads a specified number of shorts and copies them into the destination pointer.
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    /// <param name="count">Number of values to read.</param>
+	    /// <param name="dest">Pointer to copy the values into.</param>
+	    protected void ReadShorts( BinaryReader reader, int count, IntPtr dest )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -383,12 +391,13 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of shorts.
-		/// </summary>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
-		protected void WriteShorts( BinaryWriter writer, int count, IntPtr src )
+	    /// <summary>
+	    ///		Writes a specified number of shorts.
+	    /// </summary>
+	    /// <param name="writer"></param>
+	    /// <param name="count">Number of values to write.</param>
+	    /// <param name="src">Pointer that holds the values.</param>
+	    protected void WriteShorts( BinaryWriter writer, int count, IntPtr src )
 		{
 			// blast the data into the buffer
 			unsafe
@@ -421,12 +430,13 @@ namespace Axiom.Serialization
 			WriteString( writer, str, '\n' );
 		}
 
-		/// <summary>
-		///		Reads from the stream up to the specified delimiter character.
-		/// </summary>
-		/// <param name="delimiter">The character that signals the end of the string.</param>
-		/// <returns>A string formed from characters up to the first instance of the specified delimeter.</returns>
-		protected string ReadString( BinaryReader reader, char delimiter )
+	    /// <summary>
+	    ///		Reads from the stream up to the specified delimiter character.
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    /// <param name="delimiter">The character that signals the end of the string.</param>
+	    /// <returns>A string formed from characters up to the first instance of the specified delimeter.</returns>
+	    protected string ReadString( BinaryReader reader, char delimiter )
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -442,11 +452,13 @@ namespace Axiom.Serialization
 			return sb.ToString();
 		}
 
-		/// <summary>
-		///		Writes the string to the stream including the specified delimiter character.
-		/// </summary>
-		/// <param name="delimiter">The character that signals the end of the string.</param>
-		protected void WriteString( BinaryWriter writer, string str, char delimiter )
+	    /// <summary>
+	    ///		Writes the string to the stream including the specified delimiter character.
+	    /// </summary>
+	    /// <param name="str"></param>
+	    /// <param name="delimiter">The character that signals the end of the string.</param>
+	    /// <param name="writer"></param>
+	    protected void WriteString( BinaryWriter writer, string str, char delimiter )
 		{
 			StringBuilder sb = new StringBuilder( str );
 			sb.Append( delimiter );
@@ -615,11 +627,13 @@ namespace Axiom.Serialization
 			Seek( reader, length, SeekOrigin.Current );
 		}
 
-		/// <summary>
-		///		Skips to a particular part of the binary stream.
-		/// </summary>
-		/// <param name="length">Number of bytes to skip.</param>
-		protected void Seek( BinaryReader reader, long length, SeekOrigin origin )
+	    /// <summary>
+	    ///		Skips to a particular part of the binary stream.
+	    /// </summary>
+	    /// <param name="reader"></param>
+	    /// <param name="length">Number of bytes to skip.</param>
+	    /// <param name="origin"></param>
+	    protected void Seek( BinaryReader reader, long length, SeekOrigin origin )
 		{
 			if ( reader.BaseStream.CanSeek )
 			{

@@ -127,18 +127,18 @@ namespace Axiom.Core
 		/// </remarks>
 		void Shutdown();
 
-		/// <summary>
-		/// Perform the final plugin uninstallation sequence.
-		/// </summary>
-		/// <remarks>
-		/// An implementation must be supplied for this method. It must perform
-		/// the cleanup tasks which haven't already been performed in Shutdown()
-		/// (e.g. final deletion of custom instances, if you kept them around incase
-		/// the system was reinitialized). At this stage you cannot be sure what other
-		/// plugins are still loaded or active. It must therefore not perform any
-		/// operations that would reference any rendersystem-specific objects - those
-		/// should have been sorted out in the Shutdown method.
-		/// </remarks>
+		// <summary>
+		// Perform the final plugin uninstallation sequence.
+		// </summary>
+		// <remarks>
+		// An implementation must be supplied for this method. It must perform
+		// the cleanup tasks which haven't already been performed in Shutdown()
+		// (e.g. final deletion of custom instances, if you kept them around incase
+		// the system was reinitialized). At this stage you cannot be sure what other
+		// plugins are still loaded or active. It must therefore not perform any
+		// operations that would reference any rendersystem-specific objects - those
+		// should have been sorted out in the Shutdown method.
+		// </remarks>
 		//void Uninstall();
 	}
 }
