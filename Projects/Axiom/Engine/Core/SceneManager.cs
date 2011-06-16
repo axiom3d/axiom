@@ -2351,7 +2351,7 @@ namespace Axiom.Core
 			tmpLightList.Add( light );
 
 			// Turn off color writing and depth writing
-			this.targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
+			this.targetRenderSystem.SetColourBufferWriteEnabled( false, false, false, false );
 			this.targetRenderSystem.DepthWrite = false;
 			this.targetRenderSystem.StencilCheckEnabled = true;
 			this.targetRenderSystem.DepthFunction = CompareFunction.Less;
@@ -2382,7 +2382,7 @@ namespace Axiom.Core
 									 stencil2sided,
 									 tmpLightList );
 			// revert colour write state
-			this.targetRenderSystem.SetColorBufferWriteEnabled( true, true, true, true );
+			this.targetRenderSystem.SetColourBufferWriteEnabled( true, true, true, true );
 			// revert depth state
 			this.targetRenderSystem.SetDepthBufferParams();
 
@@ -2637,7 +2637,7 @@ namespace Axiom.Core
 				this.targetRenderSystem.SetStencilBufferParams();
 				this.SetPass( this.shadowDebugPass );
 				this.RenderSingleObject( sr, this.shadowDebugPass, false, manualLightList );
-				this.targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
+				this.targetRenderSystem.SetColourBufferWriteEnabled( false, false, false, false );
 			}
 		}
 
@@ -2844,7 +2844,7 @@ namespace Axiom.Core
 				// Color Write
 				// right now only using on/off, not per channel
 				bool colWrite = pass.ColorWriteEnabled;
-				this.targetRenderSystem.SetColorBufferWriteEnabled( colWrite, colWrite, colWrite, colWrite );
+				this.targetRenderSystem.SetColourBufferWriteEnabled( colWrite, colWrite, colWrite, colWrite );
 
 				// Culling Mode
 				this.targetRenderSystem.CullingMode = pass.CullingMode;
@@ -5018,10 +5018,10 @@ namespace Axiom.Core
 			this.targetRenderSystem.EndFrame();
 
 			// Notify camera of the number of rendered faces
-			camera.NotifyRenderedFaces( this.targetRenderSystem.FacesRendered );
+			camera.NotifyRenderedFaces( this.targetRenderSystem.FaceCount );
 
 			// Notify camera of the number of rendered batches
-			camera.NotifyRenderedBatches( this.targetRenderSystem.BatchesRendered );
+			camera.NotifyRenderedBatches( this.targetRenderSystem.BatchCount );
 		}
 
 		private void PrepareRenderQueue()
@@ -5566,7 +5566,7 @@ namespace Axiom.Core
 
 				if ( thisNormalize != normalizeNormals )
 				{
-					this.targetRenderSystem.NormalizeNormals = thisNormalize;
+					this.targetRenderSystem.NormaliseNormals = thisNormalize;
 					normalizeNormals = thisNormalize;
 				}
 

@@ -126,6 +126,7 @@
     <Compile Include="Core\Collections\CameraCollection.cs" />
     <Compile Include="Core\Collections\Lists.cs" />
     <Compile Include="Core\Collections\MovableObjectCollection.cs" />
+    <Compile Include="Core\Collections\MultiMap.cs" />
     <Compile Include="Core\Collections\NodeCollection.cs" />
     <Compile Include="Core\Collections\SceneManagerCollection.cs" />
     <Compile Include="Core\Collections\SceneNodeCollection.cs" />

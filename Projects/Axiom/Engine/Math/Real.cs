@@ -85,6 +85,8 @@ namespace Axiom.Math
 
 		/// <summary>The value 0</summary>
 		public readonly static Real Zero = new Real( 0 );
+        /// <summary>The value 1</summary>
+        public readonly static Real One = new Real( 1 );
 		/// <summary>The value of Positive Infinity</summary>
 		public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
 		/// <summary>The value of Negative Infinity</summary>

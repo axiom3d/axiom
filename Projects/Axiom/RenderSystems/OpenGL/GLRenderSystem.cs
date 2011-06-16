@@ -213,7 +213,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
+		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
 		{
 			int flags = 0;
 
@@ -470,7 +470,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///
 		/// </summary>
-		public override bool NormalizeNormals
+		public override bool NormaliseNormals
 		{
 			get
 			{
@@ -579,7 +579,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
+		public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest1, bool forGpuPrograms )
 		{
 			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
 			float tanThetaY = Utility.Tan( thetaY );
@@ -608,17 +608,19 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 
-		/// <summary>
-		///		Creates a projection matrix specific to OpenGL based on the given params.
-		///		Note: forGpuProgram is ignored because GL uses the same handed projection matrix
-		///		normally and for GPU programs.
-		/// </summary>
-		/// <param name="fov">In Degrees</param>
-		/// <param name="aspectRatio"></param>
-		/// <param name="near"></param>
-		/// <param name="far"></param>
-		/// <returns></returns>
-		public override Axiom.Math.Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
+	    /// <summary>
+	    ///		Creates a projection matrix specific to OpenGL based on the given params.
+	    ///		Note: forGpuProgram is ignored because GL uses the same handed projection matrix
+	    ///		normally and for GPU programs.
+	    /// </summary>
+	    ///<param name="fov">In Degrees</param>
+	    ///<param name="aspectRatio"></param>
+	    ///<param name="near"></param>
+	    ///<param name="far"></param>
+	    ///<param name="dest"></param>
+	    ///<param name="forGpuProgram"></param>
+	    ///<returns></returns>
+	    public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
 		{
 			Matrix4 matrix = Matrix4.Zero;
 
@@ -657,19 +659,20 @@ namespace Axiom.RenderSystems.OpenGL
 			return matrix;
 		}
 
-		/// <summary>
-		/// Builds a perspective projection matrix for the case when frustum is
-		/// not centered around camera.
-		/// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <param name="bottom"></param>
-		/// <param name="top"></param>
-		/// <param name="nearPlane"></param>
-		/// <param name="farPlane"></param>
-		/// <param name="forGpuProgram"></param>
-		public override Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram )
+	    /// <summary>
+	    /// Builds a perspective projection matrix for the case when frustum is
+	    /// not centered around camera.
+	    /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+	    /// </summary>
+	    /// <param name="left"></param>
+	    /// <param name="right"></param>
+	    /// <param name="bottom"></param>
+	    /// <param name="top"></param>
+	    /// <param name="nearPlane"></param>
+	    /// <param name="farPlane"></param>
+	    /// <param name="dest1"></param>
+	    /// <param name="forGpuProgram"></param>
+	    public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest1, bool forGpuProgram )
 		{
 			Real width = right - left;
 			Real height = top - bottom;
@@ -736,7 +739,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
+		public override void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest1, bool forGpuProgram )
 		{
 			// No conversion required for OpenGL
 
@@ -794,15 +797,15 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override void BeginFrame()
 		{
-			Debug.Assert( activeViewport != null, "BeginFrame cannot run without an active viewport." );
+			Debug.Assert( _activeViewport != null, "BeginFrame cannot run without an active viewport." );
 
 			// clear the viewport if required
-			if ( activeViewport.ClearEveryFrame == true )
+			if ( _activeViewport.ClearEveryFrame == true )
 			{
 				// active viewport clipping
 				Gl.glEnable( Gl.GL_SCISSOR_TEST );
 
-				ClearFrameBuffer( activeViewport.ClearBuffers, activeViewport.BackgroundColor );
+				ClearFrameBuffer( _activeViewport.ClearBuffers, _activeViewport.BackgroundColor );
 			}
 		}
 
@@ -826,10 +829,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="viewport"></param>
 		public override void SetViewport( Viewport viewport )
 		{
-			if ( activeViewport != viewport || viewport.IsUpdated )
+			if ( _activeViewport != viewport || viewport.IsUpdated )
 			{
 				// store this viewport and it's target
-				activeViewport = viewport;
+				_activeViewport = viewport;
 				RenderTarget target = viewport.Target;
 				_setRenderTarget( target );
 
@@ -1019,12 +1022,12 @@ namespace Axiom.RenderSystems.OpenGL
 				// independent size if you're looking for attenuation.
 				// So, scale the point size up by viewport size (this is equivalent to
 				// what D3D does as standard)
-				size = size * activeViewport.ActualHeight;
-				minSize = minSize * activeViewport.ActualHeight;
+				size = size * _activeViewport.ActualHeight;
+				minSize = minSize * _activeViewport.ActualHeight;
 				if ( maxSize == 0.0f )
 					maxSize = HardwareCapabilities.MaxPointSize; // pixels
 				else
-					maxSize = maxSize * activeViewport.ActualHeight;
+					maxSize = maxSize * _activeViewport.ActualHeight;
 
 				// XXX: why do I need this for results to be consistent with D3D?
 				// Equations are supposedly the same once you factor in vp height
@@ -1833,7 +1836,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
-		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
+		public override void SetColourBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			// record this for later
 			colorWrite[ 0 ] = red ? 1 : 0;
@@ -2341,7 +2344,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
-		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
+		public override void SetTextureBorderColour( int stage, ColorEx borderColor )
 		{
 			float[] border = new float[] { borderColor.r, borderColor.g, borderColor.b, borderColor.a };
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
