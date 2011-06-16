@@ -698,9 +698,10 @@ namespace Axiom.Graphics
 			}
 		}
 
+        [OgreVersion(1, 7, "Need to implement this!")]
 	    public void CopySharedParams()
 	    {
-	        throw new NotImplementedException();
+            //
 	    }
 	}
 }

@@ -141,7 +141,7 @@ namespace Axiom.Demos
 
 			_sceneManagers[ 1 ].SetWorldGeometry( "terrain.xml" );
 			// Infinite far plane?
-			if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane ) )
+			if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane ) )
 			{
 				_cameras[ 1 ].Far = 0;
 			}

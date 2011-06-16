@@ -294,7 +294,7 @@ namespace Axiom.CgPrograms
 
 				// If skeletal animation is being done, we need support for UBYTE4
 				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+					!Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
 
 					return false;

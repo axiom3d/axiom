@@ -220,7 +220,13 @@ namespace Axiom.Core
 				// create and start the plugin
 				IPlugin plugin = creator.CreateInstance<IPlugin>();
 
-				plugin.Initialize();
+                if (plugin == null)
+                {
+                    LogManager.Instance.Write("Failed to load plugin: {0}", creator.GetAssemblyTitle());
+                    return null;
+                }
+
+			    plugin.Initialize();
 
 				LogManager.Instance.Write( "Loaded plugin: {0}", creator.GetAssemblyTitle() );
 
