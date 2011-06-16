@@ -73,13 +73,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Axiom.Graphics.RenderTexture Implementation
 
-		public override void Update()
+
+		public override void Update(bool swapBuffers)
 		{
 			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
 			if ( rs.IsDeviceLost )
 				return;
 
-			base.Update();
+            base.Update(swapBuffers);
 		}
 
 		public override object this[ string attribute ]

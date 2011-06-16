@@ -225,7 +225,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
-		/// <summary>
+	    protected override void BuildConstantDefinitions()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
