@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Scripting;
 
@@ -79,6 +81,10 @@ namespace Axiom.Graphics
         [ScriptEnum( "Nokia" )]
         Nokia = 10,
     };
+
+    public class ShaderProfiles : HashSet<string>
+    {
+    }
 
 	/// <summary>
 	/// 	This serves as a way to query information about the capabilies of a 3D API and the
@@ -341,6 +347,14 @@ namespace Axiom.Graphics
 
 		#endregion FragmentProgramConstantBoolCount Property
 
+        public int GeometryProgramConstantFloatCount { get; set; }
+
+        public int GeometryProgramConstantIntCount { get; set; }
+
+        public int GeometryProgramConstantBoolCount { get; set; }
+
+        public int GeometryProgramNumOutputVertices { get; set; }
+
 		#region MultiRenderTargetCount Property
 
 		/// <summary>
@@ -412,25 +426,25 @@ namespace Axiom.Graphics
 
 		#region VendorName Property
 
-		/// <summary>
-		/// name of the GPU vendor
-		/// </summary>
-        private GPUVendor _vendor = GPUVendor.Unknown;
 		
+        private GPUVendor _vendor = GPUVendor.Unknown;
+
+        public GPUVendor Vendor
+        {
+            get
+            {
+                return _vendor;
+            }
+            set
+            {
+                _vendor = value;
+            }
+        }
+
         /// <summary>
-        /// name of the GPU vendor
-		/// </summary>
-		public string VendorName
-		{
-			get
-			{
-                return VendorToString( _vendor );
-			}
-			set
-			{
-                _vendor = VendorFromString( value );
-			}
-		}
+	    /// name of the GPU vendor
+	    /// </summary>
+        public string VendorName { get; set; }
 
 		#endregion DeviceName Property
 
@@ -715,5 +729,40 @@ namespace Axiom.Graphics
         }
 
 		#endregion Methods
+
+
+        #region ShaderProfiles
+
+        /// <summary>
+        /// Returns a set of all supported shader profiles
+        /// </summary>
+	    public ShaderProfiles ShaderProfiles { get; private set; }
+
+        /// <summary>
+        ///  Adds the profile to the list of supported profiles
+        /// </summary>
+	    public void AddShaderProfile( string profile )
+        {
+            ShaderProfiles.Add( profile );
+        }
+
+        /// <summary>
+        /// Remove a given shader profile, if present.
+        /// </summary>
+        public void RemoveShaderProfile(string profile)
+        {
+            ShaderProfiles.Remove( profile );
+        }
+
+		/// <summary>
+		/// Returns true if profile is in the list of supported profiles
+		/// </summary>
+		public bool IsShaderProfileSupported( string profile )
+		{
+		    return ShaderProfiles.Contains( profile );
+        }
+
+        #endregion
+
     }
 }
