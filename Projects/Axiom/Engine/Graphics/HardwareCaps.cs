@@ -627,10 +627,16 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Write all hardware capability information to registered listeners.
 		/// </summary>
-		public void Log()
+        public void Log()
 		{
-			LogManager logMgr = LogManager.Instance;
+		    Log( LogManager.Instance.DefaultLog );
+		}
 
+        /// <summary>
+        ///    Write all hardware capability information to registered listeners.
+        /// </summary>
+        public void Log(Log logMgr)
+		{
 			logMgr.Write( "---RenderSystem capabilities---" );
             logMgr.Write( "\t-GPU Vendor: {0}", VendorName );
 			logMgr.Write( "\t-Device Name: {0}", _deviceName );
@@ -733,10 +739,10 @@ namespace Axiom.Graphics
 
         #region ShaderProfiles
 
-        /// <summary>
-        /// Returns a set of all supported shader profiles
-        /// </summary>
-	    public ShaderProfiles ShaderProfiles { get; private set; }
+	    /// <summary>
+	    /// Returns a set of all supported shader profiles
+	    /// </summary>
+	    public readonly ShaderProfiles ShaderProfiles = new ShaderProfiles();
 
         /// <summary>
         ///  Adds the profile to the list of supported profiles
@@ -763,6 +769,6 @@ namespace Axiom.Graphics
         }
 
         #endregion
-
-    }
+	    
+	}
 }

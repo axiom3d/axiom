@@ -137,6 +137,29 @@ namespace Axiom.RenderSystems.OpenGL
 			base.dispose( disposeManagedResources );
 		}
 
+	    public static int GetGLType( VertexElementType type )
+	    {
+            switch (type)
+            {
+                case VertexElementType.Float1:
+                case VertexElementType.Float2:
+                case VertexElementType.Float3:
+                case VertexElementType.Float4:
+                    return Gl.GL_FLOAT;
+                case VertexElementType.Short1:
+                case VertexElementType.Short2:
+                case VertexElementType.Short3:
+                case VertexElementType.Short4:
+                    return Gl.GL_SHORT;
+                case VertexElementType.Color:
+                case VertexElementType.Color_ABGR:
+                case VertexElementType.Color_ARGB:
+                case VertexElementType.UByte4:
+                    return Gl.GL_UNSIGNED_BYTE;
+                default:
+                    return 0;
+            };
+	    }
 	}
 
 	public class GLSoftwareBufferManager : DefaultHardwareBufferManager
