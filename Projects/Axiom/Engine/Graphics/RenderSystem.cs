@@ -2875,6 +2875,18 @@ it says it's incompatible with that RT");
 
         #endregion
 
+        #region InitializeFromRenderSystemCapabilities
+
+        /// <summary>
+        /// Initialize the render system from the capabilities
+        /// </summary>
+        [OgreVersion( 1, 7 )]
+        public abstract void InitializeFromRenderSystemCapabilities(
+            RenderSystemCapabilities caps, RenderTarget primary );
+
+
+        #endregion
+
         #endregion Methods
 
         #region Object overrides

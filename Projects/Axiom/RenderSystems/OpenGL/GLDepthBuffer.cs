@@ -8,8 +8,11 @@ namespace Axiom.RenderSystems.OpenGL
     {
         public GLContext GLContext;
 
-        public GLDepthBuffer( PoolId poolId, ushort bitDepth, int width, int height, int fsaa, string fsaaHint, bool manual ) 
-            : base( poolId, bitDepth, width, height, fsaa, fsaaHint, manual )
+        public GLDepthBuffer( PoolId poolId, GLRenderSystem renderSystem, GLContext creatorContext,
+            GLRenderBuffer depth, GLRenderBuffer stencil, 
+            int width, int height, int fsaa, int multiSampleQuality,
+            bool manual)
+            : base( poolId, 0, width, height, fsaa, "", manual )
         {
         }
     }

@@ -43,6 +43,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Math.Collections;
+using Axiom.RenderSystems.OpenGL.GLSL;
 using Tao.OpenGl;
 using System.Collections.Generic;
 using System.Text;
@@ -58,10 +59,17 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for OpenGLRenderer.
 	/// </summary>
-	public class GLRenderSystem : RenderSystem
+	public partial class GLRenderSystem : RenderSystem
 	{
 
 		#region Fields
+
+        // Check if the GL system has already been initialised
+        
+        [OgreVersion(1, 7)]
+        private bool _glInitialised;
+
+	    private GLSLProgramFactory _GLSLProgramFactory;
 
 	    private List<GLContext> _backgroundContextList = new List<GLContext>();
 
@@ -72,21 +80,6 @@ namespace Axiom.RenderSystems.OpenGL
 	    private int _currentLights;
 
 	    private HardwareBufferManager _hardwareBufferManager;
-
-        [AxiomHelper(0, 8)]
-	    private bool GLEW_VERSION_2_0;
-
-        [AxiomHelper(0, 8)]
-        private bool GLEW_VERSION_1_4;
-
-        [AxiomHelper(0, 8)]
-	    private bool GLEW_EXT_blend_equation_separate;
-
-        [AxiomHelper(0, 8)]
-        private bool GLEW_EXT_blend_minmax;
-
-        [AxiomHelper(0, 8)]
-        private bool GLEW_ARB_imaging;
 
 		/// <summary>
 		/// Rendering loop control
@@ -102,11 +95,6 @@ namespace Axiom.RenderSystems.OpenGL
 		///		GLSupport class providing platform specific implementation.
 		/// </summary>
 		private BaseGLSupport _glSupport;
-
-		/// <summary>
-		///		Flag that remembers if GL has been initialized yet.
-		/// </summary>
-		private bool _isGLInitialized;
 
 		private GLContext _mainContext;
 		private GLContext _currentContext;
@@ -386,174 +374,64 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		///		Returns an OpenGL implementation of a hardware occlusion query.
-		/// </summary>
-		/// <returns></returns>
+        #region HardwareOcclusionQuery
+
+        [OgreVersion(1, 7)]
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
-			return new GLHardwareOcclusionQuery( this._glSupport );
+			return new GLHardwareOcclusionQuery( _glSupport );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="isFullscreen"></param>
-		/// <param name="miscParams"></param>
-		/// <returns></returns>
-		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, NamedParameterList miscParams )
+        #endregion
+
+        #region CreateMultiRenderTarget
+
+        [OgreVersion(1, 7)]
+	    public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
-			if ( renderTargets.ContainsKey( name ) )
-			{
-				throw new Exception( String.Format( "Window with the name '{0}' already exists.", name ) );
-			}
-
-			// Log a message
-			StringBuilder msg = new StringBuilder();
-			msg.AppendFormat( "GLRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height, isFullscreen ? "fullscreen" : "windowed" );
-			if ( miscParams != null )
-			{
-				msg.Append( "miscParams: " );
-				foreach ( KeyValuePair<string, object> param in miscParams )
-				{
-					msg.AppendFormat( " {0} = {1} ", param.Key, param.Value.ToString() );
-				}
-				LogManager.Instance.Write( msg.ToString() );
-			}
-			msg = null;
-
-			// create the window
-			RenderWindow window = _glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
-
-			// add the new render target
-			AttachRenderTarget( window );
-
-			if ( !_isGLInitialized )
-			{
-				InitGL( window );
-
-				// set the number of texture units
-				_fixedFunctionTextureUnits = currentCapabilities.TextureUnitCount;
-
-				// in GL there can be less fixed function texture units than general
-				// texture units. use the smaller of the two.
-				if ( Capabilities.HasCapability( Graphics.Capabilities.FragmentPrograms ) )
-				{
-					int maxTexUnits;
-					Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out maxTexUnits );
-					if ( _fixedFunctionTextureUnits > maxTexUnits )
-					{
-						_fixedFunctionTextureUnits = maxTexUnits;
-					}
-				}
-
-				// Initialize the main context
-				_oneTimeContextInitialization();
-				if ( _currentContext != null )
-					_currentContext.Initialized = true;
-			}
-
-			return window;
-		}
-
-		public override MultiRenderTarget CreateMultiRenderTarget( string name )
-		{
-			MultiRenderTarget retval = this.rttManager.CreateMultiRenderTarget( name );
+			var retval = rttManager.CreateMultiRenderTarget( name );
 			AttachRenderTarget( retval );
 			return retval;
 		}
 
-        private void ParseGLVersion()
-        {
-            GLEW_VERSION_1_4 = _glSupport.CheckMinVersion( "1.4" );
-            GLEW_VERSION_2_0 = _glSupport.CheckMinVersion( "2.0" );
+        #endregion
 
-            GLEW_EXT_blend_equation_separate = _glSupport.CheckExtension( "EXT_blend_equation_separate" );
-            GLEW_EXT_blend_minmax = _glSupport.CheckExtension("EXT_blend_minmax");
-            GLEW_ARB_imaging = _glSupport.CheckExtension("GLEW_ARB_imaging");
-        }
+        #region OneTimeContextInitialization
 
-	    /// <summary>
-		///
-		/// </summary>
-		/// <param name="primary"></param>
-		protected void InitGL( RenderTarget primary )
+        /// <summary>
+        /// One time initialization for the RenderState of a context. Things that
+        /// only need to be set once, like the LightingModel can be defined here.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        private void OneTimeContextInitialization()
 		{
-			// Set main and current context
-			_mainContext = (GLContext)primary[ "GLCONTEXT" ];
-			_currentContext = _mainContext;
-
-			// Set primary context as active
-			if ( _currentContext != null )
-				_currentContext.SetCurrent();
-
-			// intialize GL extensions and check capabilites
-			_glSupport.InitializeExtensions();
-	        ParseGLVersion();
-
-			LogManager.Instance.Write( "***************************" );
-			LogManager.Instance.Write( "*** GL Renderer Started ***" );
-			LogManager.Instance.Write( "***************************" );
-
-			// log hardware info
-			LogManager.Instance.Write( "Vendor: {0}", _glSupport.Vendor );
-			LogManager.Instance.Write( "Video Board: {0}", _glSupport.VideoCard );
-			LogManager.Instance.Write( "Version: {0}", _glSupport.Version );
-
-			LogManager.Instance.Write( "Extensions supported: " );
-
-			foreach ( string ext in _glSupport.Extensions )
-			{
-				LogManager.Instance.Write( ext );
-			}
-
-			// create our special program manager
-			gpuProgramMgr = new GLGpuProgramManager();
-
-			// query hardware capabilites
-            currentCapabilities = CreateRenderSystemCapabilities(primary);
-
-			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
-			// use software buffers as a fallback, which operate as regular vertex arrays
-			if ( currentCapabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
-			{
-				_hardwareBufferManager = new GLHardwareBufferManager();
-			}
-			else
-			{
-				_hardwareBufferManager = new GLSoftwareBufferManager();
-			}
-
-			// by creating our texture manager, singleton TextureManager will hold our implementation
-			textureManager = new GLTextureManager( _glSupport );
-
-			_isGLInitialized = true;
-		}
-
-		private void _oneTimeContextInitialization()
-		{
-			// Set nicer lighting model -- d3d9 has this by default
-			Gl.glLightModeli( Gl.GL_LIGHT_MODEL_COLOR_CONTROL, Gl.GL_SEPARATE_SPECULAR_COLOR );
-			Gl.glLightModeli( Gl.GL_LIGHT_MODEL_LOCAL_VIEWER, 1 );
-			Gl.glEnable( Gl.GL_COLOR_SUM );
-			Gl.glDisable( Gl.GL_DITHER );
+            if (GLEW_VERSION_1_2)
+            {
+                // Set nicer lighting model -- d3d9 has this by default
+                Gl.glLightModeli(Gl.GL_LIGHT_MODEL_COLOR_CONTROL, Gl.GL_SEPARATE_SPECULAR_COLOR);
+                Gl.glLightModeli(Gl.GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+            }
+            if (GLEW_VERSION_1_4)
+            {
+                Gl.glEnable(Gl.GL_COLOR_SUM);
+                Gl.glDisable(Gl.GL_DITHER);
+            }
 
 			// Check for FSAA
 			// Enable the extension if it was enabled by the GLSupport
 			if ( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
 			{
-				int fsaa_active = 0; // Default to false
-				Gl.glGetIntegerv( Gl.GL_SAMPLE_BUFFERS_ARB, out fsaa_active );
-				if ( fsaa_active == 1 )
+				int fsaaActive = 0; // Default to false
+				Gl.glGetIntegerv( Gl.GL_SAMPLE_BUFFERS_ARB, out fsaaActive );
+				if ( fsaaActive == 1 )
 				{
 					Gl.glEnable( Gl.GL_MULTISAMPLE_ARB );
 					LogManager.Instance.Write( "Using FSAA from GL_ARB_multisample extension." );
 				}
 			}
 		}
+
+        #endregion
 
         #region AmbientLight
 
@@ -919,7 +797,7 @@ namespace Axiom.RenderSystems.OpenGL
 		        // Bind this new context to this thread. 
 		        newContext.SetCurrent();
 
-		        _oneTimeContextInitialization();
+		        OneTimeContextInitialization();
                 newContext.Initialized = true;
             }
 	    }
@@ -1206,11 +1084,11 @@ namespace Axiom.RenderSystems.OpenGL
 				// Don't offer this as an option as DX links it to sprite enabled
 				for ( var i = 0; i < _fixedFunctionTextureUnits; i++ )
 				{
-					activateGLTextureUnit( i );
+					ActivateGLTextureUnit( i );
 					Gl.glTexEnvi( Gl.GL_POINT_SPRITE, Gl.GL_COORD_REPLACE, 
                         value ? Gl.GL_TRUE : Gl.GL_FALSE );
 				}
-				activateGLTextureUnit( 0 );
+				ActivateGLTextureUnit( 0 );
 			}
 		}
 
@@ -1288,49 +1166,20 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        private int _getTextureAddressingMode( TextureAddressing tam )
-        {
-            int type = 0;
+        #region SetTextureAddressingMode
 
-            switch ( tam )
-            {
-                case TextureAddressing.Wrap:
-                    type = Gl.GL_REPEAT;
-                    break;
-
-                case TextureAddressing.Mirror:
-                    type = Gl.GL_MIRRORED_REPEAT;
-                    break;
-
-                case TextureAddressing.Clamp:
-                    type = Gl.GL_CLAMP_TO_EDGE;
-                    break;
-
-                case TextureAddressing.Border:
-                    type = Gl.GL_CLAMP_TO_BORDER;
-                    break;
-            }
-
-            return type;
-        }
-
+        [OgreVersion(1, 7)]
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
         {
-            //if ( lastAddressingMode[ stage ] == uvw )
-            //{
-            //    //return;
-            //}
-
-            //lastAddressingMode[ stage ] = uvw;
-
-            if ( !activateGLTextureUnit( stage ) )
+            if ( !ActivateGLTextureUnit( stage ) )
                 return;
-
-            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, _getTextureAddressingMode( uvw.U ) );
-            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, _getTextureAddressingMode( uvw.V ) );
-            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, _getTextureAddressingMode( uvw.W ) );
-            activateGLTextureUnit( 0 );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, GLHelper.ConvertEnum( uvw.U ) );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, GLHelper.ConvertEnum( uvw.V ) );
+            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, GLHelper.ConvertEnum( uvw.W ) );
+            ActivateGLTextureUnit( 0 );
         }
+
+        #endregion
 
         #region SetTextureMipmapBias
 
@@ -1339,10 +1188,10 @@ namespace Axiom.RenderSystems.OpenGL
 	    {
             if (currentCapabilities.HasCapability(Graphics.Capabilities.MipmapLODBias))
             {
-                if (activateGLTextureUnit(stage))
+                if (ActivateGLTextureUnit(stage))
                 {
                     Gl.glTexEnvf(Gl.GL_TEXTURE_FILTER_CONTROL_EXT, Gl.GL_TEXTURE_LOD_BIAS_EXT, bias);
-                    activateGLTextureUnit(0);
+                    ActivateGLTextureUnit(0);
                 }
             }
 	    }
@@ -1373,7 +1222,7 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 			}
 
-            if (!activateGLTextureUnit(unit))
+            if (!ActivateGLTextureUnit(unit))
                 return;
 
             float largestSupportedAnisotropy;
@@ -1386,7 +1235,7 @@ namespace Axiom.RenderSystems.OpenGL
             if (GetCurrentAnisotropy(unit) != maxAnisotropy)
                 Gl.glTexParameterf( textureTypes[ unit ], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
 
-            activateGLTextureUnit(0);
+            ActivateGLTextureUnit(0);
 		}
 
         #endregion
@@ -1528,7 +1377,7 @@ namespace Axiom.RenderSystems.OpenGL
                     break;
             }
 
-            if (!activateGLTextureUnit(stage))
+            if (!ActivateGLTextureUnit(stage))
                 return;
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_COMBINE);
 
@@ -1618,46 +1467,42 @@ namespace Axiom.RenderSystems.OpenGL
             if (bm.source2 == LayerBlendSource.Manual)
                 Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv2);
 
-            activateGLTextureUnit(0);
+            ActivateGLTextureUnit(0);
 		}
 
         #endregion
 
-        /// <summary>
-		///
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="index"></param>
+        #region SetTextureCoordSet
+
+        [OgreVersion(1, 7)]
 		public override void SetTextureCoordSet( int stage, int index )
 		{
 			texCoordIndex[ stage ] = index;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="method"></param>
+        #endregion
+
+        #region SetTextureCoordCalculation
+
+        [OgreVersion(1, 7)]
 		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
 		{
+            if (stage >= _fixedFunctionTextureUnits)
+            {
+                // Can't do this
+                return;
+            }
+
 			// Default to no extra auto texture matrix
 			useAutoTextureMatrix = false;
-
-			if ( method == TexCoordCalcMethod.None &&
-				lastTexCalMethods[ stage ] == method )
-			{
-				return;
-			}
-
-			// store for next checking next time around
-			lastTexCalMethods[ stage ] = method;
 
 			float[] eyePlaneS = { 1.0f, 0.0f, 0.0f, 0.0f };
 			float[] eyePlaneT = { 0.0f, 1.0f, 0.0f, 0.0f };
 			float[] eyePlaneR = { 0.0f, 0.0f, 1.0f, 0.0f };
 			float[] eyePlaneQ = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
+            if (!ActivateGLTextureUnit(stage))
+                return;
 
 			switch ( method )
 			{
@@ -1687,7 +1532,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
 					// XXX This doesn't seem right?!
-					if ( _glSupport.CheckMinVersion( "1.3" ) )
+					if ( GL_VERSION_1_3 )
 					{
 						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
 						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
@@ -1724,8 +1569,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// We need an extra texture matrix here
 					// This sets the texture matrix to be the inverse of the modelview matrix
 					useAutoTextureMatrix = true;
-
-					Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, _tempMatrix );
+                    MakeGLMatrix(ref viewMatrix, _tempMatrix);
 
 					// Transpose 3x3 in order to invert matrix (rotation)
 					// Note that we need to invert the Z _before_ the rotation
@@ -1782,8 +1626,17 @@ namespace Axiom.RenderSystems.OpenGL
 					//projectionBias.m33 = 1.0f;
 
 					projectionBias = projectionBias * frustum.ProjectionMatrix;
-					projectionBias = projectionBias * frustum.ViewMatrix;
-					projectionBias = projectionBias * worldMatrix;
+                    if (texProjRelative)
+                    {
+                        Matrix4 tmp;
+                        frustum.CalcViewMatrixRelative(texProjRelativeOrigin, out tmp);
+                        projectionBias = projectionBias * tmp;
+                    }
+                    else
+                    {
+                        projectionBias = projectionBias*frustum.ViewMatrix;
+                    }
+			        projectionBias = projectionBias * worldMatrix;
 
 					MakeGLMatrix( ref projectionBias, autoTextureMatrix );
 					break;
@@ -1792,38 +1645,50 @@ namespace Axiom.RenderSystems.OpenGL
 					break;
 			}
 
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
+            ActivateGLTextureUnit(0);
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="xform"></param>
+        #endregion
+
+        #region SetTextureMatrix
+
+        [OgreVersion(1, 7)]
 		public override void SetTextureMatrix( int stage, Matrix4 xform )
 		{
+            if (stage >= _fixedFunctionTextureUnits)
+            {
+                // Can't do this
+                return;
+            }
 
 			MakeGLMatrix( ref xform, _tempMatrix );
 
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
+            if (!ActivateGLTextureUnit(stage))
+                return;
 			Gl.glMatrixMode( Gl.GL_TEXTURE );
 
+            // Load this matrix in
 			Gl.glLoadMatrixf( _tempMatrix );
 
-			// if texture matrix was precalced, use that
 			if ( useAutoTextureMatrix )
 			{
+                // Concat auto matrix
 				Gl.glMultMatrixf( autoTextureMatrix );
 			}
 
 			// reset to mesh view matrix and to tex unit 0
 			Gl.glMatrixMode( Gl.GL_MODELVIEW );
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
+            ActivateGLTextureUnit(0);
 		}
 
+        #endregion
+
+        #region SetTextureUnitFiltering
+
+        [OgreVersion(1, 7)]
 	    public override void SetTextureUnitFiltering( int unit, FilterType ftype, FilterOptions fo )
 	    {
-            if (!activateGLTextureUnit(unit))
+            if (!ActivateGLTextureUnit(unit))
                 return;
             switch (ftype)
             {
@@ -1864,29 +1729,29 @@ namespace Axiom.RenderSystems.OpenGL
                     break;
             }
 
-            activateGLTextureUnit(0);
+            ActivateGLTextureUnit(0);
 	    }
 
-	    /// <summary>
-		///
-		/// </summary>
-		/// <param name="autoCreateWindow"></param>
-		/// <param name="windowTitle">Title of the window to create.</param>
-		/// <returns></returns>
+        #endregion
+
+        #region Initialize
+
+        [OgreVersion(1, 7)]
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
-			// register the GLSL program manage
-
 			_glSupport.Start();
 
+            // Axiom specific?
 			WindowEventMonitor.Instance.MessagePump = WindowMessageHandling.MessagePump;
 
-			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
+			var autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
 			base.Initialize( autoCreateWindow, windowTitle );
 
 			return autoWindow;
 		}
+
+        #endregion
 
         #region Reinitialize
 
@@ -1899,15 +1764,25 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		///		Shutdown the render system.
-		/// </summary>
+        #region Shutdown
+
+        [OgreVersion(1, 7)]
 		public override void Shutdown()
 		{
 			// call base Shutdown implementation
 			base.Shutdown();
 
-			if ( gpuProgramMgr != null )
+            // Deleting the GLSL program factory
+		    if (_GLSLProgramFactory != null)
+		    {
+		        // Remove from manager safely
+		        if ( HighLevelGpuProgramManager.Instance != null )
+                    HighLevelGpuProgramManager.Instance.RemoveFactory(_GLSLProgramFactory);
+		        _GLSLProgramFactory.Dispose();
+		        _GLSLProgramFactory = null;
+		    }
+
+            if ( gpuProgramMgr != null )
 			{
 				gpuProgramMgr.Dispose();
 			}
@@ -1922,6 +1797,14 @@ namespace Axiom.RenderSystems.OpenGL
 				rttManager.Dispose();
 			}
 
+            // Delete extra threads contexts
+            foreach (var curContext in _backgroundContextList)
+            {
+                curContext.ReleaseContext();
+                curContext.Dispose();
+            }
+            _backgroundContextList.clear();
+
 			_glSupport.Stop();
 			_stopRendering = true;
 
@@ -1933,23 +1816,21 @@ namespace Axiom.RenderSystems.OpenGL
 			// There will be a new initial window and so forth, thus any call to test
 			//  some params will access an invalid pointer, so it is best to reset
 			//  the whole state.
-			_isGLInitialized = false;
-
+            _glInitialised = false;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="stage"></param>
-		/// <param name="enabled"></param>
-		/// <param name="textureName"></param>
+        #endregion
+
+        #region SetTexture
+
+        [OgreVersion(1, 7)]
 		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
-			GLTexture glTexture = (GLTexture)texture;
-			int lastTextureType = textureTypes[ stage ];
+			var glTexture = (GLTexture)texture;
+			var lastTextureType = textureTypes[ stage ];
 
-			// set the active texture
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
+            if (!ActivateGLTextureUnit(stage))
+                return;
 
 			// enable and bind the texture if necessary
 			if ( enabled )
@@ -1997,11 +1878,13 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE );
 				}
 
-				// reset active texture to unit 0
-				Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
+                // bind zero texture
+                Gl.glBindTexture(GL_TEXTURE_2D, 0); 
 			}
-			activateGLTextureUnit( 0 );
+			ActivateGLTextureUnit( 0 );
 		}
+
+        #endregion
 
         #region SetAlphaRejectSettings
 
@@ -2077,12 +1960,15 @@ namespace Axiom.RenderSystems.OpenGL
              */
 
             // temporary hack:
-	        return new GLDepthBuffer( PoolId.Default, 24, renderTarget.Width, renderTarget.Height, renderTarget.FSAA,
-	                                  renderTarget.FSAAHint, false );
+	        return new GLDepthBuffer( PoolId.Default, this, _currentContext, null, null, 
+                renderTarget.Width, renderTarget.Height, renderTarget.FSAA, 0, false);
 	    }
 
 	    #endregion
 
+        #region SetColorBufferWriteEnabled
+
+        [OgreVersion(1, 7)]
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			// record this for later
@@ -2093,6 +1979,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			Gl.glColorMask( ColorWrite[ 0 ], ColorWrite[ 1 ], ColorWrite[ 2 ], ColorWrite[ 3 ] );
 		}
+
+        #endregion
 
         #region SetDepthBufferParams
 
@@ -3185,412 +3073,13 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			_glSupport.AddConfig();
 		}
+        
 
-		/// <summary>
-		///		Helper method to go through and interrogate hardware capabilities.
+        #region GetCombinedMinMipFilter
+
+        /// <summary>
 		/// </summary>
-        [OgreVersion(0, 0, "createRenderSystemCapabilities in Ogre; needs update")]
-        public override RenderSystemCapabilities CreateRenderSystemCapabilities()
-		{
-		    throw new NotImplementedException();
-		}
-
-        private RenderSystemCapabilities CreateRenderSystemCapabilities(RenderTarget primary)
-        {
-		    var rsc = new RenderSystemCapabilities();
-
-			// check hardware mip mapping
-			if ( _glSupport.CheckMinVersion( "1.4" ) ||
-				 _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
-			{
-				rsc.SetCapability( Graphics.Capabilities.HardwareMipMaps );
-			}
-
-			// check texture blending
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
-			{
-			    rsc.SetCapability( Graphics.Capabilities.Blending );
-			}
-
-			// check multitexturing
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_multitexture" ) )
-			{
-				// check the number of texture units available
-				int numTextureUnits = 0;
-				Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits );
-				_fixedFunctionTextureUnits = numTextureUnits;
-
-				if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
-				{
-					// Also check GL_MAX_TEXTURE_IMAGE_UNITS_ARB since NV at least
-					// only increased this on the FX/6x00 series
-					int arbUnits = 0;
-					Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_IMAGE_UNITS_ARB, out arbUnits );
-					if ( arbUnits > numTextureUnits )
-						numTextureUnits = arbUnits;
-				}
-
-                rsc.TextureUnitCount = numTextureUnits;
-			}
-			else
-			{
-				// If no multitexture support then set one texture unit
-                rsc.TextureUnitCount = 1;
-			}
-
-			// anisotropic filtering
-			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.AnisotropicFiltering);
-			}
-
-			// check dot3 support
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.Dot3);
-			}
-
-			// check support for cube mapping
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_cube_map" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.CubeMapping);
-			}
-
-			// check for point sprite support
-			if ( _glSupport.CheckMinVersion( "1.2" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_point_sprite" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.PointSprites);
-			}
-			// check support for point parameters
-			if ( _glSupport.CheckMinVersion( "1.4" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_point_parameters" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_point_parameters" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.PointExtendedParameters);
-			}
-
-			// Check for hardware stencil support and set bit depth
-			int stencilBits;
-			Gl.glGetIntegerv( Gl.GL_STENCIL_BITS, out stencilBits );
-			if ( stencilBits > 0 )
-			{
-                rsc.StencilBufferBitCount = stencilBits;
-                rsc.SetCapability(Graphics.Capabilities.StencilBuffer);
-			}
-
-			// check support for vertex buffers in hardware
-			if ( _glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.VertexBuffer);
-			}
-
-			// ARB Vertex Programs
-			if ( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.VertexPrograms);
-                rsc.MaxVertexProgramVersion = "arbvp1";
-                rsc.VertexProgramConstantBoolCount = 0;
-                rsc.VertexProgramConstantIntCount = 0;
-
-				int maxFloats;
-				Gl.glGetProgramivARB( Gl.GL_VERTEX_PROGRAM_ARB, Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats );
-                rsc.VertexProgramConstantFloatCount = maxFloats;
-
-				// register support for arbvp1
-				gpuProgramMgr.PushSyntaxCode( "arbvp1" );
-				gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
-
-				// GeForceFX vp30 Vertex Programs
-				if ( _glSupport.CheckExtension( "GL_NV_vertex_program2_option" ) )
-				{
-                    rsc.SetCapability(Graphics.Capabilities.VertexPrograms);
-                    rsc.MaxVertexProgramVersion = "vp30";
-
-					gpuProgramMgr.PushSyntaxCode( "vp30" );
-					gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
-				}
-
-				if ( _glSupport.CheckExtension( "GL_NV_vertex_program3" ) )
-				{
-                    rsc.SetCapability(Graphics.Capabilities.VertexPrograms);
-                    rsc.MaxVertexProgramVersion = "vp40";
-
-					gpuProgramMgr.PushSyntaxCode( "vp40" );
-					gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
-				}
-			}
-
-			// GeForce3/4 Register Combiners/Texture Shaders
-			if ( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
-				 _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.FragmentPrograms);
-                rsc.MaxFragmentProgramVersion = "fp20";
-
-				gpuProgramMgr.PushSyntaxCode( "fp20" );
-				gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
-			}
-
-			// ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
-			if ( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.FragmentPrograms);
-                rsc.MaxFragmentProgramVersion = "ps_1_4";
-				// no boolean params allowed
-                rsc.FragmentProgramConstantBoolCount = 0;
-				// no int params allowed
-                rsc.FragmentProgramConstantIntCount = 0;
-				// only 8 vector4 constant floats supported
-                rsc.FragmentProgramConstantFloatCount = 8;
-
-				// register support for ps1.1 - ps1.4
-				gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
-				gpuProgramMgr.PushSyntaxCode( "ps_1_2" );
-				gpuProgramMgr.PushSyntaxCode( "ps_1_3" );
-				gpuProgramMgr.PushSyntaxCode( "ps_1_4" );
-				gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATI.ATIFragmentShaderFactory() );
-				gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATI.ATIFragmentShaderFactory() );
-				gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATI.ATIFragmentShaderFactory() );
-				gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATI.ATIFragmentShaderFactory() );
-			}
-
-			// ARB Fragment Programs
-			if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.FragmentPrograms);
-
-                rsc.MaxFragmentProgramVersion = "arbfp1";
-                rsc.FragmentProgramConstantBoolCount = 0;
-                rsc.FragmentProgramConstantIntCount = 0;
-
-				int maxFloats;
-				Gl.glGetProgramivARB( Gl.GL_FRAGMENT_PROGRAM_ARB, Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats );
-                rsc.FragmentProgramConstantFloatCount = maxFloats;
-
-				// register support for arbfp1
-				gpuProgramMgr.PushSyntaxCode( "arbfp1" );
-				gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
-
-				// GeForceFX fp30 Fragment Programs
-				if ( _glSupport.CheckExtension( "GL_NV_fragment_program_option" ) )
-				{
-                    rsc.MaxFragmentProgramVersion = "fp30";
-					gpuProgramMgr.PushSyntaxCode( "fp30" );
-					gpuProgramMgr.RegisterProgramFactory( "fp30", new Nvidia.NV3xGpuProgramFactory() );
-				}
-
-				if ( _glSupport.CheckExtension( "GL_NV_fragment_program2" ) )
-				{
-                    rsc.MaxFragmentProgramVersion = "fp40";
-					gpuProgramMgr.PushSyntaxCode( "fp40" );
-					gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
-				}
-			}
-
-			// GLSL support
-			if ( _glSupport.CheckMinVersion( "1.2" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
-				 _glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
-				 _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
-				 _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
-			{
-				HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
-				gpuProgramMgr.PushSyntaxCode( "glsl" );
-				LogManager.Instance.Write( "GLSL support detected" );
-			}
-
-			// Texture Compression
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.TextureCompression);
-
-				// DXT compression
-				if ( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
-				{
-                    rsc.SetCapability(Graphics.Capabilities.TextureCompressionDXT);
-				}
-
-				// VTC compression
-				if ( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
-				{
-                    rsc.SetCapability(Graphics.Capabilities.TextureCompressionVTC);
-				}
-			}
-
-			// scissor test is standard in GL 1.2 and above
-            rsc.SetCapability(Graphics.Capabilities.ScissorTest);
-
-			// as are user clip planes
-            rsc.SetCapability(Graphics.Capabilities.UserClipPlanes);
-
-			// 2 sided stencil
-			if ( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.TwoSidedStencil);
-			}
-
-			// stencil wrapping
-			if ( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.StencilWrap);
-			}
-
-			// Check for hardware occlusion support
-			if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) || _glSupport.CheckExtension( "GL_ARB_occlusion_query" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.HardwareOcculusion);
-			}
-
-			// UBYTE4 is always supported in GL
-            rsc.SetCapability(Graphics.Capabilities.VertexFormatUByte4);
-
-			// Infinit far plane always supported
-            rsc.SetCapability(Graphics.Capabilities.InfiniteFarPlane);
-
-			if ( _glSupport.CheckExtension( "GL_ARB_texture_non_power_of_two" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.NonPowerOf2Textures);
-			}
-
-			// Check for Float textures
-			if ( _glSupport.CheckExtension( "GL_ATI_texture_float" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_float" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.TextureFloat);
-			}
-
-			// 3D textures should be supported by GL 1.2, which is our minimum version
-            rsc.SetCapability(Graphics.Capabilities.Texture3D);
-
-			// Do this after extension function pointers are initialised as the extension
-			// is used to probe further capabilities.
-			int rttMode = 0;
-			if ( ConfigOptions.ContainsKey( "RTT Preferred Mode" ) )
-			{
-				var opt = ConfigOptions[ "RTT Preferred Mode" ];
-				// RTT Mode: 0 use whatever available, 1 use PBuffers, 2 force use copying
-				if ( opt.Value == "PBuffer" )
-				{
-					rttMode = 1;
-				}
-				else if ( opt.Value == "Copy" )
-				{
-					rttMode = 2;
-				}
-			}
-
-			// Check for framebuffer object extension
-			if ( _glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) && ( rttMode < 1 ) )
-			{
-				// Probe number of draw buffers
-				// Only makes sense with FBO support, so probe here
-				if ( _glSupport.CheckMinVersion( "2.0" ) ||
-					_glSupport.CheckExtension( "GL_ARB_draw_buffers" ) ||
-					_glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
-				{
-					int buffers;
-					Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
-                    rsc.MultiRenderTargetCount = (int)Utility.Min(buffers, Config.MaxMultipleRenderTargets);
-					// borrillis - This check moved inside GLFrameBufferObject where Gl.glDrawBuffers is called
-					//if ( !_glSupport.CheckMinVersion( "2.0" ) )
-					//{
-					//    //TODO: Before GL version 2.0, we need to get one of the extensions
-					//	if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
-					//	    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
-					//	else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
-					//	    Gl.glDrawBuffers = Gl.glDrawBuffersATI;
-					//}
-				}
-				// Create FBO manager
-				LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
-				rttManager = new GLFBORTTManager( _glSupport, _glSupport.Vendor == "ATI" );
-                rsc.SetCapability(Graphics.Capabilities.HardwareRenderToTexture);
-			}
-			else
-			{
-				// Check GLSupport for PBuffer support
-				if ( _glSupport.SupportsPBuffers && rttMode < 2 )
-				{
-					// Use PBuffers
-					rttManager = new GLPBRTTManager( _glSupport, primary );
-					LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
-                    rsc.SetCapability(Graphics.Capabilities.HardwareRenderToTexture);
-				}
-				else
-				{
-					// No pbuffer support either -- fallback to simplest copying from framebuffer
-					rttManager = new GLCopyingRTTManager( _glSupport );
-					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
-					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
-				}
-			}
-
-			// Point size
-			float ps;
-			Gl.glGetFloatv( Gl.GL_POINT_SIZE_MAX, out ps );
-            rsc.MaxPointSize = ps;
-
-			// Vertex texture fetching
-			int vUnits;
-			Gl.glGetIntegerv( Gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, out vUnits );
-            rsc.VertexTextureUnitCount = vUnits;
-			if ( vUnits > 0 )
-			{
-                rsc.SetCapability(Graphics.Capabilities.VertexTextureFetch);
-			}
-			// GL always shares vertex and fragment texture units (for now?)
-            rsc.VertexTextureUnitsShared = true;
-
-			// Mipmap LOD biasing?
-			if ( _glSupport.CheckMinVersion( "1.4" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.MipmapLODBias);
-			}
-
-			// Alpha to coverage??
-			if ( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
-			{
-				// Alpha to coverage always 'supported' when MSAA is available
-				// although card may ignore it if it doesn't specifically support A2C
-                rsc.SetCapability(Graphics.Capabilities.AlphaToCoverage);
-			}
-
-			// find out how many lights we have to play with, then create a light array to keep locally
-			int maxLights;
-			Gl.glGetIntegerv( Gl.GL_MAX_LIGHTS, out maxLights );
-            rsc.MaxLights = maxLights;
-
-
-			// check support for hardware vertex blending
-			// TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
-			//if(GLHelper.CheckExtension("GL_ARB_vertex_blend"))
-			//    caps.SetCap(Capabilities.VertexBlending);
-
-			// check if the hardware supports anisotropic filtering
-			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
-			{
-                rsc.SetCapability(Graphics.Capabilities.AnisotropicFiltering);
-			}
-
-
-			// write info to logs
-            rsc.Log();
-		    return rsc;
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
+        [OgreVersion(1, 7)]
 		private int GetCombinedMinMipFilter()
 		{
 			switch ( minFilter )
@@ -3634,7 +3123,9 @@ namespace Axiom.RenderSystems.OpenGL
 			return 0;
 		}
 
-		/// <summary>
+        #endregion
+
+        /// <summary>
 		///		Convenience method for VBOs
 		/// </summary>
 		/// <param name="i"></param>
@@ -3644,31 +3135,36 @@ namespace Axiom.RenderSystems.OpenGL
 			return new IntPtr( i );
 		}
 
-		private bool activateGLTextureUnit( int unit )
+        #region ActivateGLTextureUnit
+
+        [OgreVersion(1, 7)]
+		private bool ActivateGLTextureUnit( int unit )
 		{
 			if ( _activeTextureUnit != unit )
 			{
-				if ( _glSupport.CheckMinVersion( "1.2" ) && unit < Capabilities.TextureUnitCount )
+                if (GLEW_VERSION_1_2 && unit < Capabilities.TextureUnitCount)
 				{
 					Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + unit );
 					_activeTextureUnit = unit;
 					return true;
 				}
-				else if ( unit == 0 )
+				/* else */ if ( unit == 0 )
 				{
 					// always ok to use the first unit;
 					return true;
 				}
-				else
+				//else
 				{
 					return false;
 				}
 			}
-			else
+			//else
 			{
 				return true;
 			}
 		}
+
+        #endregion
 
         #region RenderTarget
 
@@ -3724,27 +3220,35 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
+        #region UnRegisterContext
+
+        [OgreVersion(1, 7)]
         internal void UnRegisterContext( GLContext context )
 		{
-			if ( this._currentContext == context )
+			if ( _currentContext == context )
 			{
 				// Change the context to something else so that a valid context
 				// remains active. When this is the main context being unregistered,
 				// we set the main context to 0.
-				if ( this._currentContext != this._mainContext )
+				if ( _currentContext != _mainContext )
 				{
-					this._switchContext( this._mainContext );
+					_switchContext( _mainContext );
 				}
 				else
 				{
-					/// No contexts remain
-					this._currentContext.EndCurrent();
-					this._currentContext = null;
-					this._mainContext = null;
+					// No contexts remain
+					_currentContext.EndCurrent();
+					_currentContext = null;
+					_mainContext = null;
 				}
 			}
 		}
 
+        #endregion
+
+        #region _switchContext
+
+        [OgreVersion(1, 7)]
 		private void _switchContext( GLContext context )
 		{
 			// Unbind GPU programs and rebind to new context later, because
@@ -3754,6 +3258,19 @@ namespace Axiom.RenderSystems.OpenGL
 				currentVertexProgram.Unbind();
 			if ( currentFragmentProgram != null )
 				currentFragmentProgram.Unbind();
+            if (currentGeometryProgram != null)
+                currentGeometryProgram.Unbind();
+
+            // Disable lights
+            for (var i = 0 ; i < _currentLights; i++ )
+			{
+				SetGLLight( i, null );
+				lights[ i ] = null;
+			}
+            _currentLights = 0;
+
+            // Disable textures
+            DisableTextureUnitsFrom(0);
 
 			// It's ready to switching
 			_currentContext.EndCurrent();
@@ -3763,7 +3280,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// Check if the context has already done one-time initialisation
 			if ( !_currentContext.Initialized )
 			{
-				_oneTimeContextInitialization();
+				OneTimeContextInitialization();
 				_currentContext.Initialized = true;
 			}
 
@@ -3772,17 +3289,20 @@ namespace Axiom.RenderSystems.OpenGL
 				currentVertexProgram.Bind();
 			if ( currentFragmentProgram != null )
 				currentFragmentProgram.Bind();
+            if (currentGeometryProgram != null)
+                currentGeometryProgram.Bind();
 
 			// Must reset depth/colour write mask to according with user desired, otherwise,
 			// clearFrameBuffer would be wrong because the value we are recorded may be
 			// difference with the really state stored in GL context.
 			Gl.glDepthMask( depthWrite ? 1 : 0 ); // Tao 2.0
-			//Gl.glDepthMask( depthWrite );
 			Gl.glColorMask( ColorWrite[ 0 ], ColorWrite[ 1 ], ColorWrite[ 2 ], ColorWrite[ 3 ] );
 			Gl.glStencilMask( stencilMask );
-		}
+        }
 
-		#endregion Private methods
+        #endregion
 
-	}
+        #endregion Private methods
+
+    }
 }
