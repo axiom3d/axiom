@@ -10,7 +10,7 @@ namespace Axiom.Graphics
         NoDepth = 0,
         ManualUsage = 0,
         Default = 1
-    } ;
+    }
 
     /// <summary>
     /// An abstract class that contains a depth/stencil buffer.
