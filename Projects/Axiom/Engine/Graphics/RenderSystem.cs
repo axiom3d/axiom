@@ -2188,6 +2188,18 @@ it says it's incompatible with that RT");
         [OgreVersion(1, 7)]
         public abstract void MakeProjectionMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram = false);
 
+        /// <summary>
+        /// Builds a perspective projection matrix for the case when frustum is
+        /// not centered around camera.
+        /// </summary>
+        /// <remarks>
+        /// Viewport coordinates are in camera coordinate frame, i.e. camera is 
+        /// at the origin.
+        /// </remarks>
+        [OgreVersion(1, 7)]
+        public abstract void MakeProjectionMatrix(Real left, Real right, Real bottom, Real top, 
+			Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram = false);
+
         #endregion
 
         #region SetAlphaRejectSettings
