@@ -893,6 +893,15 @@ namespace Axiom.Graphics
 		Replace,
 	}
 
+    public enum SceneBlendOperation
+    {
+        Add,
+        Subtract,
+        ReverseSubtract,
+        Min,
+        Max
+    }
+
 	/// <summary>
 	/// The broad type of detail for rendering.
 	/// </summary>
