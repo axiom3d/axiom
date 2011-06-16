@@ -138,11 +138,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Config options.
 		/// </summary>
-		protected ConfigOptionCollection _engineConfig = new ConfigOptionCollection();
+		protected ConfigOptionMap _engineConfig = new ConfigOptionMap();
 		/// <summary>
 		///		Gets the options currently set by the current GL implementation.
 		/// </summary>
-		public ConfigOptionCollection ConfigOptions
+		public ConfigOptionMap ConfigOptions
 		{
 			get
 			{

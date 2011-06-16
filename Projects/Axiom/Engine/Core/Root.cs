@@ -824,7 +824,7 @@ namespace Axiom.Core
 			PlatformInformation.Log( LogManager.Instance.DefaultLog );
 #endif
 			// initialize the current render system
-			this.autoWindow = this.activeRenderSystem.Initialize( autoCreateWindow, windowTitle );
+			this.autoWindow = this.activeRenderSystem.Initialise( autoCreateWindow, windowTitle );
 
 			// if they chose to auto create a window, also initialize several subsystems
 			if ( autoCreateWindow )
