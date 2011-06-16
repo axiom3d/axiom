@@ -421,8 +421,8 @@ namespace Axiom.Graphics
 
         #region Viewport
 
-        [OgreVersion(1, 7)]
-        protected Viewport activeViewport;
+        [OgreVersion(1, 7, "Public due to Ogre design deficit: directly intruding into this using friend")] 
+        public Viewport activeViewport;
 
         /// <summary>
         /// Get or set the current active viewport for rendering.

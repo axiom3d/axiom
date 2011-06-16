@@ -769,6 +769,10 @@ namespace Axiom.Graphics
         }
 
         #endregion
-	    
+
+	    public void SetCategoryRelevant( CapabilitiesCategory d3D9, bool b )
+	    {
+	        // TODO: implement for IsCategoryRelevant()
+	    }
 	}
 }

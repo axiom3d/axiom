@@ -136,7 +136,7 @@ namespace Axiom.Graphics
     {
         Common = 0,
         Common2 = 1,
-        D3D = 2,
+        D3D9 = 2,
         GL = 3
     }
 
@@ -153,7 +153,7 @@ namespace Axiom.Graphics
     {
         Common = CapabilitiesCategory.Common << CapsUtil.Shift,
         Common2 = CapabilitiesCategory.Common2 << CapsUtil.Shift,
-        D3D = CapabilitiesCategory.D3D << CapsUtil.Shift,
+        D3D9 = CapabilitiesCategory.D3D9 << CapsUtil.Shift,
         GL = CapabilitiesCategory.GL << CapsUtil.Shift,
     }
 
@@ -554,7 +554,7 @@ namespace Axiom.Graphics
         /// Is DirectX feature "per stage constants" supported
         /// </summary>
         [OgreVersion(1, 7)]
-        PerStageConstant = CapCategoryShift.D3D | (1 << 0),
+        PerStageConstant = CapCategoryShift.D3D9 | (1 << 0),
 
         #endregion
 

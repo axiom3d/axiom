@@ -85,8 +85,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="D3D9DeviceManager.cs" />
+    <Compile Include="D3D9DriverList.cs" />
+    <Compile Include="D3D9RenderWindowList.cs" />
+    <Compile Include="D3D9ResourceManager.cs" />
     <Compile Include="D3DHardwarePixelBuffer.cs" />
     <Compile Include="D3DMultiRenderTarget.cs" />
+    <Compile Include="D3DRenderSystem.Capabilities.cs" />
     <Compile Include="D3DRenderSystem.cs" />
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="DriverCollection.cs" />

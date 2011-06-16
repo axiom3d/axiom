@@ -201,9 +201,21 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#endregion Fields and Properties
 
-		#region Constructors
+        #region WindowHandle
 
-		/// <summary>
+        public SWF.Control WindowHandle
+        {
+            get
+            {
+                return _window;
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
 		///
 		/// </summary>
 		/// <param name="driver">The root driver</param>
@@ -708,6 +720,34 @@ namespace Axiom.RenderSystems.DirectX9
 	        get
 	        {
 	            return false;
+	        }
+	    }
+
+	    internal D3D9Device Device
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
+	        }
+	        set
+	        {
+	            throw new NotImplementedException();
+	        }
+	    }
+
+	    public bool IsNvPerfHUDEnable
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
+	        }
+	    }
+
+	    public bool IsVSync
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
 	        }
 	    }
 
