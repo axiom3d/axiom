@@ -514,7 +514,7 @@ namespace Axiom.RenderSystems.OpenGL
 			gpuProgramMgr = new GLGpuProgramManager();
 
 			// query hardware capabilites
-            CreateRenderSystemCapabilities(primary);
+            currentCapabilities = CreateRenderSystemCapabilities(primary);
 
 			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
 			// use software buffers as a fallback, which operate as regular vertex arrays
@@ -2075,7 +2075,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		    return retVal;
              */
-	        throw new NotImplementedException();
+
+            // temporary hack:
+	        return new GLDepthBuffer( PoolId.Default, 24, renderTarget.Width, renderTarget.Height, renderTarget.FSAA,
+	                                  renderTarget.FSAAHint, false );
 	    }
 
 	    #endregion
@@ -2496,7 +2499,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Binormal ) )
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Binormal ) ); // disable binormal
 			}*/
-            throw new NotImplementedException("need to implement attribsBound");
+            //throw new NotImplementedException("need to implement attribsBound");
 
 			Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		}
