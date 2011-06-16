@@ -21,7 +21,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             rsc.SetCategoryRelevant(CapabilitiesCategory.D3D9, true);
 		    rsc.DriverVersion = driverVersion;
-		    rsc.DeviceName = _activeDriver.Description;
+		    rsc.DeviceName = _activeDriver.DriverDescription;
             rsc.RendersystemName = Name;
 
             // Init caps to maximum.		

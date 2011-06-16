@@ -66,6 +66,7 @@ namespace Axiom.Graphics
 		#region Protected member variables
 
 		protected IntPtr targetHandle;
+
 		#region top Property
 
 		private int _top;
@@ -188,7 +189,20 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion IsPrimary Property
+        #endregion IsPrimary Property
+
+        public virtual bool IsHidden
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+            }
+        }
+
+	    
 
 		#endregion
 

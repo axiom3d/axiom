@@ -34,13 +34,12 @@ namespace Axiom.RenderSystems.DirectX9
 		    LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
             for (var iAdaptor = 0; iAdaptor < d3D.AdapterCount; iAdaptor++)
             {
-                /*
+                
                 var adapterIdentifier = d3D.GetAdapterIdentifier( iAdaptor );
-                var d3ddm = d3D.GetAdapterDisplayMode( iAdaptor );
-                var d3dcaps9 = d3D.GetAdapterDisplayMode( iAdaptor );
-                */
+                var d3Ddm = d3D.GetAdapterDisplayMode( iAdaptor );
+                var d3Dcaps9 = d3D.GetDeviceCaps( iAdaptor, DeviceType.Hardware );
 
-                _driverList.Add( new Driver( d3D.Adapters[ iAdaptor ] ) );
+                _driverList.Add(new Driver(iAdaptor, d3Dcaps9, adapterIdentifier, d3Ddm));
             }
 
             LogManager.Instance.Write( "D3D9: Driver Detection Ends" );
@@ -70,7 +69,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return _driverList.FirstOrDefault(d => d.Description == name);
+                return _driverList.FirstOrDefault(d => d.DriverDescription == name);
             }
         }
 
