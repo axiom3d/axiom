@@ -3315,7 +3315,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// Bind frame buffer object
 			rttManager.Bind( target );
 
-			if ( target.HardwareGammaEnabled )
+			if ( target.IsHardwareGammaEnabled )
 			{
 				Gl.glEnable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
 
