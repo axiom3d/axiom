@@ -75,52 +75,37 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
         static OperationType ParseOperationType(String val)
         {
-                if (val == "point_list")
-                {
-                        return OperationType.PointList;
-                }
-                else if (val == "line_list")
-                {
-                        return OperationType.LineList;
-                }
-                else if (val == "line_strip")
-                {
-                        return OperationType.LineStrip;
-                }
-                else if (val == "triangle_strip")
-                {
-                        return OperationType.TriangleStrip;
-                }
-                else if (val == "triangle_fan")
-                {
-                        return OperationType.TriangleFan;
-                }
-                else 
-                {
-                        //Triangle list is the default fallback. Keep it this way?
-                        return OperationType.TriangleList;
-                }
+            switch ( val )
+            {
+                case "point_list":
+                    return OperationType.PointList;
+                case "line_list":
+                    return OperationType.LineList;
+                case "line_strip":
+                    return OperationType.LineStrip;
+                case "triangle_strip":
+                    return OperationType.TriangleStrip;
+                case "triangle_fan":
+                    return OperationType.TriangleFan;
+                default:
+                    return OperationType.TriangleList;
+            }
         }
 
-        static String OperationTypeToString(OperationType val)
+	    static String OperationTypeToString(OperationType val)
         {
             switch ( val )
             {
                 case OperationType.PointList:
                     return "point_list";
-                    break;
                 case OperationType.LineList:
                     return "line_list";
-                    break;
                 case OperationType.LineStrip:
                     return "line_strip";
-                    break;
                 case OperationType.TriangleStrip:
                     return "triangle_strip";
-                    break;
                 case OperationType.TriangleFan:
                     return "triangle_fan";
-                    break;
                 case OperationType.TriangleList:
                 default:
                     return "triangle_list";
