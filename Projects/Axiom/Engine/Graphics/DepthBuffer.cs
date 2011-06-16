@@ -73,16 +73,34 @@ namespace Axiom.Graphics
             base.dispose(disposeManagedResources);
         }
 
+        #region PoolId
+
+        [OgreVersion(1, 7)]
+        protected PoolId poolId;
+
         /// <summary>
         /// Gets the pool id in which this DepthBuffer lives
         /// </summary>
+        [OgreVersion(1, 7)]
         public virtual PoolId PoolId
         {
             get
             {
-                throw new NotImplementedException();
+                return poolId;
+            }
+
+            set
+            {
+                //Change the pool Id
+                poolId = value;
+
+                //Render Targets were attached to us, but they have a different pool Id,
+                //so detach ourselves from them
+                DetachFromAllRenderTargets();
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Sets the pool id in which this DepthBuffer lives
@@ -210,9 +228,6 @@ namespace Axiom.Graphics
         protected class RenderTargetSet : HashSet<RenderTarget>
         {
         }
-
-        [OgreVersion(1, 7)]
-        protected PoolId poolId;
 
         [OgreVersion(1, 7)]
         protected ushort bitDepth;

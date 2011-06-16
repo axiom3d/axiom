@@ -338,7 +338,7 @@ namespace Axiom.RenderSystems.OpenGL
 			    {
 				    // Create FBO manager
 				    LogManager.Instance.Write("GL: Using GL_EXT_framebuffer_object for rendering to textures (best)");
-				    rttManager = new GLFBOManager(false);
+				    rttManager = new GLFBORTTManager(_glSupport, false);
 				    caps.SetCapability(Graphics.Capabilities.RTTSerperateDepthBuffer);
 
 				    //TODO: Check if we're using OpenGL 3.0 and add RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL flag

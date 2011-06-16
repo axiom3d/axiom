@@ -206,8 +206,13 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7)]
         protected GpuProgramParameters activeFragmentGpuProgramParameters;
 
-        [OgreVersion(1, 7)]
-        protected DepthBufferMap depthBufferPool = new DepthBufferMap();
+        [OgreVersion( 1, 7 )] protected DepthBufferMap depthBufferPool =
+            new DepthBufferMap
+            {
+                { PoolId.Default, new DepthBufferVec() },
+                // { PoolId.ManualUsage, new DepthBufferVec() },
+                { PoolId.NoDepth, new DepthBufferVec() }
+            };
 
         [OgreVersion(1, 7)]
         protected bool texProjRelative;
@@ -1049,7 +1054,8 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7)]
         protected virtual void FireEvent(string name, NameValuePairList pars = null)
         {
-            eventListeners(name, pars);
+            if (eventListeners != null)
+                eventListeners(name, pars);
         }
 
         #endregion
@@ -1951,16 +1957,11 @@ it says it's incompatible with that RT");
         /// <param name="color"></param>
         /// <returns></returns>
         [OgreVersion(1, 7, "Axiom uses slightly different interface")]
-        public abstract int ConvertColor(ColorEx color);
+        public virtual int ConvertColor(ColorEx color)
+        {
+            return VertexElement.ConvertColorValue(color, ColorVertexElementType);
+        }
 
-        /// <summary>
-        /// Converts the int value to an Axiom.Core.ColorEx object.  Each API may have the 
-        /// bytes of the packed color data in different orders. i.e. OpenGL - ABGR, D3D - ARGB
-        /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        [AxiomHelper(0, 8)]
-        public abstract ColorEx ConvertColor(int color);
 
         #endregion
 

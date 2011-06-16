@@ -178,31 +178,35 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
+        [OgreVersion(1, 7)]
 		public GLRenderSystem()
 		{
-			LogManager.Instance.Write( "{0} created.", this.Name );
+		    depthWrite = true;
+            stencilMask = unchecked((int)0xffffffff);
+
+			LogManager.Instance.Write( "{0} created.", Name );
 
 			// create
 			_glSupport = new GLSupport();
 
-			viewMatrix = Matrix4.Identity;
-			worldMatrix = Matrix4.Identity;
-			//textureMatrix = Matrix4.Identity;
+            worldMatrix = Matrix4.Identity;
+            viewMatrix = Matrix4.Identity;
 
 			InitConfigOptions();
 
 			ColorWrite[ 0 ] = ColorWrite[ 1 ] = ColorWrite[ 2 ] = ColorWrite[ 3 ] = 1;
 
-			for ( int i = 0; i < Config.MaxTextureCoordSets; i++ )
+			for ( var i = 0; i < Config.MaxTextureCoordSets; i++ )
 			{
 				texCoordIndex[ i ] = 99;
+			    textureTypes[ i ] = 0;
 			}
 
 			// init the stored stencil buffer params
 			stencilFail = stencilZFail = stencilPass = Gl.GL_KEEP;
 			stencilFunc = Gl.GL_ALWAYS;
 			stencilRef = 0;
-			stencilMask = unchecked( (int)0xffffffff );
+			
 
 			minFilter = FilterOptions.Linear;
 			mipFilter = FilterOptions.Point;
@@ -433,19 +437,22 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        #region AmbientLight
+        #region DisplayMonitorCount
 
         [OgreVersion(1, 7, "needs to be implemented")]
 	    public override int DisplayMonitorCount
 	    {
 	        get
 	        {
-                // return _glSupport.DisplayMonitorCount;
-	            return 1;
+                return _glSupport.DisplayMonitorCount;
 	        }
 	    }
 
-	    [OgreVersion(1, 7)]
+        #endregion
+
+        #region AmbientLight
+
+        [OgreVersion(1, 7)]
 		public override ColorEx AmbientLight
 		{
 			set
@@ -1803,7 +1810,7 @@ namespace Axiom.RenderSystems.OpenGL
                 curContext.ReleaseContext();
                 curContext.Dispose();
             }
-            _backgroundContextList.clear();
+            _backgroundContextList.Clear();
 
 			_glSupport.Stop();
 			_stopRendering = true;
@@ -1879,7 +1886,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 
                 // bind zero texture
-                Gl.glBindTexture(GL_TEXTURE_2D, 0); 
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0); 
 			}
 			ActivateGLTextureUnit( 0 );
 		}
@@ -1925,8 +1932,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 	    public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
 	    {
-            /*
-	        GLDepthBuffer *retVal = 0;
+	        GLDepthBuffer retVal = null;
 
 		    //Only FBO & pbuffer support different depth buffers, so everything
 		    //else creates dummy (empty) containers
@@ -1937,31 +1943,27 @@ namespace Axiom.RenderSystems.OpenGL
 		    {
 			    //Presence of an FBO means the manager is an FBO Manager, that's why it's safe to downcast
 			    //Find best depth & stencil format suited for the RT's format
-			    GLuint depthFormat, stencilFormat;
-			    static_cast<GLFBOManager*>(mRTTManager)->getBestDepthStencil( fbo->getFormat(),
-																		    &depthFormat, &stencilFormat );
+		        int depthFormat;
+                int stencilFormat;
+			    ((GLFBORTTManager)(rttManager)).GetBestDepthStencil( fbo.Format,
+																		    out depthFormat, out stencilFormat );
 
-			    GLRenderBuffer *depthBuffer = new GLRenderBuffer( depthFormat, fbo->getWidth(),
-																    fbo->getHeight(), fbo->getFSAA() );
+			    var depthBuffer = new GLRenderBuffer( depthFormat, fbo.Width,
+																    fbo.Height, fbo.FSAA );
 
-			    GLRenderBuffer *stencilBuffer = depthBuffer;
-			    if( depthFormat != GL_DEPTH24_STENCIL8_EXT && stencilBuffer != GL_NONE )
+			    var stencilBuffer = depthBuffer;
+			    if( depthFormat != Gl.GL_DEPTH24_STENCIL8_EXT && stencilBuffer != null ) /* Gl.GL_NONE */
 			    {
-				    stencilBuffer = new GLRenderBuffer( stencilFormat, fbo->getWidth(),
-													    fbo->getHeight(), fbo->getFSAA() );
+				    stencilBuffer = new GLRenderBuffer( stencilFormat, fbo.Width,
+													    fbo.Height, fbo.FSAA );
 			    }
 
 			    //No "custom-quality" multisample for now in GL
-			    retVal = new GLDepthBuffer( 0, this, mCurrentContext, depthBuffer, stencilBuffer,
-										    fbo->getWidth(), fbo->getHeight(), fbo->getFSAA(), 0, false );
+			    retVal = new GLDepthBuffer( 0, this, _currentContext, depthBuffer, stencilBuffer,
+										    fbo.Width, fbo.Height, fbo.FSAA, 0, false );
 		    }
 
 		    return retVal;
-             */
-
-            // temporary hack:
-	        return new GLDepthBuffer( PoolId.Default, this, _currentContext, null, null, 
-                renderTarget.Width, renderTarget.Height, renderTarget.FSAA, 0, false);
 	    }
 
 	    #endregion
@@ -2046,6 +2048,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetClipPlanesImpl
 
+        [OgreVersion(1, 7)]
         protected override void SetClipPlanesImpl( PlaneList clipPlanes )
 	    {
 	        // A note on GL user clipping:
@@ -2098,303 +2101,9 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		///
-		/// </summary>
-		/// <param name="op"></param>
-		public override void Render( RenderOperation op )
-		{
+        #region ProjectionMatrix
 
-			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
-			if ( op.vertexData.vertexCount == 0 )
-			{
-				return;
-			}
-
-			// call base class method first
-			base.Render( op );
-
-			// will be used to alias either the buffer offset (VBO's) or array data if VBO's are
-			// not available
-			IntPtr bufferData = IntPtr.Zero;
-
-			VertexDeclaration decl = op.vertexData.vertexDeclaration;
-
-			// loop through and handle each element
-			for ( int i = 0; i < decl.ElementCount; i++ )
-			{
-				// get a reference to the current object in the collection
-				VertexElement element = decl.GetElement( i );
-
-				//TODO: Implement VertexBufferBinding.IsBufferBound()
-				//if ( !op.vertexData.vertexBufferBinding.IsBufferBound( element.Source ) )
-				//	continue; // skip unbound elements
-
-				// get the current vertex buffer
-				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( element.Source );
-
-				if ( currentCapabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
-				{
-					// get the buffer id
-					int bufferId = ( (GLHardwareVertexBuffer)vertexBuffer ).GLBufferID;
-
-					// bind the current vertex buffer
-					Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferId );
-					bufferData = BUFFER_OFFSET( element.Offset );
-				}
-				else
-				{
-					// get a direct pointer to the software buffer data for using standard vertex arrays
-					// SoftwareBuffers in Axiom use a byte[] backer which in .Net
-					// Could change it's location in memory during GC. So to prevent
-					// the GC from moving the byte[] on us while we are still accessing it
-					// Lock() the buffer which pins the byte[] in memory. We must remember to unlock it
-					// when we are done so the GC can compact the managed heap around us.
-					bufferData = ( (DefaultHardwareVertexBuffer)vertexBuffer ).Lock( element.Offset, vertexBuffer.VertexSize, BufferLocking.ReadOnly );
-				}
-
-				// get the type of this buffer
-				int type = GLHelper.ConvertEnum( element.Type );
-
-				// set pointer usage based on the use of this buffer
-				switch ( element.Semantic )
-				{
-					case VertexElementSemantic.Position:
-						// set the pointer data
-						Gl.glVertexPointer( VertexElement.GetTypeCount( element.Type ),
-											type,
-											vertexBuffer.VertexSize,
-											bufferData );
-
-						// enable the vertex array client state
-						Gl.glEnableClientState( Gl.GL_VERTEX_ARRAY );
-
-						break;
-
-					case VertexElementSemantic.Normal:
-						// set the pointer data
-						Gl.glNormalPointer( type, vertexBuffer.VertexSize, bufferData );
-
-						// enable the normal array client state
-						Gl.glEnableClientState( Gl.GL_NORMAL_ARRAY );
-
-						break;
-
-					case VertexElementSemantic.Diffuse:
-						// set the color pointer data
-						Gl.glColorPointer( 4, type, vertexBuffer.VertexSize, bufferData );
-
-						// enable the color array client state
-						Gl.glEnableClientState( Gl.GL_COLOR_ARRAY );
-
-						break;
-
-					case VertexElementSemantic.Specular:
-						// set the secondary color pointer data
-						Gl.glSecondaryColorPointerEXT( 4, type, vertexBuffer.VertexSize, bufferData );
-
-						// enable the secondary color array client state
-						Gl.glEnableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
-
-						break;
-
-					case VertexElementSemantic.TexCoords:
-						//TODO : Needs changes to GLHardwareBufferManager
-						if ( currentFragmentProgram != null )
-						{
-							Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + element.Index );
-							Gl.glTexCoordPointer( VertexElement.GetTypeCount( element.Type ),
-												  GLHelper.ConvertEnum( element.Type ),
-												  vertexBuffer.VertexSize,
-												  bufferData );
-							Gl.glEnableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
-						}
-						else
-						{
-							// this ignores vertex element index and sets tex array for each available texture unit
-							// this allows for multitexturing on entities whose mesh only has a single set of tex coords
-							for ( int j = 0; j < Config.MaxTextureCoordSets; j++ )
-							{
-								// only set if this textures index if it is supposed to
-								if ( texCoordIndex[ j ] == element.Index )
-								{
-									// set the current active texture unit
-									Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + j );
-
-									// set the tex coord pointer
-									Gl.glTexCoordPointer(
-										VertexElement.GetTypeCount( element.Type ),
-										type,
-										vertexBuffer.VertexSize,
-										bufferData );
-
-									// enable texture coord state
-									Gl.glEnableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
-								}
-							}
-						}
-						break;
-
-					case VertexElementSemantic.BlendIndices:
-					case VertexElementSemantic.BlendWeights:
-					case VertexElementSemantic.Tangent:
-					case VertexElementSemantic.Binormal:
-
-						Debug.Assert( currentCapabilities.HasCapability( Graphics.Capabilities.VertexPrograms ) );
-						if ( currentVertexProgram != null )
-						{
-							var attrib = currentVertexProgram.AttributeIndex( element.Semantic, (uint)element.Index );
-							Gl.glVertexAttribPointerARB(
-														attrib, // matrix indices are vertex attribute 7
-														VertexElement.GetTypeCount( element.Type ),
-														GLHelper.ConvertEnum( element.Type ),
-														Gl.GL_FALSE, // normalisation disabled
-														vertexBuffer.VertexSize,
-														bufferData );
-
-							Gl.glEnableVertexAttribArrayARB( attrib );
-						}
-						break;
-
-					default:
-						break;
-				} // switch
-
-				// If using Software Buffers, unlock it.
-				if ( !currentCapabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
-				{
-					( (DefaultHardwareVertexBuffer)vertexBuffer ).Unlock();
-				}
-			} // for
-
-
-			// reset to texture unit 0
-			Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 );
-
-			int primType = 0;
-
-			// which type of render operation is this?
-			switch ( op.operationType )
-			{
-				case OperationType.PointList:
-					primType = Gl.GL_POINTS;
-					break;
-				case OperationType.LineList:
-					primType = Gl.GL_LINES;
-					break;
-				case OperationType.LineStrip:
-					primType = Gl.GL_LINE_STRIP;
-					break;
-				case OperationType.TriangleList:
-					primType = Gl.GL_TRIANGLES;
-					break;
-				case OperationType.TriangleStrip:
-					primType = Gl.GL_TRIANGLE_STRIP;
-					break;
-				case OperationType.TriangleFan:
-					primType = Gl.GL_TRIANGLE_FAN;
-					break;
-			}
-
-			if ( op.useIndices )
-			{
-				// setup a pointer to the index data
-				IntPtr indexPtr; // = IntPtr.Zero;
-
-				// find what type of index buffer elements we are using
-				int indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 )
-					? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
-
-				// if hardware is supported, expect it is a hardware buffer.  else, fallback to software
-				if ( currentCapabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
-				{
-					// get the index buffer id
-					int idxBufferID = ( (GLHardwareIndexBuffer)op.indexData.indexBuffer ).GLBufferID;
-
-					// bind the current index buffer
-					Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID );
-
-					// get the offset pointer to the data in the vbo
-					indexPtr = BUFFER_OFFSET( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
-
-					// draw the indexed vertex data
-					//				Gl.glDrawRangeElementsEXT(
-					//					primType,
-					//					op.indexData.indexStart,
-					//					op.indexData.indexStart + op.indexData.indexCount - 1,
-					//					op.indexData.indexCount,
-					//					indexType, indexPtr);
-					do
-					{
-						Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
-					} while ( UpdatePassIterationRenderState() );
-				}
-				else
-				{
-					// get the index data as a direct pointer to the software buffer data
-					int bufOffset = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
-					indexPtr = ( (DefaultHardwareIndexBuffer)op.indexData.indexBuffer )
-						.Lock( bufOffset, op.indexData.indexBuffer.Size - bufOffset, BufferLocking.ReadOnly );
-
-					// draw the indexed vertex data
-					//				Gl.glDrawRangeElementsEXT(
-					//					primType,
-					//					op.indexData.indexStart,
-					//					op.indexData.indexStart + op.indexData.indexCount - 1,
-					//					op.indexData.indexCount,
-					//					indexType, indexPtr);
-					do
-					{
-						Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
-					} while ( UpdatePassIterationRenderState() );
-
-					( (DefaultHardwareIndexBuffer)op.indexData.indexBuffer ).Unlock();
-				}
-			}
-			else
-			{
-				do
-				{
-					Gl.glDrawArrays( primType, op.vertexData.vertexStart, op.vertexData.vertexCount );
-				} while ( UpdatePassIterationRenderState() );
-
-			}
-
-			// disable all client states
-			Gl.glDisableClientState( Gl.GL_VERTEX_ARRAY );
-
-			// disable all texture units
-			for ( int i = 0; i < currentCapabilities.TextureUnitCount; i++ )
-			{
-				Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + i );
-				Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
-			}
-
-			Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 );
-			Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
-			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
-			Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
-
-            /*
-			if ( currentVertexProgram != null )
-			{
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendIndices ) )
-					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.BlendIndices ) ); // disable indices
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendWeights ) )
-					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.BlendWeights ) ); // disable weights
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Tangent ) )
-					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Tangent ) ); // disable tangent
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Binormal ) )
-					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Binormal ) ); // disable binormal
-			}*/
-            //throw new NotImplementedException("need to implement attribsBound");
-
-			Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		}
-
-		/// <summary>
-		///
-		/// </summary>
+        [OgreVersion(1, 7)]
 		public override Matrix4 ProjectionMatrix
 		{
 			set
@@ -2405,7 +2114,11 @@ namespace Axiom.RenderSystems.OpenGL
 				// invert the Y if need be
 				if ( activeRenderTarget.RequiresTextureFlipping )
 				{
-					_tempMatrix[ 5 ] = -_tempMatrix[ 5 ];
+                    // Invert transformed y
+                    _tempMatrix[1] = -_tempMatrix[1];
+                    _tempMatrix[5] = -_tempMatrix[5];
+                    _tempMatrix[9] = -_tempMatrix[9];
+                    _tempMatrix[13] = -_tempMatrix[13];
 				}
 
 				// set the matrix mode to Projection
@@ -2416,8 +2129,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// set the matrix mode back to ModelView
 				Gl.glMatrixMode( Gl.GL_MODELVIEW );
+
+                // also mark clip planes dirty
+                if (clipPlanes.Count != 0)
+                    clipPlanesDirty = true;
 			}
 		}
+
+        #endregion
 
         #region ViewMatrix
 
@@ -2446,8 +2165,9 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		/// </summary>
+        #region WorldMatrix
+
+        [OgreVersion(1, 7)]
 		public override Matrix4 WorldMatrix
 		{
 			set
@@ -2467,6 +2187,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+        #endregion
 
         #region UseLights
 
@@ -2503,26 +2224,6 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		///
-		/// </summary>
-		/// <param name="color"></param>
-		/// <returns></returns>
-		public override int ConvertColor( ColorEx color )
-		{
-			return color.ToABGR();
-		}
-
-		public override ColorEx ConvertColor( int color )
-		{
-			ColorEx colorEx;
-			colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
-			colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
-			colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
-			colorEx.b = (float)( ( color ) % 256 ) / 255;
-			return colorEx;
-		}
-
 		public override void SetConfigOption( string name, string value )
 		{
 			if ( ConfigOptions.ContainsKey( name ) )
@@ -2530,22 +2231,29 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
+        #region SetTextureBorderColor
+
+        [OgreVersion(1, 7)]
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
-			float[] border = new float[] { borderColor.r, borderColor.g, borderColor.b, borderColor.a };
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
-			Gl.glTexParameterfv( textureTypes[ stage ], Gl.GL_TEXTURE_BORDER_COLOR, border );
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
+		    borderColor.ToArrayRGBA( _tempColorVals );
+            if (ActivateGLTextureUnit(stage))
+            {
+                Gl.glTexParameterfv( textureTypes[ stage ], Gl.GL_TEXTURE_BORDER_COLOR, _tempColorVals );
+                ActivateGLTextureUnit( 0 );
+            }
 		}
 
+        #endregion
+
+        #region CullingMode
+
+        [OgreVersion(1, 7)]
 		public override CullingMode CullingMode
 		{
-			get
-			{
-				return cullingMode;
-			}
 			set
 			{
+			    cullingMode = value;
 				// NB: Because two-sided stencil API dependence of the front face, we must
 				// use the same 'winding' for the front face everywhere. As the OGRE default
 				// culling mode is clockwise, we also treat anticlockwise winding as front
@@ -2591,6 +2299,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+        #endregion
 
         #region SetSceneBlending
 
@@ -2748,8 +2457,7 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, "TODO: implement this")]
 	    public override string ValidateConfigOptions()
 	    {
-	        //return _glSupport.ValidateConfig();
-            return "";
+	        return _glSupport.ValidateConfig();
 	    }
 
         #endregion
@@ -2835,9 +2543,9 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		///
-		/// </summary>
+        #region HorizontalTexelOffset
+
+        [OgreVersion(1, 7)]
 		public override Real HorizontalTexelOffset
 		{
 			get
@@ -2847,9 +2555,11 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+        #endregion
+
+        #region VerticalTexelOffset
+
+        [OgreVersion(1, 7)]
 		public override Real VerticalTexelOffset
 		{
 			get
@@ -2859,26 +2569,67 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		/// <summary>
-		///    Binds the specified GpuProgram to the future rendering operations.
-		/// </summary>
-		/// <param name="program"></param>
+        #endregion
+
+        #region BindGpuProgram
+
+        [OgreVersion(1, 7)]
 		public override void BindGpuProgram( GpuProgram program )
 		{
-			GLGpuProgram glProgram = (GLGpuProgram)program;
+			var glProgram = (GLGpuProgram)program;
+
+            // Unbind previous gpu program first.
+            //
+            // Note:
+            //  1. Even if both previous and current are the same object, we can't
+            //     bypass re-bind completely since the object itself maybe modified.
+            //     But we can bypass unbind based on the assumption that object
+            //     internally GL program type shouldn't be changed after it has
+            //     been created. The behavior of bind to a GL program type twice
+            //     should be same as unbind and rebind that GL program type, even
+            //     for difference objects.
+            //  2. We also assumed that the program's type (vertex or fragment) should
+            //     not be changed during it's in using. If not, the following switch
+            //     statement will confuse GL state completely, and we can't fix it
+            //     here. To fix this case, we must coding the program implementation
+            //     itself, if type is changing (during load/unload, etc), and it's inuse,
+            //     unbind and notify render system to correct for its state.
+            //
+            switch (glProgram.Type)
+            {
+                case GpuProgramType.Vertex:
+                    if (currentVertexProgram != glProgram)
+                    {
+                        if (currentVertexProgram != null)
+                            currentVertexProgram.Unbind();
+                        currentVertexProgram = glProgram;
+                    }
+                    break;
+
+                case GpuProgramType.Fragment:
+                    if (currentFragmentProgram != glProgram)
+                    {
+                        if (currentFragmentProgram != null)
+                            currentFragmentProgram.Unbind();
+                        currentFragmentProgram = glProgram;
+                    }
+                    break;
+                case GpuProgramType.Geometry:
+                    if (currentGeometryProgram != glProgram)
+                    {
+                        if (currentGeometryProgram != null)
+                            currentGeometryProgram.Unbind();
+                        currentGeometryProgram = glProgram;
+                    }
+                    break;
+            }
 
 			glProgram.Bind();
 
-			// store the current program in use for eas unbinding later
-			if ( glProgram.Type == GpuProgramType.Vertex )
-			{
-				currentVertexProgram = glProgram;
-			}
-			else
-			{
-				currentFragmentProgram = glProgram;
-			}
+		    base.BindGpuProgram( program );
 		}
+
+        #endregion
 
         #region BindGpuProgramParameters
 
@@ -2914,68 +2665,111 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
-        /// <summary>
-		///    Unbinds programs of the specified type.
-		/// </summary>
-		/// <param name="type"></param>
+        #region UnbindGpuProgram
+
+        [OgreVersion(1, 7)]
 		public override void UnbindGpuProgram( GpuProgramType type )
 		{
 			// store the current program in use for eas unbinding later
 			if ( type == GpuProgramType.Vertex && currentVertexProgram != null )
 			{
+			    activeVertexGpuProgramParameters = null;
 				currentVertexProgram.Unbind();
 				currentVertexProgram = null;
 			}
+            else if (type == GpuProgramType.Geometry && currentGeometryProgram != null)
+            {
+                activeGeometryGpuProgramParameters = null;
+                currentGeometryProgram.Unbind();
+                currentGeometryProgram = null;
+            }
 			else if ( type == GpuProgramType.Fragment && currentFragmentProgram != null )
 			{
+                activeFragmentGpuProgramParameters = null;
 				currentFragmentProgram.Unbind();
 				currentFragmentProgram = null;
 			}
+
+		    base.UnbindGpuProgram( type );
 		}
 
-		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
+        #endregion
+
+        #region SetScissorTest
+
+        [OgreVersion(1, 7)]
+        public override void SetScissorTest( bool enabled, int left, int top, int right, int bottom )
 		{
-			if ( enable )
-			{
-				Gl.glEnable( Gl.GL_SCISSOR_TEST );
-				// GL uses width / height rather than right / bottom
-				Gl.glScissor( left, top, right - left, bottom - top );
-			}
-			else
-			{
-				Gl.glDisable( Gl.GL_SCISSOR_TEST );
-			}
+            // If request texture flipping, use "upper-left", otherwise use "lower-left"
+            var flipping = activeRenderTarget.RequiresTextureFlipping;
+            //  GL measures from the bottom, not the top
+            var targetHeight = activeRenderTarget.Height;
+            // Calculate the "lower-left" corner of the viewport
+            var x = 0;
+            var y = 0;
+            var w = 0;
+            var h = 0;
+
+            if (enabled)
+            {
+                Gl.glEnable(Gl.GL_SCISSOR_TEST);
+                // NB GL uses width / height rather than right / bottom
+                x = left;
+                if (flipping)
+                    y = top;
+                else
+                    y = targetHeight - bottom;
+                w = right - left;
+                h = bottom - top;
+                Gl.glScissor(x, y, w, h);
+            }
+            else
+            {
+                Gl.glDisable(Gl.GL_SCISSOR_TEST);
+                // GL requires you to reset the scissor when disabling
+                w = activeViewport.ActualWidth;
+                h = activeViewport.ActualHeight;
+                x = activeViewport.ActualLeft;
+                if (flipping)
+                    y = activeViewport.ActualTop;
+                else
+                    y = targetHeight - activeViewport.ActualTop - h;
+                Gl.glScissor(x, y, w, h);
+            }
 		}
 
-		#endregion Implementation of RenderSystem
+        #endregion
 
-		#region Private methods
+        #endregion Implementation of RenderSystem
 
-		/// <summary>
+        #region Private methods
+
+        #region MakeGLMatrix
+
+        /// <summary>
 		///		Converts a Matrix4 object to a float[16] that contains the matrix
 		///		in top to bottom, left to right order.
 		///		i.e.	glMatrix[0] = matrix[0,0]
 		///				glMatrix[1] = matrix[1,0]
 		///				etc...
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+        [OgreVersion(1, 7, "Axiom specific implementation")]
 		private void MakeGLMatrix( ref Matrix4 matrix, float[] floats )
 		{
-			Matrix4 mat = matrix.Transpose();
-			//Real[] reals = new Real[floats.Length];
-			//for(int i = 0; i < floats.Length; i++)
-			//{
-			//    reals[i] = (Real)floats[i];
-			//}
+			var mat = matrix.Transpose();
 			mat.MakeFloatArray( floats );
 		}
 
-		/// <summary>
+        #endregion
+
+        #region SetGLLight
+
+        /// <summary>
 		///		Helper method for setting all the options for a single light.
 		/// </summary>
 		/// <param name="index">Light index.</param>
 		/// <param name="light">Light object.</param>
+        [OgreVersion(1, 7)]
 		private void SetGLLight( int index, Light light )
 		{
 			int lightIndex = Gl.GL_LIGHT0 + index;
@@ -2992,6 +2786,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					case LightType.Spotlight:
 						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, light.SpotlightOuterAngle );
+                        Gl.glLightf( lightIndex, Gl.GL_SPOT_EXPONENT, light.SpotlightFalloff );
 						break;
 					default:
 						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, 180.0f );
@@ -3007,10 +2802,13 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glLightfv( lightIndex, Gl.GL_SPECULAR, _tempColorVals );
 
 				// disable ambient light for objects
-				// BUG: Why does this return GL ERROR 1280?
-				Gl.glLighti( lightIndex, Gl.GL_AMBIENT, 0 );
+			    _tempColorVals[0] = 0;
+			    _tempColorVals[1] = 0;
+			    _tempColorVals[2] = 0;
+			    _tempColorVals[3] = 1;
+                Gl.glLightfv(lightIndex, Gl.GL_AMBIENT, _tempColorVals);
 
-				SetGLLightPositionDirection( light, index );
+			    SetGLLightPositionDirection( light, lightIndex );
 
 				// light attenuation
 				Gl.glLightf( lightIndex, Gl.GL_CONSTANT_ATTENUATION, light.AttenuationConstant );
@@ -3022,11 +2820,16 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		/// <summary>
+        #endregion
+
+        #region SetGLLightPositionDirection
+
+        /// <summary>
 		///		Helper method for resetting the position and direction of a light.
 		/// </summary>
 		/// <param name="light">Light to use.</param>
 		/// <param name="index">Index of the light.</param>
+        [OgreVersion(1, 7)]
 		private void SetGLLightPositionDirection( Light light, int index )
 		{
 			// Use general 4D vector which is the same as GL's approach
@@ -3037,36 +2840,43 @@ namespace Axiom.RenderSystems.OpenGL
 			_tempLightVals[ 2 ] = vec4.z;
 			_tempLightVals[ 3 ] = vec4.w;
 
-			Gl.glLightfv( Gl.GL_LIGHT0 + index, Gl.GL_POSITION, _tempLightVals );
+			Gl.glLightfv( index, Gl.GL_POSITION, _tempLightVals );
 
 			// set spotlight direction
 			if ( light.Type == LightType.Spotlight )
 			{
-				Vector3 vec3 = light.DerivedDirection;
+				var vec3 = light.DerivedDirection;
 				_tempLightVals[ 0 ] = vec3.x;
 				_tempLightVals[ 1 ] = vec3.y;
 				_tempLightVals[ 2 ] = vec3.z;
 				_tempLightVals[ 3 ] = 0.0f;
 
-				Gl.glLightfv( Gl.GL_LIGHT0 + index, Gl.GL_SPOT_DIRECTION, _tempLightVals );
+				Gl.glLightfv( index, Gl.GL_SPOT_DIRECTION, _tempLightVals );
 			}
 		}
 
-		/// <summary>
+        #endregion
+
+        #region SetLights
+
+        /// <summary>
 		///		Private helper method for setting all lights.
 		/// </summary>
+        [OgreVersion(1, 7)]
 		private void SetLights()
 		{
 			for ( int i = 0; i < lights.Length; i++ )
 			{
 				if ( lights[ i ] != null )
 				{
-					SetGLLightPositionDirection( lights[ i ], i );
+					SetGLLightPositionDirection( lights[ i ], Gl.GL_LIGHT0 + i );
 				}
 			}
 		}
 
-		/// <summary>
+        #endregion
+
+        /// <summary>
 		///		Called in constructor to init configuration.
 		/// </summary>
 		private void InitConfigOptions()
@@ -3125,15 +2935,18 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
+        #region BUFFER_OFFSET
+
         /// <summary>
 		///		Convenience method for VBOs
 		/// </summary>
-		/// <param name="i"></param>
-		/// <returns></returns>
+        [AxiomHelper(0, 8, "impl of Ogre BUFFER_OFFSET define")]
 		private IntPtr BUFFER_OFFSET( int i )
 		{
 			return new IntPtr( i );
 		}
+
+        #endregion
 
         #region ActivateGLTextureUnit
 

@@ -303,7 +303,7 @@ namespace Axiom.RenderSystems.OpenGL
                 // Check for dxt compression
                 if(GLEW_EXT_texture_compression_s3tc)
                 {
-    #if defined(__APPLE__) && defined(__PPC__)
+    #if __APPLE__ && __PPC__
 			    // Apple on ATI & PPC has errors in DXT
 			    if (_glSupport.Vendor.Contains("ATI") == false)
     #endif

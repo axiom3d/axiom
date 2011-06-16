@@ -1,4 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
+using System;
+
 namespace Axiom.RenderSystems.OpenGL
 {
     public partial class GLRenderSystem
@@ -164,6 +166,9 @@ namespace Axiom.RenderSystems.OpenGL
         private bool GLEW_EXT_texture_lod_bias;
 
         [AxiomHelper(0, 8)]
+        private bool GLEW_EXT_secondary_color;
+
+        [AxiomHelper(0, 8)]
         private void InitGLEW()
         {
             GLEW_VERSION_1_2 = _glSupport.CheckMinVersion("1.2");
@@ -219,6 +224,12 @@ namespace Axiom.RenderSystems.OpenGL
             GLEW_ARB_draw_buffers = _glSupport.CheckExtension("ARB_draw_buffers");
             GLEW_ATI_draw_buffers = _glSupport.CheckExtension("ATI_draw_buffers");
             GLEW_EXT_texture_lod_bias = _glSupport.CheckExtension("EXT_texture_lod_bias");
+            GLEW_EXT_secondary_color = _glSupport.CheckExtension("EXT_secondary_color");
+        }
+
+        void glVertexAttribDivisor(int index, int divisor)
+        {
+            throw new NotImplementedException( "OpenTK.Tao does not expose glVertexAttribDivisor" );
         }
     }
 }

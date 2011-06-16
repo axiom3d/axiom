@@ -80,6 +80,10 @@ namespace Axiom.Graphics
 	    /// </summary>
 	    public int numberOfInstances;
 
+        /// <summary>
+        /// </summary>
+	    public bool useGlobalInstancingVertexBufferIsAvailable;
+
 		#endregion
 
 		#region Constructors
