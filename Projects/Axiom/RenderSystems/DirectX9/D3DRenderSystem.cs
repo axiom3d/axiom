@@ -197,7 +197,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///
 		/// </summary>
-		public override bool NormaliseNormals
+		public override bool NormalizeNormals
 		{
 			get
 			{
@@ -545,7 +545,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override void SetColourBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
+		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			D3D.ColorWriteEnable val = 0;
 
@@ -1118,17 +1118,17 @@ namespace Axiom.RenderSystems.DirectX9
 				case OperationType.TriangleList:
 					primType = D3D.PrimitiveType.TriangleList;
 					primCount = cnt / 3;
-					_faceCount += primCount;
+					faceCount += primCount;
 					break;
 				case OperationType.TriangleStrip:
 					primType = D3D.PrimitiveType.TriangleStrip;
 					primCount = cnt - 2;
-					_faceCount += primCount;
+					faceCount += primCount;
 					break;
 				case OperationType.TriangleFan:
 					primType = D3D.PrimitiveType.TriangleFan;
 					primCount = cnt - 2;
-					_faceCount += primCount;
+					faceCount += primCount;
 					break;
 				case OperationType.PointList:
 					primType = D3D.PrimitiveType.PointList;
@@ -2081,7 +2081,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// render point sprites (textured quads) or plain points.
 		/// </summary>
 		/// <value></value>
-		public override bool PointSprites
+		public override bool PointSpritesEnabled
 		{
 			set
 			{
@@ -2130,7 +2130,7 @@ namespace Axiom.RenderSystems.DirectX9
             device.SetSamplerState( stage, D3D.SamplerState.AddressW, D3DHelper.ConvertEnum( uvw.W ) );
 		}
 
-		public override void SetTextureBorderColour( int stage, ColorEx borderColor )
+		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
 			device.SetSamplerState( stage, D3D.SamplerState.BorderColor, D3DHelper.ToColor( borderColor ).ToArgb() );
 		}

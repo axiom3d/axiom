@@ -952,7 +952,7 @@ namespace Axiom.Graphics
 			OnAfterUpdate();
 
 			if ( swapBuffers )
-				this.SwapBuffers( Root.Instance.RenderSystem.IsVSync );
+				this.SwapBuffers( Root.Instance.RenderSystem.WaitForVerticalBlank );
 		}
 
 
