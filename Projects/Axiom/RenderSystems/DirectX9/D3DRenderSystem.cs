@@ -44,6 +44,7 @@ using System.Diagnostics;
 using System.Text;
 using Axiom.Graphics.Collections;
 using Axiom.Media;
+using Axiom.RenderSystems.DirectX9.HLSL;
 using SlimDX;
 using SlimDX.Direct3D9;
 using FogMode = Axiom.Graphics.FogMode;
@@ -81,6 +82,8 @@ namespace Axiom.RenderSystems.DirectX9
         // static DeviceManager
         // notifyOnDeviceLost
         // notifyOnDeviceReset
+
+        private HLSLProgramFactory hlslProgramFactory;
 
 	    private D3D9ResourceManager _resourceManager;
 
@@ -756,73 +759,6 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
         #endregion
-
-        public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
-		{
-			LogManager.Instance.Write( "[D3D9] : Subsystem Initializing" );
-
-			WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
-
-			_activeDriver = D3DHelper.GetDriverInfo( manager )[ ConfigOptions[ "Rendering Device" ].Value ];
-			if ( _activeDriver == null )
-				throw new ArgumentException( "Problems finding requested Direct3D driver!" );
-
-			RenderWindow renderWindow = null;
-
-			if ( autoCreateWindow )
-			{
-				int width = 800;
-				int height = 600;
-				int bpp = 32;
-				bool fullScreen = false;
-
-				fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
-
-				ConfigOption optVM = ConfigOptions[ "Video Mode" ];
-				string vm = optVM.Value;
-				width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
-				height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
-				bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
-
-                NamedParameterList miscParams = new NamedParameterList();
-				miscParams.Add( "title", windowTitle );
-				miscParams.Add( "colorDepth", bpp );
-				miscParams.Add( "FSAA", _fsaaType );
-				miscParams.Add( "FSAAQuality", _fsaaQuality );
-				miscParams.Add( "vsync", _vSync );
-				miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
-
-				// create the render window
-				renderWindow = CreateRenderWindow( "Main Window", width, height, fullScreen, miscParams );
-
-				Debug.Assert( renderWindow != null );
-
-				// use W buffer when in 16 bit color mode
-				useWBuffer = ( renderWindow.ColorDepth == 16 );
-			}
-
-			LogManager.Instance.Write( "***************************************" );
-			LogManager.Instance.Write( "*** D3D9 : Subsystem Initialized OK ***" );
-			LogManager.Instance.Write( "***************************************" );
-
-			// call superclass method
-
-			// Configure SlimDX
-			DX.Configuration.ThrowOnError = true;
-			DX.Configuration.AddResultWatch( D3D.ResultCode.DeviceLost, DX.ResultWatchFlags.AlwaysIgnore );
-			DX.Configuration.AddResultWatch( D3D.ResultCode.WasStillDrawing, DX.ResultWatchFlags.AlwaysIgnore );
-
-#if DEBUG
-			DX.Configuration.DetectDoubleDispose = false;
-			DX.Configuration.EnableObjectTracking = true;
-#else
-			DX.Configuration.DetectDoubleDispose = false;
-			DX.Configuration.EnableObjectTracking = false;
-#endif
-
-			return renderWindow;
-		}
-
 
         #region MinimumDepthInputValue
 
@@ -1582,6 +1518,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#endregion Implementation of RenderSystem
 
+        #region DisableTextureUnit
 
         [OgreVersion(1, 7)]
         public override void DisableTextureUnit(int texUnit)
@@ -1591,7 +1528,9 @@ namespace Axiom.RenderSystems.DirectX9
             SetVertexTexture( texUnit, null );
         }
 
+        #endregion
 
+        #region UseLights
 
         [OgreVersion(1, 7, "sharing _currentLights rather than using Dictionary")]
 		public override void UseLights( LightList lightList, int limit )
@@ -1611,10 +1550,7 @@ namespace Axiom.RenderSystems.DirectX9
             _currentLights = Utility.Min(limit, lightList.Count);
 		}
 
-	    public override void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary )
-	    {
-	        throw new NotImplementedException();
-	    }
+        #endregion
 
         #region SetSceneBlending
 
@@ -2086,6 +2022,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#endregion Private methods
 
+        #region SetDepthBufferParams
+
         [OgreVersion(1, 7)]
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
 		{
@@ -2136,6 +2074,10 @@ namespace Axiom.RenderSystems.DirectX9
 		    device.SetRenderState( D3D.RenderState.StencilPass, D3DHelper.ConvertEnum( passOp, flip ) );
 		}
 
+        #endregion
+
+        #region SetSurfaceParams
+
         [OgreVersion(1, 7)]
         public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular,
             ColorEx emissive, Real shininess, TrackVertexColor tracking = TrackVertexColor.None)
@@ -2166,6 +2108,8 @@ namespace Axiom.RenderSystems.DirectX9
 				device.SetRenderState( D3D.RenderState.ColorVertex, false );
 			}
 		}
+
+        #endregion
 
         #region RenderTarget
 
@@ -2378,10 +2322,13 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        [OgreVersion(1, 0, "TODO: update this to 1.7")]
+        #region SetTextureBlendMode
+
+        [OgreVersion(1, 7)]
 		public override void SetTextureBlendMode( int stage, LayerBlendModeEx bm )
         {
             TextureStage tss;
+            ColorEx manualD3D;
 			// choose type of blend.
 		    if( bm.blendType == LayerBlendType.Color)
 			    tss = TextureStage.ColorOperation;
@@ -2396,12 +2343,123 @@ namespace Axiom.RenderSystems.DirectX9
 		        SetRenderState( RenderState.TextureFactor, new Color4( bm.blendFactor, 0.0f, 0.0f, 0.0f ) );
 		    }
 
-		    // set operation
-            
+		    // set operation  
 		    SetTextureStageState( stage, tss, D3DHelper.ConvertEnum(bm.operation, _deviceManager.ActiveDevice.D3D9DeviceCaps) );
+
+            // choose source 1
+		    if( bm.blendType == LayerBlendType.Color)
+		    {
+			    tss = TextureStage.ColorArg1;
+                manualD3D = bm.colorArg1;
+		        manualBlendColors[ stage, 0 ] = manualD3D;
+		    }
+		    else if( bm.blendType == LayerBlendType.Alpha )
+		    {
+			    tss = TextureStage.AlphaArg1;
+		        manualD3D = manualBlendColors[ stage, 0 ];
+                manualD3D.a = bm.alphaArg1;
+		    }
+		    else
+		    {
+		        throw new AxiomException("Invalid blend type");
+		    }
+
+            // Set manual factor if required
+		    if (bm.source1 == LayerBlendSource.Manual)
+		    {
+			    if (currentCapabilities.HasCapability(Graphics.Capabilities.PerStageConstant))
+			    {
+				    // Per-stage state
+				    SetTextureStageState(stage, TextureStage.Constant, manualD3D.ToARGB());
+			    }
+			    else
+			    {
+				    // Global state
+				    SetRenderState( RenderState.TextureFactor, manualD3D.ToARGB() );
+			    }
+		    }
+		    // set source 1
+            SetTextureStageState(stage, tss, D3DHelper.ConvertEnum(bm.source1, currentCapabilities.HasCapability(Graphics.Capabilities.PerStageConstant)));
+
+            // choose source 2
+            if (bm.blendType == LayerBlendType.Color)
+            {
+                tss = TextureStage.ColorArg2;
+                manualD3D = bm.colorArg2;
+                manualBlendColors[stage, 1] = manualD3D;
+            }
+            else if (bm.blendType == LayerBlendType.Alpha)
+            {
+                tss = TextureStage.AlphaArg2;
+                manualD3D = manualBlendColors[ stage, 1 ];
+                manualD3D.a = bm.alphaArg2;
+            }
+            // Set manual factor if required
+		    if (bm.source2 == LayerBlendSource.Manual)
+		    {
+			    if (currentCapabilities.HasCapability(Graphics.Capabilities.PerStageConstant))
+			    {
+				    // Per-stage state
+				    SetTextureStageState(stage, TextureStage.Constant, manualD3D.ToARGB());
+			    }
+			    else
+			    {
+				    SetRenderState( RenderState.TextureFactor, manualD3D.ToARGB() );
+			    }
+		    }
+
+            // Now set source 2
+		    SetTextureStageState( stage, tss,D3DHelper.ConvertEnum(bm.source2, currentCapabilities.HasCapability(Graphics.Capabilities.PerStageConstant)) );
+		    
+            // Set interpolation factor if lerping
+		    if (bm.operation == LayerBlendOperationEx.BlendDiffuseColor && 
+			    (_deviceManager.ActiveDevice.D3D9DeviceCaps.TextureOperationCaps & TextureOperationCaps.Lerp) != 0)
+		    {
+			    // choose source 0 (lerp factor)
+			    if( bm.blendType == LayerBlendType.Color)
+			    {
+				    tss = TextureStage.ColorArg0;
+			    }
+			    else if( bm.blendType == LayerBlendType.Alpha )
+			    {
+				    tss = TextureStage.AlphaArg0;
+			    }
+			    SetTextureStageState(stage, tss, TextureArgument.Diffuse);
+		    }
 		}
 
-	    [OgreVersion(1, 7)]
+        #endregion
+
+        #region SetTextureStageState
+
+        private void SetTextureStageState( int stage, TextureStage type, int value )
+	    {
+            // can only set fixed-function texture stage state
+            if (stage < 8)
+            {
+                var oldVal = ActiveD3D9Device.GetTextureStageState( stage, type );
+                if (oldVal == value)
+                    return;
+                
+                ActiveD3D9Device.SetTextureStageState(stage, type, value);
+            }
+	    }
+
+        private void SetTextureStageState(int stage, TextureStage type, TextureArgument value)
+	    {
+            SetTextureStageState(stage, type, (int)value);
+	    }
+
+        private void SetTextureStageState(int stage, TextureStage type, TextureOperation value)
+	    {
+            SetTextureStageState(stage, type, (int)value);
+	    }
+
+	    #endregion
+
+        #region SetTextureCoordSet
+
+        [OgreVersion(1, 7)]
 		public override void SetTextureCoordSet( int stage, int index )
 		{
             // if vertex shader is being used, stage and index must match
@@ -2413,6 +2471,9 @@ namespace Axiom.RenderSystems.DirectX9
 			device.SetTextureStageState( stage, TextureStage.TexCoordIndex, ( D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index ) );
 		}
 
+        #endregion
+
+        #region SetTextureUnitFiltering
 
         [OgreVersion(1, 7)]
 		public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
@@ -2423,6 +2484,9 @@ namespace Axiom.RenderSystems.DirectX9
             device.SetSamplerState(stage, D3DHelper.ConvertEnum(type), texFilter);
 		}
 
+        #endregion
+
+        #region SetClipPlanesImpl
 
         protected override void SetClipPlanesImpl(Math.Collections.PlaneList planes)
         {
@@ -2436,6 +2500,10 @@ namespace Axiom.RenderSystems.DirectX9
             device.SetRenderState(RenderState.ClipPlaneEnable, (int)bits);
         }
 
+        #endregion
+
+        #region SetClipPlane
+
         /// <summary>
         /// </summary>
         [OgreVersion(1, 7, "D3D Rendersystem utility func")]
@@ -2443,6 +2511,10 @@ namespace Axiom.RenderSystems.DirectX9
         {
             device.SetClipPlane( index, new SlimDX.Plane( a, b, c, d ) );
         }
+
+        #endregion
+
+        #region EnableClipPlane
 
         /// <summary>
         /// </summary>
@@ -2453,8 +2525,11 @@ namespace Axiom.RenderSystems.DirectX9
             SetRenderState( RenderState.ClipPlaneEnable, enable ? ( prev | ( 1 << index ) ) : ( prev & ~( 1 << index ) ) );
 	    }
 
+        #endregion
 
-	    [OgreVersion(1, 7)]
+        #region SetScissorTest
+
+        [OgreVersion(1, 7)]
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
 			if ( enable )
@@ -2468,7 +2543,9 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		private void _cleanupDepthStencils()
+        #endregion
+
+        private void _cleanupDepthStencils()
 		{
 			foreach ( D3D.Surface surface in zBufferCache.Values )
 			{
@@ -2599,9 +2676,9 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Frustum, used if the above is projection
 		public Frustum frustum;
 		/// texture
-		public D3D.BaseTexture tex;
+		public BaseTexture tex;
 		/// vertex texture
-		public D3D.BaseTexture vertexTex;
+		public BaseTexture vertexTex;
 	}
 
 	/// <summary>
