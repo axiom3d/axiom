@@ -15,7 +15,7 @@ namespace Axiom.RenderSystems.OpenGL
 {
     public partial class GLRenderSystem
     {
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override RenderSystemCapabilities CreateRenderSystemCapabilities()
         {
             var rsc = new RenderSystemCapabilities();

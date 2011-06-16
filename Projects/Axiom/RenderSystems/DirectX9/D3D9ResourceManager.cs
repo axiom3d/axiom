@@ -33,7 +33,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         public ResourceCreationPolicy CreationPolicy;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool AutoHardwareBufferManagement { get; set; }
 
         protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )

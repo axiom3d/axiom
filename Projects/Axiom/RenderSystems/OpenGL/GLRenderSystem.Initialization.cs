@@ -14,7 +14,7 @@ namespace Axiom.RenderSystems.OpenGL
     {
         #region InitializeContext
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private void InitializeContext(RenderTarget primary)
         {
             // Set main and current context
@@ -40,7 +40,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region CreateRenderWindow
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override RenderWindow CreateRenderWindow(string name, int width, int height, 
             bool isFullscreen, NamedParameterList miscParams)
         {
@@ -127,7 +127,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void InitializeFromRenderSystemCapabilities(
             RenderSystemCapabilities caps, RenderTarget primary )
         {

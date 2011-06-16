@@ -19,7 +19,7 @@ namespace Axiom.RenderSystems.DirectX9
     {
         #region UpdateRenderSystemCapabilities
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private RenderSystemCapabilities UpdateRenderSystemCapabilities(D3DRenderWindow renderWindow)
         {
             var rsc = realCapabilities ?? new RenderSystemCapabilities();
@@ -348,7 +348,7 @@ namespace Axiom.RenderSystems.DirectX9
 		    return rsc;
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private bool CheckVertexTextureFormats(D3DRenderWindow renderWindow)
         {
             var anySupported = false;
@@ -375,7 +375,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ConvertPixelShaderCaps
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private void ConvertPixelShaderCaps( RenderSystemCapabilities rsc )
         {
             var major = 0xFF;
@@ -500,7 +500,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ConvertVertexShaderCaps
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private void ConvertVertexShaderCaps( RenderSystemCapabilities rsc )
         {
             var major = 0xFF;

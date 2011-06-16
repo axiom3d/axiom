@@ -41,7 +41,7 @@ using System.Collections.Generic;
 
 namespace Axiom.Graphics
 {
-    [OgreVersion(1, 7)]
+    [OgreVersion(1, 7, 2790)]
 	partial class GpuProgramParameters
 	{
 		/// <summary>
@@ -56,43 +56,43 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Data type.
 			/// </summary>
-			[OgreVersion(1,7)]
+			[OgreVersion(1, 7, 2790)]
 			public GpuConstantType ConstantType;
 
 			/// <summary>
 			/// Physical start index in buffer (either float or int buffer)
 			/// </summary>
-            [OgreVersion(1,7)]
+            [OgreVersion(1, 7, 2790)]
 			public int PhysicalIndex;
 
 			/// <summary>
 			/// Logical index - used to communicate this constant to the rendersystem
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public int LogicalIndex;
 
 			/// <summary>
 			/// Number of raw buffer slots per element
 			/// (some programs pack each array element to float4, some do not)
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public int ElementSize;
 
 			/// <summary>
 			/// Length of array
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public int ArraySize;
 
 			/// <summary>
 			/// How this parameter varies (bitwise combination of GpuParamVariability)
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public GpuParamVariability Variability;
 
 			/// <summary>
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public bool IsFloat
 			{
 				get
@@ -103,7 +103,7 @@ namespace Axiom.Graphics
 
 			/// <summary>
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public bool IsSampler
 			{
 				get
@@ -114,7 +114,7 @@ namespace Axiom.Graphics
 
 			/// <summary>
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public GpuConstantDefinition()
 			{
 				ConstantType = GpuConstantType.Unknown;
@@ -129,7 +129,7 @@ namespace Axiom.Graphics
 			/// <returns>
 			/// true when the curent ConstantType is a float based type
 			/// </returns>
-            [OgreVersion(1,7)]
+            [OgreVersion(1, 7, 2790)]
 			public static bool IsFloatConst( GpuConstantType c )
 			{
                 switch (c)
@@ -155,7 +155,7 @@ namespace Axiom.Graphics
 			/// <returns>
             /// true when the curent ConstantType is an int based type
             /// </returns>
-            [OgreVersion(1,7)]
+            [OgreVersion(1, 7, 2790)]
 			public bool IsSamplerConst( GpuConstantType c )
 			{
 				switch ( c )
@@ -178,7 +178,7 @@ namespace Axiom.Graphics
 			/// <param name="ctype"></param>
 			/// <param name="padToMultiplesOf4"></param>
 			/// <returns></returns>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public static int GetElementSize( GpuConstantType ctype, bool padToMultiplesOf4 )
 			{
 				if ( padToMultiplesOf4 )
@@ -263,7 +263,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Named Gpu constant lookup table
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public class GpuConstantDefinitionMap : Dictionary<string, GpuConstantDefinition>
         {
             public static readonly GpuConstantDefinitionMap Empty = new GpuConstantDefinitionMap();

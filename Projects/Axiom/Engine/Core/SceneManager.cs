@@ -4769,7 +4769,7 @@ namespace Axiom.Core
 		protected ulong _lightsDirtyCounter;
 
         // TODO: implement logic
-        [OgreVersion(1, 7, "Implement logic for this")]
+        [OgreVersion(1, 7, 2790, "Implement logic for this")]
         private GpuProgramParameters.GpuParamVariability _gpuParamsDirty = GpuProgramParameters.GpuParamVariability.All;
 
 	    /// <summary>
@@ -5450,7 +5450,7 @@ namespace Axiom.Core
 		}
 
 
-        [OgreVersion(1, 7, "Implement _gpuParamsDirty logic")]
+        [OgreVersion(1, 7, 2790, "Implement _gpuParamsDirty logic")]
         protected virtual void UpdateGpuProgramParameters(Pass pass)
         {
             if ( pass.IsProgrammable )

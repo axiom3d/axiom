@@ -10,23 +10,23 @@ namespace Axiom.RenderSystems.DirectX9
 {
     public class D3D9DriverList : DisposableObject, IEnumerable<Driver>
     {
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private readonly List<Driver> _driverList = new List<Driver>();
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public D3D9DriverList()
         {
             Enumerate();
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected override void dispose(bool disposeManagedResources)
         {
             if (!IsDisposed)
                 _driverList.Clear();
         }
 
-        [OgreVersion(1, 7, "Update D3DDriver constructor")]
+        [OgreVersion(1, 7, 2790, "Update D3DDriver constructor")]
         public bool Enumerate()
         {
             var d3D = D3DRenderSystem.Direct3D9;
@@ -46,7 +46,7 @@ namespace Axiom.RenderSystems.DirectX9
 		    return true;
 	    }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public int Count
         {
             get
@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Driver this[int index]
         {
             get
@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Driver this[string name]
         {
             get
