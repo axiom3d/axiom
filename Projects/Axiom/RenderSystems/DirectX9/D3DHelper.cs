@@ -39,7 +39,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using Axiom.Core;
 using Axiom.Graphics;
-
+using SlimDX.Direct3D9;
+using Capabilities = Axiom.Graphics.Capabilities;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 using Rectangle = Axiom.Core.Rectangle;
@@ -95,8 +96,8 @@ namespace Axiom.RenderSystems.DirectX9
 			foreach ( D3D.AdapterInformation adapterInfo in manager.Adapters )
 			{
 				List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
-				Driver driver = new Driver( adapterInfo );
-				driver.Direct3D = manager;
+				Driver driver = new Driver( adapterInfo.Adapter,
+                    adapterInfo.GetCaps(DeviceType.Hardware), adapterInfo.Details, adapterInfo.CurrentDisplayMode);
 
 				int lastWidth = 0, lastHeight = 0;
 				D3D.Format lastFormat = 0;
@@ -120,7 +121,7 @@ namespace Axiom.RenderSystems.DirectX9
 						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
 					{
 						// add the video mode to the list
-						driver.VideoModes.Add( new VideoMode( mode ) );
+						driver.VideoModeList.Add( new VideoMode( mode ) );
 
 						// save current mode settings for comparison on the next iteraion
 						lastWidth = mode.Width;

@@ -96,6 +96,7 @@
     <Compile Include="D3DMultiRenderTarget.cs" />
     <Compile Include="D3DRenderSystem.Capabilities.cs" />
     <Compile Include="D3DRenderSystem.cs" />
+    <Compile Include="D3DRenderSystem.Matrix.cs" />
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="DriverCollection.cs" />
     <Compile Include="hlsl\HLSLIncludeHandler.cs" />
@@ -161,6 +162,9 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Win32MessageHandling.cs" />
+    <Compile Include="WindowClassStyle.cs" />
+    <Compile Include="WindowsExtendedStyle.cs" />
+    <Compile Include="WindowStyles.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

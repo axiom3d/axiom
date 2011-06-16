@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 using SlimDX.Direct3D9;
@@ -681,7 +682,27 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
+        #region GetDepthBuffer
 
+        [OgreVersion(1, 7)]
+        public Surface GetDepthBuffer(D3DRenderWindow renderWindow)
+        {
+            var it = _mapRenderWindowToResources[renderWindow];
+            return it.depthBuffer;
+        }
+
+        #endregion
+
+        #region GetBackBuffer
+
+        [OgreVersion(1, 7)]
+        public Surface GetBackBuffer(D3DRenderWindow renderWindow)
+        {
+            var it = _mapRenderWindowToResources[renderWindow];
+            return it.backBuffer;
+        }
+
+        #endregion
 
         public void Destroy()
         {
@@ -701,6 +722,44 @@ namespace Axiom.RenderSystems.DirectX9
         public void Invalidate( D3DRenderWindow d3DRenderWindow )
         {
             throw new NotImplementedException();
+        }
+
+        [OgreVersion(1, 7)]
+        public void ClearDeviceStreams()
+        {
+            var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
+
+            // Set all texture units to nothing to release texture surfaces
+            for ( var stage = 0; stage < D3D9DeviceCaps.MaxSimultaneousTextures; ++stage )
+            {
+                var hr = pDevice.SetTexture( stage, null );
+                if ( !hr.IsSuccess )
+                {
+                    throw new AxiomException( "Unable to disable texture '{0}' in D3D9", stage );
+                }
+
+                var dwCurValue = pDevice.GetTextureStageState<TextureOperation>( stage, TextureStage.ColorOperation );
+                if ( dwCurValue != TextureOperation.Disable )
+                {
+                    hr = pDevice.SetTextureStageState( stage, TextureStage.ColorOperation, TextureOperation.Disable );
+                    if ( !hr.IsSuccess )
+                    {
+                        throw new AxiomException( "Unable to disable texture '{0}' in D3D9", stage );
+                    }
+                }
+
+                renderSystem.texStageDesc[ stage ].tex = null;
+                renderSystem.texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
+                renderSystem.texStageDesc[ stage ].coordIndex = 0;
+                renderSystem.texStageDesc[ stage ].texType = D3DTextureType.Normal;
+            }
+
+            // Unbind any vertex streams to avoid memory leaks				
+            for ( var i = 0; i < D3D9DeviceCaps.MaxStreams; ++i )
+            {
+                pDevice.SetStreamSource( i, null, 0, 0 );
+            }
+
         }
     }
 }

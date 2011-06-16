@@ -226,7 +226,7 @@ namespace Axiom.RenderSystems.DirectX9
 			    {
 				    var currDriver = driverList[adapter];
 
-                    if (currDriver.Description.Contains("PerfHUD"))
+                    if (currDriver.DriverDescription.Contains("PerfHUD"))
 				    {
 					    renderDevice = null;
 					    nAdapterOrdinal = adapter;
