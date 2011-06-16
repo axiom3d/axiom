@@ -1096,35 +1096,35 @@ namespace Axiom.Core
 				// remember the last frame count
 				this.frameAnimationLastUpdated = currentFrameNumber;
 			}
+			// 			// Need to update the child object's transforms when animation dirty
+			// 			// or parent node transform has altered.
+			// 			if (HasSkeleton &&
+			// 				(animationDirty || lastParentXform != ParentNodeFullTransform)) {
+			// 				// Cache last parent transform for next frame use too.
+			// 				lastParentXform = ParentNodeFullTransform;
 
-			// Need to update the child object's transforms when animation dirty
-			// or parent node transform has altered.
-			if ( HasSkeleton && animationDirty || lastParentXform != ParentNodeFullTransform )
-			{
-				lastParentXform = ParentNodeFullTransform;
-				for ( int i = 0; i < childObjectList.Count; i++ )
-				{
-					MovableObject child = childObjectList[ i ];
-					child.ParentNode.Update( true, true );
+			// 				// update the child object's transforms
+			// 				for(int i = 0; i < childObjectList.Count; i++) {
+			// 					MovableObject child = childObjectList[i];
+			// 					child.ParentNode.Update(true, true);
+			// 				}
 
-				}
+			// 				// Also calculate bone world matrices, since are used as replacement world matrices,
+			// 				// but only if it's used (when using hardware animation and skeleton animated).
+			// 				if (hwAnimation && skeletonAnimated) {
+			// 					numBoneMatrices = skeletonInstance.BoneCount;
 
-				if ( hardwareAnimation && IsSkeletonAnimated )
-				{
-					numBoneMatrices = skeletonInstance.BoneCount;
-					if ( boneWorldMatrices == null )
-					{
-						boneWorldMatrices = new Matrix4[ numBoneMatrices ];
-					}
-					for ( int i = 0; i < numBoneMatrices; i++ )
-					{
-						boneWorldMatrices[ i ] = Matrix4.Multiply( lastParentXform, boneMatrices[ i ] );
-					}
-
-				}
-			}
+			// 					// Allocate bone world matrices on demand, for better memory footprint
+			// 					// when using software animation.
+			// 					if (boneWorldMatrices) {
+			// 						boneWorldMatrices = new Matrix4[numBoneMatrices];
+			// 					}
+			// 					for(int i = 0; i < numBoneMatrices; i++) {
+			// 						boneWorldMatrices[i] = lastParentWorldXform * boneMatrices[i];
+			// 					}
+			// 				}
+			// 			}
 		}
-		protected internal Matrix4[] boneWorldMatrices;
 
 		/// <summary>
 		///     Initialize the hardware animation elements for given vertex data
@@ -1135,7 +1135,7 @@ namespace Axiom.Core
 			{
 				vdata.AllocateHardwareAnimationElements( numberOfElements );
 			}
-			// Initialise parametrics incase we don't use all of them
+			// Initialize parametrics incase we don't use all of them
 			for ( int i = 0; i < vdata.HWAnimationDataList.Count; i++ )
 			{
 				vdata.HWAnimationDataList[ i ].Parametric = 0.0f;
@@ -2388,7 +2388,7 @@ namespace Axiom.Core
 				// Save link to vertex data
 				this.currentVertexData = vertexData;
 
-				// Initialise render op
+				// Initialize render op
 				this.renderOperation.indexData = new IndexData();
 				this.renderOperation.indexData.indexBuffer = indexBuffer;
 				this.renderOperation.indexData.indexStart = 0;
