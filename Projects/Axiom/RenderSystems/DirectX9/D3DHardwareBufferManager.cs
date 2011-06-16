@@ -163,8 +163,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 	public class D3DHardwareBufferManager : HardwareBufferManager
 	{
-		public D3DHardwareBufferManager(  D3D.Device device )
-			: base( new D3DHardwareBufferManagerBase( device ) )
+		public D3DHardwareBufferManager()
+			: base( new D3DHardwareBufferManagerBase( null ) )
 		{
 		}
 

@@ -38,12 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
-
+using SlimDX.Direct3D9;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
 #endregion Namespace Declarations
 
@@ -53,34 +54,105 @@ namespace Axiom.RenderSystems.DirectX9
 	/// 	Summary description for D3DHardwareVertexBuffer.
 	/// </summary>
 	public class D3DHardwareVertexBuffer : HardwareVertexBuffer
-	{
-		#region Member variables
+    {
+        #region internal classes
 
-		protected D3D.VertexBuffer d3dBuffer;
-		protected D3D.Pool d3dPool;
+        [OgreVersion(1, 7)]
+        protected class BufferResources
+        {
+            public VertexBuffer Buffer;
+            public bool OutOfDate;
+            public int LockOffset;
+            public int LockLength;
+            public BufferLocking LockOptions;
+            public int LastUsedFrame;
+        };
 
-		#endregion Member variables
+        [OgreVersion(1, 7)]
+        protected class DeviceToBufferResourcesMap: Dictionary<Device, BufferResources> 
+        {
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Map between device to buffer resources.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        protected DeviceToBufferResourcesMap mapDeviceToBufferResources = new DeviceToBufferResourcesMap();
+
+        /// <summary>
+        /// Buffer description.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        protected VertexBufferDescription bufferDesc;
+
+        /// <summary>
+        /// Source buffer resources when working with multiple devices.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        protected BufferResources sourceBuffer;
+
+        /// <summary>
+        /// Source buffer locked bytes.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        private IntPtr sourceLockedBytes;
+
+        /// <summary>
+        /// Consistent system memory buffer for multiple devices support in case of write only buffers.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        private char[] systemMemoryBuffer;
+
+
+        #region Member variables
+
+        protected D3D.VertexBuffer d3dBuffer;
+	    private static object sDeviceAccessMutex = new object();
+
+	    #endregion Member variables
 
 		#region Constructors
 
 		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
+            lock (sDeviceAccessMutex)
+            {
 #if !NO_AXIOM_D3D_MANAGE_BUFFERS
-			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
-				// If not system mem, use managed pool UNLESS buffer is discardable
-				// if discardable, keeping the software backing is expensive
-				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
+                var eResourcePool = useSystemMemory
+                                        ? Pool.SystemMemory
+                                        : // If not system mem, use managed pool UNLESS buffer is discardable
+                                    // if discardable, keeping the software backing is expensive
+                                    ( ( usage & BufferUsage.Discardable ) != 0 ) ? Pool.Default : Pool.Managed;
 #else
-			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
+			    var eResourcePool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
-			// Create the d3d vertex buffer
-			d3dBuffer = new D3D.VertexBuffer(
-				device,
-				sizeInBytes,
-				D3DHelper.ConvertEnum( usage ),
-				D3D.VertexFormat.None,
-				d3dPool );
+
+                // Set the desired memory pool.
+		        bufferDesc.Pool = eResourcePool;
+
+		        // Set source buffer to NULL.
+		        sourceBuffer = null;
+		        sourceLockedBytes  = IntPtr.Zero;
+
+		        // Allocate the system memory buffer.
+		        if (usage & BufferUsage.WriteOnly && D3DRenderSystem.ResourceManager.AutoHardwareBufferManagement)
+		        {
+		            systemMemoryBuffer = new char[Size];
+		        }
+		        else
+		        {			
+			        systemMemoryBuffer = null;
+		        }
+
+                // Create buffer resource(s).
+                foreach ( Device d3d9Device in D3DRenderSystem.ResourceCreationDevice )
+                {
+                    CreateBuffer(d3d9Device, eResourcePool);
+                }
+            }
 		}
 
 		~D3DHardwareVertexBuffer()
@@ -95,13 +167,97 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Methods
 
-		/// <summary>
-		///
+        #region CreateBuffer
+
+        /// <summary>
+        /// Create the actual vertex buffer.
+        /// </summary>
+        [OgreVersion(1, 7)]
+        public void CreateBuffer(Device d3d9Device, Pool ePool)
+        {
+            lock(sDeviceAccessMutex)
+            {
+                // Find the vertex buffer of this device.
+                BufferResources bufferResources;
+                if (mapDeviceToBufferResources.TryGetValue(d3d9Device, out bufferResources))
+                {
+                    if (bufferResources.Buffer != null)
+                    {
+                        bufferResources.Buffer.Dispose();
+                        bufferResources.Buffer = null;
+                    }
+                }
+                else
+                {
+                    bufferResources = new BufferResources();
+                    mapDeviceToBufferResources.Add( d3d9Device, bufferResources );
+                }
+                
+                bufferResources.Buffer = null;
+                bufferResources.OutOfDate = true;
+                bufferResources.LockOffset = 0;
+                bufferResources.LockLength = Size;
+                bufferResources.LockOptions = BufferLocking.Normal;
+                bufferResources.LastUsedFrame = Root.Instance.NextFrameNumber;
+
+                // Create the vertex buffer
+
+
+                bufferResources.Buffer = new VertexBuffer( d3d9Device,
+                                                           sizeInBytes,
+                                                           D3DHelper.ConvertEnum( usage ),
+                                                           0, // No FVF here, thank you.
+                                                           ePool );
+
+                bufferDesc = bufferResources.Buffer.Description;
+
+                // Update source buffer if need to.
+                if ( sourceBuffer == null )
+                {
+                    sourceBuffer = bufferResources;
+                }
+
+                    // This is a new buffer and source buffer exists we must update the content now 
+                    // to prevent situation where the source buffer will be destroyed and we won't be able to restore its content.
+                else
+                {
+                    UpdateBufferContent( bufferResources );
+                }
+            }
+        }
+
+        #endregion
+
+        #region UpdateBufferContent
+
+        /// <summary>
+        /// Update the given buffer content.
+        /// </summary>
+        [OgreVersion(1, 7)]
+	    protected void UpdateBufferContent( BufferResources bufferResources )
+	    {
+	        if (bufferResources.OutOfDate)
+		    {
+			    if (systemMemoryBuffer != null)
+			    {
+				    UpdateBufferResources(systemMemoryBuffer, bufferResources);
+			    }
+
+			    else if (sourceBuffer != bufferResources && (usage & BufferUsage.WriteOnly) == 0)
+			    {				
+				    sourceBuffer.LockOptions = BufferLocking.ReadOnly;
+				    sourceLockedBytes = LockBuffer(sourceBuffer, 0, Size);
+				    UpdateBufferResources(mSourceLockedBytes, bufferResources);
+				    UnlockBuffer(sourceBuffer);
+				    sourceLockedBytes = null;
+			    }			
+		    }
+	    }
+
+        #endregion
+
+        /// <summary>
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
 		{
 			D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );

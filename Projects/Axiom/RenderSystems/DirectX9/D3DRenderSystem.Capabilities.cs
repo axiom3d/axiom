@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
+using Axiom.RenderSystems.DirectX9.HLSL;
+using SlimDX;
 using SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
     public partial class D3DRenderSystem
     {
+        #region UpdateRenderSystemCapabilities
 
         [OgreVersion(1, 7)]
         private RenderSystemCapabilities UpdateRenderSystemCapabilities(D3DRenderWindow renderWindow)
@@ -55,12 +60,12 @@ namespace Axiom.RenderSystems.DirectX9
             rsc.SetCapability(Graphics.Capabilities.VertexBufferInstanceData);
             rsc.SetCapability(Graphics.Capabilities.CanGetCompiledShaderBuffer);
 
-            foreach (var device in _deviceManager)
+            foreach (var dev in _deviceManager)
             {
-                var d3d9Device = device.D3DDevice;
+                var d3D9Device = dev.D3DDevice;
 
                 // Check for hardware stencil support
-                var pSurf = d3d9Device.DepthStencilSurface;
+                var pSurf = d3D9Device.DepthStencilSurface;
                 if (pSurf != null)
                 {
                     var surfDesc = pSurf.Description;
@@ -76,7 +81,7 @@ namespace Axiom.RenderSystems.DirectX9
                 //HRESULT hr = d3d9Device->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL);
                 try
                 {
-                    new Query(d3d9Device, QueryType.Occlusion);
+                    new Query(d3D9Device, QueryType.Occlusion);
                 }
                 catch (Direct3D9Exception)
                 {
@@ -366,6 +371,10 @@ namespace Axiom.RenderSystems.DirectX9
             return anySupported;
         }
 
+        #endregion
+
+        #region ConvertPixelShaderCaps
+
         [OgreVersion(1, 7)]
         private void ConvertPixelShaderCaps( RenderSystemCapabilities rsc )
         {
@@ -393,9 +402,9 @@ namespace Axiom.RenderSystems.DirectX9
                 }
             }
 		
-		    var ps2a = false;
-            var ps2b = false;
-            var ps2x = false;
+		    var ps2A = false;
+            var ps2B = false;
+            var ps2X = false;
 
 		    // Special case detection for ps_2_x/a/b support
 		    if (major >= 2)
@@ -403,7 +412,7 @@ namespace Axiom.RenderSystems.DirectX9
 			    if ((minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit) != 0 &&
 				    (minPsCaps.PS20Caps.TempCount >= 32))
 			    {
-				    ps2b = true;
+				    ps2B = true;
 			    }
 
                 if ((minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit) != 0 &&
@@ -413,13 +422,13 @@ namespace Axiom.RenderSystems.DirectX9
                     (minPsCaps.PS20Caps.Caps & PixelShaderCaps.Predication) != 0 &&
 				    (minPsCaps.PS20Caps.TempCount >= 22))
 			    {
-				    ps2a = true;
+				    ps2A = true;
 			    }
 
 			    // Does this enough?
-			    if (ps2a || ps2b)
+			    if (ps2A || ps2B)
 			    {
-				    ps2x = true;
+				    ps2X = true;
 			    }
 		    }
 
@@ -463,11 +472,11 @@ namespace Axiom.RenderSystems.DirectX9
                     rsc.AddShaderProfile( "ps_3_0" );
                     goto case 2;
                 case 2:
-                    if ( ps2x )
+                    if ( ps2X )
                         rsc.AddShaderProfile( "ps_2_x" );
-                    if ( ps2a )
+                    if ( ps2A )
                         rsc.AddShaderProfile( "ps_2_a" );
-                    if ( ps2b )
+                    if ( ps2B )
                         rsc.AddShaderProfile( "ps_2_b" );
 
                     rsc.AddShaderProfile( "ps_2_0" );
@@ -486,6 +495,10 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
         }
+
+        #endregion
+
+        #region ConvertVertexShaderCaps
 
         [OgreVersion(1, 7)]
         private void ConvertVertexShaderCaps( RenderSystemCapabilities rsc )
@@ -515,8 +528,8 @@ namespace Axiom.RenderSystems.DirectX9
 		    }
 
 		
-		    var vs2x = false;
-		    var vs2a = false;
+		    var vs2X = false;
+		    var vs2A = false;
 
 		    // Special case detection for vs_2_x/a support
 		    if (major >= 2)
@@ -525,14 +538,14 @@ namespace Axiom.RenderSystems.DirectX9
 				    (minVsCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
 				    (minVsCaps.VS20Caps.TempCount >= 12))
 			    {
-				    vs2x = true;
+				    vs2X = true;
 			    }
 
                 if ((minVsCaps.VS20Caps.Caps & VertexShaderCaps.Predication) != 0 &&
 				    (minVsCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
 				    (minVsCaps.VS20Caps.TempCount >= 13))
 			    {
-				    vs2a = true;
+				    vs2A = true;
 			    }
 		    }
 
@@ -572,9 +585,9 @@ namespace Axiom.RenderSystems.DirectX9
                     rsc.AddShaderProfile( "vs_3_0" );
                     goto case 2;
                 case 2:
-                    if ( vs2x )
+                    if ( vs2X )
                         rsc.AddShaderProfile( "vs_2_x" );
-                    if ( vs2a )
+                    if ( vs2A )
                         rsc.AddShaderProfile( "vs_2_a" );
 
                     rsc.AddShaderProfile( "vs_2_0" );
@@ -584,6 +597,119 @@ namespace Axiom.RenderSystems.DirectX9
                     rsc.SetCapability( Graphics.Capabilities.VertexPrograms );
                     break;
             }
+        }
+
+        #endregion
+
+        public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle)
+        {
+            LogManager.Instance.Write("[D3D9] : Subsystem Initializing");
+
+            // Axiom specific
+            WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
+
+            // Init using current settings
+            _activeDriver = D3DHelper.GetDriverInfo(manager)[ConfigOptions["Rendering Device"].Value];
+            if (_activeDriver == null)
+                throw new ArgumentException("Problems finding requested Direct3D driver!");
+
+
+            driverVersion.Major = _activeDriver.AdapterIdentifier.DriverVersion.Major;
+            driverVersion.Minor = _activeDriver.AdapterIdentifier.DriverVersion.Minor;
+            driverVersion.Release = _activeDriver.AdapterIdentifier.DriverVersion.MajorRevision;
+            driverVersion.Build = _activeDriver.AdapterIdentifier.DriverVersion.MinorRevision;
+
+            // Create the device manager.
+            _deviceManager = new D3D9DeviceManager();
+
+            // Create the texture manager for use by others		
+            textureManager = new D3DTextureManager();
+
+            // Also create hardware buffer manager
+            hardwareBufferManager = new D3DHardwareBufferManager();
+
+            // Create the GPU program manager	
+            gpuProgramMgr = new D3DGpuProgramManager();
+
+            hlslProgramFactory = new HLSLProgramFactory();
+
+            RenderWindow renderWindow = null;
+
+            if (autoCreateWindow)
+            {
+                var fullScreen = (ConfigOptions["Full Screen"].Value == "Yes");
+
+                var optVm = ConfigOptions["Video Mode"];
+                var vm = optVm.Value;
+                var width = int.Parse(vm.Substring(0, vm.IndexOf("x")));
+                var height = int.Parse(vm.Substring(vm.IndexOf("x") + 1, vm.IndexOf("@") - (vm.IndexOf("x") + 1)));
+                var bpp = int.Parse(vm.Substring(vm.IndexOf("@") + 1, vm.IndexOf("-") - (vm.IndexOf("@") + 1)));
+
+                // sRGB window option
+                ConfigOption opt;
+                var hwGamma = ConfigOptions.TryGetValue("sRGB Gamma Conversion", out opt) && (opt.Value == "Yes");
+
+                var miscParams = new NamedParameterList();
+                miscParams.Add("title", windowTitle);
+                miscParams.Add("FSAAQuality", _fsaaQuality);
+
+                miscParams.Add("colorDepth", bpp);
+                miscParams.Add("FSAA", _fsaaType);
+                miscParams.Add("FSAAHint", _fsaaQuality);
+                miscParams.Add("vsync", _vSync);
+                miscParams.Add("vsyncInterval", vSyncInterval);
+                miscParams.Add("useNVPerfHUD", _useNVPerfHUD);
+                miscParams.Add("gamma", hwGamma);
+                miscParams.Add("monitorIndex", _activeDriver.AdapterNumber);
+
+                // create the render window
+                renderWindow = CreateRenderWindow("Main Window", width, height, fullScreen, miscParams);
+
+                // If we have 16bit depth buffer enable w-buffering.
+                Debug.Assert(renderWindow != null);
+                useWBuffer = (renderWindow.ColorDepth == 16);
+            }
+
+            LogManager.Instance.Write("***************************************");
+            LogManager.Instance.Write("*** D3D9 : Subsystem Initialized OK ***");
+            LogManager.Instance.Write("***************************************");
+
+            // call superclass method
+            base.Initialize( autoCreateWindow, windowTitle );
+
+            // Configure SlimDX
+            SlimDX.Configuration.ThrowOnError = true;
+            SlimDX.Configuration.AddResultWatch(ResultCode.DeviceLost, ResultWatchFlags.AlwaysIgnore);
+            SlimDX.Configuration.AddResultWatch(ResultCode.WasStillDrawing, ResultWatchFlags.AlwaysIgnore);
+
+#if DEBUG
+            SlimDX.Configuration.DetectDoubleDispose = false;
+            SlimDX.Configuration.EnableObjectTracking = true;
+#else
+			SlimDX.Configuration.DetectDoubleDispose = false;
+			SlimDX.Configuration.EnableObjectTracking = false;
+#endif
+
+            return renderWindow;
+        }
+
+
+        public override void InitializeFromRenderSystemCapabilities(RenderSystemCapabilities caps, RenderTarget primary)
+        {
+            if (caps.RendersystemName != Name)
+            {
+                throw new AxiomException(
+                    "Trying to initialize D3D9RenderSystem from RenderSystemCapabilities that do not support Direct3D9" );
+		    }
+
+		    if (caps.IsShaderProfileSupported("hlsl"))
+			    HighLevelGpuProgramManager.Instance.AddFactory(hlslProgramFactory);
+
+		    var defaultLog = LogManager.Instance.DefaultLog;
+		    if (defaultLog != null)
+		    {
+			    caps.Log(defaultLog);
+		    }
         }
     }
 }

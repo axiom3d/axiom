@@ -1095,5 +1095,61 @@ namespace Axiom.RenderSystems.DirectX9
                     throw new NotImplementedException();
             }
 	    }
+
+        public static TextureOperation ConvertEnum(LayerBlendOperationEx lbo, SlimDX.Direct3D9.Capabilities devCaps)
+	    {
+            switch (lbo)
+            {
+                case LayerBlendOperationEx.Source1:
+                    return TextureOperation.SelectArg1;
+                case LayerBlendOperationEx.Source2:
+                    return TextureOperation.SelectArg2;
+                case LayerBlendOperationEx.Modulate:
+                    return TextureOperation.Modulate;
+                case LayerBlendOperationEx.ModulateX2:
+                    return TextureOperation.Modulate2X;
+                case LayerBlendOperationEx.ModulateX4:
+                    return TextureOperation.Modulate4X;
+                case LayerBlendOperationEx.Add:
+                    return TextureOperation.Add;
+                case LayerBlendOperationEx.AddSigned:
+                    return TextureOperation.AddSigned;
+                case LayerBlendOperationEx.AddSmooth:
+                    return TextureOperation.AddSmooth;
+                case LayerBlendOperationEx.Subtract:
+                    return TextureOperation.Subtract;
+                case LayerBlendOperationEx.BlendDiffuseAlpha:
+                    return TextureOperation.BlendDiffuseAlpha;
+                case LayerBlendOperationEx.BlendTextureAlpha:
+                    return TextureOperation.BlendTextureAlpha;
+                case LayerBlendOperationEx.BlendCurrentAlpha:
+                    return TextureOperation.BlendCurrentAlpha;
+                case LayerBlendOperationEx.BlendManual:
+                    return TextureOperation.BlendFactorAlpha;
+                case LayerBlendOperationEx.DotProduct:
+                    return (devCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3) != 0 ? TextureOperation.DotProduct3 : TextureOperation.Modulate;
+                case LayerBlendOperationEx.BlendDiffuseColor:
+                    return (devCaps.TextureOperationCaps & TextureOperationCaps.Lerp) != 0 ? TextureOperation.Lerp : TextureOperation.Modulate;
+            }
+            return 0;
+	    }
+
+        public static TextureArgument ConvertEnum(LayerBlendSource lbs, bool perStageConstants)
+	    {
+            switch (lbs)
+            {
+                case LayerBlendSource.Current:
+                    return TextureArgument.Current;
+                case LayerBlendSource.Texture:
+                    return TextureArgument.Texture;
+                case LayerBlendSource.Diffuse:
+                    return TextureArgument.Diffuse;
+                case LayerBlendSource.Specular:
+                    return TextureArgument.Specular;
+                case LayerBlendSource.Manual:
+                    return perStageConstants ? TextureArgument.Constant : TextureArgument.TFactor;
+            }
+            return 0;
+	    }
 	}
 }
