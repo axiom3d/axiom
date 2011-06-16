@@ -202,7 +202,7 @@ namespace Axiom.RenderSystems.DirectX9
                 viewMatrix.m22 = -viewMatrix.m22;
                 viewMatrix.m23 = -viewMatrix.m23;
 
-                var dxView = MakeD3DMatrix(value);
+                var dxView = MakeD3DMatrix(viewMatrix);
                 ActiveD3D9Device.SetTransform(TransformState.View, dxView);
 
                 // also mark clip planes dirty
