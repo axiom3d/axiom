@@ -757,6 +757,8 @@ namespace Axiom.Graphics
 				return;
 			}
 
+            PassIterationNumberIndex = int.MaxValue;
+
 			// loop through and update all constants based on their type
 			for ( int i = 0; i < autoConstantList.Count; i++ )
 			{
@@ -890,6 +892,10 @@ namespace Axiom.Graphics
 					case AutoConstantType.PassNumber:
 						SetIntConstant( entry.PhysicalIndex, source.PassNumber );
 						break;
+                    case AutoConstantType.PassIterationNumber:
+                        SetConstant(entry.PhysicalIndex, 0.0f);
+                        PassIterationNumberIndex = entry.PhysicalIndex;
+				        break;
 				}
 			}
 		}
@@ -908,6 +914,8 @@ namespace Axiom.Graphics
 			{
 				return;
 			}
+
+            PassIterationNumberIndex = int.MaxValue;
 
 			// loop through and update all constants based on their type
 			for ( int i = 0; i < autoConstantList.Count; i++ )
@@ -968,13 +976,46 @@ namespace Axiom.Graphics
 					//case AutoConstantType.ViewProjMatrix:
 					//    SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
 					//    break;
+                    case AutoConstantType.PassIterationNumber:
+                        SetConstant(entry.PhysicalIndex, 0.0f);
+                        PassIterationNumberIndex = entry.PhysicalIndex;
+				        break;
 				}
 			}
 		}
 
+
+        public void IncPassIterationNumber()
+	{
+		if (PassIterationNumberIndex != int.MaxValue)
+		{
+			// This is a physical index
+		    floatConstants[ PassIterationNumberIndex ].val[0]++;
+		}
+	}
+
 		#endregion Methods
 
 		#region Properties
+
+        /// <summary>
+        /// physical index for active pass iteration parameter real constant entry;
+        /// </summary>
+        [OgreVersion(1, 7)]
+        public int PassIterationNumberIndex { get; protected set; }
+
+
+        /// <summary>
+        /// Does this parameters object have a pass iteration number constant?
+        /// </summary>
+        [OgreVersion(1, 7)]
+        public bool HasPassIterationNumber
+        {
+            get
+            {
+                return PassIterationNumberIndex != int.MaxValue;
+            }
+        }
 
 		/// <summary>
 		///		Gets/Sets the auto add parameter name flag.
