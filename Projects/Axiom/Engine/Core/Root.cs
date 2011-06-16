@@ -325,10 +325,10 @@ namespace Axiom.Core
 
 		#region Events
 
-		/// <summary>
-		///    The time when the meter manager was started
-		/// </summary>
-		private long lastFrameStartTime = 0;
+		// <summary>
+		//    The time when the meter manager was started
+		// </summary>
+		//private long lastFrameStartTime = 0;
 
 		/// <summary>
 		///    The number of microseconds per frame when we're

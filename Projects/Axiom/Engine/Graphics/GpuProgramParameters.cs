@@ -557,7 +557,6 @@ namespace Axiom.Graphics
         /// <param name="f3">The floats.</param>
 		public void SetConstant( int index, float f0, float f1, float f2, float f3 )
 		{
-			int srcIndex = 0;
 			// resize if necessary
 			floatConstants.Resize( index + 1 );
 			FloatConstantEntry entry = floatConstants[ index ];
@@ -702,12 +701,13 @@ namespace Axiom.Graphics
 				SetConstant( GetParamIndex( name ), val );
 		}
 
-		/// <summary>
-		///    Sends multiple matrices into a program.
-		/// </summary>
-		/// <param name="name">Name of the param.</param>
-		/// <param name="matrices">Array of matrices.</param>
-		public void SetNamedConstant( string name, Matrix4[] matrices, int count )
+	    /// <summary>
+	    ///    Sends multiple matrices into a program.
+	    /// </summary>
+	    /// <param name="name">Name of the param.</param>
+	    /// <param name="matrices">Array of matrices.</param>
+	    /// <param name="count"></param>
+	    public void SetNamedConstant( string name, Matrix4[] matrices, int count )
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )

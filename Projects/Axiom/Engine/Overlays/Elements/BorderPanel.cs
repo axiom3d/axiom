@@ -610,7 +610,7 @@ namespace Axiom.Overlays.Elements
 			int index = 0;
 
 			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			float zValue = -1;
+			//float zValue = -1;
 			unsafe
 			{
 				float* posPtr = (float*)data.ToPointer();

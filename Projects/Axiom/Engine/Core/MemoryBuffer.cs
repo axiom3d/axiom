@@ -170,7 +170,7 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{

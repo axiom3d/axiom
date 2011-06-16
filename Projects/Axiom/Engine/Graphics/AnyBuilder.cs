@@ -112,19 +112,20 @@ namespace Axiom.Graphics
 			AddIndexData( indexData, vertexSet, OperationType.TriangleList );
 		}
 
-		/// <summary>
-		/// Add a set of index geometry data to the edge builder.
-		/// </summary>
-		/// <remarks>
-		/// You must add at least one set of index data to the builder before invoking the
-        /// <see name="Build"/> method.
-		/// </remarks>
-		/// <param name="indexData">The index information which describes the triangles.</param>
-		/// <param name="vertexSet">
-		/// The vertex data set this index data refers to; you only need to alter this
-		/// if you have added multiple sets of vertices.
-		/// </param>
-		public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
+	    /// <summary>
+	    /// Add a set of index geometry data to the edge builder.
+	    /// </summary>
+	    /// <remarks>
+	    /// You must add at least one set of index data to the builder before invoking the
+	    /// <see name="Build"/> method.
+	    /// </remarks>
+	    /// <param name="indexData">The index information which describes the triangles.</param>
+	    /// <param name="vertexSet">
+	    /// The vertex data set this index data refers to; you only need to alter this
+	    /// if you have added multiple sets of vertices.
+	    /// </param>
+	    /// <param name="opType"></param>
+	    public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
 		{
 			indexDataList.Add( indexData );
 			indexDataVertexDataSetList.Add( vertexSet );

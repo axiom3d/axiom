@@ -2604,9 +2604,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Render a single shadow volume to the stencil buffer.
 		/// </summary>
-		/// <param name="sr"></param>
-		/// <param name="zfail"></param>
-		/// <param name="stencil2sided"></param>
 		protected void RenderSingleShadowVolumeToStencil( ShadowRenderable sr,
 														  bool zfail,
 														  bool stencil2sided,
@@ -2766,11 +2763,13 @@ namespace Axiom.Core
 				}
 
 				// set fog params
+                /*
 				float fogScale = 1f;
 				if ( newFogMode == FogMode.None )
 				{
 					fogScale = 0f;
 				}
+                 */
 
 				// set fog using the render system
 				this.targetRenderSystem.SetFog( newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd );
@@ -3078,7 +3077,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Used to first the QueueStarted event.
 		/// </summary>
-		/// <param name="group"></param>
 		/// <returns>True if the queue should be skipped.</returns>
 		protected virtual bool OnRenderQueueStarted( RenderQueueGroupID group, string invocation )
 		{
@@ -3098,7 +3096,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Used to first the QueueEnded event.
 		/// </summary>
-		/// <param name="group"></param>
 		/// <returns>True if the queue should be repeated.</returns>
 		protected virtual bool OnRenderQueueEnded( RenderQueueGroupID group, string invocation )
 		{
@@ -3222,12 +3219,13 @@ namespace Axiom.Core
 			return this.CreateRayQuery( ray, 0xffffffff );
 		}
 
-		/// <summary>
-		///    Creates a query to return objects found along the ray.
-		/// </summary>
-		/// <param name="ray">Ray to use for the intersection query.</param>
-		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-		public virtual RaySceneQuery CreateRayQuery( Ray ray, uint mask )
+	    /// <summary>
+	    ///    Creates a query to return objects found along the ray.
+	    /// </summary>
+	    /// <param name="ray">Ray to use for the intersection query.</param>
+	    /// <param name="mask"></param>
+	    /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+	    public virtual RaySceneQuery CreateRayQuery( Ray ray, uint mask )
 		{
 			DefaultRaySceneQuery query = new DefaultRaySceneQuery( this );
 			query.Ray = ray;
@@ -3560,45 +3558,46 @@ namespace Axiom.Core
 							ResourceGroupManager.DefaultResourceGroupName );
 		}
 
-		/// <summary>
-		///		Enables / disables a 'sky box' i.e. a 6-sided box at constant
-		///		distance from the camera representing the sky.
-		/// </summary>
-		/// <remarks>
-		///		You could create a sky box yourself using the standard mesh and
-		///		entity methods, but this creates a plane which the camera can
-		///		never get closer or further away from - it moves with the camera.
-		///		(you could create this effect by creating a world box which
-		///		was attached to the same SceneNode as the Camera too, but this
-		///		would only apply to a single camera whereas this skybox applies
-		///		to any camera using this scene manager).
-		///		<p/>
-		///		The material you use for the skybox can either contain layers
-		///		which are single textures, or they can be cubic textures, i.e.
-		///		made up of 6 images, one for each plane of the cube. See the
-		///		TextureLayer class for more information.
-		/// </remarks>
-		/// <param name="enable">True to enable the skybox, false to disable it</param>
-		/// <param name="materialName">The name of the material the box will use.</param>
-		/// <param name="distance">Distance in world coordinates from the camera to each plane of the box. </param>
-		/// <param name="drawFirst">
-		///		If true, the box is drawn before all other
-		///		geometry in the scene, without updating the depth buffer.
-		///		This is the safest rendering method since all other objects
-		///		will always appear in front of the sky. However this is not
-		///		the most efficient way if most of the sky is often occluded
-		///		by other objects. If this is the case, you can set this
-		///		parameter to false meaning it draws <em>after</em> all other
-		///		geometry which can be an optimisation - however you must
-		///		ensure that the distance value is large enough that no
-		///		objects will 'poke through' the sky box when it is rendered.
-		/// </param>
-		/// <param name="orientation">
-		///		Specifies the orientation of the box. By default the 'top' of the box is deemed to be
-		///		in the +y direction, and the 'front' at the -z direction.
-		///		You can use this parameter to rotate the sky if you want.
-		/// </param>
-		public void SetSkyBox( bool enable,
+	    /// <summary>
+	    ///		Enables / disables a 'sky box' i.e. a 6-sided box at constant
+	    ///		distance from the camera representing the sky.
+	    /// </summary>
+	    /// <remarks>
+	    ///		You could create a sky box yourself using the standard mesh and
+	    ///		entity methods, but this creates a plane which the camera can
+	    ///		never get closer or further away from - it moves with the camera.
+	    ///		(you could create this effect by creating a world box which
+	    ///		was attached to the same SceneNode as the Camera too, but this
+	    ///		would only apply to a single camera whereas this skybox applies
+	    ///		to any camera using this scene manager).
+	    ///		<p/>
+	    ///		The material you use for the skybox can either contain layers
+	    ///		which are single textures, or they can be cubic textures, i.e.
+	    ///		made up of 6 images, one for each plane of the cube. See the
+	    ///		TextureLayer class for more information.
+	    /// </remarks>
+	    /// <param name="enable">True to enable the skybox, false to disable it</param>
+	    /// <param name="materialName">The name of the material the box will use.</param>
+	    /// <param name="distance">Distance in world coordinates from the camera to each plane of the box. </param>
+	    /// <param name="drawFirst">
+	    ///		If true, the box is drawn before all other
+	    ///		geometry in the scene, without updating the depth buffer.
+	    ///		This is the safest rendering method since all other objects
+	    ///		will always appear in front of the sky. However this is not
+	    ///		the most efficient way if most of the sky is often occluded
+	    ///		by other objects. If this is the case, you can set this
+	    ///		parameter to false meaning it draws <em>after</em> all other
+	    ///		geometry which can be an optimisation - however you must
+	    ///		ensure that the distance value is large enough that no
+	    ///		objects will 'poke through' the sky box when it is rendered.
+	    /// </param>
+	    /// <param name="orientation">
+	    ///		Specifies the orientation of the box. By default the 'top' of the box is deemed to be
+	    ///		in the +y direction, and the 'front' at the -z direction.
+	    ///		You can use this parameter to rotate the sky if you want.
+	    /// </param>
+	    ///<param name="groupName"></param>
+	    public void SetSkyBox( bool enable,
 							   string materialName,
 							   float distance,
 							   bool drawFirst,
@@ -3703,15 +3702,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="isEnabled"></param>
-		/// <param name="materialName"></param>
-		/// <param name="curvature"></param>
-		/// <param name="tiling"></param>
-		/// <param name="distance"></param>
-		/// <param name="drawFirst"></param>
-		/// <param name="orientation"></param>
 		public void SetSkyDome( bool isEnabled,
 								string materialName,
 								float curvature,
@@ -3784,8 +3775,6 @@ namespace Axiom.Core
 		///		method just allows you to change both at once, which can save on
 		///		reallocation if the textures have already been created.
 		/// </remarks>
-		/// <param name="size"></param>
-		/// <param name="count"></param>
 		public virtual void SetShadowTextureSettings( ushort size, ushort count, PixelFormat format )
 		{
 			if ( this.shadowTextures.Count > 0 &&
@@ -5142,7 +5131,6 @@ namespace Axiom.Core
 		///		Any visible objects will be added to a rendering queue, which is indexed by material in order
 		///		to ensure objects with the same material are rendered together to minimise render state changes.
 		/// </remarks>
-		/// <param name="camera"></param>
 		public virtual void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
 		{
 			// ask the root node to iterate through and find visible objects in the scene
@@ -5236,8 +5224,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Internal method for creating shadow textures (texture-based shadows).
 		/// </summary>
-		/// <param name="size"></param>
-		/// <param name="count"></param>
 		protected internal virtual void CreateShadowTextures( ushort size, ushort count, PixelFormat format )
 		{
 			string baseName = "Axiom/ShadowTexture";
@@ -5410,7 +5396,7 @@ namespace Axiom.Core
 				// Associate main view camera as LOD camera
 				texCam.LodCamera = camera;
 
-				Vector3 pos, dir;
+				//Vector3 dir;
 
 				// set base
 				if ( light.Type == LightType.Point )
@@ -5699,7 +5685,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Renders a set of solid objects.
 		/// </summary>
-		/// <param name="list">List of solid objects.</param>
 		protected virtual void RenderSolidObjects( System.Collections.SortedList list,
 												   bool doLightIteration,
 												   LightList manualLightList )
@@ -5751,7 +5736,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Renders a set of transparent objects.
 		/// </summary>
-		/// <param name="list"></param>
 		protected virtual void RenderTransparentObjects( List<RenderablePass> list, bool doLightIteration,
 														 LightList manualLightList )
 		{
@@ -6523,32 +6507,33 @@ namespace Axiom.Core
 			//destList.Sort();
 		}
 
-		/// <summary>
-		///		Enables / disables a 'sky plane' i.e. a plane at constant
-		///		distance from the camera representing the sky.
-		/// </summary>
-		/// <param name="enable">True to enable the plane, false to disable it.</param>
-		/// <param name="plane">Details of the plane, i.e. it's normal and it's distance from the camera.</param>
-		/// <param name="materialName">The name of the material the plane will use.</param>
-		/// <param name="scale">The scaling applied to the sky plane - higher values mean a bigger sky plane.</param>
-		/// <param name="tiling">How many times to tile the texture across the sky.</param>
-		/// <param name="drawFirst">
-		///		If true, the plane is drawn before all other geometry in the scene, without updating the depth buffer.
-		///		This is the safest rendering method since all other objects
-		///		will always appear in front of the sky. However this is not
-		///		the most efficient way if most of the sky is often occluded
-		///		by other objects. If this is the case, you can set this
-		///		parameter to false meaning it draws <em>after</em> all other
-		///		geometry which can be an optimisation - however you must
-		///		ensure that the plane.d value is large enough that no objects
-		///		will 'poke through' the sky plane when it is rendered.
-		///	 </param>
-		/// <param name="bow">
-		///		If above zero, the plane will be curved, allowing
-		///		the sky to appear below camera level.  Curved sky planes are
-		///		simular to skydomes, but are more compatable with fog.
-		/// </param>
-		public virtual void SetSkyPlane( bool enable,
+	    /// <summary>
+	    ///		Enables / disables a 'sky plane' i.e. a plane at constant
+	    ///		distance from the camera representing the sky.
+	    /// </summary>
+	    /// <param name="enable">True to enable the plane, false to disable it.</param>
+	    /// <param name="plane">Details of the plane, i.e. it's normal and it's distance from the camera.</param>
+	    /// <param name="materialName">The name of the material the plane will use.</param>
+	    /// <param name="scale">The scaling applied to the sky plane - higher values mean a bigger sky plane.</param>
+	    /// <param name="tiling">How many times to tile the texture across the sky.</param>
+	    /// <param name="drawFirst">
+	    ///		If true, the plane is drawn before all other geometry in the scene, without updating the depth buffer.
+	    ///		This is the safest rendering method since all other objects
+	    ///		will always appear in front of the sky. However this is not
+	    ///		the most efficient way if most of the sky is often occluded
+	    ///		by other objects. If this is the case, you can set this
+	    ///		parameter to false meaning it draws <em>after</em> all other
+	    ///		geometry which can be an optimisation - however you must
+	    ///		ensure that the plane.d value is large enough that no objects
+	    ///		will 'poke through' the sky plane when it is rendered.
+	    ///	 </param>
+	    /// <param name="bow">
+	    ///		If above zero, the plane will be curved, allowing
+	    ///		the sky to appear below camera level.  Curved sky planes are
+	    ///		simular to skydomes, but are more compatable with fog.
+	    /// </param>
+	    /// <param name="groupName"></param>
+	    public virtual void SetSkyPlane( bool enable,
 										 Plane plane,
 										 string materialName,
 										 float scale,
@@ -6654,8 +6639,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overload.
 		/// </summary>
-		/// <param name="enable"></param>
-		/// <param name="plane"></param>
 		public virtual void SetSkyPlane( bool enable, Plane plane, string materialName )
 		{
 			// call the overloaded method
@@ -6719,18 +6702,19 @@ namespace Axiom.Core
 			this.InjectRenderWithPass( pass, rend, true );
 		}
 
-		/// <summary>
-		///     Creates a StaticGeometry instance suitable for use with this
-		///     SceneManager.
-		/// </summary>
-		/// <remarks>
-		///     StaticGeometry is a way of batching up geometry into a more
-		///     efficient form at the expense of being able to move it. Please
-		///     read the StaticGeometry class documentation for full information.
-		/// </remarks>
-		///<param name="name">The name to give the new object</param>
-		///<returns>The new StaticGeometry instance</returns>
-		public StaticGeometry CreateStaticGeometry( string name, int logLevel )
+	    /// <summary>
+	    ///     Creates a StaticGeometry instance suitable for use with this
+	    ///     SceneManager.
+	    /// </summary>
+	    /// <remarks>
+	    ///     StaticGeometry is a way of batching up geometry into a more
+	    ///     efficient form at the expense of being able to move it. Please
+	    ///     read the StaticGeometry class documentation for full information.
+	    /// </remarks>
+	    /// <param name="name">The name to give the new object</param>
+	    /// <param name="logLevel"></param>
+	    /// <returns>The new StaticGeometry instance</returns>
+	    public StaticGeometry CreateStaticGeometry( string name, int logLevel )
 		{
 			// Check not existing
 			if ( this.staticGeometryList.ContainsKey( name ) )

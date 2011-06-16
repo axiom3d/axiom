@@ -126,19 +126,20 @@ namespace Axiom.Graphics
 			factories.Add( factory.Language, factory );
 		}
 
-		/// <summary>
-		///    Creates a new, unloaded HighLevelGpuProgram instance.
-		/// </summary>
-		/// <remarks>
-		///    This method creates a new program of the type specified as the second and third parameters.
-		///    You will have to call further methods on the returned program in order to
-		///    define the program fully before you can load it.
-		/// </remarks>
-		/// <param name="name">Name of the program to create.</param>
-		/// <param name="language">HLSL language to use.</param>
-		/// <param name="type">Type of program, i.e. vertex or fragment.</param>
-		/// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
-		public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
+	    /// <summary>
+	    ///    Creates a new, unloaded HighLevelGpuProgram instance.
+	    /// </summary>
+	    /// <remarks>
+	    ///    This method creates a new program of the type specified as the second and third parameters.
+	    ///    You will have to call further methods on the returned program in order to
+	    ///    define the program fully before you can load it.
+	    /// </remarks>
+	    /// <param name="name">Name of the program to create.</param>
+	    /// <param name="group"></param>
+	    /// <param name="language">HLSL language to use.</param>
+	    /// <param name="type">Type of program, i.e. vertex or fragment.</param>
+	    /// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
+	    public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
 		{
 			// lookup the factory for the requested program language
 			HighLevelGpuProgramFactory factory = GetFactory( language );

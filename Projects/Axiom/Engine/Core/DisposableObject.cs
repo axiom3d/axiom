@@ -59,13 +59,14 @@ namespace Axiom.Core
 
 		private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
 
-		/// <summary>
-		/// Add an object to be monitored
-		/// </summary>
-		/// <param name="instance">
-		/// A <see cref="DisposableObject"/> to monitor for proper disposal
-		/// </param>
-		public void Add( DisposableObject instance, string stackTrace )
+	    /// <summary>
+	    /// Add an object to be monitored
+	    /// </summary>
+	    /// <param name="instance">
+	    /// A <see cref="DisposableObject"/> to monitor for proper disposal
+	    /// </param>
+	    /// <param name="stackTrace"></param>
+	    public void Add( DisposableObject instance, string stackTrace )
 		{
 			List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
 

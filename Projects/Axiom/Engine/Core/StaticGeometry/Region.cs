@@ -324,7 +324,7 @@ namespace Axiom.Core
 				if ( stencilShadows )
 				{
 					EdgeListBuilder eb = new EdgeListBuilder();
-					int vertexSet = 0;
+					//int vertexSet = 0;
 					foreach ( LODBucket lod in lodBucketList )
 					{
 						foreach ( MaterialBucket mat in lod.MaterialBucketMap.Values )

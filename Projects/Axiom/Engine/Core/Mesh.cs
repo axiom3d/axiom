@@ -244,7 +244,7 @@ namespace Axiom.Core
 						// load the skeleton
 						_skeleton = (Skeleton)SkeletonManager.Instance.Load( _skeletonName, Group );
 					}
-					catch ( Exception ex )
+					catch ( Exception )
 					{
 						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name + ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
 					}
@@ -1147,7 +1147,7 @@ namespace Axiom.Core
 				//for ( int v = 0; v < targetVertexData.vertexCount; v++ )
 				foreach ( KeyValuePair<int, List<VertexBoneAssignment>> boneAssignment in boneAssignments )
 				{
-					/// Convert to specific pointers
+					// Convert to specific pointers
 					pWeight = (float*)( (byte*)pBase + weightElem.Offset );
 					pIndex = pBase + idxElem.Offset;
 
@@ -1262,11 +1262,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Ask the mesh to suggest parameters to a future <see cref="BuildTangentVectors"/> call.
+		///     Ask the mesh to suggest parameters to a future <see cref="BuildTangentVectors()"/> call.
 		/// </summary>
 		/// <remarks>
 		///     This helper method will suggest source and destination texture coordinate sets
-		///     for a call to <see cref="BuildTangentVectors"/>. It will detect when there are inappropriate
+		///     for a call to <see cref="BuildTangentVectors()"/>. It will detect when there are inappropriate
 		///     conditions (such as multiple geometry sets which don't agree).
 		///     Moreover, it will return 'true' if it detects that there are aleady 3D
 		///     coordinates in the mesh, and therefore tangents may have been prepared already.
@@ -1694,7 +1694,7 @@ namespace Axiom.Core
 		///		only affects buffers created by the mesh itself.
 		///		<p/>
 		///		You can define the approach to a Mesh by changing the default parameters to
-		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		<see cref="MeshManager.Load(string, string)"/> if you wish; this means the Mesh is loaded with those options
 		///		the first time instead of you having to reload the mesh after changing these options.
 		/// </remarks>
 		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
@@ -1724,7 +1724,7 @@ namespace Axiom.Core
 		///		only affects buffers created by the mesh itself.
 		///		<p/>
 		///		You can define the approach to a Mesh by changing the default parameters to
-		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		<see cref="MeshManager.Load(string, string)"/> if you wish; this means the Mesh is loaded with those options
 		///		the first time instead of you having to reload the mesh after changing these options.
 		/// </remarks>
 		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
@@ -2197,27 +2197,29 @@ namespace Axiom.Core
 
 		#region Static Methods
 
-		/// <summary>
-		///		Performs a software indexed vertex blend, of the kind used for
-		///		skeletal animation although it can be used for other purposes.
-		/// </summary>
-		/// <remarks>
-		///		This function is supplied to update vertex data with blends
-		///		done in software, either because no hardware support is available,
-		///		or that you need the results of the blend for some other CPU operations.
-		/// </remarks>
-		/// <param name="sourceVertexData">
-		///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
-		///	</param>
-		/// <param name="targetVertexData">
-		///		<see cref="VertexData"/> class containing target position
-		///		and normal buffers which will be updated with the blended versions.
-		///		Note that the layout of the source and target position / normal
-		///		buffers must be identical, ie they must use the same buffer indexes.
-		/// </param>
-		/// <param name="matrices">An array of matrices to be used to blend.</param>
-		/// <param name="blendNormals">If true, normals are blended as well as positions.</param>
-		public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
+	    /// <summary>
+	    ///		Performs a software indexed vertex blend, of the kind used for
+	    ///		skeletal animation although it can be used for other purposes.
+	    /// </summary>
+	    /// <remarks>
+	    ///		This function is supplied to update vertex data with blends
+	    ///		done in software, either because no hardware support is available,
+	    ///		or that you need the results of the blend for some other CPU operations.
+	    /// </remarks>
+	    /// <param name="sourceVertexData">
+	    ///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
+	    ///	</param>
+	    /// <param name="targetVertexData">
+	    ///		<see cref="VertexData"/> class containing target position
+	    ///		and normal buffers which will be updated with the blended versions.
+	    ///		Note that the layout of the source and target position / normal
+	    ///		buffers must be identical, ie they must use the same buffer indexes.
+	    /// </param>
+	    /// <param name="matrices">An array of matrices to be used to blend.</param>
+	    /// <param name="blendNormals">If true, normals are blended as well as positions.</param>
+	    /// <param name="blendTangents"></param>
+	    /// <param name="blendBinorms"></param>
+	    public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
 		{
 			// Source vectors
 			Vector3 sourcePos = Vector3.Zero;

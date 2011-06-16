@@ -58,13 +58,11 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Delegate for handling material events.
 	/// </summary>
-	/// <param name="e"></param>
 	public delegate void CompositorInstanceMaterialEventHandler( CompositorInstance source, CompositorInstanceMaterialEventArgs e );
 
 	/// <summary>
 	/// Delegate for handling resource events.
 	/// </summary>
-	/// <param name="e"></param>
 	public delegate void CompositorInstanceResourceEventHandler( CompositorInstance source, CompositorInstanceResourceEventArgs e );
 
 	/// <summary>

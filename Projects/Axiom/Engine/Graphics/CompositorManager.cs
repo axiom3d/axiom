@@ -92,7 +92,7 @@ namespace Axiom.Graphics
 		public bool Initialize( params object[] args )
 		{
 			// Create "default" compositor
-			/** Compositor that is used to implicitly represent the original
+			/* Compositor that is used to implicitly represent the original
 				render in the chain. This is an identity compositor with only an output pass:
 			compositor Axiom/Scene
 			{
@@ -801,7 +801,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Starts parsing an individual script file.
 		/// </summary>
-		/// <param name="data">Stream containing the script data.</param>
 		public override void ParseScript( Stream data, string groupName, string fileName )
 		{
 #if AXIOM_USENEWCOMPILERS

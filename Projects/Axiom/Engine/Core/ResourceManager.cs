@@ -300,38 +300,43 @@ namespace Axiom.Core
 		///		details of the returned resource and call ResourceManager.Load to load the resource. Note
 		///		that it is the CALLERS responsibility to destroy this object when it is no longer required
 		///		(after calling ResourceManager.Unload if it had been loaded).
-		/// <para/>
 		///     If you want to get at the detailed interface of this resource, you'll have to
 		///     cast the result to the subclass you know you're creating.
 		/// </remarks>
 		/// <param name="name">The unique name of the resource</param>
+        /// <param name="group"></param>
 		/// <returns></returns>
 		/// </overloads>
 		public Resource Create( string name, string group )
 		{
 			return Create( name, group, null );
 		}
-		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-		public Resource Create( string name, string group, NameValuePairList createParams )
+
+	    /// <param name="group"></param>
+	    /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
+	    /// <param name="name"></param>
+	    public Resource Create( string name, string group, NameValuePairList createParams )
 		{
 			return Create( name, group, false, null, createParams );
 		}
 
-		/// <param name="isManual">
-		/// Is this resource manually loaded? If so, you should really
-		/// populate the loader parameter in order that the load process
-		/// can call the loader back when loading is required.
-		/// </param>
-		/// <param name="loader">
-		/// Pointer to a ManualLoader implementation which will be called
-		/// when the Resource wishes to load (should be supplied if you set
-		/// isManual to true). You can in fact leave this parameter null
-		/// if you wish, but the Resource will never be able to reload if
-		/// anything ever causes it to unload. Therefore provision of a proper
-		/// ManualLoader instance is strongly recommended.
-		/// </param>
-		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+	    /// <param name="group"></param>
+	    /// <param name="isManual">
+	    /// Is this resource manually loaded? If so, you should really
+	    /// populate the loader parameter in order that the load process
+	    /// can call the loader back when loading is required.
+	    /// </param>
+	    /// <param name="loader">
+	    /// Pointer to a ManualLoader implementation which will be called
+	    /// when the Resource wishes to load (should be supplied if you set
+	    /// isManual to true). You can in fact leave this parameter null
+	    /// if you wish, but the Resource will never be able to reload if
+	    /// anything ever causes it to unload. Therefore provision of a proper
+	    /// ManualLoader instance is strongly recommended.
+	    /// </param>
+	    /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
+	    /// <param name="name"></param>
+	    public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
 			Resource ret = _create( name, nextHandle, group, isManual, loader, createParams );
@@ -795,15 +800,16 @@ namespace Axiom.Core
 
 		#region ParseScriptMethod
 
-		/// <summary>
-		/// Parse a script file.
-		/// </summary>
-		/// <param name="stream">reference to a data stream which is the source of the script</param>
-		/// <param name="groupName">
-		/// The name of a resource group which should be used if any resources
-		/// are created during the parse of this script.
-		/// </param>
-		public virtual void ParseScript( Stream stream, string groupName, string fileName )
+	    /// <summary>
+	    /// Parse a script file.
+	    /// </summary>
+	    /// <param name="stream">reference to a data stream which is the source of the script</param>
+	    /// <param name="groupName">
+	    /// The name of a resource group which should be used if any resources
+	    /// are created during the parse of this script.
+	    /// </param>
+	    /// <param name="fileName"></param>
+	    public virtual void ParseScript( Stream stream, string groupName, string fileName )
 		{
 		}
 

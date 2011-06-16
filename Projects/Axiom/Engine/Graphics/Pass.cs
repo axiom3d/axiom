@@ -119,10 +119,10 @@ namespace Axiom.Graphics
 
 		public int passId;
 
-		/// <summary>
-		///    Texture anisotropy level.
-		/// </summary>
-		private int _maxAnisotropy;
+		// <summary>
+		//    Texture anisotropy level.
+		// </summary>
+		//private int _maxAnisotropy;
 
 		#region Parent Property
 
@@ -568,7 +568,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the current DepthBiasConstant value for this pass.
 		/// </summary>
-		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
+		/// <remarks>Use <see cref="SetDepthBias(float, float)"/> to set this property</remarks>
 		public float DepthBiasConstant
 		{
 			get
@@ -580,7 +580,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the current DepthBiasSlopeScale value for this pass.
 		/// </summary>
-		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
+		/// <remarks>Use <see cref="SetDepthBias(float, float)"/> to set this property</remarks>
 		public float DepthBiasSlopeScale
 		{
 			get
@@ -1903,12 +1903,13 @@ namespace Axiom.Graphics
 			DirtyHash();
 		}
 
-		/// <summary>
-		///    Method for cloning a Pass object.
-		/// </summary>
-		/// <param name="parent">Parent technique that will own this cloned Pass.</param>
-		/// <returns></returns>
-		public Pass Clone( Technique parent, int index )
+	    /// <summary>
+	    ///    Method for cloning a Pass object.
+	    /// </summary>
+	    /// <param name="parent">Parent technique that will own this cloned Pass.</param>
+	    /// <param name="index"></param>
+	    /// <returns></returns>
+	    public Pass Clone( Technique parent, int index )
 		{
 			Pass newPass = new Pass( parent, index );
 

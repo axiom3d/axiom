@@ -832,7 +832,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Disables reflection modification previously turned on with <see cref="EnableReflection"/>.
+		///     Disables reflection modification previously turned on with 
+        ///     <see cref="EnableReflection(Plane)"/>.
 		/// </summary>
 		public virtual void DisableReflection()
 		{

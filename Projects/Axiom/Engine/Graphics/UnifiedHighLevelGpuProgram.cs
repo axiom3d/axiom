@@ -283,7 +283,6 @@ namespace Axiom.Graphics
 				case "delegate":
 					AddDelegateProgram( val );
 					return true;
-					break;
 			}
 			return false;
 		}
