@@ -1,11 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Axiom.Collections;
 using Axiom.Core;
+using SlimDX.Direct3D9;
+using Resource = Axiom.Core.Resource;
+using ResourceManager = Axiom.Core.ResourceManager;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    internal class D3D9ResourceManager: ResourceManager
+    public class D3D9ResourceManager: ResourceManager
     {
+        #region inner classes
+
+        protected class ResourceContainer : List<D3D9Resource>
+        {
+        }
+
+        #endregion
+
+        private readonly object _resourcesMutex = new object();
+
+        protected new readonly ResourceContainer Resources = new ResourceContainer();
+
+        private int _deviceAccessLockCount;
+
         protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
             throw new NotImplementedException();
@@ -13,12 +32,35 @@ namespace Axiom.RenderSystems.DirectX9
 
         public void LockDeviceAccess()
         {
-            throw new NotImplementedException();
+            Monitor.Enter( _resourcesMutex );
+
+            _deviceAccessLockCount++;
+            if ( _deviceAccessLockCount != 1 )
+                return; // recursive lock aquisition (dont propagate)
+
+            D3D9Resource.LockDeviceAccess();
+            D3DHardwarePixelBuffer.LockDeviceAccess();
         }
 
         public void UnlockDeviceAccess()
         {
-            throw new NotImplementedException();
+            _deviceAccessLockCount--;
+            if (_deviceAccessLockCount == 0)
+            {
+                // outermost recursive lock release, propagte unlock
+                D3D9Resource.UnlockDeviceAccess();
+                D3DHardwarePixelBuffer.UnlockDeviceAccess();
+            }
+            Monitor.Exit( _resourcesMutex );
+        }
+
+        public void NotifyOnDeviceCreate(Device d3d9Device)
+        {
+            lock ( _resourcesMutex )
+            {
+                foreach (var it in Resources)
+                    it.NotifyOnDeviceCreate( d3d9Device );
+            }
         }
     }
 }

@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using SlimDX.Direct3D9;
 using SWF = System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Collections;
@@ -47,6 +48,7 @@ using Axiom.Graphics.Collections;
 using Axiom.Media;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using Viewport = Axiom.Core.Viewport;
 
 #endregion Namespace Declarations
 
@@ -58,6 +60,8 @@ namespace Axiom.RenderSystems.DirectX9
 	public class D3DRenderWindow : RenderWindow
 	{
 		#region Fields and Properties
+
+	    private bool _deviceValid;
 
 		private SWF.Control _window; // Win32 Window handle
 		private bool _isExternal; // window not created by Ogre
@@ -89,7 +93,7 @@ namespace Axiom.RenderSystems.DirectX9
 		private D3D.MultisampleType _fsaaType;
 		private int _fsaaQuality;
 		private int _displayFrequency;
-		private bool _vSync;
+		protected bool vSync;
 		private bool _useNVPerfHUD;
 
 		#region Driver Property
@@ -203,11 +207,11 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region WindowHandle
 
-        public SWF.Control WindowHandle
+        public IntPtr WindowHandle
         {
             get
             {
-                return _window;
+                return _window.Handle;
             }
         }
 
@@ -283,7 +287,7 @@ namespace Axiom.RenderSystems.DirectX9
 			_useNVPerfHUD = false;
 			_fsaaType = D3D.MultisampleType.None;
 			_fsaaQuality = 0;
-			_vSync = false;
+			vSync = false;
 
 			if ( miscParams != null )
 			{
@@ -346,7 +350,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// vsync	[parseBool]
 				if ( miscParams.ContainsKey( "vsync" ) )
 				{
-					_vSync = bool.Parse( miscParams[ "vsync" ].ToString() );
+					vSync = bool.Parse( miscParams[ "vsync" ].ToString() );
 				}
 
 				// displayFrequency
@@ -524,14 +528,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 			_d3dpp.Windowed = !IsFullScreen;
 			_d3dpp.SwapEffect = D3D.SwapEffect.Discard;
-			_d3dpp.BackBufferCount = _vSync ? 2 : 1;
+			_d3dpp.BackBufferCount = vSync ? 2 : 1;
 			_d3dpp.EnableAutoDepthStencil = isDepthBuffered;
 			_d3dpp.DeviceWindowHandle = _window.Handle;
 			_d3dpp.BackBufferHeight = Height;
 			_d3dpp.BackBufferWidth = Width;
 			_d3dpp.FullScreenRefreshRateInHertz = IsFullScreen ? _displayFrequency : 0;
 
-			if ( _vSync )
+			if ( vSync )
 			{
 				_d3dpp.PresentationInterval = D3D.PresentInterval.One;
 			}
@@ -723,15 +727,80 @@ namespace Axiom.RenderSystems.DirectX9
 	        }
 	    }
 
-	    internal D3D9Device Device
+        [OgreVersion(1, 7)]
+	    protected D3D9Device device;
+
+        [OgreVersion(1, 7)]
+	    protected SlimDX.Direct3D9.MultisampleType fsaaType;
+
+        [OgreVersion(1, 7)]
+        protected int fsaaQuality;
+
+        #region VSyncInterval
+
+        [OgreVersion(1, 7)]
+	    protected int vSyncInterval;
+
+        [OgreVersion(1, 7)]
+	    protected bool isExternal;
+
+	    [OgreVersion(1, 7)]
+        public int VSyncInterval
+        {
+            get
+            {
+                return VSyncInterval;
+            }
+            set
+            {
+                vSyncInterval = value;
+                if (vSync)
+                    IsVSyncEnabled = true;
+            }
+        }
+
+        #endregion
+
+
+        // "Yet another of this Ogre idiotisms"
+        [OgreVersion(1, 7)]
+        public bool IsVSync
+        {
+            get
+            {
+                return vSync;
+            }
+        }
+
+        public bool IsVSyncEnabled
+        {
+            get
+            {
+                return vSync;
+            }
+            set
+            {
+                vSync = value;
+                if (!isExternal)
+                {
+                    // we need to reset the device with new vsync params
+                    // invalidate the window to trigger this
+                    device.Invalidate(this);
+                }
+            }
+        }
+
+        [OgreVersion(1, 7)]
+	    public D3D9Device Device
 	    {
 	        get
 	        {
-	            throw new NotImplementedException();
+	            return device;
 	        }
 	        set
 	        {
-	            throw new NotImplementedException();
+	            device = value;
+                _deviceValid = false;
 	        }
 	    }
 
@@ -739,15 +808,16 @@ namespace Axiom.RenderSystems.DirectX9
 	    {
 	        get
 	        {
-	            throw new NotImplementedException();
+	            return _useNVPerfHUD;
 	        }
 	    }
 
-	    public bool IsVSync
+        [OgreVersion(1, 7)]
+	    public bool IsDepthBuffered
 	    {
 	        get
 	        {
-	            throw new NotImplementedException();
+	            return (depthBufferPoolId != PoolId.NoDepth);
 	        }
 	    }
 
@@ -1193,5 +1263,148 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion RenderWindow implementation
+
+	    public void BuildPresentParameters( PresentParameters presentParams )
+	    {
+	        // Set up the presentation parameters		
+		    var pD3D = D3DRenderSystem.Direct3D9;
+		    var devType = SlimDX.Direct3D9.DeviceType.Hardware;
+
+		    if (device != null)		
+			    devType = device.DeviceType;		
+	
+            
+#warning Do we need to zero anything here or does everything get inited?
+		    //ZeroMemory( presentParams, sizeof(D3DPRESENT_PARAMETERS) );
+
+		    presentParams.Windowed					= !isFullScreen;
+		    presentParams.SwapEffect				= SwapEffect.Discard;
+		    // triple buffer if VSync is on
+		    presentParams.BackBufferCount			= vSync ? 2 : 1;
+		    presentParams.EnableAutoDepthStencil	= (depthBufferPoolId != PoolId.NoDepth);
+		    presentParams.DeviceWindowHandle = _window.Handle;
+		    presentParams.BackBufferWidth			= width;
+		    presentParams.BackBufferHeight			= height;
+		    presentParams.FullScreenRefreshRateInHertz = isFullScreen ? _displayFrequency : 0;
+		
+		    if (presentParams.BackBufferWidth == 0)		
+			    presentParams.BackBufferWidth = 1;					
+
+		    if (presentParams.BackBufferHeight == 0)	
+			    presentParams.BackBufferHeight = 1;					
+
+
+		    if (vSync)
+		    {
+			    // D3D9 only seems to support 2-4 presentation intervals in fullscreen
+			    if (isFullScreen)
+			    {
+				    switch(vSyncInterval)
+				    {
+				    case 1:
+				    default:
+					    presentParams.PresentationInterval = PresentInterval.One;
+					    break;
+				    case 2:
+					    presentParams.PresentationInterval = PresentInterval.Two;
+					    break;
+				    case 3:
+					    presentParams.PresentationInterval = PresentInterval.Three;
+					    break;
+				    case 4:
+					    presentParams.PresentationInterval = PresentInterval.Four;
+					    break;
+				    };
+				    // check that the interval was supported, revert to 1 to be safe otherwise
+			        var caps = pD3D.GetDeviceCaps( device.AdapterNumber, devType );
+				    if ((caps.PresentationIntervals & presentParams.PresentationInterval) != 0)
+					    presentParams.PresentationInterval = PresentInterval.One;
+
+			    }
+			    else
+			    {
+				    presentParams.PresentationInterval = PresentInterval.One;
+			    }
+
+		    }
+		    else
+		    {
+			    // NB not using vsync in windowed mode in D3D9 can cause jerking at low 
+			    // frame rates no matter what buffering modes are used (odd - perhaps a
+			    // timer issue in D3D9 since GL doesn't suffer from this) 
+			    // low is < 200fps in this context
+			    if (!isFullScreen)
+			    {
+				    LogManager.Instance.Write("D3D9 : WARNING - " +
+					    "disabling VSync in windowed mode can cause timing issues at lower " +
+					    "frame rates, turn VSync on if you observe this problem.");
+			    }
+			    presentParams.PresentationInterval = PresentInterval.Immediate;
+		    }
+
+		    presentParams.BackBufferFormat		= Format.R5G6B5;
+		    if( colorDepth > 16 )
+			    presentParams.BackBufferFormat = Format.X8R8G8B8;
+
+		    if (colorDepth > 16 )
+		    {
+                // Try to create a 32-bit depth, 8-bit stencil
+
+                if (!pD3D.CheckDeviceFormat(device.AdapterNumber,
+                    devType, presentParams.BackBufferFormat, Usage.DepthStencil,
+                    ResourceType.Surface, Format.D24S8))
+			    {
+				    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
+                    if (!pD3D.CheckDeviceFormat(device.AdapterNumber, 
+                        devType, presentParams.BackBufferFormat, Usage.DepthStencil,
+                        ResourceType.Surface, Format.D32))
+				    {
+					    // Jeez, what a naff card. Fall back on 16-bit depth buffering
+					    presentParams.AutoDepthStencilFormat = Format.D16;
+				    }
+				    else
+					    presentParams.AutoDepthStencilFormat = Format.D32;
+			    }
+			    else
+			    {
+				    // Woohoo!
+                    if (pD3D.CheckDepthStencilMatch(device.AdapterNumber, devType,
+                        presentParams.BackBufferFormat, presentParams.BackBufferFormat, Format.D24S8))
+				    {
+					    presentParams.AutoDepthStencilFormat = Format.D24S8; 
+				    } 
+				    else 
+					    presentParams.AutoDepthStencilFormat = Format.D24X8; 
+			    }
+		    }
+		    else
+			    // 16-bit depth, software stencil
+			    presentParams.AutoDepthStencilFormat	= Format.D16;
+
+
+		    var rsys = (D3DRenderSystem)Root.Instance.RenderSystem;
+		
+		    rsys.DetermineFSAASettings(device.D3DDevice,
+			    fsaa, fsaaHint, presentParams.BackBufferFormat, isFullScreen, 
+			    out fsaaType, out fsaaQuality);
+
+            presentParams.Multisample = fsaaType;
+            presentParams.MultisampleQuality = (fsaaQuality == 0) ? 0 : fsaaQuality;
+
+		    // Check sRGB
+		    if (hwGamma)
+		    {
+			    /* hmm, this never succeeds even when device does support??
+			    if(FAILED(pD3D->CheckDeviceFormat(mDriver->getAdapterNumber(),
+				    devType, presentParams->BackBufferFormat, D3DUSAGE_QUERY_SRGBWRITE, 
+				    D3DRTYPE_SURFACE, presentParams->BackBufferFormat )))
+			    {
+				    // disable - not supported
+				    mHwGamma = false;
+			    }
+			    */
+
+		    }
+	    }
 	}
 }

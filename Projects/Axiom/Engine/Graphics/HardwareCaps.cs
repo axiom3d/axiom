@@ -774,5 +774,10 @@ namespace Axiom.Graphics
 	    {
 	        // TODO: implement for IsCategoryRelevant()
 	    }
+
+	    public void UnsetCapability( Capabilities cap )
+	    {
+            _caps &= ~cap;
+	    }
 	}
 }
