@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         // Check if the GL system has already been initialised
         
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private bool _glInitialised;
 
 	    private GLSLProgramFactory _GLSLProgramFactory;
@@ -161,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGL
         private readonly float[] _tempProgramFloats = new float[4];
 	    private readonly double[] _tempPlane = new double[4];
 
-        [OgreVersion(1, 7, "Incorrectly typed as int in Ogre")]
+        [OgreVersion(1, 7, 2790, "Incorrectly typed as int in Ogre")]
         protected int[] ColorWrite = new int[4];
 
 		protected GLGpuProgramManager gpuProgramMgr;
@@ -178,7 +178,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public GLRenderSystem()
 		{
 		    depthWrite = true;
@@ -227,7 +227,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ColorVertexElementType
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override VertexElementType ColorVertexElementType
 	    {
 	        get
@@ -240,7 +240,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region VertexDeclaration
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override VertexDeclaration VertexDeclaration
 	    {
 	        set
@@ -252,7 +252,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region VertexBufferBinding
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override VertexBufferBinding VertexBufferBinding
         {
             set 
@@ -264,7 +264,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region BindGpuProgramPassIterationParameters
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void BindGpuProgramPassIterationParameters( GpuProgramType gptype )
 	    {
             switch (gptype)
@@ -285,7 +285,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ClearFrameBuffer
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void ClearFrameBuffer( FrameBufferType buffers, 
             ColorEx color, Real depth, ushort stencil )
 		{
@@ -380,7 +380,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region HardwareOcclusionQuery
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
 			return new GLHardwareOcclusionQuery( _glSupport );
@@ -390,7 +390,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region CreateMultiRenderTarget
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
 			var retval = rttManager.CreateMultiRenderTarget( name );
@@ -406,7 +406,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// One time initialization for the RenderState of a context. Things that
         /// only need to be set once, like the LightingModel can be defined here.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private void OneTimeContextInitialization()
 		{
             if (GLEW_VERSION_1_2)
@@ -439,7 +439,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region DisplayMonitorCount
 
-        [OgreVersion(1, 7, "needs to be implemented")]
+        [OgreVersion(1, 7, 2790, "needs to be implemented")]
 	    public override int DisplayMonitorCount
 	    {
 	        get
@@ -452,7 +452,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region AmbientLight
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override ColorEx AmbientLight
 		{
 			set
@@ -473,7 +473,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache to avoid unnecessary state changes")]
         private bool _lightingEnabled;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool LightingEnabled
 		{
 			set
@@ -498,7 +498,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache to avoid unnecessary state changes")]
         private bool _normalizingEnabled;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool NormalizeNormals
 		{
 			set
@@ -525,7 +525,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache to avoid unnecessary state changes")]
         private PolygonMode _lastPolygonMode;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override PolygonMode PolygonMode
 		{
 			set
@@ -564,7 +564,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache to avoid unnecessary state changes")]
         private ShadeOptions _lastShadingType;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override ShadeOptions ShadingType
         {
             set 
@@ -592,7 +592,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache to avoid unnecessary state changes")]
         private bool _lastStencilCheckEnabled;
         
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool StencilCheckEnabled
 		{
 			set
@@ -616,7 +616,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region MakeOrthoMatrix
 
-	    [OgreVersion(1, 7)]
+	    [OgreVersion(1, 7, 2790)]
         public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms )
 		{
 			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
@@ -647,7 +647,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region MakeProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
 		{
 			float thetaY = Utility.DegreesToRadians( fov * (Real)0.5f );
@@ -688,7 +688,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region MakeProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram )
 		{
 			var width = right - left;
@@ -721,7 +721,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ConvertProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram )
 		{
 			// No conversion required for OpenGL
@@ -732,7 +732,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region MinimumDepthInputValue
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override Real MinimumDepthInputValue
 		{
 			get
@@ -746,7 +746,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region MaximumDepthInputValue
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real MaximumDepthInputValue
 		{
 			get
@@ -760,7 +760,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region PreExtraThreadsStarted
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void PreExtraThreadsStarted()
 	    {
             lock (_threadInitMutex)
@@ -771,7 +771,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region PostExtraThreadsStarted
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void PostExtraThreadsStarted()
 	    {
             lock (_threadInitMutex)
@@ -782,7 +782,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region RegisterThread
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void RegisterThread()
 	    {
             lock (_threadInitMutex)
@@ -813,7 +813,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region UnregisterThread
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void UnregisterThread()
 	    {
             // nothing to do here?
@@ -825,7 +825,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ApplyObliqueDepthProjection
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
 		{
 			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
@@ -856,7 +856,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region BeginFrame
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void BeginFrame()
 		{
             if (activeViewport == null)
@@ -869,7 +869,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region EndFrame
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void EndFrame()
 		{
             // Deactivate the viewport clipping.
@@ -885,7 +885,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Viewport
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override Viewport Viewport
         {
             get
@@ -932,7 +932,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetStencilBufferParams
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetStencilBufferParams( CompareFunction func, 
             int refValue, int mask, StencilOperation stencilFailOp, 
             StencilOperation depthFailOp, StencilOperation passOp, 
@@ -1005,7 +1005,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetSurfaceParams
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular,
             ColorEx emissive, Real shininess, TrackVertexColor tracking)
 		{
@@ -1070,7 +1070,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region PointSpritesEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool PointSpritesEnabled
 		{
 			set
@@ -1103,7 +1103,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetPointParameters
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetPointParameters(Real size, bool attenuationEnabled,
             Real constant, Real linear, Real quadratic, Real minSize, Real maxSize)
         {
@@ -1175,7 +1175,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureAddressingMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
         {
             if ( !ActivateGLTextureUnit( stage ) )
@@ -1190,7 +1190,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureMipmapBias
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetTextureMipmapBias(int stage, float bias)
 	    {
             if (currentCapabilities.HasCapability(Graphics.Capabilities.MipmapLODBias))
@@ -1208,7 +1208,7 @@ namespace Axiom.RenderSystems.OpenGL
         #region GetCurrentAnisotropy
 
         /// Internal method for anisotropy validation
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private float GetCurrentAnisotropy(int unit)
         {
             float curAniso;
@@ -1221,7 +1221,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureLayerAnisotropy
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureLayerAnisotropy( int unit, int maxAnisotropy )
 		{
             if (!currentCapabilities.HasCapability(Graphics.Capabilities.AnisotropicFiltering))
@@ -1249,7 +1249,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureBlendMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureBlendMode( int stage, LayerBlendModeEx bm )
 		{
             if (stage >= _fixedFunctionTextureUnits)
@@ -1481,7 +1481,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureCoordSet
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureCoordSet( int stage, int index )
 		{
 			texCoordIndex[ stage ] = index;
@@ -1491,7 +1491,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureCoordCalculation
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
 		{
             if (stage >= _fixedFunctionTextureUnits)
@@ -1659,7 +1659,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureMatrix( int stage, Matrix4 xform )
 		{
             if (stage >= _fixedFunctionTextureUnits)
@@ -1692,7 +1692,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureUnitFiltering
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void SetTextureUnitFiltering( int unit, FilterType ftype, FilterOptions fo )
 	    {
             if (!ActivateGLTextureUnit(unit))
@@ -1743,7 +1743,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Initialize
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
 			_glSupport.Start();
@@ -1762,7 +1762,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Reinitialize
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void Reinitialize()
 	    {
 	        Shutdown();
@@ -1773,7 +1773,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Shutdown
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void Shutdown()
 		{
 			// call base Shutdown implementation
@@ -1830,7 +1830,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTexture
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
 			var glTexture = (GLTexture)texture;
@@ -1895,10 +1895,10 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetAlphaRejectSettings
 
-        [OgreVersion(1, 7, "State cache, local static in Ogre")]
+        [OgreVersion(1, 7, 2790, "State cache, local static in Ogre")]
 		private bool lasta2c;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetAlphaRejectSettings( CompareFunction func, byte val, bool alphaToCoverage )
 		{
 			bool a2c = false;
@@ -1970,7 +1970,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetColorBufferWriteEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			// record this for later
@@ -1986,7 +1986,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetDepthBufferParams
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
 		{
 			DepthBufferCheckEnabled = depthTest;
@@ -2001,7 +2001,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache")]
         private bool fogEnabled;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetFog(FogMode mode, ColorEx color, Real density, Real start, Real end)
 		{
 			int fogMode;
@@ -2048,7 +2048,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetClipPlanesImpl
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected override void SetClipPlanesImpl( PlaneList clipPlanes )
 	    {
 	        // A note on GL user clipping:
@@ -2103,7 +2103,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Matrix4 ProjectionMatrix
 		{
 			set
@@ -2140,7 +2140,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ViewMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Matrix4 ViewMatrix
 		{
 			set
@@ -2167,7 +2167,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region WorldMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Matrix4 WorldMatrix
 		{
 			set
@@ -2191,7 +2191,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region UseLights
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void UseLights( LightList lightList, int limit )
 		{
 			// save previous modelview matrix
@@ -2233,7 +2233,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetTextureBorderColor
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
 		    borderColor.ToArrayRGBA( _tempColorVals );
@@ -2248,7 +2248,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region CullingMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override CullingMode CullingMode
 		{
 			set
@@ -2303,7 +2303,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetSceneBlending
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest,
             SceneBlendOperation op)
 		{
@@ -2355,7 +2355,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetSeparateSceneBlending
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetSeparateSceneBlending( 
             SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, 
             SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
@@ -2432,7 +2432,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetDepthBias
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetDepthBias(float constantBias, float slopeScaleBias)
         {
             if (constantBias != 0 || slopeScaleBias != 0)
@@ -2454,7 +2454,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ValidateConfigOptions
 
-        [OgreVersion(1, 7, "TODO: implement this")]
+        [OgreVersion(1, 7, 2790, "TODO: implement this")]
 	    public override string ValidateConfigOptions()
 	    {
 	        return _glSupport.ValidateConfig();
@@ -2464,7 +2464,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region GetErrorDescription
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override string GetErrorDescription( int errorNumber )
 	    {
 	        return Glu.gluGetString( errorNumber );
@@ -2477,7 +2477,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper( 0, 8 )] 
         private bool _lastDepthCheckEnabled;
 
-		[OgreVersion(1, 7)]
+		[OgreVersion(1, 7, 2790)]
         public override bool DepthBufferCheckEnabled
 		{
 			set
@@ -2505,7 +2505,7 @@ namespace Axiom.RenderSystems.OpenGL
         [AxiomHelper(0, 8, "State cache")]
         protected CompareFunction lastDepthFunc;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override CompareFunction DepthBufferFunction
 		{
 			set
@@ -2545,7 +2545,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region HorizontalTexelOffset
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real HorizontalTexelOffset
 		{
 			get
@@ -2559,7 +2559,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region VerticalTexelOffset
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real VerticalTexelOffset
 		{
 			get
@@ -2573,7 +2573,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region BindGpuProgram
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void BindGpuProgram( GpuProgram program )
 		{
 			var glProgram = (GLGpuProgram)program;
@@ -2633,7 +2633,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region BindGpuProgramParameters
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
             if ((mask & GpuProgramParameters.GpuParamVariability.Global) != 0)
@@ -2667,7 +2667,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region UnbindGpuProgram
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void UnbindGpuProgram( GpuProgramType type )
 		{
 			// store the current program in use for eas unbinding later
@@ -2697,7 +2697,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region SetScissorTest
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetScissorTest( bool enabled, int left, int top, int right, int bottom )
 		{
             // If request texture flipping, use "upper-left", otherwise use "lower-left"
@@ -2753,7 +2753,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///				glMatrix[1] = matrix[1,0]
 		///				etc...
 		/// </summary>
-        [OgreVersion(1, 7, "Axiom specific implementation")]
+        [OgreVersion(1, 7, 2790, "Axiom specific implementation")]
 		private void MakeGLMatrix( ref Matrix4 matrix, float[] floats )
 		{
 			var mat = matrix.Transpose();
@@ -2769,7 +2769,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		/// <param name="index">Light index.</param>
 		/// <param name="light">Light object.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private void SetGLLight( int index, Light light )
 		{
 			int lightIndex = Gl.GL_LIGHT0 + index;
@@ -2829,7 +2829,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		/// <param name="light">Light to use.</param>
 		/// <param name="index">Index of the light.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private void SetGLLightPositionDirection( Light light, int index )
 		{
 			// Use general 4D vector which is the same as GL's approach
@@ -2862,7 +2862,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
 		///		Private helper method for setting all lights.
 		/// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private void SetLights()
 		{
 			for ( int i = 0; i < lights.Length; i++ )
@@ -2889,7 +2889,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         /// <summary>
 		/// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private int GetCombinedMinMipFilter()
 		{
 			switch ( minFilter )
@@ -2950,7 +2950,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ActivateGLTextureUnit
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private bool ActivateGLTextureUnit( int unit )
 		{
 			if ( _activeTextureUnit != unit )
@@ -2981,7 +2981,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region RenderTarget
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override RenderTarget RenderTarget
         {
             set 
@@ -3035,7 +3035,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region UnRegisterContext
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         internal void UnRegisterContext( GLContext context )
 		{
 			if ( _currentContext == context )
@@ -3061,7 +3061,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region _switchContext
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private void _switchContext( GLContext context )
 		{
 			// Unbind GPU programs and rebind to new context later, because

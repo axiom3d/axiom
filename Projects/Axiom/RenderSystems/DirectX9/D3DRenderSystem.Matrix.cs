@@ -15,7 +15,7 @@ namespace Axiom.RenderSystems.DirectX9
     {
         #region MakeOrthoMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void MakeOrthoMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms)
         {
             float thetaY = Utility.DegreesToRadians(fov / 2.0f);
@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ConvertProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void ConvertProjectionMatrix(Matrix4 mat, out Matrix4 dest, bool forGpuProgram)
         {
             dest = new Matrix4(mat.m00, mat.m01, mat.m02, mat.m03,
@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region MakeProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void MakeProjectionMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram)
         {
             float theta = Utility.DegreesToRadians((float)fov * 0.5f);
@@ -120,7 +120,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region MakeProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void MakeProjectionMatrix(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram)
         {
             // Correct position for off-axis projection matrix
@@ -170,7 +170,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region WorldMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override Matrix4 WorldMatrix
         {
             set
@@ -184,10 +184,10 @@ namespace Axiom.RenderSystems.DirectX9
         #region ViewMatrix
 
         /// Saved last view matrix
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Matrix4 viewMatrix = Matrix4.Identity;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override Matrix4 ViewMatrix
         {
             set
@@ -215,7 +215,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ProjectionMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override Matrix4 ProjectionMatrix
         {
             set
@@ -242,7 +242,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetTextureMatrix
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetTextureMatrix(int stage, Matrix4 xform)
         {
             SlimDX.Matrix d3dMat;
@@ -452,7 +452,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ApplyObliqueDepthProjection
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void ApplyObliqueDepthProjection(ref Matrix4 projMatrix, Plane plane, bool forGpuProgram)
         {
             // Thanks to Eric Lenyel for posting this calculation at www.terathon.com

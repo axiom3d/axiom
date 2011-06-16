@@ -6,22 +6,22 @@ namespace Axiom.RenderSystems.DirectX9
 {
     public class D3D9DepthBuffer : DepthBuffer
     {
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Surface depthBuffer;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Device creator;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int multiSampleQuality;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Format d3dFormat;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected D3DRenderSystem renderSystem;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Device DeviceCreator
         {
             get
@@ -30,7 +30,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Surface DepthBufferSurface
         {
             get

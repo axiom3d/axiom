@@ -84,6 +84,7 @@ namespace Axiom.RenderSystems.DirectX9
         // notifyOnDeviceLost
         // notifyOnDeviceReset
 
+        [OgreVersion(1, 7, 2790)]
         private HLSLProgramFactory hlslProgramFactory;
 
 	    private D3D9ResourceManager _resourceManager;
@@ -218,7 +219,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ActiveD3D9Device
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public static Device ActiveD3D9Device
         {
             get
@@ -239,7 +240,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region GetSamplerId
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int GetSamplerId(int unit)
         {
             return unit + (texStageDesc[ unit ].vertexTex == null ? 0 : (int)VertexTextureSampler.Sampler0);
@@ -261,7 +262,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
          */
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override ColorEx AmbientLight
 		{
 			set
@@ -270,7 +271,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-	    [OgreVersion(1, 7)]
+	    [OgreVersion(1, 7, 2790)]
 		public override bool LightingEnabled
 		{
 			set
@@ -279,7 +280,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool NormalizeNormals
 		{
 			set
@@ -288,7 +289,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override ShadeOptions ShadingType
         {
             set
@@ -297,7 +298,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool StencilCheckEnabled
 		{
             set
@@ -333,7 +334,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
         #region GetErrorDescription
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override string GetErrorDescription(int errorNumber)
         {
             return string.Format( "D3D9 error {0}", errorNumber );
@@ -354,7 +355,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// Extended setter for <see cref="VertexBufferBinding" />
 		/// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetVertexBufferBinding(VertexBufferBinding binding,
             int numberOfInstances, bool useGlobalInstancingVertexBufferIsAvailable, bool indexesUsed)
 		{
@@ -445,7 +446,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ColorVertexElementType
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override VertexElementType ColorVertexElementType
 	    {
 	        get
@@ -458,7 +459,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region VertexDeclaration
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override VertexDeclaration VertexDeclaration
         {
             set
@@ -469,7 +470,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         ///<summary>
         ///</summary>
-        [OgreVersion(1, 7, "TODO: implement useGlobalInstancingVertexBufferIsAvailable")]
+        [OgreVersion(1, 7, 2790, "TODO: implement useGlobalInstancingVertexBufferIsAvailable")]
         public void SetVertexDeclaration(VertexDeclaration decl, bool useGlobalInstancingVertexBufferIsAvailable)
         {
             // TODO: Check for duplicate setting and avoid setting if dupe
@@ -482,7 +483,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ClearFrameBuffer
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
 		{
 			ClearFlags flags = 0;
@@ -513,7 +514,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
 		///		Returns a Direct3D implementation of a hardware occlusion query.
 		/// </summary>
-        [OgreVersion(1, 7, "D3DHardwareOcclusionQuery ctor needs upgrade")]
+        [OgreVersion(1, 7, 2790, "D3DHardwareOcclusionQuery ctor needs upgrade")]
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
             var query = new D3DHardwareOcclusionQuery( ActiveD3D9Device );
@@ -525,7 +526,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region CreateRenderWindow
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
 		{
             LogManager.Instance.Write("D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} ",
@@ -574,7 +575,7 @@ namespace Axiom.RenderSystems.DirectX9
 			return retval;
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void Shutdown()
 		{
             base.Shutdown();
@@ -653,7 +654,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 	    #region Reinitialize
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void Reinitialize()
         {
             LogManager.Instance.Write( "D3D9 : Reinitialising" );
@@ -665,7 +666,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region CreateRenderSystemCapabilities
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override RenderSystemCapabilities CreateRenderSystemCapabilities()
 	    {
 	        return realCapabilities;
@@ -675,7 +676,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region PolygonMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override PolygonMode PolygonMode
 		{
 			set
@@ -688,7 +689,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetAlphaRejectSettings
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetAlphaRejectSettings( CompareFunction func, byte value, bool alphaToCoverage)
 		{
 			var a2C = false;
@@ -741,7 +742,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        [OgreVersion(1, 7, "Implement this")]
+        [OgreVersion(1, 7, 2790, "Implement this")]
 	    public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
 	    {
 	        throw new NotImplementedException();
@@ -749,7 +750,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetColorBufferWriteEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			ColorWriteEnable val = 0;
@@ -809,7 +810,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region MinimumDepthInputValue
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real MinimumDepthInputValue
 		{
 			get
@@ -823,7 +824,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region MaximumDepthInputValue
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real MaximumDepthInputValue
 		{
 			get
@@ -838,7 +839,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region RegisterThread
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void RegisterThread()
         {
             // nothing to do - D3D9 shares rendering context already
@@ -848,7 +849,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region UnregisterThread
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void UnregisterThread()
         {
             // nothing to do - D3D9 shares rendering context already
@@ -858,7 +859,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region PreExtraThreadsStarted
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void PreExtraThreadsStarted()
         {
             // nothing to do - D3D9 shares rendering context already
@@ -868,7 +869,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region PostExtraThreadsStarted
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void PostExtraThreadsStarted()
         {
             // nothing to do - D3D9 shares rendering context already
@@ -878,7 +879,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region BeginFrame
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override void BeginFrame()
 		{
             if (activeViewport == null)
@@ -900,7 +901,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         /*
         // This effectivley aint used in 1.7 ...
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         class D3D9RenderContext : RenderSystemContext
         {
             public RenderTarget target;
@@ -909,7 +910,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region PauseFrame
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override RenderSystemContext PauseFrame()
         {
             //Stop rendering
@@ -922,7 +923,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ResumeFrame
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void ResumeFrame(RenderSystemContext context)
         {
             //Resume rendering
@@ -935,7 +936,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region EndFrame
 
-        [OgreVersion(1, 7, "TODO: destroyInactiveRenderDevices")]
+        [OgreVersion(1, 7, 2790, "TODO: destroyInactiveRenderDevices")]
 		public override void EndFrame()
 		{
 			// end the D3D scene
@@ -946,7 +947,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Viewport
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override Viewport Viewport
         {
             set
@@ -1012,7 +1013,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region GetDepthStencilFormatFor
 
-        [OgreVersion(1, 7, "Needs review")]
+        [OgreVersion(1, 7, 2790, "Needs review")]
 		private Format GetDepthStencilFormatFor( Format fmt )
 		{
 			Format dsfmt;
@@ -1050,7 +1051,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region CheckTextureFilteringSupported
 
-        [OgreVersion(1, 7, "Not implemented yet")]
+        [OgreVersion(1, 7, 2790, "Not implemented yet")]
         private bool CheckTextureFilteringSupported(TextureType ttype, PixelFormat format, int usage)
 	    {
 		    // Gets D3D format
@@ -1066,7 +1067,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DetermineFSAASettings
 
-        [OgreVersion(1, 7, "Not implemented yet")]
+        [OgreVersion(1, 7, 2790, "Not implemented yet")]
         internal void DetermineFSAASettings(Device d3d9Device,
             int fsaa, string fsaaHint, Format d3DPixelFormat,
             bool fullScreen, out MultisampleType outMultisampleType, out int outMultisampleQuality)
@@ -1190,7 +1191,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DisplayMonitorCount
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override int DisplayMonitorCount
         {
             get
@@ -1201,7 +1202,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 		
-        [OgreVersion(1, 7, "TODO: RT System")]
+        [OgreVersion(1, 7, 2790, "TODO: RT System")]
 		public override void Render( RenderOperation op )
 		{
             // Exit immediately if there is nothing to render
@@ -1299,7 +1300,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetPointParameters(Real size, bool attenuationEnabled,
             Real constant, Real linear, Real quadratic, Real minSize, Real maxSize)
 		{
@@ -1327,7 +1328,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 
-        [OgreVersion(1, 7, "Hardware gamma not implemented, yet")]
+        [OgreVersion(1, 7, 2790, "Hardware gamma not implemented, yet")]
 		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
 			var dxTexture = (D3DTexture)texture;
@@ -1387,7 +1388,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
 
-	    [OgreVersion(1, 7)]
+	    [OgreVersion(1, 7, 2790)]
 		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
 		{
 
@@ -1400,7 +1401,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
 		{
 			// save this for texture matrix calcs later
@@ -1412,7 +1413,7 @@ namespace Axiom.RenderSystems.DirectX9
                                   texStageDesc[ stage ].coordIndex );
 		}
 
-        [OgreVersion(1, 7, "Ogre silently ignores binding GS; Axiom will throw.")]
+        [OgreVersion(1, 7, 2790, "Ogre silently ignores binding GS; Axiom will throw.")]
 		public override void BindGpuProgram( GpuProgram program )
 		{
 			switch ( program.Type )
@@ -1439,7 +1440,7 @@ namespace Axiom.RenderSystems.DirectX9
 			base.BindGpuProgram( program );
 		}
 
-        [OgreVersion(1, 7, "Partially outdated, need GpuProgramParameters updates")]
+        [OgreVersion(1, 7, 2790, "Partially outdated, need GpuProgramParameters updates")]
         public override void BindGpuProgramParameters(GpuProgramType gptype, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability variability)
 		{
             // special case pass iteration
@@ -1518,7 +1519,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7, "Not implemented, yet")]
+        [OgreVersion(1, 7, 2790, "Not implemented, yet")]
         public override void BindGpuProgramPassIterationParameters(GpuProgramType gptype)
         {
             var physicalIndex = 0;
@@ -1526,7 +1527,7 @@ namespace Axiom.RenderSystems.DirectX9
             throw new NotImplementedException();
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void UnbindGpuProgram( GpuProgramType type )
 		{
 			switch ( type )
@@ -1545,7 +1546,7 @@ namespace Axiom.RenderSystems.DirectX9
 			base.UnbindGpuProgram( type );
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetVertexTexture( int stage, Texture texture )
 		{
 			if ( texture == null )
@@ -1584,7 +1585,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DisableTextureUnit
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void DisableTextureUnit(int texUnit)
         {
             base.DisableTextureUnit( texUnit );
@@ -1596,7 +1597,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region UseLights
 
-        [OgreVersion(1, 7, "sharing _currentLights rather than using Dictionary")]
+        [OgreVersion(1, 7, 2790, "sharing _currentLights rather than using Dictionary")]
 		public override void UseLights( LightList lightList, int limit )
 		{
 			var i = 0;
@@ -1618,7 +1619,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetSceneBlending
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op = SceneBlendOperation.Add)
 		{
 			// set the render states after converting the incoming values to D3D.Blend
@@ -1642,7 +1643,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetSeparateSceneBlending
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha,
             SceneBlendFactor destFactorAlpha, SceneBlendOperation op = SceneBlendOperation.Add, SceneBlendOperation alphaOp = SceneBlendOperation.Add )
 		{
@@ -1669,7 +1670,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region CullingMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override CullingMode CullingMode
 		{
 			set
@@ -1686,7 +1687,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetDepthBias
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetDepthBias(float constantBias, float slopeScaleBias = 0.0f)
         {
             // Negate bias since D3D is backward
@@ -1707,7 +1708,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ValidateConfigOptions
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public override string ValidateConfigOptions()
         {
             var mOptions = configOptions;
@@ -1742,7 +1743,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DepthBufferCheckEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override bool DepthBufferCheckEnabled
 		{
 			set
@@ -1764,7 +1765,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DepthBufferFunction
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override CompareFunction DepthBufferFunction
 		{
 			set
@@ -1777,7 +1778,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DepthBufferWriteEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override bool DepthBufferWriteEnabled
 		{
 			set
@@ -1790,7 +1791,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region HorizontalTexelOffset
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real HorizontalTexelOffset
 		{
 			get
@@ -1804,7 +1805,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region VerticalTexelOffset
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override Real VerticalTexelOffset
 		{
 			get
@@ -1881,7 +1882,7 @@ namespace Axiom.RenderSystems.DirectX9
 			} // if
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         [AxiomHelper(0, 8, "Using Axiom options, change handler see below at _configOptionChanged")]
 		public override void SetConfigOption( string name, string value )
 		{
@@ -2118,7 +2119,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetDepthBufferParams
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
 		{
             DepthBufferCheckEnabled = depthTest;
@@ -2126,7 +2127,7 @@ namespace Axiom.RenderSystems.DirectX9
 			DepthBufferFunction = depthFunction;
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetStencilBufferParams( CompareFunction function = CompareFunction.AlwaysPass, 
             int refValue = 0, int mask = -1, 
             StencilOperation stencilFailOp = StencilOperation.Keep, StencilOperation depthFailOp = StencilOperation.Keep, 
@@ -2172,7 +2173,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetSurfaceParams
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular,
             ColorEx emissive, Real shininess, TrackVertexColor tracking = TrackVertexColor.None)
 		{
@@ -2207,7 +2208,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region RenderTarget
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override RenderTarget RenderTarget
         {
             set
@@ -2271,7 +2272,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region PointSpritesEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool PointSpritesEnabled
 		{
 			set
@@ -2288,7 +2289,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         private D3D9DriverList _driverList;
 
-        [OgreVersion(1, 7, "Replaces ResourceCreationDevice")]
+        [OgreVersion(1, 7, 2790, "Replaces ResourceCreationDevice")]
         public static IEnumerable<Device> ResourceCreationDevices
         {
             get
@@ -2328,7 +2329,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="state">The state to set</param>
         /// <param name="val">The value to set</param>
-        [OgreVersion(1, 7, "returns HRESULT in Ogre")]
+        [OgreVersion(1, 7, 2790, "returns HRESULT in Ogre")]
         [AxiomHelper(0, 8, "convenience overload")]
 		private void SetRenderState( RenderState state, bool val )
 		{
@@ -2342,7 +2343,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="state">The state to set</param>
         /// <param name="val">The value to set</param>
-        [OgreVersion(1, 7, "returns HRESULT in Ogre")]
+        [OgreVersion(1, 7, 2790, "returns HRESULT in Ogre")]
         private void SetRenderState( RenderState state, int val )
 		{
             var oldVal = ActiveD3D9Device.GetRenderState<int>(state);
@@ -2356,7 +2357,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="state">The state to set</param>
         /// <param name="val">The value to set</param>
-        [OgreVersion(1, 7, "returns HRESULT in Ogre")]
+        [OgreVersion(1, 7, 2790, "returns HRESULT in Ogre")]
         [AxiomHelper(0, 8, "convenience overload")]
         private void SetFloatRenderState( RenderState state, float val )
 		{
@@ -2371,7 +2372,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="state">The state to set</param>
         /// <param name="val">The value to set</param>
-        [OgreVersion(1, 7, "returns HRESULT in Ogre")]
+        [OgreVersion(1, 7, 2790, "returns HRESULT in Ogre")]
         [AxiomHelper(0, 8, "convenience overload")]
         private void SetRenderState( RenderState state, System.Drawing.Color val )
 		{
@@ -2385,7 +2386,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="state">The state to set</param>
         /// <param name="val">The value to set</param>
-        [OgreVersion(1, 7, "returns HRESULT in Ogre")]
+        [OgreVersion(1, 7, 2790, "returns HRESULT in Ogre")]
         [AxiomHelper(0, 8, "convenience overload")]
         private void SetRenderState(RenderState state, Color4 val)
         {
@@ -2399,7 +2400,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetTextureAddressingMode
 
-        [OgreVersion( 1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
 			// set the device sampler states accordingly
@@ -2412,7 +2413,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetTextureBorderColor
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
         {
             SetSamplerState( GetSamplerId( stage ), SamplerState.BorderColor, D3DHelper.ToColor( borderColor ).ToArgb() );
@@ -2422,7 +2423,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetTextureMipmapBias
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void SetTextureMipmapBias(int unit, float bias)
         {
             if (currentCapabilities.HasCapability(Graphics.Capabilities.MipmapLODBias))
@@ -2446,7 +2447,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 	    #region SetTextureBlendMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureBlendMode( int stage, LayerBlendModeEx bm )
         {
             TextureStage tss;
@@ -2581,7 +2582,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetTextureCoordSet
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureCoordSet( int stage, int index )
 		{
             // if vertex shader is being used, stage and index must match
@@ -2599,7 +2600,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetTextureUnitFiltering
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
 		{
 			var texType = texStageDesc[ stage ].texType;
@@ -2638,7 +2639,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7, "D3D Rendersystem utility func")]
+        [OgreVersion(1, 7, 2790, "D3D Rendersystem utility func")]
         public void SetClipPlane(ushort index, Real a, Real b, Real c, Real d)
         {
             ActiveD3D9Device.SetClipPlane( index, new SlimDX.Plane( a, b, c, d ) );
@@ -2650,7 +2651,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7, "D3D Rendersystem utility func")]
+        [OgreVersion(1, 7, 2790, "D3D Rendersystem utility func")]
         public void EnableClipPlane (ushort index, bool enable)
         {
             var prev = ActiveD3D9Device.GetRenderState<int>( RenderState.ClipPlaneEnable );
@@ -2661,7 +2662,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetScissorTest
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
 			if ( enable )

@@ -24,10 +24,10 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ActiveDevice
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private D3D9Device _activeDevice;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public D3D9Device ActiveDevice
         {
             get
@@ -66,10 +66,10 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ActiveRenderTargetDevice
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private D3D9Device _activeRenderWindowDevice;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public D3D9Device ActiveRenderTargetDevice
         {
             get
@@ -88,7 +88,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DeviceCount
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public int DeviceCount
         {
             get
@@ -113,7 +113,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region LinkRenderWindow
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void LinkRenderWindow(D3DRenderWindow renderWindow)
         {
             // Detach from previous device.
@@ -145,7 +145,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DestroyInactiveRenderDevices
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void DestroyInactiveRenderDevices()
         {
             foreach ( var itDevice in _renderDevices )
@@ -165,7 +165,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region NotifyOnDeviceDestroy
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void NotifyOnDeviceDestroy(D3D9Device device)
 	    {
             if ( device == null )
@@ -191,7 +191,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region GetDeviceFromD3D9Device
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public D3D9Device GetDeviceFromD3D9Device(SlimDX.Direct3D9.Device d3d9Device)
         {
             return _renderDevices.FirstOrDefault( x => x.D3DDevice == d3d9Device );
@@ -201,7 +201,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SelectDevice
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected D3D9Device SelectDevice(D3DRenderWindow renderWindow, D3D9RenderWindowList renderWindowsGroup)
         {
             var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
@@ -456,7 +456,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region FindDriver
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private Driver FindDriver(D3DRenderWindow renderWindow)
         {
             var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;		

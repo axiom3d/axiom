@@ -50,7 +50,7 @@ namespace Axiom.Graphics
     /// </remarks>    
     public class DepthBuffer : DisposableObject
     {
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public DepthBuffer(PoolId poolId, ushort bitDepth, int width, int height,
                      int fsaa, string fsaaHint, bool manual)
         {
@@ -63,7 +63,7 @@ namespace Axiom.Graphics
             this.manual = manual;
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected override void dispose(bool disposeManagedResources)
         {
             if (!IsDisposed)
@@ -75,13 +75,13 @@ namespace Axiom.Graphics
 
         #region PoolId
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected PoolId poolId;
 
         /// <summary>
         /// Gets the pool id in which this DepthBuffer lives
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual PoolId PoolId
         {
             get
@@ -106,7 +106,7 @@ namespace Axiom.Graphics
         /// Sets the pool id in which this DepthBuffer lives
         /// Note this will detach any render target from this depth buffer
         /// </summary>
-        [OgreVersion(1, 7, "The setter is nonvirtual, thus cant be part of the PoolId property")]
+        [OgreVersion(1, 7, 2790, "The setter is nonvirtual, thus cant be part of the PoolId property")]
         public void SetPoolId(PoolId id)
         {
             //Change the pool Id
@@ -117,7 +117,7 @@ namespace Axiom.Graphics
             DetachFromAllRenderTargets();
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual ushort BitDepth
         {
             get
@@ -126,7 +126,7 @@ namespace Axiom.Graphics
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int Width
         {
             get
@@ -135,7 +135,7 @@ namespace Axiom.Graphics
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int Height
         {
             get
@@ -144,7 +144,7 @@ namespace Axiom.Graphics
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int Fsaa
         {
             get
@@ -153,7 +153,7 @@ namespace Axiom.Graphics
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual string FsaaHint
         {
             get
@@ -166,7 +166,7 @@ namespace Axiom.Graphics
         /// Manual DepthBuffers are cleared in RenderSystem's destructor. Non-manual ones are released
         /// with it's render target (aka, a backbuffer or similar)
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool IsManual
         {
             get
@@ -187,7 +187,7 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <param name="renderTarget">The render target to test against</param>
         /// <returns>true if compatible</returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual bool IsCompatible(RenderTarget renderTarget)
         {
             return Width >= renderTarget.Width &&
@@ -204,7 +204,7 @@ namespace Axiom.Graphics
         /// RenderTarget::attachDepthBuffer()
         /// </remarks>
         /// <param name="renderTarget">The RenderTarget that has just been attached</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void NotifyRenderTargetAttached(RenderTarget renderTarget)
         {
             Debug.Assert(!attachedRenderTargets.Contains(renderTarget));
@@ -218,7 +218,7 @@ namespace Axiom.Graphics
         /// Same as <see cref="NotifyRenderTargetAttached"/>
         /// </remarks>        
         /// <param name="renderTarget">The RenderTarget that has just been attached</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void NotifyRenderTargetDetached(RenderTarget renderTarget)
         {
             var success = attachedRenderTargets.Remove(renderTarget);
@@ -229,28 +229,28 @@ namespace Axiom.Graphics
         {
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected ushort bitDepth;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int width;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int height;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int fsaa;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected string fsaaHint;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool manual;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected RenderTargetSet attachedRenderTargets = new RenderTargetSet();
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void DetachFromAllRenderTargets()
         {
             foreach (var itor in attachedRenderTargets)

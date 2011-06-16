@@ -15,7 +15,7 @@ namespace Axiom.RenderSystems.OpenGL
     {
         #region Render
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override void Render(RenderOperation op)
         {
             // Call super class
@@ -207,7 +207,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region BindVertexElementToGpu
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void BindVertexElementToGpu( VertexElement elem, HardwareVertexBuffer vertexBuffer, 
             int vertexStart, IList<int> attribsBound, IList<int> instanceAttribsBound )
         {

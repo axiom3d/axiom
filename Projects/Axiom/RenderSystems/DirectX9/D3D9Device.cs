@@ -17,43 +17,43 @@ namespace Axiom.RenderSystems.DirectX9
             /// <summary>
             ///  Swap chain interface.
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public SlimDX.Direct3D9.SwapChain swapChain;
 
             /// <summary>
             /// Relative index of the render window in the group.
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public int adapterOrdinalInGroupIndex;
 
             /// <summary>
             /// Index of present parameter in the shared array of the device.
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public int presentParametersIndex;
 
             /// <summary>
             /// The back buffer of the render window.
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public SlimDX.Direct3D9.Surface backBuffer;
 
             /// <summary>
             /// The depth buffer of the render window.
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public SlimDX.Direct3D9.Surface depthBuffer;
 
             /// <summary>
             /// Present parameters of the render window.
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public SlimDX.Direct3D9.PresentParameters presentParameters = new PresentParameters();
 
             /// <summary>
             /// True if resources acquired.	
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public bool acquired;
 		};		
 
@@ -69,10 +69,10 @@ namespace Axiom.RenderSystems.DirectX9
 
         protected SlimDX.Direct3D9.CreationParameters creationParams;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected CreateFlags behaviorFlags;
 
-        [OgreVersion(1, 7, "hides mPresentationParamsCount")]
+        [OgreVersion(1, 7, 2790, "hides mPresentationParamsCount")]
         protected PresentParameters []presentationParams;
 
         public SlimDX.Direct3D9.Device D3DDevice
@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region AttachRenderWindow
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void AttachRenderWindow(D3DRenderWindow renderWindow)
         {
 
@@ -156,7 +156,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region UpdateRenderWindowsIndices
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void UpdateRenderWindowsIndices()
         {
             // Update present parameters index attribute per render window.
@@ -218,7 +218,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region IsMultihead
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool IsMultihead
         {
             get
@@ -248,7 +248,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region SetAdapterOrdinalIndex
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetAdapterOrdinalIndex(D3DRenderWindow renderWindow, int adapterOrdinalInGroupIndex)
         {
             var it = _mapRenderWindowToResources[renderWindow];
@@ -262,7 +262,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Acquire
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool Acquire()
         {
             UpdatePresentationParameters();
@@ -321,7 +321,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected D3DRenderWindow PrimaryWindow
         {
             get
@@ -333,7 +333,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void AcquireRenderWindowResources( KeyValuePair<D3DRenderWindow, RenderWindowResources> it )
         {
             var renderWindowResources = it.Value;
@@ -424,7 +424,7 @@ namespace Axiom.RenderSystems.DirectX9
 		    renderWindowResources.acquired = true; 
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool IsSwapChainWindow( D3DRenderWindow renderWindow )
         {
             var it = _mapRenderWindowToResources[ renderWindow ];
@@ -432,7 +432,7 @@ namespace Axiom.RenderSystems.DirectX9
             return it.presentParametersIndex != 0 && !renderWindow.IsFullScreen;
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void ReleaseRenderWindowResources( RenderWindowResources renderWindowResources )
         {
             if ( renderWindowResources.depthBuffer != null )
@@ -566,7 +566,7 @@ namespace Axiom.RenderSystems.DirectX9
 		    D3DRenderSystem.ResourceManager.UnlockDeviceAccess();
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void SetupDeviceStates()
         {
             pDevice.SetRenderState(RenderState.SpecularEnable, true);
@@ -580,7 +580,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region UpdatePresentationParameters
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected void UpdatePresentationParameters()
         {
             // Clear old presentation parameters.
@@ -628,7 +628,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region IsAutoDepthStencil
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool IsAutoDepthStencil
         {
             get
@@ -656,21 +656,21 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        [OgreVersion( 1, 7 )] 
+        [OgreVersion(1, 7, 2790)] 
         protected static IntPtr focusWindow;
 
         #region SharedWindowHandle
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected static IntPtr sharedFocusWindow;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool d3d9DeviceCapsValid;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected D3D9DeviceManager pDeviceManager;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected IntPtr SharedWindowHandle
         {
             set
@@ -684,7 +684,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region GetDepthBuffer
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Surface GetDepthBuffer(D3DRenderWindow renderWindow)
         {
             var it = _mapRenderWindowToResources[renderWindow];
@@ -695,7 +695,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region GetBackBuffer
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Surface GetBackBuffer(D3DRenderWindow renderWindow)
         {
             var it = _mapRenderWindowToResources[renderWindow];
@@ -724,7 +724,7 @@ namespace Axiom.RenderSystems.DirectX9
             throw new NotImplementedException();
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void ClearDeviceStreams()
         {
             var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
