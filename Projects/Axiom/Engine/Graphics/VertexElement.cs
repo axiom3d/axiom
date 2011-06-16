@@ -340,7 +340,7 @@ namespace Axiom.Graphics
 #endif
                 case VertexElementType.Color_ARGB:
                     return color.ToARGB();
-#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
+#if AXIOM_PLATFORM != OGRE_PLATFORM_WIN32
         default:
 #endif
                 case VertexElementType.Color_ABGR:
