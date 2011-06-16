@@ -5,9 +5,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platform Managers", "{676C7702-0B62-4E50-8211-EA5BC21A5DF5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Systems", "{FC473D51-36A2-4437-BC06-92A8E92374B7}"
-	ProjectSection(SolutionItems) = preProject
-		GLDepthBuffer.cs = GLDepthBuffer.cs
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Managers", "{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}"
 EndProject

@@ -75,7 +75,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region RenderWindow Members
 
-		public override object this[ string attribute ]
+	    public override bool RequiresTextureFlipping
+	    {
+	        get
+	        {
+	            return false;
+	        }
+	    }
+
+	    public override object this[ string attribute ]
 		{
 			get
 			{
@@ -153,10 +161,10 @@ namespace Axiom.RenderSystems.OpenGL
 			float displayFrequency = 60f;
 			string border = "resizable";
 
-			this.Name = name;
-			this.Width = width;
-			this.Height = height;
-			this.ColorDepth = 32;
+			this.name = name;
+			this.width = width;
+			this.height = height;
+			this.colorDepth = 32;
 			this.fullScreen = fullScreen;
 			displayDevice = DisplayDevice.Default;
 
@@ -178,11 +186,11 @@ namespace Axiom.RenderSystems.OpenGL
 							top = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "fsaa":
-							FSAA = Int32.Parse( entry.Value.ToString() );
+							fsaa = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "colourDepth":
 						case "colorDepth":
-							ColorDepth = Int32.Parse( entry.Value.ToString() );
+							colorDepth = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "vsync":
 							vsync = entry.Value.ToString() == "No" ? false : true;
@@ -332,7 +340,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Switch context if different from current one
 			RenderSystem rsys = Root.Instance.RenderSystem;
-			rsys.SetViewport( this.GetViewport( 0 ) );
+			rsys.Viewport = GetViewport( 0 );
 
 			// Must change the packing to ensure no overruns!
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );

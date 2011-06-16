@@ -514,7 +514,7 @@ namespace Axiom.RenderSystems.OpenGL
 			gpuProgramMgr = new GLGpuProgramManager();
 
 			// query hardware capabilites
-			CheckCaps( primary );
+            CreateRenderSystemCapabilities(primary);
 
 			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
 			// use software buffers as a fallback, which operate as regular vertex arrays
@@ -1332,6 +1332,23 @@ namespace Axiom.RenderSystems.OpenGL
             activateGLTextureUnit( 0 );
         }
 
+        #region SetTextureMipmapBias
+
+        [OgreVersion(1, 7)]
+        public override void SetTextureMipmapBias(int stage, float bias)
+	    {
+            if (currentCapabilities.HasCapability(Graphics.Capabilities.MipmapLODBias))
+            {
+                if (activateGLTextureUnit(stage))
+                {
+                    Gl.glTexEnvf(Gl.GL_TEXTURE_FILTER_CONTROL_EXT, Gl.GL_TEXTURE_LOD_BIAS_EXT, bias);
+                    activateGLTextureUnit(0);
+                }
+            }
+	    }
+
+        #endregion
+
         #region GetCurrentAnisotropy
 
         /// Internal method for anisotropy validation
@@ -1804,7 +1821,53 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
 		}
 
-		/// <summary>
+	    public override void SetTextureUnitFiltering( int unit, FilterType ftype, FilterOptions fo )
+	    {
+            if (!activateGLTextureUnit(unit))
+                return;
+            switch (ftype)
+            {
+                case FilterType.Min:
+                    minFilter = fo;
+                    // Combine with existing mip filter
+                    Gl.glTexParameteri(
+                        textureTypes[unit],
+                        Gl.GL_TEXTURE_MIN_FILTER,
+                        GetCombinedMinMipFilter());
+                    break;
+                case FilterType.Mag:
+                    switch (fo)
+                    {
+                        case FilterOptions.Anisotropic: // GL treats linear and aniso the same
+                        case FilterOptions.Linear:
+                            Gl.glTexParameteri(
+                                textureTypes[unit],
+                                Gl.GL_TEXTURE_MAG_FILTER,
+                                Gl.GL_LINEAR);
+                            break;
+                        case FilterOptions.Point:
+                        case FilterOptions.None:
+                            Gl.glTexParameteri(
+                                textureTypes[unit],
+                                Gl.GL_TEXTURE_MAG_FILTER,
+                                Gl.GL_NEAREST);
+                            break;
+                    }
+                    break;
+                case FilterType.Mip:
+                    mipFilter = fo;
+                    // Combine with existing min filter
+                    Gl.glTexParameteri(
+                        textureTypes[unit],
+                        Gl.GL_TEXTURE_MIN_FILTER,
+                        GetCombinedMinMipFilter());
+                    break;
+            }
+
+            activateGLTextureUnit(0);
+	    }
+
+	    /// <summary>
 		///
 		/// </summary>
 		/// <param name="autoCreateWindow"></param>
@@ -1977,7 +2040,45 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-        #endregion
+	    public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
+	    {
+            /*
+	        GLDepthBuffer *retVal = 0;
+
+		    //Only FBO & pbuffer support different depth buffers, so everything
+		    //else creates dummy (empty) containers
+		    //retVal = mRTTManager->_createDepthBufferFor( renderTarget );
+            var fbo = (GLFrameBufferObject)renderTarget["FBO"];
+
+		    if( fbo != null )
+		    {
+			    //Presence of an FBO means the manager is an FBO Manager, that's why it's safe to downcast
+			    //Find best depth & stencil format suited for the RT's format
+			    GLuint depthFormat, stencilFormat;
+			    static_cast<GLFBOManager*>(mRTTManager)->getBestDepthStencil( fbo->getFormat(),
+																		    &depthFormat, &stencilFormat );
+
+			    GLRenderBuffer *depthBuffer = new GLRenderBuffer( depthFormat, fbo->getWidth(),
+																    fbo->getHeight(), fbo->getFSAA() );
+
+			    GLRenderBuffer *stencilBuffer = depthBuffer;
+			    if( depthFormat != GL_DEPTH24_STENCIL8_EXT && stencilBuffer != GL_NONE )
+			    {
+				    stencilBuffer = new GLRenderBuffer( stencilFormat, fbo->getWidth(),
+													    fbo->getHeight(), fbo->getFSAA() );
+			    }
+
+			    //No "custom-quality" multisample for now in GL
+			    retVal = new GLDepthBuffer( 0, this, mCurrentContext, depthBuffer, stencilBuffer,
+										    fbo->getWidth(), fbo->getHeight(), fbo->getFSAA(), 0, false );
+		    }
+
+		    return retVal;
+             */
+	        throw new NotImplementedException();
+	    }
+
+	    #endregion
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
@@ -3088,6 +3189,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(0, 0, "createRenderSystemCapabilities in Ogre; needs update")]
         public override RenderSystemCapabilities CreateRenderSystemCapabilities()
 		{
+		    throw new NotImplementedException();
+		}
+
+        private RenderSystemCapabilities CreateRenderSystemCapabilities(RenderTarget primary)
+        {
 		    var rsc = new RenderSystemCapabilities();
 
 			// check hardware mip mapping
