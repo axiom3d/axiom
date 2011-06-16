@@ -232,20 +232,14 @@ namespace Axiom.Core
 		#region Load Method
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="priority"></param>
 		public new Mesh Load( string name, string group )
 		{
 			return Load( name, group, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true, 1 );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="priority"></param>
 		public Mesh Load( string name, string group, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage )
 		{
 			return Load( name, group, vertexBufferUsage, indexBufferUsage, true, true, 1 );
@@ -351,62 +345,21 @@ namespace Axiom.Core
 		#region CreateCurvedPlane Method
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <param name="plane"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <returns></returns>
 		public Mesh CreateCurvedPlane( string name, string group, Plane plane, float width, float height )
 		{
 			return CreateCurvedPlane( name, group, plane, width, height, 0.5f, 1, 1, false, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <param name="plane"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="bow"></param>
-		/// <param name="xSegments"></param>
-		/// <param name="ySegments"></param>
-		/// <param name="normals"></param>
-		/// <param name="texCoordSetCount"></param>
-		/// <param name="xTile"></param>
-		/// <param name="yTile"></param>
-		/// <param name="upVec"></param>
-		/// <returns></returns>
 		public Mesh CreateCurvedPlane( string name, string group, Plane plane, float width, float height, Real bow, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTile, float yTile, Vector3 upVec )
 		{
 			return CreateCurvedPlane( name, group, plane, width, height, bow, xSegments, ySegments, normals, texCoordSetCount, xTile, yTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="controlPointArray"></param>
-		/// <param name="declaration"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="bow"></param>
-		/// <param name="xSegments"></param>
-		/// <param name="ySegments"></param>
-		/// <param name="normals"></param>
-		/// <param name="texCoordSetCount"></param>
-		/// <param name="uTile"></param>
-		/// <param name="vTile"></param>
-		/// <param name="upVec"></param>
-		/// <param name="vertexBufferUsage"></param>
-		/// <param name="indexBufferUsage"></param>
-		/// <param name="vertexShadowBuffer"></param>
-		/// <param name="indexShadowBuffer"></param>
-		/// <returns></returns>
 		public Mesh CreateCurvedPlane( string name, string group, Plane plane, float width, float height, Real bow, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTile, float yTile, Vector3 upVector, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
 		{
 			// Create manual mesh which calls back self to load
@@ -444,74 +397,21 @@ namespace Axiom.Core
 		#region CreateCurvedIllusionPlane Method
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="plane"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="curvature"></param>
-		/// <param name="xSegments"></param>
-		/// <param name="ySegments"></param>
-		/// <param name="normals"></param>
-		/// <param name="numberOfTexCoordSets"></param>
-		/// <param name="uTiles"></param>
-		/// <param name="vTiles"></param>
-		/// <param name="upVector"></param>
-		/// <returns></returns>
 		public Mesh CreateCurvedIllusionPlane( string name, string group, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTiles, float yTiles, Vector3 upVector )
 		{
 			return CreateCurvedIllusionPlane( name, group, plane, width, height, curvature, xSegments, ySegments, normals, texCoordSetCount, xTiles, yTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true, -1 );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="plane"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="curvature"></param>
-		/// <param name="xSegments"></param>
-		/// <param name="ySegments"></param>
-		/// <param name="normals"></param>
-		/// <param name="numberOfTexCoordSets"></param>
-		/// <param name="uTiles"></param>
-		/// <param name="vTiles"></param>
-		/// <param name="upVector"></param>
-		/// <param name="orientation"></param>
-		/// <param name="vertexBufferUsage"></param>
-		/// <param name="indexBufferUsage"></param>
-		/// <param name="vertexShadowBuffer"></param>
-		/// <param name="indexShadowBuffer"></param>
-		/// <returns></returns>
 		public Mesh CreateCurvedIllusionPlane( string name, string group, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTiles, float yTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
 		{
 			return CreateCurvedIllusionPlane( name, group, plane, width, height, curvature, xSegments, ySegments, normals, texCoordSetCount, xTiles, yTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, vertexShadowBuffer, indexShadowBuffer, -1 );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="plane"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="curvature"></param>
-		/// <param name="xSegments"></param>
-		/// <param name="ySegments"></param>
-		/// <param name="normals"></param>
-		/// <param name="numberOfTexCoordSets"></param>
-		/// <param name="uTiles"></param>
-		/// <param name="vTiles"></param>
-		/// <param name="upVector"></param>
-		/// <param name="orientation"></param>
-		/// <param name="vertexBufferUsage"></param>
-		/// <param name="indexBufferUsage"></param>
-		/// <param name="vertexShadowBuffer"></param>
-		/// <param name="indexShadowBuffer"></param>
-		/// <param name="ySegmentsToKeep"></param>
-		/// <returns></returns>
 		public Mesh CreateCurvedIllusionPlane( string name, string group, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTiles, float yTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer, int ySegmentsToKeep )
 		{
 
@@ -594,10 +494,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Used to generate a face list based on vertices.
 		/// </summary>
-		/// <param name="subMesh"></param>
-		/// <param name="xSegments"></param>
-		/// <param name="ySegments"></param>
-		/// <param name="doubleSided"></param>
 		private void _tesselate2DMesh( SubMesh subMesh, int width, int height, bool doubleSided, BufferUsage indexBufferUsage, bool indexShadowBuffer )
 		{
 			int vInc, uInc, v, u, iterations;

@@ -347,7 +347,7 @@ namespace Axiom.Core
 	public interface ISceneQueryListener
 	{
 		/// <summary>
-		///		Called when a <see cref="SceneObject"/> is returned by a query.
+		///		Called when a <see name="SceneObject"/> is returned by a query.
 		/// </summary>
 		/// <remarks>
 		///		The implementor should return 'true' to continue returning objects,

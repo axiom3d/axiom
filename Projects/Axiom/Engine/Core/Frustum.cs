@@ -1035,8 +1035,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overloaded method.
 		/// </summary>
-		/// <param name="box"></param>
-		/// <returns></returns>
 		public bool IsObjectVisible( Sphere sphere )
 		{
 			// this overload doesnt care about the clipping plane, but we gotta
@@ -1086,8 +1084,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overloaded method.
 		/// </summary>
-		/// <param name="box"></param>
-		/// <returns></returns>
 		public bool IsObjectVisible( Vector3 vertex )
 		{
 			// this overload doesnt care about the clipping plane, but we gotta
@@ -1099,7 +1095,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Tests whether the given 3D point is in the viewing frustum.
 		/// </summary>
-		/// <param name="vector">3D point to check for frustum visibility.</param>
+        /// <param name="vertex">3D point to check for frustum visibility.</param>
 		/// <param name="culledBy">
 		///		Optional FrustrumPlane params which will be filled by the plane which culled
 		///		the box if the result was false.
