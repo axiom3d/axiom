@@ -79,9 +79,9 @@ namespace Axiom.Media
 		/// </summary>
 		A4L4 = 4,
 
-		/// <summary>
-		///    8-bit pixel format, 4 bits luminace, 4 bits alpha.
-		/// </summary>
+		// <summary>
+		//    8-bit pixel format, 4 bits luminace, 4 bits alpha.
+		// </summary>
 		//L4A4 = 5,
 
 		/// <summary>

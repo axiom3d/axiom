@@ -173,7 +173,6 @@ namespace Axiom.Core
 		/// has been completed. The number of stages required will have been
 		/// included in the resourceCount passed in resourceGroupLoadStarted.
 		/// </summary>
-		/// <param name="description">Text description of what was just loaded</param>
 		void WorldGeometryStageEnded();
 
 		/// <summary>

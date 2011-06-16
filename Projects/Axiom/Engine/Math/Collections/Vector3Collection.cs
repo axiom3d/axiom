@@ -52,9 +52,9 @@ using T = Axiom.Math.Vector3;
 
 namespace Axiom.Math.Collections
 {
-    /// <summary>
-    /// Summary description for Vector3List.
-    /// </summary>
+    // <summary>
+    // Summary description for Vector3List.
+    // </summary>
     /*   public class Vector3List : BaseCollection {
            #region Constructors
 
@@ -86,10 +86,12 @@ namespace Axiom.Math.Collections
            #endregion
 
        } */
+
+    
+#if !( XBOX || XBOX360 || SILVERLIGHT )
     /// <summary>
     ///		A strongly-typed collection of <see cref="Vector3"/> objects.
     /// </summary>
-#if !( XBOX || XBOX360 || SILVERLIGHT )
     [Serializable]
 #endif
 	public class Vector3List : ICollection, IList, IEnumerable, ICloneable

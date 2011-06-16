@@ -542,7 +542,6 @@ namespace Axiom.Core
 		/// <summary>
 		///    Adds a node to the list of children of this node.
 		/// </summary>
-		/// <param name="node"></param>
 		public void AddChild( Node child )
 		{
 			string childName = child.Name;
@@ -662,7 +661,6 @@ namespace Axiom.Core
 		///
 		///	Note that like rotations, scalings are oriented around the node's origin.
 		///</remarks>
-		/// <param name="scale"></param>
 		public virtual void ScaleBy( Vector3 factor )
 		{
 			scale = scale * factor;
@@ -675,20 +673,21 @@ namespace Axiom.Core
 		///	This method moves the node by the supplied vector along the
 		///	world cartesian axes, i.e. along world x,y,z
 		/// </summary>
-		/// <param name="scale">Vector with x,y,z values representing the translation.</param>
+        /// <param name="translate">Vector with x,y,z values representing the translation.</param>
 		public virtual void Translate( Vector3 translate )
 		{
 			Translate( translate, TransformSpace.Parent );
 		}
 
-		/// <summary>
-		/// Moves the node along the cartesian axes.
-		///
-		///	This method moves the node by the supplied vector along the
-		///	world cartesian axes, i.e. along world x,y,z
-		/// </summary>
-		/// <param name="scale">Vector with x,y,z values representing the translation.</param>
-		public virtual void Translate( Vector3 translate, TransformSpace relativeTo )
+	    /// <summary>
+	    /// Moves the node along the cartesian axes.
+	    ///
+	    ///	This method moves the node by the supplied vector along the
+	    ///	world cartesian axes, i.e. along world x,y,z
+	    /// </summary>
+	    /// <param name="translate">Vector with x,y,z values representing the translation.</param>
+	    ///<param name="relativeTo"></param>
+	    public virtual void Translate( Vector3 translate, TransformSpace relativeTo )
 		{
 			switch ( relativeTo )
 			{

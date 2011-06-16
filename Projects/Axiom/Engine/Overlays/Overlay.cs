@@ -45,10 +45,10 @@ using Axiom.Utilities;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-/// <ogresynchronization>
-///     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-///     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-/// </ogresynchronization>
+// <ogresynchronization>
+//     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+//     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+// </ogresynchronization>
 #endregion
 
 namespace Axiom.Overlays
