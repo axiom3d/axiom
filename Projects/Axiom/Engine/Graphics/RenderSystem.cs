@@ -169,6 +169,13 @@ namespace Axiom.Graphics
         protected float derivedDepthBiasBase;
         protected float derivedDepthBiasMultiplier;
         protected float derivedDepthBiasSlopeScale;
+
+
+        /** The Active GPU programs and gpu program parameters*/
+	    protected GpuProgramParameters activeVertexGpuProgramParameters;
+        protected GpuProgramParameters activeGeometryGpuProgramParameters;
+        protected GpuProgramParameters activeFragmentGpuProgramParameters;
+
 		#endregion Fields
 
 		#region Constructor
@@ -1191,14 +1198,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Bind Gpu program parameters.
 		/// </summary>
-		/// <param name="parms"></param>
-		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms );
+		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms,
+            GpuProgramParameters.GpuParamVariability mask);
 
 		/// <summary>
 		///		Clears one or more frame buffers on the active render target.
 		/// </summary>
 		/// <param name="buffers">
-		///		Combination of one or more elements of <see cref="FrameBuffer"/>
+		///		Combination of one or more elements of <see cref="RenderTarget.FrameBuffer"/>
 		///		denoting which buffers are to be cleared.
 		/// </param>
 		/// <param name="color">The color to clear the color buffer with, if enabled.</param>

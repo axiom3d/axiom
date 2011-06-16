@@ -244,7 +244,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		    MaxOutputVertices = 3;
             
             // Manually assign language now since we use it immediately
-            this.syntaxCode = "glsl";
+            SyntaxCode = "glsl";
 		}
 
         static GLSLProgram()
@@ -382,7 +382,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// 
 		/// </summary>
 		/// <param name="checkErrors"></param>
-		protected bool Compile( bool checkErrors = true )
+		protected internal bool Compile( bool checkErrors = true )
 		{
             if (isCompiled)
             {
@@ -473,10 +473,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="parms"></param>
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
 		{
-			// can't populate parameter names in GLSL until link time
-			// allow for names read from a material script to be added automatically to the list
-            GetConstantDefinitions();
-            parms.SetNamedConstants(constantDefs);
+            parms.SetNamedConstants(ConstantDefinitions);
             // Don't set logical / physical maps here, as we can't access parameters by logical index in GLHL.
 		}
 
