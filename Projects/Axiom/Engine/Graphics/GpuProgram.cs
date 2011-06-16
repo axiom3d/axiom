@@ -159,6 +159,24 @@ namespace Axiom.Graphics
 
 		#endregion SyntaxCode Property
 
+        #region Language Property
+
+        /// <summary>
+        /// </summary>
+        protected string language = "asm";
+        /// <summary>
+        ///    Gets the language of this program
+        /// </summary>
+        public virtual string Language
+        {
+            get
+            {
+                return language;
+            }
+        }
+
+        #endregion SyntaxCode Property
+
 		#region Type Property
 
 		/// <summary>
@@ -348,6 +366,33 @@ namespace Axiom.Graphics
 				passSurfaceAndLightStates = value;
 			}
 		}
+
+
+        /// <summary>
+        ///		Does this program want transform passed through fixed pipeline?
+        /// </summary>
+        protected bool passTransformStates;
+        /// <summary>
+        ///		Sets whether a vertex program requires transform states to be passed
+        ///		to through fixed pipeline low level API rendering calls.
+        /// </summary>
+        /// <remarks>
+        ///		If this is set to true, Axiom will pass all transform states to the fixed function
+        ///		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+        ///		light and material states.  This way the user does not have to use autoparameters to 
+        ///		pass light position, color etc.
+        /// </remarks>
+        public virtual bool PassTransformStates
+        {
+            get
+            {
+                return passTransformStates;
+            }
+            set
+            {
+                passTransformStates = value;
+            }
+        }
 
 		#endregion PassSurfaceAndLightStates Property
 
