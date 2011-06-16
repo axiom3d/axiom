@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
+using System.Collections.Generic;
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -71,6 +71,37 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			{
 				instance = this;
 			}
+
+            typeEnumMap = new Dictionary<string, int>
+            {
+                {"float", Gl.GL_FLOAT},
+                {"vec2", Gl.GL_FLOAT_VEC2},
+                {"vec3", Gl.GL_FLOAT_VEC3},
+                {"vec4", Gl.GL_FLOAT_VEC4},
+                {"sampler1D", Gl.GL_SAMPLER_1D},
+                {"sampler2D", Gl.GL_SAMPLER_2D},
+                {"sampler3D", Gl.GL_SAMPLER_3D},
+                {"samplerCube", Gl.GL_SAMPLER_CUBE},
+                {"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW},
+                {"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW},
+                {"int", Gl.GL_INT},
+                {"ivec2", Gl.GL_INT_VEC2},
+                {"ivec3", Gl.GL_INT_VEC3},
+                {"ivec4", Gl.GL_INT_VEC4},
+                {"mat2", Gl.GL_FLOAT_MAT2},
+                {"mat3", Gl.GL_FLOAT_MAT3},
+                {"mat4", Gl.GL_FLOAT_MAT4},
+                // GL 2.1
+                {"mat2x2", Gl.GL_FLOAT_MAT2},
+                {"mat3x3", Gl.GL_FLOAT_MAT3},
+                {"mat4x4", Gl.GL_FLOAT_MAT4},
+                {"mat2x3", Gl.GL_FLOAT_MAT2x3},
+                {"mat3x2", Gl.GL_FLOAT_MAT3x2},
+                {"mat3x4", Gl.GL_FLOAT_MAT3x4},
+                {"mat4x3", Gl.GL_FLOAT_MAT4x3},
+                {"mat2x4", Gl.GL_FLOAT_MAT2x4},
+                {"mat4x2", Gl.GL_FLOAT_MAT4x2},
+            };
 		}
 
 		/// <summary>
@@ -91,11 +122,15 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		List holding previously created program objects.
 		/// </summary>
-		private Hashtable linkPrograms = new Hashtable();
+		private readonly Hashtable linkPrograms = new Hashtable();
 		/// <summary>
 		///		Currently active vertex GPU program.
 		/// </summary>
 		private GLSLGpuProgram activeVertexProgram;
+        /// <summary>
+        ///		Currently active geometry GPU program.
+        /// </summary>
+        private GLSLGpuProgram activeGeometryProgram;
 		/// <summary>
 		///		Currently active fragment GPU program.
 		/// </summary>
@@ -105,11 +140,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		private GLSLLinkProgram activeLinkProgram;
 
+	    private Dictionary<string, int> typeEnumMap;
+
 		#endregion Fields
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
+        /// <summary>
 		///		Get the program object that links the two active shader objects together
 		///		if a program object was not already created and linked a new one is created and linked.
 		/// </summary>
@@ -125,13 +162,16 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 				// no active link program so find one or make a new one
 				// is there an active key?
-				int activeKey = 0;
+				long activeKey = 0;
 
 				if ( activeVertexProgram != null )
 				{
-					activeKey = activeVertexProgram.ProgramID << 8;
+					activeKey = activeVertexProgram.ProgramID << 32;
 				}
-
+                if (activeGeometryProgram != null)
+                {
+                    activeKey = activeGeometryProgram.ProgramID << 16;
+                }
 				if ( activeFragmentProgram != null )
 				{
 					activeKey += activeFragmentProgram.ProgramID;
@@ -140,28 +180,20 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				// only return a link program object if a vertex or fragment program exist
 				if ( activeKey > 0 )
 				{
-					if ( linkPrograms[ activeKey ] == null )
-					{
-						activeLinkProgram = new GLSLLinkProgram();
-						linkPrograms[ activeKey ] = activeLinkProgram;
+                    // find the key in the hash map
+				    var programFound = linkPrograms[ activeKey ];
+                    // program object not found for key so need to create it
+                    if (programFound == null)
+                    {
+                        activeLinkProgram = new GLSLLinkProgram(activeVertexProgram, activeGeometryProgram, activeFragmentProgram);
+                        linkPrograms[ activeKey ] = activeLinkProgram;
+                    }
+                    else
+                    {
+                        // found a link program in map container so make it active
+                        activeLinkProgram = (GLSLLinkProgram)programFound;
+                    }
 
-						// tell shaders to attach themselves to the LinkProgram
-						// let the shaders do the attaching since they may have several children to attach
-						if ( activeVertexProgram != null )
-						{
-							activeVertexProgram.GLSLProgram.AttachToProgramObject( activeLinkProgram.GLHandle );
-						}
-
-						if ( activeFragmentProgram != null )
-						{
-							activeFragmentProgram.GLSLProgram.AttachToProgramObject( activeLinkProgram.GLHandle );
-						}
-					}
-					else
-					{
-						// found a link program in map container so make it active
-						activeLinkProgram = (GLSLLinkProgram)linkPrograms[ activeKey ];
-					}
 				}
 
 				// make the program object active
@@ -175,6 +207,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		}
 
 		#endregion Properties
+
+        #region Constructors
+
+        #endregion
 
 		#region Methods
 
