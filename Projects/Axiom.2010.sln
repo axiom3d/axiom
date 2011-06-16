@@ -5,6 +5,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platform Managers", "{676C7702-0B62-4E50-8211-EA5BC21A5DF5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Systems", "{FC473D51-36A2-4437-BC06-92A8E92374B7}"
+	ProjectSection(SolutionItems) = preProject
+		GLDepthBuffer.cs = GLDepthBuffer.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Managers", "{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}"
 EndProject
@@ -1850,8 +1853,8 @@ Global
 		{89C3D207-913D-4BCB-BD6E-F8673E20D8EA} = {47B1A6E3-B79C-481B-9A52-10E561745651}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1
