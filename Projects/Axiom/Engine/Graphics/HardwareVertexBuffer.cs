@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -61,12 +61,15 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+        [OgreVersion(1, 7)]
+	    protected HardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, 
+            BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
-			this.vertexDeclaration = vertexDeclaration;
-			this.numVertices = numVertices;
-			this.Manager = manager;
+            Manager = manager;
+            this.numVertices = numVertices;
+			this.vertexSize = vertexSize;
+	        instanceDataStepRate = 1;
 
 			// calculate the size in bytes of this buffer
 			sizeInBytes = vertexDeclaration.GetVertexSize() * numVertices;
@@ -121,6 +124,78 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
-	}
+        #region IsInstanceData
+
+        [OgreVersion(1, 7)]
+	    protected bool isInstanceData;
+
+        [OgreVersion(1, 7)]
+        public bool IsInstanceData
+        {
+            get
+            {
+                return isInstanceData;
+            }
+            set
+            {
+                if ( value && !CheckIfVertexInstanceDataIsSupported() )
+                {
+                    throw new AxiomException( "vertex instance data is not supported by the render system." );
+                }
+                // else
+                {
+                    isInstanceData = value;
+                }
+            }
+        }
+
+        #endregion
+
+        #region InstanceDataStepRate
+
+        [OgreVersion(1, 7)]
+        protected int instanceDataStepRate;
+
+        [OgreVersion(1, 7)]
+        public int InstanceDataStepRate
+        {
+            get
+            {
+                return instanceDataStepRate;
+            }
+            set
+            {
+                if (value > 0)
+                {
+                    instanceDataStepRate = value;
+                }
+                else
+                {
+                    throw new AxiomException("Instance data step rate must be bigger then 0.");    
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Checks if vertex instance data is supported by the render system
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool CheckIfVertexInstanceDataIsSupported()
+        {
+            // Use the current render system
+    	    var rs = Root.Instance.RenderSystem;
+
+    	    // Check if the supported  
+            throw new NotImplementedException();
+            //return rs.Capabilities.HasCapability(Capabilities.VertexBufferInstanceData);
+        }
+
+	    #endregion
+    }
 }
