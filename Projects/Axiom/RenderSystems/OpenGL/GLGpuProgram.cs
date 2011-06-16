@@ -115,9 +115,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///     Called when a program needs to bind the supplied parameters.
 		/// </summary>
-		/// <param name="parms"></param>
-        /// <param name="mask"></param>
-        public virtual void BindParameters(GpuProgramParameters parms, ushort mask)
+		[OgreVersion(1, 7)]
+        public virtual void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
 			// do nothing
 		}
@@ -125,7 +124,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Bind just the pass iteration parameters
 		/// </summary>
-		/// <param name="parms"></param>
+		[OgreVersion(1, 7)]
 		public virtual void BindProgramPassIterationParameters( GpuProgramParameters parms )
 		{
 			// do nothing

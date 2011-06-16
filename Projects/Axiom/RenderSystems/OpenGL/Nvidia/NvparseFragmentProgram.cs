@@ -78,18 +78,18 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			// generate a new display list
 			Gl.glNewList( programId, Gl.GL_COMPILE );
 
-			int pos = source.IndexOf( "!!" );
+			int pos = Source.IndexOf( "!!" );
 
-			while ( pos != -1 && pos != source.Length )
+			while ( pos != -1 && pos != Source.Length )
 			{
-				int newPos = source.IndexOf( "!!", pos + 1 );
+				int newPos = Source.IndexOf( "!!", pos + 1 );
 
 				if ( newPos == -1 )
 				{
-					newPos = source.Length;
+					newPos = Source.Length;
 				}
 
-				string script = source.Substring( pos, newPos - pos );
+				string script = Source.Substring( pos, newPos - pos );
 
 				nvparse( script );
 
@@ -144,7 +144,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		///     Called to pass parameters to the Nvparse program.
 		/// </summary>
 		/// <param name="parms"></param>
-		public override void BindParameters( GpuProgramParameters parms )
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
 			// Register combiners uses 2 constants per texture stage (0 and 1)
 			// We have stored these as (stage * 2) + const_index

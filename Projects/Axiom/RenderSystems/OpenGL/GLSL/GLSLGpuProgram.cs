@@ -104,7 +104,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			this.IsSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
 
 			// there is nothing to load
-			loadFromFile = false;
+			//LoadFromFile = false;
 		}
 
 		#endregion Constructor
@@ -148,7 +148,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public override void Bind()
 		{
 			// tell the Link Program Manager what shader is to become active
-			switch (type)
+			switch (Type)
 			{
                 case  GpuProgramType.Vertex:
 				    GLSLLinkProgramManager.Instance.SetActiveVertexShader( this );
@@ -165,11 +165,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         public override void Unbind()
         {
             // tell the Link Program Manager what shader is to become inactive
-            if (type == GpuProgramType.Vertex)
+            if (Type == GpuProgramType.Vertex)
             {
                 GLSLLinkProgramManager.Instance.SetActiveVertexShader(null);
             }
-            else if (type == GpuProgramType.Geometry)
+            else if (Type == GpuProgramType.Geometry)
             {
                 GLSLLinkProgramManager.Instance.SetActiveGeometryShader(null);
             }
@@ -179,13 +179,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-		public override void BindParameters( GpuProgramParameters parameters, ushort mask )
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
 			// activate the link program object
 			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
 			// pass on parameters from params to program object uniforms
-			linkProgram.UpdateUniforms( parameters, mask, type );
+            linkProgram.UpdateUniforms(parms, mask, Type);
 		}
 
         public override void BindProgramPassIterationParameters(GpuProgramParameters parms)
