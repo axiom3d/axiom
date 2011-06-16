@@ -36,12 +36,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Drawing;
 using Axiom.Core;
 using Axiom.Graphics;
 
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using Rectangle = Axiom.Core.Rectangle;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
@@ -1030,5 +1032,24 @@ namespace Axiom.RenderSystems.DirectX9
 					return Axiom.Media.PixelFormat.A8R8G8B8;
 			}
 		}
+
+	    public static D3D.BlendOperation ConvertEnum( SceneBlendOperation op )
+	    {
+            switch (op)
+            {
+                case SceneBlendOperation.Add:
+                    return D3D.BlendOperation.Add;
+                case SceneBlendOperation.Max:
+                    return D3D.BlendOperation.Maximum;
+                case SceneBlendOperation.Min:
+                    return D3D.BlendOperation.Minimum;
+                case SceneBlendOperation.ReverseSubtract:
+                    return D3D.BlendOperation.ReverseSubtract;
+                case SceneBlendOperation.Subtract:
+                    return D3D.BlendOperation.Subtract;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
 	}
 }

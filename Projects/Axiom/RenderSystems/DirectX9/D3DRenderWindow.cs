@@ -702,7 +702,15 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override object this[ string attribute ]
+	    public override bool RequiresTextureFlipping
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
+	        }
+	    }
+
+	    public override object this[ string attribute ]
 		{
 			get
 			{
