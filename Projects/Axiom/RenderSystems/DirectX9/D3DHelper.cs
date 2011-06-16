@@ -323,7 +323,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 
 				case LayerBlendOperationEx.DotProduct:
-					if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.Dot3 ) )
+					if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.Dot3 ) )
 					{
 						d3dTexOp = D3D.TextureOperation.DotProduct3;
 					}
@@ -1047,6 +1047,49 @@ namespace Axiom.RenderSystems.DirectX9
                     return D3D.BlendOperation.ReverseSubtract;
                 case SceneBlendOperation.Subtract:
                     return D3D.BlendOperation.Subtract;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static D3D.FillMode ConvertEnum(PolygonMode mode)
+        {
+            switch (mode)
+            {
+                case PolygonMode.Points:
+                    return D3D.FillMode.Point;
+                case PolygonMode.Wireframe:
+                    return D3D.FillMode.Wireframe;
+                case PolygonMode.Solid:
+                    return D3D.FillMode.Solid;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public static D3D.SamplerState ConvertEnum(FilterType type)
+	    {
+            switch (type)
+            {
+                case FilterType.Min:
+                    return D3D.SamplerState.MinFilter;
+                case FilterType.Mag:
+                    return D3D.SamplerState.MagFilter;
+                case FilterType.Mip:
+                    return D3D.SamplerState.MipFilter;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static D3D.ShadeMode ConvertEnum(ShadeOptions opt)
+	    {
+            switch (opt)
+            {
+                case ShadeOptions.Flat:
+                    return D3D.ShadeMode.Flat;
+                case ShadeOptions.Gouraud:
+                    return D3D.ShadeMode.Gouraud;
                 default:
                     throw new NotImplementedException();
             }

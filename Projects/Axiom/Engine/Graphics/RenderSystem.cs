@@ -634,6 +634,8 @@ namespace Axiom.Graphics
 
         #region ColorVertexElementType
 
+        /// <summary>
+        /// </summary>
         [OgreVersion(1, 7)]
         public abstract VertexElementType ColorVertexElementType { get; }
 
@@ -645,7 +647,7 @@ namespace Axiom.Graphics
         /// Sets the current vertex declaration, ie the source of vertex data.
         /// </summary>
         [OgreVersion(1, 7)]
-        public abstract VertexDeclaration VertexDeclaration { get; }
+        public abstract VertexDeclaration VertexDeclaration { set; }
 
         #endregion
 
@@ -655,7 +657,7 @@ namespace Axiom.Graphics
         /// Sets the current vertex buffer binding state.
         /// </summary>
         [OgreVersion(1, 7)]
-        public abstract VertexBufferBinding VertexBufferBinding { get; }
+        public abstract VertexBufferBinding VertexBufferBinding { set; }
 
         #endregion
 
@@ -850,7 +852,7 @@ namespace Axiom.Graphics
         /// the horizontal direction.
         /// </remarks>
         [OgreVersion(1, 7)]
-        public abstract float HorizontalTexelOffset
+        public abstract Real HorizontalTexelOffset
         {
             get;
         }
@@ -953,7 +955,7 @@ namespace Axiom.Graphics
         /// the vertical direction.
         /// </remarks>
         [OgreVersion(1, 7)]
-        public abstract float VerticalTexelOffset
+        public abstract Real VerticalTexelOffset
         {
             get;
         }
@@ -1291,6 +1293,8 @@ it says it's incompatible with that RT");
 
         #region GetErrorDescription
 
+        /// <summary>
+        /// </summary>
         [OgreVersion(1, 7)]
         public abstract string GetErrorDescription(int errorNumber);
 
@@ -2115,6 +2119,9 @@ it says it's incompatible with that RT");
 
         #region Reinitialize
 
+        /// <summary>
+        /// Reinitializes the Render System
+        /// </summary>
         [OgreVersion(1, 7)]
         public abstract void Reinitialize();
 

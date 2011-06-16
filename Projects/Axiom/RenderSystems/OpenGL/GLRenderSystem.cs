@@ -2583,7 +2583,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///
 		/// </summary>
-		public override float HorizontalTexelOffset
+		public override Real HorizontalTexelOffset
 		{
 			get
 			{
@@ -2595,7 +2595,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///
 		/// </summary>
-		public override float VerticalTexelOffset
+		public override Real VerticalTexelOffset
 		{
 			get
 			{

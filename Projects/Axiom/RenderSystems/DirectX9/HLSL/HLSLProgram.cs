@@ -215,10 +215,10 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-			if ( !_compileError )
+			if ( !HasCompileError )
 			{
 				// create a new program, without source since we are setting the microcode manually
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
+				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", Type, target );
 
 				// set the microcode for this program
 				( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
@@ -296,7 +296,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 			// compile the high level shader to low level microcode
 			// note, we need to pack matrices in row-major format for HLSL
-			D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), includeHandler, parseFlags );
+			D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
 
 			try
 			{
@@ -374,7 +374,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-				if ( _compileError || !IsRequiredCapabilitiesSupported() )
+                if (HasCompileError || !IsRequiredCapabilitiesSupported())
 				{
 					return false;
 				}

@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.DirectX9
 			isQueryResultStillOutstanding = true;
 
 			// check if queries are supported
-			isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
+			isSupported = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareOcculusion );
 
 			if ( isSupported )
 			{
