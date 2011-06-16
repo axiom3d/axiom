@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using Axiom.Core;
 using SlimDX.Direct3D9;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
@@ -58,7 +59,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this._name = adapterInfo.Details.DriverName;
 			this._description = adapterInfo.Details.Description;
 			this._adapterNum = adapterInfo.Adapter;
-			this._adapterIdentifier = adapterInfo.Details.DeviceIdentifier;
+			this._adapterIdentifier = adapterInfo.Details;
 
 			_videoModeList = new VideoModeCollection();
 		}
@@ -109,12 +110,14 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 		#endregion AdapterNumber Property
 
+        
+
 		#region AdapterIdentifier Property
-		private Guid _adapterIdentifier;
+        private AdapterDetails _adapterIdentifier;
 		/// <summary>
 		///
 		/// </summary>
-		public Guid AdapterIdentifier
+		public AdapterDetails AdapterIdentifier
 		{
 			get
 			{
@@ -171,7 +174,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Direct3D Property
 		private D3D.Direct3D _direct3D;
-		/// <summary>
+
+	    /// <summary>
 		/// This is the main Direct3D object
 		/// </summary>
 		public D3D.Direct3D Direct3D
@@ -186,15 +190,26 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
+        #endregion Direct3D Property
+
+        private bool d3d9DeviceCapsValid;
+
+	    private Capabilities d3d9DeviceCaps;
+
 	    public Capabilities D3D9DeviceCaps
 	    {
 	        get
 	        {
-	            throw new NotImplementedException();
+	            if (d3d9DeviceCapsValid == false)
+	            {
+	                throw new AxiomException( "Device caps are invalid!" );
+	            }
+
+		        return d3d9DeviceCaps;
 	        }
 	    }
 
-	    #endregion Direct3D Property
+	    
 
 		#endregion Properties
 	}

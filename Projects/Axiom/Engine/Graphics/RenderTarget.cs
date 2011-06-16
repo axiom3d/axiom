@@ -513,7 +513,7 @@ namespace Axiom.Graphics
 
         #region FSAAHint Property
 
-        protected string fsaaHint;
+        protected string fsaaHint = "";
 
         /// <summary>
         /// Gets the FSAA hint 

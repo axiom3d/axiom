@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,12 +6,11 @@ using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-using SlimDX.Direct3D9;
 using Capabilities = SlimDX.Direct3D9.Capabilities;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    internal class D3D9DeviceManager: IEnumerable<D3D9Device>
+    public class D3D9DeviceManager: IEnumerable<D3D9Device>
     {
         #region inner classes
 
@@ -456,20 +454,9 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        #region Native code for FindDriver (we likeley want some managed workaround)
-
-        // To get a handle to the specified monitor
-
-        [DllImport("user32.dll")]
-        static extern IntPtr MonitorFromWindow(IntPtr hwnd, int dwFlags);
-
-        private const int MONITOR_DEFAULTTONEAREST = 2;
-
-        #endregion
-
         #region FindDriver
 
-        [OgreVersion(1, 7, "Need to figure some managed way to do this")]
+        [OgreVersion(1, 7)]
         private Driver FindDriver(D3DRenderWindow renderWindow)
         {
             var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;		
@@ -477,11 +464,8 @@ namespace Axiom.RenderSystems.DirectX9
 		    var driverList = renderSystem.Direct3DDrivers;
 
 		    // Find the monitor this render window belongs to.
-		    var hRenderWindowMonitor = MonitorFromWindow(renderWindow.WindowHandle.Handle, MONITOR_DEFAULTTONEAREST);
-
-            //var screenWin = Screen.FromControl( renderWindow.WindowHandle );
-            //var screenAdapter = ??? (need to get a Screen from a HMONITOR)
-
+            var hRenderWindowMonitor = SlimDX.Windows.DisplayMonitor.FromWindow(renderWindow.WindowHandle).Handle;
+            
 		    // Find the matching driver using window monitor handle.
 		    foreach (var currDriver in driverList)
 		    {
@@ -511,110 +495,5 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         #endregion
-    }
-
-    internal class D3D9Device: DisposableObject
-    {
-        public SlimDX.Direct3D9.Device D3DDevice;
-
-        public D3D9Device( D3D9DeviceManager d3D9DeviceManager, int nAdapterOrdinal, IntPtr getAdapterMonitor, DeviceType devType, CreateFlags extraFlags )
-        {
-            throw new NotImplementedException();
-        }
-
-        public int AdapterNumber
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int RenderWindowCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public decimal LastPresentFrame
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public DeviceType DeviceType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsFullScreen
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public void DetachRenderWindow( D3DRenderWindow renderWindow )
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AttachRenderWindow( D3DRenderWindow currWindow )
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetAdapterOrdinalIndex( D3DRenderWindow currWindow, int i )
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Acquire()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Destroy()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Release()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ValidateFocusWindow()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
