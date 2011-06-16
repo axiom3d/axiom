@@ -60,15 +60,15 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
 			: base( buffer, 0 )
 		{
-			this.Name = name;
+			this.name = name;
 		}
 
 		public void Rebind( D3DHardwarePixelBuffer buffer )
 		{
 			pixelBuffer = buffer;
-			Width = pixelBuffer.Width;
-			Height = pixelBuffer.Height;
-			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+			width = pixelBuffer.Width;
+			height = pixelBuffer.Height;
+			colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		#region Axiom.Graphics.RenderTexture Implementation

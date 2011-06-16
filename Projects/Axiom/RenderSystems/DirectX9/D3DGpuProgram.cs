@@ -129,7 +129,7 @@ namespace Axiom.RenderSystems.DirectX9
 			string errors = null;
 
 			// load the shader from the source string
-			DX.Direct3D9.ShaderBytecode microcode = D3D.ShaderBytecode.Assemble( source, null, null, 0, out errors );
+            DX.Direct3D9.ShaderBytecode microcode = D3D.ShaderBytecode.Assemble(Source, null, null, 0, out errors);
 
 			if ( !string.IsNullOrEmpty( errors ) )
 			{
@@ -200,7 +200,7 @@ namespace Axiom.RenderSystems.DirectX9
 		internal D3DVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
 			: base( parent, name, handle, group, isManual, loader, device )
 		{
-			type = GpuProgramType.Vertex;
+			Type = GpuProgramType.Vertex;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -293,7 +293,7 @@ namespace Axiom.RenderSystems.DirectX9
 		internal D3DFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
 			: base( parent, name, handle, group, isManual, loader, device )
 		{
-			type = GpuProgramType.Fragment;
+			Type = GpuProgramType.Fragment;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
