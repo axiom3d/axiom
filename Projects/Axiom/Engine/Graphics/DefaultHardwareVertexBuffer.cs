@@ -91,7 +91,7 @@ namespace Axiom.Graphics
 			var ret = Memory.PinObject( _mpData );
 		    unsafe
 		    {
-		        var v = (char*)ret.ToPointer();
+		        var v = (byte*)ret.ToPointer();
 		        v += offset;
 		        ret = new IntPtr(v);
 		    }
@@ -105,7 +105,7 @@ namespace Axiom.Graphics
             var ret = Memory.PinObject(_mpData);
             unsafe
             {
-                var v = (char*)ret.ToPointer();
+                var v = (byte*)ret.ToPointer();
                 v += offset;
                 ret = new IntPtr(v);
             }
