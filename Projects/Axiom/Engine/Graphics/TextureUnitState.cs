@@ -893,6 +893,9 @@ namespace Axiom.Graphics
 			set;
 		}
 
+        [OgreVersion(1, 7)]
+        public float TextureMipmapBias { get; set; }
+
 		#endregion Fields and Properties
 
 		#region Constructors
