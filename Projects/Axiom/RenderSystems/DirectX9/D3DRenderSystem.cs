@@ -57,6 +57,7 @@ using Axiom.Graphics;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 using Texture = Axiom.Core.Texture;
+using TextureTransform = SlimDX.Direct3D9.TextureTransform;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using Viewport = Axiom.Core.Viewport;
 
@@ -355,7 +356,9 @@ namespace Axiom.RenderSystems.DirectX9
 		        }
 		        else
 		        {
-		            device.SetStreamSourceFrequency( source, 1, StreamSource.IndexedData );
+                    // SlimDX workaround see http://www.gamedev.net/topic/564376-solved-slimdx---instancing-problem/
+		            device.ResetStreamSourceFrequency( source );
+		            //device.SetStreamSourceFrequency( source, 1, StreamSource.IndexedData );
 		        }
 
 		    }
@@ -745,7 +748,7 @@ namespace Axiom.RenderSystems.DirectX9
 				height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
 				bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-				NamedParameterList miscParams = new NamedParameterList();
+                NamedParameterList miscParams = new NamedParameterList();
 				miscParams.Add( "title", windowTitle );
 				miscParams.Add( "colorDepth", bpp );
 				miscParams.Add( "FSAA", _fsaaType );
@@ -1032,7 +1035,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			    if (dwCurValue != (int)TextureOperation.Disable)
 			    {
-				    device.SetTextureStageState(stage, TextureStage.ColorOperation, TextureOperation.Disable);
+                    device.SetTextureStageState(stage, TextureStage.ColorOperation, TextureOperation.Disable);
 			    }			
 		
 
@@ -1279,7 +1282,8 @@ namespace Axiom.RenderSystems.DirectX9
             // setVertexBufferBinding from RenderSystem since the sequence is
             // a bit too D3D9-specific?
 			VertexDeclaration = op.vertexData.vertexDeclaration;
-			VertexBufferBinding = op.vertexData.vertexBufferBinding;
+            // TODO: the false parameter has to be carried inside op as var
+            SetVertexBufferBinding(op.vertexData.vertexBufferBinding, op.numberOfInstances, false, op.useIndices);
 
             // Determine rendering operation
             var primType = PrimitiveType.TriangleList;
@@ -1847,15 +1851,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7, "Need to employ Axiom configoption strategy for this")]
-	    public override ConfigOptionMap ConfigOptions
-	    {
-	        get
-	        {
-	            throw new NotImplementedException();
-	        }
-	    }
-
 	    [OgreVersion(1, 7)]
         public override bool DepthBufferWriteEnabled
 		{
@@ -2083,8 +2078,6 @@ namespace Axiom.RenderSystems.DirectX9
 			optDevice.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
 			optNVPerfHUD.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
 
-		    throw new NotImplementedException();
-            /*
 			ConfigOptions.Add( optDevice );
 			ConfigOptions.Add( optVideoMode );
 			ConfigOptions.Add( optFullScreen );
@@ -2094,7 +2087,6 @@ namespace Axiom.RenderSystems.DirectX9
 			ConfigOptions.Add( optNVPerfHUD );
 
 			_refreshD3DSettings();
-             */
 		}
 
 		private void _refreshD3DSettings()
@@ -2543,7 +2535,8 @@ namespace Axiom.RenderSystems.DirectX9
             // if a vertex program is bound, we mustn't set texture transforms
 		    if (vertexProgramBound)
 		    {
-		        device.SetTextureStageState( stage, TextureStage.TextureTransformFlags, TextureOperation.Disable );
+
+                device.SetTextureStageState(stage, TextureStage.TextureTransformFlags, TextureTransform.Disable);
 			    return;
 		    }
 
@@ -2699,12 +2692,12 @@ namespace Axiom.RenderSystems.DirectX9
 							Utility.Swap( ref d3dMat.M33, ref d3dMat.M34 );
 							Utility.Swap( ref d3dMat.M43, ref d3dMat.M44 );
 
-							texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count3;
+							texCoordDim = TextureTransform.Projected | TextureTransform.Count3;
 							break;
 						case D3DTextureType.Cube:
 						case D3DTextureType.Volume:
 							// Yes, we support 3D projective texture.
-							texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count4;
+							texCoordDim = TextureTransform.Projected | TextureTransform.Count4;
 							break;
 					}
 				}
@@ -2732,7 +2725,7 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// disable texture transformation
-				device.SetTextureStageState( stage, TextureStage.TextureTransformFlags, D3D.TextureTransform.Disable );
+				device.SetTextureStageState( stage, TextureStage.TextureTransformFlags, TextureTransform.Disable );
 			}
 		}
 
@@ -2786,6 +2779,9 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private void CheckCaps( D3D.Device device )
 		{
+            if (realCapabilities == null)
+                realCapabilities = new RenderSystemCapabilities();
+
 			d3dCaps = device.Capabilities;
 
 			// get the number of possible texture units
@@ -3110,6 +3106,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// write hardware capabilities to registered log listeners
 			realCapabilities.Log();
+
+		    currentCapabilities = realCapabilities;
 		}
 
 		/// <summary>

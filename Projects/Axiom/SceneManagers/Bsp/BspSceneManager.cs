@@ -574,7 +574,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected void InitTextureLighting()
 		{
-			if ( targetRenderSystem.HardwareCapabilities.TextureUnitCount < 2 )
+			if ( targetRenderSystem.Capabilities.TextureUnitCount < 2 )
 				LogManager.Instance.Write( "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!" );
 
 			Texture texLight = TextureLight.CreateTexture();
@@ -1301,9 +1301,9 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region Fields
 
-		MultiMap<MovableObject, MovableObject> objIntersections = new MultiMap<MovableObject, MovableObject>();
+        Collections.MultiMap<MovableObject, MovableObject> objIntersections = new Collections.MultiMap<MovableObject, MovableObject>();
 
-		MultiMap<MovableObject, BspBrush> brushIntersections = new MultiMap<MovableObject, BspBrush>();
+        Collections.MultiMap<MovableObject, BspBrush> brushIntersections = new Collections.MultiMap<MovableObject, BspBrush>();
 
 		List<MovableObject> objectsDone = new List<MovableObject>( 100 );
 
