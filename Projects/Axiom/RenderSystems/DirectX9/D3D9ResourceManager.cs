@@ -100,5 +100,15 @@ namespace Axiom.RenderSystems.DirectX9
                     it.NotifyOnDeviceDestroy(d3d9Device);
             }
         }
+
+        public void NotifyResourceCreated( D3D9Resource d3D9Resource )
+        {
+            throw new NotImplementedException();
+        }
+
+        public void NotifyResourceDestroyed( D3D9Resource d3D9Resource )
+        {
+            throw new NotImplementedException();
+        }
     }
 }
