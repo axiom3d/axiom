@@ -21,5 +21,17 @@ namespace Axiom.RenderSystems.DirectX9
         public virtual void NotifyOnDeviceCreate( Device d3D9Device )
         {
         }
+
+        public virtual void NotifyOnDeviceLost( Device d3D9Device )
+        {
+        }
+
+        public virtual void NotifyOnDeviceReset(Device d3D9Device)
+        {
+        }
+
+        public virtual void NotifyOnDeviceDestroy(Device d3D9Device)
+        {
+        }
     }
 }

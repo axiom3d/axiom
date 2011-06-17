@@ -1,5 +1,4 @@
-﻿using System;
-using Axiom.Graphics;
+﻿using Axiom.Graphics;
 using SlimDX.Direct3D9;
 
 // ReSharper disable InconsistentNaming
@@ -126,7 +125,6 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         public override bool IsCompatible(RenderTarget renderTarget)
         {
-
             var pBack = (Surface[])renderTarget[ "DDBACKBUFFER" ];
             if ( pBack[ 0 ] == null )
                 return false;

@@ -270,8 +270,8 @@ namespace Axiom.RenderSystems.DirectX9
                 Format.A32B32G32R32F};
             
 
-            var bbSurf = (Surface)renderWindow[ "DDBACKBUFFER" ];
-            var bbSurfDesc = bbSurf.Description;
+            var bbSurf = (Surface[])renderWindow[ "DDBACKBUFFER" ];
+            var bbSurfDesc = bbSurf[0].Description;
 
             for (var i = 0; i < 6; ++i)
             {
@@ -351,8 +351,8 @@ namespace Axiom.RenderSystems.DirectX9
         {
             var anySupported = false;
 
-            var bbSurf = (Surface)renderWindow[ "DDBACKBUFFER" ];
-            var bbSurfDesc = bbSurf.Description;
+            var bbSurf = (Surface[])renderWindow[ "DDBACKBUFFER" ];
+            var bbSurfDesc = bbSurf[0].Description;
 
             for (var pf = PixelFormat.L8; pf < PixelFormat.Count; pf++)
             {

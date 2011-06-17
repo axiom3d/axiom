@@ -81,7 +81,6 @@ namespace Axiom.RenderSystems.DirectX9
     public partial class D3DRenderSystem : RenderSystem
     {
         // Not implemented methods / fields: 
-        // notifyOnDeviceLost
         // notifyOnDeviceReset
 
         // Require updating / implementation:
@@ -881,11 +880,37 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        [OgreVersion(1, 7, 2790, "Implement this")]
+        #region CreateDepthBufferFor
+
+        [OgreVersion(1, 7, 2790)]
         public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
         {
-            throw new NotImplementedException();
+            var pBack = (Surface[])renderTarget[ "DDBACKBUFFER" ];
+
+		    if( pBack[0] == null )
+			    return null;
+
+            var srfDesc = pBack[ 0 ].Description;
+
+		    //Find an appropiarte format for this depth buffer that best matches the RenderTarget's
+		    var dsfmt = GetDepthStencilFormatFor( srfDesc.Format );
+
+		    //Create the depthstencil surface
+		    var activeDevice = ActiveD3D9Device;
+
+            var depthBufferSurface = Surface.CreateDepthStencil( activeDevice, srfDesc.Width, srfDesc.Height, dsfmt,
+                                                                 srfDesc.MultisampleType, srfDesc.MultisampleQuality,
+                                                                 true );
+
+		    var newDepthBuffer = new D3D9DepthBuffer( PoolId.Default, this,
+												    activeDevice, depthBufferSurface,
+												    dsfmt, srfDesc.Width, srfDesc.Height,
+												    srfDesc.MultisampleType, srfDesc.MultisampleQuality, false );
+
+		    return newDepthBuffer;
         }
+
+        #endregion
 
         #region SetColorBufferWriteEnabled
 
@@ -2577,7 +2602,12 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
+        #region renderWindows
+
+        [OgreVersion(1, 7, 2790)]
         internal D3D9RenderWindowList renderWindows = new D3D9RenderWindowList();
+
+        #endregion
 
         #region Direct3DDrivers
 
@@ -3078,6 +3108,63 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         #endregion
+
+        #region NotifyOnDeviceLost
+
+        /// <summary>
+        /// Notify when a device has been lost.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected internal void NotifyOnDeviceLost( D3D9Device device )
+        {
+            LogManager.Instance.Write( "D3D9 Device 0x[{0}] entered lost state", device.D3DDevice );
+
+            // you need to stop the physics or game engines after this event
+            FireEvent( "DeviceLost" );
+        }
+
+        #endregion
+
+        /// <summary>
+        /// This function does NOT override <see cref="RenderSystem.CleanupDepthBuffers(bool)" /> functionality.
+        /// On multi monitor setups, when a device becomes "inactive" (it has no RenderWindows; like
+        /// when the window was moved from one monitor to another); the Device will be destroyed,
+        /// meaning all it's depth buffers (auto &amp; manual) should be removed from the pool,
+        /// but only selectively removing those created by that D3D9Device.
+        /// </summary>
+        /// <param name="creator">Device to compare against. Shouldn't be null</param>
+        public void CleanupDepthBuffers(Device creator)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void NotifyOnDeviceReset( D3D9Device device )
+        {
+            // Reset state attributes.	
+		    vertexProgramBound = false;
+		    fragmentProgramBound = false;
+		    _lastVertexSourceCount = 0;
+
+		
+		    // Force all compositors to reconstruct their internal resources
+		    // render textures will have been changed without their knowledge
+		    CompositorManager.Instance.ReconstructAllCompositorResources();
+		
+		    // Restore previous active device.
+
+		    // Invalidate active view port.
+		    activeViewport = null;
+
+
+		    // Reset the texture stages, they will need to be rebound
+		    for (var i = 0; i < Config.MaxTextureLayers; ++i)
+			    SetTexture(i, false, (Texture)null);
+
+		    LogManager.Instance.Write("!!! Direct3D Device successfully restored.");
+            LogManager.Instance.Write("D3D9 device: 0x[{0}] was reset", device.D3DDevice);
+
+		    FireEvent("DeviceRestored");
+        }
     }
 }
 

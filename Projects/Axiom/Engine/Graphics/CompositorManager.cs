@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -841,5 +842,31 @@ namespace Axiom.Graphics
 		}
 
 		#endregion ResourceManager Implementation
+
+	    public void ReconstructAllCompositorResources()
+	    {
+	        var instancesToReenable = new List<CompositorInstance>();
+            foreach (var i in chains)
+            {
+                var chain = i.Value;
+                foreach (var inst in chain.Instances)
+                {
+                    if ( !inst.IsEnabled )
+                        continue;
+                    inst.IsEnabled = false;
+                    instancesToReenable.Add( inst );
+                }
+            }
+
+            // TODO: reset default UVs
+            //UVs are lost, and will never be reconstructed unless we do them again, now
+            //if (!rectangle.IsDisposed)
+            //    rectangle.SetDefaultUVs();
+
+            foreach (var inst in instancesToReenable)
+            {
+                inst.IsEnabled = true;
+            }
+	    }
 	}
 }
