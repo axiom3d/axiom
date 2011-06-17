@@ -503,8 +503,9 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         protected override void dispose(bool disposeManagedResources)
         {
-            foreach (var dev in _renderDevices)
-                dev.Destroy();
+            if (disposeManagedResources)
+                foreach (var dev in _renderDevices)
+                    dev.Destroy();
 
             _activeDevice = null;
             _activeRenderWindowDevice = null;
