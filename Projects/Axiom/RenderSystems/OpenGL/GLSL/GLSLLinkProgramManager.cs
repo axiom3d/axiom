@@ -624,16 +624,18 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                             if (def.IsFloat)
                             {
                                 def.PhysicalIndex = defs.FloatBufferSize;
-                                defs.FloatBufferSize += def.ArraySize * def.ElementSize;
+                                defs.FloatBufferSize += /*def.ArraySize * def.ElementSize*/ 1;
                             }
                             else
                             {
                                 def.PhysicalIndex = defs.IntBufferSize;
-                                defs.IntBufferSize += def.ArraySize * def.ElementSize;
+                                defs.IntBufferSize += /*def.ArraySize * def.ElementSize*/ 1;
                             }
 
                             defs.Map.Add(paramName, def);
-                            defs.GenerateConstantDefinitionArrayEntries(paramName, def);
+                            
+                            // Axiom: This is not stable yet
+                            //defs.GenerateConstantDefinitionArrayEntries(paramName, def);
                         }
                     }
                 }
