@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.DirectX9
                     if ( currDriver.AdapterNumber != _activeDevice.AdapterNumber )
                         continue;
                     
-                    renderSystem._activeDriver = currDriver;
+                    renderSystem._activeD3DDriver = currDriver;
                     break;
                 }	
 
@@ -230,7 +230,7 @@ namespace Axiom.RenderSystems.DirectX9
 				    {
 					    renderDevice = null;
 					    nAdapterOrdinal = adapter;
-				        renderSystem._activeDriver = currDriver;
+				        renderSystem._activeD3DDriver = currDriver;
                         devType = SlimDX.Direct3D9.DeviceType.Reference;
 					    nvAdapterFound = true;
 					    break;
@@ -241,8 +241,8 @@ namespace Axiom.RenderSystems.DirectX9
             // No special adapter should be used.
 		    if (nvAdapterFound == false)
 		    {
-                renderSystem._activeDriver = FindDriver(renderWindow);
-                nAdapterOrdinal = renderSystem._activeDriver.AdapterNumber;
+                renderSystem._activeD3DDriver = FindDriver(renderWindow);
+                nAdapterOrdinal = renderSystem._activeD3DDriver.AdapterNumber;
 
 			    var bTryUsingMultiheadDevice = false;
 
@@ -279,7 +279,7 @@ namespace Axiom.RenderSystems.DirectX9
 			    // on the same device using the multi-head feature.
 			    if (bTryUsingMultiheadDevice)
 			    {
-				   var targetAdapterCaps = renderSystem._activeDriver.D3D9DeviceCaps;
+				   var targetAdapterCaps = renderSystem._activeD3DDriver.D3D9DeviceCaps;
                     SlimDX.Direct3D9.Capabilities masterAdapterCaps = null;
 
 				    // Find the master device caps.

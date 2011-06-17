@@ -249,7 +249,7 @@ namespace Axiom.RenderSystems.DirectX9
             var newMat = xform;
 
             // cache this since it's used often
-            var autoTexCoordType = texStageDesc[stage].autoTexCoordType;
+            var autoTexCoordType = _texStageDesc[stage].autoTexCoordType;
 
             // if a vertex program is bound, we mustn't set texture transforms
             if (vertexProgramBound)
@@ -331,9 +331,9 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 //else
                 {
-                    newMat = texStageDesc[stage].frustum.ViewMatrix * newMat;
+                    newMat = _texStageDesc[stage].frustum.ViewMatrix * newMat;
                 }
-                newMat = texStageDesc[stage].frustum.ProjectionMatrix * newMat;
+                newMat = _texStageDesc[stage].frustum.ProjectionMatrix * newMat;
                 newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
                 newMat = xform * newMat;
             }
@@ -372,7 +372,7 @@ namespace Axiom.RenderSystems.DirectX9
                     //FIXME: The actually input texture coordinate dimensions should
                     //be determine by texture coordinate vertex element. Now, just trust
                     //user supplied texture type matchs texture coordinate vertex element.
-                    if (texStageDesc[stage].texType == D3DTextureType.Normal)
+                    if (_texStageDesc[stage].texType == D3DTextureType.Normal)
                     {
                         /* It's 2D input texture coordinate:
 
@@ -403,7 +403,7 @@ namespace Axiom.RenderSystems.DirectX9
                     //divide u, v by q. The w and q just ignored as it wasn't used by
                     //rasterizer.
 
-                    switch (texStageDesc[stage].texType)
+                    switch (_texStageDesc[stage].texType)
                     {
                         case D3DTextureType.Normal:
                             Utility.Swap(ref d3dMat.M13, ref d3dMat.M14);
@@ -422,7 +422,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 else
                 {
-                    switch (texStageDesc[stage].texType)
+                    switch (_texStageDesc[stage].texType)
                     {
                         case D3DTextureType.Normal:
                             texCoordDim = TextureTransform.Count2;

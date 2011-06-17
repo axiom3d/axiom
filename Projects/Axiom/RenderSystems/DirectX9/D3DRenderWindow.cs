@@ -915,7 +915,6 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				_d3dpp.BackBufferWidth = this.width = width;
 				_d3dpp.BackBufferHeight = this.height = height;
-				( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
 			}
 
 			// Notify viewports of resize
@@ -1134,7 +1133,9 @@ namespace Axiom.RenderSystems.DirectX9
 			// access device through driver
 			var device = D3DDevice;
 
-			if ( rs.IsDeviceLost )
+
+
+            if (D3DRenderSystem.DeviceManager.ActiveDevice.IsDeviceLost)
 			{
 				DX.Result result = device.TestCooperativeLevel();
 				if ( result.Code == D3D.ResultCode.DeviceLost.Code  )
@@ -1163,7 +1164,7 @@ namespace Axiom.RenderSystems.DirectX9
 					rs.RestoreLostDevice();
 
 					// Still lost?
-					if ( rs.IsDeviceLost )
+                    if (D3DRenderSystem.DeviceManager.ActiveDevice.IsDeviceLost)
 					{
 						// Wait a while
 						System.Threading.Thread.Sleep( 50 );
