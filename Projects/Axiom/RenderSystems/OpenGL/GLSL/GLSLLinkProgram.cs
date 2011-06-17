@@ -506,7 +506,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                     {
                         var startpos = vpSource.IndexOf( "attribute", pos < 20 ? 0 : pos - 20 );
                         if ( startpos == -1 )
-                            startpos = vpSource.IndexOf( "in", pos - 20 );
+                            startpos = vpSource.IndexOf("in", pos < 20 ? 0 : pos - 20);
                         if ( startpos != -1 && startpos < pos )
                         {
                             // final check 

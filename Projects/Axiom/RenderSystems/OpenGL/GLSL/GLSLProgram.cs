@@ -73,6 +73,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
     {
         #region Static methods
 
+        #region ParseOperationType
+
+        [OgreVersion(1, 7, 2790)]
         static OperationType ParseOperationType(String val)
         {
             switch ( val )
@@ -88,10 +91,16 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                 case "triangle_fan":
                     return OperationType.TriangleFan;
                 default:
+                    //Triangle list is the default fallback. Keep it this way?
                     return OperationType.TriangleList;
             }
         }
 
+        #endregion
+
+        #region OperationTypeToString
+
+        [OgreVersion(1, 7, 2790)]
 	    static String OperationTypeToString(OperationType val)
         {
             switch ( val )
@@ -106,14 +115,15 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                     return "triangle_strip";
                 case OperationType.TriangleFan:
                     return "triangle_fan";
-                case OperationType.TriangleList:
+                //case OperationType.TriangleList:
                 default:
                     return "triangle_list";
-                    break;
             }
         }
 
-	    #endregion
+        #endregion
+
+        #endregion
 
         #region Embedded Classes
 
@@ -378,10 +388,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	        }
 	    }
 
-		/// <summary>
-		/// 
+        #region Compile
+
+        /// <summary>
+        /// compile source into shader object
 		/// </summary>
-		/// <param name="checkErrors"></param>
+        [OgreVersion(1, 7, 2790, "TODO: Completely missing preprocessor step")]
 		protected internal bool Compile( bool checkErrors = true )
 		{
             if (isCompiled)
@@ -419,7 +431,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             // CPreprocessor cpp;
             // TODO: preprocessor not supported yet in axiom
 
+            // Add preprocessor extras and main source
 
+            if (!string.IsNullOrEmpty(source))
+            {
+                Gl.glShaderSourceARB(GLHandle, 1, new []{ source }, new []{ source.Length });
+                // check for load errors
+                GLSLHelper.CheckForGLSLError("Cannot load GLSL high-level shader source : " + Name, 0);
+            }
 
 		    Gl.glCompileShaderARB(GLHandle);
 			int compiled;
@@ -442,11 +461,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			return isCompiled;
 		}
 
-		#endregion Methods
+        #endregion
 
-		#region HighLevelGpuProgram Implementation
+        #endregion Methods
 
-		public override int SamplerCount
+        #region HighLevelGpuProgram Implementation
+
+        public override int SamplerCount
 		{
 			get
 			{
@@ -454,32 +475,41 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
+        #region CreateLowLevelImpl
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void CreateLowLevelImpl()
 		{
 			assemblerProgram = new GLSLGpuProgram( this );
 		}
 
-		/// <summary>
-        /// Internal load implementation, must be implemented by subclasses.
-		/// </summary>
+        #endregion
+
+        #region LoadFromSource
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void LoadFromSource()
 		{
             // we want to compile only if we need to link - else it is a waste of CPU
 		}
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <param name="parms"></param>
+        #endregion
+
+        #region PopulateParameterNames
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
 		{
+            // getConstantDefinitions() not needed in Axiom as the getter already does this implicitly
             parms.SetNamedConstants(ConstantDefinitions);
             // Don't set logical / physical maps here, as we can't access parameters by logical index in GLHL.
 		}
 
-        /// <summary>
-        /// Populate the passed parameters with name->index map, must be overridden
-        /// </summary>
+        #endregion
+
+        #region BuildConstantDefinitions
+
+        [OgreVersion(1, 7, 2790)]
         protected override void BuildConstantDefinitions()
         {
             // We need an accurate list of all the uniforms in the shader, but we
@@ -488,7 +518,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             // Therefore instead, parse the source code manually and extract the uniforms
             CreateParameterMappingStructures(true);
 
-            GLSLLinkProgramManager.Instance.ExtractConstantDefs( Source, ConstantDefinitions, Name );
+            GLSLLinkProgramManager.Instance.ExtractConstantDefs( Source, constantDefs, Name );
 
             // Also parse any attached sources
             foreach (var childShader in attachedGLSLPrograms)
@@ -498,7 +528,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-		/// <summary>
+        #endregion
+
+        /// <summary>
 		///		Set a custom param for this high level gpu program.
 		/// </summary>
 		/// <param name="name"></param>
@@ -514,22 +546,36 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		    return true;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void UnloadImpl()
 		{
+            // just clearing the reference here
+            assemblerProgram = null;
+
 			if ( IsSupported )
 			{
 				// only delete it if it was supported to being with, else it won't exist
                 Gl.glDeleteObjectARB(GLHandle);
 			}
-
-			// just clearing the reference here
-			assemblerProgram = null;
 		}
 
 		#endregion HighLevelGpuProgram Implementation
 
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                if ( IsLoaded )
+                {
+                    unload();
+                }
+                else
+                {
+                    // Axiom TBD:
+                    //unloadHighLevel();
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 	}
 }
