@@ -296,8 +296,8 @@ namespace Axiom.RenderSystems.OpenGL
 		{
             if (_window == null)
             {
-                this.Width = width;
-                this.Height = height;
+                this.width = width;
+                this.height = height;
                 this.WindowMovedOrResized();
             }
             else
