@@ -25,22 +25,67 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
-        private readonly object _resourcesMutex = new object();
-
-        protected new readonly ResourceContainer Resources = new ResourceContainer();
-
-        private int _deviceAccessLockCount;
-
-        public ResourceCreationPolicy CreationPolicy;
+        #region _resourcesMutex
 
         [OgreVersion(1, 7, 2790)]
-        public bool AutoHardwareBufferManagement { get; set; }
+        private readonly object _resourcesMutex = new object();
+
+        #endregion
+
+        #region Resources
+
+        [OgreVersion(1, 7, 2790)]
+        protected new readonly ResourceContainer Resources = new ResourceContainer();
+
+        #endregion
+
+        #region _deviceAccessLockCount
+
+        [OgreVersion(1, 7, 2790)]
+        private int _deviceAccessLockCount;
+
+        #endregion
+
+        #region CreationPolicy
+
+        [OgreVersion(1, 7, 2790)]
+        public ResourceCreationPolicy CreationPolicy 
+        { 
+            get; 
+            set; 
+        }
+
+        #endregion
+
+        #region Constructor
+
+        [OgreVersion(1, 7, 2790)]
+        public D3D9ResourceManager()
+        {
+            CreationPolicy = ResourceCreationPolicy.CreateOnAllDevices;
+        }
+
+        #endregion
+
+        #region AutoHardwareBufferManagement
+
+        [OgreVersion(1, 7, 2790)]
+        public bool AutoHardwareBufferManagement
+        {
+            get;
+            set;
+        }
+
+        #endregion
 
         protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Base class needs update to 1.7.2790");
         }
 
+        #region LockDeviceAccess
+
+        [OgreVersion(1, 7, 2790)]
         public void LockDeviceAccess()
         {
             Monitor.Enter( _resourcesMutex );
@@ -53,6 +98,11 @@ namespace Axiom.RenderSystems.DirectX9
             D3DHardwarePixelBuffer.LockDeviceAccess();
         }
 
+        #endregion
+
+        #region UnlockDeviceAccess
+
+        [OgreVersion(1, 7, 2790)]
         public void UnlockDeviceAccess()
         {
             _deviceAccessLockCount--;
@@ -65,50 +115,89 @@ namespace Axiom.RenderSystems.DirectX9
             Monitor.Exit( _resourcesMutex );
         }
 
-        public void NotifyOnDeviceCreate(Device d3d9Device)
+        #endregion
+
+        #region NotifyOnDeviceCreate
+
+        [OgreVersion(1, 7, 2790)]
+        public void NotifyOnDeviceCreate(Device d3D9Device)
         {
             lock ( _resourcesMutex )
             {
                 foreach (var it in Resources)
-                    it.NotifyOnDeviceCreate( d3d9Device );
+                    it.NotifyOnDeviceCreate( d3D9Device );
             }
         }
 
-        public void NotifyOnDeviceLost(Device d3d9Device)
+        #endregion
+
+        #region NotifyOnDeviceDestroy
+
+        [OgreVersion(1, 7, 2790)]
+        public void NotifyOnDeviceDestroy(Device d3D9Device)
+        {
+            lock (_resourcesMutex)
+            {
+                foreach (var it in Resources)
+                    it.NotifyOnDeviceDestroy(d3D9Device);
+            }
+        }
+
+        #endregion
+
+        #region NotifyOnDeviceLost
+
+        [OgreVersion(1, 7, 2790)]
+        public void NotifyOnDeviceLost(Device d3D9Device)
         {
             lock ( _resourcesMutex )
             {
                 foreach (var it in Resources)
-                    it.NotifyOnDeviceLost( d3d9Device );
+                    it.NotifyOnDeviceLost( d3D9Device );
             }
         }
 
-        public void NotifyOnDeviceReset(Device d3d9Device)
+        #endregion
+
+        #region NotifyOnDeviceReset
+
+        [OgreVersion(1, 7, 2790)]
+        public void NotifyOnDeviceReset(Device d3D9Device)
         {
             lock (_resourcesMutex)
             {
                 foreach (var it in Resources)
-                    it.NotifyOnDeviceReset(d3d9Device);
+                    it.NotifyOnDeviceReset(d3D9Device);
             }
         }
 
-        public void NotifyOnDeviceDestroy(Device d3d9Device)
+        #endregion
+
+        #region NotifyResourceCreated
+
+        [OgreVersion(1, 7, 2790)]
+        public void NotifyResourceCreated( D3D9Resource pResource )
         {
             lock (_resourcesMutex)
             {
-                foreach (var it in Resources)
-                    it.NotifyOnDeviceDestroy(d3d9Device);
+                Resources.Add( pResource );
             }
         }
 
-        public void NotifyResourceCreated( D3D9Resource d3D9Resource )
+        #endregion
+
+        #region NotifyResourceDestroyed
+
+        [OgreVersion(1, 7, 2790)]
+        public void NotifyResourceDestroyed( D3D9Resource pResource )
         {
-            throw new NotImplementedException();
+            lock (_resourcesMutex)
+            {
+                if (Resources.Contains(pResource))
+                    Resources.Remove( pResource );
+            }
         }
 
-        public void NotifyResourceDestroyed( D3D9Resource d3D9Resource )
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }
