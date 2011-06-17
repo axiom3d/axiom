@@ -47,7 +47,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	/// <summary>
 	///		Factory class for GLSL programs.
 	/// </summary>
-	public sealed class GLSLProgramFactory : HighLevelGpuProgramFactory, IDisposable
+	public sealed class GLSLProgramFactory : HighLevelGpuProgramFactory
 	{
 		#region Fields
 
@@ -106,12 +106,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-		public void Dispose()
-		{
-			if ( glslLinkProgramMgr != null )
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
 			{
 				glslLinkProgramMgr.Dispose();
 			}
+            base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation
