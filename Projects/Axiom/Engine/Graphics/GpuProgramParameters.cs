@@ -1174,5 +1174,10 @@ namespace Axiom.Graphics
         {
             return intConstants[physicalIndex].val;
         }
+
+	    public void SetLogicalIndexes( GpuLogicalBufferStruct floatLogicalToPhysical, GpuLogicalBufferStruct intLogicalToPhysical )
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }
