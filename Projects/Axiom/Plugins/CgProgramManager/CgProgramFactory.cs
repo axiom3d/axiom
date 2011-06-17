@@ -47,7 +47,7 @@ namespace Axiom.CgPrograms
 	/// <summary>
 	/// 	Summary description for CgProgramFactory.
 	/// </summary>
-	public class CgProgramFactory : HighLevelGpuProgramFactory, IDisposable
+	public class CgProgramFactory : HighLevelGpuProgramFactory
 	{
 		#region Fields
 
@@ -101,14 +101,14 @@ namespace Axiom.CgPrograms
 		/// <summary>
 		///    Destroys the Cg context upon being disposed.
 		/// </summary>
-		public void Dispose()
-		{
+        protected override void dispose(bool disposeManagedResources)
+        {
 			// destroy the Cg context
-			Cg.cgDestroyContext( cgContext );
-		}
+            if (disposeManagedResources)
+			    Cg.cgDestroyContext( cgContext );
+		    base.dispose( disposeManagedResources );
+        }
 
 		#endregion IDisposable Members
-
-
 	}
 }
