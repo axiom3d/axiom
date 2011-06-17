@@ -10,14 +10,24 @@ namespace Axiom.RenderSystems.DirectX9
 {
     public class D3D9DriverList : DisposableObject, IEnumerable<Driver>
     {
+        #region _driverList
+
         [OgreVersion(1, 7, 2790)]
         private readonly List<Driver> _driverList = new List<Driver>();
+
+        #endregion
+
+        #region Constructor
 
         [OgreVersion(1, 7, 2790)]
         public D3D9DriverList()
         {
             Enumerate();
         }
+
+        #endregion
+
+        #region dispose
 
         [OgreVersion(1, 7, 2790)]
         protected override void dispose(bool disposeManagedResources)
@@ -26,12 +36,16 @@ namespace Axiom.RenderSystems.DirectX9
                 _driverList.Clear();
         }
 
+        #endregion
+
+        #region Enumerate
+
         [OgreVersion(1, 7, 2790, "Update D3DDriver constructor")]
         public bool Enumerate()
         {
             var d3D = D3DRenderSystem.Direct3D9;
 
-		    LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
+            LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
             for (var iAdaptor = 0; iAdaptor < d3D.AdapterCount; iAdaptor++)
             {
                 
@@ -43,8 +57,12 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             LogManager.Instance.Write( "D3D9: Driver Detection Ends" );
-		    return true;
-	    }
+            return true;
+        }
+
+        #endregion
+
+        #region Count
 
         [OgreVersion(1, 7, 2790)]
         public int Count
@@ -54,6 +72,10 @@ namespace Axiom.RenderSystems.DirectX9
                 return _driverList.Count;
             }
         }
+
+        #endregion
+
+        #region Indexer
 
         [OgreVersion(1, 7, 2790)]
         public Driver this[int index]
@@ -73,6 +95,9 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
+        #endregion
+
+        #region IEnumerable
 
         [AxiomHelper(0, 8)]
         public IEnumerator<Driver> GetEnumerator()
@@ -85,5 +110,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             return GetEnumerator();
         }
+
+        #endregion
     }
 }
