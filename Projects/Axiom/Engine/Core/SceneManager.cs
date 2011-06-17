@@ -5455,12 +5455,11 @@ namespace Axiom.Core
         {
             if ( pass.IsProgrammable )
             {
+                if (_gpuParamsDirty == 0)
+                	return;
 
-                //if (!_gpuParamsDirty)
-                //	return;
-
-                //if (_gpuParamsDirty)
-                //	pass.UpdateAutoParams(mAutoParamDataSource, _gpuParamsDirty);
+                if (_gpuParamsDirty != 0)
+                	pass.UpdateAutoParams(autoParamDataSource, _gpuParamsDirty);
 
                 if ( pass.HasVertexProgram )
                 {
