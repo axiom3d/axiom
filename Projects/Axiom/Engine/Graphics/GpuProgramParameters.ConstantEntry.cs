@@ -70,7 +70,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// The Variability of this parameter (see <see>GpuParamVariability</see>)
 			/// </summary>
-			public UInt16 Variability;
+            public GpuParamVariability Variability;
 
 			/// <summary>
 			///    Default constructor.
@@ -79,7 +79,7 @@ namespace Axiom.Graphics
 			/// <param name="index">Index of the param.</param>
 			/// <param name="data">Any additional info to go with the parameter.</param>
 			/// <param name="variability">Variability of parameter</param>
-			public AutoConstantEntry( AutoConstantType type, int index, int data, UInt16 variability )
+			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability )
 			{
 				this.Type = type;
 				this.PhysicalIndex = index;
@@ -95,7 +95,7 @@ namespace Axiom.Graphics
 			/// <param name="index">Index of the param.</param>
 			/// <param name="fdata">Any additional info to go with the parameter.</param>
 			/// <param name="variability">Variability of parameter</param>
-			public AutoConstantEntry( AutoConstantType type, int index, float fdata, UInt16 variability )
+			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability )
 			{
 				this.Type = type;
 				this.PhysicalIndex = index;

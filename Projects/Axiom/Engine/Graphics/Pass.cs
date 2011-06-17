@@ -2874,7 +2874,29 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Object overrides
-    }
+
+        [OgreVersion(1, 7, 2790)]
+	    public void UpdateAutoParams( AutoParamDataSource source, GpuProgramParameters.GpuParamVariability mask )
+	    {
+            if (HasVertexProgram)
+            {
+                // Update vertex program auto params
+                _vertexProgramUsage.Params.UpdateAutoParams( source, mask );
+            }
+
+            if (HasGeometryProgram)
+            {
+                // Update geometry program auto params
+                _geometryProgramUsage.Params.UpdateAutoParams(source, mask);
+            }
+
+            if (HasFragmentProgram)
+            {
+                // Update fragment program auto params
+                _fragmentProgramUsage.Params.UpdateAutoParams(source, mask);
+            }
+	    }
+	}
 
 	/// <summary>
 	///		Struct recording a pass which can be used for a specific illumination stage.
