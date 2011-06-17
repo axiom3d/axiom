@@ -229,6 +229,7 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
 		{
 			// create the new vertex shader
+		    device = D3DRenderSystem.ActiveD3D9Device;
 			vertexShader = new D3D.VertexShader( device, microcode );
 		}
 
@@ -322,6 +323,7 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
 		{
 			// create a new pixel shader
+            device = D3DRenderSystem.ActiveD3D9Device;
 			pixelShader = new D3D.PixelShader( device, microcode );
 		}
 
