@@ -8,6 +8,7 @@ using SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
+    [OgreVersion(1, 7, 2790)]
     public class D3D9DriverList : DisposableObject, IEnumerable<Driver>
     {
         #region _driverList

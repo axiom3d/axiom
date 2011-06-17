@@ -15,6 +15,7 @@ using Capabilities = SlimDX.Direct3D9.Capabilities;
 
 namespace Axiom.RenderSystems.DirectX9
 {
+    [OgreVersion(1, 7, 2790)]
     public class D3D9Device: DisposableObject
     {
         #region inner classes
