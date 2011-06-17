@@ -322,7 +322,7 @@ namespace Axiom.RenderSystems.DirectX9
         #endregion
 
         [OgreVersion(1, 7, 2790)]
-        protected D3DRenderWindow PrimaryWindow
+        protected internal D3DRenderWindow PrimaryWindow
         {
             get
             {
@@ -659,7 +659,7 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)] 
         protected static IntPtr focusWindow;
 
-        #region SharedWindowHandle
+        
 
         [OgreVersion(1, 7, 2790)]
         protected static IntPtr sharedFocusWindow;
@@ -670,6 +670,8 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         protected D3D9DeviceManager pDeviceManager;
 
+        #region SharedWindowHandle
+
         [OgreVersion(1, 7, 2790)]
         protected IntPtr SharedWindowHandle
         {
@@ -677,6 +679,20 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 if (value != sharedFocusWindow)
                     sharedFocusWindow = value;		
+            }
+        }
+
+        #endregion
+
+        #region IsDeviceLost
+
+        public bool IsDeviceLost
+        {
+            get
+            {
+                var hr = pDevice.TestCooperativeLevel();
+
+                return hr.Code == 0x88760868 || hr.Code == 0x88760869;
             }
         }
 
@@ -748,10 +764,10 @@ namespace Axiom.RenderSystems.DirectX9
                     }
                 }
 
-                renderSystem.texStageDesc[ stage ].tex = null;
-                renderSystem.texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
-                renderSystem.texStageDesc[ stage ].coordIndex = 0;
-                renderSystem.texStageDesc[ stage ].texType = D3DTextureType.Normal;
+                renderSystem._texStageDesc[ stage ].tex = null;
+                renderSystem._texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
+                renderSystem._texStageDesc[ stage ].coordIndex = 0;
+                renderSystem._texStageDesc[ stage ].texType = D3DTextureType.Normal;
             }
 
             // Unbind any vertex streams to avoid memory leaks				

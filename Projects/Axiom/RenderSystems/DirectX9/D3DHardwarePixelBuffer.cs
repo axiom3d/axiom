@@ -41,8 +41,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using SlimDX.Direct3D9;
 using Root = Axiom.Core.Root;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -666,6 +668,12 @@ namespace Axiom.RenderSystems.DirectX9
 	    public static void UnlockDeviceAccess()
 	    {
             Monitor.Exit(DeviceAccessMutex);
+	    }
+
+	    public Surface GetSurface( Device d3D9Device )
+	    {
+            // TODO: implement this as in 2.7.2790
+	        return Surface;
 	    }
 	}
 }
