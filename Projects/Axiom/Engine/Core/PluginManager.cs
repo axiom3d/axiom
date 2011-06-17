@@ -36,9 +36,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using System.Reflection.Emit;
 
 #endregion Namespace Declarations
 
@@ -143,35 +145,65 @@ namespace Axiom.Core
 			return ScanForPlugins( "." );
 		}
 
-		/// <summary>
+
+        /// <summary>
+        /// Checks if the given Module contains managed code
+        /// </summary>
+        /// <param name="file">The file to check</param>
+        /// <returns>True if the module contains CLR data</returns>
+        private bool IsValidModule(string file)
+        {
+            using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                if (fs.Length < 1024)
+                    return false;
+                using (var reader = new BinaryReader(fs))
+                {
+                    fs.Position = 0x3C;
+                    var offset = reader.ReadUInt32(); // go to NT_HEADER
+                    offset += 24;  // go to optional header
+                    offset += 208; // go to CLI header directory
+
+                    if (fs.Length < offset + 4)
+                        return false;
+
+                    fs.Position = offset;
+                    return reader.ReadUInt32() != 0; // check if the RVA to the CLI header is valid
+                }
+            }
+        }
+
+	    /// <summary>
 		///		Scans for plugin files in the current directory.
 		/// </summary>
 		///<param name="folder"></param>
 		///<returns></returns>
 		protected IList<ObjectCreator> ScanForPlugins( string folder )
 		{
-			List<ObjectCreator> pluginFactories = new List<ObjectCreator>();
+            var pluginFactories = new List<ObjectCreator>();
 
             if (Directory.Exists(folder))
 			{
-                string[] files = Directory.GetFiles(folder);
-                string assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
+                var files = Directory.GetFiles(folder);
+                var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
 
-                foreach (string file in files)
+                foreach (var file in files)
 				{
-                    string currentFile = Path.GetFileName(file);
+                    var currentFile = Path.GetFileName(file);
 
                     if (Path.GetExtension(file) != ".dll" || currentFile == assemblyName)
                         continue;
-                    string fullPath = Path.GetFullPath(file);
+                    var fullPath = Path.GetFullPath(file);
 
-                    DynamicLoader loader = new DynamicLoader(fullPath);
+                    if (!IsValidModule(fullPath))
+                    {
+                        Debug.WriteLine(String.Format("Skipped {0} [Not managed]", fullPath));
+                        continue;
+                    }
 
-                    foreach (ObjectCreator factory in loader.Find(typeof(IPlugin)))
-					{
-                        pluginFactories.Add(factory);
-					}
+                    var loader = new DynamicLoader(fullPath);
 
+				    pluginFactories.AddRange( loader.Find( typeof ( IPlugin ) ) );
 				}
             }
 
