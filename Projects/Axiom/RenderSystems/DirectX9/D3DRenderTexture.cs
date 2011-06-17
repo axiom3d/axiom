@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( attribute.ToUpper() )
 				{
 					case "DDBACKBUFFER":
-						D3D.Surface[] surface = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
+						var surface = new Surface[ Config.MaxMultipleRenderTargets ];
 						if ( this.FSAA > 0 )
 						{
 							surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;

@@ -73,5 +73,32 @@ namespace Axiom.RenderSystems.DirectX9
                     it.NotifyOnDeviceCreate( d3d9Device );
             }
         }
+
+        public void NotifyOnDeviceLost(Device d3d9Device)
+        {
+            lock ( _resourcesMutex )
+            {
+                foreach (var it in Resources)
+                    it.NotifyOnDeviceLost( d3d9Device );
+            }
+        }
+
+        public void NotifyOnDeviceReset(Device d3d9Device)
+        {
+            lock (_resourcesMutex)
+            {
+                foreach (var it in Resources)
+                    it.NotifyOnDeviceReset(d3d9Device);
+            }
+        }
+
+        public void NotifyOnDeviceDestroy(Device d3d9Device)
+        {
+            lock (_resourcesMutex)
+            {
+                foreach (var it in Resources)
+                    it.NotifyOnDeviceDestroy(d3d9Device);
+            }
+        }
     }
 }

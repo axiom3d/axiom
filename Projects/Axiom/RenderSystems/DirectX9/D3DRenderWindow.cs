@@ -790,7 +790,7 @@ namespace Axiom.RenderSystems.DirectX9
 				        return device.GetDepthBuffer( this );
 
 					case "DDBACKBUFFER":
-				        return device.GetBackBuffer( this );
+                        return new[] { device.GetBackBuffer(this) };
 
 					case "DDFRONTBUFFER":
 				        return device.GetBackBuffer( this );
