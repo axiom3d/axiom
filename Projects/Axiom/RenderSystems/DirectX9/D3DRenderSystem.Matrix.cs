@@ -5,8 +5,11 @@ using System.Text;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using SlimDX;
 using SlimDX.Direct3D9;
+using Plane = Axiom.Math.Plane;
 using TextureTransform = SlimDX.Direct3D9.TextureTransform;
+using Vector4 = Axiom.Math.Vector4;
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -245,7 +248,6 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         public override void SetTextureMatrix(int stage, Matrix4 xform)
         {
-            SlimDX.Matrix d3dMat;
             var newMat = xform;
 
             // cache this since it's used often
@@ -324,9 +326,9 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     throw new NotImplementedException();
                     /*
-				    Matrix4 viewMatrix;
-				    mTexStageDesc[stage].frustum->calcViewMatrixRelative(mTexProjRelativeOrigin, viewMatrix);
-				    newMat = viewMatrix * newMat;
+                    Matrix4 viewMatrix;
+                    mTexStageDesc[stage].frustum->calcViewMatrixRelative(mTexProjRelativeOrigin, viewMatrix);
+                    newMat = viewMatrix * newMat;
                      */
                 }
                 //else
@@ -351,7 +353,7 @@ namespace Axiom.RenderSystems.DirectX9
             var d3DTransType = (TransformState)((int)(TransformState.Texture0) + stage);
 
             // convert to D3D format
-            d3dMat = MakeD3DMatrix(newMat);
+            Matrix d3dMat = MakeD3DMatrix(newMat);
 
             // set the matrix if it is not the identity
             if (!D3DHelper.IsIdentity(ref d3dMat))
@@ -388,7 +390,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 //else
                 //{
-                //	// All texgen generate 3D input texture coordinates.
+                //    // All texgen generate 3D input texture coordinates.
                 //}
 
                 // tell D3D the dimension of tex. coord
@@ -507,9 +509,9 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region MakeD3DMatrix
 
-        private SlimDX.Matrix MakeD3DMatrix(Matrix4 matrix)
+        private Matrix MakeD3DMatrix(Matrix4 matrix)
         {
-            var dxMat = new SlimDX.Matrix();
+            var dxMat = new Matrix();
 
             // set it to a transposed matrix since DX uses row vectors
             dxMat.M11 = matrix.m00;
@@ -537,31 +539,31 @@ namespace Axiom.RenderSystems.DirectX9
         #region ConvertD3DMatrix
 
         /// <summary>
-        ///		Helper method that converts a DX Matrix to our Matrix4.
+        ///        Helper method that converts a DX Matrix to our Matrix4.
         /// </summary>
-        private Matrix4 ConvertD3DMatrix(ref SlimDX.Matrix d3dMat)
+        private Matrix4 ConvertD3DMatrix(ref Matrix d3DMat)
         {
-            Matrix4 mat = Matrix4.Zero;
+            var mat = Matrix4.Zero;
 
-            mat.m00 = d3dMat.M11;
-            mat.m10 = d3dMat.M12;
-            mat.m20 = d3dMat.M13;
-            mat.m30 = d3dMat.M14;
+            mat.m00 = d3DMat.M11;
+            mat.m10 = d3DMat.M12;
+            mat.m20 = d3DMat.M13;
+            mat.m30 = d3DMat.M14;
 
-            mat.m01 = d3dMat.M21;
-            mat.m11 = d3dMat.M22;
-            mat.m21 = d3dMat.M23;
-            mat.m31 = d3dMat.M24;
+            mat.m01 = d3DMat.M21;
+            mat.m11 = d3DMat.M22;
+            mat.m21 = d3DMat.M23;
+            mat.m31 = d3DMat.M24;
 
-            mat.m02 = d3dMat.M31;
-            mat.m12 = d3dMat.M32;
-            mat.m22 = d3dMat.M33;
-            mat.m32 = d3dMat.M34;
+            mat.m02 = d3DMat.M31;
+            mat.m12 = d3DMat.M32;
+            mat.m22 = d3DMat.M33;
+            mat.m32 = d3DMat.M34;
 
-            mat.m03 = d3dMat.M41;
-            mat.m13 = d3dMat.M42;
-            mat.m23 = d3dMat.M43;
-            mat.m33 = d3dMat.M44;
+            mat.m03 = d3DMat.M41;
+            mat.m13 = d3DMat.M42;
+            mat.m23 = d3DMat.M43;
+            mat.m33 = d3DMat.M44;
 
             return mat;
         }

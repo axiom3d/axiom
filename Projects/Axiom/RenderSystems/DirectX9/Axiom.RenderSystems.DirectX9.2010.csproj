@@ -98,6 +98,8 @@
     <Compile Include="D3DRenderSystem.cs" />
     <Compile Include="D3DRenderSystem.Matrix.cs" />
     <Compile Include="D3DRenderWindow.cs" />
+    <Compile Include="D3DTextureStageDesc.cs" />
+    <Compile Include="D3DTextureType.cs" />
     <Compile Include="DriverCollection.cs" />
     <Compile Include="hlsl\HLSLIncludeHandler.cs" />
     <Compile Include="hlsl\OptimizationLevel.cs" />
