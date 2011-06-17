@@ -2189,7 +2189,8 @@ namespace Axiom.RenderSystems.DirectX9
                 case "FSAA":
                 {
                     var values = value.Split( new[] { ' ' } );
-                    _fsaaSamples = int.Parse( values[ 0 ] );
+                    _fsaaSamples = 0;
+                    int.TryParse( values[ 0 ], out _fsaaSamples );
                     if (values.Length > 1)
                         _fsaaHint = values[ 1 ];
                 }

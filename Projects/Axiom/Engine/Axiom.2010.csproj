@@ -187,6 +187,7 @@
     <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\DepthBuffer.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />

@@ -191,9 +191,43 @@ namespace Axiom.Graphics
 			}
 		}
 
-	    private GpuConstantDefinition FindNamedConstantDefinition( string name, bool b )
+        /// <summary>
+        /// Find a constant definition for a named parameter.
+        /// <remarks>
+        /// This method returns null if the named parameter did not exist, unlike
+        /// <see cref="GetConstantDefinition" /> which is more strict; unless you set the 
+        /// last parameter to true.
+        /// </remarks>
+        /// </summary>
+        /// <param name="name">The name to look up</param>
+        /// <param name="throwExceptionIfMissing"> If set to true, failure to find an entry
+        /// will throw an exception.</param>
+        public GpuConstantDefinition FindNamedConstantDefinition(string name, bool throwExceptionIfNotFound)
 	    {
-            throw new NotImplementedException();
+
+            if (namedParams == null)
+		    {
+                if (throwExceptionIfNotFound)
+                    throw new AxiomException( "Named constants have not been initialised, perhaps a compile error." );
+			    return null;
+		    }
+
+            int value;
+            if (!namedParams.TryGetValue( name, out value ))
+		    {
+			    if (throwExceptionIfNotFound)
+			        throw new AxiomException( "Parameter called " + name + " does not exist. " );
+			    return null;
+		    }
+		    //else
+	        {
+                // temp hack (gotta update this mess)
+	            var def = new GpuConstantDefinition();
+	            def.LogicalIndex = value;
+	            def.PhysicalIndex = value;
+	            return def;
+	            //return &(i->second);
+	        }
 	    }
 	}
 }
