@@ -25,11 +25,11 @@ namespace Axiom.RenderSystems.DirectX9
             var rsc = realCapabilities ?? new RenderSystemCapabilities();
 
             rsc.SetCategoryRelevant(CapabilitiesCategory.D3D9, true);
-		    rsc.DriverVersion = driverVersion;
-		    rsc.DeviceName = _activeD3DDriver.DriverDescription;
+            rsc.DriverVersion = driverVersion;
+            rsc.DeviceName = _activeD3DDriver.DriverDescription;
             rsc.RendersystemName = Name;
 
-            // Init caps to maximum.		
+            // Init caps to maximum.        
             rsc.TextureUnitCount = 1024;
             rsc.SetCapability(Graphics.Capabilities.AnisotropicFiltering);
             rsc.SetCapability(Graphics.Capabilities.HardwareMipMaps);
@@ -91,105 +91,105 @@ namespace Axiom.RenderSystems.DirectX9
 
             // Update RS caps using the minimum value found in adapter list.
             foreach (var pCurDriver in _driverList)
-		    {
-			    var rkCurCaps    = pCurDriver.D3D9DeviceCaps;
+            {
+                var rkCurCaps    = pCurDriver.D3D9DeviceCaps;
 
-			    if (rkCurCaps.MaxSimultaneousTextures < rsc.TextureUnitCount)
-			    {
-				    rsc.TextureUnitCount = rkCurCaps.MaxSimultaneousTextures;
-			    }
+                if (rkCurCaps.MaxSimultaneousTextures < rsc.TextureUnitCount)
+                {
+                    rsc.TextureUnitCount = rkCurCaps.MaxSimultaneousTextures;
+                }
 
-			    // Check for Anisotropy.
-			    if (rkCurCaps.MaxAnisotropy <= 1)
-			        rsc.UnsetCapability( Graphics.Capabilities.AnisotropicFiltering );
+                // Check for Anisotropy.
+                if (rkCurCaps.MaxAnisotropy <= 1)
+                    rsc.UnsetCapability( Graphics.Capabilities.AnisotropicFiltering );
 
-			    // Check automatic mipmap generation.
-			    if ((rkCurCaps.Caps2 & Caps2.CanAutoGenerateMipMap) == 0)
-			        rsc.UnsetCapability( Graphics.Capabilities.HardwareMipMaps );
+                // Check automatic mipmap generation.
+                if ((rkCurCaps.Caps2 & Caps2.CanAutoGenerateMipMap) == 0)
+                    rsc.UnsetCapability( Graphics.Capabilities.HardwareMipMaps );
 
-			    // Check Dot product 3.
-			    if ((rkCurCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3) == 0)
-			        rsc.UnsetCapability( Graphics.Capabilities.Dot3 );
+                // Check Dot product 3.
+                if ((rkCurCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3) == 0)
+                    rsc.UnsetCapability( Graphics.Capabilities.Dot3 );
 
-			    // Check cube map support.
-			    if ((rkCurCaps.TextureCaps & TextureCaps.CubeMap) == 0)
-				    rsc.UnsetCapability(Graphics.Capabilities.CubeMapping);
-			
-			    // Scissor test
-			    if ((rkCurCaps.RasterCaps & RasterCaps.ScissorTest) == 0)
-				    rsc.UnsetCapability(Graphics.Capabilities.ScissorTest);
-
-
-			    // Two-sided stencil
-			    if ((rkCurCaps.StencilCaps & StencilCaps.TwoSided) == 0)
-				    rsc.UnsetCapability(Graphics.Capabilities.TwoSidedStencil);
-
-			    // stencil wrap
-			    if ((rkCurCaps.StencilCaps & StencilCaps.Increment) == 0 ||
-				    (rkCurCaps.StencilCaps & StencilCaps.Decrement) == 0)
-				    rsc.UnsetCapability(Graphics.Capabilities.StencilWrap);
-
-			    // User clip planes
-			    if (rkCurCaps.MaxUserClipPlanes == 0)			
-				    rsc.UnsetCapability(Graphics.Capabilities.UserClipPlanes);			
-
-			    // UBYTE4 type?
-			    if ((rkCurCaps.DeclarationTypes & DeclarationTypeCaps.UByte4) == 0)			
-				    rsc.UnsetCapability(Graphics.Capabilities.VertexFormatUByte4);	
-
-			    // 3D textures?
-			    if ((rkCurCaps.TextureCaps & TextureCaps.VolumeMap) == 0)			
-				    rsc.UnsetCapability(Graphics.Capabilities.Texture3D);			
-
-			    if ((rkCurCaps.TextureCaps & TextureCaps.Pow2) != 0)
-			    {
-				    // Conditional support for non POW2
-				    if ((rkCurCaps.TextureCaps & TextureCaps.NonPow2Conditional) != 0)
-					    rsc.NonPOW2TexturesLimited = true;				
-
-				    // Only power of 2 supported.
-				    else					
-					    rsc.UnsetCapability(Graphics.Capabilities.NonPowerOf2Textures);				
-			    }	
-
-			    // Number of render targets
-			    if (rkCurCaps.SimultaneousRTCount < rsc.MultiRenderTargetCount)
-			    {
-			        rsc.MultiRenderTargetCount = Utility.Min( rkCurCaps.SimultaneousRTCount, Config.MaxMultipleRenderTargets );
-			    }	
-
-			    if((rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.MrtIndependentBitDepths) == 0)
-			    {
-				    rsc.UnsetCapability(Graphics.Capabilities.MRTDifferentBitDepths);
-			    }
-
-			    // Point sprites 
-			    if (rkCurCaps.MaxPointSize <= 1.0f)
-			    {
-				    rsc.UnsetCapability(Graphics.Capabilities.PointSprites);
-				    // sprites and extended parameters go together in D3D
-				    rsc.UnsetCapability(Graphics.Capabilities.PointExtendedParameters);				
-			    }
-			
-			    // Take the minimum point size.
-			    if (rkCurCaps.MaxPointSize < rsc.MaxPointSize)
-				    rsc.MaxPointSize = rkCurCaps.MaxPointSize;	
-
-			    // Mipmap LOD biasing?
-			    if ((rkCurCaps.RasterCaps & RasterCaps.MipMapLodBias) == 0)			
-				    rsc.UnsetCapability(Graphics.Capabilities.MipmapLODBias);			
+                // Check cube map support.
+                if ((rkCurCaps.TextureCaps & TextureCaps.CubeMap) == 0)
+                    rsc.UnsetCapability(Graphics.Capabilities.CubeMapping);
+            
+                // Scissor test
+                if ((rkCurCaps.RasterCaps & RasterCaps.ScissorTest) == 0)
+                    rsc.UnsetCapability(Graphics.Capabilities.ScissorTest);
 
 
-			    // Do we support per-stage src_manual constants?
-			    // HACK - ATI drivers seem to be buggy and don't support per-stage constants properly?
-			    // TODO: move this to RSC
-			    if((rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.PerStageConstant) == 0)
-				    rsc.UnsetCapability(Graphics.Capabilities.PerStageConstant);
+                // Two-sided stencil
+                if ((rkCurCaps.StencilCaps & StencilCaps.TwoSided) == 0)
+                    rsc.UnsetCapability(Graphics.Capabilities.TwoSidedStencil);
 
-			    // Advanced blend operations? min max subtract rev 
+                // stencil wrap
+                if ((rkCurCaps.StencilCaps & StencilCaps.Increment) == 0 ||
+                    (rkCurCaps.StencilCaps & StencilCaps.Decrement) == 0)
+                    rsc.UnsetCapability(Graphics.Capabilities.StencilWrap);
+
+                // User clip planes
+                if (rkCurCaps.MaxUserClipPlanes == 0)            
+                    rsc.UnsetCapability(Graphics.Capabilities.UserClipPlanes);            
+
+                // UBYTE4 type?
+                if ((rkCurCaps.DeclarationTypes & DeclarationTypeCaps.UByte4) == 0)            
+                    rsc.UnsetCapability(Graphics.Capabilities.VertexFormatUByte4);    
+
+                // 3D textures?
+                if ((rkCurCaps.TextureCaps & TextureCaps.VolumeMap) == 0)            
+                    rsc.UnsetCapability(Graphics.Capabilities.Texture3D);            
+
+                if ((rkCurCaps.TextureCaps & TextureCaps.Pow2) != 0)
+                {
+                    // Conditional support for non POW2
+                    if ((rkCurCaps.TextureCaps & TextureCaps.NonPow2Conditional) != 0)
+                        rsc.NonPOW2TexturesLimited = true;                
+
+                    // Only power of 2 supported.
+                    else                    
+                        rsc.UnsetCapability(Graphics.Capabilities.NonPowerOf2Textures);                
+                }    
+
+                // Number of render targets
+                if (rkCurCaps.SimultaneousRTCount < rsc.MultiRenderTargetCount)
+                {
+                    rsc.MultiRenderTargetCount = Utility.Min( rkCurCaps.SimultaneousRTCount, Config.MaxMultipleRenderTargets );
+                }    
+
+                if((rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.MrtIndependentBitDepths) == 0)
+                {
+                    rsc.UnsetCapability(Graphics.Capabilities.MRTDifferentBitDepths);
+                }
+
+                // Point sprites 
+                if (rkCurCaps.MaxPointSize <= 1.0f)
+                {
+                    rsc.UnsetCapability(Graphics.Capabilities.PointSprites);
+                    // sprites and extended parameters go together in D3D
+                    rsc.UnsetCapability(Graphics.Capabilities.PointExtendedParameters);                
+                }
+            
+                // Take the minimum point size.
+                if (rkCurCaps.MaxPointSize < rsc.MaxPointSize)
+                    rsc.MaxPointSize = rkCurCaps.MaxPointSize;    
+
+                // Mipmap LOD biasing?
+                if ((rkCurCaps.RasterCaps & RasterCaps.MipMapLodBias) == 0)            
+                    rsc.UnsetCapability(Graphics.Capabilities.MipmapLODBias);            
+
+
+                // Do we support per-stage src_manual constants?
+                // HACK - ATI drivers seem to be buggy and don't support per-stage constants properly?
+                // TODO: move this to RSC
+                if((rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.PerStageConstant) == 0)
+                    rsc.UnsetCapability(Graphics.Capabilities.PerStageConstant);
+
+                // Advanced blend operations? min max subtract rev 
                 if ((rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.BlendOperation) == 0)
-				    rsc.UnsetCapability(Graphics.Capabilities.AdvancedBlendOperations);
-		    }
+                    rsc.UnsetCapability(Graphics.Capabilities.AdvancedBlendOperations);
+            }
 
             // Blending between stages supported
             rsc.SetCapability(Graphics.Capabilities.Blending);
@@ -209,8 +209,8 @@ namespace Axiom.RenderSystems.DirectX9
             // Adapter details
             var adapterId = _activeD3DDriver.AdapterIdentifier;
 
-		    // determine vendor
-		    // Full list of vendors here: http://www.pcidatabase.com/vendors.php?sort=id
+            // determine vendor
+            // Full list of vendors here: http://www.pcidatabase.com/vendors.php?sort=id
             switch (adapterId.VendorId)
             {
                 case 0x10DE:
@@ -263,11 +263,11 @@ namespace Axiom.RenderSystems.DirectX9
             // We always support rendertextures bigger than the frame buffer
             rsc.SetCapability( Graphics.Capabilities.HardwareRenderToTexture );
 
-		    // Determine if any floating point texture format is supported
-		    
+            // Determine if any floating point texture format is supported
+            
             var floatFormats = new[] {Format.R16F, Format.G16R16F, 
-			    Format.A16B16G16R16F, Format.R32F, Format.G32R32F, 
-			    Format.A32B32G32R32F};
+                Format.A16B16G16R16F, Format.R32F, Format.G32R32F, 
+                Format.A32B32G32R32F};
             
 
             var bbSurf = (Surface)renderWindow[ "DDBACKBUFFER" ];
@@ -275,77 +275,75 @@ namespace Axiom.RenderSystems.DirectX9
 
             for (var i = 0; i < 6; ++i)
             {
-                if (_pD3D.CheckDeviceFormat(_activeD3DDriver.AdapterNumber,
+                if (!_pD3D.CheckDeviceFormat(_activeD3DDriver.AdapterNumber,
                     DeviceType.Hardware, bbSurfDesc.Format, 0, ResourceType.Texture, floatFormats[i]))
-                {
-                    rsc.SetCapability( Graphics.Capabilities.TextureFloat );
-                    break;
-                }
+                    continue;
+                rsc.SetCapability( Graphics.Capabilities.TextureFloat );
+                break;
             }
 
             // TODO: make convertVertex/Fragment fill in rsc
-		    // TODO: update the below line to use rsc
-		    // Vertex textures
-		    if (rsc.IsShaderProfileSupported("vs_3_0"))
-		    {
-			    // Run through all the texture formats looking for any which support
-			    // vertex texture fetching. Must have at least one!
-			    // All ATI Radeon up to X1n00 say they support vs_3_0, 
-			    // but they support no texture formats for vertex texture fetch (cheaters!)
-			    if (CheckVertexTextureFormats(renderWindow))
-			    {
-			        rsc.SetCapability( Graphics.Capabilities.VertexTextureFetch );
-				    // always 4 vertex texture units in vs_3_0, and never shared
-			        rsc.TextureUnitCount = 4;
-				    rsc.VertexTextureUnitsShared = false;
-			    }
-		    }	
-		    else
-		    {
-			    //True HW Instancing is supported since Shader model 3.0 ATI has a nasty
-			    //hack for enabling it in their SM 2.0 cards, but we don't (and won't) support it
-			    rsc.UnsetCapability( Graphics.Capabilities.VertexBufferInstanceData );
-		    }
+            // TODO: update the below line to use rsc
+            // Vertex textures
+            if (rsc.IsShaderProfileSupported("vs_3_0"))
+            {
+                // Run through all the texture formats looking for any which support
+                // vertex texture fetching. Must have at least one!
+                // All ATI Radeon up to X1n00 say they support vs_3_0, 
+                // but they support no texture formats for vertex texture fetch (cheaters!)
+                if (CheckVertexTextureFormats(renderWindow))
+                {
+                    rsc.SetCapability( Graphics.Capabilities.VertexTextureFetch );
+                    // always 4 vertex texture units in vs_3_0, and never shared
+                    rsc.TextureUnitCount = 4;
+                    rsc.VertexTextureUnitsShared = false;
+                }
+            }    
+            else
+            {
+                //True HW Instancing is supported since Shader model 3.0 ATI has a nasty
+                //hack for enabling it in their SM 2.0 cards, but we don't (and won't) support it
+                rsc.UnsetCapability( Graphics.Capabilities.VertexBufferInstanceData );
+            }
 
             // Check alpha to coverage support
-		    // this varies per vendor! But at least SM3 is required
-		    if (rsc.IsShaderProfileSupported("ps_3_0"))
-		    {
-			    // NVIDIA needs a separate check
-			    if (rsc.Vendor == GPUVendor.Nvidia)
-			    {
-                    if (_pD3D.CheckDeviceFormat(0, DeviceType.Hardware, Format.X8R8G8B8, 0, ResourceType.Surface,
-                        (Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ))
-                    {
+            // this varies per vendor! But at least SM3 is required
+            if (rsc.IsShaderProfileSupported("ps_3_0"))
+            {
+                // NVIDIA needs a separate check
+                switch ( rsc.Vendor )
+                {
+                    case GPUVendor.Nvidia:
+                        if (_pD3D.CheckDeviceFormat(0, DeviceType.Hardware, Format.X8R8G8B8, 0, ResourceType.Surface,
+                                                    (Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ))
+                        {
+                            rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
+                        }
+                        break;
+                    case GPUVendor.Ati:
                         rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
-                    }
+                        break;
+                }
 
-			    }
-			    else if (rsc.Vendor == GPUVendor.Ati)
-			    {
-				    // There is no check on ATI, we have to assume SM3 == support
-			        rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
-			    }
-
-			    // no other cards have Dx9 hacks for alpha to coverage, as far as I know
-		    }
+                // no other cards have Dx9 hacks for alpha to coverage, as far as I know
+            }
 
             if (realCapabilities == null)
-		    {		
-			    realCapabilities = rsc;
-			    realCapabilities.AddShaderProfile("hlsl");
+            {        
+                realCapabilities = rsc;
+                realCapabilities.AddShaderProfile("hlsl");
 
-			    // if we are using custom capabilities, then 
-			    // mCurrentCapabilities has already been loaded
-			    if(!useCustomCapabilities)
-				    currentCapabilities = realCapabilities;
+                // if we are using custom capabilities, then 
+                // mCurrentCapabilities has already been loaded
+                if(!useCustomCapabilities)
+                    currentCapabilities = realCapabilities;
 
                 FireEvent("RenderSystemCapabilitiesCreated");
 
-			    InitializeFromRenderSystemCapabilities(currentCapabilities, renderWindow);
-		    }
+                InitializeFromRenderSystemCapabilities(currentCapabilities, renderWindow);
+            }
 
-		    return rsc;
+            return rsc;
         }
 
         [OgreVersion(1, 7, 2790)]
@@ -356,17 +354,17 @@ namespace Axiom.RenderSystems.DirectX9
             var bbSurf = (Surface)renderWindow[ "DDBACKBUFFER" ];
             var bbSurfDesc = bbSurf.Description;
 
-            for ( var pf = PixelFormat.L8; pf < PixelFormat.Count; pf++ )
+            for (var pf = PixelFormat.L8; pf < PixelFormat.Count; pf++)
             {
                 var fmt = D3DHelper.ConvertEnum( pf );
-                if ( _pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, DeviceType.Hardware, bbSurfDesc.Format,
-                                                Usage.QueryVertexTexture, ResourceType.Texture, fmt ) )
-                {
-                    // cool, at least one supported
-                    anySupported = true;
-                    LogManager.Instance.Write( "D3D9: Vertex texture format supported - {0}",
-                                               PixelUtil.GetFormatName( pf ) );
-                }
+                if ( !_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, DeviceType.Hardware, bbSurfDesc.Format,
+                                               Usage.QueryVertexTexture, ResourceType.Texture, fmt ) )
+                    continue;
+
+                // cool, at least one supported
+                anySupported = true;
+                LogManager.Instance.Write( "D3D9: Vertex texture format supported - {0}",
+                                           PixelUtil.GetFormatName( pf ) );
             }
             return anySupported;
         }
@@ -379,8 +377,8 @@ namespace Axiom.RenderSystems.DirectX9
         private void ConvertPixelShaderCaps( RenderSystemCapabilities rsc )
         {
             var major = 0xFF;
-		    var minor = 0xFF;
-		    SlimDX.Direct3D9.Capabilities minPsCaps = null;
+            var minor = 0xFF;
+            SlimDX.Direct3D9.Capabilities minPsCaps = null;
 
             // Find the device with the lowest vertex shader caps.
             foreach (var driver in _driverList)
@@ -401,36 +399,36 @@ namespace Axiom.RenderSystems.DirectX9
                     minPsCaps = rkCurCaps;
                 }
             }
-		
-		    var ps2A = false;
+        
+            var ps2A = false;
             var ps2B = false;
             var ps2X = false;
 
-		    // Special case detection for ps_2_x/a/b support
-		    if (major >= 2)
-		    {
-			    if ((minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit) != 0 &&
-				    (minPsCaps.PS20Caps.TempCount >= 32))
-			    {
-				    ps2B = true;
-			    }
+            // Special case detection for ps_2_x/a/b support
+            if (major >= 2)
+            {
+                if ((minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit) != 0 &&
+                    (minPsCaps.PS20Caps.TempCount >= 32))
+                {
+                    ps2B = true;
+                }
 
                 if ((minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit) != 0 &&
                     (minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoDependentReadLimit) != 0 &&
                     (minPsCaps.PS20Caps.Caps & PixelShaderCaps.ArbitrarySwizzle) != 0 &&
                     (minPsCaps.PS20Caps.Caps & PixelShaderCaps.GradientInstructions) != 0 &&
                     (minPsCaps.PS20Caps.Caps & PixelShaderCaps.Predication) != 0 &&
-				    (minPsCaps.PS20Caps.TempCount >= 22))
-			    {
-				    ps2A = true;
-			    }
+                    (minPsCaps.PS20Caps.TempCount >= 22))
+                {
+                    ps2A = true;
+                }
 
-			    // Does this enough?
-			    if (ps2A || ps2B)
-			    {
-				    ps2X = true;
-			    }
-		    }
+                // Does this enough?
+                if (ps2A || ps2B)
+                {
+                    ps2X = true;
+                }
+            }
 
             switch (major)
             {
@@ -504,52 +502,52 @@ namespace Axiom.RenderSystems.DirectX9
         private void ConvertVertexShaderCaps( RenderSystemCapabilities rsc )
         {
             var major = 0xFF;
-		    var minor = 0xFF;
-		    SlimDX.Direct3D9.Capabilities minVsCaps = null;
+            var minor = 0xFF;
+            SlimDX.Direct3D9.Capabilities minVsCaps = null;
 
-		    // Find the device with the lowest vertex shader caps.
-		    foreach (var driver in _driverList)
-		    {
+            // Find the device with the lowest vertex shader caps.
+            foreach (var driver in _driverList)
+            {
                 var rkCurCaps = driver.D3D9DeviceCaps;
-		        var currMajor = rkCurCaps.VertexShaderVersion.Major;
+                var currMajor = rkCurCaps.VertexShaderVersion.Major;
                 var currMinor = rkCurCaps.VertexShaderVersion.Minor;
 
-			    if (currMajor < major)	
-			    {
-				    major = currMajor;
-				    minor = currMinor;
-				    minVsCaps = rkCurCaps;
-			    }
-			    else if (currMajor == major && currMinor < minor)
-			    {
-				    minor = currMinor;
-				    minVsCaps = rkCurCaps;
-			    }			
-		    }
+                if (currMajor < major)    
+                {
+                    major = currMajor;
+                    minor = currMinor;
+                    minVsCaps = rkCurCaps;
+                }
+                else if (currMajor == major && currMinor < minor)
+                {
+                    minor = currMinor;
+                    minVsCaps = rkCurCaps;
+                }            
+            }
 
-		
-		    var vs2X = false;
-		    var vs2A = false;
+        
+            var vs2X = false;
+            var vs2A = false;
 
-		    // Special case detection for vs_2_x/a support
-		    if (major >= 2)
-		    {
-			    if ((minVsCaps.VS20Caps.Caps & VertexShaderCaps.Predication) != 0 &&
-				    (minVsCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
-				    (minVsCaps.VS20Caps.TempCount >= 12))
-			    {
-				    vs2X = true;
-			    }
+            // Special case detection for vs_2_x/a support
+            if (major >= 2)
+            {
+                if ((minVsCaps.VS20Caps.Caps & VertexShaderCaps.Predication) != 0 &&
+                    (minVsCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
+                    (minVsCaps.VS20Caps.TempCount >= 12))
+                {
+                    vs2X = true;
+                }
 
                 if ((minVsCaps.VS20Caps.Caps & VertexShaderCaps.Predication) != 0 &&
-				    (minVsCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
-				    (minVsCaps.VS20Caps.TempCount >= 13))
-			    {
-				    vs2A = true;
-			    }
-		    }
+                    (minVsCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
+                    (minVsCaps.VS20Caps.TempCount >= 13))
+                {
+                    vs2A = true;
+                }
+            }
 
-		    // Populate max param count
+            // Populate max param count
             switch (major)
             {
                 case 1:
@@ -601,6 +599,9 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion
 
+        #region Initialize
+
+        [OgreVersion(1, 7, 2790)]
         public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle)
         {
             LogManager.Instance.Write("[D3D9] : Subsystem Initializing");
@@ -622,13 +623,13 @@ namespace Axiom.RenderSystems.DirectX9
             // Create the device manager.
             _deviceManager = new D3D9DeviceManager();
 
-            // Create the texture manager for use by others		
+            // Create the texture manager for use by others        
             textureManager = new D3DTextureManager();
 
             // Also create hardware buffer manager
             _hardwareBufferManager = new D3DHardwareBufferManager();
 
-            // Create the GPU program manager	
+            // Create the GPU program manager    
             _gpuProgramManager = new D3DGpuProgramManager();
 
             _hlslProgramFactory = new HLSLProgramFactory();
@@ -653,7 +654,7 @@ namespace Axiom.RenderSystems.DirectX9
                 miscParams.Add("title", windowTitle); // Axiom only?
                 miscParams.Add("colorDepth", bpp);
                 miscParams.Add("FSAA", _fsaaSamples);
-			    miscParams.Add("FSAAHint", _fsaaHint);
+                miscParams.Add("FSAAHint", _fsaaHint);
                 miscParams.Add("vsync", vSync);
                 miscParams.Add("vsyncInterval", vSyncInterval);
                 miscParams.Add("useNVPerfHUD", _useNVPerfHUD);
@@ -684,30 +685,36 @@ namespace Axiom.RenderSystems.DirectX9
             SlimDX.Configuration.DetectDoubleDispose = false;
             SlimDX.Configuration.EnableObjectTracking = true;
 #else
-			SlimDX.Configuration.DetectDoubleDispose = false;
-			SlimDX.Configuration.EnableObjectTracking = false;
+            SlimDX.Configuration.DetectDoubleDispose = false;
+            SlimDX.Configuration.EnableObjectTracking = false;
 #endif
 
             return renderWindow;
         }
 
+        #endregion
 
+        #region InitializeFromRenderSystemCapabilities
+
+        [OgreVersion(1, 7, 2790)]
         public override void InitializeFromRenderSystemCapabilities(RenderSystemCapabilities caps, RenderTarget primary)
         {
             if (caps.RendersystemName != Name)
             {
                 throw new AxiomException(
                     "Trying to initialize D3D9RenderSystem from RenderSystemCapabilities that do not support Direct3D9" );
-		    }
+            }
 
-		    if (caps.IsShaderProfileSupported("hlsl"))
-			    HighLevelGpuProgramManager.Instance.AddFactory(_hlslProgramFactory);
+            if (caps.IsShaderProfileSupported("hlsl"))
+                HighLevelGpuProgramManager.Instance.AddFactory(_hlslProgramFactory);
 
-		    var defaultLog = LogManager.Instance.DefaultLog;
-		    if (defaultLog != null)
-		    {
-			    caps.Log(defaultLog);
-		    }
+            var defaultLog = LogManager.Instance.DefaultLog;
+            if (defaultLog != null)
+            {
+                caps.Log(defaultLog);
+            }
         }
+
+        #endregion
     }
 }
