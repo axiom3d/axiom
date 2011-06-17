@@ -524,7 +524,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             foreach (var childShader in attachedGLSLPrograms)
             {
                 GLSLLinkProgramManager.Instance.ExtractConstantDefs(
-                    childShader.Source, ConstantDefinitions, childShader.Name);
+                    childShader.Source, constantDefs, childShader.Name);
             }
         }
 
