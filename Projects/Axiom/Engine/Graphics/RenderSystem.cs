@@ -34,21 +34,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Linq;
-
-using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.Graphics;
+using Axiom.Core;
+using Axiom.Core.Collections;
+using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Math.Collections;
-using Axiom.Media;
-using Axiom.Graphics.Collections;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -228,6 +223,7 @@ namespace Axiom.Graphics
         /// Base constructor.
         /// </summary>
         protected RenderSystem()
+            : base()
         {
             // This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
             // This makes it the same as OpenGL and other right-handed systems
@@ -768,13 +764,13 @@ namespace Axiom.Graphics
         }
 
         [AxiomHelper(0, 8)]
-        private readonly Dictionary<Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>> _namedEvents =
-            new Dictionary<Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>>();
+        private readonly Dictionary<Axiom.Math.Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>> _namedEvents =
+            new Dictionary<Axiom.Math.Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>>();
 
         [AxiomHelper(0, 8)]
         public void AddEvent(string name, Action<NameValuePairList> handler)
         {
-            var key = new Tuple<string, Action<NameValuePairList>>(name, handler);
+            var key = new Axiom.Math.Tuple<string, Action<NameValuePairList>>(name, handler);
             Action<string, NameValuePairList> wrapper = (n, args) =>
                                                         {
                                                             if (n == name)
@@ -787,7 +783,7 @@ namespace Axiom.Graphics
         [AxiomHelper(0, 8)]
         public void RemoveEvent(string name, Action<NameValuePairList> handler)
         {
-            var key = new Tuple<string, Action<NameValuePairList>>(name, handler);
+            var key = new Axiom.Math.Tuple<string, Action<NameValuePairList>>(name, handler);
             Listener -= _namedEvents[key];
             _namedEvents.Remove(key);
         }

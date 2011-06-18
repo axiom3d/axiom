@@ -140,6 +140,7 @@
     <Compile Include="Core\Collections\CameraCollection.cs" />
     <Compile Include="Core\Collections\Lists.cs" />
     <Compile Include="Core\Collections\MovableObjectCollection.cs" />
+    <Compile Include="Core\Collections\MultiMap.cs" />
     <Compile Include="Core\Collections\NodeCollection.cs" />
     <Compile Include="Core\Collections\SceneManagerCollection.cs" />
     <Compile Include="Core\Collections\SceneNodeCollection.cs" />
@@ -152,13 +153,20 @@
     <Compile Include="Core\DisposableObject.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Frustum.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
+    <Compile Include="EventHandler.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\DepthBuffer.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.LogicalBuffer.cs" />
     <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\NullProgram.cs" />
+    <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="mono\Comparer.cs" />
     <Compile Include="mono\ICloneable.cs" />
     <Compile Include="Core\IConfigurable.cs" />
@@ -231,7 +239,6 @@
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\AutoParamDataSource.cs" />
     <Compile Include="Graphics\BufferStream.cs" />
-    <Compile Include="Graphics\Collections\ConfigOptionCollection.cs" />
     <Compile Include="Graphics\Collections\Lists.cs" />
     <Compile Include="Graphics\Collections\RenderPriorityGroupList.cs" />
     <Compile Include="Graphics\Collections\RenderSystemCollection.cs" />
@@ -352,6 +359,7 @@
     <Compile Include="mono\Locale.cs" />
     <Compile Include="mono\SortedList.cs" />
     <Compile Include="mono\SortedList~2.cs" />
+    <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Overlays\Elements\BorderPanel.cs" />
     <Compile Include="Overlays\Elements\Factories.cs" />
     <Compile Include="Overlays\Elements\Panel.cs" />
