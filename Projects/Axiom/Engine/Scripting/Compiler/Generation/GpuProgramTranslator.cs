@@ -140,26 +140,25 @@ namespace Axiom.Scripting.Compiler
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_SHARED_PARAMS_REF
-                            case Keywords.ID_SHARED_PARAMS_REF:
-						    {
-						        if ( prop.Values.Count != 1 )
-						        {
-						            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-						                               "shared_params_ref requires a single parameter" );
-						            continue;
-						        }
+							case Keywords.ID_SHARED_PARAMS_REF:
+								{
+									if ( prop.Values.Count != 1 )
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"shared_params_ref requires a single parameter" );
+										continue;
+									}
 
-						        AbstractNode i0 = getNodeAt( prop.Values, 0 );
-						        if ( !( i0 is AtomAbstractNode ) )
-						        {
-						            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-						                               "shared parameter set name expected" );
-						            continue;
-						        }
-						        AtomAbstractNode atom0 = (AtomAbstractNode)i0;
+									AbstractNode i0 = getNodeAt( prop.Values, 0 );
+									if ( !(i0 is AtomAbstractNode) )
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"shared parameter set name expected" );
+										continue;
+									}
+									AtomAbstractNode atom0 = (AtomAbstractNode)i0;
 
-						        throw new NotImplementedException();
-#if UNREACHABLE_CODE
+									throw new NotImplementedException();
 									try
 									{
 										//TODO
@@ -171,10 +170,6 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-#else
-						    }
-#endif
-
 							#endregion ID_SHARED_PARAMS_REF
 
 							#region ID_PARAM_INDEXED || ID_PARAM_NAMED
@@ -270,12 +265,9 @@ namespace Axiom.Scripting.Compiler
 
 											if ( isValid )
 											{
-                                                // the following debug out is just to prevent unused var "type" warning
-											    //Console.WriteLine( "Not implemented, {0}", type );
-												//throw new NotImplementedException();
-                                                LogManager.Instance.Write("Invalid {0} attribute - unrecognised parameter type {1}", prop.Name, atom1.Value);
-#if UNREACHABLE_CODE
-    // First, clear out any offending auto constants
+												throw new NotImplementedException();
+
+												// First, clear out any offending auto constants
 												if ( named )
 												{ /*parameters->clearNamedAutoConstant(name);*/
 												}
@@ -337,7 +329,6 @@ namespace Axiom.Scripting.Compiler
 															"incorrect float constant declaration" );
 													}
 												}
-#endif
 											}
 										}
 									}
@@ -841,8 +832,9 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
 				{
-				    var ptr = prog.DefaultParameters;
-				    TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
+#warning this need GpuProgramParametersShared implementation
+					//GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
+					//GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
 				}
 			}
 

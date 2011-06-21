@@ -258,6 +258,8 @@ namespace Axiom.Math
 		/// <summary>
 		///     Project a point onto the plane.
 		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
 		public Vector3 ProjectVector( Vector3 point )
 		{
 			// We know plane normal is unit length, so use simple method

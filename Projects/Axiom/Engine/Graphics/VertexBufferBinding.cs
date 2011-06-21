@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -114,16 +112,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public virtual bool HasInstanceData
-        {
-            get
-            {
-                return bindingMap.Any( i => i.Value.IsInstanceData );
-            }
-        }
-
-	    #endregion Fields & Properties
+		#endregion Fields & Properties
 
 		#region Construction & Destruction
 
@@ -182,12 +171,6 @@ namespace Axiom.Graphics
 			return buf;
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public virtual bool IsBufferBound(short source)
-        {
-            return bindingMap.ContainsKey(source);
-        }
-
 		#endregion Methods
 
 		#region IDisposable Implementation
@@ -225,7 +208,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion IDisposable Implementation
-
-        
 	}
 }

@@ -102,16 +102,10 @@ namespace Axiom.Scripting
 	public sealed class ScriptablePropertyAttribute : Attribute
 	{
 		public readonly string ScriptPropertyName;
-		
-        public ScriptablePropertyAttribute( string scriptPropertyName )
+		public ScriptablePropertyAttribute( string scriptPropertyName )
 		{
 			ScriptPropertyName = scriptPropertyName;
 		}
-
-        public ScriptablePropertyAttribute(string scriptPropertyName, string description )
-        {
-            ScriptPropertyName = scriptPropertyName;
-        }
 
 		public ScriptablePropertyAttribute( string scriptPropertyName, string description, Type owner )
 		{

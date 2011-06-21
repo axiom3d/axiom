@@ -79,6 +79,7 @@ namespace Axiom.Core.Collections
 	}
 
 	/// <summary>
+	///     Generics: List<MeshLodUsage>
 	/// </summary>
 	public class MeshLodUsageList : List<MeshLodUsage>
 	{
@@ -92,6 +93,7 @@ namespace Axiom.Core.Collections
 	}
 
 	/// <summary>
+	///     Generics: List<int>
 	/// </summary>
 	public class IntList : List<int>
 	{
@@ -106,6 +108,7 @@ namespace Axiom.Core.Collections
 	}
 
 	/// <summary>
+	///     Generics: List<float>
 	/// </summary>
 	public class FloatList : List<float>
 	{

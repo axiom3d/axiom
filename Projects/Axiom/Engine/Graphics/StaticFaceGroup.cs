@@ -63,7 +63,7 @@ namespace Axiom.Graphics
 	///     details of the vertices itself, or in fact that it holds the vertex indices
 	///     itself. Everything is manipulated via pointers so if you want this
 	///     class to point into a block of geometry data it can.
-    /// </remarks>
+	/// </summary>
 	public class StaticFaceGroup
 	{
 		/// <summary>

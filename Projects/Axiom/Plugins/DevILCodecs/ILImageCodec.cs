@@ -182,7 +182,7 @@ namespace Axiom.Plugins.DevILCodecs
 
 			// Keep DXT data (if present at all and the GPU supports it)
 			int dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
-			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.Capabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
+			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
 			{
 				data.format = ILUtil.Convert( dxtFormat, imageType );
 				data.flags |= ImageFlags.Compressed;

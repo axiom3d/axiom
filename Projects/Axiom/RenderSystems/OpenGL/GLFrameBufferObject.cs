@@ -84,14 +84,6 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-        public int FSAA
-        {
-            get
-            {
-                return 0; // Not implemented, yet
-            }
-        }
-
 		private GLFBORTTManager _manager;
 		public GLFBORTTManager Manager
 		{
@@ -336,7 +328,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-	    #endregion isDisposed Property
+		#endregion isDisposed Property
 
 		/// <summary>
 		/// Class level dispose method

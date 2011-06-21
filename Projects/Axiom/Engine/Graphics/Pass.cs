@@ -119,10 +119,10 @@ namespace Axiom.Graphics
 
 		public int passId;
 
-		// <summary>
-		//    Texture anisotropy level.
-		// </summary>
-		//private int _maxAnisotropy;
+		/// <summary>
+		///    Texture anisotropy level.
+		/// </summary>
+		private int _maxAnisotropy;
 
 		#region Parent Property
 
@@ -568,7 +568,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the current DepthBiasConstant value for this pass.
 		/// </summary>
-		/// <remarks>Use <see cref="SetDepthBias(float, float)"/> to set this property</remarks>
+		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
 		public float DepthBiasConstant
 		{
 			get
@@ -580,7 +580,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the current DepthBiasSlopeScale value for this pass.
 		/// </summary>
-		/// <remarks>Use <see cref="SetDepthBias(float, float)"/> to set this property</remarks>
+		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
 		public float DepthBiasSlopeScale
 		{
 			get
@@ -1903,13 +1903,12 @@ namespace Axiom.Graphics
 			DirtyHash();
 		}
 
-	    /// <summary>
-	    ///    Method for cloning a Pass object.
-	    /// </summary>
-	    /// <param name="parent">Parent technique that will own this cloned Pass.</param>
-	    /// <param name="index"></param>
-	    /// <returns></returns>
-	    public Pass Clone( Technique parent, int index )
+		/// <summary>
+		///    Method for cloning a Pass object.
+		/// </summary>
+		/// <param name="parent">Parent technique that will own this cloned Pass.</param>
+		/// <returns></returns>
+		public Pass Clone( Technique parent, int index )
 		{
 			Pass newPass = new Pass( parent, index );
 
@@ -2051,6 +2050,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Overloaded method.
 		/// </summary>
+		/// <param name="textureName">The basic name of the texture (i.e. brickwall.jpg)</param>
 		/// <returns></returns>
 		public TextureUnitState CreateTextureUnitState()
 		{
@@ -2235,7 +2235,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Removes the specified TextureUnitState from this pass.
 		/// </summary>
-        /// <param name="index">Index of the TextureUnitState to remove from this pass.</param>
+		/// <param name="state">Index of the TextureUnitState to remove from this pass.</param>
 		public void RemoveTextureUnitState( int index )
 		{
 			TextureUnitState state = (TextureUnitState)textureUnitStates[ index ];
@@ -2261,7 +2261,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2316,7 +2316,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2333,7 +2333,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2354,7 +2354,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2565,7 +2565,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///		
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowCasterFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2589,7 +2592,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowReceiverFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2649,7 +2655,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowCasterVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2673,7 +2682,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowReceiverVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2765,6 +2777,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Update any automatic light parameters on this pass.
 		/// </summary>
+		/// <param name="renderable">Current object being rendered.</param>
+		/// <param name="camera">Current being being used for rendering.</param>
 		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
 		{
 			// auto update vertex program parameters
@@ -2783,6 +2797,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Update any automatic parameters (except lights) on this pass.
 		/// </summary>
+		/// <param name="renderable">Current object being rendered.</param>
+		/// <param name="camera">Current being being used for rendering.</param>
 		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
 		{
 			// auto update vertex program parameters
@@ -2874,29 +2890,7 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Object overrides
-
-        [OgreVersion(1, 7, 2790)]
-	    public void UpdateAutoParams( AutoParamDataSource source, GpuProgramParameters.GpuParamVariability mask )
-	    {
-            if (HasVertexProgram)
-            {
-                // Update vertex program auto params
-                _vertexProgramUsage.Params.UpdateAutoParams( source, mask );
-            }
-
-            if (HasGeometryProgram)
-            {
-                // Update geometry program auto params
-                _geometryProgramUsage.Params.UpdateAutoParams(source, mask);
-            }
-
-            if (HasFragmentProgram)
-            {
-                // Update fragment program auto params
-                _fragmentProgramUsage.Params.UpdateAutoParams(source, mask);
-            }
-	    }
-	}
+    }
 
 	/// <summary>
 	///		Struct recording a pass which can be used for a specific illumination stage.

@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			//bool testError = assembler.RunTests();
 
-			bool error = !assembler.Compile( Source );
+			bool error = !assembler.Compile( source );
 
 			if ( !error )
 			{
@@ -104,7 +104,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			Gl.glBindFragmentShaderATI( programId );
 		}
 
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		public override void BindParameters( GpuProgramParameters parms )
 		{
 			// program constants done internally by compiler for local
 			if ( parms.HasFloatConstants )
