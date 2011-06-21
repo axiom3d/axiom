@@ -73,7 +73,7 @@ namespace Axiom.Core
 		private bool _needUpdate;
 		private bool _updateColor;
 
-		//private float _timeUntilNextToggle;
+		private float _timeUntilNextToggle;
 		private float _radius;
 
 		private Font _font;
@@ -261,6 +261,7 @@ namespace Axiom.Core
             _caption = caption;
 			_characterHeight = charHeight;
 			_color = color;
+			_timeUntilNextToggle = 0;
 			_spaceWidth = 0;
 			_updateColor = true;
 			_onTop = true;

@@ -60,7 +60,6 @@ namespace Axiom.Utilities
 		}
 
 		/// <overloads>
-        /// <param name="condition"></param>
 		/// <param name="name">Name of the requirement, this should be something unique to make it easy to find.</param>
 		/// </overloads>
 		public static void Requires( bool condition, string name )
@@ -74,8 +73,6 @@ namespace Axiom.Utilities
 		}
 
 		/// <overloads>
-        /// <param name="condition"></param>
-        /// <param name="name">Name of the requirement, this should be something unique to make it easy to find.</param>
 		/// <param name="message">Message if the condition isn't met</param>
 		/// </overloads>
 		public static void Requires( bool condition, string name, string message )

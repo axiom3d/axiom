@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 using System.Text;
 using FI = FreeImageAPI;
 using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
@@ -152,7 +151,6 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FIBITMAP fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiMem, FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
 			if ( fiBitmap.IsNull )
 			{
-			    Debugger.Break();
 				throw new AxiomException( "Error decoding image" );
 			}
 

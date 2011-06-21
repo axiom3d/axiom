@@ -129,7 +129,7 @@ namespace Axiom.FileSystem
 		///  <remarks>
 		/// You must ensure that this archive is not being used before removing it.
 		///  </remarks>
-        /// <param name="filename">The Archive to unload</param>
+		/// <param name="arch">The Archive to unload</param>
 		public void Unload( string filename )
 		{
 			Archive arch = _archives[ filename ];
@@ -151,6 +151,7 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// Add an archive factory to the list
 		/// </summary>
+		/// <param name="type">The type of the factory (zip, file, etc.)</param>
 		/// <param name="factory">The factory itself</param>
 		public void AddArchiveFactory( ArchiveFactory factory )
 		{

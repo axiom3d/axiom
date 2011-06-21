@@ -34,12 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Scripting;
+
 using Tao.OpenGl;
 
 using ResourceHandle = System.UInt64;
@@ -70,174 +70,25 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	///		seperated by white space.
 	///	</remarks>
 	public class GLSLProgram : HighLevelGpuProgram
-    {
-        #region Static methods
+	{
+		#region Fields
 
-        #region ParseOperationType
-
-        [OgreVersion(1, 7, 2790)]
-        static OperationType ParseOperationType(String val)
-        {
-            switch ( val )
-            {
-                case "point_list":
-                    return OperationType.PointList;
-                case "line_list":
-                    return OperationType.LineList;
-                case "line_strip":
-                    return OperationType.LineStrip;
-                case "triangle_strip":
-                    return OperationType.TriangleStrip;
-                case "triangle_fan":
-                    return OperationType.TriangleFan;
-                default:
-                    //Triangle list is the default fallback. Keep it this way?
-                    return OperationType.TriangleList;
-            }
-        }
-
-        #endregion
-
-        #region OperationTypeToString
-
-        [OgreVersion(1, 7, 2790)]
-	    static String OperationTypeToString(OperationType val)
-        {
-            switch ( val )
-            {
-                case OperationType.PointList:
-                    return "point_list";
-                case OperationType.LineList:
-                    return "line_list";
-                case OperationType.LineStrip:
-                    return "line_strip";
-                case OperationType.TriangleStrip:
-                    return "triangle_strip";
-                case OperationType.TriangleFan:
-                    return "triangle_fan";
-                //case OperationType.TriangleList:
-                default:
-                    return "triangle_list";
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Embedded Classes
-
-        [ScriptableProperty("attach")]
-        private class CmdAttach : IPropertyCommand
-        {
-            public string Get(object target)
-            {
-                return ((GLSLProgram)target).AttachedShaderNames;
-            }
-
-            public void Set(object target, string shaderNames)
-            {
-                //get all the shader program names: there could be more than one
-                var vecShaderNames = shaderNames.Split(" \t".ToCharArray());
-                var t = (GLSLProgram)target;
-
-                foreach (var name in vecShaderNames)
-                {
-                    t.AttachChildShader(name);
-                }
-            }
-        }
-
-
-        [ScriptableProperty("preprocessor_defines")]
-        public class CmdPreprocessorDefines : IPropertyCommand
-        {
-            public string Get(object target)
-            {
-                return ((GLSLProgram)target)._preprocessorDefines;
-            }
-
-            public void Set(object target, string val)
-            {
-                ((GLSLProgram)target)._preprocessorDefines = val;
-            }
-        }
-
-        [ScriptableProperty("input_operation_type")]
-        public class CmdInputOperationType : IPropertyCommand
-        {
-            public string Get( object target )
-            {
-                return OperationTypeToString(((GLSLProgram)target).InputOperationType);
-            }
-
-            public void Set( object target, string val )
-            {
-                ( (GLSLProgram)target ).InputOperationType = ParseOperationType( val );
-            }
-        }
-
-        [ScriptableProperty("output_operation_type")]
-        public class CmdOutputOperationType : IPropertyCommand
-        {
-            public string Get(object target)
-            {
-                return OperationTypeToString(((GLSLProgram)target).OutputOperationType);
-            }
-
-            public void Set(object target, string val)
-            {
-                ( (GLSLProgram)target ).OutputOperationType = ParseOperationType( val );
-            }
-        }
-
-        [ScriptableProperty("max_output_vertices")]
-        public class CmdMaxOutputVertices : IPropertyCommand
-        {
-            public string Get( object target )
-            {
-                return ((GLSLProgram)target).MaxOutputVertices.ToString();
-            }
-
-            public void Set( object target, string val )
-            {
-                ( (GLSLProgram)target ).MaxOutputVertices = int.Parse( val );
-            }
-        }
-
-	    #endregion
-
-        #region Fields
-
-        private String _preprocessorDefines;
-
-        /// <summary>
+		/// <summary>
+		///		The GL id for the program object.
+		/// </summary>
+		protected int glHandle;
+		/// <summary>
 		///		Flag indicating if shader object successfully compiled.
 		/// </summary>
-        private bool isCompiled;
-
-	    /// <summary>
-	    /// The input operation type for this (geometry) program
-	    /// </summary>
-	    public virtual OperationType InputOperationType { get; set; }
-        /// <summary>
-        /// The output operation type for this (geometry) program
-        /// </summary>
-        public virtual OperationType OutputOperationType { get; set; }
-	    /// <summary>
-	    /// The maximum amount of vertices that this (geometry) program can output
-	    /// </summary>
-        public virtual int MaxOutputVertices { get; set; }
-        /// <summary>
-        /// Preprocessor options
-        /// </summary>
-	    private string preprocessorDefines;
-        /// <summary>
+		protected bool isCompiled;
+		/// <summary>
+		///		Names of shaders attached to this program.
+		/// </summary>
+		protected string attachedShaderNames;
+		/// <summary>
 		///		Holds programs attached to this object.
 		/// </summary>
-        private readonly List<GpuProgram> attachedGLSLPrograms = new List<GpuProgram>();
-
-        private static readonly Dictionary<string, IPropertyCommand> _commandTable = new Dictionary<string, IPropertyCommand>();
+		protected List<GpuProgram> attachedGLSLPrograms = new List<GpuProgram>();
 
 		#endregion Fields
 
@@ -249,52 +100,31 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public GLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-		    InputOperationType = OperationType.TriangleList;
-            OutputOperationType = OperationType.TriangleList;
-		    MaxOutputVertices = 3;
-            
-            // Manually assign language now since we use it immediately
-            SyntaxCode = "glsl";
-		}
+			// Manually assign language now since we use it immediately
+			this.syntaxCode = "glsl";
 
-        static GLSLProgram()
-        {
-            RegisterCommands();
-        }
+			// want scenemanager to pass on surface and light states to the rendersystem
+			passSurfaceAndLightStates = true;
+		}
 
 		#endregion Constructor
 
 		#region Properties
 
-	    /// <summary>
-        ///		The GL id for the program object.
-	    /// </summary>
-        public int GLHandle { get; private set; }
-
-        /// <summary>
-        /// Names of shaders attached to this program.
-        /// </summary>
-        public string AttachedShaderNames { get; private set; }
+		/// <summary>
+		///		Gets the GL id for the program object.
+		/// </summary>
+		public int GLHandle
+		{
+			get
+			{
+				return glHandle;
+			}
+		}
 
 		#endregion Properties
 
 		#region Methods
-
-        /// <summary>
-        /// Axiom internal: registers all commands for IConfigurable dispatch
-        /// </summary>
-        private static void RegisterCommands()
-        {
-            //typeof(GLSLProgram).GetCustomAttributes( typeof(ScriptableProperty) )
-            foreach (var t in typeof(GLSLProgram).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public))
-            {
-                var attr = t.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
-                foreach (var cmd in attr.Cast<ScriptablePropertyAttribute>())
-                {
-                    _commandTable.Add(cmd.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance(t));
-                }
-            }
-        }
 
 		/// <summary>
 		///		Attach another GLSL Shader to this one.
@@ -304,7 +134,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			// is the name valid and already loaded?
 			// check with the high level program manager to see if it was loaded
-			var hlProgram = (HighLevelGpuProgram)HighLevelGpuProgramManager.Instance.GetByName( name );
+			HighLevelGpuProgram hlProgram = (HighLevelGpuProgram)HighLevelGpuProgramManager.Instance.GetByName( name );
 
 			if ( hlProgram != null )
 			{
@@ -314,7 +144,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					// don't need a low level implementation for attached shader objects
 					// loadHighLevelImpl will only load the source and compile once
 					// so don't worry about calling it several times
-					var childShader = (GLSLProgram)hlProgram;
+					GLSLProgram childShader = (GLSLProgram)hlProgram;
 
 					// load the source and attach the child shader only if supported
 					if ( IsSupported )
@@ -322,7 +152,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 						childShader.LoadHighLevelImpl();
 						// add to the constainer
 						attachedGLSLPrograms.Add( childShader );
-                        AttachedShaderNames += name + " ";
+						attachedShaderNames += name + " ";
 					}
 				}
 			}
@@ -334,140 +164,65 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="programObject"></param>
 		public void AttachToProgramObject( int programObject )
 		{
-			// atach child objects
-            foreach (var childShader in attachedGLSLPrograms.Cast<GLSLProgram>())
-			{
-			    // bug in ATI GLSL linker : modules without main function must be recompiled each time 
-			    // they are linked to a different program object
-			    // don't check for compile errors since there won't be any
-			    // *** minor inconvenience until ATI fixes thier driver
-			    childShader.Compile( false );
-			    childShader.AttachToProgramObject( programObject );
-			}
+			Gl.glAttachObjectARB( programObject, glHandle );
+			GLSLHelper.CheckForGLSLError( "GLSL : Error attaching " + this.Name + " shader object to GLSL Program Object.", programObject );
 
-            Gl.glAttachObjectARB(programObject, GLHandle);
-            GLSLHelper.CheckForGLSLError("GLSL : Error attaching " + this.Name + " shader object to GLSL Program Object.", programObject);
+			// atach child objects
+			for ( int i = 0; i < attachedGLSLPrograms.Count; i++ )
+			{
+				GLSLProgram childShader = (GLSLProgram)attachedGLSLPrograms[ i ];
+
+				// bug in ATI GLSL linker : modules without main function must be recompiled each time 
+				// they are linked to a different program object
+				// don't check for compile errors since there won't be any
+				// *** minor inconvenience until ATI fixes thier driver
+				childShader.Compile( false );
+				childShader.AttachToProgramObject( programObject );
+			}
 		}
 
-        ///<summary>
-        ///</summary>
-        ///<param name="programObject"></param>
-        public void DetachFromProgramObject( int programObject )
-        {
-            Gl.glDetachObjectARB(programObject, GLHandle);
-            GLSLHelper.CheckForGLSLError( "Error detaching " + Name + " shader object from GLSL Program Object",
-                                          programObject );
-            // attach child objects
-            foreach (var childShader in attachedGLSLPrograms.Cast<GLSLProgram>())
-            {
-                childShader.DetachFromProgramObject(programObject);
-            }
-        }
-
-	    public override bool PassSurfaceAndLightStates
-	    {
-	        get
-	        {
-	            return true;
-	        }
-	    }
-
-	    public override bool PassTransformStates
-	    {
-	        get
-	        {
-	            return true;
-	        }
-	    }
-
-	    public override string Language
-	    {
-	        get
-	        {
-	            return "glsl";
-	        }
-	    }
-
-        #region Compile
-
-        /// <summary>
-        /// compile source into shader object
+		/// <summary>
+		///		
 		/// </summary>
-        [OgreVersion(1, 7, 2790, "TODO: Completely missing preprocessor step")]
-		protected internal bool Compile( bool checkErrors = true )
+		protected bool Compile()
 		{
-            if (isCompiled)
-            {
-                return true;
-            }
+			return Compile( true );
+		}
 
-            if (checkErrors)
-            {
-                GLSLHelper.LogObjectInfo( "GLSL compiling: " + Name, GLHandle );
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="checkErrors"></param>
+		protected bool Compile( bool checkErrors )
+		{
+			Gl.glCompileShaderARB( glHandle );
 
-            if (IsSupported)
-            {
-                GLSLHelper.CheckForGLSLError("GL Errors before creating shader object", 0);
-                var shaderType = 0;
-                switch ( Type )
-                {
-                    case GpuProgramType.Vertex:
-                        shaderType = Gl.GL_VERTEX_SHADER_ARB;
-                        break;
-                    case GpuProgramType.Fragment:
-                        shaderType = Gl.GL_FRAGMENT_SHADER_ARB;
-                        break;
-                    case GpuProgramType.Geometry:
-                        shaderType = Gl.GL_GEOMETRY_SHADER_EXT;
-                        break;
-                }
-                GLHandle = Gl.glCreateShaderObjectARB(shaderType);
-
-                GLSLHelper.CheckForGLSLError("Error creating GLSL shader object", 0);
-            }
-
-            // Preprocess the GLSL shader in order to get a clean source
-            // CPreprocessor cpp;
-            // TODO: preprocessor not supported yet in axiom
-
-            // Add preprocessor extras and main source
-
-            if (!string.IsNullOrEmpty(source))
-            {
-                Gl.glShaderSourceARB(GLHandle, 1, new []{ source }, new []{ source.Length });
-                // check for load errors
-                GLSLHelper.CheckForGLSLError("Cannot load GLSL high-level shader source : " + Name, 0);
-            }
-
-		    Gl.glCompileShaderARB(GLHandle);
 			int compiled;
+
 			// check for compile errors
-            Gl.glGetObjectParameterivARB(GLHandle, Gl.GL_OBJECT_COMPILE_STATUS_ARB, out compiled);
+			Gl.glGetObjectParameterivARB( glHandle, Gl.GL_OBJECT_COMPILE_STATUS_ARB, out compiled );
 
 			isCompiled = ( compiled != 0 );
 
 			// force exception if not compiled
 			if ( checkErrors )
 			{
-                GLSLHelper.CheckForGLSLError("GLSL : Cannot compile GLSL high-level shader: " + Name + ".", GLHandle, !isCompiled, !isCompiled);
+				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", glHandle, !isCompiled, !isCompiled );
 
 				if ( isCompiled )
 				{
-                    GLSLHelper.LogObjectInfo("GLSL : " + Name + " : compiled.", GLHandle);
+					GLSLHelper.LogObjectInfo( "GLSL : " + Name + " : compiled.", glHandle );
 				}
 			}
 
 			return isCompiled;
 		}
 
-        #endregion
+		#endregion Methods
 
-        #endregion Methods
+		#region HighLevelGpuProgram Implementation
 
-        #region HighLevelGpuProgram Implementation
-
-        public override int SamplerCount
+		public override int SamplerCount
 		{
 			get
 			{
@@ -475,107 +230,88 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
-        #region CreateLowLevelImpl
-
-        [OgreVersion(1, 7, 2790)]
 		protected override void CreateLowLevelImpl()
 		{
 			assemblerProgram = new GLSLGpuProgram( this );
 		}
 
-        #endregion
-
-        #region LoadFromSource
-
-        [OgreVersion(1, 7, 2790)]
+		/// <summary>
+		///		
+		/// </summary>
 		protected override void LoadFromSource()
 		{
-            // we want to compile only if we need to link - else it is a waste of CPU
+			// only create a shader object if glsl is supported
+			if ( IsSupported )
+			{
+				GLSLHelper.CheckForGLSLError( "GLSL : GL Errors before creating shader object.", 0 );
+
+				// create shader object
+				glHandle = Gl.glCreateShaderObjectARB( type == GpuProgramType.Vertex ? Gl.GL_VERTEX_SHADER_ARB : Gl.GL_FRAGMENT_SHADER_ARB );
+
+				GLSLHelper.CheckForGLSLError( "GLSL : GL Errors creating shader object.", 0 );
+			}
+
+			Gl.glShaderSourceARB( glHandle, 1, new string[] { source }, null );
+
+			// check for load errors
+			GLSLHelper.CheckForGLSLError( "GLSL : Cannot load GLSL high-level shader source " + Name + ".", glHandle );
+
+			Compile();
 		}
 
-        #endregion
-
-        #region PopulateParameterNames
-
-        [OgreVersion(1, 7, 2790)]
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="parms"></param>
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
 		{
-            // getConstantDefinitions() not needed in Axiom as the getter already does this implicitly
-            parms.SetNamedConstants(ConstantDefinitions);
-            // Don't set logical / physical maps here, as we can't access parameters by logical index in GLHL.
+			// can't populate parameter names in GLSL until link time
+			// allow for names read from a material script to be added automatically to the list
+			parms.AutoAddParamName = true;
 		}
 
-        #endregion
-
-        #region BuildConstantDefinitions
-
-        [OgreVersion(1, 7, 2790)]
-        protected override void BuildConstantDefinitions()
-        {
-            // We need an accurate list of all the uniforms in the shader, but we
-            // can't get at them until we link all the shaders into a program object.
-
-            // Therefore instead, parse the source code manually and extract the uniforms
-            CreateParameterMappingStructures(true);
-
-            GLSLLinkProgramManager.Instance.ExtractConstantDefs( Source, constantDefs, Name );
-
-            // Also parse any attached sources
-            foreach (var childShader in attachedGLSLPrograms)
-            {
-                GLSLLinkProgramManager.Instance.ExtractConstantDefs(
-                    childShader.Source, constantDefs, childShader.Name);
-            }
-        }
-
-        #endregion
-
-        /// <summary>
+		/// <summary>
 		///		Set a custom param for this high level gpu program.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="val"></param>
 		/// <returns></returns>
+		// TODO: Refactor to command pattern
 		public override bool SetParam( string name, string val )
 		{
-		    IPropertyCommand cmd;
-		    if (!_commandTable.TryGetValue( name, out cmd ))
-			    return false;
+			if ( name == "attach" )
+			{
+				//get all the shader program names: there could be more than one
+				string[] shaderNames = val.Split( new char[] { ' ', '\t' } );
 
-            cmd.Set( this, val );
-		    return true;
+				// attach the specified shaders to this program
+				for ( int i = 0; i < shaderNames.Length; i++ )
+				{
+					AttachChildShader( shaderNames[ i ] );
+				}
+
+				return true;
+			}
+
+			return false;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		protected override void UnloadImpl()
 		{
-            // just clearing the reference here
-            assemblerProgram = null;
-
 			if ( IsSupported )
 			{
 				// only delete it if it was supported to being with, else it won't exist
-                Gl.glDeleteObjectARB(GLHandle);
+				Gl.glDeleteObjectARB( glHandle );
 			}
+
+			// just clearing the reference here
+			assemblerProgram = null;
 		}
 
 		#endregion HighLevelGpuProgram Implementation
 
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (disposeManagedResources)
-            {
-                if ( IsLoaded )
-                {
-                    unload();
-                }
-                else
-                {
-                    // Axiom TBD:
-                    //unloadHighLevel();
-                }
-            }
-
-            base.dispose( disposeManagedResources );
-        }
 	}
 }

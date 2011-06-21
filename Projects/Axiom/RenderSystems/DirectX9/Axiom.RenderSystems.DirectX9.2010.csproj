@@ -56,7 +56,6 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\</OutputPath>
@@ -74,7 +73,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=2.0.11.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
+    <Reference Include="SlimDX, Version=4.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\SlimDX SDK (June 2010)\Bin\net40\x86\SlimDX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -85,21 +87,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="D3D9DepthBuffer.cs" />
-    <Compile Include="D3D9Device.cs" />
-    <Compile Include="D3D9DeviceManager.cs" />
-    <Compile Include="D3D9DriverList.cs" />
-    <Compile Include="D3D9RenderWindowList.cs" />
-    <Compile Include="D3D9Resource.cs" />
-    <Compile Include="D3D9ResourceManager.cs" />
     <Compile Include="D3DHardwarePixelBuffer.cs" />
     <Compile Include="D3DMultiRenderTarget.cs" />
-    <Compile Include="D3DRenderSystem.Capabilities.cs" />
     <Compile Include="D3DRenderSystem.cs" />
-    <Compile Include="D3DRenderSystem.Matrix.cs" />
     <Compile Include="D3DRenderWindow.cs" />
-    <Compile Include="D3DTextureStageDesc.cs" />
-    <Compile Include="D3DTextureType.cs" />
     <Compile Include="DriverCollection.cs" />
     <Compile Include="hlsl\HLSLIncludeHandler.cs" />
     <Compile Include="hlsl\OptimizationLevel.cs" />
@@ -148,7 +139,6 @@
     <Compile Include="Plugin.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SilenceSlimDX.cs" />
     <Compile Include="VideoMode.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -165,9 +155,6 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Win32MessageHandling.cs" />
-    <Compile Include="WindowClassStyle.cs" />
-    <Compile Include="WindowsExtendedStyle.cs" />
-    <Compile Include="WindowStyles.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

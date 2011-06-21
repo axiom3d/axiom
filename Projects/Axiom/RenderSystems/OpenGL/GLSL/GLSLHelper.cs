@@ -115,7 +115,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				{
 					int charsWritten = 0;
 
-				    logMessage.EnsureCapacity( infologLength + 1 );
 					Gl.glGetInfoLogARB( handle, infologLength, out charsWritten, logMessage );
 					if ( charsWritten > 0 )
 					{

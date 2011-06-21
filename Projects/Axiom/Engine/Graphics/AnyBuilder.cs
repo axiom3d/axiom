@@ -86,7 +86,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <remarks>
 		/// You must add at least one set of vertex data to the builder before invoking the
-		/// <see name="Build"/> method.
+		/// <see cref="Build"/> method.
 		/// </remarks>
 		/// <param name="vertexData">Vertex data to consider for edge detection.</param>
 		public void AddVertexData( VertexData vertexData )
@@ -99,7 +99,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <remarks>
 		/// You must add at least one set of index data to the builder before invoking the
-        /// <see name="Build"/> method.
+		/// <see cref="Build"/> method.
 		/// </remarks>
 		/// <param name="indexData">The index information which describes the triangles.</param>
 		public void AddIndexData( IndexData indexData )
@@ -112,20 +112,19 @@ namespace Axiom.Graphics
 			AddIndexData( indexData, vertexSet, OperationType.TriangleList );
 		}
 
-	    /// <summary>
-	    /// Add a set of index geometry data to the edge builder.
-	    /// </summary>
-	    /// <remarks>
-	    /// You must add at least one set of index data to the builder before invoking the
-	    /// <see name="Build"/> method.
-	    /// </remarks>
-	    /// <param name="indexData">The index information which describes the triangles.</param>
-	    /// <param name="vertexSet">
-	    /// The vertex data set this index data refers to; you only need to alter this
-	    /// if you have added multiple sets of vertices.
-	    /// </param>
-	    /// <param name="opType"></param>
-	    public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
+		/// <summary>
+		/// Add a set of index geometry data to the edge builder.
+		/// </summary>
+		/// <remarks>
+		/// You must add at least one set of index data to the builder before invoking the
+		/// <see cref="Build"/> method.
+		/// </remarks>
+		/// <param name="indexData">The index information which describes the triangles.</param>
+		/// <param name="vertexSet">
+		/// The vertex data set this index data refers to; you only need to alter this
+		/// if you have added multiple sets of vertices.
+		/// </param>
+		public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
 		{
 			indexDataList.Add( indexData );
 			indexDataVertexDataSetList.Add( vertexSet );
@@ -134,13 +133,14 @@ namespace Axiom.Graphics
 
 		/// <summary>
 		/// Populate with data as obtained from an IRenderable.
-        /// </summary>
 		/// <remarks>
 		/// Will share the buffers.
 		/// In case there are no index data associated with the <see cref="IRenderable"/>, i.e. <see cref="RenderOperation.useIndices"/> is false,
 		/// custom software index buffer is created to provide default index data to the builder.
 		/// This makes it possible for derived classes to handle the data in a convenient way.
 		/// </remarks>
+		/// </summary>
+		/// <param name="objects"></param>
 		public void AddObject( IRenderable obj )
 		{
 			if ( obj == null )

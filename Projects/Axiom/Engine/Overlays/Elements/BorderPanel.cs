@@ -52,10 +52,10 @@ using Axiom.Core.Collections;
 
 #region Ogre Synchronization Information
 
-// <ogresynchronization>
-//     <file name="OgreBorderPanelOverlayElement.h"   revision="1.6.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-//     <file name="OgreBorderPanelOverlayElement.cpp" revision="1.10" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="OgreBorderPanelOverlayElement.h"   revision="1.6.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreBorderPanelOverlayElement.cpp" revision="1.10" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 
 #endregion Ogre Synchronization Information
 
@@ -610,7 +610,7 @@ namespace Axiom.Overlays.Elements
 			int index = 0;
 
 			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			//float zValue = -1;
+			float zValue = -1;
 			unsafe
 			{
 				float* posPtr = (float*)data.ToPointer();

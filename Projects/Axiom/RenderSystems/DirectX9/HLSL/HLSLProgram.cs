@@ -165,8 +165,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		private HLSLIncludeHandler includeHandler;
 
-	    protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
-
 		#endregion Fields
 
 		#region Construction and Destruction
@@ -217,65 +215,17 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-			if ( !HasCompileError )
+			if ( !_compileError )
 			{
 				// create a new program, without source since we are setting the microcode manually
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", Type, target );
+				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
 
 				// set the microcode for this program
 				( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
 			}
 		}
 
-        #region BuildConstantDefinitions
-
-        [OgreVersion(1, 7, 2790)]
-	    protected override void BuildConstantDefinitions()
-	    {
-            constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
-            constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
-
-	        foreach ( var iter in parametersMap )
-	        {
-	            var paramName = iter.Key;
-	            var def = iter.Value;
-	            constantDefs.Map.Add( iter.Key, iter.Value );
-
-	            // Record logical / physical mapping
-	            if ( def.IsFloat )
-	            {
-                    lock(floatLogicalToPhysical.Mutex)
-                    {
-                        floatLogicalToPhysical.Map.Add( def.LogicalIndex,
-                                                        new GpuProgramParameters.GpuLogicalIndexUse(
-                                                            def.PhysicalIndex,
-                                                            def.ArraySize*def.ElementSize,
-                                                            GpuProgramParameters.GpuParamVariability.Global ) );
-                        floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-                    }
-	            }
-	            else
-	            {
-                    lock (intLogicalToPhysical.Mutex)
-                    {
-                        intLogicalToPhysical.Map.Add( def.LogicalIndex,
-                                                      new GpuProgramParameters.GpuLogicalIndexUse(
-                                                          def.PhysicalIndex,
-                                                          def.ArraySize*def.ElementSize,
-                                                          GpuProgramParameters.GpuParamVariability.Global ) );
-
-                        intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-                    }
-	            }
-
-	            // Deal with array indexing
-	            constantDefs.GenerateConstantDefinitionArrayEntries( paramName, def );
-	        }
-	    }
-
-        #endregion
-
-        /// <summary>
+		/// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
@@ -341,7 +291,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 			// compile the high level shader to low level microcode
 			// note, we need to pack matrices in row-major format for HLSL
-			D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
+			D3D.EffectCompiler effectCompiler = new D3D.EffectCompiler( source, defines.ToArray(), includeHandler, parseFlags );
 
 			try
 			{
@@ -419,7 +369,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-                if (HasCompileError || !IsRequiredCapabilitiesSupported())
+				if ( _compileError || !IsRequiredCapabilitiesSupported() )
 				{
 					return false;
 				}

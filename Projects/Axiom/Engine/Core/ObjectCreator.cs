@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
@@ -64,7 +63,7 @@ namespace Axiom.Core
 			{
 				_assembly = Assembly.LoadFrom( assemblyFile );
 			}
-			catch ( Exception )
+			catch ( Exception ex )
 			{
 				_assembly = Assembly.GetExecutingAssembly();
 			}
@@ -122,7 +121,7 @@ namespace Axiom.Core
 				catch ( Exception e )
 				{
 					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
-				    LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
+					LogManager.Instance.Write( e.Message );
 				}
 			}
 			return null;
@@ -174,7 +173,6 @@ namespace Axiom.Core
 					}
 					else
 					{
-					    Debug.WriteLine( String.Format("Loading {0}", _assemblyFilename) );
 						_assembly = Assembly.LoadFrom( _assemblyFilename );
 					}
 				}

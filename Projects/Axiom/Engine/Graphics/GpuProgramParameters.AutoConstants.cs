@@ -64,7 +64,7 @@ namespace Axiom.Graphics
             [ScriptEnum( "transpose_world_matrix" )]
             TransposeWorldMatrix,
             /// <summary>
-            /// The current world matrix, inverted &amp; transposed
+            /// The current world matrix, inverted & transposed
             /// </summary>
             [ScriptEnum( "inverse_transpose_world_matrix" )]
             InverseTransposeWorldMatrix,
@@ -136,7 +136,7 @@ namespace Axiom.Graphics
 
 
             /// <summary>
-            ///    The current view &amp; projection matrices concatenated.
+            ///    The current view & projection matrices concatenated.
             /// </summary>
             [ScriptEnum( "viewproj_matrix" )]
             ViewProjMatrix,
@@ -167,7 +167,7 @@ namespace Axiom.Graphics
             [ScriptEnum( "worldview_matrix" )]
             WorldViewMatrix,
             /// <summary>
-            /// The current world &amp; view matrices concatenated, then inverted
+            /// The current world & view matrices concatenated, then inverted
             /// </summary>
             [ScriptEnum( "inverse_worldview_matrix" )]
             InverseWorldViewMatrix,
@@ -178,7 +178,7 @@ namespace Axiom.Graphics
             [ScriptEnum( "transpose_worldview_matrix" )]
             TransposeWorldViewMatrix,
             /// <summary>
-            /// The current world &amp; view matrices concatenated, then inverted &amp; transposed
+            /// The current world & view matrices concatenated, then inverted & transposed
             /// </summary>
             [ScriptEnum( "inverse_transpose_worldview_matrix" )]
             InverseTransposeWorldViewMatrix,
@@ -865,7 +865,6 @@ namespace Axiom.Graphics
         /// <summary>
         /// Defines the base element type of the auto constant
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
         public enum ElementType
         {
             /// <summary>
@@ -882,7 +881,6 @@ namespace Axiom.Graphics
         /// <summary>
         /// Defines the type of the extra data item used by the auto constant.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
         public enum AutoConstantDataType
         {
             /// <summary>
@@ -904,43 +902,48 @@ namespace Axiom.Graphics
         /// <summary>
         /// Structure defining an auto constant that's available for use in a parameters object.
         /// </summary>
-        [OgreVersion(1, 7, 2790, "Should refactor AutoConstantType and ElementType as they hide the enums!")]
         public struct AutoConstantDefinition
         {
-            /// <summary></summary>
-            [OgreVersion(1, 7, 2790)]
+            /// <summary>
+            /// 
+            /// </summary>
             public AutoConstantType AutoConstantType;
 
-            /// <summary></summary>
-            [OgreVersion(1, 7, 2790)]
+            /// <summary>
+            /// 
+            /// </summary>
             public string Name;
 
-            /// <summary></summary>
-            [OgreVersion(1, 7, 2790)]
+            /// <summary>
+            /// 
+            /// </summary>
             public int ElementCount;
 
             /// <summary>
             /// The type of the constant in the program
             /// </summary>
-            [OgreVersion(1, 7, 2790)]
             public ElementType ElementType;
 
             /// <summary>
             /// The type of any extra data
             /// </summary>
-            [OgreVersion(1, 7, 2790)]
             public AutoConstantDataType DataType;
 
             /// <summary>
+            /// 
             /// </summary>
-            [OgreVersion(1, 7, 2790)]
+            /// <param name="autoConstantType"></param>
+            /// <param name="name"></param>
+            /// <param name="elementCount"></param>
+            /// <param name="elementType"></param>
+            /// <param name="dataType"></param>
             public AutoConstantDefinition( AutoConstantType autoConstantType, string name, int elementCount, ElementType elementType, AutoConstantDataType dataType )
             {
-                AutoConstantType = autoConstantType;
-                Name = name;
-                ElementCount = elementCount;
-                ElementType = elementType;
-                DataType = dataType;
+                this.AutoConstantType = autoConstantType;
+                this.Name = name;
+                this.ElementCount = elementCount;
+                this.ElementType = elementType;
+                this.DataType = dataType;
             }
         }
 

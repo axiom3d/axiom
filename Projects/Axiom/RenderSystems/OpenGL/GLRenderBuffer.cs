@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLRenderBuffer( int format, int width, int height, int fsaa )
+		public GLRenderBuffer( int format, int width, int height )
 			: base( width, height, 1, GLPixelUtil.GetClosestPixelFormat( format ), BufferUsage.WriteOnly )
 		{
 			this.GLFormat = format;

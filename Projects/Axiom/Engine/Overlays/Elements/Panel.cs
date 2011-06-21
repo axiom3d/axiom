@@ -45,10 +45,10 @@ using Axiom.Graphics;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="OgrePanelOverlayElement.h"   revision="1.3.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-//     <file name="OgrePanelOverlayElement.cpp" revision="1.10.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="OgrePanelOverlayElement.h"   revision="1.3.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgrePanelOverlayElement.cpp" revision="1.10.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Overlays.Elements
@@ -143,7 +143,11 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
+		///    
 		/// </summary>
+		/// <param name="tileX"></param>
+		/// <param name="tileY"></param>
+		/// <param name="layer"></param>
 		public void SetTiling( float x, float y, int layer )
 		{
 			Debug.Assert( layer < Config.MaxTextureLayers, "layer < Config.MaxTextureLayers" );

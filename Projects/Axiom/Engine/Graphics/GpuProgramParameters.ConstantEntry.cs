@@ -70,7 +70,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// The Variability of this parameter (see <see>GpuParamVariability</see>)
 			/// </summary>
-            public GpuParamVariability Variability;
+			public UInt16 Variability;
 
 			/// <summary>
 			///    Default constructor.
@@ -79,7 +79,7 @@ namespace Axiom.Graphics
 			/// <param name="index">Index of the param.</param>
 			/// <param name="data">Any additional info to go with the parameter.</param>
 			/// <param name="variability">Variability of parameter</param>
-			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability )
+			public AutoConstantEntry( AutoConstantType type, int index, int data, UInt16 variability )
 			{
 				this.Type = type;
 				this.PhysicalIndex = index;
@@ -93,9 +93,9 @@ namespace Axiom.Graphics
 			/// </summary>
 			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
 			/// <param name="index">Index of the param.</param>
-			/// <param name="fdata">Any additional info to go with the parameter.</param>
+			/// <param name="data">Any additional info to go with the parameter.</param>
 			/// <param name="variability">Variability of parameter</param>
-			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability )
+			public AutoConstantEntry( AutoConstantType type, int index, float fdata, UInt16 variability )
 			{
 				this.Type = type;
 				this.PhysicalIndex = index;
@@ -113,6 +113,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///     Generics: List<AutoConstantEntry>
 		/// </summary>
 		public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry>
 		{
@@ -131,14 +132,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///     Generics: List<AutoConstantEntry>
 		/// </summary>
-		public class FloatConstantEntryList : List<FloatConstantEntry>
+		public class FloatConstantEntryList : List<GpuProgramParameters.FloatConstantEntry>
 		{
 			public void Resize( int size )
 			{
-				while ( Count < size )
+				while ( this.Count < size )
 				{
-					Add( new FloatConstantEntry() );
+					Add( new GpuProgramParameters.FloatConstantEntry() );
 				}
 			}
 		}
@@ -156,14 +158,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///     Generics: List<AutoConstantEntry>
 		/// </summary>
-		public class IntConstantEntryList : List<IntConstantEntry>
+		public class IntConstantEntryList : List<GpuProgramParameters.IntConstantEntry>
 		{
 			public void Resize( int size )
 			{
 				while ( this.Count < size )
 				{
-					Add( new IntConstantEntry() );
+					Add( new GpuProgramParameters.IntConstantEntry() );
 				}
 			}
 		}

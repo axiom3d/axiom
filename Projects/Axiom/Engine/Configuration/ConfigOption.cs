@@ -58,7 +58,7 @@ namespace Axiom.Configuration
 	/// <remarks>Used for <see cref="RenderSystem.ConfigOptions" />. If immutable is true, this option must be disabled for modifying.</remarks>
 	public class ConfigOption<T>
 	{
-		//RenderSystem _parent;
+		RenderSystem _parent;
 
 		#region Name Property
 

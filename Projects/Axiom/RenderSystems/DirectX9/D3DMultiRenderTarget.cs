@@ -121,13 +121,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( this._targets[ 0 ] != null )
 			{
-				width = this._targets[ 0 ].Width;
-				height = this._targets[ 0 ].Height;
+				Width = this._targets[ 0 ].Width;
+				Height = this._targets[ 0 ].Height;
 			}
 			else
 			{
-				width = 0;
-				height = 0;
+				Width = 0;
+				Height = 0;
 			}
 		}
 
@@ -135,41 +135,24 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region RenderTarget Implementation
 
-        [OgreVersion(1, 7, 2790)]
-        public override void Update(bool swapBuffers)
-        {
-            var deviceManager = D3DRenderSystem.DeviceManager;
-            var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
+		public override void Update()
+		{
+			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
+			if ( rs.IsDeviceLost )
+				return;
 
-            if ( currRenderWindowDevice != null )
-            {
-                if ( currRenderWindowDevice.IsDeviceLost == false )
-                    base.Update( swapBuffers );
-            }
-            else
-            {
-                foreach ( var device in deviceManager )
-                {
-                    if ( device.IsDeviceLost == false )
-                    {
-                        deviceManager.ActiveRenderTargetDevice = device;
-                        base.Update( swapBuffers );
-                        deviceManager.ActiveRenderTargetDevice = null;
-                        ;
-                    }
-                }
-            }
-        }
+			base.Update();
+		}
 
-	    public override object this[ string attribute ]
+		public override object this[ string attribute ]
 		{
 			get
 			{
-				if ( attribute == "DDBACKBUFFER" )
+				if ( attribute == "D3DBACKBUFFER" )
 				{
-					var surfaces = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
-					// Transfer surfaces
-					for ( var x = 0; x < Config.MaxMultipleRenderTargets; x++ )
+					D3D.Surface[] surfaces = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
+					/// Transfer surfaces
+					for ( int x = 0; x < Config.MaxMultipleRenderTargets; x++ )
 					{
 						if ( this._targets[ x ] != null )
 							surfaces[ x ] = this._targets[ x ].Surface;
@@ -181,12 +164,11 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7, 2790)]
 		public override bool RequiresTextureFlipping
 		{
 			get
 			{
-				return false;
+				return true;
 			}
 		}
 

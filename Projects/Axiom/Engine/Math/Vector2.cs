@@ -335,7 +335,7 @@ namespace Axiom.Math
 			return x.GetHashCode() ^ y.GetHashCode();
 		}
 
-		public override string ToString()
+		public string ToString()
 		{
 			return String.Format( CultureInfo.InvariantCulture, "Vector2({0}, {1})", this.x, this.y );
 		}

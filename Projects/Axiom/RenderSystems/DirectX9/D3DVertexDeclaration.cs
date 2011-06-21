@@ -51,12 +51,19 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Member variables
 
+		protected D3D.Device device;
 		protected D3D.VertexDeclaration d3dVertexDecl;
 		protected bool needsRebuild;
 
 		#endregion Member variables
 
 		#region Constructors
+
+		public D3DVertexDeclaration( D3D.Device device )
+            : base()
+		{
+			this.device = device;
+		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -72,6 +79,8 @@ namespace Axiom.RenderSystems.DirectX9
 
                         d3dVertexDecl = null;
                     }
+
+                    this.device = null;
 				}
 
 				// There are no unmanaged resources to release, but
@@ -182,7 +191,7 @@ namespace Axiom.RenderSystems.DirectX9
 					d3dElements[ elements.Count ] = D3D.VertexElement.VertexDeclarationEnd;
 
 					// create the new declaration
-					d3dVertexDecl = new D3D.VertexDeclaration( D3DRenderSystem.ActiveD3D9Device, d3dElements );
+					d3dVertexDecl = new D3D.VertexDeclaration( device, d3dElements );
 
 					// reset the flag
 					needsRebuild = false;

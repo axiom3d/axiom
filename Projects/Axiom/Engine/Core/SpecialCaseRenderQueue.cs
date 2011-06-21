@@ -76,13 +76,13 @@ namespace Axiom.Core
 		/// Adds an item to the 'special case' render queue list.
 		/// </summary>
 		/// <remarks>Normally all render queues are rendered, in their usual sequence,
-		/// only varying if a RenderQueueListener nominates for the queue to be
+		/// only varying if a <see cref="RenderQueueListener"/> nominates for the queue to be
 		/// repeated or skipped. This method allows you to add a render queue to
 		/// a 'special case' list, which varies the behaviour. The effect of this
 		/// list depends on the 'mode' in which this list is in, which might be
 		/// to exclude these render queues, or to include them alone (excluding
 		/// all other queues). This allows you to perform broad selective
-		/// rendering without requiring a RenderQueueListener.</remarks>
+		/// rendering without requiring a <see cref="RenderQueueListener"/>.</remarks>
 		/// <param name="queueId">The identifier of the queue which should be added to the
 		///  special case list. Nothing happens if the queue is already in the list.</param>
 		public virtual void AddRenderQueue( RenderQueueGroupID queueId )
@@ -101,7 +101,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Clears the 'special case' render queue list.
+		/// Clears the 'special case' render queue list. <see cref="SceneManager.AddRenderQueueMode" />
 		/// </summary>
 		public virtual void ClearRenderQueues()
 		{
@@ -109,7 +109,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Gets the way the special case render queue list is processed.
+		/// Gets the way the special case render queue list is processed. <see cref="SceneManager.AddRenderQueueMode" />
 		/// </summary>
 		/// <returns></returns>
 		public virtual SpecialCaseRenderQueueMode RenderQueueMode
@@ -127,7 +127,7 @@ namespace Axiom.Core
 
 		/// <summary>
 		/// Returns whether or not the named queue will be rendered based on the
-		/// current 'special case' render queue list and mode.
+		/// current 'special case' render queue list and mode. <see cref="SceneManager.AddRenderQueueMode" />
 		/// </summary>
 		/// <param name="queueId">The identifier of the queue which should be tested</param>
 		/// <returns>true if the queue will be rendered, false otherwise</returns>

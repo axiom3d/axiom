@@ -230,9 +230,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Adds a renderable item to the queue.
 		/// </summary>
-        /// <param name="renderable">IRenderable object to add to the queue.</param>
+		/// <param name="item">IRenderable object to add to the queue.</param>
 		/// <param name="groupID">Group to add the item to.</param>
-        /// <param name="priority"></param>
+		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable renderable, ushort priority, RenderQueueGroupID groupID )
 		{
 			RenderQueueGroup group = GetQueueGroup( groupID );

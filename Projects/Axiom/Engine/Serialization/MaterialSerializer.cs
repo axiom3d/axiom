@@ -123,7 +123,7 @@ namespace Axiom.Serialization
 		#region Helper Methods
 
 		/// <summary>
-		///		Internal method for finding &amp; invoking an attribute parser.
+		///		Internal method for finding & invoking an attribute parser.
 		/// </summary>
 		/// <param name="line"></param>
 		/// <param name="parsers"></param>
@@ -2407,13 +2407,12 @@ namespace Axiom.Serialization
 
 		#region Public Methods
 
-	    /// <summary>
-	    ///		Parses a Material script file passed in the specified stream.
-	    /// </summary>
-	    /// <param name="stream">Stream containing the material file data.</param>
-	    /// <param name="groupName">Name of the material group.</param>
-	    ///<param name="fileName"></param>
-	    public void ParseScript( Stream stream, string groupName, string fileName )
+		/// <summary>
+		///		Parses a Material script file passed in the specified stream.
+		/// </summary>
+		/// <param name="data">Stream containing the material file data.</param>
+		/// <param name="groupName">Name of the material group.</param>
+		public void ParseScript( Stream stream, string groupName, string fileName )
 		{
 #if !(WINDOWS_PHONE)
 			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );

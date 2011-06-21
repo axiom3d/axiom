@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				foreach ( Driver drv in this )
 				{
-                    if (drv.DriverDescription == description)
+					if ( drv.Description == description )
 						return drv;
 				}
 				return null;

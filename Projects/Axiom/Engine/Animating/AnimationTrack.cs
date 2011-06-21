@@ -46,10 +46,10 @@ using Axiom.Animating.Collections;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="AnimationTrack.h"   revision="1.13.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-//     <file name="AnimationTrack.cpp" revision="1.28.2.3" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="AnimationTrack.h"   revision="1.13.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="AnimationTrack.cpp" revision="1.28.2.3" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Animating
@@ -155,7 +155,6 @@ namespace Axiom.Animating
 		///    discrete points in time. Normally however, you want to interpolate between these
 		///    keyframes to produce smooth movement, and this method allows you to do this easily.
 		///    In animation terminology this is called 'tweening'. 
-        /// </remarks>
 		/// <param name="time">The time (in relation to the whole animation sequence)</param>
 		///	<param name="kf">Keyframe object to store results </param>
 		public abstract KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf );
@@ -166,7 +165,7 @@ namespace Axiom.Animating
 		/// <param name="time">The time position in the animation to apply.</param>
 		/// <param name="weight">The influence to give to this track, 1.0 for full influence, 
 		///	   less to blend with other animations.</param>
-        /// <param name="accumulate">Don't make weights relative to overall weights applied,
+		/// <param name="acculumate">Don't make weights relative to overall weights applied,
 		///    make them absolute and just add. </param>          
 		/// <param name="scale">The scale to apply to translations and scalings, useful for 
 		///	   adapting an animation to a different size target.</param>
@@ -467,7 +466,7 @@ namespace Axiom.Animating
 
 		/// <summary> Applies an animation track to a given animable value. </summary>
 		/// <param name="anim">The AnimableValue to which to apply the animation </param>
-        /// <param name="time">The time position in the animation to apply. </param>
+		/// <param name="timePos">The time position in the animation to apply. </param>
 		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
 		///        other animations. </param>
 		/// <param name="scale">The scale to apply to translations and scalings, useful for 
@@ -581,23 +580,22 @@ namespace Axiom.Animating
 
 		#region Public methods
 
-	    /// <summary>
-	    ///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
-	    /// </summary>
-	    /// <remarks>
-	    ///		The KeyFrame objects held by this class are transformation snapshots at 
-	    ///		discrete points in time. Normally however, you want to interpolate between these
-	    ///		keyframes to produce smooth movement, and this method allows you to do this easily.
-	    ///		In animation terminology this is called 'tweening'. 
-	    /// </remarks>
-	    /// <param name="time">The time (in relation to the whole animation sequence).</param>
-	    ///<param name="kf"></param>
-	    ///<returns>
-	    ///		A new keyframe object containing the interpolated transforms. Note that the
-	    ///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
-	    ///		spherically linearly interpolated (slerp) for the most natural result.
-	    /// </returns>
-	    public override KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf )
+		/// <summary>
+		///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
+		/// </summary>
+		/// <remarks>
+		///		The KeyFrame objects held by this class are transformation snapshots at 
+		///		discrete points in time. Normally however, you want to interpolate between these
+		///		keyframes to produce smooth movement, and this method allows you to do this easily.
+		///		In animation terminology this is called 'tweening'. 
+		/// </remarks>
+		/// <param name="time">The time (in relation to the whole animation sequence).</param>
+		/// <returns>
+		///		A new keyframe object containing the interpolated transforms. Note that the
+		///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
+		///		spherically linearly interpolated (slerp) for the most natural result.
+		/// </returns>
+		public override KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf )
 		{
 			// note: this is an un-attached keyframe
 			TransformKeyFrame result = (TransformKeyFrame)kf;
@@ -662,19 +660,18 @@ namespace Axiom.Animating
 			return result;
 		}
 
-	    /// <summary>
-	    ///		Applies an animation track at a certain position to the target node.
-	    /// </summary>
-	    /// <remarks>
-	    ///		When a track has bee associated with a target node, you can eaisly apply the animation
-	    ///		to the target by calling this method.
-	    /// </remarks>
-	    /// <param name="time">The time position in the animation to apply.</param>
-	    /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-	    ///		other animations.</param>
-	    /// <param name="accumulate"></param>
-	    ///<param name="scale"></param>
-	    public override void Apply( float time, float weight, bool accumulate, float scale )
+		/// <summary>
+		///		Applies an animation track at a certain position to the target node.
+		/// </summary>
+		/// <remarks>
+		///		When a track has bee associated with a target node, you can eaisly apply the animation
+		///		to the target by calling this method.
+		/// </remarks>
+		/// <param name="time">The time position in the animation to apply.</param>
+		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
+		///		other animations.</param>
+		/// <param name="accumulate"></param>
+		public override void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// call ApplyToNode with our target node
 			ApplyToNode( target, time, weight, accumulate, scale );
@@ -684,6 +681,10 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
 		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="time"></param>
+		/// <param name="weight"></param>
+		/// <param name="accumulate"></param>
 		public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scale )
 		{
 			this.GetInterpolatedKeyFrame( time, kf );
@@ -975,7 +976,7 @@ namespace Axiom.Animating
 		///     in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created
 		///     for you, so you don't need to create this one, just access it using getKeyFrame(0);
 		/// </remarks>
-        /// <param name="time">The time from which this KeyFrame will apply.</param>
+		/// <param name="timePos">The time from which this KeyFrame will apply.</param>
 		public VertexMorphKeyFrame CreateVertexMorphKeyFrame( float time )
 		{
 			if ( animationType != VertexAnimationType.Morph )

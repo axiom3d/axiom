@@ -46,7 +46,7 @@ using Axiom.Collections;
 namespace Axiom.Collections
 {
 	/// <summary>
-	/// Represents a collection of Viewports that are sorted by zOrder key based on the associated <see cref="IComparer&lt;T&gt;"/> implementation.
+	/// Represents a collection of Viewports that are sorted by zOrder key based on the associated <see cref="IComparer"/> implementation.
 	/// </summary>
 	public class ViewportCollection : AxiomSortedCollection<int, Viewport>
 	{
