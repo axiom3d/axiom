@@ -2,7 +2,7 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <PropertyGroup>
-    <ProjectBase>OctreeZone</ProjectBase>
+    <ProjectBase>Axiom.Plugins.OctreeZone</ProjectBase>
     <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).csproj</ProjectFile>
     <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
     <ImagePath>bin\$(Platform)\$(Configuration)</ImagePath>
