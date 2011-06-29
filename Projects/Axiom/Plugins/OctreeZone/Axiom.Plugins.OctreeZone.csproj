@@ -3,9 +3,9 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>44ee5ceb-1d37-4953-b5cd-e76553ded8bf</ProjectGuid>
+    <ProjectGuid>{B19D8BB9-E642-4ACB-8B90-091B61D3F06D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.Plugins.OctreeZone</RootNamespace>
@@ -39,8 +39,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ConfigFile.cs" />
+    <Compile Include="HeightmapTerrainZonePageSource.cs" />
+    <Compile Include="Octree.cs" />
+    <Compile Include="OctreeZone.cs" />
+    <Compile Include="OctreeZoneOctree.cs" />
+    <Compile Include="OctreeZonePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TerrainVertexProgram.cs" />
+    <Compile Include="TerrainZone.cs" />
+    <Compile Include="TerrainZoneOptions.cs" />
+    <Compile Include="TerrainZonePage.cs" />
+    <Compile Include="TerrainZonePageSource.cs" />
+    <Compile Include="TerrainZonePageSourceOptionList.cs" />
+    <Compile Include="TerrainZoneRenderable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+      <Project>{2F61CAE2-E060-44F7-9F12-EF58F12923CD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
