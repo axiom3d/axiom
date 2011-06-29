@@ -780,6 +780,46 @@ namespace Axiom.Core
 			}
 		}
 
+        /// <summary>
+        ///		Method called to notify the object that it has been attached to a node.
+        /// </summary>
+        /// <param name="node">Scene node to notify.</param>
+        public virtual void NotifyAttached(Node node)
+        {
+            this.NotifyAttached(node, false);
+        }
+
+        /// <summary>
+        ///		Method called to notify the object that it has been attached to a node.
+        /// </summary>
+        /// <param name="node">Scene node to notify.</param>
+        public virtual void NotifyAttached(Node node, bool isTagPoint)
+        {
+            bool parentChanged = (node != this.parentNode);
+            this.parentNode = node;
+            this.parentIsTagPoint = isTagPoint;
+            // Mark light list being dirty, simply decrease
+            // counter by one for minimize overhead
+            --lightListUpdated;
+
+            if (parentChanged && this.parentNode != null)
+            {
+                if (ObjectAttached != null)
+                {
+                    //Fire Event
+                    ObjectAttached(this);
+                }
+            }
+            else
+            {
+                if (ObjectDetached != null)
+                {
+                    //Fire Event
+                    ObjectDetached(this);
+                }
+            }
+        }
+
 		#region IAnimable methods
 
 		/// <summary>
@@ -808,47 +848,6 @@ namespace Axiom.Core
 		#endregion IAnimable methods
 
 		#region Internal engine methods
-
-		/// <summary>
-		///		Internal method called to notify the object that it has been attached to a node.
-		/// </summary>
-		/// <param name="node">Scene node to notify.</param>
-		internal virtual void NotifyAttached( Node node )
-		{
-			this.NotifyAttached( node, false );
-		}
-
-		/// <summary>
-		///		Internal method called to notify the object that it has been attached to a node.
-		/// </summary>
-		/// <param name="node">Scene node to notify.</param>
-		internal virtual void NotifyAttached( Node node, bool isTagPoint )
-		{
-			bool parentChanged = ( node != this.parentNode );
-			this.parentNode = node;
-			this.parentIsTagPoint = isTagPoint;
-			// Mark light list being dirty, simply decrease
-			// counter by one for minimise overhead
-			--lightListUpdated;
-
-			if ( parentChanged && this.parentNode != null )
-			{
-				if ( ObjectAttached != null )
-				{
-					//Fire Event
-					ObjectAttached( this );
-				}
-			}
-			else
-			{
-				if ( ObjectDetached != null )
-				{
-					//Fire Event
-					ObjectDetached( this );
-				}
-			}
-		}
-
 
 		/// <summary>
 		///		Internal method to notify the object of the camera to be used for the next rendering operation.

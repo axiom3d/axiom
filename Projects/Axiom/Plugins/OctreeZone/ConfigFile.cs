@@ -1,8 +1,8 @@
-#region LGPL License
+﻿#region LGPL License
 
 /*
 Axiom Graphics Engine Library
-Copyright � 2003-2011 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -41,42 +41,39 @@ using System.Collections;
 
 #endregion Namespace Declarations
 
-namespace OctreeZone
+public class ConfigFile
 {
-	public class ConfigFile
-	{
-		private XmlDocument _doc = new XmlDocument();
-		private string baseSchema;
-		public ConfigFile( string baseSchemaName )
-		{
-			baseSchema = baseSchemaName;
-		}
+    private XmlDocument _doc = new XmlDocument();
+    private string baseSchema;
+    public ConfigFile(string baseSchemaName)
+    {
+        baseSchema = baseSchemaName;
+    }
 
-		public bool Load( Stream stream )
-		{
-			_doc.Load( stream );
-			return true;
-		}
+    public bool Load(Stream stream)
+    {
+        _doc.Load(stream);
+        return true;
+    }
 
-		public string this[ string key ]
-		{
-			get
-			{
-				return _doc[ baseSchema ][ key ].InnerText;
-			}
-		}
+    public string this[string key]
+    {
+        get
+        {
+            return _doc[baseSchema][key].InnerText;
+        }
+    }
 
-		public IEnumerable GetEnumerator()
-		{
-			foreach ( XmlElement el in _doc[ baseSchema ] )
-			{
-				yield return new string[] { el.Name, el.InnerText };
-			}
-		}
+    public IEnumerable GetEnumerator()
+    {
+        foreach (XmlElement el in _doc[baseSchema])
+        {
+            yield return new string[] { el.Name, el.InnerText };
+        }
+    }
 
-		public string getSetting( string key )
-		{
-			return this[ key ];
-		}
-	}
+    public string GetSetting(string key)
+    {
+        return this[key];
+    }
 }

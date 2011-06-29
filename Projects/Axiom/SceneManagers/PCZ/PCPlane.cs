@@ -1,35 +1,29 @@
-﻿#region LGPL License
-
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
-#endregion
+#region MIT/X11 License
+//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+// <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+// <id value="$Id:$"/>
 // </file>
 #endregion SVN Version Information
 
@@ -44,81 +38,81 @@ using Axiom.Math;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-	public class PCPlane
-	{
-		protected Plane plane;
-		protected Portal mPortal;
+    public class PCPlane
+    {
+        protected Plane _plane = new Plane();
+        protected Portal _portal = null;
 
-		public PCPlane()
-		{
-			mPortal = null;
-		}
+        public PCPlane()
+        {
+            _portal = null;
+        }
 
-		public PCPlane( Plane plane )
-		{
-			this.plane = new Plane( plane );
-			mPortal = null;
-		}
+        public PCPlane(Plane plane)
+        {
+            this._plane = new Plane(plane);
+            _portal = null;
+        }
 
-		public PCPlane( Vector3 rkNormal, Vector3 rkPoint )
-		{
-			this.plane = new Plane( rkNormal, rkPoint );
-			mPortal = null;
-		}
+        public PCPlane(Vector3 rkNormal, Vector3 rkPoint)
+        {
+            this._plane = new Plane(rkNormal, rkPoint);
+            _portal = null;
+        }
 
-		public PCPlane( Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2 )
-		{
-			this.plane = new Plane( rkPoint0, rkPoint1, rkPoint2 );
-			mPortal = null;
-		}
+        public PCPlane(Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2)
+        {
+            this._plane = new Plane(rkPoint0, rkPoint1, rkPoint2);
+            _portal = null;
+        }
 
-		public PlaneSide GetSide( AxisAlignedBox box )
-		{
-			return this.plane.GetSide( box );
-		}
+        public PlaneSide GetSide(AxisAlignedBox box)
+        {
+            return this._plane.GetSide(box);
+        }
 
-		public PlaneSide GetSide( Vector3 centre, Vector3 halfSize )
-		{
-			return this.plane.GetSide( centre, halfSize );
-		}
+        public PlaneSide GetSide(Vector3 centre, Vector3 halfSize)
+        {
+            return this._plane.GetSide(centre, halfSize);
+        }
 
-		public PlaneSide GetSide( Vector3 point )
-		{
-			return this.plane.GetSide( point );
-		}
+        public PlaneSide GetSide(Vector3 point)
+        {
+            return this._plane.GetSide(point);
+        }
 
-		public void Redefine( Vector3 point0, Vector3 point1, Vector3 point2 )
-		{
-			this.plane.Redefine( point0, point1, point2 );
-		}
+        public void Redefine(Vector3 point0, Vector3 point1, Vector3 point2)
+        {
+            this._plane.Redefine(point0, point1, point2);
+        }
 
-		public void Redefine( Vector3 rkNormal, Vector3 rkPoint )
-		{
-			this.plane.Redefine( rkNormal, rkPoint );
-		}
+        public void Redefine(Vector3 rkNormal, Vector3 rkPoint)
+        {
+            this._plane.Redefine(rkNormal, rkPoint);
+        }
 
-		public void SetFromAxiomPlane( Plane axiomPlane )
-		{
-			this.plane = new Plane( plane );
-			mPortal = null;
-		}
+        public void SetFromAxiomPlane(Plane axiomPlane)
+        {
+            this._plane = new Plane(_plane);
+            _portal = null;
+        }
 
-		public Portal Portal
-		{
-			get
-			{
-				return mPortal;
-			}
-			set
-			{
-				mPortal = value;
-			}
-		}
+        public Portal Portal
+        {
+            get
+            {
+                return _portal;
+            }
+            set
+            {
+                _portal = value;
+            }
+        }
 
-		~PCPlane()
-		{
-			mPortal = null;
-		}
+        ~PCPlane()
+        {
+            _portal = null;
+        }
 
-	}
+    }
 }

@@ -1,382 +1,325 @@
-﻿#region LGPL License
-
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
-#endregion
+#region MIT/X11 License
+//Copyright (c) 2009 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+// <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+// <id value="$Id:$"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Axiom;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Collections;
+using Axiom.Graphics;
 
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-	public class PCZSceneNode : SceneNode
-	{
-		Vector3 newPosition;
-		PCZone homeZone;
-		bool anchored;
-		bool allowedToVisit;
-		readonly Dictionary<string, PCZone> visitingZones = new Dictionary<string, PCZone>();
-		Vector3 prevPosition;
-		ulong lastVisibleFrame;
-		PCZCamera lastVisibleFromCamera;
-		Dictionary<string, ZoneData> zoneData = new Dictionary<string, ZoneData>();
-		bool enabled;
-		Dictionary<string, MovableObject> objectsByName = new Dictionary<string, MovableObject>();
+
+    //ORIGINAL LINE: class _OgrePCZPluginExport PCZSceneNode : public SceneNode
+    public class PCZSceneNode : SceneNode
+    {
+
+        /// <summary>
+        /// name generator
+        /// </summary>
+        private static NameGenerator<PCZSceneNode> _nameGenerator = new NameGenerator<PCZSceneNode>("PCZSceneNode");
+
+        protected Vector3 NewPosition = Vector3.Zero;
+        protected PCZone mHomeZone = null;
+        public bool Anchored = false;
+        public bool AllowToVisit = true;
+        public bool AllowedToVisit = true;
+        protected Dictionary<string, PCZone> VisitingZones = new Dictionary<string, PCZone>();
+        public Vector3 PrevPosition = Vector3.Zero;
+        public ulong LastVisibleFrame = 0;
+        public PCZCamera LastVisibleFromCamera;
+        protected Dictionary<string, ZoneData> ZoneData = new Dictionary<string, ZoneData>();
+        public bool Enabled = true;
+        public bool Moved = false;
+
+        //* Standard constructor 
+        public PCZSceneNode(SceneManager creator)
+            : this(creator, _nameGenerator.GetNextUniqueName())
+        {
+        }
+
+        //* Standard constructor 
+        public PCZSceneNode(SceneManager creator, string name)
+            : base(creator, name)
+        {
+
+        }
+        //* Standard destructor 
+        ~PCZSceneNode()
+        {
+            // clear visiting zones list
+            VisitingZones.Clear();
+            ZoneData.Clear();
+            base.Dispose();
+        }
+
+        protected override void Update(bool updateChildren, bool parentHasChanged)
+        {
+            base.Update(updateChildren, parentHasChanged);
+            if (base.Parent != null) // skip bound update if it's root scene node. Saves a lot of CPU.
+                UpdateBounds();
+
+            PrevPosition = NewPosition;
+            NewPosition = DerivedPosition;
+        }
+
+        //ORIGINAL LINE: void updateFromParentImpl() const
+        public void updateFromParentImpl()
+        {
+            base.UpdateFromParent();
+            Moved = true;
+        }
+
+        //    * Creates an unnamed new SceneNode as a child of this node.
+        //        translate Initial translation offset of child relative to parent
+        //        rotate Initial rotation relative to parent
+        public SceneNode CreateChildSceneNode(Vector3 inTranslate)
+        {
+            return CreateChildSceneNode(inTranslate, Quaternion.Identity);
+        }
+
+        public SceneNode CreateChildSceneNode()
+        {
+            return CreateChildSceneNode(Vector3.Zero, Quaternion.Identity);
+        }
+
+        //ORIGINAL LINE: SceneNode* createChildSceneNode(const Vector3& inTranslate = Vector3::ZERO, const Quaternion& inRotate = Quaternion::IDENTITY)
+        public SceneNode CreateChildSceneNode(Vector3 inTranslate, Quaternion inRotate)
+        {
+            PCZSceneNode childSceneNode = (PCZSceneNode)(this.CreateChild(inTranslate, inRotate));
+            if (HomeZone != null)
+            {
+                childSceneNode.HomeZone = HomeZone;
+                HomeZone.AddNode(childSceneNode);
+            }
+            return (SceneNode)(childSceneNode);
+        }
+
+        //    * Creates a new named SceneNode as a child of this node.
+        //        This creates a child node with a given name, which allows you to look the node up from 
+        //        the parent which holds this collection of nodes.
+        //            translate Initial translation offset of child relative to parent
+        //            rotate Initial rotation relative to parent
+        public SceneNode CreateChildSceneNode(string name, Vector3 inTranslate)
+        {
+            return CreateChildSceneNode(name, inTranslate, Quaternion.Identity);
+        }
+
+        public SceneNode CreateChildSceneNode(string name)
+        {
+            return CreateChildSceneNode(name, Vector3.Zero, Quaternion.Identity);
+        }
+
+        //ORIGINAL LINE: SceneNode* createChildSceneNode(const string& name, const Vector3& inTranslate = Vector3::ZERO, const Quaternion& inRotate = Quaternion::IDENTITY)
+        public SceneNode CreateChildSceneNode(string name, Vector3 inTranslate, Quaternion inRotate)
+        {
+            PCZSceneNode childSceneNode = (PCZSceneNode)(this.CreateChild(name, inTranslate, inRotate));
+            if (HomeZone != null)
+            {
+                childSceneNode.HomeZone = HomeZone;
+                HomeZone.AddNode(childSceneNode);
+            }
+            return (SceneNode)(childSceneNode);
+        }
+
+        public PCZone HomeZone
+        {
+            get
+            {
+                return mHomeZone;
+            }
+            set
+            {
+                // if the new home zone is different than the current, remove
+                // the node from the current home zone's list of home nodes first
+                if (value != mHomeZone && mHomeZone != null)
+                {
+                    mHomeZone.RemoveNode(this);
+                }
+                mHomeZone = value;
+            }
+        }
+
+        public void AnchorToHomeZone(PCZone zone)
+        {
+            mHomeZone = zone;
+            if (zone != null)
+            {
+                Anchored = true;
+            }
+            else
+            {
+                Anchored = false;
+            }
+        }
 
 
-		public PCZSceneNode( SceneManager creator )
-			: base( creator )
-		{
-			homeZone = null;
-			anchored = false;
-			allowedToVisit = true;
-			lastVisibleFrame = 0;
-			lastVisibleFromCamera = null;
-			enabled = true;
-		}
+        public void AddZoneToVisitingZonesMap(PCZone zone)
+        {
+            VisitingZones[zone.Name] = zone;
+        }
 
-		public PCZSceneNode( SceneManager creator, string name )
-			: base( creator, name )
-		{
-			homeZone = null;
-			anchored = false;
-			allowedToVisit = true;
-			lastVisibleFrame = 0;
-			lastVisibleFromCamera = null;
-			enabled = true;
-		}
+        public void ClearVisitingZonesMap()
+        {
+            VisitingZones.Clear();
+        }
 
-		~PCZSceneNode()
-		{
-			// clear visiting zones list
-			visitingZones.Clear();
+        // The following function does the following:
+        // * 1) Remove references to the node from zones the node is visiting
+        // * 2) Clear the node's list of zones it is visiting
+        public void ClearNodeFromVisitedZones()
+        {
+            if (VisitingZones.Count > 0)
+            {
+                // first go through the list of zones this node is visiting
+                // and remove references to this node
 
-			// delete zone data
-			zoneData.Clear();
+                foreach (KeyValuePair<string, PCZone> kvp in VisitingZones)
+                {
+                    PCZone zone = kvp.Value;
+                    zone.RemoveNode(this);
+                }
 
-			//clear object list
-			objectsByName.Clear();
-		}
+                // second, clear the visiting zones list
+                VisitingZones.Clear();
 
-		#region Propertys
+            }
+        }
 
-		public Vector3 PreviousPosition
-		{
-			get
-			{
-				return prevPosition;
-			}
-		}
+        // Remove all references that the node has to the given zone
+        //	
+        public void RemoveReferencesToZone(PCZone zone)
+        {
+            if (HomeZone == zone)
+            {
+                HomeZone = null;
+            }
 
-		public bool IsAnchored
-		{
-			get
-			{
-				return anchored;
-			}
-			set
-			{
-				anchored = value;
-			}
-		}
+            if (VisitingZones.ContainsKey(zone.Name))
+            {
+                VisitingZones.Remove(zone.Name);
 
-		public bool AllowToVisit
-		{
-			get
-			{
-				return allowedToVisit;
-			}
-			set
-			{
-				allowedToVisit = value;
-			}
-		}
+            }
 
-		public ulong LastVisibleFrame
-		{
+        }
 
-			get
-			{
-				return lastVisibleFrame;
-			}
-			set
-			{
-				lastVisibleFrame = value;
-			}
-		}
+        // returns true if zone is in the node's visiting zones map
+        //   false otherwise.
+        //	
+        public bool IsVisitingZone(PCZone zone)
+        {
+            return VisitingZones.ContainsKey(zone.Name);
+        }
 
-		public PCZCamera LastVisibleFromCamera
-		{
-			get
-			{
-				return lastVisibleFromCamera;
-			}
-			set
-			{
-				lastVisibleFromCamera = value;
-			}
-		}
+        //* Adds the attached objects of this PCZSceneNode into the queue. 
+        public void AddToRenderQueue(Camera cam, RenderQueue queue, bool onlyShadowCasters, VisibleObjectsBoundsInfo visibleBounds)
+        {
+            foreach (MovableObject mo in objectList)
+            {
 
-		public bool Enabled
-		{
-			get
-			{
-				return enabled;
-			}
+                mo.NotifyCurrentCamera(cam);
+                if (mo.IsVisible && (!onlyShadowCasters || mo.CastShadows))
+                {
+                    mo.UpdateRenderQueue(queue);
 
-			set
-			{
-				enabled = value;
-			}
-		}
+                    //TODO: Check this
+                    //if (visibleBounds != null)
+                    //{
+                    visibleBounds.Merge(mo.GetWorldBoundingBox(true), mo.GetWorldBoundingSphere(true), cam);
+                    //}
+                }
+            }
+        }
 
+        //    * Save the node's current position as the previous position
+        //	
+        public void SavePrevPosition()
+        {
+            PrevPosition = DerivedPosition;
+        }
 
-		#endregion Propertys
+        public void SetZoneData(PCZone zone, ZoneData zoneData)
+        {
 
-		#region Methods
+            // first make sure that the data doesn't already exist
+            if (ZoneData.ContainsKey(zone.Name))
+            {
+                throw new AxiomException("A ZoneData associated with zone " + zone.Name + " already exists", "PCZSceneNode::setZoneData");
+            }
+            ZoneData[zone.Name] = zoneData;
+        }
 
-		protected override void Update( bool updateChildren, bool parentHasChanged )
-		{
-			base.Update( updateChildren, parentHasChanged );
+        // get zone data for this node for given zone
+        // NOTE: This routine assumes that the zone data is present!
+        public ZoneData GetZoneData(PCZone zone)
+        {
+            if (ZoneData.ContainsKey(zone.Name))
+            {
+                return ZoneData[zone.Name];
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-			prevPosition = newPosition;
-			newPosition = DerivedPosition;   // do this way since _update is called through SceneManager::_updateSceneGraph which comes before PCZSceneManager::_updatePCZSceneNodes
-		}
-		//-----------------------------------------------------------------------
-		public override SceneNode CreateChildSceneNode( Vector3 translate, Quaternion rotate )
-		{
-			PCZSceneNode childSceneNode = (PCZSceneNode)( this.CreateChild( translate, rotate ) );
-			if ( anchored )
-			{
-				childSceneNode.AnchorToHomeZone( homeZone );
-				homeZone.AddNode( childSceneNode );
-			}
-			return childSceneNode;
-		}
-		//-----------------------------------------------------------------------
-		public override SceneNode CreateChildSceneNode( string name, Vector3 translate, Quaternion rotate )
-		{
-			PCZSceneNode childSceneNode = (PCZSceneNode)( this.CreateChild( name, translate, rotate ) );
-			if ( anchored )
-			{
-				childSceneNode.AnchorToHomeZone( homeZone );
-				homeZone.AddNode( childSceneNode );
-			}
-			return childSceneNode;
-		}
+        // update zone-specific data for any zone that the node is touching
+        public void UpdateZoneData()
+        {
+            ZoneData zoneData;
+            PCZone zone;
+            // make sure home zone data is updated
+            zone = HomeZone;
+            if (zone.RequiresZoneSpecificNodeData)
+            {
+                zoneData = GetZoneData(zone);
+                //TODO: check this to get it to run but it should have something here right?
+                if (zoneData != null)
+                {
+                    zoneData.Update();
+                }
+            }
 
+        }
+        public void Enable(bool yesno)
+        {
+            Enabled = yesno;
+        }
+        public bool IsEnabled()
+        {
+            return Enabled;
+        }
 
-		public PCZone HomeZone
-		{
-			get
-			{
-				return homeZone;
-			}
-			set
-			{
-				// if the new home zone is different than the current, remove
-				// the node from the current home zone's list of home nodes first
-				if ( value != homeZone && homeZone != null )
-				{
-					homeZone.RemoveNode( this );
-				}
-
-				homeZone = value;
-			}
-		}
-
-		public void AnchorToHomeZone( PCZone zone )
-		{
-			homeZone = zone;
-			anchored = true;
-		}
-
-		public void AddZoneToVisitingZonesMap( PCZone zone )
-		{
-			visitingZones[ zone.Name ] = zone;
-		}
-		public void ClearVisitingZonesMap()
-		{
-			visitingZones.Clear();
-		}
-		/* The following function does the following:
-		 * 1) Remove references to the node from zones the node is visiting
-		 * 2) Clear the node's list of zones it is visiting
-		 */
-		public void ClearNodeFromVisitedZones()
-		{
-			if ( visitingZones.Count > 0 )
-			{
-				// first go through the list of zones this node is visiting
-				// and remove references to this node
-				//PCZone zone;
-				//ZoneMap::iterator it = mVisitingZones.begin();
-
-				foreach ( PCZone zone in visitingZones.Values )
-				{
-					zone.RemoveNode( this );
-				}
-
-				// second, clear the visiting zones list
-				visitingZones.Clear();
-			}
-		}
-
-		/* Remove all references that the node has to the given zone
-		*/
-		public void RemoveReferencesToZone( PCZone zone )
-		{
-			if ( homeZone == zone )
-			{
-				homeZone = null;
-			}
-
-			if ( visitingZones.ContainsKey( zone.Name ) )
-			{
-				visitingZones.Remove( zone.Name );
-			}
-
-			// search the map of visiting zones and remove
-			//ZoneMap::iterator i;
-			//i = mVisitingZones.find(zone->getName());
-			//if (i != mVisitingZones.end())
-			//{
-			//    mVisitingZones.erase(i);
-			//}
-		}
-
-		/* returns true if zone is in the node's visiting zones map
-		   false otherwise.
-		*/
-		public bool IsVisitingZone( PCZone zone )
-		{
-			if ( visitingZones.ContainsKey( zone.Name ) )
-			{
-				return true;
-			}
-
-			return false;
-
-			//ZoneMap::iterator i;
-			//i = mVisitingZones.find(zone->getName());
-			//if (i != mVisitingZones.end())
-			//{
-			//    return true;
-			//}
-			//return false;
-		}
-
-		/** Adds the attached objects of this PCZSceneNode into the queue. */
-		public void AddToRenderQueue( Camera cam, RenderQueue queue, bool onlyShadowCasters, VisibleObjectsBoundsInfo visibleBounds )
-		{
-			foreach ( KeyValuePair<string, MovableObject> pair in objectsByName )
-			{
-				pair.Value.NotifyCurrentCamera( cam );
-
-				if ( pair.Value.IsVisible && ( !onlyShadowCasters || pair.Value.CastShadows ) )
-				{
-					pair.Value.UpdateRenderQueue( queue );
-
-					if ( !visibleBounds.aabb.IsNull )
-					{
-						visibleBounds.Merge( pair.Value.GetWorldBoundingBox( true ), pair.Value.GetWorldBoundingSphere( true ), cam );
-					}
-				}
-			}
-		}
-
-		/** Save the node's current position as the previous position
-		*/
-		public void SavePrevPosition()
-		{
-			prevPosition = DerivedPosition;
-		}
-
-		public void SetZoneData( PCZone zone, ZoneData zoneData )
-		{
-
-			// first make sure that the data doesn't already exist
-			if ( this.zoneData.ContainsKey( zone.Name ) )
-			{
-				throw new AxiomException( "A ZoneData associated with zone " + zone.Name + " already exists. PCZSceneNode::setZoneData" );
-			}
-
-			//mZoneData[zone->getName()] = zoneData;
-			// is this equivalent? i think so...
-			this.zoneData.Add( zone.Name, zoneData );
-		}
-
-		// get zone data for this node for given zone
-		// NOTE: This routine assumes that the zone data is present!
-		public ZoneData GetZoneData( PCZone zone )
-		{
-			return zoneData[ zone.Name ];
-		}
-
-		// update zone-specific data for any zone that the node is touching
-		public void UpdateZoneData()
-		{
-			ZoneData zoneData;
-			PCZone zone;
-
-			// make sure home zone data is updated
-			zone = homeZone;
-			if ( zone.RequiresZoneSpecificNodeData )
-			{
-				zoneData = GetZoneData( zone );
-				zoneData.update();
-			}
-
-			// update zone data for any zones visited
-			foreach ( KeyValuePair<string, PCZone> pair in visitingZones )
-			{
-				zone = pair.Value;
-
-				if ( zone.RequiresZoneSpecificNodeData )
-				{
-					zoneData = GetZoneData( zone );
-					zoneData.update();
-				}
-			}
-		}
-
-		#endregion Methods
-	}
+    }
 }

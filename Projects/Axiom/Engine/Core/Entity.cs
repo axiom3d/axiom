@@ -837,7 +837,7 @@ namespace Axiom.Core
 		///		Internal method called to notify the object that it has been attached to a node.
 		/// </summary>
 		/// <param name="node">Scene node to which we are being attached.</param>
-		internal override void NotifyAttached( Node node, bool isTagPoint )
+		public override void NotifyAttached( Node node, bool isTagPoint )
 		{
 			base.NotifyAttached( node, isTagPoint );
 			// Also notify LOD entities
