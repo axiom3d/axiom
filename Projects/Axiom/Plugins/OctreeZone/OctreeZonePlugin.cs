@@ -1,8 +1,8 @@
-﻿#region LGPL License
+#region LGPL License
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright � 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -45,24 +45,24 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace OctreeZone
 {
-	public class OctreeZonePlugin : IPlugin
-	{
-		public void Initialize()
-		{
-			mTerrainZoneFactory = new TerrainZoneFactory( "ZoneType_Terrain" );
-			mOctreeZoneFactory = new OctreeZoneFactory( "ZoneType_Octree" );
+    public class OctreeZonePlugin : IPlugin
+    {
+        public void Initialize()
+        {
+            mTerrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
+            mOctreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
 
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( mTerrainZoneFactory );
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( mOctreeZoneFactory );
-		}
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(mTerrainZoneFactory);
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(mOctreeZoneFactory);
+        }
 
-		public void Shutdown()
-		{
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( mOctreeZoneFactory );
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( mTerrainZoneFactory );
-		}
+        public void Shutdown()
+        {
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(mOctreeZoneFactory);
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(mTerrainZoneFactory);
+        }
 
-		OctreeZoneFactory mOctreeZoneFactory;
-		TerrainZoneFactory mTerrainZoneFactory;
-	}
+        OctreeZoneFactory mOctreeZoneFactory;
+        TerrainZoneFactory mTerrainZoneFactory;
+    }
 }

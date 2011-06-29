@@ -1,8 +1,8 @@
-#region LGPL License
+﻿#region LGPL License
 
 /*
 Axiom Graphics Engine Library
-Copyright � 2003-2011 Axiom Project Team
+Copyright © 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -39,21 +39,18 @@ using Axiom.Collections;
 
 #endregion Namespace Declarations
 
-namespace OctreeZone
+//public class TerrainZonePageSourceOption
+//{
+//    public string Key;
+//    public string Value;
+
+//    public TerrainZonePageSourceOption(string key, string value)
+//    {
+//        Key = key;
+//        Value = value;
+//    }
+//}
+
+public class TerrainZonePageSourceOptionList : AxiomSortedCollection<string, string>
 {
-	//public class TerrainZonePageSourceOption
-	//{
-	//    public string Key;
-	//    public string Value;
-
-	//    public TerrainZonePageSourceOption(string key, string value)
-	//    {
-	//        Key = key;
-	//        Value = value;
-	//    }
-	//}
-
-	public class TerrainZonePageSourceOptionList : AxiomSortedCollection<string, string>
-	{
-	}
 }

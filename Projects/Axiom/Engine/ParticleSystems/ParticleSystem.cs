@@ -833,7 +833,7 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		internal override void NotifyAttached( Node parent, bool isTagPoint )
+		public override void NotifyAttached( Node parent, bool isTagPoint )
 		{
 			base.NotifyAttached( parent, isTagPoint );
 			if ( renderer != null && isRendererConfigured )

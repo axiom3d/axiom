@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</ProjectGuid>
+    <ProjectGuid>{2F61CAE2-E060-44F7-9F12-EF58F12923CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.SceneManagers.PortalConnected</RootNamespace>
@@ -13,55 +13,56 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\x86\Release\Axiom.SceneManagers.PortalConnected.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Capsule.cs" />
     <Compile Include="DefaultZone.cs" />
-    <None Include="MovableObjectFactory.cs" />
+    <Compile Include="DefaultZoneFactory.cs" />
     <Compile Include="PCPlane.cs" />
     <Compile Include="PCZCamera.cs" />
     <Compile Include="PCZFrustum.cs" />
     <Compile Include="PCZLight.cs" />
+    <Compile Include="PCZone.cs" />
     <Compile Include="PCZoneFactory.cs" />
-    <Compile Include="PCZPPlugin.cs" />
+    <Compile Include="PCZoneFactoryManager.cs" />
+    <Compile Include="PCZPlugin.cs" />
     <Compile Include="PCZSceneManager.cs" />
     <Compile Include="PCZSceneNode.cs" />
     <Compile Include="PCZSceneQuery.cs" />
     <Compile Include="Portal.cs" />
+    <Compile Include="PortalBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Segment.cs" />
-    <Compile Include="PCZone.cs" />
-    <Compile Include="VisibleObjectsBoundsInfo.cs" />
+    <Compile Include="ZoneData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.csproj">
+    <ProjectReference Include="..\..\..\_dev\axiomengine\Projects\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
+      <Name>Axiom.2010</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -72,8 +73,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
 </Project>
