@@ -2,18 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2F61CAE2-E060-44F7-9F12-EF58F12923CD}</ProjectGuid>
+    <ProjectGuid>44ee5ceb-1d37-4953-b5cd-e76553ded8bf</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Axiom.SceneManagers.PortalConnected</RootNamespace>
-    <AssemblyName>Axiom.SceneManagers.PortalConnected</AssemblyName>
+    <RootNamespace>Axiom.Plugins.OctreeZone</RootNamespace>
+    <AssemblyName>Axiom.Plugins.OctreeZone</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,9 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,33 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntiPortal.cs" />
-    <Compile Include="Capsule.cs" />
-    <Compile Include="DefaultZone.cs" />
-    <Compile Include="MovableObjectFactory.cs" />
-    <Compile Include="PCPlane.cs" />
-    <Compile Include="PCZCamera.cs" />
-    <Compile Include="PCZFrustum.cs" />
-    <Compile Include="PCZLight.cs" />
-    <Compile Include="PCZone.cs" />
-    <Compile Include="PCZoneFactory.cs" />
-    <Compile Include="PCZPlugin.cs" />
-    <Compile Include="PCZPPlugin.cs" />
-    <Compile Include="PCZSceneManager.cs" />
-    <Compile Include="PCZSceneNode.cs" />
-    <Compile Include="PCZSceneQuery.cs" />
-    <Compile Include="Portal.cs" />
-    <Compile Include="PortalBase.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Segment.cs" />
-    <Compile Include="VisibleObjectsBoundsInfo.cs" />
-    <Compile Include="ZoneData.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

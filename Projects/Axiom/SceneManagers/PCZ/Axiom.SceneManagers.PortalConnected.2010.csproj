@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnitPortal.cs" />
+    <Compile Include="AntiPortal.cs" />
     <Compile Include="Capsule.cs" />
     <Compile Include="DefaultZone.cs" />
     <Compile Include="PCPlane.cs" />
