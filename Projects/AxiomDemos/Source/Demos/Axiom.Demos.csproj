@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -178,10 +178,6 @@
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
-      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>OctreeZone</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
@@ -191,7 +187,7 @@
       <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Project>{2F61CAE2-E060-44F7-9F12-EF58F12923CD}</Project>
       <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
   </ItemGroup>

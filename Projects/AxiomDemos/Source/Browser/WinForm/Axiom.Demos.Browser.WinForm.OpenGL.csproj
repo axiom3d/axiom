@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -1154,10 +1154,6 @@
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
       <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
       <Name>Axiom.Plugins.DevILCodecs</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
-      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>OctreeZone</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
