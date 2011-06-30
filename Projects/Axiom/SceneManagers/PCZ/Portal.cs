@@ -46,9 +46,10 @@ using System.Collections;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-    //* Portal data structure for connecting zones. 
 
-    //ORIGINAL LINE: class _OgrePCZPluginExport Portal : public PortalBase
+    /// <summary>
+    /// Portal data structure for connecting zones. 
+    /// </summary>
     public class Portal : PortalBase
     {
 
@@ -57,41 +58,52 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         private static NameGenerator<Portal> _nameGenerator = new NameGenerator<Portal>("Portal");
 
+        /// <summary>
+        /// Portal Constructor, auto name
+        /// </summary>
         public Portal()
             : this(_nameGenerator.GetNextUniqueName(), PortalType.Quad)
         {
         }
 
+        /// <summary>
+        /// Portal Constructor, supply name
+        /// </summary>
+        /// <param name="name"></param>
         public Portal(string name)
             : this(name, PortalType.Quad)
         {
         }
 
-        //ORIGINAL LINE: Portal(const string& name, const PORTAL_TYPE type = PORTAL_TYPE_QUAD) : PortalBase(name, type), mTargetZone(0), mTargetPortal(0)
+        /// <summary>
+        /// Portal Constructor, supply name and portal type
+        /// </summary>
+        /// <param name="name">string</param>
+        /// <param name="type">PortalType</param>
         public Portal(string name, PortalType type)
             : base(name, type)
         {
-            mTargetZone = null;
-            mTargetZone = null;
+            _targetZone = null;
+            _targetZone = null;
         }
 
 
         ///connected Zone
-        private PCZone mTargetZone;
+        private PCZone _targetZone;
         public PCZone TargetZone
         {
-            get { return mTargetZone; }
-            set { mTargetZone = value; }
+            get { return _targetZone; }
+            set { _targetZone = value; }
 
         }
 
         // Matching Portal in the target zone (usually in same world space 
         //as this portal, but pointing the opposite direction)
-        private Portal mTargetPortal;
+        private Portal _targetPortal;
         public Portal TargetPortal
         {
-            get { return mTargetPortal; }
-            set { mTargetPortal = value; }
+            get { return _targetPortal; }
+            set { _targetPortal = value; }
         }
     }
 

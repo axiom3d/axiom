@@ -44,8 +44,8 @@ namespace Axiom.SceneManagers.PortalConnected
     public class PCZAxisAlignedBoxSceneQuery : DefaultAxisAlignedBoxRegionSceneQuery
     {
 
-        private PCZone startZone;
-        private SceneNode excludeNode;
+        private PCZone _startZone = null;
+        private SceneNode _excludeNode = null;
         //private ulong queryTypeMask;
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace Axiom.SceneManagers.PortalConnected
         public PCZAxisAlignedBoxSceneQuery(SceneManager creator)
             : base(creator)
         {
-            startZone = null;
-            excludeNode = null;
+            _startZone = null;
+            _excludeNode = null;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             List<PCZSceneNode> list = new List<PCZSceneNode>();
             //find the nodes that intersect the AAB
-            ((PCZSceneManager)creator).FindNodesIn(box, ref list, startZone, (PCZSceneNode)excludeNode);
+            ((PCZSceneManager)creator).FindNodesIn(box, ref list, _startZone, (PCZSceneNode)_excludeNode);
 
             //grab all moveable's from the node that intersect...
 
@@ -104,20 +104,30 @@ namespace Axiom.SceneManagers.PortalConnected
                 }
             }
             // reset startzone and exclude node
-            startZone = null;
-            excludeNode = null;
+            _startZone = null;
+            _excludeNode = null;
         }
     }
 
+    /// <summary>
+    /// PCZIntersection SceneQuery
+    /// </summary>
     public class PCZIntersectionSceneQuery : DefaultIntersectionSceneQuery
     {
-        //private ulong queryTypeMask;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="creator"></param>
         public PCZIntersectionSceneQuery(SceneManager creator)
             : base(creator)
         {
         }
-
+        
+        /// <summary>
+        /// Execute
+        /// </summary>
+        /// <param name="listener">IIntersectionSceneQueryListener</param>
         public override void Execute(IIntersectionSceneQueryListener listener)
         {
             Dictionary<MovableObject, MovableObject> set = new Dictionary<MovableObject, MovableObject>();
@@ -171,22 +181,32 @@ namespace Axiom.SceneManagers.PortalConnected
         }
     }
 
+    /// <summary>
+    /// PCZSphere SceneQuery
+    /// </summary>
     public class PCZSphereSceneQuery : DefaultSphereRegionSceneQuery
     {
-        //private ulong queryTypeMask;
-        private PCZone startZone;
-        private SceneNode excludeNode;
+        private PCZone _startZone = null;
+        private SceneNode _excludeNode = null;
 
+        /// <summary>
+        /// PCZSphere SceneQuery
+        /// </summary>
+        /// <param name="creator">SceneManager</param>
         protected internal PCZSphereSceneQuery(SceneManager creator)
             : base(creator)
         {
         }
 
+        /// <summary>
+        /// Execute
+        /// </summary>
+        /// <param name="listener">ISceneQueryListener</param>
         public override void Execute(ISceneQueryListener listener)
         {
             List<PCZSceneNode> list = new List<PCZSceneNode>();
             //find the nodes that intersect the AAB
-            ((PCZSceneManager)creator).FindNodesIn(sphere, ref list, startZone, (PCZSceneNode)excludeNode);
+            ((PCZSceneManager)creator).FindNodesIn(sphere, ref list, _startZone, (PCZSceneNode)_excludeNode);
 
             //grab all moveables from the node that intersect...
 
@@ -219,28 +239,38 @@ namespace Axiom.SceneManagers.PortalConnected
                 }
             }
             // reset startzone and exclude node
-            startZone = null;
-            excludeNode = null;
+            _startZone = null;
+            _excludeNode = null;
         }
 
     }
 
+    /// <summary>
+    /// PCZRay SceneQuery
+    /// </summary>
     public class PCZRaySceneQuery : DefaultRaySceneQuery
     {
-        //private ulong queryTypeMask;
-        private PCZone startZone;
-        private SceneNode excludeNode;
+        private PCZone _startZone = null;
+        private SceneNode _excludeNode = null;
 
+        /// <summary>
+        /// PCZRay SceneQuery Constructor
+        /// </summary>
+        /// <param name="creator">SceneManager</param>
         protected internal PCZRaySceneQuery(SceneManager creator)
             : base(creator)
         {
         }
 
+        /// <summary>
+        /// Execute
+        /// </summary>
+        /// <param name="listener">IRaySceneQueryListener</param>
         public override void Execute(IRaySceneQueryListener listener)
         {
             List<PCZSceneNode> list = new List<PCZSceneNode>();
             //find the nodes that intersect the AAB
-            ((PCZSceneManager)creator).FindNodesIn(ray, ref list, startZone, (PCZSceneNode)excludeNode);
+            ((PCZSceneManager)creator).FindNodesIn(ray, ref list, _startZone, (PCZSceneNode)_excludeNode);
 
             //grab all moveables from the node that intersect...
 
@@ -279,47 +309,63 @@ namespace Axiom.SceneManagers.PortalConnected
                 }
             }
             // reset startzone and exclude node
-            startZone = null;
-            excludeNode = null;
+            _startZone = null;
+            _excludeNode = null;
         }
 
+        /// <summary>
+        /// StartZone
+        /// </summary>
         public PCZone StartZone
         {
             get
             {
-                return startZone;
+                return _startZone;
             }
             set
             {
-                startZone = value;
+                _startZone = value;
             }
         }
 
+        /// <summary>
+        /// ExcludeNode
+        /// </summary>
         public SceneNode ExcludeNode
         {
             get
             {
-                return excludeNode;
+                return _excludeNode;
             }
 
             set
             {
-                excludeNode = value;
+                _excludeNode = value;
             }
         }
     }
 
+    /// <summary>
+    /// PCZPlaneBounded VolumeList SceneQuery
+    /// </summary>
     public class PCZPlaneBoundedVolumeListSceneQuery : DefaultPlaneBoundedVolumeListSceneQuery
     {
-        //private ulong queryTypeMask;
-        private PCZone startZone;
-        private SceneNode excludeNode;
+        private PCZone _startZone = null;
+        private SceneNode _excludeNode = null;
 
+        /// <summary>
+        /// PCZPlaneBoundedVolumeListSceneQuery
+        /// </summary>
+        /// <param name="creator">SceneManager</param>
         protected internal PCZPlaneBoundedVolumeListSceneQuery(SceneManager creator)
             : base(creator)
         {
         }
 
+        /// <summary>
+        /// Execute
+        /// </summary>
+        /// <param name="listener">ISceneQueryListener</param>
         public override void Execute(ISceneQueryListener listener)
         {
             List<PCZSceneNode> list = new List<PCZSceneNode>();
@@ -328,7 +374,7 @@ namespace Axiom.SceneManagers.PortalConnected
             foreach (PlaneBoundedVolume volume in volumes)
             {
                 //find the nodes that intersect the AAB
-                ((PCZSceneManager)creator).FindNodesIn(volume, ref list, startZone, (PCZSceneNode)excludeNode);
+                ((PCZSceneManager)creator).FindNodesIn(volume, ref list, _startZone, (PCZSceneNode)_excludeNode);
 
                 //grab all moveables from the node that intersect...
                 foreach (PCZSceneNode node in list)
@@ -366,8 +412,8 @@ namespace Axiom.SceneManagers.PortalConnected
                 }
             }
             // reset startzone and exclude node
-            startZone = null;
-            excludeNode = null;
+            _startZone = null;
+            _excludeNode = null;
         }
     }
 }

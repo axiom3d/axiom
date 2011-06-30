@@ -40,7 +40,6 @@ using System.Collections.Generic;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-    // ORIGINAL LINE: class _OgrePCZPluginExport PCZLight : public Light
     /// <summary>
     /// Specialized version of Axiom.Light which caches which zones the light affects 
     /// </summary>
@@ -49,43 +48,43 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <summary>
         /// name generator
         /// </summary>
-        private static NameGenerator<PCZLight> nameGenerator = new NameGenerator<PCZLight>("PCZLight");
+        private static NameGenerator<PCZLight> _nameGenerator = new NameGenerator<PCZLight>("PCZLight");
 
         /// <summary>
         /// flag indicating if any of the zones in the affectedZonesList is 
         /// visible in the current frame
         /// </summary>
-        private bool affectsVisibleZone = false;
+        private bool _affectsVisibleZone = false;
 
         /// <summary>
         /// 
         /// </summary>
-        private List<PCZone> affectedZonesList = new List<PCZone>();
+        private List<PCZone> _affectedZonesList = new List<PCZone>();
 
         /// <summary>
         /// List of PCZones which are affected by the light
         /// </summary>
         protected List<PCZone> AffectedZonesList
         {
-            get { return affectedZonesList; }
-            set { affectedZonesList = value; }
+            get { return _affectedZonesList; }
+            set { _affectedZonesList = value; }
         }
 
         /// <summary>
         /// flag recording if light has moved, therefore affected list needs updating 
         /// </summary>
-        private bool needsUpdate = true;
+        private bool _needsUpdate = true;
 
         /// <summary>
         /// Update the list of zones the light affects 
         /// </summary>
-        private PCZFrustum portalFrustum = new PCZFrustum();
+        private PCZFrustum _portalFrustum = new PCZFrustum();
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public PCZLight()
-            : this(nameGenerator.GetNextUniqueName())
+            : this(_nameGenerator.GetNextUniqueName())
         {
         }
         
@@ -140,8 +139,8 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <returns>bool</returns>
         public bool AffectsVisibleZone
         {
-            get { return affectsVisibleZone; }
-            set { affectsVisibleZone = value; }
+            get { return _affectsVisibleZone; }
+            set { _affectsVisibleZone = value; }
         }
 
         /// <summary>
@@ -154,7 +153,7 @@ namespace Axiom.SceneManagers.PortalConnected
             //update the zones this light affects
             PCZone homeZone;
             AffectedZonesList.Clear();
-            affectsVisibleZone = false;
+            _affectsVisibleZone = false;
             PCZSceneNode sn = (PCZSceneNode)(this.ParentSceneNode);
             if (sn != null)
             {
@@ -165,7 +164,7 @@ namespace Axiom.SceneManagers.PortalConnected
                     AffectedZonesList.Add(homeZone);
                     if (homeZone.LastVisibleFrame == frameCount)
                     {
-                        affectsVisibleZone = true;
+                        _affectsVisibleZone = true;
                     }
                 }
                 else
@@ -175,7 +174,7 @@ namespace Axiom.SceneManagers.PortalConnected
                     AffectedZonesList.Add(defaultZone);
                     if (defaultZone.LastVisibleFrame == frameCount)
                     {
-                        affectsVisibleZone = true;
+                        _affectsVisibleZone = true;
                     }
                     return;
                 }
@@ -187,7 +186,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 AffectedZonesList.Add(defaultZone);
                 if (defaultZone.LastVisibleFrame == frameCount)
                 {
-                    affectsVisibleZone = true;
+                    _affectsVisibleZone = true;
                 }
                 return;
             }
@@ -197,8 +196,8 @@ namespace Axiom.SceneManagers.PortalConnected
             // affected zones and recurse into the target zone
             //C++ TO C# CONVERTER NOTE: This static local variable declaration (not allowed in C#) has been moved just prior to the method:
             //			static PCZFrustum portalFrustum;
-            portalFrustum.Origin = base.DerivedPosition;
-            homeZone.CheckLightAgainstPortals( this, frameCount, portalFrustum, null);
+            _portalFrustum.Origin = base.DerivedPosition;
+            homeZone.CheckLightAgainstPortals( this, frameCount, _portalFrustum, null);
         }
 
         /// <summary>
@@ -216,7 +215,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public void NotifyMoved()
         {
             base.localTransformDirty = true;
-            needsUpdate = true; // set need update flag
+            _needsUpdate = true; // set need update flag
         }
 
         /// <summary>
@@ -224,7 +223,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         public void ClearNeedsUpdate()
         {
-            needsUpdate = false;
+            _needsUpdate = false;
         }
 
         /// <summary>
@@ -235,7 +234,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             get
             {
-                if (needsUpdate) // if this light has moved, return true immediately
+                if (_needsUpdate) // if this light has moved, return true immediately
                     return true;
 
                 foreach (PCZone zone in AffectedZonesList)
@@ -248,7 +247,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
                 return false; // light hasn't moved, and no zones have updated portals. no light update.
             }
-            set { needsUpdate = value; }
+            set { _needsUpdate = value; }
         }
     }
 

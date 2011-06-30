@@ -61,53 +61,53 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         private static NameGenerator<PCZone> _nameGenerator = new NameGenerator<PCZone>("PCZone");
 
-        private string name = "";
+        private string _name = "";
         /// <summary>
         /// name of the zone (must be unique)
         /// </summary>
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return _name; }
+            set { _name = value; }
 
         }
 
-        private string zoneTypeName = "ZoneType_Undefined";
+        private string _zoneTypeName = "ZoneType_Undefined";
         /// <summary>
         /// Zone type name
         /// </summary>
         public string ZoneTypeName
         {
-            get { return zoneTypeName; }
-            set { zoneTypeName = value; }
+            get { return _zoneTypeName; }
+            set { _zoneTypeName = value; }
         }
 
-        private ulong lastVisibleFrame = 0;
+        private ulong _lastVisibleFrame = 0;
         /// <summary>
         /// frame counter for visibility
         /// </summary>
         public ulong LastVisibleFrame
         {
-            get { return lastVisibleFrame; }
-            set { lastVisibleFrame = value; }
+            get { return _lastVisibleFrame; }
+            set { _lastVisibleFrame = value; }
         }
 
-        private PCZCamera lastVisibleFromCamera = null;
+        private PCZCamera _lastVisibleFromCamera = null;
         /// <summary>
         /// last camera which this zone was visible to
         /// </summary>
         public PCZCamera LastVisibleFromCamera
         {
-            get { return lastVisibleFromCamera; }
-            set { lastVisibleFromCamera = value; }
+            get { return _lastVisibleFromCamera; }
+            set { _lastVisibleFromCamera = value; }
         }
 
         // flag determining whether or not this zone has sky in it.
-        private bool hasSky = false;
+        private bool _hasSky = false;
         public bool HasSky
         {
-            get { return hasSky; }
-            set { hasSky = value; }
+            get { return _hasSky; }
+            set { _hasSky = value; }
         }
 
         //SceneNode which corresponds to the enclosure for this zone
@@ -118,63 +118,63 @@ namespace Axiom.SceneManagers.PortalConnected
             set { _enclosureNode = value; }
         }
         
-        private List<PCZSceneNode> homeNodeList = new List<PCZSceneNode>();
+        private List<PCZSceneNode> _homeNodeList = new List<PCZSceneNode>();
         /// <summary>
         /// list of SceneNodes contained in this particular PCZone
         /// </summary>
         public List<PCZSceneNode> HomeNodeList
         {
-            get { return homeNodeList; }
-            set { homeNodeList = value; }
+            get { return _homeNodeList; }
+            set { _homeNodeList = value; }
         }
 
         // list of SceneNodes visiting this particular PCZone
-        private List<PCZSceneNode> visitorNodeList = new List<PCZSceneNode>();
+        private List<PCZSceneNode> _visitorNodeList = new List<PCZSceneNode>();
         public List<PCZSceneNode> VisitorNodeList
         {
-            get { return visitorNodeList; }
-            set { visitorNodeList = value; }
+            get { return _visitorNodeList; }
+            set { _visitorNodeList = value; }
         }
 
-        private bool portalsUpdated = false;
+        private bool _portalsUpdated = false;
         /// <summary>
         /// flag recording whether any portals in this zone have moved 
         /// </summary>
         public bool PortalsUpdated
         {
-            get { return portalsUpdated; }
-            set { portalsUpdated = value; }
+            get { return _portalsUpdated; }
+            set { _portalsUpdated = value; }
         }
-        private List<Portal> portals = new List<Portal>();
+        private List<Portal> _portals = new List<Portal>();
         /// <summary>
         /// list of Portals which this zone contains (each portal leads to another zone)
         /// </summary>
         public List<Portal> Portals
         {
-            get { return portals; }
-            set { portals = value; }
+            get { return _portals; }
+            set { _portals = value; }
         }
 
-        private List<AntiPortal> antiPortals = new List<AntiPortal>();
+        private List<AntiPortal> _antiPortals = new List<AntiPortal>();
         public List<AntiPortal> AntiPortals
         {
-            get { return antiPortals; }
-            set { antiPortals = value; }
+            get { return _antiPortals; }
+            set { _antiPortals = value; }
         }
 
-        private PCZSceneManager pCZSM = new PCZSceneManager("");
+        private PCZSceneManager _pCZSM = new PCZSceneManager("");
         /// <summary>
         /// pointer to the pcz scene manager that created this zone
         /// </summary>
         public PCZSceneManager PCZSM
         {
-            get { return pCZSM; }
-            set { pCZSM = value; }
+            get { return _pCZSM; }
+            set { _pCZSM = value; }
         }
 
         // user defined data pointer - NOT allocated or deallocated by the zone!  
         // you must clean it up yourself!
-        private object userData = null;
+        private object _userData = null;
 
         /// <summary>
         /// Default constructor
@@ -191,9 +191,8 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <param name="name">string</param>
         public PCZone(PCZSceneManager creator, string name)
         {
-            Name = name;
-            pCZSM = creator;
-            hasSky = false;
+            _name = name;
+            _pCZSM = creator;
         }
 
         #region IDisposable Implementation
@@ -229,8 +228,8 @@ namespace Axiom.SceneManagers.PortalConnected
                 if (disposeManagedResources)
                 {
                     ClearNodeLists();
-                    this.homeNodeList = null;
-                    this.visitorNodeList = null;
+                    this._homeNodeList = null;
+                    this._visitorNodeList = null;
                 }
 
                 // There are no unmanaged resources to release, but
@@ -260,8 +259,8 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <param name="type">ClearNodeLists</param>
         public void ClearNodeLists()
         {
-            homeNodeList.Clear();
-            visitorNodeList.Clear();
+            _homeNodeList.Clear();
+            _visitorNodeList.Clear();
 
         }
 
@@ -588,8 +587,8 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         public object UserData
         {
-            get { return userData; }
-            set { userData = value; }
+            get { return _userData; }
+            set { _userData = value; }
         }
         
         /// <summary>
