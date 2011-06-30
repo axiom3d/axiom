@@ -42,7 +42,9 @@ using System.Collections.Generic;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-
+    /// <summary>
+    /// PortalIntersectResult Enum
+    /// </summary>
     public enum PortalIntersectResult : int
     {
         NoIntersect,
@@ -51,8 +53,10 @@ namespace Axiom.SceneManagers.PortalConnected
         IntersectCross
     }
 
-    //* PortalBase - Base class to Portal and AntiPortal classes. 
 
+    /// <summary>
+    /// PortalBase - Base class to Portal and AntiPortal classes. 
+    /// </summary>
     public enum PortalType : int
     {
         Quad,
@@ -60,61 +64,236 @@ namespace Axiom.SceneManagers.PortalConnected
         Sphere,
     }
 
-    //ORIGINAL LINE: class _OgrePCZPluginExport PortalBase : public MovableObject
-    public class PortalBase : MovableObject
+    /// <summary>
+    /// PortalBase
+    /// </summary>
+    public abstract class PortalBase : MovableObject
     {
 
+        private PortalType _type;
         // Type of portal (quad, aabb, or sphere)
-        public PortalType Type;
-        /// Zone this portal is currently owned by (in)
-        protected PCZone mCurrentHomeZone = null;
+        public PortalType Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
 
-        protected Real mRadius = 0.0f;
+        private PCZone _currentHomeZone = null;
+        /// <summary>
+        /// Set the current home zone of the portal 
+        /// </summary>
+        public PCZone CurrentHomeZone
+        {
+            get { return _currentHomeZone; }
+
+            set
+            {
+                // do this here since more than one function calls setCurrentHomeZone
+                // also _addPortal is abstract, so easier to do it here.
+                if (value != null)
+                {
+                    // inform old zone of portal change.
+                    if (_currentHomeZone != null)
+                    {
+                        _currentHomeZone.PortalsUpdated = true;
+                    }
+                    value.PortalsUpdated = true; // inform new zone of portal change
+                }
+                _currentHomeZone = value;
+            }
+        }
+
+
+        private Real _radius = 0.0f;
+        /// <summary>
+        /// Retrieve the radius of the portal (calculates if necessary for quad portals) 
+        /// Calculate the local bounding sphere of the portal from the corner points
+        /// </summary>
+        public Real Radius
+        {
+            get
+            {
+                //TODO: Check This
+                //if (!LocalsUpToDate)
+                //{
+                //    CalcDirectionAndRadius();
+                //}
+                return _radius;
+            }
+
+            set { _radius = value; }
+        }
+
         ///zone to transfer this portal to
-        public PCZone NewHomeZone = null;
+        private PCZone _newHomeZone = null;
+        public PCZone NewHomeZone
+        {
+            get { return _newHomeZone; }
+            set { _newHomeZone = value; }
+        }
+
+        private List<Vector3> _corners = new List<Vector3>();
+        /// <summary>
         /// Corners of the portal - coordinates are relative to the sceneNode
-        // NOTE: there are 4 corners if the portal is a quad type
-        //   there are 2 corners if the portal is an AABB type
-        //   there are 2 corners if the portal is a sphere type (center and point on sphere)
-        public List<Vector3> Corners = new List<Vector3>();
+        /// NOTE: there are 4 corners if the portal is a quad type
+        ///   there are 2 corners if the portal is an AABB type
+        ///   there are 2 corners if the portal is a sphere type (center and point on sphere)
+        /// </summary>
+        public List<Vector3> Corners
+        {
+            get { return _corners; }
+            set { _corners = value; }
+        }
+
+        private Vector3 _direction = Vector3.UnitZ;
+        /// <summary>
         /// Direction ("Norm") of the portal - 
-        // NOTE: For a Quad portal, determined by the 1st 3 corners.
-        // NOTE: For AABB & SPHERE portals, we only have "inward" or "outward" cases.
-        //   To indicate "outward", the Direction is UNIT_Z
-        //   to indicate "inward", the Direction is NEGATIVE_UNIT_Z
-        public Vector3 Direction = Vector3.UnitZ;
-        // Local Center point of the portal
-        protected Vector3 mLocalCP = Vector3.Zero;
+        /// NOTE: For a Quad portal, determined by the 1st 3 corners.
+        /// NOTE: For AABB & SPHERE portals, we only have "inward" or "outward" cases.
+        ///   To indicate "outward", the Direction is UNIT_Z
+        ///   to indicate "inward", the Direction is NEGATIVE_UNIT_Z
+        /// </summary>
+        public Vector3 Direction
+        {
+            get { return _direction; }
+            set { _direction = value; }
+        }
+
+        private Vector3 _localCP = Vector3.Zero;
+        /// <summary>
+        /// Local Center point of the portal
+        /// </summary>
+        protected Vector3 LocalCP
+        {
+            get { return _localCP; }
+            set { _localCP = value; }
+        }
+
+        private List<Vector3> _derivedCorners = new List<Vector3>();
+        /// <summary>
         /// Derived (world coordinates) Corners of the portal
-        // NOTE: there are 4 corners if the portal is a quad type
-        //   there are 2 corners if the portal is an AABB type (min corner & max corner)
-        //   there are 2 corners if the portal is a sphere type (center and point on sphere)
-        public List<Vector3> DerivedCorners = new List<Vector3>();
+        /// NOTE: there are 4 corners if the portal is a quad type
+        ///   there are 2 corners if the portal is an AABB type (min corner & max corner)
+        ///   there are 2 corners if the portal is a sphere type (center and point on sphere)
+        /// </summary>
+        public List<Vector3> DerivedCorners
+        {
+            get { return _derivedCorners; }
+            set { _derivedCorners = value; }
+        }
+
+        private Vector3 _derivedDirection = Vector3.Zero;
+        /// <summary>
         /// Derived (world coordinates) direction of the portal
-        // NOTE: Only applicable for a Quad portal
-        public Vector3 DerivedDirection = Vector3.Zero;
+        /// NOTE: Only applicable for a Quad portal
+        /// </summary>
+        public Vector3 DerivedDirection
+        {
+            get { return _derivedDirection; }
+            set { _derivedDirection = value; }
+        }
+
+        /// <summary>
         /// Derived (world coordinates) of portal (center point)
-        public Vector3 DerivedCP = Vector3.Zero;
+        /// </summary>
+        private Vector3 _derivedCP = Vector3.Zero;
+        public Vector3 DerivedCP
+        {
+            get { return _derivedCP; }
+            set { _derivedCP = value; }
+        }
+
+        private Sphere _derivedSphere = new Sphere();
+        /// <summary>
         /// Sphere of the portal centered on the derived CP
-        public Sphere DerivedSphere = new Sphere();
+        /// </summary>
+        public Sphere DerivedSphere
+        {
+            get { return _derivedSphere; }
+            set { _derivedSphere = value; }
+        }
+
+        private Plane _derivedPlane = new Plane();
+        /// <summary>
         /// Derived (world coordinates) Plane of the portal
-        // NOTE: Only applicable for a Quad portal
-        protected Plane DerivedPlane = new Plane();
+        /// NOTE: Only applicable for a Quad portal
+        /// </summary>
+        protected Plane DerivedPlane
+        {
+            get { return _derivedPlane; }
+            set { _derivedPlane = value; }
+        }
+
+
+        private Vector3 _prevDerivedCP = Vector3.Zero;
+        /// <summary>
         /// Previous frame portal cp (in world coordinates)
-        protected Vector3 PrevDerivedCP = Vector3.Zero;
+        /// </summary>
+        protected Vector3 PrevDerivedCP
+        {
+            get { return _prevDerivedCP; }
+            set { _prevDerivedCP = value; }
+        }
+
+
+        private Plane _prevDerivedPlane = new Plane();
+        /// <summary>
         /// Previous frame derived plane 
-        // NOTE: Only applicable for a Quad portal
-        protected Plane PrevDerivedPlane = new Plane();
+        /// NOTE: Only applicable for a Quad portal
+        /// </summary>
+        protected Plane PrevDerivedPlane
+        {
+            get { return _prevDerivedPlane; }
+            set { _prevDerivedPlane = value; }
+        }
+
+        private bool _localsUpToDate = false;
+        /// <summary>
         /// flag indicating whether or not local values are up-to-date
-        protected bool LocalsUpToDate = false;
+        /// </summary>
+        protected bool LocalsUpToDate
+        {
+            get { return _localsUpToDate; }
+            set { _localsUpToDate = value; }
+        }
+        
+        private bool _derivedUpToDate = false;
+        /// <summary>
         /// flag indicating whether or not derived values are up-to-date
-        protected bool DerivedUpToDate = false;
-        // previous world transform
-        protected Matrix4 PrevWorldTransform = Matrix4.Zero;
+        /// </summary>
+        protected bool DerivedUpToDate
+        {
+            get { return _derivedUpToDate; }
+            set { _derivedUpToDate = value; }
+        }
+
+        private Matrix4 _prevWorldTransform = Matrix4.Zero;
+        /// <summary>
+        /// Previous world transform
+        /// </summary>
+        protected Matrix4 PrevWorldTransform
+        {
+            get { return _prevWorldTransform; }
+            set { _prevWorldTransform = value; }
+        }
+
+
+        private bool _enabled = true;
         // flag defining if portal is enabled or disabled.
-        public bool Enabled = true;
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set { _enabled = value; }
+        }
+
+        protected Capsule _capsule = new Capsule();
         // cache of portal's capsule.
-        protected Capsule capsule = new Capsule();
+        protected Capsule PortalCapsule
+        {
+            get { return _capsule; }
+            set { _capsule = value; }
+        }
+
         // cache of portal's AAB that contains the bound of portal movement.
         protected AxisAlignedBox AAB = new AxisAlignedBox();
         // cache of portal's previous AAB.
@@ -219,30 +398,6 @@ namespace Axiom.SceneManagers.PortalConnected
                 sn.AttachObject(this);
         }
 
-        //* Set the current home zone of the portal 
-        public PCZone CurrentHomeZone
-        {
-            get { return mCurrentHomeZone; }
-
-            set
-            {
-                // do this here since more than one function calls setCurrentHomeZone
-                // also _addPortal is abstract, so easier to do it here.
-                if (value != null)
-                {
-                    // inform old zone of portal change.
-                    if (mCurrentHomeZone != null)
-                    {
-                        mCurrentHomeZone.PortalsUpdated = true;
-                    }
-                    value.PortalsUpdated = true; // inform new zone of portal change
-                }
-                mCurrentHomeZone = value;
-            }
-        }
-
-
-
         // Set the local coordinates of one of the portal corners    
         public void SetCorner(int index, Vector3 point)
         {
@@ -324,31 +479,31 @@ namespace Axiom.SceneManagers.PortalConnected
                     Direction = side1.Cross(side2);
                     Direction.Normalize();
                     // calculate local cp
-                    mLocalCP = Vector3.Zero;
+                    LocalCP = Vector3.Zero;
                     for (int i = 0; i < 4; i++)
                     {
-                        mLocalCP += Corners[i];
+                        LocalCP += Corners[i];
 
                         min.Floor(Corners[i]);
                         max.Ceil(Corners[i]);
                     }
-                    mLocalCP *= 0.25f;
+                    LocalCP *= 0.25f;
                     // then calculate radius
-                    radiusVector = Corners[0] - mLocalCP;
-                    mRadius = radiusVector.Length;
+                    radiusVector = Corners[0] - LocalCP;
+                    _radius = radiusVector.Length;
                     break;
                 case PortalType.AABB:
                     // "direction" is is either pointed inward or outward and is set by user, not calculated.
                     // calculate local cp
-                    mLocalCP = Vector3.Zero;
+                    LocalCP = Vector3.Zero;
                     for (int i = 0; i < 2; i++)
                     {
-                        mLocalCP += Corners[i];
+                        LocalCP += Corners[i];
                     }
-                    mLocalCP *= 0.5f;
+                    LocalCP *= 0.5f;
                     // for radius, use distance from corner to center point
                     // this gives the radius of a sphere that encapsulates the aabb
-                    radiusVector = Corners[0] - mLocalCP;
+                    radiusVector = Corners[0] - LocalCP;
                     Radius = radiusVector.Length;
 
                     min = Corners[0];
@@ -357,9 +512,9 @@ namespace Axiom.SceneManagers.PortalConnected
                 case PortalType.Sphere:
                     // "direction" is is either pointed inward or outward and is set by user, not calculated.
                     // local CP is same as corner point 0
-                    mLocalCP = Corners[0];
+                    LocalCP = Corners[0];
                     // since corner1 is point on sphere, radius is simply corner1 - center point
-                    radiusVector = Corners[1] - mLocalCP;
+                    radiusVector = Corners[1] - LocalCP;
                     Radius = radiusVector.Length;
 
                     //TODO CHECK THIS
@@ -379,25 +534,6 @@ namespace Axiom.SceneManagers.PortalConnected
         public PortalType GetType()
         {
             return Type;
-        }
-        //* Retrieve the radius of the portal (calculates if necessary for quad portals) 
-
-        // Calculate the local bounding sphere of the portal from the corner points
-
-        //ORIGINAL LINE: Real .Radius const
-        public Real Radius
-        {
-            get
-            {
-                //TODO: Check This
-                //if (!LocalsUpToDate)
-                //{
-                //    CalcDirectionAndRadius();
-                //}
-                return mRadius;
-            }
-
-            set { mRadius = value; }
         }
 
         //* Update the derived values 
@@ -429,7 +565,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				Matrix3 rotation;
 				// save off the current DerivedCP
 				PrevDerivedCP = DerivedCP;
-				DerivedCP = transform * mLocalCP;
+				DerivedCP = transform * LocalCP;
 				DerivedSphere.Center = DerivedCP;
 				switch(Type)
 				{
@@ -493,7 +629,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				{
 					// save off the current DerivedCP
 					PrevDerivedCP = DerivedCP;
-					DerivedCP = mLocalCP;
+					DerivedCP = LocalCP;
 					DerivedSphere.Center = DerivedCP;
 					for (int i =0;i<numCorners;i++)
 					{
@@ -514,7 +650,7 @@ namespace Axiom.SceneManagers.PortalConnected
 					}
 					// this is the first time the derived CP has been calculated, so there
 					// is no "previous" value, so set previous = current.
-					DerivedCP = mLocalCP;
+					DerivedCP = LocalCP;
 					PrevDerivedCP = DerivedCP;
 					DerivedSphere.Center = DerivedCP;
 					for (int i =0;i<numCorners;i++)
@@ -536,7 +672,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			AAB.Merge(PrevPortalAAB);
 			PrevPortalAAB = base.worldAABB;
 		
-			capsule.Set(PrevDerivedCP, DerivedCP, Radius);
+			_capsule.Set(PrevDerivedCP, DerivedCP, Radius);
 			DerivedUpToDate = true;
 		}
         //* Adjust the portal so that it is centered and oriented on the given node 
@@ -554,7 +690,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 CalcDirectionAndRadius();
             }
             // move the parent node to the center point
-            node.Position = mLocalCP;
+            node.Position = LocalCP;
 
             // move the corner points to be relative to the node
             int numCorners = 4;
@@ -565,7 +701,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
             for (i = 0; i < numCorners; i++)
             {
-                Corners[i] -= mLocalCP;
+                Corners[i] -= LocalCP;
             }
             if (Type != PortalType.AABB && Type != PortalType.Sphere)
             {
@@ -964,7 +1100,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 //     don't move - resulting in simple sphere tests
                 // BUGBUG! If one (or both) portals are aabb's this is REALLY not accurate.
                 Capsule otherPortalCapsule = new Capsule();
-                otherPortalCapsule = otherPortal.capsule;
+                otherPortalCapsule = otherPortal.PortalCapsule;
 
                 if (getCapsule().Intersects(otherPortalCapsule))
                 {
@@ -1176,7 +1312,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 updateDerivedValues();
                 Moved = false;
             }
-            return capsule;
+            return _capsule;
         }
 
         //* Returns an updated AAB of the portal for Intersection test. 

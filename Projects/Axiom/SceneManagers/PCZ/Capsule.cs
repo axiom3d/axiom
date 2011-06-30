@@ -40,19 +40,19 @@ namespace Axiom.SceneManagers.PortalConnected
     public class Capsule
     {
         // defining members
-        private Segment segment = new Segment();
-        private Real radius = 0;
+        private Segment _segment = new Segment();
+        private Real _radius = 0;
 
         public Segment Segment
         {
-            get { return segment; }
-            set { segment = value; }
+            get { return _segment; }
+            set { _segment = value; }
         }
 
         public Real Radius
         {
-            get { return radius; }
-            set { radius = value; }
+            get { return _radius; }
+            set { _radius = value; }
         }
 
         // construction

@@ -38,80 +38,95 @@ using Axiom.Math;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-    public class PCPlane
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PCZPlane
     {
-        protected Plane Plane = new Plane();
-        private Portal portal = null;
-
-        public PCPlane()
+        private Plane _plane = new Plane();
+        /// <summary>
+        /// Plane
+        /// </summary>
+        protected Plane Plane
         {
-            portal = null;
+            get { return _plane; }
+            set { _plane = value; }
         }
 
-        public PCPlane(Plane plane)
-        {
-            this.Plane = new Plane(plane);
-            portal = null;
-        }
-
-        public PCPlane(Vector3 rkNormal, Vector3 rkPoint)
-        {
-            this.Plane = new Plane(rkNormal, rkPoint);
-            portal = null;
-        }
-
-        public PCPlane(Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2)
-        {
-            this.Plane = new Plane(rkPoint0, rkPoint1, rkPoint2);
-            portal = null;
-        }
-
-        public PlaneSide GetSide(AxisAlignedBox box)
-        {
-            return this.Plane.GetSide(box);
-        }
-
-        public PlaneSide GetSide(Vector3 centre, Vector3 halfSize)
-        {
-            return this.Plane.GetSide(centre, halfSize);
-        }
-
-        public PlaneSide GetSide(Vector3 point)
-        {
-            return this.Plane.GetSide(point);
-        }
-
-        public void Redefine(Vector3 point0, Vector3 point1, Vector3 point2)
-        {
-            this.Plane.Redefine(point0, point1, point2);
-        }
-
-        public void Redefine(Vector3 rkNormal, Vector3 rkPoint)
-        {
-            this.Plane.Redefine(rkNormal, rkPoint);
-        }
-
-        public void SetFromAxiomPlane(Plane axiomPlane)
-        {
-            this.Plane = new Plane(Plane);
-            portal = null;
-        }
-
+        private Portal _portal = null;
+        /// <summary>
+        /// Portal
+        /// </summary>
         public Portal Portal
         {
             get
             {
-                return portal;
+                return _portal;
             }
             set
             {
-                portal = value;
+                _portal = value;
             }
         }
 
-        ~PCPlane()
+
+        public PCZPlane()
         {
-            portal = null;
+            _portal = null;
+        }
+
+        public PCZPlane(Plane plane)
+        {
+            this._plane = new Plane(plane);
+            _portal = null;
+        }
+
+        public PCZPlane(Vector3 rkNormal, Vector3 rkPoint)
+        {
+            this._plane = new Plane(rkNormal, rkPoint);
+            _portal = null;
+        }
+
+        public PCZPlane(Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2)
+        {
+            this._plane = new Plane(rkPoint0, rkPoint1, rkPoint2);
+            _portal = null;
+        }
+
+        public PlaneSide GetSide(AxisAlignedBox box)
+        {
+            return this._plane.GetSide(box);
+        }
+
+        public PlaneSide GetSide(Vector3 centre, Vector3 halfSize)
+        {
+            return this._plane.GetSide(centre, halfSize);
+        }
+
+        public PlaneSide GetSide(Vector3 point)
+        {
+            return this._plane.GetSide(point);
+        }
+
+        public void Redefine(Vector3 point0, Vector3 point1, Vector3 point2)
+        {
+            this._plane.Redefine(point0, point1, point2);
+        }
+
+        public void Redefine(Vector3 rkNormal, Vector3 rkPoint)
+        {
+            this._plane.Redefine(rkNormal, rkPoint);
+        }
+
+        public void SetFromAxiomPlane(Plane axiomPlane)
+        {
+            this._plane = new Plane(Plane);
+            _portal = null;
+        }
+
+        ~PCZPlane()
+        {
+            _portal = null;
         }
 
     }
