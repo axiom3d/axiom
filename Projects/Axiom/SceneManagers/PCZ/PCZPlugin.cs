@@ -37,41 +37,48 @@ using System.Diagnostics;
 
 #endregion Namespace Declarations
 
-
 namespace Axiom.SceneManagers.PortalConnected
 {
 
-    //* Plugin instance for PCZ Manager 
+    /// <summary>
+    /// Plugin instance for PCZ Scene Manager 
+    /// </summary>
     public class PCZPlugin : IPlugin
     {
 
-        private PCZSceneManagerFactory _pCZSMFactory;
-        private PCZLightFactory _pCZLightFactory;
-        private PortalFactory _portalFactory;
-        private AntiPortalFactory _antiPortalFactory;
+        private PCZSceneManagerFactory pCZSMFactory;
+        private PCZLightFactory pCZLightFactory;
+        private PortalFactory portalFactory;
+        private AntiPortalFactory antiPortalFactory;
 
+        /// <summary>
+        /// Initialize the Plugin
+        /// </summary>
         public void Initialize()
         {
-            _pCZSMFactory = new PCZSceneManagerFactory();
-            Root.Instance.AddSceneManagerFactory(_pCZSMFactory);
+            pCZSMFactory = new PCZSceneManagerFactory();
+            Root.Instance.AddSceneManagerFactory(pCZSMFactory);
 
-            _pCZLightFactory = new PCZLightFactory();
-            Root.Instance.AddMovableObjectFactory(_pCZLightFactory, true);
+            pCZLightFactory = new PCZLightFactory();
+            Root.Instance.AddMovableObjectFactory(pCZLightFactory, true);
 
-            _portalFactory = new PortalFactory();
-            Root.Instance.AddMovableObjectFactory(_portalFactory, true);
+            portalFactory = new PortalFactory();
+            Root.Instance.AddMovableObjectFactory(portalFactory, true);
 
-            _antiPortalFactory = new AntiPortalFactory();
-            Root.Instance.AddMovableObjectFactory(_antiPortalFactory, true);
+            antiPortalFactory = new AntiPortalFactory();
+            Root.Instance.AddMovableObjectFactory(antiPortalFactory, true);
 
         }
 
+        /// <summary>
+        /// Shutdown the plugin
+        /// </summary>
         public void Shutdown()
         {
-            Root.Instance.RemoveSceneManagerFactory(_pCZSMFactory);
-            Root.Instance.RemoveMovableObjectFactory(_pCZLightFactory);
-            Root.Instance.RemoveMovableObjectFactory(_portalFactory);
-            Root.Instance.RemoveMovableObjectFactory(_antiPortalFactory);
+            Root.Instance.RemoveSceneManagerFactory(pCZSMFactory);
+            Root.Instance.RemoveMovableObjectFactory(pCZLightFactory);
+            Root.Instance.RemoveMovableObjectFactory(portalFactory);
+            Root.Instance.RemoveMovableObjectFactory(antiPortalFactory);
         }
     }
 

@@ -49,43 +49,43 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <summary>
         /// name generator
         /// </summary>
-        private static NameGenerator<PCZLight> _nameGenerator = new NameGenerator<PCZLight>("PCZLight");
+        private static NameGenerator<PCZLight> nameGenerator = new NameGenerator<PCZLight>("PCZLight");
 
         /// <summary>
         /// flag indicating if any of the zones in the affectedZonesList is 
         /// visible in the current frame
         /// </summary>
-        private bool _affectsVisibleZone;
+        private bool affectsVisibleZone = false;
 
         /// <summary>
         /// 
         /// </summary>
-        private List<PCZone> _affectedZonesList;
+        private List<PCZone> affectedZonesList = new List<PCZone>();
 
         /// <summary>
         /// List of PCZones which are affected by the light
         /// </summary>
         protected List<PCZone> AffectedZonesList
         {
-            get { return _affectedZonesList; }
-            set { _affectedZonesList = value; }
+            get { return affectedZonesList; }
+            set { affectedZonesList = value; }
         }
 
         /// <summary>
         /// flag recording if light has moved, therefore affected list needs updating 
         /// </summary>
-        private bool _needsUpdate;
+        private bool needsUpdate = true;
 
         /// <summary>
         /// Update the list of zones the light affects 
         /// </summary>
-        private PCZFrustum _portalFrustum = new PCZFrustum();
+        private PCZFrustum portalFrustum = new PCZFrustum();
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public PCZLight()
-            : this(_nameGenerator.GetNextUniqueName())
+            : this(nameGenerator.GetNextUniqueName())
         {
         }
         
@@ -96,7 +96,6 @@ namespace Axiom.SceneManagers.PortalConnected
         public PCZLight(string name)
             : base(name)
         {
-            _needsUpdate = true; // need to update the first time, regardless of attachment or movement
         }
 
         /// <summary>
@@ -141,8 +140,8 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <returns>bool</returns>
         public bool AffectsVisibleZone
         {
-            get { return _affectsVisibleZone; }
-            set { _affectsVisibleZone = value; }
+            get { return affectsVisibleZone; }
+            set { affectsVisibleZone = value; }
         }
 
         /// <summary>
@@ -155,7 +154,7 @@ namespace Axiom.SceneManagers.PortalConnected
             //update the zones this light affects
             PCZone homeZone;
             AffectedZonesList.Clear();
-            _affectsVisibleZone = false;
+            affectsVisibleZone = false;
             PCZSceneNode sn = (PCZSceneNode)(this.ParentSceneNode);
             if (sn != null)
             {
@@ -166,7 +165,7 @@ namespace Axiom.SceneManagers.PortalConnected
                     AffectedZonesList.Add(homeZone);
                     if (homeZone.LastVisibleFrame == frameCount)
                     {
-                        _affectsVisibleZone = true;
+                        affectsVisibleZone = true;
                     }
                 }
                 else
@@ -176,7 +175,7 @@ namespace Axiom.SceneManagers.PortalConnected
                     AffectedZonesList.Add(defaultZone);
                     if (defaultZone.LastVisibleFrame == frameCount)
                     {
-                        _affectsVisibleZone = true;
+                        affectsVisibleZone = true;
                     }
                     return;
                 }
@@ -188,7 +187,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 AffectedZonesList.Add(defaultZone);
                 if (defaultZone.LastVisibleFrame == frameCount)
                 {
-                    _affectsVisibleZone = true;
+                    affectsVisibleZone = true;
                 }
                 return;
             }
@@ -198,9 +197,8 @@ namespace Axiom.SceneManagers.PortalConnected
             // affected zones and recurse into the target zone
             //C++ TO C# CONVERTER NOTE: This static local variable declaration (not allowed in C#) has been moved just prior to the method:
             //			static PCZFrustum portalFrustum;
-            Vector3 v = base.DerivedPosition;
-            _portalFrustum.SetOrigin(v);
-            homeZone.CheckLightAgainstPortals( this, frameCount, _portalFrustum, null);
+            portalFrustum.Origin = base.DerivedPosition;
+            homeZone.CheckLightAgainstPortals( this, frameCount, portalFrustum, null);
         }
 
         /// <summary>
@@ -218,7 +216,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public void NotifyMoved()
         {
             base.localTransformDirty = true;
-            _needsUpdate = true; // set need update flag
+            needsUpdate = true; // set need update flag
         }
 
         /// <summary>
@@ -226,7 +224,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         public void ClearNeedsUpdate()
         {
-            _needsUpdate = false;
+            needsUpdate = false;
         }
 
         /// <summary>
@@ -237,7 +235,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             get
             {
-                if (_needsUpdate) // if this light has moved, return true immediately
+                if (needsUpdate) // if this light has moved, return true immediately
                     return true;
 
                 foreach (PCZone zone in AffectedZonesList)
@@ -250,7 +248,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
                 return false; // light hasn't moved, and no zones have updated portals. no light update.
             }
-            set { _needsUpdate = value; }
+            set { needsUpdate = value; }
         }
     }
 
@@ -264,7 +262,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <summary>
         /// TypeName
         /// </summary>
-        public new const string TypeName = "PCZLight";
+        public new const string TypeName = "Light";
 
         /// <summary>
         /// Constructor

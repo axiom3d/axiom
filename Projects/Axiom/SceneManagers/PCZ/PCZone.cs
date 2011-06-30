@@ -47,7 +47,9 @@ namespace Axiom.SceneManagers.PortalConnected
     //ORIGINAL LINE: class _OgrePCZPluginExport PCZone : public DisposableObject
     public abstract class PCZone : DisposableObject
     {
-
+        /// <summary>
+        /// Node List Type
+        /// </summary>
         public enum NodeListType : int
         {
             HomeNodeList = 1,
@@ -59,16 +61,55 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         private static NameGenerator<PCZone> _nameGenerator = new NameGenerator<PCZone>("PCZone");
 
-        // name of the zone (must be unique)
-        public string Name = "";
+        private string name = "";
+        /// <summary>
+        /// name of the zone (must be unique)
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+
+        }
+
+        private string zoneTypeName = "ZoneType_Undefined";
+        /// <summary>
         /// Zone type name
-        public string ZoneTypeName = "ZoneType_Undefined";
-        // frame counter for visibility
-        public ulong LastVisibleFrame = 0;
-        // last camera which this zone was visible to
-        public PCZCamera LastVisibleFromCamera = null;
+        /// </summary>
+        public string ZoneTypeName
+        {
+            get { return zoneTypeName; }
+            set { zoneTypeName = value; }
+        }
+
+        private ulong lastVisibleFrame = 0;
+        /// <summary>
+        /// frame counter for visibility
+        /// </summary>
+        public ulong LastVisibleFrame
+        {
+            get { return lastVisibleFrame; }
+            set { lastVisibleFrame = value; }
+        }
+
+        private PCZCamera lastVisibleFromCamera = null;
+        /// <summary>
+        /// last camera which this zone was visible to
+        /// </summary>
+        public PCZCamera LastVisibleFromCamera
+        {
+            get { return lastVisibleFromCamera; }
+            set { lastVisibleFromCamera = value; }
+        }
+
         // flag determining whether or not this zone has sky in it.
-        public bool HasSky = false;
+        private bool hasSky = false;
+        public bool HasSky
+        {
+            get { return hasSky; }
+            set { hasSky = value; }
+        }
+
         //SceneNode which corresponds to the enclosure for this zone
         private PCZSceneNode _enclosureNode = null;
         public virtual PCZSceneNode EnclosureNode
@@ -76,21 +117,64 @@ namespace Axiom.SceneManagers.PortalConnected
             get { return _enclosureNode; }
             set { _enclosureNode = value; }
         }
+        
+        private List<PCZSceneNode> homeNodeList = new List<PCZSceneNode>();
+        /// <summary>
+        /// list of SceneNodes contained in this particular PCZone
+        /// </summary>
+        public List<PCZSceneNode> HomeNodeList
+        {
+            get { return homeNodeList; }
+            set { homeNodeList = value; }
+        }
 
-        // list of SceneNodes contained in this particular PCZone
-        public List<PCZSceneNode> HomeNodeList = new List<PCZSceneNode>();
         // list of SceneNodes visiting this particular PCZone
-        public List<PCZSceneNode> VisitorNodeList = new List<PCZSceneNode>();
-        // flag recording whether any portals in this zone have moved 
-        private bool mPortalsUpdated = false;
-        //* list of Portals which this zone contains (each portal leads to another zone)
-        public List<Portal> Portals = new List<Portal>();
-        public List<AntiPortal> AntiPortals = new List<AntiPortal>();
-        // pointer to the pcz scene manager that created this zone
-        public PCZSceneManager PCZSM = new PCZSceneManager("");
+        private List<PCZSceneNode> visitorNodeList = new List<PCZSceneNode>();
+        public List<PCZSceneNode> VisitorNodeList
+        {
+            get { return visitorNodeList; }
+            set { visitorNodeList = value; }
+        }
+
+        private bool portalsUpdated = false;
+        /// <summary>
+        /// flag recording whether any portals in this zone have moved 
+        /// </summary>
+        public bool PortalsUpdated
+        {
+            get { return portalsUpdated; }
+            set { portalsUpdated = value; }
+        }
+        private List<Portal> portals = new List<Portal>();
+        /// <summary>
+        /// list of Portals which this zone contains (each portal leads to another zone)
+        /// </summary>
+        public List<Portal> Portals
+        {
+            get { return portals; }
+            set { portals = value; }
+        }
+
+        private List<AntiPortal> antiPortals = new List<AntiPortal>();
+        public List<AntiPortal> AntiPortals
+        {
+            get { return antiPortals; }
+            set { antiPortals = value; }
+        }
+
+        private PCZSceneManager pCZSM = new PCZSceneManager("");
+        /// <summary>
+        /// pointer to the pcz scene manager that created this zone
+        /// </summary>
+        public PCZSceneManager PCZSM
+        {
+            get { return pCZSM; }
+            set { pCZSM = value; }
+        }
+
         // user defined data pointer - NOT allocated or deallocated by the zone!  
         // you must clean it up yourself!
-        protected object mUserData = null;
+        private object userData = null;
 
         /// <summary>
         /// Default constructor
@@ -100,33 +184,90 @@ namespace Axiom.SceneManagers.PortalConnected
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="creator">PCZSceneManager</param>
+        /// <param name="name">string</param>
         public PCZone(PCZSceneManager creator, string name)
         {
             Name = name;
-            PCZSM = creator;
-            HasSky = false;
+            pCZSM = creator;
+            hasSky = false;
         }
-        public void Dispose()
+
+        #region IDisposable Implementation
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose(bool disposeManagedResources)
         {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    ClearNodeLists();
+                    this.homeNodeList = null;
+                    this.visitorNodeList = null;
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+
+            base.dispose(disposeManagedResources);
         }
 
+        #endregion IDisposable Implementation
 
-        public abstract void AddNode(PCZSceneNode NamelessParameter);
+        /// <summary>
+        /// AddNode
+        /// </summary>
+        /// <param name="node">PCZSceneNode</param>
+        public abstract void AddNode(PCZSceneNode node);
 
-        //    * Removes all references to a SceneNode from this PCZone.        
-        public abstract void RemoveNode(PCZSceneNode NamelessParameter);
+        /// <summary>
+        /// Removes all references to a SceneNode from this PCZone.   
+        /// </summary>
+        /// <param name="node">PCZSceneNode</param>
+        public abstract void RemoveNode(PCZSceneNode node);
 
-        //    * Remove all nodes from the node reference list and clear it
-        public void ClearNodeLists(short type)
+        /// <summary>
+        /// Remove all nodes from the node reference list and clear it
+        /// </summary>
+        /// <param name="type">ClearNodeLists</param>
+        public void ClearNodeLists()
         {
-            HomeNodeList.Clear();
-            VisitorNodeList.Clear();
+            homeNodeList.Clear();
+            visitorNodeList.Clear();
 
         }
 
-        //    * Indicates whether or not this zone requires zone-specific data for 
-        //		 *  each scene node
-        //		 
+        /// <summary>
+        /// Indicates whether or not this zone requires zone-specific data for each scene node
+        /// </summary>
         private bool _RequiresZoneSpecificNodeData = false;
         public virtual bool RequiresZoneSpecificNodeData
         {
@@ -134,14 +275,21 @@ namespace Axiom.SceneManagers.PortalConnected
             set { _RequiresZoneSpecificNodeData = value; }
         }
 
-        //    * create zone specific data for a node
-        // create node specific zone data if necessary
-        public void CreateNodeZoneData(PCZSceneNode UnnamedParameter1)
+        /// <summary>
+        /// create zone specific data for a node
+        /// create node specific zone data if necessary
+        /// </summary>
+        /// <param name="node">PCZSceneNode</param>
+        public void CreateNodeZoneData(PCZSceneNode node)
         {
         }
 
-        //    * find a matching portal (for connecting portals)
-        //		
+
+        /// <summary>
+        /// find a matching portal (for connecting portals)
+        /// </summary>
+        /// <param name="portal">Portal</param>
+        /// <returns>Portal</returns>
         public Portal FindMatchingPortal(Portal portal)
         {
             // look through all the portals in zone2 for a match
@@ -159,7 +307,10 @@ namespace Axiom.SceneManagers.PortalConnected
             return null;
         }
 
-        // Add a portal to the zone 
+        /// <summary>
+        /// Add a portal to the zone 
+        /// </summary>
+        /// <param name="newPortal">Portal</param>
         public void AddPortal(Portal newPortal)
         {
             if (newPortal != null)
@@ -181,9 +332,10 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-        // Remove a portal from the zone 
-
-        // Remove a portal from the zone (does not erase the portal object, just removes reference) 
+        /// <summary>
+        /// Remove a portal from the zone (does not erase the portal object, just removes reference) 
+        /// </summary>
+        /// <param name="removePortal">Portal</param>
         public void RemovePortal(Portal removePortal)
         {
             if (removePortal != null && Portals.Contains(removePortal))
@@ -192,9 +344,10 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-        // Add an anti portal to the zone 
-
-        // Add an anti portal to the zone 
+        /// <summary>
+        /// Add an anti portal to the zone 
+        /// </summary>
+        /// <param name="newAntiPortal"></param>
         public void AddAntiPortal(AntiPortal newAntiPortal)
         {
             if (newAntiPortal != null)
@@ -215,9 +368,10 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-        // Remove an anti portal from the zone 
-
-        // Remove an anti portal from the zone 
+        /// <summary>
+        /// Remove an anti portal from the zone 
+        /// </summary>
+        /// <param name="removeAntiPortal">AntiPortal</param>
         public void _removeAntiPortal(AntiPortal removeAntiPortal)
         {
             if (removeAntiPortal != null)
@@ -226,37 +380,61 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-        //    * (recursive) check the given node against all portals in the zone
-        //		
-        public abstract void CheckNodeAgainstPortals(PCZSceneNode NamelessParameter1, Portal NamelessParameter2);
+        /// <summary>
+        /// (recursive) check the given node against all portals in the zone
+        /// </summary>
+        /// <param name="node">PCZSceneNode</param>
+        /// <param name="portal">portal</param>
+        public abstract void CheckNodeAgainstPortals(PCZSceneNode node, Portal portal);
 
-        //    * (recursive) check the given light against all portals in the zone
-        //    
+        /// <summary>
+        /// (recursive) check the given light against all portals in the zone
+        /// </summary>
+        /// <param name="light">light</param>
+        /// <param name="frameCount">frameCount</param>
+        /// <param name="portalFrustum">PCZFrustum</param>
+        /// <param name="ignorePortal">Portal</param>
         public abstract void CheckLightAgainstPortals(PCZLight light,
                                                ulong frameCount,
                                                PCZFrustum portalFrustum,
                                                Portal ignorePortal);
 
-        //     Update the zone data for each portal 
-        //		
+        /// <summary>
+        /// Update the zone data for each portal 
+        /// </summary>
         public abstract void UpdatePortalsZoneData();
 
-        //* Mark nodes dirty base on moving portals. 
+        /// <summary>
+        /// Mark nodes dirty base on moving portals. 
+        /// </summary>
         public abstract void DirtyNodeByMovingPortals();
 
-        // Update a node's home zone 
+        /// <summary>
+        /// Update a node's home zone 
+        /// </summary>
+        /// <param name="pczsn">PCZSceneNode/param>
+        /// <param name="allowBackTouces">bool</param>
+        /// <returns>PCZSceneNode</returns>
         public abstract PCZone UpdateNodeHomeZone(PCZSceneNode pczsn, bool allowBackTouces);
 
-        //    * Find and add visible objects to the render queue.
-        //    @remarks
-        //    Starts with objects in the zone and proceeds through visible portals   
-        //    This is a recursive call (the main call should be to _findVisibleObjects)
-        //    
-        /** Find and add visible objects to the render queue.
-        @remarks
-        Starts with objects in the zone and proceeds through visible portals
-        This is a recursive call (the main call should be to _findVisibleObjects)
-        */
+        /// <summary>
+        ///  Find and add visible objects to the render queue.
+        ///    @remarks
+        ///    Starts with objects in the zone and proceeds through visible portals   
+        ///    This is a recursive call (the main call should be to _findVisibleObjects)
+        ///    
+        /// Find and add visible objects to the render queue.
+        /// @remarks
+        ///     Starts with objects in the zone and proceeds through visible portals
+        ///     This is a recursive call (the main call should be to _findVisibleObjects)
+        /// </summary>
+        /// <param name="camera">PCZCamera</param>
+        /// <param name="visibleNodeList">List<PCZSceneNode></param>
+        /// <param name="queue">RenderQueue</param>
+        /// <param name="visibleBounds">VisibleObjectsBoundsInfo</param>
+        /// <param name="onlyShadowCasters">bool</param>
+        /// <param name="displayNodes">bool</param>
+        /// <param name="showBoundingBoxes">bool</param>
         public abstract void FindVisibleNodes(PCZCamera camera,
                                       ref List<PCZSceneNode> visibleNodeList,
                                       RenderQueue queue,
@@ -265,43 +443,89 @@ namespace Axiom.SceneManagers.PortalConnected
                                       bool displayNodes,
                                       bool showBoundingBoxes);
 
-        /* Functions for finding Nodes that intersect various shapes */
+        /// <summary>
+        /// Function for finding Nodes that intersect an AxisAlignedBox
+        /// </summary>
+        /// <param name="t">AxisAlignedBox</param>
+        /// <param name="nodes">List<PCZSceneNode></param>
+        /// <param name="visitedPortals">List<Portal></param>
+        /// <param name="includeVisitors">bool</param>
+        /// <param name="recurseThruPortals">bool</param>
+        /// <param name="exclude">PCZSceneNode</param>
         public abstract void FindNodes(AxisAlignedBox t,
-                                 ref List<PCZSceneNode> list,
+                                 ref List<PCZSceneNode> nodes,
                                  List<Portal> visitedPortals,
                                  bool includeVisitors,
                                  bool recurseThruPortals,
                                  PCZSceneNode exclude);
+
+        /// <summary>
+        /// Function for finding Nodes that intersect a Sphere
+        /// </summary>
+        /// <param name="t">Sphere</param>
+        /// <param name="nodes">List<PCZSceneNode> </param>
+        /// <param name="portals">List<Portal> portals</param>
+        /// <param name="includeVisitors">bool</param>
+        /// <param name="recurseThruPortals">bool</param>
+        /// <param name="exclude">PCZSceneNode</param>
         public abstract void FindNodes(Sphere t,
                                  ref List<PCZSceneNode> nodes,
                                  List<Portal> portals,
                                  bool includeVisitors,
                                  bool recurseThruPortals,
                                  PCZSceneNode exclude);
+
+        /// <summary>
+        /// Function for finding Nodes that intersect a PlaneBoundedVolume
+        /// </summary>
+        /// <param name="t">PlaneBoundedVolume</param>
+        /// <param name="nodes">List<PCZSceneNode></param>
+        /// <param name="portals">List<Portal> portals</param>
+        /// <param name="includeVisitors">bool</param>
+        /// <param name="recurseThruPortals">bool</param>
+        /// <param name="exclude">PCZSceneNode</param>
         public abstract void FindNodes(PlaneBoundedVolume t,
                                  ref List<PCZSceneNode> list,
                                  List<Portal> visitedPortals,
                                  bool includeVisitors,
                                  bool recurseThruPortals,
                                  PCZSceneNode exclude);
+
+        /// <summary>
+        /// Function for finding Nodes that intersect a ray
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="nodes">List<PCZSceneNode> </param>
+        /// <param name="portals">List<Portal> portals</param>
+        /// <param name="includeVisitors">bool</param>
+        /// <param name="recurseThruPortals">bool</param>
+        /// <param name="exclude">PCZSceneNode</param>
         public abstract void FindNodes(Ray t,
-                                 ref List<PCZSceneNode> list,
+                                 ref List<PCZSceneNode> nodes,
                                  List<Portal> visitedPortals,
                                  bool includeVisitors,
                                  bool recurseThruPortals,
                                  PCZSceneNode exclude);
 
-        //* Sets the options for the Zone 
+        /// <summary>
+        /// Sets the options for the Zone 
+        /// </summary>
+        /// <param name="NamelessParameter1">string</param>
+        /// <param name="NamelessParameter2">object</param>
+        /// <returns></returns>
         public abstract bool SetOption(string NamelessParameter1, object NamelessParameter2);
-        //    * called when the scene manager creates a camera in order to store the first camera created as the primary
-        //			one, for determining error metrics and the 'home' terrain page.
-        //		
+
+        /// <summary>
+        /// called when the scene manager creates a camera in order to store the first camera created as the primary
+        /// one, for determining error metrics and the 'home' terrain page.	
+        /// </summary>
+        /// <param name="c">Camera</param>
         public abstract void NotifyCameraCreated(Camera c);
 
-        protected RenderQueueGroupID worldGeometryRenderQueueId = RenderQueueGroupID.WorldGeometryOne;
-
-        public abstract void NotifyWorldGeometryRenderQueue(RenderQueueGroupID renderQueueGroupID);
-
+        private RenderQueueGroupID worldGeometryRenderQueueId = RenderQueueGroupID.WorldGeometryOne;
+        /// <summary>
+        ///  worldGeometryRenderQueueId
+        /// </summary>
         public virtual RenderQueueGroupID WorldGeometryRenderQueueId
         {
             get
@@ -315,17 +539,33 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-        // Called when a _renderScene is called in the SceneManager 
+        /// <summary>
+        /// NotifyWorldGeometryRenderQueue
+        /// </summary>
+        /// <param name="renderQueueGroupID">RenderQueueGroupID</param>
+        public abstract void NotifyWorldGeometryRenderQueue(RenderQueueGroupID renderQueueGroupID);
+
+        /// <summary>
+        /// Called when a _renderScene is called in the SceneManager 
+        /// </summary>
         public abstract void NotifyBeginRenderScene();
 
-        // called by PCZSM during setZoneGeometry() 
+        /// <summary>
+        /// called by PCZSM during setZoneGeometry() 
+        /// </summary>
+        /// <param name="filename">string</param>
+        /// <param name="parentNode">PCZSceneNode</param>
         public abstract void SetZoneGeometry(string filename, PCZSceneNode parentNode);
-        // get the world coordinate aabb of the zone 
 
-        // get the aabb of the zone - default implementation
-        //   uses the enclosure node, but there are other perhaps
-        //   better ways
-        //	
+
+        /// <summary>
+        /// get the world coordinate aabb of the zone 
+        ///
+        /// get the aabb of the zone - default implementation
+        ///   uses the enclosure node, but there are other perhaps
+        ///   better ways
+        /// </summary>
+        /// <param name="aabb"></param>
         public void GetAABB(ref AxisAlignedBox aabb)
         {
             // if there is no node, just return a null box
@@ -343,19 +583,18 @@ namespace Axiom.SceneManagers.PortalConnected
             return;
         }
 
-        public bool PortalsUpdated
-        {
-            get { return mPortalsUpdated; }
-            set { mPortalsUpdated = value ; }
-        }
-
+        /// <summary>
+        /// UserData
+        /// </summary>
         public object UserData
         {
-            get { return mUserData; }
-            set { mUserData = value; }
+            get { return userData; }
+            set { userData = value; }
         }
-
-        //* Binary predicate for portal <-> camera distance sorting. 
+        
+        /// <summary>
+        /// Binary predicate for portal <-> camera distance sorting. 
+        /// </summary>
         protected class PortalSortDistance
         {
             public Vector3 cameraPosition = Vector3.Zero;

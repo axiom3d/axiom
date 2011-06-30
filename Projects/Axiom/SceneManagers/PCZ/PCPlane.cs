@@ -40,78 +40,78 @@ namespace Axiom.SceneManagers.PortalConnected
 {
     public class PCPlane
     {
-        protected Plane _plane = new Plane();
-        protected Portal _portal = null;
+        protected Plane Plane = new Plane();
+        private Portal portal = null;
 
         public PCPlane()
         {
-            _portal = null;
+            portal = null;
         }
 
         public PCPlane(Plane plane)
         {
-            this._plane = new Plane(plane);
-            _portal = null;
+            this.Plane = new Plane(plane);
+            portal = null;
         }
 
         public PCPlane(Vector3 rkNormal, Vector3 rkPoint)
         {
-            this._plane = new Plane(rkNormal, rkPoint);
-            _portal = null;
+            this.Plane = new Plane(rkNormal, rkPoint);
+            portal = null;
         }
 
         public PCPlane(Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2)
         {
-            this._plane = new Plane(rkPoint0, rkPoint1, rkPoint2);
-            _portal = null;
+            this.Plane = new Plane(rkPoint0, rkPoint1, rkPoint2);
+            portal = null;
         }
 
         public PlaneSide GetSide(AxisAlignedBox box)
         {
-            return this._plane.GetSide(box);
+            return this.Plane.GetSide(box);
         }
 
         public PlaneSide GetSide(Vector3 centre, Vector3 halfSize)
         {
-            return this._plane.GetSide(centre, halfSize);
+            return this.Plane.GetSide(centre, halfSize);
         }
 
         public PlaneSide GetSide(Vector3 point)
         {
-            return this._plane.GetSide(point);
+            return this.Plane.GetSide(point);
         }
 
         public void Redefine(Vector3 point0, Vector3 point1, Vector3 point2)
         {
-            this._plane.Redefine(point0, point1, point2);
+            this.Plane.Redefine(point0, point1, point2);
         }
 
         public void Redefine(Vector3 rkNormal, Vector3 rkPoint)
         {
-            this._plane.Redefine(rkNormal, rkPoint);
+            this.Plane.Redefine(rkNormal, rkPoint);
         }
 
         public void SetFromAxiomPlane(Plane axiomPlane)
         {
-            this._plane = new Plane(_plane);
-            _portal = null;
+            this.Plane = new Plane(Plane);
+            portal = null;
         }
 
         public Portal Portal
         {
             get
             {
-                return _portal;
+                return portal;
             }
             set
             {
-                _portal = value;
+                portal = value;
             }
         }
 
         ~PCPlane()
         {
-            _portal = null;
+            portal = null;
         }
 
     }

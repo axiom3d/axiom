@@ -121,7 +121,7 @@ namespace Axiom.SceneManagers.PortalConnected
             {
                 if (param.ContainsKey("Type"))
                 {
-                    switch (param["type"].ToString())
+                    switch (param["Type"].ToString())
                     {
                         case "Quad":
                             portal.Type = PortalType.Quad;

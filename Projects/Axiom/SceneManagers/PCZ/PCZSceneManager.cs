@@ -110,76 +110,76 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <summary>
         /// name generator
         /// </summary>
-        private static NameGenerator<PCZSceneManager> _nameGenerator = new NameGenerator<PCZSceneManager>("PCZSceneManager");
+        private static NameGenerator<PCZSceneManager> nameGenerator = new NameGenerator<PCZSceneManager>("PCZSceneManager");
 
         /// <summary>
         /// type of default zone to be used
         /// </summary>
-        private string _defaultZoneTypeName = "ZoneType_Default";
+        private string defaultZoneTypeName = "ZoneType_Default";
 
         /// <summary>
         /// name of data file for default zone
         /// </summary>
-        private string _defaultZoneFileName = "none";
+        private string defaultZoneFileName = "none";
 
         /// <summary>
         /// list of visible nodes
         /// </summary>
-        private List<PCZSceneNode> _visibleNodes = new List<PCZSceneNode>();
+        private List<PCZSceneNode> visibleNodes = new List<PCZSceneNode>();
 
         /// <summary>
         /// The root PCZone
         /// </summary>
-        private PCZone _defaultZone = null;
+        private PCZone defaultZone = null;
 
         /// <summary>
         /// The list of all PCZones
         /// </summary>
-        private readonly List<PCZone> _zones = new List<PCZone>();
+        private readonly List<PCZone> zones = new List<PCZone>();
 
         /// <summary>
         /// Master list of Portals in the world (includes all portals)
         /// </summary>
-        private readonly List<Portal> _portals = new List<Portal>();
+        private readonly List<Portal> portals = new List<Portal>();
 
         /// <summary>
         /// Portals visibility flag
         /// </summary>
-        private bool _showPortals = false;
+        private bool showPortals = false;
 
         /// <summary>
         /// frame counter used in visibility determination
         /// </summary>
-        private ulong _frameCount = 0;
+        private ulong frameCount = 0;
 
         /// <summary>
         /// ZoneFactoryManager instance
         /// </summary>
-        private PCZoneFactoryManager _zoneFactoryManager = null;
+        private PCZoneFactoryManager zoneFactoryManager = null;
 
         /// <summary>
         /// The zone of the active camera (for shadow texture casting use)
         /// </summary>
-        private PCZone _activeCameraZone = null;
+        private PCZone activeCameraZone = null;
 
         /// <summary>
         /// Test LightInfo List  (private)
         /// </summary>
-        private List<LightInfo> _testLightInfos = new List<LightInfo>();
+        private List<LightInfo> testLightInfos = new List<LightInfo>();
 
         /// <summary>
         /// Test LightInfo List  (protected)
         /// </summary>
         protected List<LightInfo> TestLightInfos
         {
-            get { return _testLightInfos; }
-            set { _testLightInfos = value; }
+            get { return testLightInfos; }
+            set { testLightInfos = value; }
         }
 
         /// <summary>
         /// CachedLightInfos List (private)
         /// </summary>
-        protected List<LightInfo> _cachedLightInfos = new List<LightInfo>();
+        private List<LightInfo> cachedLightInfos = new List<LightInfo>();
 
         /// <summary>
         /// CachedLightInfos List (protected)
@@ -187,15 +187,15 @@ namespace Axiom.SceneManagers.PortalConnected
         protected List<LightInfo> CachedLightInfos
         {
 
-            get { return _cachedLightInfos; }
-            set { _cachedLightInfos = value; }
+            get { return cachedLightInfos; }
+            set { cachedLightInfos = value; }
         }
 
         /// <summary>
         /// Constructor (auto generate name)
         /// </summary>
         public PCZSceneManager()
-            : this(_nameGenerator.GetNextUniqueName())
+            : this(nameGenerator.GetNextUniqueName())
         {
         }
 
@@ -244,11 +244,11 @@ namespace Axiom.SceneManagers.PortalConnected
                     // base scene manager class does that.
 
                     // delete ALL portals
-                    _portals.Clear();
+                    portals.Clear();
 
                     // delete all the zones
-                    _zones.Clear();
-                    _defaultZone = null;
+                    zones.Clear();
+                    defaultZone = null;
                 }
             }
 
@@ -262,7 +262,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             get
             {
-                return _defaultZone;
+                return defaultZone;
             }
         }
 
@@ -274,19 +274,19 @@ namespace Axiom.SceneManagers.PortalConnected
         public void Init(string defaultZoneTypeName, string filename)
         {
             // delete ALL portals
-            _portals.Clear();
+            portals.Clear();
 
             // delete all the zones
-            _zones.Clear();
+            zones.Clear();
 
-            _frameCount = 0;
+            frameCount = 0;
 
-            this._defaultZoneTypeName = defaultZoneTypeName;
-            _defaultZoneFileName = filename;
+            this.defaultZoneTypeName = defaultZoneTypeName;
+            defaultZoneFileName = filename;
 
             // create a new default zone
-            _zoneFactoryManager = PCZoneFactoryManager.Instance;
-            _defaultZone = CreateZoneFromFile(this._defaultZoneTypeName, "Default_Zone", RootSceneNode as PCZSceneNode, _defaultZoneFileName);
+            zoneFactoryManager = PCZoneFactoryManager.Instance;
+            defaultZone = CreateZoneFromFile(this.defaultZoneTypeName, "Default_Zone", RootSceneNode as PCZSceneNode, defaultZoneFileName);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public Portal CreatePortal(string name, PortalType type)
         {
             Portal newPortal = new Portal(name, type);
-            _portals.Add(newPortal);
+            portals.Add(newPortal);
             return newPortal;
         }
 
@@ -324,7 +324,7 @@ namespace Axiom.SceneManagers.PortalConnected
             }
 
             // remove the portal from the master portal list
-            _portals.Remove(portal);
+            portals.Remove(portal);
         }
 
         /// <summary>
@@ -335,12 +335,12 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             // find the portal from the master portal list
             Portal thePortal = null;
-            foreach (Portal portal in _portals)
+            foreach (Portal portal in portals)
             {
                 if (portal.Name == name)
                 {
                     thePortal = portal;
-                    _portals.Remove(portal);
+                    portals.Remove(portal);
                     break;
                 }
             }
@@ -385,9 +385,9 @@ namespace Axiom.SceneManagers.PortalConnected
             PCZone newZone;
 
             // create a new default zone
-            newZone = _zoneFactoryManager.CreatePCZone(this, zoneTypeName, zoneName);
+            newZone = zoneFactoryManager.CreatePCZone(this, zoneTypeName, zoneName);
             // add to the global list of zones
-            _zones.Add(newZone);
+            zones.Add(newZone);
             if (filename != "none")
             {
                 // set the zone geometry
@@ -404,7 +404,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <returns>PCZone</returns>
         public PCZone GetZoneByName(string name)
         {
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 if (zone.Name == name)
                 {
@@ -425,7 +425,7 @@ namespace Axiom.SceneManagers.PortalConnected
                                      PCZSceneNode parent,
                                      string filename)
         {
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 if (zone.Name == name)
                 {
@@ -509,7 +509,7 @@ namespace Axiom.SceneManagers.PortalConnected
             //mCamVisibleObjectsMap[c] = VisibleObjectsBoundsInfo();
 
             // tell all the zones about the new camera
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 zone.NotifyCameraCreated(c);
             }
@@ -543,11 +543,11 @@ namespace Axiom.SceneManagers.PortalConnected
             base.ClearScene();
 
             // delete all the zones
-            _zones.Clear();
-            _defaultZone = null;
+            zones.Clear();
+            defaultZone = null;
 
             // re-initialize
-            Init(_defaultZoneTypeName, _defaultZoneFileName);
+            Init(defaultZoneTypeName, defaultZoneFileName);
         }
 
 
@@ -556,7 +556,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public new void RenderScene(Camera cam, Viewport vp, bool includeOverlays)
         {
             // notify all the zones that a scene render is starting
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 zone.NotifyBeginRenderScene();
             }
@@ -571,7 +571,7 @@ namespace Axiom.SceneManagers.PortalConnected
             if (null == zone)
             {
                 // if no zone specified, use default zone
-                zone = _defaultZone;
+                zone = defaultZone;
             }
             if (null != skyBoxNode)
             {
@@ -640,7 +640,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
         public void UpdatePortalZoneData()
         {
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 // this call checks for portal zone changes & applies zone data changes as necessary
                 zone.UpdatePortalsZoneData();
@@ -670,7 +670,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 {
                     if (l.NeedsUpdate)
                     {
-                        l.UpdateZones(((PCZSceneNode)(cam.ParentSceneNode)).HomeZone, _frameCount);
+                        l.UpdateZones(((PCZSceneNode)(cam.ParentSceneNode)).HomeZone, frameCount);
                     }
                     l.NeedsUpdate = false;
                 }
@@ -686,7 +686,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public void UpdatePCZSceneNode(PCZSceneNode pczsn)
         {
             // Skip if root Zone has been destroyed (shutdown conditions)
-            if (null == _defaultZone)
+            if (null == defaultZone)
             {
                 return;
             }
@@ -723,7 +723,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public void RemoveSceneNode(SceneNode sn)
         {
             // Skip if mDefaultZone has been destroyed (shutdown conditions)
-            if (null == _defaultZone)
+            if (null == defaultZone)
             {
                 return;
             }
@@ -750,7 +750,7 @@ namespace Axiom.SceneManagers.PortalConnected
         // Create a zone with the given name and parent zone
         public PCZone CreateZone(string zoneType, string instanceName)
         {
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 if (zone.Name == instanceName)
                 {
@@ -758,11 +758,11 @@ namespace Axiom.SceneManagers.PortalConnected
                 }
             }
 
-            PCZone newZone = _zoneFactoryManager.CreatePCZone(this, zoneType, instanceName);
+            PCZone newZone = zoneFactoryManager.CreatePCZone(this, zoneType, instanceName);
             if (null != newZone)
             {
                 // add to the global list of zones
-                _zones.Add(newZone);
+                zones.Add(newZone);
                 if (newZone.RequiresZoneSpecificNodeData)
                 {
                     CreateZoneSpecificNodeData(newZone);
@@ -814,7 +814,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 pczsn.ClearNodeFromVisitedZones();
             }
 
-            _zones.Remove(zone);
+            zones.Remove(zone);
         }
 
         //* The following function checks if a node has left it's current home zone.
@@ -835,7 +835,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public void UpdateHomeZone(PCZSceneNode pczsn, bool allowBackTouches)
         {
             // Skip if root PCZoneTree has been destroyed (shutdown conditions)
-            if (null == _defaultZone)
+            if (null == defaultZone)
             {
                 return;
             }
@@ -881,10 +881,10 @@ namespace Axiom.SceneManagers.PortalConnected
         // Find the best (smallest) zone that contains a point
         public PCZone FindZoneForPoint(Vector3 point)
         {
-            PCZone bestZone = _defaultZone;
+            PCZone bestZone = defaultZone;
             Real bestVolume = Real.PositiveInfinity;
 
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 AxisAlignedBox aabb = new AxisAlignedBox();
                 zone.GetAABB( ref aabb);
@@ -913,7 +913,7 @@ namespace Axiom.SceneManagers.PortalConnected
         // create any zone-specific data necessary for all zones for the given node
         public void CreateZoneSpecificNodeData(PCZSceneNode node)
         {
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 if (zone.RequiresZoneSpecificNodeData)
                 {
@@ -1017,7 +1017,7 @@ namespace Axiom.SceneManagers.PortalConnected
                             // Always visible
                             lightInfo.Position = Vector3.Zero;
                             lightInfo.Range = 0;
-                            _testLightInfos.Add(lightInfo);
+                            testLightInfos.Add(lightInfo);
                         }
                         else
                         {
@@ -1028,7 +1028,7 @@ namespace Axiom.SceneManagers.PortalConnected
                             Sphere sphere = new Sphere(lightInfo.Position, lightInfo.Range);
                             if (camera.IsObjectVisible(sphere))
                             {
-                                _testLightInfos.Add(lightInfo);
+                                testLightInfos.Add(lightInfo);
                             }
                         }
                     }
@@ -1040,7 +1040,7 @@ namespace Axiom.SceneManagers.PortalConnected
             // from here on down this function is same as Ogre::SceneManager
 
             // Update lights affecting frustum if changed
-            if (_cachedLightInfos != _testLightInfos)
+            if (cachedLightInfos != testLightInfos)
             {
                 //mLightsAffectingFrustum.resize(mTestLightInfos.size());
                 //LightInfoList::const_iterator i;
@@ -1056,7 +1056,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 //    }
                 //}
 
-                foreach (LightInfo i in _testLightInfos)
+                foreach (LightInfo i in testLightInfos)
                 {
                     if (IsShadowTechniqueTextureBased)
                     {
@@ -1095,7 +1095,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
                 // Use swap instead of copy operator for efficiently
                 //mCachedLightInfos.swap(mTestLightInfos);
-                _cachedLightInfos = _testLightInfos;
+                cachedLightInfos = testLightInfos;
 
                 // notify light dirty, so all movable objects will re-populate
                 // their light list next time
@@ -1121,7 +1121,7 @@ namespace Axiom.SceneManagers.PortalConnected
             {
                 PCZSceneNode node = (PCZSceneNode)rootSceneNode.CreateChildSceneNode(shadowTextureCameras[i].Name);
                 node.AttachObject(shadowTextureCameras[i]);
-                AddPCZSceneNode(node, _defaultZone);
+                AddPCZSceneNode(node, defaultZone);
             }
         }
 
@@ -1142,7 +1142,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             if (((PCZSceneNode)cam.ParentSceneNode) != null)
             {
-                _activeCameraZone = ((PCZSceneNode)cam.ParentSceneNode).HomeZone;
+                activeCameraZone = ((PCZSceneNode)cam.ParentSceneNode).HomeZone;
             }
             base.PrepareShadowTextures(cam, vp);
         }
@@ -1154,9 +1154,9 @@ namespace Axiom.SceneManagers.PortalConnected
 
             if (light.Type == LightType.Directional)
             {
-                if (camNode.HomeZone != _activeCameraZone)
+                if (camNode.HomeZone != activeCameraZone)
                 {
-                    AddPCZSceneNode(camNode, _activeCameraZone);
+                    AddPCZSceneNode(camNode, activeCameraZone);
                 }
             }
             else
@@ -1180,7 +1180,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             // go through every zone to find portals
             bool foundMatch;
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 // go through all the portals in the zone
                 foreach (Portal portal in zone.Portals)
@@ -1193,9 +1193,9 @@ namespace Axiom.SceneManagers.PortalConnected
                         PCZone zone2;
                         foundMatch = false;
                         int j = 0;
-                        while (!foundMatch && j != _zones.Count)
+                        while (!foundMatch && j != zones.Count)
                         {
-                            zone2 = _zones[j++];
+                            zone2 = zones[j++];
                             if (zone2 != zone) // make sure we don't look in the same zone
                             {
                                 Portal portal2 = zone2.FindMatchingPortal(portal);
@@ -1230,7 +1230,7 @@ namespace Axiom.SceneManagers.PortalConnected
             // clear the render queue
             renderQueue.Clear();
             // clear the list of visible nodes
-            _visibleNodes.Clear();
+            visibleNodes.Clear();
 
             // turn off sky
             EnableSky(false);
@@ -1240,7 +1240,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
             // increment the visibility frame counter
             //mFrameCount++;
-            _frameCount = Root.Instance.CurrentFrameCount;
+            frameCount = Root.Instance.CurrentFrameCount;
 
             // update the camera
             ((PCZCamera)cam).Update();
@@ -1250,9 +1250,9 @@ namespace Axiom.SceneManagers.PortalConnected
 
             // walk the zones, starting from the camera home zone,
             // adding all visible scene nodes to the mVisibles list
-            cameraHomeZone.LastVisibleFrame = _frameCount;
+            cameraHomeZone.LastVisibleFrame = frameCount;
             cameraHomeZone.FindVisibleNodes((PCZCamera)cam,
-                                             ref _visibleNodes,
+                                             ref visibleNodes,
                                              renderQueue,
                                              visibleBounds,
                                              onlyShadowCasters,
@@ -1274,7 +1274,7 @@ namespace Axiom.SceneManagers.PortalConnected
             else
             {
                 // no start zone specified, so check all zones
-                foreach (PCZone zone in _zones)
+                foreach (PCZone zone in zones)
                 {
                     zone.FindNodes(box, ref list, visitedPortals, false, false, exclude);
                 }
@@ -1295,7 +1295,7 @@ namespace Axiom.SceneManagers.PortalConnected
             else
             {
                 // no start zone specified, so check all zones
-                foreach (PCZone zone in _zones)
+                foreach (PCZone zone in zones)
                 {
                     zone.FindNodes(sphere, ref list, visitedPortals, false, false, exclude);
                 }
@@ -1316,7 +1316,7 @@ namespace Axiom.SceneManagers.PortalConnected
             else
             {
                 // no start zone specified, so check all zones
-                foreach (PCZone zone in _zones)
+                foreach (PCZone zone in zones)
                 {
                     zone.FindNodes(volumes, ref list, visitedPortals, false, false, exclude);
                 }
@@ -1336,7 +1336,7 @@ namespace Axiom.SceneManagers.PortalConnected
             }
             else
             {
-                foreach (PCZone zone in _zones)
+                foreach (PCZone zone in zones)
                 {
                     zone.FindNodes(r, ref list, visitedPortals, false, false, exclude);
                 }
@@ -1373,11 +1373,11 @@ namespace Axiom.SceneManagers.PortalConnected
 
             else if (key == "ShowPortals")
             {
-                _showPortals = Convert.ToBoolean(val);
+                showPortals = Convert.ToBoolean(val);
                 return true;
             }
             // send option to each zone
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 if (zone.SetOption(key, val) == true)
                 {
@@ -1407,7 +1407,7 @@ namespace Axiom.SceneManagers.PortalConnected
             }
             if (key == "ShowPortals")
             {
-                val = _showPortals;
+                val = showPortals;
                 return true;
             }
 
@@ -1469,7 +1469,7 @@ namespace Axiom.SceneManagers.PortalConnected
         // clear portal update flag from all zones
         public void ClearAllZonesPortalUpdateFlag()
         {
-            foreach (PCZone zone in _zones)
+            foreach (PCZone zone in zones)
             {
                 zone.PortalsUpdated = true;
             }
@@ -1490,11 +1490,11 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             get
             {
-                return _showPortals;
+                return showPortals;
             }
             set
             {
-                _showPortals = value;
+                showPortals = value;
             }
         }
 
@@ -1507,7 +1507,7 @@ namespace Axiom.SceneManagers.PortalConnected
             set
             {
                 // notify zones of new value
-                foreach (PCZone pcZone in _zones)
+                foreach (PCZone pcZone in zones)
                 {
                     pcZone.WorldGeometryRenderQueueId = value;
                 }

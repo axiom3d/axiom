@@ -42,11 +42,11 @@ namespace Axiom.SceneManagers.PortalConnected
 {
     public class PCZCamera : Camera
     {
-        private PCZFrustum _extraCullingFrustum = new PCZFrustum();
-        private static NameGenerator<PCZCamera> _nameGenerator = new NameGenerator<PCZCamera>("PCZCamera");
+        private PCZFrustum extraCullingFrustum = new PCZFrustum();
+        private static NameGenerator<PCZCamera> nameGenerator = new NameGenerator<PCZCamera>("PCZCamera");
 
         public PCZCamera(SceneManager sceneManager)
-            : this(_nameGenerator.GetNextUniqueName(), sceneManager)
+            : this(nameGenerator.GetNextUniqueName(), sceneManager)
         {
         }
 
@@ -54,8 +54,8 @@ namespace Axiom.SceneManagers.PortalConnected
             : base(name, sceneManager)
         {
             base._boundingBox = new AxisAlignedBox(new Vector3(-0.1f, -0.1f, -0.1f), new Vector3(0.1f, 0.1f, 0.1f));
-            _extraCullingFrustum = new PCZFrustum();
-            _extraCullingFrustum.SetUseOriginPlane(true);
+            extraCullingFrustum = new PCZFrustum();
+            extraCullingFrustum.SetUseOriginPlane(true);
         }
 
         // this version checks against extra culling planes
@@ -76,7 +76,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
             // check extra culling planes
             bool extraResults;
-            extraResults = _extraCullingFrustum.IsObjectVisible(bound);
+            extraResults = extraCullingFrustum.IsObjectVisible(bound);
             if (!extraResults)
             {
                 return false;
@@ -122,7 +122,7 @@ namespace Axiom.SceneManagers.PortalConnected
             }
 
             // check the extra frustum first
-            if (!_extraCullingFrustum.IsObjectVisible(portal))
+            if (!extraCullingFrustum.IsObjectVisible(portal))
             {
                 return false;
             }
@@ -267,7 +267,7 @@ namespace Axiom.SceneManagers.PortalConnected
                     all_inside = false;
             }
 
-            switch (_extraCullingFrustum.GetVisibility(bound))
+            switch (extraCullingFrustum.GetVisibility(bound))
             {
                 case PCZFrustum.Visibility.None:
                     return PCZFrustum.Visibility.None;
@@ -293,7 +293,7 @@ namespace Axiom.SceneManagers.PortalConnected
             set
             {
                 base.ProjectionType = value;
-                _extraCullingFrustum.ProjectionType = value;
+                extraCullingFrustum.ProjectionType = value;
             }
         }
 
@@ -304,37 +304,37 @@ namespace Axiom.SceneManagers.PortalConnected
         public int AddPortalCullingPlanes(Portal portal)
         {
             // add the extra culling planes from the portal
-            return _extraCullingFrustum.AddPortalCullingPlanes(portal);
+            return extraCullingFrustum.AddPortalCullingPlanes(portal);
         }
 
         // remove extra culling planes created from the given portal
         // NOTE: This should only be used during visibility traversal (backing out of a recursion)
         public void RemovePortalCullingPlanes(Portal portal)
         {
-            _extraCullingFrustum.RemovePortalCullingPlanes(portal);
+            extraCullingFrustum.RemovePortalCullingPlanes(portal);
         }
 
         // remove all extra culling planes
         public void RemoveAllExtraCullingPlanes()
         {
-            _extraCullingFrustum.RemoveAllCullingPlanes();
+            extraCullingFrustum.RemoveAllCullingPlanes();
         }
 
         public void Update()
         {
             // make sure the extra culling frustum origin stuff is up to date
-            if (_extraCullingFrustum.ProjectionType == Projection.Perspective)
+            if (extraCullingFrustum.ProjectionType == Projection.Perspective)
             //if (!mCustomViewMatrix)
             {
-                _extraCullingFrustum.SetUseOriginPlane(true);
-                _extraCullingFrustum.SetOrigin(DerivedPosition);
-                _extraCullingFrustum.SetOriginPlane(DerivedDirection, DerivedPosition);
+                extraCullingFrustum.SetUseOriginPlane(true);
+                extraCullingFrustum.Origin = DerivedPosition;
+                extraCullingFrustum.SetOriginPlane(DerivedDirection, DerivedPosition);
             }
             else
             {
                 // In ortho mode, we don't want to cull things behind camera.
                 // This helps for back casting which is useful for texture shadow projection on directional light.
-                _extraCullingFrustum.SetUseOriginPlane(false);
+                extraCullingFrustum.SetUseOriginPlane(false);
             }
 
         }

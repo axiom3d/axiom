@@ -37,23 +37,35 @@ using Axiom.Math;
 namespace Axiom.SceneManagers.PortalConnected
 {
 
-	public class Capsule
-	{
-		// defining members
-		public Segment Segment = new Segment();
-		public Real Radius = 0;
-        		
-		// construction
-		public Capsule()
-		{
-			// uninitialized
-		}
-		//----------------------------------------------------------------------------
-		public Capsule(Segment segment, Real radius)
-		{
-			Segment = segment;
-			Radius = radius;
-		}
+    public class Capsule
+    {
+        // defining members
+        private Segment segment = new Segment();
+        private Real radius = 0;
+
+        public Segment Segment
+        {
+            get { return segment; }
+            set { segment = value; }
+        }
+
+        public Real Radius
+        {
+            get { return radius; }
+            set { radius = value; }
+        }
+
+        // construction
+        public Capsule()
+        {
+            // uninitialized
+        }
+        //----------------------------------------------------------------------------
+        public Capsule(Segment segment, Real radius)
+        {
+            Segment = segment;
+            Radius = radius;
+        }
 
         public void Set(Vector3 newOrigin, Vector3 newEnd, Real newRadius)
         {
@@ -63,11 +75,16 @@ namespace Axiom.SceneManagers.PortalConnected
 
         //// set values
         //void @set(Vector3 newOrigin, Vector3 newEnd, float newRadius);
-		//----------------------------------------------------------------------------
-		public void SetOrigin(Vector3 newOrigin)
-		{
-			Segment.Origin = newOrigin;
-		}
+        //----------------------------------------------------------------------------
+        public Vector3 Origin
+        {
+            get { return Segment.Origin; }
+
+            set
+            {
+                Segment.Origin = value;
+            }
+        }
 
         /// <summary>
         /// EndPoint
@@ -80,29 +97,23 @@ namespace Axiom.SceneManagers.PortalConnected
             }
         }
 
-		//----------------------------------------------------------------------------
-		public void SetRadius(Real newRadius)
-		{
-			Radius = newRadius;
-		}
-
-		// Intersection tests
-		//----------------------------------------------------------------------------
+        // Intersection tests
+        //----------------------------------------------------------------------------
         //ORIGINAL LINE: bool Intersects(const Capsule& otherCapsule) const
-		public bool Intersects(Capsule otherCapsule)
-		{
-			Real fDistance = Segment.Distance(otherCapsule.Segment);
-			Real fRSum = Radius + otherCapsule.Radius;
-			return fDistance <= fRSum;
-		}
+        public bool Intersects(Capsule otherCapsule)
+        {
+            Real fDistance = Segment.Distance(otherCapsule.Segment);
+            Real fRSum = Radius + otherCapsule.Radius;
+            return fDistance <= fRSum;
+        }
 
-		//----------------------------------------------------------------------------
+        //----------------------------------------------------------------------------
         //ORIGINAL LINE: bool Intersects(const Segment& segment) const
-		public bool Intersects(Segment segment)
-		{
-			Real fDist = segment.Distance(Segment);
-			return fDist <= Radius;
-		}
+        public bool Intersects(Segment segment)
+        {
+            Real fDist = segment.Distance(Segment);
+            return fDist <= Radius;
+        }
 
-	}
+    }
 }
