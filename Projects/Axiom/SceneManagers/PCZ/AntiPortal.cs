@@ -71,7 +71,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
     public class AntiPortalFactory : MovableObjectFactory
     {
-        public new const string TypeName = "AntiPortalFactory";
+        public new const string TypeName = "AntiPortal";
 
         public AntiPortalFactory()
         {
