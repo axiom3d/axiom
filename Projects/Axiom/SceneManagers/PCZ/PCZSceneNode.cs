@@ -50,18 +50,103 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         private static NameGenerator<PCZSceneNode> _nameGenerator = new NameGenerator<PCZSceneNode>("PCZSceneNode");
 
+        /// <summary>
+        /// NewPosition
+        /// </summary>
         protected Vector3 NewPosition = Vector3.Zero;
-        protected PCZone mHomeZone = null;
-        public bool Anchored = false;
-        public bool AllowToVisit = true;
-        public bool AllowedToVisit = true;
+
+        private PCZone homeZone = null;
+
+        private bool anchored = false;
+        /// <summary>
+        /// Anchored
+        /// </summary>
+        public bool Anchored
+        {
+            get { return anchored; }
+            set { anchored = value; }
+        }
+
+        private bool allowToVisit = true;
+        /// <summary>
+        /// AllowToVisit
+        /// </summary>
+        public bool AllowToVisit
+        {
+            get { return allowToVisit; }
+            set { allowToVisit = value; }
+        }
+
+        private bool allowedToVisit = true;
+        /// <summary>
+        /// AllowedToVisit
+        /// </summary>
+        public bool AllowedToVisit
+        {
+            get { return allowedToVisit; }
+            set { allowedToVisit = value; }
+        }
+
+        /// <summary>
+        /// VisitingZones
+        /// </summary>
         protected Dictionary<string, PCZone> VisitingZones = new Dictionary<string, PCZone>();
-        public Vector3 PrevPosition = Vector3.Zero;
-        public ulong LastVisibleFrame = 0;
-        public PCZCamera LastVisibleFromCamera;
+
+        private Vector3 prevPosition = Vector3.Zero;
+        /// <summary>
+        /// PrevPosition
+        /// </summary>
+        public Vector3 PrevPosition
+        {
+            get { return prevPosition; }
+            set { prevPosition = value; }
+        }
+
+        private ulong lastVisibleFrame = 0;
+        /// <summary>
+        /// LastVisibleFrame
+        /// </summary>
+        public ulong LastVisibleFrame
+        {
+            get { return lastVisibleFrame; }
+            set { lastVisibleFrame = value; }
+        }
+
+        private PCZCamera lastVisibleFromCamera = null;
+        /// <summary>
+        /// LastVisibleFromCamera
+        /// </summary>
+        public PCZCamera LastVisibleFromCamera
+        {
+            get { return lastVisibleFromCamera; }
+            set { lastVisibleFromCamera = value; }
+        }
+
+        /// <summary>
+        /// ZoneData
+        /// </summary>
         protected Dictionary<string, ZoneData> ZoneData = new Dictionary<string, ZoneData>();
-        public bool Enabled = true;
-        public bool Moved = false;
+
+
+        private bool enabled = true;
+        /// <summary>
+        /// Enabled
+        /// </summary>
+        public bool Enabled
+        {
+            get { return enabled; }
+            set { enabled = value; }
+        }
+
+        private bool moved = false;
+        /// <summary>
+        /// Moved
+        /// </summary>
+        public bool Moved
+        {
+            get { return moved; }
+            set { moved = value; }
+        }
 
         //* Standard constructor 
         public PCZSceneNode(SceneManager creator)
@@ -90,7 +175,7 @@ namespace Axiom.SceneManagers.PortalConnected
             if (base.Parent != null) // skip bound update if it's root scene node. Saves a lot of CPU.
                 UpdateBounds();
 
-            PrevPosition = NewPosition;
+            prevPosition = NewPosition;
             NewPosition = DerivedPosition;
         }
 
@@ -98,7 +183,7 @@ namespace Axiom.SceneManagers.PortalConnected
         public void updateFromParentImpl()
         {
             base.UpdateFromParent();
-            Moved = true;
+            moved = true;
         }
 
         //    * Creates an unnamed new SceneNode as a child of this node.
@@ -157,23 +242,23 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             get
             {
-                return mHomeZone;
+                return homeZone;
             }
             set
             {
                 // if the new home zone is different than the current, remove
                 // the node from the current home zone's list of home nodes first
-                if (value != mHomeZone && mHomeZone != null)
+                if (value != homeZone && homeZone != null)
                 {
-                    mHomeZone.RemoveNode(this);
+                    homeZone.RemoveNode(this);
                 }
-                mHomeZone = value;
+                homeZone = value;
             }
         }
 
         public void AnchorToHomeZone(PCZone zone)
         {
-            mHomeZone = zone;
+            homeZone = zone;
             if (zone != null)
             {
                 Anchored = true;
@@ -311,14 +396,6 @@ namespace Axiom.SceneManagers.PortalConnected
                 }
             }
 
-        }
-        public void Enable(bool yesno)
-        {
-            Enabled = yesno;
-        }
-        public bool IsEnabled()
-        {
-            return Enabled;
         }
 
     }

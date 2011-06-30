@@ -114,7 +114,7 @@ namespace Axiom.SceneManagers.PortalConnected
         // flag defining if portal is enabled or disabled.
         public bool Enabled = true;
         // cache of portal's capsule.
-        protected Capsule Capsule = new Capsule();
+        protected Capsule capsule = new Capsule();
         // cache of portal's AAB that contains the bound of portal movement.
         protected AxisAlignedBox AAB = new AxisAlignedBox();
         // cache of portal's previous AAB.
@@ -536,7 +536,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			AAB.Merge(PrevPortalAAB);
 			PrevPortalAAB = base.worldAABB;
 		
-			Capsule.Set(PrevDerivedCP, DerivedCP, Radius);
+			capsule.Set(PrevDerivedCP, DerivedCP, Radius);
 			DerivedUpToDate = true;
 		}
         //* Adjust the portal so that it is centered and oriented on the given node 
@@ -964,7 +964,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 //     don't move - resulting in simple sphere tests
                 // BUGBUG! If one (or both) portals are aabb's this is REALLY not accurate.
                 Capsule otherPortalCapsule = new Capsule();
-                otherPortalCapsule = otherPortal.Capsule;
+                otherPortalCapsule = otherPortal.capsule;
 
                 if (getCapsule().Intersects(otherPortalCapsule))
                 {
@@ -1176,7 +1176,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 updateDerivedValues();
                 Moved = false;
             }
-            return Capsule;
+            return capsule;
         }
 
         //* Returns an updated AAB of the portal for Intersection test. 

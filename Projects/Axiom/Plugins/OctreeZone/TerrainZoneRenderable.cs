@@ -74,6 +74,23 @@ public class TerrainZoneRenderable : SimpleRenderable
     public static int MORPH_CUSTOM_PARAM_ID = 77;
 
 
+    public enum StitchShift
+    {
+        North = 0,
+        South = 8,
+        East = 16,
+        West = 24
+    }
+
+    [Flags]
+    public enum StitchDirection
+    {
+        North = 128 << StitchShift.North,
+        South = 128 << StitchShift.South,
+        East = 128 << StitchShift.East,
+        West = 128 << StitchShift.West
+    }
+
     /// Parent Zone
     TerrainZone mTerrainZone;
     /// Link to shared options

@@ -38,41 +38,94 @@ using Axiom.Math;
 
 namespace Axiom.Core
 {
-    /** Structure collecting together information about the visible objects
-    that have been discovered in a scene.
-    */
-    public struct VisibleObjectsBoundsInfo
-    {
-        /// The axis-aligned bounds of the visible objects
-        public AxisAlignedBox aabb;
-        /// The axis-aligned bounds of the visible shadow receiver objects
-        public AxisAlignedBox receiverAabb;
-        /// The closest a visible object is to the camera
-        public Real minDistance;
-        /// The farthest a visible objects is from the camera
-        public Real maxDistance;
 
-        public void Reset()
+    /// <summary>
+    ///     Structure collecting together information about the visible objects
+    ///     that have been discovered in a scene.
+    /// </summary>
+    public class VisibleObjectsBoundsInfo
+    {
+        private AxisAlignedBox aabb = new AxisAlignedBox();
+
+        /// <summary>
+        /// The axis-aligned bounds of the visible objects
+        /// </summary>
+        public AxisAlignedBox AABB
         {
-            aabb.IsNull = true;
-            receiverAabb.IsNull = true;
-            minDistance = float.NegativeInfinity;
-            maxDistance = 0;
+            get { return aabb; }
+            set { aabb = value; }
         }
 
+        private AxisAlignedBox receiverAabb = new AxisAlignedBox();
+
+        /// <summary>
+        /// The axis-aligned bounds of the visible shadow receiver objects
+        /// </summary>
+        public AxisAlignedBox ReceiverAABB
+        {
+            get { return receiverAabb; }
+            set { receiverAabb = value; }
+        }
+        
+        private Real minDistance = float.NegativeInfinity;
+
+        /// <summary>
+        /// The closest a visible object is to the camera
+        /// </summary>
+        public Real MinDistance
+        {
+            get { return minDistance; }
+            set { minDistance = value; }
+        }
+        
+        private Real maxDistance = 0;
+
+        /// <summary>
+        /// The farthest a visible objects is from the camera
+        /// </summary>
+        public Real MaxDistance
+        {
+            get { return maxDistance; }
+            set { maxDistance = value; }
+        }
+
+        /// <summary>
+        /// Reset
+        /// </summary>
+        public void Reset()
+        {
+            AABB.IsNull = true;
+            receiverAabb.IsNull = true;
+            MinDistance = float.NegativeInfinity;
+            MaxDistance = 0;
+        }
+
+        /// <summary>
+        /// Merge
+        /// </summary>
+        /// <param name="boxBounds">AxisAlignedBox</param>
+        /// <param name="sphereBounds">Sphere</param>
+        /// <param name="cam">Camera</param>
         public void Merge(AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam)
         {
             Merge(boxBounds, sphereBounds, cam, true);
         }
 
+        /// <summary>
+        /// Merge
+        /// </summary>
+        /// <param name="boxBounds">AxisAlignedBox</param>
+        /// <param name="sphereBounds">Sphere</param>
+        /// <param name="cam">Camera</param>
+        /// <param name="receiver">bool</param>
         public void Merge(AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam, bool receiver)
         {
-            aabb.Merge(boxBounds);
+            AABB.Merge(boxBounds);
             if (receiver)
                 receiverAabb.Merge(boxBounds);
             Real camDistToCenter = (cam.DerivedPosition - sphereBounds.Center).Length;
-            minDistance = System.Math.Min(minDistance, System.Math.Max((Real)0, camDistToCenter - sphereBounds.Radius));
-            maxDistance = System.Math.Max(maxDistance, camDistToCenter + sphereBounds.Radius);
+            MinDistance = System.Math.Min(MinDistance, System.Math.Max((Real)0, camDistToCenter - sphereBounds.Radius));
+            MaxDistance = System.Math.Max(MaxDistance, camDistToCenter + sphereBounds.Radius);
         }
 
     }
