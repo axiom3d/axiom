@@ -58,6 +58,13 @@ namespace Axiom.SceneManagers.PortalConnected
         /// </summary>
         private static NameGenerator<Portal> _nameGenerator = new NameGenerator<Portal>("Portal");
 
+        private string _typeName = "Portal";
+        public override string TypeName
+        {
+            get { return _typeName; }
+        }
+
+
         /// <summary>
         /// Portal Constructor, auto name
         /// </summary>
@@ -108,11 +115,10 @@ namespace Axiom.SceneManagers.PortalConnected
     }
 
     //* Factory object for creating Portal instances 
-    //ORIGINAL LINE: class _OgrePCZPluginExport PortalFactory : public PortalBaseFactory
     public class PortalFactory : MovableObjectFactory
     {
 
-        public new const string TypeName = "PortalBase";
+        public new const string TypeName = "Portal";
 
         public PortalFactory()
         {
@@ -120,6 +126,7 @@ namespace Axiom.SceneManagers.PortalConnected
             base.Type = PortalFactory.TypeName;
             base.TypeFlag = (uint)SceneQueryTypeMask.WorldGeometry;
         }
+
         public void Dispose()
         {
         }

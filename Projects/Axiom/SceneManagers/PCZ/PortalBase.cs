@@ -28,6 +28,7 @@
 #endregion SVN Version Information
 
 #region Namespace Declarations
+using System;
 using System.Collections.Generic;
 
 using Axiom;
@@ -36,7 +37,6 @@ using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
 
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -69,6 +69,10 @@ namespace Axiom.SceneManagers.PortalConnected
     /// </summary>
     public abstract class PortalBase : MovableObject
     {
+        public abstract string TypeName
+        {
+            get;
+        }
 
         private PortalType _type;
         // Type of portal (quad, aabb, or sphere)
@@ -256,7 +260,7 @@ namespace Axiom.SceneManagers.PortalConnected
             get { return _localsUpToDate; }
             set { _localsUpToDate = value; }
         }
-        
+
         private bool _derivedUpToDate = false;
         /// <summary>
         /// flag indicating whether or not derived values are up-to-date
@@ -540,141 +544,141 @@ namespace Axiom.SceneManagers.PortalConnected
         // Update (Calculate) the world spatial values
         //ORIGINAL LINE: void updateDerivedValues() const
         public void updateDerivedValues()
-		{
-			// make sure local values are up to date
-			if (!LocalsUpToDate)
-			{
-				CalcDirectionAndRadius();
-			}
-			int numCorners = 4;
-			if (Type == PortalType.AABB)
-				numCorners = 2;
-			else if (Type == PortalType.Sphere)
-				numCorners = 2;
-		
-			// calculate derived values
-			if (ParentNode!=null)
-			{
-				if (CurrentHomeZone != null)
-				{
-					// inform home zone that a portal has been updated
-					CurrentHomeZone.PortalsUpdated = true;
-				}
-				// save world transform
-				Matrix4 transform = ParentNode.FullTransform;
-				Matrix3 rotation;
-				// save off the current DerivedCP
-				PrevDerivedCP = DerivedCP;
-				DerivedCP = transform * LocalCP;
-				DerivedSphere.Center = DerivedCP;
-				switch(Type)
-				{
-				case PortalType.Quad:
-					for (int i =0;i<numCorners;i++)
-					{
-						DerivedCorners[i] = Corners[i];
-					}
-                    rotation = transform.ExtractRotation();
-					DerivedDirection = rotation * Direction;
-					break;
-				case PortalType.AABB:
-					{
-						AxisAlignedBox aabb = new AxisAlignedBox();
-						aabb.SetExtents(Corners[0], Corners[1]);
-						aabb = ((SceneNode)ParentNode).WorldAABB;
-						//aabb.transform(ParentNode->_getFullTransform());
-						DerivedCorners[0] = aabb.Minimum;
-						DerivedCorners[1] = aabb.Minimum;
-						DerivedDirection = Direction;
-					}
-					break;
-				case PortalType.Sphere:
-					{
-						DerivedCorners[0] = DerivedCP;
-                        // CHECK THIS DerivedCorners[1] = transform Corners[1];
-						DerivedCorners[1] = Corners[1];
-						DerivedDirection = Direction;
-					}
-					break;
-				}
-				if (PrevWorldTransform != Matrix4.Zero)
-				{
-					// save previous calc'd plane
-					PrevDerivedPlane = DerivedPlane;
-					// calc new plane
-					DerivedPlane = new Plane(DerivedDirection, DerivedCP);
-					// only update prevWorldTransform if did not move
-					// we need to add this conditional to ensure that
-					// the portal fully updates when it changes position.
-					if (PrevDerivedPlane == DerivedPlane && PrevDerivedCP == DerivedCP)
-					{
-						PrevWorldTransform = transform;
-					}
-					PrevDerivedCP = DerivedCP;
-				}
-				else
-				{
-					// calc new plane
-					DerivedPlane = new Plane(DerivedDirection, DerivedCP);
-					// this is first time, so there is no previous, so prev = current.
-					PrevDerivedPlane = DerivedPlane;
-					PrevDerivedCP = DerivedCP;
-					PrevWorldTransform = Matrix4.Identity;
-					PrevWorldTransform = transform;
-				}
-			}
-			else // no associated node, so just use the local values as derived values
-			{
-				if (PrevWorldTransform != Matrix4.Zero)
-				{
-					// save off the current DerivedCP
-					PrevDerivedCP = DerivedCP;
-					DerivedCP = LocalCP;
-					DerivedSphere.Center = DerivedCP;
-					for (int i =0;i<numCorners;i++)
-					{
-						DerivedCorners[i] = Corners[i];
-					}
-					DerivedDirection = Direction;
-					// save previous calc'd plane
-					PrevDerivedPlane = DerivedPlane;
-					// calc new plane
-					DerivedPlane = new Plane(DerivedDirection, DerivedCP);
-				}
-				else
-				{
-					if (CurrentHomeZone != null)
-					{
-						// this case should only happen once
-						CurrentHomeZone.PortalsUpdated = true;
-					}
-					// this is the first time the derived CP has been calculated, so there
-					// is no "previous" value, so set previous = current.
-					DerivedCP = LocalCP;
-					PrevDerivedCP = DerivedCP;
-					DerivedSphere.Center = DerivedCP;
-					for (int i =0;i<numCorners;i++)
-					{
-						DerivedCorners[i] = Corners[i];
-					}
-					DerivedDirection = Direction;
-					// calc new plane
-					DerivedPlane = new  Plane(DerivedDirection, DerivedCP);
-					// this is first time, so there is no previous, so prev = current.
-					PrevDerivedPlane = DerivedPlane;
-					// flag as initialized
-					PrevWorldTransform = Matrix4.Identity;
-				}
-			}
-		
-			// rebuild AAB.
-			AAB = base.worldAABB ;
-			AAB.Merge(PrevPortalAAB);
-			PrevPortalAAB = base.worldAABB;
-		
-			_capsule.Set(PrevDerivedCP, DerivedCP, Radius);
-			DerivedUpToDate = true;
-		}
+        {
+            // make sure local values are up to date
+            if (!LocalsUpToDate)
+            {
+                CalcDirectionAndRadius();
+            }
+            int numCorners = 4;
+            if (Type == PortalType.AABB)
+                numCorners = 2;
+            else if (Type == PortalType.Sphere)
+                numCorners = 2;
+
+            // calculate derived values
+            if (ParentNode != null)
+            {
+                if (CurrentHomeZone != null)
+                {
+                    // inform home zone that a portal has been updated
+                    CurrentHomeZone.PortalsUpdated = true;
+                }
+                // save world transform
+                Matrix4 transform = ParentNode.FullTransform;
+                Matrix3 rotation;
+                // save off the current DerivedCP
+                PrevDerivedCP = DerivedCP;
+                DerivedCP = transform * LocalCP;
+                DerivedSphere.Center = DerivedCP;
+                switch (Type)
+                {
+                    case PortalType.Quad:
+                        for (int i = 0; i < numCorners; i++)
+                        {
+                            DerivedCorners[i] = Corners[i];
+                        }
+                        rotation = transform.ExtractRotation();
+                        DerivedDirection = rotation * Direction;
+                        break;
+                    case PortalType.AABB:
+                        {
+                            AxisAlignedBox aabb = new AxisAlignedBox();
+                            aabb.SetExtents(Corners[0], Corners[1]);
+                            aabb = ((SceneNode)ParentNode).WorldAABB;
+                            //aabb.transform(ParentNode->_getFullTransform());
+                            DerivedCorners[0] = aabb.Minimum;
+                            DerivedCorners[1] = aabb.Minimum;
+                            DerivedDirection = Direction;
+                        }
+                        break;
+                    case PortalType.Sphere:
+                        {
+                            DerivedCorners[0] = DerivedCP;
+                            // CHECK THIS DerivedCorners[1] = transform Corners[1];
+                            DerivedCorners[1] = Corners[1];
+                            DerivedDirection = Direction;
+                        }
+                        break;
+                }
+                if (PrevWorldTransform != Matrix4.Zero)
+                {
+                    // save previous calc'd plane
+                    PrevDerivedPlane = DerivedPlane;
+                    // calc new plane
+                    DerivedPlane = new Plane(DerivedDirection, DerivedCP);
+                    // only update prevWorldTransform if did not move
+                    // we need to add this conditional to ensure that
+                    // the portal fully updates when it changes position.
+                    if (PrevDerivedPlane == DerivedPlane && PrevDerivedCP == DerivedCP)
+                    {
+                        PrevWorldTransform = transform;
+                    }
+                    PrevDerivedCP = DerivedCP;
+                }
+                else
+                {
+                    // calc new plane
+                    DerivedPlane = new Plane(DerivedDirection, DerivedCP);
+                    // this is first time, so there is no previous, so prev = current.
+                    PrevDerivedPlane = DerivedPlane;
+                    PrevDerivedCP = DerivedCP;
+                    PrevWorldTransform = Matrix4.Identity;
+                    PrevWorldTransform = transform;
+                }
+            }
+            else // no associated node, so just use the local values as derived values
+            {
+                if (PrevWorldTransform != Matrix4.Zero)
+                {
+                    // save off the current DerivedCP
+                    PrevDerivedCP = DerivedCP;
+                    DerivedCP = LocalCP;
+                    DerivedSphere.Center = DerivedCP;
+                    for (int i = 0; i < numCorners; i++)
+                    {
+                        DerivedCorners[i] = Corners[i];
+                    }
+                    DerivedDirection = Direction;
+                    // save previous calc'd plane
+                    PrevDerivedPlane = DerivedPlane;
+                    // calc new plane
+                    DerivedPlane = new Plane(DerivedDirection, DerivedCP);
+                }
+                else
+                {
+                    if (CurrentHomeZone != null)
+                    {
+                        // this case should only happen once
+                        CurrentHomeZone.PortalsUpdated = true;
+                    }
+                    // this is the first time the derived CP has been calculated, so there
+                    // is no "previous" value, so set previous = current.
+                    DerivedCP = LocalCP;
+                    PrevDerivedCP = DerivedCP;
+                    DerivedSphere.Center = DerivedCP;
+                    for (int i = 0; i < numCorners; i++)
+                    {
+                        DerivedCorners[i] = Corners[i];
+                    }
+                    DerivedDirection = Direction;
+                    // calc new plane
+                    DerivedPlane = new Plane(DerivedDirection, DerivedCP);
+                    // this is first time, so there is no previous, so prev = current.
+                    PrevDerivedPlane = DerivedPlane;
+                    // flag as initialized
+                    PrevWorldTransform = Matrix4.Identity;
+                }
+            }
+
+            // rebuild AAB.
+            AAB = base.worldAABB;
+            AAB.Merge(PrevPortalAAB);
+            PrevPortalAAB = base.worldAABB;
+
+            _capsule.Set(PrevDerivedCP, DerivedCP, Radius);
+            DerivedUpToDate = true;
+        }
         //* Adjust the portal so that it is centered and oriented on the given node 
 
         // Adjust the portal so that it is centered and oriented on the given node
@@ -818,7 +822,7 @@ namespace Axiom.SceneManagers.PortalConnected
                             // then the portal does not intersect the pbv. (this can result in
                             // some false positives, but it's the best I can do for now)
 
-                                foreach(Plane plane in pbv.planes)
+                            foreach (Plane plane in pbv.planes)
                             {
                                 // check if all 4 corners of the portal are on negative side of the pbv
                                 bool allOutside = true;
@@ -958,7 +962,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 {
                     // the node is modeled as a line segment (prevPostion to currentPosition)
                     // Intersection test is then between the capsule and the line segment.
-                    Segment nodeSegment =  new Segment();
+                    Segment nodeSegment = new Segment();
 
                     nodeSegment.Set(pczsn.PrevPosition, pczsn.DerivedPosition);
                     // we model the portal as a line swept sphere (mPrevDerivedCP to mDerivedCP).
@@ -1262,7 +1266,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             visitRenderables(visitor, false);
         }
-        
+
         //ORIGINAL LINE: void visitRenderables(Renderable::Visitor* visitor, bool debugRenderables = false)
         public void visitRenderables(IRenderable visitor, bool debugRenderables)
         {
@@ -1280,7 +1284,7 @@ namespace Axiom.SceneManagers.PortalConnected
         {
             base.NotifyAttached(parent, false);
         }
-        
+
         //ORIGINAL LINE: void _notifyAttached(Node* parent, bool isTagPoint = false)
         public void NotifyAttached(Node parent, bool isTagPoint)
         {
@@ -1330,6 +1334,6 @@ namespace Axiom.SceneManagers.PortalConnected
 
             return AAB;
         }
-
     }
+
 }

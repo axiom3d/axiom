@@ -124,6 +124,11 @@ namespace Axiom.SceneManagers.PortalConnected
             _portal = null;
         }
 
+        public Real GetDistance(Vector3 point)
+        {
+            return this._plane.Normal.Dot(point) + this._plane.D;
+        }
+
         ~PCZPlane()
         {
             _portal = null;

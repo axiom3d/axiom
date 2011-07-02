@@ -356,7 +356,7 @@ namespace Axiom.SceneManagers.PortalConnected
                 {
                     if (antiportal.Name == newAntiPortal.Name)
                     {
-                        throw new AxiomException("An anti portal with the name " + newAntiPortal.Name + " already exists", "PCZone.AddAntiPortal");
+                        throw new AxiomException("An anti portal with the name {0} already exists.", newAntiPortal.Name);
                     }
                 }
                 // add portal to portals list
@@ -590,18 +590,22 @@ namespace Axiom.SceneManagers.PortalConnected
             get { return _userData; }
             set { _userData = value; }
         }
-        
+
+
         /// <summary>
         /// Binary predicate for portal <-> camera distance sorting. 
         /// </summary>
-        protected class PortalSortDistance
+        protected class PortalSortDistance : IComparer<PortalBase>
         {
-            public Vector3 cameraPosition = Vector3.Zero;
-            public PortalSortDistance(Vector3 inCameraPosition)
+            private Vector3 _cameraPosition = Vector3.Zero;
+            /// <summary>
+            /// 
+            /// </summary>
+            public Vector3 CameraPosition
             {
-                cameraPosition = inCameraPosition;
+                get { return _cameraPosition; }
+                set { _cameraPosition = value; }
             }
-
 
             ////ORIGINAL LINE: bool _OgrePCZPluginExport operator ()(const PortalBase* p1, const PortalBase* p2) const
             ////C++ TO C# CONVERTER TODO TASK: The () operator cannot be overloaded in C#:
@@ -611,6 +615,32 @@ namespace Axiom.SceneManagers.PortalConnected
             //            Real depth2 = p2.DerivedCP.DistanceSquared(cameraPosition);
             //            return (depth1 < depth2);
             //        }
+
+            #region IComparable Members
+
+
+            int IComparer<PortalBase>.Compare(PortalBase portal1, PortalBase portal2)
+            {
+
+                Real depth1 = portal1.DerivedCP.DistanceSquared(_cameraPosition);
+                Real depth2 = portal2.DerivedCP.DistanceSquared(_cameraPosition);
+
+                if (depth1 > depth2)
+                {
+                    return 1;
+                }
+                if (depth1 < depth2)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+
+            #endregion
         }
 
     }

@@ -49,14 +49,28 @@ namespace OctreeZone
 {
     public class OctreeZone : PCZone
     {
+        /// <summary>
+        /// Name Generator 
+        /// </summary>
+        private static NameGenerator<DefaultZone> _nameGenerator = new NameGenerator<DefaultZone>("OctreeZone");
+
         /// The root octree
-        private Octree RootOctree;
+        private Octree RootOctree = null;
         /// Max depth for the tree
-        private int MaxDepth;
+        private int MaxDepth = 8;
         /// Size of the octree
-        private AxisAlignedBox Box;
+        private AxisAlignedBox Box = new AxisAlignedBox(new Vector3(-10000, -10000, -10000), new Vector3(10000, 10000, 10000));
 
         private bool Loose;
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="creator"></param>
+        public OctreeZone(PCZSceneManager creator)
+            : this(creator, _nameGenerator.GetNextUniqueName())
+        {
+        }
 
         public OctreeZone(PCZSceneManager creator, string name)
             : base(creator, name)
@@ -469,35 +483,87 @@ namespace OctreeZone
                        displayNodes,
                        showBoundingBoxes);
 
-            // find visible portals in the zone and recurse into them
-            bool vis;
+            FrustumPlane culledBy = new FrustumPlane();
+
+            // Here we merge both portal and antiportal visible to the camera into one list.
+            // Then we sort them in the order from nearest to furthest from camera.
+            List<PortalBase> sortedPortalList = new List<PortalBase>();
+            foreach (AntiPortal portal in AntiPortals)
+            {
+                if (camera.IsObjectVisible(portal, out culledBy))
+                {
+                    sortedPortalList.Add(portal);
+                }
+            }
+
             foreach (Portal portal in Portals)
             {
-                // for portal, check visibility using world bounding sphere & direction
-                FrustumPlane pl = FrustumPlane.None;
-                vis = camera.IsVisible(portal, out pl);
-                if (vis)
+                if (camera.IsObjectVisible(portal, out culledBy))
                 {
-                    // portal is visible. Add the portal as extra culling planes to camera
-                    int planes_added = camera.AddPortalCullingPlanes(portal);
-                    // tell target zone it's visible this frame
+                    sortedPortalList.Add(portal);
+                }
+
+            }
+
+            Vector3 cameraOrigin = camera.DerivedPosition;
+            PortalSortDistance sorter = new PortalSortDistance();
+            sorter.CameraPosition = cameraOrigin;
+            sortedPortalList.Sort(sorter);
+
+            // create a standalone frustum for anti portal use.
+            // we're doing this instead of using camera because we don't need
+            // to do camera frustum check again.
+            PCZFrustum antiPortalFrustum = new PCZFrustum();
+            antiPortalFrustum.Origin = cameraOrigin;
+            antiPortalFrustum.ProjectionType = camera.ProjectionType;
+
+            for (int Index = 0; Index <= sortedPortalList.Count; Index++)
+            {
+                PortalBase portalBase = sortedPortalList[Index];
+
+                if (portalBase == null) continue;
+                if (portalBase.TypeName == "Portal")
+                {
+                    Portal portal = (Portal)portalBase;
+                    int planesAdded = camera.AddPortalCullingPlanes(portal);
                     portal.TargetZone.LastVisibleFrame = LastVisibleFrame;
-                    portal.TargetZone.LastVisibleFromCamera = camera;
-                    // recurse into the connected zone
+                    portal.TargetZone.LastVisibleFromCamera = LastVisibleFromCamera;
                     portal.TargetZone.FindVisibleNodes(camera,
-                                                              ref visibleNodeList,
-                                                              queue,
-                                                              visibleBounds,
-                                                              onlyShadowCasters,
-                                                              displayNodes,
-                                                              showBoundingBoxes);
-                    if (planes_added > 0)
+                                                          ref visibleNodeList,
+                                                          queue,
+                                                          visibleBounds,
+                                                          onlyShadowCasters,
+                                                          displayNodes,
+                                                          showBoundingBoxes);
+
+                    if (planesAdded > 0)
                     {
-                        // Then remove the extra culling planes added before going to the next portal in this zone.
                         camera.RemovePortalCullingPlanes(portal);
                     }
                 }
+                else if (Index != sortedPortalList.Count)
+                {
+                    // this is an anti portal. So we use it to test preceding portals in the list.
+                    AntiPortal antiPortal = (AntiPortal)portalBase;
+                    int planes_added = antiPortalFrustum.AddPortalCullingPlanes(antiPortal);
+
+                    for (int indexRemaining = Index + 1; indexRemaining <= sortedPortalList.Count; indexRemaining++)
+                    {
+                        PortalBase otherPortal = sortedPortalList[indexRemaining];
+                        // Since this is an antiportal, we are doing the inverse of the test.
+                        // Here if the portal is fully visible in the anti portal fustrum, it means it's hidden.
+                        if (otherPortal != null && antiPortalFrustum.IsFullyVisible(otherPortal))
+                            sortedPortalList[indexRemaining] = null;
+                    }
+
+                    if (planes_added > 0)
+                    {
+                        // Then remove the extra culling planes added before going to the next portal in the list.
+                        antiPortalFrustum.RemovePortalCullingPlanes(antiPortal);
+                    }
+                }
             }
+
         }
 
         private void WalkOctree(PCZCamera camera,
@@ -951,7 +1017,7 @@ namespace OctreeZone
         public override void NotifyCameraCreated(Camera c)
         {
         }
-        
+
         public override void NotifyBeginRenderScene()
         {
         }
@@ -968,7 +1034,7 @@ namespace OctreeZone
             // attach the entity to the node
             node.AttachObject(ent);
             // set the node as the enclosure node
-            EnclosureNode =node;
+            EnclosureNode = node;
         }
 
         //public override void GetAABB(ref AxisAlignedBox aabb)

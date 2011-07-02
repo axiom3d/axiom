@@ -261,7 +261,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <summary>
         /// TypeName
         /// </summary>
-        public new const string TypeName = "Light";
+        public new const string TypeName = "PCZLight";
 
         /// <summary>
         /// Constructor
