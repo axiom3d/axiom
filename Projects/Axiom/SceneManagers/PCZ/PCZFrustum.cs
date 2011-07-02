@@ -41,7 +41,7 @@ namespace Axiom.SceneManagers.PortalConnected
     /// <summary>
     /// PCZFrustum
     /// </summary>
-    public class PCZFrustum : DisposableObject 
+    public class PCZFrustum : DisposableObject
     {
         public enum Visibility
         {
@@ -121,6 +121,144 @@ namespace Axiom.SceneManagers.PortalConnected
             return true;
         }
 
+        /* special function that returns true only when aabb fully fits inside the frustum. */
+        public bool IsFullyVisible(AxisAlignedBox bound)
+        {
+            // Null boxes are always invisible
+            if (bound.IsNull) return false;
+
+            // Infinite boxes are never fully visible
+            if (bound.IsInfinite) return false;
+
+            // Get centre of the box
+            Vector3 center = bound.Center;
+            // Get the half-size of the box
+            Vector3 halfSize = bound.HalfSize;
+
+            // Check origin plane if told to
+            if (_useOriginPlane)
+            {
+                PlaneSide side = _originPlane.GetSide(center, halfSize);
+                if (side != PlaneSide.Positive) return false;
+            }
+
+            // For each extra active culling plane,
+            // see if the aabb is not on the positive side
+            // If so, object is not fully visible
+            foreach (PCZPlane plane in _activeCullingPlanes)
+            {
+                PlaneSide xside = plane.GetSide(center, halfSize);
+                if (xside != PlaneSide.Positive)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /* special function that returns true only when sphere fully fits inside the frustum. */
+        public bool IsFullyVisible(Sphere bound)
+        {
+            // Check origin plane if told to
+            if (_useOriginPlane)
+            {
+                if (_originPlane.GetDistance(bound.Center) <= bound.Radius ||
+                    _originPlane.GetSide(bound.Center) != PlaneSide.Positive)
+                {
+                    return false;
+                }
+            }
+
+            // For each extra active culling plane,
+            // see if the sphere is not on the positive side
+            // If so, object is not fully visible
+            foreach (PCZPlane plane in _activeCullingPlanes)
+            {
+                if (plane.GetDistance(bound.Center) <= bound.Radius ||
+                    plane.GetSide(bound.Center) != PlaneSide.Positive)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        /* special function that returns true only when portal fully fits inside the frustum. */
+        public bool IsFullyVisible(PortalBase portal)
+        {
+            // if portal isn't enabled, it's not visible
+            if (!portal.Enabled) return false;
+
+            // if the frustum has no planes, just return true
+            if (_activeCullingPlanes.Count == 0)
+            {
+                return true;
+            }
+            // check if this portal is already in the list of active culling planes (avoid
+            // infinite recursion case)
+            foreach (PCZPlane plane in _activeCullingPlanes)
+            {
+                if (plane.Portal == portal)
+                {
+                    return false;
+                }
+            }
+
+            // if portal is of type AABB or Sphere, then use simple bound check against planes
+            if (portal.Type == PortalType.AABB)
+            {
+                AxisAlignedBox aabb = new AxisAlignedBox(); ;
+                aabb.SetExtents(portal.DerivedCorners[0], portal.DerivedCorners[1]);
+                return IsFullyVisible(aabb);
+            }
+            else if (portal.Type == PortalType.Sphere)
+            {
+                return IsFullyVisible(portal.DerivedSphere);
+            }
+            
+
+            // only do this check if it's a portal. (anti portal doesn't care about facing)
+            if (portal.TypeName == "Portal")
+            {
+                // check if the portal norm is facing the frustum
+                Vector3 frustumToPortal = portal.DerivedCP - _origin;
+                Vector3 portalDirection = portal.DerivedDirection;
+                Real dotProduct = frustumToPortal.Dot(portalDirection);
+                if (dotProduct > 0)
+                {
+                    // portal is faced away from Frustum 
+                    return false;
+                }
+            }
+
+            // Check originPlane if told to
+            if (_useOriginPlane)
+            {
+                // we have to check each corner of the portal
+                for (int corner = 0; corner < 4; corner++)
+                {
+                    PlaneSide side = _originPlane.GetSide(portal.DerivedCorners[corner]);
+                    if (side == PlaneSide.Negative) return false;
+                }
+            }
+
+            // For each active culling plane, see if any portal points are on the negative 
+            // side. If so, the portal is not fully visible
+            foreach (PCZPlane plane in _activeCullingPlanes)
+            {
+                // we have to check each corner of the portal
+                for (int corner = 0; corner < 4; corner++)
+                {
+                    PlaneSide side = plane.GetSide(portal.DerivedCorners[corner]);
+                    if (side == PlaneSide.Negative) return false;
+                }
+            }
+            // no plane culled all the portal points and the norm
+            // was facing the frustum, so this portal is fully visible
+            return true;
+
+        }
         public bool IsObjectVisible(Sphere bound)
         {
             // Check origin plane if told to
@@ -169,7 +307,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <returns>
         /// true if the Portal is visible.
         /// </returns>
-        public bool IsObjectVisible(Portal portal)
+        public bool IsObjectVisible(PortalBase portal)
         {
             // if portal isn't open, it's not visible
             if (!portal.Enabled)
@@ -335,7 +473,7 @@ namespace Axiom.SceneManagers.PortalConnected
         // origin and add to list of culling planes
         // NOTE: returns 0 if portal was completely culled by existing planes
         //		 returns > 0 if culling planes are added (# is planes added)
-        public int AddPortalCullingPlanes(Portal portal)
+        public int AddPortalCullingPlanes(PortalBase portal)
         {
             int addedcullingplanes = 0;
 
@@ -347,7 +485,7 @@ namespace Axiom.SceneManagers.PortalConnected
             {
                 PCZPlane newPlane = GetUnusedCullingPlane();
                 newPlane.SetFromAxiomPlane(_originPlane);
-                newPlane.Portal = portal;
+                newPlane.Portal = (Portal)portal;
                 _activeCullingPlanes.Add(newPlane);
                 addedcullingplanes++;
                 return addedcullingplanes;
@@ -394,7 +532,7 @@ namespace Axiom.SceneManagers.PortalConnected
                     {
                         newPlane.Redefine(_origin, portal.DerivedCorners[j], portal.DerivedCorners[i]);
                     }
-                    newPlane.Portal = portal;
+                    newPlane.Portal = (Portal)portal;
                     _activeCullingPlanes.Add(newPlane);
                     addedcullingplanes++;
                 }
@@ -405,7 +543,7 @@ namespace Axiom.SceneManagers.PortalConnected
             {
                 PCZPlane newPlane = GetUnusedCullingPlane();
                 newPlane.Redefine(portal.DerivedCorners[2], portal.DerivedCorners[1], portal.DerivedCorners[0]);
-                newPlane.Portal = portal;
+                newPlane.Portal = (Portal)portal;
                 _activeCullingPlanes.Add(newPlane);
                 addedcullingplanes++;
             }
@@ -413,7 +551,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         // remove culling planes created from the given portal
-        public void RemovePortalCullingPlanes(Portal portal)
+        public void RemovePortalCullingPlanes(PortalBase portal)
         {
             for (int i = 0; i < _activeCullingPlanes.Count; i++)
             {

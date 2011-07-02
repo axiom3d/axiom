@@ -43,6 +43,12 @@ namespace Axiom.SceneManagers.PortalConnected
     {
         private static NameGenerator<AntiPortal> _nameGenerator = new NameGenerator<AntiPortal>("AntiPortal");
 
+        private string _typeName = "AntiPortal";
+        public override string TypeName
+        {
+            get { return _typeName; }
+        }
+
         public AntiPortal(string name)
             : this(name, PortalType.AABB)
         {

@@ -95,6 +95,8 @@ namespace Axiom.SceneManagers.PortalConnected
             return true;
         }
 
+
+
         /// <summary>
         /// IsObjectVisible() function for portals.
         /// </summary>
@@ -111,7 +113,7 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <returns>
         /// true if the Portal is visible.
         /// </returns>
-        public bool IsVisible(Portal portal, out FrustumPlane culledBy)
+        public bool IsObjectVisible(PortalBase portal, out FrustumPlane culledBy) 
         {
             culledBy = FrustumPlane.None;
 
