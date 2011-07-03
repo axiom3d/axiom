@@ -46,49 +46,123 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
+/// <summary>
+/// Height map Terrain Zone Page Source
+/// </summary>
 public class HeightmapTerrainZonePageSource : TerrainZonePageSource
 {
 
-    /// Is this input RAW?
-    protected bool IsRaw;
+    private bool _isRaw = false;
+    /// <summary>
+    ///  Is this input RAW?
+    /// </summary>
+    protected bool IsRaw
+    {
+        get { return _isRaw; }
+        set { _isRaw = value; }
+    }
+
+    private bool _flipTerrainZone = false;
+    /// <summary>
     /// Should we flip terrain vertically?
-    protected bool FlipTerrainZone;
-    /// Image containing the source heightmap if loaded from non-RAW
-    protected Image _Image;
+    /// </summary>
+    protected bool FlipTerrainZone
+    {
+        get { return _flipTerrainZone; }
+        set { _flipTerrainZone = value; }
+    }
+
+    private Image _Image = null;
+    /// <summary>
+    /// Image containing the source height map if loaded from non-RAW
+    /// </summary>
+    protected Image Image
+    {
+        get { return _Image; }
+        set { _Image = value; }
+    }
+
+    private MemoryStream _rawData = null;
+    /// <summary>
     /// Arbitrary data loaded from RAW
-    protected MemoryStream RawData;
+    /// </summary>
+    protected MemoryStream RawData
+    {
+        get { return _rawData; }
+        set { _rawData = value; }
+    }
+
+    private TerrainZonePage _page = null;
+    /// <summary>
     /// The (single) terrain page this source will provide
-    protected TerrainZonePage Page;
+    /// </summary>
+    protected TerrainZonePage Page
+    {
+        get { return _page; }
+        set { _page = value; }
+    }
+
+
+    private string _source = "";
+    /// <summary>
     /// Source file name
-    protected string Source;
+    /// </summary>
+    protected string Source
+    {
+        get { return _source; }
+        set { _source = value; }
+    }
+
+    private int _rawSize = 0;
+    /// <summary>
     /// Manual size if source is RAW
-    protected int RawSize;
+    /// </summary>
+    protected int RawSize
+    {
+        get { return _rawSize; }
+        set { _rawSize = value; }
+    }
+
+    private byte _rawBpp;
+    /// <summary>
     /// Manual bpp if source is RAW
-    protected byte RawBpp;
+    /// </summary>
+    protected byte RawBpp
+    {
+        get { return _rawBpp; }
+        set { _rawBpp = value; }
+    }
 
-
-    //-------------------------------------------------------------------------
+    /// <summary>
+    /// Constructor HeightmapTerrainZonePageSource
+    /// </summary>
     public HeightmapTerrainZonePageSource()
     {
-        IsRaw = false;
-        FlipTerrainZone = false;
-        Page = null;
     }
-    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// Destructor HeightmapTerrainZonePageSource
+    /// </summary>
     ~HeightmapTerrainZonePageSource()
     {
         Shutdown();
     }
-    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// Shutdown
+    /// </summary>
     public override void Shutdown()
     {
-        if (null != _Image)
+        if (null != Image)
         {
-            _Image.Dispose();
+            Image.Dispose();
         }
         Page = null;
     }
-    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// Load Height map
+    /// </summary>
     public void LoadHeightmap()
     {
         int imgSize;
@@ -110,34 +184,42 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             if (RawData.Length != numBytes)
             {
                 Shutdown();
-                throw new AxiomException("RAW size (" + RawData.Length +
-                                         ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap");
+                throw new AxiomException("RAW size ({0}) does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap", RawData.Length);
             }
         }
         else
         {
-            _Image =
+            Image =
                 Image.FromStream(ResourceGroupManager.Instance.OpenResource(Source,
                                                                             ResourceGroupManager.Instance.
                                                                                 WorldResourceGroupName), Source.Split('.')[1]);
 
             // Must be square (dimensions checked later)
-            if (_Image.Width != _Image.Height)
+            if (Image.Width != Image.Height)
             {
                 Shutdown();
                 throw new AxiomException("Heightmap must be square. HeightmapTerrainZonePageSource.LoadHeightmap");
             }
-            imgSize = _Image.Width;
+            imgSize = Image.Width;
         }
         //check to make sure it's the expected size
         if (imgSize != mPageSize)
         {
             Shutdown();
-            throw new AxiomException("Error: Invalid heightmap size : " + imgSize + ". Should be " + mPageSize + "HeightmapTerrainZonePageSource.LoadHeightmap");
+            throw new AxiomException("Error: Invalid heightmap size : {0}. Should be {1} HeightmapTerrainZonePageSource.LoadHeightmap", imgSize, mPageSize);
+
         }
 
     }
-    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// Initialize
+    /// </summary>
+    /// <param name="tsm">TerrainZone</param>
+    /// <param name="tileSize">int</param>
+    /// <param name="pageSize">int</param>
+    /// <param name="asyncLoading">bool</param>
+    /// <param name="optionList">TerrainZonePageSourceOptionList</param>
     public override void Initialize(TerrainZone tsm, int tileSize, int pageSize, bool asyncLoading,
         TerrainZonePageSourceOptionList optionList)
     {
@@ -204,7 +286,12 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
         // Load it!
         LoadHeightmap();
     }
-    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// Request Page
+    /// </summary>
+    /// <param name="x">ushort</param>
+    /// <param name="y">ushort</param>
     public override void RequestPage(ushort x, ushort y)
     {
         // Only 1 page provided
@@ -225,13 +312,13 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             }
             else
             {
-                PixelFormat pf = _Image.Format;
+                PixelFormat pf = Image.Format;
                 if (pf != PixelFormat.L8 && pf != PixelFormat.L16)
                 {
                     throw new AxiomException("Error: Image is not a grayscale image. HeightmapTerrainZonePageSource.RequestPage");
                 }
 
-                pOrigSrc = _Image.Data;
+                pOrigSrc = Image.Data;
                 is16bit = (pf == PixelFormat.L16);
             }
             // Determine mapping from fixed to floating
@@ -248,36 +335,36 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             }
             // Read the data
             pSrc = pOrigSrc;
-            //                for ( int j = 0; j < mPageSize; ++j )
-            //                {
-            //                    if ( mFlipTerrainZone )
-            //                    {
-            //                        //Array al = Array.CreateInstance(typeof(byte), pSrc.Length);
-            //                        //pSrc.CopyTo(al, 0);
-            //                        pOrigSrc.CopyTo( pSrc, 0 );
-            //                        Array.Reverse( pSrc );
-            //                        // Work backwards
-            //                        // pSrc = pOrigSrc + (rowSize * (mPageSize - j - 1));
-            //                    }
-            //                    for ( int i = 0; i < mPageSize; ++i )
-            //                    {
-            //                        if ( is16bit )
-            //                        {
-            //#if OGRE_ENDIAN == OGRE_ENDIAN_BIG
-            //                            int val = pSrc[ j + i ] << 8;
-            //                            val += pSrc[ j + i ];
-            //#else
-            //                            ushort val = *pSrc++;
-            //                            val += *pSrc++ << 8;
-            //#endif
-            //                            pDest[ j + i ] = new Real( val )*invScale;
-            //                        }
-            //                        else
-            //                        {
-            //                            pDest[ j + i ] = new Real( pSrc[ j + i ] )*invScale;
-            //                        }
-            //                    }
-            //                }
+            for (int j = 0; j < mPageSize; ++j)
+            {
+                if (_flipTerrainZone)
+                {
+                    //Array al = Array.CreateInstance(typeof(byte), pSrc.Length);
+                    //pSrc.CopyTo(al, 0);
+                    pOrigSrc.CopyTo(pSrc, 0);
+                    Array.Reverse(pSrc);
+                    // Work backwards
+                    // pSrc = pOrigSrc + (rowSize * (mPageSize - j - 1));
+                }
+                for (int i = 0; i < mPageSize; ++i)
+                {
+                    if (is16bit)
+                    {
+#if OGRE_ENDIAN == OGRE_ENDIAN_BIG
+                        int val = pSrc[j + i] << 8;
+                        val += pSrc[j + i];
+#else
+                                        ushort val = *pSrc++;
+                                        val += *pSrc++ << 8;
+#endif
+                        pDest[j + i] = new Real(val) * invScale;
+                    }
+                    else
+                    {
+                        pDest[j + i] = new Real(pSrc[j + i]) * invScale;
+                    }
+                }
+            }
 
             for (ulong i = 0; i < totalPageSize - 1; i++)
             {
@@ -292,16 +379,18 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             // Note that we're using a single material for now
             if (null != mTerrainZone)
             {
-                Page = BuildPage(heightData,
-                    mTerrainZone.Options.terrainMaterial);
+                Page = BuildPage(heightData, mTerrainZone.Options.terrainMaterial);
                 mTerrainZone.AttachPage(0, 0, Page);
             }
 
-            // Free temp store
-            // OGRE_FREE(heightData, MEMCATEGORY_RESOURCE);
         }
     }
-    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// ExpirePage
+    /// </summary>
+    /// <param name="x">ushort</param>
+    /// <param name="y">ushort</param>
     public void ExpirePage(ushort x, ushort y)
     {
         // Single page
@@ -311,5 +400,4 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
         }
 
     }
-    //-------------------------------------------------------------------------
 }

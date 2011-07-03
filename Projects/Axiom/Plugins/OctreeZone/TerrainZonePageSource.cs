@@ -170,7 +170,7 @@ public class TerrainZonePageSource
         // calculate neighbours for page
         page.LinkNeighbours();
 
-        if (mTerrainZone.Options.lit)
+        if (mTerrainZone.Options.UseDynamicLighting)
         {
             q = 0;
             for (int j = 0; j < mPageSize - 1; j += (mTileSize - 1))

@@ -50,10 +50,11 @@ namespace Axiom.SceneManagers.PortalConnected
         /// <summary>
         /// Node List Type
         /// </summary>
+        [Flags]
         public enum NodeListType : int
         {
-            HomeNodeList = 1,
-            VistoryNodeList = 2
+            Home = 1,
+            Visitor = 2
         }
 
         /// <summary>

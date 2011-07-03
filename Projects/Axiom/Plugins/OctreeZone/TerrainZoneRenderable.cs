@@ -180,13 +180,13 @@ public class TerrainZoneRenderable : SimpleRenderable
     /** Returns the index into the height array for the given coords. */
     public ushort Index(int x, int z)
     {
-        return (ushort)(x + z * mOptions.tileSize);
+        return (ushort)(x + z * mOptions.TileSize);
     }
 
     /** Returns the  vertex coord for the given coordinates */
     public float Vertex(int x, int z, int n)
     {
-        return mPositionBuffer[x * 3 + z * mOptions.tileSize * 3 + n];
+        return mPositionBuffer[x * 3 + z * mOptions.TileSize * 3 + n];
     }
 
     public int NumNeighbors()
@@ -257,11 +257,11 @@ public class TerrainZoneRenderable : SimpleRenderable
     public unsafe void Initialize(int startx, int startz, Real[] pageHeightData)
     {
 
-        if (mOptions.maxGeoMipMapLevel != 0)
+        if (mOptions.MaxGeoMipMapLevel != 0)
         {
-            int i = (int)1 << (mOptions.maxGeoMipMapLevel - 1);
+            int i = (int)1 << (mOptions.MaxGeoMipMapLevel - 1);
 
-            if ((i + 1) > mOptions.tileSize)
+            if ((i + 1) > mOptions.TileSize)
             {
                 LogManager.Instance.Write("Invalid maximum mipmap specifed, must be n, such that 2^(n-1)+1 < tileSize \n");
                 return;
@@ -275,10 +275,10 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         mTerrain = new VertexData();
         mTerrain.vertexStart = 0;
-        mTerrain.vertexCount = mOptions.tileSize * mOptions.tileSize;
+        mTerrain.vertexCount = mOptions.TileSize * mOptions.TileSize;
 
         renderOperation.useIndices = true;
-        renderOperation.operationType = mOptions.useTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
+        renderOperation.operationType = mOptions.UseTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
         renderOperation.vertexData = mTerrain;
         renderOperation.indexData = GetIndexData();
 
@@ -289,7 +289,7 @@ public class TerrainZoneRenderable : SimpleRenderable
         int offset = 0;
         decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position);
         offset += VertexElement.GetTypeSize(VertexElementType.Float3);
-        if (mOptions.lit)
+        if (mOptions.UseDynamicLighting)
         {
             decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position);
             offset += VertexElement.GetTypeSize(VertexElementType.Float3);
@@ -299,7 +299,7 @@ public class TerrainZoneRenderable : SimpleRenderable
         offset += VertexElement.GetTypeSize(VertexElementType.Float2);
         decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
         offset += VertexElement.GetTypeSize(VertexElementType.Float2);
-        if (mOptions.coloured)
+        if (mOptions.Coloured)
         {
             decl.AddElement(MAIN_BINDING, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
             offset += VertexElement.GetTypeSize(VertexElementType.Color);
@@ -317,7 +317,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         bind.SetBinding(MAIN_BINDING, mMainBuffer);
 
-        if (mOptions.lodMorph)
+        if (mOptions.LodMorph)
         {
             // Create additional element for delta
             decl.AddElement(DELTA_BINDING, 0, VertexElementType.Float1, VertexElementSemantic.BlendWeights);
@@ -329,11 +329,11 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         mRenderLevel = 0;
 
-        mMinLevelDistSqr = new Real[mOptions.maxGeoMipMapLevel];
+        mMinLevelDistSqr = new Real[mOptions.MaxGeoMipMapLevel];
 
-        int endx = startx + mOptions.tileSize;
+        int endx = startx + mOptions.TileSize;
 
-        int endz = startz + mOptions.tileSize;
+        int endz = startz + mOptions.TileSize;
 
         Vector3 left, down, here;
 
@@ -357,22 +357,22 @@ public class TerrainZoneRenderable : SimpleRenderable
                     //texelem0.baseVertexPointerToElement(pBase, &pTex0);
                     //texelem1.baseVertexPointerToElement(pBase, &pTex1);
 
-                    Real height = pageHeightData[j * mOptions.pageSize + i];
-                    height = height * mOptions.scale.y; // scale height
+                    Real height = pageHeightData[j * mOptions.PageSize + i];
+                    height = height * mOptions.Scale.y; // scale height
 
                     //*pSysPos++ = *pPos++ = (float) i*mOptions.scale.x; //x
                     //*pSysPos++ = *pPos++ = height; // y
                     //*pSysPos++ = *pPos++ = (float) j*mOptions.scale.z; //z
 
-                    mPositionBuffer[pos++] = *pPos++ = (float)i * mOptions.scale.x; //x
+                    mPositionBuffer[pos++] = *pPos++ = (float)i * mOptions.Scale.x; //x
                     mPositionBuffer[pos++] = *pPos++ = height; // y
-                    mPositionBuffer[pos++] = *pPos++ = (float)j * mOptions.scale.z; //z
+                    mPositionBuffer[pos++] = *pPos++ = (float)j * mOptions.Scale.z; //z
 
-                    *pTex0++ = (float)i / (float)(mOptions.pageSize - 1);
-                    *pTex0++ = (float)j / (float)(mOptions.pageSize - 1);
+                    *pTex0++ = (float)i / (float)(mOptions.PageSize - 1);
+                    *pTex0++ = (float)j / (float)(mOptions.PageSize - 1);
 
-                    *pTex1++ = ((float)i / (float)(mOptions.tileSize - 1)) * mOptions.detailTile;
-                    *pTex1++ = ((float)j / (float)(mOptions.tileSize - 1)) * mOptions.detailTile;
+                    *pTex1++ = ((float)i / (float)(mOptions.TileSize - 1)) * mOptions.DetailTile;
+                    *pTex1++ = ((float)j / (float)(mOptions.TileSize - 1)) * mOptions.DetailTile;
 
                     if (height < min)
                         min = (Real)height;
@@ -386,23 +386,23 @@ public class TerrainZoneRenderable : SimpleRenderable
 
             mMainBuffer.Unlock();
             mBounds = new AxisAlignedBox();
-            mBounds.SetExtents(new Vector3((Real)startx * mOptions.scale.x, min, (Real)startz * mOptions.scale.z),
-                                new Vector3((Real)(endx - 1) * mOptions.scale.x, max,
-                                             (Real)(endz - 1) * mOptions.scale.z));
+            mBounds.SetExtents(new Vector3((Real)startx * mOptions.Scale.x, min, (Real)startz * mOptions.Scale.z),
+                                new Vector3((Real)(endx - 1) * mOptions.Scale.x, max,
+                                             (Real)(endz - 1) * mOptions.Scale.z));
 
-            mCenter = new Vector3((startx * mOptions.scale.x + (endx - 1) * mOptions.scale.x) / 2,
+            mCenter = new Vector3((startx * mOptions.Scale.x + (endx - 1) * mOptions.Scale.x) / 2,
                                    (min + max) / 2,
-                                   (startz * mOptions.scale.z + (endz - 1) * mOptions.scale.z) / 2);
+                                   (startz * mOptions.Scale.z + (endz - 1) * mOptions.Scale.z) / 2);
             boundingRadius = Math.Sqrt(
                                   Utility.Sqr(max - min) +
-                                  Utility.Sqr((endx - 1 - startx) * mOptions.scale.x) +
-                                  Utility.Sqr((endz - 1 - startz) * mOptions.scale.z)) / 2;
+                                  Utility.Sqr((endx - 1 - startx) * mOptions.Scale.x) +
+                                  Utility.Sqr((endz - 1 - startz) * mOptions.Scale.z)) / 2;
 
             // Create delta buffer list if required to morph
-            if (mOptions.lodMorph)
+            if (mOptions.LodMorph)
             {
                 // Create delta buffer for all except the lowest mip
-                mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>(mOptions.maxGeoMipMapLevel - 1);
+                mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>(mOptions.MaxGeoMipMapLevel - 1);
             }
 
             Real C = CalculateCFactor();
@@ -421,7 +421,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         Real A, T;
 
-        if (null == mOptions.primaryCamera)
+        if (null == mOptions.PrimaryCamera)
         {
             throw new AxiomException("You have not created a camera yet! TerrainZoneRenderable._calculateCFactor");
         }
@@ -430,9 +430,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         // Turn off detail compression at higher FOVs
         A = 1.0f;
 
-        int vertRes = mOptions.primaryCamera.Viewport.ActualHeight;
+        int vertRes = mOptions.PrimaryCamera.Viewport.ActualHeight;
 
-        T = 2 * (Real)mOptions.maxPixelError / (Real)vertRes;
+        T = 2 * (Real)mOptions.MaxPixelError / (Real)vertRes;
 
         return A / T;
     }
@@ -446,9 +446,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         start.y = Vertex(0, 0, 1);
         start.z = Vertex(0, 0, 2);
 
-        end.x = Vertex(mOptions.tileSize - 1, mOptions.tileSize - 1, 0);
-        end.y = Vertex(mOptions.tileSize - 1, mOptions.tileSize - 1, 1);
-        end.z = Vertex(mOptions.tileSize - 1, mOptions.tileSize - 1, 2);
+        end.x = Vertex(mOptions.TileSize - 1, mOptions.TileSize - 1, 0);
+        end.y = Vertex(mOptions.TileSize - 1, mOptions.TileSize - 1, 1);
+        end.z = Vertex(mOptions.TileSize - 1, mOptions.TileSize - 1, 2);
 
         /* Safety catch, if the point asked for is outside
         * of this tile, it will ask the appropriate tile
@@ -491,14 +491,14 @@ public class TerrainZoneRenderable : SimpleRenderable
         float x_pct = (x - start.x) / (end.x - start.x);
         float z_pct = (z - start.z) / (end.z - start.z);
 
-        float x_pt = x_pct * (float)(mOptions.tileSize - 1);
-        float z_pt = z_pct * (float)(mOptions.tileSize - 1);
+        float x_pt = x_pct * (float)(mOptions.TileSize - 1);
+        float z_pt = z_pct * (float)(mOptions.TileSize - 1);
 
         int x_index = (int)x_pt;
         int z_index = (int)z_pt;
 
         // If we got to the far right / bottom edge, move one back
-        if (x_index == mOptions.tileSize - 1)
+        if (x_index == mOptions.TileSize - 1)
         {
             --x_index;
             x_pct = 1.0f;
@@ -508,7 +508,7 @@ public class TerrainZoneRenderable : SimpleRenderable
             // get remainder
             x_pct = x_pt - x_index;
         }
-        if (z_index == mOptions.tileSize - 1)
+        if (z_index == mOptions.TileSize - 1)
         {
             --z_index;
             z_pct = 1.0f;
@@ -660,9 +660,9 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         VertexElement elem = mTerrain.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
         //for each point in the terrain, see if it's in the line of sight for the sun.
-        for (int i = 0; i < mOptions.tileSize; i++)
+        for (int i = 0; i < mOptions.TileSize; i++)
         {
-            for (int j = 0; j < mOptions.tileSize; j++)
+            for (int j = 0; j < mOptions.TileSize; j++)
             {
                 //  printf( "Checking %f,%f,%f ", pt.x, pt.y, pt.z );
                 pt.x = Vertex(i, j, 0);
@@ -743,7 +743,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         mRenderLevel = -1;
 
-        for (int i = 0; i < mOptions.maxGeoMipMapLevel; i++)
+        for (int i = 0; i < mOptions.MaxGeoMipMapLevel; i++)
         {
             if (mMinLevelDistSqr[i] > L)
             {
@@ -753,9 +753,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         }
 
         if (mRenderLevel < 0)
-            mRenderLevel = mOptions.maxGeoMipMapLevel - 1;
+            mRenderLevel = mOptions.MaxGeoMipMapLevel - 1;
 
-        if (mOptions.lodMorph)
+        if (mOptions.LodMorph)
         {
             // Get the next LOD level down
             int nextLevel = mNextLevelDown[mRenderLevel];
@@ -773,8 +773,8 @@ public class TerrainZoneRenderable : SimpleRenderable
                 {
                     Real percent = (L - mMinLevelDistSqr[mRenderLevel]) / range;
                     // scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
-                    Real rescale = 1.0f / (1.0f - mOptions.lodMorphStart);
-                    mLODMorphFactor = Math.Max((percent - mOptions.lodMorphStart) * rescale, 0.0);
+                    Real rescale = 1.0f / (1.0f - mOptions.LodMorphStart);
+                    mLODMorphFactor = Math.Max((percent - mOptions.LodMorphStart) * rescale, 0.0);
                 }
                 else
                 {
@@ -866,16 +866,16 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         Vector3 norm = Vector3.Zero;
 
-        Debug.Assert(mOptions.lit, "No normals present");
+        Debug.Assert(mOptions.UseDynamicLighting, "No normals present");
 
         HardwareVertexBuffer vbuf = mTerrain.vertexBufferBinding.GetBuffer((short)MAIN_BINDING);
         VertexElement elem = mTerrain.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
         char* pBase = (char*)vbuf.Lock(BufferLocking.Discard);
         float* pNorm = null;
 
-        for (int j = 0; j < mOptions.tileSize; j++)
+        for (int j = 0; j < mOptions.TileSize; j++)
         {
-            for (int i = 0; i < mOptions.tileSize; i++)
+            for (int i = 0; i < mOptions.TileSize; i++)
             {
 
                 GetNormalAt(Vertex(i, j, 0), Vertex(i, j, 2), ref norm);
@@ -902,7 +902,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         int i, j;
 
-        for (int level = 1; level < mOptions.maxGeoMipMapLevel; level++)
+        for (int level = 1; level < mOptions.MaxGeoMipMapLevel; level++)
         {
             mMinLevelDistSqr[level] = 0;
 
@@ -912,7 +912,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
             float* pDeltas = null;
             IntPtr dataPtr;
-            if (mOptions.lodMorph)
+            if (mOptions.LodMorph)
             {
                 // Create a set of delta values (store at index - 1 since 0 has none)
                 mDeltaBuffers[level - 1] = CreateDeltaBuffer();
@@ -923,9 +923,9 @@ public class TerrainZoneRenderable : SimpleRenderable
                 pDeltas = (float*)dataPtr.ToPointer();
             }
 
-            for (j = 0; j < mOptions.tileSize - step; j += step)
+            for (j = 0; j < mOptions.TileSize - step; j += step)
             {
-                for (i = 0; i < mOptions.tileSize - step; i += step)
+                for (i = 0; i < mOptions.TileSize - step; i += step)
                 {
                     /* Form planes relating to the lower detail tris to be produced
                     For tri lists and even tri strip rows, they are this shape:
@@ -947,7 +947,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                     t1 = new Plane();
                     t2 = new Plane();
                     bool backwardTri = false;
-                    if (!mOptions.useTriStrips || j % 2 == 0)
+                    if (!mOptions.UseTriStrips || j % 2 == 0)
                     {
                         t1.Redefine(v1, v3, v2);
                         t2.Redefine(v2, v3, v4);
@@ -960,11 +960,11 @@ public class TerrainZoneRenderable : SimpleRenderable
                     }
 
                     // include the bottommost row of vertices if this is the last row
-                    int zubound = (j == (mOptions.tileSize - step) ? step : step - 1);
+                    int zubound = (j == (mOptions.TileSize - step) ? step : step - 1);
                     for (int z = 0; z <= zubound; z++)
                     {
                         // include the rightmost col of vertices if this is the last col
-                        int xubound = (i == (mOptions.tileSize - step) ? step : step - 1);
+                        int xubound = (i == (mOptions.TileSize - step) ? step : step - 1);
                         for (int x = 0; x <= xubound; x++)
                         {
                             int fulldetailx = i + x;
@@ -1015,12 +1015,12 @@ public class TerrainZoneRenderable : SimpleRenderable
 
                             // Should be save height difference?
                             // Don't morph along edges
-                            if (mOptions.lodMorph &&
-                                fulldetailx != 0 && fulldetailx != (mOptions.tileSize - 1) &&
-                                fulldetailz != 0 && fulldetailz != (mOptions.tileSize - 1))
+                            if (mOptions.LodMorph &&
+                                fulldetailx != 0 && fulldetailx != (mOptions.TileSize - 1) &&
+                                fulldetailz != 0 && fulldetailz != (mOptions.TileSize - 1))
                             {
                                 // Save height difference
-                                pDeltas[(int)(fulldetailx + (fulldetailz * mOptions.tileSize))] =
+                                pDeltas[(int)(fulldetailx + (fulldetailz * mOptions.TileSize))] =
                                     interp_h - actual_h;
                             }
 
@@ -1031,7 +1031,7 @@ public class TerrainZoneRenderable : SimpleRenderable
             }
 
             // Unlock morph deltas if required
-            if (mOptions.lodMorph)
+            if (mOptions.LodMorph)
             {
                 mDeltaBuffers[level - 1].Unlock();
             }
@@ -1040,7 +1040,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
 
         // Post validate the whole set
-        for (i = 1; i < mOptions.maxGeoMipMapLevel; i++)
+        for (i = 1; i < mOptions.MaxGeoMipMapLevel; i++)
         {
 
             // Make sure no LOD transition within the tile
@@ -1062,9 +1062,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         // Now reverse traverse the list setting the 'next level down'
         Real lastDist = -1;
         int lastIndex = 0;
-        for (i = mOptions.maxGeoMipMapLevel - 1; i >= 0; --i)
+        for (i = mOptions.MaxGeoMipMapLevel - 1; i >= 0; --i)
         {
-            if (i == mOptions.maxGeoMipMapLevel - 1)
+            if (i == mOptions.MaxGeoMipMapLevel - 1)
             {
                 // Last one is always 0
                 lastIndex = i;
@@ -1091,11 +1091,11 @@ public class TerrainZoneRenderable : SimpleRenderable
         // Delta buffer is a 1D float buffer of height offsets
         HardwareVertexBuffer buf = HardwareBufferManager.Instance.CreateVertexBuffer(
             VertexElement.GetTypeSize(VertexElementType.Float1),
-            mOptions.tileSize * mOptions.tileSize,
+            mOptions.TileSize * mOptions.TileSize,
             BufferUsage.WriteOnly);
         // Fill the buffer with zeros, we will only fill in delta
         IntPtr pVoid = buf.Lock(BufferLocking.Discard);
-        Memory.Set(pVoid, 0, (mOptions.tileSize * mOptions.tileSize) * sizeof(float));
+        Memory.Set(pVoid, 0, (mOptions.TileSize * mOptions.TileSize) * sizeof(float));
         //memset(pVoid, 0, mOptions.tileSize*mOptions.tileSize*sizeof (float));
         buf.Unlock();
 
@@ -1146,7 +1146,7 @@ public class TerrainZoneRenderable : SimpleRenderable
         if (null == levelIndex[mRenderLevel] || (((KeyValuePair<uint, IndexData>)levelIndex[mRenderLevel]).Key & stitchFlags) == 0)
         {
             // Create
-            if (mOptions.useTriStrips)
+            if (mOptions.UseTriStrips)
             {
                 indexData = GenerateTriStripIndexes((uint)stitchFlags);
             }
@@ -1177,9 +1177,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         // Calculate the number of indexes required
         // This is the number of 'cells' at this detail level x 2
         // plus 3 degenerates to turn corners
-        int numTrisAcross = (((mOptions.tileSize - 1) / step) * 2) + 3;
+        int numTrisAcross = (((mOptions.TileSize - 1) / step) * 2) + 3;
         // Num indexes is number of tris + 2
-        int new_length = numTrisAcross * ((mOptions.tileSize - 1) / step) + 2;
+        int new_length = numTrisAcross * ((mOptions.TileSize - 1) / step) + 2;
         //this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
         IndexData indexData = new IndexData();
@@ -1196,12 +1196,12 @@ public class TerrainZoneRenderable : SimpleRenderable
             ushort* pIdx = (ushort*)indexData.indexBuffer.Lock(0, indexData.indexBuffer.Size, BufferLocking.Discard);
 
             // Stripified mesh
-            for (int j = 0; j < mOptions.tileSize - 1; j += step)
+            for (int j = 0; j < mOptions.TileSize - 1; j += step)
             {
                 int i;
                 // Forward strip
                 // We just do the |/ here, final | done after
-                for (i = 0; i < mOptions.tileSize - 1; i += step)
+                for (i = 0; i < mOptions.TileSize - 1; i += step)
                 {
                     int[] x = new int[4];
                     int[] y = new int[4];
@@ -1240,7 +1240,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                             y[1] -= step;
                         }
                     }
-                    if (i == (mOptions.tileSize - 1 - step) && (stitchFlags & STITCH_EAST) != 0)
+                    if (i == (mOptions.TileSize - 1 - step) && (stitchFlags & STITCH_EAST) != 0)
                     {
                         // East tiling means rounding y[2] & y[3]
                         if (y[2] % lowstep != 0)
@@ -1265,12 +1265,12 @@ public class TerrainZoneRenderable : SimpleRenderable
                     *pIdx++ = (ushort)Index(x[2], y[2]);
                     numIndexes++;
 
-                    if (i == mOptions.tileSize - 1 - step)
+                    if (i == mOptions.TileSize - 1 - step)
                     {
                         // Emit extra index to finish row
                         *pIdx++ = (ushort)Index(x[3], y[3]);
                         numIndexes++;
-                        if (j < mOptions.tileSize - 1 - step)
+                        if (j < mOptions.TileSize - 1 - step)
                         {
                             // Emit this index twice more (this is to turn around without
                             // artefacts)
@@ -1284,7 +1284,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                 // Increment row
                 j += step;
                 // Backward strip
-                for (i = mOptions.tileSize - 1; i > 0; i -= step)
+                for (i = mOptions.TileSize - 1; i > 0; i -= step)
                 {
                     int[] x = new int[4];
                     int[] y = new int[4];
@@ -1295,7 +1295,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
                     // Never get a north tiling on a backward strip (always
                     // start on a forward strip)
-                    if (j == (mOptions.tileSize - 1 - step) && (stitchFlags & STITCH_SOUTH) != 0)
+                    if (j == (mOptions.TileSize - 1 - step) && (stitchFlags & STITCH_SOUTH) != 0)
                     {
                         // South reduction means rounding x[1] / x[3]
                         if (x[1] % lowstep != 0)
@@ -1320,7 +1320,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                             y[3] -= step;
                         }
                     }
-                    if (i == mOptions.tileSize - 1 && (stitchFlags & STITCH_EAST) != 0)
+                    if (i == mOptions.TileSize - 1 && (stitchFlags & STITCH_EAST) != 0)
                     {
                         // East tiling means rounding y[0] and y[1] on backward strip
                         if (y[0] % lowstep != 0)
@@ -1334,7 +1334,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                     }
 
                     //triangles
-                    if (i == mOptions.tileSize)
+                    if (i == mOptions.TileSize)
                     {
                         // Starter
                         *pIdx++ = (ushort)Index(x[0], y[0]);
@@ -1350,7 +1350,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                         // Emit extra index to finish row
                         *pIdx++ = (ushort)Index(x[3], y[3]);
                         numIndexes++;
-                        if (j < mOptions.tileSize - 1 - step)
+                        if (j < mOptions.TileSize - 1 - step)
                         {
                             // Emit this index once more (this is to turn around)
                             *pIdx++ = (ushort)Index(x[3], y[3]);
@@ -1383,7 +1383,7 @@ public class TerrainZoneRenderable : SimpleRenderable
         int east = (stitchFlags & STITCH_EAST) != 0 ? step : 0;
         int west = (stitchFlags & STITCH_WEST) != 0 ? step : 0;
 
-        int new_length = (mOptions.tileSize / step) * (mOptions.tileSize / step) * 2 * 2 * 2;
+        int new_length = (mOptions.TileSize / step) * (mOptions.TileSize / step) * 2 * 2 * 2;
         //this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
         indexData = new IndexData();
@@ -1398,9 +1398,9 @@ public class TerrainZoneRenderable : SimpleRenderable
             BufferLocking.Discard);
 
         // Do the core vertices, minus stitches
-        for (int j = north; j < mOptions.tileSize - 1 - south; j += step)
+        for (int j = north; j < mOptions.TileSize - 1 - south; j += step)
         {
-            for (int i = west; i < mOptions.tileSize - 1 - east; i += step)
+            for (int i = west; i < mOptions.TileSize - 1 - east; i += step)
             {
                 //triangles
                 *pIdx++ = Index(i, j + step);
@@ -1536,13 +1536,13 @@ public class TerrainZoneRenderable : SimpleRenderable
         {
             case Neighbor.NORTH:
                 startx = starty = 0;
-                endx = mOptions.tileSize - 1;
+                endx = mOptions.TileSize - 1;
                 rowstep = step;
                 horizontal = true;
                 break;
             case Neighbor.SOUTH:
                 // invert x AND y direction, helps to keep same winding
-                startx = starty = mOptions.tileSize - 1;
+                startx = starty = mOptions.TileSize - 1;
                 endx = 0;
                 rowstep = -step;
                 step = -step;
@@ -1552,13 +1552,13 @@ public class TerrainZoneRenderable : SimpleRenderable
                 break;
             case Neighbor.EAST:
                 startx = 0;
-                endx = mOptions.tileSize - 1;
-                starty = mOptions.tileSize - 1;
+                endx = mOptions.TileSize - 1;
+                starty = mOptions.TileSize - 1;
                 rowstep = -step;
                 horizontal = false;
                 break;
             case Neighbor.WEST:
-                startx = mOptions.tileSize - 1;
+                startx = mOptions.TileSize - 1;
                 endx = 0;
                 starty = 0;
                 rowstep = step;
