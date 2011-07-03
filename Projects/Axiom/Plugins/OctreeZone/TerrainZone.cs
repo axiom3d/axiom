@@ -63,44 +63,44 @@ using Axiom.Core;
         /// </summary>
         private static NameGenerator<TerrainZone> _nameGenerator = new NameGenerator<TerrainZone>("TerrainZone");
 
-        private const string TERRAIN_MATERIAL_NAME = "TerrainSceneManager/Terrain";
+        private const string _terrainMaterialName = "TerrainSceneManager/Terrain";
         /// The node to which all terrain tiles are attached
-        private PCZSceneNode mTerrainRoot = null;
+        private PCZSceneNode _terrainRoot = null;
         /// Terrain size, detail etc
-        private TerrainZoneOptions mOptions = new TerrainZoneOptions();
+        private TerrainZoneOptions _options = new TerrainZoneOptions();
         /// Should we use an externally-defined custom material?
-        private bool mUseCustomMaterial = false;
+        private bool _useCustomMaterial = false;
         /// The name of the custom material to use
-        private string mCustomMaterialName = "";
+        private string _customMaterialName = "";
         /// The name of the world texture
-        private string mWorldTextureName = "";
+        private string _worldTextureName = "";
         /// The name of the detail texture
-        private string mDetailTextureName = "";
+        private string _detailTextureName = "";
         /// Are we using a named parameter to hook up LOD morph?
-        private bool mUseNamedParameterLodMorph = false;
+        private bool _useNamedParameterLodMorph = false;
         /// The name of the parameter to send the LOD morph to
-        private string mLodMorphParamName = "";
+        private string _lodMorphParamName = "";
         /// The index of the parameter to send the LOD morph to
-        private int mLodMorphParamIndex = 3;
+        private int _lodMorphParamIndex = 3;
         /// Whether paging is enabled, or whether a single page will be used
-        private bool mPagingEnabled = false;
+        private bool _pagingEnabled = false;
         /// The number of pages to render outside the 'home' page
-        private ushort mLivePageMargin = 0;
+        private ushort _livePageMargin = 0;
         /// The number of pages to keep loaded outside the 'home' page
-        private ushort mBufferedPageMargin = 0;
+        private ushort _bufferedPageMargin = 0;
         /// Grid of buffered pages
-        private TerrainZonePage2D mTerrainZonePages = new TerrainZonePage2D();
+        private TerrainZonePage2D _terrainZonePages = new TerrainZonePage2D();
         //-- attributes to share across tiles
         /// Shared list of index buffers
-        private TerrainBufferCache mIndexCache = new TerrainBufferCache();
+        private TerrainBufferCache _indexCache = new TerrainBufferCache();
 
         /// Shared array of IndexData (reuse indexes across tiles)
-        private System.Collections.Hashtable mLevelIndex = Hashtable.Synchronized(new Hashtable());
+        private System.Collections.Hashtable _levelIndex = Hashtable.Synchronized(new Hashtable());
         //private List<KeyValuePair<uint, IndexData>> mLevelIndex = new List<KeyValuePair<uint, IndexData>>();
         /// Map of source type -> TerrainZonePageSource
-        private Dictionary<string, TerrainZonePageSource> mPageSources = new Dictionary<string, TerrainZonePageSource>();
+        private Dictionary<string, TerrainZonePageSource> _pageSources = new Dictionary<string, TerrainZonePageSource>();
         /// The currently active page source
-        private TerrainZonePageSource mActivePageSource = null;
+        private TerrainZonePageSource _activePageSource = null;
 
                 /// <summary>
         /// Default constructor
@@ -121,7 +121,7 @@ using Axiom.Core;
         {
             get
             {
-                return mOptions;
+                return _options;
             }
         }
 
@@ -130,7 +130,7 @@ using Axiom.Core;
         {
             get
             {
-                return mLevelIndex;
+                return _levelIndex;
             }
         }
 
@@ -139,7 +139,7 @@ using Axiom.Core;
         {
             get
             {
-                return mIndexCache;
+                return _indexCache;
             }
         }
 
@@ -147,7 +147,7 @@ using Axiom.Core;
         {
             get
             {
-                return mTerrainZonePages.Count;
+                return _terrainZonePages.Count;
             }
         }
 
@@ -155,7 +155,7 @@ using Axiom.Core;
         {
             get
             {
-                return mTerrainRoot;
+                return _terrainRoot;
             }
         }
 
@@ -175,9 +175,9 @@ using Axiom.Core;
             }
 
             // Shut down page source to free terrain pages
-            if (null != mActivePageSource)
+            if (null != _activePageSource)
             {
-                mActivePageSource.Shutdown();
+                _activePageSource.Shutdown();
             }
 
         }
@@ -267,23 +267,23 @@ using Axiom.Core;
                 v.z = (float)Convert.ToDouble(val);
 
             // Scale x/z relative to pagesize
-            v.x /= Options.pageSize - 1;
-            v.z /= Options.pageSize - 1;
+            v.x /= Options.PageSize - 1;
+            v.z /= Options.PageSize - 1;
             setScale(v);
 
             val = config.GetSetting("MaxPixelError");
             if (!string.IsNullOrEmpty(val))
                 setMaxPixelError(Convert.ToInt32(val));
 
-            mDetailTextureName = config.GetSetting("DetailTexture");
+            _detailTextureName = config.GetSetting("DetailTexture");
 
-            mWorldTextureName = config.GetSetting("WorldTexture");
+            _worldTextureName = config.GetSetting("WorldTexture");
 
             if (config.GetSetting("VertexColours") == "yes")
-                Options.coloured = true;
+                Options.Coloured = true;
 
             if (config.GetSetting("VertexNormals") == "yes")
-                Options.lit = true;
+                Options.UseDynamicLighting = true;
 
             if (config.GetSetting("UseTriStrips") == "yes")
                 SetUseTriStrips(true);
@@ -332,10 +332,10 @@ using Axiom.Core;
         //-------------------------------------------------------------------------
         public void SetupTerrainMaterial()
         {
-            if (string.IsNullOrEmpty(mCustomMaterialName))
+            if (string.IsNullOrEmpty(_customMaterialName))
             {
                 // define our own material
-                Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName(TERRAIN_MATERIAL_NAME);
+                Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName(_terrainMaterialName);
                 // Make unique terrain material name
                 string s = Name + "/Terrain";
                 Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName(s);
@@ -353,18 +353,18 @@ using Axiom.Core;
 
                 Pass pass = Options.terrainMaterial.GetTechnique(0).GetPass(0);
 
-                if (mWorldTextureName != "")
+                if (_worldTextureName != "")
                 {
-                    pass.CreateTextureUnitState(mWorldTextureName, 0);
+                    pass.CreateTextureUnitState(_worldTextureName, 0);
                 }
-                if (mDetailTextureName != "")
+                if (_detailTextureName != "")
                 {
-                    pass.CreateTextureUnitState(mDetailTextureName, 1);
+                    pass.CreateTextureUnitState(_detailTextureName, 1);
                 }
 
-                Options.terrainMaterial.Lighting = Options.lit;
+                Options.terrainMaterial.Lighting = Options.UseDynamicLighting;
 
-                if (Options.lodMorph &&
+                if (Options.LodMorph &&
                     PCZSM.TargetRenderSystem.HardwareCapabilities.HasCapability(Capabilities.VertexPrograms) &&
                     GpuProgramManager.Instance.GetByName("Terrain/VertexMorph") == null)
                 {
@@ -426,8 +426,8 @@ using Axiom.Core;
 
 
                     // Set param index
-                    mLodMorphParamName = "";
-                    mLodMorphParamIndex = 4;
+                    _lodMorphParamName = "";
+                    _lodMorphParamIndex = 4;
                 }
 
                 Options.terrainMaterial.Load();
@@ -436,13 +436,13 @@ using Axiom.Core;
             else
             {
                 // Custom material
-                Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName(mCustomMaterialName);
+                Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName(_customMaterialName);
                 Options.terrainMaterial.Load();
 
             }
 
             // now set up the linkage between vertex program and LOD morph param
-            if (Options.lodMorph)
+            if (Options.LodMorph)
             {
                 Technique t = Options.terrainMaterial.GetBestTechnique();
                 for (ushort i = 0; i < t.PassCount; ++i)
@@ -466,14 +466,14 @@ using Axiom.Core;
                         }
                         if (!found)
                         {
-                            if (mLodMorphParamName != "")
+                            if (_lodMorphParamName != "")
                             {
-                                paras.SetNamedAutoConstant(mLodMorphParamName,
+                                paras.SetNamedAutoConstant(_lodMorphParamName,
                                     GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
                             }
                             else
                             {
-                                paras.SetAutoConstant(mLodMorphParamIndex,
+                                paras.SetAutoConstant(_lodMorphParamIndex,
                                     GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
                             }
                         }
@@ -488,27 +488,27 @@ using Axiom.Core;
         {
 
             //create a root terrain node.
-            if (null == mTerrainRoot)
+            if (null == _terrainRoot)
             {
-                mTerrainRoot = (PCZSceneNode)(parentNode.CreateChildSceneNode(this.Name + "_Node"));
-                EnclosureNode = mTerrainRoot;
+                _terrainRoot = (PCZSceneNode)(parentNode.CreateChildSceneNode(this.Name + "_Node"));
+                EnclosureNode = _terrainRoot;
             }
             //setup the page array.
-            ushort pageSlots = (ushort)(1 + (mBufferedPageMargin * 2));
+            ushort pageSlots = (ushort)(1 + (_bufferedPageMargin * 2));
             ushort i, j;
             for (i = 0; i < pageSlots; ++i)
             {
-                mTerrainZonePages.Add(new TerrainZonePageRow());
+                _terrainZonePages.Add(new TerrainZonePageRow());
                 ;
                 for (j = 0; j < pageSlots; ++j)
                 {
-                    mTerrainZonePages[i].Add(null);
+                    _terrainZonePages[i].Add(null);
                 }
             }
 
             // If we're not paging, load immediate for convenience
-            if (mActivePageSource != null && !mPagingEnabled)
-                mActivePageSource.RequestPage(0, 0);
+            if (_activePageSource != null && !_pagingEnabled)
+                _activePageSource.RequestPage(0, 0);
 
 
         }
@@ -552,7 +552,7 @@ using Axiom.Core;
                     ResourceGroupManager.Instance.WorldResourceGroupName);
             }
             DestroyLevelIndexes();
-            mTerrainZonePages.Clear();
+            _terrainZonePages.Clear();
             // Load the configuration
             LoadConfig(stream);
             InitLevelIndexes();
@@ -563,27 +563,27 @@ using Axiom.Core;
             SetupTerrainZonePages(parentNode);
 
             // Resize the octree allow for 1 page for now
-            float max_x = Options.scale.x * Options.pageSize;
-            float max_y = Options.scale.y;
-            float max_z = Options.scale.z * Options.pageSize;
+            float max_x = Options.Scale.x * Options.PageSize;
+            float max_y = Options.Scale.y;
+            float max_z = Options.Scale.z * Options.PageSize;
             Resize(new AxisAlignedBox(new Vector3(0, 0, 0), new Vector3(max_x, max_y, max_z)));
 
         }
         //-------------------------------------------------------------------------
         public void ClearZone()
         {
-            mTerrainZonePages.Clear();
+            _terrainZonePages.Clear();
             DestroyLevelIndexes();
             // Octree has destroyed our root
-            mTerrainRoot = null;
+            _terrainRoot = null;
         }
         //-------------------------------------------------------------------------
         public override void NotifyBeginRenderScene()
         {
             // For now, no paging and expect immediate response
-            if (mTerrainZonePages.Count != 0 && mTerrainZonePages[0][0] == null)
+            if (_terrainZonePages.Count != 0 && _terrainZonePages[0][0] == null)
             {
-                mActivePageSource.RequestPage(0, 0);
+                _activePageSource.RequestPage(0, 0);
             }
 
         }
@@ -592,12 +592,12 @@ using Axiom.Core;
         {
             Debug.Assert(pageX == 0 && pageZ == 0, "Multiple pages not yet supported");
 
-            Debug.Assert(mTerrainZonePages[pageX][pageZ] == null, "Page at that index not yet expired!");
+            Debug.Assert(_terrainZonePages[pageX][pageZ] == null, "Page at that index not yet expired!");
             // Insert page into list
-            mTerrainZonePages[pageX][pageZ] = page;
+            _terrainZonePages[pageX][pageZ] = page;
             // Attach page to terrain root
-            if (page.PageSceneNode.Parent != mTerrainRoot)
-                mTerrainRoot.AddChild(page.PageSceneNode);
+            if (page.PageSceneNode.Parent != _terrainRoot)
+                _terrainRoot.AddChild(page.PageSceneNode);
 
         }
         //-------------------------------------------------------------------------
@@ -624,7 +624,7 @@ using Axiom.Core;
         //-------------------------------------------------------------------------
         public TerrainZonePage GetTerrainZonePage(Vector3 pt)
         {
-            if (mPagingEnabled)
+            if (_pagingEnabled)
             {
                 // TODO
                 return null;
@@ -632,15 +632,15 @@ using Axiom.Core;
             else
             {
                 // Single page
-                if (mTerrainZonePages.Count == 0 || mTerrainZonePages[0] == null)
+                if (_terrainZonePages.Count == 0 || _terrainZonePages[0] == null)
                     return null;
-                return mTerrainZonePages[0][0];
+                return _terrainZonePages[0][0];
             }
         }
         //-------------------------------------------------------------------------
         public TerrainZonePage GetTerrainZonePage(ushort x, ushort z)
         {
-            if (mPagingEnabled)
+            if (_pagingEnabled)
             {
                 // TODO
                 return null;
@@ -648,13 +648,13 @@ using Axiom.Core;
             else
             {
                 // Single page
-                if (mTerrainZonePages.Count == 0 || mTerrainZonePages[0] == null)
+                if (_terrainZonePages.Count == 0 || _terrainZonePages[0] == null)
                     return null;
-                if (x > Options.pageSize || z > Options.pageSize)
+                if (x > Options.PageSize || z > Options.PageSize)
                 {
-                    return mTerrainZonePages[0][0];
+                    return _terrainZonePages[0][0];
                 }
-                return mTerrainZonePages[x][z];
+                return _terrainZonePages[x][z];
             }
         }
 
@@ -684,97 +684,97 @@ using Axiom.Core;
         //-------------------------------------------------------------------------
         void SetUseTriStrips(bool useStrips)
         {
-            Options.useTriStrips = useStrips;
+            Options.UseTriStrips = useStrips;
         }
         //-------------------------------------------------------------------------
         void SetUseLODMorph(bool morph)
         {
             // Set true only if vertex programs are supported
-            Options.lodMorph = morph && PCZSM.TargetRenderSystem.HardwareCapabilities.HasCapability(Capabilities.VertexPrograms);
+            Options.LodMorph = morph && PCZSM.TargetRenderSystem.HardwareCapabilities.HasCapability(Capabilities.VertexPrograms);
         }
         //-------------------------------------------------------------------------
         void SetUseVertexNormals(bool useNormals)
         {
-            Options.lit = useNormals;
+            Options.UseDynamicLighting = useNormals;
         }
         //-------------------------------------------------------------------------
         void SetUseVertexColours(bool useColours)
         {
-            Options.coloured = useColours;
+            Options.Coloured = useColours;
         }
         //-------------------------------------------------------------------------
         void SetWorldTexture(string textureName)
         {
-            mWorldTextureName = textureName;
+            _worldTextureName = textureName;
         }
         //-------------------------------------------------------------------------
         void SetDetailTexture(string textureName)
         {
-            mDetailTextureName = textureName;
+            _detailTextureName = textureName;
 
         }
         //-------------------------------------------------------------------------
         public void setDetailTextureRepeat(int repeat)
         {
-            Options.detailTile = repeat;
+            Options.DetailTile = repeat;
         }
         //-------------------------------------------------------------------------
         void setTileSize(int size)
         {
-            Options.tileSize = size;
+            Options.TileSize = size;
         }
         //-------------------------------------------------------------------------
         void setPageSize(int size)
         {
-            Options.pageSize = size;
+            Options.PageSize = size;
         }
         //-------------------------------------------------------------------------
         void setMaxPixelError(int pixelError)
         {
-            Options.maxPixelError = pixelError;
+            Options.MaxPixelError = pixelError;
         }
         //-------------------------------------------------------------------------
         void setScale(Vector3 scale)
         {
-            Options.scale = scale;
+            Options.Scale = scale;
         }
         //-------------------------------------------------------------------------
         void setMaxGeoMipMapLevel(int maxMip)
         {
-            Options.maxGeoMipMapLevel = maxMip;
+            Options.MaxGeoMipMapLevel = maxMip;
         }
         //-------------------------------------------------------------------------
         void setCustomMaterial(string materialName)
         {
-            mCustomMaterialName = materialName;
+            _customMaterialName = materialName;
             if (materialName != "")
-                mUseCustomMaterial = true;
+                _useCustomMaterial = true;
             else
-                mUseCustomMaterial = false;
+                _useCustomMaterial = false;
         }
         //-------------------------------------------------------------------------
         void setCustomMaterialMorphFactorParam(string paramName)
         {
-            mUseNamedParameterLodMorph = true;
-            mLodMorphParamName = paramName;
+            _useNamedParameterLodMorph = true;
+            _lodMorphParamName = paramName;
 
         }
         //-------------------------------------------------------------------------
         void setCustomMaterialMorphFactorParam(int paramIndex)
         {
-            mUseNamedParameterLodMorph = false;
-            mLodMorphParamIndex = paramIndex;
+            _useNamedParameterLodMorph = false;
+            _lodMorphParamIndex = paramIndex;
         }
         //-------------------------------------------------------------------------
         void setLODMorphStart(Real morphStart)
         {
-            Options.lodMorphStart = morphStart;
+            Options.LodMorphStart = morphStart;
         }
         //-------------------------------------------------------------------------
         public override void NotifyCameraCreated(Camera c)
         {
             // Set primary camera, if none
-            if (null == Options.primaryCamera)
+            if (null == Options.PrimaryCamera)
                 setPrimaryCamera(c);
 
             return;
@@ -782,7 +782,7 @@ using Axiom.Core;
         //-------------------------------------------------------------------------
         void setPrimaryCamera(Camera cam)
         {
-            Options.primaryCamera = cam;
+            Options.PrimaryCamera = cam;
         }
         //-------------------------------------------------------------------------
         public bool setOption(string name, object value)
@@ -877,34 +877,33 @@ using Axiom.Core;
                 return base.SetOption(name, value);
             }
 
-            return false;
         }
         //-------------------------------------------------------------------------
         public void registerPageSource(string typeName, TerrainZonePageSource source)
         {
-            if (mPageSources.ContainsKey(typeName))
+            if (_pageSources.ContainsKey(typeName))
             {
                 throw new AxiomException("The page source " + typeName + " is already registered. registerPageSource");
             }
-            mPageSources.Add(typeName, source);
+            _pageSources.Add(typeName, source);
             LogManager.Instance.Write("TerrainZone: Registered a new PageSource for type " + typeName);
         }
         //-------------------------------------------------------------------------
         public void SelectPageSource(string typeName, TerrainZonePageSourceOptionList optionList)
         {
-            if (!mPageSources.ContainsKey(typeName))
+            if (!_pageSources.ContainsKey(typeName))
             {
                 throw new AxiomException("Cannot locate a TerrainZonePageSource for type " + typeName +
                     ". SelectPageSource");
             }
 
-            if (null != mActivePageSource)
+            if (null != _activePageSource)
             {
-                mActivePageSource.Shutdown();
+                _activePageSource.Shutdown();
             }
-            mActivePageSource = mPageSources[typeName];
-            mActivePageSource.Initialize(this, Options.tileSize, Options.pageSize,
-                mPagingEnabled, optionList);
+            _activePageSource = _pageSources[typeName];
+            _activePageSource.Initialize(this, Options.TileSize, Options.PageSize,
+                _pagingEnabled, optionList);
 
             LogManager.Instance.Write(
                 "TerrainZone: Activated PageSource " + typeName);
@@ -913,32 +912,32 @@ using Axiom.Core;
         //-------------------------------------------------------------------------
         public int getDetailTextureRepeat()
         {
-            return Options.detailTile;
+            return Options.DetailTile;
         }
         //-------------------------------------------------------------------------
         public int getTileSize()
         {
-            return Options.tileSize;
+            return Options.TileSize;
         }
         //-------------------------------------------------------------------------
         public int getPageSize()
         {
-            return Options.pageSize;
+            return Options.PageSize;
         }
         //-------------------------------------------------------------------------
         public int getMaxPixelError()
         {
-            return Options.maxPixelError;
+            return Options.MaxPixelError;
         }
         //-------------------------------------------------------------------------
         public Vector3 getScale()
         {
-            return Options.scale;
+            return Options.Scale;
         }
         //-------------------------------------------------------------------------
         public int getMaxGeoMipMapLevel()
         {
-            return Options.maxGeoMipMapLevel;
+            return Options.MaxGeoMipMapLevel;
         }
         //-----------------------------------------------------------------------
         public void InitLevelIndexes()
@@ -1029,7 +1028,7 @@ using Axiom.Core;
         //-------------------------------------------------------------------------
         public override void NotifyWorldGeometryRenderQueue(RenderQueueGroupID qid)
         {
-            foreach (TerrainZonePageRow row in mTerrainZonePages)
+            foreach (TerrainZonePageRow row in _terrainZonePages)
             {
                 foreach (TerrainZonePage page in row)
                 {

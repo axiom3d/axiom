@@ -49,20 +49,20 @@ namespace OctreeZone
     {
         public void Initialize()
         {
-            mTerrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
-            mOctreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
+            terrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
+            octreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
 
-            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(mTerrainZoneFactory);
-            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(mOctreeZoneFactory);
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(terrainZoneFactory);
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(octreeZoneFactory);
         }
 
         public void Shutdown()
         {
-            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(mOctreeZoneFactory);
-            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(mTerrainZoneFactory);
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(octreeZoneFactory);
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(terrainZoneFactory);
         }
 
-        OctreeZoneFactory mOctreeZoneFactory;
-        TerrainZoneFactory mTerrainZoneFactory;
+        OctreeZoneFactory octreeZoneFactory;
+        TerrainZoneFactory terrainZoneFactory;
     }
 }

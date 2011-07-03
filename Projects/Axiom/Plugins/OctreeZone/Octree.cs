@@ -63,115 +63,125 @@ public class Octree
 
     #region Member Variables
 
-    /** Returns the number of scene nodes attached to this octree
-		*/
-    protected int _NuNodeList;
+    private int _nuNodeList = 0;
+    /// <summary>
+    /// Returns the number of scene nodes attached to this octree
+    /// </summary>
+    protected int NuNodeList
+    {
+        get { return _nuNodeList; }
+        set { _nuNodeList = value; }
+    }
 
-    /** Public list of SceneNodes attached to this particular octree
-    */
-    protected NodeCollection _NodeList = new NodeCollection();
+    private NodeCollection _nodeList = new NodeCollection();
+    /// <summary>
+    /// Public list of SceneNodes attached to this particular octree
+    /// </summary>
+    public NodeCollection NodeList
+    {
+        get { return _nodeList; }
+        //set{nodeList = value;}
+    }
 
     /** The bounding box of the octree
     @remarks
     This is used for octant index determination and rendering, but not culling
     */
-    protected AxisAlignedBox _box = new AxisAlignedBox();
-    /** Creates the wire frame bounding box for this octant
-    */
-    protected WireBoundingBox WireBoundingBox;
+    private AxisAlignedBox _box = new AxisAlignedBox();
+    public AxisAlignedBox Box
+    {
+        get { return _box; }
+        set { _box = value; }
+    }
 
-    /** Vector containing the dimensions of this octree / 2
-    */
-    protected Vector3 _HalfSize;
+    private WireBoundingBox _wireBoundingBox = new WireBoundingBox();
+    /// <summary>
+    /// Creates the wire frame bounding box for this octant
+    /// </summary>
+    protected WireBoundingBox WireBoundingBox
+    {
+        get { return _wireBoundingBox; }
+        set { _wireBoundingBox = value; }
+    }
 
-    /** 3D array of children of this octree.
-    @remarks
-    Children are dynamically created as needed when nodes are inserted in the Octree.
-    If, later, the all the nodes are removed from the child, it is still kept arround.
-    */
-    public Octree[, ,] Children = new Octree[8, 8, 8];
+    private Vector3 _halfSize;
+    /// <summary>
+    /// Vector containing the dimensions of this octree / 2
+    /// </summary>
+    public Vector3 HalfSize
+    {
+        get { return _halfSize; }
+        set { _halfSize = value; }
+    }
 
-    protected Octree Parent = null;
+    private Octree[, ,] _children = new Octree[8, 8, 8];
+    /// <summary>
+    ///     3D array of children of this octree.
+    /// </summary>
+    /// <remarks>
+    /// Children are dynamically created as needed when nodes are inserted in the Octree.
+    /// If, later, the all the nodes are removed from the child, it is still kept around.
+    /// </remarks>
+    public Octree[, ,] Children
+    {
+        get { return _children; }
+        set { _children = value; }
+    }
 
-    protected PCZone Zone;
+
+    private Octree _parent = null;
+    /// <summary>
+    /// Parent of this tree
+    /// </summary>
+    protected Octree Parent
+    {
+        get { return _parent; }
+        set { _parent = value; }
+    }
+
+
+    private PCZone _zone = null;
+    /// <summary>
+    /// Zone
+    /// </summary>
+    protected PCZone Zone
+    {
+        get { return _zone; }
+        set { _zone = value; }
+    }
 
     #endregion Member Variables
 
-    #region Properties
-    public int NunodeList
-    {
-        get
-        {
-            return _NuNodeList;
-        }
-        set
-        {
-            _NuNodeList = value;
-        }
-    }
-
-    public NodeCollection NodeList
-    {
-        get
-        {
-            return _NodeList;
-        }
-        //set{nodeList = value;}
-    }
-
+    /// <summary>
+    /// BoundingBox
+    /// </summary>
     public WireBoundingBox BoundingBox
     {
         get
         {
-            // Create a WireBoundingBox if needed
-            if (this.WireBoundingBox == null)
-            {
-                this.WireBoundingBox = new WireBoundingBox();
-            }
-
-            this.WireBoundingBox.BoundingBox = this._box;
-            return this.WireBoundingBox;
+            this._wireBoundingBox.BoundingBox = this._box;
+            return this._wireBoundingBox;
         }
 
         set
         {
-            WireBoundingBox = value;
+            _wireBoundingBox = value;
         }
     }
 
-    public Vector3 HalfSize
-    {
-        get
-        {
-            return _HalfSize;
-        }
-        set
-        {
-            _HalfSize = value;
-        }
-    }
-
-    public AxisAlignedBox Box
-    {
-        get
-        {
-            return _box;
-        }
-        set
-        {
-            _box = value;
-        }
-    }
-
-    #endregion Properties
+    /// <summary>
+    /// Constructor Octree 
+    /// </summary>
+    /// <param name="zone"></param>
+    /// <param name="parent"></param>
     public Octree(PCZone zone, Octree parent)
     {
-        this.WireBoundingBox = null;
-        this.HalfSize = new Vector3();
+        this._wireBoundingBox = null;
+        this._halfSize = new Vector3();
 
-        this.Parent = parent;
-        this.NunodeList = 0;
-        this.Zone = zone;
+        this._parent = parent;
+        this._nuNodeList = 0;
+        this._zone = zone;
 
         //initialize all children to null.
         for (int i = 0; i < 2; i++)
@@ -187,48 +197,38 @@ public class Octree
 
     }
 
+    /// <summary>
+    /// AddNode
+    /// </summary>
+    /// <param name="node">PCZSceneNode</param>
     public void AddNode(PCZSceneNode node)
     {
-        _NodeList[node.Name] = node;
+        _nodeList[node.Name] = node;
         ((OctreeZoneData)node.GetZoneData(Zone)).Octant = this;
 
         //update total counts.
         Ref();
     }
 
+    /// <summary>
+    /// RemoveNode
+    /// </summary>
+    /// <param name="node">PCZSceneNode</param>
     public void RemoveNode(PCZSceneNode node)
     {
-
-        //PCZSceneNode check;
-        //int i;
-        //int Index;
-
-        //Index = NodeList.Count - 1;
-
-        //for ( i = Index; i >= 0; i-- )
-        //{
-        //    check = ( PCZSceneNode ) NodeList.Values[ i ];
-
-        //    if ( check == node )
-        //    {
-        //        ( ( OctreeZoneData ) node.GetZoneData( zone ) ).Octant = null;
-        //        NodeList.RemoveAt( i );
-        //        UnRef();
-        //    }
-        //}
-
         ((OctreeZoneData)node.GetZoneData(Zone)).Octant = null;
-        NodeList.Remove(node);
+        if (_nodeList.ContainsKey(node.Name))
+        {
+            _nodeList.Remove(node);
+        }
         UnRef();
     }
 
     /// <summary>
-    ///  Determines if this octree is twice as big as the given box.
-    ///@remarks
+    /// Determines if this octree is twice as big as the given box.
     ///	This method is used by the OctreeSceneManager to determine if the given
     ///	box will fit into a child of this octree.
     /// </summary>
-
     public bool IsTwiceSize(AxisAlignedBox box)
     {
         Vector3[] pts1 = this._box.Corners;
@@ -305,7 +305,7 @@ public class Octree
 
     public void Ref()
     {
-        _NuNodeList++;
+        NuNodeList++;
 
         if (Parent != null)
         {
@@ -315,7 +315,7 @@ public class Octree
 
     public void UnRef()
     {
-        _NuNodeList--;
+        NuNodeList--;
 
         if (Parent != null)
         {
@@ -541,7 +541,7 @@ public class Octree
 
     public void GetCullBounds(out AxisAlignedBox b)
     {
-        b = new AxisAlignedBox(_box.Minimum - _HalfSize, _box.Maximum + _HalfSize);
+        b = new AxisAlignedBox(_box.Minimum - _halfSize, _box.Maximum + _halfSize);
     }
 
 
@@ -564,7 +564,7 @@ public class Octree
             full = (isect == Intersection.Inside);
         }
 
-        foreach (PCZSceneNode on in _NodeList.Values)
+        foreach (PCZSceneNode on in _nodeList.Values)
         {
 
             if (on != exclude && (on.HomeZone == Zone || includeVisitors))
@@ -636,7 +636,7 @@ public class Octree
             full = (isect == Intersection.Inside);
         }
 
-        foreach (PCZSceneNode on in _NodeList.Values)
+        foreach (PCZSceneNode on in _nodeList.Values)
         {
 
             if (on != exclude && (on.HomeZone == Zone || includeVisitors))
@@ -710,7 +710,7 @@ public class Octree
 
 
 
-        foreach (PCZSceneNode on in _NodeList.Values)
+        foreach (PCZSceneNode on in _nodeList.Values)
         {
 
             if (on != exclude && (on.HomeZone == Zone || includeVisitors))
@@ -784,7 +784,7 @@ public class Octree
         }
 
 
-        foreach (PCZSceneNode on in _NodeList.Values)
+        foreach (PCZSceneNode on in _nodeList.Values)
         {
 
             if (on != exclude && (on.HomeZone == Zone || includeVisitors))
