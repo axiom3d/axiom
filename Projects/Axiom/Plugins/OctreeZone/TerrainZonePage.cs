@@ -41,95 +41,128 @@ using Axiom.Math;
 
 #endregion Namespace Declarations
 
+/// <summary>
+/// List Of TerrainZoneRenderable
+/// </summary>
 public class TerrainZoneRow : List<TerrainZoneRenderable>
 {
 }
+/// <summary>
+/// List of TerrainZoneRow
+/// </summary>
 public class TerrainZone2D : List<TerrainZoneRow>
 {
 }
 
+/// <summary>
+/// Terrain Zone Page
+/// </summary>
 public class TerrainZonePage
 {
+    private TerrainZone2D _tiles = new TerrainZone2D();
+    /// <summary>
     /// 2-dimensional vector of tiles, pre-allocated to the correct size
-    protected internal TerrainZone2D tiles = new TerrainZone2D();
-    /// The number of tiles across a page
-    ushort tilesPerPage;
-    /// The scene node to which all the tiles for this page are attached
-    protected SceneNode pageSceneNode;
-
-    public TerrainZonePage(ushort numTiles)
+    /// </summary>
+    public TerrainZone2D Tiles
     {
-        tilesPerPage = numTiles;
-        // Set up an empty array of TerrainZoneRenderable pointers
-        int i, j;
-        for (i = 0; i < tilesPerPage; i++)
-        {
-            tiles.Add(new TerrainZoneRow());
-
-            for (j = 0; j < tilesPerPage; j++)
-            {
-                tiles[i].Add(null);
-            }
-        }
-        pageSceneNode = null;
+        get { return _tiles; }
+        set { _tiles = value; }
     }
 
+    private ushort _tilesPerPage = 1;
+
+    /// <summary>
+    /// The number of tiles across a page
+    /// </summary>
+    public ushort TilesPerPage
+    {
+        get { return _tilesPerPage; }
+        set { _tilesPerPage = value; }
+    }
+
+    protected SceneNode _pageSceneNode = null;
+    /// <summary>
+    /// The scene node to which all the tiles for this page are attached
+    /// </summary>
     public SceneNode PageSceneNode
     {
-        get
-        {
-            return pageSceneNode;
-        }
-        set
-        {
-            pageSceneNode = value;
-        }
+        get { return _pageSceneNode; }
+        set { _pageSceneNode = value; }
     }
 
+    /// <summary>
+    /// Terrain Zone Page Constructor
+    /// </summary>
+    /// <param name="numTiles">ushort</param>
+    public TerrainZonePage(ushort numTiles)
+    {
+        TilesPerPage = numTiles;
+        // Set up an empty array of TerrainZoneRenderable pointers
+        int i, j;
+        for (i = 0; i < TilesPerPage; i++)
+        {
+            _tiles.Add(new TerrainZoneRow());
+
+            for (j = 0; j < TilesPerPage; j++)
+            {
+                _tiles[i].Add(null);
+            }
+        }
+        _pageSceneNode = null;
+    }
+
+    /// <summary>
+    /// Link Neighbours
+    /// </summary>
     public void LinkNeighbours()
     {
         //setup the neighbor links.
 
-        for (int j = 0; j < tilesPerPage; j++)
+        for (int j = 0; j < TilesPerPage; j++)
         {
-            for (int i = 0; i < tilesPerPage; i++)
+            for (int i = 0; i < TilesPerPage; i++)
             {
-                if (j != tilesPerPage - 1)
+                if (j != TilesPerPage - 1)
                 {
-                    tiles[i][j].SetNeighbor(Neighbor.SOUTH, tiles[i][j + 1]);
-                    tiles[i][j + 1].SetNeighbor(Neighbor.NORTH, tiles[i][j]);
+                    _tiles[i][j].SetNeighbor(Neighbor.South, _tiles[i][j + 1]);
+                    _tiles[i][j + 1].SetNeighbor(Neighbor.North, _tiles[i][j]);
                 }
 
-                if (i != tilesPerPage - 1)
+                if (i != TilesPerPage - 1)
                 {
-                    tiles[i][j].SetNeighbor(Neighbor.EAST, tiles[i + 1][j]);
-                    tiles[i + 1][j].SetNeighbor(Neighbor.WEST, tiles[i][j]);
+                    _tiles[i][j].SetNeighbor(Neighbor.East, _tiles[i + 1][j]);
+                    _tiles[i + 1][j].SetNeighbor(Neighbor.West, _tiles[i][j]);
                 }
 
             }
         }
     }
 
+    /// <summary>
+    /// GetTerrainZoneTile
+    /// </summary>
+    /// <param name="pt">Vector3</param>
+    /// <returns>TerrainZoneRenderable</returns>
     public TerrainZoneRenderable GetTerrainZoneTile(Vector3 pt)
     {
         /* Since we don't know if the terrain is square, or has holes, we use a line trace
         to find the containing tile...
         */
 
-        TerrainZoneRenderable tile = tiles[0][0];
+        TerrainZoneRenderable tile = _tiles[0][0];
 
         while (null != tile)
         {
             AxisAlignedBox b = tile.BoundingBox;
 
             if (pt.x < b.Minimum.x)
-                tile = tile.GetNeighbor(Neighbor.WEST);
+                tile = tile.GetNeighbor(Neighbor.West);
             else if (pt.x > b.Maximum.x)
-                tile = tile.GetNeighbor(Neighbor.EAST);
+                tile = tile.GetNeighbor(Neighbor.East);
             else if (pt.z < b.Minimum.z)
-                tile = tile.GetNeighbor(Neighbor.NORTH);
+                tile = tile.GetNeighbor(Neighbor.North);
             else if (pt.z > b.Maximum.z)
-                tile = tile.GetNeighbor(Neighbor.SOUTH);
+                tile = tile.GetNeighbor(Neighbor.South);
             else
                 return tile;
         }
@@ -137,27 +170,33 @@ public class TerrainZonePage
         return null;
     }
 
-
-
-    /** Returns the TerrainZoneRenderable Tile with given index
-    */
+    /// <summary>
+    /// Returns the TerrainZoneRenderable Tile with given index
+    /// </summary>
+    /// <param name="x">ushort</param>
+    /// <param name="z">ushort</param>
+    /// <returns>TerrainZoneRenderable</returns>
     public TerrainZoneRenderable GetTerrainZoneTile(ushort x, ushort z)
     {
         /* Todo: error checking!
         */
         //TerrainZoneRenderable * tile = tiles[ 0 ][ 0 ];
-        return tiles[x][z];
+        return _tiles[x][z];
     }
 
+    /// <summary>
+    /// SetRenderQueue
+    /// </summary>
+    /// <param name="qid">RenderQueueGroupID</param>
     public void SetRenderQueue(RenderQueueGroupID qid)
     {
-        for (int j = 0; j < tilesPerPage; j++)
+        for (int j = 0; j < TilesPerPage; j++)
         {
-            for (int i = 0; i < tilesPerPage; i++)
+            for (int i = 0; i < TilesPerPage; i++)
             {
-                if (j != tilesPerPage - 1)
+                if (j != TilesPerPage - 1)
                 {
-                    tiles[i][j].RenderQueueGroup = qid;
+                    _tiles[i][j].RenderQueueGroup = qid;
                 }
             }
         }

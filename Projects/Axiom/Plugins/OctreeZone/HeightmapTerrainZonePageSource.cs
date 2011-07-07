@@ -203,10 +203,10 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             imgSize = Image.Width;
         }
         //check to make sure it's the expected size
-        if (imgSize != mPageSize)
+        if (imgSize != PageSize)
         {
             Shutdown();
-            throw new AxiomException("Error: Invalid heightmap size : {0}. Should be {1} HeightmapTerrainZonePageSource.LoadHeightmap", imgSize, mPageSize);
+            throw new AxiomException("Error: Invalid heightmap size : {0}. Should be {1} HeightmapTerrainZonePageSource.LoadHeightmap", imgSize, PageSize);
 
         }
 
@@ -298,7 +298,7 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
         if (x == 0 && y == 0 && Page == null)
         {
             // Convert the image data to unscaled floats
-            ulong totalPageSize = (ulong)(mPageSize * mPageSize);
+            ulong totalPageSize = (ulong)(PageSize * PageSize);
             Real[] heightData = new Real[totalPageSize];
             byte[] pOrigSrc, pSrc;
             Real[] pDest = heightData;
@@ -326,16 +326,16 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             if (is16bit)
             {
                 invScale = 1.0f / 65535.0f;
-                rowSize = (ulong)mPageSize * 2;
+                rowSize = (ulong)PageSize * 2;
             }
             else
             {
                 invScale = 1.0f / 255.0f;
-                rowSize = (ulong)mPageSize;
+                rowSize = (ulong)PageSize;
             }
             // Read the data
             pSrc = pOrigSrc;
-            for (int j = 0; j < mPageSize; ++j)
+            for (int j = 0; j < PageSize; ++j)
             {
                 if (_flipTerrainZone)
                 {
@@ -346,7 +346,7 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
                     // Work backwards
                     // pSrc = pOrigSrc + (rowSize * (mPageSize - j - 1));
                 }
-                for (int i = 0; i < mPageSize; ++i)
+                for (int i = 0; i < PageSize; ++i)
                 {
                     if (is16bit)
                     {
@@ -377,10 +377,10 @@ public class HeightmapTerrainZonePageSource : TerrainZonePageSource
             OnPageConstructed(0, 0, heightData);
             // Now turn into TerrainZonePage
             // Note that we're using a single material for now
-            if (null != mTerrainZone)
+            if (null != TerrainZone)
             {
-                Page = BuildPage(heightData, mTerrainZone.Options.terrainMaterial);
-                mTerrainZone.AttachPage(0, 0, Page);
+                Page = BuildPage(heightData, TerrainZone.Options.terrainMaterial);
+                TerrainZone.AttachPage(0, 0, Page);
             }
 
         }
