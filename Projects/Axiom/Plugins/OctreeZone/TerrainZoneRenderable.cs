@@ -47,33 +47,37 @@ using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
+/// <summary>
+/// Neighbor
+/// </summary>
 public enum Neighbor
 {
-    NORTH = 0,
-    SOUTH = 1,
-    EAST = 2,
-    WEST = 3,
-    HERE = 4
+    North = 0,
+    South = 1,
+    East = 2,
+    West = 3,
+    Here = 4
 };
 
+/// <summary>
+/// TerrainZoneRenderable
+/// </summary>
 public class TerrainZoneRenderable : SimpleRenderable
 {
-    public static short MAIN_BINDING = 0;
-    public static short DELTA_BINDING = 1;
-
-    public static int STITCH_NORTH_SHIFT = 0;
-    public static int STITCH_SOUTH_SHIFT = 8;
-    public static int STITCH_WEST_SHIFT = 16;
-    public static int STITCH_EAST_SHIFT = 24;
-
-    public static int STITCH_NORTH = 128 << STITCH_NORTH_SHIFT;
-    public static int STITCH_SOUTH = 128 << STITCH_SOUTH_SHIFT;
-    public static int STITCH_WEST = 128 << STITCH_WEST_SHIFT;
-    public static int STITCH_EAST = 128 << STITCH_EAST_SHIFT;
+    /// <summary>
+    /// Binding
+    /// </summary>
+    public enum Binding : short
+    {
+        Main,
+        Delta
+    }
 
     public static int MORPH_CUSTOM_PARAM_ID = 77;
 
-
+    /// <summary>
+    /// StitchShift
+    /// </summary>
     public enum StitchShift
     {
         North = 0,
@@ -82,6 +86,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         West = 24
     }
 
+    /// <summary>
+    /// StitchDirection (flag)
+    /// </summary>
     [Flags]
     public enum StitchDirection
     {
@@ -91,122 +98,192 @@ public class TerrainZoneRenderable : SimpleRenderable
         West = 128 << StitchShift.West
     }
 
+    /// <summary>
     /// Parent Zone
-    TerrainZone mTerrainZone;
+    /// </summary>   
+    private TerrainZone _terrainZone = null;
+
+    /// <summary>
     /// Link to shared options
-    TerrainZoneOptions mOptions;
+    /// </summary>
+    private TerrainZoneOptions _options = null;
 
-    VertexData mTerrain;
+    /// <summary>
+    /// Terrain
+    /// </summary>
+    private VertexData _terrain = new VertexData();
+
+    /// <summary>
     /// The current LOD level
-    int mRenderLevel;
+    /// </summary>
+    private int _renderLevel = 0;
+
+    /// <summary>
     /// The previous 'next' LOD level down, for frame coherency
-    int mLastNextLevel;
+    /// </summary>
+    private int _lastNextLevel = -1;
+
+    /// <summary>
     /// The morph factor between this and the next LOD level down
-    Real mLODMorphFactor;
+    /// </summary>
+    private Real _lODMorphFactor = 0;
+
+    /// <summary>
     /// List of squared distances at which LODs change
-    Real[] mMinLevelDistSqr;
-    /// Connection to tiles four neighbours
-    TerrainZoneRenderable[] mNeighbors;
+    /// </summary>
+    private Real[] _minLevelDistSqr = null;
+
+    /// <summary>
+    /// Connection to tiles four neighbors
+    /// </summary>
+    private TerrainZoneRenderable[] _neighbors = new TerrainZoneRenderable[4];
+
+    /// <summary>
     /// Whether light list need to re-calculate
-    bool mLightListDirty;
+    /// </summary>
+    private bool _lightListDirty = true;
+
+    /// <summary>
     /// Cached light list
-    LightList mLightList = new LightList();
-    /// The bounding radius of this tile
-    //Real mBoundingRadius;
+    /// </summary>
+    private LightList _lightList = new LightList();
+
+    private AxisAlignedBox _bounds = new AxisAlignedBox();
+    /// <summary>
     /// Bounding box of this tile
-    private AxisAlignedBox mBounds;
-    /// The center point of this tile
-    Vector3 mCenter;
-    /// The MovableObject type
-    //static string mType;
-    /// Current material used by this tile
-    //Material mMaterial;
-    /// Whether this tile has been initialised
-    bool mInit;
-    /// The buffer with all the renderable geometry in it
-    private HardwareVertexBuffer mMainBuffer;
-    /// Optional set of delta buffers, used to morph from one LOD to the next
-    private AxiomSortedCollection<int, HardwareVertexBuffer> mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>();
-    /// System-memory buffer with just positions in it, for CPU operations
-    float[] mPositionBuffer;
-    /// Forced rendering LOD level, optional
-    int mForcedRenderLevel;
-    /// Array of LOD indexes specifying which LOD is the next one down
-    /// (deals with clustered error metrics which cause LODs to be skipped)
-    int[] mNextLevelDown = new int[10];
-
-    private Real boundingRadius;
-
-    //private bool castsShadows;
-
-    //private Material material;
-
-    //private Technique technique;
-
-    private bool normalizeNormals;
-
-    private ushort numWorldTransforms;
-
-    private bool useIdentityProjection;
-
-    private bool useIdentityView;
-
-    private bool polygonModeOverrideable = true;
-
-    private Quaternion worldOrientation;
-
-    private Vector3 worldPosition;
-
-    /// Bounding box of this tile
+    /// </summary>
     public override AxisAlignedBox BoundingBox
     {
-        get
-        {
-            return mBounds;
-        }
+        get { return _bounds; }
     }
 
+    /// <summary>
+    /// The center point of this tile
+    /// </summary>
+    private Vector3 _center = Vector3.Zero;
+
+    /// <summary>
+    /// Whether this tile has been initialized
+    /// </summary>
+    private bool _init = false;
+
+    /// <summary>
+    /// The buffer with all the renderable geometry in it
+    /// </summary>
+    private HardwareVertexBuffer _mainBuffer = null;
+
+    /// <summary>
+    /// Optional set of delta buffers, used to morph from one LOD to the next
+    /// </summary>
+    private AxiomSortedCollection<int, HardwareVertexBuffer> mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>();
+
+    /// <summary>
+    /// System-memory buffer with just positions in it, for CPU operations
+    /// </summary>
+    private float[] _positionBuffer = null;
+
+    /// <summary>
+    /// Forced rendering LOD level, optional
+    /// </summary>
+    private int _forcedRenderLevel = -1;
+
+    /// <summary>
+    /// Array of LOD indexes specifying which LOD is the next one down
+    /// (deals with clustered error metrics which cause LODs to be skipped)
+    /// </summary>
+    private int[] _nextLevelDown = new int[10];
+
+    private Real _boundingRadius;
     /// <summary>
     ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
     /// </summary>
     public override float BoundingRadius
     {
-        get
-        {
-            return boundingRadius;
-        }
+        get { return _boundingRadius; }
     }
 
-    /** Returns the index into the height array for the given coords. */
+    /// <summary>
+    /// Normalize Normals
+    /// </summary>
+    private bool _normalizeNormals = true;
+
+    /// <summary>
+    /// Number World Translations
+    /// </summary>
+    private ushort _WorldTransformsCount = 0;
+
+    /// <summary>
+    /// Use Identity Projection
+    /// </summary>
+    private bool _useIdentityProjection = false;
+
+    /// <summary>
+    /// Use Identity View
+    /// </summary>
+    private bool _useIdentityView = false;
+
+    /// <summary>
+    /// Polygon Mode Overrideable
+    /// </summary>
+    private bool _polygonModeOverrideable = true;
+
+    /// <summary>
+    /// World Orientation
+    /// </summary>
+    private Quaternion _worldOrientation = Quaternion.Zero;
+
+    /// <summary>
+    /// World Position
+    /// </summary>
+    private Vector3 _worldPosition = Vector3.Zero;
+
+    /// <summary>
+    /// Returns the index into the height array for the given coords.
+    /// </summary>
+    /// <param name="x">int</param>
+    /// <param name="z">int</param>
+    /// <returns>ushort</returns>
     public ushort Index(int x, int z)
     {
-        return (ushort)(x + z * mOptions.TileSize);
+        return (ushort)(x + z * _options.TileSize);
     }
 
-    /** Returns the  vertex coord for the given coordinates */
+    /// <summary>
+    /// Returns the  vertex coord for the given coordinates
+    /// </summary>
+    /// <param name="x">int</param>
+    /// <param name="z">int</param>
+    /// <param name="n">int</param>
+    /// <returns>float</returns>
     public float Vertex(int x, int z, int n)
     {
-        return mPositionBuffer[x * 3 + z * mOptions.TileSize * 3 + n];
+        return _positionBuffer[x * 3 + z * _options.TileSize * 3 + n];
     }
 
-    public int NumNeighbors()
+    /// <summary>
+    /// Number Neighbors
+    /// </summary>
+    public int NumberNeighbors
     {
-        int n = 0;
-
-        for (int i = 0; i < 4; i++)
+        get
         {
-            if (mNeighbors[i] != null)
-                n++;
-        }
+            int n = 0;
 
-        return n;
+            for (int i = 0; i < 4; i++)
+            {
+                if (_neighbors[i] != null)
+                    n++;
+            }
+
+            return n;
+        }
     }
 
     public bool HasNeighborRenderLevel(int i)
     {
         for (int j = 0; j < 4; j++)
         {
-            if (mNeighbors[j] != null && mNeighbors[j].mRenderLevel == i)
+            if (_neighbors[j] != null && _neighbors[j]._renderLevel == i)
                 return true;
         }
 
@@ -216,52 +293,52 @@ public class TerrainZoneRenderable : SimpleRenderable
 
     public TerrainZoneRenderable GetNeighbor(Neighbor neighbor)
     {
-        return mNeighbors[(int)neighbor];
+        return _neighbors[(int)neighbor];
     }
 
     public void SetNeighbor(Neighbor n, TerrainZoneRenderable t)
     {
-        mNeighbors[(int)n] = t;
+        _neighbors[(int)n] = t;
     }
 
     public TerrainZoneRenderable(string name, TerrainZone tsm)
         : base()
     {
         this.name = name;
-        mTerrainZone = tsm;
-        mTerrain = null;
-        mPositionBuffer = null;
-        mForcedRenderLevel = -1;
-        mLastNextLevel = -1;
-        mMinLevelDistSqr = null;
-        mInit = false;
-        mLightListDirty = true;
+        _terrainZone = tsm;
+        _terrain = null;
+        _positionBuffer = null;
+        _forcedRenderLevel = -1;
+        _lastNextLevel = -1;
+        _minLevelDistSqr = null;
+        _init = false;
+        _lightListDirty = true;
         castShadows = false;
-        mNeighbors = new TerrainZoneRenderable[4];
+        _neighbors = new TerrainZoneRenderable[4];
 
-        mOptions = mTerrainZone.Options;
+        _options = _terrainZone.Options;
     }
 
     public void DeleteGeometry()
     {
-        if (null != mTerrain)
-            mTerrain = null;
+        if (null != _terrain)
+            _terrain = null;
 
-        if (null != mPositionBuffer)
-            mPositionBuffer = null;
+        if (null != _positionBuffer)
+            _positionBuffer = null;
 
-        if (null != mMinLevelDistSqr)
-            mMinLevelDistSqr = null;
+        if (null != _minLevelDistSqr)
+            _minLevelDistSqr = null;
     }
 
-    public unsafe void Initialize(int startx, int startz, Real[] pageHeightData)
+    public  void Initialize(int startx, int startz, Real[] pageHeightData)
     {
 
-        if (mOptions.MaxGeoMipMapLevel != 0)
+        if (_options.MaxGeoMipMapLevel != 0)
         {
-            int i = (int)1 << (mOptions.MaxGeoMipMapLevel - 1);
+            int i = (int)1 << (_options.MaxGeoMipMapLevel - 1);
 
-            if ((i + 1) > mOptions.TileSize)
+            if ((i + 1) > _options.TileSize)
             {
                 LogManager.Instance.Write("Invalid maximum mipmap specifed, must be n, such that 2^(n-1)+1 < tileSize \n");
                 return;
@@ -273,77 +350,76 @@ public class TerrainZoneRenderable : SimpleRenderable
         //calculate min and max heights;
         Real min = 256000, max = 0;
 
-        mTerrain = new VertexData();
-        mTerrain.vertexStart = 0;
-        mTerrain.vertexCount = mOptions.TileSize * mOptions.TileSize;
+        _terrain = new VertexData();
+        _terrain.vertexStart = 0;
+        _terrain.vertexCount = _options.TileSize * _options.TileSize;
 
         renderOperation.useIndices = true;
-        renderOperation.operationType = mOptions.UseTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
-        renderOperation.vertexData = mTerrain;
+        renderOperation.operationType = _options.UseTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
+        renderOperation.vertexData = _terrain;
         renderOperation.indexData = GetIndexData();
 
-        VertexDeclaration decl = mTerrain.vertexDeclaration;
-        VertexBufferBinding bind = mTerrain.vertexBufferBinding;
+        VertexDeclaration decl = _terrain.vertexDeclaration;
+        VertexBufferBinding bind = _terrain.vertexBufferBinding;
 
         // positions
         int offset = 0;
-        decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position);
+        decl.AddElement((short)Binding.Main, offset, VertexElementType.Float3, VertexElementSemantic.Position);
         offset += VertexElement.GetTypeSize(VertexElementType.Float3);
-        if (mOptions.UseDynamicLighting)
+        if (_options.UseDynamicLighting)
         {
-            decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position);
+            decl.AddElement((short)Binding.Main, offset, VertexElementType.Float3, VertexElementSemantic.Position);
             offset += VertexElement.GetTypeSize(VertexElementType.Float3);
         }
         // texture coord sets
-        decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
+        decl.AddElement((short)Binding.Main, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
         offset += VertexElement.GetTypeSize(VertexElementType.Float2);
-        decl.AddElement(MAIN_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
+        decl.AddElement((short)Binding.Main, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
         offset += VertexElement.GetTypeSize(VertexElementType.Float2);
-        if (mOptions.Coloured)
+        if (_options.Coloured)
         {
-            decl.AddElement(MAIN_BINDING, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
+            decl.AddElement((short)Binding.Main, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
             offset += VertexElement.GetTypeSize(VertexElementType.Color);
         }
 
         // Create shared vertex buffer
-        mMainBuffer =
+        _mainBuffer =
             HardwareBufferManager.Instance.CreateVertexBuffer(
-            decl.GetVertexSize(MAIN_BINDING),
-            mTerrain.vertexCount,
+            decl.GetVertexSize((short)Binding.Main),
+            _terrain.vertexCount,
             BufferUsage.StaticWriteOnly);
         // Create system memory copy with just positions in it, for use in simple reads
         //mPositionBuffer = OGRE_ALLOC_T(float, mTerrain.vertexCount * 3, MEMCATEGORY_GEOMETRY);
-        mPositionBuffer = new float[mTerrain.vertexCount * 3];
+        _positionBuffer = new float[_terrain.vertexCount * 3];
 
-        bind.SetBinding(MAIN_BINDING, mMainBuffer);
+        bind.SetBinding((short)Binding.Main, _mainBuffer);
 
-        if (mOptions.LodMorph)
+        if (_options.LodMorph)
         {
             // Create additional element for delta
-            decl.AddElement(DELTA_BINDING, 0, VertexElementType.Float1, VertexElementSemantic.BlendWeights);
+            decl.AddElement((short)Binding.Delta, 0, VertexElementType.Float1, VertexElementSemantic.BlendWeights);
             // NB binding is not set here, it is set when deriving the LOD
         }
 
 
-        mInit = true;
+        _init = true;
 
-        mRenderLevel = 0;
+        _renderLevel = 0;
 
-        mMinLevelDistSqr = new Real[mOptions.MaxGeoMipMapLevel];
+        _minLevelDistSqr = new Real[_options.MaxGeoMipMapLevel];
 
-        int endx = startx + mOptions.TileSize;
+        int endx = startx + _options.TileSize;
 
-        int endz = startz + mOptions.TileSize;
-
-        Vector3 left, down, here;
+        int endz = startz + _options.TileSize;
 
         VertexElement poselem = decl.FindElementBySemantic(VertexElementSemantic.Position);
         VertexElement texelem0 = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
         VertexElement texelem1 = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
         //fixed ( float* pSysPos = mPositionBuffer )
+        unsafe
         {
             int pos = 0;
-            byte* pBase = (byte*)mMainBuffer.Lock(BufferLocking.Discard);
+            byte* pBase = (byte*)_mainBuffer.Lock(BufferLocking.Discard);
 
             for (int j = startz; j < endz; j++)
             {
@@ -357,22 +433,22 @@ public class TerrainZoneRenderable : SimpleRenderable
                     //texelem0.baseVertexPointerToElement(pBase, &pTex0);
                     //texelem1.baseVertexPointerToElement(pBase, &pTex1);
 
-                    Real height = pageHeightData[j * mOptions.PageSize + i];
-                    height = height * mOptions.Scale.y; // scale height
+                    Real height = pageHeightData[j * _options.PageSize + i];
+                    height = height * _options.Scale.y; // scale height
 
                     //*pSysPos++ = *pPos++ = (float) i*mOptions.scale.x; //x
                     //*pSysPos++ = *pPos++ = height; // y
                     //*pSysPos++ = *pPos++ = (float) j*mOptions.scale.z; //z
 
-                    mPositionBuffer[pos++] = *pPos++ = (float)i * mOptions.Scale.x; //x
-                    mPositionBuffer[pos++] = *pPos++ = height; // y
-                    mPositionBuffer[pos++] = *pPos++ = (float)j * mOptions.Scale.z; //z
+                    _positionBuffer[pos++] = *pPos++ = (float)i * _options.Scale.x; //x
+                    _positionBuffer[pos++] = *pPos++ = height; // y
+                    _positionBuffer[pos++] = *pPos++ = (float)j * _options.Scale.z; //z
 
-                    *pTex0++ = (float)i / (float)(mOptions.PageSize - 1);
-                    *pTex0++ = (float)j / (float)(mOptions.PageSize - 1);
+                    *pTex0++ = (float)i / (float)(_options.PageSize - 1);
+                    *pTex0++ = (float)j / (float)(_options.PageSize - 1);
 
-                    *pTex1++ = ((float)i / (float)(mOptions.TileSize - 1)) * mOptions.DetailTile;
-                    *pTex1++ = ((float)j / (float)(mOptions.TileSize - 1)) * mOptions.DetailTile;
+                    *pTex1++ = ((float)i / (float)(_options.TileSize - 1)) * _options.DetailTile;
+                    *pTex1++ = ((float)j / (float)(_options.TileSize - 1)) * _options.DetailTile;
 
                     if (height < min)
                         min = (Real)height;
@@ -380,29 +456,29 @@ public class TerrainZoneRenderable : SimpleRenderable
                     if (height > max)
                         max = (Real)height;
 
-                    pBase += mMainBuffer.VertexSize;
+                    pBase += _mainBuffer.VertexSize;
                 }
             }
 
-            mMainBuffer.Unlock();
-            mBounds = new AxisAlignedBox();
-            mBounds.SetExtents(new Vector3((Real)startx * mOptions.Scale.x, min, (Real)startz * mOptions.Scale.z),
-                                new Vector3((Real)(endx - 1) * mOptions.Scale.x, max,
-                                             (Real)(endz - 1) * mOptions.Scale.z));
+            _mainBuffer.Unlock();
+            _bounds = new AxisAlignedBox();
+            _bounds.SetExtents(new Vector3((Real)startx * _options.Scale.x, min, (Real)startz * _options.Scale.z),
+                                new Vector3((Real)(endx - 1) * _options.Scale.x, max,
+                                             (Real)(endz - 1) * _options.Scale.z));
 
-            mCenter = new Vector3((startx * mOptions.Scale.x + (endx - 1) * mOptions.Scale.x) / 2,
+            _center = new Vector3((startx * _options.Scale.x + (endx - 1) * _options.Scale.x) / 2,
                                    (min + max) / 2,
-                                   (startz * mOptions.Scale.z + (endz - 1) * mOptions.Scale.z) / 2);
-            boundingRadius = Math.Sqrt(
+                                   (startz * _options.Scale.z + (endz - 1) * _options.Scale.z) / 2);
+            _boundingRadius = Math.Sqrt(
                                   Utility.Sqr(max - min) +
-                                  Utility.Sqr((endx - 1 - startx) * mOptions.Scale.x) +
-                                  Utility.Sqr((endz - 1 - startz) * mOptions.Scale.z)) / 2;
+                                  Utility.Sqr((endx - 1 - startx) * _options.Scale.x) +
+                                  Utility.Sqr((endz - 1 - startz) * _options.Scale.z)) / 2;
 
             // Create delta buffer list if required to morph
-            if (mOptions.LodMorph)
+            if (_options.LodMorph)
             {
                 // Create delta buffer for all except the lowest mip
-                mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>(mOptions.MaxGeoMipMapLevel - 1);
+                mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>(_options.MaxGeoMipMapLevel - 1);
             }
 
             Real C = CalculateCFactor();
@@ -414,14 +490,14 @@ public class TerrainZoneRenderable : SimpleRenderable
     public void AdjustRenderLevel(int i)
     {
 
-        mRenderLevel = i;
+        _renderLevel = i;
     }
 
     public Real CalculateCFactor()
     {
         Real A, T;
 
-        if (null == mOptions.PrimaryCamera)
+        if (null == _options.PrimaryCamera)
         {
             throw new AxiomException("You have not created a camera yet! TerrainZoneRenderable._calculateCFactor");
         }
@@ -430,9 +506,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         // Turn off detail compression at higher FOVs
         A = 1.0f;
 
-        int vertRes = mOptions.PrimaryCamera.Viewport.ActualHeight;
+        int vertRes = _options.PrimaryCamera.Viewport.ActualHeight;
 
-        T = 2 * (Real)mOptions.MaxPixelError / (Real)vertRes;
+        T = 2 * (Real)_options.MaxPixelError / (Real)vertRes;
 
         return A / T;
     }
@@ -446,9 +522,9 @@ public class TerrainZoneRenderable : SimpleRenderable
         start.y = Vertex(0, 0, 1);
         start.z = Vertex(0, 0, 2);
 
-        end.x = Vertex(mOptions.TileSize - 1, mOptions.TileSize - 1, 0);
-        end.y = Vertex(mOptions.TileSize - 1, mOptions.TileSize - 1, 1);
-        end.z = Vertex(mOptions.TileSize - 1, mOptions.TileSize - 1, 2);
+        end.x = Vertex(_options.TileSize - 1, _options.TileSize - 1, 0);
+        end.y = Vertex(_options.TileSize - 1, _options.TileSize - 1, 1);
+        end.z = Vertex(_options.TileSize - 1, _options.TileSize - 1, 2);
 
         /* Safety catch, if the point asked for is outside
         * of this tile, it will ask the appropriate tile
@@ -456,32 +532,32 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         if (x < start.x)
         {
-            if (mNeighbors[(int)Neighbor.WEST] != null)
-                return mNeighbors[(int)Neighbor.WEST].GetHeightAt(x, z);
+            if (_neighbors[(int)Neighbor.West] != null)
+                return _neighbors[(int)Neighbor.West].GetHeightAt(x, z);
             else
                 x = start.x;
         }
 
         if (x > end.x)
         {
-            if (mNeighbors[(int)Neighbor.EAST] != null)
-                return mNeighbors[(int)Neighbor.EAST].GetHeightAt(x, z);
+            if (_neighbors[(int)Neighbor.East] != null)
+                return _neighbors[(int)Neighbor.East].GetHeightAt(x, z);
             else
                 x = end.x;
         }
 
         if (z < start.z)
         {
-            if (mNeighbors[(int)Neighbor.NORTH] != null)
-                return mNeighbors[(int)Neighbor.NORTH].GetHeightAt(x, z);
+            if (_neighbors[(int)Neighbor.North] != null)
+                return _neighbors[(int)Neighbor.North].GetHeightAt(x, z);
             else
                 z = start.z;
         }
 
         if (z > end.z)
         {
-            if (mNeighbors[(int)Neighbor.SOUTH] != null)
-                return mNeighbors[(int)Neighbor.SOUTH].GetHeightAt(x, z);
+            if (_neighbors[(int)Neighbor.South] != null)
+                return _neighbors[(int)Neighbor.South].GetHeightAt(x, z);
             else
                 z = end.z;
         }
@@ -491,14 +567,14 @@ public class TerrainZoneRenderable : SimpleRenderable
         float x_pct = (x - start.x) / (end.x - start.x);
         float z_pct = (z - start.z) / (end.z - start.z);
 
-        float x_pt = x_pct * (float)(mOptions.TileSize - 1);
-        float z_pt = z_pct * (float)(mOptions.TileSize - 1);
+        float x_pt = x_pct * (float)(_options.TileSize - 1);
+        float z_pt = z_pct * (float)(_options.TileSize - 1);
 
         int x_index = (int)x_pt;
         int z_index = (int)z_pt;
 
         // If we got to the far right / bottom edge, move one back
-        if (x_index == mOptions.TileSize - 1)
+        if (x_index == _options.TileSize - 1)
         {
             --x_index;
             x_pct = 1.0f;
@@ -508,7 +584,7 @@ public class TerrainZoneRenderable : SimpleRenderable
             // get remainder
             x_pct = x_pt - x_index;
         }
-        if (z_index == mOptions.TileSize - 1)
+        if (z_index == _options.TileSize - 1)
         {
             --z_index;
             z_pct = 1.0f;
@@ -632,14 +708,14 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         }
 
-        if (ray.x < box.Minimum.x && mNeighbors[(int)Neighbor.WEST] != null)
-            return mNeighbors[(int)Neighbor.WEST].IntersectSegment(ray, end, ref result);
-        else if (ray.z < box.Minimum.z && mNeighbors[(int)Neighbor.NORTH] != null)
-            return mNeighbors[(int)Neighbor.NORTH].IntersectSegment(ray, end, ref result);
-        else if (ray.x > box.Maximum.x && mNeighbors[(int)Neighbor.EAST] != null)
-            return mNeighbors[(int)Neighbor.EAST].IntersectSegment(ray, end, ref result);
-        else if (ray.z > box.Maximum.z && mNeighbors[(int)Neighbor.SOUTH] != null)
-            return mNeighbors[(int)Neighbor.SOUTH].IntersectSegment(ray, end, ref result);
+        if (ray.x < box.Minimum.x && _neighbors[(int)Neighbor.West] != null)
+            return _neighbors[(int)Neighbor.West].IntersectSegment(ray, end, ref result);
+        else if (ray.z < box.Minimum.z && _neighbors[(int)Neighbor.North] != null)
+            return _neighbors[(int)Neighbor.North].IntersectSegment(ray, end, ref result);
+        else if (ray.x > box.Maximum.x && _neighbors[(int)Neighbor.East] != null)
+            return _neighbors[(int)Neighbor.East].IntersectSegment(ray, end, ref result);
+        else if (ray.z > box.Maximum.z && _neighbors[(int)Neighbor.South] != null)
+            return _neighbors[(int)Neighbor.South].IntersectSegment(ray, end, ref result);
         else
         {
             //if ( result != 0 )
@@ -656,13 +732,13 @@ public class TerrainZoneRenderable : SimpleRenderable
         Vector3 normal = Vector3.Zero;
         Vector3 light;
 
-        HardwareVertexBuffer vbuf = mTerrain.vertexBufferBinding.GetBuffer((short)MAIN_BINDING);
+        HardwareVertexBuffer vbuf = _terrain.vertexBufferBinding.GetBuffer((short)Binding.Main);
 
-        VertexElement elem = mTerrain.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
+        VertexElement elem = _terrain.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
         //for each point in the terrain, see if it's in the line of sight for the sun.
-        for (int i = 0; i < mOptions.TileSize; i++)
+        for (int i = 0; i < _options.TileSize; i++)
         {
-            for (int j = 0; j < mOptions.TileSize; j++)
+            for (int j = 0; j < _options.TileSize; j++)
             {
                 //  printf( "Checking %f,%f,%f ", pt.x, pt.y, pt.z );
                 pt.x = Vertex(i, j, 0);
@@ -726,9 +802,9 @@ public class TerrainZoneRenderable : SimpleRenderable
 
     public override void NotifyCurrentCamera(Camera cam)
     {
-        if (mForcedRenderLevel >= 0)
+        if (_forcedRenderLevel >= 0)
         {
-            mRenderLevel = mForcedRenderLevel;
+            _renderLevel = _forcedRenderLevel;
             return;
         }
 
@@ -741,45 +817,45 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         Real L = diff.LengthSquared;
 
-        mRenderLevel = -1;
+        _renderLevel = -1;
 
-        for (int i = 0; i < mOptions.MaxGeoMipMapLevel; i++)
+        for (int i = 0; i < _options.MaxGeoMipMapLevel; i++)
         {
-            if (mMinLevelDistSqr[i] > L)
+            if (_minLevelDistSqr[i] > L)
             {
-                mRenderLevel = i - 1;
+                _renderLevel = i - 1;
                 break;
             }
         }
 
-        if (mRenderLevel < 0)
-            mRenderLevel = mOptions.MaxGeoMipMapLevel - 1;
+        if (_renderLevel < 0)
+            _renderLevel = _options.MaxGeoMipMapLevel - 1;
 
-        if (mOptions.LodMorph)
+        if (_options.LodMorph)
         {
             // Get the next LOD level down
-            int nextLevel = mNextLevelDown[mRenderLevel];
+            int nextLevel = _nextLevelDown[_renderLevel];
             if (nextLevel == 0)
             {
                 // No next level, so never morph
-                mLODMorphFactor = 0;
+                _lODMorphFactor = 0;
             }
             else
             {
                 // Set the morph such that the morph happens in the last 0.25 of
                 // the distance range
-                Real range = mMinLevelDistSqr[nextLevel] - mMinLevelDistSqr[mRenderLevel];
+                Real range = _minLevelDistSqr[nextLevel] - _minLevelDistSqr[_renderLevel];
                 if (range > 0)
                 {
-                    Real percent = (L - mMinLevelDistSqr[mRenderLevel]) / range;
+                    Real percent = (L - _minLevelDistSqr[_renderLevel]) / range;
                     // scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
-                    Real rescale = 1.0f / (1.0f - mOptions.LodMorphStart);
-                    mLODMorphFactor = Math.Max((percent - mOptions.LodMorphStart) * rescale, 0.0);
+                    Real rescale = 1.0f / (1.0f - _options.LodMorphStart);
+                    _lODMorphFactor = Math.Max((percent - _options.LodMorphStart) * rescale, 0.0);
                 }
                 else
                 {
                     // Identical ranges
-                    mLODMorphFactor = 0.0f;
+                    _lODMorphFactor = 0.0f;
                 }
 
                 //assert(mLODMorphFactor >= 0 && mLODMorphFactor <= 1);
@@ -787,20 +863,20 @@ public class TerrainZoneRenderable : SimpleRenderable
 
             // Bind the correct delta buffer if it has changed
             // nextLevel - 1 since the first entry is for LOD 1 (since LOD 0 never needs it)
-            if (mLastNextLevel != nextLevel)
+            if (_lastNextLevel != nextLevel)
             {
                 if (nextLevel > 0)
                 {
-                    mTerrain.vertexBufferBinding.SetBinding((short)DELTA_BINDING, mDeltaBuffers[nextLevel - 1]);
+                    _terrain.vertexBufferBinding.SetBinding((short)(short)Binding.Delta, mDeltaBuffers[nextLevel - 1]);
                 }
                 else
                 {
                     // bind dummy (incase bindings checked)
-                    mTerrain.vertexBufferBinding.SetBinding((short)DELTA_BINDING,
+                    _terrain.vertexBufferBinding.SetBinding((short)(short)Binding.Delta,
                         mDeltaBuffers[0]);
                 }
             }
-            mLastNextLevel = nextLevel;
+            _lastNextLevel = nextLevel;
 
         }
 
@@ -810,7 +886,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     public override void UpdateRenderQueue(RenderQueue queue)
     {
         // Notify need to calculate light list when our sending to render queue
-        mLightListDirty = true;
+        _lightListDirty = true;
 
         //if ( !added )
         {
@@ -866,16 +942,16 @@ public class TerrainZoneRenderable : SimpleRenderable
 
         Vector3 norm = Vector3.Zero;
 
-        Debug.Assert(mOptions.UseDynamicLighting, "No normals present");
+        Debug.Assert(_options.UseDynamicLighting, "No normals present");
 
-        HardwareVertexBuffer vbuf = mTerrain.vertexBufferBinding.GetBuffer((short)MAIN_BINDING);
-        VertexElement elem = mTerrain.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+        HardwareVertexBuffer vbuf = _terrain.vertexBufferBinding.GetBuffer((short)Binding.Main);
+        VertexElement elem = _terrain.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
         char* pBase = (char*)vbuf.Lock(BufferLocking.Discard);
         float* pNorm = null;
 
-        for (int j = 0; j < mOptions.TileSize; j++)
+        for (int j = 0; j < _options.TileSize; j++)
         {
-            for (int i = 0; i < mOptions.TileSize; i++)
+            for (int i = 0; i < _options.TileSize; i++)
             {
 
                 GetNormalAt(Vertex(i, j, 0), Vertex(i, j, 2), ref norm);
@@ -898,13 +974,13 @@ public class TerrainZoneRenderable : SimpleRenderable
     unsafe public void CalculateMinLevelDist2(Real C)
     {
         //level 0 has no delta.
-        mMinLevelDistSqr[0] = 0;
+        _minLevelDistSqr[0] = 0;
 
         int i, j;
 
-        for (int level = 1; level < mOptions.MaxGeoMipMapLevel; level++)
+        for (int level = 1; level < _options.MaxGeoMipMapLevel; level++)
         {
-            mMinLevelDistSqr[level] = 0;
+            _minLevelDistSqr[level] = 0;
 
             int step = 1 << level;
             // The step of the next higher LOD
@@ -912,7 +988,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
             float* pDeltas = null;
             IntPtr dataPtr;
-            if (mOptions.LodMorph)
+            if (_options.LodMorph)
             {
                 // Create a set of delta values (store at index - 1 since 0 has none)
                 mDeltaBuffers[level - 1] = CreateDeltaBuffer();
@@ -923,9 +999,9 @@ public class TerrainZoneRenderable : SimpleRenderable
                 pDeltas = (float*)dataPtr.ToPointer();
             }
 
-            for (j = 0; j < mOptions.TileSize - step; j += step)
+            for (j = 0; j < _options.TileSize - step; j += step)
             {
-                for (i = 0; i < mOptions.TileSize - step; i += step)
+                for (i = 0; i < _options.TileSize - step; i += step)
                 {
                     /* Form planes relating to the lower detail tris to be produced
                     For tri lists and even tri strip rows, they are this shape:
@@ -947,7 +1023,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                     t1 = new Plane();
                     t2 = new Plane();
                     bool backwardTri = false;
-                    if (!mOptions.UseTriStrips || j % 2 == 0)
+                    if (!_options.UseTriStrips || j % 2 == 0)
                     {
                         t1.Redefine(v1, v3, v2);
                         t2.Redefine(v2, v3, v4);
@@ -960,11 +1036,11 @@ public class TerrainZoneRenderable : SimpleRenderable
                     }
 
                     // include the bottommost row of vertices if this is the last row
-                    int zubound = (j == (mOptions.TileSize - step) ? step : step - 1);
+                    int zubound = (j == (_options.TileSize - step) ? step : step - 1);
                     for (int z = 0; z <= zubound; z++)
                     {
                         // include the rightmost col of vertices if this is the last col
-                        int xubound = (i == (mOptions.TileSize - step) ? step : step - 1);
+                        int xubound = (i == (_options.TileSize - step) ? step : step - 1);
                         for (int x = 0; x <= xubound; x++)
                         {
                             int fulldetailx = i + x;
@@ -1010,17 +1086,17 @@ public class TerrainZoneRenderable : SimpleRenderable
 
                             Real D2 = delta * delta * C * C;
 
-                            if (mMinLevelDistSqr[level] < D2)
-                                mMinLevelDistSqr[level] = D2;
+                            if (_minLevelDistSqr[level] < D2)
+                                _minLevelDistSqr[level] = D2;
 
                             // Should be save height difference?
                             // Don't morph along edges
-                            if (mOptions.LodMorph &&
-                                fulldetailx != 0 && fulldetailx != (mOptions.TileSize - 1) &&
-                                fulldetailz != 0 && fulldetailz != (mOptions.TileSize - 1))
+                            if (_options.LodMorph &&
+                                fulldetailx != 0 && fulldetailx != (_options.TileSize - 1) &&
+                                fulldetailz != 0 && fulldetailz != (_options.TileSize - 1))
                             {
                                 // Save height difference
-                                pDeltas[(int)(fulldetailx + (fulldetailz * mOptions.TileSize))] =
+                                pDeltas[(int)(fulldetailx + (fulldetailz * _options.TileSize))] =
                                     interp_h - actual_h;
                             }
 
@@ -1031,7 +1107,7 @@ public class TerrainZoneRenderable : SimpleRenderable
             }
 
             // Unlock morph deltas if required
-            if (mOptions.LodMorph)
+            if (_options.LodMorph)
             {
                 mDeltaBuffers[level - 1].Unlock();
             }
@@ -1040,7 +1116,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
 
         // Post validate the whole set
-        for (i = 1; i < mOptions.MaxGeoMipMapLevel; i++)
+        for (i = 1; i < _options.MaxGeoMipMapLevel; i++)
         {
 
             // Make sure no LOD transition within the tile
@@ -1053,31 +1129,31 @@ public class TerrainZoneRenderable : SimpleRenderable
             */
 
             //make sure the levels are increasing...
-            if (mMinLevelDistSqr[i] < mMinLevelDistSqr[i - 1])
+            if (_minLevelDistSqr[i] < _minLevelDistSqr[i - 1])
             {
-                mMinLevelDistSqr[i] = mMinLevelDistSqr[i - 1];
+                _minLevelDistSqr[i] = _minLevelDistSqr[i - 1];
             }
         }
 
         // Now reverse traverse the list setting the 'next level down'
         Real lastDist = -1;
         int lastIndex = 0;
-        for (i = mOptions.MaxGeoMipMapLevel - 1; i >= 0; --i)
+        for (i = _options.MaxGeoMipMapLevel - 1; i >= 0; --i)
         {
-            if (i == mOptions.MaxGeoMipMapLevel - 1)
+            if (i == _options.MaxGeoMipMapLevel - 1)
             {
                 // Last one is always 0
                 lastIndex = i;
-                lastDist = mMinLevelDistSqr[i];
-                mNextLevelDown[i] = 0;
+                lastDist = _minLevelDistSqr[i];
+                _nextLevelDown[i] = 0;
             }
             else
             {
-                mNextLevelDown[i] = lastIndex;
-                if (mMinLevelDistSqr[i] != lastDist)
+                _nextLevelDown[i] = lastIndex;
+                if (_minLevelDistSqr[i] != lastDist)
                 {
                     lastIndex = i;
-                    lastDist = mMinLevelDistSqr[i];
+                    lastDist = _minLevelDistSqr[i];
                 }
             }
 
@@ -1091,11 +1167,11 @@ public class TerrainZoneRenderable : SimpleRenderable
         // Delta buffer is a 1D float buffer of height offsets
         HardwareVertexBuffer buf = HardwareBufferManager.Instance.CreateVertexBuffer(
             VertexElement.GetTypeSize(VertexElementType.Float1),
-            mOptions.TileSize * mOptions.TileSize,
+            _options.TileSize * _options.TileSize,
             BufferUsage.WriteOnly);
         // Fill the buffer with zeros, we will only fill in delta
         IntPtr pVoid = buf.Lock(BufferLocking.Discard);
-        Memory.Set(pVoid, 0, (mOptions.TileSize * mOptions.TileSize) * sizeof(float));
+        Memory.Set(pVoid, 0, (_options.TileSize * _options.TileSize) * sizeof(float));
         //memset(pVoid, 0, mOptions.tileSize*mOptions.tileSize*sizeof (float));
         buf.Unlock();
 
@@ -1106,47 +1182,47 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         long stitchFlags = 0;
 
-        if (mNeighbors[(int)Neighbor.EAST] != null &&
-            mNeighbors[(int)Neighbor.EAST].mRenderLevel > mRenderLevel)
+        if (_neighbors[(int)Neighbor.East] != null &&
+            _neighbors[(int)Neighbor.East]._renderLevel > _renderLevel)
         {
-            stitchFlags |= STITCH_EAST;
-            stitchFlags |=
-                (mNeighbors[(int)Neighbor.EAST].mRenderLevel - mRenderLevel) << STITCH_EAST_SHIFT;
+            stitchFlags |= (long)StitchShift.East;
+            stitchFlags |= (long)
+                (_neighbors[(int)Neighbor.East]._renderLevel - _renderLevel) << (int)StitchDirection.East;
         }
 
-        if (mNeighbors[(int)Neighbor.WEST] != null &&
-            mNeighbors[(int)Neighbor.WEST].mRenderLevel > mRenderLevel)
+        if (_neighbors[(int)Neighbor.West] != null &&
+            _neighbors[(int)Neighbor.West]._renderLevel > _renderLevel)
         {
-            stitchFlags |= STITCH_WEST;
-            stitchFlags |=
-                (mNeighbors[(int)Neighbor.WEST].mRenderLevel - mRenderLevel) << STITCH_WEST_SHIFT;
+            stitchFlags |= (long)StitchShift.West;
+            stitchFlags |= (long)
+                (_neighbors[(int)Neighbor.West]._renderLevel - _renderLevel) << (int)StitchShift.West;
         }
 
-        if (mNeighbors[(int)Neighbor.NORTH] != null &&
-            mNeighbors[(int)Neighbor.NORTH].mRenderLevel > mRenderLevel)
+        if (_neighbors[(int)Neighbor.North] != null &&
+            _neighbors[(int)Neighbor.North]._renderLevel > _renderLevel)
         {
-            stitchFlags |= STITCH_NORTH;
-            stitchFlags |=
-                (mNeighbors[(int)Neighbor.NORTH].mRenderLevel - mRenderLevel) << STITCH_NORTH_SHIFT;
+            stitchFlags |= (long)StitchShift.North;
+            stitchFlags |= (long)
+                (_neighbors[(int)Neighbor.North]._renderLevel - _renderLevel) << (int)StitchShift.North;
         }
 
-        if (mNeighbors[(int)Neighbor.SOUTH] != null &&
-            mNeighbors[(int)Neighbor.SOUTH].mRenderLevel > mRenderLevel)
+        if (_neighbors[(int)Neighbor.South] != null &&
+            _neighbors[(int)Neighbor.South]._renderLevel > _renderLevel)
         {
-            stitchFlags |= STITCH_SOUTH;
-            stitchFlags |=
-                (mNeighbors[(int)Neighbor.SOUTH].mRenderLevel - mRenderLevel) << STITCH_SOUTH_SHIFT;
+            stitchFlags |= (long)StitchShift.South;
+            stitchFlags |= (long)
+                (_neighbors[(int)Neighbor.South]._renderLevel - _renderLevel) << (int)StitchShift.South;
         }
 
         // Check preexisting
-        Hashtable levelIndex = mTerrainZone.LevelIndex;
+        Hashtable levelIndex = _terrainZone.LevelIndex;
         //IndexMap::iterator ii = levelIndex[ mRenderLevel ].find( stitchFlags );
         IndexData indexData;
 
-        if (null == levelIndex[mRenderLevel] || (((KeyValuePair<uint, IndexData>)levelIndex[mRenderLevel]).Key & stitchFlags) == 0)
+        if (null == levelIndex[_renderLevel] || (((KeyValuePair<uint, IndexData>)levelIndex[_renderLevel]).Key & stitchFlags) == 0)
         {
             // Create
-            if (mOptions.UseTriStrips)
+            if (_options.UseTriStrips)
             {
                 indexData = GenerateTriStripIndexes((uint)stitchFlags);
             }
@@ -1154,11 +1230,11 @@ public class TerrainZoneRenderable : SimpleRenderable
             {
                 indexData = GenerateTriListIndexes((uint)stitchFlags);
             }
-            levelIndex[mRenderLevel] = new KeyValuePair<uint, IndexData>((uint)stitchFlags, indexData);
+            levelIndex[_renderLevel] = new KeyValuePair<uint, IndexData>((uint)stitchFlags, indexData);
         }
         else
         {
-            indexData = ((KeyValuePair<uint, IndexData>)levelIndex[mRenderLevel]).Value;
+            indexData = ((KeyValuePair<uint, IndexData>)levelIndex[_renderLevel]).Value;
         }
 
 
@@ -1168,18 +1244,18 @@ public class TerrainZoneRenderable : SimpleRenderable
     public IndexData GenerateTriStripIndexes(uint stitchFlags)
     {
         // The step used for the current level
-        int step = 1 << mRenderLevel;
+        int step = 1 << _renderLevel;
         // The step used for the lower level
-        int lowstep = 1 << (mRenderLevel + 1);
+        int lowstep = 1 << (_renderLevel + 1);
 
         int numIndexes = 0;
 
         // Calculate the number of indexes required
         // This is the number of 'cells' at this detail level x 2
         // plus 3 degenerates to turn corners
-        int numTrisAcross = (((mOptions.TileSize - 1) / step) * 2) + 3;
+        int numTrisAcross = (((_options.TileSize - 1) / step) * 2) + 3;
         // Num indexes is number of tris + 2
-        int new_length = numTrisAcross * ((mOptions.TileSize - 1) / step) + 2;
+        int new_length = numTrisAcross * ((_options.TileSize - 1) / step) + 2;
         //this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
         IndexData indexData = new IndexData();
@@ -1188,7 +1264,7 @@ public class TerrainZoneRenderable : SimpleRenderable
             IndexType.Size16,
             new_length, BufferUsage.StaticWriteOnly);//, false);
 
-        mTerrainZone.IndexCache.mCache.Add(indexData);
+        _terrainZone.IndexCache.mCache.Add(indexData);
         unsafe
         {
 
@@ -1196,12 +1272,12 @@ public class TerrainZoneRenderable : SimpleRenderable
             ushort* pIdx = (ushort*)indexData.indexBuffer.Lock(0, indexData.indexBuffer.Size, BufferLocking.Discard);
 
             // Stripified mesh
-            for (int j = 0; j < mOptions.TileSize - 1; j += step)
+            for (int j = 0; j < _options.TileSize - 1; j += step)
             {
                 int i;
                 // Forward strip
                 // We just do the |/ here, final | done after
-                for (i = 0; i < mOptions.TileSize - 1; i += step)
+                for (i = 0; i < _options.TileSize - 1; i += step)
                 {
                     int[] x = new int[4];
                     int[] y = new int[4];
@@ -1210,7 +1286,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                     y[0] = y[2] = j;
                     y[1] = y[3] = j + step;
 
-                    if (j == 0 && (stitchFlags & STITCH_NORTH) != 0)
+                    if (j == 0 && (stitchFlags & (long)StitchShift.North) != 0)
                     {
                         // North reduction means rounding x[0] and x[2]
                         if (x[0] % lowstep != 0)
@@ -1228,7 +1304,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                     // Never get a south tiling on a forward strip (always finish on
                     // a backward strip)
 
-                    if (i == 0 && (stitchFlags & STITCH_WEST) != 0)
+                    if (i == 0 && (stitchFlags & (long)StitchShift.West) != 0)
                     {
                         // West reduction means rounding y[0] / y[1]
                         if (y[0] % lowstep != 0)
@@ -1240,7 +1316,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                             y[1] -= step;
                         }
                     }
-                    if (i == (mOptions.TileSize - 1 - step) && (stitchFlags & STITCH_EAST) != 0)
+                    if (i == (_options.TileSize - 1 - step) && (stitchFlags & (long)StitchShift.East) != 0)
                     {
                         // East tiling means rounding y[2] & y[3]
                         if (y[2] % lowstep != 0)
@@ -1265,12 +1341,12 @@ public class TerrainZoneRenderable : SimpleRenderable
                     *pIdx++ = (ushort)Index(x[2], y[2]);
                     numIndexes++;
 
-                    if (i == mOptions.TileSize - 1 - step)
+                    if (i == _options.TileSize - 1 - step)
                     {
                         // Emit extra index to finish row
                         *pIdx++ = (ushort)Index(x[3], y[3]);
                         numIndexes++;
-                        if (j < mOptions.TileSize - 1 - step)
+                        if (j < _options.TileSize - 1 - step)
                         {
                             // Emit this index twice more (this is to turn around without
                             // artefacts)
@@ -1284,7 +1360,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                 // Increment row
                 j += step;
                 // Backward strip
-                for (i = mOptions.TileSize - 1; i > 0; i -= step)
+                for (i = _options.TileSize - 1; i > 0; i -= step)
                 {
                     int[] x = new int[4];
                     int[] y = new int[4];
@@ -1295,7 +1371,7 @@ public class TerrainZoneRenderable : SimpleRenderable
 
                     // Never get a north tiling on a backward strip (always
                     // start on a forward strip)
-                    if (j == (mOptions.TileSize - 1 - step) && (stitchFlags & STITCH_SOUTH) != 0)
+                    if (j == (_options.TileSize - 1 - step) && (stitchFlags & (long)StitchShift.South) != 0)
                     {
                         // South reduction means rounding x[1] / x[3]
                         if (x[1] % lowstep != 0)
@@ -1308,7 +1384,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                         }
                     }
 
-                    if (i == step && (stitchFlags & STITCH_WEST) != 0)
+                    if (i == step && (stitchFlags & (long)StitchShift.West) != 0)
                     {
                         // West tiling on backward strip is rounding of y[2] / y[3]
                         if (y[2] % lowstep != 0)
@@ -1320,7 +1396,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                             y[3] -= step;
                         }
                     }
-                    if (i == mOptions.TileSize - 1 && (stitchFlags & STITCH_EAST) != 0)
+                    if (i == _options.TileSize - 1 && (stitchFlags & (long)StitchShift.East) != 0)
                     {
                         // East tiling means rounding y[0] and y[1] on backward strip
                         if (y[0] % lowstep != 0)
@@ -1334,7 +1410,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                     }
 
                     //triangles
-                    if (i == mOptions.TileSize)
+                    if (i == _options.TileSize)
                     {
                         // Starter
                         *pIdx++ = (ushort)Index(x[0], y[0]);
@@ -1350,7 +1426,7 @@ public class TerrainZoneRenderable : SimpleRenderable
                         // Emit extra index to finish row
                         *pIdx++ = (ushort)Index(x[3], y[3]);
                         numIndexes++;
-                        if (j < mOptions.TileSize - 1 - step)
+                        if (j < _options.TileSize - 1 - step)
                         {
                             // Emit this index once more (this is to turn around)
                             *pIdx++ = (ushort)Index(x[3], y[3]);
@@ -1374,16 +1450,16 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
 
         int numIndexes = 0;
-        int step = 1 << mRenderLevel;
+        int step = 1 << _renderLevel;
 
         IndexData indexData;
 
-        int north = (stitchFlags & STITCH_NORTH) != 0 ? step : 0;
-        int south = (stitchFlags & STITCH_SOUTH) != 0 ? step : 0;
-        int east = (stitchFlags & STITCH_EAST) != 0 ? step : 0;
-        int west = (stitchFlags & STITCH_WEST) != 0 ? step : 0;
+        int north = (stitchFlags & (long)StitchShift.North) != 0 ? step : 0;
+        int south = (stitchFlags & (long)StitchShift.South) != 0 ? step : 0;
+        int east = (stitchFlags & (long)StitchShift.East) != 0 ? step : 0;
+        int west = (stitchFlags & (long)StitchShift.West) != 0 ? step : 0;
 
-        int new_length = (mOptions.TileSize / step) * (mOptions.TileSize / step) * 2 * 2 * 2;
+        int new_length = (_options.TileSize / step) * (_options.TileSize / step) * 2 * 2 * 2;
         //this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
         indexData = new IndexData();
@@ -1391,16 +1467,16 @@ public class TerrainZoneRenderable : SimpleRenderable
             IndexType.Size16,
             new_length, BufferUsage.StaticWriteOnly);//, false);
 
-        mTerrainZone.IndexCache.mCache.Add(indexData);
+        _terrainZone.IndexCache.mCache.Add(indexData);
 
         ushort* pIdx = (ushort*)indexData.indexBuffer.Lock(0,
             indexData.indexBuffer.Size,
             BufferLocking.Discard);
 
         // Do the core vertices, minus stitches
-        for (int j = north; j < mOptions.TileSize - 1 - south; j += step)
+        for (int j = north; j < _options.TileSize - 1 - south; j += step)
         {
-            for (int i = west; i < mOptions.TileSize - 1 - east; i += step)
+            for (int i = west; i < _options.TileSize - 1 - east; i += step)
             {
                 //triangles
                 *pIdx++ = Index(i, j + step);
@@ -1422,25 +1498,25 @@ public class TerrainZoneRenderable : SimpleRenderable
         // North stitching
         if (north > 0)
         {
-            numIndexes += StitchEdge(Neighbor.NORTH, mRenderLevel, mNeighbors[(int)Neighbor.NORTH].mRenderLevel,
+            numIndexes += StitchEdge(Neighbor.North, _renderLevel, _neighbors[(int)Neighbor.North]._renderLevel,
                 west > 0, east > 0, &pIdx);
         }
         // East stitching
         if (east > 0)
         {
-            numIndexes += StitchEdge(Neighbor.EAST, mRenderLevel, mNeighbors[(int)Neighbor.EAST].mRenderLevel,
+            numIndexes += StitchEdge(Neighbor.East, _renderLevel, _neighbors[(int)Neighbor.East]._renderLevel,
                 north > 0, south > 0, &pIdx);
         }
         // South stitching
         if (south > 0)
         {
-            numIndexes += StitchEdge(Neighbor.SOUTH, mRenderLevel, mNeighbors[(int)Neighbor.SOUTH].mRenderLevel,
+            numIndexes += StitchEdge(Neighbor.South, _renderLevel, _neighbors[(int)Neighbor.South]._renderLevel,
                 east > 0, west > 0, &pIdx);
         }
         // West stitching
         if (west > 0)
         {
-            numIndexes += StitchEdge(Neighbor.WEST, mRenderLevel, mNeighbors[(int)Neighbor.WEST].mRenderLevel,
+            numIndexes += StitchEdge(Neighbor.West, _renderLevel, _neighbors[(int)Neighbor.West]._renderLevel,
                 south > 0, north > 0, &pIdx);
         }
 
@@ -1474,7 +1550,7 @@ public class TerrainZoneRenderable : SimpleRenderable
         if (constantEntry.Data == MORPH_CUSTOM_PARAM_ID)
         {
             // Update morph LOD factor
-            param.SetConstant(constantEntry.PhysicalIndex, mLODMorphFactor);
+            param.SetConstant(constantEntry.PhysicalIndex, _lODMorphFactor);
             //_writeRawConstant(constantEntry.PhysicalIndex, mLODMorphFactor);
         }
         else
@@ -1534,15 +1610,15 @@ public class TerrainZoneRenderable : SimpleRenderable
         bool horizontal = false;
         switch (neighbor)
         {
-            case Neighbor.NORTH:
+            case Neighbor.North:
                 startx = starty = 0;
-                endx = mOptions.TileSize - 1;
+                endx = _options.TileSize - 1;
                 rowstep = step;
                 horizontal = true;
                 break;
-            case Neighbor.SOUTH:
+            case Neighbor.South:
                 // invert x AND y direction, helps to keep same winding
-                startx = starty = mOptions.TileSize - 1;
+                startx = starty = _options.TileSize - 1;
                 endx = 0;
                 rowstep = -step;
                 step = -step;
@@ -1550,15 +1626,15 @@ public class TerrainZoneRenderable : SimpleRenderable
                 halfsuperstep = -halfsuperstep;
                 horizontal = true;
                 break;
-            case Neighbor.EAST:
+            case Neighbor.East:
                 startx = 0;
-                endx = mOptions.TileSize - 1;
-                starty = mOptions.TileSize - 1;
+                endx = _options.TileSize - 1;
+                starty = _options.TileSize - 1;
                 rowstep = -step;
                 horizontal = false;
                 break;
-            case Neighbor.WEST:
-                startx = mOptions.TileSize - 1;
+            case Neighbor.West:
+                startx = _options.TileSize - 1;
                 endx = 0;
                 starty = 0;
                 rowstep = step;
@@ -1682,13 +1758,13 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            if (mLightListDirty)
+            if (_lightListDirty)
             {
                 ParentSceneNode.Creator.PopulateLightList(
-                    mCenter, this.BoundingRadius, mLightList);
-                mLightListDirty = false;
+                    _center, this.BoundingRadius, _lightList);
+                _lightListDirty = false;
             }
-            return mLightList;
+            return _lightList;
         }
 
     }
@@ -1700,7 +1776,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return normalizeNormals;
+            return _normalizeNormals;
         }
     }
 
@@ -1718,7 +1794,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return numWorldTransforms;
+            return _WorldTransformsCount;
         }
     }
 
@@ -1736,7 +1812,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return useIdentityProjection;
+            return _useIdentityProjection;
         }
     }
 
@@ -1754,7 +1830,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return useIdentityView;
+            return _useIdentityView;
         }
     }
 
@@ -1768,7 +1844,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return polygonModeOverrideable;
+            return _polygonModeOverrideable;
         }
     }
 
@@ -1783,7 +1859,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return worldOrientation;
+            return _worldOrientation;
         }
     }
 
@@ -1798,7 +1874,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     {
         get
         {
-            return worldPosition;
+            return _worldPosition;
         }
     }
 
@@ -1813,7 +1889,7 @@ public class TerrainZoneRenderable : SimpleRenderable
     /// <returns></returns>
     public override float GetSquaredViewDepth(Camera camera)
     {
-        Vector3 diff = mCenter - camera.DerivedPosition;
+        Vector3 diff = _center - camera.DerivedPosition;
         // Use squared length to avoid square root
         return diff.LengthSquared;
     }
