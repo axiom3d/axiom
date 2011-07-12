@@ -412,25 +412,25 @@ namespace Axiom.Graphics
 
 		private bool _hwGamma;
 
-        /// <summary>
-        /// Indicates whether on rendering, linear color space is converted to 
-        /// sRGB gamma colour space. This is the exact opposite conversion of
-        /// what is indicated by <see cref="Texture.HardwareGammaEnabled" />, and can only
-        /// be enabled on creation of the render target. For render windows, it's
-        /// enabled through the 'gamma' creation misc parameter. For textures, 
-        /// it is enabled through the hwGamma parameter to the create call.
-        /// </summary>
-        public bool HardwareGammaEnabled
-        {
-            get
-            {
-                return _hwGamma;
-            }
-            protected set
-            {
-                _hwGamma = value;
-            }
-        }
+		/// <summary>
+		/// Indicates whether on rendering, linear color space is converted to 
+		/// sRGB gamma colour space. This is the exact opposite conversion of
+		/// what is indicated by <see cref="Texture.HardwareGammaEnabled" />, and can only
+		/// be enabled on creation of the render target. For render windows, it's
+		/// enabled through the 'gamma' creation misc parameter. For textures, 
+		/// it is enabled through the hwGamma parameter to the create call.
+		/// </summary>
+		public bool HardwareGammaEnabled
+		{
+			get
+			{
+				return _hwGamma;
+			}
+			protected set
+			{
+				_hwGamma = value;
+			}
+		}
 
 		#endregion HardwareGammaEnabled Property
 
@@ -475,13 +475,13 @@ namespace Axiom.Graphics
 		#endregion Fields and Properties
 
 		public RenderTarget()
-            : base()
+			: base()
 		{
 
 		}
 
 		public RenderTarget( string name )
-            : base()
+			: base()
 		{
 			_name = name;
 		}
@@ -699,7 +699,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="bestFPS">The best FPS rating that has been achieved since rendering began.</param>
 		/// <param name="worstFPS">The worst FPS rating seen so far</param>
-		[Obsolete("The RenderTarget.Statistics Property provides complete access to all statistical data.")]
+		[Obsolete( "The RenderTarget.Statistics Property provides complete access to all statistical data." )]
 		public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
 		{
 			lastFPS = _statistics.LastFPS;
@@ -964,20 +964,20 @@ namespace Axiom.Graphics
 		/// <param name="camera"></param>
 		internal void NotifyCameraRemoved( Camera camera )
 		{
-            if ( _viewportList == null )
-                return;
+			if ( _viewportList == null )
+				return;
 
-            for ( int i = 0; i < _viewportList.Count; i++ )
-            {
-                Viewport viewport = _viewportList.Values[ i ];
+			for ( int i = 0; i < _viewportList.Count; i++ )
+			{
+				Viewport viewport = _viewportList.Values[ i ];
 
-                // remove the link to this camera
-                if ( viewport.Camera == camera )
-                {
-                    viewport.Camera = null;
-                }
-            }
-        }
+				// remove the link to this camera
+				if ( viewport.Camera == camera )
+				{
+					viewport.Camera = null;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Retrieve information about the render target.
@@ -1000,16 +1000,12 @@ namespace Axiom.Graphics
 			PixelFormat pf = suggestPixelFormat();
 
 			byte[] data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
-			GCHandle bufGCHandle = new GCHandle();
-			bufGCHandle = GCHandle.Alloc( data, GCHandleType.Pinned );
-			PixelBox pb = new PixelBox( Width, Height, 1, pf, bufGCHandle.AddrOfPinnedObject() );
+			var buffer = MemoryManager.Instance.Allocate( data );
+			PixelBox pb = new PixelBox( Width, Height, 1, pf, buffer );
 
 			CopyContentsToMemory( pb );
 
 			( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
-
-			if ( bufGCHandle.IsAllocated )
-				bufGCHandle.Free();
 		}
 
 		public void CopyContentsToMemory( PixelBox pb )
@@ -1070,11 +1066,11 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Delete viewports
-                    if (_viewportList != null)
-                    {
-                        this.RemoveAllViewports();
-                        _viewportList = null;
-                    }
+					if ( _viewportList != null )
+					{
+						this.RemoveAllViewports();
+						_viewportList = null;
+					}
 
 
 					// Write final performance stats
