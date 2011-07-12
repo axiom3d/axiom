@@ -157,8 +157,7 @@ namespace Axiom.Graphics
 			{
 				//Create custom index buffer
 				int vertexCount = renderOp.vertexData.vertexCount;
-				IndexType itype = vertexCount > UInt16.MaxValue ?
-				IndexType.Size32 : IndexType.Size16;
+				IndexType itype = vertexCount > UInt16.MaxValue ? IndexType.Size32 : IndexType.Size16;
 
 				DefaultHardwareIndexBuffer ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
 				customIndexBufferList.Add( ibuf ); //to be disposed later
@@ -169,31 +168,11 @@ namespace Axiom.Graphics
 				indexData.indexStart = 0;
 
 				//Fill buffer with indices
-				IntPtr ibuffer =
-				indexData.indexBuffer.Lock( BufferLocking.Normal );
-				try
-				{
-					unsafe
-					{
-						Int16* ibuf16 = (Int16*)ibuffer;
-						Int32* ibuf32 = (Int32*)ibuffer;
-						for ( int i = 0; i < indexData.indexCount; i++ )
-						{
-							if ( itype == IndexType.Size16 )
-							{
-								ibuf16[ i ] = (Int16)i;
-							}
-							else
-							{
-								ibuf32[ i ] = i;
-							}
-						}
-					} //unsafe
-				}
-				finally
-				{
-					indexData.indexBuffer.Unlock();
-				}
+				if ( itype == IndexType.Size16 )
+					populate16BitBuffer( ibuf, vertexCount );
+				else
+					populate32BitBuffer( ibuf, vertexCount );
+
 			}
 
 			AddVertexData( renderOp.vertexData );
@@ -201,6 +180,21 @@ namespace Axiom.Graphics
 			renderOp.operationType );
 		}
 
+		private void populate16BitBuffer( DefaultHardwareIndexBuffer buffer, int indexCount )
+		{
+			short[] ibuf = new short[ indexCount ];
+			while ( --indexCount >= 0 )
+				ibuf[ indexCount ] = (short)indexCount;
+			buffer.SetData( ibuf, 0, indexCount, true );
+		}
+
+		private void populate32BitBuffer( DefaultHardwareIndexBuffer buffer, int indexCount )
+		{
+			int[] ibuf = new int[ indexCount ];
+			while ( --indexCount >= 0 )
+				ibuf[ indexCount ] = indexCount;
+			buffer.SetData( ibuf, 0, indexCount, true );
+		}
 
 		/// <summary>
 		/// Add vertex and index sets of a mesh to the builder.
@@ -274,12 +268,12 @@ namespace Axiom.Graphics
 		#endregion Methods
 
 		#region IDisposable Implementation
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
 			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )

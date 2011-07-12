@@ -57,6 +57,7 @@ namespace Axiom.Graphics
 		const int TEXCOORD = 1;
 		const int NORMAL = 2;
 		static float[] texCoords = new float[] { 0, 0, 0, 1, 1, 0, 1, 1 };
+		static float[] defaultNormals = new float[] { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
 
 		public Rectangle2D()
 			: this( false )
@@ -77,55 +78,26 @@ namespace Axiom.Graphics
 			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
-
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 			binding.SetBinding( POSITION, buffer );
 
 			decl.AddElement( NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
-
-			buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
-
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 			binding.SetBinding( NORMAL, buffer );
 
-			unsafe
-			{
-				float* pNorm = (float*)buffer.Lock( BufferLocking.Discard );
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
+			buffer.SetData( defaultNormals );
 
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
-
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
-
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
-
-				buffer.Unlock();
-			}
 			if ( includeTextureCoordinates )
 			{
 				decl.AddElement( TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords );
-
-				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
-
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 				binding.SetBinding( TEXCOORD, buffer );
 
-				buffer.WriteData( 0, buffer.Size, texCoords, true );
+				buffer.SetData( texCoords, true );
 			}
 
-			// TODO: Fix
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			material.Lighting = false;
+			//  set basic white material
+			material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 		}
 
 		#region SimpleRenderable Members
@@ -215,10 +187,9 @@ namespace Axiom.Graphics
 				right, bottom, -1
 			};
 
-			HardwareVertexBuffer buffer =
-				vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
-			buffer.WriteData( 0, buffer.Size, data, true );
+			buffer.SetData( data, 0, buffer.Length, true );
 
 			if ( updateAABB )
 			{
@@ -236,27 +207,24 @@ namespace Axiom.Graphics
 		public void SetNormals( Vector3 topLeft, Vector3 bottomLeft, Vector3 topRight, Vector3 bottomRight )
 		{
 			HardwareVertexBuffer vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
-			unsafe
-			{
-				float* pfloat = (float*)vbuf.Lock( BufferLocking.Discard );
-				*pfloat++ = topLeft.x;
-				*pfloat++ = topLeft.y;
-				*pfloat++ = topLeft.z;
+			float[] normals = new float[] { 				
+				topLeft.x,
+				topLeft.y,
+				topLeft.z,
 
-				*pfloat++ = bottomLeft.x;
-				*pfloat++ = bottomLeft.y;
-				*pfloat++ = bottomLeft.z;
+				bottomLeft.x,
+				bottomLeft.y,
+				bottomLeft.z,
 
-				*pfloat++ = topRight.x;
-				*pfloat++ = topRight.y;
-				*pfloat++ = topRight.z;
+				topRight.x,
+				topRight.y,
+				topRight.z,
 
-				*pfloat++ = bottomRight.x;
-				*pfloat++ = bottomRight.y;
-				*pfloat++ = bottomRight.z;
-
-				vbuf.Unlock();
-			}
+				bottomRight.x,
+				bottomRight.y,
+				bottomRight.z,
+			};
+			vbuf.SetData( normals, 0, normals.Length, true );
 		}
 		#endregion Methods
 	}

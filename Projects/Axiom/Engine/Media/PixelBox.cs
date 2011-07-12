@@ -274,7 +274,7 @@ namespace Axiom.Media
 		///<summary>
 		///    The data pointer.  We do not own this.
 		///</summary>
-		protected IntPtr data;
+		protected IMemoryBuffer data;
 		///<summary>
 		///    A byte offset into the data
 		///</summary>
@@ -316,7 +316,7 @@ namespace Axiom.Media
 		///<param name="extents">Extents of the region defined by data</param>
 		///<param name="ormat">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-		internal PixelBox( BasicBox extents, PixelFormat format, IntPtr data )
+		internal PixelBox( BasicBox extents, PixelFormat format, IMemoryBuffer data )
 		{
 			CopyFromBasicBox( extents );
 			this.format = format;
@@ -343,7 +343,7 @@ namespace Axiom.Media
 		///<param name="depth">Depth of the region</param>
 		///<param name="format">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-		public PixelBox( int width, int height, int depth, PixelFormat format, IntPtr data )
+		public PixelBox( int width, int height, int depth, PixelFormat format, IMemoryBuffer data )
 			: base( 0, 0, 0, width, height, depth )
 		{
 			this.format = format;
@@ -366,7 +366,7 @@ namespace Axiom.Media
 		///<summary>
 		///    Get/set the data array
 		///</summary>
-		public IntPtr Data
+		public IMemoryBuffer Data
 		{
 			get
 			{

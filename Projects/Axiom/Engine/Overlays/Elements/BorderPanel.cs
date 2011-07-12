@@ -131,28 +131,28 @@ namespace Axiom.Overlays.Elements
 
 		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.renderOp2 != null)
-                    {
-                        if (!this.renderOp2.IsDisposed)
-                            this.renderOp2.Dispose();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.renderOp2 != null )
+					{
+						if ( !this.renderOp2.IsDisposed )
+							this.renderOp2.Dispose();
 
-                        this.renderOp2 = null;
-                    }
-                }
-            }
+						this.renderOp2 = null;
+					}
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		protected override void UpdateTextureGeometry()
 		{
@@ -168,28 +168,57 @@ namespace Axiom.Overlays.Elements
 
 			// No choice but to lock / unlock each time here, but lock only small sections
 
-			HardwareVertexBuffer vbuf =	renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
+			HardwareVertexBuffer vbuf = renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
 			// Can't use discard since this discards whole buffer
-			IntPtr data = vbuf.Lock( BufferLocking.Discard );
+			//IntPtr data = vbuf.Lock( BufferLocking.Discard );
+			byte[] idxPtr = new byte[ vbuf.Length ];
+			byte[] bytes;
+			vbuf.GetData( idxPtr );
+
 			int index = 0;
 			unsafe
 			{
-				float* idxPtr = (float*)data.ToPointer();
+				//float* idxPtr = (float*)data.ToPointer();
 
 				for ( short i = 0; i < 8; i++ )
 				{
-					idxPtr[ index++ ] = borderUV[ i ].u1;
-					idxPtr[ index++ ] = borderUV[ i ].v1;
-					idxPtr[ index++ ] = borderUV[ i ].u1;
-					idxPtr[ index++ ] = borderUV[ i ].v2;
-					idxPtr[ index++ ] = borderUV[ i ].u2;
-					idxPtr[ index++ ] = borderUV[ i ].v1;
-					idxPtr[ index++ ] = borderUV[ i ].u2;
-					idxPtr[ index++ ] = borderUV[ i ].v2;
+					//idxPtr[ index++ ] = borderUV[ i ].u1;
+					bytes = BitConverter.GetBytes( borderUV[ i ].u1 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].v1;
+					bytes = BitConverter.GetBytes( borderUV[ i ].v1 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].u1;
+					bytes = BitConverter.GetBytes( borderUV[ i ].u1 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].v2;
+					bytes = BitConverter.GetBytes( borderUV[ i ].v2 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].u2;
+					bytes = BitConverter.GetBytes( borderUV[ i ].u2 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].v1;
+					bytes = BitConverter.GetBytes( borderUV[ i ].v1 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].u2;
+					bytes = BitConverter.GetBytes( borderUV[ i ].u2 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
+					//idxPtr[ index++ ] = borderUV[ i ].v2;
+					bytes = BitConverter.GetBytes( borderUV[ i ].v2 );
+					bytes.CopyTo( idxPtr, index );
+					index += bytes.Length;
 				}
 			}
 
-			vbuf.Unlock();
+			//vbuf.Unlock();
+			vbuf.SetData( idxPtr );
 		}
 
 		public void GetLeftBorderUV( out float u1, out float v1, out float u2, out float v2 )
@@ -345,8 +374,7 @@ namespace Axiom.Overlays.Elements
 				decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 				// position buffer
-				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind position
 				VertexBufferBinding binding = renderOp2.vertexData.vertexBufferBinding;
@@ -378,36 +406,54 @@ namespace Axiom.Overlays.Elements
 				*/
 
 				// create a new index buffer
-				renderOp2.indexData.indexBuffer =
-					HardwareBufferManager.Instance.CreateIndexBuffer(
-						IndexType.Size16,
-						renderOp2.indexData.indexCount,
-						BufferUsage.StaticWriteOnly );
+				renderOp2.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, renderOp2.indexData.indexCount, BufferUsage.StaticWriteOnly );
 
 				// lock this bad boy
-				IntPtr data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				//IntPtr data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				byte[] idxPtr = new byte[ renderOp2.indexData.indexCount ];
+				byte[] bytes;
+
 				int index = 0;
 				unsafe
 				{
-					short* idxPtr = (short*)data.ToPointer();
+					//short* idxPtr = (short*)data.ToPointer();
 
 					for ( short cell = 0; cell < 8; cell++ )
 					{
 						short val = (short)( cell * 4 );
-						idxPtr[ index++ ] = val;
-						idxPtr[ index++ ] = (short)( val + 1 );
-						idxPtr[ index++ ] = (short)( val + 2 );
+						//idxPtr[ index++ ] = val;
+						bytes = BitConverter.GetBytes( val );
+						bytes.CopyTo( idxPtr, index );
+						index += bytes.Length;
+						//idxPtr[ index++ ] = (short)( val + 1 );
+						bytes = BitConverter.GetBytes( (short)( val + 1 ) );
+						bytes.CopyTo( idxPtr, index );
+						index += bytes.Length;
+						//idxPtr[ index++ ] = (short)( val + 2 );
+						bytes = BitConverter.GetBytes( (short)( val + 2 ) );
+						bytes.CopyTo( idxPtr, index );
+						index += bytes.Length;
 
-						idxPtr[ index++ ] = (short)( val + 2 );
-						idxPtr[ index++ ] = (short)( val + 1 );
-						idxPtr[ index++ ] = (short)( val + 3 );
+						//idxPtr[ index++ ] = (short)( val + 2 );
+						bytes = BitConverter.GetBytes( (short)( val + 2 ) );
+						bytes.CopyTo( idxPtr, index );
+						index += bytes.Length;
+						//idxPtr[ index++ ] = (short)( val + 1 );
+						bytes = BitConverter.GetBytes( (short)( val + 1 ) );
+						bytes.CopyTo( idxPtr, index );
+						index += bytes.Length;
+						//idxPtr[ index++ ] = (short)( val + 3 );
+						bytes = BitConverter.GetBytes( (short)( val + 3 ) );
+						bytes.CopyTo( idxPtr, index );
+						index += bytes.Length;
 					}
 				}
 
 				// unlock the buffer
-				renderOp2.indexData.indexBuffer.Unlock();
+				//renderOp2.indexData.indexBuffer.Unlock();
+				renderOp2.indexData.indexBuffer.SetData( idxPtr );
 
-				// create new seperate object for the panels since they have a different material
+				// create new separate object for the panels since they have a different material
 				borderRenderable = new BorderRenderable( this );
 				isInitialized = true;
 			}
@@ -509,7 +555,7 @@ namespace Axiom.Overlays.Elements
 		///    The border panel uses 8 panels for the border (9 including the center).
 		///    Imagine a table with 3 rows and 3 columns. The corners are always the same size,
 		///    but the edges stretch depending on how big the panel is. Those who have done
-		///    resizable HTML tables will be familiar with this approach.
+		///    re sizable HTML tables will be familiar with this approach.
 		///    <p/>
 		///    We only require 2 sets of uv coordinates, one for the top-left and one for the
 		///    bottom-right of the panel, since it is assumed the sections are aligned on the texture.
@@ -524,32 +570,55 @@ namespace Axiom.Overlays.Elements
 			int cellIndex = (int)cell;
 
 			// no choice but to lock/unlock each time here, locking only what we want to modify
-			HardwareVertexBuffer buffer =
-				renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
+			HardwareVertexBuffer buffer = renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
 
 			// can't use discard, or it will discard the whole buffer, wiping out the positions too
-			IntPtr data = buffer.Lock(
-				cellIndex * 8 * Marshal.SizeOf( typeof( float ) ),
-				Marshal.SizeOf( typeof( float ) ) * 8,
-				BufferLocking.Normal );
-
+			//IntPtr data = buffer.Lock(cellIndex * 8 * Marshal.SizeOf( typeof( float ) ), Marshal.SizeOf( typeof( float ) ) * 8,	BufferLocking.Normal );
+			byte[] texPtr = new byte[ Marshal.SizeOf( typeof( float ) ) * 8 ];
+			buffer.GetData( texPtr, cellIndex * 8 * Marshal.SizeOf( typeof( float ) ), Marshal.SizeOf( typeof( float ) ) * 8 );
+			byte[] bytes;
 			int index = 0;
 
-			unsafe
-			{
-				float* texPtr = (float*)data.ToPointer();
+			//unsafe
+			//{
+			//float* texPtr = (float*)data.ToPointer();
 
-				texPtr[ index++ ] = u1;
-				texPtr[ index++ ] = v1;
-				texPtr[ index++ ] = u1;
-				texPtr[ index++ ] = v2;
-				texPtr[ index++ ] = u2;
-				texPtr[ index++ ] = v1;
-				texPtr[ index++ ] = u2;
-				texPtr[ index ] = v2;
-			}
+			//texPtr[ index++ ] = u1;
+			bytes = BitConverter.GetBytes( (short)( u1 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index++ ] = v1;
+			bytes = BitConverter.GetBytes( (short)( v1 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index++ ] = u1;
+			bytes = BitConverter.GetBytes( (short)( u1 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index++ ] = v2;
+			bytes = BitConverter.GetBytes( (short)( v2 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index++ ] = u2;
+			bytes = BitConverter.GetBytes( (short)( u2 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index++ ] = v1;
+			bytes = BitConverter.GetBytes( (short)( v1 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index++ ] = u2;
+			bytes = BitConverter.GetBytes( (short)( u2 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//texPtr[ index ] = v2;
+			bytes = BitConverter.GetBytes( (short)( v2 ) );
+			bytes.CopyTo( texPtr, index );
+			index += bytes.Length;
+			//}
 
-			buffer.Unlock();
+			//buffer.Unlock();
+			buffer.SetData( texPtr, cellIndex * 8 * Marshal.SizeOf( typeof( float ) ), Marshal.SizeOf( typeof( float ) ) * 8 );
 		}
 
 		/// <summary>
@@ -602,71 +671,148 @@ namespace Axiom.Overlays.Elements
 			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize * 2 );
 
 			// get a reference to the buffer
-			HardwareVertexBuffer buffer =
-				renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			HardwareVertexBuffer buffer = renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			// lock this bad boy
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
+			//IntPtr data = buffer.Lock( BufferLocking.Discard );
+			byte[] posPtr = new byte[ buffer.Length ];
+			buffer.GetData( posPtr );
+			byte[] bytes;
 			int index = 0;
 
-			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			float zValue = -1;
-			unsafe
+			float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
+			//unsafe
+			//{
+			//float* posPtr = (float*)data.ToPointer();
+			for ( int cell = 0; cell < 8; cell++ )
 			{
-				float* posPtr = (float*)data.ToPointer();
-				for ( int cell = 0; cell < 8; cell++ )
-				{
-					posPtr[ index++ ] = lefts[ cell ];
-					posPtr[ index++ ] = tops[ cell ];
-					posPtr[ index++ ] = -1;
+				//posPtr[ index++ ] = lefts[ cell ];
+				bytes = BitConverter.GetBytes( lefts[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = tops[ cell ];
+				bytes = BitConverter.GetBytes( tops[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 
-					posPtr[ index++ ] = lefts[ cell ];
-					posPtr[ index++ ] = bottoms[ cell ];
-					posPtr[ index++ ] = -1;
+				//posPtr[ index++ ] = lefts[ cell ];
+				bytes = BitConverter.GetBytes( lefts[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = bottoms[ cell ];
+				bytes = BitConverter.GetBytes( bottoms[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 
-					posPtr[ index++ ] = rights[ cell ];
-					posPtr[ index++ ] = tops[ cell ];
-					posPtr[ index++ ] = -1;
+				//posPtr[ index++ ] = rights[ cell ];
+				bytes = BitConverter.GetBytes( rights[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = tops[ cell ];
+				bytes = BitConverter.GetBytes( tops[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 
-					posPtr[ index++ ] = rights[ cell ];
-					posPtr[ index++ ] = bottoms[ cell ];
-					posPtr[ index++ ] = -1;
-				} // for
-			} // unsafe
+				//posPtr[ index++ ] = rights[ cell ];
+				bytes = BitConverter.GetBytes( rights[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = bottoms[ cell ];
+				bytes = BitConverter.GetBytes( bottoms[ cell ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+			} // for
+			//} // unsafe
 
 			// unlock the position buffer
-			buffer.Unlock();
+			//buffer.Unlock();
+			buffer.SetData( posPtr );
 
 			// Also update center geometry
 			// don't use base class because we need to make it smaller because of border
 			buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
-			data = buffer.Lock( BufferLocking.Discard );
+			//IntPtr data = buffer.Lock( BufferLocking.Discard );
+			posPtr = new byte[ buffer.Length ];
+			buffer.GetData( posPtr );
 
 			index = 0;
 
 			unsafe
 			{
-				float* posPtr = (float*)data.ToPointer();
+				//float* posPtr = (float*)data.ToPointer();
 
-				posPtr[ index++ ] = lefts[ 1 ];
-				posPtr[ index++ ] = tops[ 3 ];
-				posPtr[ index++ ] = -1;
+				//posPtr[ index++ ] = lefts[ 1 ];
+				bytes = BitConverter.GetBytes( lefts[ 1 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = tops[ 3 ];
+				bytes = BitConverter.GetBytes( tops[ 3 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 
-				posPtr[ index++ ] = lefts[ 1 ];
-				posPtr[ index++ ] = bottoms[ 3 ];
-				posPtr[ index++ ] = -1;
+				//posPtr[ index++ ] = lefts[ 1 ];
+				bytes = BitConverter.GetBytes( lefts[ 1 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = bottoms[ 3 ];
+				bytes = BitConverter.GetBytes( bottoms[ 3 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 
-				posPtr[ index++ ] = rights[ 1 ];
-				posPtr[ index++ ] = tops[ 3 ];
-				posPtr[ index++ ] = -1;
+				//posPtr[ index++ ] = rights[ 1 ];
+				bytes = BitConverter.GetBytes( rights[ 1 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = tops[ 3 ];
+				bytes = BitConverter.GetBytes( tops[ 3 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 
-				posPtr[ index++ ] = rights[ 1 ];
-				posPtr[ index++ ] = bottoms[ 3 ];
-				posPtr[ index ] = -1;
+				//posPtr[ index++ ] = rights[ 1 ];
+				bytes = BitConverter.GetBytes( rights[ 1 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index++ ] = bottoms[ 3 ];
+				bytes = BitConverter.GetBytes( bottoms[ 3 ] );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
+				//posPtr[ index ] = -1;
+				bytes = BitConverter.GetBytes( zValue );
+				bytes.CopyTo( posPtr, index );
+				index += bytes.Length;
 			}
 
 			// unlock the buffer to finish
-			buffer.Unlock();
+			//buffer.Unlock();
+			buffer.SetData( posPtr );
 		}
 
 		/// <summary>

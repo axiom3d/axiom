@@ -1189,7 +1189,7 @@ namespace Axiom.Core
 									VertexElementSemantic.Position );
 					HardwareVertexBuffer buf =
 							this.softwareVertexAnimVertexData.vertexBufferBinding.GetBuffer( elem.Source );
-					buf.SuppressHardwareUpdate( true );
+					buf.SuppressHardwareUpdate = true;
 				}
 				foreach ( SubEntity subEntity in this.subEntityList )
 				{
@@ -1200,7 +1200,7 @@ namespace Axiom.Core
 						VertexElement elem =
 								data.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 						HardwareVertexBuffer buf = data.vertexBufferBinding.GetBuffer( elem.Source );
-						buf.SuppressHardwareUpdate( true );
+						buf.SuppressHardwareUpdate = true;
 					}
 				}
 			}
@@ -1235,7 +1235,7 @@ namespace Axiom.Core
 									VertexElementSemantic.Position );
 					HardwareVertexBuffer buf =
 							this.softwareVertexAnimVertexData.vertexBufferBinding.GetBuffer( elem.Source );
-					buf.SuppressHardwareUpdate( false );
+					buf.SuppressHardwareUpdate = false;
 				}
 				foreach ( SubEntity subEntity in this.subEntityList )
 				{
@@ -1247,7 +1247,7 @@ namespace Axiom.Core
 						VertexElement elem =
 								data.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 						HardwareVertexBuffer buf = data.vertexBufferBinding.GetBuffer( elem.Source );
-						buf.SuppressHardwareUpdate( false );
+						buf.SuppressHardwareUpdate = false;
 					}
 				}
 			}
@@ -2011,7 +2011,7 @@ namespace Axiom.Core
 				}
 
 				// Stop suppressing hardware update now, if we were
-				esr.PositionBuffer.SuppressHardwareUpdate( false );
+				esr.PositionBuffer.SuppressHardwareUpdate = false;
 			}
 
 			// Calc triangle light facing
@@ -2619,7 +2619,7 @@ namespace Axiom.Core
 		public new const string TypeName = "Entity";
 
 		public EntityFactory()
-            : base()
+			: base()
 		{
 			base.Type = EntityFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;

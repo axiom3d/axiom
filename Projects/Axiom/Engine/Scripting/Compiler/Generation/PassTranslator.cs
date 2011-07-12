@@ -1405,7 +1405,7 @@ namespace Axiom.Scripting.Compiler
 
 													case Keywords.ID_SPOT:
 														//TODO
-                                                        //_pass.SetIteratePerLight(true, true, LightType.Spotlight );
+														//_pass.SetIteratePerLight(true, true, LightType.Spotlight );
 														break;
 
 													default:
@@ -1417,7 +1417,7 @@ namespace Axiom.Scripting.Compiler
 											else
 											{
 												//TODO
-                                                //_pass.SetIteratePerLight(true, false);
+												//_pass.SetIteratePerLight(true, false);
 											}
 
 										}

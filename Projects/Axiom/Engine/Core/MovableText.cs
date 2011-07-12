@@ -253,12 +253,12 @@ namespace Axiom.Core
 			: base( name )
 		{
 
-			if (string.IsNullOrEmpty(name))
+			if ( string.IsNullOrEmpty( name ) )
 				throw new AxiomException( "Trying to create MovableText without name." );
-			if (string.IsNullOrEmpty(caption))
+			if ( string.IsNullOrEmpty( caption ) )
 				throw new AxiomException( "Trying to create MovableText without caption." );
 
-            _caption = caption;
+			_caption = caption;
 			_characterHeight = charHeight;
 			_color = color;
 			_timeUntilNextToggle = 0;
@@ -360,191 +360,185 @@ namespace Axiom.Core
 				}
 			}
 
-			//Real *pPCBuff = static_cast<Real*>(ptbuf.lock(HardwareBuffer::HBL_DISCARD));
-			IntPtr ipPos = vbuf.Lock( BufferLocking.Discard );
+			float[] pPCBuff = new float[ vbuf.Length ];
 			int cntPos = 0;
-			unsafe
+
+			for ( int i = 0; i != charlen; i++ )
 			{
-				float* pPCBuff = (float*)ipPos.ToPointer();
-
-				for ( int i = 0; i != charlen; i++ )
+				if ( newLine )
 				{
-					if ( newLine )
+					len = 0.0f;
+					for ( int j = i; j != charlen && _caption[ j ] != '\n'; j++ )
 					{
-						len = 0.0f;
-						for ( int j = i; j != charlen && _caption[ j ] != '\n'; j++ )
-						{
-							if ( _caption[ j ] == ' ' )
-								len += _spaceWidth;
-							else
-								len += _font.GetGlyphAspectRatio( _caption[ j ] ) * _characterHeight * 2.0f;
-						}
-						newLine = false;
+						if ( _caption[ j ] == ' ' )
+							len += _spaceWidth;
+						else
+							len += _font.GetGlyphAspectRatio( _caption[ j ] ) * _characterHeight * 2.0f;
 					}
-
-					if ( _caption[ i ] == '\n' )
-					{
-						left = 0f * 2.0f - 1.0f;
-						top -= _characterHeight * 2.0f;
-						newLine = true;
-						continue;
-					}
-
-					if ( _caption[ i ] == ' ' )
-					{
-						// Just leave a gap, no tris
-						left += _spaceWidth;
-						// Also reduce tri count
-						renderOperation.vertexData.vertexCount -= 6;
-						continue;
-					}
-
-					float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
-					Real u1, u2, v1, v2;
-					_font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
-
-					// each vert is (x, y, z, u, v)
-					//-------------------------------------------------------------------------------------
-					// First tri
-					//
-					// Upper left
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						pPCBuff[ cntPos++ ] = left;
-					else
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-					pPCBuff[ cntPos++ ] = top;
-					pPCBuff[ cntPos++ ] = -1.0f;
-					pPCBuff[ cntPos++ ] = u1;
-					pPCBuff[ cntPos++ ] = v1;
-
-					// Deal with bounds
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						currPos = new Vector3( left, top, -1.0f );
-					else
-						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
-
-					if ( first )
-					{
-						min = max = currPos;
-						maxSquaredRadius = currPos.LengthSquared;
-						first = false;
-					}
-					else
-					{
-						min.Floor( currPos );
-						max.Ceil( currPos );
-						maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-					}
-
-					top -= _characterHeight * 2.0f;
-
-					// Bottom left
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						pPCBuff[ cntPos++ ] = left;
-					else
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-					pPCBuff[ cntPos++ ] = top;
-					pPCBuff[ cntPos++ ] = -1.0f;
-					pPCBuff[ cntPos++ ] = u1;
-					pPCBuff[ cntPos++ ] = v2;
-
-					// Deal with bounds
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						currPos = new Vector3( left, top, -1.0f );
-					else
-						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
-
-					min.Floor( currPos );
-					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-
-					top += _characterHeight * 2.0f;
-					left += horiz_height * _characterHeight * 2.0f;
-
-					// Top right
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						pPCBuff[ cntPos++ ] = left;
-					else
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-					pPCBuff[ cntPos++ ] = top;
-					pPCBuff[ cntPos++ ] = -1.0f;
-					pPCBuff[ cntPos++ ] = u2;
-					pPCBuff[ cntPos++ ] = v1;
-					//-------------------------------------------------------------------------------------
-
-					// Deal with bounds
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						currPos = new Vector3( left, top, -1.0f );
-					else
-						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
-					min.Floor( currPos );
-					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-
-					//-------------------------------------------------------------------------------------
-					// Second tri
-					//
-					// Top right (again)
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						pPCBuff[ cntPos++ ] = left;
-					else
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-					pPCBuff[ cntPos++ ] = top;
-					pPCBuff[ cntPos++ ] = -1.0f;
-					pPCBuff[ cntPos++ ] = u2;
-					pPCBuff[ cntPos++ ] = v1;
-
-					currPos = new Vector3( left, top, -1.0f );
-					min.Floor( currPos );
-					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-
-					top -= _characterHeight * 2.0f;
-					left -= horiz_height * _characterHeight * 2.0f;
-
-					// Bottom left (again)
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						pPCBuff[ cntPos++ ] = left;
-					else
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-					pPCBuff[ cntPos++ ] = top;
-					pPCBuff[ cntPos++ ] = -1.0f;
-					pPCBuff[ cntPos++ ] = u1;
-					pPCBuff[ cntPos++ ] = v2;
-
-					currPos = new Vector3( left, top, -1.0f );
-					min.Floor( currPos );
-					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-
-					left += horiz_height * _characterHeight * 2.0f;
-
-					// Bottom right
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
-						pPCBuff[ cntPos++ ] = left;
-					else
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
-					pPCBuff[ cntPos++ ] = top;
-					pPCBuff[ cntPos++ ] = -1.0f;
-					pPCBuff[ cntPos++ ] = u2;
-					pPCBuff[ cntPos++ ] = v2;
-					//-------------------------------------------------------------------------------------
-
-					currPos = new Vector3( left, top, -1.0f );
-					min.Floor( currPos );
-					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
-
-					// Go back up with top
-					top += _characterHeight * 2.0f;
-
-					float currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
-					if ( currentWidth > largestWidth )
-						largestWidth = currentWidth;
+					newLine = false;
 				}
+
+				if ( _caption[ i ] == '\n' )
+				{
+					left = 0f * 2.0f - 1.0f;
+					top -= _characterHeight * 2.0f;
+					newLine = true;
+					continue;
+				}
+
+				if ( _caption[ i ] == ' ' )
+				{
+					// Just leave a gap, no tris
+					left += _spaceWidth;
+					// Also reduce tri count
+					renderOperation.vertexData.vertexCount -= 6;
+					continue;
+				}
+
+				float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
+				Real u1, u2, v1, v2;
+				_font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
+
+				// each vert is (x, y, z, u, v)
+				//-------------------------------------------------------------------------------------
+				// First tri
+				//
+				// Upper left
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					pPCBuff[ cntPos++ ] = left;
+				else
+					pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+				pPCBuff[ cntPos++ ] = top;
+				pPCBuff[ cntPos++ ] = -1.0f;
+				pPCBuff[ cntPos++ ] = u1;
+				pPCBuff[ cntPos++ ] = v1;
+
+				// Deal with bounds
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					currPos = new Vector3( left, top, -1.0f );
+				else
+					currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+
+				if ( first )
+				{
+					min = max = currPos;
+					maxSquaredRadius = currPos.LengthSquared;
+					first = false;
+				}
+				else
+				{
+					min.Floor( currPos );
+					max.Ceil( currPos );
+					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+				}
+
+				top -= _characterHeight * 2.0f;
+
+				// Bottom left
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					pPCBuff[ cntPos++ ] = left;
+				else
+					pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+				pPCBuff[ cntPos++ ] = top;
+				pPCBuff[ cntPos++ ] = -1.0f;
+				pPCBuff[ cntPos++ ] = u1;
+				pPCBuff[ cntPos++ ] = v2;
+
+				// Deal with bounds
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					currPos = new Vector3( left, top, -1.0f );
+				else
+					currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+
+				min.Floor( currPos );
+				max.Ceil( currPos );
+				maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+
+				top += _characterHeight * 2.0f;
+				left += horiz_height * _characterHeight * 2.0f;
+
+				// Top right
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					pPCBuff[ cntPos++ ] = left;
+				else
+					pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+				pPCBuff[ cntPos++ ] = top;
+				pPCBuff[ cntPos++ ] = -1.0f;
+				pPCBuff[ cntPos++ ] = u2;
+				pPCBuff[ cntPos++ ] = v1;
+				//-------------------------------------------------------------------------------------
+
+				// Deal with bounds
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					currPos = new Vector3( left, top, -1.0f );
+				else
+					currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+				min.Floor( currPos );
+				max.Ceil( currPos );
+				maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+
+				//-------------------------------------------------------------------------------------
+				// Second tri
+				//
+				// Top right (again)
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					pPCBuff[ cntPos++ ] = left;
+				else
+					pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+				pPCBuff[ cntPos++ ] = top;
+				pPCBuff[ cntPos++ ] = -1.0f;
+				pPCBuff[ cntPos++ ] = u2;
+				pPCBuff[ cntPos++ ] = v1;
+
+				currPos = new Vector3( left, top, -1.0f );
+				min.Floor( currPos );
+				max.Ceil( currPos );
+				maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+
+				top -= _characterHeight * 2.0f;
+				left -= horiz_height * _characterHeight * 2.0f;
+
+				// Bottom left (again)
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					pPCBuff[ cntPos++ ] = left;
+				else
+					pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+				pPCBuff[ cntPos++ ] = top;
+				pPCBuff[ cntPos++ ] = -1.0f;
+				pPCBuff[ cntPos++ ] = u1;
+				pPCBuff[ cntPos++ ] = v2;
+
+				currPos = new Vector3( left, top, -1.0f );
+				min.Floor( currPos );
+				max.Ceil( currPos );
+				maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+
+				left += horiz_height * _characterHeight * 2.0f;
+
+				// Bottom right
+				if ( _horizontalAlignment == HorizontalAlignment.Left )
+					pPCBuff[ cntPos++ ] = left;
+				else
+					pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+				pPCBuff[ cntPos++ ] = top;
+				pPCBuff[ cntPos++ ] = -1.0f;
+				pPCBuff[ cntPos++ ] = u2;
+				pPCBuff[ cntPos++ ] = v2;
+				//-------------------------------------------------------------------------------------
+
+				currPos = new Vector3( left, top, -1.0f );
+				min.Floor( currPos );
+				max.Ceil( currPos );
+				maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+
+				// Go back up with top
+				top += _characterHeight * 2.0f;
+
+				float currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
+				if ( currentWidth > largestWidth )
+					largestWidth = currentWidth;
 			}
-			// Unlock vertex buffer
-			vbuf.Unlock();
+			vbuf.SetData( pPCBuff, 0, pPCBuff.Length, true );
 
 			// update AABB/Sphere radius
 			this.box = new AxisAlignedBox( min, max );
@@ -565,14 +559,11 @@ namespace Axiom.Core
 			int color;
 			color = Root.Instance.ConvertColor( _color );
 			HardwareVertexBuffer cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
-			IntPtr ipPos = cbuf.Lock( BufferLocking.Discard );
-			unsafe
-			{
-				int* pPos = (int*)ipPos.ToPointer();
-				for ( int i = 0; i < renderOperation.vertexData.vertexCount; i++ )
-					pPos[ i ] = color;
-			}
-			cbuf.Unlock();
+
+			int[] pPos = new int[ renderOperation.vertexData.vertexCount ];
+			for ( int i = 0; i < renderOperation.vertexData.vertexCount; i++ )
+				pPos[ i ] = color;
+			cbuf.SetData( pPos, 0, pPos.Length, true );
 			_updateColor = false;
 		}
 

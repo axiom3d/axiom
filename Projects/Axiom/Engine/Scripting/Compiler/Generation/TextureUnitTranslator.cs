@@ -263,7 +263,6 @@ namespace Axiom.Scripting.Compiler
 												{
 													string name = ( (AtomAbstractNode)j ).Value;
 
-#warning check this if statement
 													// Run the name through the listener
 													if ( compiler.Listener != null )
 													{

@@ -146,98 +146,94 @@ namespace Axiom.Core
 
 			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
 
-			IntPtr posPtr = buffer.Lock( BufferLocking.Discard );
-
-			unsafe
-			{
-				float* pPos = (float*)posPtr.ToPointer();
+			float[] pos = new float[] {
 
 				// line 0
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = minz;
+				minx,
+				miny,
+				minz,
+				maxx,
+				miny,
+				minz,
 				// line 1
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
+				minx,
+				miny,
+				minz,
+				minx,
+				miny,
+				maxz,
 				// line 2
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
+				minx,
+				miny,
+				minz,
+				minx,
+				maxy,
+				minz,
 				// line 3
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				minx,
+				maxy,
+				minz,
+				minx,
+				maxy,
+				maxz,
 				// line 4
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
+				minx,
+				maxy,
+				minz,
+				maxx,
+				maxy,
+				minz,
 				// line 5
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
+				maxx,
+				miny,
+				minz,
+				maxx,
+				miny,
+				maxz,
 				// line 6
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
+				maxx,
+				miny,
+				minz,
+				maxx,
+				maxy,
+				minz,
 				// line 7
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				minx,
+				maxy,
+				maxz,
+				maxx,
+				maxy,
+				maxz,
 				// line 8
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
+				minx,
+				maxy,
+				maxz,
+				minx,
+				miny,
+				maxz,
 				// line 9
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				maxx,
+				maxy,
+				minz,
+				maxx,
+				maxy,
+				maxz,
 				// line 10
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				maxx,
+				miny,
+				maxz,
+				maxx,
+				maxy,
+				maxz,
 				// line 11
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos = maxz;
-			}
-			buffer.Unlock();
+				minx,
+				miny,
+				maxz,
+				maxx,
+				miny,
+				maxz
+			};
+			buffer.SetData( pos, 0, pos.Length, true );
 		}
 
 		#endregion Methods

@@ -441,139 +441,200 @@ namespace Axiom.Core
 		{
 			this.SetupBuffers();
 			HardwareVertexBuffer buffer = this.vertexData.vertexBufferBinding.GetBuffer( 0 );
-			IntPtr bufferPtr = buffer.Lock( BufferLocking.Discard );
+			byte[] bufferData = new byte[ buffer.Length ];
+			buffer.GetData<byte>( bufferData );
 
 			Vector3 camPosition = camera.DerivedPosition;
 			Vector3 eyePosition = ParentNode.DerivedOrientation.Inverse() * ( camPosition - ParentNode.DerivedPosition ) / ParentNode.DerivedScale;
 
 			Vector3 chainTangent;
 
-			unsafe
+			int bufferstart = 0;
+
+			foreach ( ChainSegment segment in this.chainSegmentList )
 			{
-				byte* bufferStart = (byte*)bufferPtr.ToPointer();
-
-				foreach ( ChainSegment segment in this.chainSegmentList )
+				// Skip 0 or 1 element segment counts
+				if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 				{
-					// Skip 0 or 1 element segment counts
-					if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
+					int laste = segment.head;
+					for ( int e = segment.head; ; ++e )
 					{
-						int laste = segment.head;
-						for ( int e = segment.head; ; ++e )
+						// Wrap forwards
+						if ( e == this.maxElementsPerChain )
 						{
-							// Wrap forwards
-							if ( e == this.maxElementsPerChain )
-							{
-								e = 0;
-							}
+							e = 0;
+						}
 
-							Element element = this.chainElementList[ e + segment.start ];
-							ushort baseIndex = (ushort)( ( e + segment.start ) * 2 );
+						Element element = this.chainElementList[ e + segment.start ];
+						ushort baseIndex = (ushort)( ( e + segment.start ) * 2 );
 
-							// Determine base pointer to vertex #1
-							byte* pBase = bufferStart + buffer.VertexSize * baseIndex;
+						// Determine base pointer to vertex #1
+						//byte* pBase = bufferStart + buffer.VertexSize * baseIndex;
+						int pBase = bufferstart + buffer.VertexSize + baseIndex;
 
-							// Get index of next item
-							int nexte = e + 1;
-							if ( nexte == this.maxElementsPerChain )
-							{
-								nexte = 0;
-							}
+						// Get index of next item
+						int nexte = e + 1;
+						if ( nexte == this.maxElementsPerChain )
+						{
+							nexte = 0;
+						}
 
-							if ( e == segment.head )
+						if ( e == segment.head )
+						{
+							// no laste, use next item
+							chainTangent = this.chainElementList[ nexte + segment.start ].Position - element.Position;
+						}
+						else if ( e == segment.tail )
+						{
+							// no nexte, use only last item
+							chainTangent = element.Position - this.chainElementList[ laste + segment.start ].Position;
+						}
+						else
+						{
+							// a mid position, use tangent across both prev and next
+							chainTangent = this.chainElementList[ nexte + segment.start ].Position - this.chainElementList[ laste + segment.start ].Position;
+						}
+
+						Vector3 p1ToEye = eyePosition - element.Position;
+						Vector3 perpendicular = chainTangent.Cross( p1ToEye );
+						perpendicular.Normalize();
+						perpendicular *= ( element.Width * 0.5f );
+
+						Vector3 pos0 = element.Position - perpendicular;
+						Vector3 pos1 = element.Position + perpendicular;
+
+						//float* pFloat = (float*)pBase;
+						int pFloat = pBase;
+						// pos1
+						byte[] bytes;
+						//*pFloat++ = pos0.x;
+						bytes = BitConverter.GetBytes( pos0.x );
+						bytes.CopyTo( bufferData, pFloat );
+						pFloat += bytes.Length;
+						//*pFloat++ = pos0.y;
+						bytes = BitConverter.GetBytes( pos0.y );
+						bytes.CopyTo( bufferData, pFloat );
+						pFloat += bytes.Length;
+						//*pFloat++ = pos0.z;
+						bytes = BitConverter.GetBytes( pos0.y );
+						bytes.CopyTo( bufferData, pFloat );
+						pFloat += bytes.Length;
+
+						//pBase = (byte*)pFloat;
+						pBase = pFloat;
+
+						if ( this.useVertexColor )
+						{
+							//int* pColor = (int*)pBase;
+							int pColor = pBase;
+							//*pColor++ = Root.Instance.ConvertColor( element.Color );
+							bytes = BitConverter.GetBytes( Root.Instance.ConvertColor( element.Color ) );
+							bytes.CopyTo( bufferData, pColor );
+							pColor += bytes.Length;
+							//pBase = (byte*)pColor;
+							pBase = pColor;
+						}
+
+						if ( this.useTexCoords )
+						{
+							//pFloat = (float*)pBase;
+							pFloat = pBase;
+
+							if ( this.texCoordDirection == TexCoordDirection.U )
 							{
-								// no laste, use next item
-								chainTangent = this.chainElementList[ nexte + segment.start ].Position - element.Position;
-							}
-							else if ( e == segment.tail )
-							{
-								// no nexte, use only last item
-								chainTangent = element.Position - this.chainElementList[ laste + segment.start ].Position;
+								//*pFloat++ = element.TexCoord;
+								bytes = BitConverter.GetBytes( element.TexCoord );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
+								//*pFloat++ = this.otherTexCoordRange[ 0 ];
+								bytes = BitConverter.GetBytes( this.otherTexCoordRange[ 0 ] );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
 							}
 							else
 							{
-								// a mid position, use tangent across both prev and next
-								chainTangent = this.chainElementList[ nexte + segment.start ].Position - this.chainElementList[ laste + segment.start ].Position;
+								//*pFloat++ = this.otherTexCoordRange[ 0 ];
+								bytes = BitConverter.GetBytes( this.otherTexCoordRange[ 0 ] );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
+								//*pFloat++ = element.TexCoord;
+								bytes = BitConverter.GetBytes( element.TexCoord );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
 							}
-
-							Vector3 p1ToEye = eyePosition - element.Position;
-							Vector3 perpendicular = chainTangent.Cross( p1ToEye );
-							perpendicular.Normalize();
-							perpendicular *= ( element.Width * 0.5f );
-
-							Vector3 pos0 = element.Position - perpendicular;
-							Vector3 pos1 = element.Position + perpendicular;
-
-							float* pFloat = (float*)pBase;
-							// pos1
-							*pFloat++ = pos0.x;
-							*pFloat++ = pos0.y;
-							*pFloat++ = pos0.z;
-
-							pBase = (byte*)pFloat;
-
-							if ( this.useVertexColor )
-							{
-								int* pColor = (int*)pBase;
-								*pColor++ = Root.Instance.ConvertColor( element.Color );
-								pBase = (byte*)pColor;
-							}
-
-							if ( this.useTexCoords )
-							{
-								pFloat = (float*)pBase;
-								if ( this.texCoordDirection == TexCoordDirection.U )
-								{
-									*pFloat++ = element.TexCoord;
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-								}
-								else
-								{
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-									*pFloat++ = element.TexCoord;
-								}
-								pBase = (byte*)pFloat;
-							}
-
-							// pos2
-							*pFloat++ = pos1.x;
-							*pFloat++ = pos1.y;
-							*pFloat++ = pos1.z;
-
-							pBase = (byte*)pFloat;
-
-							if ( this.useVertexColor )
-							{
-								int* pColor = (int*)pBase;
-								*pColor++ = Root.Instance.ConvertColor( element.Color );
-								pBase = (byte*)pColor;
-							}
-
-							if ( this.useTexCoords )
-							{
-								pFloat = (float*)pBase;
-								if ( this.texCoordDirection == TexCoordDirection.U )
-								{
-									*pFloat++ = element.TexCoord;
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-								}
-								else
-								{
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-									*pFloat++ = element.TexCoord;
-								}
-								pBase = (byte*)pFloat;
-							}
-
-							if ( e == segment.tail )
-							{
-								break;
-							}
-							laste = e;
+							//pBase = (byte*)pFloat;
+							pBase = pFloat;
 						}
+
+						// pos2
+						//*pFloat++ = pos1.x;
+						bytes = BitConverter.GetBytes( pos1.x );
+						bytes.CopyTo( bufferData, pFloat );
+						pFloat += bytes.Length;
+						//*pFloat++ = pos1.y;
+						bytes = BitConverter.GetBytes( pos1.y );
+						bytes.CopyTo( bufferData, pFloat );
+						pFloat += bytes.Length;
+						//*pFloat++ = pos1.z;
+						bytes = BitConverter.GetBytes( pos1.y );
+						bytes.CopyTo( bufferData, pFloat );
+						pFloat += bytes.Length;
+
+						//pBase = (byte*)pFloat;
+						pBase = pFloat;
+
+						if ( this.useVertexColor )
+						{
+							//int* pColor = (int*)pBase;
+							int pColor = pBase;
+							//*pColor++ = Root.Instance.ConvertColor( element.Color );
+							bytes = BitConverter.GetBytes( Root.Instance.ConvertColor( element.Color ) );
+							bytes.CopyTo( bufferData, pColor );
+							pColor += bytes.Length;
+							//pBase = (byte*)pColor;
+							pBase = pColor;
+						}
+
+						if ( this.useTexCoords )
+						{
+							//pFloat = (float*)pBase;
+							pFloat = pBase;
+
+							if ( this.texCoordDirection == TexCoordDirection.U )
+							{
+								//*pFloat++ = element.TexCoord;
+								bytes = BitConverter.GetBytes( element.TexCoord );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
+								//*pFloat++ = this.otherTexCoordRange[ 0 ];
+								bytes = BitConverter.GetBytes( this.otherTexCoordRange[ 0 ] );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
+							}
+							else
+							{
+								//*pFloat++ = this.otherTexCoordRange[ 0 ];
+								bytes = BitConverter.GetBytes( this.otherTexCoordRange[ 0 ] );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
+								//*pFloat++ = element.TexCoord;
+								bytes = BitConverter.GetBytes( element.TexCoord );
+								bytes.CopyTo( bufferData, pFloat );
+								pFloat += bytes.Length;
+							}
+							//pBase = (byte*)pFloat;
+							pBase = pFloat;
+						}
+
+						if ( e == segment.tail )
+						{
+							break;
+						}
+						laste = e;
 					}
 				}
 			}
-			buffer.Unlock();
+			buffer.SetData( bufferData );
 		}
 
 		protected virtual void UpdateIndexBuffer()
@@ -582,55 +643,73 @@ namespace Axiom.Core
 
 			if ( this.indexContentDirty )
 			{
-				IntPtr pBufferBase = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				byte[] bufferData = new byte[ this.indexData.indexBuffer.Length ];
+				byte[] bytes;
+				this.indexData.indexBuffer.GetData<byte>( bufferData );
+				int pBufferBase = 0;
+
 				this.indexData.indexCount = 0;
 
-				unsafe
+				// indexes
+				foreach ( ChainSegment segment in this.chainSegmentList )
 				{
-					ushort* pShort = (ushort*)pBufferBase.ToPointer();
-					// indexes
-					foreach ( ChainSegment segment in this.chainSegmentList )
+					// Skip 0 or 1 element segment counts
+					if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 					{
-						// Skip 0 or 1 element segment counts
-						if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
+						// Start from head + 1 since it's only useful in pairs
+						int laste = segment.head;
+
+						while ( true )
 						{
-							// Start from head + 1 since it's only useful in pairs
-							int laste = segment.head;
-
-							while ( true )
+							int e = laste + 1;
+							// Wrap Forwards
+							if ( e == this.maxElementsPerChain )
 							{
-								int e = laste + 1;
-								// Wrap Forwards
-								if ( e == this.maxElementsPerChain )
-								{
-									e = 0;
-								}
-								// indexes of this element are (e * 2) and (e * 2) + 1
-								// indexes of the last element are the same, -2
-								ushort baseIndex = (ushort)( ( e + segment.start ) * 2 );
-								ushort lastBaseIndex = (ushort)( ( laste + segment.start ) * 2 );
-
-								*pShort++ = lastBaseIndex;
-								*pShort++ = (ushort)( lastBaseIndex + 1 );
-								*pShort++ = baseIndex;
-								*pShort++ = (ushort)( lastBaseIndex + 1 );
-								*pShort++ = (ushort)( baseIndex + 1 );
-								*pShort++ = baseIndex;
-
-								this.indexData.indexCount += 6;
-
-								if ( e == segment.tail )
-								{
-									break;
-								}
-
-								laste = e;
+								e = 0;
 							}
+							// indexes of this element are (e * 2) and (e * 2) + 1
+							// indexes of the last element are the same, -2
+							ushort baseIndex = (ushort)( ( e + segment.start ) * 2 );
+							ushort lastBaseIndex = (ushort)( ( laste + segment.start ) * 2 );
+
+							//*pShort++ = lastBaseIndex;
+							bytes = BitConverter.GetBytes( lastBaseIndex );
+							bytes.CopyTo( bufferData, pBufferBase );
+							pBufferBase += bytes.Length;
+							//*pShort++ = (ushort)( lastBaseIndex + 1 );
+							bytes = BitConverter.GetBytes( (ushort)( lastBaseIndex + 1 ) );
+							bytes.CopyTo( bufferData, pBufferBase );
+							pBufferBase += bytes.Length;
+							//*pShort++ = baseIndex;
+							bytes = BitConverter.GetBytes( baseIndex );
+							bytes.CopyTo( bufferData, pBufferBase );
+							pBufferBase += bytes.Length;
+							//*pShort++ = (ushort)( lastBaseIndex + 1 );
+							bytes = BitConverter.GetBytes( (ushort)( lastBaseIndex + 1 ) );
+							bytes.CopyTo( bufferData, pBufferBase );
+							pBufferBase += bytes.Length;
+							//*pShort++ = (ushort)( baseIndex + 1 );
+							bytes = BitConverter.GetBytes( (ushort)baseIndex + 1 );
+							bytes.CopyTo( bufferData, pBufferBase );
+							pBufferBase += bytes.Length;
+							//*pShort++ = baseIndex;
+							bytes = BitConverter.GetBytes( baseIndex );
+							bytes.CopyTo( bufferData, pBufferBase );
+							pBufferBase += bytes.Length;
+
+							this.indexData.indexCount += 6;
+
+							if ( e == segment.tail )
+							{
+								break;
+							}
+
+							laste = e;
 						}
 					}
 				}
 
-				this.indexData.indexBuffer.Unlock();
+				this.indexData.indexBuffer.SetData( bufferData );
 				this.indexContentDirty = false;
 			}
 		}
@@ -1064,34 +1143,34 @@ namespace Axiom.Core
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-                        if (!this.renderOperation.IsDisposed)
-                            this.renderOperation.Dispose();
+						if ( !this.renderOperation.IsDisposed )
+							this.renderOperation.Dispose();
 
 						renderOperation = null;
 					}
 
-                    if (indexData != null)
-                    {
-                        if (!indexData.IsDisposed)
-                            indexData.Dispose();
+					if ( indexData != null )
+					{
+						if ( !indexData.IsDisposed )
+							indexData.Dispose();
 
-                        indexData = null;
-                    }
+						indexData = null;
+					}
 
-                    if (vertexData != null)
-                    {
-                        if (!vertexData.IsDisposed)
-                            vertexData.Dispose();
+					if ( vertexData != null )
+					{
+						if ( !vertexData.IsDisposed )
+							vertexData.Dispose();
 
-                        vertexData = null;
-                    }
+						vertexData = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
@@ -1102,7 +1181,7 @@ namespace Axiom.Core
 		public new const string TypeName = "BillboardChain";
 
 		public BillboardChainFactory()
-            : base()
+			: base()
 		{
 			base.Type = BillboardChainFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Fx;

@@ -330,7 +330,7 @@ namespace Axiom.Graphics
 		public FloatConstantEntry GetNamedFloatConstant( string name )
 		{
 			int index;
-			if ( namedParams.TryGetValue(name, out index) )
+			if ( namedParams.TryGetValue( name, out index ) )
 			{
 				return GetFloatConstant( index );
 			}
@@ -346,7 +346,7 @@ namespace Axiom.Graphics
 		public IntConstantEntry GetNamedIntConstant( string name )
 		{
 			int index;
-			if ( namedParams.TryGetValue(name, out index) )
+			if ( namedParams.TryGetValue( name, out index ) )
 			{
 				return GetIntConstant( index );
 			}
@@ -461,8 +461,10 @@ namespace Axiom.Graphics
 		public void SetConstant( int index, ColorEx color )
 		{
 			if ( color != null )
+			{
 				// verify order of color components
 				SetConstant( index++, color.r, color.g, color.b, color.a );
+			}
 		}
 
 		/// <summary>
@@ -606,11 +608,11 @@ namespace Axiom.Graphics
 
 		#region Named parameters
 
-        /// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
-        public void SetNamedAutoConstant( string name, AutoConstantType type )
-        {
-            SetNamedAutoConstant( name, type, 0 );
-        }
+		/// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
+		public void SetNamedAutoConstant( string name, AutoConstantType type )
+		{
+			SetNamedAutoConstant( name, type, 0 );
+		}
 
 		/// <summary>
 		///    Sets up a constant which will automatically be updated by the engine.
@@ -635,21 +637,27 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetAutoConstant( GetParamIndex( name ), type, extraInfo );
+			}
 		}
 
 		public void SetNamedConstant( string name, float val )
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val, 0f, 0f, 0f );
+			}
 		}
 
 		public void SetNamedConstant( string name, float[] val )
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val );
+			}
 		}
 
 		public void SetNamedConstant( string name, int[] val )
@@ -666,7 +674,9 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val.x, val.y, val.z, val.w );
+			}
 		}
 
 		/// <summary>
@@ -678,7 +688,9 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val.x, val.y, val.z, 1f );
+			}
 		}
 
 		/// <summary>
@@ -690,7 +702,9 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), color.r, color.g, color.b, color.a );
+			}
 		}
 
 		/// <summary>
@@ -702,7 +716,9 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val );
+			}
 		}
 
 		/// <summary>
@@ -714,7 +730,9 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), matrices, count );
+			}
 		}
 
 		/// <summary>
@@ -726,7 +744,9 @@ namespace Axiom.Graphics
 		{
 			int index = GetParamIndex( name );
 			if ( index != -1 )
+			{
 				SetConstantFromTime( GetParamIndex( name ), factor );
+			}
 		}
 
 		#endregion Named parameters

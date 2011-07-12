@@ -112,7 +112,7 @@ namespace Axiom.Core
 			#region Constructors
 
 			public MaterialBucket( LODBucket parent, string materialName )
-                : base()
+				: base()
 			{
 				this.parent = parent;
 				this.materialName = materialName;
@@ -221,35 +221,42 @@ namespace Axiom.Core
 			/// <summary>
 			///     Dispose the geometry buckets
 			/// </summary>
-			protected override void  dispose(bool disposeManagedResources)
+			protected override void dispose( bool disposeManagedResources )
 			{
-                if (!this.IsDisposed)
-                {
-                    if (disposeManagedResources)
-                    {
-                        if (geometryBucketList != null)
-                        {
-                            foreach (GeometryBucket gbucket in geometryBucketList)
-                            {
-                                if (!gbucket.IsDisposed)
-                                    gbucket.Dispose();
-                            }
-                            geometryBucketList.Clear();
-                            geometryBucketList = null;
-                        }
+				if ( !this.IsDisposed )
+				{
+					if ( disposeManagedResources )
+					{
+						if ( geometryBucketList != null )
+						{
+							foreach ( GeometryBucket gbucket in geometryBucketList )
+							{
+								if ( !gbucket.IsDisposed )
+									gbucket.Dispose();
+							}
+							geometryBucketList.Clear();
+							geometryBucketList = null;
+						}
 
+						if ( this.parent != null )
+						{
+							if ( !this.parent.IsDisposed )
+								this.parent.Dispose();
 
-                        if (this.material != null)
-                        {
-                            if (!this.material.IsDisposed)
-                                this.material.Dispose();
+							this.parent = null;
+						}
 
-                            this.material = null;
-                        }
-                    }
-                }
+						if ( this.material != null )
+						{
+							if ( !this.material.IsDisposed )
+								this.material.Dispose();
 
-                base.dispose(disposeManagedResources);
+							this.material = null;
+						}
+					}
+				}
+
+				base.dispose( disposeManagedResources );
 			}
 
 			#endregion

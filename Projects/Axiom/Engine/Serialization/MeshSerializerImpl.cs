@@ -659,7 +659,7 @@ namespace Axiom.Serialization
 			IntPtr buf = vertexBuffer.Lock( BufferLocking.Discard );
 			try
 			{
-				WriteGeometryVertexBufferData( writer, vertexBuffer.Size, buf );
+				WriteGeometryVertexBufferData( writer, vertexBuffer.Length, buf );
 			}
 			finally
 			{
@@ -1717,10 +1717,10 @@ namespace Axiom.Serialization
 			VertexMorphKeyFrame mkf = track.CreateVertexMorphKeyFrame( time );
 			int vertexCount = track.TargetVertexData.vertexCount;
 			// create/populate vertex buffer
-            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-            decl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+			VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			decl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-            HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexCount, BufferUsage.Static, true );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexCount, BufferUsage.Static, true );
 			// lock the buffer for editing
 			IntPtr vertices = buffer.Lock( BufferLocking.Discard );
 			// stuff the floats into the normal buffer
