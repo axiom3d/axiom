@@ -42,148 +42,218 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-	public interface IMemoryBuffer : IDisposable
-	{
-	}
+    public interface IBitConverter
+    {
+        Array Convert(Array buffer, int startIndex);
+    }
 
-	public interface IBitConverter
-	{
-		Array Convert( Array buffer, int startIndex );
-	}
+    public abstract class MemoryBuffer : DisposableObject, IMemoryBuffer
+    {
+        #region Implementation of IMemoryBuffer
 
-	public class MemoryManager : Singleton<MemoryManager>
-	{
-		private readonly List<IMemoryBuffer> _memoryPool = new List<IMemoryBuffer>();
-		private readonly static Dictionary<Type, IBitConverter> _bitConverters;
-		public Dictionary<Type, IBitConverter> BitConverters
-		{
-			get
-			{
-				return _bitConverters;
-			}
-		}
+        /// <summary>
+        /// Copies data into an array.
+        /// </summary>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="data">The array to receive  data.</param>
+        public virtual void GetData<T>(T[] data) where T : struct
+        {
+            GetData(data, 0, data.Length);
+        }
 
-		static MemoryManager()
-		{
-			_bitConverters = new Dictionary<Type, IBitConverter>()
-								 {
-									 {typeof (int), new IntBitConverter()},
-									 {typeof (float), new SingleBitConverter()}
-								 };
-		}
+        /// <summary>
+        /// Copies data into an array.
+        /// </summary>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="data">The array to receive  data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public virtual void GetData<T>(T[] data, int startIndex, int elementCount) where T : struct
+        {
+            GetData(0, data, startIndex, elementCount);
+        }
 
-		public MemoryBuffer<T> Allocate<T>( long size )
-			where T : struct
-		{
-			MemoryBuffer<T> buffer = new MemoryBuffer<T>( this, size );
-			this._memoryPool.Add( buffer );
-			return buffer;
-		}
+        /// <summary>
+        /// Copies data into an array.
+        /// </summary>
+        /// <param name="offset">The index of the first element in the buffer to retrieve</param>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="data">The array to receive  data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public abstract void GetData<T>(int offset, T[] data, int startIndex, int elementCount) where T : struct;
 
-		public void Deallocate( IMemoryBuffer buffer )
-		{
-			if ( _memoryPool.Contains( buffer ) )
-			{
-				_memoryPool.Remove( buffer );
-				buffer.Dispose();
-			}
-		}
+        /// <summary>
+        ///  Sets data.
+        /// </summary>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="data">The array of data.</param>
+        public virtual void SetData<T>(T[] data) where T : struct
+        {
+            SetData(0, data, 0, data.Length);
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			base.dispose( disposeManagedResources );
-		}
+        /// <summary>
+        /// Sets data.
+        /// </summary>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="data">The array of data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public virtual void SetData<T>(T[] data, int startIndex, int elementCount) where T : struct
+        {
+            SetData(0, data, startIndex, elementCount);
+        }
 
-		private class IntBitConverter : IBitConverter
-		{
-			public Array Convert( Array buffer, int startIndex )
-			{
-				int[] retVal;
-				int size = buffer.Length / 4;
-				retVal = new int[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
-				{
-					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
-				}
-				return retVal;
-			}
-		}
+        /// <summary>
+        /// Sets data.
+        /// </summary>
+        /// <param name="offset">The index of the first element in the buffer to write to</param>
+        /// <typeparam name="T">The type of the element</typeparam>
+        /// <param name="data">The array of data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public abstract void SetData<T>(int offset, T[] data, int startIndex, int elementCount) where T : struct;
 
-		private class SingleBitConverter : IBitConverter
-		{
-			public Array Convert( Array buffer, int startIndex )
-			{
-				float[] retVal;
-				int size = buffer.Length / 4;
-				retVal = new float[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
-				{
-					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
-				}
-				return retVal;
-			}
-		}
-	}
+        #endregion
+    }
 
-	public class MemoryBuffer<T> : DisposableObject, IMemoryBuffer
-		where T : struct
-	{
-		private T[] _buffer;
+    public class SafeMemoryBuffer<T> : MemoryBuffer
+        where T : struct
+    {
+        private T[] _buffer;
 
-		public MemoryManager Owner
-		{
-			get;
-			private set;
-		}
+        public MemoryManager Owner { get; private set; }
 
-		public T this[ long index ]
-		{
-			get
-			{
-				return _buffer[ index ];
-			}
+        public T this[int index]
+        {
+            get
+            {
+                return _buffer[index];
+            }
 
-			set
-			{
-				_buffer[ index ] = value;
-			}
-		}
+            set
+            {
+                _buffer[index] = value;
+            }
+        }
 
-		internal MemoryBuffer( MemoryManager owner )
-		{
-			IsDisposed = false;
-			this.Owner = owner;
-		}
+        internal SafeMemoryBuffer(MemoryManager owner)
+        {
+            this.Owner = owner;
+        }
 
-		internal MemoryBuffer( MemoryManager owner, long size ) :
-			this( owner )
-		{
-			_buffer = new T[ size ];
-		}
+        internal SafeMemoryBuffer(MemoryManager owner, T[] data) :
+            this(owner)
+        {
+            _buffer = data;
+        }
 
-		public TDestType[] AsArray<TDestType>()
-		{
-			if ( Owner.BitConverters.ContainsKey( typeof( TDestType ) ) )
-				return (TDestType[])( Owner.BitConverters[ typeof( TDestType ) ].Convert( _buffer, 0 ) );
-			return new TDestType[ 0 ];
-		}
+        internal SafeMemoryBuffer(MemoryManager owner, long size) :
+            this(owner)
+        {
+            _buffer = new T[size];
+        }
 
-		#region IDisposable Implementation
+        public ToType[] AsArray<ToType>()
+        {
+            if (Owner.BitConverters.ContainsKey(typeof(T)))
+            {
+                var converters = Owner.BitConverters[typeof(T)];
+                if (converters.ContainsKey(typeof(ToType)))
+                    return (ToType[])(converters[typeof(ToType)].Convert(_buffer, 0));
+            }
+            return new ToType[0];
+        }
 
-		protected virtual void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					this._buffer = null;
-				}
+        #region IDisposable Members
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-		}
+        /// <summary>
+        /// Copies data into an array.
+        /// </summary>
+        /// <typeparam name="TDest">The type of the element</typeparam>
+        /// <param name="data">The array to receive  data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public override void GetData<TDest>(int offset, TDest[] data, int startIndex, int elementCount)
+        {
+            throw new NotImplementedException();
+        }
 
-		#endregion IDisposable Implementation
-	}
+        /// <summary>
+        /// Sets data.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the element</typeparam>
+        /// <param name="data">The array of data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public override void SetData<TSource>(int offset, TSource[] data, int startIndex, int elementCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion IDisposable Members
+    }
+
+#if !AXIOM_SAFE_ONLY
+    public class UnsafeMemoryBuffer : MemoryBuffer
+    {
+        private IntPtr _buffer;
+
+        public MemoryManager Owner { get; private set; }
+
+        public byte this[int index]
+        {
+            get
+            {
+                unsafe
+                {
+                    return ((byte*)_buffer.ToPointer())[index];
+                }
+            }
+
+            set
+            {
+                unsafe
+                {
+                    ((byte*)_buffer.ToPointer())[index] = value;
+                }
+            }
+        }
+
+        internal UnsafeMemoryBuffer(MemoryManager owner, IntPtr data)
+        {
+            this.Owner = owner;
+            _buffer = data;
+        }
+
+        /// <summary>
+        /// Copies data into an array.
+        /// </summary>
+        /// <typeparam name="TDest">The type of the element</typeparam>
+        /// <param name="data">The array to receive  data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public override void GetData<TDest>(int offset, TDest[] data, int startIndex, int elementCount)
+        {
+            IntPtr pin = MemoryManager.PinMemory(data);
+            MemoryManager.Copy(_buffer, pin, offset * MemoryManager.SizeOf(typeof(TDest)), startIndex * MemoryManager.SizeOf(typeof(TDest)), elementCount);
+            MemoryManager.UnpinMemory(data);
+        }
+
+        /// <summary>
+        /// Sets data.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the element</typeparam>
+        /// <param name="data">The array of data.</param>
+        /// <param name="startIndex">The index of the first element in the array to start from.</param>
+        /// <param name="elementCount">The number of elements to copy.</param>
+        public override void SetData<TSource>(int offset, TSource[] data, int startIndex, int elementCount)
+        {
+            IntPtr pin = MemoryManager.PinMemory(data);
+            MemoryManager.Copy(pin, _buffer, startIndex * MemoryManager.SizeOf(typeof(TSource)), offset * MemoryManager.SizeOf(typeof(TSource)), elementCount);
+            MemoryManager.UnpinMemory(data);
+        }
+    }
+#endif
 }
