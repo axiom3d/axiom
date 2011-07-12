@@ -115,8 +115,8 @@ namespace Axiom.Graphics
 				Debug.Assert( positionBuffer.VertexSize == sizeof( float ) * 3, "Position buffer should contain only positions!" );
 
 				// Lock buffer for reading
-				IntPtr posPtr = positionBuffer.Lock( BufferLocking.ReadOnly );
-				float* pVert = (float*)posPtr.ToPointer();
+				float[] pVert = new float[ positionBuffer.Length / sizeof( float ) ];
+				positionBuffer.GetData( pVert );
 
 				// Iterate over the triangles
 				for ( int i = 0; i < triangles.Count; i++ )
@@ -139,9 +139,6 @@ namespace Axiom.Graphics
 					}
 				}
 			}
-
-			// unlock the buffer
-			positionBuffer.Unlock();
 		}
 
 		public void DebugLog( Log log )
