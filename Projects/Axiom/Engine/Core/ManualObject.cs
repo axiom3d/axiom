@@ -229,28 +229,28 @@ namespace Axiom.Core
 
 		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    foreach (ShadowRenderable current in shadowRenderables)
-                    {
-                        if (!current.IsDisposed)
-                            current.Dispose();
-                    }
-                    shadowRenderables.Clear();
-                    shadowRenderables = null;
-                }
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					foreach ( ShadowRenderable current in shadowRenderables )
+					{
+						if ( !current.IsDisposed )
+							current.Dispose();
+					}
+					shadowRenderables.Clear();
+					shadowRenderables = null;
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		/// <summary>
 		/// Delete temp buffers and reset init counts
@@ -995,7 +995,7 @@ namespace Axiom.Core
 					// to allow for user-configured growth area
 					int vertexCount = (int)Utility.Max( rop.vertexData.vertexCount, this.estVertexCount );
 
-                    vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
+					vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 
 					rop.vertexData.vertexBufferBinding.SetBinding( 0, vbuf );
 				}
@@ -1011,13 +1011,13 @@ namespace Axiom.Core
 				// Write vertex data
 				if ( vbuf != null )
 				{
-					vbuf.WriteData( 0, rop.vertexData.vertexCount * vbuf.VertexSize, this.tempVertexBuffer, true );
+					vbuf.SetData( this.tempVertexBuffer, 0, rop.vertexData.vertexCount * vbuf.VertexSize, true );
 				}
 
 				// Write index data
 				if ( rop.useIndices )
 				{
-					rop.indexData.indexBuffer.WriteData( 0, rop.indexData.indexCount * rop.indexData.indexBuffer.IndexSize, this.tempIndexBuffer, true );
+					rop.indexData.indexBuffer.SetData( this.tempIndexBuffer, 0, rop.indexData.indexCount * rop.indexData.indexBuffer.IndexSize, true );
 				}
 
 				// return the finished section
@@ -1363,7 +1363,7 @@ namespace Axiom.Core
 			public ManualObjectSection( ManualObject parent,
 										string materialName,
 										OperationType opType )
-                : base()
+				: base()
 			{
 				this.parent = parent;
 				this.materialName = materialName;
@@ -1623,8 +1623,8 @@ namespace Axiom.Core
 						// Dispose managed resources.
 						if ( renderOperation != null )
 						{
-                            if (!renderOperation.IsDisposed)
-                                renderOperation.Dispose();
+							if ( !renderOperation.IsDisposed )
+								renderOperation.Dispose();
 
 							renderOperation = null;
 						}
@@ -1634,7 +1634,7 @@ namespace Axiom.Core
 					// if we add them, they need to be released here.
 				}
 
-                base.dispose(disposeManagedResources);
+				base.dispose( disposeManagedResources );
 			}
 
 			#endregion IDisposable Implementation
@@ -1666,7 +1666,7 @@ namespace Axiom.Core
 														VertexData vertexData,
 														bool createSeparateLightCap,
 														bool isLightCap )
-                : base()
+				: base()
 			{
 				this.parent = parent;
 				// Initialise render op
@@ -1781,29 +1781,29 @@ namespace Axiom.Core
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
-                        if (this.lightCap != null)
-                        {
-                            if (!this.lightCap.IsDisposed)
-                                this.lightCap.Dispose();
+						if ( this.lightCap != null )
+						{
+							if ( !this.lightCap.IsDisposed )
+								this.lightCap.Dispose();
 
-                            this.lightCap = null;
-                        }
+							this.lightCap = null;
+						}
 
-                        if (this.positionBuffer != null)
-                        {
-                            if (!this.positionBuffer.IsDisposed)
-                                this.positionBuffer.Dispose();
+						if ( this.positionBuffer != null )
+						{
+							if ( !this.positionBuffer.IsDisposed )
+								this.positionBuffer.Dispose();
 
-                            this.positionBuffer = null;
-                        }
+							this.positionBuffer = null;
+						}
 
-                        if (this.wBuffer != null)
-                        {
-                            if (!this.wBuffer.IsDisposed)
-                                this.wBuffer.Dispose();
+						if ( this.wBuffer != null )
+						{
+							if ( !this.wBuffer.IsDisposed )
+								this.wBuffer.Dispose();
 
-                            this.wBuffer = null;
-                        }
+							this.wBuffer = null;
+						}
 					}
 
 					// There are no unmanaged resources to release, but
@@ -1838,7 +1838,7 @@ namespace Axiom.Core
 		public new const string TypeName = "ManualObject";
 
 		public ManualObjectFactory()
-            : base()
+			: base()
 		{
 			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
