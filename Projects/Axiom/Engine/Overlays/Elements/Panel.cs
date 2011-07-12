@@ -198,39 +198,36 @@ namespace Axiom.Overlays.Elements
 			bottom = top - ( height * 2 );
 
 			// get a reference to the position buffer
-			HardwareVertexBuffer buffer =
-				renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			// lock the buffer
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
+			float[] posPtr = new float[ buffer.Length / sizeof( float ) ];
+			buffer.GetData( posPtr );
+
 			int index = 0;
 
 			// Use the furthest away depth value, since materials should have depth-check off
 			// This initialised the depth buffer for any 3D objects in front
 			float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			unsafe
-			{
-				float* posPtr = (float*)data.ToPointer();
 
-				posPtr[ index++ ] = left;
-				posPtr[ index++ ] = top;
-				posPtr[ index++ ] = zValue;
+			posPtr[ index++ ] = left;
+			posPtr[ index++ ] = top;
+			posPtr[ index++ ] = zValue;
 
-				posPtr[ index++ ] = left;
-				posPtr[ index++ ] = bottom;
-				posPtr[ index++ ] = zValue;
+			posPtr[ index++ ] = left;
+			posPtr[ index++ ] = bottom;
+			posPtr[ index++ ] = zValue;
 
-				posPtr[ index++ ] = right;
-				posPtr[ index++ ] = top;
-				posPtr[ index++ ] = zValue;
+			posPtr[ index++ ] = right;
+			posPtr[ index++ ] = top;
+			posPtr[ index++ ] = zValue;
 
-				posPtr[ index++ ] = right;
-				posPtr[ index++ ] = bottom;
-				posPtr[ index ] = zValue;
-			}
+			posPtr[ index++ ] = right;
+			posPtr[ index++ ] = bottom;
+			posPtr[ index ] = zValue;
 
 			// unlock the position buffer
-			buffer.Unlock();
+			buffer.SetData( posPtr );
 		}
 
 		public override void UpdateRenderQueue( RenderQueue queue )
@@ -302,52 +299,45 @@ namespace Axiom.Overlays.Elements
 				{
 					// get the tex coord buffer
 					HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
-					IntPtr data = buffer.Lock( BufferLocking.Discard );
+					float[] texPtr = new float[ buffer.Length / sizeof( float ) ];
+					buffer.GetData( texPtr );
+					int texIndex = 0;
 
-					unsafe
+					int uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof( float );
+					int vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof( float );
+
+					for ( int i = 0; i < numLayers; i++ )
 					{
+						// Calc upper tex coords
+						float upperX = bottomRight.x * tileX[ i ];
+						float upperY = bottomRight.y * tileY[ i ];
 
-						float* texPtr = (float*)data.ToPointer();
-						int texIndex = 0;
+						/*
+							0-----2
+							|    /|
+							|  /  |
+							|/    |
+							1-----3
+						*/
+						// Find start offset for this set
+						texIndex = ( i * uvSize );
 
-						int uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof( float );
-						int vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof( float );
+						texPtr[ texIndex ] = topLeft.x;
+						texPtr[ texIndex + 1 ] = topLeft.y;
 
-						for ( int i = 0; i < numLayers; i++ )
-						{
-							// Calc upper tex coords
-							float upperX = bottomRight.x * tileX[ i ];
-							float upperY = bottomRight.y * tileY[ i ];
+						texIndex += vertexSize; // jump by 1 vertex stride
+						texPtr[ texIndex ] = topLeft.x;
+						texPtr[ texIndex + 1 ] = upperY;
 
-							/*
-								0-----2
-								|    /|
-								|  /  |
-								|/    |
-								1-----3
-							*/
-							// Find start offset for this set
-							texIndex = ( i * uvSize );
+						texIndex += vertexSize;
+						texPtr[ texIndex ] = upperX;
+						texPtr[ texIndex + 1 ] = topLeft.y;
 
-							texPtr[ texIndex ] = topLeft.x;
-							texPtr[ texIndex + 1 ] = topLeft.y;
-
-							texIndex += vertexSize; // jump by 1 vertex stride
-							texPtr[ texIndex ] = topLeft.x;
-							texPtr[ texIndex + 1 ] = upperY;
-
-							texIndex += vertexSize;
-							texPtr[ texIndex ] = upperX;
-							texPtr[ texIndex + 1 ] = topLeft.y;
-
-							texIndex += vertexSize;
-							texPtr[ texIndex ] = upperX;
-							texPtr[ texIndex + 1 ] = upperY;
-						} // for
-					} // unsafev
-
-					// unlock the buffer
-					buffer.Unlock();
+						texIndex += vertexSize;
+						texPtr[ texIndex ] = upperX;
+						texPtr[ texIndex + 1 ] = upperY;
+					}
+					buffer.SetData( texPtr );
 				}
 			} // if material != null
 		}
