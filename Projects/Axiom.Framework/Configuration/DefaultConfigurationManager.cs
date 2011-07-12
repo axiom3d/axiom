@@ -120,8 +120,7 @@ namespace Axiom.Framework.Configuration
 			// Get the section.
 			this.ConfigurationSection = this.Configuration.GetSection( sectionName ) as AxiomConfigurationSection;
 
-
-			if ( this.ConfigurationSection != null && !String.IsNullOrEmpty( this.ConfigurationSection.LogFilename ) )
+			if ( this.ConfigurationSection != null && !String.IsNullOrEmpty( this.ConfigurationSection.LogFilename) )
 			{
 				this.LogFilename = this.ConfigurationSection.LogFilename;
 			}
@@ -161,7 +160,7 @@ namespace Axiom.Framework.Configuration
 				{
 					var renderSystem = engine.RenderSystems[ renderSystemConfig.Name ];
 
-					foreach ( RenderSystemOption optionConfig in renderSystemConfig.Options )
+					foreach (RenderSystemOption optionConfig in renderSystemConfig.Options )
 					{
 						if ( renderSystem.ConfigOptions.ContainsKey( optionConfig.Name ) )
 						{
