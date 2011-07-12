@@ -918,28 +918,22 @@ namespace Axiom.Core
 						// Do not overwrite original image but do gamma correction in temporary buffer
 						int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
 						byte[] buff = new byte[ bufSize ];
-						unsafe
+						var buffer = MemoryManager.Instance.Allocate( buff );
+
+						try
 						{
-							fixed ( void* pBuf = &buff[ 0 ] )
-							{
-								IntPtr buffer = new IntPtr( pBuf );
+							PixelBox corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
+							PixelConverter.BulkPixelConversion( src, corrected );
 
-								try
-								{
-									PixelBox corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
-									PixelConverter.BulkPixelConversion( src, corrected );
+							Image.ApplyGamma( buff, _gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
 
-									Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
-
-									// Destination: entire texture. BlitFromMemory does
-									// the scaling to a power of two for us when needed
-									GetBuffer( i, mip ).BlitFromMemory( corrected );
-								}
-								finally
-								{
-									//Marshal.FreeHGlobal( buffer );
-								}
-							}
+							// Destination: entire texture. BlitFromMemory does
+							// the scaling to a power of two for us when needed
+							GetBuffer( i, mip ).BlitFromMemory( corrected );
+						}
+						finally
+						{
+							//Marshal.FreeHGlobal( buffer );
 						}
 					}
 					else
