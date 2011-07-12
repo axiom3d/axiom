@@ -110,45 +110,45 @@ namespace Axiom.Core
 					StringBuilder msg = new StringBuilder();
 #endif
 
-                    // Dispose managed resources.
+					// Dispose managed resources.
 					foreach ( KeyValuePair<Type, List<ObjectEntry>> item in this._objects )
 					{
-                        string typeName = item.Key.Name;
-                        List<ObjectEntry> objectList = item.Value;
-                        foreach (ObjectEntry objectEntry in objectList)
-                        {
-                            if (objectEntry.Instance.IsAlive && !((DisposableObject)objectEntry.Instance.Target).IsDisposed)
-                            {
-                                if (perTypeCount.ContainsKey(typeName))
-                                    perTypeCount[typeName]++;
-                                else
-                                    perTypeCount.Add(typeName, 1);
+						string typeName = item.Key.Name;
+						List<ObjectEntry> objectList = item.Value;
+						foreach ( ObjectEntry objectEntry in objectList )
+						{
+							if ( objectEntry.Instance.IsAlive && !( (DisposableObject)objectEntry.Instance.Target ).IsDisposed )
+							{
+								if ( perTypeCount.ContainsKey( typeName ) )
+									perTypeCount[ typeName ]++;
+								else
+									perTypeCount.Add( typeName, 1 );
 
-                                objectCount++;
-
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
-                                msg.AppendFormat("\nAn instance of {0} was not disposed properly, creation stacktrace :\n{1}", typeName, objectEntry.ConstructionStack);
-#endif
-                            }
-                        }
-                    }
-
-                    LogManager.Instance.Write("[ObjectManager] Disposal Report:");
-
-                    if (objectCount > 0)
-                    {
-                        LogManager.Instance.Write("Total of {0} objects still alive.", objectCount);
-                        LogManager.Instance.Write("Types of not disposed objects count: " + perTypeCount.Count);
-
-                        foreach (KeyValuePair<string, int> currentPair in perTypeCount)
-                            LogManager.Instance.Write("{0} occurrence of type {1}", currentPair.Value, currentPair.Key);
+								objectCount++;
 
 #if !(XBOX || XBOX360 || WINDOWS_PHONE)
-                        LogManager.Instance.Write("Creation Stacktraces:\n" + msg.ToString());
+								msg.AppendFormat( "\nAn instance of {0} was not disposed properly, creation stacktrace :\n{1}", typeName, objectEntry.ConstructionStack );
 #endif
-                    }
-                    else
-                        LogManager.Instance.Write("Everything went right! Congratulations!!");
+							}
+						}
+					}
+
+					LogManager.Instance.Write( "[ObjectManager] Disposal Report:" );
+
+					if ( objectCount > 0 )
+					{
+						LogManager.Instance.Write( "Total of {0} objects still alive.", objectCount );
+						LogManager.Instance.Write( "Types of not disposed objects count: " + perTypeCount.Count );
+
+						foreach ( KeyValuePair<string, int> currentPair in perTypeCount )
+							LogManager.Instance.Write( "{0} occurrence of type {1}", currentPair.Value, currentPair.Key );
+
+#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+						LogManager.Instance.Write( "Creation Stacktraces:\n" + msg.ToString() );
+#endif
+					}
+					else
+						LogManager.Instance.Write( "Everything went right! Congratulations!!" );
 				}
 
 				// There are no unmanaged resources to release, but
