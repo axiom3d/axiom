@@ -303,7 +303,7 @@ namespace Axiom.Graphics
 			// Copy data?
 			if ( copyData )
 			{
-				vbuf.CopyData( sourceBuffer, 0, 0, sourceBuffer.Size, true );
+				vbuf.CopyData( sourceBuffer, 0, 0, sourceBuffer.Length, true );
 			}
 			// Insert copy into licensee list
 			tempVertexBufferLicenses.Add( new VertexBufferLicense( sourceBuffer, licenseType, expiredDelayFrameThreshold, vbuf, licensee ) );
