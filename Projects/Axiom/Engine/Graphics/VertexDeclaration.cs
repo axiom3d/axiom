@@ -67,7 +67,7 @@ namespace Axiom.Graphics
 	///		Like the other classes in this functional area, these declarations should be created and
 	///		destroyed using the <see cref="HardwareBufferManager"/>.
 	/// </remarks>
-	public class VertexDeclaration : DisposableObject , ICloneable
+	public class VertexDeclaration : DisposableObject, ICloneable
 	{
 		#region Fields
 
@@ -329,20 +329,20 @@ namespace Axiom.Graphics
 			return newDecl;
 		}
 
-        /// <summary>
+		/// <summary>
 		/// Gets the vertex size defined by this declaration.
 		/// </summary>
-        public virtual int GetVertexSize()
-        {
-            int size = 0;
+		public virtual int GetVertexSize()
+		{
+			int size = 0;
 
-            for (int i = 0; i < elements.Count; i++)
-            {
-                VertexElement element = elements[i];
-                size += element.Size;
-            }
-            return size;
-        }
+			for ( int i = 0; i < elements.Count; i++ )
+			{
+				VertexElement element = elements[ i ];
+				size += element.Size;
+			}
+			return size;
+		}
 
 		/// <summary>
 		///     Gets the vertex size defined by this declaration for a given source.
@@ -614,25 +614,25 @@ namespace Axiom.Graphics
 			return clone;
 		}
 
-        /// <summary>
-        /// Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds for the given source.
-        /// </summary>
-        /// <param name="source">the source elements to clone</param>
-        /// <returns>a new <see cref="VertexDeclaration"/> containing only those <see cref="VertexElement"/>s</returns>
-        /// <remarks>all elements in the cloned <see cref="VertexDeclaration"/> will have a source of 0.</remarks>
-        public VertexDeclaration Clone( short source )
-        {
-            VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
-            List<VertexElement> sourceElements = FindElementBySource(source);
+		/// <summary>
+		/// Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds for the given source.
+		/// </summary>
+		/// <param name="source">the source elements to clone</param>
+		/// <returns>a new <see cref="VertexDeclaration"/> containing only those <see cref="VertexElement"/>s</returns>
+		/// <remarks>all elements in the cloned <see cref="VertexDeclaration"/> will have a source of 0.</remarks>
+		public VertexDeclaration Clone( short source )
+		{
+			VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			List<VertexElement> sourceElements = FindElementBySource( source );
 
-            for (int i = 0; i < sourceElements.Count; i++)
-            {
-                VertexElement element = (VertexElement)sourceElements[i];
-                clone.AddElement(0, element.Offset, element.Type, element.Semantic, element.Index);
-            }
+			for ( int i = 0; i < sourceElements.Count; i++ )
+			{
+				VertexElement element = (VertexElement)sourceElements[ i ];
+				clone.AddElement( 0, element.Offset, element.Type, element.Semantic, element.Index );
+			}
 
-            return clone;
-        }
+			return clone;
+		}
 
 		#endregion ICloneable Members
 
@@ -674,7 +674,7 @@ namespace Axiom.Graphics
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 		#endregion IDisposable Implementation
 
