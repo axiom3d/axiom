@@ -107,9 +107,9 @@ namespace Axiom.Overlays.Elements
 
 		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="size"></param>
 		protected void CheckMemoryAllocation( int numChars )
 		{
@@ -128,14 +128,14 @@ namespace Axiom.Overlays.Elements
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
 				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
 
 				// colors
 				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );
@@ -219,11 +219,9 @@ namespace Axiom.Overlays.Elements
 			int bottomColor = Root.Instance.ConvertColor( colorBottom );
 
 			// get the seperate color buffer
-			HardwareVertexBuffer buffer =
-				renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
-
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
-			int* colPtr = (int*)data.ToPointer();
+			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+			int[] colPtr = new int[ buffer.VertexSize * buffer.VertexCount ];
+			buffer.GetData( colPtr );
 			int index = 0;
 
 			for ( int i = 0; i < allocSize; i++ )
@@ -239,14 +237,13 @@ namespace Axiom.Overlays.Elements
 				colPtr[ index++ ] = bottomColor;
 			}
 
-			// unlock this bad boy
-			buffer.Unlock();
+			buffer.SetData( colPtr );
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected unsafe void UpdateGeometry()
+		protected void UpdateGeometry()
 		{
 			if ( font == null || text == null || !this.isGeomPositionsOutOfDate )
 			{
@@ -262,7 +259,9 @@ namespace Axiom.Overlays.Elements
 
 			// get pos/tex buffer
 			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
+			float[] vertPtr = new float[ buffer.VertexSize * buffer.VertexCount ];
+			buffer.GetData( vertPtr );
+
 			float largestWidth = 0.0f;
 			float left = this.DerivedLeft * 2.0f - 1.0f;
 			float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
@@ -339,7 +338,6 @@ namespace Axiom.Overlays.Elements
 				// each vert is (x, y, z, u, v)
 				// first tri
 				// upper left
-				float* vertPtr = (float*)data.ToPointer();
 				vertPtr[ index++ ] = left;
 				vertPtr[ index++ ] = top;
 				vertPtr[ index++ ] = -1.0f;
@@ -404,8 +402,7 @@ namespace Axiom.Overlays.Elements
 				}
 			} // for i
 
-			// unlock vertex buffer
-			buffer.Unlock();
+			buffer.SetData( vertPtr );
 
 			if ( metricsMode == MetricsMode.Pixels )
 			{
@@ -951,5 +948,5 @@ namespace Axiom.Overlays.Elements
 
 		#endregion ScriptableObject Interface Command Classes
 
-		}
+	}
 }
