@@ -61,7 +61,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
+		/// Gets the vertex size in bytes
 		/// </summary>
 		public int VertexSize
 		{
