@@ -641,8 +641,8 @@ namespace Axiom.Graphics
 
 					vbuf.Unlock();
 				}
-			}
 #endif
+			}
 			// Log original index data
 			for ( i = 0; i < indexDataList.Count; i += 3 )
 			{
