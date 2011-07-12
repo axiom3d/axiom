@@ -46,101 +46,28 @@ namespace Axiom.Graphics
 {
 	public class DefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		byte[] mpData = null;
+		protected IMemoryBuffer mpData;
 
-        public DefaultHardwareVertexBuffer(VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
-            : base(null, vertexDeclaration, numVertices, usage, true, false)// always software, never shadowed
+		public DefaultHardwareVertexBuffer( VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
+			: base( null, vertexDeclaration, numVertices, usage, true, false )// always software, never shadowed
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			mpData = MemoryManager.Instance.Allocate<byte>( base.Length );
 		}
 
-        public DefaultHardwareVertexBuffer(HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
-            : base(manager, vertexDeclaration, numVertices, usage, true, false)// always software, never shadowed
+		public DefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
+			: base( manager, vertexDeclaration, numVertices, usage, true, false )// always software, never shadowed
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			mpData = MemoryManager.Instance.Allocate<byte>( base.Length );
 		}
 
-		public override void ReadData( int offset, int length, IntPtr dest )
+		public override void GetData<T>( int offset, T[] data, int startIndex, int elementCount )
 		{
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr data = Memory.PinObject( mpData );
-			Memory.Copy( dest, data, length );
-			Memory.UnpinObject( mpData );
+			mpData.GetData( offset, data, startIndex, elementCount );
 		}
 
-		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
+		public override void SetData<T>( int offset, T[] data, int startIndex, int elementCount, bool discardWholeBuffer )
 		{
-			IntPtr pSource = Memory.PinObject( data );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
-			Memory.Copy( pSource, pIntData, length );
-			Memory.UnpinObject( data );
-			Memory.UnpinObject( mpData );
-		}
-
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-		{
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
-			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( mpData );
-		}
-
-		public override void Unlock()
-		{
-			base.isLocked = false;
-		}
-
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
-		{
-			base.isLocked = true;
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
-		}
-
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-		{
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
-		}
-
-		protected override void UnlockImpl()
-		{
-			// nothing to do
+			mpData.SetData( offset, data, startIndex, elementCount );
 		}
 	}
 }

@@ -303,8 +303,7 @@ namespace Axiom.Graphics
 
 			// locate postion element & the buffer to go with it
 			VertexData vertexData = (VertexData)vertexDataList[ vertexSet ];
-			VertexElement posElem =
-				vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement posElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 
 			HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
 			IntPtr posPtr = posBuffer.Lock( BufferLocking.ReadOnly );
@@ -593,7 +592,7 @@ namespace Axiom.Graphics
 			return newCommon.index;
 		}
 
-		public unsafe void DebugLog( Log log )
+		public void DebugLog( Log log )
 		{
 			log.Write( "EdgeListBuilder Log" );
 			log.Write( "-------------------" );
@@ -609,67 +608,105 @@ namespace Axiom.Graphics
 				log.Write( "." );
 				log.Write( "Original vertex set {0} - vertex count {1}", i, vData.vertexCount );
 
-				VertexElement posElem =
-					vData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				HardwareVertexBuffer vbuf =
-					vData.vertexBufferBinding.GetBuffer( posElem.Source );
+				VertexElement posElem = vData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				HardwareVertexBuffer vbuf = vData.vertexBufferBinding.GetBuffer( posElem.Source );
 
 				// lock the buffer for reading
-				IntPtr basePtr = vbuf.Lock( BufferLocking.ReadOnly );
+#if AXIOM_SAFE_ONLY
+				var verts = new float[vData.vertexCount * 3 ];
+				vbuf.GetData(verts);
 
-				byte* pBaseVertex = (byte*)basePtr.ToPointer();
-
-				float* pReal;
-
-				for ( j = 0; j < vData.vertexCount; j++ )
+				for (j = 0; j < vData.vertexCount; j++)
 				{
-					pReal = (float*)( pBaseVertex + posElem.Offset );
-
-					log.Write( "Vertex {0}: ({1}, {2}, {3})", j, pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] );
-
-					pBaseVertex += vbuf.VertexSize;
+					log.Write("Vertex {0}: ({1}, {2}, {3})", j, verts[j+0], verts[j+1], verts[j+2]);
 				}
 
-				vbuf.Unlock();
-			}
+#else
+				unsafe
+				{
+					IntPtr basePtr = vbuf.Lock( BufferLocking.ReadOnly );
 
+					byte* pBaseVertex = (byte*)basePtr.ToPointer();
+
+					float* pReal;
+
+					for ( j = 0; j < vData.vertexCount; j++ )
+					{
+						pReal = (float*)( pBaseVertex + posElem.Offset );
+
+						log.Write( "Vertex {0}: ({1}, {2}, {3})", j, pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] );
+
+						pBaseVertex += vbuf.VertexSize;
+					}
+
+					vbuf.Unlock();
+				}
+			}
+#endif
 			// Log original index data
 			for ( i = 0; i < indexDataList.Count; i += 3 )
 			{
 				IndexData iData = (IndexData)indexDataList[ i ];
 				log.Write( "." );
-				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})",
-					i, iData.indexCount, indexDataVertexDataSetList[ i ] );
+				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})", i, iData.indexCount, indexDataVertexDataSetList[ i ] );
 
 				// Get the indexes ready for reading
-				short* p16Idx = null;
-				int* p32Idx = null;
-
-				IntPtr idxPtr = iData.indexBuffer.Lock( BufferLocking.ReadOnly );
-
-				if ( iData.indexBuffer.Type == IndexType.Size32 )
+#if AXIOM_SAFE_ONLY
+				var indicies16 = new short[iData.indexCount * 3];
+				var indicies32 = new short[iData.indexCount * 3];
+				if (iData.indexBuffer.Type == IndexType.Size32)
 				{
-					p32Idx = (int*)idxPtr.ToPointer();
+					iData.indexBuffer.GetData(indicies32);
 				}
 				else
 				{
-					p16Idx = (short*)idxPtr.ToPointer();
+					iData.indexBuffer.GetData(indicies16);
 				}
 
-				for ( j = 0; j < iData.indexCount / 3; j++ )
+				for (j = 0; j < iData.indexCount; j++)
 				{
-					if ( iData.indexBuffer.Type == IndexType.Size32 )
+					if (iData.indexBuffer.Type == IndexType.Size32)
 					{
-						log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++ );
+						log.Write("Triangle {0}: ({1}, {2}, {3})", j, indicies32[j + 0], indicies32[j + 1], indicies32[j + 2]);
 					}
 					else
 					{
-						log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p16Idx++, *p16Idx++, *p16Idx++ );
+						log.Write("Triangle {0}: ({1}, {2}, {3})", j, indicies16[j + 0], indicies16[j + 1], indicies16[j + 2]);
 					}
 				}
 
-				iData.indexBuffer.Unlock();
+#else
+				unsafe
+				{
+					short* p16Idx = null;
+					int* p32Idx = null;
 
+					IntPtr idxPtr = iData.indexBuffer.Lock( BufferLocking.ReadOnly );
+
+					if ( iData.indexBuffer.Type == IndexType.Size32 )
+					{
+						p32Idx = (int*)idxPtr.ToPointer();
+					}
+					else
+					{
+						p16Idx = (short*)idxPtr.ToPointer();
+					}
+
+					for ( j = 0; j < iData.indexCount / 3; j++ )
+					{
+						if ( iData.indexBuffer.Type == IndexType.Size32 )
+						{
+							log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++ );
+						}
+						else
+						{
+							log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p16Idx++, *p16Idx++, *p16Idx++ );
+						}
+					}
+
+					iData.indexBuffer.Unlock();
+				}
+#endif
 				// Log common vertex list
 				log.Write( "." );
 				log.Write( "Common vertex list - vertex count {0}", vertices.Count );

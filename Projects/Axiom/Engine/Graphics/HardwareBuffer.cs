@@ -1,5 +1,4 @@
 #region LGPL License
-
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -29,7 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 
@@ -82,36 +81,44 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public abstract class HardwareBuffer : DisposableObject
 	{
-		#region Fields
+		#region Fields and Properties
 
 		/// <summary>
-		///     Total size (in bytes) of the buffer.
+		///	 Gets whether this buffer is held in system memory.
 		/// </summary>
-		protected int sizeInBytes;
+		public bool IsSystemMemory
+		{
+			get;
+			protected set;
+		}
+
 		/// <summary>
-		///     Usage type for this buffer.
+		/// Gets the size (in bytes) for this buffer.
 		/// </summary>
-		protected BufferUsage usage;
+		public int Length
+		{
+			get;
+			protected set;
+		}
+
 		/// <summary>
-		///     Is this buffer currently locked?
+		///	Gets the usage of this buffer.
 		/// </summary>
-		protected bool isLocked;
+		public BufferUsage Usage
+		{
+			get;
+			protected set;
+		}
+
 		/// <summary>
-		///     Byte offset into the buffer where the current lock is held.
+		/// specifies whether this buffer has a software shadow buffer.
 		/// </summary>
-		protected int lockStart;
-		/// <summary>
-		///     Total size (int bytes) of locked buffer data.
-		/// </summary>
-		protected int lockSize;
-		/// <summary>
-		///
-		/// </summary>
-		protected bool useSystemMemory;
-		/// <summary>
-		///     Does this buffer have a shadow buffer?
-		/// </summary>
-		protected bool useShadowBuffer;
+		public bool HasShadowBuffer
+		{
+			get;
+			protected set;
+		}
+
 		/// <summary>
 		///     Reference to the sys memory shadow buffer tied to this hardware buffer.
 		/// </summary>
@@ -120,17 +127,45 @@ namespace Axiom.Graphics
 		///     Flag indicating whether the shadow buffer (if it exists) has been updated.
 		/// </summary>
 		protected bool shadowUpdated;
+
 		/// <summary>
-		///     Flag indicating whether hardware updates from shadow buffer should be supressed.
+		/// Flag indicating whether hardware updates from shadow buffer should be suppressed.
 		/// </summary>
-		protected bool suppressHardwareUpdate;
+		private bool suppressHardwareUpdate;
+		/// <summary>
+		///     Pass true to suppress hardware upload of shadow buffer changes.
+		/// </summary>
+		/// <param name="suppress">If true, shadow buffer updates won't be uploaded to hardware.</param>
+		public bool SuppressHardwareUpdate
+		{
+			get
+			{
+				return this.suppressHardwareUpdate;
+			}
+			set
+			{
+				suppressHardwareUpdate = value;
+
+				// if disabling future shadow updates, then update from what is current in the buffer now
+				// this is needed for shadow volumes
+				if ( !value )
+				{
+					UpdateFromShadow();
+				}
+			}
+		}
+
 		/// <summary>
 		///		Unique id for this buffer.
 		/// </summary>
-		public int ID;
+		public int ID
+		{
+			get;
+			protected set;
+		}
 		protected static int nextID;
 
-		#endregion Fields
+		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
@@ -142,218 +177,127 @@ namespace Axiom.Graphics
 		/// <param name="useShadowBuffer">Use a software shadow buffer?</param>
 		internal HardwareBuffer( BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 		{
-			this.usage = usage;
-			this.useSystemMemory = useSystemMemory;
-			this.useShadowBuffer = useShadowBuffer;
+			this.Usage = usage;
+			this.IsSystemMemory = useSystemMemory;
+			this.HasShadowBuffer = useShadowBuffer;
 			this.shadowBuffer = null;
 			this.shadowUpdated = false;
-			this.suppressHardwareUpdate = false;
+			this.SuppressHardwareUpdate = false;
 			ID = nextID++;
 
 			// If use shadow buffer, upgrade to WRITE_ONLY on hardware side
 			if ( useShadowBuffer && usage == BufferUsage.Dynamic )
-				usage = BufferUsage.DynamicWriteOnly;
+				this.Usage = BufferUsage.DynamicWriteOnly;
 			else if ( useShadowBuffer && usage == BufferUsage.Static )
-				usage = BufferUsage.StaticWriteOnly;
+				this.Usage = BufferUsage.StaticWriteOnly;
 		}
 
 		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.shadowBuffer != null)
-                    {
-                        if (!this.shadowBuffer.IsDisposed)
-                            this.shadowBuffer.Dispose();
-
-                        this.shadowBuffer = null;
-                    }
-                }
-            }
-
-            base.dispose(disposeManagedResources);
-        }
-
 		#region Methods
 
-		public BufferStream LockStream( BufferLocking locking )
-		{
-			return new BufferStream( this, Lock( locking ) );
-		}
-
 		/// <summary>
-		///		Convenient overload to allow locking the entire buffer with only having
-		///		to supply the locking type.
+		/// Copies data into an array.
 		/// </summary>
-		/// <param name="locking">Locking options.</param>
-		/// <returns>IntPtr to the beginning of the locked region of buffer memory.</returns>
-		public IntPtr Lock( BufferLocking locking )
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array to receive  data.</param>
+		public virtual void GetData<T>( T[] data ) where T : struct
 		{
-			return Lock( 0, sizeInBytes, locking );
-		}
-
-		/// <summary>
-		///		Used to lock a vertex buffer in hardware memory in order to make modifications.
-		/// </summary>
-		/// <param name="offset">Starting index in the buffer to lock.</param>
-		/// <param name="length">Number of bytes to lock after the offset.</param>
-		/// <param name="locking">Specifies how to lock the buffer.</param>
-		/// <returns>An array of the <code>System.Type</code> associated with this VertexBuffer.</returns>
-		public virtual IntPtr Lock( int offset, int length, BufferLocking locking )
-		{
-			Debug.Assert( !IsLocked, "Cannot lock this buffer because it is already locked." );
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
-
-			IntPtr data; // = IntPtr.Zero;
-
-			if ( useShadowBuffer )
+			if ( data.Length != this.Length )
 			{
-				if ( locking != BufferLocking.ReadOnly )
-				{
-					// we have to assume a read / write lock so we use the shadow buffer
-					// and tag for sync on Unlock()
-					shadowUpdated = true;
-				}
-
-				data = shadowBuffer.Lock( offset, length, locking );
+				throw new AxiomException( "Size of destination buffer does not equal size of requested data." );
 			}
-			else
+			GetData( data, 0, data.Length );
+		}
+
+		/// <summary>
+		/// Copies data into an array.
+		/// </summary>
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array to receive  data.</param>
+		/// <param name="startIndex">The index of the first element in the array to start from.</param>
+		/// <param name="elementCount">The number of elements to copy.</param>
+		public virtual void GetData<T>( T[] data, int startIndex, int elementCount ) where T : struct
+		{
+			if ( data.Length != this.Length )
 			{
-				// lock the real deal and flag it as locked
-				data = this.LockImpl( offset, length, locking );
-				isLocked = true;
+				throw new AxiomException( "Size of destination buffer does not equal size of requested data." );
 			}
-
-			lockStart = offset;
-			lockSize = length;
-
-			return data;
+			GetData( 0, data, startIndex, elementCount );
 		}
 
 		/// <summary>
-		///     Internal implementation of Lock, which will be overridden by subclasses to provide
-		///     the core locking functionality.
+		/// Copies data into an array.
 		/// </summary>
-		/// <param name="offset">Offset into the buffer (in bytes) to lock.</param>
-		/// <param name="length">Length of the portion of the buffer (int bytes) to lock.</param>
-		/// <param name="locking">Locking type.</param>
-		/// <returns>IntPtr to the beginning of the locked portion of the buffer.</returns>
-		protected abstract IntPtr LockImpl( int offset, int length, BufferLocking locking );
+		/// <param name="offset">The index of the first element in the buffer to retrieve</param>
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array to receive  data.</param>
+		/// <param name="startIndex">The index of the first element in the array to start from.</param>
+		/// <param name="elementCount">The number of elements to copy.</param>
+		public abstract void GetData<T>( int offset, T[] data, int startIndex, int elementCount ) where T : struct;
 
 		/// <summary>
-		///		Must be called after a call to <code>Lock</code>.  Unlocks the vertex buffer in the hardware
-		///		memory.
+		///  Sets data.
 		/// </summary>
-		public virtual void Unlock()
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array of data.</param>
+		public virtual void SetData<T>( T[] data ) where T : struct
 		{
-			Debug.Assert( this.IsLocked, "Cannot unlock this buffer if it isn't locked to begin with." );
-
-			if ( useShadowBuffer && shadowBuffer.IsLocked )
+			if ( data.Length != this.Length )
 			{
-				shadowBuffer.Unlock();
-
-				// potentially update the real buffer from the shadow buffer
-				UpdateFromShadow();
+				throw new AxiomException( "Size of destination buffer does not equal size of requested data." );
 			}
-			else
+			SetData( 0, data, 0, data.Length, false );
+		}
+
+		/// <summary>
+		///  Sets data.
+		/// </summary>
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array of data.</param>
+		public virtual void SetData<T>( T[] data, bool discardWholeBuffer ) where T : struct
+		{
+			if ( data.Length != this.Length )
 			{
-				// unlock the real deal
-				this.UnlockImpl();
-
-				isLocked = false;
+				throw new AxiomException( "Size of destination buffer does not equal size of requested data." );
 			}
+			SetData( 0, data, 0, data.Length, discardWholeBuffer );
 		}
 
 		/// <summary>
-		///     Abstract implementation of <see cref="Unlock"/>.
+		/// Sets data.
 		/// </summary>
-		protected abstract void UnlockImpl();
-
-		/// <summary>
-		///     Reads data from the buffer and places it in the memory pointed to by 'dest'.
-		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to read.</param>
-		/// <param name="length">The size of the area to read, in bytes.</param>
-		/// <param name="dest">
-		///     The area of memory in which to place the data, must be large enough to
-		///     accommodate the data!
-		/// </param>
-		public abstract void ReadData( int offset, int length, IntPtr dest );
-
-		/// <summary>
-		///     Writes data to the buffer from an area of system memory; note that you must
-		///     ensure that your buffer is big enough.
-		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
-		/// <param name="length">The size of the data to write to, in bytes.</param>
-		/// <param name="src">The source of the data to be written.</param>
-		/// <param name="discardWholeBuffer">
-		///     If true, this allows the driver to discard the entire buffer when writing,
-		///     such that DMA stalls can be avoided; use if you can.
-		/// </param>
-		public abstract void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer );
-
-		/// <summary>
-		///     Writes data to the buffer from an area of system memory; note that you must
-		///     ensure that your buffer is big enough.
-		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
-		/// <param name="length">The size of the data to write to, in bytes.</param>
-		/// <param name="src">The source of the data to be written.</param>
-		public void WriteData( int offset, int length, IntPtr src )
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array of data.</param>
+		/// <param name="startIndex">The index of the first element in the array to start from.</param>
+		/// <param name="elementCount">The number of elements to copy.</param>
+		public virtual void SetData<T>( T[] data, int startIndex, int elementCount ) where T : struct
 		{
-			WriteData( offset, length, src, false );
+			SetData( 0, data, startIndex, elementCount, false );
 		}
 
 		/// <summary>
-		///    Allows passing in a managed array of data to fill the vertex buffer.
+		/// Sets data.
 		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
-		/// <param name="length">The size of the data to write to, in bytes.</param>
-		/// <param name="data">
-		///     Array of data to blast into the buffer.  This can be an array of custom structs, that hold
-		///     position, normal, etc data.  The size of the struct *must* match the vertex size of the buffer,
-		///     so use with care.
-		/// </param>
-		public void WriteData( int offset, int length, System.Array data )
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array of data.</param>
+		/// <param name="startIndex">The index of the first element in the array to start from.</param>
+		/// <param name="elementCount">The number of elements to copy.</param>
+		public virtual void SetData<T>( T[] data, int startIndex, int elementCount, bool discardWholeBuffer ) where T : struct
 		{
-			IntPtr dataPtr = Memory.PinObject( data );
-
-			WriteData( offset, length, dataPtr, false );
-
-			Memory.UnpinObject( data );
+			SetData( 0, data, startIndex, elementCount, discardWholeBuffer );
 		}
+
 
 		/// <summary>
-		///    Allows passing in a managed array of data to fill the vertex buffer.
+		/// Sets data.
 		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
-		/// <param name="length">The size of the data to write to, in bytes.</param>
-		/// <param name="data">
-		///     Array of data to blast into the buffer.  This can be an array of custom structs, that hold
-		///     position, normal, etc data.  The size of the struct *must* match the vertex size of the buffer,
-		///     so use with care.
-		/// </param>
-		/// <param name="discardWholeBuffer">
-		///     If true, this allows the driver to discard the entire buffer when writing,
-		///     such that DMA stalls can be avoided; use if you can.
-		/// </param>
-		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
-		{
-			IntPtr dataPtr = Memory.PinObject( data );
-
-			WriteData( offset, length, dataPtr, discardWholeBuffer );
-
-			Memory.UnpinObject( data );
-		}
+		/// <param name="offset">The index of the first element in the buffer to write to</param>
+		/// <typeparam name="T">The type of the element</typeparam>
+		/// <param name="data">The array of data.</param>
+		/// <param name="startIndex">The index of the first element in the array to start from.</param>
+		/// <param name="elementCount">The number of elements to copy.</param>
+		public abstract void SetData<T>( int offset, T[] data, int startIndex, int elementCount, bool discardWholeBuffer ) where T : struct;
 
 		/// <summary>
 		///     Copy data from another buffer into this one.
@@ -379,113 +323,24 @@ namespace Axiom.Graphics
 		public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
 		{
 			// lock the source buffer
-			IntPtr srcData = srcBuffer.Lock( srcOffset, length, BufferLocking.ReadOnly );
-
+			byte[] tmp = new byte[ length ];
+			srcBuffer.GetData( tmp, srcOffset, length );
 			// write the data to this buffer
-			this.WriteData( destOffset, length, srcData, discardWholeBuffer );
-
-			// unlock the source buffer
-			srcBuffer.Unlock();
+			this.SetData( destOffset, tmp, destOffset, length, discardWholeBuffer );
 		}
 
 		/// <summary>
 		///     Updates the real buffer from the shadow buffer, if required.
 		/// </summary>
-		protected virtual void UpdateFromShadow()
+		protected void UpdateFromShadow()
 		{
-			if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
-			{
-				// do this manually to avoid locking problems
-				IntPtr src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
-
-				// Lock with discard if the whole buffer was locked, otherwise normal
-				BufferLocking locking = ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
-
-				IntPtr dest = this.LockImpl( lockStart, lockSize, locking );
-
-				// copy the data in directly
-				Memory.Copy( src, dest, lockSize );
-
-				// unlock both buffers to commit the write
-				this.UnlockImpl();
-				shadowBuffer.UnlockImpl();
+			if ( HasShadowBuffer && shadowUpdated && !SuppressHardwareUpdate )
+			{                // copy the data in directly
+				byte[] tmp = new byte[ Length ];
+				shadowBuffer.GetData( tmp, 0, Length );
+				this.SetData( tmp );
 
 				shadowUpdated = false;
-			}
-		}
-
-		/// <summary>
-		///     Pass true to suppress hardware upload of shadow buffer changes.
-		/// </summary>
-		/// <param name="suppress">If true, shadow buffer updates won't be uploaded to hardware.</param>
-		public void SuppressHardwareUpdate( bool suppress )
-		{
-			suppressHardwareUpdate = suppress;
-
-			// if disabling future shadow updates, then update from what is current in the buffer now
-			// this is needed for shadow volumes
-			if ( !suppress )
-			{
-				UpdateFromShadow();
-			}
-		}
-
-		#endregion
-
-		#region Properties
-
-		/// <summary>
-		///		Gets whether or not this buffer is currently locked.
-		/// </summary>
-		public bool IsLocked
-		{
-			get
-			{
-				return isLocked || ( useShadowBuffer && shadowBuffer.IsLocked );
-			}
-		}
-
-		/// <summary>
-		///		Gets whether this buffer is held in system memory.
-		/// </summary>
-		public bool IsSystemMemory
-		{
-			get
-			{
-				return useSystemMemory;
-			}
-		}
-
-		/// <summary>
-		///		Gets the size (in bytes) for this buffer.
-		/// </summary>
-		public int Size
-		{
-			get
-			{
-				return sizeInBytes;
-			}
-		}
-
-		/// <summary>
-		///		Gets the usage of this buffer.
-		/// </summary>
-		public BufferUsage Usage
-		{
-			get
-			{
-				return usage;
-			}
-		}
-
-		/// <summary>
-		///     Gets a bool that specifies whether this buffer has a software shadow buffer.
-		/// </summary>
-		public bool HasShadowBuffer
-		{
-			get
-			{
-				return useShadowBuffer;
 			}
 		}
 

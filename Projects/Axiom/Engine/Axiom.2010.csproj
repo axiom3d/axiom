@@ -136,11 +136,13 @@
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\ILodListener.cs" />
+    <Compile Include="Core\IMemoryBuffer.cs" />
     <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\MemoryBuffer.cs" />
+    <Compile Include="Core\MemoryManager.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PixelCountStrategy.cs" />
@@ -454,9 +456,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\AutoParamDataSource.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Graphics\BufferStream.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Graphics\EdgeData.cs">

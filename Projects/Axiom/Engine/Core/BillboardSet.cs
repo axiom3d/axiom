@@ -144,7 +144,8 @@ namespace Axiom.Core
 
 		protected bool pointRendering = false;
 		protected bool accurateFacing = false;
-		protected IntPtr lockPtr = IntPtr.Zero;
+		//protected IntPtr lockPtr = IntPtr.Zero;
+		protected byte[] lockPtr;
 		protected int ptrOffset = 0;
 		protected Vector3[] vOffset = new Vector3[ 4 ];
 		protected Camera currentCamera;
@@ -197,32 +198,32 @@ namespace Axiom.Core
 			this.SetTextureStacksAndSlices( 1, 1 );
 		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.renderOperation != null)
-                    {
-                        if (!this.renderOperation.IsDisposed)
-                            this.renderOperation.Dispose();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.renderOperation != null )
+					{
+						if ( !this.renderOperation.IsDisposed )
+							this.renderOperation.Dispose();
 
-                        this.renderOperation = null;
-                    }
-                }
-            }
+						this.renderOperation = null;
+					}
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
 
-        #region Methods
+		#region Methods
 
 		/// <summary>
 		///     Generate the vertices for all the billboards relative to the camera
@@ -232,7 +233,8 @@ namespace Axiom.Core
 		internal void BeginBillboards()
 		{
 			// Make sure we aren't calling this more than once
-			Debug.Assert( this.lockPtr == IntPtr.Zero );
+			//Debug.Assert( this.lockPtr == IntPtr.Zero );
+			Debug.Assert( this.lockPtr == null );
 
 			/* NOTE: most engines generate world coordinates for the billboards
 			   directly, taking the world axes of the camera as offsets to the
@@ -288,7 +290,9 @@ namespace Axiom.Core
 			this.numVisibleBillboards = 0;
 
 			// Lock the buffer
-			this.lockPtr = this.mainBuffer.Lock( BufferLocking.Discard );
+			//this.lockPtr = this.mainBuffer.Lock( BufferLocking.Discard );
+			lockPtr = new byte[ this.mainBuffer.Length ];
+			this.mainBuffer.GetData( this.lockPtr );
 			this.ptrOffset = 0;
 		}
 
@@ -368,9 +372,12 @@ namespace Axiom.Core
 		internal void EndBillboards()
 		{
 			// Make sure we aren't double unlocking
-			Debug.Assert( this.lockPtr != IntPtr.Zero );
-			this.mainBuffer.Unlock();
-			this.lockPtr = IntPtr.Zero;
+			//Debug.Assert( this.lockPtr != IntPtr.Zero );
+			Debug.Assert( this.lockPtr != null );
+			//this.mainBuffer.Unlock();
+			this.mainBuffer.SetData( lockPtr );
+			//this.lockPtr = IntPtr.Zero;
+			lockPtr = null;
 		}
 
 		protected void SetBounds( AxisAlignedBox box, float radius )
@@ -723,74 +730,166 @@ namespace Axiom.Core
 			Debug.Assert( bb.UseTexcoordRect || bb.TexcoordIndex < this.textureCoords.Count );
 			RectangleF r = bb.UseTexcoordRect ? bb.TexcoordRect : this.textureCoords[ bb.TexcoordIndex ];
 
+			byte[] bytes;
+
 			if ( this.pointRendering )
 			{
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
+				//unsafe
+				//{
+				//float* posPtr = (float*)this.lockPtr.ToPointer();
+				byte[] posPtr = this.lockPtr;
+				//int* colPtr = (int*)posPtr;
+				byte[] colPtr = posPtr;
 
-					// Single vertex per billboard, ignore offsets
-					// position
-					posPtr[ this.ptrOffset++ ] = bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = bb.Position.z;
-					colPtr[ this.ptrOffset++ ] = color;
-					// No texture coords in point rendering
-				}
+				// Single vertex per billboard, ignore offsets
+				// position
+				//posPtr[ this.ptrOffset++ ] = bb.Position.x;
+				bytes = System.BitConverter.GetBytes( bb.Position.x );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+
+				//posPtr[ this.ptrOffset++ ] = bb.Position.y;
+				bytes = System.BitConverter.GetBytes( bb.Position.y );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = bb.Position.z;
+				bytes = System.BitConverter.GetBytes( bb.Position.z );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// No texture coords in point rendering
+				//}
 			}
 			else if ( this.allDefaultRotation || bb.Rotation == 0 )
 			{
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
-					float* texPtr = (float*)posPtr;
+				//unsafe
+				//{
+				//float* posPtr = (float*)this.lockPtr.ToPointer();
+				byte[] posPtr = this.lockPtr;
+				//int* colPtr = (int*)posPtr;
+				byte[] colPtr = posPtr;
+				//float* texPtr = (float*)posPtr;
+				byte[] texPtr = posPtr;
 
-					// Left-top
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Left;
-					texPtr[ this.ptrOffset++ ] = r.Top;
+				// Left-top
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 0 ].x + bb.Position.x );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 0 ].y + bb.Position.y );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 0 ].z + bb.Position.z );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = r.Left;
+				bytes = System.BitConverter.GetBytes( r.Left );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = r.Top;
+				bytes = System.BitConverter.GetBytes( r.Top );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
 
-					// Right-top
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 1 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 1 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 1 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Right;
-					texPtr[ this.ptrOffset++ ] = r.Top;
+				// Right-top
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 1 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 1 ].x + bb.Position.x );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 1 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 1 ].y + bb.Position.y );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 1 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 1 ].z + bb.Position.z );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = r.Right;
+				bytes = System.BitConverter.GetBytes( r.Right );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = r.Top;
+				bytes = System.BitConverter.GetBytes( r.Top );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
 
-					// Left-bottom
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 2 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 2 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 2 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Left;
-					texPtr[ this.ptrOffset++ ] = r.Bottom;
+				// Left-bottom
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 2 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 2 ].x + bb.Position.x );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 2 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 2 ].y + bb.Position.y );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 2 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 2 ].z + bb.Position.z );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = r.Left;
+				bytes = System.BitConverter.GetBytes( r.Left );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = r.Bottom;
+				bytes = System.BitConverter.GetBytes( r.Bottom );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
 
-					// Right-bottom
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 3 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 3 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 3 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Right;
-					texPtr[ this.ptrOffset++ ] = r.Bottom;
-				}
+				// Right-bottom
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 3 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 3 ].x + bb.Position.x );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 3 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 3 ].y + bb.Position.y );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 3 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 3 ].z + bb.Position.z );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = r.Right;
+				bytes = System.BitConverter.GetBytes( r.Right );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = r.Bottom;
+				bytes = System.BitConverter.GetBytes( r.Bottom );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//}
 			}
 			else if ( this.rotationType == BillboardRotationType.Vertex )
 			{
@@ -804,57 +903,132 @@ namespace Axiom.Core
 
 				unsafe
 				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
-					float* texPtr = (float*)posPtr;
+					//float* posPtr = (float*)this.lockPtr.ToPointer();
+					byte[] posPtr = this.lockPtr;
+					//int* colPtr = (int*)posPtr;
+					byte[] colPtr = posPtr;
+					//float* texPtr = (float*)posPtr;
+					byte[] texPtr = posPtr;
 
 					// Left-top
 					// Positions
 					pt = rotation * offsets[ 0 ];
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
+					//posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
+					bytes = System.BitConverter.GetBytes( pt.x + bb.Position.x );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
+					bytes = System.BitConverter.GetBytes( pt.y + bb.Position.y );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					bytes = System.BitConverter.GetBytes( pt.z + bb.Position.z );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Color
-					colPtr[ this.ptrOffset++ ] = color;
+					//colPtr[ this.ptrOffset++ ] = color;
+					bytes = System.BitConverter.GetBytes( color );
+					bytes.CopyTo( colPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Left;
-					texPtr[ this.ptrOffset++ ] = r.Top;
+					//texPtr[ this.ptrOffset++ ] = r.Left;
+					bytes = System.BitConverter.GetBytes( r.Left );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//texPtr[ this.ptrOffset++ ] = r.Top;
+					bytes = System.BitConverter.GetBytes( r.Top );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 
 					// Right-top
 					// Positions
 					pt = rotation * offsets[ 1 ];
-					posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					//posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
+					bytes = System.BitConverter.GetBytes( pt.x + bb.Position.x );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
+					bytes = System.BitConverter.GetBytes( pt.y + bb.Position.y );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					bytes = System.BitConverter.GetBytes( pt.z + bb.Position.z );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Color
-					colPtr[ this.ptrOffset++ ] = color;
+					//colPtr[ this.ptrOffset++ ] = color;
+					bytes = System.BitConverter.GetBytes( color );
+					bytes.CopyTo( colPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Right;
-					texPtr[ this.ptrOffset++ ] = r.Top;
+					//texPtr[ this.ptrOffset++ ] = r.Right;
+					bytes = System.BitConverter.GetBytes( r.Right );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//texPtr[ this.ptrOffset++ ] = r.Top;
+					bytes = System.BitConverter.GetBytes( r.Top );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 
 					// Left-bottom
 					// Positions
 					pt = rotation * offsets[ 2 ];
-					posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					//posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
+					bytes = System.BitConverter.GetBytes( pt.x + bb.Position.x );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
+					bytes = System.BitConverter.GetBytes( pt.y + bb.Position.y );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					bytes = System.BitConverter.GetBytes( pt.z + bb.Position.z );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Color
-					colPtr[ this.ptrOffset++ ] = color;
+					//colPtr[ this.ptrOffset++ ] = color;
+					bytes = System.BitConverter.GetBytes( color );
+					bytes.CopyTo( colPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Left;
-					texPtr[ this.ptrOffset++ ] = r.Bottom;
+					//texPtr[ this.ptrOffset++ ] = r.Left;
+					bytes = System.BitConverter.GetBytes( r.Left );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//texPtr[ this.ptrOffset++ ] = r.Bottom;
+					bytes = System.BitConverter.GetBytes( r.Bottom );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 
 					// Right-bottom
 					// Positions
 					pt = rotation * offsets[ 3 ];
-					posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					//posPtr[ this.ptrOffset++ ] = pt.x + bb.Position.x;
+					bytes = System.BitConverter.GetBytes( pt.x + bb.Position.x );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.y + bb.Position.y;
+					bytes = System.BitConverter.GetBytes( pt.y + bb.Position.y );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//posPtr[ this.ptrOffset++ ] = pt.z + bb.Position.z;
+					bytes = System.BitConverter.GetBytes( pt.z + bb.Position.z );
+					bytes.CopyTo( posPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Color
-					colPtr[ this.ptrOffset++ ] = color;
+					//colPtr[ this.ptrOffset++ ] = color;
+					bytes = System.BitConverter.GetBytes( color );
+					bytes.CopyTo( colPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 					// Texture coords
-					texPtr[ this.ptrOffset++ ] = r.Right;
-					texPtr[ this.ptrOffset++ ] = r.Bottom;
+					//texPtr[ this.ptrOffset++ ] = r.Right;
+					bytes = System.BitConverter.GetBytes( r.Right );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
+					//texPtr[ this.ptrOffset++ ] = r.Bottom;
+					bytes = System.BitConverter.GetBytes( r.Bottom );
+					bytes.CopyTo( texPtr, this.ptrOffset );
+					this.ptrOffset += bytes.Length;
 				}
 			}
 			else
@@ -872,56 +1046,131 @@ namespace Axiom.Core
 				float sin_rot_w = sin_rot * width;
 				float sin_rot_h = sin_rot * height;
 
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
-					float* texPtr = (float*)posPtr;
+				//unsafe
+				//{
+				//float* posPtr = (float*)this.lockPtr.ToPointer();
+				byte[] posPtr = this.lockPtr;
+				//int* colPtr = (int*)posPtr;
+				byte[] colPtr = posPtr;
+				//float* texPtr = (float*)posPtr;
+				byte[] texPtr = posPtr;
 
-					// Left-top
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = mid_u - cos_rot_w + sin_rot_h;
-					texPtr[ this.ptrOffset++ ] = mid_v - sin_rot_w - cos_rot_h;
+				// Left-top
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 0 ].x + bb.Position.x );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 0 ].y + bb.Position.y );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 0 ].z + bb.Position.z );
+				bytes.CopyTo( posPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = mid_u - cos_rot_w + sin_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u - cos_rot_w + sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = mid_v - sin_rot_w - cos_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_v - sin_rot_w - cos_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
 
-					// Right-top
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 1 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 1 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 1 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = mid_u + cos_rot_w + sin_rot_h;
-					texPtr[ this.ptrOffset++ ] = mid_v + sin_rot_w - cos_rot_h;
+				// Right-top
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 1 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 1 ].x + bb.Position.x );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 1 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 1 ].y + bb.Position.y );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 1 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 1 ].z + bb.Position.z );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = mid_u + cos_rot_w + sin_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u + cos_rot_w + sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = mid_v + sin_rot_w - cos_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u + cos_rot_w - sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
 
-					// Left-bottom
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 2 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 2 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 2 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = mid_u - cos_rot_w - sin_rot_h;
-					texPtr[ this.ptrOffset++ ] = mid_v - sin_rot_w + cos_rot_h;
+				// Left-bottom
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 2 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 2 ].x + bb.Position.x );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 2 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 2 ].y + bb.Position.y );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 2 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 2 ].z + bb.Position.z );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = mid_u - cos_rot_w - sin_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u - cos_rot_w - sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = mid_v - sin_rot_w + cos_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u - cos_rot_w + sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
 
-					// Right-bottom
-					// Positions
-					posPtr[ this.ptrOffset++ ] = offsets[ 3 ].x + bb.Position.x;
-					posPtr[ this.ptrOffset++ ] = offsets[ 3 ].y + bb.Position.y;
-					posPtr[ this.ptrOffset++ ] = offsets[ 3 ].z + bb.Position.z;
-					// Color
-					colPtr[ this.ptrOffset++ ] = color;
-					// Texture coords
-					texPtr[ this.ptrOffset++ ] = mid_u + cos_rot_w - sin_rot_h;
-					texPtr[ this.ptrOffset++ ] = mid_v + sin_rot_w + cos_rot_h;
-				}
+				// Right-bottom
+				// Positions
+				//posPtr[ this.ptrOffset++ ] = offsets[ 3 ].x + bb.Position.x;
+				bytes = System.BitConverter.GetBytes( offsets[ 3 ].x + bb.Position.x );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 3 ].y + bb.Position.y;
+				bytes = System.BitConverter.GetBytes( offsets[ 3 ].y + bb.Position.y );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//posPtr[ this.ptrOffset++ ] = offsets[ 3 ].z + bb.Position.z;
+				bytes = System.BitConverter.GetBytes( offsets[ 3 ].z + bb.Position.z );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Color
+				//colPtr[ this.ptrOffset++ ] = color;
+				bytes = System.BitConverter.GetBytes( color );
+				bytes.CopyTo( colPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				// Texture coords
+				//texPtr[ this.ptrOffset++ ] = mid_u + cos_rot_w - sin_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u + cos_rot_w - sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//texPtr[ this.ptrOffset++ ] = mid_v + sin_rot_w + cos_rot_h;
+				bytes = System.BitConverter.GetBytes( mid_u + cos_rot_w + sin_rot_h );
+				bytes.CopyTo( texPtr, this.ptrOffset );
+				this.ptrOffset += bytes.Length;
+				//}
 			}
 		}
 
@@ -1103,11 +1352,7 @@ namespace Axiom.Core
 				this.indexData.indexCount = this.poolSize * 6;
 
 				// create the index buffer
-				this.indexData.indexBuffer =
-						HardwareBufferManager.Instance.CreateIndexBuffer(
-								IndexType.Size16,
-								this.indexData.indexCount,
-								BufferUsage.StaticWriteOnly );
+				this.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, this.indexData.indexCount, BufferUsage.StaticWriteOnly );
 
 				/* Create indexes (will be the same every frame)
 				   Using indexes because it means 1/3 less vertex transforms (4 instead of 6)
@@ -1122,29 +1367,51 @@ namespace Axiom.Core
 				*/
 
 				// lock the index buffer
-				IntPtr idxPtr = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				//IntPtr idxPtr = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				byte[] idxPtr = new byte[ this.indexData.indexCount ];
+				this.indexData.indexBuffer.GetData( idxPtr );
 
-				unsafe
+				//unsafe
+				//{
+				//ushort* pIdx = (ushort*)idxPtr.ToPointer();
+				int pIdx = 0;
+				byte[] bytes;
+				for ( int idx, idxOffset, bboard = 0; bboard < this.poolSize; ++bboard )
 				{
-					ushort* pIdx = (ushort*)idxPtr.ToPointer();
+					// Do indexes
+					idx = bboard * 6;
+					idxOffset = bboard * 4;
 
-					for ( int idx, idxOffset, bboard = 0; bboard < this.poolSize; ++bboard )
-					{
-						// Do indexes
-						idx = bboard * 6;
-						idxOffset = bboard * 4;
-
-						pIdx[ idx ] = (ushort)idxOffset; // + 0;, for clarity
-						pIdx[ idx + 1 ] = (ushort)( idxOffset + 2 );
-						pIdx[ idx + 2 ] = (ushort)( idxOffset + 1 );
-						pIdx[ idx + 3 ] = (ushort)( idxOffset + 1 );
-						pIdx[ idx + 4 ] = (ushort)( idxOffset + 2 );
-						pIdx[ idx + 5 ] = (ushort)( idxOffset + 3 );
-					} // for
-				} // unsafe
+					//pIdx[ idx ] = (ushort)idxOffset; // + 0;, for clarity
+					bytes = System.BitConverter.GetBytes( idxOffset );
+					bytes.CopyTo( idxPtr, pIdx );
+					pIdx += bytes.Length;
+					//pIdx[ idx + 1 ] = (ushort)( idxOffset + 2 );
+					bytes = System.BitConverter.GetBytes( idxOffset + 2 );
+					bytes.CopyTo( idxPtr, pIdx );
+					pIdx += bytes.Length;
+					//pIdx[ idx + 2 ] = (ushort)( idxOffset + 1 );
+					bytes = System.BitConverter.GetBytes( idxOffset + 1 );
+					bytes.CopyTo( idxPtr, pIdx );
+					pIdx += bytes.Length;
+					//pIdx[ idx + 3 ] = (ushort)( idxOffset + 1 );
+					bytes = System.BitConverter.GetBytes( idxOffset + 1 );
+					bytes.CopyTo( idxPtr, pIdx );
+					pIdx += bytes.Length;
+					//pIdx[ idx + 4 ] = (ushort)( idxOffset + 2 );
+					bytes = System.BitConverter.GetBytes( idxOffset + 2 );
+					bytes.CopyTo( idxPtr, pIdx );
+					pIdx += bytes.Length;
+					//pIdx[ idx + 5 ] = (ushort)( idxOffset + 3 );
+					bytes = System.BitConverter.GetBytes( idxOffset + 3 );
+					bytes.CopyTo( idxPtr, pIdx );
+					pIdx += bytes.Length;
+				} // for
+				//} // unsafe
 
 				// unlock the buffers
-				this.indexData.indexBuffer.Unlock();
+				//this.indexData.indexBuffer.Unlock();
+				this.indexData.indexBuffer.SetData( idxPtr );
 			}
 			this.buffersCreated = true;
 		}

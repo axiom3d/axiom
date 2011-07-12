@@ -276,14 +276,14 @@ namespace Axiom.Graphics
 		/// <param name="suppressHardwareUpload"></param>
 		public void BindTempCopies( VertexData targetData, bool suppressHardwareUpload )
 		{
-			destPositionBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+			destPositionBuffer.SuppressHardwareUpdate = suppressHardwareUpload;
 			targetData.vertexBufferBinding.SetBinding( posBindIndex, destPositionBuffer );
 
 			if ( bindNormals && destNormalBuffer != null )
 			{
 				if ( normBindIndex != posBindIndex )
 				{
-					destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+					destNormalBuffer.SuppressHardwareUpdate = suppressHardwareUpload;
 					targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
 				}
 			}
@@ -292,7 +292,7 @@ namespace Axiom.Graphics
 				if ( tanBindIndex != posBindIndex &&
 					tanBindIndex != normBindIndex )
 				{
-					destTangentBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+					destTangentBuffer.SuppressHardwareUpdate = suppressHardwareUpload;
 					targetData.vertexBufferBinding.SetBinding( tanBindIndex, destTangentBuffer );
 				}
 			}
@@ -302,7 +302,7 @@ namespace Axiom.Graphics
 					binormBindIndex != normBindIndex &&
 					binormBindIndex != tanBindIndex )
 				{
-					destBinormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+					destBinormalBuffer.SuppressHardwareUpdate = suppressHardwareUpload;
 					targetData.vertexBufferBinding.SetBinding( binormBindIndex, destBinormalBuffer );
 				}
 			}

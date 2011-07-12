@@ -114,7 +114,7 @@ namespace Axiom.Graphics
 		/// <param name="usage">One or more members of the BufferUsage enumeration; you are
 		///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
 		///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>
-        public virtual HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
+		public virtual HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
 		{
 			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
 		}
@@ -137,9 +137,9 @@ namespace Axiom.Graphics
 		///		counted so you do not need to worry about destroying them this will be done
 		///		automatically.
 		/// </remarks>
-        /// <param name="vertexDeclaration">The <see cref="VertexDeclaration"/> used for this buffer,
-        ///		this based on the kind of data you expect to populate this buffer with.</param>
-        /// <param name="numVerts">The number of vertices in this buffer.</param>
+		/// <param name="vertexDeclaration">The <see cref="VertexDeclaration"/> used for this buffer,
+		///		this based on the kind of data you expect to populate this buffer with.</param>
+		/// <param name="numVerts">The number of vertices in this buffer.</param>
 		/// <param name="usage">One or more members of the BufferUsage enumeration; you are
 		///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
 		///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>

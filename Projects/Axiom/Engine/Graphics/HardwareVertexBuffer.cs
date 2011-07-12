@@ -45,54 +45,20 @@ namespace Axiom.Graphics
 	///		Describes the graphics API independent functionality required by a hardware
 	///		vertex buffer.  
 	/// </summary>
-	/// <remarks>
-	///		
-	/// </remarks>
 	public abstract class HardwareVertexBuffer : HardwareBuffer
 	{
-		#region Member variables
+		#region Fields and Properties
 
 		protected HardwareBufferManagerBase Manager;
-		protected int numVertices;
-		protected VertexDeclaration vertexDeclaration;
-		protected int useCount;
 
-		#endregion
-
-		#region Constructors
-
-		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
-			: base( usage, useSystemMemory, useShadowBuffer )
+		/// <summary>
+		/// 
+		/// </summary>
+		public VertexDeclaration VertexDeclaration
 		{
-			this.vertexDeclaration = vertexDeclaration;
-			this.numVertices = numVertices;
-			this.Manager = manager;
-
-			// calculate the size in bytes of this buffer
-			sizeInBytes = vertexDeclaration.GetVertexSize() * numVertices;
-
-			// create a shadow buffer if required
-			if ( useShadowBuffer )
-			{
-                shadowBuffer = new DefaultHardwareVertexBuffer(Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic);
-			}
-
-			useCount = 0;
+			get;
+			protected set;
 		}
-
-		#endregion
-
-		#region Properties
-        /// <summary>
-        /// 
-        /// </summary>
-        public VertexDeclaration VertexDeclaration
-        {
-            get
-            {
-                return vertexDeclaration;
-            }
-        }
 
 		/// <summary>
 		/// 
@@ -101,26 +67,45 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexDeclaration.GetVertexSize();
+				return VertexDeclaration.GetVertexSize();
 			}
 		}
 
 		public int VertexCount
 		{
-			get
-			{
-				return numVertices;
-			}
+			get;
+			protected set;
 		}
 
 		public int UseCount
 		{
-			get
-			{
-				return useCount;
-			}
+			get;
+			protected set;
 		}
 
-		#endregion
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+			: base( usage, useSystemMemory, useShadowBuffer )
+		{
+			this.VertexDeclaration = vertexDeclaration;
+			this.VertexCount = numVertices;
+			this.Manager = manager;
+
+			// calculate the size in bytes of this buffer
+			Length = vertexDeclaration.GetVertexSize() * numVertices;
+
+			// create a shadow buffer if required
+			if ( useShadowBuffer )
+			{
+				shadowBuffer = new DefaultHardwareVertexBuffer( Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic );
+			}
+
+			UseCount = 0;
+		}
+
+		#endregion Construction and Destruction
 	}
 }

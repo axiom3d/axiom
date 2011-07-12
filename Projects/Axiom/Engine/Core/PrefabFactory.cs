@@ -112,7 +112,7 @@ namespace Axiom.Core
 			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, 4, BufferUsage.StaticWriteOnly );
 			binding.SetBinding( 0, vbuf );
 
-			vbuf.WriteData( 0, vbuf.Size, vertices, true );
+			vbuf.SetData( vertices, 0, vbuf.Length, true );
 
 			sub.useSharedVertices = true;
 			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6, BufferUsage.StaticWriteOnly );
@@ -121,7 +121,7 @@ namespace Axiom.Core
 			sub.IndexData.indexBuffer = ibuf;
 			sub.IndexData.indexCount = 6;
 			sub.IndexData.indexStart = 0;
-			ibuf.WriteData( 0, ibuf.Size, faces, true );
+			ibuf.SetData( faces, 0, ibuf.Length, true );
 
 			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -100, -100, 0 ), new Vector3( 100, 100, 0 ) );
 			mesh.BoundingSphereRadius = Utility.Sqrt( 100 * 100 + 100 * 100 );
@@ -244,13 +244,13 @@ namespace Axiom.Core
 			decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( decl, NUM_VERTICES, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, NUM_VERTICES, BufferUsage.StaticWriteOnly );
 			bind.SetBinding( 0, vbuf );
 
-			vbuf.WriteData( 0, vbuf.Size, vertices, true );
+			vbuf.SetData( vertices, 0, vbuf.Length, true );
 
 			sub.useSharedVertices = true;
-			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES,	BufferUsage.StaticWriteOnly );
+			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES, BufferUsage.StaticWriteOnly );
 
 			short[] faces = new short[ NUM_INDICES ] {
 				// front
@@ -281,7 +281,7 @@ namespace Axiom.Core
 			sub.IndexData.indexBuffer = ibuf;
 			sub.IndexData.indexCount = NUM_INDICES;
 			sub.IndexData.indexStart = 0;
-			ibuf.WriteData( 0, ibuf.Size, faces, true );
+			ibuf.SetData( faces, 0, ibuf.Length, true );
 
 			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE ),
 												   new Vector3( CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE ) );
@@ -337,7 +337,7 @@ namespace Axiom.Core
 
 				float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
 
-				ushort* pIndices =(ushort*)iBuf.Lock( BufferLocking.Discard );
+				ushort* pIndices = (ushort*)iBuf.Lock( BufferLocking.Discard );
 
 				float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
 				float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );

@@ -89,6 +89,8 @@ namespace Axiom.Media
 	public static class OptimizedPixelConversion
 	{
 
+#if !AXIOM_SAFE_ONLY
+
 		#region PixelFormat.A8R8G8B8 Converters
 
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.A8B8G8R8 )]
@@ -651,6 +653,8 @@ namespace Axiom.Media
 
 		#endregion PixelFormat.X8B8G8R8 Converters
 
+#endif
+
 		private class PixelConverterAttribute : Attribute
 		{
 			private PixelFormat _srcFormat;
@@ -674,7 +678,9 @@ namespace Axiom.Media
 
 		private interface IPixelConverter
 		{
+#if !AXIOM_SAFE_ONLY
 			unsafe void Convert( byte* input, byte* output, int offset );
+#endif
 		}
 
 		private static Dictionary<int, IPixelConverter> _supportedConversions;
@@ -700,6 +706,7 @@ namespace Axiom.Media
 		{
 			public static void Convert( PixelBox src, PixelBox dst, IPixelConverter pixelConverter )
 			{
+#if !AXIOM_SAFE_ONLY
 				unsafe
 				{
 					byte* srcptr = (byte*)( src.Data.ToPointer() );
@@ -723,6 +730,7 @@ namespace Axiom.Media
 						dstptr += dstSliceSkip;
 					}
 				}
+#endif
 			}
 		}
 

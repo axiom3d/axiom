@@ -46,25 +46,41 @@ namespace Axiom.Graphics
 	/// </summary>
 	public abstract class HardwareIndexBuffer : HardwareBuffer
 	{
-		#region Fields
+		#region Fields and Properties
+
 		protected HardwareBufferManagerBase Manager;
 
 		/// <summary>
-		///		Type of index (16 or 32 bit).
+		///	An enum specifying whether this index buffer is 16 or 32 bit elements.
 		/// </summary>
-		protected IndexType type;
-		/// <summary>
-		///		Number of indices in this buffer.
-		/// </summary>
-		protected int numIndices;
-		/// <summary>
-		///     Size of each index.
-		/// </summary>
-		protected int indexSize;
+		public IndexType Type
+		{
+			get;
+			protected set;
+		}
 
-		#endregion
+		/// <summary>
+		///	The number of indices in this buffer.
+		/// </summary>
+		public int IndexCount
+		{
+			get;
+			protected set;
+		}
 
-		#region Constructors
+		/// <summary>
+		/// The size (in bytes) of each index element.
+		/// </summary>
+		/// <value></value>
+		public int IndexSize
+		{
+			get;
+			protected set;
+		}
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
 
 		/// <summary>
 		///		Constructor.
@@ -77,22 +93,22 @@ namespace Axiom.Graphics
 		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
-			this.type = type;
-			this.numIndices = numIndices;
-			this.Manager =  manager;
+			this.Type = type;
+			this.IndexCount = numIndices;
+			this.Manager = manager;
 			// calc the index buffer size
-			sizeInBytes = numIndices;
+			base.Length = numIndices;
 
 			if ( type == IndexType.Size32 )
 			{
-				indexSize = Marshal.SizeOf( typeof( int ) );
+				this.IndexSize = Marshal.SizeOf( typeof( int ) );
 			}
 			else
 			{
-				indexSize = Marshal.SizeOf( typeof( short ) );
+				this.IndexSize = Marshal.SizeOf( typeof( short ) );
 			}
 
-			sizeInBytes *= indexSize;
+			Length *= this.IndexSize;
 
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
@@ -101,44 +117,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
-
-		#region Properties
-
-		/// <summary>
-		///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
-		/// </summary>
-		public IndexType Type
-		{
-			get
-			{
-				return type;
-			}
-		}
-
-		/// <summary>
-		///		Gets the number of indices in this buffer.
-		/// </summary>
-		public int IndexCount
-		{
-			get
-			{
-				return numIndices;
-			}
-		}
-
-		/// <summary>
-		///     Gets the size (in bytes) of each index element.
-		/// </summary>
-		/// <value></value>
-		public int IndexSize
-		{
-			get
-			{
-				return indexSize;
-			}
-		}
-
-		#endregion
+		#endregion Construction and Destruction
 	}
 }
