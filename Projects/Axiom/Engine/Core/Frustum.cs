@@ -1633,131 +1633,127 @@ namespace Axiom.Core
 				// 5, 6, 7, 8 are the points on the far plane, top left first, clockwise
 				HardwareVertexBuffer buffer = _vertexData.vertexBufferBinding.GetBuffer( 0 );
 
-				IntPtr posPtr = buffer.Lock( BufferLocking.Discard );
+				float[] pPos = new float[ buffer.VertexSize * buffer.VertexCount ];
+				int index = 0;
+				buffer.GetData( pPos );
 
-				unsafe
-				{
-					float* pPos = (float*)posPtr.ToPointer();
+				// near plane (remember frustum is going in -Z direction)
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
 
-					// near plane (remember frustum is going in -Z direction)
-					*pPos++ = nearLeft;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
-					*pPos++ = nearRight;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
 
-					*pPos++ = nearRight;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
-					*pPos++ = nearRight;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
 
-					*pPos++ = nearRight;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
-					*pPos++ = nearLeft;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
 
-					*pPos++ = nearLeft;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
-					*pPos++ = nearLeft;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
+				// far plane (remember frustum is going in -Z direction)
+				pPos[ index++ ] = farLeft;
+				pPos[ index++ ] = farTop;
+				pPos[ index++ ] = -farDist;
+				pPos[ index++ ] = farRight;
+				pPos[ index++ ] = farTop;
+				pPos[ index++ ] = -farDist;
 
-					// far plane (remember frustum is going in -Z direction)
-					*pPos++ = farLeft;
-					*pPos++ = farTop;
-					*pPos++ = -farDist;
-					*pPos++ = farRight;
-					*pPos++ = farTop;
-					*pPos++ = -farDist;
+				pPos[ index++ ] = farRight;
+				pPos[ index++ ] = farTop;
+				pPos[ index++ ] = -farDist;
+				pPos[ index++ ] = farRight;
+				pPos[ index++ ] = farBottom;
+				pPos[ index++ ] = -farDist;
 
-					*pPos++ = farRight;
-					*pPos++ = farTop;
-					*pPos++ = -farDist;
-					*pPos++ = farRight;
-					*pPos++ = farBottom;
-					*pPos++ = -farDist;
+				pPos[ index++ ] = farRight;
+				pPos[ index++ ] = farBottom;
+				pPos[ index++ ] = -farDist;
+				pPos[ index++ ] = farLeft;
+				pPos[ index++ ] = farBottom;
+				pPos[ index++ ] = -farDist;
 
-					*pPos++ = farRight;
-					*pPos++ = farBottom;
-					*pPos++ = -farDist;
-					*pPos++ = farLeft;
-					*pPos++ = farBottom;
-					*pPos++ = -farDist;
+				pPos[ index++ ] = farLeft;
+				pPos[ index++ ] = farBottom;
+				pPos[ index++ ] = -farDist;
+				pPos[ index++ ] = farLeft;
+				pPos[ index++ ] = farTop;
+				pPos[ index++ ] = -farDist;
 
-					*pPos++ = farLeft;
-					*pPos++ = farBottom;
-					*pPos++ = -farDist;
-					*pPos++ = farLeft;
-					*pPos++ = farTop;
-					*pPos++ = -farDist;
+				// Sides of the pyramid
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
 
-					// Sides of the pyramid
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = nearLeft;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
 
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = nearRight;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
 
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = nearRight;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = 0.0f;
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
 
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = 0.0f;
-					*pPos++ = nearLeft;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
+				// Sides of the box
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = farLeft;
+				pPos[ index++ ] = farTop;
+				pPos[ index++ ] = -farDist;
 
-					// Sides of the box
-					*pPos++ = nearLeft;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
-					*pPos++ = farLeft;
-					*pPos++ = farTop;
-					*pPos++ = -farDist;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearTop;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = farRight;
+				pPos[ index++ ] = farTop;
+				pPos[ index++ ] = -farDist;
 
-					*pPos++ = nearRight;
-					*pPos++ = nearTop;
-					*pPos++ = -_nearDistance;
-					*pPos++ = farRight;
-					*pPos++ = farTop;
-					*pPos++ = -farDist;
+				pPos[ index++ ] = nearRight;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = farRight;
+				pPos[ index++ ] = farBottom;
+				pPos[ index++ ] = -farDist;
 
-					*pPos++ = nearRight;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
-					*pPos++ = farRight;
-					*pPos++ = farBottom;
-					*pPos++ = -farDist;
+				pPos[ index++ ] = nearLeft;
+				pPos[ index++ ] = nearBottom;
+				pPos[ index++ ] = -_nearDistance;
+				pPos[ index++ ] = farLeft;
+				pPos[ index++ ] = farBottom;
+				pPos[ index++ ] = -farDist;
 
-					*pPos++ = nearLeft;
-					*pPos++ = nearBottom;
-					*pPos++ = -_nearDistance;
-					*pPos++ = farLeft;
-					*pPos++ = farBottom;
-					*pPos++ = -farDist;
-				}
-
-				// don't forget to unlock!
-				buffer.Unlock();
+				buffer.SetData( pPos );
 
 				_recalculateVertexData = false;
 			}
