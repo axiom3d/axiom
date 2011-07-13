@@ -688,8 +688,8 @@ namespace Axiom.Media
 			Contract.Requires( PixelUtil.IsAccessible( src.Format ) );
 			Contract.Requires( PixelUtil.IsAccessible( scaled.Format ) );
 
-			byte[] buf; // For auto-delete
-			PixelBox temp;
+			byte[] buf = null; // For auto-delete
+			PixelBox temp = null;
 			switch ( filter )
 			{
 				default:
@@ -704,7 +704,7 @@ namespace Axiom.Media
 						// Allocate temporary buffer of destination size in source format 
 						temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
 						buf = new byte[ temp.ConsecutiveSize ];
-						temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
+						temp.Data = MemoryManager.Instance.Allocate( buf );
 					}
 
 					// super-optimized: no conversion
@@ -715,6 +715,7 @@ namespace Axiom.Media
 						// Blit temp buffer
 						PixelConverter.BulkPixelConversion( temp, scaled );
 					}
+
 					break;
 
 				case ImageFilter.Linear:
@@ -742,7 +743,7 @@ namespace Axiom.Media
 								// Allocate temp buffer of destination size in source format 
 								temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
 								buf = new byte[ temp.ConsecutiveSize ];
-								temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
+								temp.Data = MemoryManager.Instance.Allocate( buf );
 							}
 
 							// super-optimized: byte-oriented math, no conversion
@@ -762,7 +763,6 @@ namespace Axiom.Media
 									break;
 								default:
 									throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
-									break;
 							}
 							if ( temp.Data != scaled.Data )
 							{
@@ -788,6 +788,11 @@ namespace Axiom.Media
 							break;
 					}
 					break;
+			}
+			if ( buf != null )
+			{
+				MemoryManager.Instance.Deallocate( temp.Data );
+				buf = null;
 			}
 		}
 
@@ -819,10 +824,15 @@ namespace Axiom.Media
 			// do not delete[] m_pBuffer!  temp will destroy it
 
 			// set new dimensions, allocate new buffer
-			width = width;
-			height = height;
+			this.width = width;
+			this.height = height;
 			size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
 			buffer = new byte[ size ];
+			if ( bufPtr != null )
+			{
+				MemoryManager.Instance.Deallocate( bufPtr );
+				bufPtr = MemoryManager.Instance.Allocate( buffer );
+			}
 			numMipMaps = 0; // Loses precomputed mipmaps
 
 			// scale the image from temp into our resized buffer
