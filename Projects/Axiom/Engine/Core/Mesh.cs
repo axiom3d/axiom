@@ -1127,10 +1127,10 @@ namespace Axiom.Core
 				weightElem = decl.AddElement( bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
 			}
 
-            HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(bindIndex), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(bindIndex), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
 
-            // bind new buffer
-            bind.SetBinding(bindIndex, vbuf);
+			// bind new buffer
+			bind.SetBinding(bindIndex, vbuf);
 
 
 			// Assign data
@@ -1226,11 +1226,11 @@ namespace Axiom.Core
 				// add the new element
 				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3, VertexElementSemantic.TexCoords,	destCoordSet );
 
-                // Now create a new buffer, which includes the previous contents
-                // plus extra space for the 3D coords
-                HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
-                
-                // now copy the original data across
+				// Now create a new buffer, which includes the previous contents
+				// plus extra space for the 3D coords
+				HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
+				
+				// now copy the original data across
 				IntPtr srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
 				IntPtr destPtr = newBuffer.Lock( BufferLocking.Discard );
 
@@ -2628,39 +2628,32 @@ namespace Axiom.Core
 		///	     buffer already bound, and the number of vertices must agree with the
 		///   number in start and end
 		/// </param>
-		public static void SoftwareVertexMorph( float t, HardwareVertexBuffer b1,
-											   HardwareVertexBuffer b2, VertexData targetVertexData )
+		public static void SoftwareVertexMorph( float t, HardwareVertexBuffer b1, HardwareVertexBuffer b2, VertexData targetVertexData )
 		{
-			unsafe
+			float[] pb1 = new float[ b1.Length / sizeof( float ) ];
+			b1.GetData( pb1 );
+
+			float[] pb2 = new float[ b2.Length / sizeof( float ) ];
+			b2.GetData( pb2 );
+
+			VertexElement posElem =	targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			Debug.Assert( posElem != null );
+			HardwareVertexBuffer destBuf = targetVertexData.vertexBufferBinding.GetBuffer( posElem.Source );
+			Debug.Assert( posElem.Size == destBuf.VertexSize, "Positions must be in a buffer on their own for morphing" );
+
+			float[] pdst = new float[ destBuf.Length / sizeof( float ) ];
+			destBuf.GetData( pdst );
+
+			for ( int i = 0; i < targetVertexData.vertexCount; ++i )
 			{
-				float* pb1 = (float*)b1.Lock( BufferLocking.ReadOnly );
-				float* pb2 = (float*)b2.Lock( BufferLocking.ReadOnly );
-				VertexElement posElem =
-					targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				Debug.Assert( posElem != null );
-				HardwareVertexBuffer destBuf = targetVertexData.vertexBufferBinding.GetBuffer( posElem.Source );
-				Debug.Assert( posElem.Size == destBuf.VertexSize,
-							 "Positions must be in a buffer on their own for morphing" );
-				float* pdst = (float*)destBuf.Lock( BufferLocking.Discard );
-				for ( int i = 0; i < targetVertexData.vertexCount; ++i )
-				{
-					// x
-					*pdst++ = *pb1 + t * ( *pb2 - *pb1 );
-					++pb1;
-					++pb2;
-					// y
-					*pdst++ = *pb1 + t * ( *pb2 - *pb1 );
-					++pb1;
-					++pb2;
-					// z
-					*pdst++ = *pb1 + t * ( *pb2 - *pb1 );
-					++pb1;
-					++pb2;
-				}
-				destBuf.Unlock();
-				b1.Unlock();
-				b2.Unlock();
+				// x
+				pdst[ i ] = pb1[ i ] + t * ( pb2[ i ] - pb1[ i ] );
+				// y
+				pdst[ i + 1 ] = pb1[ i + 1 ] + t * ( pb2[ i + 1 ] - pb1[ i + 1 ] );
+				// z
+				pdst[ i + 2 ] = pb1[ i + 2 ] + t * ( pb2[ i + 2 ] - pb1[ i + 2 ] );
 			}
+			destBuf.SetData( pdst );
 		}
 
 		/// <summary>
@@ -2816,34 +2809,34 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void unload()
 		{
-            // Dispose managed resources.
-            if (_skeleton != null)
-            {
-                if (!this.Skeleton.IsDisposed)
-                    this._skeleton.Dispose();
+			// Dispose managed resources.
+			if (_skeleton != null)
+			{
+				if (!this.Skeleton.IsDisposed)
+					this._skeleton.Dispose();
 
-                this._skeleton = null;
-            }
+				this._skeleton = null;
+			}
 
-            foreach (SubMesh subMesh in _subMeshList)
-            {
-                if (!subMesh.IsDisposed)
-                    subMesh.Dispose();
-            }
-            _subMeshList.Clear();
+			foreach (SubMesh subMesh in _subMeshList)
+			{
+				if (!subMesh.IsDisposed)
+					subMesh.Dispose();
+			}
+			_subMeshList.Clear();
 
-            if (this._sharedVertexData != null)
-            {
-                if (!this._sharedVertexData.IsDisposed)
-                    this._sharedVertexData.Dispose();
+			if (this._sharedVertexData != null)
+			{
+				if (!this._sharedVertexData.IsDisposed)
+					this._sharedVertexData.Dispose();
 
-                this._sharedVertexData = null;
-            }
+				this._sharedVertexData = null;
+			}
 
-            _isPreparedForShadowVolumes = false;
+			_isPreparedForShadowVolumes = false;
 			
-            //// TODO: SubMeshNameCount
-            //// TODO: Remove LOD levels
+			//// TODO: SubMeshNameCount
+			//// TODO: Remove LOD levels
 		}
 
 		#endregion Implementation of Resource
@@ -2856,15 +2849,15 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-                    if (this.IsLoaded)
-                        this.unload();
+					if (this.IsLoaded)
+						this.unload();
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose(disposeManagedResources);
 		}
 
 
