@@ -91,6 +91,33 @@ namespace Axiom.Core
 				}
 			}
 		}
+
+		/// <summary>
+		///		Method for copying data from one MemoryBuffer to another.
+		/// </summary>
+		/// <param name="src">Source buffer.</param>
+		/// <param name="dest">Destination buffer.</param>
+		/// <param name="length">Length of data (in bytes) to copy.</param>
+		public static void Copy( IMemoryBuffer src, IMemoryBuffer dst, int length )
+		{
+			Copy( src, dst, 0, 0, length );
+		}
+
+		/// <summary>
+		///		Method for copying data from one MemoryBuffer to another.
+		/// </summary>
+		/// <param name="src">Source buffer.</param>
+		/// <param name="dest">Destination buffer.</param>
+		/// <param name="srcOffset">Offset at which to copy from the source buffer.</param>
+		/// <param name="destOffset">Offset at which to begin copying to the destination buffer.</param>
+		/// <param name="length">Length of data (in bytes) to copy.</param>
+		public static void Copy( IMemoryBuffer src, IMemoryBuffer dst, int srcOffset, int dstOffset, int length )
+		{
+			byte[] srcData = new byte[ length ];
+			src.GetData( srcData, srcOffset, length );
+			dst.SetData( srcData, dstOffset, length );
+		}
+
 		#endregion Copy Method
 
 		/// <summary>
