@@ -637,7 +637,7 @@ namespace Axiom.Media
 			faceSize = PixelUtil.GetMemorySize( width, height, depth, this.Format );
 			offset += faceSize * face;
 			// Return subface as pixelbox
-			if ( bufPtr != IntPtr.Zero )
+			if ( bufPtr != null )
 			{
 				return new PixelBox( width, height, depth, this.Format, bufPtr );
 			}
@@ -921,12 +921,9 @@ namespace Axiom.Media
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
-				if ( bufferPinnedHandle.IsAllocated )
-				{
-					bufferPinnedHandle.Free();
-				}
 				// Set large fields to null.
-				bufPtr = IntPtr.Zero;
+				MemoryManager.Instance.Deallocate( bufPtr );
+				bufPtr = null;
 				buffer = null;
 			}
 
