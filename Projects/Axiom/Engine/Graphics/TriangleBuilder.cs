@@ -64,8 +64,7 @@ namespace Axiom.Graphics
 			for ( int indexSet = 0; indexSet < indexDataList.Count; indexSet++ )
 			{
 				IndexData indexData = indexDataList[ indexSet ];
-				VertexData vertexData =
-				vertexDataList[ (int)indexDataVertexDataSetList[ indexSet ] ];
+				VertexData vertexData =	vertexDataList[ (int)indexDataVertexDataSetList[ indexSet ] ];
 				IndexType indexType = indexData.indexBuffer.Type;
 				OperationType opType = operationTypes[ indexSet ];
 
@@ -93,108 +92,91 @@ namespace Axiom.Graphics
 				HardwareVertexBuffer vertexBuffer = vertexData.vertexBufferBinding.GetBuffer( posElement.Source );
 
 				//Lock buffers
-				IntPtr vxPtr = vertexBuffer.Lock( BufferLocking.ReadOnly );
-				try
-				{
-					IntPtr idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
-					try
-					{
-						unsafe
-						{
-							byte* pVertexPos = (byte*)vxPtr + posElement.Offset; // positional element of the base vertex
-							float* pReal;										 // for vector component retrieval
-							int icount = 0;										 // index into the index buffer
-							int index;											 // index into the vertex buffer
-							short* p16Idx = null;
-							int* p32Idx = null;
+				float[] pVertexPos = new float[ vertexBuffer.Length / sizeof( float ) ];
+				vertexBuffer.GetData( pVertexPos );
 
-							if ( indexType == IndexType.Size16 )
+				short[] p16Idx = null;
+				int[] p32Idx = null;
+
+				int icount = 0;										 // index into the index buffer
+				int index;		// index into the vertex buffer
+				if ( indexType == IndexType.Size16 )
+				{
+					p16Idx = new short[ indexData.indexBuffer.Length / sizeof( short ) ];
+					indexData.indexBuffer.GetData( p16Idx );
+				}
+				else
+				{
+					p32Idx = new int[ indexData.indexBuffer.Length / sizeof( int ) ];
+					indexData.indexBuffer.GetData( p32Idx );
+				}
+
+				int componentCount = vertexBuffer.VertexSize / sizeof( float );
+				// iterate over all the groups of 3 indices
+				for ( int t = 0; t < iterations; t++ )
+				{
+					Vector3[] v = new Vector3[ 3 ]; //vertices of a single triangle, new instance needed each iteration
+
+					//assemble a triangle
+					for ( int i = 0; i < 3; i++ )
+					{
+						// standard 3-index read for tri list or first tri in strip / fan
+						if ( opType == OperationType.TriangleList || t == 0 )
+						{
+							if ( indexType == IndexType.Size32 )
 							{
-								p16Idx = (Int16*)idxPtr; //.ToPointer(); (?)
+								index = p32Idx[ icount++ ];
 							}
 							else
 							{
-								p32Idx = (Int32*)idxPtr; //.ToPointer();
+								index = p16Idx[ icount++ ];
+							}
+						}
+						else
+						{
+							// Strips and fans are formed from last 2 indexes plus the
+							// current one for triangles after the first
+
+							if ( indexType == IndexType.Size32 )
+							{
+								index = p32Idx[ icount + i - 2 ];
+							}
+							else
+							{
+								index = p16Idx[ icount + i - 2 ];
 							}
 
-							// iterate over all the groups of 3 indices
-							for ( int t = 0; t < iterations; t++ )
+							if ( i == 2 )
 							{
-								Vector3[] v = new Vector3[ 3 ]; //vertices of a single triangle, new instance needed each iteration
+								icount++;
+							}
+						}
 
-								//assemble a triangle
-								for ( int i = 0; i < 3; i++ )
-								{
-									// standard 3-index read for tri list or first tri in strip / fan
-									if ( opType == OperationType.TriangleList || t == 0 )
-									{
-										if ( indexType == IndexType.Size32 )
-										{
-											index = p32Idx[ icount++ ];
-										}
-										else
-										{
-											index = p16Idx[ icount++ ];
-										}
-									}
-									else
-									{
-										// Strips and fans are formed from last 2 indexes plus the
-										// current one for triangles after the first
+						//retrieve vertex position
 
-										if ( indexType == IndexType.Size32 )
-										{
-											index = p32Idx[ icount + i -
-											2 ];
-										}
-										else
-										{
-											index = p16Idx[ icount + i -
-											2 ];
-										}
-
-										if ( i == 2 )
-										{
-											icount++;
-										}
-									}
-
-									//retrieve vertex position
-									pReal = (float*)( pVertexPos + index * vertexBuffer.VertexSize );
-									v[ i ].x = *pReal++;
-									v[ i ].y = *pReal++;
-									v[ i ].z = *pReal;
-								}
-
-								// Put the points in in counter-clockwise order
-								if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y )
-								- ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
-								{
-									// Clockwise, so reverse points 1 and 2
-									Vector3 tmp = v[ 1 ];
-									v[ 1 ] = v[ 2 ];
-									v[ 2 ] = tmp;
-								}
-
-								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) -
-												( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
-												"Failed to arrange triangle points counter-clockwise." );
-
-								// Add to the list of triangles
-								triangles.Add( new TriangleVertices( v ) );
-
-							} // for iterations
-						} // unsafe
+						v[ i ].x = pVertexPos[ index * componentCount + posElement.Offset ];
+						v[ i ].y = pVertexPos[ index * componentCount + posElement.Offset  + 1 ];
+						v[ i ].z = pVertexPos[ index * componentCount + posElement.Offset  + 2 ];
 					}
-					finally
+
+					// Put the points in in counter-clockwise order
+					if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y )
+					- ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
 					{
-						indexData.indexBuffer.Unlock();
+						// Clockwise, so reverse points 1 and 2
+						Vector3 tmp = v[ 1 ];
+						v[ 1 ] = v[ 2 ];
+						v[ 2 ] = tmp;
 					}
-				}
-				finally
-				{
-					vertexBuffer.Unlock();
-				}
+
+					Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) -
+									( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
+									"Failed to arrange triangle points counter-clockwise." );
+
+					// Add to the list of triangles
+					triangles.Add( new TriangleVertices( v ) );
+
+				} // for iterations
 			}
 
 			return triangles;
