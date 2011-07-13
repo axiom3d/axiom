@@ -1989,13 +1989,13 @@ namespace Axiom.Core
 						// with the latest animated positions
 						if ( !extrudeVertices )
 						{
-							IntPtr srcPtr = esr.PositionBuffer.Lock( BufferLocking.Normal );
-							IntPtr destPtr = new IntPtr( srcPtr.ToInt64() + ( egi.vertexData.vertexCount * 12 ) );
+							byte[] srcBuffer = new byte[ egi.vertexData.vertexCount * 12 * 2 ];
+							esr.PositionBuffer.GetData( srcBuffer );
 
 							// 12 = sizeof(float) * 3
-							Memory.Copy( srcPtr, destPtr, 12 * egi.vertexData.vertexCount );
+							Array.Copy( srcBuffer, 0, srcBuffer, egi.vertexData.vertexCount * 12, egi.vertexData.vertexCount * 12 );
 
-							esr.PositionBuffer.Unlock();
+							esr.PositionBuffer.SetData( srcBuffer );
 						}
 
 						if ( egi.vertexData == this.mesh.SharedVertexData )
