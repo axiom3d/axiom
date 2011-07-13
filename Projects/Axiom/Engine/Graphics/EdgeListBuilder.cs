@@ -306,144 +306,109 @@ namespace Axiom.Graphics
 			VertexElement posElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 
 			HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
-			IntPtr posPtr = posBuffer.Lock( BufferLocking.ReadOnly );
-			IntPtr idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
+			float[] pBaseVertex = new float[ posBuffer.Length / sizeof( float ) ];
+			posBuffer.GetData( pBaseVertex );
 
-			unsafe
+			short[] p16Idx = null;
+			int[] p32Idx = null;
+
+			// counters used for pointer indexing
+			int count = 0;
+
+			if ( indexData.indexBuffer.Type == IndexType.Size16 )
 			{
-				byte* pBaseVertex = (byte*)posPtr.ToPointer();
+				indexData.indexBuffer.GetData( p16Idx );
+			}
+			else
+			{
+				indexData.indexBuffer.GetData( p32Idx );
+			}
 
-				short* p16Idx = null;
-				int* p32Idx = null;
+			int triStart = edgeData.triangles.Count;
 
-				// counters used for pointer indexing
-				int count16 = 0;
-				int count32 = 0;
+			// iterate over all the groups of 3 indices
+			edgeData.triangles.Capacity = triStart + iterations;
 
-				if ( indexData.indexBuffer.Type == IndexType.Size16 )
+			for ( int t = 0; t < iterations; t++ )
+			{
+				EdgeData.Triangle tri = new EdgeData.Triangle();
+				tri.indexSet = indexSet;
+				tri.vertexSet = vertexSet;
+
+				int[] index = new int[ 3 ];
+				Vector3[] v = new Vector3[ 3 ];
+
+				for ( int i = 0; i < 3; i++ )
 				{
-					p16Idx = (short*)idxPtr.ToPointer();
+					// Standard 3-index read for tri list or first tri in strip / fan
+					if ( opType == OperationType.TriangleList || t == 0 )
+					{
+						index[ i ] = indexData.indexBuffer.Type == IndexType.Size32 ? p32Idx[ count++ ] : p16Idx[ count++ ];
+					}
+					else
+					{
+						// Strips and fans are formed from last 2 indexes plus the 
+						// current one for triangles after the first
+						index[ i - 2 ] = indexData.indexBuffer.Type == IndexType.Size32 ? p32Idx[ count++ ] : p16Idx[ count++ ];
+
+						// Perform single-index increment at the last tri index
+						if ( i == 2 )
+						{
+							count++;
+						}
+					}
+
+					// populate tri original vertex index
+					tri.vertIndex[ i ] = index[ i ];
+
+					// Retrieve the vertex position
+					int vertPos = index[ i ] * ( posBuffer.VertexSize + posElem.Offset ) / sizeof( float );
+					v[ i ].x = pBaseVertex[ vertPos++ ];
+					v[ i ].y = pBaseVertex[ vertPos++ ];
+					v[ i ].z = pBaseVertex[ vertPos++ ];
+					// find this vertex in the existing vertex map, or create it
+					tri.sharedVertIndex[ i ] = FindOrCreateCommonVertex( v[ i ], vertexSet, indexSet, index[ i ] );
 				}
-				else
+
+				// Calculate triangle normal (NB will require recalculation for 
+				// skeletally animated meshes)
+				tri.normal = Utility.CalculateFaceNormal( v[ 0 ], v[ 1 ], v[ 2 ] );
+
+				// Add triangle to list
+				edgeData.triangles.Add( tri );
+
+				try
 				{
-					p32Idx = (int*)idxPtr.ToPointer();
+					// create edges from common list
+					if ( tri.sharedVertIndex[ 0 ] < tri.sharedVertIndex[ 1 ] )
+					{
+						CreateEdge( vertexSet, triStart + t,
+							tri.vertIndex[ 0 ], tri.vertIndex[ 1 ],
+							tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 1 ] );
+					}
+					if ( tri.sharedVertIndex[ 1 ] < tri.sharedVertIndex[ 2 ] )
+					{
+						CreateEdge( vertexSet, triStart + t,
+							tri.vertIndex[ 1 ], tri.vertIndex[ 2 ],
+							tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 2 ] );
+					}
+					if ( tri.sharedVertIndex[ 2 ] < tri.sharedVertIndex[ 0 ] )
+					{
+						CreateEdge( vertexSet, triStart + t,
+							tri.vertIndex[ 2 ], tri.vertIndex[ 0 ],
+							tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 0 ] );
+					}
 				}
-
-				float* pReal = null;
-
-				int triStart = edgeData.triangles.Count;
-
-				// iterate over all the groups of 3 indices
-				edgeData.triangles.Capacity = triStart + iterations;
-
-				for ( int t = 0; t < iterations; t++ )
+				catch ( Exception ex )
 				{
-					EdgeData.Triangle tri = new EdgeData.Triangle();
-					tri.indexSet = indexSet;
-					tri.vertexSet = vertexSet;
+					//Debug.WriteLine(ex.ToString());
+					//Debug.WriteLine(ex.StackTrace);
+					// unlock those buffers!
 
-					int[] index = new int[ 3 ];
-					Vector3[] v = new Vector3[ 3 ];
+					throw ex;
+				}
+			} // for iterations
 
-					for ( int i = 0; i < 3; i++ )
-					{
-						// Standard 3-index read for tri list or first tri in strip / fan
-						if ( opType == OperationType.TriangleList || t == 0 )
-						{
-							if ( indexData.indexBuffer.Type == IndexType.Size32 )
-							{
-								index[ i ] = p32Idx[ count32++ ];
-							}
-							else
-							{
-								index[ i ] = p16Idx[ count16++ ];
-							}
-						}
-						else
-						{
-							// Strips and fans are formed from last 2 indexes plus the 
-							// current one for triangles after the first
-							if ( indexData.indexBuffer.Type == IndexType.Size32 )
-							{
-								index[ i ] = p32Idx[ i - 2 ];
-							}
-							else
-							{
-								index[ i ] = p16Idx[ i - 2 ];
-							}
-
-							// Perform single-index increment at the last tri index
-							if ( i == 2 )
-							{
-								if ( indexData.indexBuffer.Type == IndexType.Size32 )
-								{
-									count32++;
-								}
-								else
-								{
-									count16++;
-								}
-							}
-						}
-
-						// populate tri original vertex index
-						tri.vertIndex[ i ] = index[ i ];
-
-						// Retrieve the vertex position
-						byte* pVertex = pBaseVertex + ( index[ i ] * posBuffer.VertexSize );
-						pReal = (float*)( pVertex + posElem.Offset );
-						v[ i ].x = *pReal++;
-						v[ i ].y = *pReal++;
-						v[ i ].z = *pReal++;
-						// find this vertex in the existing vertex map, or create it
-						tri.sharedVertIndex[ i ] = FindOrCreateCommonVertex( v[ i ], vertexSet, indexSet, index[ i ] );
-					}
-
-					// Calculate triangle normal (NB will require recalculation for 
-					// skeletally animated meshes)
-					tri.normal = Utility.CalculateFaceNormal( v[ 0 ], v[ 1 ], v[ 2 ] );
-
-					// Add triangle to list
-					edgeData.triangles.Add( tri );
-
-					try
-					{
-						// create edges from common list
-						if ( tri.sharedVertIndex[ 0 ] < tri.sharedVertIndex[ 1 ] )
-						{
-							CreateEdge( vertexSet, triStart + t,
-								tri.vertIndex[ 0 ], tri.vertIndex[ 1 ],
-								tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 1 ] );
-						}
-						if ( tri.sharedVertIndex[ 1 ] < tri.sharedVertIndex[ 2 ] )
-						{
-							CreateEdge( vertexSet, triStart + t,
-								tri.vertIndex[ 1 ], tri.vertIndex[ 2 ],
-								tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 2 ] );
-						}
-						if ( tri.sharedVertIndex[ 2 ] < tri.sharedVertIndex[ 0 ] )
-						{
-							CreateEdge( vertexSet, triStart + t,
-								tri.vertIndex[ 2 ], tri.vertIndex[ 0 ],
-								tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 0 ] );
-						}
-					}
-					catch ( Exception ex )
-					{
-						//Debug.WriteLine(ex.ToString());
-						//Debug.WriteLine(ex.StackTrace);
-						// unlock those buffers!
-						indexData.indexBuffer.Unlock();
-						posBuffer.Unlock();
-
-						throw ex;
-					}
-				} // for iterations
-			} // unsafe
-
-			// unlock those buffers!
-			indexData.indexBuffer.Unlock();
-			posBuffer.Unlock();
 		}
 
 		/// <summary>
