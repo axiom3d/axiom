@@ -73,16 +73,9 @@ namespace Axiom.Media
 		/// </summary>
 		protected byte[] buffer;
 		/// <summary>
-		///   This allows me to pin the buffer, so that I can return PixelBox 
-		///   objects representing subsets of this image.  Since the PixelBox
-		///   does not own the data, and has an IntPtr, I need to pin the
-		///   internal buffer here.
-		/// </summary>
-		protected GCHandle bufferPinnedHandle;
-		/// <summary>
 		///   This is the pointer to the contents of buffer.
 		/// </summary>
-		protected IntPtr bufPtr;
+		protected IMemoryBuffer bufPtr;
 
 		/// <summary>
 		///    Gets the byte array that holds the image data.
@@ -238,7 +231,7 @@ namespace Axiom.Media
 		#region Construction and Destruction
 
 		public Image()
-            : base()
+			: base()
 		{
 		}
 		#endregion Construction and Destruction
@@ -247,16 +240,15 @@ namespace Axiom.Media
 
 		protected void SetBuffer( byte[] newBuffer )
 		{
-			if ( bufferPinnedHandle.IsAllocated )
+			if ( bufPtr != null )
 			{
-				bufferPinnedHandle.Free();
-				bufPtr = IntPtr.Zero;
+				MemoryManager.Instance.Deallocate( bufPtr );
+				bufPtr = null;
 				buffer = null;
 			}
 			if ( newBuffer != null )
 			{
-				bufferPinnedHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
-				bufPtr = bufferPinnedHandle.AddrOfPinnedObject();
+				bufPtr = MemoryManager.Instance.Allocate( newBuffer );
 				buffer = newBuffer;
 			}
 		}
@@ -321,7 +313,7 @@ namespace Axiom.Media
 		/// <param name="gamma"></param>
 		/// <param name="size"></param>
 		/// <param name="bpp"></param>
-		public static void ApplyGamma( IntPtr bufPtr, float gamma, int size, int bpp )
+		public static void ApplyGamma( IMemoryBuffer bufPtr, float gamma, int size, int bpp )
 		{
 			if ( gamma == 1.0f )
 				return;
@@ -331,40 +323,38 @@ namespace Axiom.Media
 				return;
 
 			int stride = bpp >> 3;
-			unsafe
+			byte[] srcBytes = new byte[ size ];
+			bufPtr.GetData( srcBytes );
+			for ( int i = 0, j = size / stride, p = 0; i < j; i++, p += stride )
 			{
-				byte* srcBytes = (byte*)bufPtr.ToPointer();
+				float r, g, b;
 
-				for ( int i = 0, j = size / stride, p = 0; i < j; i++, p += stride )
-				{
-					float r, g, b;
+				r = (float)srcBytes[ p + 0 ];
+				g = (float)srcBytes[ p + 1 ];
+				b = (float)srcBytes[ p + 2 ];
 
-					r = (float)srcBytes[ p + 0 ];
-					g = (float)srcBytes[ p + 1 ];
-					b = (float)srcBytes[ p + 2 ];
+				r = r * gamma;
+				g = g * gamma;
+				b = b * gamma;
 
-					r = r * gamma;
-					g = g * gamma;
-					b = b * gamma;
+				float scale = 1.0f, tmp;
 
-					float scale = 1.0f, tmp;
+				if ( r > 255.0f && ( tmp = ( 255.0f / r ) ) < scale )
+					scale = tmp;
+				if ( g > 255.0f && ( tmp = ( 255.0f / g ) ) < scale )
+					scale = tmp;
+				if ( b > 255.0f && ( tmp = ( 255.0f / b ) ) < scale )
+					scale = tmp;
 
-					if ( r > 255.0f && ( tmp = ( 255.0f / r ) ) < scale )
-						scale = tmp;
-					if ( g > 255.0f && ( tmp = ( 255.0f / g ) ) < scale )
-						scale = tmp;
-					if ( b > 255.0f && ( tmp = ( 255.0f / b ) ) < scale )
-						scale = tmp;
+				r *= scale;
+				g *= scale;
+				b *= scale;
 
-					r *= scale;
-					g *= scale;
-					b *= scale;
-
-					srcBytes[ p + 0 ] = (byte)r;
-					srcBytes[ p + 1 ] = (byte)g;
-					srcBytes[ p + 2 ] = (byte)b;
-				}
+				srcBytes[ p + 0 ] = (byte)r;
+				srcBytes[ p + 1 ] = (byte)g;
+				srcBytes[ p + 2 ] = (byte)b;
 			}
+			bufPtr.SetData( srcBytes );
 		}
 
 		/// <summary>
@@ -940,7 +930,7 @@ namespace Axiom.Media
 				buffer = null;
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 		#endregion IDisposable Implementation
 	}
