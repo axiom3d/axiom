@@ -116,7 +116,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// 
 		/// </summary>
-		public XFG.VertexDeclaration XFGVertexDeclaration
+		public XFG.VertexDeclaration XnaVertexDecl
 		{
 			get
 			{
@@ -132,7 +132,8 @@ namespace Axiom.RenderSystems.Xna
 					// loop through and configure each element for D3D
 					for ( int i = 0; i < elements.Count; i++ )
 					{
-						Axiom.Graphics.VertexElement element = 	(Axiom.Graphics.VertexElement)elements[ i ];
+						Axiom.Graphics.VertexElement element =
+							(Axiom.Graphics.VertexElement)elements[ i ];
 
                         //No hardware could actually use this property: http://blogs.msdn.com/b/shawnhar/archive/2010/04/19/vertex-data-in-xna-game-studio-4-0.aspx
 						//xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
@@ -165,7 +166,7 @@ namespace Axiom.RenderSystems.Xna
 
 					// create the new declaration
 
-					_xnaVertexDecl = new XFG.VertexDeclaration( xnaElements );
+					_xnaVertexDecl =  new XFG.VertexDeclaration( xnaElements );
 
 
 					// reset the flag

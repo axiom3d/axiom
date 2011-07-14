@@ -54,27 +54,27 @@ namespace Axiom.Graphics
 
 		protected HardwareBufferManagerBase Manager;
 		protected int numVertices;
-		protected VertexDeclaration vertexDeclaration;
+		protected int vertexSize;
 		protected int useCount;
 
 		#endregion
 
 		#region Constructors
 
-		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
-			this.vertexDeclaration = vertexDeclaration;
+			this.vertexSize = vertexSize;
 			this.numVertices = numVertices;
 			this.Manager = manager;
 
 			// calculate the size in bytes of this buffer
-			sizeInBytes = vertexDeclaration.GetVertexSize() * numVertices;
+			sizeInBytes = vertexSize * numVertices;
 
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-                shadowBuffer = new DefaultHardwareVertexBuffer(Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic);
+				shadowBuffer = new DefaultHardwareVertexBuffer( Manager, vertexSize, numVertices, BufferUsage.Dynamic );
 			}
 
 			useCount = 0;
@@ -83,16 +83,6 @@ namespace Axiom.Graphics
 		#endregion
 
 		#region Properties
-        /// <summary>
-        /// 
-        /// </summary>
-        public VertexDeclaration VertexDeclaration
-        {
-            get
-            {
-                return vertexDeclaration;
-            }
-        }
 
 		/// <summary>
 		/// 
@@ -101,7 +91,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexDeclaration.GetVertexSize();
+				return vertexSize;
 			}
 		}
 
