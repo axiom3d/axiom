@@ -101,10 +101,6 @@ namespace Axiom.Animating
 			{
 				return time;
 			}
-			set
-			{
-				time = value;
-			}
 		}
 
 		#endregion

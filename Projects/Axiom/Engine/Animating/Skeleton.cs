@@ -646,9 +646,9 @@ namespace Axiom.Animating
 		public virtual void SetAnimationState( AnimationStateSet animSet )
 		{
 			/*
-			Algorithm:
-			  1. Reset all bone positions
-			  2. Iterate per AnimationState, if enabled get Animation and call Animation::apply
+		Algorithm:
+		  1. Reset all bone positions
+		  2. Iterate per AnimationState, if enabled get Animation and call Animation::apply
 			*/
 
 			// reset bones

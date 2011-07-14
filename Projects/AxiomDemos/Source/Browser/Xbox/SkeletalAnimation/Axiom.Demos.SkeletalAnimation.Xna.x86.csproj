@@ -105,8 +105,8 @@
     <Compile Include="..\Common\XnaInput.cs">
       <Link>XnaInput.cs</Link>
     </Compile>
-    <Compile Include="..\Common\XnaInput.x86.cs">
-      <Link>XnaInput.x86.cs</Link>
+    <Compile Include="..\Common\XnaInput.XBox.cs">
+      <Link>XnaInput.XBox.cs</Link>
     </Compile>
     <Compile Include="Game.Xbox.SkeletalAnimation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -178,7 +178,7 @@
     </ProjectReference>
     <ProjectReference Include="Content\Axiom.Content.SkeletalAnimation.contentproj">
       <Project>{BF8E6CB2-6D99-4A56-AE2C-CF568EB5381D}</Project>
-      <Name>Axiom.Content.SkeletalAnimation %28Content%29</Name>
+      <Name>SkeletalAnimationAxiom.Content.SkeletalAnimation %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>

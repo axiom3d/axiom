@@ -599,7 +599,6 @@ namespace Axiom.Animating
 		{
 			// note: this is an un-attached keyframe
 			TransformKeyFrame result = (TransformKeyFrame)kf;
-			result.Time = time;
 
 			// Keyframe pointers
 			KeyFrame kBase1, kBase2;
@@ -677,7 +676,6 @@ namespace Axiom.Animating
 			ApplyToNode( target, time, weight, accumulate, scale );
 		}
 
-		TransformKeyFrame kf = new TransformKeyFrame( null, 0.0f );
 		/// <summary>
 		///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
 		/// </summary>
@@ -687,6 +685,7 @@ namespace Axiom.Animating
 		/// <param name="accumulate"></param>
 		public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scale )
 		{
+			TransformKeyFrame kf = new TransformKeyFrame( null, time );
 			this.GetInterpolatedKeyFrame( time, kf );
 
 			if ( accumulate )

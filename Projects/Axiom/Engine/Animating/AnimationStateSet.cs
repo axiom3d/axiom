@@ -54,7 +54,7 @@ namespace Axiom.Animating
 	///		This class implements the IControllerValue interface to enable automatic update of
 	///		animation state through controllers.
 	/// </remarks>
-	public class AnimationStateSet : IEnumerable<KeyValuePair<string, AnimationState>>
+	public class AnimationStateSet
 	{
 
 		#region Protected Fields
@@ -273,15 +273,5 @@ namespace Axiom.Animating
 		}
 
 		#endregion Methods
-
-		public IEnumerator<KeyValuePair<string, AnimationState>> GetEnumerator()
-		{
-			return stateSet.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return stateSet.GetEnumerator();
-		}
 	}
 }
