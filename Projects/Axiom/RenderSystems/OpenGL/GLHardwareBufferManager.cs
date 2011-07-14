@@ -96,9 +96,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="numVerts"></param>
 		/// <param name="usage"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
 		{
-			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
+			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
 		}
 
 		/// <summary>
@@ -109,9 +109,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
+			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( this, vertexSize, numVerts, usage, useShadowBuffer );
 			vertexBuffers.Add( buffer );
 			return buffer;
 		}

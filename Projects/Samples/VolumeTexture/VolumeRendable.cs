@@ -203,7 +203,7 @@ namespace Axiom.Samples.VolumeTexture
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.TexCoords ).Size;
 
 			HardwareVertexBuffer vertexBuffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl, nvertices, BufferUsage.StaticWriteOnly );
+				HardwareBufferManager.Instance.CreateVertexBuffer( offset, nvertices, BufferUsage.StaticWriteOnly );
 
 			bind.SetBinding( 0, vertexBuffer );
 
