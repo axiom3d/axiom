@@ -164,18 +164,17 @@ namespace Axiom.Graphics
 		/// <param name="extrudeDistance">The distance to extrude.</param>
 		public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, float extrudeDistance )
 		{
-			unsafe
-			{
+
 				Debug.Assert( vertexBuffer.VertexSize == sizeof( float ) * 3, "Position buffer should contain only positions!" );
 
 				// Extrude the first area of the buffer into the second area
 				// Lock the entire buffer for writing, even though we'll only be
 				// updating the latter because you can't have 2 locks on the same
 				// buffer
-				IntPtr srcPtr = vertexBuffer.Lock( BufferLocking.Normal );
-				IntPtr destPtr = new IntPtr( srcPtr.ToInt64() + ( originalVertexCount * 3 * 4 ) );
-				float* pSrc = (float*)srcPtr.ToPointer();
-				float* pDest = (float*)destPtr.ToPointer();
+                float[] pSrc = new float[vertexBuffer.Length / sizeof(float)];
+                vertexBuffer.GetData(pSrc);
+
+                float[] pDest = new float[vertexBuffer.Length + (originalVertexCount * 3 * 4)];
 
 				int destCount = 0, srcCount = 0;
 
@@ -200,10 +199,9 @@ namespace Axiom.Graphics
 					pDest[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.y;
 					pDest[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.z;
 				}
+                vertexBuffer.SetData(pDest);
 			}
 
-			vertexBuffer.Unlock();
-		}
 
 		/// <summary>
 		///		Tells the caster to perform the tasks necessary to update the
@@ -241,14 +239,13 @@ namespace Axiom.Graphics
 			bool extrudeToInfinity = ( flags & (int)ShadowRenderableFlags.ExtrudeToInfinity ) > 0;
 
 			// Lock index buffer for writing
-			IntPtr idxPtr = indexBuffer.Lock( BufferLocking.Discard );
-
+            float[] pIdx = new float[indexBuffer.Length / sizeof(float)];
+            indexBuffer.GetData(pIdx);
 			int indexStart = 0;
 
-			unsafe
+			//unsafe
 			{
 				// TODO: Will currently cause an overflow for 32 bit indices, revisit
-				short* pIdx = (short*)idxPtr.ToPointer();
 				int count = 0;
 
 				// Iterate over the groups and form renderables for each based on their
@@ -421,7 +418,7 @@ namespace Axiom.Graphics
 			}
 
 			// Unlock index buffer
-			indexBuffer.Unlock();
+            indexBuffer.SetData(pIdx);
 
 			Debug.Assert( indexStart <= indexBuffer.IndexCount, "Index buffer overrun while generating shadow volume!" );
 		}
