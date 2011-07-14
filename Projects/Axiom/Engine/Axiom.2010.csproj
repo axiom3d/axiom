@@ -254,6 +254,7 @@
     <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
     <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\DepthBuffer.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
