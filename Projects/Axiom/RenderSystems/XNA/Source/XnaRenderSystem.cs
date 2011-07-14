@@ -151,7 +151,6 @@ namespace Axiom.RenderSystems.Xna
 		{
 			Dictionary<short, HardwareVertexBuffer> bindings = binding.Bindings;
 
-			// TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
 			var xnaBindings = new XFG.VertexBufferBinding[ binding.BindingCount ];
 			int index = 0;
 			foreach ( short stream in bindings.Keys )
@@ -1554,8 +1553,10 @@ namespace Axiom.RenderSystems.Xna
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState( _device );
 			StateManager.ResetState( _device );
-            
-			basicEffect.CurrentTechnique.Passes[0].Apply();
+
+            basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
+
+            basicEffect.CurrentTechnique.Passes[0].Apply();
             
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
@@ -1689,8 +1690,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
-           
-			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
+            XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 			// set the vertex declaration and buffer binding 
 			//_device.VertexDeclaration = vertDecl.XnaVertexDecl;
 			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
