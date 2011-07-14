@@ -223,14 +223,14 @@ namespace Axiom.Core
 		/// <summary>
 		///    Gets a reference to the specified named resource.
 		/// </summary>
-		/// <param name="name">Name of the resource to retrieve.</param>
+		/// <param name="name">Name of the resource to retreive.</param>
 		/// <returns>A reference to a Resource with the given name or null.</returns>
 		/// <ogre name="getByName" />
 		public Resource this[ string name ]
 		{
 			get
 			{
-				Debug.Assert( _resources != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( _resources != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
 				Resource resource;
 
@@ -252,7 +252,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Debug.Assert( _resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( _resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
 				Resource resource;
 

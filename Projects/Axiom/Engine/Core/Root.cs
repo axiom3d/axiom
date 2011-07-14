@@ -846,9 +846,6 @@ namespace Axiom.Core
 			if ( this.firstTimePostWindowInit )
 			{
 				// init material manager singleton, which parse sources for materials
-                if ( MaterialManager.Instance == null )
-                    new MaterialManager();
-
 				MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
@@ -1234,7 +1231,6 @@ namespace Axiom.Core
 			return result;
 		}
 
-		FrameEventArgs frameEventArgs = new FrameEventArgs();
 		/// <summary>
 		///    Method for raising frame started events.
 		/// </summary>
@@ -1251,12 +1247,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameStarted()
 		{
-			//FrameEventArgs e = new FrameEventArgs();
+			FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
+			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameStarted( frameEventArgs );
+			return this.OnFrameStarted( e );
 		}
 
 		/// <summary>
@@ -1273,12 +1269,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameRenderingQueued()
 		{
-			//FrameEventArgs e = new FrameEventArgs();
+			FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
+			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameRenderingQueued( frameEventArgs );
+			return this.OnFrameRenderingQueued( e );
 		}
 
 		/// <summary>
@@ -1297,12 +1293,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public bool OnFrameEnded()
 		{
-			//FrameEventArgs e = new FrameEventArgs();
+			FrameEventArgs e = new FrameEventArgs();
 			long now = this.timer.Milliseconds;
-			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
+			e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameEnded( frameEventArgs );
+			return this.OnFrameEnded( e );
 		}
 
 		/// <summary>

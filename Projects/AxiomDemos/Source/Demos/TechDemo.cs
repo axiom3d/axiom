@@ -405,9 +405,7 @@ namespace Axiom.Demos
 
 		protected virtual void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-            evt.StopRendering = false;
-            
-            float scaleMove = 200 * evt.TimeSinceLastFrame;
+			float scaleMove = 200 * evt.TimeSinceLastFrame;
 
 			// reset acceleration zero
 			camAccel = Vector3.Zero;
@@ -423,7 +421,6 @@ namespace Axiom.Demos
 			{
 				//Root.Instance.QueueEndRendering();
 				evt.StopRendering = true;
-                return;
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.A ) )
@@ -484,7 +481,7 @@ namespace Axiom.Demos
 				}
 				else
 				{
-					//camera.PolygonMode = PolygonMode.Points;
+					camera.PolygonMode = PolygonMode.Points;
 				}
 
 				SetDebugText( String.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
@@ -750,19 +747,16 @@ namespace Axiom.Demos
 			{
 				camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
 			}
-            evt.StopRendering = false;
-        }
+		}
 
 		protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
 		{
-            evt.StopRendering = false;
-        }
+		}
 
 		protected virtual void OnFrameEnded( object source, FrameEventArgs evt )
 		{
 			UpdateStats();
-            evt.StopRendering = false;
-        }
+		}
 
 
 		DateTime averageStart = DateTime.Now;
@@ -805,7 +799,6 @@ namespace Axiom.Demos
 			element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
 			if ( element != null )
 				element.Text = debugText;
-
 		}
 
 

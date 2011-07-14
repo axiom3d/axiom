@@ -237,7 +237,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( glContext == null )
 			{
 				// create window
-				_window = new NativeWindow( width, height, title, WindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
+				_window = new NativeWindow( width, height, title, GameWindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
 				glContext = new OpenTKGLContext( _window.WindowInfo );
 
 				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
@@ -286,18 +286,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Resize( int width, int height )
 		{
-            if (_window == null)
-            {
-                this.Width = width;
-                this.Height = height;
-                this.WindowMovedOrResized();
-            }
-            else
-            {
-                _window.Width = width;
-                _window.Height = height;
-                WindowEventMonitor.Instance.WindowResized(this);
-            }
+			if ( _window == null )
+				return;
+			_window.Width = width;
+			_window.Height = height;
+			WindowEventMonitor.Instance.WindowResized( this );
 		}
 
 		public override void WindowMovedOrResized()

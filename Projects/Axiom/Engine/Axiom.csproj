@@ -105,7 +105,7 @@
     <Compile Include="Core\BillboardChain.cs" />
     <Compile Include="Core\BitConverterEx.cs" />
     <Compile Include="Core\DisposableObject.cs" />
-    <Compile Include="Core\InstancedGeometry\InstancedGeometry.cs" />
+    <Compile Include="Core\InstanceGeometry\InstancedGeometry.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\MemoryBuffer.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />

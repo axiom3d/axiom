@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Axiom.RenderSystems.OpenGL.Win32</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>Axiom.RenderSystems.OpenGL</RootNamespace>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>http://localhost/Axiom.RenderSystems.OpenGL/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;OPENGL_W32</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;OPENGL_W32</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\x86\Release\Axiom.RenderSystems.OpenGL.Win32.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <WarningLevel>0</WarningLevel>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <DebugType>none</DebugType>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Platform.Windows, Version=1.0.0.5, Culture=neutral, PublicKeyToken=701104b2da67a104">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.Platform.Windows.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="ARBGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BaseGLSupport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLContext.cs" />
+    <Compile Include="GLCopyingRenderTexture.cs" />
+    <Compile Include="GLCopyingRTTManager.cs" />
+    <Compile Include="GLFBOMultiRenderTarget.cs" />
+    <Compile Include="GLFBORenderTexture.cs" />
+    <Compile Include="GLFBORTTManager.cs" />
+    <Compile Include="GLFrameBufferObject.cs" />
+    <Compile Include="GLGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLGpuProgramManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareBufferManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareIndexBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareOcclusionQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwarePixelBuffer.cs" />
+    <Compile Include="GLHardwareVertexBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLPBRenderTexture.cs" />
+    <Compile Include="GLPBRTTManager.cs" />
+    <Compile Include="GLPBuffer.cs" />
+    <Compile Include="GLPixelUtil.cs" />
+    <Compile Include="GLRenderBuffer.cs" />
+    <Compile Include="GLRenderSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLRenderTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLRTTManager.cs" />
+    <Compile Include="GLSurfaceDesc.cs" />
+    <Compile Include="GLTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLTextureBuffer.cs" />
+    <Compile Include="GLTextureManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IOpenGLGpuProgramFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ati\ATIFragmentShaderGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ati\Compiler2Pass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ati\Enums.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ati\Lists.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ati\PixelShader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ati\Structures.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nvidia\NV3xGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nvidia\NvparseFragmentProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="glsl\GLSLGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="glsl\GLSLHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="glsl\GLSLLinkProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="glsl\GLSLLinkProgramManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="glsl\GLSLProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="glsl\GLSLProgramFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Win32AssemblyInfo.cs" />
+    <Compile Include="Win32\DefaultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Win32\GLHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Win32\GLRenderWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Win32\Win32Context.cs" />
+    <Compile Include="Win32\Win32MessageHandling.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

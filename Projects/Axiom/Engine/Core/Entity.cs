@@ -424,9 +424,9 @@ namespace Axiom.Core
 		{
 			get
 			{
-				foreach ( var item in this.animationState )
+				foreach ( AnimationState state in this.animationState.Values )
 				{
-					if ( item.Value.IsEnabled )
+					if ( state.IsEnabled )
 					{
 						return true;
 					}
@@ -1049,7 +1049,8 @@ namespace Axiom.Core
 							// Blend, taking source from either mesh data or morph data
 							Mesh.SoftwareVertexBlend(
 									( this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None
-											  ? this.softwareVertexAnimVertexData
+											  ?
+													  this.softwareVertexAnimVertexData
 											  : this.mesh.SharedVertexData ),
 									this.skelAnimVertexData,
 									this.boneMatrices,
@@ -1096,38 +1097,38 @@ namespace Axiom.Core
 				// remember the last frame count
 				this.frameAnimationLastUpdated = currentFrameNumber;
 			}
+			// 			// Need to update the child object's transforms when animation dirty
+			// 			// or parent node transform has altered.
+			// 			if (HasSkeleton &&
+			// 				(animationDirty || lastParentXform != ParentNodeFullTransform)) {
+			// 				// Cache last parent transform for next frame use too.
+			// 				lastParentXform = ParentNodeFullTransform;
 
-			// Need to update the child object's transforms when animation dirty
-			// or parent node transform has altered.
-			if ( HasSkeleton && animationDirty || lastParentXform != ParentNodeFullTransform )
-			{
-				lastParentXform = ParentNodeFullTransform;
-				for ( int i = 0; i < childObjectList.Count; i++ )
-				{
-					MovableObject child = childObjectList[ i ];
-					child.ParentNode.Update( true, true );
+			// 				// update the child object's transforms
+			// 				for(int i = 0; i < childObjectList.Count; i++) {
+			// 					MovableObject child = childObjectList[i];
+			// 					child.ParentNode.Update(true, true);
+			// 				}
 
-				}
+			// 				// Also calculate bone world matrices, since are used as replacement world matrices,
+			// 				// but only if it's used (when using hardware animation and skeleton animated).
+			// 				if (hwAnimation && skeletonAnimated) {
+			// 					numBoneMatrices = skeletonInstance.BoneCount;
 
-				if ( hardwareAnimation && IsSkeletonAnimated )
-				{
-					numBoneMatrices = skeletonInstance.BoneCount;
-					if ( boneWorldMatrices == null )
-					{
-						boneWorldMatrices = new Matrix4[ numBoneMatrices ];
-					}
-					for ( int i = 0; i < numBoneMatrices; i++ )
-					{
-						boneWorldMatrices[ i ] = Matrix4.Multiply( lastParentXform, boneMatrices[ i ] );
-					}
-
-				}
-			}
+			// 					// Allocate bone world matrices on demand, for better memory footprint
+			// 					// when using software animation.
+			// 					if (boneWorldMatrices) {
+			// 						boneWorldMatrices = new Matrix4[numBoneMatrices];
+			// 					}
+			// 					for(int i = 0; i < numBoneMatrices; i++) {
+			// 						boneWorldMatrices[i] = lastParentWorldXform * boneMatrices[i];
+			// 					}
+			// 				}
+			// 			}
 		}
-		protected internal Matrix4[] boneWorldMatrices;
 
 		/// <summary>
-		///     Initialize the hardware animation elements for given vertex data
+		///     Initialise the hardware animation elements for given vertex data
 		/// </summary>
 		private void InitHardwareAnimationElements( VertexData vdata, ushort numberOfElements )
 		{

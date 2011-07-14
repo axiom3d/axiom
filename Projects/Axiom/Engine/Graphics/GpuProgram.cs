@@ -523,7 +523,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return manualNamedConstantsFile;
+				return ManualNamedConstantsFile;
 			}
 			set
 			{

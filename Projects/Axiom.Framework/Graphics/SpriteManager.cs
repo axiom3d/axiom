@@ -164,7 +164,11 @@ namespace Axiom.Framework.Graphics
                 VertexElementType.Float2,
                 VertexElementSemantic.TexCoords );
 
-            hardwareBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( vd.Clone( 0 ), size, BufferUsage.DynamicWriteOnlyDiscardable, true );
+            hardwareBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
+                vd.GetVertexSize( 0 ),
+                size,
+                BufferUsage.DynamicWriteOnlyDiscardable,
+                true );
 
             renderOp.vertexData.vertexBufferBinding.SetBinding( 0, hardwareBuffer );
 

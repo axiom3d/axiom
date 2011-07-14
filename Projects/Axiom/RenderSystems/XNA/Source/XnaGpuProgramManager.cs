@@ -34,11 +34,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using Axiom.Collections;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using ResourceHandle = System.UInt64;
+
+using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -86,16 +89,16 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
-            switch (type)
-            {
-                case GpuProgramType.Vertex:
-                    return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+			switch ( type )
+			{
+				case GpuProgramType.Vertex:
+				//	return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 
-                case GpuProgramType.Fragment:
-                    return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
-                default:
-                    throw new NotSupportedException( "The program type is not supported." );
-            }
+				case GpuProgramType.Fragment:
+				//	return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				default:
+					throw new NotSupportedException( "The program type is not supported." );
+			}
 		}
 
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
@@ -107,11 +110,11 @@ namespace Axiom.RenderSystems.Xna
             return null;
 			if ( createParams[ "type" ] == "vertex_program" )
 			{
-				return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+				//return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 			}
 			else
 			{
-				return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				//return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
 			}
 		}
 
