@@ -158,7 +158,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected GLGpuProgramManager gpuProgramMgr;
 		protected GLGpuProgram currentVertexProgram;
-		protected GLGpuProgram currentFragmentProgram;
+		protected GLGpuProgram currentGeometryProgram;
+        protected GLGpuProgram currentFragmentProgram;
 
 		private int _activeTextureUnit;
 
@@ -2040,7 +2041,7 @@ namespace Axiom.RenderSystems.OpenGL
 						Debug.Assert( _rsCapabilities.HasCapability( Capabilities.VertexPrograms ) );
 						if ( currentVertexProgram != null )
 						{
-							int attrib = currentVertexProgram.AttributeIndex( element.Semantic );
+							var attrib = currentVertexProgram.AttributeIndex( element.Semantic, (uint)element.Index );
 							Gl.glVertexAttribPointerARB(
 														attrib, // matrix indices are vertex attribute 7
 														VertexElement.GetTypeCount( element.Type ),
@@ -2172,6 +2173,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 			Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
+            /*
 			if ( currentVertexProgram != null )
 			{
 				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendIndices ) )
@@ -2182,7 +2184,8 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Tangent ) ); // disable tangent
 				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Binormal ) )
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Binormal ) ); // disable binormal
-			}
+			}*/
+            throw new NotImplementedException("need to implement attribsBound");
 
 			Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		}
@@ -2622,18 +2625,33 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///    Binds the supplied parameters to programs of the specified type for future rendering operations.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="parms"></param>
-		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
+		[OgreVersion(1, 7)]
+		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
-			// store the current program in use for eas unbinding later
-			if ( type == GpuProgramType.Vertex )
+            if (mask.HasFlag(GpuProgramParameters.GpuParamVariability.Global))
+            {
+                // We could maybe use GL_EXT_bindable_uniform here to produce Dx10-style
+                // shared constant buffers, but GPU support seems fairly weak?
+                // for now, just copy
+                parms.CopySharedParams();
+            }
+
+			// store the current program in use for eas unbinding later);
+			switch (type)
 			{
-				currentVertexProgram.BindParameters( parms );
-			}
-			else
-			{
-				currentFragmentProgram.BindParameters( parms );
+                case GpuProgramType.Vertex:
+                    activeVertexGpuProgramParameters = parms;
+				    currentVertexProgram.BindProgramParameters( parms, mask );
+			        break;
+                case GpuProgramType.Geometry:
+                    activeGeometryGpuProgramParameters = parms;
+                    currentGeometryProgram.BindProgramParameters(parms, mask);
+                    break;
+                case GpuProgramType.Fragment:
+                    activeFragmentGpuProgramParameters = parms;
+                    currentFragmentProgram.BindProgramParameters(parms, mask);
+                    break;
+
 			}
 		}
 
