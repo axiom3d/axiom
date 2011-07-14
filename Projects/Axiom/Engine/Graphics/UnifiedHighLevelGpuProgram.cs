@@ -230,11 +230,6 @@ namespace Axiom.Graphics
 				}
 				return false;
 			}
-			set
-			{
-				if ( Delegate != null )
-					Delegate.PassSurfaceAndLightStates = value;
-			}
 		}
 
 		public override bool HasDefaultParameters
@@ -261,7 +256,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override GpuProgramParameters CreateParameters()
+	    protected override void BuildConstantDefinitions()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public override GpuProgramParameters CreateParameters()
 		{
 			if ( IsSupported )
 			{
@@ -283,7 +283,6 @@ namespace Axiom.Graphics
 				case "delegate":
 					AddDelegateProgram( val );
 					return true;
-					break;
 			}
 			return false;
 		}
@@ -299,12 +298,7 @@ namespace Axiom.Graphics
 			throw new Exception( "The method or operation is not implemented." );
 		}
 
-		protected override void UnloadImpl()
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
-
-		protected override void PopulateParameterNames( GpuProgramParameters parms )
+		protected override void UnloadHighLevelImpl()
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}

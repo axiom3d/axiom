@@ -8,7 +8,6 @@
     <Module Include="Platforms\OpenTK\axiom.platform.opentk.module" Condition="'$(Platform)'=='x86'" />
 
     <Module Include="RenderSystems\DirectX9\axiom.rendersystem.directx9.module" Condition="'$(Platform)'=='x86'" />
-    <Module Include="RenderSystems\OpenGL\axiom.rendersystem.opengl.win32.module" Condition="'$(Platform)'=='x86'" />
     <Module Include="RenderSystems\OpenGL\axiom.rendersystem.opengl.opentk.module" Condition="'$(Platform)'=='x86'" />
     <Module Include="RenderSystems\Xna\axiom.rendersystem.xna.module" />
       <Module Include="Tools\Axiom.RenderSystems.Xna.Content\axiom.tool.xna.content.module" />
@@ -21,6 +20,7 @@
     <Module Include="Plugins\Axiom.Plugins.SystemDrawingCodecs\axiom.plugin.systemdrawingcodecs.module" Condition="'$(Platform)'=='x86'" />
     <Module Include="Plugins\CgProgramManager\axiom.plugin.cgprogrammanager.module" Condition="'$(Platform)'=='x86'" />
     <Module Include="Plugins\DevILCodecs\axiom.plugin.devilcodecs.module" Condition="'$(Platform)'=='x86'" />
+    <Module Include="Plugins\Axiom.Plugins.FreeImageCodecs\axiom.plugin.freeimagecodecs.module" Condition="'$(Platform)'=='x86'" />
     <Module Include="Plugins\ParticleFX\axiom.plugin.particlefx.module" />
 
   </ItemGroup>

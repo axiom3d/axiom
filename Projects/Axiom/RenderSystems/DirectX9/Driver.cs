@@ -34,7 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using Axiom.Core;
+using SlimDX.Direct3D9;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -49,144 +50,124 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public Driver( D3D.AdapterInformation adapterInfo )
-		{
-			this._desktopMode = adapterInfo.CurrentDisplayMode;
-			this._name = adapterInfo.Details.DriverName;
-			this._description = adapterInfo.Details.Description;
-			this._adapterNum = adapterInfo.Adapter;
-			this._adapterIdentifier = adapterInfo.Details.DeviceIdentifier;
-
-			_videoModeList = new VideoModeCollection();
-		}
+	    public Driver( int adapterNumber, Capabilities deviceCaps,
+                AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode)
+	    {
+            _adapterNumber = adapterNumber;
+            _d3D9DeviceCaps = deviceCaps;
+		    _adapterIdentifier	= adapterIdentifier;
+		    _desktopDisplayMode = desktopDisplayMode;
+		    _videoModeList		= null;			
+	    }
 
 		#endregion Constructors
 
-		#region Properties
+        #region Properties
 
-		#region Name Property
-		private string _name;
-		/// <summary>
-		///
-		/// </summary>
-		public string Name
+        #region DriverName
+
+            [OgreVersion(1, 7, 2790)]
+		public string DriverName
 		{
 			get
 			{
-				return _name;
+				return _adapterIdentifier.DriverName;
 			}
 		}
 		#endregion Name Property
 
-		#region Description Property
-		private string _description;
-		/// <summary>
-		///
-		/// </summary>
-		public string Description
+		#region DriverDescription
+
+		public string DriverDescription
 		{
 			get
 			{
-				return _description;
+				return _adapterIdentifier.Description;
 			}
 		}
 		#endregion Description Property
 
 		#region AdapterNumber Property
-		private int _adapterNum;
-		/// <summary>
-		///
-		/// </summary>
+
+        [OgreVersion(1, 7, 2790)]
+		private readonly int _adapterNumber;
+
+        [OgreVersion(1, 7, 2790)]
 		public int AdapterNumber
 		{
 			get
 			{
-				return _adapterNum;
+                return _adapterNumber;
 			}
 		}
 		#endregion AdapterNumber Property
 
 		#region AdapterIdentifier Property
-		private Guid _adapterIdentifier;
-		/// <summary>
-		///
-		/// </summary>
-		public Guid AdapterIdentifier
+
+        [OgreVersion(1, 7, 2790)]
+        private readonly AdapterDetails _adapterIdentifier;
+
+        [OgreVersion(1, 7, 2790)]
+		public AdapterDetails AdapterIdentifier
 		{
 			get
 			{
 				return _adapterIdentifier;
 			}
 		}
+
 		#endregion AdapterIdentifier Property
 
 		#region DesktopMode Property
-		private D3D.DisplayMode _desktopMode;
-		/// <summary>
-		///
-		/// </summary>
-		public D3D.DisplayMode DesktopMode
+
+        [OgreVersion(1, 7, 2790)]
+		private readonly DisplayMode _desktopDisplayMode;
+
+        [OgreVersion(1, 7, 2790)]
+		public DisplayMode DesktopMode
 		{
 			get
 			{
-				return _desktopMode;
+				return _desktopDisplayMode;
 			}
 		}
+
 		#endregion DesktopMode Property
 
 		#region VideoModes Property
+
+        [OgreVersion(1, 7, 2790)]
 		private VideoModeCollection _videoModeList;
-		/// <summary>
-		///
-		/// </summary>
-		public VideoModeCollection VideoModes
+		
+        [OgreVersion(1, 7, 2790)]
+		public VideoModeCollection VideoModeList
 		{
 			get
 			{
+                if (_videoModeList == null)
+                    _videoModeList = new VideoModeCollection();
 				return _videoModeList;
 			}
 		}
+
 		#endregion VideoModes Property
 
-		#region D3DDevice Property
-		private D3D.Device _device;
-		/// <summary>
-		///
-		/// </summary>
-		public D3D.Device D3DDevice
-		{
-			get
-			{
-				return _device;
-			}
-			set
-			{
-				_device = value;
-			}
-		}
-		#endregion D3DDevice Property
+        #region D3D9DeviceCaps
 
-		#region Direct3D Property
-		private D3D.Direct3D _direct3D;
-		/// <summary>
-		/// This is the main Direct3D object
-		/// </summary>
-		public D3D.Direct3D Direct3D
-		{
-			get
-			{
-				return _direct3D;
-			}
-			set
-			{
-				_direct3D = value;
-			}
-		}
-		#endregion Direct3D Property
+        [OgreVersion(1, 7, 2790)]
+	    private readonly Capabilities _d3D9DeviceCaps;
 
-		#endregion Properties
-	}
+        [OgreVersion(1, 7, 2790)]
+	    public Capabilities D3D9DeviceCaps
+	    {
+	        get
+	        {
+		        return _d3D9DeviceCaps;
+	        }
+        }
+
+        #endregion
+
+        #endregion Properties
+    }
 }

@@ -59,7 +59,7 @@ namespace Axiom.Graphics
 	///		texture coordinates (in order, with no gaps)</li>
 	///		<li>You must not have unused gaps in your buffers which are not referenced
 	///		by any <see cref="VertexElement"/></li>
-	///		<li>You must not cause the buffer & offset settings of 2 VertexElements to overlap</li>
+	///		<li>You must not cause the buffer &amp; offset settings of 2 VertexElements to overlap</li>
 	///		</ol>
 	///		Whilst GL and more modern graphics cards in D3D will allow you to defy these rules,
 	///		sticking to them will ensure that your buffers have the maximum compatibility.
@@ -329,6 +329,21 @@ namespace Axiom.Graphics
 			return newDecl;
 		}
 
+        /// <summary>
+		/// Gets the vertex size defined by this declaration.
+		/// </summary>
+        public virtual int GetVertexSize()
+        {
+            int size = 0;
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                VertexElement element = elements[i];
+                size += element.Size;
+            }
+            return size;
+        }
+
 		/// <summary>
 		///     Gets the vertex size defined by this declaration for a given source.
 		/// </summary>
@@ -583,7 +598,7 @@ namespace Axiom.Graphics
 		#region ICloneable Members
 
 		/// <summary>
-		///     Clonses this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds.
+		///     Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds.
 		/// </summary>
 		/// <returns></returns>
 		public object Clone()
@@ -598,6 +613,26 @@ namespace Axiom.Graphics
 
 			return clone;
 		}
+
+        /// <summary>
+        /// Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds for the given source.
+        /// </summary>
+        /// <param name="source">the source elements to clone</param>
+        /// <returns>a new <see cref="VertexDeclaration"/> containing only those <see cref="VertexElement"/>s</returns>
+        /// <remarks>all elements in the cloned <see cref="VertexDeclaration"/> will have a source of 0.</remarks>
+        public VertexDeclaration Clone( short source )
+        {
+            VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            List<VertexElement> sourceElements = FindElementBySource(source);
+
+            for (int i = 0; i < sourceElements.Count; i++)
+            {
+                VertexElement element = (VertexElement)sourceElements[i];
+                clone.AddElement(0, element.Offset, element.Type, element.Semantic, element.Index);
+            }
+
+            return clone;
+        }
 
 		#endregion ICloneable Members
 

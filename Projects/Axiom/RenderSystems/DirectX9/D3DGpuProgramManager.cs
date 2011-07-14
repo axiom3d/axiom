@@ -54,10 +54,11 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		protected D3D.Device device;
 
+        /*
 		internal D3DGpuProgramManager( D3D.Device device )
 		{
 			this.device = device;
-		}
+		}*/
 
 		/// <summary>
 		///    Returns a specialized version of GpuProgramParameters.

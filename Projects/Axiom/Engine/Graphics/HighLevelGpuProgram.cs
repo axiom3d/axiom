@@ -69,22 +69,27 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public abstract class HighLevelGpuProgram : GpuProgram, IConfigurable
 	{
-		#region Fields and Properties
-
 		/// <summary>
 		///    Whether the high-level program (and it's parameter defs) is loaded.
 		/// </summary>
-		protected bool isHighLevelLoaded;
+        [OgreVersion(1, 7, 2790)]
+		protected bool highLevelLoaded;
+
+        /// <summary>
+        ///    The underlying assembler program.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected GpuProgram assemblerProgram;
+
+        [OgreVersion(1, 7, 2790)]
+        protected bool constantDefsBuilt;
 
 		#region BindingDelegate Property
 
 		/// <summary>
-		///    The underlying assembler program.
-		/// </summary>
-		protected GpuProgram assemblerProgram;
-		/// <summary>
 		///    Gets the lowlevel assembler program based on this HighLevel program.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		public override GpuProgram BindingDelegate
 		{
 			get
@@ -94,102 +99,197 @@ namespace Axiom.Graphics
 		}
 		#endregion BindingDelegate Property
 
-		#endregion Fields and Properties
-
-		#region Construction and Destruction
+		#region constructor
 
 		/// <summary>
 		///    Default constructor.
 		/// </summary>
-		/// <param name="name">Name of the high level program.</param>
-		/// <param name="type">Type of program, vertex or fragment.</param>
-		/// <param name="language">HLSL language this program is written in.</param>
-		public HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 		}
 
 		#endregion Construction and Destruction
 
-		#region Methods
+        #region LoadHighLevel
 
-		/// <summary>
-		///    Implementation of Resource.load.
+        /// <summary>
+        ///    Internal load high-level portion if not loaded
 		/// </summary>
-		protected override void load()
-		{
-			if ( IsLoaded )
-			{
-				Unload();
-			}
+        [OgreVersion(1, 7, 2790)]
+        protected virtual void LoadHighLevel()
+        {
+            if ( highLevelLoaded )
+                return;
+            try
+            {
+                LoadHighLevelImpl();
+                highLevelLoaded = true;
+                if ( defaultParams != null )
+                {
+                    // Keep a reference to old ones to copy
+                    var savedParams = defaultParams;
+                    // reset params to stop them being referenced in the next create
+                    //defaultParams = null;
 
-			// polymorphic load 
-			LoadHighLevelImpl();
+                    // Create new params
+                    defaultParams = CreateParameters();
 
-			// polymorphic creation of the low level program
-			CreateLowLevelImpl();
+                    // Copy old (matching) values across
+                    // Don't use copyConstantsFrom since program may be different
+                    defaultParams.CopyMatchingNamedConstantsFrom( savedParams );
 
-			Debug.Assert( assemblerProgram != null, "Subclasses of HighLevelGpuProgram MUST initialize the low level assembler program." );
+                }
 
-			// load the low level assembler program
-			assemblerProgram.Load();
-		}
+            }
+            catch ( Exception e )
+            {
+                // will already have been logged
+                LogManager.Instance.Write(
+                    "High-level program {0} encountered an error during loading and is thus not supported.\n{1}",
+                    _name, e.Message );
+                compileError = true;
+            }
+        }
 
-		/// <summary>
-		///    Internal load implementation, loads just the high-level portion, enough to 
-		///    get parameters.
-		/// </summary>
-		protected virtual void LoadHighLevelImpl()
-		{
-			if ( !isHighLevelLoaded )
-			{
-				if ( loadFromFile )
-				{
-					Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
-					StreamReader reader = new StreamReader( stream, System.Text.Encoding.UTF8 );
-					source = reader.ReadToEnd();
-					stream.Close();
-				}
 
-				LoadFromSource();
-				isHighLevelLoaded = true;
-			}
-		}
+	    #endregion
 
-		/// <summary>
+        #region LoadHighLevelImpl
+
+        /// <summary>
+        /// Internal load implementation, loads just the high-level portion, enough to 
+        /// get parameters.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected virtual void LoadHighLevelImpl()
+	    {
+            if (LoadFromFile)
+            {
+                // find & load source code
+                using (var stream = ResourceGroupManager.Instance.OpenResource( fileName, _group, true, this ))
+                using (var t = new StreamReader( stream ))
+                    source = t.ReadToEnd();
+            }
+
+	        LoadFromSource();
+	    }
+
+        #endregion
+
+        #region UnloadHighLevel
+
+        /// <summary>
+        /// Internal unload high-level portion if loaded
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected virtual void UnloadHighLevel()
+        {
+            if ( !highLevelLoaded )
+                return;
+            
+            UnloadHighLevelImpl();
+            // Clear saved constant defs
+            constantDefsBuilt = false;
+            CreateParameterMappingStructures( true );
+
+            highLevelLoaded = false;
+        }
+
+        #endregion
+
+        #region CreateLowLevelImpl
+
+        /// <summary>
 		///    Internal method for creating an appropriate low-level program from this
 		///    high-level program, must be implemented by subclasses.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected abstract void CreateLowLevelImpl();
 
-		/// <summary>
-		///    Implementation of Resource.unload.
-		/// </summary>
-		protected override void unload()
-		{
-			if ( assemblerProgram != null )
-			{
-				assemblerProgram.Unload();
-			}
+        #endregion
 
-			// polymorphic unload
-			UnloadImpl();
+        #region UnloadHighLevelImpl
 
-			isHighLevelLoaded = false;
-		}
+        /// <summary>
+        ///    Internal unload implementation, must be implemented by subclasses.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected abstract void UnloadHighLevelImpl();
 
-		/// <summary>
-		///    Internal unload implementation, must be implemented by subclasses.
-		/// </summary>
-		protected abstract void UnloadImpl();
+        #endregion
 
-		/// <summary>
-		///    Populate the passed parameters with name->index map, must be overridden.
-		/// </summary>
-		/// <param name="parms"></param>
-		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
+        #region PopulateParameterNames
 
-		/// <summary>
+        /// <summary>
+        ///    Populate the passed parameters with name->index map, must be overridden.
+        /// </summary>
+        /// <param name="parms"></param>
+        [OgreVersion(1, 7, 2790)]
+        protected virtual void PopulateParameterNames(GpuProgramParameters parms)
+        {
+            var defs = ConstantDefinitions; // Axiom: Ogre has SIDE EFFECT here!!
+            parms.NamedConstants = constantDefs;
+            // also set logical / physical maps for programs which use this
+            parms.SetLogicalIndexes(floatLogicalToPhysical, intLogicalToPhysical);
+        }
+
+        #endregion
+
+        #region BuildConstantDefinitions
+
+        /// <summary>
+        /// Build the constant definition map, must be overridden.
+        /// </summary>
+        /// <remarks>
+        /// The implementation must fill in the (inherited) mConstantDefs field at a minimum, 
+        /// and if the program requires that parameters are bound using logical 
+        /// parameter indexes then the mFloatLogicalToPhysical and mIntLogicalToPhysical
+        /// maps must also be populated.
+        /// </remarks>
+        [OgreVersion(1, 7, 2790)]
+        protected abstract void BuildConstantDefinitions();
+
+        #endregion
+
+        #region ConstantDefinitions
+
+        [OgreVersion(1, 7, 2790)]
+        public override GpuProgramParameters.GpuNamedConstants ConstantDefinitions
+        {
+            get
+            {
+                if (!constantDefsBuilt)
+                {
+                    BuildConstantDefinitions();
+                    constantDefsBuilt = true;
+                }
+
+                return constantDefs;
+            }
+        }
+
+        #endregion
+
+        #region NamedConstants
+
+        /// <summary>
+        /// Override GpuProgram::getNamedConstants to ensure built
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        public override GpuProgramParameters.GpuNamedConstants NamedConstants
+        {
+            get
+            {
+                return ConstantDefinitions;
+            }
+        }
+
+        #endregion
+
+        #region CreateParameters
+
+        /// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
@@ -199,34 +299,89 @@ namespace Axiom.Graphics
 		///    object containing the definition of the parameters this program understands.
 		/// </remarks>
 		/// <returns>A new set of program parameters.</returns>
+        [OgreVersion(1, 7, 2790)]
 		public override GpuProgramParameters CreateParameters()
-		{
-			// create and load named parameters
-			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+        {
 
-			// load high level program and parameters if required
-			if ( IsSupported )
-			{
-				// make sure parameter definitions are loaded
-				LoadHighLevelImpl();
+            // Lock mutex before allowing this since this is a top-level method
+            // called outside of the load()
+#if AXIOM_MULTITHREADED
+            lock ( _autoMutex )
+#endif
+            {
 
-				PopulateParameterNames( newParams );
-			}
+                // Make sure param defs are loaded
+                var newParams = GpuProgramManager.Instance.CreateParameters();
 
-			// copy in default parameters if present
-			if ( defaultParams != null )
-			{
-				newParams.CopyConstantsFrom( defaultParams );
-			}
+                // Only populate named parameters if we can support this program
+                if ( IsSupported )
+                {
+                    // Errors during load may have prevented compile
+                    LoadHighLevel();
+                    if (IsSupported)
+                    {
+                        PopulateParameterNames( newParams );
+                    }
+                }
 
-			return newParams;
-		}
 
-		#endregion
+                // copy in default parameters if present
+                if ( defaultParams != null )
+                    newParams.CopyConstantsFrom( DefaultParameters );
+                return newParams;
+            }
+        }
 
-		#region IConfigurable Members
+        #endregion
 
-		/// <summary>
+        #region loadImpl
+
+        /// <summary>
+        ///    Implementation of Resource.load.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected override void load()
+        {
+            if ( !IsSupported )
+                return;
+
+            // load self 
+            LoadHighLevel();
+
+            // create low-level implementation
+            CreateLowLevelImpl();
+            // load constructed assembler program (if it exists)
+            if (assemblerProgram != null && assemblerProgram != this)
+            {
+                assemblerProgram.Load();
+            }
+        }
+
+        #endregion
+
+        #region unloadImpl
+
+        /// <summary>
+        ///    Implementation of Resource.unload.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected override void unload()
+        {
+            if (assemblerProgram != null && assemblerProgram != this)
+            {
+                assemblerProgram.Creator.Remove(assemblerProgram.Handle);
+                assemblerProgram = null;
+            }
+
+            UnloadHighLevel();
+            ResetCompileError();
+        }
+
+        #endregion
+
+        #region IConfigurable Members
+
+        /// <summary>
 		///    Must be implemented by subclasses.
 		/// </summary>
 		/// <param name="name"></param>
@@ -259,12 +414,6 @@ namespace Axiom.Graphics
 		///    Create method which needs to be implemented to return an
 		///    instance of a HighLevelGpuProgram.
 		/// </summary>
-		/// <param name="name">
-		///    Name of the program to create.
-		/// </param>
-		/// <param name="type">
-		///    Type of program to create, i.e. vertex or fragment.
-		/// </param>
 		/// <returns>
 		///    A newly created instance of HighLevelGpuProgram.
 		/// </returns>

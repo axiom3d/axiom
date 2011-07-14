@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Collections;
 
@@ -66,6 +66,7 @@ namespace Axiom.Graphics
 		#region Protected member variables
 
 		protected IntPtr targetHandle;
+
 		#region top Property
 
 		private int _top;
@@ -108,7 +109,7 @@ namespace Axiom.Graphics
 
 		#region IsFullScreen Property
 
-		private bool _isFullScreen;
+		protected bool isFullScreen;
 		/// <summary>
 		/// Returns true if window is running in fullscreen mode.
 		/// </summary>
@@ -116,11 +117,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isFullScreen;
+				return isFullScreen;
 			}
 			protected set
 			{
-				_isFullScreen = value;
+				isFullScreen = value;
 			}
 		}
 
@@ -188,7 +189,20 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion IsPrimary Property
+        #endregion IsPrimary Property
+
+        public virtual bool IsHidden
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+            }
+        }
+
+	    
 
 		#endregion
 
@@ -226,7 +240,7 @@ namespace Axiom.Graphics
 		#region Abstract methods and properties
 
 		/// <summary>
-		///		Creates & displays the new window.
+		///		Creates &amp; displays the new window.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="width">The width of the window in pixels.</param>
@@ -265,9 +279,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Retrieve information about the render target.
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="colorDepth"></param>
 		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
@@ -279,4 +290,8 @@ namespace Axiom.Graphics
 		#endregion
 
 	}
+
+    public class RenderWindowList: List<RenderWindow>
+    {
+    }
 }

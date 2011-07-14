@@ -616,31 +616,22 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				switch ( attribute.ToUpper() )
+				if ( string.Equals(attribute, "XNABACKBUFFER", StringComparison.CurrentCultureIgnoreCase ))
 				{
-					case "XNADEVICE":
-						return Driver.XnaDevice;
-
-					case "WINDOW":
-						return this._windowHandle;
-
-					case "XNAZBUFFER":
-                        return this._renderSurface.DepthStencilFormat;
-
-					case "XNABACKBUFFER":
 						return this._renderSurface;
-					// if we're in windowed mode, we want to get our own backbuffer.
-					/*if ( isFullScreen )
-					{
-						return _device.GetRenderTarget(0);
-					}
-					else
-					{
-						return _device.GetRenderTarget(0);
-						// _swapChain.get.GetBackBuffer(0, XFG.BackBufferType.Mono);
-					}*/
 				}
-
+				if ( string.Equals(attribute, "XNADEVICE", StringComparison.CurrentCultureIgnoreCase ))
+				{
+						return Driver.XnaDevice;
+				}
+				if ( string.Equals(attribute, "WINDOW", StringComparison.CurrentCultureIgnoreCase ))
+				{
+						return this._windowHandle;
+				}
+				if ( string.Equals(attribute, "XNAZBUFFER", StringComparison.CurrentCultureIgnoreCase ))
+				{
+                        return this._renderSurface.DepthStencilFormat;
+				}
 				return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
 			}
 		}

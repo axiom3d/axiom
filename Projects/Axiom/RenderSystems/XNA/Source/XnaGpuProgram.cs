@@ -181,56 +181,25 @@ namespace Axiom.RenderSystems.Xna
 
 	}
 
-#if XNA31
 	/// <summary>
 	///    Xna implementation of low-level vertex programs.
 	/// </summary>
 	public class XnaVertexProgram : XnaGpuProgram
 	{
-	#region Fields and Properties
-
-	#region VertexShader Property
-		/// <summary>
-		///    Reference to the current Xna VertexShader object.
-		/// </summary>
-		protected XFG.VertexShader vertexShader;
-		/// <summary>
-		///    Used internally by the XnaRenderSystem to get a reference to the underlying VertexShader object.
-		/// </summary>
-		internal XFG.VertexShader VertexShader
-		{
-			get
-			{
-				return vertexShader;
-			}
-		}
-		#endregion VertexShader Property
-
-		#endregion Fields and Properties
-
-	#region Constructor
 
 		internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
 			: base( parent, name, handle, group, isManual, loader, device )
 		{
 		}
 
-		#endregion Constructor
-
-	#region XnaGpuProgram Members
 
 		/// <summary>
 		///     Loads a vertex shader from shaderCode member variable
 		/// </summary>
 		protected override void LoadFromShaderCode()
 		{
-			// create the new vertex shader
-			vertexShader = new XFG.VertexShader( device, shaderCode );
 		}
 
-		#endregion XnaGpuProgram Memebers
-
-	#region GpuProgram Members
 
 		/// <summary>
 		///     Unloads the VertexShader object.
@@ -238,17 +207,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void Unload()
 		{
 			base.Unload();
-
-			if ( vertexShader != null )
-			{
-				if (!vertexShader.IsDisposed)
-					vertexShader.Dispose();
-
-				vertexShader = null;
-			}
 		}
-
-		#endregion GpuProgram Members
 
 	}
 
@@ -257,53 +216,18 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaFragmentProgram : XnaGpuProgram
 	{
-	#region Fields and Properties
 
-	#region PixelShader Property
-
-		/// <summary>
-		///    Reference to the current Xna PixelShader object.
-		/// </summary>
-		protected XFG.PixelShader pixelShader;
-		/// <summary>
-		///    Used internally by the XnaRenderSystem to get a reference to the underlying
-		///    PixelShader object.
-		/// </summary>
-		internal XFG.PixelShader PixelShader
-		{
-			get
-			{
-				return pixelShader;
-			}
-		}
-
-		#endregion PixelShader Property
-
-		#endregion Fields and Properties
-
-	#region Constructors
-
-		internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+        internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
 			: base( parent, name, handle, group, isManual, loader, device )
 		{
 		}
-
-		#endregion Constructors
-
-	#region XnaGpuProgram Members
 
 		/// <summary>
 		///     Loads a pixel shader from shaderCode member variable
 		/// </summary>
 		protected override void LoadFromShaderCode()
 		{
-			// create a new pixel shader
-			pixelShader = new XFG.PixelShader( device, shaderCode );
 		}
-
-		#endregion XnaGpuProgram Members
-
-	#region GpuProgram Members
 
 		/// <summary>
 		///     Unloads the PixelShader object.
@@ -312,18 +236,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			base.Unload();
 
-			if ( pixelShader != null )
-			{
-				if (!pixelShader.IsDisposed)
-					pixelShader.Dispose();
-
-				pixelShader = null;
-			}
 		}
-
-		#endregion GpuProgram Members
-
 	}
-#endif
 
 }

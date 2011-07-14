@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -92,7 +93,7 @@ namespace Axiom.Graphics
 		public bool Initialize( params object[] args )
 		{
 			// Create "default" compositor
-			/** Compositor that is used to implicitly represent the original
+			/* Compositor that is used to implicitly represent the original
 				render in the chain. This is an identity compositor with only an output pass:
 			compositor Axiom/Scene
 			{
@@ -310,7 +311,7 @@ namespace Axiom.Graphics
 				}
 
 				RenderSystem rs = Root.Instance.RenderSystem;
-				Viewport vp = rs.ActiveViewport;
+				Viewport vp = rs.Viewport;
 				float hOffset = rs.HorizontalTexelOffset / ( 0.5f * vp.ActualWidth );
 				float vOffset = rs.VerticalTexelOffset / ( 0.5f * vp.ActualHeight );
 				rectangle.SetCorners( -1f + hOffset, 1f - vOffset, 1f + hOffset, -1f - vOffset );
@@ -801,7 +802,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Starts parsing an individual script file.
 		/// </summary>
-		/// <param name="data">Stream containing the script data.</param>
 		public override void ParseScript( Stream data, string groupName, string fileName )
 		{
 #if AXIOM_USENEWCOMPILERS
@@ -842,5 +842,31 @@ namespace Axiom.Graphics
 		}
 
 		#endregion ResourceManager Implementation
+
+	    public void ReconstructAllCompositorResources()
+	    {
+	        var instancesToReenable = new List<CompositorInstance>();
+            foreach (var i in chains)
+            {
+                var chain = i.Value;
+                foreach (var inst in chain.Instances)
+                {
+                    if ( !inst.IsEnabled )
+                        continue;
+                    inst.IsEnabled = false;
+                    instancesToReenable.Add( inst );
+                }
+            }
+
+            // TODO: reset default UVs
+            //UVs are lost, and will never be reconstructed unless we do them again, now
+            //if (!rectangle.IsDisposed)
+            //    rectangle.SetDefaultUVs();
+
+            foreach (var inst in instancesToReenable)
+            {
+                inst.IsEnabled = true;
+            }
+	    }
 	}
 }

@@ -52,10 +52,10 @@ using Axiom.Core.Collections;
 
 #region Ogre Synchronization Information
 
-/// <ogresynchronization>
-///     <file name="OgreBorderPanelOverlayElement.h"   revision="1.6.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-///     <file name="OgreBorderPanelOverlayElement.cpp" revision="1.10" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-/// </ogresynchronization>
+// <ogresynchronization>
+//     <file name="OgreBorderPanelOverlayElement.h"   revision="1.6.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+//     <file name="OgreBorderPanelOverlayElement.cpp" revision="1.10" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+// </ogresynchronization>
 
 #endregion Ogre Synchronization Information
 
@@ -346,10 +346,7 @@ namespace Axiom.Overlays.Elements
 
 				// position buffer
 				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-						decl.GetVertexSize( POSITION ),
-						renderOp2.vertexData.vertexCount,
-						BufferUsage.StaticWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind position
 				VertexBufferBinding binding = renderOp2.vertexData.vertexBufferBinding;
@@ -357,10 +354,7 @@ namespace Axiom.Overlays.Elements
 
 				// texcoord buffer
 				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( TEXCOORDS ),
-					renderOp2.vertexData.vertexCount,
-						BufferUsage.StaticWriteOnly, true );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly, true );
 
 				// bind texcoords
 				binding = renderOp2.vertexData.vertexBufferBinding;
@@ -616,7 +610,7 @@ namespace Axiom.Overlays.Elements
 			int index = 0;
 
 			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			float zValue = -1;
+			//float zValue = -1;
 			unsafe
 			{
 				float* posPtr = (float*)data.ToPointer();

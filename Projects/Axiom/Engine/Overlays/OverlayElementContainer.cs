@@ -45,10 +45,10 @@ using System.Collections.Generic;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-/// <ogresynchronization>
-///     <file name="OgreOverlayContainer.h"   revision="1.4.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-///     <file name="OgreOverlayContainer.cpp" revision="1.5.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-/// </ogresynchronization>
+// <ogresynchronization>
+//     <file name="OgreOverlayContainer.h"   revision="1.4.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+//     <file name="OgreOverlayContainer.cpp" revision="1.5.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+// </ogresynchronization>
 #endregion
 
 namespace Axiom.Overlays

@@ -1,0 +1,29 @@
+# User configuration files.
+*.opensdf
+*.sdf
+*.suo
+*.user
+*.userprefs
+*ReSharper*
+
+# Debugging files.
+*.pdb
+*.pidb
+*.vsp
+
+# Merge conflict-related files.
+*.orig
+
+# Output directories.
+obj/*
+bin/*
+*/obj/*
+*/bin/*
+*/*/obj/*
+*/*/bin/*
+*/*/*/obj/*
+*/*/*/bin/*
+*/*/*/*/obj/*
+*/*/*/*/bin/*
+*/*/*/*/*/obj/*
+*/*/*/*/*/bin/*

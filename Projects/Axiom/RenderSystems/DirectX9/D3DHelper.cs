@@ -36,12 +36,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Drawing;
 using Axiom.Core;
 using Axiom.Graphics;
-
+using SlimDX.Direct3D9;
+using Capabilities = Axiom.Graphics.Capabilities;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using Rectangle = Axiom.Core.Rectangle;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
@@ -93,8 +96,8 @@ namespace Axiom.RenderSystems.DirectX9
 			foreach ( D3D.AdapterInformation adapterInfo in manager.Adapters )
 			{
 				List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
-				Driver driver = new Driver( adapterInfo );
-				driver.Direct3D = manager;
+				Driver driver = new Driver( adapterInfo.Adapter,
+                    adapterInfo.GetCaps(DeviceType.Hardware), adapterInfo.Details, adapterInfo.CurrentDisplayMode);
 
 				int lastWidth = 0, lastHeight = 0;
 				D3D.Format lastFormat = 0;
@@ -118,7 +121,7 @@ namespace Axiom.RenderSystems.DirectX9
 						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
 					{
 						// add the video mode to the list
-						driver.VideoModes.Add( new VideoMode( mode ) );
+						driver.VideoModeList.Add( new VideoMode( mode ) );
 
 						// save current mode settings for comparison on the next iteraion
 						lastWidth = mode.Width;
@@ -321,7 +324,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 
 				case LayerBlendOperationEx.DotProduct:
-					if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.Dot3 ) )
+					if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.Dot3 ) )
 					{
 						d3dTexOp = D3D.TextureOperation.DotProduct3;
 					}
@@ -507,7 +510,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( ( usage & BufferUsage.Dynamic ) != 0 )
 			{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
 				// Only add the dynamic flag for the default pool, and
 				// we use default pool when buffer is discardable
 				if ( ( usage & BufferUsage.Discardable ) != 0 )
@@ -585,9 +588,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			D3D.LockFlags ret = 0;
 			if ( locking == BufferLocking.Discard )
-			{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
-				// Only add the discard flag for dynamic usgae and default pool
+            {
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
+                // Only add the discard flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.Discard;
@@ -607,9 +610,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 			}
 			if ( locking == BufferLocking.NoOverwrite )
-			{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
-				// Only add the nooverwrite flag for dynamic usgae and default pool
+            {
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
+                // Only add the nooverwrite flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.NoOverwrite;
@@ -1030,5 +1033,123 @@ namespace Axiom.RenderSystems.DirectX9
 					return Axiom.Media.PixelFormat.A8R8G8B8;
 			}
 		}
+
+	    public static D3D.BlendOperation ConvertEnum( SceneBlendOperation op )
+	    {
+            switch (op)
+            {
+                case SceneBlendOperation.Add:
+                    return D3D.BlendOperation.Add;
+                case SceneBlendOperation.Max:
+                    return D3D.BlendOperation.Maximum;
+                case SceneBlendOperation.Min:
+                    return D3D.BlendOperation.Minimum;
+                case SceneBlendOperation.ReverseSubtract:
+                    return D3D.BlendOperation.ReverseSubtract;
+                case SceneBlendOperation.Subtract:
+                    return D3D.BlendOperation.Subtract;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static D3D.FillMode ConvertEnum(PolygonMode mode)
+        {
+            switch (mode)
+            {
+                case PolygonMode.Points:
+                    return D3D.FillMode.Point;
+                case PolygonMode.Wireframe:
+                    return D3D.FillMode.Wireframe;
+                case PolygonMode.Solid:
+                    return D3D.FillMode.Solid;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public static D3D.SamplerState ConvertEnum(FilterType type)
+	    {
+            switch (type)
+            {
+                case FilterType.Min:
+                    return D3D.SamplerState.MinFilter;
+                case FilterType.Mag:
+                    return D3D.SamplerState.MagFilter;
+                case FilterType.Mip:
+                    return D3D.SamplerState.MipFilter;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static D3D.ShadeMode ConvertEnum(ShadeOptions opt)
+	    {
+            switch (opt)
+            {
+                case ShadeOptions.Flat:
+                    return D3D.ShadeMode.Flat;
+                case ShadeOptions.Gouraud:
+                    return D3D.ShadeMode.Gouraud;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static TextureOperation ConvertEnum(LayerBlendOperationEx lbo, SlimDX.Direct3D9.Capabilities devCaps)
+	    {
+            switch (lbo)
+            {
+                case LayerBlendOperationEx.Source1:
+                    return TextureOperation.SelectArg1;
+                case LayerBlendOperationEx.Source2:
+                    return TextureOperation.SelectArg2;
+                case LayerBlendOperationEx.Modulate:
+                    return TextureOperation.Modulate;
+                case LayerBlendOperationEx.ModulateX2:
+                    return TextureOperation.Modulate2X;
+                case LayerBlendOperationEx.ModulateX4:
+                    return TextureOperation.Modulate4X;
+                case LayerBlendOperationEx.Add:
+                    return TextureOperation.Add;
+                case LayerBlendOperationEx.AddSigned:
+                    return TextureOperation.AddSigned;
+                case LayerBlendOperationEx.AddSmooth:
+                    return TextureOperation.AddSmooth;
+                case LayerBlendOperationEx.Subtract:
+                    return TextureOperation.Subtract;
+                case LayerBlendOperationEx.BlendDiffuseAlpha:
+                    return TextureOperation.BlendDiffuseAlpha;
+                case LayerBlendOperationEx.BlendTextureAlpha:
+                    return TextureOperation.BlendTextureAlpha;
+                case LayerBlendOperationEx.BlendCurrentAlpha:
+                    return TextureOperation.BlendCurrentAlpha;
+                case LayerBlendOperationEx.BlendManual:
+                    return TextureOperation.BlendFactorAlpha;
+                case LayerBlendOperationEx.DotProduct:
+                    return (devCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3) != 0 ? TextureOperation.DotProduct3 : TextureOperation.Modulate;
+                case LayerBlendOperationEx.BlendDiffuseColor:
+                    return (devCaps.TextureOperationCaps & TextureOperationCaps.Lerp) != 0 ? TextureOperation.Lerp : TextureOperation.Modulate;
+            }
+            return 0;
+	    }
+
+        public static TextureArgument ConvertEnum(LayerBlendSource lbs, bool perStageConstants)
+	    {
+            switch (lbs)
+            {
+                case LayerBlendSource.Current:
+                    return TextureArgument.Current;
+                case LayerBlendSource.Texture:
+                    return TextureArgument.Texture;
+                case LayerBlendSource.Diffuse:
+                    return TextureArgument.Diffuse;
+                case LayerBlendSource.Specular:
+                    return TextureArgument.Specular;
+                case LayerBlendSource.Manual:
+                    return perStageConstants ? TextureArgument.Constant : TextureArgument.TFactor;
+            }
+            return 0;
+	    }
 	}
 }

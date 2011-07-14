@@ -54,6 +54,7 @@
     <XnaCompressContent>True</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <OutputPath>..\bin\Xbox\</OutputPath>
@@ -103,9 +104,9 @@
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.Xna.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="Content\BrowserContent.contentproj">
+    <ProjectReference Include="Content\Axiom.Samples.Content.contentproj">
       <Project>{21A8413B-B5BF-46F2-9F1B-61C363BF3C41}</Project>
-      <Name>BrowserContent %28Content%29</Name>
+      <Name>Axiom.Samples.Content %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>

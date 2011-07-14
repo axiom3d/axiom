@@ -290,14 +290,21 @@ namespace Axiom.Demos
 			// Register [Enter] and [Esc] keys for Default buttons
 			Application.AddMessageFilter( this );
 			cmdOk.NotifyDefault( true );
+            try
+            {
+                foreach (RenderSystem renderSystem in Root.Instance.RenderSystems)
+                {
+                    LoadRenderSystemConfig(this, renderSystem);
+                    cboRenderSystems.Items.Add(renderSystem);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+                throw;
+            }
 
-			foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
-			{
-				LoadRenderSystemConfig( this, renderSystem );
-				cboRenderSystems.Items.Add( renderSystem );
-			}
-
-			if ( cboRenderSystems.Items.Count > 0 )
+		    if ( cboRenderSystems.Items.Count > 0 )
 				cboRenderSystems.SelectedIndex = 0;
 		}
 

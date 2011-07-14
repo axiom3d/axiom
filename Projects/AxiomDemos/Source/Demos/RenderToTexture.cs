@@ -94,7 +94,7 @@ namespace Axiom.Demos
 			reflectCam.AspectRatio = (float)window.GetViewport( 0 ).ActualWidth / (float)window.GetViewport( 0 ).ActualHeight;
 
 			Viewport viewport = rttTex.AddViewport( reflectCam );
-			viewport.ClearEveryFrame = true;
+		    viewport.SetClearEveryFrame( true );
 			viewport.ShowOverlays = false;
 			viewport.BackgroundColor = ColorEx.Black;
 

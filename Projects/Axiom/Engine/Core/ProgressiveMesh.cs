@@ -919,7 +919,6 @@ namespace Axiom.Core
 
 			// Add dest and all the neighbours of source and dest to recompute list
 			recomputeSet.Add( dest );
-			PMVertex temp;
 
 			foreach ( PMVertex neighbor in src.neighbors )
 			{

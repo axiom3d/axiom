@@ -46,10 +46,10 @@ using Axiom.Math;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-/// <ogresynchronization>
-///     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
-///     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
-/// </ogresynchronization>
+// <ogresynchronization>
+//     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
+//     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
+// </ogresynchronization>
 #endregion
 
 namespace Axiom.Overlays.Elements
@@ -108,9 +108,7 @@ namespace Axiom.Overlays.Elements
 		#region Methods
 
         /// <summary>
-        /// 
         /// </summary>
-		/// <param name="size"></param>
 		protected void CheckMemoryAllocation( int numChars )
 		{
 			if ( allocSize < numChars )
@@ -128,20 +126,14 @@ namespace Axiom.Overlays.Elements
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
 				HardwareVertexBuffer buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-						decl.GetVertexSize( POSITION_TEXCOORD_BINDING ),
-						renderOperation.vertexData.vertexCount,
-						BufferUsage.DynamicWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
 
 				// colors
 				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( COLOR_BINDING ),
-					renderOperation.vertexData.vertexCount,
-					BufferUsage.DynamicWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
 
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );

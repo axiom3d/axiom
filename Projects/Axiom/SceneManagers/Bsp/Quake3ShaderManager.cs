@@ -162,7 +162,7 @@ namespace Axiom.SceneManagers.Bsp
                 Array.Copy( attribParams, 1, fogValues, 0, 4 );
 
                 shader.Fog = true;
-                shader.FogColour = StringConverter.ParseColor( fogValues );
+                shader.FogColor = StringConverter.ParseColor( fogValues );
                 shader.FogDistance = StringConverter.ParseFloat( attribParams[ 4 ] );
             }
         }

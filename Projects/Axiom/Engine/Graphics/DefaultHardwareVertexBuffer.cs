@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Axiom.Core;
 
@@ -46,101 +47,83 @@ namespace Axiom.Graphics
 {
 	public class DefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		byte[] mpData = null;
+		private readonly byte[] _mpData;
 
-		public DefaultHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
-			: base( null, vertexSize, numVertices, usage, true, false )// always software, never shadowed
+        public DefaultHardwareVertexBuffer(VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
+            : base(null, vertexDeclaration, numVertices, usage, true, false)// always software, never shadowed
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			_mpData = new byte[ sizeInBytes ];
 		}
 
-		public DefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage )
-			: base( manager, vertexSize, numVertices, usage, true, false )// always software, never shadowed
+        public DefaultHardwareVertexBuffer(HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
+            : base(manager, vertexDeclaration, numVertices, usage, true, false)// always software, never shadowed
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			_mpData = new byte[ sizeInBytes ];
 		}
 
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr data = Memory.PinObject( mpData );
+			var data = Memory.PinObject( _mpData );
 			Memory.Copy( dest, data, length );
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( _mpData );
 		}
 
 		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
 		{
-			IntPtr pSource = Memory.PinObject( data );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
+			var pSource = Memory.PinObject( data );
+			var pIntData = Memory.PinObject( _mpData );
 			Memory.Copy( pSource, pIntData, length );
 			Memory.UnpinObject( data );
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( _mpData );
 		}
 
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
+			var pIntData = Memory.PinObject( _mpData );
 			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( mpData );
-		}
-
-		public override void Unlock()
-		{
-			base.isLocked = false;
+			Memory.UnpinObject( _mpData );
 		}
 
 		public override IntPtr Lock( int offset, int length, BufferLocking locking )
 		{
-			base.isLocked = true;
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
+		    Debug.Assert( !isLocked );
+			isLocked = true;
+			var ret = Memory.PinObject( _mpData );
+		    unsafe
+		    {
+		        var v = (byte*)ret.ToPointer();
+		        v += offset;
+		        ret = new IntPtr(v);
+		    }
 			return ret;
 		}
 
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
 		{
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
+		    Debug.Assert( !isLocked );
+            isLocked = true;
+            var ret = Memory.PinObject(_mpData);
+            unsafe
+            {
+                var v = (byte*)ret.ToPointer();
+                v += offset;
+                ret = new IntPtr(v);
+            }
+            return ret;
 		}
+
+        public override void Unlock()
+        {
+            Debug.Assert(isLocked);
+            Memory.UnpinObject(_mpData);
+            isLocked = false;
+        }
 
 		protected override void UnlockImpl()
 		{
-			// nothing to do
+            Debug.Assert(isLocked);
+            Memory.UnpinObject(_mpData);
+            isLocked = false;
 		}
 	}
 }
