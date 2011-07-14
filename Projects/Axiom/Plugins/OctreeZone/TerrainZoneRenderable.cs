@@ -292,7 +292,10 @@ namespace OctreeZone
 
 			// Create shared vertex buffer
 			mMainBuffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( MAIN_BINDING ), mTerrain.vertexCount, BufferUsage.StaticWriteOnly );
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+				decl.GetVertexSize( MAIN_BINDING ),
+				mTerrain.vertexCount,
+				BufferUsage.StaticWriteOnly );
 			// Create system memory copy with just positions in it, for use in simple reads
 			//mPositionBuffer = OGRE_ALLOC_T(float, mTerrain.vertexCount * 3, MEMCATEGORY_GEOMETRY);
 			mPositionBuffer = new float[ mTerrain.vertexCount * 3 ];
@@ -1071,9 +1074,10 @@ namespace OctreeZone
 		public HardwareVertexBuffer CreateDeltaBuffer()
 		{
 			// Delta buffer is a 1D float buffer of height offsets
-            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-            decl.AddElement(0, 0, VertexElementType.Float1, VertexElementSemantic.Position);
-			HardwareVertexBuffer buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, mOptions.tileSize * mOptions.tileSize, BufferUsage.WriteOnly );
+			HardwareVertexBuffer buf = HardwareBufferManager.Instance.CreateVertexBuffer(
+				VertexElement.GetTypeSize( VertexElementType.Float1 ),
+				mOptions.tileSize * mOptions.tileSize,
+				BufferUsage.WriteOnly );
 			// Fill the buffer with zeros, we will only fill in delta
 			IntPtr pVoid = buf.Lock( BufferLocking.Discard );
 			Memory.Set( pVoid, 0, ( mOptions.tileSize * mOptions.tileSize ) * sizeof( float ) );

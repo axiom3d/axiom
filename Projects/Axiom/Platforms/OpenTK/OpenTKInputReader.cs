@@ -1,6 +1,7 @@
 ﻿#region Namespace Declarations
 
 using System.Threading;
+using System.Drawing;
 using Axiom.Input;
 using Axiom.Utilities;
 using OpenTK.Input;
@@ -19,7 +20,7 @@ namespace Axiom.Platforms.OpenTK
 		#region Fields
 
 		RenderWindow parent;
-		System.Drawing.Point center;
+		Point center;
 		bool ownMouse = false;
 		KeyboardDevice keyboard = null;
 		MouseDevice mouse = null;
@@ -219,7 +220,7 @@ namespace Axiom.Platforms.OpenTK
 				}
 				else
 				{
-					System.Drawing.Point center2 = window.PointToScreen( center );
+					Point center2 = window.PointToScreen( center );
 					System.Windows.Forms.Cursor.Position = center2;
 					mouseX = oldX = center.X;
 					mouseY = oldY = center.Y;
