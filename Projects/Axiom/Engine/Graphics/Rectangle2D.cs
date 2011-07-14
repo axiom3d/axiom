@@ -79,20 +79,14 @@ namespace Axiom.Graphics
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( POSITION ),
-					vertexData.vertexCount,
-					BufferUsage.StaticWriteOnly );
+				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( POSITION, buffer );
 
 			decl.AddElement( NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
 
 			buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( NORMAL ),
-				renderOperation.vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( NORMAL, buffer );
 
@@ -122,10 +116,7 @@ namespace Axiom.Graphics
 				decl.AddElement( TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 
 				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( TEXCOORD ),
-					vertexData.vertexCount,
-					BufferUsage.StaticWriteOnly );
+					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				binding.SetBinding( TEXCOORD, buffer );
 

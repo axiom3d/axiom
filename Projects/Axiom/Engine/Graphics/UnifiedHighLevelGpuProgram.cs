@@ -230,6 +230,11 @@ namespace Axiom.Graphics
 				}
 				return false;
 			}
+			set
+			{
+				if ( Delegate != null )
+					Delegate.PassSurfaceAndLightStates = value;
+			}
 		}
 
 		public override bool HasDefaultParameters
@@ -256,12 +261,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-	    protected override void BuildConstantDefinitions()
-	    {
-	        throw new NotImplementedException();
-	    }
-
-	    public override GpuProgramParameters CreateParameters()
+		public override GpuProgramParameters CreateParameters()
 		{
 			if ( IsSupported )
 			{

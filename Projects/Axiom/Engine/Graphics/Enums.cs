@@ -809,7 +809,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Specifies priorities for processing Render Targets.
 	/// </summary>
-	public enum RenderTargetPriority: byte
+	public enum RenderTargetPriority
 	{
 		/// <summary>
 		///    Will be processed last.
@@ -997,7 +997,6 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		Describes the various actions which can be taken on the stencil buffer.
 	///	</summary> 
-	[OgreVersion(1, 7)]
 	public enum StencilOperation
 	{
 		/// <summary>
@@ -1067,7 +1066,6 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		Describes the ways to generate texture coordinates.
 	/// </summary>
-	[OgreVersion(1, 7)]
 	public enum TexCoordCalcMethod
 	{
 		/// <summary>

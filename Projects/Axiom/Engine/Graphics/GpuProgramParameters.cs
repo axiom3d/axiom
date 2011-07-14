@@ -729,17 +729,6 @@ namespace Axiom.Graphics
 				SetConstantFromTime( GetParamIndex( name ), factor );
 		}
 
-        public void SetNamedConstants(GpuNamedConstants constantDefs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyMatchingNamedConstantsFrom(GpuProgramParameters source)
-        {
-            throw new NotImplementedException();
-		}
-	
-
 		#endregion Named parameters
 
 		/// <summary>
@@ -1126,15 +1115,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Properties
-
-	    public float[] GetFloatPointer( int physicalIndex )
-	    {
-	        return floatConstants[ physicalIndex ].val;
-	    }
-
-        public int[] GetIntPointer( int physicalIndex )
-        {
-            return intConstants[physicalIndex].val;
-        }
 	}
 }
