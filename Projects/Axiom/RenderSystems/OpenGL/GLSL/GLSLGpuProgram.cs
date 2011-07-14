@@ -179,13 +179,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-		public override void BindParameters( GpuProgramParameters parameters )
+		public override void BindParameters( GpuProgramParameters parameters, ushort mask )
 		{
 			// activate the link program object
 			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
 			// pass on parameters from params to program object uniforms
-			linkProgram.UpdateUniforms( parameters );
+			linkProgram.UpdateUniforms( parameters, mask, type );
 		}
 
         public override void BindProgramPassIterationParameters(GpuProgramParameters parms)
@@ -198,29 +198,29 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         }
 
         /// @copydoc GLGpuProgram::getAttributeIndex
-        public uint GetAttributeIndex(VertexElementSemantic semantic, uint index)
+        internal override uint AttributeIndex(VertexElementSemantic semantic, uint index)
         {
             // get link program - only call this in the context of bound program
             var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
-            if (linkProgram.IsAttributeValid(sementic, index))
+            if (linkProgram.IsAttributeValid(semantic, index))
             {
                 return linkProgram.GetAttributeIndex(semantic, index);
             }
             else
             {
                 // fall back to default implementation, allow default bindings
-                return base.GetAttributeIndex(semantic, index)
+                return base.AttributeIndex( semantic, index );
             }
         }
 
         /// @copydoc GLGpuProgram::isAttributeValid
-        public bool IsAttributeValid(VertexElementSemantic semantic, uint index)
+        internal override bool IsAttributeValid(VertexElementSemantic semantic, uint index)
         {
             // get link program - only call this in the context of bound program
             var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
-            if (linkProgram.IsAttributeValid(sementic, index))
+            if (linkProgram.IsAttributeValid(semantic, index))
             {
                 return true;
             } 
