@@ -263,7 +263,33 @@ namespace Axiom.Core
 
 		#endregion FrustumOffset Property
 
-		///<summary>
+        #region OrientationMode
+
+	    private OrientationMode _orientationMode;
+
+        [OgreVersion(1, 7)]
+        public OrientationMode OrientationMode 
+        {
+            get
+            {
+#if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
+                throw new AxiomException( "Getting Frustrum orientation mode is not supported" );
+#endif
+                return _orientationMode;
+            }
+            protected set
+            {
+#if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
+                throw new AxiomException( "Setting Frustrum orientation mode is not supported" );
+#endif
+                _orientationMode = value;
+                InvalidateFrustum();
+            }
+        }
+
+        #endregion
+
+        ///<summary>
 		/// Focal length of frustum (for stereo rendering, defaults to 1.0)
 		///</summary>
 		protected float _focalLength;
@@ -489,7 +515,7 @@ namespace Axiom.Core
 				}
 
 				// deriving direction from linked plane?
-				if ( _isReflected && linkedReflectionPlane != null &&
+				if ( isReflected && linkedReflectionPlane != null &&
 					!( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
 				{
 					_reflectionPlane = linkedReflectionPlane.DerivedPlane;
@@ -564,7 +590,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Is this frustum to act as a reflection of itself?
 		/// </summary>
-		private bool _isReflected;
+		protected bool isReflected;
 		/// <summary>
 		///     Gets a flag that specifies whether this camera is being reflected or not.
 		/// </summary>
@@ -572,7 +598,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _isReflected;
+				return isReflected;
 			}
 		}
 
@@ -811,7 +837,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void DisableReflection()
 		{
-			_isReflected = false;
+			isReflected = false;
 			lastLinkedReflectionPlane.Normal = Vector3.Zero;
 			InvalidateView();
 		}
@@ -896,7 +922,7 @@ namespace Axiom.Core
 		/// <param name="plane"></param>
 		public virtual void EnableReflection( Plane plane )
 		{
-			_isReflected = true;
+			isReflected = true;
 			_reflectionPlane = plane;
 			linkedReflectionPlane = null;
 			_reflectionMatrix = Utility.BuildReflectionMatrix( plane );
@@ -912,7 +938,7 @@ namespace Axiom.Core
 		/// <param name="plane"></param>
 		public virtual void EnableReflection( IDerivedPlaneProvider plane )
 		{
-			_isReflected = true;
+			isReflected = true;
 			linkedReflectionPlane = plane;
 			_reflectionPlane = linkedReflectionPlane.DerivedPlane;
 			_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
@@ -1394,9 +1420,9 @@ namespace Axiom.Core
 			// grab a reference to the current render system
 			RenderSystem renderSystem = Root.Instance.RenderSystem;
 			// API specific
-			_projectionMatrixRS = renderSystem.ConvertProjectionMatrix( _projectionMatrix );
+            renderSystem.ConvertProjectionMatrix(_projectionMatrix, out _projectionMatrixRS);
 			// API specific for Gpu Programs
-			_projectionMatrixRSDepth = renderSystem.ConvertProjectionMatrix( _projectionMatrix, out null, true );
+            renderSystem.ConvertProjectionMatrix(_projectionMatrix, out _projectionMatrixRSDepth, true);
 
 			// Calculate bounding box (local)
 			// Box is from 0, down -Z, max dimensions as determined from far plane
@@ -1540,7 +1566,7 @@ namespace Axiom.Core
 				_viewMatrix[ 2, 3 ] = trans.z;
 
 				// Deal with reflections
-				if ( _isReflected )
+				if ( isReflected )
 				{
 					_viewMatrix = _viewMatrix * _reflectionMatrix;
 				}
