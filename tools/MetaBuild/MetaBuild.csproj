@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MetaBuild</RootNamespace>
     <AssemblyName>MetaBuild</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="bin\Custom.After.Microsoft.Common.targets" />
     <None Include="bin\MetaBuild.ASPNetWebSite.shell.ext" />
     <None Include="bin\MetaBuild.ASPNetWebSite.targets" />
