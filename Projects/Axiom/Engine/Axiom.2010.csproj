@@ -219,6 +219,7 @@
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
     <Compile Include="Core\SceneManagerEnumerator.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />
@@ -234,7 +235,7 @@
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\FreetypeWrapper.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
-    <Compile Include="Graphics\Collections\ConfigOptionCollection.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\Collections\Lists.cs" />
     <Compile Include="Graphics\Collections\RenderPriorityGroupList.cs" />
     <Compile Include="Graphics\Collections\RenderSystemCollection.cs" />
@@ -266,6 +267,7 @@
     <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\NullProgram.cs" />
+    <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
