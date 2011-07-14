@@ -197,7 +197,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             linkProgram.UpdatePassIterationUniforms(parms);
         }
 
-        uint GetAttributeIndex(VertexElementSemantic semantic, uint index)
+        /// @copydoc GLGpuProgram::getAttributeIndex
+        public uint GetAttributeIndex(VertexElementSemantic semantic, uint index)
         {
             // get link program - only call this in the context of bound program
             var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
@@ -213,7 +214,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-        bool IsAttributeValid(VertexElementSemantic semantic, uint index)
+        /// @copydoc GLGpuProgram::isAttributeValid
+        public bool IsAttributeValid(VertexElementSemantic semantic, uint index)
         {
             // get link program - only call this in the context of bound program
             var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
