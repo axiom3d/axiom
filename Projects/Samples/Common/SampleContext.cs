@@ -189,7 +189,7 @@ namespace Axiom.Samples
 				}
 
 				// test system capabilities against sample requirements
-				s.TestCapabilities( Root.RenderSystem.Capabilities );
+				s.TestCapabilities( this.Root.RenderSystem.HardwareCapabilities );
 
 				s.Setup( RenderWindow, this.Keyboard, this.Mouse );   // start new sample
 			}

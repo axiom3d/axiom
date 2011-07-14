@@ -109,9 +109,9 @@ namespace Axiom.Core
 					{
 						instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 					}
-					} catch (Exception)
+					} catch (Exception e)
 					{
-					    System.Diagnostics.Debug.WriteLine( String.Format( "Failed to load assembly: {0}.", assemblies[index].FullName ) );	
+					System.Diagnostics.Debug.WriteLine( String.Format( "Failed to load assembly: {0}.", assemblies[index].FullName ) );	
 					}
 				}
 			}

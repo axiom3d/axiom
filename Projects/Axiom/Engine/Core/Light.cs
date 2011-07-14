@@ -402,23 +402,18 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets the derived position of this light.
 		/// </summary>
-        public virtual Vector3 GetDerivedPosition(bool cameraRelative = false)
+		public virtual Vector3 DerivedPosition
 		{
-		    // this is called to force an update
-		    Update();
+			get
+			{
+				// this is called to force an update
+				this.Update();
 
-		    if ( cameraRelative && _cameraToBeRelativeTo != null )
-		    {
-		        throw new NotImplementedException();
-		        //return mDerivedCamRelativePosition;
-		    }
-		    else
-		    {
-		        return this.derivedPosition;
-		    }
+				return this.derivedPosition;
+			}
 		}
 
-	    /// <summary>
+		/// <summary>
 		///		Gets the derived position of this light.
 		/// </summary>
 		public virtual Vector3 DerivedDirection
@@ -539,21 +534,21 @@ namespace Axiom.Core
 		///		calculations.
 		/// </remarks>
 		/// <returns>A 4D vector representation of the light.</returns>
-        public virtual Vector4 GetAs4DVector(bool cameraRelativeIfSet = false)
+		public virtual Vector4 GetAs4DVector()
 		{
 			Vector4 vec;
 
-			if ( type == LightType.Directional )
+			if ( this.type == LightType.Directional )
 			{
 				// negate direction as 'position'
-				vec = -(Vector4)DerivedDirection;
+				vec = -(Vector4)this.DerivedDirection;
 
 				// infinite distance
 				vec.w = 0.0f;
 			}
 			else
 			{
-                vec = (Vector4)GetDerivedPosition(cameraRelativeIfSet);
+				vec = (Vector4)this.DerivedPosition;
 				vec.w = 1.0f;
 			}
 
@@ -908,19 +903,7 @@ namespace Axiom.Core
                                                             "Specular"
                                                     };
 
-	    private Camera _cameraToBeRelativeTo;
-	    private bool _derivedCamRelativeDirty;
-
-        protected internal Camera CameraRelative
-        {
-            set
-            {
-                _cameraToBeRelativeTo = value;
-                _derivedCamRelativeDirty = true;
-            }
-        }
-
-	    /// <summary>
+		/// <summary>
 		///     Part of the IAnimableObject interface.
 		/// </summary>
 		public override string[] AnimableValueNames
@@ -1353,6 +1336,8 @@ namespace Axiom.Core
 
 			if ( param != null )
 			{
+				string ni;
+
 				// Setting the light type first before any property specific to a certain light type
 				if ( param.ContainsKey( "type" ) )
 				{

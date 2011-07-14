@@ -168,7 +168,7 @@ namespace Axiom.Math
 
 		}
 
-		public override bool Equals( object other )
+		public bool Equals( object other )
 		{
 			if ( other is Tuple<A, B, C, D> )
 			{

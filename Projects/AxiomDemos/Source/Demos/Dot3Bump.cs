@@ -105,7 +105,7 @@ namespace Axiom.Demos
 		public override void CreateScene()
 		{
 			// Check prerequisites first
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			if ( !caps.HasCapability( Capabilities.VertexPrograms ) || !caps.HasCapability( Capabilities.FragmentPrograms ) )
 			{
 				throw new AxiomException( "Your card does not support vertex and fragment programs, so cannot run this demo. Sorry!" );

@@ -230,9 +230,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Adds a renderable item to the queue.
 		/// </summary>
-        /// <param name="renderable">IRenderable object to add to the queue.</param>
+		/// <param name="item">IRenderable object to add to the queue.</param>
 		/// <param name="groupID">Group to add the item to.</param>
-        /// <param name="priority"></param>
+		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable renderable, ushort priority, RenderQueueGroupID groupID )
 		{
 			RenderQueueGroup group = GetQueueGroup( groupID );
@@ -335,10 +335,10 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderQueueGroup GetQueueGroup( RenderQueueGroupID queueID )
 		{
-			RenderQueueGroup group = renderGroups[ queueID ] as RenderQueueGroup;
+			RenderQueueGroup group = null;
 
 			// see if there is a current queue group for this group id
-			if ( group == null )
+			if ( renderGroups[ queueID ] == null )
 			{
 				// create a new queue group for this group id
 				group = new RenderQueueGroup( this, splitPassesByLightingType,
@@ -347,6 +347,11 @@ namespace Axiom.Graphics
 
 				// add the new group to cached render group
 				renderGroups.Add( queueID, group );
+			}
+			else
+			{
+				// retreive the existing queue group
+				group = (RenderQueueGroup)renderGroups[ queueID ];
 			}
 
 			return group;

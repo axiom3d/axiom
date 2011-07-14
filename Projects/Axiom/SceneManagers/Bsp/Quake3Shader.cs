@@ -209,16 +209,16 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		private ColorEx _fogColor;
-		public ColorEx FogColor
+		private ColorEx _fogColour;
+		public ColorEx FogColour
 		{
 			get
 			{
-				return _fogColor;
+				return _fogColour;
 			}
 			set
 			{
-				_fogColor = value;
+				_fogColour = value;
 			}
 		}
 
@@ -564,7 +564,7 @@ namespace Axiom.SceneManagers.Bsp
 		DepthWrite = 1 << 2,
 		Sky = 1 << 3,
 		NoMipMaps = 1 << 4,
-		NeedColors = 1 << 5,
+		NeedColours = 1 << 5,
 		DeformVerts = 1 << 6
 	}
 

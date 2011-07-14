@@ -145,7 +145,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else
 			{
-				lightDist = faceGroup.plane.GetDistance( this.GetDerivedPosition() );
+				lightDist = faceGroup.plane.GetDistance( this.DerivedPosition );
 
 				if ( cullMode != ManualCullingMode.None )
 				{
@@ -206,7 +206,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			Vector3 lightPos, faceLightPos;
 
-			lightPos = this.GetDerivedPosition();
+			lightPos = this.DerivedPosition;
 
 			float dist = plane.GetDistance( lightPos );
 			if ( Utility.Abs( dist ) < range )

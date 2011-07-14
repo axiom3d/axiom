@@ -503,7 +503,7 @@ namespace Axiom.Core
 					// use cached bone matrices of the parent entity
 					for ( int i = 0; i < parent.numBoneMatrices; i++ )
 					{
-						matrices[ i ] = parent.boneWorldMatrices[ i ];
+						matrices[ i ] = parent.boneMatrices[ i ];
 					}
 				}
 				else

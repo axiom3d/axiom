@@ -739,9 +739,9 @@ namespace Axiom.Media
 
 		#region Static Bulk Conversion Methods
 
-		//*************************************************************************
-		//   Pixel packing/unpacking utilities
-		//*************************************************************************
+		///*************************************************************************
+		///   Pixel packing/unpacking utilities
+		///*************************************************************************
 
 
         ///<summary>
@@ -758,10 +758,7 @@ namespace Axiom.Media
 		///<summary>
 		///    Pack a color value to memory
 		///</summary>
-		///<param name="r">Red component, range 0x00 to 0xFF</param>
-        ///<param name="g">Green component, range 0x00 to 0xFF</param>
-        ///<param name="b">Blue component, range 0x00 to 0xFF</param>
-        ///<param name="a">Alpha component, range 0x00 to 0xFF</param>
+		///<param name="r,g,b,a">The four color components, range 0x00 to 0xFF</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
 		public static void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, IntPtr dest )
@@ -787,26 +784,11 @@ namespace Axiom.Media
 		///<summary>
 		///    Pack a color value to memory
 		///</summary>
-		///<param name="r">
+		///<param name="r,g,b,a">
 		///    The four color components, range 0.0f to 1.0f
 		///    (an exception to this case exists for floating point pixel
 		///    formats, which don't clamp to 0.0f..1.0f)
 		///</param>
-        ///<param name="g">
-        ///    The four color components, range 0.0f to 1.0f
-        ///    (an exception to this case exists for floating point pixel
-        ///    formats, which don't clamp to 0.0f..1.0f)
-        ///</param>
-        ///<param name="b">
-        ///    The four color components, range 0.0f to 1.0f
-        ///    (an exception to this case exists for floating point pixel
-        ///    formats, which don't clamp to 0.0f..1.0f)
-        ///</param>
-        ///<param name="a">
-        ///    The four color components, range 0.0f to 1.0f
-        ///    (an exception to this case exists for floating point pixel
-        ///    formats, which don't clamp to 0.0f..1.0f)
-        ///</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
 		public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
@@ -1025,19 +1007,16 @@ namespace Axiom.Media
 			}
 		}
 
-	    ///<summary>
-	    ///    Convert consecutive pixels from one format to another. No dithering or filtering is being done. 
-	    ///    Converting from RGB to luminance takes the R channel.  In case the source and destination format match,
-	    ///    just a copy is done.
-	    ///</summary>
-	    ///<param name="srcBytes">Pointer to source region</param>
-	    ///<param name="srcOffset"></param>
-	    ///<param name="srcFormat">Pixel format of source region</param>
-	    ///<param name="dstBytes">Pointer to destination region</param>
-	    ///<param name="dstOffset"></param>
-	    ///<param name="dstFormat">Pixel format of destination region</param>
-	    ///<param name="count"></param>
-	    public static void BulkPixelConversion( IntPtr srcBytes, int srcOffset, PixelFormat srcFormat,
+		///<summary>
+		///    Convert consecutive pixels from one format to another. No dithering or filtering is being done. 
+		///    Converting from RGB to luminance takes the R channel.  In case the source and destination format match,
+		///    just a copy is done.
+		///</summary>
+		///<param name="srcBytes">Pointer to source region</param>
+		///<param name="srcFormat">Pixel format of source region</param>
+		///<param name="dstBytes">Pointer to destination region</param>
+		///<param name="dstFormat">Pixel format of destination region</param>
+		public static void BulkPixelConversion( IntPtr srcBytes, int srcOffset, PixelFormat srcFormat,
 											   IntPtr dstBytes, int dstOffset, PixelFormat dstFormat,
 											   int count )
 		{

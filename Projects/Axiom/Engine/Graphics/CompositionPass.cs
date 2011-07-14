@@ -503,12 +503,11 @@ namespace Axiom.Graphics
 		protected string customType;
 		/// <summary>
 		/// Get's or set's the type name of this custom composition pass.
-        /// <see cref="CompositorManager.RegisterCustomCompositorPass"/>
 		/// </summary>
 		/// <note>
 		/// applies when PassType is RenderCustom
 		/// </note>
-		
+		/// <see cref="CompositorManager.RegisterCustomCompositionPass"/>
 		public string CustomType
 		{
 			get

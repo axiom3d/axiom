@@ -313,7 +313,7 @@ namespace Axiom.ParticleSystems
 		///		Whilst the direction property defines the general direction of emission for particles, 
 		///		this property defines how far the emission angle can deviate away from this base direction.
 		///		This allows you to create a scatter effect - if set to 0, all particles will be emitted
-		///		exactly along the emitters direction vector, whereas if you set it to 180 or more, particles
+		///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
 		///		will be emitted in a sphere, i.e. in all directions.
 		/// </remarks>
 		public virtual float Angle
@@ -488,7 +488,7 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		/// <remarks>
 		///		Particles have an initial color on emission which the emitter sets. This property sets
-		///		this color. See the alternate Start/End versions of this property which takes 2 colors in order to establish
+		///		this color. See the alternate Start/End versions of this property which takes 2 colous in order to establish
 		///		a range of colors to be assigned to particles.
 		/// </remarks>
 		public new virtual ColorEx Color
@@ -950,6 +950,8 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public bool SetParam( string name, string val )
 		{
 			if ( commandTable.ContainsKey( name ) )

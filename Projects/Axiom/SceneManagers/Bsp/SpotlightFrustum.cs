@@ -67,7 +67,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				this.light = value;
 				this.lightNode = light.ParentNode;
-				this.lightPosition = light.GetDerivedPosition();
+				this.lightPosition = light.DerivedPosition;
 				this.lightOrientation = GetLightOrientation();
 
 				base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );
@@ -88,16 +88,12 @@ namespace Axiom.SceneManagers.Bsp
 			if ( ProjectionType == Projection.Perspective )
 			{
 				// perspective transform, API specific
-			    Matrix4 tmp;
-			    renderSystem.MakeProjectionMatrix( FieldOfView, AspectRatio, Near, Far, out tmp );
-			    ProjectionMatrix = tmp;
+				ProjectionMatrix = renderSystem.MakeProjectionMatrix( FieldOfView, AspectRatio, Near, Far );
 			}
 			else if ( ProjectionType == Projection.Orthographic )
 			{
 				// orthographic projection, API specific
-                Matrix4 tmp;
-				renderSystem.MakeOrthoMatrix( FieldOfView, AspectRatio, Near, Far, out tmp );
-			    ProjectionMatrix = tmp;
+				ProjectionMatrix = renderSystem.MakeOrthoMatrix( FieldOfView, AspectRatio, Near, Far );
 			}
 
 			// View matrix is:

@@ -19,11 +19,11 @@ namespace Axiom.Demos.Browser.Xna
         /// </summary>
         partial void _setupResources()
         {
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Fonts", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Programs", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Scripts", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Textures", "Folder" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content\\Overlays", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( titleLocation + "Content\\Fonts", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( titleLocation + "Content\\Materials\\Programs", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( titleLocation + "Content\\Materials\\Scripts", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( titleLocation + "Content\\Materials\\Textures", "Folder" );
+            ResourceGroupManager.Instance.AddResourceLocation( titleLocation + "Content\\Overlays", "Folder" );
         }
 
     }

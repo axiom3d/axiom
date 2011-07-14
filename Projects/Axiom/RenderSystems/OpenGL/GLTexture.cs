@@ -332,7 +332,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 				else
 				{
-					if ( isCompressed && Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.TextureCompressionDXT ) )
+					if ( isCompressed && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.TextureCompressionDXT ) )
 					{
 						int blockSize = ( Format == PixelFormat.DXT1 ) ? 8 : 16;
 						int size = ( ( Width + 3 ) / 4 ) * ( ( Height + 3 ) / 4 ) * blockSize;
@@ -500,7 +500,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
 
 			// If we can do automip generation and the user desires this, do so
-			MipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps );
+			MipmapsHardwareGenerated = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareMipMaps );
 			if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) &&
 				RequestedMipmapCount != 0 && MipmapsHardwareGenerated )
 			{

@@ -326,7 +326,6 @@
       <Link>Media\Textures\WaterNormal2.tga</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="app.config" />
     <None Include="axiom.demos.browser.winform.module" />
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -349,6 +348,7 @@
     </None>
     <None Include="..\..\..\..\..\Media\Archives\Fresnel.zip">
       <Link>Media\Archives\Fresnel.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Archives\RZR-002.zip">
       <Link>Media\Archives\RZR-002.zip</Link>

@@ -235,7 +235,7 @@ namespace OctreeZone
 				if ( p != ignorePortal )
 				{
 					// calculate the direction vector from light to portal
-					Vector3 lightToPortal = p.getDerivedCP() - light.GetDerivedPosition();
+					Vector3 lightToPortal = p.getDerivedCP() - light.DerivedPosition;
 					if ( portalFrustum.IsObjectVisible( p ) )
 					{
 						// portal is facing the light, but some light types need to

@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Threading;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3DHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer )
 		{
-#if !NO_AXIOM_D3D_MANAGE_BUFFERS
+#if !NO_OGRE_D3D_MANAGE_BUFFERS
 			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
 				// If not system mem, use managed pool UNLESS buffer is discardable
 				// if discardable, keeping the software backing is expensive
@@ -74,8 +74,6 @@ namespace Axiom.RenderSystems.DirectX9
 #else
 			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
-
-		    device = D3DRenderSystem.ActiveD3D9Device; // temp hack (update to 1.7)
 
 			// create the buffer
 			d3dBuffer = new D3D.IndexBuffer(

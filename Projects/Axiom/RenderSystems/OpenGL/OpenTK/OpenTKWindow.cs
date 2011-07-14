@@ -75,15 +75,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region RenderWindow Members
 
-	    public override bool RequiresTextureFlipping
-	    {
-	        get
-	        {
-	            return false;
-	        }
-	    }
-
-	    public override object this[ string attribute ]
+		public override object this[ string attribute ]
 		{
 			get
 			{
@@ -161,10 +153,10 @@ namespace Axiom.RenderSystems.OpenGL
 			float displayFrequency = 60f;
 			string border = "resizable";
 
-			this.name = name;
-			this.width = width;
-			this.height = height;
-			this.colorDepth = 32;
+			this.Name = name;
+			this.Width = width;
+			this.Height = height;
+			this.ColorDepth = 32;
 			this.fullScreen = fullScreen;
 			displayDevice = DisplayDevice.Default;
 
@@ -186,11 +178,11 @@ namespace Axiom.RenderSystems.OpenGL
 							top = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "fsaa":
-							fsaa = Int32.Parse( entry.Value.ToString() );
+							FSAA = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "colourDepth":
 						case "colorDepth":
-							colorDepth = Int32.Parse( entry.Value.ToString() );
+							ColorDepth = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "vsync":
 							vsync = entry.Value.ToString() == "No" ? false : true;
@@ -245,7 +237,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( glContext == null )
 			{
 				// create window
-				_window = new NativeWindow( width, height, title, GameWindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
+				_window = new NativeWindow( width, height, title, WindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
 				glContext = new OpenTKGLContext( _window.WindowInfo );
 
 				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
@@ -294,24 +286,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Resize( int width, int height )
 		{
-            if (_window == null)
-            {
-                this.width = width;
-                this.height = height;
-                this.WindowMovedOrResized();
-            }
-            else
-            {
-                _window.Width = width;
-                _window.Height = height;
-                WindowEventMonitor.Instance.WindowResized(this);
-            }
+			if ( _window == null )
+				return;
+			_window.Width = width;
+			_window.Height = height;
+			WindowEventMonitor.Instance.WindowResized( this );
 		}
 
 		public override void WindowMovedOrResized()
 		{
 			// Update dimensions incase changed
-			foreach ( Viewport entry in this.ViewportList.Values )
+			foreach ( Viewport entry in this.viewportList.Values )
 			{
 				entry.UpdateDimensions();
 			}
@@ -340,7 +325,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Switch context if different from current one
 			RenderSystem rsys = Root.Instance.RenderSystem;
-			rsys.Viewport = GetViewport( 0 );
+			rsys.SetViewport( this.GetViewport( 0 ) );
 
 			// Must change the packing to ensure no overruns!
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );

@@ -36,13 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
-using Axiom.Graphics.Collections;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -75,81 +71,10 @@ namespace Axiom.Graphics
 	///    Capabilities for full details.
 	/// </remarks>
 	public partial class GpuProgramParameters
-    {
-        #region GpuParamVariability
+	{
+		#region Structs
 
-        [OgreVersion(1, 7, 2790)]
-        [Flags]
-        public enum GpuParamVariability : ushort
-        {
-            /// <summary>
-            /// No variation except by manual setting - the default
-            /// </summary>
-            Global = 1,
-            /// <summary>
-            /// Varies per object (based on an auto param usually), but not per light setup
-            /// </summary>
-            PerObject = 2,
-            /// <summary>
-            /// Varies with light setup
-            /// </summary>
-            Lights = 4,
-            /// <summary>
-            /// Varies with pass iteration number
-            /// </summary>
-            PassIterationNumber = 8,
-            /// <summary>
-            /// Full mask (16-bit)
-            /// </summary>
-            All = 0xFFFF
-        }
-
-        #endregion
-
-        #region GpuConstantType
-
-        /// <summary>
-        /// Enumeration of the types of constant we may encounter in programs.
-        /// </summary>
-        /// <note>
-        /// Low-level programs, by definition, will always use either
-        /// float4 or int4 constant types since that is the fundamental underlying
-        /// type in assembler.
-        /// </note>
-        [OgreVersion(1, 7, 2790)]
-        public enum GpuConstantType
-        {
-            Float1 = 1,
-            Float2 = 2,
-            Float3 = 3,
-            Float4 = 4,
-            Sampler1D = 5,
-            Sampler2D = 6,
-            Sampler3D = 7,
-            SamplerCube = 8,
-            Sampler1DShadow = 9,
-            Sampler2DShadow = 10,
-            Matrix_2X2 = 11,
-            Matrix_2X3 = 12,
-            Matrix_2X4 = 13,
-            Matrix_3X2 = 14,
-            Matrix_3X3 = 15,
-            Matrix_3X4 = 16,
-            Matrix_4X2 = 17,
-            Matrix_4X3 = 18,
-            Matrix_4X4 = 19,
-            Int1 = 20,
-            Int2 = 21,
-            Int3 = 22,
-            Int4 = 23,
-            Unknown = 99
-        }
-
-        #endregion
-
-        #region Structs
-
-        public struct ParameterEntry
+		public struct ParameterEntry
 		{
 			public GpuProgramParameterType ParameterType;
 			public string ParameterName;
@@ -159,124 +84,22 @@ namespace Axiom.Graphics
 
 		#region Fields
 
-        #region floatConstants
-
-        /// <summary>
-        /// Definition of container that holds the current float constants.
+		/// <summary>
+		///    Packed list of integer constants
 		/// </summary>
-        /// <remarks>
-        /// Not necessarily in direct index order to constant indexes, logical
-        /// to physical index map is derived from GpuProgram
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-		protected FloatConstantList floatConstants = new FloatConstantList();
-
-        #endregion
-
-        #region intConstants
-
-        /// <summary>
-        /// Definition of container that holds the current integer constants.
-        /// </summary>
-        /// <remarks>
-        /// Not necessarily in direct index order to constant indexes, logical
-        /// to physical index map is derived from GpuProgram
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        protected IntConstantList intConstants = new IntConstantList();
-
-        #endregion
-
-        #region floatLogicalToPhysical
-
-        /// <summary>
-        /// Logical index to physical index map - for low-level programs
-        /// or high-level programs which pass params this way.
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        protected GpuLogicalBufferStruct floatLogicalToPhysical;
-
-        [OgreVersion(1, 7, 2790)]
-        public GpuLogicalBufferStruct FloatLogicalBufferStruct
-        {
-            get
-            {
-                return floatLogicalToPhysical;
-            }
-        }
-
-        #endregion
-
-        #region intLogicalToPhysical
-
-        /// <summary>
-        /// Packed list of floating-point constants (physical indexing)
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        protected GpuLogicalBufferStruct intLogicalToPhysical;
-
-        [OgreVersion(1, 7, 2790)]
-        public GpuLogicalBufferStruct IntLogicalBufferStruct
-        {
-            get
-            {
-                return intLogicalToPhysical;
-            }
-        }
-
-        #endregion
-
-        #region NamedConstants
-
-        [OgreVersion(1, 7, 2790)]
-	    private GpuNamedConstants _namedConstants;
-
-        /// <summary>
-        /// Mapping from parameter names to def - high-level programs are expected to populate this
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public GpuNamedConstants NamedConstants
-        {
-            set
-            {
-                _namedConstants = value;
-
-                // Determine any extension to local buffers
-
-                // Size and reset buffer (fill with zero to make comparison later ok)
-                if (_namedConstants.FloatBufferSize > floatConstants.Count)
-                {
-                    floatConstants.AddRange( Enumerable.Repeat(
-                        0.0f, _namedConstants.FloatBufferSize - floatConstants.Count ) );
-                }
-                if (_namedConstants.IntBufferSize > intConstants.Count)
-                {
-                    intConstants.AddRange( Enumerable.Repeat(
-                        0, _namedConstants.IntBufferSize - intConstants.Count));
-                }
-            }
-        }
-
-        #endregion
-
-        #region _combinedVariability
-
-        /// <summary>
-        /// The combined variability masks of all parameters
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-	    private GpuParamVariability _combinedVariability;
-
-        #endregion
-
-        /// <summary>
+		protected IntConstantEntryList intConstants = new IntConstantEntryList();
+		/// <summary>
+		///    Table of Vector4 constants by index.
+		/// </summary>
+		protected FloatConstantEntryList floatConstants = new FloatConstantEntryList();
+		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
-		protected AutoConstantsList autoConstants = new AutoConstantsList();
+		protected AutoConstantEntryList autoConstantList = new AutoConstantEntryList();
 		/// <summary>
 		///    Lookup of constant indicies for named parameters.
 		/// </summary>
-		//protected AxiomCollection<int> namedParams = new AxiomCollection<int>();
+		protected AxiomCollection<int> namedParams = new AxiomCollection<int>();
 		/// <summary>
 		///     Specifies whether matrices need to be transposed prior to
 		///     being sent to the hardware.
@@ -296,132 +119,88 @@ namespace Axiom.Graphics
 
 		protected bool ignoreMissingParameters = false;
 
-        #region _activePassIterationIndex
+		#endregion Fields
 
-        /// <summary>
-        /// physical index for active pass iteration parameter real constant entry;
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-	    private int _activePassIterationIndex;
+		#region Constructors
 
-        #endregion
-
-        [OgreVersion(1, 7, 2790)]
-	    private readonly GpuSharedParametersUsageList _sharedParamSets = new GpuSharedParametersUsageList();
-
-        #endregion Fields
-
-        #region Constructors
-
-        /// <summary>
+		/// <summary>
 		///		Default constructor.
 		/// </summary>
 		public GpuProgramParameters()
-        {
-            _combinedVariability = GpuParamVariability.Global;
-            transposeMatrices = false;
-            ignoreMissingParameters = false;
-            _activePassIterationIndex = int.MaxValue;            
+		{
+			this.autoAddParamName = true;
 		}
 
-        public GpuProgramParameters(GpuProgramParameters other)
-        {
-            // let compiler perform shallow copies of structures 
-            // AutoConstantEntry, RealConstantEntry, IntConstantEntry
-            floatConstants = new FloatConstantList(other.floatConstants); // vector<float> in ogre => shallow copy
-            intConstants = new IntConstantList(other.intConstants);         // vector<int> in ogre => shallow copy
-
-            autoConstants = new AutoConstantsList();                  // vector<AutoConstantEntry> in ogre => deep copy
-            foreach (var ac in other.autoConstants)
-                autoConstants.Add(ac.Clone());
-
-            // copy value members
-            floatLogicalToPhysical = other.floatLogicalToPhysical; // pointer in ogre => no Clone
-            intLogicalToPhysical = other.intLogicalToPhysical;     // pointer in ogre => no Clone
-            _namedConstants = other._namedConstants;               // pointer in ogre => no Clone
-            CopySharedParamSetUsage(other._sharedParamSets);
-
-            _combinedVariability = other._combinedVariability;
-            transposeMatrices = other.transposeMatrices;
-            ignoreMissingParameters = other.ignoreMissingParameters;
-            _activePassIterationIndex = other._activePassIterationIndex;
-        }
-
-	    #endregion Constructors
+		#endregion Constructors
 
 		#region Methods
 
-        #region CopySharedParamSetUsage
-
-        [OgreVersion(1, 7, 2790)]
-        protected void CopySharedParamSetUsage(GpuSharedParametersUsageList srcList)
-        {
-
-            _sharedParamSets.Clear();
-            foreach ( var i in srcList )
-            {
-                _sharedParamSets.Add(new GpuSharedParametersUsage(i.SharedParameters, this));
-            }
-        }
-
-        #endregion
-
-        #region SetLogicalIndexes
-
-        [OgreVersion(1, 7, 2790)]
-        public void SetLogicalIndexes(GpuLogicalBufferStruct floatIndexMap, GpuLogicalBufferStruct intIndexMap)
-        {
-            if (floatIndexMap == null)
-                Debugger.Break();
-
-            floatLogicalToPhysical = floatIndexMap;
-            intLogicalToPhysical = intIndexMap;
-
-            // resize the internal buffers
-            // Note that these will only contain something after the first parameter
-            // set has set some parameters
-
-            // Size and reset buffer (fill with zero to make comparison later ok)
-            if (floatIndexMap != null && floatIndexMap.BufferSize > floatConstants.Count)
-            {
-                floatConstants.AddRange(Enumerable.Repeat(
-                        0.0f, floatIndexMap.BufferSize - floatConstants.Count));
-            }
-            if (intIndexMap != null && intIndexMap.BufferSize > intConstants.Count)
-            {
-                intConstants.AddRange(Enumerable.Repeat(
-                        0, intIndexMap.BufferSize - intConstants.Count));
-            }
-        }
-
-        #endregion
-
-
-        public void AddParameterToDefaultsList( GpuProgramParameterType type, string name )
+		public void AddParameterToDefaultsList( GpuProgramParameterType type, string name )
 		{
-			var p = new ParameterEntry();
+			ParameterEntry p = new ParameterEntry();
 			p.ParameterType = type;
 			p.ParameterName = name;
 			paramTypeList.Add( p );
 		}
 
-        #region ClearAutoConstants
-
-        /// <summary>
+		/// <summary>
 		///    Clears all the existing automatic constants.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
-		public void ClearAutoConstants()
+		public void ClearAutoConstantType()
 		{
-			autoConstants.Clear();
-		    _combinedVariability = GpuParamVariability.Global;
+			autoConstantList.Clear();
 		}
 
-        #endregion
-
-        public GpuProgramParameters Clone()
+		public GpuProgramParameters Clone()
 		{
-            return new GpuProgramParameters( this );
+			GpuProgramParameters p = new GpuProgramParameters();
+
+			// copy int constants
+			for ( int i = 0; i < intConstants.Count; i++ )
+			{
+				IntConstantEntry e = intConstants[ i ] as IntConstantEntry;
+				if ( e.isSet )
+				{
+					p.SetConstant( i, e.val );
+				}
+			}
+
+			// copy float constants
+			for ( int i = 0; i < floatConstants.Count; i++ )
+			{
+				FloatConstantEntry e = floatConstants[ i ] as FloatConstantEntry;
+				if ( e.isSet )
+				{
+					p.SetConstant( i, e.val );
+				}
+			}
+
+			// copy auto constants
+			for ( int i = 0; i < autoConstantList.Count; i++ )
+			{
+				AutoConstantEntry entry = autoConstantList[ i ] as AutoConstantEntry;
+				p.SetAutoConstant( entry.Clone() );
+			}
+
+			// copy named params
+			foreach ( string key in namedParams.Keys )
+			{
+				p.MapParamNameToIndex( key, namedParams[ key ] );
+			}
+
+			for ( int i = 0; i < paramTypeList.Count; i++ )
+			{
+			}
+			foreach ( ParameterEntry pEntry in paramTypeList )
+			{
+				p.AddParameterToDefaultsList( pEntry.ParameterType, pEntry.ParameterName );
+			}
+
+			// copy value members
+			p.transposeMatrices = transposeMatrices;
+			p.autoAddParamName = autoAddParamName;
+
+			return p;
 		}
 
 		/// <summary>
@@ -430,38 +209,162 @@ namespace Axiom.Graphics
 		/// <param name="source">Set of params to use as the source.</param>
 		public void CopyConstantsFrom( GpuProgramParameters source )
 		{
-		    floatConstants.Clear();
-		    floatConstants.AddRange( source.floatConstants );
+			int i = 0;
 
-            intConstants.Clear();
-            intConstants.AddRange(source.intConstants);
+			FloatConstantEntry[] floatEntries = new FloatConstantEntry[ source.floatConstants.Count ];
+			IntConstantEntry[] intEntries = new IntConstantEntry[ source.intConstants.Count ];
+
+			// copy those float and int constants right on in
+			source.floatConstants.CopyTo( floatEntries );
+			source.intConstants.CopyTo( intEntries );
+
+			floatConstants.AddRange( floatEntries );
+			intConstants.AddRange( intEntries );
 
 			// Iterate over auto parameters
 			// Clear existing auto constants
-			ClearAutoConstants();
-            autoConstants.AddRange(source.autoConstants.Select(x => x.Clone()));
+			ClearAutoConstantType();
 
-            _combinedVariability = source._combinedVariability;
-            CopySharedParamSetUsage(source._sharedParamSets);
+			for ( i = 0; i < source.autoConstantList.Count; i++ )
+			{
+				AutoConstantEntry entry = (AutoConstantEntry)source.autoConstantList[ i ];
+				SetAutoConstant( entry.Clone() );
+			}
+
+			// don't forget to copy the named param lookup as well
+			namedParams = new AxiomCollection<int>( source.namedParams );
 		}
 
 		/// <summary>
+		///
 		/// </summary>
-		public float GetFloatConstant( int i )
+		/// <param name="i"></param>
+		/// <returns></returns>
+		public FloatConstantEntry GetFloatConstant( int i )
 		{
-			return floatConstants[ i ];
+			if ( i < floatConstants.Count )
+			{
+				return (FloatConstantEntry)floatConstants[ i ];
+			}
+
+			return null;
 		}
 
 		/// <summary>
+		///
 		/// </summary>
-		public int GetIntConstant( int i )
+		/// <param name="i"></param>
+		/// <returns></returns>
+		public IntConstantEntry GetIntConstant( int i )
 		{
-			return intConstants[ i ];
+			if ( i < intConstants.Count )
+			{
+				return (IntConstantEntry)intConstants[ i ];
+			}
+
+			return null;
 		}
 
-        #region SetAutoConstant
+		/// <summary>
+		///    Gets the constant index of the specified named param.
+		/// </summary>
+		/// <param name="name">
+		///    Name of the param.
+		/// </param>
+		/// <returns>
+		///    Constant index.
+		/// </returns>
+		public int GetParamIndex( string name )
+		{
+			if ( !namedParams.ContainsKey( name ) )
+			{
+				// name not found in map, should it be added to the map?
+				if ( autoAddParamName )
+				{
+					// determine index
+					// don't know which Constants list the name is for
+					// so pick the largest index
+					int index = floatConstants.Count > intConstants.Count ? floatConstants.Count : intConstants.Count;
 
-        /// <summary>
+					floatConstants.Resize( index + 1 );
+					intConstants.Resize( index + 1 );
+					MapParamNameToIndex( name, index );
+					return index;
+				}
+				else
+				{
+					if ( this.ignoreMissingParameters )
+					{
+						return -1;
+					}
+					throw new Exception( string.Format( "Cannot find a param index for a param named '{0}'.", name ) );
+				}
+			}
+
+			return (int)namedParams[ name ];
+		}
+
+		/// <summary>
+		///		Given an index, this function will return the name of the parameter at that index.
+		/// </summary>
+		/// <param name="index">Index of the parameter to look up.</param>
+		/// <returns>Name of the param at the specified index.</returns>
+		public string GetNameByIndex( int index )
+		{
+			foreach ( DictionaryEntry entry in namedParams )
+			{
+				if ( (int)entry.Value == index )
+				{
+					return (string)entry.Key;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///		Gets a Named Float Constant entry if the name is found otherwise returns a null.
+		/// </summary>
+		/// <param name="name">Name of the constant to retreive.</param>
+		/// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
+		public FloatConstantEntry GetNamedFloatConstant( string name )
+		{
+			int index;
+			if ( namedParams.TryGetValue(name, out index) )
+			{
+				return GetFloatConstant( index );
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///		Gets a Named Int Constant entry if the name is found otherwise returns a null.
+		/// </summary>
+		/// <param name="name">Name of the constant to retreive.</param>
+		/// <returns>A reference to the int constant entry with the specified name, else null if not found.</returns>
+		public IntConstantEntry GetNamedIntConstant( string name )
+		{
+			int index;
+			if ( namedParams.TryGetValue(name, out index) )
+			{
+				return GetIntConstant( index );
+			}
+			return null;
+		}
+
+		/// <summary>
+		///    Maps a parameter name to the specified constant index.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="index">Constant index of the param.</param>
+		public void MapParamNameToIndex( string name, int index )
+		{
+			// map the param name to a constant register index
+			namedParams[ name ] = index;
+		}
+
+		/// <summary>
 		///    Sets up a constant which will automatically be updated by the engine.
 		/// </summary>
 		/// <remarks>
@@ -477,164 +380,90 @@ namespace Axiom.Graphics
 		///    it is changed. Note that because of the nature of the types, we know how big the
 		///    parameter details will be so you don't need to set that like you do for manual constants.
 		/// </param>
-        [AxiomHelper(0, 8, "Default param overload")]
 		public void SetAutoConstant( int index, AutoConstantType type )
 		{
 			SetAutoConstant( index, type, 0 );
 		}
 
-        /// <summary>
+		/// <summary>
 		///    Overloaded method.
 		/// </summary>
-		/// <param name="acType">The type of automatic constant to set.</param>
+		/// <param name="type">The type of automatic constant to set.</param>
 		/// <param name="index">
 		///    The location in the constant list to place this updated constant every time
 		///    it is changed. Note that because of the nature of the types, we know how big the
 		///    parameter details will be so you don't need to set that like you do for manual constants.
 		/// </param>
 		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetAutoConstant(int index, AutoConstantType acType, int extraInfo)
+		public void SetAutoConstant( int index, AutoConstantType type, int extraInfo )
 		{
-            // Get auto constant definition for sizing
-		    AutoConstantDefinition autoDef;
-            GetAutoConstantDefinition((int)acType, out autoDef);
-            // round up to nearest multiple of 4
-            var sz = autoDef.ElementCount;
-            if (sz % 4 > 0)
-            {
-                sz += 4 - (sz % 4);
-            }
-
-            var indexUse = GetFloatConstantLogicalIndexUse(index, sz, DeriveVariability(acType));
-
-            if (indexUse != null)
-                SetRawAutoConstant(indexUse.PhysicalIndex, acType, extraInfo, indexUse.Variability, sz);
+			AutoConstantEntry entry = new AutoConstantEntry( type, index, extraInfo, 0 );
+			System.Diagnostics.Debug.Assert( type != AutoConstantType.SinTime_0_X );
+			autoConstantList.Add( entry );
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public void SetAutoConstant(int index, AutoConstantType acType, ushort extraInfo1, ushort extraInfo2)
-        {
-            var extraInfo = extraInfo1 | (extraInfo2 << 16);
-            SetAutoConstant( index, acType, extraInfo );
-        }
+		/// <summary>
+		///    Overloaded method.
+		/// </summary>
+		/// <param name="type">The type of automatic constant to set.</param>
+		/// <param name="index">
+		///    The location in the constant list to place this updated constant every time
+		///    it is changed. Note that because of the nature of the types, we know how big the
+		///    parameter details will be so you don't need to set that like you do for manual constants.
+		/// </param>
+		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
+		public void SetAutoConstant( AutoConstantEntry entry )
+		{
+			autoConstantList.Add( entry );
+		}
 
-        #endregion
+		/// <summary>
+		///    Overloaded method.
+		/// </summary>
+		/// <param name="type">The type of automatic constant to set.</param>
+		/// <param name="index">
+		///    The location in the constant list to place this updated constant every time
+		///    it is changed. Note that because of the nature of the types, we know how big the
+		///    parameter details will be so you don't need to set that like you do for manual constants.
+		/// </param>
+		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
+		public void SetAutoConstant( int index, AutoConstantType type, float extraInfo )
+		{
+			AutoConstantEntry entry = new AutoConstantEntry( type, index, extraInfo, 0 );
+			autoConstantList.Add( entry );
+		}
 
-        #region SetAutoConstantReal
-
-        [OgreVersion(1, 7, 2790)]
-        public void SetAutoConstantReal(int index, AutoConstantType acType, Real extraInfo)
-        {
-            // Get auto constant definition for sizing
-            AutoConstantDefinition autoDef;
-            GetAutoConstantDefinition((int)acType, out autoDef);
-            // round up to nearest multiple of 4
-            var sz = autoDef.ElementCount;
-            if (sz % 4 > 0)
-            {
-                sz += 4 - (sz % 4);
-            }
-
-            var indexUse = GetFloatConstantLogicalIndexUse(index, sz, DeriveVariability(acType));
-
-            if (indexUse != null)
-                SetRawAutoConstantReal(indexUse.PhysicalIndex, acType, extraInfo, indexUse.Variability, sz);
-        }
-
-        #endregion
-
-        #region SetRawAutoConstant
-
-        [OgreVersion(1, 7, 2790)]
-        protected internal void SetRawAutoConstant(int physicalIndex,
-        AutoConstantType acType, int extraInfo, GpuParamVariability variability, int elementSize)
-        {
-            // update existing index if it exists
-            var found = false;
-            foreach ( var i in autoConstants )
-            {
-                if ( i.PhysicalIndex == physicalIndex )
-                {
-                    i.Type = acType;
-                    i.Data = extraInfo;
-                    i.ElementCount = elementSize;
-                    i.Variability = variability;
-                    found = true;
-                    break;
-                }
-            }
-            if ( !found )
-                autoConstants.Add( new AutoConstantEntry( acType, physicalIndex, extraInfo, variability, elementSize ) );
-
-            _combinedVariability |= variability;
-        }
-
-        #endregion
-
-        #region SetRawAutoConstantReal
-
-        [OgreVersion(1, 7, 2790)]
-        protected internal void SetRawAutoConstantReal(int physicalIndex,
-        AutoConstantType acType, Real extraInfo, GpuParamVariability variability, int elementSize)
-        {
-            // update existing index if it exists
-            var found = false;
-            foreach (var i in autoConstants)
-            {
-                if (i.PhysicalIndex == physicalIndex)
-                {
-                    i.Type = acType;
-                    i.FData = extraInfo;
-                    i.ElementCount = elementSize;
-                    i.Variability = variability;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                autoConstants.Add(new AutoConstantEntry(acType, physicalIndex, extraInfo, variability, elementSize));
-
-            _combinedVariability |= variability;
-        }
-
-        #endregion
-
-        #region SetConstant
-
-        /// <summary>
+		/// <summary>
 		///    Sends 4 packed floating-point values to the program.
 		/// </summary>
 		/// <param name="index">Index of the contant register.</param>
 		/// <param name="val">Structure containing 4 packed float values.</param>
-        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
 		public void SetConstant( int index, Vector4 val )
 		{
 			SetConstant( index, val.x, val.y, val.z, val.w );
 		}
-
-        /// <summary>
-        ///    Provides a way to pass in a single float
-        /// </summary>
-        /// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="value"></param>
-        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
-        public void SetConstant(int index, Real value)
-        {
-            SetConstant(index, value, 0.0f, 0.0f, 0.0f);
-        }
 
 		/// <summary>
 		///    Sends 3 packed floating-point values to the program.
 		/// </summary>
 		/// <param name="index">Index of the contant register.</param>
 		/// <param name="val">Structure containing 3 packed float values.</param>
-        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
 		public void SetConstant( int index, Vector3 val )
 		{
 			SetConstant( index, val.x, val.y, val.z, 1.0f );
 		}
 
+		/// <summary>
+		///    Sends 4 packed floating-point RGBA color values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
+		public void SetConstant( int index, ColorEx color )
+		{
+			if ( color != null )
+				// verify order of color components
+				SetConstant( index++, color.r, color.g, color.b, color.a );
+		}
 
 		/// <summary>
 		///    Sends a multiple value constant floating-point parameter to the program.
@@ -646,176 +475,138 @@ namespace Axiom.Graphics
 		///     before passing to the hardware.
 		/// </remarks>
 		/// <param name="index">Index of the contant register.</param>
-		/// <param name="mat">Structure containing 3 packed float values.</param>
-        [OgreVersion(1, 7, 2790)]
-		public void SetConstant( int index, Matrix4 mat )
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetConstant( int index, Matrix4 val )
 		{
-		    var a = new float[16];
+			Matrix4 mat;
 
-            // set as 4x 4-element floats
+			// transpose the matrix if need be
 			if ( transposeMatrices )
-			    mat.Transpose().MakeFloatArray( a );
+			{
+				mat = val.Transpose();
+			}
 			else
-			    mat.MakeFloatArray( a );
+			{
+				mat = val;
+			}
 
-		    SetConstant( index, a, 4 );
+			SetConstant( index++, mat.m00, mat.m01, mat.m02, mat.m03 );
+			SetConstant( index++, mat.m10, mat.m11, mat.m12, mat.m13 );
+			SetConstant( index++, mat.m20, mat.m21, mat.m22, mat.m23 );
+			SetConstant( index, mat.m30, mat.m31, mat.m32, mat.m33 );
 		}
 
-	    /// <summary>
-	    ///    Sends a multiple matrix values to the program.
-	    /// </summary>
-	    /// <param name="index">Index of the contant register.</param>
-	    /// <param name="matrices">Values to set.</param>
-	    /// <param name="count">Number of matrices to set</param>
-        [OgreVersion(1, 7, 2790)]
-	    public void SetConstant( int index, Matrix4[] matrices, int count )
-	    {
-	        if ( transposeMatrices )
-	        {
-                var a = new float[16];
-	            for ( var i = 0; i < count; ++i )
-	            {
-	                matrices[ i ].Transpose().MakeFloatArray( a );
-	                SetConstant( index, a, 4 );
-	                index += 4;
-	            }
-	        }
-	        else
-	        {
-	            var a = new float[16*count];
-                for (var i = 0; i < count; ++i)
-                    matrices[ i ].MakeFloatArray( a, 16*i );
-
-	            SetConstant( index, a, 4*count );
-	        }
-	    }
-
-        /// <summary>
-        ///    Sends 4 packed floating-point RGBA color values to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
-        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
-        public void SetConstant(int index, ColorEx color)
-        {
-            SetConstant(index, color.r, color.g, color.b, color.a);
-        }
-
-        /// <summary>
-        ///    Optimize the most common case of setting constant
-        ///    consisting of four floats
-        /// </summary>
-        /// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="f0">The floats.</param>
-        /// <param name="f1">The floats.</param>
-        /// <param name="f2">The floats.</param>
-        /// <param name="f3">The floats.</param>
-        [AxiomHelper(0, 8)]
-        public void SetConstant(int index, float f0, float f1, float f2, float f3)
-        {
-            // TODO: optimize this in case of GC pressure problems
-            SetConstant(index, new[] { f0, f1, f2, f3 });
-        }
-
-
-        /// <summary>
-        /// Sets a multiple value constant floating-point parameter to the program.
-        /// </summary>
-        /// <param name="index">The logical constant index at which to start placing parameters 
-        /// (each constant is a 4D float)</param>
-        /// <param name="val">Pointer to the values to write, must contain 4*count floats</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetConstant(int index, float[] val)
-        {
-            // Raw buffer size is 4x count
-            var rawCount = val.Length;
-            // get physical index
-            Debug.Assert(floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
-
-            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
-
-            // Copy 
-            WriteRawConstants(physicalIndex, val, rawCount);
-        }
-
-        /// <summary>
-        /// Sets a multiple value constant floating-point parameter to the program.
-        /// </summary>
-        /// <param name="index">The logical constant index at which to start placing parameters 
-        /// (each constant is a 4D float)</param>
-        /// <param name="val">Pointer to the values to write, must contain 4*count floats</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetConstant(int index, double[] val)
-        {
-            // Raw buffer size is 4x count
-            var rawCount = val.Length;
-            // get physical index
-            Debug.Assert(floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
-
-            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
-
-            Debug.Assert(physicalIndex + rawCount <= floatConstants.Count);
-            // Copy manually since cast required
-            for (var i = 0; i < rawCount; ++i)
-            {
-                floatConstants[physicalIndex + i] = (float)(val[i]);
-            }
-        }
-
-	    /// <summary>
-	    ///    Sets an array of int values starting at the specified index.
-	    /// </summary>
-	    /// <param name="index">Index of the contant register to start at.</param>
-	    /// <param name="val">Array of ints.</param>
-	    /// <param name="count"></param>
-	    [OgreVersion(1, 7, 2790)]
-        public void SetConstant(int index, int[] val, int count)
+		/// <summary>
+		///    Sends a multiple matrix values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetConstant( int index, Matrix4[] matrices, int count )
 		{
-            // Raw buffer size is 4x count
-	        var rawCount = count*4;
-            // get physical index
-            Debug.Assert(intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
-
-            var physicalIndex = GetIntConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
-            // Copy 
-            WriteRawConstants(physicalIndex, val, rawCount);
+			for ( int i = 0; i < count; i++ )
+			{
+				SetConstant( index++, matrices[ i ] );
+			}
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public void SetConstant(int index, float[] val, int count)
-        {
-            // Raw buffer size is 4x count
-            var rawCount = count * 4;
-            // get physical index
-            Debug.Assert(floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
+		/// <summary>
+		///    Sets an array of int values starting at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="ints">Array of ints.</param>
+		public void SetConstant( int index, int[] ints )
+		{
+			int count = ints.Length / 4;
+			int srcIndex = 0;
 
-            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+			// resize if necessary
+			intConstants.Resize( index + count );
 
-            // Copy 
-            WriteRawConstants(physicalIndex, val, rawCount);
-        }
-
-        #endregion
+			// copy in chunks of 4
+			while ( count-- > 0 )
+			{
+				IntConstantEntry entry = (IntConstantEntry)intConstants[ index++ ];
+				entry.isSet = true;
+				Array.Copy( ints, srcIndex, entry.val, 0, 4 );
+				srcIndex += 4;
+			}
+		}
 
 		/// <summary>
 		///    Provides a way to pass in the technique pass number
 		/// </summary>
 		/// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="value">Value of the constant.</param>
-        [Obsolete("Use SetConstant")]
+		/// <param name="ints">Array of ints.</param>
 		public void SetIntConstant( int index, int value )
 		{
 			SetConstant( index, value, 0f, 0f, 0f );
 		}
 
+		/// <summary>
+		///    Provides a way to pass in a single float
+		/// </summary>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="value"></param>
+		public void SetConstant( int index, float value )
+		{
+			SetConstant( index, value, 0f, 0f, 0f );
+		}
+
+		/// <summary>
+		///    Optimize the most common case of setting constant
+		///    consisting of four floats
+		/// </summary>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="f0,f1,f2,f3">The floats.</param>
+		public void SetConstant( int index, float f0, float f1, float f2, float f3 )
+		{
+			int srcIndex = 0;
+			// resize if necessary
+			floatConstants.Resize( index + 1 );
+			FloatConstantEntry entry = floatConstants[ index ];
+			entry.isSet = true;
+			entry.val[ 0 ] = f0;
+			entry.val[ 1 ] = f1;
+			entry.val[ 2 ] = f2;
+			entry.val[ 3 ] = f3;
+		}
+
+		/// <summary>
+		///    Sets an array of int values starting at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="ints">Array of floats.</param>
+		public void SetConstant( int index, float[] floats )
+		{
+			int count = floats.Length / 4;
+			int srcIndex = 0;
+
+			// resize if necessary
+			floatConstants.Resize( index + count );
+
+			// copy in chunks of 4
+			while ( count-- > 0 )
+			{
+				FloatConstantEntry entry = floatConstants[ index++ ];
+				entry.isSet = true;
+				Array.Copy( floats, srcIndex, entry.val, 0, 4 );
+				srcIndex += 4;
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="factor"></param>
+		public void SetConstantFromTime( int index, float factor )
+		{
+			ControllerManager.Instance.CreateGpuProgramTimerParam( this, index, factor );
+		}
 
 		#region Named parameters
 
-
-        #region SetNamedAutoConstant
-
         /// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
-        [AxiomHelper(0, 8, "default param overload")]
         public void SetNamedAutoConstant( string name, AutoConstantType type )
         {
             SetNamedAutoConstant( name, type, 0 );
@@ -834,325 +625,345 @@ namespace Axiom.Graphics
 		/// <param name="name">
 		///    Name of the param.
 		/// </param>
-        /// <param name="acType">
+		/// <param name="type">
 		///    The type of automatic constant to set.
 		/// </param>
 		/// <param name="extraInfo">
 		///    Any extra information needed by the auto constant (i.e. light index, etc).
 		/// </param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedAutoConstant(string name, AutoConstantType acType, int extraInfo)
+		public void SetNamedAutoConstant( string name, AutoConstantType type, int extraInfo )
 		{
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-            {
-                def.Variability = DeriveVariability(acType);
-                // make sure we also set variability on the logical index map
-                var indexUse = GetFloatConstantLogicalIndexUse(def.LogicalIndex, def.ElementSize * def.ArraySize, def.Variability);
-                if (indexUse != null)
-                    indexUse.Variability = def.Variability;
-
-                SetRawAutoConstant(def.PhysicalIndex, acType, extraInfo, def.Variability, def.ElementSize);
-            }
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetAutoConstant( GetParamIndex( name ), type, extraInfo );
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedAutoConstant(string name, AutoConstantType acType, ushort extraInfo1, ushort extraInfo2)
-        {
-            var extraInfo = extraInfo1 | ( extraInfo2 << 16 );
-            SetNamedAutoConstant( name, acType, extraInfo );
-        }
-
-	    #endregion
-
-        #region SetNamedAutoConstantReal
-
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedAutoConstantReal(string name, AutoConstantType acType, Real rData)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-            {
-                def.Variability = DeriveVariability(acType);
-                // make sure we also set variability on the logical index map
-                var indexUse = GetFloatConstantLogicalIndexUse(def.LogicalIndex, def.ElementSize * def.ArraySize, def.Variability);
-                if (indexUse != null)
-                    indexUse.Variability = def.Variability;
-
-                SetRawAutoConstantReal(def.PhysicalIndex, acType, rData, def.Variability, def.ElementSize);
-            }
-        }
-
-        #endregion
-
-        #region SetNamedConstant
-
-        [OgreVersion(1, 7, 2790)]
-		public void SetNamedConstant( string name, Real val )
+		public void SetNamedConstant( string name, float val )
 		{
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, val);
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), val, 0f, 0f, 0f );
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, int val)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, val);
-        }
-
-
-        /// <summary>
-        ///    Sends 4 packed floating-point values to the program.
-        /// </summary>
-        /// <param name="name">Name of the contant register.</param>
-        /// <param name="val">Structure containing 4 packed float values.</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, Vector4 val)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, val);
-        }
-
-        /// <summary>
-        ///    Sends 3 packed floating-point values to the program.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="val">Structure containing 3 packed float values.</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, Vector3 val)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, val);
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, Matrix4 val)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, val, def.ElementSize);
-        }
-
-        /// <summary>
-        ///    Sends multiple matrices into a program.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="matrices">Array of matrices.</param>
-        /// <param name="count"></param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, Matrix4[] matrices, int count)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, matrices, count);
-        }
-
-        [OgreVersion(1, 7, 2790)]
-		public void SetNamedConstant( string name, float[] val, int count, int multiple = 4 )
+		public void SetNamedConstant( string name, float[] val )
 		{
-            var rawCount = count * multiple;
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstants(def.PhysicalIndex, val, rawCount);
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), val );
 		}
 
-        /// <summary>
-        ///    Sends 4 packed floating-point RGBA color values to the program.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, ColorEx color)
-        {
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstant(def.PhysicalIndex, color, def.ElementSize);
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, int[] val, int count, int multiple = 4)
+		public void SetNamedConstant( string name, int[] val )
 		{
-            var rawCount = count * multiple;
-            // look up, and throw an exception if we're not ignoring missing
-            var def = FindNamedConstantDefinition(name, !ignoreMissingParameters);
-            if (def != null)
-                WriteRawConstants(def.PhysicalIndex, val, rawCount);
+			SetConstant( GetParamIndex( name ), val );
 		}
 
-        #endregion
-
-        #region SetConstantFromTime
-
-        [OgreVersion(1, 7, 2790)]
-        public void SetConstantFromTime(int index, Real factor)
-        {
-            //ControllerManager.Instance.CreateGpuProgramTimerParam(this, index, factor);
-            SetAutoConstantReal(index, AutoConstantType.Time, factor);
-        }
-
-        #endregion
-
-        #region SetNamedConstantFromTime
-
-        public void SetNamedConstantFromTime( string name, float factor )
+		/// <summary>
+		///    Sends 4 packed floating-point values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 4 packed float values.</param>
+		public void SetNamedConstant( string name, Vector4 val )
 		{
-            SetNamedAutoConstantReal(name, AutoConstantType.Time, factor);
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), val.x, val.y, val.z, val.w );
 		}
 
-        #endregion
-
-        #region GetAutoConstantEntry
-
-        [OgreVersion(1, 7, 2790)]
-        public AutoConstantEntry GetAutoConstantEntry(int index)
-        {
-            return index < autoConstants.Count ? autoConstants[index] : null;
-        }
-
-        #endregion
-
-        #region FindFloatAutoConstantEntry
-
-        /// <summary>
-        /// /** Finds an auto constant that's affecting a given logical parameter 
-        /// index for floating-point values.
-        /// </summary>
-        /// <remarks>
-        /// Only applicable for low-level programs.
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        public AutoConstantEntry FindFloatAutoConstantEntry(int logicalIndex)
-        {
-            if ( floatLogicalToPhysical == null )
-                throw new AxiomException( "This is not a low-level parameter parameter object" );
-
-            return FindRawAutoConstantEntryFloat(
-                GetFloatConstantPhysicalIndex( logicalIndex, 0, GpuParamVariability.Global ) );
-        }
-
-        #endregion
-
-        #region FindIntAutoConstantEntry
-
-        /// <summary>
-        /// /** Finds an auto constant that's affecting a given logical parameter 
-        /// index for integer values.
-        /// </summary>
-        /// <remarks>
-        /// Only applicable for low-level programs.
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        public AutoConstantEntry FindIntAutoConstantEntry(int logicalIndex)
-        {
-            if (intLogicalToPhysical == null)
-                throw new AxiomException("This is not a low-level parameter parameter object");
-
-            return FindRawAutoConstantEntryInt(
-                GetIntConstantPhysicalIndex(logicalIndex, 0, GpuParamVariability.Global));
-        }
-
-        #endregion
-
-        #region FindAutoConstantEntry
-
-        /// <summary>
-        /// inds an auto constant that's affecting a given named parameter index.
-        /// </summary>
-        /// <remarks>
-        /// Only applicable to high-level programs.
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        public AutoConstantEntry FindAutoConstantEntry(string paramName)
-        {
-            if ( _namedConstants == null )
-                throw new AxiomException( "This params object is not based on a program with named parameters." );
-
-            var def = GetConstantDefinition( paramName );
-            return def.IsFloat
-                       ? FindRawAutoConstantEntryFloat( def.PhysicalIndex )
-                       : FindRawAutoConstantEntryInt( def.PhysicalIndex );
-        }
-
-        #endregion
-
-        #region FindRawAutoConstantEntryFloat
-
-        [OgreVersion(1, 7, 2790)]
-        protected internal AutoConstantEntry FindRawAutoConstantEntryFloat(int physicalIndex)
-        {
-            // should check that auto is float and not int so that physicalIndex
-            // doesn't have any ambiguity
-            // However, all autos are float I think so no need
-            return autoConstants.FirstOrDefault( x => x.PhysicalIndex == physicalIndex );
-        }
-
-        #endregion
-
-        #region FindRawAutoConstantEntryInt
-
-        [OgreVersion(1, 7, 2790)]
-        protected internal AutoConstantEntry FindRawAutoConstantEntryInt(int physicalIndex)
-        {
-            // No autos are float?
-            return null;
-        }
-
-        #endregion
-
-        public void CopyMatchingNamedConstantsFrom(GpuProgramParameters source)
-        {
-            throw new NotImplementedException();
+		/// <summary>
+		///    Sends 3 packed floating-point values to the program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetNamedConstant( string name, Vector3 val )
+		{
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), val.x, val.y, val.z, 1f );
 		}
-	
+
+		/// <summary>
+		///    Sends 4 packed floating-point RGBA color values to the program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
+		public void SetNamedConstant( string name, ColorEx color )
+		{
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), color.r, color.g, color.b, color.a );
+		}
+
+		/// <summary>
+		///    Sends a multiple value constant floating-point parameter to the program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetNamedConstant( string name, Matrix4 val )
+		{
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), val );
+		}
+
+		/// <summary>
+		///    Sends multiple matrices into a program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="matrices">Array of matrices.</param>
+		public void SetNamedConstant( string name, Matrix4[] matrices, int count )
+		{
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstant( GetParamIndex( name ), matrices, count );
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="factor"></param>
+		public void SetNamedConstantFromTime( string name, float factor )
+		{
+			int index = GetParamIndex( name );
+			if ( index != -1 )
+				SetConstantFromTime( GetParamIndex( name ), factor );
+		}
 
 		#endregion Named parameters
 
-        public void IncPassIterationNumber()
-        {
-            if ( PassIterationNumberIndex != int.MaxValue )
-            {
-                // This is a physical index
-                floatConstants[ PassIterationNumberIndex ]++;
-            }
-        }
+		/// <summary>
+		///    Updates the automatic parameters (except lights) based on the details provided.
+		/// </summary>
+		/// <param name="source">
+		///    A source containing all the updated data to be made available for auto updating
+		///    the GPU program constants.
+		/// </param>
+		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
+		{
+			// return if no constants
+			if ( !this.HasAutoConstantType )
+			{
+				return;
+			}
 
-	    #endregion Methods
+			// loop through and update all constants based on their type
+			for ( int i = 0; i < autoConstantList.Count; i++ )
+			{
+				AutoConstantEntry entry = autoConstantList[ i ];
+
+				Matrix4[] matrices = null;
+				int numMatrices = 0;
+				int index = 0;
+
+				switch ( entry.Type )
+				{
+					case AutoConstantType.WorldMatrix:
+						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
+						break;
+
+					case AutoConstantType.WorldMatrixArray:
+						SetConstant( entry.PhysicalIndex, source.WorldMatrixArray, source.WorldMatrixCount );
+						break;
+
+					case AutoConstantType.WorldMatrixArray3x4:
+						matrices = source.WorldMatrixArray;
+						numMatrices = source.WorldMatrixCount;
+						index = entry.PhysicalIndex;
+
+						for ( int j = 0; j < numMatrices; j++ )
+						{
+							Matrix4 m = matrices[ j ];
+							SetConstant( index++, m.m00, m.m01, m.m02, m.m03 );
+							SetConstant( index++, m.m10, m.m11, m.m12, m.m13 );
+							SetConstant( index++, m.m20, m.m21, m.m22, m.m23 );
+						}
+
+						break;
+
+					case AutoConstantType.ViewMatrix:
+						SetConstant( entry.PhysicalIndex, source.ViewMatrix );
+						break;
+
+					case AutoConstantType.ProjectionMatrix:
+						SetConstant( entry.PhysicalIndex, source.ProjectionMatrix );
+						break;
+
+					case AutoConstantType.ViewProjMatrix:
+						SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
+						break;
+
+					case AutoConstantType.WorldViewMatrix:
+						SetConstant( entry.PhysicalIndex, source.WorldViewMatrix );
+						break;
+
+					case AutoConstantType.WorldViewProjMatrix:
+						SetConstant( entry.PhysicalIndex, source.WorldViewProjMatrix );
+						break;
+
+					case AutoConstantType.InverseWorldMatrix:
+						SetConstant( entry.PhysicalIndex, source.InverseWorldMatrix );
+						break;
+
+					case AutoConstantType.InverseViewMatrix:
+						SetConstant( entry.PhysicalIndex, source.InverseViewMatrix );
+						break;
+
+					case AutoConstantType.InverseTransposeViewMatrix:
+						SetConstant( entry.PhysicalIndex, source.InverseTransposeViewMatrix );
+						break;
+
+					case AutoConstantType.InverseWorldViewMatrix:
+						SetConstant( entry.PhysicalIndex, source.InverseWorldViewMatrix );
+						break;
+
+					case AutoConstantType.InverseTransposeWorldViewMatrix:
+						SetConstant( entry.PhysicalIndex, source.InverseTransposeWorldViewMatrix );
+						break;
+
+					case AutoConstantType.AmbientLightColor:
+						SetConstant( entry.PhysicalIndex, source.AmbientLight );
+						break;
+
+					case AutoConstantType.CameraPositionObjectSpace:
+						SetConstant( entry.PhysicalIndex, source.CameraPositionObjectSpace );
+						break;
+
+					case AutoConstantType.CameraPosition:
+						SetConstant( entry.PhysicalIndex, source.CameraPosition );
+						break;
+
+					case AutoConstantType.TextureViewProjMatrix:
+						SetConstant( entry.PhysicalIndex, source.TextureViewProjectionMatrix );
+						break;
+
+					case AutoConstantType.Custom:
+					case AutoConstantType.AnimationParametric:
+						source.Renderable.UpdateCustomGpuParameter( entry, this );
+						break;
+					case AutoConstantType.FogParams:
+						SetConstant( entry.PhysicalIndex, source.FogParams );
+						break;
+					case AutoConstantType.ViewDirection:
+						SetConstant( entry.PhysicalIndex, source.ViewDirection );
+						break;
+					case AutoConstantType.ViewSideVector:
+						SetConstant( entry.PhysicalIndex, source.ViewSideVector );
+						break;
+					case AutoConstantType.ViewUpVector:
+						SetConstant( entry.PhysicalIndex, source.ViewUpVector );
+						break;
+					case AutoConstantType.NearClipDistance:
+						SetConstant( entry.PhysicalIndex, source.NearClipDistance, 0f, 0f, 0f );
+						break;
+					case AutoConstantType.FarClipDistance:
+						SetConstant( entry.PhysicalIndex, source.FarClipDistance, 0f, 0f, 0f );
+						break;
+					case AutoConstantType.MVShadowTechnique:
+						SetConstant( entry.PhysicalIndex, source.MVShadowTechnique );
+						break;
+					case AutoConstantType.Time:
+						SetConstant( entry.PhysicalIndex, source.Time * entry.FData, 0f, 0f, 0f );
+						break;
+					case AutoConstantType.Time_0_X:
+						SetConstant( entry.PhysicalIndex, source.Time % entry.FData, 0f, 0f, 0f );
+						break;
+					case AutoConstantType.SinTime_0_X:
+						SetConstant( entry.PhysicalIndex, Utility.Sin( source.Time % entry.FData ), 0f, 0f, 0f );
+						break;
+					case AutoConstantType.Time_0_1:
+						SetConstant( entry.PhysicalIndex, (float)( source.Time % 1 ), 0f, 0f, 0f );
+						break;
+					case AutoConstantType.RenderTargetFlipping:
+						SetIntConstant( entry.PhysicalIndex, source.RenderTarget.RequiresTextureFlipping ? -1 : 1 );
+						break;
+					case AutoConstantType.PassNumber:
+						SetIntConstant( entry.PhysicalIndex, source.PassNumber );
+						break;
+				}
+			}
+		}
+
+		/// <summary>
+		///    Updates the automatic light parameters based on the details provided.
+		/// </summary>
+		/// <param name="source">
+		///    A source containing all the updated data to be made available for auto updating
+		///    the GPU program constants.
+		/// </param>
+		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
+		{
+			// return if no constants
+			if ( !this.HasAutoConstantType )
+			{
+				return;
+			}
+
+			// loop through and update all constants based on their type
+			for ( int i = 0; i < autoConstantList.Count; i++ )
+			{
+				AutoConstantEntry entry = autoConstantList[ i ];
+
+				Vector3 vec3;
+
+				switch ( entry.Type )
+				{
+					case AutoConstantType.LightDiffuseColor:
+						SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).Diffuse );
+						break;
+
+					case AutoConstantType.LightSpecularColor:
+						SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).Specular );
+						break;
+
+					case AutoConstantType.LightPosition:
+						// Fix from Multiverse to enable Normal Mapping Sample Material from OGRE
+						SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).GetAs4DVector() );
+						break;
+
+					case AutoConstantType.LightDirection:
+						vec3 = source.GetLight( 1 ).DerivedDirection;
+						SetConstant( entry.PhysicalIndex, vec3.x, vec3.y, vec3.z, 1.0f );
+						break;
+
+					case AutoConstantType.LightPositionObjectSpace:
+						SetConstant( entry.PhysicalIndex, source.InverseWorldMatrix * source.GetLight( entry.Data ).GetAs4DVector() );
+						break;
+
+					case AutoConstantType.LightDirectionObjectSpace:
+						vec3 = source.InverseWorldMatrix * source.GetLight( entry.Data ).DerivedDirection;
+						vec3.Normalize();
+						SetConstant( entry.PhysicalIndex, vec3.x, vec3.y, vec3.z, 1.0f );
+						break;
+
+					case AutoConstantType.LightDistanceObjectSpace:
+						vec3 = source.InverseWorldMatrix * source.GetLight( entry.Data ).DerivedPosition;
+						SetConstant( entry.PhysicalIndex, vec3.Length, 0f, 0f, 0f );
+						break;
+
+					case AutoConstantType.ShadowExtrusionDistance:
+						SetConstant( entry.PhysicalIndex, source.ShadowExtrusionDistance, 0f, 0f, 0f );
+						break;
+
+					case AutoConstantType.LightAttenuation:
+						Light light = source.GetLight( entry.Data );
+						SetConstant( entry.PhysicalIndex, light.AttenuationRange, light.AttenuationConstant, light.AttenuationLinear, light.AttenuationQuadratic );
+						break;
+					case AutoConstantType.LightPowerScale:
+						SetConstant( entry.PhysicalIndex, source.GetLightPowerScale( entry.Data ) );
+						break;
+					case AutoConstantType.WorldMatrix:
+						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
+						break;
+					//case AutoConstantType.ViewProjMatrix:
+					//    SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
+					//    break;
+				}
+			}
+		}
+
+		#endregion Methods
 
 		#region Properties
-
-        /// <summary>
-        /// physical index for active pass iteration parameter real constant entry;
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public int PassIterationNumberIndex { get; protected set; }
-
-
-        /// <summary>
-        /// Does this parameters object have a pass iteration number constant?
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public bool HasPassIterationNumber
-        {
-            get
-            {
-                return PassIterationNumberIndex != int.MaxValue;
-            }
-        }
 
 		/// <summary>
 		///		Gets/Sets the auto add parameter name flag.
@@ -1192,7 +1003,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return autoConstants.Count > 0;
+				return autoConstantList.Count > 0;
 			}
 		}
 
@@ -1218,6 +1029,18 @@ namespace Axiom.Graphics
 			}
 		}
 
+		/// <summary>
+		///    Gets a packed array of all current integer contants.
+		/// </summary>
+		public IntConstantEntry[] IntConstants
+		{
+			get
+			{
+				IntConstantEntry[] ints = new IntConstantEntry[ intConstants.Count ];
+				intConstants.CopyTo( ints );
+				return ints;
+			}
+		}
 
 		/// <summary>
 		///    Gets the number of int contants values currently set.
@@ -1242,6 +1065,17 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///		Gets the number of named parameters in this param set.
+		/// </summary>
+		public int NamedParamCount
+		{
+			get
+			{
+				return this.namedParams.Count;
+			}
+		}
+
+		/// <summary>
 		///     Specifies whether matrices need to be transposed prior to
 		///     being sent to the hardware.
 		/// </summary>
@@ -1260,11 +1094,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
-		public AutoConstantsList AutoConstantList
+		public AutoConstantEntryList AutoConstantList
 		{
 			get
 			{
-				return autoConstants;
+				return autoConstantList;
 			}
 		}
 
@@ -1281,644 +1115,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Properties
-
-	    public OffsetArray<float>.FixedPointer GetFloatPointer( int physicalIndex )
-	    {
-	        return floatConstants.Fix( physicalIndex );
-	    }
-
-        public float[] GetFloatPointer()
-        {
-            return floatConstants.Data;
-        }
-
-        public OffsetArray<int>.FixedPointer GetIntPointer( int physicalIndex )
-        {
-            return intConstants.Fix( physicalIndex );
-        }
-
-        public int[] GetIntPointer()
-        {
-            return intConstants.Data;
-        }
-
-	    #region ClearNamedAutoConstant
-
-        [OgreVersion(1, 7, 2790)]
-        public void ClearNamedAutoConstant(string name)
-        {
-            var def = FindNamedConstantDefinition( name );
-            if ( def != null )
-            {
-                def.Variability = GpuParamVariability.Global;
-
-                // Autos are always floating point
-                if ( def.IsFloat )
-                {
-                    autoConstants.RemoveAll( x => x.PhysicalIndex == def.PhysicalIndex );
-                }
-
-            }
-        }
-
-        #endregion
-
-        #region GetFloatConstantLogicalIndexUse
-
-        [OgreVersion(1, 7, 2790)]
-        protected GpuLogicalIndexUse GetFloatConstantLogicalIndexUse(
-            int logicalIndex, int requestedSize, GpuParamVariability variability)
-        {
-            if ( floatLogicalToPhysical == null )
-                return null;
-
-            GpuLogicalIndexUse indexUse = null;
-            lock(floatLogicalToPhysical.Mutex)
-            {
-                GpuLogicalIndexUse logi;
-                if (!floatLogicalToPhysical.Map.TryGetValue( logicalIndex, out logi ))
-                {
-                    if ( requestedSize != 0 )
-                    {
-                        var physicalIndex = floatConstants.Count;
-
-                        // Expand at buffer end
-                        for (var i = 0; i < requestedSize; i++)
-                            floatConstants.Add(0.0f);
-
-                        // Record extended size for future GPU params re-using this information
-                        floatLogicalToPhysical.BufferSize = floatConstants.Count;
-
-                        // low-level programs will not know about mapping ahead of time, so 
-                        // populate it. Other params objects will be able to just use this
-                        // accepted mapping since the constant structure will be the same
-
-                        // Set up a mapping for all items in the count
-                        var currPhys = physicalIndex;
-                        var count = requestedSize/4;
-
-                        GpuLogicalIndexUse insertedIterator = null;
-                        for ( var logicalNum = 0; logicalNum < count; ++logicalNum )
-                        {
-
-                            var it = new GpuLogicalIndexUse( currPhys, requestedSize, variability );
-                            floatLogicalToPhysical.Map.Add( logicalIndex + logicalNum,
-                                                            it);
-
-                            currPhys += 4;
-
-                            if ( logicalNum == 0 )
-                                insertedIterator = it;
-                        }
-
-                        indexUse = insertedIterator;
-                    }
-                    else
-                    {
-                        // no match & ignore
-                        return null;
-                    }
-
-                }
-                else
-                {
-                    var physicalIndex = logi.PhysicalIndex;
-                    indexUse = logi;
-                    // check size
-                    if ( logi.CurrentSize < requestedSize )
-                    {
-                        // init buffer entry wasn't big enough; could be a mistake on the part
-                        // of the original use, or perhaps a variable length we can't predict
-                        // until first actual runtime use e.g. world matrix array
-                        var insertCount = requestedSize - logi.CurrentSize;
-                        var insertPos = 0;
-                        insertPos += physicalIndex;
-
-                        for (var i = 0; i < insertCount; i++ )
-                            floatConstants.Insert(insertPos, 0.0f);
-
-                        // shift all physical positions after this one
-                        foreach (var i in floatLogicalToPhysical.Map)
-                        {
-                            if ( i.Value.PhysicalIndex > physicalIndex )
-                                i.Value.PhysicalIndex += insertCount;
-                        }
-                        
-                        floatLogicalToPhysical.BufferSize += insertCount;
-                        foreach (var i in autoConstants)
-                        {
-                            AutoConstantDefinition def;
-                            if ( i.PhysicalIndex > physicalIndex &&
-                                 GetAutoConstantDefinition( i.Type.ToString(), out def ) && 
-                                 def.ElementType == ElementType.Real )
-                            {
-                                i.PhysicalIndex += insertCount;
-                            }
-                        }
-                        if (_namedConstants != null)
-                        {
-                            foreach (var i in _namedConstants.Map)
-                            {
-                                if ( i.Value.IsFloat && i.Value.PhysicalIndex > physicalIndex )
-                                    i.Value.PhysicalIndex += insertCount;
-                            }
-                            _namedConstants.FloatBufferSize += insertCount;
-                        }
-
-                        logi.CurrentSize += insertCount;
-                    }
-                }
-
-                if ( indexUse != null )
-                    indexUse.Variability= variability;
-
-                return indexUse;
-            }
-        }
-
-        #endregion
-
-        #region GetIntConstantLogicalIndexUse
-
-        [OgreVersion(1, 7, 2790)]
-        protected GpuLogicalIndexUse GetIntConstantLogicalIndexUse(
-            int logicalIndex, int requestedSize, GpuParamVariability variability)
-        {
-            if (intLogicalToPhysical == null)
-                throw new AxiomException( "This is not a low-level parameter parameter object" );
-
-            GpuLogicalIndexUse indexUse = null;
-            lock (intLogicalToPhysical.Mutex)
-            {
-                GpuLogicalIndexUse logi;
-                if (!intLogicalToPhysical.Map.TryGetValue(logicalIndex, out logi))
-                {
-                    if (requestedSize != 0)
-                    {
-                        var physicalIndex = intConstants.Count;
-
-                        // Expand at buffer end
-                        for (var i = 0; i < requestedSize; i++)
-                            intConstants.Add(0);
-
-                        // Record extended size for future GPU params re-using this information
-                        intLogicalToPhysical.BufferSize = intConstants.Count;
-
-                        // low-level programs will not know about mapping ahead of time, so 
-                        // populate it. Other params objects will be able to just use this
-                        // accepted mapping since the constant structure will be the same
-
-                        // Set up a mapping for all items in the count
-                        var currPhys = physicalIndex;
-                        var count = requestedSize / 4;
-
-                        GpuLogicalIndexUse insertedIterator = null;
-                        for (var logicalNum = 0; logicalNum < count; ++logicalNum)
-                        {
-
-                            var it = new GpuLogicalIndexUse(currPhys, requestedSize, variability);
-                            intLogicalToPhysical.Map.Add(logicalIndex + logicalNum,
-                                                            it);
-
-                            currPhys += 4;
-
-                            if (logicalNum == 0)
-                                insertedIterator = it;
-                        }
-
-                        indexUse = insertedIterator;
-                    }
-                    else
-                    {
-                        // no match & ignore
-                        return null;
-                    }
-
-                }
-                else
-                {
-                    var physicalIndex = logi.PhysicalIndex;
-                    indexUse = logi;
-                    // check size
-                    if (logi.CurrentSize < requestedSize)
-                    {
-                        // init buffer entry wasn't big enough; could be a mistake on the part
-                        // of the original use, or perhaps a variable length we can't predict
-                        // until first actual runtime use e.g. world matrix array
-                        var insertCount = requestedSize - logi.CurrentSize;
-                        var insertPos = 0;
-                        insertPos += physicalIndex;
-
-                        for (var i = 0; i < insertCount; i++)
-                            intConstants.Insert(insertPos, 0);
-
-                        // shift all physical positions after this one
-                        foreach (var i in intLogicalToPhysical.Map)
-                        {
-                            if (i.Value.PhysicalIndex > physicalIndex)
-                                i.Value.PhysicalIndex += insertCount;
-                        }
-
-                        intLogicalToPhysical.BufferSize += insertCount;
-                        foreach (var i in autoConstants)
-                        {
-                            AutoConstantDefinition def;
-                            if (i.PhysicalIndex > physicalIndex &&
-                                 GetAutoConstantDefinition(i.Type.ToString(), out def) &&
-                                 def.ElementType == ElementType.Int)
-                            {
-                                i.PhysicalIndex += insertCount;
-                            }
-                        }
-                        if (_namedConstants != null)
-                        {
-                            foreach (var i in _namedConstants.Map)
-                            {
-                                if (!i.Value.IsFloat && i.Value.PhysicalIndex > physicalIndex)
-                                    i.Value.PhysicalIndex += insertCount;
-                            }
-                            _namedConstants.FloatBufferSize += insertCount;
-                        }
-
-                        logi.CurrentSize += insertCount;
-                    }
-                }
-
-                if (indexUse != null)
-                    indexUse.Variability = variability;
-
-                return indexUse;
-            }
-        }
-
-        #endregion
-
-        #region ClearAutoConstant
-
-        [OgreVersion(1, 7, 2790)]
-        public void ClearAutoConstant(int index)
-        {
-
-            var indexUse = GetFloatConstantLogicalIndexUse( index, 0, GpuParamVariability.Global );
-
-            if ( indexUse != null )
-            {
-                indexUse.Variability = GpuParamVariability.Global;
-                var physicalIndex = indexUse.PhysicalIndex;
-                // update existing index if it exists
-
-                autoConstants.RemoveAll( i => i.PhysicalIndex == physicalIndex );
-            }
-        }
-
-        #endregion
-
-        #region GetFloatConstantPhysicalIndex
-
-        [OgreVersion(1, 7, 2790)]
-	    private int GetFloatConstantPhysicalIndex(int logicalIndex, int requestedSize, GpuParamVariability variability)
-	    {
-            var indexUse = GetFloatConstantLogicalIndexUse(logicalIndex, requestedSize, variability);
-            return indexUse != null ? indexUse.PhysicalIndex : 0;
-	    }
-
-        #endregion
-
-        #region GetIntConstantPhysicalIndex
-
-        [OgreVersion(1, 7, 2790)]
-        private int GetIntConstantPhysicalIndex(int logicalIndex, int requestedSize, GpuParamVariability variability)
-        {
-            var indexUse = GetFloatConstantLogicalIndexUse(logicalIndex, requestedSize, variability);
-            return indexUse != null ? indexUse.PhysicalIndex : 0;
-        }
-
-        #endregion
-
-        #region GetFloatLogicalIndexForPhysicalIndex
-
-        /// <summary>
-        /// Retrieves the logical index relating to a physical index in the float
-        /// buffer, for programs which support that (low-level programs and 
-        /// high-level programs which use logical parameter indexes).
-        /// </summary>
-        /// <returns>int.MaxValue if not found</returns>
-        [OgreVersion(1, 7, 2790)]
-        public int GetFloatLogicalIndexForPhysicalIndex(int physicalIndex)
-        {
-            // perhaps build a reverse map of this sometime (shared in GpuProgram)
-            var it = floatLogicalToPhysical.Map.FirstOrDefault( ( i ) => i.Value.PhysicalIndex == physicalIndex );
-            return it.Value != null ? it.Key : int.MaxValue;
-        }
-
-        #endregion
-
-        #region GetIntLogicalIndexForPhysicalIndex
-
-        /// <summary>
-        /// Retrieves the logical index relating to a physical index in the int
-        /// buffer, for programs which support that (low-level programs and 
-        /// high-level programs which use logical parameter indexes).
-        /// </summary>
-        /// <returns>int.MaxValue if not found</returns>
-        [OgreVersion(1, 7, 2790)]
-        public int GetIntLogicalIndexForPhysicalIndex(int physicalIndex)
-        {
-            // perhaps build a reverse map of this sometime (shared in GpuProgram)
-            var it = intLogicalToPhysical.Map.FirstOrDefault((i) => i.Value.PhysicalIndex == physicalIndex);
-            return it.Value != null ? it.Key : int.MaxValue;
-        }
-
-        #endregion
-
-        #region GetConstantDefinition
-
-        /// <summary>
-        /// Get a specific GpuConstantDefinition for a named parameter.
-        /// </summary>
-        public GpuConstantDefinition GetConstantDefinition(string name)
-        {
-            if (_namedConstants == null)
-                throw new AxiomException( "This params object is not based on a program with named parameters." );
-
-            // locate, and throw exception if not found
-            var def = FindNamedConstantDefinition(name, true);
-
-            return def;
-        }
-
-        #endregion
-
-        #region WriteRawConstant
-
-        public void WriteRawConstant(int physicalIndex, Vector4 val, int count = 4)
-        {
-            // remember, raw content access uses raw float count rather than float4
-		    // write either the number requested (for packed types) or up to 4
-            // WriteRawConstants(physicalIndex, vec.ptr(), sz);
-
-            var arr = new float[] { val.x, val.y, val.z, val.w };
-            WriteRawConstants( physicalIndex, arr, Utility.Min( count, 4 ) );
-        }
-
-        public void WriteRawConstant(int physicalIndex, Vector3 val)
-        {
-            var arr = new float[] { val.x, val.y, val.z };
-            WriteRawConstants( physicalIndex, arr,  3 );
-        }
-
-        [OgreVersion(1, 7, 2790)]
-	    public void WriteRawConstant( int physicalIndex, Real val )
-	    {
-            WriteRawConstants(physicalIndex, new float[] { val }, 1);
-	    }
-
-        [OgreVersion(1, 7, 2790)]
-        public void WriteRawConstant(int physicalIndex, int val)
-        {
-            WriteRawConstants(physicalIndex, new [] { val }, 1);
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        public void WriteRawConstant(int physicalIndex, Matrix4 m, int elementCount)
-        {
-            var arr = new float[16];
-            // remember, raw content access uses raw float count rather than float4
-            if ( transposeMatrices )
-            {
-                var t = m.Transpose();
-                t.MakeFloatArray( arr );
-
-                WriteRawConstants( physicalIndex, arr, elementCount > 16 ? 16 : elementCount );
-            }
-            else
-            {
-                m.MakeFloatArray( arr );
-                WriteRawConstants( physicalIndex, arr, elementCount > 16 ? 16 : elementCount );
-            }
-
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        public void WriteRawConstant(int physicalIndex, Matrix4[] pMatrix, int numEntries)
-        {
-            for (var i = 0; i < numEntries; i++ )
-            {
-                WriteRawConstant(physicalIndex, pMatrix[i], 16);
-                physicalIndex += 16;
-            }
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        public void WriteRawConstant(int physicalIndex, ColorEx color, int count)
-        {
-            // write either the number requested (for packed types) or up to 4
-            var arr = new float[4];
-            color.ToArrayRGBA( arr );
-            WriteRawConstants(physicalIndex, arr, Utility.Min(count, 4));
-        }
-
-        #endregion
-
-        #region WriteRawConstants
-
-        [OgreVersion(1, 7, 2790)]
-        private void WriteRawConstants(int physicalIndex, double[] val, int count)
-        {
-            Debug.Assert(physicalIndex + count <= floatConstants.Count);
-            for (var i = 0; i < count; ++i)
-            {
-                floatConstants[physicalIndex + i] = (float)val[i];
-            }
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        private void WriteRawConstants(int physicalIndex, float[] val, int count)
-        {
-            Debug.Assert(physicalIndex + count <= floatConstants.Count);
-            for (var i = 0; i < count; ++i)
-            {
-                floatConstants[physicalIndex + i] = val[i];
-            }
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        private void WriteRawConstants(int physicalIndex, int[] val, int count)
-        {
-            Debug.Assert(physicalIndex + count <= intConstants.Count);
-            for (var i = 0; i < count; ++i)
-            {
-                intConstants[physicalIndex + i] = val[i];
-            }
-        }
-
-        #endregion
-
-        #region DeriveVariability
-
-        [OgreVersion(1, 7, 2790, "SpotLightViewProjMatrixArray missing")]
-        protected GpuParamVariability DeriveVariability(AutoConstantType act)
-        {
-            switch ( act )
-            {
-                case AutoConstantType.ViewMatrix:
-                case AutoConstantType.InverseViewMatrix:
-                case AutoConstantType.TransposeViewMatrix:
-                case AutoConstantType.InverseTransposeViewMatrix:
-                case AutoConstantType.ProjectionMatrix:
-                case AutoConstantType.InverseProjectionMatrix:
-                case AutoConstantType.TransposeProjectionMatrix:
-                case AutoConstantType.InverseTransposeProjectionMatrix:
-                case AutoConstantType.ViewProjMatrix:
-                case AutoConstantType.InverseViewProjMatrix:
-                case AutoConstantType.TransposeViewProjMatrix:
-                case AutoConstantType.InverseTransposeViewProjMatrix:
-                case AutoConstantType.RenderTargetFlipping:
-                case AutoConstantType.VertexWinding:
-                case AutoConstantType.AmbientLightColor:
-                case AutoConstantType.DerivedAmbientLightColor:
-                case AutoConstantType.DerivedSceneColor:
-                case AutoConstantType.FogColor:
-                case AutoConstantType.FogParams:
-                case AutoConstantType.SurfaceAmbientColor:
-                case AutoConstantType.SurfaceDiffuseColor:
-                case AutoConstantType.SurfaceSpecularColor:
-                case AutoConstantType.SurfaceEmissiveColor:
-                case AutoConstantType.SurfaceShininess:
-                case AutoConstantType.CameraPosition:
-                case AutoConstantType.Time:
-                case AutoConstantType.Time_0_X:
-                case AutoConstantType.CosTime_0_X:
-                case AutoConstantType.SinTime_0_X:
-                case AutoConstantType.TanTime_0_X:
-                case AutoConstantType.Time_0_X_Packed:
-                case AutoConstantType.Time_0_1:
-                case AutoConstantType.CosTime_0_1:
-                case AutoConstantType.SinTime_0_1:
-                case AutoConstantType.TanTime_0_1:
-                case AutoConstantType.Time_0_1_Packed:
-                case AutoConstantType.Time_0_2PI:
-                case AutoConstantType.CosTime_0_2PI:
-                case AutoConstantType.SinTime_0_2PI:
-                case AutoConstantType.TanTime_0_2PI:
-                case AutoConstantType.Time_0_2PI_Packed:
-                case AutoConstantType.FrameTime:
-                case AutoConstantType.FPS:
-                case AutoConstantType.ViewportWidth:
-                case AutoConstantType.ViewportHeight:
-                case AutoConstantType.InverseViewportWidth:
-                case AutoConstantType.InverseViewportHeight:
-                case AutoConstantType.ViewportSize:
-                case AutoConstantType.TexelOffsets:
-                case AutoConstantType.TextureSize:
-                case AutoConstantType.InverseTextureSize:
-                case AutoConstantType.PackedTextureSize:
-                case AutoConstantType.SceneDepthRange:
-                case AutoConstantType.ViewDirection:
-                case AutoConstantType.ViewSideVector:
-                case AutoConstantType.ViewUpVector:
-                case AutoConstantType.FOV:
-                case AutoConstantType.NearClipDistance:
-                case AutoConstantType.FarClipDistance:
-                case AutoConstantType.PassNumber:
-                case AutoConstantType.TextureMatrix:
-                case AutoConstantType.LODCameraPosition:
-                    return GpuParamVariability.Global;
-
-                case AutoConstantType.WorldMatrix:
-                case AutoConstantType.InverseWorldMatrix:
-                case AutoConstantType.TransposeWorldMatrix:
-                case AutoConstantType.InverseTransposeWorldMatrix:
-                case AutoConstantType.WorldMatrixArray3x4:
-                case AutoConstantType.WorldMatrixArray:
-                case AutoConstantType.WorldViewMatrix:
-                case AutoConstantType.InverseWorldViewMatrix:
-                case AutoConstantType.TransposeWorldViewMatrix:
-                case AutoConstantType.InverseTransposeWorldViewMatrix:
-                case AutoConstantType.WorldViewProjMatrix:
-                case AutoConstantType.InverseWorldViewProjMatrix:
-                case AutoConstantType.TransposeWorldViewProjMatrix:
-                case AutoConstantType.InverseTransposeWorldViewProjMatrix:
-                case AutoConstantType.CameraPositionObjectSpace:
-                case AutoConstantType.LODCameraPositionObjectSpace:
-                case AutoConstantType.Custom:
-                case AutoConstantType.AnimationParametric:
-                    return GpuParamVariability.PerObject;
-
-                case AutoConstantType.LightPositionObjectSpace:
-                case AutoConstantType.LightDirectionObjectSpace:
-                case AutoConstantType.LightDistanceObjectSpace:
-                case AutoConstantType.LightPositionObjectSpaceArray:
-                case AutoConstantType.LightDirectionObjectSpaceArray:
-                case AutoConstantType.LightDistanceObjectSpaceArray:
-                case AutoConstantType.TextureWorldViewProjMatrix:
-                case AutoConstantType.TextureWorldViewProjMatrixArray:
-                case AutoConstantType.SpotLightWorldViewProjMatrix:
-
-                    // These depend on BOTH lights and objects
-                    return GpuParamVariability.PerObject | GpuParamVariability.Lights;
-
-                case AutoConstantType.LightCount:
-                case AutoConstantType.LightDiffuseColor:
-                case AutoConstantType.LightSpecularColor:
-                case AutoConstantType.LightPosition:
-                case AutoConstantType.LightDirection:
-                case AutoConstantType.LightPositionViewSpace:
-                case AutoConstantType.LightDirectionViewSpace:
-                case AutoConstantType.ShadowExtrusionDistance:
-                case AutoConstantType.ShadowSceneDepthRange:
-                case AutoConstantType.ShadowColor:
-                case AutoConstantType.LightPowerScale:
-                case AutoConstantType.LightDiffuseColorPowerScaled:
-                case AutoConstantType.LightSpecularColorPowerScaled:
-                case AutoConstantType.LightNumber:
-                case AutoConstantType.LightCastsShadows:
-                case AutoConstantType.LightAttenuation:
-                case AutoConstantType.SpotLightParams:
-                case AutoConstantType.LightDiffuseColorArray:
-                case AutoConstantType.LightSpecularColorArray:
-                case AutoConstantType.LightDiffuseColorPowerScaledArray:
-                case AutoConstantType.LightSpecularColorPowerScaledArray:
-                case AutoConstantType.LightPositionArray:
-                case AutoConstantType.LightDirectionArray:
-                case AutoConstantType.LightPositionViewSpaceArray:
-                case AutoConstantType.LightDirectionViewSpaceArray:
-                case AutoConstantType.LightPowerScaleArray:
-                case AutoConstantType.LightAttenuationArray:
-                case AutoConstantType.SpotLightParamsArray:
-                case AutoConstantType.TextureViewProjMatrix:
-                case AutoConstantType.TextureViewProjMatrixArray:
-                case AutoConstantType.SpotLightViewProjMatrix:
-                    //case AutoConstantType.SpotLightViewProjMatrixArray:
-                case AutoConstantType.LightCustom:
-                    return GpuParamVariability.Lights;
-
-                case AutoConstantType.DerivedLightDiffuseColor:
-                case AutoConstantType.DerivedLightSpecularColor:
-                case AutoConstantType.DerivedLightDiffuseColorArray:
-                case AutoConstantType.DerivedLightSpecularColorArray:
-                    return GpuParamVariability.Global | GpuParamVariability.Lights;
-
-                case AutoConstantType.PassIterationNumber:
-                    return GpuParamVariability.PassIterationNumber;
-
-                default:
-                    return GpuParamVariability.Global;
-            }
-
-        }
-
-        #endregion
-
-        #region CopySharedParams
-
-        [OgreVersion(1, 7, 2790)]
-	    public void CopySharedParams()
-	    {
-            foreach (var i in _sharedParamSets)
-                i.CopySharedParamsToTargetParams();
-        }
-
-        #endregion
-    }
+	}
 }

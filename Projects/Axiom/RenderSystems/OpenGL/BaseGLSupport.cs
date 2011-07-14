@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
@@ -138,11 +138,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Config options.
 		/// </summary>
-		protected ConfigOptionMap _engineConfig = new ConfigOptionMap();
+		protected ConfigOptionCollection _engineConfig = new ConfigOptionCollection();
 		/// <summary>
 		///		Gets the options currently set by the current GL implementation.
 		/// </summary>
-		public ConfigOptionMap ConfigOptions
+		public ConfigOptionCollection ConfigOptions
 		{
 			get
 			{
@@ -174,7 +174,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public bool CheckExtension( string extention )
 		{
 			// check if the extension is supported
-            return _extensionList.Contains("GL_" + extention) || _extensionList.Contains(extention);
+			return _extensionList.Contains( extention );
 		}
 
 		/// <summary>
@@ -223,15 +223,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-	    public int DisplayMonitorCount
-	    {
-	        get
-	        {
-	            return Screen.AllScreens.Length;
-	        }
-	    }
-
-	    public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
+		public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
 		{
 			return null;
 		}
@@ -290,9 +282,5 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#endregion Abstract Members
 
-	    public string ValidateConfig()
-	    {
-	        return "";
-	    }
 	}
 }

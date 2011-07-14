@@ -61,7 +61,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				//assert( _color[ 0 ].buffer );
+				//assert( mColour[ 0 ].buffer );
 				return _color[ 0 ].Buffer.Height;
 			}
 		}
@@ -70,7 +70,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-                //assert( _color[ 0 ].buffer );
+				//assert( mColour[ 0 ].buffer );
 				return _color[ 0 ].Buffer.Width;
 			}
 		}
@@ -79,18 +79,10 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-                //assert( _color[ 0 ].buffer );
+				//assert( mColour[ 0 ].buffer );
 				return _color[ 0 ].Buffer.Format;
 			}
 		}
-
-        public int FSAA
-        {
-            get
-            {
-                return 0; // Not implemented, yet
-            }
-        }
 
 		private GLFBORTTManager _manager;
 		public GLFBORTTManager Manager
@@ -223,11 +215,11 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_COLOR_ATTACHMENT0_EXT + x, Gl.GL_RENDERBUFFER_EXT, 0 );
 				}
 			}
-			// Find suitable depth and stencil format that is compatible with color format
+			/// Find suitable depth and stencil format that is compatible with colour format
 			int depthFormat, stencilFormat;
 			_manager.GetBestDepthStencil( format, out depthFormat, out stencilFormat );
 
-			// Request surfaces
+			/// Request surfaces
 			_depth = _manager.RequestRenderBuffer( depthFormat, width, height );
 			if ( depthFormat == GLFBORTTManager.GL_DEPTH24_STENCIL8_EXT )
 			{
@@ -264,7 +256,7 @@ namespace Axiom.RenderSystems.OpenGL
 			int n = 0;
 			for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 			{
-				// Fill attached color buffers
+				// Fill attached colour buffers
 				if ( _color[ x ].Buffer != null )
 				{
 					bufs[ x ] = Gl.GL_COLOR_ATTACHMENT0_EXT + x;
@@ -336,7 +328,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-	    #endregion isDisposed Property
+		#endregion isDisposed Property
 
 		/// <summary>
 		/// Class level dispose method

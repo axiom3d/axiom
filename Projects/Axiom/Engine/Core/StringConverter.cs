@@ -51,7 +51,7 @@ namespace Axiom.Core
 
 		public bool Equals( string x, string y )
 		{
-			return string.Equals( x, y, StringComparison.CurrentCultureIgnoreCase );
+			return x.ToLower() == y.ToLower();
 		}
 
 		public int GetHashCode( string obj )
@@ -260,6 +260,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Parses an array of params and returns a color from it.
 		/// </summary>
+		/// <param name="val"></param>
 		public static ColorEx ParseColor( string[] values )
 		{
 			ColorEx color;
@@ -291,6 +292,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Parses an array of params and returns a color from it.
 		/// </summary>
+		/// <param name="val"></param>
 		public static Vector3 ParseVector3( string[] values )
 		{
 			Vector3 vec = new Vector3();
@@ -320,6 +322,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Parses an array of params and returns a color from it.
 		/// </summary>
+		/// <param name="val"></param>
 		public static Vector4 ParseVector4( string[] values )
 		{
 			Vector4 vec = new Vector4();
@@ -396,7 +399,17 @@ namespace Axiom.Core
 
 		public static bool ParseInt( string value, out int num )
 		{
-		    return int.TryParse( value, out num);
+			bool retVal = true;
+			try
+			{
+				num = Int32.Parse( value );
+			}
+			catch ( Exception e )
+			{
+				num = 0;
+				retVal = false;
+			}
+			return retVal;
 		}
 	}
 }

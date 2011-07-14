@@ -217,7 +217,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <remarks>
 		///     Note that the property reflects the real scale only when there isn't any rotation, 
-		/// i.e. the 3x3 rotation portion of the matrix was a <see cref="Matrix3.Identity"/> before a scale was set.
+		/// i.e. the 3x3 rotation portion of the matrix was a <see cref="Matrix3.Identiy"/> before a scale was set.
 		/// If you need to obtain the current scale of a rotated matrix, use the more expensive <see cref="ExtractRotation"/> method.
 		/// </remarks>
 		public Vector3 Scale
@@ -283,6 +283,10 @@ namespace Axiom.Math
 		/// <summary>
 		/// Creates a translation Matrix
 		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="scale"></param>
+		/// <param name="orientation"></param>
+		/// <returns></returns>
 		public static Matrix4 Compose( Vector3 translation, Vector3 scale, Quaternion orientation )
 		{
 			// Ordering:
@@ -504,30 +508,10 @@ namespace Axiom.Math
 			floats[ 14 ] = this.m32;
 			floats[ 15 ] = this.m33;
 		}
-
-        public void MakeFloatArray(float[] floats, int offset)
-        {
-            floats[offset++] = m00;
-            floats[offset++] = m01;
-            floats[offset++] = m02;
-            floats[offset++] = m03;
-            floats[offset++] = m10;
-            floats[offset++] = m11;
-            floats[offset++] = m12;
-            floats[offset++] = m13;
-            floats[offset++] = m20;
-            floats[offset++] = m21;
-            floats[offset++] = m22;
-            floats[offset++] = m23;
-            floats[offset++] = m30;
-            floats[offset++] = m31;
-            floats[offset++] = m32;
-            floats[offset] = m33;
-        }
-
 		/// <summary>
 		///     Extract the 3x3 matrix representing the current rotation. 
 		/// </summary>
+		/// <param name="rotation"></param>
 		public Matrix3 ExtractRotation()
 		{
 			Vector3 axis = Vector3.Zero;
@@ -760,6 +744,8 @@ namespace Axiom.Math
 		/// <summary>
 		///		Used to multiply a Matrix4 object by a scalar value..
 		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
 		/// <returns></returns>
 		public static Matrix4 operator *( Matrix4 left, Real scalar )
 		{
@@ -1076,18 +1062,5 @@ namespace Axiom.Math
 		}
 
 		#endregion
-
-	    public void Extract3x3Matrix( out Matrix3 m3 )
-	    {
-            m3.m00 = m00;
-            m3.m01 = m01;
-            m3.m02 = m02;
-            m3.m10 = m10;
-            m3.m11 = m11;
-            m3.m12 = m12;
-            m3.m20 = m20;
-            m3.m21 = m21;
-            m3.m22 = m22;
-	    }
 	}
 }

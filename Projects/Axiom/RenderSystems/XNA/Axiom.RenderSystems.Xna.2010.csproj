@@ -10,7 +10,7 @@
     <AssemblyName>Axiom.RenderSystems.Xna</AssemblyName>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -172,14 +172,25 @@
     </Compile>
     <Compile Include="Source\Driver.cs" />
     <Compile Include="Source\DriverCollection.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\FixedFunctionProgram.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\FixedFunctionProgramsParameters.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\FixedFunctionState.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\GeneralFixedFunctionState.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\HLSLFixedFunctionProgram.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\HLSLShaderGenerator.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\Serializer.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\ShaderGenerator.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\ShaderManager.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\TextureLayerState.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\VertexBufferDeclaration.cs" />
+    <Compile Include="Source\FixedFunctionEmulation\VertexBufferElement.cs" />
+    <Compile Include="Source\hlsl\HLSLIncludeHandler.cs" />
     <Compile Include="Source\hlsl\HLSLProgram.cs" />
     <Compile Include="Source\hlsl\HLSLProgramFactory.cs" />
     <Compile Include="Source\Plugin.cs" />
-    <Compile Include="Source\StateManagement.cs" />
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
     <Compile Include="Source\Win32MessageHandling.cs" />
-    <Compile Include="Source\XnaCodec.cs" />
     <Compile Include="Source\XnaGamerServices.cs" />
     <Compile Include="Source\XnaGpuProgram.cs">
       <SubType>Code</SubType>
@@ -193,13 +204,9 @@
     <Compile Include="Source\XnaHardwarePixelBuffer.cs" />
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaHelper.cs" />
-    <Compile Include="Source\XnaMaterial.cs" />
-    <Compile Include="Source\XnaMaterialManager.cs" />
-    <Compile Include="Source\XnaPass.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />
     <Compile Include="Source\XnaRenderTexture.cs" />
     <Compile Include="Source\XnaRenderWindow.cs" />
-    <Compile Include="Source\XnaResourceGroupManager.cs" />
     <Compile Include="Source\XnaTexture.cs" />
     <Compile Include="Source\XnaTextureManager.cs" />
     <Compile Include="Source\XnaTextureStageDescription.cs" />
@@ -207,16 +214,8 @@
     <Compile Include="Source\XnaVertexDeclaration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Input.Touch, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework.Storage, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework.Video, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Data" />

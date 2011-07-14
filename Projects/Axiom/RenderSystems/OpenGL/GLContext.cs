@@ -117,10 +117,6 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 		}
 
-        public virtual void ReleaseContext()
-        {
-        }
-
 		/// <summary>
 		/// Create a new context based on the same window/pbuffer as this
 		/// context - mostly useful for additional threads.

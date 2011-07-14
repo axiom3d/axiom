@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration>Release</Configuration>
 
@@ -11,7 +11,7 @@
     <MetaBuildConfigFile>$(RootDir)\..\tools\MetaBuild\bin\MetaBuild.config.custom</MetaBuildConfigFile>
   </PropertyGroup>
 
-  <Target Name="Build">
+  <Target Name="All">
     <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
              Properties="
 	       Configuration=$(Configuration);
@@ -25,21 +25,5 @@
 	       MetaBuildBinDir=$(MetaBuildBinDir);
 	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
 	     Targets="Clean;Build;Image;Test;Dist" />
-  </Target>
-
-  <Target Name="Clean">
-    <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
-             Properties="
-	       Configuration=$(Configuration);
-	       ShowReports=$(ShowReports);
-	       ReportTypes=$(ReportTypes);
-	       Coverage=$(Coverage);
-	       Version=$(Version);
-	       RootDir=$(RootDir);
-	       StartDir=$(StartDir);
-         BuildDir=$(BuildDir);
-	       MetaBuildBinDir=$(MetaBuildBinDir);
-	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
-	     Targets="Clean" />
   </Target>
 </Project>

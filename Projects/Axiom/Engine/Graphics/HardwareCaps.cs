@@ -33,8 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Scripting;
 
@@ -81,10 +79,6 @@ namespace Axiom.Graphics
         [ScriptEnum( "Nokia" )]
         Nokia = 10,
     };
-
-    public class ShaderProfiles : HashSet<string>
-    {
-    }
 
 	/// <summary>
 	/// 	This serves as a way to query information about the capabilies of a 3D API and the
@@ -347,14 +341,6 @@ namespace Axiom.Graphics
 
 		#endregion FragmentProgramConstantBoolCount Property
 
-        public int GeometryProgramConstantFloatCount { get; set; }
-
-        public int GeometryProgramConstantIntCount { get; set; }
-
-        public int GeometryProgramConstantBoolCount { get; set; }
-
-        public int GeometryProgramNumOutputVertices { get; set; }
-
 		#region MultiRenderTargetCount Property
 
 		/// <summary>
@@ -426,20 +412,25 @@ namespace Axiom.Graphics
 
 		#region VendorName Property
 
-		
+		/// <summary>
+		/// name of the GPU vendor
+		/// </summary>
         private GPUVendor _vendor = GPUVendor.Unknown;
-
-        public GPUVendor Vendor
-        {
-            get
-            {
-                return _vendor;
-            }
-            set
-            {
-                _vendor = value;
-            }
-        }
+		
+        /// <summary>
+        /// name of the GPU vendor
+		/// </summary>
+		public string VendorName
+		{
+			get
+			{
+                return VendorToString( _vendor );
+			}
+			set
+			{
+                _vendor = VendorFromString( value );
+			}
+		}
 
 		#endregion DeviceName Property
 
@@ -622,24 +613,18 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Write all hardware capability information to registered listeners.
 		/// </summary>
-        public void Log()
+		public void Log()
 		{
-		    Log( LogManager.Instance.DefaultLog );
-		}
+			LogManager logMgr = LogManager.Instance;
 
-        /// <summary>
-        ///    Write all hardware capability information to registered listeners.
-        /// </summary>
-        public void Log(Log logMgr)
-		{
 			logMgr.Write( "---RenderSystem capabilities---" );
-            logMgr.Write( "\t-GPU Vendor: {0}", VendorToString(Vendor) );
+            logMgr.Write( "\t-GPU Vendor: {0}", VendorName );
 			logMgr.Write( "\t-Device Name: {0}", _deviceName );
 			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
 			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
 			logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
 			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
-			logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.Blending ) ) );
+			logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.TextureBlending ) ) );
 			logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
 			logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( HasCapability( Capabilities.Dot3 ) ) );
 			logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( HasCapability( Capabilities.CubeMapping ) ) );
@@ -730,49 +715,5 @@ namespace Axiom.Graphics
         }
 
 		#endregion Methods
-
-
-        #region ShaderProfiles
-
-	    /// <summary>
-	    /// Returns a set of all supported shader profiles
-	    /// </summary>
-	    public readonly ShaderProfiles ShaderProfiles = new ShaderProfiles();
-
-        /// <summary>
-        ///  Adds the profile to the list of supported profiles
-        /// </summary>
-	    public void AddShaderProfile( string profile )
-        {
-            ShaderProfiles.Add( profile );
-        }
-
-        /// <summary>
-        /// Remove a given shader profile, if present.
-        /// </summary>
-        public void RemoveShaderProfile(string profile)
-        {
-            ShaderProfiles.Remove( profile );
-        }
-
-		/// <summary>
-		/// Returns true if profile is in the list of supported profiles
-		/// </summary>
-		public bool IsShaderProfileSupported( string profile )
-		{
-		    return ShaderProfiles.Contains( profile );
-        }
-
-        #endregion
-
-	    public void SetCategoryRelevant( CapabilitiesCategory d3D9, bool b )
-	    {
-	        // TODO: implement for IsCategoryRelevant()
-	    }
-
-	    public void UnsetCapability( Capabilities cap )
-	    {
-            _caps &= ~cap;
-	    }
-	}
+    }
 }

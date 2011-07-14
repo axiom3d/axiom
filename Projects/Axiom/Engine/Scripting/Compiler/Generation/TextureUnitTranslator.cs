@@ -700,7 +700,6 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									throw new NotImplementedException();
-#if UNREACHABLE_CODE
 									Real val = 0.0f;
 									if ( getReal( prop.Values[ 0 ], out val ) )
 									{ /*mUnit->setTextureMipmapBias(val);*/
@@ -708,13 +707,12 @@ namespace Axiom.Scripting.Compiler
 									else
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 											prop.Values[ 0 ].Value + " is not a valid number argument" );
-#endif
 								}
 								break;
 							#endregion ID_MIPMAP_BIAS
 
-							#region ID_COLOR_OP
-							case Keywords.ID_COLOR_OP:
+							#region ID_COLOUR_OP
+							case Keywords.ID_COLOUR_OP:
 								if ( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
@@ -722,7 +720,7 @@ namespace Axiom.Scripting.Compiler
 								else if ( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"color_op must have at most 1 argument" );
+										"colour_op must have at most 1 argument" );
 								}
 								else
 								{
@@ -760,19 +758,19 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_COLOR_OP
+							#endregion ID_COLOUR_OP
 
-							#region ID_COLOR_OP_EX
-							case Keywords.ID_COLOR_OP_EX:
+							#region ID_COLOUR_OP_EX
+							case Keywords.ID_COLOUR_OP_EX:
 								if ( prop.Values.Count < 3 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-										"color_op_ex must have at least 3 arguments" );
+										"colour_op_ex must have at least 3 arguments" );
 								}
 								else if ( prop.Values.Count > 10 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"color_op_ex must have at most 10 arguments" );
+										"colour_op_ex must have at most 10 arguments" );
 								}
 								else
 								{
@@ -974,10 +972,10 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_COLOR_OP_EX
+							#endregion ID_COLOUR_OP_EX
 
-							#region ID_COLOR_OP_MULTIPASS_FALLBACK
-							case Keywords.ID_COLOR_OP_MULTIPASS_FALLBACK:
+							#region ID_COLOUR_OP_MULTIPASS_FALLBACK
+							case Keywords.ID_COLOUR_OP_MULTIPASS_FALLBACK:
 								if ( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
@@ -985,7 +983,7 @@ namespace Axiom.Scripting.Compiler
 								else if ( prop.Values.Count > 2 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"color_op_multiplass_fallback must have at most 2 arguments" );
+										"colour_op_multiplass_fallback must have at most 2 arguments" );
 								}
 								else if ( prop.Values.Count == 1 )
 								{
@@ -1037,7 +1035,7 @@ namespace Axiom.Scripting.Compiler
 											"arguments must be valid scene blend factors" );
 								}
 								break;
-							#endregion ID_COLOR_OP_MULTIPASS_FALLBACK
+							#endregion ID_COLOUR_OP_MULTIPASS_FALLBACK
 
 							#region ID_ALPHA_OP_EX
 							case Keywords.ID_ALPHA_OP_EX:
@@ -1525,9 +1523,8 @@ namespace Axiom.Scripting.Compiler
 
 							#region ID_TRANSFORM
 							case Keywords.ID_TRANSFORM:
-						    {
-						        throw new NotImplementedException();
-#if UNREACHABLE_CODE
+								{
+									throw new NotImplementedException();
 									Matrix4 m;
 									if ( getMatrix4( prop.Values, 0, out m ) )
 									{ /*mUnit->setTextureTransform(m);*/
@@ -1536,11 +1533,7 @@ namespace Axiom.Scripting.Compiler
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 								}
 								break;
-#else
-						    }
-#endif
-
-						        #endregion ID_TRANSFORM
+							#endregion ID_TRANSFORM
 
 							#region ID_BINDING_TYPE
 							case Keywords.ID_BINDING_TYPE:
@@ -1599,7 +1592,7 @@ namespace Axiom.Scripting.Compiler
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										throw new NotImplementedException();
-#if UNREACHABLE_CODE
+
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
@@ -1643,7 +1636,6 @@ namespace Axiom.Scripting.Compiler
 													atom.Value + " is not a valid content type (must be \"named\" or \"shadow\" or \"compositor\")" );
 												break;
 										}
-#endif
 									}
 									else
 									{
