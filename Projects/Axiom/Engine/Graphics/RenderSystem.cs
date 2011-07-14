@@ -117,7 +117,7 @@ namespace Axiom.Graphics
         {
         }
 
-        public class DepthBufferMap : Dictionary<ushort, DepthBufferVec>
+        public class DepthBufferMap : Dictionary<PoolId, DepthBufferVec>
         {
         }
 
@@ -1165,7 +1165,7 @@ namespace Axiom.Graphics
 
                 if (newDepthBuffer != null)
                 {
-                    newDepthBuffer.PoolId = poolId;
+                    newDepthBuffer.SetPoolId( poolId );
                     depthBufferPool[poolId].Add(newDepthBuffer);
 
                     bAttached = renderTarget.AttachDepthBuffer(newDepthBuffer);
@@ -1423,7 +1423,7 @@ it says it's incompatible with that RT");
         /// operations. Unlikely to be used directly by client
         /// applications, since the <see cref="SceneManager"/> and various support
         /// classes will be responsible for calling this method.
-        /// Can only be called between <see cref="BeginScene"/> and <see cref="EndScene"/>
+        /// Can only be called between BeginScene and EndScene
         /// </remarks>
         /// <param name="op">
         /// A rendering operation instance, which contains details of the operation to be performed.
@@ -1433,7 +1433,7 @@ it says it's incompatible with that RT");
         {
             var val = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
 
-            val *= op.NumberOfInstances;
+            val *= op.numberOfInstances;
 
             // account for a pass having multiple iterations
             if (currentPassIterationCount > 1)
