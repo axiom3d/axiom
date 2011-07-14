@@ -284,7 +284,7 @@ namespace Axiom.Core
 								throw new Exception( "Index range exceeded when using stencil shadows, consider " +
 															 "reducing your region size or reducing poly count" );
 						}
-						HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.GetVertexSize( b ), vertexCount, BufferUsage.StaticWriteOnly );
+						HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
 						binds.SetBinding( b, vbuf );
 						IntPtr pLock = vbuf.Lock( BufferLocking.Discard );
 						destBufferPtrs[ b ] = (byte*)pLock.ToPointer();
@@ -352,9 +352,11 @@ namespace Axiom.Core
 
 						// Also set up hardware W buffer if appropriate
 						RenderSystem rend = Root.Instance.RenderSystem;
-						if ( null != rend && rend.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
+						if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 						{
-							buf = HardwareBufferManager.Instance.CreateVertexBuffer( sizeof( float ), vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
+                            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                            decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
+							buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
 							// Fill the first half with 1.0, second half with 0.0
 							float* pW = (float*)buf.Lock( BufferLocking.Discard ).ToPointer();
 							for ( int v = 0; v < vertexData.vertexCount; ++v )

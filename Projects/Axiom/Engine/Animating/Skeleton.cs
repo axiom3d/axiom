@@ -581,7 +581,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///    Initialize an animation set suitable for use with this mesh.
+		///    Initialise an animation set suitable for use with this mesh.
 		/// </summary>
 		/// <remarks>
 		///    Only recommended for use inside the engine, not by applications.

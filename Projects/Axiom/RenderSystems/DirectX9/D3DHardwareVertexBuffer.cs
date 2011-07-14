@@ -63,8 +63,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructors
 
-		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
-			: base( manager, vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
+		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :

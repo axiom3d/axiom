@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glGenProgramsNV( 1, out programId );
 
 			// find the GL enum for the type of program this is
-			programType = ( Type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
+			programType = ( type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
 		}
 
 		#endregion Constructor
@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glBindProgramNV( programType, programId );
 
 			// load the ASM source into an NV program
-			Gl.glLoadProgramNV( programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes( Source ) ); // TAO 2.0
+			Gl.glLoadProgramNV( programType, programId, source.Length, System.Text.Encoding.ASCII.GetBytes( source ) ); // TAO 2.0
 			//Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
 			// get the error string from the NV program loader
@@ -162,7 +162,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		///     Binds params by index to the vp30 program.
 		/// </summary>
 		/// <param name="parms"></param>
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		public override void BindParameters( GpuProgramParameters parms )
 		{
 			if ( parms.HasFloatConstants )
 			{
@@ -215,7 +215,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		///     Binds named parameters to fp30 programs.
 		/// </summary>
 		/// <param name="parms"></param>
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		public override void BindParameters( GpuProgramParameters parms )
 		{
 			if ( parms.HasFloatConstants )
 			{

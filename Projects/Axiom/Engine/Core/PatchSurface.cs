@@ -267,7 +267,7 @@ namespace Axiom.Core
 			this.side = visibleSide;
 
 			// Determine max level
-			// Initialize to 100% detail
+			// Initialise to 100% detail
 			subdivisionFactor = 1.0f;
 
 			if ( uMaxSubdivisionLevel == AUTO_LEVEL )
