@@ -240,7 +240,7 @@ namespace Axiom.Graphics
         {
             foreach (var itor in attachedRenderTargets)
             {
-                itor.DetachDepthBuffer();
+                itor._DetachDepthBuffer();
             }
             attachedRenderTargets.Clear();
         }

@@ -88,7 +88,7 @@ namespace Axiom.Graphics
 			pixelBuffer.BlitToMemory( dst );
 		}
 
-		protected override PixelFormat suggestPixelFormat()
+		protected override PixelFormat SuggestPixelFormat()
 		{
 			return pixelBuffer.Format;
 		}
