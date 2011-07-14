@@ -4767,7 +4767,11 @@ namespace Axiom.Core
 
 		protected ulong _lightsDirtyCounter;
 
-		/// <summary>
+        // TODO: implement logic
+        [OgreVersion(1, 7, "Implement logic for this")]
+        private GpuProgramParameters.GpuParamVariability _gpuParamsDirty = GpuProgramParameters.GpuParamVariability.All;
+
+	    /// <summary>
 		/// Gets the lights dirty counter.
 		/// </summary>
 		/// <remarks>
@@ -5444,7 +5448,43 @@ namespace Axiom.Core
 			MaterialManager.Instance.ActiveScheme = viewport.MaterialScheme;
 		}
 
-		protected void RenderSingleObject( IRenderable renderable, Pass pass, bool doLightIteration )
+
+        [OgreVersion(1, 7, "Implement _gpuParamsDirty logic")]
+        protected virtual void UpdateGpuProgramParameters(Pass pass)
+        {
+            if ( pass.IsProgrammable )
+            {
+
+                //if (!_gpuParamsDirty)
+                //	return;
+
+                //if (_gpuParamsDirty)
+                //	pass.UpdateAutoParams(mAutoParamDataSource, _gpuParamsDirty);
+
+                if ( pass.HasVertexProgram )
+                {
+                    targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex, pass.VertexProgramParameters,
+                                                                 _gpuParamsDirty );
+                }
+
+                if ( pass.HasGeometryProgram )
+                {
+                    targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Geometry, pass.GeometryProgramParameters,
+                                                                 _gpuParamsDirty );
+                }
+
+                if ( pass.HasFragmentProgram )
+                {
+                    targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment, pass.FragmentProgramParameters,
+                                                                 _gpuParamsDirty );
+                }
+
+                //_gpuParamsDirty = 0;
+            }
+
+        }
+
+	    protected void RenderSingleObject( IRenderable renderable, Pass pass, bool doLightIteration )
 		{
 			this.RenderSingleObject( renderable, pass, doLightIteration, null );
 		}
@@ -5590,17 +5630,7 @@ namespace Axiom.Core
 							this.autoParamDataSource.SetCurrentLightList( lightListToUse );
 							pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 
-							// note: parameters must be bound after auto params are updated
-							if ( pass.HasVertexProgram )
-							{
-								this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex,
-																				  pass.VertexProgramParameters );
-							}
-							if ( pass.HasFragmentProgram )
-							{
-								this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment,
-																				  pass.FragmentProgramParameters );
-							}
+						    UpdateGpuProgramParameters( pass );
 						}
 
 						// Do we need to update light states?
@@ -5627,18 +5657,7 @@ namespace Axiom.Core
 							pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 						}
 
-						// note: parameters must be bound after auto params are updated
-						if ( pass.HasVertexProgram )
-						{
-							this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex,
-																			  pass.VertexProgramParameters );
-						}
-
-						if ( pass.HasFragmentProgram )
-						{
-							this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment,
-																			  pass.FragmentProgramParameters );
-						}
+					    UpdateGpuProgramParameters( pass );
 					}
 
 					// Use manual lights if present, and not using vertex programs

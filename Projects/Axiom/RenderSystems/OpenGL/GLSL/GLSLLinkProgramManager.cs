@@ -36,13 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-<<<<<<< HEAD
 using System.Diagnostics;
 using System.Text;
 using Axiom.Core;
 using Axiom.Graphics;
-=======
->>>>>>> fa746b43a5c215181b5c757651d1b93ddb573d96
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -635,7 +632,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                                 defs.IntBufferSize += def.ArraySize * def.ElementSize;
                             }
 
-                            defs.GpuConstantDefinitions.Add(paramName, def);
+                            defs.Map.Add(paramName, def);
                             defs.GenerateConstantDefinitionArrayEntries(paramName, def);
                         }
                     }
