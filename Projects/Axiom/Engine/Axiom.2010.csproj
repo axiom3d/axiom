@@ -126,7 +126,6 @@
     <Optimize>false</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\</OutputPath>
@@ -167,7 +166,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -219,7 +217,6 @@
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
     <Compile Include="Core\SceneManagerEnumerator.cs" />
-    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />
@@ -228,14 +225,13 @@
     <Compile Include="Core\StaticGeometry\MaterialBucket.cs" />
     <Compile Include="Core\StaticGeometry\Region.cs" />
     <Compile Include="Core\StaticGeometry\StaticGeometry.cs" />
-    <Compile Include="Core\StringInterface.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\FreetypeWrapper.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
-    <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionCollection.cs" />
     <Compile Include="Graphics\Collections\Lists.cs" />
     <Compile Include="Graphics\Collections\RenderPriorityGroupList.cs" />
     <Compile Include="Graphics\Collections\RenderSystemCollection.cs" />
@@ -257,7 +253,6 @@
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.LogicalBuffer.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
@@ -267,8 +262,6 @@
     <Compile Include="Graphics\ICustomCompositionPass.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\NullProgram.cs" />
-    <Compile Include="Graphics\RenderWindowDescription.cs" />
-    <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
     <Compile Include="Graphics\RenderQueueInvocationSequence.cs" />

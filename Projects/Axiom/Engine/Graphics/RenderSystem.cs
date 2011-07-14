@@ -80,33 +80,18 @@ namespace Axiom.Graphics
 		/// </summary>
 		const string DefaultWindowTitle = "Axiom Window";
 
-        const int NumRendertargetGroups = 10;
-
 		#endregion Constants
-
-        #region Inner Types
-        
-        public class RenderTargetMap: Dictionary<string, RenderTarget>
-        {
-        }
-
-        public class RenderTargetPriorityMap : MultiMap<RenderTargetPriority, RenderTarget>
-        {
-        }
-
-        #endregion
 
 		#region Fields
 
-	    /// <summary>
-	    ///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>) by priority
-	    /// </summary>
-	    protected RenderTargetPriorityMap prioritizedRenderTargets = new RenderTargetPriorityMap();
-        
-        /// <summary>
+		/// <summary>
+		///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>) by priority
+		/// </summary>
+		protected List<RenderTarget> prioritizedRenderTargets = new List<RenderTarget>();
+		/// <summary>
 		///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>)
 		/// </summary>
-        protected RenderTargetMap renderTargets = new RenderTargetMap();
+		protected Dictionary<string, RenderTarget> renderTargets = new Dictionary<string, RenderTarget>();
 		/// <summary>
 		///		A reference to the texture management class specific to this implementation.
 		/// </summary>
@@ -134,7 +119,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Reference to the config options for the graphics engine.
 		/// </summary>
-		protected ConfigOptionMap engineConfig = new ConfigOptionMap();
+		protected ConfigOptionCollection engineConfig = new ConfigOptionCollection();
 		/// <summary>
 		///		Active viewport (dest for future rendering operations) and target.
 		/// </summary>
@@ -159,15 +144,11 @@ namespace Axiom.Graphics
 		/// Number of times to render the current state
 		/// </summary>
 		protected int currentPassIterationCount;
-		
-        /// <summary>
+		/// <summary>
 		///		Capabilites of the current hardware (populated at startup).
 		/// </summary>
-        private RenderSystemCapabilities _realCapabilities;
-
-	    private bool _useCustomCapabilities;
-
-        /// <summary>
+		protected RenderSystemCapabilities _rsCapabilities = new RenderSystemCapabilities();
+		/// <summary>
 		///		Saved set of world matrices.
 		/// </summary>
 		protected Matrix4[] worldMatrices = new Matrix4[ 256 ];
@@ -178,8 +159,6 @@ namespace Axiom.Graphics
 
 		protected bool vertexProgramBound = false;
 		protected bool fragmentProgramBound = false;
-	    protected bool geometryProgramBound;
-
         /// <summary>
         /// Saved manual color blends
         /// </summary>
@@ -190,14 +169,7 @@ namespace Axiom.Graphics
         protected float derivedDepthBiasBase;
         protected float derivedDepthBiasMultiplier;
         protected float derivedDepthBiasSlopeScale;
-
-
-        /** The Active GPU programs and gpu program parameters*/
-	    protected GpuProgramParameters activeVertexGpuProgramParameters;
-        protected GpuProgramParameters activeGeometryGpuProgramParameters;
-        protected GpuProgramParameters activeFragmentGpuProgramParameters;
-
-	    #endregion Fields
+		#endregion Fields
 
 		#region Constructor
 
@@ -224,9 +196,7 @@ namespace Axiom.Graphics
 
 		#region Properties
 
-        #region ActiveViewport
-
-        /// <summary>
+		/// <summary>
 		///		Gets the currently-active viewport
 		/// </summary>
 		public Viewport ActiveViewport
@@ -237,30 +207,29 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
+		/// <summary>
+		///		Gets a set of hardware capabilities queryed by the current render system.
+		/// </summary>
+		public virtual RenderSystemCapabilities HardwareCapabilities
+		{
+			get
+			{
+				return _rsCapabilities;
+			}
+		}
 
-        #region RenderSystemCapabilities
+		/// <summary>
+		/// Gets a dataset with the options set for the rendering system.
+		/// </summary>
+		public virtual ConfigOptionCollection ConfigOptions
+		{
+			get
+			{
+				return engineConfig;
+			}
+		}
 
-	    /// <summary>
-	    ///		Gets a set of hardware capabilities queryed by the current render system.
-	    /// </summary>
-        public RenderSystemCapabilities MutableCapabilities { get; private set; }
-
-        #endregion
-
-        #region ConfigOptions
-
-	    /// <summary>
-	    /// Gets a dataset with the options set for the rendering system.
-	    /// </summary>
-	    [OgreVersion(1, 7)]
-	    public abstract ConfigOptionMap ConfigOptions { get; }
-
-        #endregion
-
-        #region FacesRendered
-
-        /// <summary>
+		/// <summary>
 		///		Number of faces rendered during the current frame so far.
 		/// </summary>
 		public int FacesRendered
@@ -271,11 +240,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #region BatchesRendered
-
-        /// <summary>
+		/// <summary>
 		///		Number of batches rendered during the current frame so far.
 		/// </summary>
 		public int BatchesRendered
@@ -286,11 +251,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #region CurrentPassIterationCount
-
-        /// <summary>
+		/// <summary>
 		///	Number of times to render the current state.
 		/// </summary>
 		/// <remarks>Set the current multi pass count value.  This must be set prior to 
@@ -309,11 +270,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #region InvertVertexWinding
-
-        /// <summary>
+		/// <summary>
 		///     Sets whether or not vertex windings set should be inverted; this can be important
 		///     for rendering reflections.
 		/// </summary>
@@ -329,11 +286,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #region IsVSync
-
-        /// <summary>
+		/// <summary>
 		/// Gets/Sets a value that determines whether or not to wait for the screen to finish refreshing
 		/// before drawing the next frame.
 		/// </summary>
@@ -349,33 +302,24 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #region Name
-
-        /// <summary>
+		/// <summary>
 		/// Gets the name of this RenderSystem based on it's assembly attribute Title.
 		/// </summary>
-		[OgreVersion(1,7, "abstract in Ogre; Axiom uses reflection to supply a default value")]
 		public virtual string Name
 		{
 			get
 			{
-				var attribute =
-					(AssemblyTitleAttribute)Attribute.GetCustomAttribute( GetType().Assembly, typeof( AssemblyTitleAttribute ), false );
+				AssemblyTitleAttribute attribute =
+					(AssemblyTitleAttribute)Attribute.GetCustomAttribute( this.GetType().Assembly, typeof( AssemblyTitleAttribute ), false );
 
 				if ( attribute != null )
 					return attribute.Title;
-				//else
+				else
 					return "Not Found";
 			}
 		}
 
-        #endregion
-
-        #region RenderTargetCount
-
-        public int RenderTargetCount
+		public int RenderTargetCount
 		{
 			get
 			{
@@ -383,11 +327,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #region TotalRenderCalls
-
-        public static long TotalRenderCalls
+		public static long TotalRenderCalls
 		{
 			get
 			{
@@ -395,25 +335,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-        #endregion
-
-        #endregion Properties
+		#endregion Properties
 
         #region Methods
-
-        [OgreVersion(1, 7)]
-        protected virtual void UseCustomRenderSystemCapabilities(RenderSystemCapabilities capabilities)
-        {
-            if (_realCapabilities != null)
-            {
-                throw new AxiomException("Custom render capabilities must be set before the RenderSystem is initialised.");
-            }
-
-            MutableCapabilities = capabilities;
-            _useCustomCapabilities = true;
-        }
-
         /// <summary>
+        /// 
         /// </summary>
         /// <param name="constantBias"></param>
         public virtual void SetDepthBias(float constantBias)
@@ -483,20 +409,29 @@ namespace Axiom.Graphics
         /// </summary>
         /// <remarks>Calling this method can cause the rendering system to modify the ConfigOptions collection.</remarks>
         /// <returns>Error message is configuration is invalid <see cref="String.Empty"/> if valid.</returns>
-        [OgreVersion(1, 7)]
-	    public abstract string ValidateConfigOptions();
-       
+        public virtual string ValidateConfiguration()
+        {
+            return String.Empty;
+        }
 
 		/// <summary>
 		///    Attaches a render target to this render system.
 		/// </summary>
 		/// <param name="target">Reference to the render target to attach to this render system.</param>
-		[OgreVersion(1, 7)]
-        public virtual void AttachRenderTarget( RenderTarget target )
+		public virtual void AttachRenderTarget( RenderTarget target )
 		{
-            Debug.Assert((int)target.Priority < NumRendertargetGroups);
-            renderTargets.Add(target.Name, target);
-            prioritizedRenderTargets.Add( target.Priority, target );
+			renderTargets.Add( target.Name, target );
+
+			if ( target.Priority == RenderTargetPriority.RenderToTexture )
+			{
+				// insert at the front of the list
+				prioritizedRenderTargets.Insert( 0, target );
+			}
+			else
+			{
+				// add to the end
+				prioritizedRenderTargets.Add( target );
+			}
 		}
 
 		/// <summary>
@@ -514,19 +449,11 @@ namespace Axiom.Graphics
 		/// <returns>the render target that was detached</returns>
 		public RenderTarget DetachRenderTarget( string name )
 		{
-            /*
 			var target = (from item in prioritizedRenderTargets
 						  where item.Name == name
 						  select item).First();
 
 			return DetachRenderTarget( target );
-             */
-
-		    RenderTarget ret;
-		    if (renderTargets.TryGetValue( name, out ret ))
-		    {
-                // remove it from prioritizedRenderTargets
-		    }
 		}
 
 		/// <summary>
@@ -966,11 +893,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Sets the color & strength of the ambient (global directionless) light in the world.
 		/// </summary>
-        [OgreVersion(1, 7, "Axiom interface uses ColorEx while Ogre uses a ternary (r,g,b) setter")]
-        public abstract ColorEx AmbientLight { set; }
-
-        [OgreVersion(1, 7)]
-	    public abstract ShadeOptions ShadingType { set; }
+		public abstract ColorEx AmbientLight
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		///    Gets/Sets the culling mode for the render system based on the 'vertex winding'.
@@ -1079,12 +1006,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		public abstract bool LightingEnabled
 		{
+			get;
 			set;
 		}
-
-        [OgreVersion(1, 7)]
-        public bool WBufferEnabled
-        { get; set; }
 
 		/// <summary>
 		///    Get/Sets whether or not normals are to be automatically normalized.
@@ -1267,14 +1191,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Bind Gpu program parameters.
 		/// </summary>
-		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms,
-            GpuProgramParameters.GpuParamVariability mask);
+		/// <param name="parms"></param>
+		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms );
 
 		/// <summary>
 		///		Clears one or more frame buffers on the active render target.
 		/// </summary>
 		/// <param name="buffers">
-		///		Combination of one or more elements of <see cref="RenderTarget.FrameBuffer"/>
+		///		Combination of one or more elements of <see cref="FrameBuffer"/>
 		///		denoting which buffers are to be cleared.
 		/// </param>
 		/// <param name="color">The color to clear the color buffer with, if enabled.</param>
@@ -1314,75 +1238,12 @@ namespace Axiom.Graphics
 		/// <param name="name"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-        /// <param name="isFullScreen"></param>
+		/// <param name="isFullscreen"></param>
 		/// <param name="miscParams">
 		///		A collection of addition rendersystem specific options.
 		///	</param>
 		/// <returns></returns>
-		[OgreVersion(1, 7)]
 		public abstract RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams );
-
-
-        /// <summary>
-        /// Creates multiple rendering windows.
-        /// </summary>
-        /// <param name="renderWindowDescriptions">
-        /// Array of structures containing the descriptions of each render window.
-        /// The structure's members are the same as the parameters of CreateRenderWindow:
-        /// <see cref="CreateRenderWindow"/>
-        /// </param>
-        /// <param name="createdWindows">This array will hold the created render windows.</param>
-        /// <returns>true on success.</returns>
-        [OgreVersion(1, 7)]
-        public virtual bool CreateRenderWindows(RenderWindowDescriptionList renderWindowDescriptions, 
-                        RenderWindowList createdWindows)
-        {
-            var fullscreenWindowsCount = 0;
-
-            for (var nWindow = 0; nWindow < renderWindowDescriptions.Count; ++nWindow)
-            {
-                var curDesc = renderWindowDescriptions[ nWindow ];
-                if ( curDesc.UseFullScreen )
-                    fullscreenWindowsCount++;
-
-                var renderWindowFound = false;
-
-                if ( renderTargets.ContainsKey( curDesc.Name ) )
-                    renderWindowFound = true;
-                else
-                {
-                    for ( var nSecWindow = nWindow + 1; nSecWindow < renderWindowDescriptions.Count; ++nSecWindow )
-                    {
-                        if ( curDesc.Name == renderWindowDescriptions[ nSecWindow ].Name )
-                        {
-                            renderWindowFound = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Make sure we don't already have a render target of the 
-                // same name as the one supplied
-                if ( renderWindowFound )
-                {
-                    throw new AxiomException(
-                        "A render target of the same name '{0}' already exists.  You cannot create a new window with this name.",
-                        curDesc.Name );
-                }
-            }
-
-             // Case we have to create some full screen rendering windows.
-            if (fullscreenWindowsCount > 0)
-            {
-                // Can not mix full screen and windowed rendering windows.
-                if ( fullscreenWindowsCount != renderWindowDescriptions.Count )
-                {
-                    throw new AxiomException( "Can not create mix of full screen and windowed rendering windows" );
-                }
-            }
-
-            return true;
-        }
 
 		/// <summary>
 		/// Create a MultiRenderTarget, which is a render target that renders to multiple RenderTextures at once.
@@ -1391,8 +1252,7 @@ namespace Axiom.Graphics
 		/// Surfaces can be bound and unbound at will. This fails if Capabilities.MultiRenderTargetsCount is smaller than 2.
 		/// </Remarks>
 		/// <returns></returns>
-        [OgreVersion(1, 7)]
-        public abstract MultiRenderTarget CreateMultiRenderTarget( string name );
+		public abstract MultiRenderTarget CreateMultiRenderTarget( string name );
 
 		/// <summary>
 		///		Requests an API implementation of a hardware occlusion query used to test for the number
@@ -1414,23 +1274,22 @@ namespace Axiom.Graphics
 		/// <param name="windowTitle">Text to display on the window caption if not fullscreen.</param>
 		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
 		/// <remarks>All subclasses should call this method from within thier own intialize methods.</remarks>
-        [OgreVersion(1, 7)]
-        public virtual RenderWindow Initialise(bool autoCreateWindow, string windowTitle = DefaultWindowTitle)
+		public virtual RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
 			vertexProgramBound = false;
-		    geometryProgramBound = false;
 			fragmentProgramBound = false;
 			return null;
 		}
 
-        [OgreVersion(1, 7)]
-        abstract void Reinitialise();
-
-        /// <summary>
-        /// Query the real capabilities of the GPU and driver in the RenderSystem
-        /// </summary>
-        [OgreVersion(1, 7)]
-        public abstract RenderSystemCapabilities CreateRenderSystemCapabilities();
+		/// <summary>
+		///	Initialize the rendering engine.
+		/// </summary>
+		/// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
+		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
+		public RenderWindow Initialize( bool autoCreateWindow )
+		{
+			return Initialize( autoCreateWindow, DefaultWindowTitle );
+		}
 
 		/// <summary>
 		///		Builds an orthographic projection matrix suitable for this render system.
@@ -1849,10 +1708,9 @@ namespace Axiom.Graphics
 		///   Destroys a render target of any sort
 		/// </summary>
 		/// <param name="name"></param>
-		[OgreVersion(1, 7)]
 		public virtual void DestroyRenderTarget( string name )
 		{
-			var rt = DetachRenderTarget( name );
+			RenderTarget rt = DetachRenderTarget( name );
 			rt.Dispose();
 		}
 
@@ -1860,7 +1718,6 @@ namespace Axiom.Graphics
 		///   Destroys a render window
 		/// </summary>
 		/// <param name="name"></param>
-		[OgreVersion(1, 7)]
 		public virtual void DestroyRenderWindow( string name )
 		{
 			DestroyRenderTarget( name );
@@ -1870,7 +1727,6 @@ namespace Axiom.Graphics
 		///   Destroys a render texture
 		/// </summary>
 		/// <param name="name"></param>
-		[OgreVersion(1, 7)]
 		public virtual void DestroyRenderTexture( string name )
 		{
 			DestroyRenderTarget( name );
@@ -2115,4 +1971,5 @@ namespace Axiom.Graphics
 
 		#endregion DisposableObject Members
 	}
+
 }
