@@ -237,7 +237,7 @@ namespace Axiom.Graphics
 			bool extrudeToInfinity = ( flags & (int)ShadowRenderableFlags.ExtrudeToInfinity ) > 0;
 
 			// Lock index buffer for writing
-            int[] pIdx = new int[indexBuffer.Length / sizeof(int)];
+            short[] pIdx = new short[indexBuffer.Length / sizeof(short)];
             indexBuffer.GetData(pIdx);
 			int indexStart = 0;
 
