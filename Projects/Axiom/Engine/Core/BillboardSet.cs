@@ -1089,7 +1089,10 @@ namespace Axiom.Core
 			}
 
 			this.mainBuffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnlyDiscardable );
+					HardwareBufferManager.Instance.CreateVertexBuffer(
+							decl.GetVertexSize( 0 ),
+							this.vertexData.vertexCount,
+							BufferUsage.DynamicWriteOnlyDiscardable );
 
 			// bind position and diffuses
 			binding.SetBinding( 0, this.mainBuffer );
@@ -1905,7 +1908,7 @@ namespace Axiom.Core
 				bool enabled = value;
 				// Override point rendering if not supported
 				if ( enabled
-					 && !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.PointSprites ) )
+					 && !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.PointSprites ) )
 				{
 					enabled = false;
 				}

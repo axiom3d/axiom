@@ -127,7 +127,6 @@ namespace Axiom.Media
 		/// <summary>
 		///    Gets the codec registered for the passed in file extension.
 		/// </summary>
-		/// <param name="type"></param>
 		/// <returns></returns>
 		public ICodec GetCodec( string extension )
 		{

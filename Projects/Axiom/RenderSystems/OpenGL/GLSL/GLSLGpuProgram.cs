@@ -68,6 +68,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		Keep track of the number of fragment shaders created.
 		/// </summary>
 		protected static int fragmentShaderCount;
+        /// <summary>
+        ///		Keep track of the number of geometry shaders created.
+        /// </summary>
+        protected static int geometryShaderCount;
+
 
 		#endregion Fields
 
@@ -86,16 +91,20 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			{
 				programId = ++vertexShaderCount;
 			}
-			else
+			else if (parent.Type == GpuProgramType.Fragment)
 			{
 				programId = ++fragmentShaderCount;
+			}
+			else
+			{
+			    programId = ++geometryShaderCount;
 			}
 
 			// transfer skeletal animation status from parent
 			this.IsSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
 
 			// there is nothing to load
-			loadFromFile = false;
+			//LoadFromFile = false;
 		}
 
 		#endregion Constructor
@@ -127,6 +136,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// nothing to do
 		}
 
+        protected override void LoadFromSource()
+        {
+            // nothing to load
+        }
+
 		#endregion Resource Implementation
 
 		#region GpuProgram Implementation
@@ -134,45 +148,88 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public override void Bind()
 		{
 			// tell the Link Program Manager what shader is to become active
-			if ( type == GpuProgramType.Vertex )
+			switch (Type)
 			{
-				GLSLLinkProgramManager.Instance.SetActiveVertexShader( this );
-			}
-			else
-			{
-				GLSLLinkProgramManager.Instance.SetActiveFragmentShader( this );
+                case  GpuProgramType.Vertex:
+				    GLSLLinkProgramManager.Instance.SetActiveVertexShader( this );
+			        break;
+                case GpuProgramType.Fragment:
+                    GLSLLinkProgramManager.Instance.SetActiveFragmentShader(this);
+			        break;
+                case GpuProgramType.Geometry:
+                    GLSLLinkProgramManager.Instance.SetActiveGeometryShader(this);
+			        break;
 			}
 		}
 
-		public override void BindParameters( GpuProgramParameters parameters )
+        public override void Unbind()
+        {
+            // tell the Link Program Manager what shader is to become inactive
+            if (Type == GpuProgramType.Vertex)
+            {
+                GLSLLinkProgramManager.Instance.SetActiveVertexShader(null);
+            }
+            else if (Type == GpuProgramType.Geometry)
+            {
+                GLSLLinkProgramManager.Instance.SetActiveGeometryShader(null);
+            }
+            else
+            {
+                GLSLLinkProgramManager.Instance.SetActiveFragmentShader(null);
+            }
+        }
+
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
 			// activate the link program object
 			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
 			// pass on parameters from params to program object uniforms
-			linkProgram.UpdateUniforms( parameters );
+            linkProgram.UpdateUniforms(parms, mask, Type);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void LoadFromSource()
-		{
-			// nothing to load
-		}
+        public override void BindProgramPassIterationParameters(GpuProgramParameters parms)
+        {
+            // activate the link program object
+            GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
-		public override void Unbind()
-		{
-			// tell the Link Program Manager what shader is to become inactive
-			if ( type == GpuProgramType.Vertex )
-			{
-				GLSLLinkProgramManager.Instance.SetActiveVertexShader( null );
-			}
-			else
-			{
-				GLSLLinkProgramManager.Instance.SetActiveFragmentShader( null );
-			}
-		}
+            // pass on parameters from params to program object uniforms
+            linkProgram.UpdatePassIterationUniforms(parms);
+        }
+
+        /// @copydoc GLGpuProgram::getAttributeIndex
+        internal override uint AttributeIndex(VertexElementSemantic semantic, uint index)
+        {
+            // get link program - only call this in the context of bound program
+            var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+
+            if (linkProgram.IsAttributeValid(semantic, index))
+            {
+                return linkProgram.GetAttributeIndex(semantic, index);
+            }
+            else
+            {
+                // fall back to default implementation, allow default bindings
+                return base.AttributeIndex( semantic, index );
+            }
+        }
+
+        /// @copydoc GLGpuProgram::isAttributeValid
+        internal override bool IsAttributeValid(VertexElementSemantic semantic, uint index)
+        {
+            // get link program - only call this in the context of bound program
+            var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+
+            if (linkProgram.IsAttributeValid(semantic, index))
+            {
+                return true;
+            } 
+            else
+            {
+                // fall back to default implementation, allow default bindings
+                return base.IsAttributeValid(semantic, index);
+            }
+        }
 
 		#endregion GpuProgram Implementation
 	}

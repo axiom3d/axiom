@@ -2035,7 +2035,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Overloaded method.
 		/// </summary>
-		/// <param name="textureName">The basic name of the texture (i.e. brickwall.jpg)</param>
 		/// <returns></returns>
 		public TextureUnitState CreateTextureUnitState()
 		{
@@ -2220,7 +2219,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Removes the specified TextureUnitState from this pass.
 		/// </summary>
-		/// <param name="state">Index of the TextureUnitState to remove from this pass.</param>
+        /// <param name="index">Index of the TextureUnitState to remove from this pass.</param>
 		public void RemoveTextureUnitState( int index )
 		{
 			TextureUnitState state = (TextureUnitState)textureUnitStates[ index ];
@@ -2246,7 +2245,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2301,7 +2300,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2318,7 +2317,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2339,7 +2338,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2550,10 +2549,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///		
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="resetParams"></param>
 		public void SetShadowCasterFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2577,10 +2573,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="resetParams"></param>
 		public void SetShadowReceiverFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2640,10 +2633,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="resetParams"></param>
 		public void SetShadowCasterVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2667,10 +2657,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="resetParams"></param>
 		public void SetShadowReceiverVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2762,8 +2749,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Update any automatic light parameters on this pass.
 		/// </summary>
-		/// <param name="renderable">Current object being rendered.</param>
-		/// <param name="camera">Current being being used for rendering.</param>
 		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
 		{
 			// auto update vertex program parameters
@@ -2782,8 +2767,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Update any automatic parameters (except lights) on this pass.
 		/// </summary>
-		/// <param name="renderable">Current object being rendered.</param>
-		/// <param name="camera">Current being being used for rendering.</param>
 		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
 		{
 			// auto update vertex program parameters

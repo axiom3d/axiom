@@ -136,14 +136,6 @@
       <Project>{7DB37793-DE53-428C-8C7D-E55CE1905FAE}</Project>
       <Name>Axiom.Framework.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xna.x86.csproj">
-      <Project>{D2CCB2B6-58D6-4A99-AD88-98D8F97023A3}</Project>
-      <Name>Axiom.Xna.x86</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.x86.csproj">
-      <Project>{05004B16-CAC1-45B7-A88A-DB56C1DD24B8}</Project>
-      <Name>Axiom.RenderSystems.Xna.x86</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj">
       <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.x86</Name>

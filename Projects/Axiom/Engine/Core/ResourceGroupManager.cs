@@ -1340,7 +1340,7 @@ namespace Axiom.Core
 		/// method, there are no resources declared as part of the named group
 		/// any more. Resource locations still persist though.
 		/// </remarks>
-		/// <param name="name">The name to of the resource group to clear.</param>
+        /// <param name="groupName">The name to of the resource group to clear.</param>
 		public void ClearResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Clearing resource group {0}", groupName );
@@ -1364,7 +1364,7 @@ namespace Axiom.Core
 		/// which are part of it, and then removing it from
 		/// the list of resource groups.
 		/// </summary>
-		/// <param name="name">The name of the resource group to destroy.</param>
+        /// <param name="groupName">The name of the resource group to destroy.</param>
 		public void DestroyResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Destroying resource group " + groupName );
