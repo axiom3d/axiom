@@ -8,4 +8,11 @@ namespace Axiom
         {
         }
     }
+
+    public class AxiomHelperAttribute: Attribute
+    {
+        public AxiomHelperAttribute(int major, int minor, string comment="")
+        {
+        }
+    }
 }

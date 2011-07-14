@@ -824,7 +824,7 @@ namespace Axiom.Core
 			PlatformInformation.Log( LogManager.Instance.DefaultLog );
 #endif
 			// initialize the current render system
-			this.autoWindow = this.activeRenderSystem.Initialise( autoCreateWindow, windowTitle );
+			this.autoWindow = this.activeRenderSystem.Initialize( autoCreateWindow, windowTitle );
 
 			// if they chose to auto create a window, also initialize several subsystems
 			if ( autoCreateWindow )
@@ -1038,7 +1038,7 @@ namespace Axiom.Core
 			// give client app opportunity to use queued GPU time
 			bool ret = OnFrameRenderingQueued();
 			// block for final swap
-			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.IsVSync );
+			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.WaitForVerticalBlank );
 
 			return ret;
 		}
