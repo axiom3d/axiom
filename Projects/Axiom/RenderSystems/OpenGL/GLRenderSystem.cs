@@ -205,7 +205,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Implementation of RenderSystem
 
-		public override ConfigOptionCollection ConfigOptions
+		public override ConfigOptionMap ConfigOptions
 		{
 			get
 			{
@@ -1682,7 +1682,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="autoCreateWindow"></param>
 		/// <param name="windowTitle">Title of the window to create.</param>
 		/// <returns></returns>
-		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
+		public override RenderWindow Initialise( bool autoCreateWindow, string windowTitle )
 		{
 			// register the GLSL program manage
 
@@ -1692,7 +1692,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
-			base.Initialize( autoCreateWindow, windowTitle );
+			base.Initialise( autoCreateWindow, windowTitle );
 
 			return autoWindow;
 		}
