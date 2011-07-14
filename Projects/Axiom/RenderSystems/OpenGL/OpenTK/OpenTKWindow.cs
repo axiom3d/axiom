@@ -296,7 +296,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void WindowMovedOrResized()
 		{
 			// Update dimensions incase changed
-			foreach ( Viewport entry in this.viewportList.Values )
+			foreach ( Viewport entry in this.ViewportList.Values )
 			{
 				entry.UpdateDimensions();
 			}
