@@ -134,13 +134,13 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Generics: List<AutoConstantEntry>
 		/// </summary>
-		public class FloatConstantEntryList : List<FloatConstantEntry>
+		public class FloatConstantEntryList : List<GpuProgramParameters.FloatConstantEntry>
 		{
 			public void Resize( int size )
 			{
-				while ( Count < size )
+				while ( this.Count < size )
 				{
-					Add( new FloatConstantEntry() );
+					Add( new GpuProgramParameters.FloatConstantEntry() );
 				}
 			}
 		}
@@ -160,13 +160,13 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Generics: List<AutoConstantEntry>
 		/// </summary>
-		public class IntConstantEntryList : List<IntConstantEntry>
+		public class IntConstantEntryList : List<GpuProgramParameters.IntConstantEntry>
 		{
 			public void Resize( int size )
 			{
 				while ( this.Count < size )
 				{
-					Add( new IntConstantEntry() );
+					Add( new GpuProgramParameters.IntConstantEntry() );
 				}
 			}
 		}

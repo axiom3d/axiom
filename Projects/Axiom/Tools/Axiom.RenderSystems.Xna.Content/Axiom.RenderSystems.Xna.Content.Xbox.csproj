@@ -17,7 +17,7 @@
     </XnaUpgrade>
     <XnaOutputType>Library</XnaOutputType>
     <XnaProfile>HiDef</XnaProfile>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+	<TargetFrameworkProfile></TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
@@ -76,8 +76,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline">
+      <Private>False</Private>
+    </Reference>		
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>

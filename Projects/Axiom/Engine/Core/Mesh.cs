@@ -594,7 +594,7 @@ namespace Axiom.Core
 			_useVertexShadowBuffer = true;
 			_useIndexShadowBuffer = true;
 
-			// Initialize to default strategy
+			// Initialise to default strategy
 			_lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
 
 			// Init first (manual) lod
@@ -1068,8 +1068,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Software blending oriented bone assignment compilation.
 		/// </summary>
-		protected internal void CompileBoneAssignments( Dictionary<int, List<VertexBoneAssignment>> boneAssignments,
-													   int numBlendWeightsPerVertex, VertexData targetVertexData )
+		protected internal void CompileBoneAssignments( Dictionary<int, List<VertexBoneAssignment>> boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData )
 		{
 			// Create or reuse blend weight / indexes buffer
 			// Indices are always a UBYTE4 no matter how many weights per vertex
@@ -1099,16 +1098,6 @@ namespace Axiom.Core
 			int bufferSize = Marshal.SizeOf( typeof( byte ) ) * 4;
 			bufferSize += Marshal.SizeOf( typeof( float ) ) * numBlendWeightsPerVertex;
 
-			HardwareVertexBuffer vbuf =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-					bufferSize,
-					targetVertexData.vertexCount,
-					BufferUsage.StaticWriteOnly,
-					true ); // use shadow buffer
-
-			// bind new buffer
-			bind.SetBinding( bindIndex, vbuf );
-
 			VertexElement idxElem, weightElem;
 
 			VertexElement firstElem = decl.GetElement( 0 );
@@ -1126,22 +1115,22 @@ namespace Axiom.Core
 					insertPoint++;
 				}
 
-				idxElem = decl.InsertElement( insertPoint, bindIndex, 0, VertexElementType.UByte4,
-					VertexElementSemantic.BlendIndices );
+				idxElem = decl.InsertElement( insertPoint, bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices );
 
-				weightElem = decl.InsertElement( insertPoint + 1, bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4,
-					VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ),
-					VertexElementSemantic.BlendWeights );
+				weightElem = decl.InsertElement( insertPoint + 1, bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
 			}
 			else
 			{
 				// Position is not the first semantic, therefore this declaration is
 				// not pre-Dx9 compatible anyway, so just tack it on the end
 				idxElem = decl.AddElement( bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices );
-				weightElem = decl.AddElement( bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4,
-					VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ),
-					VertexElementSemantic.BlendWeights );
+				weightElem = decl.AddElement( bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
 			}
+
+            HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(bindIndex), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
+
+            // bind new buffer
+            bind.SetBinding(bindIndex, vbuf);
 
 
 			// Assign data
@@ -1234,23 +1223,14 @@ namespace Axiom.Core
 				// find the buffer associated with this element
 				HardwareVertexBuffer origBuffer = vertexData.vertexBufferBinding.GetBuffer( prevTexCoordElem.Source );
 
-				// Now create a new buffer, which includes the previous contents
-				// plus extra space for the 3D coords
-				HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-					origBuffer.VertexSize + ( 3 * Marshal.SizeOf( typeof( float ) ) ),
-					vertexData.vertexCount,
-					origBuffer.Usage,
-					origBuffer.HasShadowBuffer );
-
 				// add the new element
-				decl.AddElement(
-					prevTexCoordElem.Source,
-					origBuffer.VertexSize,
-					VertexElementType.Float3,
-					VertexElementSemantic.TexCoords,
-					destCoordSet );
+				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3, VertexElementSemantic.TexCoords,	destCoordSet );
 
-				// now copy the original data across
+                // Now create a new buffer, which includes the previous contents
+                // plus extra space for the 3D coords
+                HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
+                
+                // now copy the original data across
 				IntPtr srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
 				IntPtr destPtr = newBuffer.Lock( BufferLocking.Discard );
 
@@ -1466,7 +1446,7 @@ namespace Axiom.Core
 
 
 		/// <summary>
-		///    Initialize an animation set suitable for use with this mesh.
+		///    Initialise an animation set suitable for use with this mesh.
 		/// </summary>
 		/// <remarks>
 		///    Only recommended for use inside the engine, not by applications.
@@ -1796,7 +1776,7 @@ namespace Axiom.Core
 			// Don't check flag here; since detail checks on track changes are not
 			// done, allow caller to force if they need to
 
-			// Initialize all types to nothing
+			// Initialise all types to nothing
 			_sharedVertexDataAnimationType = VertexAnimationType.None;
 			for ( int sm = 0; sm < this.SubMeshCount; sm++ )
 			{

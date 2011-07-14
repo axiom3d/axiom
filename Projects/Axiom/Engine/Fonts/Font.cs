@@ -513,7 +513,8 @@ namespace Axiom.Fonts
 				}
 
 				// set texture addressing mode to Clamp to eliminate fuzzy edges
-                unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
+                if ( unitState != null )
+                    unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				// set up blending mode
 				if ( blendByAlpha )

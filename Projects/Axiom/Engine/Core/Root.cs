@@ -846,6 +846,7 @@ namespace Axiom.Core
 			if ( this.firstTimePostWindowInit )
 			{
 				// init material manager singleton, which parse sources for materials
+				new MaterialManager();
 				MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
@@ -1038,7 +1039,7 @@ namespace Axiom.Core
 			// give client app opportunity to use queued GPU time
 			bool ret = OnFrameRenderingQueued();
 			// block for final swap
-			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.WaitForVerticalBlank );
+			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.IsVSync );
 
 			return ret;
 		}

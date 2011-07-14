@@ -54,6 +54,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <XnaCompressContent>True</XnaCompressContent>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <DebugType>pdbonly</DebugType>
@@ -61,7 +62,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.XML</DocumentationFile>
-    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360;NET_2_0;XNA</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
