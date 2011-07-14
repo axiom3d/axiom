@@ -1271,8 +1271,8 @@ namespace Axiom.Graphics
             viewport.Update();
             if (updateStatistics)
             {
-                stats.TriangleCount += viewport.NumRenderedFaces;
-                stats.BatchCount += viewport.NumRenderedBatches;
+                stats.TriangleCount += viewport.RenderedFaceCount;
+                stats.BatchCount += viewport.RenderedBatchCount;
             }
             FireViewportPostUpdate(viewport);
         }
