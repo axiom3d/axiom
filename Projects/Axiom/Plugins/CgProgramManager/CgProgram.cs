@@ -144,7 +144,7 @@ namespace Axiom.CgPrograms
 			}
 
 			// create the Cg program
-			cgProgram = Cg.cgCreateProgram( cgContext, Cg.CG_SOURCE, source, selectedCgProfile, entry, args );
+			cgProgram = Cg.cgCreateProgram( cgContext, Cg.CG_SOURCE, Source, selectedCgProfile, entry, args );
 
 			CgHelper.CheckCgError( "Unable to compile Cg program " + Name, cgContext );
 		}
@@ -154,13 +154,13 @@ namespace Axiom.CgPrograms
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-			if ( this.selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !_compileError )
+			if ( selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !HasCompileError )
 			{
 				// retreive the
 				string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
 
 				// create a low-level program, with the same name as this one
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, lowLevelSource, type, selectedProfile );
+				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, lowLevelSource, Type, selectedProfile );
 			}
 		}
 
@@ -247,7 +247,12 @@ namespace Axiom.CgPrograms
 			}
 		}
 
-		/// <summary>
+	    protected override void BuildConstantDefinitions()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		///    Unloads the Cg program.
 		/// </summary>
 		protected override void UnloadImpl()
@@ -284,7 +289,7 @@ namespace Axiom.CgPrograms
 		{
 			get
 			{
-				if ( _compileError || !IsRequiredCapabilitiesSupported() )
+                if (HasCompileError || !IsRequiredCapabilitiesSupported())
 					return false;
 
 				// If skeletal animation is being done, we need support for UBYTE4

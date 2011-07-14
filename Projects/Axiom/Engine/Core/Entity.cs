@@ -1128,7 +1128,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Initialise the hardware animation elements for given vertex data
+		///     Initialize the hardware animation elements for given vertex data
 		/// </summary>
 		private void InitHardwareAnimationElements( VertexData vdata, ushort numberOfElements )
 		{
@@ -1136,7 +1136,7 @@ namespace Axiom.Core
 			{
 				vdata.AllocateHardwareAnimationElements( numberOfElements );
 			}
-			// Initialise parametrics incase we don't use all of them
+			// Initialize parametrics incase we don't use all of them
 			for ( int i = 0; i < vdata.HWAnimationDataList.Count; i++ )
 			{
 				vdata.HWAnimationDataList[ i ].Parametric = 0.0f;
@@ -2389,7 +2389,7 @@ namespace Axiom.Core
 				// Save link to vertex data
 				this.currentVertexData = vertexData;
 
-				// Initialise render op
+				// Initialize render op
 				this.renderOperation.indexData = new IndexData();
 				this.renderOperation.indexData.indexBuffer = indexBuffer;
 				this.renderOperation.indexData.indexStart = 0;

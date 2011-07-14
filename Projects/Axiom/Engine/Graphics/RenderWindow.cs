@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Collections;
 
@@ -226,7 +226,7 @@ namespace Axiom.Graphics
 		#region Abstract methods and properties
 
 		/// <summary>
-		///		Creates & displays the new window.
+		///		Creates &amp; displays the new window.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="width">The width of the window in pixels.</param>
@@ -279,4 +279,8 @@ namespace Axiom.Graphics
 		#endregion
 
 	}
+
+    public class RenderWindowList: List<RenderWindow>
+    {
+    }
 }

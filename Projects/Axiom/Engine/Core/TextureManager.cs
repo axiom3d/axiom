@@ -320,7 +320,7 @@ namespace Axiom.Core
 		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
 		/// <param name="width">The dimensions of the texture</param>
 		/// <param name="height">The dimensions of the texture</param>
-		/// <param name="numMipMaps">
+        /// <param name="numMipmaps">
 		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
 		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
 		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
@@ -362,7 +362,7 @@ namespace Axiom.Core
 		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
 		/// <param name="width">The dimensions of the texture</param>
 		/// <param name="height">The dimensions of the texture</param>
-		/// <param name="numMipMaps">
+        /// <param name="numMipmaps">
 		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
 		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
 		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
@@ -448,29 +448,14 @@ namespace Axiom.Core
 			return Load( name, group, type, numMipMaps, 1.0f, false );
 		}
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="numMipMaps"></param>
-		/// <param name="gamma"></param>
-		/// <param name="priority"></param>
-		/// <returns></returns>
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha )
 		{
 			return Load( name, group, type, numMipMaps, gamma, false, PixelFormat.Unknown );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="group"></param>
-		/// <param name="type"></param>
-		/// <param name="numMipMaps"></param>
-		/// <param name="gamma"></param>
-		/// <param name="isAlpha"></param>
-		/// <param name="desiredFormat"></param>
-		/// <returns></returns>
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
@@ -521,11 +506,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Loads a pre-existing image into the texture.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="image"></param>
-		/// <param name="numMipMaps"></param>
-		/// <param name="gamma"></param>
-		/// <param name="priority"></param>
 		/// <returns></returns>
 		public Texture LoadImage( string name, string group, Image image, TextureType texType, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{

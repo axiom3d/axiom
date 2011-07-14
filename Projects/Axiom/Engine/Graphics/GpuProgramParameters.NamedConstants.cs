@@ -39,7 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-
+using Axiom.Core;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
@@ -56,32 +56,45 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Total size of the float buffer required
 			/// </summary>
+			[OgreVersion(1, 7)]
 			public int FloatBufferSize;
 
 			/// <summary>
 			/// Total size of the int buffer required
 			/// </summary>
+            [OgreVersion(1, 7)]
 			public int IntBufferSize;
 
 			/// <summary>
 			/// Dictionary of parameter names to GpuConstantDefinition
 			/// </summary>
-			public Dictionary<string, GpuConstantDefinition> GpuConstantDefinitions = new Dictionary<string, GpuConstantDefinition>();
+            [OgreVersion(1, 7)]
+            public GpuConstantDefinitionMap Map = new GpuConstantDefinitionMap();
 
-			private static bool _generateAllConstantDefinitionArrayEntries;
+            /// <summary>
+            /// Indicates whether all array entries will be generated and added to the definitions map
+            /// </summary>
+            /// <remarks>
+            /// Normally, the number of array entries added to the definitions map is capped at 16
+            /// to save memory. Setting this value to <code>true</code> allows all of the entries
+            /// to be generated and added to the map.
+            /// </remarks>
+            [OgreVersion(1, 7)]
+            protected static bool GenerateAllConstantDefinitionArrayEntries;
 
 			/// <summary>
 			/// Indicates whether all array entries will be generated and added to the definitions map
 			/// </summary>
-			public static bool GenerateAllConstantDefinitionEntries
+            [OgreVersion(1, 7)]
+            public static bool GenerateAllConstantDefinitionEntries
 			{
 				get
 				{
-					return _generateAllConstantDefinitionArrayEntries;
+					return GenerateAllConstantDefinitionArrayEntries;
 				}
 				set
 				{
-					_generateAllConstantDefinitionArrayEntries = value;
+					GenerateAllConstantDefinitionArrayEntries = value;
 				}
 			}
 
@@ -100,31 +113,31 @@ namespace Axiom.Graphics
 			///	all, you can address the larger arrays in a bulk fashion much more
 			///	easily anyway.
 			/// </remarks>
+			[OgreVersion(1, 7)]
 			public void GenerateConstantDefinitionArrayEntries( String paramName, GpuConstantDefinition baseDef )
 			{
 				// Copy definition for use with arrays
-				GpuConstantDefinition arrayDef = baseDef;
+				var arrayDef = baseDef;
 				arrayDef.ArraySize = 1;
-				string arrayName = string.Empty;
 
-				// Add parameters for array accessors
+			    // Add parameters for array accessors
 				// [0] will refer to the same location, [1+] will increment
 				// only populate others individually up to 16 array slots so as not to get out of hand,
 				// unless the system has been explicitly configured to allow all the parameters to be added
 
 				// paramName[0] version will always exist
-				int maxArrayIndex = 1;
-				if ( baseDef.ArraySize <= 16 || _generateAllConstantDefinitionArrayEntries )
+				var maxArrayIndex = 1;
+				if ( baseDef.ArraySize <= 16 || GenerateAllConstantDefinitionArrayEntries )
 				{
 					maxArrayIndex = baseDef.ArraySize;
 				}
 
-				for ( int i = 0; i < maxArrayIndex; i++ )
+				for ( var i = 0; i < maxArrayIndex; i++ )
 				{
-					arrayName = paramName + "[" + i + "]";
+					var arrayName = paramName + "[" + i + "]";
+                    Map.Add(arrayName, arrayDef);
 					// increment location
-					arrayDef.PhysicalIndex += arrayDef.ElementSize;
-					GpuConstantDefinitions.Add( arrayName, arrayDef );
+					arrayDef.PhysicalIndex += arrayDef.ElementSize;					
 				}
 				// note no increment of buffer sizes since this is shared with main array def
 			}
@@ -132,10 +145,10 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Saves constant definitions to a file, compatible with GpuProgram::setManualNamedConstantsFile.
 			/// </summary>
-			/// <param name="filename"></param>
+            [OgreVersion(1, 7)]
 			public void Save( string filename )
 			{
-				GpuNamedConstantsSerializer ser = new GpuNamedConstantsSerializer();
+				var ser = new GpuNamedConstantsSerializer();
 				ser.ExportNamedConstants( this, filename );
 			}
 
@@ -143,9 +156,10 @@ namespace Axiom.Graphics
 			/// Loads constant definitions from a stream, compatible with GpuProgram::setManualNamedConstantsFile.
 			/// </summary>
 			/// <param name="stream"></param>
-			public void Load( Stream stream )
+            [OgreVersion(1, 7)]
+            public void Load( Stream stream )
 			{
-				GpuNamedConstantsSerializer ser = new GpuNamedConstantsSerializer();
+				var ser = new GpuNamedConstantsSerializer();
 				ser.ImportNamedConstants( stream, this );
 			}
 		}
@@ -158,7 +172,7 @@ namespace Axiom.Graphics
 			public void ExportNamedConstants( GpuNamedConstants pConsts, string filename )
 			{
 #warning implement Endian.Native.
-				this.ExportNamedConstants( pConsts, filename, Endian.Little );
+				ExportNamedConstants( pConsts, filename, Endian.Little );
 			}
 
 			public void ExportNamedConstants( GpuNamedConstants pConsts, string filename, Endian endianMode )
@@ -176,5 +190,10 @@ namespace Axiom.Graphics
 				throw new NotImplementedException();
 			}
 		}
+
+	    private GpuConstantDefinition FindNamedConstantDefinition( string name, bool b )
+	    {
+            throw new NotImplementedException();
+	    }
 	}
 }

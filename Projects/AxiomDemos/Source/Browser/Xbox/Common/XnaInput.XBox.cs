@@ -38,7 +38,7 @@ namespace Axiom.Demos.Browser.Xna
 
             XFG.Input.Keys xnaKey = Convert( key );
 
-            isPressed = !_keyboardState.IsKeyUp( xnaKey );
+            isPressed = _keyboardState.IsKeyDown( xnaKey );
         }
 
         private Microsoft.Xna.Framework.Input.Keys Convert( Axiom.Input.KeyCodes key )
@@ -48,7 +48,7 @@ namespace Axiom.Demos.Browser.Xna
                 case Axiom.Input.KeyCodes.G:
                     return Microsoft.Xna.Framework.Input.Keys.G;
                 default:
-                    return Microsoft.Xna.Framework.Input.Keys.BrowserFavorites;
+                    return (Microsoft.Xna.Framework.Input.Keys)0;
             }
         }
 

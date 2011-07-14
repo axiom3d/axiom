@@ -44,10 +44,17 @@ namespace Axiom.Demos.Browser.Xna
             ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
 #endif
 
+            XnaResourceGroupManager.Instance.Initialize( new string[]
+                                                         {
+                                                             "png", "jpg", "bmp", "dds", "jpeg", "tiff"
+                                                         } );
+
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
 
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
             Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
+
+            _loadPlugins();
 
             _setupResources();
 
@@ -66,8 +73,11 @@ namespace Axiom.Demos.Browser.Xna
 
         public void Run()
         {
-            //TODO: remove all references to titleLocation
-            titleLocation = string.Empty;
+#if !( XBOX || XBOX360 )
+            titleLocation = String.Empty;
+#else
+            titleLocation = StorageContainer.TitleLocation + "\\";
+#endif
 
             try
             {

@@ -69,10 +69,10 @@ namespace Axiom.Graphics
 
 		public MultiRenderTarget( string name )
 		{
-			this.Priority = RenderTargetPriority.RenderToTexture;
-			this.Name = name;
+			Priority = RenderTargetPriority.RenderToTexture;
+			this.name = name;
 			// Width and height is unknown with no targets attached
-			this.Width = this.Height = 0;
+			width =height = 0;
 		}
 
 		#endregion Construction and Destruction
