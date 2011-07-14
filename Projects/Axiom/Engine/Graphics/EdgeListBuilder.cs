@@ -452,10 +452,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="vertexSet"></param>
 		/// <param name="triangleIndex"></param>
-		/// <param name="vertexIndex0"></param>
 		/// <param name="vertexIndex1"></param>
-		/// <param name="sharedVertIndex0"></param>
+		/// <param name="vertexIndex2"></param>
 		/// <param name="sharedVertIndex1"></param>
+		/// <param name="sharedVertIndex2"></param>
 		protected void CreateEdge( int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0, int sharedVertIndex1 )
 		{
 			UniqueEdge vertPair = new UniqueEdge();

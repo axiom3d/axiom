@@ -7,11 +7,11 @@
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </Module>
-	<Module Include="Axiom\axiom.core.module">
-	  <Configuration>Release</Configuration>
-	  <Platform>x86</Platform>
-	</Module>
-	  
+	  <Module Include="Axiom\axiom.core.module">
+  		<Configuration>Release</Configuration>
+  		<Platform>x86</Platform>
+	  </Module>
+
     <Module Include="Axiom\axiom.core.module">
       <Configuration>Debug</Configuration>
       <Platform>Xbox</Platform>
@@ -21,58 +21,14 @@
       <Platform>Xbox</Platform>
     </Module>
 
-    <Module Include="Axiom.Framework\axiom.framework.module">
-      <Configuration>Debug</Configuration>
-      <Platform>x86</Platform>
-    </Module>
-    <Module Include="Axiom.Framework\axiom.framework.module">
-	  <Configuration>Release</Configuration>
-	  <Platform>x86</Platform>
-	</Module>
-	  
-    <Module Include="Axiom.Framework\axiom.framework.module">
-      <Configuration>Debug</Configuration>
-      <Platform>Xbox</Platform>
-    </Module>
-    <Module Include="Axiom.Framework\axiom.framework.module">
-      <Configuration>Release</Configuration>
-      <Platform>Xbox</Platform>
-    </Module>
-	
-    <Module Include="Samples\axiom.samples.module">
+    <Module Include="AxiomDemos\axiom.samples.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
-      <Properties>
-        Framework=DotNet
-      </Properties>
     </Module>
-
-    <Module Include="Samples\axiom.samples.module">
-      <Configuration>Release</Configuration>
-      <Platform>x86</Platform>
-      <Properties>
-        Framework=Mono
-      </Properties>
-    </Module>
-
-    <Module Include="Samples\axiom.samples.module">
-      <Configuration>Release</Configuration>
-      <Platform>Xbox</Platform>
-      <Properties>
-        Framework=DotNet
-      </Properties>
-    </Module>
-    
     <Module Include="Tests\axiom.tests.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
     </Module>
-  </ItemGroup>
-
-  <ItemGroup>
-    <File Include="..\Media\**\*" >
-      <ImagePath>$(ImagePath)\demos\media</ImagePath>
-    </File>
   </ItemGroup>
 
 </Project>

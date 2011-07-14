@@ -1,5 +1,4 @@
-﻿using System;
-using Axiom.Math;
+﻿using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
 using System.Collections.Generic;
@@ -245,11 +244,9 @@ namespace Axiom.Samples.Ocean
 
                                             if ( activeParameters != null )
                                             {
-                                                throw new NotImplementedException("Fix this");
-                                                //int idx = activeParameters.GetParamIndex( activeShaderDef.ParamName );
-                                                //activeShaderDef.PhysicalIndex = idx;
-                                                
-                                                //uniformVal = activeParameters.GetNamedFloatConstant( activeShaderDef.ParamName ).val[ activeShaderDef.ElementIndex ];
+                                                int idx = activeParameters.GetParamIndex( activeShaderDef.ParamName );
+                                                activeShaderDef.PhysicalIndex = idx;
+                                                uniformVal = activeParameters.GetNamedFloatConstant( activeShaderDef.ParamName ).val[ activeShaderDef.ElementIndex ];
                                             }
                                         }
                                         break;
@@ -325,7 +322,12 @@ namespace Axiom.Samples.Ocean
 
                             if ( activeParameters != null )
                             {
-                                activeParameters.WriteRawConstant(activeShaderDef.PhysicalIndex + activeShaderDef.ElementIndex, val);
+                                int idx = activeParameters.GetParamIndex( activeShaderDef.ParamName );
+                                activeShaderDef.PhysicalIndex = idx;
+                                GpuProgramParameters.FloatConstantEntry entry;
+                                entry = activeParameters.GetNamedFloatConstant( activeShaderDef.ParamName );
+                                entry.val[ activeShaderDef.ElementIndex ] = val;
+                                activeParameters.SetConstant( activeShaderDef.PhysicalIndex, entry.val );
                             }
                         }
                         break;

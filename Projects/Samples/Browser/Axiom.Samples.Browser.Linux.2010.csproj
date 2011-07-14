@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputType>WinExe</OutputType>
@@ -19,7 +19,6 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <ProjectGuid>{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}</ProjectGuid>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,6 +33,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ProjectGuid>{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +96,10 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.csproj">
+      <Project>{3FA3E842-91DE-4A78-99A8-DE3546763136}</Project>
+      <Name>Axiom.Plugins.FreeImageCodecs</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>

@@ -62,9 +62,9 @@ namespace Axiom.Graphics
 			pixelBuffer = buffer;
 			this.zOffset = zOffset;
 			Priority = RenderTargetPriority.RenderToTexture;
-			width = buffer.Width;
-			height = buffer.Height;
-			colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+			Width = buffer.Width;
+			Height = buffer.Height;
+			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
@@ -88,7 +88,7 @@ namespace Axiom.Graphics
 			pixelBuffer.BlitToMemory( dst );
 		}
 
-	    public override PixelFormat SuggestPixelFormat()
+		protected override PixelFormat suggestPixelFormat()
 		{
 			return pixelBuffer.Format;
 		}

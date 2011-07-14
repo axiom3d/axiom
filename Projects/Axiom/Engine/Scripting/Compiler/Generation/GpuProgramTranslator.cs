@@ -137,30 +137,28 @@ namespace Axiom.Scripting.Compiler
 					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
-                        LogManager.Instance.Write("TranslateProgramParameters {0}", (Keywords)prop.Id);
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_SHARED_PARAMS_REF
-                            case Keywords.ID_SHARED_PARAMS_REF:
-						    {
-						        if ( prop.Values.Count != 1 )
-						        {
-						            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-						                               "shared_params_ref requires a single parameter" );
-						            continue;
-						        }
+							case Keywords.ID_SHARED_PARAMS_REF:
+								{
+									if ( prop.Values.Count != 1 )
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"shared_params_ref requires a single parameter" );
+										continue;
+									}
 
-						        AbstractNode i0 = getNodeAt( prop.Values, 0 );
-						        if ( !( i0 is AtomAbstractNode ) )
-						        {
-						            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-						                               "shared parameter set name expected" );
-						            continue;
-						        }
-						        AtomAbstractNode atom0 = (AtomAbstractNode)i0;
+									AbstractNode i0 = getNodeAt( prop.Values, 0 );
+									if ( !(i0 is AtomAbstractNode) )
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											"shared parameter set name expected" );
+										continue;
+									}
+									AtomAbstractNode atom0 = (AtomAbstractNode)i0;
 
-						        throw new NotImplementedException();
-#if UNREACHABLE_CODE
+									throw new NotImplementedException();
 									try
 									{
 										//TODO
@@ -172,10 +170,6 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-#else
-						    }
-#endif
-
 							#endregion ID_SHARED_PARAMS_REF
 
 							#region ID_PARAM_INDEXED || ID_PARAM_NAMED
@@ -239,7 +233,7 @@ namespace Axiom.Scripting.Compiler
 										else
 										{
 											// Find the number of parameters
-											var isValid = true;
+											bool isValid = true;
 											GpuProgramParameters.ElementType type = GpuProgramParameters.ElementType.Real;
 											int count = 0;
 											if ( atom1.Value.Contains( "float" ) )
@@ -271,14 +265,14 @@ namespace Axiom.Scripting.Compiler
 
 											if ( isValid )
 											{
-                                                // First, clear out any offending auto constants
+												throw new NotImplementedException();
+
+												// First, clear out any offending auto constants
 												if ( named )
-												{
-                                                    parameters.ClearNamedAutoConstant(name);
+												{ /*parameters->clearNamedAutoConstant(name);*/
 												}
 												else
-												{ 
-                                                    parameters.ClearAutoConstant(index);
+												{ /*parameters->clearAutoConstant(index);*/
 												}
 
 												int roundedCount = count % 4 != 0 ? count + 4 - ( count % 4 ) : count;
@@ -290,12 +284,10 @@ namespace Axiom.Scripting.Compiler
 														try
 														{
 															if ( named )
-															{ 
-                                                                parameters.SetNamedConstant(name, vals, count, 1);
+															{ /*parameters.SetNamedConstant(name, vals, count, 1);*/
 															}
 															else
-															{ 
-                                                                parameters.SetConstant(index , vals, roundedCount/4);
+															{ /*parameters.SetNamedConstant(index , vals, roundedCount/4);*/
 															}
 														}
 														catch
@@ -317,13 +309,12 @@ namespace Axiom.Scripting.Compiler
 													{
 														try
 														{
+															//TODO
 															if ( named )
-															{ 
-                                                                parameters.SetNamedConstant(name, vals, count, 1);
+															{ /*parameters.SetNamedConstant(name, vals, count, 1);*/
 															}
 															else
-															{ 
-                                                                parameters.SetConstant(index , vals, roundedCount/4);
+															{ /*parameters.SetNamedConstant(index , vals, roundedCount/4);*/
 															}
 														}
 														catch
@@ -338,7 +329,6 @@ namespace Axiom.Scripting.Compiler
 															"incorrect float constant declaration" );
 													}
 												}
-
 											}
 										}
 									}
@@ -515,12 +505,12 @@ namespace Axiom.Scripting.Compiler
 
 														try
 														{
+															//TODO
 															if ( named )
-															{ 
-                                                                parameters.SetNamedAutoConstantReal(name, def.AutoConstantType, f);
+															{ /*parameters->setNamedAutoConstantReal(name, def->acType, f);*/
 															}
 															else
-																parameters.SetAutoConstantReal( index, def.AutoConstantType, f );
+																parameters.SetAutoConstant( index, def.AutoConstantType, f );
 														}
 														catch
 														{
@@ -537,12 +527,12 @@ namespace Axiom.Scripting.Compiler
 															{
 																try
 																{
+																	//TODO
 																	if ( named )
-																	{
-                                                                        parameters.SetNamedAutoConstantReal(name, def.AutoConstantType, extraInfo);
+																	{ /*parameters->setNamedAutoConstantReal(name, def->acType, extraInfo);*/
 																	}
 																	else
-																		parameters.SetAutoConstantReal( index, def.AutoConstantType, extraInfo );
+																		parameters.SetAutoConstant( index, def.AutoConstantType, extraInfo );
 																}
 																catch
 																{
@@ -708,8 +698,9 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && customParameters != null )
 				{
-					var ptr = prog.DefaultParameters;
-					GpuProgramTranslator.TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
+#warning this need GpuProgramParametersShared implementation
+					//GpuProgramParametersShared ptr = prog.DefaultParameters;
+					//GpuProgramTranslator.TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
 				}
 			}
 
@@ -841,8 +832,9 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
 				{
-				    var ptr = prog.DefaultParameters;
-				    TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
+#warning this need GpuProgramParametersShared implementation
+					//GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
+					//GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
 				}
 			}
 
@@ -944,8 +936,9 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
 				{
-					var ptr = prog.DefaultParameters;
-					GpuProgramTranslator.TranslateProgramParameters(compiler, ptr, (ObjectAbstractNode)parameters);
+#warning this need GpuProgramParametersShared implementation
+					//GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
+					//GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
 				}
 			}
 		}

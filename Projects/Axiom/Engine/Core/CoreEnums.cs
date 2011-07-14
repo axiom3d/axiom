@@ -263,7 +263,7 @@ namespace Axiom.Core
 	};
 
 	/// <summary>
-	///    This type can be used by collaborating applications &amp; SceneManagers to
+	///    This type can be used by collaborating applications & SceneManagers to
 	///    agree on the type of world geometry to be returned from queries. Not all
 	///    these types will be supported by all SceneManagers; once the application
 	///    has decided which SceneManager specialization to use, it is expected that

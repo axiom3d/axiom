@@ -223,31 +223,5 @@ namespace Axiom.RenderSystems.OpenGL
 			// make the compiler happy
 			return 0;
 		}
-
-	    public static int ConvertEnum( TextureAddressing tam )
-        {
-            var type = 0;
-
-            switch ( tam )
-            {
-                case TextureAddressing.Wrap:
-                    type = Gl.GL_REPEAT;
-                    break;
-
-                case TextureAddressing.Mirror:
-                    type = Gl.GL_MIRRORED_REPEAT;
-                    break;
-
-                case TextureAddressing.Clamp:
-                    type = Gl.GL_CLAMP_TO_EDGE;
-                    break;
-
-                case TextureAddressing.Border:
-                    type = Gl.GL_CLAMP_TO_BORDER;
-                    break;
-            }
-
-            return type;
-	    }
 	}
 }

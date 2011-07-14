@@ -96,9 +96,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="numVerts"></param>
 		/// <param name="usage"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
 		{
-			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
+			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
 		}
 
 		/// <summary>
@@ -109,9 +109,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
+			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( this, vertexSize, numVerts, usage, useShadowBuffer );
 			vertexBuffers.Add( buffer );
 			return buffer;
 		}
@@ -137,29 +137,6 @@ namespace Axiom.RenderSystems.OpenGL
 			base.dispose( disposeManagedResources );
 		}
 
-	    public static int GetGLType( VertexElementType type )
-	    {
-            switch (type)
-            {
-                case VertexElementType.Float1:
-                case VertexElementType.Float2:
-                case VertexElementType.Float3:
-                case VertexElementType.Float4:
-                    return Gl.GL_FLOAT;
-                case VertexElementType.Short1:
-                case VertexElementType.Short2:
-                case VertexElementType.Short3:
-                case VertexElementType.Short4:
-                    return Gl.GL_SHORT;
-                case VertexElementType.Color:
-                case VertexElementType.Color_ABGR:
-                case VertexElementType.Color_ARGB:
-                case VertexElementType.UByte4:
-                    return Gl.GL_UNSIGNED_BYTE;
-                default:
-                    return 0;
-            };
-	    }
 	}
 
 	public class GLSoftwareBufferManager : DefaultHardwareBufferManager

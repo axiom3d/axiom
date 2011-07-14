@@ -164,7 +164,11 @@ namespace Axiom.Framework.Graphics
                 VertexElementType.Float2,
                 VertexElementSemantic.TexCoords );
 
-            hardwareBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( vd.Clone( 0 ), size, BufferUsage.DynamicWriteOnlyDiscardable, true );
+            hardwareBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
+                vd.GetVertexSize( 0 ),
+                size,
+                BufferUsage.DynamicWriteOnlyDiscardable,
+                true );
 
             renderOp.vertexData.vertexBufferBinding.SetBinding( 0, hardwareBuffer );
 
@@ -330,7 +334,7 @@ namespace Axiom.Framework.Graphics
             rs.CullingMode = CullingMode.None;
             rs.SetDepthBufferParams( false, false );
             rs.SetColorBufferWriteEnabled( true, true, true, false );
-            rs.ShadingType = ShadeOptions.Gouraud;
+            rs.ShadingMode = Shading.Gouraud;
             rs.PolygonMode = PolygonMode.Solid;
             rs.UnbindGpuProgram( GpuProgramType.Fragment );
             rs.UnbindGpuProgram( GpuProgramType.Vertex );

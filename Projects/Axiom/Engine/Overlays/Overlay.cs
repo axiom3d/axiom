@@ -45,10 +45,10 @@ using Axiom.Utilities;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-//     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Overlays
@@ -205,6 +205,7 @@ namespace Axiom.Overlays
 		/// <remarks>
 		/// Consider using <see>Hide</see>.
 		/// </remarks>
+		/// <param name="element"></param>
 		public void RemoveElement( string name )
 		{
 			RemoveElement( GetChild( name ) );
@@ -404,6 +405,7 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Adds the passed in angle to the rotation applied to this overlay.
 		/// </summary>
+		/// <param name="degress"></param>
 		public void Rotate( float degrees )
 		{
 			this.Rotation = ( rotate += degrees );

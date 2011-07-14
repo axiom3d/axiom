@@ -223,14 +223,14 @@ namespace Axiom.Core
 		/// <summary>
 		///    Gets a reference to the specified named resource.
 		/// </summary>
-		/// <param name="name">Name of the resource to retrieve.</param>
+		/// <param name="name">Name of the resource to retreive.</param>
 		/// <returns>A reference to a Resource with the given name or null.</returns>
 		/// <ogre name="getByName" />
 		public Resource this[ string name ]
 		{
 			get
 			{
-				Debug.Assert( _resources != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( _resources != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
 				Resource resource;
 
@@ -252,7 +252,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Debug.Assert( _resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( _resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
 				Resource resource;
 
@@ -300,43 +300,38 @@ namespace Axiom.Core
 		///		details of the returned resource and call ResourceManager.Load to load the resource. Note
 		///		that it is the CALLERS responsibility to destroy this object when it is no longer required
 		///		(after calling ResourceManager.Unload if it had been loaded).
+		/// <para/>
 		///     If you want to get at the detailed interface of this resource, you'll have to
 		///     cast the result to the subclass you know you're creating.
 		/// </remarks>
 		/// <param name="name">The unique name of the resource</param>
-        /// <param name="group"></param>
 		/// <returns></returns>
 		/// </overloads>
 		public Resource Create( string name, string group )
 		{
 			return Create( name, group, null );
 		}
-
-	    /// <param name="group"></param>
-	    /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-	    /// <param name="name"></param>
-	    public Resource Create( string name, string group, NameValuePairList createParams )
+		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
+		public Resource Create( string name, string group, NameValuePairList createParams )
 		{
 			return Create( name, group, false, null, createParams );
 		}
 
-	    /// <param name="group"></param>
-	    /// <param name="isManual">
-	    /// Is this resource manually loaded? If so, you should really
-	    /// populate the loader parameter in order that the load process
-	    /// can call the loader back when loading is required.
-	    /// </param>
-	    /// <param name="loader">
-	    /// Pointer to a ManualLoader implementation which will be called
-	    /// when the Resource wishes to load (should be supplied if you set
-	    /// isManual to true). You can in fact leave this parameter null
-	    /// if you wish, but the Resource will never be able to reload if
-	    /// anything ever causes it to unload. Therefore provision of a proper
-	    /// ManualLoader instance is strongly recommended.
-	    /// </param>
-	    /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-	    /// <param name="name"></param>
-	    public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		/// <param name="isManual">
+		/// Is this resource manually loaded? If so, you should really
+		/// populate the loader parameter in order that the load process
+		/// can call the loader back when loading is required.
+		/// </param>
+		/// <param name="loader">
+		/// Pointer to a ManualLoader implementation which will be called
+		/// when the Resource wishes to load (should be supplied if you set
+		/// isManual to true). You can in fact leave this parameter null
+		/// if you wish, but the Resource will never be able to reload if
+		/// anything ever causes it to unload. Therefore provision of a proper
+		/// ManualLoader instance is strongly recommended.
+		/// </param>
+		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
+		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
 			Resource ret = _create( name, nextHandle, group, isManual, loader, createParams );
@@ -385,6 +380,19 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name">The name of the Resource</param>
 		/// <param name="group">The resource group to which this resource will belong</param>
+		/// <param name="isManual">
+		///     Is the resource to be manually loaded? If so, you should
+		///     provide a value for the loader parameter
+		/// </param>
+		/// <param name="loader">
+		///     The manual loader which is to perform the required actions
+		///     when this resource is loaded; only applicable when you specify true
+		///     for the previous parameter
+		/// </param>
+		/// <param name="loadParams">
+		///     Optional pointer to a list of name/value pairs
+		///     containing loading parameters for this type of resource.
+		/// </param>
 		/// <returns></returns>
 		/// </overloads>
 		public virtual Resource Load( string name, string group )
@@ -392,8 +400,6 @@ namespace Axiom.Core
 			return Load( name, group, null );
 		}
 
-        /// <param name="name">The name of the Resource</param>
-        /// <param name="group">The resource group to which this resource will belong</param>
 		/// <param name="loadParams">
 		///     Optional pointer to a list of name/value pairs
 		///     containing loading parameters for this type of resource.
@@ -403,8 +409,6 @@ namespace Axiom.Core
 			return Load( name, group, false, null, null );
 		}
 
-        /// <param name="name">The name of the Resource</param>
-        /// <param name="group">The resource group to which this resource will belong</param>
 		/// <param name="isManual">
 		///     Is the resource to be manually loaded? If so, you should
 		///     provide a value for the loader parameter
@@ -800,16 +804,15 @@ namespace Axiom.Core
 
 		#region ParseScriptMethod
 
-	    /// <summary>
-	    /// Parse a script file.
-	    /// </summary>
-	    /// <param name="stream">reference to a data stream which is the source of the script</param>
-	    /// <param name="groupName">
-	    /// The name of a resource group which should be used if any resources
-	    /// are created during the parse of this script.
-	    /// </param>
-	    /// <param name="fileName"></param>
-	    public virtual void ParseScript( Stream stream, string groupName, string fileName )
+		/// <summary>
+		/// Parse a script file.
+		/// </summary>
+		/// <param name="stream">reference to a data stream which is the source of the script</param>
+		/// <param name="groupName">
+		/// The name of a resource group which should be used if any resources
+		/// are created during the parse of this script.
+		/// </param>
+		public virtual void ParseScript( Stream stream, string groupName, string fileName )
 		{
 		}
 

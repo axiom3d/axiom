@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -70,309 +69,165 @@ namespace Axiom.Graphics
 	/// 	Just incase it wasn't clear from the above, this class provides linkage to both 
 	/// 	GpuProgram and HighLevelGpuProgram, despite its name.
 	/// </remarks>
-    public class GpuProgramUsage: DisposableObject
+	public class GpuProgramUsage
 	{
-        // TODO: Resource::Listener implementation!
-
 		#region Member variables
 
-        #region type
-
-        /// <summary>
+		/// <summary>
 		///    Type of program (vertex or fragment) this usage is being specified for.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
 		protected GpuProgramType type;
-
-        #endregion
-
-        #region parent
-
-        [OgreVersion(1, 7, 2790)]
-	    protected Pass parent;
-
-        #endregion
-
-        #region recreateParams
-
-        /// Whether to recreate parameters next load
-        [OgreVersion(1, 7, 2790)]
-        bool recreateParams;
-
-        #endregion
-
-        #region program
-
-        /// <summary>
+		/// <summary>
 		///    Reference to the program whose usage is being specified within this class.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
 		protected GpuProgram program;
-
-        #endregion
-
-        #region parameters
-
-        /// <summary>
+		/// <summary>
 		///    Low level GPU program parameters.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
 		protected GpuProgramParameters parameters;
 
-        #endregion
+		#endregion
 
-        #endregion
+		#region Constructors
 
-        #region Constructors
-
-        /// <summary>
-	    ///    Default constructor.
-	    /// </summary>
-	    /// <param name="type">Type of program to link to.</param>
-	    /// <param name="parent"></param>
-        [OgreVersion(1, 7, 2790)]
-	    public GpuProgramUsage( GpuProgramType type, Pass parent )
+		/// <summary>
+		///    Default constructor.
+		/// </summary>
+		/// <param name="type">Type of program to link to.</param>
+		public GpuProgramUsage( GpuProgramType type )
 		{
 			this.type = type;
-	        this.parent = parent;
-            recreateParams = false;
-
 		}
 
-        /// <summary>
-        /// Copy constructor
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public GpuProgramUsage(GpuProgramUsage oth, Pass parent)
-        {
-            type = oth.type;
-            this.parent = parent;
-            program = oth.Program;
-            // nfz: parameters should be copied not just use a shared ptr to the original
-            parameters = new GpuProgramParameters( oth.parameters );
-            recreateParams = false;
-        }
+		#endregion
 
-	    #endregion
+		#region Methods
 
-        #region dispose
+		/// <summary>
+		///		Creates and returns a copy of this GpuProgramUsage object.
+		/// </summary>
+		/// <returns></returns>
+		public GpuProgramUsage Clone()
+		{
+			GpuProgramUsage usage = new GpuProgramUsage( type );
+			usage.program = program;
+			usage.parameters = parameters.Clone();
 
-        [OgreVersion(1, 7, 2790)]
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (disposeManagedResources)
-            {
-                // Listener not in place yet
-                //if (program != null)
-                //    program.RemoveListener( this );
-            }
-            base.dispose(disposeManagedResources);
-        }
+			return usage;
+		}
 
-        #endregion
-
-        #region Methods
-
-        #region Load
-
-        /// <summary>
+		/// <summary>
 		///    Load this usage (and ensure program is loaded).
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
-        internal void Load()
+		internal void Load()
 		{
-		    if ( !program.IsLoaded )
-		        program.Load();
-
-		    // check type
-		    if ( program.IsLoaded && program.Type != type )
-		    {
-		        var myType = type.ToString();
-		        var yourType = program.Type.ToString();
-		        throw new AxiomException(
-		            "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.",
-		            program.Name, yourType, myType );
-		    }
-
-            // hackaround as Listener::loadingComplete is not in place, yet
-            if (recreateParams)
-                RecreateParameters();
+			// only load the program if it isn't already loaded
+			if ( !program.IsLoaded )
+			{
+				program.Load();
+			}
 		}
 
-        #endregion
-
-        #region Unload
-
-        /// <summary>
+		/// <summary>
 		///    Unload this usage.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
 		internal void Unload()
 		{
-			// TODO?
-
-            // hackaround as Listener::unloadingComplete is not in place, yet
-            recreateParams = true;
+			// TODO: Anything needed here?  The program cannot be destroyed since it is shared.
+            if (program.IsLoaded)
+                program.Unload();
 		}
 
-        #endregion
+		#endregion
 
-        #region RecreateParameters
+		#region Properties
 
-        [OgreVersion(1, 7, 2790)]
-        protected void RecreateParameters()
-        {
-            // Keep a reference to old ones to copy
-            var savedParams = parameters;
-
-            // Create new params
-            parameters = program.CreateParameters();
-
-            // Copy old (matching) values across
-            // Don't use copyConstantsFrom since program may be different
-            if (savedParams != null)
-                parameters.CopyMatchingNamedConstantsFrom(savedParams);
-
-            recreateParams = false;
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Properties
-
-        #region SetProgramName
-
-        /// <summary>
-        ///    Sets the name of the program we're trying to link to.
-        /// </summary>
-        /// <remarks>
-        ///    Note that this will create a fresh set of parameters from the 
-        ///    new program being linked, so if you had previously set parameters 
-        ///    you will have to set them again. 
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        public void SetProgramName(string name, bool resetParams = true)
-        {
-
-            if ( program != null )
-            {
-                // Listener not in place, yet
-                //program.RemoveListener( this );
-                //recreateParams = true;
-            }
-
-            // get a reference to the gpu program
-            program = GpuProgramManager.Instance.GetByName(name);
-
-            if ( program == null )
-            {
-                throw new Exception(string.Format("Unable to locate gpu program named '{0}'", name));
-            }
-
-            // Reset parameters 
-            if ( resetParams || parameters == null || recreateParams )
-            {
-                RecreateParameters();
-            }
-
-            // Listener not in place, yet
-            // Listen in on reload events so we can regenerate params
-            //program.AddListener( this );
-
-        }
-
-        #endregion
-
-        #region ProgramName
-
-        /// <summary>
-		///    Gets the name of the program we're trying to link to.
+		/// <summary>
+		///    Gets/Sets the program parameters that should be used; because parameters can be
+		///    shared between multiple usages for efficiency, this method is here for you
+		///    to register externally created parameter objects.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
+		public GpuProgramParameters Params
+		{
+			get
+			{
+				if ( parameters == null )
+				{
+					throw new Exception( "A program must be loaded before its parameters can be retreived." );
+				}
+
+				return parameters;
+			}
+			set
+			{
+				parameters = value;
+			}
+		}
+
+		/// <summary>
+		///    Gets the program this usage is linked to; only available after the usage has been
+		///    validated either via enableValidation or by enabling validation on construction.
+		/// </summary>
+		/// <remarks>
+		///    Note that this will create a fresh set of parameters from the
+		///    new program being linked, so if you had previously set parameters
+		///    you will have to set them again.
+		/// </remarks>
+		public GpuProgram Program
+		{
+			get
+			{
+				return program;
+			}
+			set
+			{
+				program = value;
+
+				// create program specific parameters
+				parameters = program.CreateParameters();
+			}
+		}
+
+		/// <summary>
+		///    Gets/Sets the name of the program we're trying to link to.
+		/// </summary>
+		/// <remarks>
+		///    Note that this will create a fresh set of parameters from the 
+		///    new program being linked, so if you had previously set parameters 
+		///    you will have to set them again. 
+		/// </remarks>
 		public string ProgramName
 		{
 			get
 			{
 				return program.Name;
 			}
+			set
+			{
+				// get a reference to the gpu program
+				program = GpuProgramManager.Instance.GetByName( value );
+
+				if ( program == null )
+				{
+					throw new Exception( string.Format( "Unable to locate gpu program named '{0}'", value ) );
+				}
+
+				// create program specific parameters
+				parameters = program.CreateParameters();
+			}
 		}
 
-        #endregion
-
-        #region Program
-
-        /// <summary>
-        ///    Gets the program this usage is linked to; only available after the usage has been
-        ///    validated either via enableValidation or by enabling validation on construction.
-        /// </summary>
-        /// <remarks>
-        ///    Note that this will create a fresh set of parameters from the
-        ///    new program being linked, so if you had previously set parameters
-        ///    you will have to set them again.
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        public GpuProgram Program
-        {
-            get
-            {
-                return program;
-            }
-            set
-            {
-                program = value;
-
-                // create program specific parameters
-                parameters = program.CreateParameters();
-            }
-        }
-
-        #endregion
-
-        #region Parameters
-
-        /// <summary>
-        ///    Gets/Sets the program parameters that should be used; because parameters can be
-        ///    shared between multiple usages for efficiency, this method is here for you
-        ///    to register externally created parameter objects.
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public GpuProgramParameters Parameters
-        {
-            get
-            {
-                if (parameters == null)
-                {
-                    throw new Exception("A program must be loaded before its parameters can be retreived.");
-                }
-
-                return parameters;
-            }
-            set
-            {
-                parameters = value;
-            }
-        }
-
-        #endregion
-
-        #region Type
-
-        /// <summary>
+		/// <summary>
 		///    Gets the type of program we're trying to link to.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
 		public GpuProgramType Type
 		{
 			get
 			{
 				return type;
 			}
-        }
+		}
 
-        #endregion
-
-        #endregion
-    }
+		#endregion
+	}
 }

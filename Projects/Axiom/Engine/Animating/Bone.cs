@@ -41,10 +41,10 @@ using Axiom.Core;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="Bone.h"   revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-//     <file name="Bone.cpp" revision="1.22" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="Bone.h"   revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Bone.cpp" revision="1.22" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Animating
@@ -277,8 +277,8 @@ namespace Axiom.Animating
 	{
 		/// <summary>Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.</summary>
 		/// <returns>Value Condition Less than zero x is less than y. Zero x equals y. Greater than zero x is greater than y. </returns>
-        /// <param name="yVba">Second object to compare. </param>
-        /// <param name="xVba">First object to compare. </param>
+		/// <param name="y">Second object to compare. </param>
+		/// <param name="x">First object to compare. </param>
 		/// <filterpriority>2</filterpriority>
 		public int Compare( VertexBoneAssignment xVba, VertexBoneAssignment yVba )
 		{

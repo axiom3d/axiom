@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-            throw new AxiomException("This needs upgrading");
+
 			programType = Gl.GL_FRAGMENT_SHADER_ATI;
 			programId = Gl.glGenFragmentShadersATI( 1 );
 		}
@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			//bool testError = assembler.RunTests();
 
-			bool error = !assembler.Compile( Source );
+			bool error = !assembler.Compile( source );
 
 			if ( !error )
 			{
@@ -104,19 +104,20 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			Gl.glBindFragmentShaderATI( programId );
 		}
 
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		public override void BindParameters( GpuProgramParameters parms )
 		{
 			// program constants done internally by compiler for local
 			if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
-                    using (var entry = parms.GetFloatPointer(index))
-                    {
-                        // send the params 4 at a time
-                        throw new AxiomException( "Update this!" );
-                        Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.Pointer );
-                    }
+					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
+
+					if ( entry.isSet )
+					{
+						// send the params 4 at a time
+						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.val );
+					}
 				}
 			}
 		}

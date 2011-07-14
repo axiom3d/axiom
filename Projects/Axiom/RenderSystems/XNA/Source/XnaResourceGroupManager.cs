@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.Xna
 
         public XnaImageCodecStream( XFG.Texture2D texture )
         {
-            //texture = texture;
+            texture = texture;
             byte[] buffer = new byte[ texture.Width * texture.Height * PixelUtil.GetNumElemBytes( XnaHelper.Convert( texture.Format ) ) ];
             texture.GetData( buffer );
             this._stream = new MemoryStream( buffer );

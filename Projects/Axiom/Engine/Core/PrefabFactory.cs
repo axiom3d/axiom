@@ -109,7 +109,7 @@ namespace Axiom.Core
 			decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, 4, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( offset, 4, BufferUsage.StaticWriteOnly );
 			binding.SetBinding( 0, vbuf );
 
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
@@ -244,7 +244,7 @@ namespace Axiom.Core
 			decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( decl, NUM_VERTICES, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( offset, NUM_VERTICES, BufferUsage.StaticWriteOnly );
 			bind.SetBinding( 0, vbuf );
 
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
@@ -321,7 +321,7 @@ namespace Axiom.Core
 			// allocate the vertex buffer
 			vertexData.vertexCount = ( NUM_RINGS + 1 ) * ( NUM_SEGMENTS + 1 );
 
-			HardwareVertexBuffer vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.Clone( 0 ), vertexData.vertexCount, BufferUsage.StaticWriteOnly, false );
+			HardwareVertexBuffer vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.GetVertexSize( 0 ), vertexData.vertexCount, BufferUsage.StaticWriteOnly, false );
 
 			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 			binding.SetBinding( 0, vBuf );

@@ -81,25 +81,25 @@ namespace Axiom.Core
 	/// </note>
 	public interface IPlugin
 	{
-		// <summary>
-		// Unique name for the plugin
-		// </summary>
+		/// <summary>
+		/// Unique name for the plugin
+		/// </summary>
 		//string Name
 		//{
 		//    get;
 		//}
 
-		// <summary>
-		// Perform the plugin initial installation sequence.
-		// </summary>
-		// <remarks>
-		// An implementation must be supplied for this method. It must perform
-		// the startup tasks necessary to install any rendersystem customizations
-		// or anything else that is not dependent on system initialization, ie
-		// only dependent on the core of Axiom. It must not perform any
-		// operations that would create rendersystem-specific objects at this stage,
-		// that should be done in Initialize().
-		// </remarks>
+		/// <summary>
+		/// Perform the plugin initial installation sequence.
+		/// </summary>
+		/// <remarks>
+		/// An implementation must be supplied for this method. It must perform
+		/// the startup tasks necessary to install any rendersystem customizations
+		/// or anything else that is not dependent on system initialization, ie
+		/// only dependent on the core of Axiom. It must not perform any
+		/// operations that would create rendersystem-specific objects at this stage,
+		/// that should be done in Initialize().
+		/// </remarks>
 		//void Install();
 
 		/// <summary>
@@ -127,18 +127,18 @@ namespace Axiom.Core
 		/// </remarks>
 		void Shutdown();
 
-		// <summary>
-		// Perform the final plugin uninstallation sequence.
-		// </summary>
-		// <remarks>
-		// An implementation must be supplied for this method. It must perform
-		// the cleanup tasks which haven't already been performed in Shutdown()
-		// (e.g. final deletion of custom instances, if you kept them around incase
-		// the system was reinitialized). At this stage you cannot be sure what other
-		// plugins are still loaded or active. It must therefore not perform any
-		// operations that would reference any rendersystem-specific objects - those
-		// should have been sorted out in the Shutdown method.
-		// </remarks>
+		/// <summary>
+		/// Perform the final plugin uninstallation sequence.
+		/// </summary>
+		/// <remarks>
+		/// An implementation must be supplied for this method. It must perform
+		/// the cleanup tasks which haven't already been performed in Shutdown()
+		/// (e.g. final deletion of custom instances, if you kept them around incase
+		/// the system was reinitialized). At this stage you cannot be sure what other
+		/// plugins are still loaded or active. It must therefore not perform any
+		/// operations that would reference any rendersystem-specific objects - those
+		/// should have been sorted out in the Shutdown method.
+		/// </remarks>
 		//void Uninstall();
 	}
 }

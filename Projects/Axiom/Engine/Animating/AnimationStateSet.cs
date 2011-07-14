@@ -54,7 +54,7 @@ namespace Axiom.Animating
 	///		This class implements the IControllerValue interface to enable automatic update of
 	///		animation state through controllers.
 	/// </remarks>
-	public class AnimationStateSet : IEnumerable<KeyValuePair<string, AnimationState>>
+	public class AnimationStateSet
 	{
 
 		#region Protected Fields
@@ -114,6 +114,10 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Get the list of enabled animation states
 		/// </summary>
+
+		/// <summary>
+		///     Get the list of all animation states
+		/// </summary>
 		public List<AnimationState> EnabledAnimationStates
 		{
 			get
@@ -153,9 +157,9 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Create a new AnimationState instance. 
 		/// </summary>
-        /// <param name="name"> The name of the animation</param>
-		/// <param name="time"> Starting time position</param>
-		/// <param name="length"> Length of the animation to play</param>
+		/// <param name="animName" The name of the animation</param>
+		/// <param name="timePos Starting time position</param>
+		/// <param name="length Length of the animation to play</param>
 		public AnimationState CreateAnimationState( string name, float time, float length )
 		{
 			return CreateAnimationState( name, time, length, 1.0f, false );
@@ -164,11 +168,11 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Create a new AnimationState instance. 
 		/// </summary>
-		/// <param name="name"> The name of the animation</param>
-        /// <param name="time"> Starting time position</param>
-		/// <param name="length"> Length of the animation to play</param>
-		/// <param name="weight"> Weight to apply the animation with</param>
-		/// <param name="enabled"> Whether the animation is enabled</param>
+		/// <param name="animName" The name of the animation</param>
+		/// <param name="timePos Starting time position</param>
+		/// <param name="length Length of the animation to play</param>
+		/// <param name="weight Weight to apply the animation with</param>
+		/// <param name="enabled Whether the animation is enabled</param>
 		public AnimationState CreateAnimationState( string name, float time, float length,
 												   float weight, bool enabled )
 		{
@@ -269,15 +273,5 @@ namespace Axiom.Animating
 		}
 
 		#endregion Methods
-
-		public IEnumerator<KeyValuePair<string, AnimationState>> GetEnumerator()
-		{
-			return stateSet.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return stateSet.GetEnumerator();
-		}
 	}
 }

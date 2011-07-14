@@ -202,9 +202,9 @@ namespace Axiom.Demos
 						{
 							// horizontal bloom
 							e.Material.Load();
-							var fparams = e.Material.GetBestTechnique().GetPass( 0 ).FragmentProgramParameters;
-							fparams.SetNamedConstant( "sampleOffsets", bloomTexOffsetsHorz, 15 );
-							fparams.SetNamedConstant( "sampleWeights", bloomTexWeights, 15 );
+							GpuProgramParameters fparams = e.Material.GetBestTechnique().GetPass( 0 ).FragmentProgramParameters;
+							fparams.SetNamedConstant( "sampleOffsets", bloomTexOffsetsHorz );
+							fparams.SetNamedConstant( "sampleWeights", bloomTexWeights );
 
 							break;
 						}
@@ -212,9 +212,9 @@ namespace Axiom.Demos
 						{
 							// vertical bloom
 							e.Material.Load();
-							var fparams = e.Material.GetTechnique( 0 ).GetPass( 0 ).FragmentProgramParameters;
-							fparams.SetNamedConstant( "sampleOffsets", bloomTexOffsetsVert, 15 );
-							fparams.SetNamedConstant( "sampleWeights", bloomTexWeights, 15 );
+							GpuProgramParameters fparams = e.Material.GetTechnique( 0 ).GetPass( 0 ).FragmentProgramParameters;
+							fparams.SetNamedConstant( "sampleOffsets", bloomTexOffsetsHorz );
+							fparams.SetNamedConstant( "sampleWeights", bloomTexWeights );
 
 							break;
 						}

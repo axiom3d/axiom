@@ -35,7 +35,7 @@
     </XnaUpgrade>
     <XnaOutputType>Library</XnaOutputType>
     <XnaProfile>HiDef</XnaProfile>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -69,7 +69,6 @@
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCompressContent>True</XnaCompressContent>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>

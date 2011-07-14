@@ -357,7 +357,7 @@ namespace OctreeZone
 				Options.terrainMaterial.Lighting = Options.lit;
 
 				if ( Options.lodMorph &&
-					mPCZSM.TargetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) &&
+					mPCZSM.TargetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) &&
 					GpuProgramManager.Instance.GetByName( "Terrain/VertexMorph" ) == null )
 				{
 					// Create & assign LOD morphing vertex program
@@ -682,7 +682,7 @@ namespace OctreeZone
 		void SetUseLODMorph( bool morph )
 		{
 			// Set true only if vertex programs are supported
-			Options.lodMorph = morph && mPCZSM.TargetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms );
+			Options.lodMorph = morph && mPCZSM.TargetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms );
 		}
 		//-------------------------------------------------------------------------
 		void SetUseVertexNormals( bool useNormals )

@@ -94,10 +94,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected Matrix4 projectionMatrix;
 		protected bool projMatrixDirty;
-
-        protected Matrix4 inverseTransposeWorldMatrix;
-        protected bool inverseTransposeWorldMatrixDirty;
-
 		/// <summary>
 		///    Current view and projection matrices concatenated.
 		/// </summary>
@@ -218,7 +214,7 @@ namespace Axiom.Graphics
 			inverseWorldMatrixDirty = true;
 			inverseWorldViewMatrixDirty = true;
 			inverseViewMatrixDirty = true;
-			inverseTransposeWorldMatrixDirty = true;
+			// inverseTransposeWorldMatrixDirty = true;
 			inverseTransposeWorldViewMatrixDirty = true;
 			cameraPositionObjectSpaceDirty = true;
 			// cameraPositionDirty = true;
@@ -335,7 +331,7 @@ namespace Axiom.Graphics
 				inverseViewMatrixDirty = true;
 				inverseWorldViewMatrixDirty = true;
 				// inverseTransposeWorldMatrixDirty = true;
-				inverseTransposeWorldViewMatrixDirty = true;
+				// inverseTransposeWorldViewMatrixDirty = true;
 				cameraPositionObjectSpaceDirty = true;
 				viewMatrixDirty = true;
 				projMatrixDirty = true;
@@ -621,29 +617,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the position of the current camera in world space.
 		/// </summary>
-		public Vector4 CameraPosition
+		public Vector3 CameraPosition
 		{
 			get
 			{
-                /*
-                if (mCameraPositionDirty)
-                {
-                    var vec3 = camera.DerivedPosition;
-                    if (mCameraRelativeRendering)
-                    {
-                        vec3 -= mCameraRelativePosition;
-                    }
-                    mCameraPosition[0] = vec3[0];
-                    mCameraPosition[1] = vec3[1];
-                    mCameraPosition[2] = vec3[2];
-                    mCameraPosition[3] = 1.0;
-                    mCameraPositionDirty = false;
-                }
-                return mCameraPosition;
-                 */
-
-			    var v = camera.DerivedDirection;
-                return new Vector4(v.x, v.y, v.z, 1.0f);
+				return camera.DerivedPosition;
 			}
 		}
 
@@ -661,7 +639,8 @@ namespace Axiom.Graphics
 					if ( renderable != null && renderable.UseIdentityProjection )
 					{
 						// Use identity projection matrix, still need to take RS depth into account
-                        Root.Instance.RenderSystem.ConvertProjectionMatrix(Matrix4.Identity, out projectionMatrix, true);
+						projectionMatrix =
+							Root.Instance.RenderSystem.ConvertProjectionMatrix( Matrix4.Identity, true );
 					}
 					else
 					{
@@ -756,7 +735,7 @@ namespace Axiom.Graphics
 				{
 					// Calculate based on object space light distance
 					// compared to light attenuation range
-					var objPos = this.InverseWorldMatrix.TransformAffine( light.GetDerivedPosition(true) );
+					Vector3 objPos = this.InverseWorldMatrix * light.DerivedPosition;
 					return light.AttenuationRange - objPos.Length;
 				}
 			}
@@ -846,57 +825,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-	    public virtual Matrix4 InverseTransposeWorldMatrix
-	    {
-	        get
-	        {
-                if (inverseTransposeWorldMatrixDirty)
-                {
-                    inverseTransposeWorldMatrix = InverseWorldMatrix.Transpose();
-                    inverseTransposeWorldMatrixDirty = false;
-                }
-                return inverseTransposeWorldMatrix;
-	        }
-	    }
-
-	    public IRenderable CurrentRenderable
-	    {
-	        get
-	        {
-                return renderable;
-	        }
-	    }
-
-	    #endregion
-
-        #region GetLightAs4DVector
-
-        [OgreVersion(1, 7, 2790)]
-	    public virtual Vector4 GetLightAs4DVector( int index )
-	    {
-            return GetLight(index).GetAs4DVector(true);
-	    }
-
-        #endregion
-
-        #region GetLightDiffuseColor
-
-        [OgreVersion(1, 7, 2790)]
-	    public virtual ColorEx GetLightDiffuseColor( int index )
-	    {
-            return GetLight(index).Diffuse;
-        }
-
-        #endregion
-
-        #region GetLightSpecularColor
-
-        [OgreVersion(1, 7, 2790)]
-	    public ColorEx GetLightSpecularColor( int index )
-	    {
-            return GetLight(index).Specular;
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -284,6 +284,7 @@ namespace Axiom.Scripting.Compiler
 			return _errors.Count == 0;
 		}
 
+		/// <see cref="ScriptCompiler.AddError(CompilerErrorCode, string, uint, string)"/>
 		internal void AddError( CompileErrorCode code, string file, uint line )
 		{
 			this.AddError( code, file, line, string.Empty );
@@ -452,7 +453,7 @@ namespace Axiom.Scripting.Compiler
 						//_importRequests.Remove(
 						//        mImportRequests.erase(mImportRequests.lower_bound(import->source),
 						//            mImportRequests.upper_bound(import->source));
-						//_importRequests.Add( import.Source, "*" );
+						_importRequests.Add( import.Source, "*" );
 					}
 					else
 					{
@@ -460,14 +461,13 @@ namespace Axiom.Scripting.Compiler
 						//        ImportRequestMap::iterator iter = mImportRequests.lower_bound(import->source),
 						//            end = mImportRequests.upper_bound(import->source);
 						//        if(iter == end || iter->second != "*")
-						//{
-						//	_importRequests.Add( import.Source, import.Target );
-						//}
+						{
+							_importRequests.Add( import.Source, import.Target );
+						}
 					}
-#if UNREACHABLE_CODE
+
 					nodes.RemoveAt( i );
 					i--;
-#endif
 				}
 			}
 
@@ -1021,14 +1021,12 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "anisotropic" ] = (uint)Keywords.ID_ANISOTROPIC;
 			_keywordMap[ "max_anisotropy" ] = (uint)Keywords.ID_MAX_ANISOTROPY;
 			_keywordMap[ "mipmap_bias" ] = (uint)Keywords.ID_MIPMAP_BIAS;
-			_keywordMap[ "color_op" ] = (uint)Keywords.ID_COLOR_OP;
-		    _keywordMap[ "colour_op" ] = (uint)Keywords.ID_COLOR_OP;
+			_keywordMap[ "colour_op" ] = (uint)Keywords.ID_COLOUR_OP;
 			_keywordMap[ "replace" ] = (uint)Keywords.ID_REPLACE;
 			_keywordMap[ "add" ] = (uint)Keywords.ID_ADD;
 			_keywordMap[ "modulate" ] = (uint)Keywords.ID_MODULATE;
 			_keywordMap[ "alpha_blend" ] = (uint)Keywords.ID_ALPHA_BLEND;
-			_keywordMap[ "color_op_ex" ] = (uint)Keywords.ID_COLOR_OP_EX;
-		    _keywordMap[ "colour_op_ex" ] = (uint)Keywords.ID_COLOR_OP_EX;
+			_keywordMap[ "colour_op_ex" ] = (uint)Keywords.ID_COLOUR_OP_EX;
 			_keywordMap[ "source1" ] = (uint)Keywords.ID_SOURCE1;
 			_keywordMap[ "source2" ] = (uint)Keywords.ID_SOURCE2;
 			_keywordMap[ "modulate" ] = (uint)Keywords.ID_MODULATE;
@@ -1049,8 +1047,7 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "src_diffuse" ] = (uint)Keywords.ID_SRC_DIFFUSE;
 			_keywordMap[ "src_specular" ] = (uint)Keywords.ID_SRC_SPECULAR;
 			_keywordMap[ "src_manual" ] = (uint)Keywords.ID_SRC_MANUAL;
-			_keywordMap[ "color_op_multipass_fallback" ] = (uint)Keywords.ID_COLOR_OP_MULTIPASS_FALLBACK;
-		    _keywordMap[ "colour_op_multipass_fallback" ] = (uint)Keywords.ID_COLOR_OP_MULTIPASS_FALLBACK;
+			_keywordMap[ "colour_op_multipass_fallback" ] = (uint)Keywords.ID_COLOUR_OP_MULTIPASS_FALLBACK;
 			_keywordMap[ "alpha_op_ex" ] = (uint)Keywords.ID_ALPHA_OP_EX;
 			_keywordMap[ "env_map" ] = (uint)Keywords.ID_ENV_MAP;
 			_keywordMap[ "spherical" ] = (uint)Keywords.ID_SPHERICAL;

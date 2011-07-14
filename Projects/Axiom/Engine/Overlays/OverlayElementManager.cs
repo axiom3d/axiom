@@ -42,10 +42,10 @@ using Axiom.Utilities;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-//     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Overlays
@@ -212,14 +212,26 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="templateName"></param>
+		/// <param name="typeName"></param>
+		/// <param name="instanceName"></param>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
 		public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName )
 		{
 			return CreateElementFromTemplate( templateName, typeName, instanceName, false );
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="templateName"></param>
+		/// <param name="typeName"></param>
+		/// <param name="instanceName"></param>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
 		public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName, bool isTemplate )
 		{
 			OverlayElement element = null;
@@ -269,6 +281,7 @@ namespace Axiom.Overlays
 		///    Gets a reference to an existing element.
 		/// </summary>
 		/// <param name="name">Name of the element to retrieve.</param>
+		/// <param name="isTemplate"></param>
 		/// <returns></returns>
 		public OverlayElement GetElement( string name )
 		{

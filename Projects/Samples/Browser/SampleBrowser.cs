@@ -331,7 +331,8 @@ namespace Axiom.Samples
 				}
 				if ( selectedRenderSystem != string.Empty )
 				{
-					var options = Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
+					Graphics.Collections.ConfigOptionCollection options =
+					Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
 
 					Axiom.Collections.NameValuePairList newOptions = new Collections.NameValuePairList();
 					// collect new settings and decide if a reset is needed
@@ -447,7 +448,7 @@ namespace Axiom.Samples
 					TrayManager.DestroyWidget( RendererMenu.TrayLocation, 3 );
 				}
 
-				var options = Root.RenderSystems[ menu.SelectionIndex ].ConfigOptions;
+				Graphics.Collections.ConfigOptionCollection options = Root.RenderSystems[ menu.SelectionIndex ].ConfigOptions;
 
 				int i = 0;
 

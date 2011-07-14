@@ -352,7 +352,11 @@ namespace Axiom.Demos
 				if ( dynamic )
 				{
 					HardwareVertexBuffer newBuffer =
-						HardwareBufferManager.Instance.CreateVertexBuffer( orgBuffer.VertexDeclaration, orgBuffer.VertexCount, BufferUsage.DynamicWriteOnly, true );
+						HardwareBufferManager.Instance.CreateVertexBuffer(
+						orgBuffer.VertexSize,
+						orgBuffer.VertexCount,
+						BufferUsage.DynamicWriteOnly,
+						true );
 
 					// copy and bind the new dynamic buffer
 					newBuffer.CopyData( orgBuffer, 0, 0, orgBuffer.Size, true );

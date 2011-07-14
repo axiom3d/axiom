@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// MONO: Cannot compile programs when passing in the string as is for whatever reason.
 			// would get "Invalid vertex program header", which I assume means the source got mangled along the way
-			byte[] bytes = Encoding.ASCII.GetBytes( Source );
+			byte[] bytes = Encoding.ASCII.GetBytes( source );
 			// TODO: We pin the managed 'bytes' to get a pointer to data and get sure they won't move around in memory.
 			//       In case glProgramStringARB() doesn't store the pointer internally, we better free the handle yet in this method,
 			//       or rather utilize a fixed (byte* sourcePtr = bytes) statement, which cares for unpinning the data even in case
@@ -115,7 +115,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
 			IntPtr sourcePtr = _handle.AddrOfPinnedObject();
 
-			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, Source.Length, sourcePtr );
+			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr );
 
 			// check for any errors
 			if ( Gl.glGetError() == Gl.GL_INVALID_OPERATION )
@@ -183,35 +183,24 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisable( programType );
 		}
 
-
-        [OgreVersion(1, 7, 2790, "using 4f rather than 4fv for uniform upload")]
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		public override void BindParameters( GpuProgramParameters parms )
 		{
-            var type = programType;
-    
-	        // only supports float constants
-	        var floatStruct = parms.FloatLogicalBufferStruct;
+			if ( !IsSupported )
+				return;
+			if ( parms.HasFloatConstants )
+			{
+				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				{
+					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
-	        foreach (var i in floatStruct.Map)
-	        {
-		        if ((i.Value.Variability & mask) != 0)
-		        {
-			        var logicalIndex = i.Key;
-		            var pFloat = parms.GetFloatPointer();
-		            var ptr = i.Value.PhysicalIndex;
-			        {
-                        for (var j = 0; j < i.Value.CurrentSize; j += 4)
-                        {
-                            var x = pFloat[ ptr + j ];
-                            var y = pFloat[ ptr + j + 1 ];
-                            var z = pFloat[ ptr + j + 2 ];
-                            var w = pFloat[ ptr + j + 3 ];
-                            Gl.glProgramLocalParameter4fARB( type, logicalIndex, x, y, z, w );
-                            ++logicalIndex;
-                        }
-                    }
-		        }
-	        }
+					if ( entry.isSet )
+					{
+						// MONO: the 4fv version does not work
+						float[] vals = entry.val;
+						Gl.glProgramLocalParameter4fARB( programType, index, vals[ 0 ], vals[ 1 ], vals[ 2 ], vals[ 3 ] );
+					}
+				}
+			}
 		}
 
 		#endregion Implementation of GLGpuProgram

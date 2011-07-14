@@ -145,7 +145,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// the light then add the target zone of the portal to the list of
 			// affected zones and recurse into the target zone
 			PCZFrustum portalFrustum = new PCZFrustum();
-			Vector3 v = GetDerivedPosition();
+			Vector3 v = DerivedPosition;
 			portalFrustum.SetOrigin( v );
 			homeZone.CheckLightAgainstPortals( this, frameCount, portalFrustum, null );
 		}

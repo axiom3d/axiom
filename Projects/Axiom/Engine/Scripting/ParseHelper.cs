@@ -75,6 +75,9 @@ namespace Axiom.Scripting
 		///		Helper method to log a formatted error when encountering problems with parsing
 		///		an attribute.
 		/// </summary>
+		/// <param name="attribute"></param>
+		/// <param name="context"></param>
+		/// <param name="expectedParams"></param>
 		public static void LogParserError( string attribute, string context, string reason )
 		{
 			string error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
@@ -130,6 +133,7 @@ namespace Axiom.Scripting
 		///		starting at the second element of the original array.  This helpe to seperate the params from the command
 		///		in the various script files.
 		/// </summary>
+		/// <param name="splitLine"></param>
 		/// <returns></returns>
 		public static string[] GetParams( string[] all )
 		{

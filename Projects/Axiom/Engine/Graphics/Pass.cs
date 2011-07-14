@@ -119,10 +119,10 @@ namespace Axiom.Graphics
 
 		public int passId;
 
-		// <summary>
-		//    Texture anisotropy level.
-		// </summary>
-		//private int _maxAnisotropy;
+		/// <summary>
+		///    Texture anisotropy level.
+		/// </summary>
+		private int _maxAnisotropy;
 
 		#region Parent Property
 
@@ -568,7 +568,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the current DepthBiasConstant value for this pass.
 		/// </summary>
-		/// <remarks>Use <see cref="SetDepthBias(float, float)"/> to set this property</remarks>
+		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
 		public float DepthBiasConstant
 		{
 			get
@@ -580,7 +580,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the current DepthBiasSlopeScale value for this pass.
 		/// </summary>
-		/// <remarks>Use <see cref="SetDepthBias(float, float)"/> to set this property</remarks>
+		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
 		public float DepthBiasSlopeScale
 		{
 			get
@@ -1303,12 +1303,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				return _vertexProgramUsage.Parameters;
+				return _vertexProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				_vertexProgramUsage.Parameters = value;
+				_vertexProgramUsage.Params = value;
 			}
 		}
 
@@ -1391,12 +1391,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				return _fragmentProgramUsage.Parameters;
+				return _fragmentProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				_fragmentProgramUsage.Parameters = value;
+				_fragmentProgramUsage.Params = value;
 			}
 		}
 
@@ -1479,12 +1479,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
-				return _geometryProgramUsage.Parameters;
+				return _geometryProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
-				_geometryProgramUsage.Parameters = value;
+				_geometryProgramUsage.Params = value;
 			}
 		}
 
@@ -1526,12 +1526,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				return shadowCasterVertexProgramUsage.Parameters;
+				return shadowCasterVertexProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				shadowCasterVertexProgramUsage.Parameters = value;
+				shadowCasterVertexProgramUsage.Params = value;
 			}
 		}
 
@@ -1573,12 +1573,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				return _shadowCasterFragmentProgramUsage.Parameters;
+				return _shadowCasterFragmentProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				_shadowCasterFragmentProgramUsage.Parameters = value;
+				_shadowCasterFragmentProgramUsage.Params = value;
 			}
 		}
 
@@ -1619,12 +1619,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				return _shadowReceiverVertexProgramUsage.Parameters;
+				return _shadowReceiverVertexProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				_shadowReceiverVertexProgramUsage.Parameters = value;
+				_shadowReceiverVertexProgramUsage.Params = value;
 			}
 		}
 
@@ -1665,12 +1665,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				return _shadowReceiverFragmentProgramUsage.Parameters;
+				return _shadowReceiverFragmentProgramUsage.Params;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				_shadowReceiverFragmentProgramUsage.Parameters = value;
+				_shadowReceiverFragmentProgramUsage.Params = value;
 			}
 		}
 
@@ -1752,23 +1752,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected bool queuedForDeletion;
 
-		#region IterationCount Property
-        /// <summary>
-        /// the number of iterations that this pass should perform when doing fast multi pass operation.
-        /// </summary>
-        /// <remarks>
-        /// Only applicable for programmable passes.
-        /// A value greater than 1 will cause the pass to be executed count number of
-        /// times without changing the render state.  This is very usefull for passes
-        /// that use programmable shaders that have to iterate more than once but don't
-        /// need a render state change.  Using multi pass can dramatically speed up rendering
-        /// for materials that do things like fur, blur.
-        /// A value of 1 turns off multi pass operation and the pass does
-        /// the normal pass operation.
-        /// </remarks>
-        public int IterationCount { get; set; }
+		#region PassIterationCount Property
 
-        #endregion IterationCount Property
+
+		#endregion PassIterationCount Property
 
 		/// <summary>
 		///		Gets a flag indicating whether this pass is ambient only.
@@ -1873,8 +1860,6 @@ namespace Axiom.Graphics
 
 			_name = index.ToString();
 
-            IterationCount = 1;
-
 			DirtyHash();
 		}
 
@@ -1903,13 +1888,12 @@ namespace Axiom.Graphics
 			DirtyHash();
 		}
 
-	    /// <summary>
-	    ///    Method for cloning a Pass object.
-	    /// </summary>
-	    /// <param name="parent">Parent technique that will own this cloned Pass.</param>
-	    /// <param name="index"></param>
-	    /// <returns></returns>
-	    public Pass Clone( Technique parent, int index )
+		/// <summary>
+		///    Method for cloning a Pass object.
+		/// </summary>
+		/// <param name="parent">Parent technique that will own this cloned Pass.</param>
+		/// <returns></returns>
+		public Pass Clone( Technique parent, int index )
 		{
 			Pass newPass = new Pass( parent, index );
 
@@ -1967,12 +1951,12 @@ namespace Axiom.Graphics
 			target._onlyLightType = _onlyLightType;
 			target._shadingMode = _shadingMode;
 			target._polygonMode = _polygonMode;
-			target.IterationCount = IterationCount;
+			//target._passIterationCount = _passIterationCount;
 
 			// vertex program
 			if ( _vertexProgramUsage != null )
 			{
-			    target._vertexProgramUsage = new GpuProgramUsage( _vertexProgramUsage, this );
+				target._vertexProgramUsage = _vertexProgramUsage.Clone();
 			}
 			else
 			{
@@ -1982,7 +1966,7 @@ namespace Axiom.Graphics
 			// shadow caster vertex program
 			if ( shadowCasterVertexProgramUsage != null )
 			{
-				target.shadowCasterVertexProgramUsage = new GpuProgramUsage(shadowCasterVertexProgramUsage, this);
+				target.shadowCasterVertexProgramUsage = shadowCasterVertexProgramUsage.Clone();
 			}
 			else
 			{
@@ -1992,7 +1976,7 @@ namespace Axiom.Graphics
 			// shadow receiver vertex program
 			if ( _shadowReceiverVertexProgramUsage != null )
 			{
-				target._shadowReceiverVertexProgramUsage = new GpuProgramUsage(_shadowReceiverVertexProgramUsage, this);
+				target._shadowReceiverVertexProgramUsage = _shadowReceiverVertexProgramUsage.Clone();
 			}
 			else
 			{
@@ -2002,7 +1986,7 @@ namespace Axiom.Graphics
 			// fragment program
 			if ( _fragmentProgramUsage != null )
 			{
-				target._fragmentProgramUsage = new GpuProgramUsage(_fragmentProgramUsage, this);
+				target._fragmentProgramUsage = _fragmentProgramUsage.Clone();
 			}
 			else
 			{
@@ -2012,7 +1996,7 @@ namespace Axiom.Graphics
 			// shadow caster fragment program
 			if ( _shadowCasterFragmentProgramUsage != null )
 			{
-				target._shadowCasterFragmentProgramUsage = new GpuProgramUsage(_shadowCasterFragmentProgramUsage, this);
+				target._shadowCasterFragmentProgramUsage = _shadowCasterFragmentProgramUsage.Clone();
 			}
 			else
 			{
@@ -2022,7 +2006,7 @@ namespace Axiom.Graphics
 			// shadow receiver fragment program
 			if ( _shadowReceiverFragmentProgramUsage != null )
 			{
-				target._shadowReceiverFragmentProgramUsage = new GpuProgramUsage(_shadowReceiverFragmentProgramUsage, this);
+				target._shadowReceiverFragmentProgramUsage = _shadowReceiverFragmentProgramUsage.Clone();
 			}
 			else
 			{
@@ -2051,6 +2035,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Overloaded method.
 		/// </summary>
+		/// <param name="textureName">The basic name of the texture (i.e. brickwall.jpg)</param>
 		/// <returns></returns>
 		public TextureUnitState CreateTextureUnitState()
 		{
@@ -2235,7 +2220,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Removes the specified TextureUnitState from this pass.
 		/// </summary>
-        /// <param name="index">Index of the TextureUnitState to remove from this pass.</param>
+		/// <param name="state">Index of the TextureUnitState to remove from this pass.</param>
 		public void RemoveTextureUnitState( int index )
 		{
 			TextureUnitState state = (TextureUnitState)textureUnitStates[ index ];
@@ -2261,7 +2246,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2316,7 +2301,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2333,7 +2318,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2354,7 +2339,7 @@ namespace Axiom.Graphics
 		///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
 		/// </param>
 		/// <param name="mode">
-		///    Only applicable if <paramref name="overrideScene"/> is true. You can disable fog which is turned on for the
+		///    Only applicable if <paramref cref="overrideScene"/> is true. You can disable fog which is turned on for the
 		///    rest of the scene by specifying FogMode.None. Otherwise, set a pass-specific fog mode as
 		///    defined in the enum FogMode.
 		/// </param>
@@ -2518,10 +2503,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasFragmentProgram )
 				{
-					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
+					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
 
-			    _fragmentProgramUsage.SetProgramName( name, resetParams );
+				_fragmentProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2554,10 +2539,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasGeometryProgram )
 				{
-					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry, this );
+					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry );
 				}
 
-			    _geometryProgramUsage.SetProgramName( name, resetParams );
+				_geometryProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2565,7 +2550,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///		
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowCasterFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2578,10 +2566,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowCasterFragmentProgram )
 				{
-					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
+					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
 
-			    _shadowCasterFragmentProgramUsage.SetProgramName( name );
+				_shadowCasterFragmentProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2589,7 +2577,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowReceiverFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2602,10 +2593,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowReceiverFragmentProgram )
 				{
-					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
+					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
 
-			    _shadowReceiverFragmentProgramUsage.SetProgramName( name );
+				_shadowReceiverFragmentProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2638,10 +2629,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasVertexProgram )
 				{
-					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
 
-			    _vertexProgramUsage.SetProgramName( name, resetParams );
+				_vertexProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2649,7 +2640,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowCasterVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2662,10 +2656,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowCasterVertexProgram )
 				{
-					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
 
-			    shadowCasterVertexProgramUsage.SetProgramName( name );
+				shadowCasterVertexProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2673,7 +2667,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
 		public void SetShadowReceiverVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2686,10 +2683,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowReceiverVertexProgram )
 				{
-					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
 
-			    _shadowReceiverVertexProgramUsage.SetProgramName( name );
+				_shadowReceiverVertexProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
@@ -2760,6 +2757,46 @@ namespace Axiom.Graphics
 
 			if ( this.HasVertexProgram )
 				this._vertexProgramUsage.Program.Unload();
+		}
+
+		/// <summary>
+		///    Update any automatic light parameters on this pass.
+		/// </summary>
+		/// <param name="renderable">Current object being rendered.</param>
+		/// <param name="camera">Current being being used for rendering.</param>
+		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
+		{
+			// auto update vertex program parameters
+			if ( this.HasVertexProgram )
+			{
+				_vertexProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
+			}
+
+			// auto update fragment program parameters
+			if ( this.HasFragmentProgram )
+			{
+				_fragmentProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
+			}
+		}
+
+		/// <summary>
+		///    Update any automatic parameters (except lights) on this pass.
+		/// </summary>
+		/// <param name="renderable">Current object being rendered.</param>
+		/// <param name="camera">Current being being used for rendering.</param>
+		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
+		{
+			// auto update vertex program parameters
+			if ( this.HasVertexProgram )
+			{
+				_vertexProgramUsage.Params.UpdateAutoParamsNoLights( source );
+			}
+
+			// auto update fragment program parameters
+			if ( this.HasFragmentProgram )
+			{
+				_fragmentProgramUsage.Params.UpdateAutoParamsNoLights( source );
+			}
 		}
 
 		/// <summary>
@@ -2839,27 +2876,6 @@ namespace Axiom.Graphics
 
 		#endregion Object overrides
 
-        [OgreVersion(1, 7, 2790)]
-	    public void UpdateAutoParams( AutoParamDataSource source, GpuProgramParameters.GpuParamVariability mask )
-	    {
-            if (HasVertexProgram)
-            {
-                // Update vertex program auto params
-                _vertexProgramUsage.Parameters.UpdateAutoParams( source, mask );
-            }
-
-            if (HasGeometryProgram)
-            {
-                // Update geometry program auto params
-                _geometryProgramUsage.Parameters.UpdateAutoParams(source, mask);
-            }
-
-            if (HasFragmentProgram)
-            {
-                // Update fragment program auto params
-                _fragmentProgramUsage.Parameters.UpdateAutoParams(source, mask);
-            }
-	    }
 	}
 
 	/// <summary>
