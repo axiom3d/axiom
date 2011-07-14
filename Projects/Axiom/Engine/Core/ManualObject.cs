@@ -995,7 +995,7 @@ namespace Axiom.Core
 					// to allow for user-configured growth area
 					int vertexCount = (int)Utility.Max( rop.vertexData.vertexCount, this.estVertexCount );
 
-                    vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
+					vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( this.declSize, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 
 					rop.vertexData.vertexBufferBinding.SetBinding( 0, vbuf );
 				}

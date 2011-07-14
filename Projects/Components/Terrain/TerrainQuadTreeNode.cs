@@ -167,11 +167,11 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Buffer binding used for holding positions.
         /// </summary>
-        public static short POSITION_BUFFER = 0;
+        public static ushort POSITION_BUFFER = 0;
         /// <summary>
         /// Buffer binding used for holding delta values
         /// </summary>
-        public static short DELTA_BUFFER = 1;
+        public static ushort DELTA_BUFFER = 1;
         /// <summary>
         /// 
         /// </summary>
@@ -1766,10 +1766,10 @@ namespace Axiom.Components.Terrain
                 numVerts += mVertexDataRecord.Size * mVertexDataRecord.NumSkirtRowsCols;
                 numVerts += mVertexDataRecord.Size * mVertexDataRecord.NumSkirtRowsCols;
 
-                HardwareVertexBuffer def = HardwareBufferManager.Instance.CreateVertexBuffer(dcl.Clone(POSITION_BUFFER), numVerts, BufferUsage.StaticWriteOnly, false);//new DefaultHardwareVertexBuffer(dcl.GetVertexSize((short)POSITION_BUFFER), numVerts, BufferUsage.StaticWriteOnly);
+                HardwareVertexBuffer def = HardwareBufferManager.Instance.CreateVertexBuffer(dcl.GetVertexSize((short)POSITION_BUFFER), numVerts, BufferUsage.StaticWriteOnly, false);//new DefaultHardwareVertexBuffer(dcl.GetVertexSize((short)POSITION_BUFFER), numVerts, BufferUsage.StaticWriteOnly);
                 //manually create CPU-side buffer
                 HardwareVertexBuffer posBuf = def;
-                def = HardwareBufferManager.Instance.CreateVertexBuffer(dcl.Clone(DELTA_BUFFER), numVerts, BufferUsage.StaticWriteOnly, false);//new DefaultHardwareVertexBuffer(dcl.GetVertexSize((short)DELTA_BUFFER),
+                def = HardwareBufferManager.Instance.CreateVertexBuffer(dcl.GetVertexSize((short)DELTA_BUFFER), numVerts, BufferUsage.StaticWriteOnly, false);//new DefaultHardwareVertexBuffer(dcl.GetVertexSize((short)DELTA_BUFFER),
                     //numVerts, BufferUsage.StaticWriteOnly);
 
                 HardwareVertexBuffer deltabuf = def;

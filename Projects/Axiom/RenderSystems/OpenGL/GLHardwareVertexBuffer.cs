@@ -62,8 +62,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useShadowBuffer )
-			: base( manager, vertexDeclaration, numVertices, usage, false, useShadowBuffer )
+		public GLHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
+			: base( manager, vertexSize, numVertices, usage, false, useShadowBuffer )
 		{
 			bufferID = 0;
 
