@@ -63,11 +63,12 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			: base( parent, name, handle, group, isManual, loader )
 		{
 
+		    throw new AxiomException( "This needs upgrading" );
 			// generate the program and store the unique name
 			Gl.glGenProgramsNV( 1, out programId );
 
 			// find the GL enum for the type of program this is
-			programType = ( type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
+			programType = ( Type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
 		}
 
 		#endregion Constructor
@@ -83,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glBindProgramNV( programType, programId );
 
 			// load the ASM source into an NV program
-			Gl.glLoadProgramNV( programType, programId, source.Length, System.Text.Encoding.ASCII.GetBytes( source ) ); // TAO 2.0
+			Gl.glLoadProgramNV( programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes( Source ) ); // TAO 2.0
 			//Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
 			// get the error string from the NV program loader
@@ -152,6 +153,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+            throw new AxiomException( "This needs upgrading" );
 		}
 
 		#endregion Constructor
@@ -162,18 +164,17 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		///     Binds params by index to the vp30 program.
 		/// </summary>
 		/// <param name="parms"></param>
-		public override void BindParameters( GpuProgramParameters parms )
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
 			if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
-					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-					if ( entry.isSet )
+					using (var entry = parms.GetFloatPointer( index ))
 					{
 						// send the params 4 at a time
-						Gl.glProgramParameter4fvNV( programType, index, entry.val );
+					    throw new AxiomException( "Update this!" );
+						Gl.glProgramParameter4fvNV( programType, index, entry.Pointer );
 					}
 				}
 			}
@@ -205,6 +206,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+            throw new AxiomException("This needs upgrading");
 		}
 
 		#endregion Constructor
@@ -215,8 +217,10 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		///     Binds named parameters to fp30 programs.
 		/// </summary>
 		/// <param name="parms"></param>
-		public override void BindParameters( GpuProgramParameters parms )
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
+		    throw new NotImplementedException();
+            /*
 			if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
@@ -225,14 +229,19 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 					if ( name != null )
 					{
-						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
+						using (var entry = parms.GetFloatPointer( index ))
+					    {
 
-						// send the params 4 at a time
-						Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ), entry.val ); // TAO 2.0
-						//Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+					        // send the params 4 at a time
+					        throw new AxiomException( "Update this!" );
+					        Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ),
+					                                         entry.Pointer ); // TAO 2.0
+					        //Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+					    }
 					}
 				}
 			}
+             */
 		}
 		#endregion GpuProgram members
 	}

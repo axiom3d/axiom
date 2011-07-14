@@ -33,10 +33,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
+using System;
 
 #endregion Namespace Declarations
 
@@ -404,8 +406,10 @@ namespace Axiom.Scripting.Compiler
 												return;
 										}
 
-										//TODO
-										//mPass->setSeparateSceneBlending(sbt0, sbt1);
+									    throw new NotImplementedException(
+                                            string.Format("SetSeparateSceneBlending({0}, {1})", sbt0, sbt1));
+									    //TODO
+									    //mPass->setSeparateSceneBlending(sbt0, sbt1);
 									}
 									else
 									{
@@ -1399,12 +1403,12 @@ namespace Axiom.Scripting.Compiler
 
 													case Keywords.ID_DIRECTIONAL:
 														//TODO
-														//mPass->setIteratePerLight(true, true, Light::LT_DIRECTIONAL);
+														//_pass.SetIteratePerLight(true, true, LightType.Directional );
 														break;
 
 													case Keywords.ID_SPOT:
 														//TODO
-														//mPass->setIteratePerLight(true, true, Light::LT_SPOTLIGHT);
+                                                        //_pass.SetIteratePerLight(true, true, LightType.Spotlight );
 														break;
 
 													default:
@@ -1416,14 +1420,14 @@ namespace Axiom.Scripting.Compiler
 											else
 											{
 												//TODO
-												//mPass->setIteratePerLight(true, false);
+                                                //_pass.SetIteratePerLight(true, false);
 											}
 
 										}
 										else if ( atom.IsNumber )
 										{
 											//TODO
-											//mPass->setPassIterationCount(Ogre::StringConverter::parseInt(atom->value));
+											_pass.IterationCount = Int32.Parse( atom.Value );
 
 											AbstractNode i1 = getNodeAt( prop.Values, 1 );
 											if ( i1 != null && i1 is AtomAbstractNode )
@@ -1771,9 +1775,8 @@ namespace Axiom.Scripting.Compiler
 				pass.SetFragmentProgram( createdProgramName );
 				if ( pass.FragmentProgram.IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared parameters = pass.FragmentProgramParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
+					var parameters = pass.FragmentProgramParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
@@ -1788,9 +1791,8 @@ namespace Axiom.Scripting.Compiler
 				pass.SetVertexProgram( createdProgramName );
 				if ( pass.VertexProgram.IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared parameters = pass.VertexProgramParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
+					var parameters = pass.VertexProgramParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
@@ -1805,9 +1807,8 @@ namespace Axiom.Scripting.Compiler
 				pass.SetGeometryProgram( createdProgramName );
 				if ( pass.GeometryProgram.IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared parameters = pass.GeometryProgramParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
+					var parameters = pass.GeometryProgramParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 

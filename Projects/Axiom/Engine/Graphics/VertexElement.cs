@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -329,5 +330,22 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
+
+	    public static int ConvertColorValue( ColorEx color, VertexElementType colorVertexElementType )
+	    {
+            switch (colorVertexElementType)
+            {
+#if AXIOM_PLATFORM == AXIOM_PLATFORM_WIN32
+                default:
+#endif
+                case VertexElementType.Color_ARGB:
+                    return color.ToARGB();
+#if AXIOM_PLATFORM != OGRE_PLATFORM_WIN32
+        default:
+#endif
+                case VertexElementType.Color_ABGR:
+                    return color.ToABGR();
+            }
+	    }
 	}
 }

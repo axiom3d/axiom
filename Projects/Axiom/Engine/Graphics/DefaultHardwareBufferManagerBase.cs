@@ -44,13 +44,15 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	/** Specialization of HardwareBufferManagerBase to emulate hardware buffers.
-	@remarks
-		You might want to instantiate this class if you want to utilize
-		classes like MeshSerializer without having initialized the 
-		rendering system (which is required to create a 'real' hardware
-		buffer manager.
-	*/
+    /// <summary>
+    /// Specialization of HardwareBufferManagerBase to emulate hardware buffers.
+    /// </summary>
+    /// <remarks>
+    /// You might want to instantiate this class if you want to utilize
+    /// classes like MeshSerializer without having initialized the 
+    /// rendering system (which is required to create a 'real' hardware
+    /// buffer manager.
+    /// </remarks>
 	public class DefaultHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
 		public DefaultHardwareBufferManagerBase()
@@ -62,9 +64,9 @@ namespace Axiom.Graphics
 		}
 
 		/// Creates a vertex buffer
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			DefaultHardwareVertexBuffer vb = new DefaultHardwareVertexBuffer( this, vertexSize, numVerts, usage );
+			DefaultHardwareVertexBuffer vb = new DefaultHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage );
 			return vb;
 		}
 

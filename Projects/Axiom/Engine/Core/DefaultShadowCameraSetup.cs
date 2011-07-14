@@ -148,7 +148,7 @@ namespace Axiom.Core
 				textureCamera.Near = camera.Near;
 
 				// Calculate position, which same as spotlight position
-				pos = light.DerivedPosition;
+				pos = light.GetDerivedPosition();
 
 				// Calculate direction, which same as spotlight direction
 				dir = -light.DerivedDirection; // backwards since point down -z
@@ -171,7 +171,7 @@ namespace Axiom.Core
 				Vector3 target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
 
 				// Calculate position, which same as point light position
-				pos = light.DerivedPosition;
+				pos = light.GetDerivedPosition();
 
 				dir = ( pos - target ); // backwards since point down -z
 				dir.Normalize();

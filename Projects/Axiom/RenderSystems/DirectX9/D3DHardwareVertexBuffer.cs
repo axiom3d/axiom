@@ -38,12 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.Graphics;
-
+using Axiom.Math;
+using SlimDX;
+using SlimDX.Direct3D9;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
 #endregion Namespace Declarations
 
@@ -53,78 +57,329 @@ namespace Axiom.RenderSystems.DirectX9
 	/// 	Summary description for D3DHardwareVertexBuffer.
 	/// </summary>
 	public class D3DHardwareVertexBuffer : HardwareVertexBuffer
-	{
-		#region Member variables
+    {
+        #region internal classes
 
-		protected D3D.VertexBuffer d3dBuffer;
-		protected D3D.Pool d3dPool;
+        [OgreVersion(1, 7, 2790)]
+        protected class BufferResources
+        {
+            public VertexBuffer Buffer;
+            public bool OutOfDate;
+            public int LockOffset;
+            public int LockLength;
+            public BufferLocking LockOptions;
+            public int LastUsedFrame;
+        };
 
-		#endregion Member variables
+        [OgreVersion(1, 7, 2790)]
+        protected class DeviceToBufferResourcesMap: Dictionary<Device, BufferResources> 
+        {
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Map between device to buffer resources.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected DeviceToBufferResourcesMap mapDeviceToBufferResources = new DeviceToBufferResourcesMap();
+
+        /// <summary>
+        /// Buffer description.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected VertexBufferDescription bufferDesc;
+
+        /// <summary>
+        /// Source buffer resources when working with multiple devices.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected BufferResources sourceBuffer;
+
+        /// <summary>
+        /// Source buffer locked bytes.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        private IntPtr sourceLockedBytes;
+
+        /// <summary>
+        /// Consistent system memory buffer for multiple devices support in case of write only buffers.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        private IntPtr systemMemoryBuffer;
+
+
+        #region Member variables
+
+        [OgreVersion(1, 7, 2790)]
+	    private static readonly object SDeviceAccessMutex = new object();
+
+        [AxiomHelper(0, 8, "Holding a reference to SlimDX buffer in order to release it properly later")]
+	    private DataStream _pSourceBytes;
+
+	    #endregion Member variables
 
 		#region Constructors
 
-		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
-			: base( manager, vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
+		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
-			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
-				// If not system mem, use managed pool UNLESS buffer is discardable
-				// if discardable, keeping the software backing is expensive
-				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
+            lock (SDeviceAccessMutex)
+            {
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
+                var eResourcePool = useSystemMemory
+                                        ? Pool.SystemMemory
+                                        : // If not system mem, use managed pool UNLESS buffer is discardable
+                                    // if discardable, keeping the software backing is expensive
+                                    ( ( usage & BufferUsage.Discardable ) != 0 ) ? Pool.Default : Pool.Managed;
 #else
-			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
+			    var eResourcePool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
-			// Create the d3d vertex buffer
-			d3dBuffer = new D3D.VertexBuffer(
-				device,
-				sizeInBytes,
-				D3DHelper.ConvertEnum( usage ),
-				D3D.VertexFormat.None,
-				d3dPool );
-		}
 
-		~D3DHardwareVertexBuffer()
-		{
-			if ( d3dBuffer != null )
-			{
-				d3dBuffer.Dispose();
-			}
+                // Set the desired memory pool.
+		        bufferDesc.Pool = eResourcePool;
+
+		        // Set source buffer to NULL.
+		        sourceBuffer = null;
+		        sourceLockedBytes  = IntPtr.Zero;
+
+		        // Allocate the system memory buffer.
+		        if (((usage & BufferUsage.WriteOnly) != 0) && D3DRenderSystem.ResourceManager.AutoHardwareBufferManagement)
+		        {
+		            systemMemoryBuffer = Marshal.AllocHGlobal(Size);
+		        }
+		        else
+		        {			
+			        systemMemoryBuffer = IntPtr.Zero;
+		        }
+
+                // Create buffer resource(s).
+                foreach ( Device d3d9Device in D3DRenderSystem.ResourceCreationDevices )
+                {
+                    CreateBuffer(d3d9Device, eResourcePool);
+                }
+            }
 		}
 
 		#endregion Constructors
 
 		#region Methods
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+        #region CreateBuffer
+
+        /// <summary>
+        /// Create the actual vertex buffer.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        public void CreateBuffer(Device d3d9Device, Pool ePool)
+        {
+            lock(SDeviceAccessMutex)
+            {
+                // Find the vertex buffer of this device.
+                BufferResources bufferResources;
+                if (mapDeviceToBufferResources.TryGetValue(d3d9Device, out bufferResources))
+                {
+                    if (bufferResources.Buffer != null)
+                    {
+                        bufferResources.Buffer.Dispose();
+                        bufferResources.Buffer = null;
+                    }
+                }
+                else
+                {
+                    bufferResources = new BufferResources();
+                    mapDeviceToBufferResources.Add( d3d9Device, bufferResources );
+                }
+                
+                bufferResources.Buffer = null;
+                bufferResources.OutOfDate = true;
+                bufferResources.LockOffset = 0;
+                bufferResources.LockLength = Size;
+                bufferResources.LockOptions = BufferLocking.Normal;
+                bufferResources.LastUsedFrame = Root.Instance.NextFrameNumber;
+
+                // Create the vertex buffer
+
+
+                bufferResources.Buffer = new VertexBuffer( d3d9Device,
+                                                           sizeInBytes,
+                                                           D3DHelper.ConvertEnum( usage ),
+                                                           0, // No FVF here, thank you.
+                                                           ePool );
+
+                bufferDesc = bufferResources.Buffer.Description;
+
+                // Update source buffer if need to.
+                if ( sourceBuffer == null )
+                {
+                    sourceBuffer = bufferResources;
+                }
+
+                    // This is a new buffer and source buffer exists we must update the content now 
+                    // to prevent situation where the source buffer will be destroyed and we won't be able to restore its content.
+                else
+                {
+                    UpdateBufferContent( bufferResources );
+                }
+            }
+        }
+
+        #endregion
+
+        #region UpdateBufferContent
+
+        /// <summary>
+        /// Update the given buffer content.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+	    protected void UpdateBufferContent( BufferResources bufferResources )
+	    {
+	        if (bufferResources.OutOfDate)
+		    {
+			    if (systemMemoryBuffer != IntPtr.Zero)
+			    {
+				    UpdateBufferResources(systemMemoryBuffer, bufferResources);
+			    }
+
+			    else if (sourceBuffer != bufferResources && (usage & BufferUsage.WriteOnly) == 0)
+			    {				
+				    sourceBuffer.LockOptions = BufferLocking.ReadOnly;
+				    sourceLockedBytes = LockBuffer(sourceBuffer, 0, Size);
+				    UpdateBufferResources(sourceLockedBytes, bufferResources);
+				    UnlockBuffer(sourceBuffer);
+				    sourceLockedBytes = IntPtr.Zero;
+			    }			
+		    }
+	    }
+
+        protected void UpdateBufferResources(char[] p0, BufferResources bufferResources)
+        {
+            var ptr = Memory.PinObject( p0 );
+            UpdateBufferResources( ptr, bufferResources );
+            Memory.UnpinObject( ptr );
+        }
+
+        protected void UpdateBufferResources(IntPtr p0, BufferResources bufferResources)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    protected void UnlockBuffer( BufferResources bufferResources )
+	    {
+	        bufferResources.Buffer.Unlock();
+
+            // Reset attributes.
+            bufferResources.OutOfDate = false;
+            bufferResources.LockOffset = sizeInBytes;
+            bufferResources.LockLength = 0;
+            bufferResources.LockOptions = BufferLocking.Normal;
+
+	        _pSourceBytes.Dispose();
+	        _pSourceBytes = null;
+	    }
+
+        #region LockBuffer
+
+        protected IntPtr LockBuffer( BufferResources bufferResources, int offset, int length)
+	    {
+	        _pSourceBytes = bufferResources.Buffer.Lock(
+	            offset,
+	            length,
+	            D3DHelper.ConvertEnum(sourceBuffer.LockOptions, usage) );
+		    return _pSourceBytes.DataPointer;
+	    }
+
+        #endregion
+
+        #endregion
+
+        #region LockImpl
+
+        [OgreVersion(1, 7, 2790)]
+		protected override IntPtr LockImpl( int offset, int length, BufferLocking options )
 		{
-			D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );
-			DX.DataStream s = d3dBuffer.Lock( offset, length, d3dLocking );
-			return s.DataPointer;
+			lock(SDeviceAccessMutex)
+			{
+                foreach (var it in mapDeviceToBufferResources)
+			    {
+			        var bufferResources = it.Value;
+
+			        if ( options != BufferLocking.ReadOnly )
+			            bufferResources.OutOfDate = true;
+
+			        // Case it is the first buffer lock in this frame.
+			        if ( bufferResources.LockLength == 0 )
+			        {
+			            if ( offset < bufferResources.LockOffset )
+			                bufferResources.LockOffset = offset;
+			            if ( length > bufferResources.LockLength )
+			                bufferResources.LockLength = length;
+			        }
+
+			            // Case buffer already locked in this frame.
+			        else
+			        {
+			            var highPoint = Utility.Max(offset + length,
+			                                         bufferResources.LockOffset + bufferResources.LockLength );
+			            bufferResources.LockOffset = Utility.Min( bufferResources.LockOffset, offset );
+			            bufferResources.LockLength = highPoint - bufferResources.LockOffset;
+			        }
+
+			        bufferResources.LockOptions = options;
+			    }
+
+			    // Case we use system memory buffer -> just return it
+			    if ( systemMemoryBuffer != IntPtr.Zero)
+			    {
+                    return systemMemoryBuffer.Offset(offset);
+			    }
+			    else
+			    {
+			        // Lock the source buffer.
+			        sourceLockedBytes = LockBuffer( sourceBuffer, sourceBuffer.LockOffset, sourceBuffer.LockLength );
+
+			        return sourceLockedBytes;
+			    }
+			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+        #endregion
+
 		protected override void UnlockImpl()
 		{
-			// unlock the buffer
-			d3dBuffer.Unlock();
+		    lock ( SDeviceAccessMutex )
+		    {
+		        var nextFrameNumber = Root.Instance.NextFrameNumber;
+
+                foreach (var it in mapDeviceToBufferResources)
+		        {
+		            var bufferResources = it.Value;
+
+		            if ( bufferResources.OutOfDate &&
+		                 bufferResources.Buffer != null &&
+		                 nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
+		            {
+		                if ( systemMemoryBuffer != IntPtr.Zero )
+		                {
+		                    UpdateBufferResources( systemMemoryBuffer.Offset(bufferResources.LockOffset), bufferResources );
+		                }
+		                else if ( sourceBuffer != bufferResources )
+		                {
+		                    UpdateBufferResources( sourceLockedBytes, bufferResources );
+		                }
+		            }
+		        }
+
+		        // Unlock the source buffer.
+		        if ( systemMemoryBuffer == IntPtr.Zero )
+		        {
+		            UnlockBuffer( sourceBuffer );
+		            sourceLockedBytes = IntPtr.Zero;
+		        }
+		    }
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="dest"></param>
-		public override void ReadData( int offset, int length, IntPtr dest )
+	    public override void ReadData( int offset, int length, IntPtr dest )
 		{
 			// lock the buffer for reading
 			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
@@ -146,7 +401,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
 			// lock the buffer real quick
-			IntPtr dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			IntPtr dest = Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 			// copy that data in there
 			Memory.Copy( src, dest, length );
 
@@ -157,50 +412,24 @@ namespace Axiom.RenderSystems.DirectX9
 		//---------------------------------------------------------------------
 		public bool ReleaseIfDefaultPool()
 		{
-			if ( d3dPool == D3D.Pool.Default )
-			{
-				if ( d3dBuffer != null )
-				{
-					d3dBuffer.Dispose();
-					d3dBuffer = null;
-				}
-				return true;
-			}
-			return false;
+		    throw new NotImplementedException();
 		}
 
 		//---------------------------------------------------------------------
 		public bool RecreateIfDefaultPool( D3D.Device device )
 		{
-			if ( d3dPool == D3D.Pool.Default )
-			{
-				// Create the d3d vertex buffer
-				d3dBuffer = new D3D.VertexBuffer(
-					device,
-					sizeInBytes,
-					D3DHelper.ConvertEnum( usage ),
-					D3D.VertexFormat.None,
-					d3dPool );
-				return true;
-			}
-			return false;
+            throw new NotImplementedException();
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( d3dBuffer != null && !d3dBuffer.Disposed )
-					{
-						d3dBuffer.Dispose();
-						d3dBuffer = null;
-					}
-				}
-			}
+            if (systemMemoryBuffer != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(systemMemoryBuffer);
+                systemMemoryBuffer = IntPtr.Zero;
+            }
 
-			// If it is available, make the call to the
+		    // If it is available, make the call to the
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
@@ -212,11 +441,27 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Gets the underlying D3D Vertex Buffer object.
 		/// </summary>
-		public D3D.VertexBuffer D3DVertexBuffer
+		public VertexBuffer D3DVertexBuffer
 		{
 			get
 			{
-				return d3dBuffer;
+                var d3D9Device = D3DRenderSystem.ActiveD3D9Device;
+	
+			    BufferResources it;
+
+                // Case vertex buffer was not found for the current device -> create it.		
+                if (!mapDeviceToBufferResources.TryGetValue(d3D9Device, out it) || it.Buffer == null)
+		        {						
+			        CreateBuffer(d3D9Device, bufferDesc.Pool);
+			        it = mapDeviceToBufferResources[d3D9Device];			
+		        }
+
+		        // Make sure that the buffer content is updated.
+		        UpdateBufferContent(it);
+		
+		        it.LastUsedFrame = Root.Instance.NextFrameNumber;
+
+		        return it.Buffer;
 			}
 		}
 

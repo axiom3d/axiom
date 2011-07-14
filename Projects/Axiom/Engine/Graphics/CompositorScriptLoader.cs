@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -543,7 +544,7 @@ namespace Axiom.Graphics
 			string n = s.Trim();
 			try
 			{
-				return float.Parse( n );
+			    return float.Parse( n, CultureInfo.InvariantCulture );
 			}
 			catch ( Exception e )
 			{

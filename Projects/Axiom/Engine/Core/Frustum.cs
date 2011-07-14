@@ -263,7 +263,33 @@ namespace Axiom.Core
 
 		#endregion FrustumOffset Property
 
-		///<summary>
+        #region OrientationMode
+
+	    private OrientationMode _orientationMode;
+
+        [OgreVersion(1, 7, 2790)]
+        public OrientationMode OrientationMode 
+        {
+            get
+            {
+#if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
+                throw new AxiomException( "Getting Frustrum orientation mode is not supported" );
+#endif
+                return _orientationMode;
+            }
+            set
+            {
+#if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
+                throw new AxiomException( "Setting Frustrum orientation mode is not supported" );
+#endif
+                _orientationMode = value;
+                InvalidateFrustum();
+            }
+        }
+
+        #endregion
+
+        ///<summary>
 		/// Focal length of frustum (for stereo rendering, defaults to 1.0)
 		///</summary>
 		protected float _focalLength;
@@ -489,7 +515,7 @@ namespace Axiom.Core
 				}
 
 				// deriving direction from linked plane?
-				if ( _isReflected && linkedReflectionPlane != null &&
+				if ( isReflected && linkedReflectionPlane != null &&
 					!( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
 				{
 					_reflectionPlane = linkedReflectionPlane.DerivedPlane;
@@ -564,7 +590,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Is this frustum to act as a reflection of itself?
 		/// </summary>
-		private bool _isReflected;
+		protected bool isReflected;
 		/// <summary>
 		///     Gets a flag that specifies whether this camera is being reflected or not.
 		/// </summary>
@@ -572,7 +598,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _isReflected;
+				return isReflected;
 			}
 		}
 
@@ -743,8 +769,7 @@ namespace Axiom.Core
 			_vertexData.vertexDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 			_vertexData.vertexStart = 0;
 			_vertexData.vertexCount = 32;
-			_vertexData.vertexBufferBinding.SetBinding( 0,
-													   HardwareBufferManager.Instance.CreateVertexBuffer( 4 * 3, _vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
+            _vertexData.vertexBufferBinding.SetBinding(0, HardwareBufferManager.Instance.CreateVertexBuffer( _vertexData.vertexDeclaration, _vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
 
 			_material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
@@ -807,11 +832,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Disables reflection modification previously turned on with <see cref="EnableReflection"/>.
+		///     Disables reflection modification previously turned on with 
+        ///     <see cref="EnableReflection(Plane)"/>.
 		/// </summary>
 		public virtual void DisableReflection()
 		{
-			_isReflected = false;
+			isReflected = false;
 			lastLinkedReflectionPlane.Normal = Vector3.Zero;
 			InvalidateView();
 		}
@@ -896,7 +922,7 @@ namespace Axiom.Core
 		/// <param name="plane"></param>
 		public virtual void EnableReflection( Plane plane )
 		{
-			_isReflected = true;
+			isReflected = true;
 			_reflectionPlane = plane;
 			linkedReflectionPlane = null;
 			_reflectionMatrix = Utility.BuildReflectionMatrix( plane );
@@ -912,7 +938,7 @@ namespace Axiom.Core
 		/// <param name="plane"></param>
 		public virtual void EnableReflection( IDerivedPlaneProvider plane )
 		{
-			_isReflected = true;
+			isReflected = true;
 			linkedReflectionPlane = plane;
 			_reflectionPlane = linkedReflectionPlane.DerivedPlane;
 			_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
@@ -1010,8 +1036,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overloaded method.
 		/// </summary>
-		/// <param name="box"></param>
-		/// <returns></returns>
 		public bool IsObjectVisible( Sphere sphere )
 		{
 			// this overload doesnt care about the clipping plane, but we gotta
@@ -1061,8 +1085,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overloaded method.
 		/// </summary>
-		/// <param name="box"></param>
-		/// <returns></returns>
 		public bool IsObjectVisible( Vector3 vertex )
 		{
 			// this overload doesnt care about the clipping plane, but we gotta
@@ -1074,7 +1096,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Tests whether the given 3D point is in the viewing frustum.
 		/// </summary>
-		/// <param name="vector">3D point to check for frustum visibility.</param>
+        /// <param name="vertex">3D point to check for frustum visibility.</param>
 		/// <param name="culledBy">
 		///		Optional FrustrumPlane params which will be filled by the plane which culled
 		///		the box if the result was false.
@@ -1394,9 +1416,9 @@ namespace Axiom.Core
 			// grab a reference to the current render system
 			RenderSystem renderSystem = Root.Instance.RenderSystem;
 			// API specific
-			_projectionMatrixRS = renderSystem.ConvertProjectionMatrix( _projectionMatrix );
+            renderSystem.ConvertProjectionMatrix(_projectionMatrix, out _projectionMatrixRS);
 			// API specific for Gpu Programs
-			_projectionMatrixRSDepth = renderSystem.ConvertProjectionMatrix( _projectionMatrix, true );
+            renderSystem.ConvertProjectionMatrix(_projectionMatrix, out _projectionMatrixRSDepth, true);
 
 			// Calculate bounding box (local)
 			// Box is from 0, down -Z, max dimensions as determined from far plane
@@ -1540,7 +1562,7 @@ namespace Axiom.Core
 				_viewMatrix[ 2, 3 ] = trans.z;
 
 				// Deal with reflections
-				if ( _isReflected )
+				if ( isReflected )
 				{
 					_viewMatrix = _viewMatrix * _reflectionMatrix;
 				}
@@ -2141,5 +2163,10 @@ namespace Axiom.Core
 		}
 
 		#endregion IDisposable Implementation
+
+	    public void CalcViewMatrixRelative( Vector3 texProjRelativeOrigin, out Matrix4 tmp )
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }

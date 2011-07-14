@@ -152,13 +152,13 @@ namespace Axiom.Samples
 			else if ( mStyle != CameraStyle.FreeLook && style == CameraStyle.FreeLook )
 			{
 				mStyle = CameraStyle.FreeLook;
-				mCamera.AutoTrackingTarget = null;
+			    mCamera.SetAutoTracking( false, (SceneNode)null );
 				mCamera.FixedYawAxis = Vector3.UnitY;
 			}
 			else if ( mStyle != CameraStyle.Manual && style == CameraStyle.Manual )
 			{
 				mStyle = CameraStyle.Manual;
-				mCamera.AutoTrackingTarget = null;
+                mCamera.SetAutoTracking(false, (SceneNode)null);
 				mCamera.FixedYawAxis = Vector3.UnitY;
 			}
 		}

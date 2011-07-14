@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+using SlimDX.Direct3D9;
 using Image = Axiom.Media.Image;
 
 using DX = SlimDX;
@@ -60,36 +61,53 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
 			: base( buffer, 0 )
 		{
-			this.Name = name;
+			this.name = name;
 		}
 
 		public void Rebind( D3DHardwarePixelBuffer buffer )
 		{
 			pixelBuffer = buffer;
-			Width = pixelBuffer.Width;
-			Height = pixelBuffer.Height;
-			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+			width = pixelBuffer.Width;
+			height = pixelBuffer.Height;
+			colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		#region Axiom.Graphics.RenderTexture Implementation
 
-		public override void Update()
-		{
-			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-			if ( rs.IsDeviceLost )
-				return;
 
-			base.Update();
-		}
+        [OgreVersion(1, 7, 2790)]
+        public override void Update(bool swapBuffers)
+        {
+            var deviceManager = D3DRenderSystem.DeviceManager;
+            var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
 
-		public override object this[ string attribute ]
+            if ( currRenderWindowDevice != null )
+            {
+                if ( currRenderWindowDevice.IsDeviceLost == false )
+                    base.Update( swapBuffers );
+            }
+            else
+            {
+                foreach ( var device in deviceManager )
+                {
+                    if ( device.IsDeviceLost == false )
+                    {
+                        deviceManager.ActiveRenderTargetDevice = device;
+                        base.Update( swapBuffers );
+                        deviceManager.ActiveRenderTargetDevice = null;
+                    }
+                }
+            }
+        }
+
+	    public override object this[ string attribute ]
 		{
 			get
 			{
 				switch ( attribute.ToUpper() )
 				{
-					case "D3DBACKBUFFER":
-						D3D.Surface[] surface = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
+					case "DDBACKBUFFER":
+						var surface = new Surface[ Config.MaxMultipleRenderTargets ];
 						if ( this.FSAA > 0 )
 						{
 							surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
@@ -118,29 +136,24 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
+        [OgreVersion(1, 7, 2790)]
 		public override void SwapBuffers( bool waitForVSync )
 		{
-			//// Only needed if we have to blit from AA surface
-			if ( this.FSAA > 0 )
-			{
+			// Only needed if we have to blit from AA surface
+		    if (fsaa> 0)
+		    {
+			    var deviceManager = D3DRenderSystem.DeviceManager;     					
+			    var buf = (D3DHardwarePixelBuffer)(pixelBuffer);
 
-				D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-				if ( rs.IsDeviceLost )
-					return;
-
-				D3DHardwarePixelBuffer buf = (D3DHardwarePixelBuffer)this.pixelBuffer;
-
-				// TODO: Implement rs.Device.StretchRect()
-				//    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
-				//    if (FAILED(hr))
-				//    {
-				//        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR,
-				//            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)),
-				//            "D3D9RenderTexture::swapBuffers");
-				//    }
-
-
-			}
+                foreach (var device in deviceManager)
+			    {				 				
+				    if (device.IsDeviceLost == false)
+				    {
+					    var d3D9Device = device.D3DDevice;
+				        d3D9Device.StretchRectangle( buf.FSAASurface, buf.GetSurface( d3D9Device ), TextureFilter.None );
+				    }								
+			    }																		
+		    }			
 		}
 
 		protected override void dispose( bool disposeManagedResources )

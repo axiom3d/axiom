@@ -108,15 +108,15 @@ namespace Axiom.Graphics
 		///		counted so you do not need to worry about destroying them this will be done
 		///		automatically.
 		/// </remarks>
-		/// <param name="vertexSize">The size in bytes of each vertex in this buffer; you must calculate
+		/// <param name="vertexDeclaration">The <see cref="VertexDeclaration"/> used for this buffer,
 		///		this based on the kind of data you expect to populate this buffer with.</param>
 		/// <param name="numVerts">The number of vertices in this buffer.</param>
 		/// <param name="usage">One or more members of the BufferUsage enumeration; you are
 		///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
 		///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>
-		public virtual HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+        public virtual HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
 		{
-			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
 		}
 
 		/// <summary>
@@ -137,14 +137,14 @@ namespace Axiom.Graphics
 		///		counted so you do not need to worry about destroying them this will be done
 		///		automatically.
 		/// </remarks>
-		/// <param name="vertexSize">The size in bytes of each vertex in this buffer; you must calculate
-		///		this based on the kind of data you expect to populate this buffer with.</param>
-		/// <param name="numVerts">The number of vertices in this buffer.</param>
+        /// <param name="vertexDeclaration">The <see cref="VertexDeclaration"/> used for this buffer,
+        ///		this based on the kind of data you expect to populate this buffer with.</param>
+        /// <param name="numVerts">The number of vertices in this buffer.</param>
 		/// <param name="usage">One or more members of the BufferUsage enumeration; you are
 		///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
 		///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>
 		/// <param name="useShadowBuffer"></param>
-		public abstract HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer );
+		public abstract HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer );
 
 		/// <summary>
 		///     Create a hardware index buffer.
@@ -241,7 +241,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="licensee">
 		///     Reference back to the class requesting the copy, which must
-		///     implement <see cref="IHardwareBufferLicense"/> in order to be notified when the license
+		///     implement <see cref="IHardwareBufferLicensee"/> in order to be notified when the license
 		///     expires.
 		/// </param>
 		/// <returns></returns>
@@ -267,7 +267,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="licensee">
 		///     Reference back to the class requesting the copy, which must
-		///     implement <see cref="IHardwareBufferLicense"/> in order to be notified when the license
+		///     implement <see cref="IHardwareBufferLicensee"/> in order to be notified when the license
 		///     expires.
 		/// </param>
 		/// <param name="copyData">If true, the current data is copied as well as the structure of the buffer.</param>
@@ -315,7 +315,8 @@ namespace Axiom.Graphics
 		///     Manually release a vertex buffer copy for others to subsequently use.
 		/// </summary>
 		/// <remarks>
-		///     Only required if the original call to <see cref="AllocateVertexBufferCopy"/>
+		///     Only required if the original call to 
+        ///     <see cref="AllocateVertexBufferCopy(HardwareVertexBuffer, BufferLicenseRelease, IHardwareBufferLicensee, bool)"/>
 		///     included a licenseType of <see cref="BufferLicenseRelease.Manual"/>. 
 		/// </remarks>
 		/// <param name="bufferCopy">
@@ -345,7 +346,7 @@ namespace Axiom.Graphics
 		///     the internal configured value, keep the buffer not get released for
 		///     some frames.
 		/// </remarks>
-		/// <param name="bufferCopy" The buffer copy. The caller is expected to keep this
+		/// <param name="bufferCopy"> The buffer copy. The caller is expected to keep this
 		///     buffer copy for use.</param>
 		public void TouchVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
@@ -499,7 +500,7 @@ namespace Axiom.Graphics
 		/// <returns>A copy of the vertex buffer, but data is not copied.</returns>
 		protected HardwareVertexBuffer MakeBufferCopy( HardwareVertexBuffer source, BufferUsage usage, bool useShadowBuffer )
 		{
-			return CreateVertexBuffer( source.VertexSize, source.VertexCount, usage, useShadowBuffer );
+			return CreateVertexBuffer( source.VertexDeclaration, source.VertexCount, usage, useShadowBuffer );
 		}
 
 		#endregion

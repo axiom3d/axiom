@@ -122,6 +122,8 @@
     </Compile>
     <Compile Include="Source\Driver.cs" />
     <Compile Include="Source\DriverCollection.cs" />
+    <Compile Include="Source\HLSL\HLSLProgram.cs" />
+    <Compile Include="Source\HLSL\HLSLProgramFactory.cs" />
     <Compile Include="Source\Plugin.cs" />
     <Compile Include="Source\StateManagement.cs">
       <SubType>Code</SubType>
@@ -141,10 +143,14 @@
     <Compile Include="Source\XnaHardwarePixelBuffer.cs" />
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaHelper.cs" />
+    <Compile Include="Source\XnaMaterial.cs" />
+    <Compile Include="Source\XnaMaterialManager.cs" />
+    <Compile Include="Source\XnaPass.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />
     <Compile Include="Source\XnaRenderTexture.cs" />
     <Compile Include="Source\XnaRenderWindow.cs" />
     <Compile Include="Source\XnaResourceGroupManager.cs" />
+    <Compile Include="Source\XnaTechnique.cs" />
     <Compile Include="Source\XnaTexture.cs" />
     <Compile Include="Source\XnaTextureManager.cs" />
     <Compile Include="Source\XnaTextureStageDescription.cs" />

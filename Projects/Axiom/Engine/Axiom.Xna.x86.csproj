@@ -59,9 +59,9 @@
     <DebugType>pdbonly</DebugType>
     <BaseAddress>285212672</BaseAddress>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox\Release</OutputPath>
-    <DocumentationFile>bin\Xbox\Release\Axiom.XML</DocumentationFile>
-    <DefineConstants>TRACE;</DefineConstants>
+    <OutputPath>bin\x86\</OutputPath>
+    <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
+    <DefineConstants>TRACE;XNA;AXIOM_USENEWCOMPILERS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>

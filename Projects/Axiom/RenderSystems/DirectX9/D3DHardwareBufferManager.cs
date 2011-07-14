@@ -85,22 +85,22 @@ namespace Axiom.RenderSystems.DirectX9
 			return buffer;
 		}
 
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
 		{
 			// call overloaded method with no shadow buffer
-			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
 		}
 
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( this, vertexSize, numVerts, usage, device, false, useShadowBuffer );
+			D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, device, false, useShadowBuffer );
 			vertexBuffers.Add( buffer );
 			return buffer;
 		}
 
 		public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
 		{
-			VertexDeclaration decl = new D3DVertexDeclaration( device );
+			VertexDeclaration decl = new D3DVertexDeclaration();
 			vertexDeclarations.Add( decl );
 			return decl;
 		}
@@ -163,8 +163,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 	public class D3DHardwareBufferManager : HardwareBufferManager
 	{
-		public D3DHardwareBufferManager(  D3D.Device device )
-			: base( new D3DHardwareBufferManagerBase( device ) )
+		public D3DHardwareBufferManager()
+			: base( new D3DHardwareBufferManagerBase( null ) )
 		{
 		}
 

@@ -81,7 +81,8 @@ namespace Axiom.Core
 	///         This is not essential but will make the process more efficient by saving
 	///         memory reallocations.
 	///      -# Call <see cref="Begin"/> to begin entering data
-	///      -# For each vertex, call <see cref="Position"/>, <see cref="Normal"/>, <see cref="TextureCoord"/>, <see cref="Color"/>
+	///      -# For each vertex, call <see cref="Position(Vector3)"/>, 
+    ///      <see cref="Normal(Vector3)"/>, <see cref="TextureCoord(Vector3)"/>, <see cref="Color(ColorEx)"/>
 	///         to define your vertex data. Note that each time you call Position()
 	///         you start a new vertex. Note that the first vertex defines the
 	///         components of the vertex - you can't add more after that. For example
@@ -440,7 +441,7 @@ namespace Axiom.Core
 		///	by the active camera. However, if they want they can cancel this out
 		///	and use an identity projection, which effectively projects in 2D using
 		///	a {-1, 1} view space. Useful for overlay rendering. Normally you don't
-		//	need to change this. The default is false.
+		///	need to change this. The default is false.
 		/// </summary>
 		public bool UseIdentityProjection
 		{
@@ -622,10 +623,11 @@ namespace Axiom.Core
 
 		///<summary>
 		/// A vertex position is slightly special among the other vertex data
-		/// methods like <see cref="Normal"/> and <see cref="TextureCoord"/>, since calling it indicates
+        /// methods like <see cref="Normal(Vector3)"/> and <see cref="TextureCoord(Vector3)"/>, 
+        /// since calling it indicates
 		/// the start of a new vertex. All other vertex data methods you call
 		/// after this are assumed to be adding more information (like normals or
-		/// texture coordinates) to the last vertex started with <see cref="Position"/>.
+        /// texture coordinates) to the last vertex started with <see cref="Position(Vector3)"/>.
 		/// </summary>
 		/// <param name="pos">Position as a <see cref="Vector3"/></param>
 		public virtual void Position( Vector3 pos )
@@ -709,7 +711,7 @@ namespace Axiom.Core
 		}
 
 		///<summary>
-		/// You can call this method multiple times between <see cref="Position"/> calls
+		/// You can call this method multiple times between <see cref="Position(Vector3)"/> calls
 		/// to add multiple texture coordinates to a vertex. Each one can have
 		/// between 1 and 3 dimensions, depending on your needs, although 2 is
 		/// most common. There are several versions of this method for the
@@ -847,7 +849,7 @@ namespace Axiom.Core
 		/// <remarks>
 		/// You will have to call this 3 times for each face for a triangle list,
 		/// or use the alternative 3-parameter version. Other operation types
-		/// require different numbers of indexes, <see cref="renderOperation.OperationType"/>.
+		/// require different numbers of indexes, <see cref="RenderOperation.operationType"/>.
 		/// 32-bit indexes are not supported on all cards which is why this
 		/// class only allows 16-bit indexes, for simplicity and ease of use.
 		/// </remarks>
@@ -874,7 +876,7 @@ namespace Axiom.Core
 			this.tempIndexBuffer[ rop.indexData.indexCount - 1 ] = idx;
 		}
 
-		/**
+		/*
 		@note
 			32-bit indexes are not supported on all cards which is why this
 			class only allows 16-bit indexes, for simplicity and ease of use.
@@ -995,7 +997,7 @@ namespace Axiom.Core
 					// to allow for user-configured growth area
 					int vertexCount = (int)Utility.Max( rop.vertexData.vertexCount, this.estVertexCount );
 
-					vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( this.declSize, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
+                    vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 
 					rop.vertexData.vertexBufferBinding.SetBinding( 0, vbuf );
 				}
@@ -1510,8 +1512,6 @@ namespace Axiom.Core
 					{
 						throw new AxiomException( "ManualObject.Technique - couldn't get object material." );
 					}
-
-					return null;
 				}
 			}
 
@@ -1669,7 +1669,7 @@ namespace Axiom.Core
                 : base()
 			{
 				this.parent = parent;
-				// Initialise render op
+				// Initialize render op
 				this.renderOperation.indexData = new IndexData();
 				this.renderOperation.indexData.indexBuffer = indexBuffer;
 				this.renderOperation.indexData.indexStart = 0;

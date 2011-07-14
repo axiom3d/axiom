@@ -425,22 +425,23 @@ namespace Axiom.Fonts
 			SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 ) / ( v2 - v1 ) );
 		}
 
-		/// <summary>
-		/// Sets the texture coordinates of a glyph.
-		/// </summary>
-		/// <param name="c"></param>
-		/// <param name="u1"></param>
-		/// <param name="v1"></param>
-		/// <param name="u2"></param>
-		/// <param name="v2"></param>
-		/// <remarks>
-		/// You only need to call this if you're setting up a font loaded from a texture manually.
-		/// <para>
-		/// Also sets the aspect ratio (width / height) of this character. textureAspect
-		/// is the width/height of the texture (may be non-square)
-		/// </para>
-		/// </remarks>
-		[Obsolete( "Use Glyphs property" )]
+	    /// <summary>
+	    /// Sets the texture coordinates of a glyph.
+	    /// </summary>
+	    /// <param name="c"></param>
+	    /// <param name="u1"></param>
+	    /// <param name="v1"></param>
+	    /// <param name="u2"></param>
+	    /// <param name="v2"></param>
+	    /// <param name="aspect"></param>
+	    /// <remarks>
+	    /// You only need to call this if you're setting up a font loaded from a texture manually.
+	    /// <para>
+	    /// Also sets the aspect ratio (width / height) of this character. textureAspect
+	    /// is the width/height of the texture (may be non-square)
+	    /// </para>
+	    /// </remarks>
+	    [Obsolete( "Use Glyphs property" )]
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
 			GlyphInfo glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect * ( u2 - u1 ) / ( v2 - v1 ) );
@@ -513,7 +514,8 @@ namespace Axiom.Fonts
 				}
 
 				// set texture addressing mode to Clamp to eliminate fuzzy edges
-                unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
+                if ( unitState != null )
+                    unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				// set up blending mode
 				if ( blendByAlpha )

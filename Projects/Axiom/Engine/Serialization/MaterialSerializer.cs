@@ -37,6 +37,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -44,6 +45,7 @@ using System.Text;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Media;
 using Axiom.Scripting;
 using Axiom.Core.Collections;
@@ -123,7 +125,7 @@ namespace Axiom.Serialization
 		#region Helper Methods
 
 		/// <summary>
-		///		Internal method for finding & invoking an attribute parser.
+		///		Internal method for finding &amp; invoking an attribute parser.
 		/// </summary>
 		/// <param name="line"></param>
 		/// <param name="parsers"></param>
@@ -989,11 +991,11 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			float constantBias = float.Parse( values[ 0 ] );
+            float constantBias = float.Parse(values[0], CultureInfo.InvariantCulture);
 			float slopeScaleBias = 0.0f;
 			if ( values.Length > 1 )
 			{
-				slopeScaleBias = float.Parse( values[ 1 ] );
+                slopeScaleBias = float.Parse(values[1], CultureInfo.InvariantCulture);
 			}
 
 			context.pass.SetDepthBias( constantBias, slopeScaleBias );
@@ -2248,7 +2250,7 @@ namespace Axiom.Serialization
 			// get start index
 			int index = int.Parse( values[ 0 ] );
 
-			ProcessManualProgramParam( index, "param_indexed", values, context );
+            ProcessManualProgramParam(false, "param_indexed", values, context, index);
 
 			return false;
 		}
@@ -2274,7 +2276,7 @@ namespace Axiom.Serialization
 			// get start index
 			int index = int.Parse( values[ 0 ] );
 
-			ProcessAutoProgramParam( index, "param_indexed_auto", values, context );
+            ProcessAutoProgramParam(false, "param_indexed_auto", values, context, index);
 
 			return false;
 		}
@@ -2300,15 +2302,15 @@ namespace Axiom.Serialization
 			// get start index
 			try
 			{
-				int index = context.programParams.GetParamIndex( values[ 0 ] );
-
-				ProcessManualProgramParam( index, "param_named", values, context );
+                var def = context.programParams.GetConstantDefinition(values[0]);
 			}
 			catch ( Exception ex )
 			{
 				LogParseError( context, "Invalid param_named attribute - {0}.", ex.Message );
 				return false;
 			}
+
+            ProcessManualProgramParam(true, "param_named", values, context, 0, values[0]);
 
 			return false;
 		}
@@ -2334,15 +2336,20 @@ namespace Axiom.Serialization
 			// get start index
 			try
 			{
-				int index = context.programParams.GetParamIndex( values[ 0 ] );
+                //int index = context.programParams.GetParamIndex(values[0]);
 
-				ProcessAutoProgramParam( index, "param_named_auto", values, context );
+			    var def = context.programParams.GetConstantDefinition( values[ 0 ] );
+			    //var index = context.programParams.GetParamIndex( values[ 0 ] );
+
+				//ProcessAutoProgramParam( index, "param_named_auto", values, context );
 			}
 			catch ( Exception ex )
 			{
 				LogParseError( context, "Invalid param_named_auto attribute - {0}.", ex.Message );
 				return false;
 			}
+
+            ProcessAutoProgramParam(true, "param_named_auto", values, context, 0, values[0]);
 
 			return false;
 		}
@@ -2407,12 +2414,13 @@ namespace Axiom.Serialization
 
 		#region Public Methods
 
-		/// <summary>
-		///		Parses a Material script file passed in the specified stream.
-		/// </summary>
-		/// <param name="data">Stream containing the material file data.</param>
-		/// <param name="groupName">Name of the material group.</param>
-		public void ParseScript( Stream stream, string groupName, string fileName )
+	    /// <summary>
+	    ///		Parses a Material script file passed in the specified stream.
+	    /// </summary>
+	    /// <param name="stream">Stream containing the material file data.</param>
+	    /// <param name="groupName">Name of the material group.</param>
+	    ///<param name="fileName"></param>
+	    public void ParseScript( Stream stream, string groupName, string fileName )
 		{
 #if !(WINDOWS_PHONE)
 			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
@@ -2472,26 +2480,29 @@ namespace Axiom.Serialization
 
 
 		#region Static Methods
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="commandName"></param>
-		/// <param name="parameters"></param>
-		/// <param name="context"></param>
-		protected static void ProcessManualProgramParam( int index, string commandName, string[] parameters, MaterialScriptContext context )
+
+
+		protected static void ProcessManualProgramParam( 
+            bool isNamed, string commandName, 
+            string[] parameters, 
+            MaterialScriptContext context,
+            int index = 0,
+            string paramName = null
+             )
 		{
 			// NB we assume that the first element of vecparams is taken up with either
 			// the index or the parameter name, which we ignore
 
 			int dims, roundedDims;
-			bool isFloat = false;
-			string type = parameters[ 1 ].ToLower();
+			bool isReal;
+            var isMatrix4x4 = false;
+			var type = parameters[ 1 ].ToLower();
 
 			if ( type == "matrix4x4" )
 			{
 				dims = 16;
-				isFloat = true;
+                isReal = true;
+                isMatrix4x4 = true;
 			}
 			else if ( type.IndexOf( "float" ) != -1 )
 			{
@@ -2506,7 +2517,7 @@ namespace Axiom.Serialization
 					dims = int.Parse( type.Substring( 5 ) );
 				}
 
-				isFloat = true;
+                isReal = true;
 			}
 			else if ( type.IndexOf( "int" ) != -1 )
 			{
@@ -2519,6 +2530,8 @@ namespace Axiom.Serialization
 					// the first 5 letters are "int", get the dim indicator at the end
 					dims = int.Parse( type.Substring( 3 ) );
 				}
+
+                isReal = false;
 			}
 			else
 			{
@@ -2533,6 +2546,14 @@ namespace Axiom.Serialization
 				return;
 			}
 
+            // clear any auto parameter bound to this constant, it would override this setting
+            // can cause problems overriding materials or changing default params
+            if (isNamed)
+                context.programParams.ClearNamedAutoConstant(paramName);
+            else
+                context.programParams.ClearAutoConstant(index);
+             
+
 			// Round dims to multiple of 4
 			if ( dims % 4 != 0 )
 			{
@@ -2543,26 +2564,56 @@ namespace Axiom.Serialization
 				roundedDims = dims;
 			}
 
-			int i = 0;
+			int i;
 
 			// now parse all the values
-			if ( isFloat )
+            if (isReal)
 			{
-				float[] buffer = new float[ roundedDims ];
+                var realBuffer = new float[roundedDims];
 
 				// do specified values
 				for ( i = 0; i < dims; i++ )
 				{
-					buffer[ i ] = StringConverter.ParseFloat( parameters[ i + 2 ] );
+                    realBuffer[i] = StringConverter.ParseFloat(parameters[i + 2]);
 				}
 
 				// fill up to multiple of 4 with zero
 				for ( ; i < roundedDims; i++ )
 				{
-					buffer[ i ] = 0.0f;
+                    realBuffer[i] = 0.0f;
 				}
 
-				context.programParams.SetConstant( index, buffer );
+                if (isMatrix4x4)
+                {
+                    // its a Matrix4x4 so pass as a Matrix4
+                    // use specialized setConstant that takes a matrix so matrix is transposed if required
+                    var m4X4 = new Matrix4(
+                        realBuffer[0],  realBuffer[1],  realBuffer[2],  realBuffer[3],
+                        realBuffer[4],  realBuffer[5],  realBuffer[6],  realBuffer[7],
+                        realBuffer[8],  realBuffer[9],  realBuffer[10], realBuffer[11],
+                        realBuffer[12], realBuffer[13], realBuffer[14], realBuffer[15]
+                        );
+				    if (isNamed)
+					    context.programParams.SetNamedConstant(paramName, m4X4);
+				    else
+					    context.programParams.SetConstant(index, m4X4);
+                }
+                else
+                {
+                    // Set
+                    if (isNamed)
+                    {
+                        // For named, only set up to the precise number of elements
+                        // (no rounding to 4 elements)
+                        // GLSL can support sub-float4 elements and we support that
+                        // in the buffer now. Note how we set the 'multiple' param to 1
+                        context.programParams.SetNamedConstant(paramName, realBuffer, dims, 1);
+                    }
+                    else
+                    {
+                        context.programParams.SetConstant(index, realBuffer, (int)(roundedDims * 0.25));
+                    }
+                }
 			}
 			else
 			{
@@ -2580,7 +2631,7 @@ namespace Axiom.Serialization
 					buffer[ i ] = 0;
 				}
 
-				context.programParams.SetConstant( index, buffer );
+                context.programParams.SetConstant(index, buffer, (int)(roundedDims * 0.25));
 			}
 		}
 
@@ -2591,8 +2642,10 @@ namespace Axiom.Serialization
 		/// <param name="commandName"></param>
 		/// <param name="parameters"></param>
 		/// <param name="context"></param>
-		protected static void ProcessAutoProgramParam( int index, string commandName, string[] parameters, MaterialScriptContext context )
+        protected static void ProcessAutoProgramParam(bool isNamed, string commandName,
+           string[] parameters, MaterialScriptContext context,  int index = 0,  string paramName = null )
 		{
+            /*
 			bool extras = false;
 
 			object val = ScriptEnumAttribute.Lookup( parameters[ 1 ], typeof( GpuProgramParameters.AutoConstantType ) );
@@ -2634,15 +2687,15 @@ namespace Axiom.Serialization
 					}
 				}
 				if ( isFloat && extras )
-					context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
+					context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ], CultureInfo.InvariantCulture ) );
 				else if ( extras )
 					context.programParams.SetAutoConstant( index, constantType, int.Parse( parameters[ 2 ] ) );
 				else if ( constantType == GpuProgramParameters.AutoConstantType.Time )
 				{
 					if ( parameters.Length == 3 )
-						context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
+						context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ], CultureInfo.InvariantCulture ) );
 					else
-						context.programParams.SetAutoConstant( index, constantType, 1.0f );
+						context.programParams.SetAutoConstantReal( index, constantType, 1.0f );
 				}
 				else
 					context.programParams.SetAutoConstant( index, constantType, 0 );
@@ -2653,6 +2706,127 @@ namespace Axiom.Serialization
 				LogParseError( context, "Bad auto gpu program param - Invalid param type '{0}', valid values are {1}.", parameters[ 1 ], legalValues );
 				return;
 			}
+             */
+
+            ///////////////////////////////
+
+            // NB we assume that the first element of vecparams is taken up with either
+        // the index or the parameter name, which we ignore
+
+        // make sure param is in lower case
+        //StringUtil::toLowerCase(vecparams[1]);
+
+        // lookup the param to see if its a valid auto constant
+		    GpuProgramParameters.AutoConstantDefinition autoConstantDef;
+
+                    // exit with error msg if the auto constant definition wasn't found
+
+            if (!GpuProgramParameters.GetAutoConstantDefinition(parameters[1], out autoConstantDef))
+		{
+			LogParseError(context, "Invalid " + commandName + " attribute - "
+				+ parameters[1]);
+			return;
+		}
+
+        // add AutoConstant based on the type of data it uses
+        switch (autoConstantDef.DataType)
+        {
+        case GpuProgramParameters.AutoConstantDataType.None:
+			if (isNamed)
+				context.programParams.SetNamedAutoConstant(paramName, autoConstantDef.AutoConstantType, 0);
+			else
+	            context.programParams.SetAutoConstant(index, autoConstantDef.AutoConstantType, 0);
+            break;
+
+        case GpuProgramParameters.AutoConstantDataType.Int:
+            {
+				// Special case animation_parametric, we need to keep track of number of times used
+				if (autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.AnimationParametric)
+				{
+					if (isNamed)
+						context.programParams.SetNamedAutoConstant(
+							paramName, autoConstantDef.AutoConstantType, context.numAnimationParametrics++);
+					else
+						context.programParams.SetAutoConstant(
+							index, autoConstantDef.AutoConstantType, context.numAnimationParametrics++);
+				}
+				// Special case texture projector - assume 0 if data not specified
+				else if ((autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureViewProjMatrix ||
+						autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureWorldViewProjMatrix ||
+						autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightViewProjMatrix ||
+						autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightWorldViewProjMatrix)
+					&& parameters.Length == 2)
+				{
+					if (isNamed)
+						context.programParams.SetNamedAutoConstant(
+							paramName, autoConstantDef.AutoConstantType, 0);
+					else
+						context.programParams.SetAutoConstant(
+							index, autoConstantDef.AutoConstantType, 0);
+
+				}
+				else
+				{
+
+					if (parameters.Length != 3)
+					{
+						LogParseError(context, "Invalid " + commandName + " attribute - "+
+							"expected 3 parameters.");
+						return;
+					}
+
+					var extraParam = int.Parse(parameters[2]);
+					if (isNamed)
+						context.programParams.SetNamedAutoConstant(
+							paramName, autoConstantDef.AutoConstantType, extraParam);
+					else
+						context.programParams.SetAutoConstant(
+							index, autoConstantDef.AutoConstantType, extraParam);
+				}
+            }
+            break;
+
+        case GpuProgramParameters.AutoConstantDataType.Real:
+            {
+                // special handling for time
+                if (autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.Time ||
+                    autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.FrameTime)
+                {
+                    Real factor = 1.0f;
+                    if (parameters.Length == 3)
+                    {
+                        factor = float.Parse(parameters[2], CultureInfo.InvariantCulture);
+                    }
+
+					if (isNamed)
+						context.programParams.SetNamedAutoConstantReal(paramName, 
+							autoConstantDef.AutoConstantType, factor);
+					else
+	                    context.programParams.SetAutoConstantReal(index, 
+							autoConstantDef.AutoConstantType, factor);
+                }
+                else // normal processing for auto constants that take an extra real value
+                {
+                    if (parameters.Length != 3)
+                    {
+                        LogParseError(context, "Invalid " + commandName + " attribute - " +
+                            "expected 3 parameters.");
+                        return;
+                    }
+
+                    Real rData = float.Parse(parameters[2], CultureInfo.InvariantCulture);
+					if (isNamed)
+						context.programParams.SetNamedAutoConstantReal(paramName, 
+							autoConstantDef.AutoConstantType, rData);
+					else
+						context.programParams.SetAutoConstantReal(index, 
+							autoConstantDef.AutoConstantType, rData);
+                }
+            }
+            break;
+
+        } // end switch
+
 		}
 
 		#endregion Static Methods
@@ -2716,6 +2890,7 @@ namespace Axiom.Serialization
 		public string filename;
 
 		public Dictionary<string, string> textureAliases = new Dictionary<string, string>();
+	    public int numAnimationParametrics;
 	}
 
 	/// <summary>

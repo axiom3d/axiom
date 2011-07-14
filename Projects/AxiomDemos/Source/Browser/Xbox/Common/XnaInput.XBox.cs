@@ -30,7 +30,7 @@ namespace Axiom.Demos.Browser.Xna
         {
             isPressed = false;
 
-            if ( key == Axiom.Input.KeyCodes.Escape && ( _gpState.IsButtonDown( XInput.Buttons.Back ) ) )
+            if ( key == Axiom.Input.KeyCodes.Escape || ( _gpState.IsButtonDown( XInput.Buttons.Back ) ) )
             {
                 isPressed = true;
                 return;
@@ -38,7 +38,7 @@ namespace Axiom.Demos.Browser.Xna
 
             XFG.Input.Keys xnaKey = Convert( key );
 
-            isPressed = _keyboardState.IsKeyDown( xnaKey );
+            isPressed = !_keyboardState.IsKeyUp( xnaKey );
         }
 
         private Microsoft.Xna.Framework.Input.Keys Convert( Axiom.Input.KeyCodes key )
@@ -48,7 +48,7 @@ namespace Axiom.Demos.Browser.Xna
                 case Axiom.Input.KeyCodes.G:
                     return Microsoft.Xna.Framework.Input.Keys.G;
                 default:
-                    return (Microsoft.Xna.Framework.Input.Keys)0;
+                    return Microsoft.Xna.Framework.Input.Keys.BrowserFavorites;
             }
         }
 
@@ -56,10 +56,10 @@ namespace Axiom.Demos.Browser.Xna
         {
             isPressed = false;
 
-            if ( button == Axiom.Input.MouseButtons.Left && _gpState.IsButtonDown( XInput.Buttons.A ) )
+            if ( button == Axiom.Input.MouseButtons.Left || _gpState.IsButtonDown( XInput.Buttons.A ) )
                 isPressed = true;
 
-            if ( button == Axiom.Input.MouseButtons.Right && _gpState.IsButtonDown( XInput.Buttons.B ) )
+            if ( button == Axiom.Input.MouseButtons.Right || _gpState.IsButtonDown( XInput.Buttons.B ) )
                 isPressed = true;
         }
 

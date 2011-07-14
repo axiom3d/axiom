@@ -34,8 +34,8 @@ namespace Axiom.Demos
 
 		public override void CreateScene()
 		{
-			if ( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) ||
-				!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
+			if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) ||
+				!Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.FragmentPrograms ) )
 			{
 
 				throw new Exception( "Your hardware does not support vertex and fragment programs, so you cannot run this demo." );

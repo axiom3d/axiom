@@ -55,7 +55,7 @@ namespace Axiom.ParticleSystems
 
 	#endregion Delegates
 	/// <summary>
-	///		Manages particle systems, particle system scripts (templates) and the available emitter & affector factories.
+	///		Manages particle systems, particle system scripts (templates) and the available emitter &amp; affector factories.
 	///	 </summary>
 	///	 <remarks>
 	///		This singleton class is responsible for creating and managing particle systems. All particle
@@ -359,16 +359,17 @@ namespace Axiom.ParticleSystems
 			return system;
 		}
 
-		/// <summary>
-		///		Internal method for creating a new emitter from a factory.
-		/// </summary>
-		/// <remarks>
-		///		Used internally by the engine to create new ParticleEmitter instances from named
-		///		factories. Applications should use the ParticleSystem.AddEmitter method instead,
-		///		which calls this method to create an instance.
-		/// </remarks>
-		/// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
-		internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
+	    /// <summary>
+	    ///		Internal method for creating a new emitter from a factory.
+	    /// </summary>
+	    /// <remarks>
+	    ///		Used internally by the engine to create new ParticleEmitter instances from named
+	    ///		factories. Applications should use the ParticleSystem.AddEmitter method instead,
+	    ///		which calls this method to create an instance.
+	    /// </remarks>
+	    /// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
+	    /// <param name="ps"></param>
+	    internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
 		{
 			ParticleEmitterFactory factory = emitterFactoryList[ emitterType ];
 
@@ -388,7 +389,7 @@ namespace Axiom.ParticleSystems
 		///		factories. Applications should use the ParticleSystem.AddAffector method instead,
 		///		which calls this method to create an instance.
 		/// </remarks>
-		/// <param name="emitterType">string name of the affector type to be created. A factory of this type must have been registered.</param>
+        /// <param name="affectorType">string name of the affector type to be created. A factory of this type must have been registered.</param>
 		internal ParticleAffector CreateAffector( string affectorType )
 		{
 			ParticleAffectorFactory factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType ];
@@ -452,10 +453,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="line"></param>
-		/// <param name="system"></param>
 		private void ParseEmitter( string type, TextReader script, ParticleSystem system )
 		{
 			ParticleEmitter emitter = system.AddEmitter( type );
@@ -482,10 +480,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="line"></param>
-		/// <param name="system"></param>
 		private void ParseAffector( string type, TextReader script, ParticleSystem system )
 		{
 			ParticleAffector affector = system.AddAffector( type );

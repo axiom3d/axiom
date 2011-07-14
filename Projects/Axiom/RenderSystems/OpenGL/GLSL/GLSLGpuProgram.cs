@@ -34,7 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.Diagnostics;
+using Axiom.Core;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -55,56 +56,107 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	{
 		#region Fields
 
-		/// <summary>
+        #region glslProgram
+
+        /// <summary>
 		///		GL Handle for the shader object.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected GLSLProgram glslProgram;
 
-		/// <summary>
+        #endregion
+
+        #region vertexShaderCount
+
+        /// <summary>
 		///		Keep track of the number of vertex shaders created.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected static int vertexShaderCount;
-		/// <summary>
+
+        #endregion
+
+        #region fragmentShaderCount
+
+        /// <summary>
 		///		Keep track of the number of fragment shaders created.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected static int fragmentShaderCount;
 
-		#endregion Fields
+        #endregion
 
-		#region Constructor
+        #region geometryShaderCount
 
+        /// <summary>
+        ///		Keep track of the number of geometry shaders created.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected static int geometryShaderCount;
+
+        #endregion
+
+        #endregion Fields
+
+        #region Constructor
+
+        [OgreVersion(1, 7, 2790)]
 		public GLSLGpuProgram( GLSLProgram parent )
 			: base( parent.Creator, parent.Name, parent.Handle, parent.Group, false, null )
 		{
-			this.Type = parent.Type;
-			this.SyntaxCode = "glsl";
+            // store off the reference to the parent program
+            glslProgram = parent;
 
-			// store off the reference to the parent program
-			glslProgram = parent;
+		    type = parent.Type;
+		    syntaxCode = "glsl";
 
 			if ( parent.Type == GpuProgramType.Vertex )
 			{
 				programId = ++vertexShaderCount;
 			}
-			else
+			else if (parent.Type == GpuProgramType.Fragment)
 			{
 				programId = ++fragmentShaderCount;
 			}
+			else
+			{
+			    programId = ++geometryShaderCount;
+			}
 
 			// transfer skeletal animation status from parent
-			this.IsSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
+			isSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
 
 			// there is nothing to load
-			loadFromFile = false;
+            LoadFromFile = false;
 		}
 
 		#endregion Constructor
 
-		#region Properties
+        #region dispose
 
-		/// <summary>
+        [OgreVersion(1, 7,2790)]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                // have to call this here reather than in Resource destructor
+                // since calling virtual methods in base destructors causes crash
+                unload(); 
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
+        #endregion
+
+        #region Properties
+
+        #region GLSLProgram
+
+        /// <summary>
 		///		Gets the GLSLProgram for the shader object.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		public GLSLProgram GLSLProgram
 		{
 			get
@@ -113,67 +165,180 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
-		#endregion Properties
+        #endregion
 
-		#region Resource Implementation
+        /*
+        // parent class already exposes this!
+        [OgreVersion(1, 7, 2790)]
+        public int ProgramID
+        {
+            get
+            {
+                return programId;
+            }
+        }
+         */
 
+        #endregion Properties
+
+        #region Resource Implementation
+
+        #region loadImpl
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void load()
 		{
 			// nothing to do
 		}
 
-		protected override void unload()
+        #endregion
+
+        #region unloadImpl
+
+        [OgreVersion(1, 7, 2790)]
+        protected override void unload()
 		{
 			// nothing to do
 		}
 
-		#endregion Resource Implementation
+        #endregion
 
-		#region GpuProgram Implementation
+        #region LoadFromSource
 
-		public override void Bind()
+        [OgreVersion(1, 7, 2790)]
+        protected override void LoadFromSource()
+        {
+            // nothing to load
+        }
+
+        #endregion
+
+        #endregion Resource Implementation
+
+        #region GpuProgram Implementation
+
+        #region bindProgram
+
+        [OgreVersion(1, 7, 2790)]
+        public override void Bind()
 		{
 			// tell the Link Program Manager what shader is to become active
-			if ( type == GpuProgramType.Vertex )
+			switch (Type)
 			{
-				GLSLLinkProgramManager.Instance.SetActiveVertexShader( this );
-			}
-			else
-			{
-				GLSLLinkProgramManager.Instance.SetActiveFragmentShader( this );
+                case  GpuProgramType.Vertex:
+				    GLSLLinkProgramManager.Instance.SetActiveVertexShader( this );
+			        break;
+                case GpuProgramType.Fragment:
+                    GLSLLinkProgramManager.Instance.SetActiveFragmentShader(this);
+			        break;
+                case GpuProgramType.Geometry:
+                    GLSLLinkProgramManager.Instance.SetActiveGeometryShader(this);
+			        break;
 			}
 		}
 
-		public override void BindParameters( GpuProgramParameters parameters )
+        #endregion
+
+        #region unbindProgram
+
+        [OgreVersion(1, 7, 2790)]
+        public override void Unbind()
+        {
+            // tell the Link Program Manager what shader is to become inactive
+            if (Type == GpuProgramType.Vertex)
+            {
+                GLSLLinkProgramManager.Instance.SetActiveVertexShader(null);
+            }
+            else if (Type == GpuProgramType.Geometry)
+            {
+                GLSLLinkProgramManager.Instance.SetActiveGeometryShader(null);
+            }
+            else
+            {
+                GLSLLinkProgramManager.Instance.SetActiveFragmentShader(null);
+            }
+        }
+
+        #endregion
+
+        #region BindProgramParameters
+
+        [OgreVersion(1, 7, 2790)]
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
-			// activate the link program object
-			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+            try
+            {
+                // activate the link program object
+                GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
-			// pass on parameters from params to program object uniforms
-			linkProgram.UpdateUniforms( parameters );
+                // pass on parameters from params to program object uniforms
+                linkProgram.UpdateUniforms(parms, mask, Type);
+            }
+            catch (Exception e)
+            {
+                LogManager.Instance.Write( "Remove this when validated" );
+                Debugger.Break();
+            }
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void LoadFromSource()
-		{
-			// nothing to load
-		}
+        #endregion
 
-		public override void Unbind()
-		{
-			// tell the Link Program Manager what shader is to become inactive
-			if ( type == GpuProgramType.Vertex )
-			{
-				GLSLLinkProgramManager.Instance.SetActiveVertexShader( null );
-			}
-			else
-			{
-				GLSLLinkProgramManager.Instance.SetActiveFragmentShader( null );
-			}
-		}
+        #region BindProgramPassIterationParameters
 
-		#endregion GpuProgram Implementation
-	}
+        [OgreVersion(1, 7, 2790)]
+        public override void BindProgramPassIterationParameters(GpuProgramParameters parms)
+        {
+            // activate the link program object
+            var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+
+            // pass on parameters from params to program object uniforms
+            linkProgram.UpdatePassIterationUniforms(parms);
+        }
+
+        #endregion
+
+        #region AttributeIndex
+
+        [OgreVersion(1, 7, 2790)]
+        internal override uint AttributeIndex(VertexElementSemantic semantic, uint index)
+        {
+            // get link program - only call this in the context of bound program
+            var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+
+            if (linkProgram.IsAttributeValid(semantic, index))
+            {
+                return linkProgram.GetAttributeIndex(semantic, index);
+            }
+            //else
+            {
+                // fall back to default implementation, allow default bindings
+                return base.AttributeIndex( semantic, index );
+            }
+        }
+
+        #endregion
+
+        #region IsAttributeValid
+
+        [OgreVersion(1, 7, 2790)]
+        internal override bool IsAttributeValid(VertexElementSemantic semantic, uint index)
+        {
+            // get link program - only call this in the context of bound program
+            var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+
+            if (linkProgram.IsAttributeValid(semantic, index))
+            {
+                return true;
+            } 
+            //else
+            {
+                // fall back to default implementation, allow default bindings
+                return base.IsAttributeValid(semantic, index);
+            }
+        }
+
+        #endregion
+
+        #endregion GpuProgram Implementation
+    }
 }
