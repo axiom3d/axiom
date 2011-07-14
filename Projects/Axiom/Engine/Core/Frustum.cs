@@ -277,7 +277,7 @@ namespace Axiom.Core
 #endif
                 return _orientationMode;
             }
-            protected set
+            set
             {
 #if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
                 throw new AxiomException( "Setting Frustrum orientation mode is not supported" );

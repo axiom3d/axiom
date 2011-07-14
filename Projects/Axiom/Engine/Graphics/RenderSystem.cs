@@ -1281,6 +1281,12 @@ it says it's incompatible with that RT");
             return ret;
         }
 
+        [AxiomHelper(0, 8)]
+        public void DetachRenderTarget(RenderTarget target)
+        {
+            DetachRenderTarget( target.Name );
+        }
+
         #endregion
 
         #region GetErrorDescription

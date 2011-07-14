@@ -1771,7 +1771,7 @@ namespace Axiom.Core
             Real tX = screenX; Real a = (int)OrientationMode * System.Math.PI * 0.5f;
             screenX = System.Math.Cos(a) * (tX - 0.5f) + System.Math.Sin(a) * (screenY - 0.5f) + 0.5f;
             screenY = System.Math.Sin(a) * (tX - 0.5f) + System.Math.Cos(a) * (screenY - 0.5f) + 0.5f;
-            if (((int)OrientationMode) & 1) screenY = 1.0f - screenY;
+            if ((((int)OrientationMode) & 1) == 1) screenY = 1.0f - screenY;
 #endif
 
             Real nx = (2.0f * screenX) - 1.0f;
