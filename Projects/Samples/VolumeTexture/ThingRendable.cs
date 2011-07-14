@@ -149,8 +149,7 @@ namespace Axiom.Samples.VolumeTexture
 			int offset = 0;
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position ).Size;
 
-			vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize(0), nVertices, BufferUsage.DynamicWriteOnly );
+			vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(0), nVertices, BufferUsage.DynamicWriteOnly );
 
 			bind.SetBinding( 0, vertexBuffer );
 
