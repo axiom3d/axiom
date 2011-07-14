@@ -164,41 +164,41 @@ namespace Axiom.Graphics
 		/// <param name="extrudeDistance">The distance to extrude.</param>
 		public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, float extrudeDistance )
 		{
-            Debug.Assert(vertexBuffer.VertexSize == sizeof(float) * 3, "Position buffer should contain only positions!");
+			Debug.Assert( vertexBuffer.VertexSize == sizeof( float ) * 3, "Position buffer should contain only positions!" );
 
-            // Extrude the first area of the buffer into the second area
-            // Lock the entire buffer for writing, even though we'll only be
-            // updating the latter because you can't have 2 locks on the same
-            // buffer                                
-            float[] pSrc = new float[vertexBuffer.Length / sizeof(float)];
-            vertexBuffer.GetData(pSrc);
+			// Extrude the first area of the buffer into the second area
+			// Lock the entire buffer for writing, even though we'll only be
+			// updating the latter because you can't have 2 locks on the same
+			// buffer                                
+			float[] pSrc = new float[ vertexBuffer.Length / sizeof( float ) ];
+			vertexBuffer.GetData( pSrc );
 
-            int destCount = (originalVertexCount * 3 * 4), srcCount = 0;
+			int destCount = ( originalVertexCount * 3 * 4 ), srcCount = 0;
 
-            // Assume directional light, extrusion is along light direction
-            Vector3 extrusionDir = new Vector3(-lightPosition.x, -lightPosition.y, -lightPosition.z);
-            extrusionDir.Normalize();
-            extrusionDir *= extrudeDistance;
+			// Assume directional light, extrusion is along light direction
+			Vector3 extrusionDir = new Vector3( -lightPosition.x, -lightPosition.y, -lightPosition.z );
+			extrusionDir.Normalize();
+			extrusionDir *= extrudeDistance;
 
-            for (int vert = 0; vert < originalVertexCount; vert++)
-            {
-                if (lightPosition.w != 0.0f)
-                {
-                    // Point light, adjust extrusionDir
-                    extrusionDir.x = pSrc[srcCount + 0] - lightPosition.x;
-                    extrusionDir.y = pSrc[srcCount + 1] - lightPosition.y;
-                    extrusionDir.z = pSrc[srcCount + 2] - lightPosition.z;
-                    extrusionDir.Normalize();
-                    extrusionDir *= extrudeDistance;
-                }
+			for ( int vert = 0; vert < originalVertexCount; vert++ )
+			{
+				if ( lightPosition.w != 0.0f )
+				{
+					// Point light, adjust extrusionDir
+					extrusionDir.x = pSrc[ srcCount + 0 ] - lightPosition.x;
+					extrusionDir.y = pSrc[ srcCount + 1 ] - lightPosition.y;
+					extrusionDir.z = pSrc[ srcCount + 2 ] - lightPosition.z;
+					extrusionDir.Normalize();
+					extrusionDir *= extrudeDistance;
+				}
 
-                pSrc[destCount++] = pSrc[srcCount++] + extrusionDir.x;
-                pSrc[destCount++] = pSrc[srcCount++] + extrusionDir.y;
-                pSrc[destCount++] = pSrc[srcCount++] + extrusionDir.z;
-            }
-
-            vertexBuffer.SetData(pSrc);
+				pSrc[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.x;
+				pSrc[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.y;
+				pSrc[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.z;
 			}
+
+			vertexBuffer.SetData( pSrc );
+		}
 
 
 		/// <summary>
@@ -237,8 +237,8 @@ namespace Axiom.Graphics
 			bool extrudeToInfinity = ( flags & (int)ShadowRenderableFlags.ExtrudeToInfinity ) > 0;
 
 			// Lock index buffer for writing
-            short[] pIdx = new short[indexBuffer.Length / sizeof(short)];
-            indexBuffer.GetData(pIdx);
+			short[] pIdx = new short[ indexBuffer.Length / sizeof( short ) ];
+			indexBuffer.GetData( pIdx );
 			int indexStart = 0;
 
 			//unsafe
@@ -416,7 +416,7 @@ namespace Axiom.Graphics
 			}
 
 			// Unlock index buffer
-            indexBuffer.SetData(pIdx);
+			indexBuffer.SetData( pIdx );
 
 			Debug.Assert( indexStart <= indexBuffer.IndexCount, "Index buffer overrun while generating shadow volume!" );
 		}
