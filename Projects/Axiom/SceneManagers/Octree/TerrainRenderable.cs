@@ -131,15 +131,27 @@ namespace Axiom.SceneManagers.Octree
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 			// TODO: Color
 
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
+			HardwareVertexBuffer buffer =
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+				decl.GetVertexSize( POSITION ),
+				terrain.vertexCount,
+				BufferUsage.StaticWriteOnly, true );
 
 			binding.SetBinding( POSITION, buffer );
 
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
+			buffer =
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+				decl.GetVertexSize( NORMAL ),
+				terrain.vertexCount,
+				BufferUsage.StaticWriteOnly, true );
 
 			binding.SetBinding( NORMAL, buffer );
 
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
+			buffer =
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+				offset,
+				terrain.vertexCount,
+				BufferUsage.StaticWriteOnly, true );
 
 			binding.SetBinding( TEXCOORD, buffer );
 

@@ -90,7 +90,6 @@ namespace Axiom.Framework.Properties {
             }
         }
         
-#if !(XBOX || XBOX360)
         public static System.Drawing.Icon AxiomIcon {
             get {
                 object obj = ResourceManager.GetObject("AxiomIcon", resourceCulture);
@@ -104,6 +103,5 @@ namespace Axiom.Framework.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-#endif
-	}
+    }
 }

@@ -2572,7 +2572,7 @@ namespace Axiom.Core
 				else
 					retVal.a = 1.0f;
 			}
-			catch ( Exception e )
+			catch ( Exception )
 			{
 				throw new FormatException( "The parts of the ColorEx in Parse_0_255 must be integers" );
 			}
@@ -2607,9 +2607,9 @@ namespace Axiom.Core
 
 		public override bool Equals( object obj )
 		{
-			if ( typeof( object ) is ColorEx )
+            if (obj is ColorEx)
 				return this == (ColorEx)obj;
-			else
+			//else
 				return false;
 		}
 

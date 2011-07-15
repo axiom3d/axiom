@@ -260,7 +260,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Parses an array of params and returns a color from it.
 		/// </summary>
-		/// <param name="val"></param>
 		public static ColorEx ParseColor( string[] values )
 		{
 			ColorEx color;
@@ -292,7 +291,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Parses an array of params and returns a color from it.
 		/// </summary>
-		/// <param name="val"></param>
 		public static Vector3 ParseVector3( string[] values )
 		{
 			Vector3 vec = new Vector3();
@@ -322,7 +320,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Parses an array of params and returns a color from it.
 		/// </summary>
-		/// <param name="val"></param>
 		public static Vector4 ParseVector4( string[] values )
 		{
 			Vector4 vec = new Vector4();
@@ -404,7 +401,7 @@ namespace Axiom.Core
 			{
 				num = Int32.Parse( value );
 			}
-			catch ( Exception e )
+			catch ( Exception )
 			{
 				num = 0;
 				retVal = false;

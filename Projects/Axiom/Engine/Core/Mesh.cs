@@ -244,7 +244,7 @@ namespace Axiom.Core
 						// load the skeleton
 						_skeleton = (Skeleton)SkeletonManager.Instance.Load( _skeletonName, Group );
 					}
-					catch ( Exception ex )
+					catch ( Exception )
 					{
 						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name + ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
 					}
@@ -594,7 +594,7 @@ namespace Axiom.Core
 			_useVertexShadowBuffer = true;
 			_useIndexShadowBuffer = true;
 
-			// Initialise to default strategy
+			// Initialize to default strategy
 			_lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
 
 			// Init first (manual) lod
@@ -1068,7 +1068,8 @@ namespace Axiom.Core
 		/// <summary>
 		///    Software blending oriented bone assignment compilation.
 		/// </summary>
-		protected internal void CompileBoneAssignments( Dictionary<int, List<VertexBoneAssignment>> boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData )
+		protected internal void CompileBoneAssignments( Dictionary<int, List<VertexBoneAssignment>> boneAssignments,
+													   int numBlendWeightsPerVertex, VertexData targetVertexData )
 		{
 			// Create or reuse blend weight / indexes buffer
 			// Indices are always a UBYTE4 no matter how many weights per vertex
@@ -1098,6 +1099,16 @@ namespace Axiom.Core
 			int bufferSize = Marshal.SizeOf( typeof( byte ) ) * 4;
 			bufferSize += Marshal.SizeOf( typeof( float ) ) * numBlendWeightsPerVertex;
 
+			HardwareVertexBuffer vbuf =
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+					bufferSize,
+					targetVertexData.vertexCount,
+					BufferUsage.StaticWriteOnly,
+					true ); // use shadow buffer
+
+			// bind new buffer
+			bind.SetBinding( bindIndex, vbuf );
+
 			VertexElement idxElem, weightElem;
 
 			VertexElement firstElem = decl.GetElement( 0 );
@@ -1115,22 +1126,22 @@ namespace Axiom.Core
 					insertPoint++;
 				}
 
-				idxElem = decl.InsertElement( insertPoint, bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices );
+				idxElem = decl.InsertElement( insertPoint, bindIndex, 0, VertexElementType.UByte4,
+					VertexElementSemantic.BlendIndices );
 
-				weightElem = decl.InsertElement( insertPoint + 1, bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
+				weightElem = decl.InsertElement( insertPoint + 1, bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4,
+					VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ),
+					VertexElementSemantic.BlendWeights );
 			}
 			else
 			{
 				// Position is not the first semantic, therefore this declaration is
 				// not pre-Dx9 compatible anyway, so just tack it on the end
 				idxElem = decl.AddElement( bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices );
-				weightElem = decl.AddElement( bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
+				weightElem = decl.AddElement( bindIndex, Marshal.SizeOf( typeof( byte ) ) * 4,
+					VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ),
+					VertexElementSemantic.BlendWeights );
 			}
-
-            HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(bindIndex), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
-
-            // bind new buffer
-            bind.SetBinding(bindIndex, vbuf);
 
 
 			// Assign data
@@ -1147,7 +1158,7 @@ namespace Axiom.Core
 				//for ( int v = 0; v < targetVertexData.vertexCount; v++ )
 				foreach ( KeyValuePair<int, List<VertexBoneAssignment>> boneAssignment in boneAssignments )
 				{
-					/// Convert to specific pointers
+					// Convert to specific pointers
 					pWeight = (float*)( (byte*)pBase + weightElem.Offset );
 					pIndex = pBase + idxElem.Offset;
 
@@ -1223,14 +1234,23 @@ namespace Axiom.Core
 				// find the buffer associated with this element
 				HardwareVertexBuffer origBuffer = vertexData.vertexBufferBinding.GetBuffer( prevTexCoordElem.Source );
 
-				// add the new element
-				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3, VertexElementSemantic.TexCoords,	destCoordSet );
+				// Now create a new buffer, which includes the previous contents
+				// plus extra space for the 3D coords
+				HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
+					origBuffer.VertexSize + ( 3 * Marshal.SizeOf( typeof( float ) ) ),
+					vertexData.vertexCount,
+					origBuffer.Usage,
+					origBuffer.HasShadowBuffer );
 
-                // Now create a new buffer, which includes the previous contents
-                // plus extra space for the 3D coords
-                HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
-                
-                // now copy the original data across
+				// add the new element
+				decl.AddElement(
+					prevTexCoordElem.Source,
+					origBuffer.VertexSize,
+					VertexElementType.Float3,
+					VertexElementSemantic.TexCoords,
+					destCoordSet );
+
+				// now copy the original data across
 				IntPtr srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
 				IntPtr destPtr = newBuffer.Lock( BufferLocking.Discard );
 
@@ -1262,11 +1282,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Ask the mesh to suggest parameters to a future <see cref="BuildTangentVectors"/> call.
+		///     Ask the mesh to suggest parameters to a future <see cref="BuildTangentVectors()"/> call.
 		/// </summary>
 		/// <remarks>
 		///     This helper method will suggest source and destination texture coordinate sets
-		///     for a call to <see cref="BuildTangentVectors"/>. It will detect when there are inappropriate
+		///     for a call to <see cref="BuildTangentVectors()"/>. It will detect when there are inappropriate
 		///     conditions (such as multiple geometry sets which don't agree).
 		///     Moreover, it will return 'true' if it detects that there are aleady 3D
 		///     coordinates in the mesh, and therefore tangents may have been prepared already.
@@ -1446,7 +1466,7 @@ namespace Axiom.Core
 
 
 		/// <summary>
-		///    Initialise an animation set suitable for use with this mesh.
+		///    Initialize an animation set suitable for use with this mesh.
 		/// </summary>
 		/// <remarks>
 		///    Only recommended for use inside the engine, not by applications.
@@ -1694,7 +1714,7 @@ namespace Axiom.Core
 		///		only affects buffers created by the mesh itself.
 		///		<p/>
 		///		You can define the approach to a Mesh by changing the default parameters to
-		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		<see cref="MeshManager.Load(string, string)"/> if you wish; this means the Mesh is loaded with those options
 		///		the first time instead of you having to reload the mesh after changing these options.
 		/// </remarks>
 		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
@@ -1724,7 +1744,7 @@ namespace Axiom.Core
 		///		only affects buffers created by the mesh itself.
 		///		<p/>
 		///		You can define the approach to a Mesh by changing the default parameters to
-		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		<see cref="MeshManager.Load(string, string)"/> if you wish; this means the Mesh is loaded with those options
 		///		the first time instead of you having to reload the mesh after changing these options.
 		/// </remarks>
 		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
@@ -1776,7 +1796,7 @@ namespace Axiom.Core
 			// Don't check flag here; since detail checks on track changes are not
 			// done, allow caller to force if they need to
 
-			// Initialise all types to nothing
+			// Initialize all types to nothing
 			_sharedVertexDataAnimationType = VertexAnimationType.None;
 			for ( int sm = 0; sm < this.SubMeshCount; sm++ )
 			{
@@ -2197,27 +2217,29 @@ namespace Axiom.Core
 
 		#region Static Methods
 
-		/// <summary>
-		///		Performs a software indexed vertex blend, of the kind used for
-		///		skeletal animation although it can be used for other purposes.
-		/// </summary>
-		/// <remarks>
-		///		This function is supplied to update vertex data with blends
-		///		done in software, either because no hardware support is available,
-		///		or that you need the results of the blend for some other CPU operations.
-		/// </remarks>
-		/// <param name="sourceVertexData">
-		///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
-		///	</param>
-		/// <param name="targetVertexData">
-		///		<see cref="VertexData"/> class containing target position
-		///		and normal buffers which will be updated with the blended versions.
-		///		Note that the layout of the source and target position / normal
-		///		buffers must be identical, ie they must use the same buffer indexes.
-		/// </param>
-		/// <param name="matrices">An array of matrices to be used to blend.</param>
-		/// <param name="blendNormals">If true, normals are blended as well as positions.</param>
-		public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
+	    /// <summary>
+	    ///		Performs a software indexed vertex blend, of the kind used for
+	    ///		skeletal animation although it can be used for other purposes.
+	    /// </summary>
+	    /// <remarks>
+	    ///		This function is supplied to update vertex data with blends
+	    ///		done in software, either because no hardware support is available,
+	    ///		or that you need the results of the blend for some other CPU operations.
+	    /// </remarks>
+	    /// <param name="sourceVertexData">
+	    ///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
+	    ///	</param>
+	    /// <param name="targetVertexData">
+	    ///		<see cref="VertexData"/> class containing target position
+	    ///		and normal buffers which will be updated with the blended versions.
+	    ///		Note that the layout of the source and target position / normal
+	    ///		buffers must be identical, ie they must use the same buffer indexes.
+	    /// </param>
+	    /// <param name="matrices">An array of matrices to be used to blend.</param>
+	    /// <param name="blendNormals">If true, normals are blended as well as positions.</param>
+	    /// <param name="blendTangents"></param>
+	    /// <param name="blendBinorms"></param>
+	    public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
 		{
 			// Source vectors
 			Vector3 sourcePos = Vector3.Zero;
@@ -2624,7 +2646,7 @@ namespace Axiom.Core
 		/// <param name="t">Parametric distance between the start and end buffer positions</param>
 		/// <param name="b1">Vertex buffer containing VertexElementType.Float3 entries for the start positions</param>
 		/// <param name="b2">Vertex buffer containing VertexElementType.Float3 entries for the end positions</param>
-		/// <param name="targetVertexData" VertexData destination; assumed to have a separate position
+		/// <param name="targetVertexData"> VertexData destination; assumed to have a separate position
 		///	     buffer already bound, and the number of vertices must agree with the
 		///   number in start and end
 		/// </param>
@@ -2674,9 +2696,9 @@ namespace Axiom.Core
 		///     you would be best to suppress hardware uploads of the position buffer
 		///     for the duration)
 		/// </remarks>
-		/// <param name="weight"Parametric weight to scale the offsets by</param>
-		/// <param name="vertexOffsetMap" Potentially sparse map of vertex index -> offset</param>
-		/// <param name="targetVertexData" VertexData destination; assumed to have a separate position
+		/// <param name="weight">Parametric weight to scale the offsets by</param>
+		/// <param name="vertexOffsetMap"> Potentially sparse map of vertex index -> offset</param>
+		/// <param name="targetVertexData"> VertexData destination; assumed to have a separate position
 		///	    buffer already bound, and the number of vertices must agree with the
 		///	    number in start and end
 		/// </param>

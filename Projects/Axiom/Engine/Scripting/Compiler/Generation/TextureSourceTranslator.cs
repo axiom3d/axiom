@@ -62,7 +62,7 @@ namespace Axiom.Scripting.Compiler
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
 				throw new NotImplementedException();
-
+#if UNREACHABLE_CODE
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
 				// It has to have one value identifying the texture source name
@@ -139,8 +139,8 @@ namespace Axiom.Scripting.Compiler
 
 					//TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->createDefinedTexture(material->getName(), material->getGroup());
 				}
-			}
-
+#endif
+            }
 			#endregion Translator Implementation
 		}
 	}

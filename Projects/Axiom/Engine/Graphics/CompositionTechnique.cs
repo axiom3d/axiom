@@ -180,7 +180,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Depth Buffer's pool ID. (unrelated to "pool" variable below)
 			/// </summary>
-			public ushort DepthBufferId
+			public PoolId DepthBufferId
 			{
 				get;
 				set;
@@ -211,12 +211,12 @@ namespace Axiom.Graphics
 			{
 				WidthFactor = 1.0f;
 				HeightFactor = 1.0f;
-				this.Fsaa = true;
-				this.DepthBufferId = 1;
+				Fsaa = true;
+				DepthBufferId = PoolId.Default;
 				Scope = TextureScope.Local;
 				ReferenceCompositorName = string.Empty;
 				ReferenceTextureName = string.Empty;
-				this.PixelFormats = new List<PixelFormat>();
+				PixelFormats = new List<PixelFormat>();
 			}
 		}
 
@@ -478,7 +478,7 @@ namespace Axiom.Graphics
 			foreach ( TextureDefinition td in this.textureDefinitions )
 			{
 				// Firstly check MRTs
-				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.HardwareCapabilities.MultiRenderTargetCount )
+				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.Capabilities.MultiRenderTargetCount )
 				{
 					return false;
 				}

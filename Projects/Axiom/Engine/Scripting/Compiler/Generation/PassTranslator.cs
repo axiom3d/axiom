@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -404,8 +405,10 @@ namespace Axiom.Scripting.Compiler
 												return;
 										}
 
-										//TODO
-										//mPass->setSeparateSceneBlending(sbt0, sbt1);
+									    throw new NotImplementedException(
+                                            string.Format("SetSeparateSceneBlending({0}, {1})", sbt0, sbt1));
+									    //TODO
+									    //mPass->setSeparateSceneBlending(sbt0, sbt1);
 									}
 									else
 									{

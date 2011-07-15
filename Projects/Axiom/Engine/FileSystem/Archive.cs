@@ -332,6 +332,7 @@ namespace Axiom.FileSystem
 			return Find( pattern );
 		}
 
+        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
 		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
 		public abstract List<string> Find( string pattern, bool recursive );
 
@@ -379,6 +380,7 @@ namespace Axiom.FileSystem
 			return FindFileInfo( pattern, true );
 		}
 
+        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
 		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
 		public abstract FileInfoList FindFileInfo( string pattern, bool recursive );
 

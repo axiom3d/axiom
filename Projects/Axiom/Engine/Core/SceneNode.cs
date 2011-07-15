@@ -554,7 +554,7 @@ namespace Axiom.Core
 		/// is O(n), whereas the string overload of this method is O(1). Use the string
 		/// version of this method if speed is important.
 		/// </summary>
-		/// <param name="name">The name of the object to return.</param>
+        /// <param name="index">The index of the object to return.</param>
 		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( int index )
 		{
@@ -812,7 +812,7 @@ namespace Axiom.Core
 		///		This method allows you to change the yaw behavior of the node - by default, it
 		///		yaws around it's own local Y axis when told to yaw with <see cref="TransformSpace.Local"/>,
 		///		this makes it yaw around a fixed axis.
-		///		You only really need this when you're using auto tracking (<see cref="SetAutoTracking"/>,
+		///		You only really need this when you're using auto tracking (<see cref="SetAutoTracking(bool)"/>,
 		///		because when you're manually rotating a node you can specify the <see cref="TransformSpace"/>
 		///		in which you wish to work anyway.
 		/// </remarks>
@@ -942,14 +942,14 @@ namespace Axiom.Core
 		/// <remarks>
 		///		Note that the 'up' vector for the orientation will automatically be
 		///		recalculated based on the current 'up' vector (i.e. the roll will
-		///		remain the same). If you need more control, use the <see cref="Orientation"/>
+		///		remain the same). If you need more control, use the <see name="Orientation"/>
 		///		property.
 		/// </remarks>
 		/// <param name="x">The x component of the direction vector.</param>
 		/// <param name="y">The y component of the direction vector.</param>
 		/// <param name="z">The z component of the direction vector.</param>
 		/// <param name="relativeTo">The space in which this direction vector is expressed.</param>
-		/// <param name="localDirection">The vector which normally describes the natural direction
+        /// <param name="localDirectionVector">The vector which normally describes the natural direction
 		///		of the node, usually -Z.
 		///	</param>
 		public void SetDirection( Real x, Real y, Real z, TransformSpace relativeTo, Vector3 localDirectionVector )
@@ -976,7 +976,7 @@ namespace Axiom.Core
 		/// <remarks>
 		///		Note that the 'up' vector for the orientation will automatically be
 		///		recalculated based on the current 'up' vector (i.e. the roll will
-		///		remain the same). If you need more control, use the <see cref="Orientation"/>
+		///		remain the same). If you need more control, use the <see name="Orientation"/>
 		///		property.
 		/// </remarks>
 		/// <param name="vec">The direction vector.</param>

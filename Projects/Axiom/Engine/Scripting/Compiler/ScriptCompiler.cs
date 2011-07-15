@@ -284,7 +284,6 @@ namespace Axiom.Scripting.Compiler
 			return _errors.Count == 0;
 		}
 
-		/// <see cref="ScriptCompiler.AddError(CompilerErrorCode, string, uint, string)"/>
 		internal void AddError( CompileErrorCode code, string file, uint line )
 		{
 			this.AddError( code, file, line, string.Empty );
@@ -453,7 +452,7 @@ namespace Axiom.Scripting.Compiler
 						//_importRequests.Remove(
 						//        mImportRequests.erase(mImportRequests.lower_bound(import->source),
 						//            mImportRequests.upper_bound(import->source));
-						_importRequests.Add( import.Source, "*" );
+						//_importRequests.Add( import.Source, "*" );
 					}
 					else
 					{
@@ -461,13 +460,14 @@ namespace Axiom.Scripting.Compiler
 						//        ImportRequestMap::iterator iter = mImportRequests.lower_bound(import->source),
 						//            end = mImportRequests.upper_bound(import->source);
 						//        if(iter == end || iter->second != "*")
-						{
-							_importRequests.Add( import.Source, import.Target );
-						}
+						//{
+						//	_importRequests.Add( import.Source, import.Target );
+						//}
 					}
-
+#if UNREACHABLE_CODE
 					nodes.RemoveAt( i );
 					i--;
+#endif
 				}
 			}
 

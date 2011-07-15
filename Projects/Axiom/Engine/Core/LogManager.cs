@@ -113,7 +113,7 @@ namespace Axiom.Core
 		///     Creates a new log with the given name.
 		/// </summary>
 		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
-		/// <param name="defaultLog">
+        /// <param name="isDefaultLog">
 		///     If true, this is the default log output will be
 		///     sent to if the generic logging methods on this class are
 		///     used. The first log created is always the default log unless
@@ -129,7 +129,7 @@ namespace Axiom.Core
 		///     Creates a new log with the given name.
 		/// </summary>
 		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
-		/// <param name="defaultLog">
+        /// <param name="isDefaultLog">
 		///     If true, this is the default log output will be
 		///     sent to if the generic logging methods on this class are
 		///     used. The first log created is always the default log unless
