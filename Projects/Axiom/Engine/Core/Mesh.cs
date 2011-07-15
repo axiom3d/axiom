@@ -594,7 +594,7 @@ namespace Axiom.Core
 			_useVertexShadowBuffer = true;
 			_useIndexShadowBuffer = true;
 
-			// Initialize to default strategy
+			// Initialise to default strategy
 			_lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
 
 			// Init first (manual) lod
@@ -1466,7 +1466,7 @@ namespace Axiom.Core
 
 
 		/// <summary>
-		///    Initialize an animation set suitable for use with this mesh.
+		///    Initialise an animation set suitable for use with this mesh.
 		/// </summary>
 		/// <remarks>
 		///    Only recommended for use inside the engine, not by applications.
@@ -1796,7 +1796,7 @@ namespace Axiom.Core
 			// Don't check flag here; since detail checks on track changes are not
 			// done, allow caller to force if they need to
 
-			// Initialize all types to nothing
+			// Initialise all types to nothing
 			_sharedVertexDataAnimationType = VertexAnimationType.None;
 			for ( int sm = 0; sm < this.SubMeshCount; sm++ )
 			{

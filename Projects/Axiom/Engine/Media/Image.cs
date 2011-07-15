@@ -687,7 +687,7 @@ namespace Axiom.Media
 		/// Scale a 1D, 2D or 3D image volume.
 		/// </summary>
 		/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
-        /// <param name="scaled">PixelBox containing the destination pointer, dimensions and format</param>
+		/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
 		/// <param name="filter">Which filter to use</param>
 		/// <remarks>
 		/// This function can do pixel format conversion in the process.

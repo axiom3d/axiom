@@ -284,6 +284,7 @@ namespace Axiom.Scripting.Compiler
 			return _errors.Count == 0;
 		}
 
+		/// <see cref="ScriptCompiler.AddError(CompilerErrorCode, string, uint, string)"/>
 		internal void AddError( CompileErrorCode code, string file, uint line )
 		{
 			this.AddError( code, file, line, string.Empty );

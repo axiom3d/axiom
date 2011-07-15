@@ -296,14 +296,14 @@ namespace Axiom.RenderSystems.DirectX9
 			device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
 		}
 
-	    /// <summary>
-	    ///
-	    /// </summary>
-	    ///<param name="buffers"></param>
-	    ///<param name="color"></param>
-	    ///<param name="depth"></param>
-	    ///<param name="stencil"></param>
-	    public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="buffers"></param>
+		/// <param name="color"></param>
+		/// <param name="depth"></param>
+		/// <param name="stencil"></param>
+		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			D3D.ClearFlags flags = 0;
 
@@ -665,17 +665,16 @@ namespace Axiom.RenderSystems.DirectX9
 			return renderWindow;
 		}
 
-	    /// <summary>
-	    ///
-	    /// </summary>
-	    ///<param name="fov"></param>
-	    ///<param name="aspectRatio"></param>
-	    ///<param name="near"></param>
-	    ///<param name="far"></param>
-	    ///<param name="dest1"></param>
-	    ///<param name="forGpuPrograms"></param>
-	    ///<returns></returns>
-	    public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest1, bool forGpuPrograms )
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="fov"></param>
+		/// <param name="aspectRatio"></param>
+		/// <param name="near"></param>
+		/// <param name="far"></param>
+		/// <param name="forGpuPrograms"></param>
+		/// <returns></returns>
+		public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
 		{
 			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
 			float tanThetaY = Utility.Tan( thetaY );
@@ -708,7 +707,7 @@ namespace Axiom.RenderSystems.DirectX9
 			return dest;
 		}
 
-		public override void ConvertProjectionMatrix( Matrix4 mat, out Matrix4 dest1, bool forGpuProgram )
+		public override Matrix4 ConvertProjectionMatrix( Matrix4 mat, bool forGpuProgram )
 		{
 			Matrix4 dest = new Matrix4( mat.m00, mat.m01, mat.m02, mat.m03,
 									   mat.m10, mat.m11, mat.m12, mat.m13,
@@ -733,17 +732,16 @@ namespace Axiom.RenderSystems.DirectX9
 			return dest;
 		}
 
-	    /// <summary>
-	    ///
-	    /// </summary>
-	    ///<param name="fov"></param>
-	    ///<param name="aspectRatio"></param>
-	    ///<param name="near"></param>
-	    ///<param name="far"></param>
-	    ///<param name="dest1"></param>
-	    ///<param name="forGpuProgram"></param>
-	    ///<returns></returns>
-	    public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest1, bool forGpuProgram )
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="fov"></param>
+		/// <param name="aspectRatio"></param>
+		/// <param name="near"></param>
+		/// <param name="far"></param>
+		/// <param name="forGpuProgram"></param>
+		/// <returns></returns>
+		public override Axiom.Math.Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
 		{
 			float theta = Utility.DegreesToRadians( fov * 0.5f );
 			float h = 1 / Utility.Tan( theta );
@@ -783,20 +781,19 @@ namespace Axiom.RenderSystems.DirectX9
 			return dest;
 		}
 
-	    /// <summary>
-	    /// Builds a perspective projection matrix for the case when frustum is
-	    /// not centered around camera.
-	    /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
-	    /// </summary>
-	    /// <param name="left"></param>
-	    /// <param name="right"></param>
-	    /// <param name="bottom"></param>
-	    /// <param name="top"></param>
-	    /// <param name="nearPlane"></param>
-	    /// <param name="farPlane"></param>
-	    /// <param name="dest1"></param>
-	    /// <param name="forGpuProgram"></param>
-	    public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest1, bool forGpuProgram )
+		/// <summary>
+		/// Builds a perspective projection matrix for the case when frustum is
+		/// not centered around camera.
+		/// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <param name="bottom"></param>
+		/// <param name="top"></param>
+		/// <param name="nearPlane"></param>
+		/// <param name="farPlane"></param>
+		/// <param name="forGpuProgram"></param>
+		public override Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram )
 		{
 			// Correct position for off-axis projection matrix
 			if ( !forGpuProgram )
@@ -918,7 +915,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		public override void BeginFrame()
 		{
-			Debug.Assert( _activeViewport != null, "BeingFrame cannot run without an active viewport." );
+			Debug.Assert( activeViewport != null, "BeingFrame cannot run without an active viewport." );
 
 			// begin the D3D scene for the current viewport
 			device.BeginScene();
@@ -950,10 +947,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="viewport"></param>
 		public override void SetViewport( Axiom.Core.Viewport viewport )
 		{
-			if ( _activeViewport != viewport || viewport.IsUpdated )
+			if ( activeViewport != viewport || viewport.IsUpdated )
 			{
 				// store this viewport and it's target
-				_activeViewport = viewport;
+				activeViewport = viewport;
 				activeRenderTarget = viewport.Target;
 
 				RenderTarget target = viewport.Target;
@@ -2081,7 +2078,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// render point sprites (textured quads) or plain points.
 		/// </summary>
 		/// <value></value>
-		public override bool PointSpritesEnabled
+		public override bool PointSprites
 		{
 			set
 			{

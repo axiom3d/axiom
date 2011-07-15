@@ -789,12 +789,13 @@ namespace Axiom.Graphics
 					// Save old viewport clearing options
 					oldClearEveryFrameBuffers = viewport.ClearBuffers;
 					// Don't clear anything every frame since we have our own clear ops
-					viewport.SetClearEveryFrame(false);
+					viewport.ClearEveryFrame = false;
 				}
 				else
 				{
 					// Reset clearing options
-					viewport.SetClearEveryFrame(oldClearEveryFrameBuffers > 0, oldClearEveryFrameBuffers);
+					viewport.ClearEveryFrame = oldClearEveryFrameBuffers > 0;
+					viewport.ClearBuffers = oldClearEveryFrameBuffers;
 				}
 			}
 			dirty = false;

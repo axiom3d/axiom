@@ -127,7 +127,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///
 		/// </summary>
-        /// <param name="affector"></param>
+		/// <param name="emitter"></param>
 		public virtual void CopyTo( ParticleAffector affector )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
@@ -149,7 +149,8 @@ namespace Axiom.ParticleSystems
 		///		The affector is expected to apply it's effect to some or all of the particles in the system
 		///		passed to it, depending on the affector's approach.
 		/// </remarks>
-        /// <param name="particle">Reference to a ParticleSystem to affect.</param>
+		/// <param name="system">Reference to a ParticleSystem to affect.</param>
+		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
 		public virtual void InitParticle( ref Particle particle )
 		{
 			// do nothing by default
@@ -162,6 +163,8 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public bool SetParam( string name, string val )
 		{
 			if ( commandTable.ContainsKey( name ) )
