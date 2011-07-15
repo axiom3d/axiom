@@ -499,6 +499,9 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overloaded method.
 		///	 </summary>
+		/// <param name="camera"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		protected virtual void GenerateBillboardAxes( ref Vector3 x, ref Vector3 y )
 		{
 			this.GenerateBillboardAxes( ref x, ref y, null );
@@ -507,6 +510,10 @@ namespace Axiom.Core
 		/// <summary>
 		///		Generates billboard corners.
 		///	 </summary>
+		/// <param name="camera"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="billboard"></param>
 		/// <remarks>Billboard param only required for type OrientedSelf</remarks>
 		protected virtual void GenerateBillboardAxes( ref Vector3 x, ref Vector3 y, Billboard bb )
 		{
@@ -1697,6 +1704,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
+		///
 		/// </summary>
 		public virtual ushort NumWorldTransforms
 		{
@@ -1706,8 +1714,8 @@ namespace Axiom.Core
 			}
 		}
 
-        /// <summary>
-        /// </summary>
+		///
+		/// </summary>
 		public bool UseIdentityProjection
 		{
 			get
@@ -1716,8 +1724,9 @@ namespace Axiom.Core
 			}
 		}
 
-        /// <summary>
-        /// </summary>
+		/// <summary>
+		///
+		/// </summary>
 		public bool UseIdentityView
 		{
 			get
@@ -1899,7 +1908,7 @@ namespace Axiom.Core
 				bool enabled = value;
 				// Override point rendering if not supported
 				if ( enabled
-					 && !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.PointSprites ) )
+					 && !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.PointSprites ) )
 				{
 					enabled = false;
 				}
@@ -1948,6 +1957,7 @@ namespace Axiom.Core
 
 			if ( param != null )
 			{
+				object ni;
 				if ( param.ContainsKey( "poolSize" ) )
 				{
 					poolSize = Convert.ToInt32( param[ "poolSize" ] );

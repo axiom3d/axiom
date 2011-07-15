@@ -182,6 +182,16 @@ namespace Axiom.Core
 		/// </param>
 		/// <param name="width">Specifies the width of the patch in control points.</param>
 		/// <param name="height">Specifies the height of the patch in control points.</param>
+		/// <param name="type">The type of surface.</param>
+		/// <param name="uMaxSubdivision">
+		///     If you want to manually set the top level of subdivision,
+		///     do it here, otherwise let the system decide.
+		/// </param>
+		/// <param name="vMaxSubdivisionLevel">
+		///     If you want to manually set the top level of subdivision,
+		///     do it here, otherwise let the system decide.
+		/// </param>
+		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
 		public void DefineSurface( Array controlPointArray, VertexDeclaration decl, int width, int height )
 		{
 			DefineSurface( controlPointArray, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
@@ -204,7 +214,7 @@ namespace Axiom.Core
 		///     The array is internally treated as a contiguous memory buffer without any gaps between the elements.
 		///     The format of the buffer is defined in the VertexDeclaration parameter.
 		/// </param>
-        /// <param name="declaration">
+		/// <param name="decl">
 		///     VertexDeclaration describing the contents of the buffer.
 		///     Note this declaration must _only_ draw on buffer source 0!
 		/// </param>
@@ -219,7 +229,7 @@ namespace Axiom.Core
 		///     If you want to manually set the top level of subdivision,
 		///     do it here, otherwise let the system decide.
 		/// </param>
-        /// <param name="visibleSide">Determines which side of the patch (or both) triangles are generated for.</param>
+		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
 		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
 			PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
 		{
@@ -257,7 +267,7 @@ namespace Axiom.Core
 			this.side = visibleSide;
 
 			// Determine max level
-			// Initialize to 100% detail
+			// Initialise to 100% detail
 			subdivisionFactor = 1.0f;
 
 			if ( uMaxSubdivisionLevel == AUTO_LEVEL )
@@ -321,7 +331,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <remarks>
 		///     The VertexDeclaration of the vertex buffer must be identical to the one passed into
-		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.  In addition, there must be enough space in the buffer to
+		///     <see cref="DefineSurface"/>.  In addition, there must be enough space in the buffer to
 		///     accommodate the patch at full detail level; you should check <see cref="RequiredVertexCount"/>
 		///     and <see cref="RequiredIndexCount"/> to determine this. This method does not create an internal
 		///     mesh for this patch and so GetMesh will return null if you call it after building the
@@ -781,14 +791,20 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="forMax"></param>
+		/// <returns></returns>
 		protected int GetAutoULevel()
 		{
 			return GetAutoULevel( false );
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="forMax"></param>
+		/// <returns></returns>
 		protected int GetAutoULevel( bool forMax )
 		{
 			// determine levels
@@ -829,14 +845,20 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="forMax"></param>
+		/// <returns></returns>
 		protected int GetAutoVLevel()
 		{
 			return GetAutoVLevel( false );
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="forMax"></param>
+		/// <returns></returns>
 		protected int GetAutoVLevel( bool forMax )
 		{
 			Vector3 a = Vector3.Zero;
@@ -883,9 +905,7 @@ namespace Axiom.Core
 		#region Properties
 
 		/// <summary>
-		///     Based on a previous call to 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
-        ///     establishes the number of vertices required
+		///     Based on a previous call to <see cref="DefineSurface"/>, establishes the number of vertices required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
 		/// <remarks>
@@ -900,9 +920,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Based on a previous call to 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
-        ///     establishes the number of indexes required
+		///     Based on a previous call to <see cref="DefineSurface"/>, establishes the number of indexes required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
 		public int RequiredIndexCount
@@ -947,8 +965,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-        ///     Gets the bounds of this patch, only valid after calling 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
+		///     Gets the bounds of this patch, only valid after calling <see cref="DefineSurface"/>.
 		/// </summary>
 		public AxisAlignedBox Bounds
 		{
@@ -959,8 +976,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-        ///     Gets the radius of the bounding sphere for this patch, only valid after 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>
+		///     Gets the radius of the bounding sphere for this patch, only valid after <see cref="DefineSurface"/>
 		///     has been called.
 		/// </summary>
 		public float BoundingSphereRadius
@@ -979,7 +995,7 @@ namespace Axiom.Core
 		///     the U and V directions can have different subdivision levels, this property
 		///     takes a single float value where 0 is the minimum detail (the control points)
 		///     and 1 is the maximum detail level as supplied to the original call to
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
+		///     <see cref="DefineSurface"/>.
 		/// </remarks>
 		public float SubdivisionFactor
 		{

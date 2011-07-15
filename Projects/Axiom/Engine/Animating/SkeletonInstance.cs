@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom.Collections;
-using Axiom.Core;
 using Axiom.Math;
 using System.Collections.Generic;
 
@@ -199,7 +198,7 @@ namespace Axiom.Animating
 
 		/// <summary>
 		///		Creates a new Animation object for animating this skeleton.
-		/// </summary>
+		/// </summary
 		/// <remarks>
 		///		This method updates the reference skeleton, not just this instance!
 		/// </remarks>

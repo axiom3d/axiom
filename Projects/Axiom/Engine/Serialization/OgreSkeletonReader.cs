@@ -236,10 +236,11 @@ namespace Axiom.Serialization
 			parent.AddChild( child );
 		}
 
-	    /// <summary>
-	    ///    Reads an animation track section.
-	    /// </summary>
-	    protected void ReadKeyFrame( BinaryReader reader, NodeAnimationTrack track )
+		/// <summary>
+		///    Reads an animation track section.
+		/// </summary>
+		/// <param name="track"></param>
+		protected void ReadKeyFrame( BinaryReader reader, NodeAnimationTrack track )
 		{
 			float time = ReadFloat( reader );
 

@@ -1336,6 +1336,8 @@ namespace Axiom.Core
 
 			if ( param != null )
 			{
+				string ni;
+
 				// Setting the light type first before any property specific to a certain light type
 				if ( param.ContainsKey( "type" ) )
 				{

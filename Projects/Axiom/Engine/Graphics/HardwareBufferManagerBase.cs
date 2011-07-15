@@ -241,7 +241,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="licensee">
 		///     Reference back to the class requesting the copy, which must
-		///     implement <see cref="IHardwareBufferLicensee"/> in order to be notified when the license
+		///     implement <see cref="IHardwareBufferLicense"/> in order to be notified when the license
 		///     expires.
 		/// </param>
 		/// <returns></returns>
@@ -267,7 +267,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="licensee">
 		///     Reference back to the class requesting the copy, which must
-		///     implement <see cref="IHardwareBufferLicensee"/> in order to be notified when the license
+		///     implement <see cref="IHardwareBufferLicense"/> in order to be notified when the license
 		///     expires.
 		/// </param>
 		/// <param name="copyData">If true, the current data is copied as well as the structure of the buffer.</param>
@@ -315,8 +315,7 @@ namespace Axiom.Graphics
 		///     Manually release a vertex buffer copy for others to subsequently use.
 		/// </summary>
 		/// <remarks>
-		///     Only required if the original call to 
-        ///     <see cref="AllocateVertexBufferCopy(HardwareVertexBuffer, BufferLicenseRelease, IHardwareBufferLicensee, bool)"/>
+		///     Only required if the original call to <see cref="AllocateVertexBufferCopy"/>
 		///     included a licenseType of <see cref="BufferLicenseRelease.Manual"/>. 
 		/// </remarks>
 		/// <param name="bufferCopy">
@@ -346,7 +345,7 @@ namespace Axiom.Graphics
 		///     the internal configured value, keep the buffer not get released for
 		///     some frames.
 		/// </remarks>
-		/// <param name="bufferCopy"> The buffer copy. The caller is expected to keep this
+		/// <param name="bufferCopy" The buffer copy. The caller is expected to keep this
 		///     buffer copy for use.</param>
 		public void TouchVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{

@@ -85,8 +85,6 @@ namespace Axiom.Math
 
 		/// <summary>The value 0</summary>
 		public readonly static Real Zero = new Real( 0 );
-        /// <summary>The value 1</summary>
-        public readonly static Real One = new Real( 1 );
 		/// <summary>The value of Positive Infinity</summary>
 		public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
 		/// <summary>The value of Negative Infinity</summary>
@@ -632,21 +630,33 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <param name="tolerance"></param>
+		/// <returns></returns>
 		public bool Equals( Real obj )
 		{
 			return this.Equals( obj, Tolerance );
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="lhs"></param>
+		/// <param name="rhs"></param>
+		/// <param name="tolerance"></param>
+		/// <returns></returns>
 		public bool Equals( Real obj, Real tolerance )
 		{
 			return ( Utility.Abs( obj - this ) <= tolerance );
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <returns></returns>
 		public override int GetHashCode()
 		{
 			return this._value.GetHashCode();

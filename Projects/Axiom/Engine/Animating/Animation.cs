@@ -44,10 +44,10 @@ using Axiom.Graphics;
 #endregion
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="Animation.h"   revision="1.15.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-//     <file name="Animation.cpp" revision="1.16.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="Animation.h"   revision="1.15.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Animation.cpp" revision="1.16.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Animating
@@ -299,7 +299,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Creates a new NodeAnimationTrack automatically associated with a Node. 
 		/// </summary>
-        /// <param name="handle">Handle to give the track, used for accessing the track later.</param>
+		/// <param name="index">Handle to give the track, used for accessing the track later.</param>
 		/// <param name="targetNode">Node object which will be affected by this track.</param>
 		/// <returns></returns>
 		public NodeAnimationTrack CreateNodeTrack( ushort handle, Node targetNode )
@@ -329,7 +329,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Creates a new NumericAnimationTrack automatically associated with a Numeric. 
 		/// </summary>
-        /// <param name="handle">Handle to give the track, used for accessing the track later.</param>
+		/// <param name="index">Handle to give the track, used for accessing the track later.</param>
 		/// <param name="animable">AnimableValue which will be affected by this track.</param>
 		/// <returns></returns>
 		public NumericAnimationTrack CreateNumericTrack( ushort handle, AnimableValue animable )
@@ -341,13 +341,12 @@ namespace Axiom.Animating
 			return track;
 		}
 
-	    /// <summary>
-	    ///		Creates an VertexAnimationTrack. 
-	    /// </summary>
-	    /// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-	    /// <param name="animType"></param>
-	    /// <returns></returns>
-	    public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexAnimationType animType )
+		/// <summary>
+		///		Creates an VertexAnimationTrack. 
+		/// </summary>
+		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
+		/// <returns></returns>
+		public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexAnimationType animType )
 		{
 			VertexAnimationTrack track = new VertexAnimationTrack( this, handle, animType );
 
@@ -357,14 +356,13 @@ namespace Axiom.Animating
 			return track;
 		}
 
-	    /// <summary>
-	    ///		Creates a new VertexAnimationTrack automatically associated with a Vertex. 
-	    /// </summary>
-	    /// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-	    /// <param name="targetVertexData">Vertex object which will be affected by this track.</param>
-	    /// <param name="type"></param>
-	    /// <returns></returns>
-	    public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexData targetVertexData,
+		/// <summary>
+		///		Creates a new VertexAnimationTrack automatically associated with a Vertex. 
+		/// </summary>
+		/// <param name="index">Handle to give the track, used for accessing the track later.</param>
+		/// <param name="target">Vertex object which will be affected by this track.</param>
+		/// <returns></returns>
+		public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexData targetVertexData,
 													  VertexAnimationType type )
 		{
 			// create a new track and set it's target
@@ -373,19 +371,18 @@ namespace Axiom.Animating
 			return track;
 		}
 
-	    /// <summary>
-	    ///		Applies an animation given a specific time point and weight.
-	    /// </summary>
-	    /// <remarks>
-	    ///		Where you have associated animation tracks with Node objects, you can eaily apply
-	    ///		an animation to those nodes by calling this method.
-	    /// </remarks>
-	    /// <param name="time">The time position in the animation to apply.</param>
-	    /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-	    ///		other animations.</param>
-	    /// <param name="accumulate"></param>
-	    /// <param name="scale"></param>
-	    public void Apply( float time, float weight, bool accumulate, float scale )
+		/// <summary>
+		///		Applies an animation given a specific time point and weight.
+		/// </summary>
+		/// <remarks>
+		///		Where you have associated animation tracks with Node objects, you can eaily apply
+		///		an animation to those nodes by calling this method.
+		/// </remarks>
+		/// <param name="time">The time position in the animation to apply.</param>
+		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
+		///		other animations.</param>
+		/// <param name="accumulate"></param>
+		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
 			foreach ( NodeAnimationTrack nodeTrack in nodeTrackList.Values )
