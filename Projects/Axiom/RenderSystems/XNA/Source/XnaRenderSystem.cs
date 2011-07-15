@@ -746,6 +746,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_ambientLight = value;
+                basicEffect.AmbientLightColor = XnaHelper.Convert(_ambientLight).ToVector3();
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightAmbient = value;
 #endif
@@ -835,6 +836,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_lightingEnabled = value;
+                basicEffect.LightingEnabled = _lightingEnabled;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightingEnabled = value;
 #endif
@@ -884,10 +886,7 @@ namespace Axiom.RenderSystems.Xna
 				{
 					case PolygonMode.Points:
 
-                        throw new NotSupportedException("Point geometry is no longer supported on the XNA RenderSystem");
-
-						throw new Exception( "Xna does not implement Point rendering." );
-						//_device.RenderState.FillMode = XFG.FillMode.Point;
+                        StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
 
 						break;
 					case PolygonMode.Wireframe:
@@ -909,7 +908,6 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				//throw new Exception("The method or operation is not implemented.");
-
 			}
 		}
 
@@ -1537,7 +1535,6 @@ namespace Axiom.RenderSystems.Xna
 			return dest;
 		}
 
-		//XFG.BasicEffect ef;
 		public override void SetClipPlane( ushort index, float A, float B, float C, float D )
 		{
 			throw new NotImplementedException();
@@ -1778,8 +1775,8 @@ namespace Axiom.RenderSystems.Xna
 				a2c = alphaToCoverage;
 			}
 
-			//_device.BlendState.AlphaBlendFunction = XnaHelper.Convert( func );
-			//_device.BlendState.ReferenceAlpha = val;
+			StateManager.BlendState.AlphaBlendFunction = XFG.BlendFunction.Add /* XnaHelper.Convert( func )*/;
+			//StateManager.BlendState.ReferenceAlpha = val;
 
 			// Alpha to coverage
 			if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
@@ -1853,21 +1850,13 @@ namespace Axiom.RenderSystems.Xna
 
 		}
 
-		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
-		{
-			//if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
-			//{
-			//    _device.RenderState.AlphaBlendEnable = false;
-			//}
-			//else
-			//{
-			//    _device.RenderState.AlphaBlendEnable = true;
-			//    _device.RenderState.SeparateAlphaBlendEnabled = false;
-			//    _device.RenderState.SourceBlend = XnaHelper.Convert( src );
-			//    _device.RenderState.DestinationBlend = XnaHelper.Convert( dest );
-			//}
-		}
-
+        public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest)
+        {
+            StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert(src);
+            StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert(dest);
+            StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert(src);
+            StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert(dest);
+        }
 		/// <summary>
 		/// Sets the global blending factors for combining subsequent renders with the existing frame contents.
 		/// The result of the blending operation is:
@@ -1881,21 +1870,11 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
 		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
-			//if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
-			//    sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
-			//{
-			//    _device.RenderState.AlphaBlendEnable = false;
-			//}
-			//else
-			//{
-			//    _device.RenderState.AlphaBlendEnable = true;
-			//    _device.RenderState.SeparateAlphaBlendEnabled = true;
-			//    _device.RenderState.SourceBlend = XnaHelper.Convert( sourceFactor );
-			//    _device.RenderState.DestinationBlend = XnaHelper.Convert( destFactor );
-			//    _device.RenderState.AlphaSourceBlend = XnaHelper.Convert( sourceFactorAlpha );
-			//    _device.RenderState.AlphaDestinationBlend = XnaHelper.Convert( destFactorAlpha );
-			//}
-		}
+            StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert(sourceFactor);
+            StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert(destFactor);
+            StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert(sourceFactorAlpha);
+            StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert(destFactorAlpha);
+        }
 
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
@@ -2094,20 +2073,20 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/* TODO: use StateManager.BlendState */
 
-			/*if (blendMode.operation == LayerBlendOperationEx.BlendManual)
+			if (blendMode.operation == LayerBlendOperationEx.BlendManual)
 			{
-				_device.RenderState.BlendFactor = new Microsoft.Xna.Framework.Graphics.Color(blendMode.blendFactor, 0, 0, 0);
+                StateManager.BlendState.BlendFactor = new XNA.Color(blendMode.blendFactor, 0, 0, 0);
 			}
 			if (blendMode.blendType == LayerBlendType.Color)
 			{
-				_device.RenderState.AlphaBlendEnable = false;
+				//_device.RenderState.AlphaBlendEnable = false;
 			}
 			else if (blendMode.blendType == LayerBlendType.Alpha)
 			{
-				_device.RenderState.AlphaBlendEnable = true;
+				//_device.RenderState.AlphaBlendEnable = true;
 			}
 
-			ColorEx manualD3D = ColorEx.White;//XnaHelper.Convert(_device.RenderState.BlendFactor);
+			ColorEx manualD3D = XnaHelper.Convert(StateManager.BlendState.BlendFactor);
 			if (blendMode.blendType == LayerBlendType.Color)
 			{
 				manualD3D = new ColorEx(blendMode.blendFactor, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b);
@@ -2123,7 +2102,7 @@ namespace Axiom.RenderSystems.Xna
 				// set the texture blend factor if this is manual blending
 				if (blendSource == LayerBlendSource.Manual)
 				{
-					_device.RenderState.BlendFactor =  XnaHelper.Convert(manualD3D);
+					StateManager.BlendState.BlendFactor =  XnaHelper.Convert(manualD3D);
 				}
 				// pick proper argument settings
 				if (blendMode.blendType == LayerBlendType.Color)
@@ -2158,7 +2137,7 @@ namespace Axiom.RenderSystems.Xna
 				{
 					manualD3D = new ColorEx(blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b);
 				}
-			}*/
+			}
 		}
 
 		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
