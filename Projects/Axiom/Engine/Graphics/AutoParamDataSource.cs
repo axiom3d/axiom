@@ -639,8 +639,7 @@ namespace Axiom.Graphics
 					if ( renderable != null && renderable.UseIdentityProjection )
 					{
 						// Use identity projection matrix, still need to take RS depth into account
-						projectionMatrix =
-							Root.Instance.RenderSystem.ConvertProjectionMatrix( Matrix4.Identity, true );
+                        Root.Instance.RenderSystem.ConvertProjectionMatrix(Matrix4.Identity, out projectionMatrix, true);
 					}
 					else
 					{

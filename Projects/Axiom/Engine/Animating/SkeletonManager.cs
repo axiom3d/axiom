@@ -92,12 +92,10 @@ namespace Axiom.Animating
 
 		#region ResourceManager Implementation
 
-		/// <summary>
-		///    Creates a new skeleton object.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+	    /// <summary>
+	    ///    Creates a new skeleton object.
+	    /// </summary>
+	    protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Skeleton( this, name, handle, group, isManual, loader );
 		}

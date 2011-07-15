@@ -97,8 +97,6 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		/// Delegated to by ParticleSystem.NotifyAttached
 		/// </summary>
-		/// <param name="parent"></param>
-		/// <param name="isTagPoint"></param>
 		public virtual void NotifyAttached( Node parent )
 		{
 			NotifyAttached( parent, false );
@@ -148,7 +146,6 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		/// Optional callback notified when particles are moved
 		/// </summary>
-		/// <param name="activeParticles"></param>
 		public virtual void NotifyParticleExpired( Particle particle )
 		{
 		}
@@ -156,8 +153,6 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		/// Tells the renderer that the particle default size has changed
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
 		public virtual void NotifyDefaultDimensions( float width, float height )
 		{
 		}

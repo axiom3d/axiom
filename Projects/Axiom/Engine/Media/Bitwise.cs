@@ -94,7 +94,7 @@ namespace Axiom.Media
 
 		///<summary>
 		///    Convert N bit colour channel value to P bits. It fills P bits with the
-		///    bit pattern repeated. (this is /((1<<n)-1) in fixed point)
+        ///    bit pattern repeated. (this is /((1&lt;&lt;n)-1) in fixed point)
 		///</summary>
 		public static uint FixedToFixed( uint value, int n, int p )
 		{
@@ -117,7 +117,7 @@ namespace Axiom.Media
 
 		///<summary>
 		///    Convert N bit colour channel value to 8 bits, and return as a byte. It 
-		///    fills P bits with thebit pattern repeated. (this is /((1<<n)-1) in fixed point)
+        ///    fills P bits with thebit pattern repeated. (this is /((1&lt;&lt;n)-1) in fixed point)
 		///</summary>
 		public static byte FixedToByteFixed( uint value, int p )
 		{
@@ -267,7 +267,7 @@ namespace Axiom.Media
 				else    // NAN
 				{
 					m >>= 13;
-					return (ushort)( s | 0x7c00 | m | ( m == 0 ? 1u : 0u ) );
+					return (ushort)( (uint)s | 0x7c00 | (uint)m | ( m == 0 ? 1u : 0u ) );
 				}
 			}
 			else

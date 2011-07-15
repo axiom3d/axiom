@@ -935,7 +935,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Compilation method for Techniques.  See <see cref="Axiom.Core.Material"/>
+		///    Compilation method for Techniques.  See <see cref="Axiom.Graphics.Material"/>
 		/// </summary>
 		/// <param name="autoManageTextureUnits">
 		///    Determines whether or not the engine should split up extra texture unit requests
@@ -948,7 +948,7 @@ namespace Axiom.Graphics
 			_isSupported = false;
 
 			// grab a ref to the current hardware caps
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
 			int numAvailTexUnits = caps.TextureUnitCount;
 
 			int passNum = 0;
@@ -1279,9 +1279,6 @@ namespace Axiom.Graphics
 		///    that you create an alternative fallback Technique for if a card does not have 
 		///    enough facilities for what you're asking for.
 		/// </remarks>
-		/// <param name="programmable">
-		///    True if programmable via vertex or fragment programs, false if fixed function.
-		/// </param>
 		/// <returns>A new Pass object reference.</returns>
 		public Pass CreatePass()
 		{

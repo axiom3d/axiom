@@ -88,8 +88,8 @@ namespace Axiom.Core
 	///		to be extended through subclassing in order to provide more specialized
 	///		scene organization structures for particular needs. The default
 	///		SceneManager culls based on a hierarchy of node bounding boxes, other
-	///		implementations can use an octree (<see cref="OctreeSceneManager"/>), a BSP
-	///		tree (<see cref="BspSceneManager"/>), and many other options. New SceneManager
+	///		implementations can use an octree (<see name="OctreeSceneManager"/>), a BSP
+    ///		tree (<see name="BspSceneManager"/>), and many other options. New SceneManager
 	///		implementations can be added at runtime by plugins, see <see cref="SceneManagerEnumerator"/>
 	///		for the interfaces for adding new SceneManager types.
 	///   <p/>
@@ -837,7 +837,6 @@ namespace Axiom.Core
 		///		Note that this method takes a name parameter, which makes the node easier to
 		///		retrieve directly again later.
 		/// </remarks>
-		/// <param name="pName"></param>
 		/// <returns></returns>
 		public virtual SceneNode CreateSceneNode( string name )
 		{
@@ -1014,7 +1013,7 @@ namespace Axiom.Core
 		///		Create an Entity (instance of a discrete mesh).
 		/// </summary>
 		/// <param name="name">The name to be given to the entity (must be unique).</param>
-		/// <param name="meshName">The name of the mesh to load.  Will be loaded if not already.</param>
+        /// <param name="prefab">The name of the mesh to load.  Will be loaded if not already.</param>
 		/// <returns></returns>
 		public virtual Entity CreateEntity( string name, PrefabEntity prefab )
 		{
@@ -1397,7 +1396,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Returns the material with the specified handle.
 		/// </summary>
-		/// <param name="name">Handle of the material to retrieve.</param>
+        /// <param name="handle">Handle of the material to retrieve.</param>
 		/// <returns>A reference to a Material.</returns>
 		public virtual Material GetMaterial( ResourceHandle handle )
 		{
@@ -1560,7 +1559,7 @@ namespace Axiom.Core
 										  bool doBeginEndFrame )
 		{
 			// configure all necessary parameters
-			this.targetRenderSystem.SetViewport( vp );
+			this.targetRenderSystem.Viewport = vp;
 			this.targetRenderSystem.WorldMatrix = worldMatrix;
 			this.targetRenderSystem.ViewMatrix = viewMatrix;
 			this.targetRenderSystem.ProjectionMatrix = projMatrix;
@@ -1919,7 +1918,7 @@ namespace Axiom.Core
 
 				this.shadowDebugPass.CullingMode = CullingMode.None;
 
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					ShadowVolumeExtrudeProgram.Initialize();
 
@@ -1939,7 +1938,7 @@ namespace Axiom.Core
 			else
 			{
 				this.shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
 				}
@@ -1959,7 +1958,7 @@ namespace Axiom.Core
 													 ResourceGroupManager.InternalResourceGroupName );
 				this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
 
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					// Enable the finite point light extruder for now, just to get some params
 					this.shadowStencilPass.SetVertexProgram(
@@ -1978,7 +1977,7 @@ namespace Axiom.Core
 			else
 			{
 				this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					this.finiteExtrusionParams = this.shadowStencilPass.VertexProgramParameters;
 				}
@@ -2287,7 +2286,7 @@ namespace Axiom.Core
 			// Set up scissor test (point & spot lights only)
 			bool scissored = false;
 			if ( light.Type != LightType.Directional &&
-				 this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.ScissorTest ) )
+				 this.targetRenderSystem.Capabilities.HasCapability( Capabilities.ScissorTest ) )
 			{
 				// Project the sphere onto the camera
 				float left, right, top, bottom;
@@ -2314,8 +2313,8 @@ namespace Axiom.Core
 			// Can we do a 2-sided stencil?
 			bool stencil2sided = false;
 
-			if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
-				 this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.StencilWrap ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
+				 this.targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilWrap ) )
 			{
 				// enable
 				stencil2sided = true;
@@ -2325,10 +2324,10 @@ namespace Axiom.Core
 			bool extrudeInSoftware = true;
 
 			bool finiteExtrude = !this.shadowUseInfiniteFarPlane ||
-								 !this.targetRenderSystem.HardwareCapabilities.HasCapability(
+								 !this.targetRenderSystem.Capabilities.HasCapability(
 									  Capabilities.InfiniteFarPlane );
 
-			if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 			{
 				extrudeInSoftware = false;
 				this.EnableHardwareShadowExtrusion( light, finiteExtrude );
@@ -2344,9 +2343,9 @@ namespace Axiom.Core
 
 			// Turn off color writing and depth writing
 			this.targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
-			this.targetRenderSystem.DepthWrite = false;
+			this.targetRenderSystem.DepthBufferWriteEnabled = false;
 			this.targetRenderSystem.StencilCheckEnabled = true;
-			this.targetRenderSystem.DepthFunction = CompareFunction.Less;
+			this.targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
 
 			// Calculate extrusion distance
 			float extrudeDistance = 0;
@@ -2517,7 +2516,7 @@ namespace Axiom.Core
 								 && ( ( flags & (int)ShadowRenderableFlags.IncludeLightCap ) ) > 0 )
 							{
 								// must always fail depth check
-								this.targetRenderSystem.DepthFunction = CompareFunction.AlwaysFail;
+								this.targetRenderSystem.DepthBufferFunction = CompareFunction.AlwaysFail;
 
 								Debug.Assert( sr.LightCapRenderable != null,
 											  "Shadow renderable is missing a separate light cap renderable!" );
@@ -2528,7 +2527,7 @@ namespace Axiom.Core
 																		tmpLightList,
 																		( i > 0 ) );
 								// reset depth function
-								this.targetRenderSystem.DepthFunction = CompareFunction.Less;
+                                this.targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
 							}
 						}
 					}
@@ -2597,9 +2596,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Render a single shadow volume to the stencil buffer.
 		/// </summary>
-		/// <param name="sr"></param>
-		/// <param name="zfail"></param>
-		/// <param name="stencil2sided"></param>
 		protected void RenderSingleShadowVolumeToStencil( ShadowRenderable sr,
 														  bool zfail,
 														  bool stencil2sided,
@@ -2759,11 +2755,13 @@ namespace Axiom.Core
 				}
 
 				// set fog params
+                /*
 				float fogScale = 1f;
 				if ( newFogMode == FogMode.None )
 				{
 					fogScale = 0f;
 				}
+                 */
 
 				// set fog using the render system
 				this.targetRenderSystem.SetFog( newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd );
@@ -2797,12 +2795,12 @@ namespace Axiom.Core
 				//}
 
 				// set all required texture units for this pass, and disable ones not being used
-				int numTextureUnits = this.targetRenderSystem.HardwareCapabilities.TextureUnitCount;
+				int numTextureUnits = this.targetRenderSystem.Capabilities.TextureUnitCount;
 				if ( pass.HasFragmentProgram  && pass.FragmentProgram.IsSupported )
 				{
 					numTextureUnits = pass.FragmentProgram.SamplerCount;
 				}
-				else if ( Config.MaxTextureLayers < this.targetRenderSystem.HardwareCapabilities.TextureUnitCount )
+				else if ( Config.MaxTextureLayers < this.targetRenderSystem.Capabilities.TextureUnitCount )
 				{
 					numTextureUnits = Config.MaxTextureLayers;
 				}
@@ -2812,7 +2810,8 @@ namespace Axiom.Core
 					if ( i < pass.TextureUnitStageCount )
 					{
 						TextureUnitState texUnit = pass.GetTextureUnitState( i );
-						this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
+					    targetRenderSystem.SetTextureUnitSettings( i, texUnit );
+						//this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
 					}
 					else
 					{
@@ -2825,13 +2824,13 @@ namespace Axiom.Core
 				}
 
 				// Depth Settings
-				this.targetRenderSystem.DepthWrite = pass.DepthWrite;
-				this.targetRenderSystem.DepthCheck = pass.DepthCheck;
-				this.targetRenderSystem.DepthFunction = pass.DepthFunction;
-				this.targetRenderSystem.DepthBias = pass.DepthBiasConstant;
+				this.targetRenderSystem.DepthBufferWriteEnabled = pass.DepthWrite;
+				this.targetRenderSystem.DepthBufferCheckEnabled = pass.DepthCheck;
+				this.targetRenderSystem.DepthBufferFunction = pass.DepthFunction;
+				this.targetRenderSystem.SetDepthBias(pass.DepthBiasConstant);
 
 				// Aplha Reject Settings
-				this.targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, pass.AlphaRejectValue, pass.IsAlphaToCoverageEnabled );
+				this.targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, (byte)pass.AlphaRejectValue, pass.IsAlphaToCoverageEnabled );
 
 				// Color Write
 				// right now only using on/off, not per channel
@@ -2842,7 +2841,7 @@ namespace Axiom.Core
 				this.targetRenderSystem.CullingMode = pass.CullingMode;
 
 				// Shading mode
-				this.targetRenderSystem.ShadingMode = pass.ShadingMode;
+                //this.targetRenderSystem.ShadingMode = pass.ShadingMode;
 
 				// Polygon Mode
 				this.targetRenderSystem.PolygonMode = pass.PolygonMode;
@@ -3060,16 +3059,16 @@ namespace Axiom.Core
 			if ( useIdentityProj )
 			{
 				// Use identity projection matrix, still need to take RS depth into account
-				Matrix4 mat = this.targetRenderSystem.ConvertProjectionMatrix( Matrix4.Identity );
-				this.targetRenderSystem.ProjectionMatrix = mat;
-				this.lastProjectionWasIdentity = true;
+			    Matrix4 mat;
+                targetRenderSystem.ConvertProjectionMatrix(Matrix4.Identity, out mat);
+				targetRenderSystem.ProjectionMatrix = mat;
+				lastProjectionWasIdentity = true;
 			}
 		}
 
 		/// <summary>
 		///		Used to first the QueueStarted event.
 		/// </summary>
-		/// <param name="group"></param>
 		/// <returns>True if the queue should be skipped.</returns>
 		protected virtual bool OnRenderQueueStarted( RenderQueueGroupID group, string invocation )
 		{
@@ -3089,7 +3088,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Used to first the QueueEnded event.
 		/// </summary>
-		/// <param name="group"></param>
 		/// <returns>True if the queue should be repeated.</returns>
 		protected virtual bool OnRenderQueueEnded( RenderQueueGroupID group, string invocation )
 		{
@@ -3213,12 +3211,13 @@ namespace Axiom.Core
 			return this.CreateRayQuery( ray, 0xffffffff );
 		}
 
-		/// <summary>
-		///    Creates a query to return objects found along the ray.
-		/// </summary>
-		/// <param name="ray">Ray to use for the intersection query.</param>
-		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-		public virtual RaySceneQuery CreateRayQuery( Ray ray, uint mask )
+	    /// <summary>
+	    ///    Creates a query to return objects found along the ray.
+	    /// </summary>
+	    /// <param name="ray">Ray to use for the intersection query.</param>
+	    /// <param name="mask"></param>
+	    /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+	    public virtual RaySceneQuery CreateRayQuery( Ray ray, uint mask )
 		{
 			DefaultRaySceneQuery query = new DefaultRaySceneQuery( this );
 			query.Ray = ray;
@@ -3431,7 +3430,7 @@ namespace Axiom.Core
 		/// <remarks>
 		///		This method removes a previously added light from the scene.
 		/// </remarks>
-		/// <param name="camera">Reference to the light to remove.</param>
+        /// <param name="light">Reference to the light to remove.</param>
 		public virtual void RemoveLight( Light light )
 		{
 			this.DestroyMovableObject( light );
@@ -3455,7 +3454,7 @@ namespace Axiom.Core
 		/// <remarks>
 		///		This method removes a previously added BillboardSet from the scene.
 		/// </remarks>
-		/// <param name="camera">Reference to the BillboardSet to remove.</param>
+        /// <param name="billboardSet">Reference to the BillboardSet to remove.</param>
 		public virtual void RemoveBillboardSet( BillboardSet billboardSet )
 		{
 			this.DestroyMovableObject( billboardSet );
@@ -3485,7 +3484,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Removes the entity with the specified name from the scene.
 		/// </summary>
-		/// <param name="entity">Entity to remove from the scene.</param>
+		/// <param name="name">Entity to remove from the scene.</param>
 		public virtual void RemoveEntity( string name )
 		{
 			this.DestroyMovableObject( name, EntityFactory.TypeName );
@@ -3551,45 +3550,46 @@ namespace Axiom.Core
 							ResourceGroupManager.DefaultResourceGroupName );
 		}
 
-		/// <summary>
-		///		Enables / disables a 'sky box' i.e. a 6-sided box at constant
-		///		distance from the camera representing the sky.
-		/// </summary>
-		/// <remarks>
-		///		You could create a sky box yourself using the standard mesh and
-		///		entity methods, but this creates a plane which the camera can
-		///		never get closer or further away from - it moves with the camera.
-		///		(you could create this effect by creating a world box which
-		///		was attached to the same SceneNode as the Camera too, but this
-		///		would only apply to a single camera whereas this skybox applies
-		///		to any camera using this scene manager).
-		///		<p/>
-		///		The material you use for the skybox can either contain layers
-		///		which are single textures, or they can be cubic textures, i.e.
-		///		made up of 6 images, one for each plane of the cube. See the
-		///		TextureLayer class for more information.
-		/// </remarks>
-		/// <param name="enable">True to enable the skybox, false to disable it</param>
-		/// <param name="materialName">The name of the material the box will use.</param>
-		/// <param name="distance">Distance in world coordinates from the camera to each plane of the box. </param>
-		/// <param name="drawFirst">
-		///		If true, the box is drawn before all other
-		///		geometry in the scene, without updating the depth buffer.
-		///		This is the safest rendering method since all other objects
-		///		will always appear in front of the sky. However this is not
-		///		the most efficient way if most of the sky is often occluded
-		///		by other objects. If this is the case, you can set this
-		///		parameter to false meaning it draws <em>after</em> all other
-		///		geometry which can be an optimisation - however you must
-		///		ensure that the distance value is large enough that no
-		///		objects will 'poke through' the sky box when it is rendered.
-		/// </param>
-		/// <param name="orientation">
-		///		Specifies the orientation of the box. By default the 'top' of the box is deemed to be
-		///		in the +y direction, and the 'front' at the -z direction.
-		///		You can use this parameter to rotate the sky if you want.
-		/// </param>
-		public void SetSkyBox( bool enable,
+	    /// <summary>
+	    ///		Enables / disables a 'sky box' i.e. a 6-sided box at constant
+	    ///		distance from the camera representing the sky.
+	    /// </summary>
+	    /// <remarks>
+	    ///		You could create a sky box yourself using the standard mesh and
+	    ///		entity methods, but this creates a plane which the camera can
+	    ///		never get closer or further away from - it moves with the camera.
+	    ///		(you could create this effect by creating a world box which
+	    ///		was attached to the same SceneNode as the Camera too, but this
+	    ///		would only apply to a single camera whereas this skybox applies
+	    ///		to any camera using this scene manager).
+	    ///		<p/>
+	    ///		The material you use for the skybox can either contain layers
+	    ///		which are single textures, or they can be cubic textures, i.e.
+	    ///		made up of 6 images, one for each plane of the cube. See the
+	    ///		TextureLayer class for more information.
+	    /// </remarks>
+	    /// <param name="enable">True to enable the skybox, false to disable it</param>
+	    /// <param name="materialName">The name of the material the box will use.</param>
+	    /// <param name="distance">Distance in world coordinates from the camera to each plane of the box. </param>
+	    /// <param name="drawFirst">
+	    ///		If true, the box is drawn before all other
+	    ///		geometry in the scene, without updating the depth buffer.
+	    ///		This is the safest rendering method since all other objects
+	    ///		will always appear in front of the sky. However this is not
+	    ///		the most efficient way if most of the sky is often occluded
+	    ///		by other objects. If this is the case, you can set this
+	    ///		parameter to false meaning it draws <em>after</em> all other
+	    ///		geometry which can be an optimisation - however you must
+	    ///		ensure that the distance value is large enough that no
+	    ///		objects will 'poke through' the sky box when it is rendered.
+	    /// </param>
+	    /// <param name="orientation">
+	    ///		Specifies the orientation of the box. By default the 'top' of the box is deemed to be
+	    ///		in the +y direction, and the 'front' at the -z direction.
+	    ///		You can use this parameter to rotate the sky if you want.
+	    /// </param>
+	    ///<param name="groupName"></param>
+	    public void SetSkyBox( bool enable,
 							   string materialName,
 							   float distance,
 							   bool drawFirst,
@@ -3694,15 +3694,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="isEnabled"></param>
-		/// <param name="materialName"></param>
-		/// <param name="curvature"></param>
-		/// <param name="tiling"></param>
-		/// <param name="distance"></param>
-		/// <param name="drawFirst"></param>
-		/// <param name="orientation"></param>
 		public void SetSkyDome( bool isEnabled,
 								string materialName,
 								float curvature,
@@ -3775,8 +3767,6 @@ namespace Axiom.Core
 		///		method just allows you to change both at once, which can save on
 		///		reallocation if the textures have already been created.
 		/// </remarks>
-		/// <param name="size"></param>
-		/// <param name="count"></param>
 		public virtual void SetShadowTextureSettings( ushort size, ushort count, PixelFormat format )
 		{
 			if ( this.shadowTextures.Count > 0 &&
@@ -3819,11 +3809,11 @@ namespace Axiom.Core
 					shadowTextureCameras.Add( cam );
 
 					// Create a viewport, if not there already
-					if ( shadowRTT.ViewportCount == 0 )
+					if ( shadowRTT.NumViewports == 0 )
 					{
 						// Note camera assignment is transient when multiple SMs
 						Viewport v = shadowRTT.AddViewport( cam );
-						v.ClearEveryFrame = true;
+						v.SetClearEveryFrame(true);
 						// remove overlays
 						v.ShowOverlays = false;
 					}
@@ -4271,7 +4261,7 @@ namespace Axiom.Core
 				if ( this.IsShadowTechniqueStencilBased )
 				{
 					// Firstly check that we have a stencil. Otherwise, forget it!
-					if ( !this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.StencilBuffer ) )
+					if ( !this.targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilBuffer ) )
 					{
 						LogManager.Instance.Write(
 							"WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling." );
@@ -4494,7 +4484,7 @@ namespace Axiom.Core
 		///		vertex program capable cards on Direct3D7) does not
 		///		support it</LI>
 		///		<LI>Direct3D on GeForce3 and GeForce4 Ti does not seem to support
-		///		infinite projection<LI>
+		///		infinite projection</LI>
 		///		</UL>
 		///		Therefore in the RenderSystem implementation, we may veto the use
 		///		of an infinite far plane based on these heuristics.
@@ -4666,7 +4656,7 @@ namespace Axiom.Core
 		///     <li>specular = ColourEx.Black</li>
 		///     <li>emmissive = ColourEx.Black</li>
 		///     <li>shininess = 0</li>
-		///     <li>No texture unit settings (& hence no textures)</li>
+		///     <li>No texture unit settings (&amp; hence no textures)</li>
 		///     <li>SourceBlendFactor = SBF_ONE</li>
 		///     <li>DestBlendFactor = SBF_ZERO (no blend, replace with new colour)</li>
 		///     <li>Depth buffer checking on</li>
@@ -4767,7 +4757,11 @@ namespace Axiom.Core
 
 		protected ulong _lightsDirtyCounter;
 
-		/// <summary>
+        // TODO: implement logic
+        [OgreVersion(1, 7, "Implement logic for this")]
+        private GpuProgramParameters.GpuParamVariability _gpuParamsDirty = GpuProgramParameters.GpuParamVariability.All;
+
+	    /// <summary>
 		/// Gets the lights dirty counter.
 		/// </summary>
 		/// <remarks>
@@ -4840,7 +4834,7 @@ namespace Axiom.Core
 			// to prevent dark caps getting clipped
 			if ( this.IsShadowTechniqueStencilBased &&
 				 camera.Far != 0 &&
-				 this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane ) &&
+				 this.targetRenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane ) &&
 				 this.shadowUseInfiniteFarPlane )
 			{
 				// infinite far distance
@@ -4931,16 +4925,19 @@ namespace Axiom.Core
 			//autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
 
 			// Set camera window clipping planes (if any)
-			if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.UserClipPlanes ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.UserClipPlanes ) )
 			{
 				// TODO: Add ClipPlanes to RenderSystem.cs
 				if ( camera.IsWindowSet )
 				{
+				    targetRenderSystem.ResetClipPlanes();
 					IList<Plane> planeList = camera.WindowPlanes;
 					for ( ushort i = 0; i < 4; ++i )
 					{
-						this.targetRenderSystem.EnableClipPlane( i, true );
-						this.targetRenderSystem.SetClipPlane( i, planeList[ i ] );
+					    targetRenderSystem.AddClipPlane( planeList[ i ] );
+
+						//this.targetRenderSystem.EnableClipPlane( i, true );
+						//this.targetRenderSystem.SetClipPlane( i, planeList[ i ] );
 					}
 				}
 				// this disables any user-set clipplanes... this should be done manually
@@ -5006,10 +5003,10 @@ namespace Axiom.Core
 			this.targetRenderSystem.EndFrame();
 
 			// Notify camera of the number of rendered faces
-			camera.NotifyRenderedFaces( this.targetRenderSystem.FacesRendered );
+			camera.NotifyRenderedFaces( this.targetRenderSystem.FaceCount );
 
 			// Notify camera of the number of rendered batches
-			camera.NotifyRenderedBatches( this.targetRenderSystem.BatchesRendered );
+			camera.NotifyRenderedBatches( this.targetRenderSystem.BatchCount );
 		}
 
 		private void PrepareRenderQueue()
@@ -5126,7 +5123,6 @@ namespace Axiom.Core
 		///		Any visible objects will be added to a rendering queue, which is indexed by material in order
 		///		to ensure objects with the same material are rendered together to minimise render state changes.
 		/// </remarks>
-		/// <param name="camera"></param>
 		public virtual void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
 		{
 			// ask the root node to iterate through and find visible objects in the scene
@@ -5220,8 +5216,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Internal method for creating shadow textures (texture-based shadows).
 		/// </summary>
-		/// <param name="size"></param>
-		/// <param name="count"></param>
 		protected internal virtual void CreateShadowTextures( ushort size, ushort count, PixelFormat format )
 		{
 			string baseName = "Axiom/ShadowTexture";
@@ -5284,11 +5278,11 @@ namespace Axiom.Core
 				this.shadowTextureCameras.Add( cam );
 
 				// Create a viewport, if not there already
-				if ( shadowRTT.ViewportCount == 0 )
+				if ( shadowRTT.NumViewports == 0 )
 				{
 					// Note camera assignment is transient when multiple SMs
 					Viewport view = shadowRTT.AddViewport( cam );
-					view.ClearEveryFrame = true;
+					view.SetClearEveryFrame(true);
 					// remove overlays
 					view.ShowOverlays = false;
 				}
@@ -5394,7 +5388,7 @@ namespace Axiom.Core
 				// Associate main view camera as LOD camera
 				texCam.LodCamera = camera;
 
-				Vector3 pos, dir;
+				//Vector3 dir;
 
 				// set base
 				if ( light.Type == LightType.Point )
@@ -5439,12 +5433,48 @@ namespace Axiom.Core
 		{
 			this.currentViewport = viewport;
 			// Set viewport in render system
-			this.targetRenderSystem.SetViewport( viewport );
+			this.targetRenderSystem.Viewport = viewport;
 			// Set the active material scheme for this viewport
 			MaterialManager.Instance.ActiveScheme = viewport.MaterialScheme;
 		}
 
-		protected void RenderSingleObject( IRenderable renderable, Pass pass, bool doLightIteration )
+
+        [OgreVersion(1, 7, "Implement _gpuParamsDirty logic")]
+        protected virtual void UpdateGpuProgramParameters(Pass pass)
+        {
+            if ( pass.IsProgrammable )
+            {
+
+                //if (!_gpuParamsDirty)
+                //	return;
+
+                //if (_gpuParamsDirty)
+                //	pass.UpdateAutoParams(mAutoParamDataSource, _gpuParamsDirty);
+
+                if ( pass.HasVertexProgram )
+                {
+                    targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex, pass.VertexProgramParameters,
+                                                                 _gpuParamsDirty );
+                }
+
+                if ( pass.HasGeometryProgram )
+                {
+                    targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Geometry, pass.GeometryProgramParameters,
+                                                                 _gpuParamsDirty );
+                }
+
+                if ( pass.HasFragmentProgram )
+                {
+                    targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment, pass.FragmentProgramParameters,
+                                                                 _gpuParamsDirty );
+                }
+
+                //_gpuParamsDirty = 0;
+            }
+
+        }
+
+	    protected void RenderSingleObject( IRenderable renderable, Pass pass, bool doLightIteration )
 		{
 			this.RenderSingleObject( renderable, pass, doLightIteration, null );
 		}
@@ -5509,7 +5539,8 @@ namespace Axiom.Core
 
 					if ( texUnit.HasViewRelativeTexCoordGen )
 					{
-						this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
+					    targetRenderSystem.SetTextureUnitSettings( i, texUnit );
+					    //this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
 					}
 				}
 
@@ -5590,17 +5621,7 @@ namespace Axiom.Core
 							this.autoParamDataSource.SetCurrentLightList( lightListToUse );
 							pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 
-							// note: parameters must be bound after auto params are updated
-							if ( pass.HasVertexProgram )
-							{
-								this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex,
-																				  pass.VertexProgramParameters );
-							}
-							if ( pass.HasFragmentProgram )
-							{
-								this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment,
-																				  pass.FragmentProgramParameters );
-							}
+						    UpdateGpuProgramParameters( pass );
 						}
 
 						// Do we need to update light states?
@@ -5627,18 +5648,7 @@ namespace Axiom.Core
 							pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 						}
 
-						// note: parameters must be bound after auto params are updated
-						if ( pass.HasVertexProgram )
-						{
-							this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex,
-																			  pass.VertexProgramParameters );
-						}
-
-						if ( pass.HasFragmentProgram )
-						{
-							this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment,
-																			  pass.FragmentProgramParameters );
-						}
+					    UpdateGpuProgramParameters( pass );
 					}
 
 					// Use manual lights if present, and not using vertex programs
@@ -5665,7 +5675,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Renders a set of solid objects.
 		/// </summary>
-		/// <param name="list">List of solid objects.</param>
 		protected virtual void RenderSolidObjects( System.Collections.SortedList list,
 												   bool doLightIteration,
 												   LightList manualLightList )
@@ -5717,7 +5726,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Renders a set of transparent objects.
 		/// </summary>
-		/// <param name="list"></param>
 		protected virtual void RenderTransparentObjects( List<RenderablePass> list, bool doLightIteration,
 														 LightList manualLightList )
 		{
@@ -6489,32 +6497,33 @@ namespace Axiom.Core
 			//destList.Sort();
 		}
 
-		/// <summary>
-		///		Enables / disables a 'sky plane' i.e. a plane at constant
-		///		distance from the camera representing the sky.
-		/// </summary>
-		/// <param name="enable">True to enable the plane, false to disable it.</param>
-		/// <param name="plane">Details of the plane, i.e. it's normal and it's distance from the camera.</param>
-		/// <param name="materialName">The name of the material the plane will use.</param>
-		/// <param name="scale">The scaling applied to the sky plane - higher values mean a bigger sky plane.</param>
-		/// <param name="tiling">How many times to tile the texture across the sky.</param>
-		/// <param name="drawFirst">
-		///		If true, the plane is drawn before all other geometry in the scene, without updating the depth buffer.
-		///		This is the safest rendering method since all other objects
-		///		will always appear in front of the sky. However this is not
-		///		the most efficient way if most of the sky is often occluded
-		///		by other objects. If this is the case, you can set this
-		///		parameter to false meaning it draws <em>after</em> all other
-		///		geometry which can be an optimisation - however you must
-		///		ensure that the plane.d value is large enough that no objects
-		///		will 'poke through' the sky plane when it is rendered.
-		///	 </param>
-		/// <param name="bow">
-		///		If above zero, the plane will be curved, allowing
-		///		the sky to appear below camera level.  Curved sky planes are
-		///		simular to skydomes, but are more compatable with fog.
-		/// </param>
-		public virtual void SetSkyPlane( bool enable,
+	    /// <summary>
+	    ///		Enables / disables a 'sky plane' i.e. a plane at constant
+	    ///		distance from the camera representing the sky.
+	    /// </summary>
+	    /// <param name="enable">True to enable the plane, false to disable it.</param>
+	    /// <param name="plane">Details of the plane, i.e. it's normal and it's distance from the camera.</param>
+	    /// <param name="materialName">The name of the material the plane will use.</param>
+	    /// <param name="scale">The scaling applied to the sky plane - higher values mean a bigger sky plane.</param>
+	    /// <param name="tiling">How many times to tile the texture across the sky.</param>
+	    /// <param name="drawFirst">
+	    ///		If true, the plane is drawn before all other geometry in the scene, without updating the depth buffer.
+	    ///		This is the safest rendering method since all other objects
+	    ///		will always appear in front of the sky. However this is not
+	    ///		the most efficient way if most of the sky is often occluded
+	    ///		by other objects. If this is the case, you can set this
+	    ///		parameter to false meaning it draws <em>after</em> all other
+	    ///		geometry which can be an optimisation - however you must
+	    ///		ensure that the plane.d value is large enough that no objects
+	    ///		will 'poke through' the sky plane when it is rendered.
+	    ///	 </param>
+	    /// <param name="bow">
+	    ///		If above zero, the plane will be curved, allowing
+	    ///		the sky to appear below camera level.  Curved sky planes are
+	    ///		simular to skydomes, but are more compatable with fog.
+	    /// </param>
+	    /// <param name="groupName"></param>
+	    public virtual void SetSkyPlane( bool enable,
 										 Plane plane,
 										 string materialName,
 										 float scale,
@@ -6620,8 +6629,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overload.
 		/// </summary>
-		/// <param name="enable"></param>
-		/// <param name="plane"></param>
 		public virtual void SetSkyPlane( bool enable, Plane plane, string materialName )
 		{
 			// call the overloaded method
@@ -6685,18 +6692,19 @@ namespace Axiom.Core
 			this.InjectRenderWithPass( pass, rend, true );
 		}
 
-		/// <summary>
-		///     Creates a StaticGeometry instance suitable for use with this
-		///     SceneManager.
-		/// </summary>
-		/// <remarks>
-		///     StaticGeometry is a way of batching up geometry into a more
-		///     efficient form at the expense of being able to move it. Please
-		///     read the StaticGeometry class documentation for full information.
-		/// </remarks>
-		///<param name="name">The name to give the new object</param>
-		///<returns>The new StaticGeometry instance</returns>
-		public StaticGeometry CreateStaticGeometry( string name, int logLevel )
+	    /// <summary>
+	    ///     Creates a StaticGeometry instance suitable for use with this
+	    ///     SceneManager.
+	    /// </summary>
+	    /// <remarks>
+	    ///     StaticGeometry is a way of batching up geometry into a more
+	    ///     efficient form at the expense of being able to move it. Please
+	    ///     read the StaticGeometry class documentation for full information.
+	    /// </remarks>
+	    /// <param name="name">The name to give the new object</param>
+	    /// <param name="logLevel"></param>
+	    /// <returns>The new StaticGeometry instance</returns>
+	    public StaticGeometry CreateStaticGeometry( string name, int logLevel )
 		{
 			// Check not existing
 			if ( this.staticGeometryList.ContainsKey( name ) )
@@ -6736,7 +6744,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Remove & destroy a StaticGeometry instance.
+		///     Remove &amp; destroy a StaticGeometry instance.
 		/// </summary>
 		public void DestroyStaticGeometry( StaticGeometry geom )
 		{
@@ -6744,7 +6752,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Remove & destroy a StaticGeometry instance.
+		///     Remove &amp; destroy a StaticGeometry instance.
 		/// </summary>
 		public void DestroyStaticGeometry( string name )
 		{
@@ -6904,7 +6912,7 @@ namespace Axiom.Core
 		/// custom world geometry that can take some time to load. They should
 		/// return from this method a count of the number of stages of progress
 		/// they can report on whilst loading. During real loading (setWorldGeomtry),
-		/// they should call <see cref="ResourceGroupManager.notifyWorlGeometryProgress"/> exactly
+		/// they should call <see name="ResourceGroupManager.notifyWorlGeometryProgress"/> exactly
 		/// that number of times when loading the geometry for real.
 		/// </remarks>
 		/// <param name="fileName">Name of the file.</param>
@@ -7501,7 +7509,7 @@ namespace Axiom.Core
 	#endregion Default SceneQuery Implementations
 
 	/// <summary>
-	///     Structure for holding a position & orientation pair.
+	///     Structure for holding a position &amp; orientation pair.
 	/// </summary>
 	public struct ViewPoint
 	{
