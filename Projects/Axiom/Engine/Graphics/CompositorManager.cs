@@ -310,7 +310,7 @@ namespace Axiom.Graphics
 				}
 
 				RenderSystem rs = Root.Instance.RenderSystem;
-				Viewport vp = rs.Viewport;
+				Viewport vp = rs.ActiveViewport;
 				float hOffset = rs.HorizontalTexelOffset / ( 0.5f * vp.ActualWidth );
 				float vOffset = rs.VerticalTexelOffset / ( 0.5f * vp.ActualHeight );
 				rectangle.SetCorners( -1f + hOffset, 1f - vOffset, 1f + hOffset, -1f - vOffset );

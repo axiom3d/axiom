@@ -74,7 +74,7 @@ namespace Axiom.ParticleSystems
 	///     In addition, like all subclasses of MovableObject, the ParticleSystem 
 	/// 	will only be considered for rendering once it has been attached to a 
 	/// 	SceneNode. 
-	/// </remarks>
+	/// </summary>
 	public class ParticleSystem : MovableObject
 	{
 		#region Fields and Properties
@@ -309,7 +309,7 @@ namespace Axiom.ParticleSystems
 		///		Particles are modified over time in a particle system by affectors - see the ParticleAffector
 		///		class for more details.
 		/// </remarks>
-        /// <param name="affectorType">
+		/// <param name="emitterType">
 		///		string identifying the affector type to create. Affector types are defined
 		///		by registering new factories with the manager - see ParticleAffectorFactory for more details.
 		///		Affector types can be extended by plugin authors.
@@ -757,6 +757,7 @@ namespace Axiom.ParticleSystems
 		///		'startup sequence' of a system, when you want the system to be fully populated right
 		///		from the start.
 		/// </remarks>
+		/// </summary>
 		/// <param name="time">The number of seconds to fast-forward by.</param>
 		/// <param name="interval">
 		///		The sampling interval used to generate particles, apply affectors etc. The lower this
@@ -1456,7 +1457,7 @@ namespace Axiom.ParticleSystems
 					ConfigureRenderer();
 			}
 
-			// Initialize emitted emitters list if not done already
+			// Initialise emitted emitters list if not done already
 			initializeEmittedEmitters();
 
 			float _iterationInterval = iterationIntervalSet ? iterationInterval : defaultIterationInterval;
@@ -1493,7 +1494,7 @@ namespace Axiom.ParticleSystems
 
 		private void initializeEmittedEmitters()
 		{
-			// Initialize the pool if needed
+			// Initialise the pool if needed
 			int currSize = 0;
 			if ( emittedEmitterPool.Count == 0 )
 			{

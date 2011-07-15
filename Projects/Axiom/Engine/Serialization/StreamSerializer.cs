@@ -561,7 +561,7 @@ namespace Axiom.Serialization
 		/// <summary>
 		/// Return whether the current data pointer is at the end of the current chunk.
 		/// </summary>
-		/// <param name="id">The id of the chunk that you were reading (for validation purposes)</param>
+		/// <param name="id">The id of the chunk that you were reading (for validation purposes)</par+am>
 		/// <returns>Return whether the current data pointer is at the end of the current chunk.</returns>
 		public bool IsEndOfChunk( uint id )
 		{
@@ -883,6 +883,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
 		protected void CheckStream()
 		{
@@ -890,7 +891,11 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="failOnEoF"></param>
+		/// <param name="validateReadable"></param>
+		/// <param name="validateWriteble"></param>
 		protected void CheckStream( bool failOnEof, bool validateReadable, bool validateWriteable )
 		{
 			if ( mStream == null )

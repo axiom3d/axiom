@@ -146,7 +146,11 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
+		///    
 		/// </summary>
+		/// <param name="tileX"></param>
+		/// <param name="tileY"></param>
+		/// <param name="layer"></param>
 		public void SetTiling( float x, float y, int layer )
 		{
 			Debug.Assert( layer < Config.MaxTextureLayers, "layer < Config.MaxTextureLayers" );

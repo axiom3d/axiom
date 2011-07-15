@@ -380,6 +380,19 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name">The name of the Resource</param>
 		/// <param name="group">The resource group to which this resource will belong</param>
+		/// <param name="isManual">
+		///     Is the resource to be manually loaded? If so, you should
+		///     provide a value for the loader parameter
+		/// </param>
+		/// <param name="loader">
+		///     The manual loader which is to perform the required actions
+		///     when this resource is loaded; only applicable when you specify true
+		///     for the previous parameter
+		/// </param>
+		/// <param name="loadParams">
+		///     Optional pointer to a list of name/value pairs
+		///     containing loading parameters for this type of resource.
+		/// </param>
 		/// <returns></returns>
 		/// </overloads>
 		public virtual Resource Load( string name, string group )
@@ -387,8 +400,6 @@ namespace Axiom.Core
 			return Load( name, group, null );
 		}
 
-        /// <param name="name">The name of the Resource</param>
-        /// <param name="group">The resource group to which this resource will belong</param>
 		/// <param name="loadParams">
 		///     Optional pointer to a list of name/value pairs
 		///     containing loading parameters for this type of resource.
@@ -398,8 +409,6 @@ namespace Axiom.Core
 			return Load( name, group, false, null, null );
 		}
 
-        /// <param name="name">The name of the Resource</param>
-        /// <param name="group">The resource group to which this resource will belong</param>
 		/// <param name="isManual">
 		///     Is the resource to be manually loaded? If so, you should
 		///     provide a value for the loader parameter

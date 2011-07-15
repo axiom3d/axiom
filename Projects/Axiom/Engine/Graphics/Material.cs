@@ -1018,6 +1018,7 @@ namespace Axiom.Graphics
 			this._compilationRequired = true;
 		}
 
+        /// <see cref="ApplyTextureAliases(Dictionary&lt;string,string&gt, bool)"/>
         public bool ApplyTextureAliases( Dictionary<string, string> aliasList )
         {
             return ApplyTextureAliases( aliasList, true );
@@ -1213,7 +1214,7 @@ namespace Axiom.Graphics
 		/// Note that the values returned from this method is not totally analogous to
 		/// the one passed in by calling <see cref="SetLodLevels"/> - the list includes a zero
 		/// entry at the start (since the highest LOD starts at value 0). Also, the
-        /// values returned are after being transformed by <see name="LodStrategy.TransformUserValue"/>.
+		/// values returned are after being transformed by <see cref="LodStrategy.TransformUserValue"/>.
 		/// </remarks>
 		public LodValueList LodValues
 		{
@@ -1280,7 +1281,7 @@ namespace Axiom.Graphics
 		///		The decision about what distance is actually used is a combination of this
 		///		and the LOD bias applied to both the current <see cref="Camera"/> and the current Entity.
 		/// </remarks>
-        /// <param name="lodDistanceList">
+		/// <param name="lodDistances">
 		///		A list of floats which indicate the distance at which to
 		///		switch to lower details. They are listed in LOD index order, starting at index
 		///		1 (ie the first level down from the highest level 0, which automatically applies
@@ -1310,7 +1311,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <remarks>
 		/// The value passed in is the 'transformed' value. If you are dealing with
-		/// an original source value (e.g. distance), use <see name="LodStrategy.TransformUserValue"/>
+		/// an original source value (e.g. distance), use <see cref="LodStrategy.TransformUserValue"/>
 		/// to turn this into a lookup value.
 		/// </remarks>
 		/// <param name="distance"></param>

@@ -260,7 +260,7 @@ namespace Axiom.Graphics
 
 					RenderOperation lightShadOp = null;
 
-					// Initialize the index bounds for this shadow renderable
+					// Initialise the index bounds for this shadow renderable
 					RenderOperation shadOp = si.GetRenderOperationForUpdate();
 					shadOp.indexData.indexCount = 0;
 					shadOp.indexData.indexStart = indexStart;

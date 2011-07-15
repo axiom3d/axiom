@@ -950,6 +950,8 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public bool SetParam( string name, string val )
 		{
 			if ( commandTable.ContainsKey( name ) )
