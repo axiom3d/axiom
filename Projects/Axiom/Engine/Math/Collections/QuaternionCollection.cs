@@ -568,9 +568,9 @@ namespace Axiom.Math.Collections
         #region Implementation (helpers)
 
         /// <exception cref="ArgumentOutOfRangeException">
-        ///		<para><paramref name="i"/> is less than zero</para>
+        ///		<para><paramref name="index"/> is less than zero</para>
         ///		<para>-or-</para>
-        ///		<para><paramref name="i"/> is equal to or greater than <see cref="QuaternionCollection.Count"/>.</para>
+        ///		<para><paramref name="index"/> is equal to or greater than <see cref="QuaternionCollection.Count"/>.</para>
         /// </exception>
         private void ValidateIndex( int i )
         {
@@ -578,9 +578,9 @@ namespace Axiom.Math.Collections
         }
 
         /// <exception cref="ArgumentOutOfRangeException">
-        ///		<para><paramref name="i"/> is less than zero</para>
+        ///		<para><paramref name="index"/> is less than zero</para>
         ///		<para>-or-</para>
-        ///		<para><paramref name="i"/> is equal to or greater than <see cref="QuaternionCollection.Count"/>.</para>
+        ///		<para><paramref name="index"/> is equal to or greater than <see cref="QuaternionCollection.Count"/>.</para>
         /// </exception>
         private void ValidateIndex( int i, bool allowEqualEnd )
         {

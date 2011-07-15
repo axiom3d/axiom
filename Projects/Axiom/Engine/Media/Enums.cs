@@ -79,9 +79,9 @@ namespace Axiom.Media
 		/// </summary>
 		A4L4 = 4,
 
-		// <summary>
-		//    8-bit pixel format, 4 bits luminace, 4 bits alpha.
-		// </summary>
+		/// <summary>
+		///    8-bit pixel format, 4 bits luminace, 4 bits alpha.
+		/// </summary>
 		//L4A4 = 5,
 
 		/// <summary>
@@ -138,9 +138,9 @@ namespace Axiom.Media
 		B8G8R8 = 11,
 		BYTE_RGB = B8G8R8,
 
-		// <summary>
-		//    24-bit pixel format, all bits luminance.
-		// </summary>
+		/// <summary>
+		///    24-bit pixel format, all bits luminance.
+		/// </summary>
 		//L24,
 
 		/// <summary>
@@ -308,30 +308,10 @@ namespace Axiom.Media
 	/// </summary>
 	public enum PixelComponentType
 	{
-        /// <summary>
-        ///  Byte per component (8 bit fixed 0.0..1.0)
-        /// </summary>
-		Byte = 0,
-
-        /// <summary>
-        /// Short per component (16 bit fixed 0.0..1.0))
-        /// </summary>
-		Short = 1,
-
-        /// <summary>
-        /// 16 bit float per component
-        /// </summary>
-		Float16 = 2,
-
-        /// <summary>
-        /// 32 bit float per component
-        /// </summary>
-		Float32 = 3,
-
-        // this should not be part of the enum in C# ...
-        /// <summary>
-        /// Number of pixel types
-        /// </summary>
-		Count = 4 
+		Byte = 0,    /// Byte per component (8 bit fixed 0.0..1.0)
+		Short = 1,   /// Short per component (16 bit fixed 0.0..1.0))
+		Float16 = 2, /// 16 bit float per component
+		Float32 = 3, /// 32 bit float per component
+		Count = 4    /// Number of pixel types
 	}
 }

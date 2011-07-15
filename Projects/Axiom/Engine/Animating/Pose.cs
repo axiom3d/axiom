@@ -131,8 +131,8 @@ namespace Axiom.Animating
 		#region Public Methods
 
 		/// <summary>Adds an offset to a vertex for this pose.</summary>
-		/// <param name="index"> The vertex index</param>
-		/// <param name="offset"> The position offset for this pose</param>
+		/// <param name="index" The vertex index</param>
+		/// <param name="offset" The position offset for this pose</param>
 		public void AddVertex( int index, Vector3 offset )
 		{
 			vertexOffsetMap[ index ] = offset;

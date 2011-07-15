@@ -343,7 +343,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
 		/// <param name="length">The size of the data to write to, in bytes.</param>
-        /// <param name="source">The source of the data to be written.</param>
+		/// <param name="src">The source of the data to be written.</param>
 		/// <param name="discardWholeBuffer">
 		///     If true, this allows the driver to discard the entire buffer when writing,
 		///     such that DMA stalls can be avoided; use if you can.
@@ -386,7 +386,7 @@ namespace Axiom.Graphics
 		///    Convenience function that blits this entire buffer to a pixelbox.
 		///    The image is scaled as needed.
 		///</summary>
-		///<param name="dst">PixelBox containing the source pixels and format in memory</param>
+		///<param name="src">PixelBox containing the source pixels and format in memory</param>
 		///<remarks>
 		///    Only call this function when the buffer is unlocked. 
 		///</remarks>

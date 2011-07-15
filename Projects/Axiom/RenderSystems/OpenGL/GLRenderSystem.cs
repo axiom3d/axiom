@@ -158,8 +158,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected GLGpuProgramManager gpuProgramMgr;
 		protected GLGpuProgram currentVertexProgram;
-		protected GLGpuProgram currentGeometryProgram;
-        protected GLGpuProgram currentFragmentProgram;
+		protected GLGpuProgram currentFragmentProgram;
 
 		private int _activeTextureUnit;
 
@@ -205,7 +204,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Implementation of RenderSystem
 
-		public override ConfigOptionMap ConfigOptions
+		public override ConfigOptionCollection ConfigOptions
 		{
 			get
 			{
@@ -213,7 +212,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
+		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			int flags = 0;
 
@@ -333,7 +332,7 @@ namespace Axiom.RenderSystems.OpenGL
 					}
 				}
 
-				// Initialize the main context
+				// Initialise the main context
 				_oneTimeContextInitialization();
 				if ( _currentContext != null )
 					_currentContext.Initialized = true;
@@ -579,7 +578,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest1, bool forGpuPrograms )
+		public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
 		{
 			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
 			float tanThetaY = Utility.Tan( thetaY );
@@ -608,19 +607,17 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 
-	    /// <summary>
-	    ///		Creates a projection matrix specific to OpenGL based on the given params.
-	    ///		Note: forGpuProgram is ignored because GL uses the same handed projection matrix
-	    ///		normally and for GPU programs.
-	    /// </summary>
-	    ///<param name="fov">In Degrees</param>
-	    ///<param name="aspectRatio"></param>
-	    ///<param name="near"></param>
-	    ///<param name="far"></param>
-	    ///<param name="dest"></param>
-	    ///<param name="forGpuProgram"></param>
-	    ///<returns></returns>
-	    public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
+		/// <summary>
+		///		Creates a projection matrix specific to OpenGL based on the given params.
+		///		Note: forGpuProgram is ignored because GL uses the same handed projection matrix
+		///		normally and for GPU programs.
+		/// </summary>
+		/// <param name="fov">In Degrees</param>
+		/// <param name="aspectRatio"></param>
+		/// <param name="near"></param>
+		/// <param name="far"></param>
+		/// <returns></returns>
+		public override Axiom.Math.Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
 		{
 			Matrix4 matrix = Matrix4.Zero;
 
@@ -659,20 +656,19 @@ namespace Axiom.RenderSystems.OpenGL
 			return matrix;
 		}
 
-	    /// <summary>
-	    /// Builds a perspective projection matrix for the case when frustum is
-	    /// not centered around camera.
-	    /// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
-	    /// </summary>
-	    /// <param name="left"></param>
-	    /// <param name="right"></param>
-	    /// <param name="bottom"></param>
-	    /// <param name="top"></param>
-	    /// <param name="nearPlane"></param>
-	    /// <param name="farPlane"></param>
-	    /// <param name="dest1"></param>
-	    /// <param name="forGpuProgram"></param>
-	    public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest1, bool forGpuProgram )
+		/// <summary>
+		/// Builds a perspective projection matrix for the case when frustum is
+		/// not centered around camera.
+		/// <remarks>Viewport coordinates are in camera coordinate frame, i.e. camera is at the origin.</remarks>
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <param name="bottom"></param>
+		/// <param name="top"></param>
+		/// <param name="nearPlane"></param>
+		/// <param name="farPlane"></param>
+		/// <param name="forGpuProgram"></param>
+		public override Matrix4 MakeProjectionMatrix( float left, float right, float bottom, float top, float nearPlane, float farPlane, bool forGpuProgram )
 		{
 			Real width = right - left;
 			Real height = top - bottom;
@@ -739,7 +735,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest1, bool forGpuProgram )
+		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
 		{
 			// No conversion required for OpenGL
 
@@ -797,15 +793,15 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override void BeginFrame()
 		{
-			Debug.Assert( _activeViewport != null, "BeginFrame cannot run without an active viewport." );
+			Debug.Assert( activeViewport != null, "BeginFrame cannot run without an active viewport." );
 
 			// clear the viewport if required
-			if ( _activeViewport.ClearEveryFrame == true )
+			if ( activeViewport.ClearEveryFrame == true )
 			{
 				// active viewport clipping
 				Gl.glEnable( Gl.GL_SCISSOR_TEST );
 
-				ClearFrameBuffer( _activeViewport.ClearBuffers, _activeViewport.BackgroundColor );
+				ClearFrameBuffer( activeViewport.ClearBuffers, activeViewport.BackgroundColor );
 			}
 		}
 
@@ -829,10 +825,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="viewport"></param>
 		public override void SetViewport( Viewport viewport )
 		{
-			if ( _activeViewport != viewport || viewport.IsUpdated )
+			if ( activeViewport != viewport || viewport.IsUpdated )
 			{
 				// store this viewport and it's target
-				_activeViewport = viewport;
+				activeViewport = viewport;
 				RenderTarget target = viewport.Target;
 				_setRenderTarget( target );
 
@@ -969,7 +965,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// render point sprites (textured quads) or plain points.
 		/// </summary>
 		/// <value></value>
-		public override bool PointSpritesEnabled
+		public override bool PointSprites
 		{
 			set
 			{
@@ -1022,12 +1018,12 @@ namespace Axiom.RenderSystems.OpenGL
 				// independent size if you're looking for attenuation.
 				// So, scale the point size up by viewport size (this is equivalent to
 				// what D3D does as standard)
-				size = size * _activeViewport.ActualHeight;
-				minSize = minSize * _activeViewport.ActualHeight;
+				size = size * activeViewport.ActualHeight;
+				minSize = minSize * activeViewport.ActualHeight;
 				if ( maxSize == 0.0f )
 					maxSize = HardwareCapabilities.MaxPointSize; // pixels
 				else
-					maxSize = maxSize * _activeViewport.ActualHeight;
+					maxSize = maxSize * activeViewport.ActualHeight;
 
 				// XXX: why do I need this for results to be consistent with D3D?
 				// Equations are supposedly the same once you factor in vp height
@@ -2044,7 +2040,7 @@ namespace Axiom.RenderSystems.OpenGL
 						Debug.Assert( _rsCapabilities.HasCapability( Capabilities.VertexPrograms ) );
 						if ( currentVertexProgram != null )
 						{
-							var attrib = currentVertexProgram.AttributeIndex( element.Semantic, (uint)element.Index );
+							int attrib = currentVertexProgram.AttributeIndex( element.Semantic );
 							Gl.glVertexAttribPointerARB(
 														attrib, // matrix indices are vertex attribute 7
 														VertexElement.GetTypeCount( element.Type ),
@@ -2176,7 +2172,6 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 			Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
-            /*
 			if ( currentVertexProgram != null )
 			{
 				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendIndices ) )
@@ -2187,8 +2182,7 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Tangent ) ); // disable tangent
 				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Binormal ) )
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Binormal ) ); // disable binormal
-			}*/
-            throw new NotImplementedException("need to implement attribsBound");
+			}
 
 			Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		}
@@ -2628,33 +2622,18 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///    Binds the supplied parameters to programs of the specified type for future rendering operations.
 		/// </summary>
-		[OgreVersion(1, 7)]
-		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
+		/// <param name="type"></param>
+		/// <param name="parms"></param>
+		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
 		{
-            if (mask.HasFlag(GpuProgramParameters.GpuParamVariability.Global))
-            {
-                // We could maybe use GL_EXT_bindable_uniform here to produce Dx10-style
-                // shared constant buffers, but GPU support seems fairly weak?
-                // for now, just copy
-                parms.CopySharedParams();
-            }
-
-			// store the current program in use for eas unbinding later);
-			switch (type)
+			// store the current program in use for eas unbinding later
+			if ( type == GpuProgramType.Vertex )
 			{
-                case GpuProgramType.Vertex:
-                    activeVertexGpuProgramParameters = parms;
-				    currentVertexProgram.BindProgramParameters( parms, mask );
-			        break;
-                case GpuProgramType.Geometry:
-                    activeGeometryGpuProgramParameters = parms;
-                    currentGeometryProgram.BindProgramParameters(parms, mask);
-                    break;
-                case GpuProgramType.Fragment:
-                    activeFragmentGpuProgramParameters = parms;
-                    currentFragmentProgram.BindProgramParameters(parms, mask);
-                    break;
-
+				currentVertexProgram.BindParameters( parms );
+			}
+			else
+			{
+				currentFragmentProgram.BindParameters( parms );
 			}
 		}
 
@@ -3315,7 +3294,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// Bind frame buffer object
 			rttManager.Bind( target );
 
-			if ( target.IsHardwareGammaEnabled )
+			if ( target.HardwareGammaEnabled )
 			{
 				Gl.glEnable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
 

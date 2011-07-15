@@ -63,7 +63,7 @@ namespace Axiom.Core
 			{
 				_assembly = Assembly.LoadFrom( assemblyFile );
 			}
-			catch ( Exception )
+			catch ( Exception ex )
 			{
 				_assembly = Assembly.GetExecutingAssembly();
 			}

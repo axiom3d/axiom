@@ -109,25 +109,24 @@ namespace Axiom.Graphics
 			return GetWorldBoundingBox( false );
 		}
 
-	    /// <summary>
-	    ///		Gets an iterator over the renderables required to render the shadow volume.
-	    /// </summary>
-	    /// <remarks>
-	    ///		Shadowable geometry should ideally be designed such that there is only one
-	    ///		ShadowRenderable required to render the the shadow; however this is not a necessary
-	    ///		limitation and it can be exceeded if required.
-	    /// </remarks>
-	    /// <param name="technique">The technique being used to generate the shadow.</param>
-	    /// <param name="light">The light to generate the shadow from.</param>
-	    /// <param name="indexBuffer">The index buffer to build the renderables into,
-	    /// the current contents are assumed to be disposable.</param>
-	    /// <param name="extrudeVertices">If true, this means this class should extrude
-	    /// the vertices of the back of the volume in software. If false, it
-	    /// will not be done (a vertex program is assumed).</param>
-	    /// <param name="extrusionDistance"></param>
-	    /// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
-	    /// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
-	    public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
+		/// <summary>
+		///		Gets an iterator over the renderables required to render the shadow volume.
+		/// </summary>
+		/// <remarks>
+		///		Shadowable geometry should ideally be designed such that there is only one
+		///		ShadowRenderable required to render the the shadow; however this is not a necessary
+		///		limitation and it can be exceeded if required.
+		/// </remarks>
+		/// <param name="technique">The technique being used to generate the shadow.</param>
+		/// <param name="light">The light to generate the shadow from.</param>
+		/// <param name="indexBuffer">The index buffer to build the renderables into,
+		/// the current contents are assumed to be disposable.</param>
+		/// <param name="extrudeVertices">If true, this means this class should extrude
+		/// the vertices of the back of the volume in software. If false, it
+		/// will not be done (a vertex program is assumed).</param>
+		/// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
+		/// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
+		public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
 			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
 
 		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
@@ -261,7 +260,7 @@ namespace Axiom.Graphics
 
 					RenderOperation lightShadOp = null;
 
-					// Initialize the index bounds for this shadow renderable
+					// Initialise the index bounds for this shadow renderable
 					RenderOperation shadOp = si.GetRenderOperationForUpdate();
 					shadOp.indexData.indexCount = 0;
 					shadOp.indexData.indexStart = indexStart;

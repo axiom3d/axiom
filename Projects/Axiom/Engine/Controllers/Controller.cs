@@ -51,8 +51,8 @@ namespace Axiom.Controllers
 	///		<p/>
 	///		The Controller is an intentionally abstract concept - it can generate values
 	///		based on input and a function, which can either be one of the standard ones
-	///		supplied, or a function can be 'plugged in' for custom behavior - see the <see cref="IControllerFunction&lt;T&gt;"/> class for details.
-    ///		Both the input and output values are via <see cref="IControllerValue&lt;T&gt;"/> objects, meaning that any value can be both
+	///		supplied, or a function can be 'plugged in' for custom behavior - see the <see cref="ControllerFunction"/> class for details.
+	///		Both the input and output values are via <see cref="ControllerValue"/> objects, meaning that any value can be both
 	///		input and output of the controller.
 	///		<p/>
 	///		While this is very flexible, it can be a little bit confusing so to make it simpler the most often used
