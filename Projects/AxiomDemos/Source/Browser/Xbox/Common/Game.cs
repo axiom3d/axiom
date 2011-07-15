@@ -49,8 +49,6 @@ namespace Axiom.Demos.Browser.Xna
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
             Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
 
-            _loadPlugins();
-
             _setupResources();
 
             engine.FrameStarted += engine_FrameStarted;
