@@ -176,6 +176,11 @@
       <Project>{ebf98b3b-3d1a-45ec-b2c9-0ac31dce3ee4}</Project>
       <Name>Axiom.Demos.Xna.Xbox</Name>
     </ProjectReference>
+    <ProjectReference Include="Content\Axiom.Content.ParticleFX.contentproj">
+      <Project>{DD044FE7-FF87-4498-AB23-95FAFE0DC668}</Project>
+      <Name>Axiom.Content.ParticleFX %28Content%29</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Common\Game.cs">
