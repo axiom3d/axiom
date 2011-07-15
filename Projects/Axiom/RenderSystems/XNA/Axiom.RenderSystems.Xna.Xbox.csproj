@@ -114,17 +114,16 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\AxiomContentManager.cs">
+      <Link>Source\AxiomContentManager.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Source\DefaultForm.cs" />
     <Compile Include="Source\Driver.cs" />
     <Compile Include="Source\DriverCollection.cs" />
-    <None Include="Source\HLSL\HLSLProgram.cs" />
-    <None Include="Source\HLSL\HLSLProgramFactory.cs" />
     <Compile Include="Source\Plugin.cs" />
     <Compile Include="Source\StateManagement.cs" />
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
-    <None Include="Source\Win32MessageHandling.cs" />
     <Compile Include="Source\XnaCodec.cs" />
     <Compile Include="Source\XnaGamerServices.cs" />
     <Compile Include="Source\XnaGpuProgram.cs" />
@@ -137,10 +136,14 @@
     <Compile Include="Source\XnaHardwarePixelBuffer.cs" />
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaHelper.cs" />
+    <Compile Include="Source\XnaMaterial.cs" />
+    <Compile Include="Source\XnaMaterialManager.cs" />
+    <Compile Include="Source\XnaPass.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />
     <Compile Include="Source\XnaRenderTexture.cs" />
     <Compile Include="Source\XnaRenderWindow.cs" />
     <Compile Include="Source\XnaResourceGroupManager.cs" />
+    <Compile Include="Source\XnaTechnique.cs" />
     <Compile Include="Source\XnaTexture.cs" />
     <Compile Include="Source\XnaTextureManager.cs" />
     <Compile Include="Source\XnaTextureStageDescription.cs" />
@@ -151,10 +154,6 @@
     <ProjectReference Include="..\..\Engine\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Xbox.csproj">
-      <Project>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</Project>
-      <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

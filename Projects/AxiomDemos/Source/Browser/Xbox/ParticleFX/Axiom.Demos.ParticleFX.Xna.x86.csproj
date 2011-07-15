@@ -164,6 +164,10 @@
       <Project>{D2CCB2B6-58D6-4A99-AD88-98D8F97023A3}</Project>
       <Name>Axiom.Xna.x86</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.Xna.x86.csproj">
+      <Project>{47D7447D-7B83-451C-B1EF-4CD276EB8E7F}</Project>
+      <Name>Axiom.Plugins.ParticleFX.Xna.x86</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.x86.csproj">
       <Project>{05004B16-CAC1-45B7-A88A-DB56C1DD24B8}</Project>
       <Name>Axiom.RenderSystems.Xna.x86</Name>
@@ -175,6 +179,11 @@
     <ProjectReference Include="..\..\..\Demos\Axiom.Demos.Xna.x86.csproj">
       <Project>{3DADBC6D-4756-44D5-8032-C65AE5812F82}</Project>
       <Name>Axiom.Demos.Xna.x86</Name>
+    </ProjectReference>
+    <ProjectReference Include="Content\Axiom.Content.ParticleFX.contentproj">
+      <Project>{DD044FE7-FF87-4498-AB23-95FAFE0DC668}</Project>
+      <Name>Axiom.Content.ParticleFX %28Content%29</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
