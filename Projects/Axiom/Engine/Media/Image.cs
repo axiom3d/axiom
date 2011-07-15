@@ -457,15 +457,16 @@ namespace Axiom.Media
 			return FromRawStream( stream, width, height, 1, format );
 		}
 
-		/// <summary>
-		///    Loads raw image data from memory.
-		/// </summary>
-		/// <param name="stream">Stream containing the raw image data.</param>
-		/// <param name="width">Width of this image data (in pixels).</param>
-		/// <param name="height">Height of this image data (in pixels).</param>
-		/// <param name="format">Pixel format used in this texture.</param>
-		/// <returns>A new instance of Image containing the raw data supplied.</returns>
-		public static Image FromRawStream( Stream stream, int width, int height, int depth, PixelFormat format )
+	    /// <summary>
+	    ///    Loads raw image data from memory.
+	    /// </summary>
+	    /// <param name="stream">Stream containing the raw image data.</param>
+	    /// <param name="width">Width of this image data (in pixels).</param>
+	    /// <param name="height">Height of this image data (in pixels).</param>
+	    /// <param name="depth"></param>
+	    /// <param name="format">Pixel format used in this texture.</param>
+	    /// <returns>A new instance of Image containing the raw data supplied.</returns>
+	    public static Image FromRawStream( Stream stream, int width, int height, int depth, PixelFormat format )
 		{
 			// create a new buffer and write the image data directly to it
 			int size = width * height * depth * PixelUtil.GetNumElemBytes( format );
@@ -486,15 +487,16 @@ namespace Axiom.Media
 			return FromDynamicImage( buffer, width, height, 1, format );
 		}
 
-		/// <summary>
-		///    Loads raw image data from a byte array.
-		/// </summary>
-		/// <param name="buffer">Raw image buffer.</param>
-		/// <param name="width">Width of this image data (in pixels).</param>
-		/// <param name="height">Height of this image data (in pixels).</param>
-		/// <param name="format">Pixel format used in this texture.</param>
-		/// <returns>A new instance of Image containing the raw data supplied.</returns>
-		public Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format )
+	    /// <summary>
+	    ///    Loads raw image data from a byte array.
+	    /// </summary>
+	    /// <param name="buffer">Raw image buffer.</param>
+	    /// <param name="width">Width of this image data (in pixels).</param>
+	    /// <param name="height">Height of this image data (in pixels).</param>
+	    /// <param name="depth"></param>
+	    /// <param name="format">Pixel format used in this texture.</param>
+	    /// <returns>A new instance of Image containing the raw data supplied.</returns>
+	    public Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format )
 		{
 			return FromDynamicImage( buffer, width, height, depth, format, true, 1, 0 );
 		}
@@ -633,9 +635,9 @@ namespace Axiom.Media
 			for ( int mip = 0; mip < mipmap; ++mip )
 			{
 				faceSize = PixelUtil.GetMemorySize( width, height, depth, this.Format );
-				/// Skip all faces of this mipmap
+				// Skip all faces of this mipmap
 				offset += faceSize * this.NumFaces;
-				/// Half size in each dimension
+				// Half size in each dimension
 				if ( width != 1 )
 					width /= 2;
 				if ( height != 1 )
@@ -687,7 +689,7 @@ namespace Axiom.Media
 		/// Scale a 1D, 2D or 3D image volume.
 		/// </summary>
 		/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
-		/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
+        /// <param name="scaled">PixelBox containing the destination pointer, dimensions and format</param>
 		/// <param name="filter">Which filter to use</param>
 		/// <remarks>
 		/// This function can do pixel format conversion in the process.
@@ -772,7 +774,6 @@ namespace Axiom.Media
 									break;
 								default:
 									throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
-									break;
 							}
 							if ( temp.Data != scaled.Data )
 							{
@@ -829,8 +830,8 @@ namespace Axiom.Media
 			// do not delete[] m_pBuffer!  temp will destroy it
 
 			// set new dimensions, allocate new buffer
-			width = width;
-			height = height;
+			this.width = width;
+			this.height = height;
 			size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
 			buffer = new byte[ size ];
 			numMipMaps = 0; // Loses precomputed mipmaps

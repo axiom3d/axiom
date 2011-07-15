@@ -52,9 +52,9 @@ using T = Axiom.Math.Vector3;
 
 namespace Axiom.Math.Collections
 {
-    /// <summary>
-    /// Summary description for Vector3List.
-    /// </summary>
+    // <summary>
+    // Summary description for Vector3List.
+    // </summary>
     /*   public class Vector3List : BaseCollection {
            #region Constructors
 
@@ -86,10 +86,12 @@ namespace Axiom.Math.Collections
            #endregion
 
        } */
+
+    
+#if !( XBOX || XBOX360 || SILVERLIGHT )
     /// <summary>
     ///		A strongly-typed collection of <see cref="Vector3"/> objects.
     /// </summary>
-#if !( XBOX || XBOX360 || SILVERLIGHT )
     [Serializable]
 #endif
 	public class Vector3List : ICollection, IList, IEnumerable, ICloneable
@@ -566,9 +568,9 @@ namespace Axiom.Math.Collections
         #region Implementation (helpers)
 
         /// <exception cref="ArgumentOutOfRangeException">
-        ///		<para><paramref name="index"/> is less than zero</para>
+        ///		<para><paramref name="i"/> is less than zero</para>
         ///		<para>-or-</para>
-        ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
+        ///		<para><paramref name="i"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
         /// </exception>
         private void ValidateIndex( int i )
         {
@@ -576,9 +578,9 @@ namespace Axiom.Math.Collections
         }
 
         /// <exception cref="ArgumentOutOfRangeException">
-        ///		<para><paramref name="index"/> is less than zero</para>
+        ///		<para><paramref name="i"/> is less than zero</para>
         ///		<para>-or-</para>
-        ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
+        ///		<para><paramref name="i"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
         /// </exception>
         private void ValidateIndex( int i, bool allowEqualEnd )
         {

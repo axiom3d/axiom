@@ -47,9 +47,9 @@ namespace Axiom.Collections
         #region Instance Indexers
 
         /// <summary>
-        /// Gets the <see cref="TValue"/> at the specified index.
+        /// Gets the <see name="TValue"/> at the specified index.
         /// </summary>
-        /// <value>A <see cref="TValue"/>.</value>
+        /// <value>A <see name="TValue"/>.</value>
         public TValue this[ int index ]
         {
             get { return Values[index]; }
@@ -60,10 +60,10 @@ namespace Axiom.Collections
         #region Instance Methods
 
         /// <summary>
-        /// Gets a <see cref="TValue"/> by key.
+        /// Gets a <see name="TValue"/> by key.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns>The <see cref="TValue"/> that corresponds to the specified key.</returns>
+        /// <returns>The <see name="TValue"/> that corresponds to the specified key.</returns>
         public TValue GetByKey( TKey key )
         {
             return base[ key ];

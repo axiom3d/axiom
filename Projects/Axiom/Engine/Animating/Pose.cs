@@ -49,7 +49,8 @@ namespace Axiom.Animating
 {
 
 	/// <summary>
-	/// A pose is a linked set of vertex offsets applying to one set of vertex data. 
+	///     A pose is a linked set of vertex offsets applying to one set of vertex
+	/// 	data. 
 	/// </summary>
 	/// <remarks>
 	///		The target index referred to by the pose has a meaning set by the user
@@ -130,8 +131,8 @@ namespace Axiom.Animating
 		#region Public Methods
 
 		/// <summary>Adds an offset to a vertex for this pose.</summary>
-		/// <param name="index" The vertex index</param>
-		/// <param name="offset" The position offset for this pose</param>
+		/// <param name="index"> The vertex index</param>
+		/// <param name="offset"> The position offset for this pose</param>
 		public void AddVertex( int index, Vector3 offset )
 		{
 			vertexOffsetMap[ index ] = offset;
@@ -168,10 +169,11 @@ namespace Axiom.Animating
 			if ( vertexBuffer == null )
 			{
 				// Create buffer
-                VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-                decl.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
-
-				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, numVertices, BufferUsage.StaticWriteOnly, false );
+				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
+					VertexElement.GetTypeSize( VertexElementType.Float3 ),
+					numVertices,
+					BufferUsage.StaticWriteOnly,
+					false );
 
 				// lock the vertex buffer
 				IntPtr ipBuf = vertexBuffer.Lock( BufferLocking.Discard );

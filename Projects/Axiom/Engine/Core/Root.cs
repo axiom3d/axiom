@@ -325,10 +325,10 @@ namespace Axiom.Core
 
 		#region Events
 
-		/// <summary>
-		///    The time when the meter manager was started
-		/// </summary>
-		private long lastFrameStartTime = 0;
+		// <summary>
+		//    The time when the meter manager was started
+		// </summary>
+		//private long lastFrameStartTime = 0;
 
 		/// <summary>
 		///    The number of microseconds per frame when we're
@@ -786,8 +786,7 @@ namespace Axiom.Core
 		///     the selected rendering system ready for use.
 		/// </remarks>
 		/// <param name="autoCreateWindow">
-		///     If true, a rendering window will automatically be created (saving a call to
-		///     <see cref="RenderSystem.CreateRenderWindow"/>). The window will be
+		///     If true, a rendering window will automatically be created. The window will be
 		///     created based on the options currently set on the render system.
 		/// </param>
 		/// <returns>A reference to the automatically created window (if requested), or null otherwise.</returns>
@@ -805,8 +804,7 @@ namespace Axiom.Core
 		///     the selected rendering system ready for use.
 		/// </remarks>
 		/// <param name="autoCreateWindow">
-		///     If true, a rendering window will automatically be created (saving a call to
-		///     <see cref="RenderSystem.CreateRenderWindow"/>). The window will be
+		///     If true, a rendering window will automatically be created The window will be
 		///     created based on the options currently set on the render system.
 		/// </param>
 		/// <param name="windowTitle">Title to use by the window.</param>
@@ -846,7 +844,6 @@ namespace Axiom.Core
 			if ( this.firstTimePostWindowInit )
 			{
 				// init material manager singleton, which parse sources for materials
-				new MaterialManager();
 				MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
@@ -862,10 +859,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		Overloaded method.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="isFullscreen"></param>
 		/// <returns></returns>
 		public RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen )
 		{
@@ -873,16 +866,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="target"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="isFullscreen"></param>
-		/// <param name="miscParams">
 		///		A collection of addition render system specific options.
-		///	</param>
+        ///	</summary>
 		public RenderWindow CreateRenderWindow( string name,
 												int width,
 												int height,
@@ -1029,7 +1014,7 @@ namespace Axiom.Core
 		///     You don't need to use this method if you're using Axiom's own internal
 		///     rendering loop (<see cref="Root.StartRendering"/>). If you're running your own loop
 		///     you may wish to call it to update all the render targets which are
-		///     set to auto update (<see cref="RenderTarget.AutoUpdated"/>). You can also update
+		///     set to auto update (<see cref="RenderTarget.IsAutoUpdated"/>). You can also update
 		///     individual <see cref="RenderTarget"/> instances using their own Update() method.
 		/// </remarks>
 		public bool UpdateAllRenderTargets()
@@ -1039,7 +1024,7 @@ namespace Axiom.Core
 			// give client app opportunity to use queued GPU time
 			bool ret = OnFrameRenderingQueued();
 			// block for final swap
-			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.IsVSync );
+			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.WaitForVerticalBlank );
 
 			return ret;
 		}
@@ -1266,7 +1251,7 @@ namespace Axiom.Core
 		///    particular event. Really if you're running your own rendering loop at
 		///    this level of detail then you can get the same effect as doing your
 		///    updates in a OnFrameRenderingQueued event by just calling
-		///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false.
+		///    <see name="RenderWindow.Update" /> with the 'swapBuffers' option set to false.
 		/// </remarks>
 		public bool OnFrameRenderingQueued()
 		{
@@ -1341,7 +1326,7 @@ namespace Axiom.Core
 		///    particular event. Really if you're running your own rendering loop at
 		///    this level of detail then you can get the same effect as doing your
 		///    updates in a OnFrameRenderingQueued event by just calling
-		///    <see cref="RenderWindow.Update" /> with the 'swapBuffers' option set to false.
+		///    <see name="RenderWindow.Update" /> with the 'swapBuffers' option set to false.
 		/// </remarks>
 		public bool OnFrameRenderingQueued( FrameEventArgs e )
 		{

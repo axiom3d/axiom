@@ -187,7 +187,7 @@ namespace Axiom.Demos
 			dcl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl, 12, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( offset, 12, BufferUsage.StaticWriteOnly );
 
 			int i;
 			unsafe

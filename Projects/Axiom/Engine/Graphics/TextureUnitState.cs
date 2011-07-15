@@ -354,7 +354,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private bool isCubic;
 
-		/// </summary>
+        /// <summary></summary>
 		/// <remarks>
 		///    Applies to both fixed-function and programmable pipeline.
 		/// </remarks>
@@ -371,7 +371,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private int numFrames;
 
-		/// </summary>
+        /// <summary></summary>
 		/// <remarks>
 		///    Applies to both fixed-function and programmable pipeline.
 		/// </remarks>
@@ -615,13 +615,13 @@ namespace Axiom.Graphics
 		///    It's obviously a bit impractical to create scrolling effects by calling this method manually since you
 		///    would have to call it every frame with a slight alteration each time, which is tedious. Instead
 		///    you can use the ControllerManager class to create a Controller object which will manage the
-		///    effect over time for you. See <see cref="ControllerManager.CreateTextureScroller"/> and it's sibling methods for details.<BR/>
+		///    effect over time for you. See <see cref="ControllerManager.CreateTextureUVScroller"/> and it's sibling methods for details.<BR/>
 		///    In addition, if you want to set the individual texture transformations rather than concatenating them
 		///    yourself, use <see cref="SetTextureScroll"/>, <see cref="SetTextureScroll"/> and <see cref="SetTextureRotate"/>. 
 		///    <p/>
 		///    This has no effect in the programmable pipeline.
 		/// </remarks>
-		/// <seealso cref="Controller"/><seealso cref="ControllerManager"/>
+		/// <seealso cref="Controller&lt;T&gt;"/><seealso cref="ControllerManager"/>
 		public Matrix4 TextureMatrix
 		{
 			get
@@ -893,6 +893,9 @@ namespace Axiom.Graphics
 			set;
 		}
 
+        [OgreVersion(1, 7)]
+        public float TextureMipmapBias { get; set; }
+
 		#endregion Fields and Properties
 
 		#region Constructors
@@ -989,9 +992,6 @@ namespace Axiom.Graphics
         /// The default is TAM_WRAP i.e. the texture repeats over values of 1.0.
         /// This applies for both the fixed-function and programmable pipelines.
         /// </remarks>
-        /// <param name="u"></param>
-        /// <param name="v"></param>
-        /// <param name="W"></param>
         public void SetTextureAddressingMode( TextureAddressing u, TextureAddressing v, TextureAddressing w )
         {
             texAddressingMode = new UVWAddressing( u, v, w );
@@ -1145,14 +1145,14 @@ namespace Axiom.Graphics
 		///    Skyboxes are created by calling SceneManager.SetSkyBox.
 		///    </p>
 		///    </li>
-		///    </ul>
+		///    </ol>
 		///    <p/>
 		///    Applies to both fixed-function and programmable pipeline.
 		/// </remarks>
 		/// <param name="textureName">
 		///    The basic name of the texture e.g. brickwall.jpg, stonefloor.png. There must be 6 versions
 		///    of this texture with the suffixes _fr, _bk, _up, _dn, _lf, and _rt (before the extension) which
-		///    make up the 6 sides of the box. The textures must all be the same size and be powers of 2 in width & height.
+		///    make up the 6 sides of the box. The textures must all be the same size and be powers of 2 in width &amp; height.
 		///    If you can't make your texture names conform to this, use the alternative method of the same name which takes
 		///    an array of texture names instead.
 		/// </param>
@@ -1234,7 +1234,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="textureNames">
 		///    6 versions of this texture with the suffixes _fr, _bk, _up, _dn, _lf, and _rt (before the extension) which
-		///    make up the 6 sides of the box. The textures must all be the same size and be powers of 2 in width & height.
+		///    make up the 6 sides of the box. The textures must all be the same size and be powers of 2 in width &amp; height.
 		///    If you can't make your texture names conform to this, use the alternative method of the same name which takes
 		///    an array of texture names instead.
 		/// </param>
@@ -1268,7 +1268,9 @@ namespace Axiom.Graphics
 		///    if single-pass multitexturing hardware is available, and another for if it is not and the blending must
 		///    be achieved through multiple rendering passes. It is, however, quite limited and does not expose
 		///    the more flexible multitexturing operations, simply because these can't be automatically supported in
-		///    multipass fallback mode. If want to use the fancier options, use <see cref="TextureUnitState.SetColorOperationEx"/>,
+		///    multipass fallback mode. If want to use the fancier options, use 
+        ///    <see cref="TextureUnitState.SetColorOperationEx(LayerBlendOperationEx, LayerBlendSource, LayerBlendSource,
+        ///    ColorEx, ColorEx, float)"/>,
 		///    but you'll either have to be sure that enough multitexturing units will be available, or you should
 		///    explicitly set a fallback using <see cref="TextureUnitState.SetColorOpMultipassFallback"/>.
 		///    <p/>
@@ -1729,7 +1731,7 @@ namespace Axiom.Graphics
 		///		Sets up an animated texture rotation for this layer.
 		/// </summary>
 		/// <remarks>
-		///    Useful for constant rotations (for varying rotations, <see cref="setTransformAnimation"/>).
+		///    Useful for constant rotations (for varying rotations, <see cref="SetTransformAnimation"/>).
 		///    <p/>
 		///    This option has no effect in the programmable pipeline.
 		/// </remarks>
@@ -1748,8 +1750,8 @@ namespace Axiom.Graphics
 		///    Sets up a general time-relative texture modification effect.
 		/// </summary>
 		/// <remarks>
-		///    This can be called multiple times for different values of <paramref cref="transType"/>, but only the latest effect
-		///    applies if called multiple time for the same <paramref cref="transType"/>.
+        ///    This can be called multiple times for different values of <paramref name="transType"/>, but only the latest effect
+		///    applies if called multiple time for the same <paramref name="transType"/>.
 		///    <p/>
 		///    This option has no effect in the programmable pipeline.
 		/// </remarks>
@@ -1909,15 +1911,17 @@ namespace Axiom.Graphics
 			isDefaultFiltering = false;
 		}
 
-		/// <summary>
-		///    Sets this texture layer to use a single texture, given the name of the texture to use on this layer.
-		/// </summary>
-		/// <remarks>
-		///    Applies to both fixed-function and programmable pipeline.
-		/// </remarks>
-		/// <param name="name">Name of the texture.</param>
-		/// <param name="type">Type of texture this is.</param>
-		public void SetTextureName( string name, TextureType type, int mipmaps, bool alpha )
+	    /// <summary>
+	    ///    Sets this texture layer to use a single texture, given the name of the texture to use on this layer.
+	    /// </summary>
+	    /// <remarks>
+	    ///    Applies to both fixed-function and programmable pipeline.
+	    /// </remarks>
+	    /// <param name="name">Name of the texture.</param>
+	    /// <param name="type">Type of texture this is.</param>
+	    /// <param name="mipmaps"></param>
+	    /// <param name="alpha"></param>
+	    public void SetTextureName( string name, TextureType type, int mipmaps, bool alpha )
 		{
 			if ( type == TextureType.CubeMap )
 			{
@@ -1967,6 +1971,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+        /// </summary>
 		public void SetTextureName( string name, TextureType type, int mipmaps )
 		{
 			SetTextureName( name, type, mipmaps, false );
@@ -1977,7 +1982,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <remarks>
 		///    This sets a fixed rotation angle - if you wish to animate this, see the
-		///    <see cref="ControllerManager.CreateTextureRotater"/> method.
+		///    <see cref="ControllerManager.CreateTextureRotator"/> method.
 		///    <p/>
 		///    Has no effect in the programmable pipeline.
 		/// </remarks>

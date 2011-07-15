@@ -700,6 +700,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									throw new NotImplementedException();
+#if UNREACHABLE_CODE
 									Real val = 0.0f;
 									if ( getReal( prop.Values[ 0 ], out val ) )
 									{ /*mUnit->setTextureMipmapBias(val);*/
@@ -707,6 +708,7 @@ namespace Axiom.Scripting.Compiler
 									else
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 											prop.Values[ 0 ].Value + " is not a valid number argument" );
+#endif
 								}
 								break;
 							#endregion ID_MIPMAP_BIAS
@@ -1523,8 +1525,9 @@ namespace Axiom.Scripting.Compiler
 
 							#region ID_TRANSFORM
 							case Keywords.ID_TRANSFORM:
-								{
-									throw new NotImplementedException();
+						    {
+						        throw new NotImplementedException();
+#if UNREACHABLE_CODE
 									Matrix4 m;
 									if ( getMatrix4( prop.Values, 0, out m ) )
 									{ /*mUnit->setTextureTransform(m);*/
@@ -1533,7 +1536,11 @@ namespace Axiom.Scripting.Compiler
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 								}
 								break;
-							#endregion ID_TRANSFORM
+#else
+						    }
+#endif
+
+						        #endregion ID_TRANSFORM
 
 							#region ID_BINDING_TYPE
 							case Keywords.ID_BINDING_TYPE:
@@ -1592,7 +1599,7 @@ namespace Axiom.Scripting.Compiler
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										throw new NotImplementedException();
-
+#if UNREACHABLE_CODE
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
@@ -1636,6 +1643,7 @@ namespace Axiom.Scripting.Compiler
 													atom.Value + " is not a valid content type (must be \"named\" or \"shadow\" or \"compositor\")" );
 												break;
 										}
+#endif
 									}
 									else
 									{

@@ -85,13 +85,14 @@ namespace Axiom.Graphics
 
 		#region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		/// <param name="parent">Render queue that owns this group.</param>
-		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
-		/// <param name="splitNoShadowPasses"></param>
-		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType,
+	    /// <summary>
+	    ///		Default constructor.
+	    /// </summary>
+	    /// <param name="parent">Render queue that owns this group.</param>
+	    /// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
+	    /// <param name="splitNoShadowPasses"></param>
+	    /// <param name="shadowCastersCannotBeReceivers"></param>
+	    public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType,
 								bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
 		{
 			// shadows enabled by default
@@ -108,10 +109,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable item, Technique technique, ushort priority )
 		{
 			RenderPriorityGroup group = null;

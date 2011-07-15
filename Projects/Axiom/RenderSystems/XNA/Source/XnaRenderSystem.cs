@@ -151,6 +151,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			Dictionary<short, HardwareVertexBuffer> bindings = binding.Bindings;
 
+			// TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
 			var xnaBindings = new XFG.VertexBufferBinding[ binding.BindingCount ];
 			int index = 0;
 			foreach ( short stream in bindings.Keys )
@@ -745,7 +746,6 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_ambientLight = value;
-                basicEffect.AmbientLightColor = XnaHelper.Convert(_ambientLight).ToVector3();
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightAmbient = value;
 #endif
@@ -835,7 +835,6 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_lightingEnabled = value;
-                basicEffect.LightingEnabled = _lightingEnabled;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightingEnabled = value;
 #endif
@@ -885,7 +884,10 @@ namespace Axiom.RenderSystems.Xna
 				{
 					case PolygonMode.Points:
 
-                        StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
+                        throw new NotSupportedException("Point geometry is no longer supported on the XNA RenderSystem");
+
+						throw new Exception( "Xna does not implement Point rendering." );
+						//_device.RenderState.FillMode = XFG.FillMode.Point;
 
 						break;
 					case PolygonMode.Wireframe:
@@ -907,6 +909,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				//throw new Exception("The method or operation is not implemented.");
+
 			}
 		}
 
@@ -1534,6 +1537,7 @@ namespace Axiom.RenderSystems.Xna
 			return dest;
 		}
 
+		//XFG.BasicEffect ef;
 		public override void SetClipPlane( ushort index, float A, float B, float C, float D )
 		{
 			throw new NotImplementedException();
@@ -1553,15 +1557,8 @@ namespace Axiom.RenderSystems.Xna
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState( _device );
 			StateManager.ResetState( _device );
-
-            basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
-
-            VertexElement ve = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
-            if (ve != null) //this operation has Normals
-            {
-                basicEffect.LightingEnabled = false; //turn off lighting
-            }
-            basicEffect.CurrentTechnique.Passes[0].Apply();
+            
+			basicEffect.CurrentTechnique.Passes[0].Apply();
             
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
 			if ( op.vertexData.vertexCount == 0 )
@@ -1695,7 +1692,8 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
-            XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
+           
+			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 			// set the vertex declaration and buffer binding 
 			//_device.VertexDeclaration = vertDecl.XnaVertexDecl;
 			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
@@ -1730,26 +1728,19 @@ namespace Axiom.RenderSystems.Xna
 					break;
 			} // switch(primType)
 
-			try
+			// are we gonna use indices?
+			if ( op.useIndices )
 			{
+				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
+				_device.Indices = idxBuffer.XnaIndexBuffer;
+				_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+			}
+			else
+			{
+				// draw vertices without indices
+				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+			}
 
-				// are we gonna use indices?
-				if ( op.useIndices )
-				{
-					XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
-					_device.Indices = idxBuffer.XnaIndexBuffer;
-					_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
-				}
-				else
-				{
-					// draw vertices without indices
-					_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
-				}
-			}
-			catch ( InvalidOperationException ioe )
-			{
-				LogManager.Instance.Write( "Failed to draw RenderOperation : ", LogManager.BuildExceptionString( ioe ) );
-			}
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
 			_device.SetVertexBuffer( null );
 			_device.Indices = null;
@@ -1780,8 +1771,8 @@ namespace Axiom.RenderSystems.Xna
 				a2c = alphaToCoverage;
 			}
 
-			StateManager.BlendState.AlphaBlendFunction = XFG.BlendFunction.Add /* XnaHelper.Convert( func )*/;
-			//StateManager.BlendState.ReferenceAlpha = val;
+			//_device.BlendState.AlphaBlendFunction = XnaHelper.Convert( func );
+			//_device.BlendState.ReferenceAlpha = val;
 
 			// Alpha to coverage
 			if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
@@ -1855,13 +1846,21 @@ namespace Axiom.RenderSystems.Xna
 
 		}
 
-        public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest)
-        {
-            StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert(src);
-            StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert(dest);
-            StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert(src);
-            StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert(dest);
-        }
+		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
+		{
+			//if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
+			//{
+			//    _device.RenderState.AlphaBlendEnable = false;
+			//}
+			//else
+			//{
+			//    _device.RenderState.AlphaBlendEnable = true;
+			//    _device.RenderState.SeparateAlphaBlendEnabled = false;
+			//    _device.RenderState.SourceBlend = XnaHelper.Convert( src );
+			//    _device.RenderState.DestinationBlend = XnaHelper.Convert( dest );
+			//}
+		}
+
 		/// <summary>
 		/// Sets the global blending factors for combining subsequent renders with the existing frame contents.
 		/// The result of the blending operation is:
@@ -1875,11 +1874,21 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
 		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
-            StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert(sourceFactor);
-            StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert(destFactor);
-            StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert(sourceFactorAlpha);
-            StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert(destFactorAlpha);
-        }
+			//if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+			//    sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+			//{
+			//    _device.RenderState.AlphaBlendEnable = false;
+			//}
+			//else
+			//{
+			//    _device.RenderState.AlphaBlendEnable = true;
+			//    _device.RenderState.SeparateAlphaBlendEnabled = true;
+			//    _device.RenderState.SourceBlend = XnaHelper.Convert( sourceFactor );
+			//    _device.RenderState.DestinationBlend = XnaHelper.Convert( destFactor );
+			//    _device.RenderState.AlphaSourceBlend = XnaHelper.Convert( sourceFactorAlpha );
+			//    _device.RenderState.AlphaDestinationBlend = XnaHelper.Convert( destFactorAlpha );
+			//}
+		}
 
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
@@ -2038,31 +2047,26 @@ namespace Axiom.RenderSystems.Xna
 #endif
 		}
 
-		public override void SetTextureAddressingMode( int stage, UVWAddressing texAddressingMode )
+		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
-			XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
+            XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
 			bool compensateNPOT = false;
 
-			if ( ( xnaTexture != null ) && ( !Bitwise.IsPow2( xnaTexture.Width ) || !Bitwise.IsPow2( xnaTexture.Height ) ) )
-			{
-				if ( HardwareCapabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
-				{
-					if ( HardwareCapabilities.NonPOW2TexturesLimited )
-						compensateNPOT = true;
-				}
-				else
-					compensateNPOT = true;
+            if (xnaTexture != null)
+            {
+                if (Bitwise.IsPow2(xnaTexture.Width) == false || Bitwise.IsPow2(xnaTexture.Height) == false) //we're going to have to compensate for that
+                {
+                    compensateNPOT = true;
+                }
+            }
+            if (compensateNPOT)
+            {
+                uvw = new UVWAddressing(TextureAddressing.Clamp);
+            }
 
-				if ( compensateNPOT )
-				{
-					texAddressingMode =  new UVWAddressing( TextureAddressing.Clamp );
-				}
-			}
-
-			// set the device sampler states accordingly
-			StateManager.SamplerStates[ stage ].AddressU = XnaHelper.Convert( texAddressingMode.U );
-			StateManager.SamplerStates[ stage ].AddressV = XnaHelper.Convert( texAddressingMode.V );
-			StateManager.SamplerStates[ stage ].AddressW = XnaHelper.Convert( texAddressingMode.W );
+			StateManager.SamplerStates[ stage ].AddressU = XnaHelper.Convert( uvw.U );
+			StateManager.SamplerStates[ stage ].AddressV = XnaHelper.Convert( uvw.V );
+			StateManager.SamplerStates[ stage ].AddressW = XnaHelper.Convert( uvw.W );
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
@@ -2078,20 +2082,20 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/* TODO: use StateManager.BlendState */
 
-			if (blendMode.operation == LayerBlendOperationEx.BlendManual)
+			/*if (blendMode.operation == LayerBlendOperationEx.BlendManual)
 			{
-                StateManager.BlendState.BlendFactor = new XNA.Color(blendMode.blendFactor, 0, 0, 0);
+				_device.RenderState.BlendFactor = new Microsoft.Xna.Framework.Graphics.Color(blendMode.blendFactor, 0, 0, 0);
 			}
 			if (blendMode.blendType == LayerBlendType.Color)
 			{
-				//_device.RenderState.AlphaBlendEnable = false;
+				_device.RenderState.AlphaBlendEnable = false;
 			}
 			else if (blendMode.blendType == LayerBlendType.Alpha)
 			{
-				//_device.RenderState.AlphaBlendEnable = true;
+				_device.RenderState.AlphaBlendEnable = true;
 			}
 
-			ColorEx manualD3D = XnaHelper.Convert(StateManager.BlendState.BlendFactor);
+			ColorEx manualD3D = ColorEx.White;//XnaHelper.Convert(_device.RenderState.BlendFactor);
 			if (blendMode.blendType == LayerBlendType.Color)
 			{
 				manualD3D = new ColorEx(blendMode.blendFactor, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b);
@@ -2107,7 +2111,7 @@ namespace Axiom.RenderSystems.Xna
 				// set the texture blend factor if this is manual blending
 				if (blendSource == LayerBlendSource.Manual)
 				{
-					StateManager.BlendState.BlendFactor =  XnaHelper.Convert(manualD3D);
+					_device.RenderState.BlendFactor =  XnaHelper.Convert(manualD3D);
 				}
 				// pick proper argument settings
 				if (blendMode.blendType == LayerBlendType.Color)
@@ -2142,7 +2146,7 @@ namespace Axiom.RenderSystems.Xna
 				{
 					manualD3D = new ColorEx(blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b);
 				}
-			}
+			}*/
 		}
 
 		public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
