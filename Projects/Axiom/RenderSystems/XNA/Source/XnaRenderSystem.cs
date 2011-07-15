@@ -1556,6 +1556,11 @@ namespace Axiom.RenderSystems.Xna
 
             basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
 
+            VertexElement ve = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+            if (ve != null) //this operation has Normals
+            {
+                basicEffect.LightingEnabled = false; //turn off lighting
+            }
             basicEffect.CurrentTechnique.Passes[0].Apply();
             
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
