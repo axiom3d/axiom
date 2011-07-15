@@ -66,7 +66,9 @@ namespace Axiom.Core
 		public delegate void ObjectRenamedDelegate( MovableObject obj, string oldName );
 
 		// Define all events Handler
+#pragma warning disable 67
 		public event ObjectDelegate ObjectDestroyed;
+#pragma warning restore 67
 		public event ObjectDelegate ObjectAttached;
 		public event ObjectDelegate ObjectDetached;
 		public event ObjectDelegate ObjectMoved;
@@ -412,7 +414,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Detaches an object from a parent SceneNode or TagPoint, if attached.
 		/// </summary>
-		/// <param name="void"></param>
 		public virtual void DetachFromParent()
 		{
 			if ( IsInScene )
@@ -644,7 +645,7 @@ namespace Axiom.Core
 		///	Gets/Sets the visibility flags for this object.
 		/// </summary>
 		/// <remarks>
-		///	As well as a simple true/false value for visibility (as seen in <see cref="Visible"/>),
+        ///	As well as a simple true/false value for visibility (as seen in <see cref="IsVisible"/>),
 		///	you can also set visiblity flags which when 'and'ed with the SceneManager's
 		///	visibility mask can also make an object invisible.
 		/// </remarks>
@@ -846,7 +847,7 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
@@ -861,7 +862,7 @@ namespace Axiom.Core
 			IsDisposed = true;
 		}
 
-		public void Dispose()
+		public new void Dispose()
 		{
 			dispose( true );
 			GC.SuppressFinalize( this );
@@ -880,11 +881,12 @@ namespace Axiom.Core
 			this.NotifyAttached( node, false );
 		}
 
-		/// <summary>
-		///		Internal method called to notify the object that it has been attached to a node.
-		/// </summary>
-		/// <param name="node">Scene node to notify.</param>
-		internal virtual void NotifyAttached( Node node, bool isTagPoint )
+	    /// <summary>
+	    ///		Internal method called to notify the object that it has been attached to a node.
+	    /// </summary>
+	    /// <param name="node">Scene node to notify.</param>
+	    ///<param name="isTagPoint"></param>
+	    internal virtual void NotifyAttached( Node node, bool isTagPoint )
 		{
 			bool parentChanged = ( node != this.parentNode );
 			this.parentNode = node;

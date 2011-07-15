@@ -798,12 +798,12 @@ namespace Axiom.Demos
 
 			// Prepare buffer for positions - todo: first attempt, slow
 			// Create the Position Vertex Buffer and Bind it index 0 - Write Only
-			posVBuf = HwBufMgr.CreateVertexBuffer( vdecl.Clone(0), numVertices, BufferUsage.DynamicWriteOnly );
+			posVBuf = HwBufMgr.CreateVertexBuffer( 3 * 4, numVertices, BufferUsage.DynamicWriteOnly );
 			vbind.SetBinding( 0, posVBuf );
 
 			// Prepare buffer for normals - write only
 			// Create the Normals Buffer and Bind it to index 1 - Write only
-			normVBuf = HwBufMgr.CreateVertexBuffer( vdecl.Clone(1), numVertices, BufferUsage.DynamicWriteOnly );
+			normVBuf = HwBufMgr.CreateVertexBuffer( 3 * 4, numVertices, BufferUsage.DynamicWriteOnly );
 			vbind.SetBinding( 1, normVBuf );
 
 			// Prepare Texture Coordinates buffer (static, written only once)
@@ -830,7 +830,7 @@ namespace Axiom.Demos
 
 			// Now Create the actual hardware buffer to contain the Texture Coordinate 2d map.
 			//   and Bind it to buffer index 2
-			tcVBuf = HwBufMgr.CreateVertexBuffer( vdecl.Clone(2), numVertices, BufferUsage.StaticWriteOnly );
+			tcVBuf = HwBufMgr.CreateVertexBuffer( 2 * 4, numVertices, BufferUsage.StaticWriteOnly );
 			tcVBuf.WriteData( 0, tcVBuf.Size, tcBufDat, true );
 			vbind.SetBinding( 2, tcVBuf );
 

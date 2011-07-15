@@ -74,6 +74,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool useIndices;
 
+	    /// <summary>
+	    /// The number of instances for the render operation - this option is supported 
+	    /// in only a part of the render systems.
+	    /// </summary>
+	    public int numberOfInstances;
+
 		#endregion
 
 		#region Constructors
@@ -82,8 +88,8 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public RenderOperation()
-            : base()
 		{
+		    numberOfInstances = 1;
 		}
 
 		#endregion

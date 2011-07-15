@@ -122,6 +122,11 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Axiom.Xna.x86.csproj">
+      <Name>Axiom.Xna.x86</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="AreaEmitter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -239,12 +244,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.x86.csproj">
-      <Project>{D2CCB2B6-58D6-4A99-AD88-98D8F97023A3}</Project>
-      <Name>Axiom.Xna.x86</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

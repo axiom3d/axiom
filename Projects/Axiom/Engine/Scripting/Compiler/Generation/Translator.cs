@@ -246,7 +246,7 @@ namespace Axiom.Scripting.Compiler
 				return false;
 			}
 
-			/// <see cref="getColor(IList&lt;AbstractNode&gt;, int, ColorEx, int)"/>
+			
 			protected static bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result )
 			{
 				return getColor( nodes, i, out result, 4 );

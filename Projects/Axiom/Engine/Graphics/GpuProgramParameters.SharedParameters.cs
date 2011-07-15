@@ -37,8 +37,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -48,8 +46,10 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
-		[Flags]
-		public enum GpuParamVariability
+		
+        [OgreVersion(1,7)]
+        [Flags]
+		public enum GpuParamVariability: ushort
 		{
 			/// <summary>
 			/// No variation except by manual setting - the default
@@ -81,6 +81,7 @@ namespace Axiom.Graphics
 		/// float4 or int4 constant types since that is the fundamental underlying
 		/// type in assembler.
 		/// </note>
+		[OgreVersion(1,7)]
 		public enum GpuConstantType
 		{
 			Float1 = 1,
@@ -109,6 +110,31 @@ namespace Axiom.Graphics
 			Unknown = 99
 		}
 
+
+        public class ConstantList: List<byte[]>
+        {
+            public void Resize(int sz)
+            {
+                Capacity = sz;
+                while (Count < sz)
+                    Add(null);
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        [OgreVersion(1, 7)]
+        public class FloatConstantList : ConstantList
+        {
+        }
+
+        /// <summary>
+        /// </summary>
+        [OgreVersion(1, 7)]
+        public class IntConstantList : ConstantList
+        {
+        }
+
 		/// <summary>
 		/// A group of manually updated parameters that are shared between many parameter sets.
 		/// </summary>
@@ -128,140 +154,72 @@ namespace Axiom.Graphics
 		/// <note>
 		/// Shared parameter sets can be named, and looked up using the GpuProgramManager.
 		/// </note>
+		/// <note>
+        /// Axiom specific: Data is serialized within FloatConstantList etc
+        /// as a byte[] per constant entry and not to a large linear byte[] as in Ogre
+		/// </note>
 		public class GpuSharedParameters
 		{
 			/// <summary>
-			/// 
 			/// </summary>
+			[OgreVersion(1, 7)]
 			protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
 
 			/// <summary>
-			/// 
 			/// </summary>
-			protected List<byte[]> FloatConstants = new List<byte[]>();
+            [OgreVersion(1, 7)]
+			protected FloatConstantList FloatConstants = new FloatConstantList();
 
 			/// <summary>
-			/// 
 			/// </summary>
-			protected List<byte[]> IntConstants = new List<byte[]>();
+            [OgreVersion(1, 7)]
+            protected IntConstantList IntConstants = new IntConstantList();
 
 			/// <summary>
-			/// 
 			/// </summary>
 			public GpuNamedConstants ConstantDefinitions
 			{
 				get
 				{
-					return this.NamedConstants;
+					return NamedConstants;
 				}
 			}
 
-			/// <summary>
-			/// 
-			/// </summary>
-			private string _name;
+		    /// <summary>
+		    /// Get the name of this shared parameter set
+		    /// </summary>
+		    [OgreVersion(1, 7)]
+		    public string Name { get; protected set; }
+
+		    /// <summary>
+		    /// Get the version number of this shared parameter set, can be used to identify when
+		    /// changes have occurred.
+		    /// </summary>
+            [OgreVersion(1, 7)]
+            public ulong Version { get; protected set; }
+
+
+		    /// <summary>
+		    ///  Not used when copying data, but might be useful to RS using shared buffers
+		    ///  Get the frame in which this shared parameter set was last updated
+		    /// </summary>
+            [OgreVersion(1, 7)]
+		    public int FrameLastUpdated { get; protected set; }
+
+
+		    /// <summary>
+		    ///  Internal method that the RenderSystem might use to store optional data.
+		    /// </summary>
+            [OgreVersion(1, 7)]
+            public object RenderSystemData { get; protected set; }
 
 			/// <summary>
-			/// Get the name of this shared parameter set
 			/// </summary>
-			public string Name
-			{
-				get
-				{
-					return this._name;
-				}
-				protected set
-				{
-					this._name = value;
-				}
-			}
-
-			/// <summary>
-			/// Version number of the definitions in this buffer
-			/// </summary>
-			private ulong _version;
-
-			/// <summary>
-			/// Get the version number of this shared parameter set, can be used to identify when
-			/// changes have occurred.
-			/// </summary>
-			public ulong Version
-			{
-				get
-				{
-					return this._version;
-				}
-				protected set
-				{
-					this._version = value;
-				}
-			}
-
-			/// <summary>
-			/// Not used when copying data, but might be useful to RS using shared buffers
-			/// </summary>
-			private int _frameLastUpdated;
-
-			/// <summary>
-			///  Get the frame in which this shared parameter set was last updated
-			/// </summary>
-			public int FrameLastUpdated
-			{
-				get
-				{
-					return this._frameLastUpdated;
-				}
-				set
-				{
-					this._frameLastUpdated = value;
-				}
-			}
-
-			/// <summary>
-			/// Optional data the rendersystem might want to store
-			/// </summary>
-			private object _renderSystemData;
-
-			/// <summary>
-			///  Internal method that the RenderSystem might use to store optional data.
-			/// </summary>
-			public object RenderSystemData
-			{
-				set
-				{
-					this._renderSystemData = value;
-				}
-				get
-				{
-					return this._renderSystemData;
-				}
-			}
-
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
 			public GpuSharedParameters( string name )
 			{
-				this._name = name;
-				this._frameLastUpdated = (int)Root.Instance.CurrentFrameCount;
-				this._version = 0;
-			}
-
-			/// <summary>
-			/// Add a new constant definition to this shared set of parameters.
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="constType"></param>
-			/// <remarks>
-			/// Unlike GpuProgramParameters, where the parameter list is defined by the
-			/// program being compiled, this shared parameter set is defined by the
-			/// user. Only parameters which have been predefined here may be later
-			/// updated.
-			/// </remarks>
-			public void AddConstantDefinition( string name, GpuConstantType constType )
-			{
-				this.AddConstantDefinition( name, constType, 1 );
+				Name = name;
+				FrameLastUpdated = (int)Root.Instance.CurrentFrameCount;
+				Version = 0;
 			}
 
 			/// <summary>
@@ -276,101 +234,97 @@ namespace Axiom.Graphics
 			/// user. Only parameters which have been predefined here may be later
 			/// updated.
 			/// </remarks>
-			public virtual void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
+            [OgreVersion(1, 7, "will not expose ConstantDefinitionIterator")]
+			public virtual void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize = 1 )
 			{
-				if ( this.NamedConstants.GpuConstantDefinitions.ContainsKey( name ) )
+				if ( NamedConstants.Map.ContainsKey( name ) )
 				{
 					throw new Exception( "Constant entry with name '" + name + "' allready exists, GpuSharedParameters.AddConstantDefinition" );
 				}
-				GpuConstantDefinition def = new GpuConstantDefinition();
-				def.ArraySize = arrraySize;
-				def.ConstantType = constType;
-				// for compatibility we do not pad values to multiples of 4
-				// when it comes to arrays, user is responsible for creating matching defs
-				def.ElementSize = GpuConstantDefinition.GetElementSize( constType, false );
+				var def = new GpuConstantDefinition
+				          {
+				              ArraySize = arrraySize,
+				              ConstantType = constType,
+                              // for compatibility we do not pad values to multiples of 4
+                              // when it comes to arrays, user is responsible for creating matching defs
+				              ElementSize = GpuConstantDefinition.GetElementSize( constType, false ),
 
-				//not used
-				def.LogicalIndex = 0;
-				def.Variability = GpuParamVariability.Global;
-				byte[] b = new byte[ 1 ];
+                              // not used
+                              LogicalIndex = 0,
+				              Variability = GpuParamVariability.Global
+				          };
+
 				if ( def.IsFloat )
 				{
-					def.PhysicalIndex = this.FloatConstants.Count;
-					int amount = def.ArraySize * def.ElementSize;
-					;
-					this.FloatConstants.Capacity += amount;
-					for ( int i = 0; i < amount; i++ )
-					{
-						this.FloatConstants.Add( b );
-					}
+					def.PhysicalIndex = FloatConstants.Count;
+                    // TODO: Validate: is the resize really def.ArraySize * def.ElementSize or rather def.ArraySize?
+                    FloatConstants.Resize(FloatConstants.Count + def.ArraySize);
 				}
 				else
 				{
-					def.PhysicalIndex = this.IntConstants.Count;
-					int amount = def.ArraySize * def.ElementSize;
-					this.IntConstants.Capacity += amount;
-					for ( int i = 0; i < amount; i++ )
-					{
-						this.IntConstants.Add( b );
-					}
+					def.PhysicalIndex = IntConstants.Count;
+                    // TODO: Validate: is the resize really def.ArraySize * def.ElementSize or rather def.ArraySize?
+                    IntConstants.Resize(IntConstants.Count + def.ArraySize);
 				}
-				this.NamedConstants.GpuConstantDefinitions.Add( name, def );
+				NamedConstants.Map.Add( name, def );
 
-				++this._version;
+				++Version;
 			}
 
 			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			/// <param name="name"></param>
+			[OgreVersion(1, 7)]
 			public virtual void RemoveConstantDefinition( string name )
 			{
-				GpuConstantDefinition i = null;
-				if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out i ) )
+				GpuConstantDefinition def;
+				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					GpuConstantDefinition def = i;
-					bool isFloat = def.IsFloat;
-					foreach ( KeyValuePair<string, GpuConstantDefinition> j in this.NamedConstants.GpuConstantDefinitions )
+					var isFloat = def.IsFloat;
+
+					foreach ( var j in NamedConstants.Map )
 					{
-						GpuConstantDefinition otherDef = j.Value;
-						bool otherIsFloat = otherDef.IsFloat;
+						var otherDef = j.Value;
+						var otherIsFloat = otherDef.IsFloat;
+
 						// same type, and comes after in the buffer
 						if ( ( ( isFloat && otherIsFloat ) || ( !isFloat && !otherIsFloat ) ) &&
 							 otherDef.PhysicalIndex > def.PhysicalIndex )
 						{
 							// adjust index
-							otherDef.PhysicalIndex -= 1;
+                            otherDef.PhysicalIndex -= 1; // Ogre: numElements
 						}
 					}
 
 					// remove floats and reduce buffer
 					if ( isFloat )
 					{
-						byte[] tmp = this.FloatConstants[ def.PhysicalIndex ];
-						this.NamedConstants.FloatBufferSize -= sizeof( byte ) * tmp.Length;
-						this.FloatConstants.RemoveAt( def.PhysicalIndex );
+                        var tmp = FloatConstants[def.PhysicalIndex];
+                        NamedConstants.FloatBufferSize -= tmp.Length;
+                        FloatConstants.RemoveAt(def.PhysicalIndex);
 					}
 					else
 					{
-						byte[] tmp = this.IntConstants[ def.PhysicalIndex ];
-						this.NamedConstants.IntBufferSize -= sizeof( byte ) * tmp.Length;
-						this.IntConstants.RemoveAt( def.PhysicalIndex );
+                        var tmp = IntConstants[def.PhysicalIndex];
+                        NamedConstants.IntBufferSize -= tmp.Length;
+                        IntConstants.RemoveAt(def.PhysicalIndex);
 					}
 
-					++this._version;
+					++Version;
 				}
 			}
 
 			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			public virtual void RemoveAllConstantDefinitions()
+			[OgreVersion(1, 7)]
+			public void RemoveAllConstantDefinitions()
 			{
-				this.NamedConstants.GpuConstantDefinitions.Clear();
-				this.NamedConstants.FloatBufferSize = 0;
-				this.NamedConstants.IntBufferSize = 0;
-				this.FloatConstants.Clear();
-				this.IntConstants.Clear();
+				NamedConstants.Map.Clear();
+				NamedConstants.FloatBufferSize = 0;
+				NamedConstants.IntBufferSize = 0;
+				FloatConstants.Clear();
+				IntConstants.Clear();
 			}
 
 			/// <summary>
@@ -380,165 +334,148 @@ namespace Axiom.Graphics
 			/// You do not need to call this yourself, set is marked as dirty whenever
 			/// setNamedConstant or (non const) getFloatPointer et al are called.
 			/// </remarks>
+            [OgreVersion(1, 7)]
 			public virtual void MarkDirty()
 			{
-				this._frameLastUpdated = (int)Root.Instance.CurrentFrameCount;
+				FrameLastUpdated = (int)Root.Instance.CurrentFrameCount;
 			}
 
 			/// <summary>
 			/// Get a specific GpuConstantDefinition for a named parameter.
 			/// </summary>
-			/// <param name="name"></param>
-			/// <returns></returns>
-			public virtual GpuConstantDefinition GetConstantDefinition( string name )
+			[OgreVersion(1, 7)]
+			public GpuConstantDefinition GetConstantDefinition( string name )
 			{
-				GpuConstantDefinition def = null;
-				if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
+				GpuConstantDefinition def;
+				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
 					return def;
 				}
-				else
+				// else
 				{
 					throw new Exception( "Constant entry with name '" + name + "' does not exists!\n" +
 										 "GpuSharedParameters.GetConstantDefinition" );
 				}
 			}
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, float value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, float value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, int value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), false );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, int value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), false);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, Vector4 value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, Vector4 value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, Vector3 value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, Vector3 value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, Matrix4 value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, Matrix4 value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, Matrix3 value )
-			{
-				SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, Matrix3 value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, Matrix4 value, int numEntries )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, Matrix4 value, int numEntries)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, double value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, double value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			public void SetNamedConstant( string name, ColorEx value )
-			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
-			}
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7)]
+            public void SetNamedConstant(string name, ColorEx value)
+            {
+                SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
+            }
 
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="value"></param>
-			/// <param name="isFloat"></param>
-			public virtual void SetNamedConstant( string name, byte[] value, bool isFloat )
-			{
-				GpuConstantDefinition def = null;
-				if ( isFloat )
-				{
-					if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
-					{
-						this.FloatConstants[ def.PhysicalIndex ] = value;
-					}
-				}
-				else
-				{
-					if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
-					{
-						this.IntConstants[ def.PhysicalIndex ] = value;
-					}
-				}
+            /// <summary>
+            /// Associates serialized data with a named constant
+            /// </summary>
+            /// <remarks>
+            /// The interface is not exactly as in Ogre as the internals in Axiom
+            /// are different. Furthermore we cant differ serialized float -> byte[]
+            /// from a serialized int -> byte[] so we need the additional hint
+            /// </remarks>
+            [OgreVersion(1, 7)]
+            public virtual void SetNamedConstant(string name, byte[] value, bool isFloat)
+            {
+                GpuConstantDefinition def;
+                if (isFloat)
+                {
+                    if (NamedConstants.Map.TryGetValue(name, out def))
+                    {
+                        FloatConstants[def.PhysicalIndex] = value;
+                    }
+                }
+                else
+                {
+                    if (NamedConstants.Map.TryGetValue(name, out def))
+                    {
+                        IntConstants[def.PhysicalIndex] = value;
+                    }
+                }
 
-				MarkDirty();
-			}
+                MarkDirty();
+            }
 
 			/// <summary>
 			/// Get a pointer to the 'nth' item in the float buffer
 			/// </summary>
-			/// <param name="pos"></param>
-			/// <returns></returns>
+			[OgreVersion(1,7, "different interface due to serialization")]
 			public byte[] GetFloatPointer( int pos )
 			{
-				return this.FloatConstants[ pos ];
+				return FloatConstants[ pos ];
 			}
 
 			/// <summary>
 			/// Get a pointer to the 'nth' item in the int buffer
 			/// </summary>
-			/// <param name="pos"></param>
-			/// <returns></returns>
+            [OgreVersion(1, 7, "different interface due to serialization")]
 			public byte[] GetIntPointer( int pos )
 			{
-				return this.IntConstants[ pos ];
+				return IntConstants[ pos ];
 			}
 		}
 
@@ -571,14 +508,13 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return this._sharedParameters.Name;
+					return _sharedParameters.Name;
 				}
 			}
 
 			/// <summary>
-			/// 
 			/// </summary>
-			private GpuSharedParameters _sharedParameters;
+			private readonly GpuSharedParameters _sharedParameters;
 
 			/// <summary>
 			/// Get's the shared parameters.
@@ -587,14 +523,13 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return this._sharedParameters;
+					return _sharedParameters;
 				}
 			}
 
 			/// <summary>
-			/// 
 			/// </summary>
-			private GpuProgramParameters _parameters;
+			private readonly GpuProgramParameters _parameters;
 
 			/// <summary>
 			/// Get's the target Gpu program parameters.
@@ -603,39 +538,24 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return this._parameters;
+					return _parameters;
 				}
 			}
 
-			/// <summary>
-			/// Optional data the rendersystem might want to store
-			/// </summary>
-			private object _renderSystemData;
+		    /// <summary>
+		    /// Optional data the rendersystem might want to store
+		    /// </summary>
+		    public object RenderSystemData { get; set; }
 
-			/// <summary>
-			/// Optional data the rendersystem might want to store
-			/// </summary>
-			public object RenderSystemData
-			{
-				set
-				{
-					this._renderSystemData = value;
-				}
-				get
-				{
-					return this._renderSystemData;
-				}
-			}
-
-			/// <summary>
+		    /// <summary>
 			/// Default Constructor.
 			/// </summary>
 			/// <param name="sharedParams"></param>
 			/// <param name="gparams"></param>
 			public GpuSharedParametersUsage( GpuSharedParameters sharedParams, GpuProgramParameters gparams )
 			{
-				this._sharedParameters = sharedParams;
-				this._parameters = gparams;
+				_sharedParameters = sharedParams;
+				_parameters = gparams;
 				InitCopyData();
 			}
 
@@ -652,25 +572,22 @@ namespace Axiom.Graphics
 			public void CopySharedParamsToTargetParams()
 			{
 				// check copy data version
-				if ( this.CopyDataVersion != this._sharedParameters.Version )
-				{
+				if ( CopyDataVersion != _sharedParameters.Version )
 					InitCopyData();
-				}
 
-				foreach ( CopyDataEntry i in this.CopyDataList )
+				foreach ( var e in CopyDataList )
 				{
-					CopyDataEntry e = i;
 					if ( e.DstDefinition.IsFloat )
 					{
 						unsafe
 						{
-							byte[] src = this._sharedParameters.GetFloatPointer( e.SrcDefinition.PhysicalIndex );
+							byte[] src = _sharedParameters.GetFloatPointer( e.SrcDefinition.PhysicalIndex );
 #warning implement: _parameters.GetFloatPointer(e.DstDefinition.PhysicalIndex);
 							byte[] dst = null;
 
 							// Deal with matrix transposition here!!!
 							// transposition is specific to the dest param set, shared params don't do it
-							if ( this._parameters.TransposeMatrices && e.DstDefinition.ConstantType == GpuConstantType.Matrix_4X4 )
+							if ( _parameters.TransposeMatrices && e.DstDefinition.ConstantType == GpuConstantType.Matrix_4X4 )
 							{
 								for ( int row = 0; row < 4; ++row )
 								{
@@ -715,7 +632,7 @@ namespace Axiom.Graphics
 					{
 						unsafe
 						{
-							byte[] src = this._sharedParameters.GetIntPointer( e.SrcDefinition.PhysicalIndex );
+							byte[] src = _sharedParameters.GetIntPointer( e.SrcDefinition.PhysicalIndex );
 #warning implement: _parameters.GetIntPointer(e.DstDefinition.PhysicalIndex);
 							byte[] dst = null;
 							if ( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
@@ -736,8 +653,8 @@ namespace Axiom.Graphics
 								{
 									Memory.Copy( pSrc, pDst, sizeof( int ) * valsPerIteration );
 
-									int* pfSrc = (int*)pSrc;
-									int* pfDSt = (int*)pDst;
+									var pfSrc = (int*)pSrc;
+									var pfDSt = (int*)pDst;
 									pfSrc += valsPerIteration;
 									pfDSt += 4;
 								}
@@ -750,34 +667,40 @@ namespace Axiom.Graphics
 			}
 
 			/// <summary>
-			/// 
 			/// </summary>
+			[OgreVersion(1, 7)]
 			protected void InitCopyData()
 			{
-				this.CopyDataList.Clear();
-				Dictionary<string, GpuConstantDefinition> sharedMap = this._sharedParameters.ConstantDefinitions.GpuConstantDefinitions;
-				foreach ( KeyValuePair<string, GpuConstantDefinition> i in sharedMap )
+				CopyDataList.Clear();
+				var sharedMap = _sharedParameters.ConstantDefinitions.Map;
+				foreach (var i in sharedMap )
 				{
-					string name = i.Key;
-					GpuConstantDefinition sharedDef = i.Value;
-#warning implement: _parameters.FindNamedConstantDefinition(name, false);
-					GpuConstantDefinition instDef = null;
+					var name = i.Key;
+					var sharedDef = i.Value;
+
+
+                    var instDef = _parameters.FindNamedConstantDefinition(name, false);
 					if ( instDef != null )
 					{
 						// Check that the definitions are the same
 						if ( instDef.ConstantType == sharedDef.ConstantType &&
 							 instDef.ArraySize == sharedDef.ArraySize )
 						{
-							CopyDataEntry e = new CopyDataEntry();
+							var e = new CopyDataEntry();
 							e.SrcDefinition = sharedDef;
 							e.DstDefinition = instDef;
-							this.CopyDataList.Add( e );
+							CopyDataList.Add( e );
 						}
 					}
 				}
 
-				this.CopyDataVersion = this._sharedParameters.Version;
+				CopyDataVersion = _sharedParameters.Version;
 			}
 		}
+
+	    public void CopySharedParams()
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }

@@ -515,7 +515,6 @@ namespace Axiom.Math
 		}
 
 
-		/// <param name="shortestPath"></param>
 		public static Quaternion Nlerp( Real fT, Quaternion rkP, Quaternion rkQ, bool shortestPath )
 		{
 			Quaternion result;
@@ -562,12 +561,6 @@ namespace Axiom.Math
 		/// <summary>
 		///		Performs spherical quadratic interpolation.
 		/// </summary>
-		/// <param name="t"></param>
-		/// <param name="p"></param>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <param name="q"></param>
-		/// <returns></returns>
 		public static Quaternion Squad( Real t, Quaternion p, Quaternion a, Quaternion b, Quaternion q, bool useShortestPath )
 		{
 			Real slerpT = 2.0f * t * ( 1.0f - t );

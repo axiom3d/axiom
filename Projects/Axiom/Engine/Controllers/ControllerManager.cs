@@ -307,7 +307,7 @@ namespace Axiom.Controllers
 		///	    rotation of a texture based on a wave function.	
 		/// </summary>
 		/// <param name="layer">The texture unit to effect.</param>
-		/// <param name="transformType">The type of transform, either translate (scroll), scale (stretch) or rotate (spin).</param>
+        /// <param name="type">The type of transform, either translate (scroll), scale (stretch) or rotate (spin).</param>
 		/// <param name="waveType">The shape of the wave, see WaveformType enum for details.</param>
 		/// <param name="baseVal">The base value of the output.</param>
 		/// <param name="frequency">The speed of the wave in cycles per second.</param>
