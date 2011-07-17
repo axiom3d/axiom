@@ -720,7 +720,7 @@ namespace Axiom.Graphics
             // set up named parameters, if any
             if ( constantDefs.Map.Count != 0 )
             {
-                newParams.SetNamedConstants( constantDefs );
+                newParams.NamedConstants = constantDefs;
             }
             // link shared logical / physical map for low-level use
             newParams.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );

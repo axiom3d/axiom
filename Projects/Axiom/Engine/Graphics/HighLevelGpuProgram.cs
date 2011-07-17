@@ -188,7 +188,7 @@ namespace Axiom.Graphics
         protected virtual void PopulateParameterNames(GpuProgramParameters parms)
 		{
             var defs = ConstantDefinitions;
-    		parms.SetNamedConstants( constantDefs );
+    		parms.NamedConstants = constantDefs;
 	    	// also set logical / physical maps for programs which use this
             parms.SetLogicalIndexes(floatLogicalToPhysical, intLogicalToPhysical);
 		}

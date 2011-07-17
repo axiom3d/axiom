@@ -37,6 +37,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Controllers;
@@ -225,18 +226,38 @@ namespace Axiom.Graphics
 
         #endregion
 
+        #region NamedConstants
+
         [OgreVersion(1, 7, 2790)]
 	    private GpuNamedConstants _namedConstants;
 
         /// <summary>
         /// Mapping from parameter names to def - high-level programs are expected to populate this
         /// </summary>
+        [OgreVersion(1, 7, 2790)]
         public GpuNamedConstants NamedConstants
         {
             set
             {
+                _namedConstants = value;
+
+                // Determine any extension to local buffers
+
+                // Size and reset buffer (fill with zero to make comparison later ok)
+                if (_namedConstants.FloatBufferSize > floatConstants.Count)
+                {
+                    floatConstants.AddRange( Enumerable.Repeat(
+                        0.0f, _namedConstants.FloatBufferSize - floatConstants.Count ) );
+                }
+                if (_namedConstants.IntBufferSize > intConstants.Count)
+                {
+                    intConstants.AddRange( Enumerable.Repeat(
+                        0, _namedConstants.IntBufferSize - intConstants.Count));
+                }
             }
         }
+
+        #endregion
 
         #region _combinedVariability
 
@@ -275,7 +296,18 @@ namespace Axiom.Graphics
 
 		protected bool ignoreMissingParameters = false;
 
+        #region _activePassIterationIndex
 
+        /// <summary>
+        /// physical index for active pass iteration parameter real constant entry;
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+	    private int _activePassIterationIndex;
+
+        #endregion
+
+        [OgreVersion(1, 7, 2790)]
+	    private readonly GpuSharedParametersUsageList _sharedParamSets = new GpuSharedParametersUsageList();
 
         #endregion Fields
 
@@ -289,14 +321,63 @@ namespace Axiom.Graphics
             _combinedVariability = GpuParamVariability.Global;
             transposeMatrices = false;
             ignoreMissingParameters = false;
-            activePassIterationIndex = int.MaxValue;            
+            _activePassIterationIndex = int.MaxValue;            
 		}
 
-		#endregion Constructors
+        public GpuProgramParameters(GpuProgramParameters other)
+        {
+            throw new NotImplementedException();
+            // should do a shallow copy here
+        }
+
+	    #endregion Constructors
 
 		#region Methods
 
-		public void AddParameterToDefaultsList( GpuProgramParameterType type, string name )
+        #region CopySharedParamSetUsage
+
+        [OgreVersion(1, 7, 2790)]
+        protected void CopySharedParamSetUsage(GpuSharedParametersUsageList srcList)
+        {
+
+            _sharedParamSets.Clear();
+            foreach ( var i in srcList )
+            {
+                _sharedParamSets.Add(new GpuSharedParametersUsage(i.SharedParameters, this));
+            }
+        }
+
+        #endregion
+
+        #region SetLogicalIndexes
+
+        [OgreVersion(1, 7, 2790)]
+        public void SetLogicalIndexes(GpuLogicalBufferStruct floatIndexMap, GpuLogicalBufferStruct intIndexMap)
+        {
+            floatLogicalToPhysical = floatIndexMap;
+            intLogicalToPhysical = intIndexMap;
+
+            // resize the internal buffers
+            // Note that these will only contain something after the first parameter
+            // set has set some parameters
+
+            // Size and reset buffer (fill with zero to make comparison later ok)
+            if (floatIndexMap != null && floatIndexMap.BufferSize > floatConstants.Count)
+            {
+                floatConstants.AddRange(Enumerable.Repeat(
+                        0.0f, floatIndexMap.BufferSize - floatConstants.Count));
+            }
+            if (intIndexMap != null && intIndexMap.BufferSize > intConstants.Count)
+            {
+                intConstants.AddRange(Enumerable.Repeat(
+                        0, intIndexMap.BufferSize - intConstants.Count));
+            }
+        }
+
+        #endregion
+
+
+        public void AddParameterToDefaultsList( GpuProgramParameterType type, string name )
 		{
 			ParameterEntry p = new ParameterEntry();
 			p.ParameterType = type;
@@ -538,32 +619,34 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="index">Index of the contant register.</param>
 		/// <param name="val">Structure containing 4 packed float values.</param>
+        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
 		public void SetConstant( int index, Vector4 val )
 		{
 			SetConstant( index, val.x, val.y, val.z, val.w );
 		}
+
+        /// <summary>
+        ///    Provides a way to pass in a single float
+        /// </summary>
+        /// <param name="index">Index of the contant register to start at.</param>
+        /// <param name="value"></param>
+        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
+        public void SetConstant(int index, Real value)
+        {
+            SetConstant(index, value, 0.0f, 0.0f, 0.0f);
+        }
 
 		/// <summary>
 		///    Sends 3 packed floating-point values to the program.
 		/// </summary>
 		/// <param name="index">Index of the contant register.</param>
 		/// <param name="val">Structure containing 3 packed float values.</param>
+        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
 		public void SetConstant( int index, Vector3 val )
 		{
 			SetConstant( index, val.x, val.y, val.z, 1.0f );
 		}
 
-		/// <summary>
-		///    Sends 4 packed floating-point RGBA color values to the program.
-		/// </summary>
-		/// <param name="index">Index of the contant register.</param>
-		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
-		public void SetConstant( int index, ColorEx color )
-		{
-			if ( color != null )
-				// verify order of color components
-				SetConstant( index++, color.r, color.g, color.b, color.a );
-		}
 
 		/// <summary>
 		///    Sends a multiple value constant floating-point parameter to the program.
@@ -576,49 +659,18 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="index">Index of the contant register.</param>
 		/// <param name="mat">Structure containing 3 packed float values.</param>
+        [OgreVersion(1, 7, 2790)]
 		public void SetConstant( int index, Matrix4 mat )
 		{
-            floatConstants.Resize(index + 16);
+		    var a = new float[16];
 
-			// transpose the matrix if need be
+            // set as 4x 4-element floats
 			if ( transposeMatrices )
-			{
-                floatConstants[index + 0] = mat.m00;
-                floatConstants[index + 1] = mat.m10;
-                floatConstants[index + 2] = mat.m20;
-                floatConstants[index + 3] = mat.m30;
-                floatConstants[index + 4] = mat.m01;
-                floatConstants[index + 5] = mat.m11;
-                floatConstants[index + 6] = mat.m21;
-                floatConstants[index + 7] = mat.m31;
-                floatConstants[index + 8] = mat.m02;
-                floatConstants[index + 9] = mat.m12;
-                floatConstants[index + 10] = mat.m22;
-                floatConstants[index + 11] = mat.m32;
-                floatConstants[index + 12] = mat.m03;
-                floatConstants[index + 13] = mat.m13;
-                floatConstants[index + 14] = mat.m23;
-                floatConstants[index + 15] = mat.m33;
-			}
+			    mat.Transpose().MakeFloatArray( a );
 			else
-			{
-                floatConstants[index + 0] = mat.m00;
-                floatConstants[index + 1] = mat.m01;
-                floatConstants[index + 2] = mat.m02;
-                floatConstants[index + 3] = mat.m03;
-                floatConstants[index + 4] = mat.m10;
-                floatConstants[index + 5] = mat.m11;
-                floatConstants[index + 6] = mat.m12;
-                floatConstants[index + 7] = mat.m13;
-                floatConstants[index + 8] = mat.m20;
-                floatConstants[index + 9] = mat.m21;
-                floatConstants[index + 10] = mat.m22;
-                floatConstants[index + 11] = mat.m23;
-                floatConstants[index + 12] = mat.m30;
-                floatConstants[index + 13] = mat.m31;
-                floatConstants[index + 14] = mat.m32;
-                floatConstants[index + 15] = mat.m33;
-			}
+			    mat.MakeFloatArray( a );
+
+		    SetConstant( index, a, 4 );
 		}
 
 	    /// <summary>
@@ -627,37 +679,114 @@ namespace Axiom.Graphics
 	    /// <param name="index">Index of the contant register.</param>
 	    /// <param name="matrices">Values to set.</param>
 	    /// <param name="count">Number of matrices to set</param>
+        [OgreVersion(1, 7, 2790)]
 	    public void SetConstant( int index, Matrix4[] matrices, int count )
-		{
-			for ( int i = 0; i < count; i++ )
-			{
-				SetConstant( index++, matrices[ i ] );
-			}
-		}
+	    {
+	        if ( transposeMatrices )
+	        {
+                var a = new float[16];
+	            for ( var i = 0; i < count; ++i )
+	            {
+	                matrices[ i ].Transpose().MakeFloatArray( a );
+	                SetConstant( index, a, 4 );
+	                index += 4;
+	            }
+	        }
+	        else
+	        {
+	            var a = new float[16*count];
+                for (var i = 0; i < count; ++i)
+                    matrices[ i ].MakeFloatArray( a, 16*i );
 
-		/// <summary>
+	            SetConstant( index, a, 4*count );
+	        }
+	    }
+
+        /// <summary>
+        ///    Sends 4 packed floating-point RGBA color values to the program.
+        /// </summary>
+        /// <param name="index">Index of the contant register.</param>
+        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
+        [OgreVersion(1, 7, 2790, "not passing as [] but as 4 args")]
+        public void SetConstant(int index, ColorEx color)
+        {
+            SetConstant(index, color.r, color.g, color.b, color.a);
+        }
+
+        /// <summary>
+        ///    Optimize the most common case of setting constant
+        ///    consisting of four floats
+        /// </summary>
+        /// <param name="index">Index of the contant register to start at.</param>
+        /// <param name="f0">The floats.</param>
+        /// <param name="f1">The floats.</param>
+        /// <param name="f2">The floats.</param>
+        /// <param name="f3">The floats.</param>
+        [AxiomHelper(0, 8)]
+        public void SetConstant(int index, float f0, float f1, float f2, float f3)
+        {
+            // TODO: optimize this in case of GC pressure problems
+            SetConstant(index, new[] { f0, f1, f2, f3 });
+        }
+
+
+        /// <summary>
+        /// Sets a multiple value constant floating-point parameter to the program.
+        /// </summary>
+        /// <param name="index">The logical constant index at which to start placing parameters 
+        /// (each constant is a 4D float)</param>
+        /// <param name="val">Pointer to the values to write, must contain 4*count floats</param>
+        public void SetConstant(int index, float[] val)
+        {
+            // Raw buffer size is 4x count
+            var rawCount = val.Length;
+            // get physical index
+            Debug.Assert(floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
+
+            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+
+            // Copy 
+            WriteRawConstants(physicalIndex, val, rawCount);
+        }
+
+        /// <summary>
+        /// Sets a multiple value constant floating-point parameter to the program.
+        /// </summary>
+        /// <param name="index">The logical constant index at which to start placing parameters 
+        /// (each constant is a 4D float)</param>
+        /// <param name="val">Pointer to the values to write, must contain 4*count floats</param>
+        public void SetConstant(int index, double[] val)
+        {
+            // Raw buffer size is 4x count
+            var rawCount = val.Length;
+            // get physical index
+            Debug.Assert(floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
+
+            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+
+            Debug.Assert(physicalIndex + rawCount <= floatConstants.Count);
+            // Copy manually since cast required
+            for (var i = 0; i < rawCount; ++i)
+            {
+                floatConstants[physicalIndex + i] = (float)(val[i]);
+            }
+        }
+
+	    /// <summary>
 		///    Sets an array of int values starting at the specified index.
 		/// </summary>
 		/// <param name="index">Index of the contant register to start at.</param>
-		/// <param name="ints">Array of ints.</param>
-		public void SetConstant( int index, int[] ints )
+        /// <param name="val">Array of ints.</param>
+        public void SetConstant(int index, int[] val)
 		{
-			int count = ints.Length / 4;
-			int srcIndex = 0;
+            // Raw buffer size is 4x count
+            var rawCount = val.Length;
+            // get physical index
+            Debug.Assert(intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
 
-			// resize if necessary
-			intConstants.Resize( index + count );
-
-            throw new AxiomException("Validate this");
-			// copy in chunks of 4
-            /*
-			while ( count-- > 0 )
-			{
-				IntConstantEntry entry = (IntConstantEntry)intConstants[ index++ ];
-				entry.isSet = true;
-				Array.Copy( ints, srcIndex, entry.val, 0, 4 );
-				srcIndex += 4;
-			}*/
+            var physicalIndex = GetIntConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+            // Copy 
+            WriteRawConstants(physicalIndex, val, rawCount);
 		}
 
 		/// <summary>
@@ -670,60 +799,9 @@ namespace Axiom.Graphics
 			SetConstant( index, value, 0f, 0f, 0f );
 		}
 
-		/// <summary>
-		///    Provides a way to pass in a single float
-		/// </summary>
-		/// <param name="index">Index of the contant register to start at.</param>
-		/// <param name="value"></param>
-		public void SetConstant( int index, float value )
-		{
-			SetConstant( index, value, 0f, 0f, 0f );
-		}
+		
 
-		/// <summary>
-		///    Optimize the most common case of setting constant
-		///    consisting of four floats
-		/// </summary>
-		/// <param name="index">Index of the contant register to start at.</param>
-		/// <param name="f0">The floats.</param>
-        /// <param name="f1">The floats.</param>
-        /// <param name="f2">The floats.</param>
-        /// <param name="f3">The floats.</param>
-		public void SetConstant( int index, float f0, float f1, float f2, float f3 )
-		{
-			// resize if necessary
-		    floatConstants.Resize( index + 4 );
-		    floatConstants[ index ] = f0;
-		    floatConstants[ index + 1 ] = f1;
-		    floatConstants[ index + 2 ] = f2;
-		    floatConstants[ index + 3 ] = f3;
-		}
-
-		/// <summary>
-		///    Sets an array of int values starting at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="floats">Array of floats.</param>
-		public void SetConstant( int index, float[] floats )
-		{
-			int count = floats.Length / 4;
-			int srcIndex = 0;
-
-			// resize if necessary
-			floatConstants.Resize( index + count );
-
-			// copy in chunks of 4
-		    throw new AxiomException( "Validate this" );
-            /*
-			while ( count-- > 0 )
-			{
-				FloatConstantEntry entry = floatConstants[ index++ ];
-				entry.isSet = true;
-				Array.Copy( floats, srcIndex, entry.val, 0, 4 );
-				srcIndex += 4;
-			}
-             */
-		}
+		
 
 		/// <summary>
 		///
@@ -860,11 +938,6 @@ namespace Axiom.Graphics
 			if ( index != -1 )
 				SetConstantFromTime( GetParamIndex( name ), factor );
 		}
-
-        public void SetNamedConstants(GpuNamedConstants constantDefs)
-        {
-            //throw new NotImplementedException();
-        }
 
         public void CopyMatchingNamedConstantsFrom(GpuProgramParameters source)
         {
@@ -1319,29 +1392,7 @@ namespace Axiom.Graphics
             return intConstants.Data;
         }
 
-        [OgreVersion(1, 7, 2790)]
-        public void SetLogicalIndexes(GpuLogicalBufferStruct floatIndexMap, GpuLogicalBufferStruct intIndexMap)
-	    {
-            floatLogicalToPhysical = floatIndexMap;
-            intLogicalToPhysical = intIndexMap;
-
-            // resize the internal buffers
-            // Note that these will only contain something after the first parameter
-            // set has set some parameters
-
-            // Size and reset buffer (fill with zero to make comparison later ok)
-            if (floatIndexMap != null && floatIndexMap.BufferSize > floatConstants.Count)
-            {
-                while (floatConstants.Count < floatIndexMap.BufferSize)
-                    floatConstants.Add( 0.0f);
-            }
-            if (intIndexMap != null && intIndexMap.BufferSize > intConstants.Count)
-            {
-                while (intConstants.Count < intIndexMap.BufferSize)
-                    intConstants.Add( 0 );
-            }
-	    }
-
+        
         /// <summary>
         /// Update automatic parameters.
         /// </summary>
@@ -1684,6 +1735,13 @@ namespace Axiom.Graphics
             var indexUse = GetFloatConstantLogicalIndexUse(logicalIndex, requestedSize, variability);
             return indexUse != null ? indexUse.PhysicalIndex : 0;
 	    }
+
+        private int GetIntConstantPhysicalIndex(int logicalIndex, int requestedSize, GpuParamVariability variability)
+        {
+            throw new NotImplementedException();
+            //var indexUse = GetFloatConstantLogicalIndexUse(logicalIndex, requestedSize, variability);
+            //return indexUse != null ? indexUse.PhysicalIndex : 0;
+        }
 
 	    public void SetNamedConstant( string paramName, float[] realBuffer, int dims, int i )
 	    {
