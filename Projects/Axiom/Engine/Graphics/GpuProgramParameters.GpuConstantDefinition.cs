@@ -1,4 +1,5 @@
 ﻿using System;
+using Axiom.Core;
 
 namespace Axiom.Graphics
 {
@@ -28,8 +29,23 @@ namespace Axiom.Graphics
             /// <summary>
             /// Physical start index in buffer (either float or int buffer)
             /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public int PhysicalIndex;
+            //[OgreVersion(1, 7, 2790)]
+            //public int PhysicalIndex;
+
+            private int _physIndex;
+            public int PhysicalIndex
+            {
+                get
+                {
+                    return _physIndex;
+                }
+                set
+                {
+                    if (value == 0x1C)
+                        LogManager.Instance.Write(".");
+                    _physIndex = value;
+                }
+            }
 
             #endregion
 
@@ -259,6 +275,18 @@ namespace Axiom.Graphics
             }
 
             #endregion
+
+            public GpuConstantDefinition Clone()
+            {
+                var result = new GpuConstantDefinition();
+                result.ConstantType = ConstantType;
+                result.PhysicalIndex = PhysicalIndex;
+                result.LogicalIndex = LogicalIndex;
+                result.ElementSize = ElementSize;
+                result.ArraySize = ArraySize;
+                result.Variability = Variability;
+                return result;
+            }
         }
     }
 }

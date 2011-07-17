@@ -39,10 +39,13 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Utilities;
+using SlimDX.Direct3D9;
 using ResourceHandle = System.UInt64;
 
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using ResourceManager = Axiom.Core.ResourceManager;
 
 #endregion Namespace Declarations
 
@@ -64,11 +67,22 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		protected D3D.ShaderBytecode externalMicrocode;
 
-		#endregion Fields
+        #region ColumnMajorMatrices
 
-		#region Construction and Destruction
+        [OgreVersion(1, 7, 2790)]
+        public bool ColumnMajorMatrices
+        {
+            get;
+            set;
+        }
 
-		protected D3DGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+        #endregion
+
+        #endregion Fields
+
+        #region Construction and Destruction
+
+        protected D3DGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			this.device = device;
@@ -97,74 +111,147 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region GpuProgram Members
 
-		/// <summary>
+        #region loadImpl
+
+        /// <summary>
 		///     Overridden to allow for loading microcode from external sources.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected override void load()
 		{
-			if ( externalMicrocode != null )
-			{
-				// unload if needed
-				if ( IsLoaded )
-				{
-					Unload();
-				}
-
-				// creates the shader from an external microcode source
-				// for example, a compiled HLSL program
-				LoadFromMicrocode( externalMicrocode );
-			}
-			else
-			{
-				// call base implementation
-				base.load();
-			}
+            foreach (var dev in D3DRenderSystem.ResourceCreationDevices)
+                LoadImpl( dev );
 		}
 
-		/// <summary>
-		///     Loads a D3D shader from the assembler source.
-		/// </summary>
+        #endregion
+
+        #region nonvirt LoadImpl
+
+        /// <summary>
+        /// Loads this program to specified device
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        private void LoadImpl(Device d3D9Device)
+	    {
+            if (externalMicrocode != null)
+            {
+                LoadFromMicrocode(d3D9Device, externalMicrocode);
+            }
+            else
+            {
+                // Normal load-from-source approach
+			    if (LoadFromFile)
+			    {
+				    // find & load source code
+                    var stream = 
+					    ResourceGroupManager.Instance.OpenResource(
+					    fileName, _group, true, this);
+				    source = stream.AsString();
+			    }
+
+			    // Call polymorphic load
+			    LoadFromSource(d3D9Device);
+            }
+	    }
+
+        #endregion
+
+        #region unload
+
+        [OgreVersion(1, 7, 2790)]
+        protected override void unload()
+        {
+            externalMicrocode.Dispose();
+            externalMicrocode = null;
+        }
+
+        #endregion
+
+        #region LoadFromSource
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void LoadFromSource()
 		{
-			string errors = null;
-
-			// load the shader from the source string
-            DX.Direct3D9.ShaderBytecode microcode = D3D.ShaderBytecode.Assemble(Source, null, null, 0, out errors);
-
-			if ( !string.IsNullOrEmpty( errors ) )
-			{
-				LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", Name, errors );
-				return;
-			}
-
-			// load the code into a shader object (polymorphic)
-			LoadFromMicrocode( microcode );
+		    LoadFromSource( null );
 		}
 
-		#endregion GpuProgram Members
+        [OgreVersion(1, 7, 2790)]
+        protected void LoadFromSource(Device d3D9Device)
+        {
+            /*
+            if (GpuProgramManager.Instance.IsMicrocodeAvailableInCache(_name))
+            {
+                GetMicrocodeFromCache(d3d9Device);
+            }
+            else*/
+            {
+                CompileMicrocode( d3D9Device );
+            }
+        }
 
-		#region Methods
+        #endregion
 
-		/// <summary>
-		///     Loads a shader object from the supplied microcode.
-		/// </summary>
-		/// <param name="microcode">
-		///     GraphicsStream that contains the assembler instructions for the program.
-		/// </param>
-		protected abstract void LoadFromMicrocode( D3D.ShaderBytecode microcode );
+        #region CompileMicrocode
 
+        [OgreVersion(1, 7, 2790)]
+        protected void CompileMicrocode(Device d3D9Device)
+        {
+            string errors;
+
+            // load the shader from the source string
+            var microcode = ShaderBytecode.Assemble( Source, null, null, 0, out errors );
+
+            if ( !string.IsNullOrEmpty( errors ) )
+            {
+                throw new AxiomException( "Error while compiling pixel shader '{0}':\n {1}", Name, errors );
+            }
+
+            /*
+            if ( GpuProgramManager.Instance.SaveMicrocodesToCache )
+			{
+		        // create microcode
+		        GpuProgramManager.Microcode newMicrocode = 
+                    GpuProgramManager.Instance.CreateMicrocode(microcode.GetBufferSize());
+
+        		// save microcode
+				memcpy(newMicrocode->getPtr(), microcode->GetBufferPointer(), microcode->GetBufferSize());
+
+				// add to the microcode to the cache
+				GpuProgramManager.Instance.AddMicrocodeToCache(_name, newMicrocode);
+			}*/
+
+            // load the code into a shader object (polymorphic)
+            LoadFromMicrocode(d3D9Device, microcode);
+
+            microcode.Dispose();
+        }
+
+	    #endregion
+
+        #region LoadFromMicrocode
+
+        [OgreVersion(1, 7, 2790)]
+        protected abstract void LoadFromMicrocode(Device d3D9Device, ShaderBytecode microcode);
+
+        #endregion
+
+        #region CreateParameters
+
+        [OgreVersion(1, 7, 2790)]
         public override GpuProgramParameters CreateParameters()
         {
             // Call superclass
             var parms = base.CreateParameters();
 
             // Need to transpose matrices if compiled with column-major matrices
-            //parms.TransposeMatrices = mColumnMajorMatrices;
+            parms.TransposeMatrices = ColumnMajorMatrices;
 
             return parms;
         }
 
-		#endregion Methods
+        #endregion
+
+        #endregion GpuProgram Members
 
 		#region Properties
 
@@ -237,7 +324,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region D3DGpuProgram Memebers
 
-		protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
+		protected override void LoadFromMicrocode( Device device, ShaderBytecode microcode )
 		{
 			// create the new vertex shader
 		    device = D3DRenderSystem.ActiveD3D9Device;
@@ -331,7 +418,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region D3DGpuProgram Memebers
 
-		protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
+		protected override void LoadFromMicrocode( Device device, D3D.ShaderBytecode microcode )
 		{
 			// create a new pixel shader
             device = D3DRenderSystem.ActiveD3D9Device;

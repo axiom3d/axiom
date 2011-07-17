@@ -840,6 +840,7 @@
     <Compile Include="Serialization\StreamSerializer.cs" />
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
   </ItemGroup>
   <ItemGroup>

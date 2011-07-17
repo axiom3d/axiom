@@ -128,11 +128,9 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\smoke.particle">
       <Link>Media\Materials\smoke.particle</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\freetype6.dll">
       <Link>freetype6.dll</Link>
@@ -589,15 +587,12 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Athene.material">
       <Link>Media\Materials\Athene.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\BlackAndWhite.material">
       <Link>Media\Materials\BlackAndWhite.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Bloom.material">
       <Link>Media\Materials\Bloom.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\CelShading.material">
       <Link>Media\Materials\CelShading.material</Link>
@@ -605,95 +600,72 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Dot3Bump.material">
       <Link>Media\Materials\Dot3Bump.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\DP3.material">
       <Link>Media\Materials\DP3.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example-DynTex.material">
       <Link>Media\Materials\Example-DynTex.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Examples.compositor">
       <Link>Media\Materials\Examples.compositor</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Examples.material">
       <Link>Media\Materials\Examples.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\facial.material">
       <Link>Media\Materials\facial.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Glass.material">
       <Link>Media\Materials\Glass.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\hdr.material">
       <Link>Media\Materials\hdr.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\HeatVision.material">
       <Link>Media\Materials\HeatVision.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Laplace.material">
       <Link>Media\Materials\Laplace.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\MotionBlur.material">
       <Link>Media\Materials\MotionBlur.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Ninja.material">
       <Link>Media\Materials\Ninja.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\OffsetMapping.material">
       <Link>Media\Materials\OffsetMapping.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\OldMovie.material">
       <Link>Media\Materials\OldMovie.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\OldTV.material">
       <Link>Media\Materials\OldTV.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Particles.material">
       <Link>Media\Materials\Particles.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Posterize.material">
       <Link>Media\Materials\Posterize.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Robot.material">
       <Link>Media\Materials\Robot.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\SharpenEdges.material">
       <Link>Media\Materials\SharpenEdges.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Skys.material">
       <Link>Media\Materials\Skys.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\smoke.material">
       <Link>Media\Materials\smoke.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Terrain.material">
       <Link>Media\Materials\Terrain.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Tiling.material">
       <Link>Media\Materials\Tiling.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Meshes\athene.mesh">
       <Link>Media\Meshes\athene.mesh</Link>
