@@ -59,11 +59,13 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private D3D.Direct3D manager;
 
+        /*
 		public D3DTextureManager( D3D.Direct3D manager, D3D.Device device )
 		{
 			this.device = device;
 			this.manager = manager;
 		}
+         */
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
