@@ -260,7 +260,7 @@ namespace Axiom.Framework.Configuration
 
 			Axiom.Graphics.RenderSystem system = (Axiom.Graphics.RenderSystem)cboRenderSystems.SelectedItem;
 
-			string errorMsg = system.ValidateConfiguration();
+			string errorMsg = system.ValidateConfigOptions();
 			if ( !String.IsNullOrEmpty( errorMsg ) )
 			{
 				SWF.MessageBox.Show( errorMsg, "Axiom", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Exclamation );

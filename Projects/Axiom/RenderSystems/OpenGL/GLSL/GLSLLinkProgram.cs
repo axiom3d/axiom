@@ -139,22 +139,22 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
         CustomAttribute[] sCustomAttributes = new CustomAttribute[]
         {
-            new CustomAttribute("vertex", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.Position, 0)), 
-            new CustomAttribute("blendWeights", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.BlendWeights, 0)),
-            new CustomAttribute("normal", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.Normal, 0)),
-            new CustomAttribute("colour", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.Diffuse, 0)),
-            new CustomAttribute("secondary_colour", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.Specular, 0)),
-            new CustomAttribute("blendIndices", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.BlendIndices, 0)),
-            new CustomAttribute("uv0", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 0)),
-            new CustomAttribute("uv1", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 1)),
-            new CustomAttribute("uv2", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 2)),
-            new CustomAttribute("uv3", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 3)),
-            new CustomAttribute("uv4", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 4)),
-            new CustomAttribute("uv5", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 5)),
-            new CustomAttribute("uv6", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 6)),
-            new CustomAttribute("uv7", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.TexCoords, 7)),
-            new CustomAttribute("tangent", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.Tangent, 0)),
-            new CustomAttribute("binormal", GLGpuProgram.GetFixedAttributeIndex(VertexElementSemantic.Binormal, 0)),                                      
+            new CustomAttribute("vertex", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.Position, 0)), 
+            new CustomAttribute("blendWeights", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.BlendWeights, 0)),
+            new CustomAttribute("normal", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.Normal, 0)),
+            new CustomAttribute("colour", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.Diffuse, 0)),
+            new CustomAttribute("secondary_colour", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.Specular, 0)),
+            new CustomAttribute("blendIndices", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.BlendIndices, 0)),
+            new CustomAttribute("uv0", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 0)),
+            new CustomAttribute("uv1", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 1)),
+            new CustomAttribute("uv2", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 2)),
+            new CustomAttribute("uv3", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 3)),
+            new CustomAttribute("uv4", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 4)),
+            new CustomAttribute("uv5", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 5)),
+            new CustomAttribute("uv6", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 6)),
+            new CustomAttribute("uv7", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.TexCoords, 7)),
+            new CustomAttribute("tangent", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.Tangent, 0)),
+            new CustomAttribute("binormal", GLGpuProgram.FixedAttributeIndex(VertexElementSemantic.Binormal, 0)),                                      
         };
 
 
@@ -318,7 +318,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
         public uint GetAttributeIndex(VertexElementSemantic semantic, uint index)
         {
-            return GLGpuProgram.GetFixedAttributeIndex( semantic, index );
+            return GLGpuProgram.FixedAttributeIndex( semantic, index );
         }
 
         public bool IsAttributeValid(VertexElementSemantic semantic, uint index)
@@ -333,20 +333,20 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
             if (!uniformRefsBuilt)
             {
-                GpuProgramParameters.GpuConstantDefinition vertParams;
-                GpuProgramParameters.GpuConstantDefinition fragParams;
-                GpuProgramParameters.GpuConstantDefinition geomParams;
+                var vertParams = GpuProgramParameters.GpuConstantDefinitionMap.Empty;
+                var fragParams = GpuProgramParameters.GpuConstantDefinitionMap.Empty;
+                var geomParams = GpuProgramParameters.GpuConstantDefinitionMap.Empty;
                 if (vertexProgram != null)
                 {
-                    vertParams = vertexProgram.GLSLProgram.ConstantDefinitions.Map();
+                    vertParams = vertexProgram.GLSLProgram.ConstantDefinitions.Map;
                 }
                 if (geometryProgram != null)
                 {
-                    geomParams = geometryProgram.GLSLProgram.ConstantDefinitions.Map();
+                    geomParams = geometryProgram.GLSLProgram.ConstantDefinitions.Map;
                 }
                 if (fragmentProgram != null)
                 {
-                    fragParams = fragmentProgram.GLSLProgram.ConstantDefinitions.Map();
+                    fragParams = fragmentProgram.GLSLProgram.ConstantDefinitions.Map;
                 }
 
                 GLSLLinkProgramManager.Instance.ExtractUniforms(
@@ -361,7 +361,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		normally called by GLSLGpuProgram.BindParameters() just before rendering occurs.
 		/// </summary>
 		/// <param name="parameters">GPU Parameters to use to update the uniforms params.</param>
-		public void UpdateUniforms( GpuProgramParameters parameters, ushort mask, GpuProgramType fromProgType )
+		public void UpdateUniforms( GpuProgramParameters parameters, GpuProgramParameters.GpuParamVariability mask, GpuProgramType fromProgType )
 		{
 			foreach (var currentUniform in uniformReferences)
 			{
@@ -372,7 +372,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                 {
                     var def = currentUniform.ConstantDef;
 
-                    if (((ushort)def.Variability & mask) != 0)
+                    if ((def.Variability & mask) != 0)
                     {
                         var glArraySize = def.ArraySize;
 
