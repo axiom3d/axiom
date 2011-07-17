@@ -1713,7 +1713,8 @@ it says it's incompatible with that RT");
                 primary.Dispose();
             renderTargets.Clear();
             prioritizedRenderTargets.Clear();
-            Dispose();
+            if (!IsDisposed)
+                Dispose();
         }
 
         #endregion

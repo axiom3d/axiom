@@ -49,7 +49,7 @@ namespace Axiom.Core
 	/// implementation that can be overriden by derivitives
 	/// </summary>
 	/// <typeparam name="T">The Type to instantiate</typeparam>
-	public class AbstractFactory<T> : IAbstractFactory<T> where T : class
+	public class AbstractFactory<T> : DisposableObject, IAbstractFactory<T> where T : class
 	{
 		static private readonly List<T> _instances = new List<T>();
 
