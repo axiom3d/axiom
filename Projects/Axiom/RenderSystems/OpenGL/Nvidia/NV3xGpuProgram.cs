@@ -216,6 +216,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		/// <param name="parms"></param>
         public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
+		    throw new NotImplementedException();
+            /*
 			if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
@@ -236,6 +238,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 					}
 				}
 			}
+             */
 		}
 		#endregion GpuProgram members
 	}

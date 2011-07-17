@@ -59,32 +59,25 @@ namespace Axiom.Graphics
         /// <param name="name">The name to look up</param>
         /// <param name="throwExceptionIfNotFound"> If set to true, failure to find an entry
         /// will throw an exception.</param>
+        [OgreVersion(1, 7, 2790)]
         public GpuConstantDefinition FindNamedConstantDefinition(string name, bool throwExceptionIfNotFound = false)
 	    {
 
-            if (namedParams == null)
+            if (_namedConstants == null)
 		    {
                 if (throwExceptionIfNotFound)
                     throw new AxiomException( "Named constants have not been initialised, perhaps a compile error." );
 			    return null;
 		    }
 
-            int value;
-            if (!namedParams.TryGetValue( name, out value ))
+            GpuConstantDefinition def;
+            if (!_namedConstants.Map.TryGetValue(name, out def))
 		    {
 			    if (throwExceptionIfNotFound)
 			        throw new AxiomException( "Parameter called " + name + " does not exist. " );
 			    return null;
 		    }
-		    //else
-	        {
-                // temp hack (gotta update this mess)
-	            var def = new GpuConstantDefinition();
-	            def.LogicalIndex = value;
-	            def.PhysicalIndex = value;
-	            return def;
-	            //return &(i->second);
-	        }
+            return def;
 	    }
 	}
 }

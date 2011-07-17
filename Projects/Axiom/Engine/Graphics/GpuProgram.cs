@@ -104,7 +104,7 @@ namespace Axiom.Graphics
                 fileName = value;
                 source = "";
                 LoadFromFile = true;
-                _compileError = false;
+                compileError = false;
             }
         }
 
@@ -137,7 +137,7 @@ namespace Axiom.Graphics
                 source = value;
                 fileName = "";
                 LoadFromFile = false;
-                _compileError = false;
+                compileError = false;
             }
         }
 
@@ -351,7 +351,7 @@ namespace Axiom.Graphics
         ///    List of default parameters, as gathered from the program definition.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        private GpuProgramParameters _defaultParams;
+        protected GpuProgramParameters defaultParams;
         /// <summary>
         ///    Get a reference to the default parameters which are to be used for all uses of this program.
         /// </summary>
@@ -367,7 +367,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return _defaultParams ?? ( _defaultParams = CreateParameters() );
+                return defaultParams ?? ( defaultParams = CreateParameters() );
             }
         }
 
@@ -380,7 +380,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return _defaultParams != null;
+                return defaultParams != null;
             }
         }
 
@@ -465,7 +465,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                if ( _compileError || !IsRequiredCapabilitiesSupported() )
+                if ( compileError || !IsRequiredCapabilitiesSupported() )
                 {
                     return false;
                 }
@@ -495,7 +495,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Did we encounter a compilation error?
         /// </summary>
-        private bool _compileError;
+        protected bool compileError;
 
         /// <summary>
         /// Did this program encounter a compile error when loading?
@@ -505,7 +505,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return _compileError;
+                return compileError;
             }
         }
 
@@ -514,7 +514,7 @@ namespace Axiom.Graphics
         /// </summary>
         public virtual void ResetCompileError()
         {
-            _compileError = false;
+            compileError = false;
         }
 
         #endregion CompilerError Property
@@ -672,7 +672,7 @@ namespace Axiom.Graphics
             poseAnimation = 0;
             vertexTextureFetchRequired = false;
             needsAdjacencyInfo = false;
-            _compileError = false;
+            compileError = false;
             _loadedManualNamedConstants = false;
             
             CreateParameterMappingStructures();
@@ -727,8 +727,8 @@ namespace Axiom.Graphics
             
 
             // Copy in default parameters if present
-            if ( _defaultParams != null )
-                newParams.CopyConstantsFrom( _defaultParams );
+            if ( defaultParams != null )
+                newParams.CopyConstantsFrom( defaultParams );
 
             return newParams;
         }
@@ -756,26 +756,26 @@ namespace Axiom.Graphics
             {
                 LoadFromSource();
 
-                if ( _defaultParams != null )
+                if ( defaultParams != null )
                 {
                     // Keep a reference to old ones to copy
-                    var savedParams = _defaultParams;
+                    var savedParams = defaultParams;
                     // reset params to stop them being referenced in the next create
                     // _defaultParams.SetNull();
 
                     // Create new params
-                    _defaultParams = CreateParameters();
+                    defaultParams = CreateParameters();
 
                     // Copy old (matching) values across
                     // Don't use copyConstantsFrom since program may be different
-                    _defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
+                    defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
                 }
 
             }
             catch ( Exception ex )
             {
                 LogManager.Instance.Write("Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message);
-                _compileError = true;
+                compileError = true;
             }
         }
 

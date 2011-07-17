@@ -48,52 +48,53 @@ namespace Axiom.Graphics
         {
         }
 
+        [OgreVersion(1, 7, 2790)]
         internal NullProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
             : base( creator, name, handle, group, isManual, loader )
         {
         }
 
+        [OgreVersion(1, 7, 2790)]
+        protected override void LoadFromSource()
+        {
+        }
+
+        [OgreVersion(1, 7, 2790)]
         protected override void CreateLowLevelImpl()
         {
         }
 
-        protected override void UnloadImpl()
+        [OgreVersion(1, 7, 2790, "might be unload()?")]
+        protected override void UnloadHighLevelImpl()
         {
         }
 
+        [OgreVersion(1, 7, 2790)]
+        protected override void PopulateParameterNames(GpuProgramParameters parms)
+        {
+            // Skip the normal implementation
+            // Ensure we don't complain about missing parameter names
+            parms.IgnoreMissingParameters = true;
+        }
+
+        [OgreVersion(1, 7, 2790)]
         protected override void BuildConstantDefinitions()
         {
         }
 
-        protected override void PopulateParameterNames(GpuProgramParameters parms)
-        {
-            // Skip the normal implementation
-			// Ensure we don't complain about missing parameter names
 
-            throw new NotImplementedException();
-            //IgnoreMissingParams = true;
-        }
-
-        protected override void load()
-        {
-            // do nothing
-        }
-
-        /// <summary>
-        /// always silently ignore all parameters so as not to report errors on
-        /// unsupported platforms
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="val"></param>
-        /// <returns></returns>
+        [OgreVersion(1, 7, 2790)]
         public override bool SetParam( string name, string val )
         {
+            // always silently ignore all parameters so as not to report errors on
+            // unsupported platforms
             return true;
         }
 
         /// <summary>
         /// Overridden from GpuProgram - never supported
         /// </summary>
+        [OgreVersion(1, 7, 2790)]
         public override bool IsSupported
         {
             get
@@ -105,10 +106,6 @@ namespace Axiom.Graphics
         public override int SamplerCount
         {
             get { return 0; }
-        }
-
-        protected override void LoadFromSource()
-        {
         }
     }
 

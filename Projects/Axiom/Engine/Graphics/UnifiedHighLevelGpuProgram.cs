@@ -298,7 +298,7 @@ namespace Axiom.Graphics
 			throw new Exception( "The method or operation is not implemented." );
 		}
 
-		protected override void UnloadImpl()
+		protected override void UnloadHighLevelImpl()
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}

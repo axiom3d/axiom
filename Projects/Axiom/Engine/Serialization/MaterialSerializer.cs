@@ -2249,7 +2249,7 @@ namespace Axiom.Serialization
 			// get start index
 			int index = int.Parse( values[ 0 ] );
 
-			ProcessManualProgramParam( index, "param_indexed", values, context );
+            ProcessManualProgramParam(false, "param_indexed", values, context, index);
 
 			return false;
 		}
@@ -2275,7 +2275,7 @@ namespace Axiom.Serialization
 			// get start index
 			int index = int.Parse( values[ 0 ] );
 
-			ProcessAutoProgramParam( index, "param_indexed_auto", values, context );
+            ProcessAutoProgramParam(false, "param_indexed_auto", values, context, index);
 
 			return false;
 		}
@@ -2301,15 +2301,15 @@ namespace Axiom.Serialization
 			// get start index
 			try
 			{
-				int index = context.programParams.GetParamIndex( values[ 0 ] );
-
-				ProcessManualProgramParam( index, "param_named", values, context );
+                var def = context.programParams.GetConstantDefinition(values[0]);
 			}
 			catch ( Exception ex )
 			{
 				LogParseError( context, "Invalid param_named attribute - {0}.", ex.Message );
 				return false;
 			}
+
+            ProcessManualProgramParam(true, "param_named", values, context, 0, values[0]);
 
 			return false;
 		}
@@ -2335,15 +2335,20 @@ namespace Axiom.Serialization
 			// get start index
 			try
 			{
-				int index = context.programParams.GetParamIndex( values[ 0 ] );
+                //int index = context.programParams.GetParamIndex(values[0]);
 
-				ProcessAutoProgramParam( index, "param_named_auto", values, context );
+			    var def = context.programParams.GetConstantDefinition( values[ 0 ] );
+			    //var index = context.programParams.GetParamIndex( values[ 0 ] );
+
+				//ProcessAutoProgramParam( index, "param_named_auto", values, context );
 			}
 			catch ( Exception ex )
 			{
 				LogParseError( context, "Invalid param_named_auto attribute - {0}.", ex.Message );
 				return false;
 			}
+
+            ProcessAutoProgramParam(true, "param_named_auto", values, context, 0, values[0]);
 
 			return false;
 		}
@@ -2474,20 +2479,18 @@ namespace Axiom.Serialization
 
 
 		#region Static Methods
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="commandName"></param>
-		/// <param name="parameters"></param>
-		/// <param name="context"></param>
-		protected static void ProcessManualProgramParam( int index, string commandName, string[] parameters, MaterialScriptContext context )
+
+
+		protected static void ProcessManualProgramParam( 
+            bool isNamed, string commandName, 
+            string[] parameters, 
+            MaterialScriptContext context,
+            int index = 0,
+            string paramName = null
+             )
 		{
 			// NB we assume that the first element of vecparams is taken up with either
 			// the index or the parameter name, which we ignore
-
-            var isNamed = false; // TODO: pass as arg
-		    var paramName = string.Empty; // TODO: pass as arg
 
 			int dims, roundedDims;
 			bool isReal;
@@ -2638,8 +2641,10 @@ namespace Axiom.Serialization
 		/// <param name="commandName"></param>
 		/// <param name="parameters"></param>
 		/// <param name="context"></param>
-		protected static void ProcessAutoProgramParam( int index, string commandName, string[] parameters, MaterialScriptContext context )
+        protected static void ProcessAutoProgramParam(bool isNamed, string commandName,
+           string[] parameters, MaterialScriptContext context,  int index = 0,  string paramName = null )
 		{
+            /*
 			bool extras = false;
 
 			object val = ScriptEnumAttribute.Lookup( parameters[ 1 ], typeof( GpuProgramParameters.AutoConstantType ) );
@@ -2700,6 +2705,127 @@ namespace Axiom.Serialization
 				LogParseError( context, "Bad auto gpu program param - Invalid param type '{0}', valid values are {1}.", parameters[ 1 ], legalValues );
 				return;
 			}
+             */
+
+            ///////////////////////////////
+
+            // NB we assume that the first element of vecparams is taken up with either
+        // the index or the parameter name, which we ignore
+
+        // make sure param is in lower case
+        //StringUtil::toLowerCase(vecparams[1]);
+
+        // lookup the param to see if its a valid auto constant
+		    GpuProgramParameters.AutoConstantDefinition autoConstantDef;
+
+                    // exit with error msg if the auto constant definition wasn't found
+
+            if (!GpuProgramParameters.GetAutoConstantDefinition(parameters[1], out autoConstantDef))
+		{
+			LogParseError(context, "Invalid " + commandName + " attribute - "
+				+ parameters[1]);
+			return;
+		}
+
+        // add AutoConstant based on the type of data it uses
+        switch (autoConstantDef.DataType)
+        {
+        case GpuProgramParameters.AutoConstantDataType.None:
+			if (isNamed)
+				context.programParams.SetNamedAutoConstant(paramName, autoConstantDef.AutoConstantType, 0);
+			else
+	            context.programParams.SetAutoConstant(index, autoConstantDef.AutoConstantType, 0);
+            break;
+
+        case GpuProgramParameters.AutoConstantDataType.Int:
+            {
+				// Special case animation_parametric, we need to keep track of number of times used
+				if (autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.AnimationParametric)
+				{
+					if (isNamed)
+						context.programParams.SetNamedAutoConstant(
+							paramName, autoConstantDef.AutoConstantType, context.numAnimationParametrics++);
+					else
+						context.programParams.SetAutoConstant(
+							index, autoConstantDef.AutoConstantType, context.numAnimationParametrics++);
+				}
+				// Special case texture projector - assume 0 if data not specified
+				else if ((autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureViewProjMatrix ||
+						autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.TextureWorldViewProjMatrix ||
+						autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightViewProjMatrix ||
+						autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.SpotLightWorldViewProjMatrix)
+					&& parameters.Length == 2)
+				{
+					if (isNamed)
+						context.programParams.SetNamedAutoConstant(
+							paramName, autoConstantDef.AutoConstantType, 0);
+					else
+						context.programParams.SetAutoConstant(
+							index, autoConstantDef.AutoConstantType, 0);
+
+				}
+				else
+				{
+
+					if (parameters.Length != 3)
+					{
+						LogParseError(context, "Invalid " + commandName + " attribute - "+
+							"expected 3 parameters.");
+						return;
+					}
+
+					var extraParam = int.Parse(parameters[2]);
+					if (isNamed)
+						context.programParams.SetNamedAutoConstant(
+							paramName, autoConstantDef.AutoConstantType, extraParam);
+					else
+						context.programParams.SetAutoConstant(
+							index, autoConstantDef.AutoConstantType, extraParam);
+				}
+            }
+            break;
+
+        case GpuProgramParameters.AutoConstantDataType.Real:
+            {
+                // special handling for time
+                if (autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.Time ||
+                    autoConstantDef.AutoConstantType == GpuProgramParameters.AutoConstantType.FrameTime)
+                {
+                    Real factor = 1.0f;
+                    if (parameters.Length == 3)
+                    {
+                        factor = float.Parse(parameters[2]);
+                    }
+
+					if (isNamed)
+						context.programParams.SetNamedAutoConstantReal(paramName, 
+							autoConstantDef.AutoConstantType, factor);
+					else
+	                    context.programParams.SetAutoConstantReal(index, 
+							autoConstantDef.AutoConstantType, factor);
+                }
+                else // normal processing for auto constants that take an extra real value
+                {
+                    if (parameters.Length != 3)
+                    {
+                        LogParseError(context, "Invalid " + commandName + " attribute - " +
+                            "expected 3 parameters.");
+                        return;
+                    }
+
+			        Real rData = float.Parse(parameters[2]);
+					if (isNamed)
+						context.programParams.SetNamedAutoConstantReal(paramName, 
+							autoConstantDef.AutoConstantType, rData);
+					else
+						context.programParams.SetAutoConstantReal(index, 
+							autoConstantDef.AutoConstantType, rData);
+                }
+            }
+            break;
+
+        } // end switch
+
 		}
 
 		#endregion Static Methods
@@ -2763,6 +2889,7 @@ namespace Axiom.Serialization
 		public string filename;
 
 		public Dictionary<string, string> textureAliases = new Dictionary<string, string>();
+	    public int numAnimationParametrics;
 	}
 
 	/// <summary>
