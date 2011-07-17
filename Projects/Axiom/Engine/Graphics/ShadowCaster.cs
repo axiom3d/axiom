@@ -486,7 +486,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		protected float GetExtrusionDistance( Vector3 objectPos, Light light )
 		{
-			Vector3 diff = objectPos - light.DerivedPosition;
+			Vector3 diff = objectPos - light.GetDerivedPosition();
 			return light.AttenuationRange - diff.Length;
 		}
 

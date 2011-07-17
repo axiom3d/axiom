@@ -1076,5 +1076,18 @@ namespace Axiom.Math
 		}
 
 		#endregion
+
+	    public void Extract3x3Matrix( out Matrix3 m3 )
+	    {
+            m3.m00 = m00;
+            m3.m01 = m01;
+            m3.m02 = m02;
+            m3.m10 = m10;
+            m3.m11 = m11;
+            m3.m12 = m12;
+            m3.m20 = m20;
+            m3.m21 = m21;
+            m3.m22 = m22;
+	    }
 	}
 }

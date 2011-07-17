@@ -109,8 +109,11 @@ namespace Axiom.Core
 	///	 </remarks>
 	/// TODO: Thoroughly review node removal/cleanup.
 	/// TODO: Review of method visibility/virtuality to ensure consistency.
+    /// 
 	public abstract class SceneManager : DisposableObject
 	{
+        bool cameraRelativeRendering = false; // implement logic
+
 		#region Fields
 
 		/// <summary>
@@ -1636,6 +1639,11 @@ namespace Axiom.Core
 
 			foreach ( Light light in lightList.Values )
 			{
+                if (cameraRelativeRendering)
+                    light.CameraRelative = cameraInProgress;
+                else
+                    light.CameraRelative = null;
+
 				if ( light.IsVisible )
 				{
 					if ( light.Type == LightType.Directional )
@@ -1647,7 +1655,7 @@ namespace Axiom.Core
 					{
 						// treating spotlight as point for simplicity
 						// Just see if the lights attenuation range is within the frustum
-						sphere.Center = light.DerivedPosition;
+						sphere.Center = light.GetDerivedPosition();
 						sphere.Radius = light.AttenuationRange;
 
 						if ( camera.IsObjectVisible( sphere ) )
@@ -1716,7 +1724,7 @@ namespace Axiom.Core
 			}
 			else
 			{
-				Sphere s = new Sphere( light.DerivedPosition, light.AttenuationRange );
+				Sphere s = new Sphere( light.GetDerivedPosition(), light.AttenuationRange );
 
 				// eliminate early if camera cannot see light sphere
 				if ( camera.IsObjectVisible( s ) )
@@ -1732,7 +1740,7 @@ namespace Axiom.Core
 					}
 
 					// check if the light is within view of the camera
-					bool lightInFrustum = camera.IsObjectVisible( light.DerivedPosition );
+					bool lightInFrustum = camera.IsObjectVisible( light.GetDerivedPosition() );
 
 					PlaneBoundedVolumeList volumeList = null;
 
@@ -2298,7 +2306,7 @@ namespace Axiom.Core
 			{
 				// Project the sphere onto the camera
 				float left, right, top, bottom;
-				Sphere sphere = new Sphere( light.DerivedPosition, light.AttenuationRange );
+				Sphere sphere = new Sphere( light.GetDerivedPosition(), light.AttenuationRange );
 				if ( camera.ProjectSphere( sphere, out left, out top, out right, out bottom ) )
 				{
 					scissored = true;
@@ -5405,7 +5413,7 @@ namespace Axiom.Core
 				if ( light.Type == LightType.Point )
 					texCam.Direction = light.DerivedDirection;
 				if ( light.Type == LightType.Directional )
-					texCam.Position = light.DerivedPosition;
+					texCam.Position = light.GetDerivedPosition();
 
 				// Use the material scheme of the main viewport
 				// This is required to pick up the correct shadow_caster_material and similar properties.
@@ -6493,7 +6501,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						light.tempSquaredDist = ( light.DerivedPosition - position ).LengthSquared;
+						light.tempSquaredDist = ( light.GetDerivedPosition() - position ).LengthSquared;
 						light.tempSquaredDist -= squaredRadius;
 						// only add in-range lights
 						float range = light.AttenuationRange;

@@ -1240,10 +1240,6 @@
       <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
       <Name>Axiom.Platforms.Win32.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
-      <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
-      <Name>Axiom.Plugins.CgProgramManager.2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.csproj">
       <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
       <Name>Axiom.Plugins.DevILCodecs.2010</Name>
