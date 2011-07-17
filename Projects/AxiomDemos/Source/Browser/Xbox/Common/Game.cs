@@ -8,6 +8,7 @@ using Axiom.Demos;
 using Axiom.RenderSystems.Xna;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.Input;
 
 #endregion Namespace Declarations
 
@@ -24,7 +25,6 @@ namespace Axiom.Demos.Browser.Xna
         private Root engine;
 
         string nextGame = String.Empty;
-        string titleLocation;
         private InputReader _input;
 
         partial void _setDefaultNextGame();
@@ -38,23 +38,16 @@ namespace Axiom.Demos.Browser.Xna
             new XnaResourceGroupManager();
 
             // instantiate the Root singleton
-            engine = new Root( titleLocation + "AxiomDemos.log" );
+            engine = new Root( "AxiomDemos.log" );
 
 #if (XBOX || XBOX360)
-            ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
+//            ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
 #endif
-
-            XnaResourceGroupManager.Instance.Initialize( new string[]
-                                                         {
-                                                             "png", "jpg", "bmp", "dds", "jpeg", "tiff"
-                                                         } );
 
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
 
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
             Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
-
-            _loadPlugins();
 
             _setupResources();
 
@@ -69,34 +62,32 @@ namespace Axiom.Demos.Browser.Xna
             {
                 Guide.ShowSignIn( 1, false );
             }
+			if ( GamePad.GetState( 0 ).IsButtonDown( Buttons.Back ) )
+			{
+				e.StopRendering = true;
+			}
         }
 
         public void Run()
         {
-#if !( XBOX || XBOX360 )
-            titleLocation = String.Empty;
-#else
-            titleLocation = StorageContainer.TitleLocation + "\\";
-#endif
-
             try
             {
                 if ( _configure() )
                 {
-                    Assembly demos = Assembly.LoadFrom( titleLocation + "Axiom.Demos.dll" );
+                    Assembly demos = Assembly.LoadFrom("Axiom.Demos.dll");
 
                     _setDefaultNextGame();
 
                     Type type;
 
-                    type = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos.Browser.Xna." + nextGame );
+                    type = Assembly.GetExecutingAssembly().GetType("Axiom.Demos.Browser.Xna." + nextGame);
 
-                    if ( type == null )
+                    if (type == null)
                     {
-                        type = demos.GetType( "Axiom.Demos." + nextGame );
+                        type = demos.GetType("Axiom.Demos." + nextGame);
                     }
 
-                    if ( type != null )
+                    if (type != null)
                     {
                         using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
                         {

@@ -258,48 +258,45 @@ namespace Axiom.Core
 
 		#region Methods
 
-	    /// <summary>
-	    /// Create a manual texture with specified width, height and depth (not loaded from a file).
-	    /// </summary>
-	    /// <param name="name">The name to give the resulting texture</param>
-	    /// <param name="group">The name of the resource group to assign the texture to</param>
-	    /// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
-	    /// <param name="width">The dimensions of the texture</param>
-	    /// <param name="height">The dimensions of the texture</param>
-	    /// <param name="depth">The dimensions of the texture</param>
-	    /// <param name="numMipMaps">
-	    /// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
-	    /// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
-	    /// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
-	    /// level, 1x1x1.
-	    /// </param>
-	    /// <param name="format">
-	    /// The internal format you wish to request; the manager reserves
-	    /// the right to create a different format if the one you select is
-	    /// not available in this context.
-	    /// </param>
-	    /// <param name="usage">
-	    /// The kind of usage this texture is intended for. It
-	    /// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
-	    /// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
-	    /// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
-	    /// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
-	    /// </param>
-	    /// <param name="loader">
-	    /// If you intend the contents of the manual texture to be
-	    /// regularly updated, to the extent that you don't need to recover
-	    /// the contents if the texture content is lost somehow, you can leave
-	    /// this parameter as null. However, if you intend to populate the
-	    /// texture only once, then you should implement ManualResourceLoader
-	    /// and pass a pointer to it in this parameter; this means that if the
-	    /// manual texture ever needs to be reloaded, the ManualResourceLoader
-	    /// will be called to do it.
-	    /// </param>
-	    /// <param name="hwGammaCorrection"></param>
-	    /// <param name="fsaa"></param>
-	    /// <param name="fsaaHint"></param>
-	    /// <returns></returns>
-	    public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
+		/// <summary>
+		/// Create a manual texture with specified width, height and depth (not loaded from a file).
+		/// </summary>
+		/// <param name="name">The name to give the resulting texture</param>
+		/// <param name="group">The name of the resource group to assign the texture to</param>
+		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
+		/// <param name="width">The dimensions of the texture</param>
+		/// <param name="height">The dimensions of the texture</param>
+		/// <param name="depth">The dimensions of the texture</param>
+		/// <param name="numMipMaps">
+		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
+		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
+		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
+		/// level, 1x1x1.
+		/// </param>
+		/// <param name="format">
+		/// The internal format you wish to request; the manager reserves
+		/// the right to create a different format if the one you select is
+		/// not available in this context.
+		/// </param>
+		/// <param name="usage">
+		/// The kind of usage this texture is intended for. It
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
+		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
+		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
+		/// </param>
+		/// <param name="loader">
+		/// If you intend the contents of the manual texture to be
+		/// regularly updated, to the extent that you don't need to recover
+		/// the contents if the texture content is lost somehow, you can leave
+		/// this parameter as null. However, if you intend to populate the
+		/// texture only once, then you should implement ManualResourceLoader
+		/// and pass a pointer to it in this parameter; this means that if the
+		/// manual texture ever needs to be reloaded, the ManualResourceLoader
+		/// will be called to do it.
+		/// </param>
+		/// <returns></returns>
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
 		{
 			Texture ret = (Texture)Create( name, group, true, loader, null );
 			ret.TextureType = type;
@@ -323,7 +320,7 @@ namespace Axiom.Core
 		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
 		/// <param name="width">The dimensions of the texture</param>
 		/// <param name="height">The dimensions of the texture</param>
-        /// <param name="numMipmaps">
+		/// <param name="numMipMaps">
 		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
 		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
 		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
@@ -365,7 +362,7 @@ namespace Axiom.Core
 		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
 		/// <param name="width">The dimensions of the texture</param>
 		/// <param name="height">The dimensions of the texture</param>
-        /// <param name="numMipmaps">
+		/// <param name="numMipMaps">
 		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
 		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
 		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
@@ -427,13 +424,18 @@ namespace Axiom.Core
 		/// <summary>
 		///    Loads a texture with the specified name.
 		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public Texture Load( string name, string group )
 		{
 			return Load( name, group, TextureType.TwoD );
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public Texture Load( string name, string group, TextureType type )
 		{
 			// load the texture by default with -1 mipmaps (uses default), gamma of 1, isAlpha of false
@@ -446,14 +448,29 @@ namespace Axiom.Core
 			return Load( name, group, type, numMipMaps, 1.0f, false );
 		}
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="gamma"></param>
+		/// <param name="priority"></param>
+		/// <returns></returns>
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha )
 		{
 			return Load( name, group, type, numMipMaps, gamma, false, PixelFormat.Unknown );
 		}
 
 		/// <summary>
+		///
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <param name="type"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="gamma"></param>
+		/// <param name="isAlpha"></param>
+		/// <param name="desiredFormat"></param>
+		/// <returns></returns>
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
@@ -504,6 +521,11 @@ namespace Axiom.Core
 		/// <summary>
 		///		Loads a pre-existing image into the texture.
 		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="image"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="gamma"></param>
+		/// <param name="priority"></param>
 		/// <returns></returns>
 		public Texture LoadImage( string name, string group, Image image, TextureType texType, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{

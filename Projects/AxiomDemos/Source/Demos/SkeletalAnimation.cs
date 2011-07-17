@@ -41,6 +41,7 @@ namespace Axiom.Demos
 				entity = scene.CreateEntity( robotName, "robot.mesh" );
 				SceneNode node = scene.RootSceneNode.CreateChildSceneNode(
 					new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
+				node.ScaleBy( new Vector3( 0.5f, 0.5f, 0.5f ) ) ;
 				node.AttachObject( entity );
 				animState[ i ] = entity.GetAnimationState( "Walk" );
 				animState[ i ].IsEnabled = true;

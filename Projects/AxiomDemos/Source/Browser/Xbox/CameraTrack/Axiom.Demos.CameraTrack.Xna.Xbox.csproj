@@ -54,6 +54,7 @@
     <XnaCompressContent>True</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <OutputPath>bin\Xbox\</OutputPath>
@@ -172,6 +173,11 @@
     <ProjectReference Include="..\..\..\Demos\Axiom.Demos.Xna.Xbox.csproj">
       <Project>{ebf98b3b-3d1a-45ec-b2c9-0ac31dce3ee4}</Project>
       <Name>Axiom.Demos.Xna.Xbox</Name>
+    </ProjectReference>
+    <ProjectReference Include="Content\Axiom.Content.CameraTrack.contentproj">
+      <Project>{875935E2-A4BC-4AD9-9CF9-95A8EBC519A9}</Project>
+      <Name>Axiom.Content.CameraTrack %28Content%29</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

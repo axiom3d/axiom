@@ -64,6 +64,13 @@ namespace Axiom.RenderSystems.Xna
 		{
 			// add an instance of this plugin to the list of available RenderSystems
 			Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
+
+			XnaResourceGroupManager.Instance.Initialize( new string[]
+                                                         {
+                                                             "png", "jpg", "bmp", "dds", "jpeg", "tiff"
+                                                         } );
+
+			//new XnaMaterialManager();
 		}
 
 		public void Shutdown()

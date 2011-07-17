@@ -73,7 +73,7 @@ namespace Axiom.Graphics
 	///     <file name="OgreMaterialManager.cpp" revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
 	/// 
-	public class MaterialManager : ResourceManager
+	public class MaterialManager : ResourceManager, ISingleton<MaterialManager>
 	{
 		#region Delegates
 
@@ -81,21 +81,6 @@ namespace Axiom.Graphics
 		delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
 
 		#endregion
-
-		#region Singleton implementation
-
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static MaterialManager Instance
-		{
-			get
-			{
-				return Singleton<MaterialManager>.Instance;
-			}
-		}
-
-		#endregion Singleton implementation
 
 		#region Fields and Properties
 
@@ -157,6 +142,11 @@ namespace Axiom.Graphics
 		public MaterialManager()
 			: base()
 		{
+			if ( instance == null )
+			{
+				instance = this;
+			}
+
 			this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
 			_defaultMaxAniso = 1;
 
@@ -390,11 +380,38 @@ namespace Axiom.Graphics
 
 		#endregion ResourceManager Implementation
 
+		#region ISingleton<MaterialManager> implementation
+
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		protected static MaterialManager instance;
+
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static MaterialManager Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
+
+		public virtual bool Initialize( params object[] args )
+		{
+
+			return true;
+		}
+
+		#endregion ISingleton<MaterialManager> implementation
+
 		#region IScriptLoader Implementation
 
 		/// <summary>
 		///    Parse a .material script passed in as a chunk.
 		/// </summary>
+        /// <param name="script"></param>
         public override void ParseScript( Stream stream, string groupName, string fileName )
         {
 #if AXIOM_USENEWCOMPILERS

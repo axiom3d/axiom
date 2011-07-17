@@ -73,7 +73,7 @@ namespace Axiom.Demos
 #endif
 		protected Vector3 cameraVector = Vector3.Zero;
 		protected float cameraScale;
-		protected bool showDebugOverlay = true;
+		protected bool showDebugOverlay = false;
 		protected float statDelay = 0.0f;
 		protected float debugTextDelay = 0.0f;
 		protected string debugText = "";
@@ -405,7 +405,9 @@ namespace Axiom.Demos
 
 		protected virtual void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			float scaleMove = 200 * evt.TimeSinceLastFrame;
+            evt.StopRendering = false;
+            
+            float scaleMove = 200 * evt.TimeSinceLastFrame;
 
 			// reset acceleration zero
 			camAccel = Vector3.Zero;
@@ -421,6 +423,7 @@ namespace Axiom.Demos
 			{
 				//Root.Instance.QueueEndRendering();
 				evt.StopRendering = true;
+                return;
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.A ) )
@@ -481,7 +484,7 @@ namespace Axiom.Demos
 				}
 				else
 				{
-					camera.PolygonMode = PolygonMode.Points;
+					//camera.PolygonMode = PolygonMode.Points;
 				}
 
 				SetDebugText( String.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
@@ -747,16 +750,25 @@ namespace Axiom.Demos
 			{
 				camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
 			}
-		}
+            evt.StopRendering = false;
+        }
 
 		protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
 		{
-		}
+            evt.StopRendering = false;
+        }
 
+		float statsDelay = 1.0f;
 		protected virtual void OnFrameEnded( object source, FrameEventArgs evt )
 		{
-			UpdateStats();
-		}
+			statsDelay -= evt.TimeSinceLastFrame;
+			if ( statsDelay > 0 )
+			{
+				UpdateStats();
+				statsDelay = 1.0f;
+			}
+            evt.StopRendering = false;
+        }
 
 
 		DateTime averageStart = DateTime.Now;
@@ -765,6 +777,9 @@ namespace Axiom.Demos
 		int elapsedFrames = 1;
 		protected void UpdateStats()
 		{
+			if ( !showDebugOverlay )
+				return;
+
 			// TODO: Replace with CEGUI
 			OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/CurrFps" );
 			if ( element != null )
@@ -799,6 +814,7 @@ namespace Axiom.Demos
 			element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
 			if ( element != null )
 				element.Text = debugText;
+
 		}
 
 

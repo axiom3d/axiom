@@ -53,10 +53,10 @@ using Axiom.Animating.Collections;
 
 #region Ogre Synchronization Information
 
-// <ogresynchronization>
-//     <file name="Skeleton.h"   revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-//     <file name="Skeleton.cpp" revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="Skeleton.h"   revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Skeleton.cpp" revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 
 #endregion Ogre Synchronization Information
 
@@ -581,7 +581,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///    Initialize an animation set suitable for use with this mesh.
+		///    Initialise an animation set suitable for use with this mesh.
 		/// </summary>
 		/// <remarks>
 		///    Only recommended for use inside the engine, not by applications.
@@ -646,9 +646,9 @@ namespace Axiom.Animating
 		public virtual void SetAnimationState( AnimationStateSet animSet )
 		{
 			/*
-		Algorithm:
-		  1. Reset all bone positions
-		  2. Iterate per AnimationState, if enabled get Animation and call Animation::apply
+			Algorithm:
+			  1. Reset all bone positions
+			  2. Iterate per AnimationState, if enabled get Animation and call Animation::apply
 			*/
 
 			// reset bones

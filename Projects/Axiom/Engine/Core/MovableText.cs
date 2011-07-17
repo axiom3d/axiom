@@ -73,7 +73,7 @@ namespace Axiom.Core
 		private bool _needUpdate;
 		private bool _updateColor;
 
-		//private float _timeUntilNextToggle;
+		private float _timeUntilNextToggle;
 		private float _radius;
 
 		private Font _font;
@@ -261,6 +261,7 @@ namespace Axiom.Core
             _caption = caption;
 			_characterHeight = charHeight;
 			_color = color;
+			_timeUntilNextToggle = 0;
 			_spaceWidth = 0;
 			_updateColor = true;
 			_onTop = true;
@@ -319,17 +320,13 @@ namespace Axiom.Core
 			if ( decl.FindElementBySemantic( VertexElementSemantic.TexCoords ) == null )
 				decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POS_TEX_BINDING ),
-																						   renderOperation.vertexData.vertexCount,
-																						   BufferUsage.DynamicWriteOnly );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POS_TEX_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( POS_TEX_BINDING, vbuf );
 
-			// Colours - store these in a separate buffer because they change less often
+			// Colors - store these in a separate buffer because they change less often
 			if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
 				decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
-			HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR_BINDING ),
-																						   renderOperation.vertexData.vertexCount,
-																						   BufferUsage.DynamicWriteOnly );
+			HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( COLOR_BINDING, cbuf );
 
 			int charlen = _caption.Length;

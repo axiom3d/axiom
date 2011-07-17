@@ -423,19 +423,13 @@ namespace Axiom.Core
 			if ( this.buffersNeedRecreating )
 			{
 				// Create the vertex buffer (always dynamic due to the camera adjust)
-				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-					this.vertexData.vertexDeclaration.GetVertexSize( 0 ),
-					this.vertexData.vertexCount,
-					BufferUsage.DynamicWriteOnly );
+				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexData.vertexDeclaration.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// (re)Bind the buffer
 				// Any existing buffer will lose its reference count and be destroyed
 				this.vertexData.vertexBufferBinding.SetBinding( 0, buffer );
 
-				this.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer(
-					IndexType.Size16,
-					this.chainCount * this.maxElementsPerChain * 6, // max we can use
-					this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
+				this.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, this.chainCount * this.maxElementsPerChain * 6 /* max we can use */, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 				// NB we don't set the indexCount on IndexData here since we will
 				// probably use less than the maximum number of indices
 

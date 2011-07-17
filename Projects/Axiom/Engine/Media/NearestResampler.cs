@@ -66,7 +66,10 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
+		/// <param name="src"></param>
+		/// <param name="temp"></param>
 		static public void Scale( PixelBox src, PixelBox dst, int elementSize )
 		{
 			// assert(src.format == dst.format);

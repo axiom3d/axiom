@@ -50,12 +50,12 @@ namespace Axiom.Core
 	/// that.
 	/// <para />
 	/// Axiom is provided with several alternative shadow camera setups, including
-	/// LiSPSM (<see name="LiSPSMShadowCameraSetup"/>) and Plane Optimal
-    /// (<see name="PlaneOptimalShadowCameraSetup"/>).
+	/// LiSPSM (<see cref="LiSPSMShadowCameraSetup"/>) and Plane Optimal
+	/// (<see cref="PlaneOptimalShadowCameraSetup"/>).
 	/// Others can of course be written to incorporate other algorithms. All you
 	/// have to do is instantiate one of these classes and enable it using
-	/// <see cref="SceneManager.ShadowCameraSetup"/> (global) or
-	/// <see cref="Light.CustomShadowCameraSetup"/>
+	/// <see cref="SceneManager.SetShadowCameraSetup"/> (global) or
+	/// <see cref="Light.SetCustomShadowCameraSetup"/>
 	/// (per light). In both cases the instance is be deleted automatically when
 	/// no more references to it exist.
 	/// <para />

@@ -20,7 +20,8 @@
     </XnaUpgrade>
     <XnaOutputType>Game</XnaOutputType>
     <XnaProfile>HiDef</XnaProfile>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
@@ -54,6 +55,7 @@
     <XnaCompressContent>True</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <OutputPath>bin\Xbox\</OutputPath>
@@ -173,8 +175,13 @@
       <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Demos\Axiom.Demos.Xna.Xbox.csproj">
-      <Project>{ebf98b3b-3d1a-45ec-b2c9-0ac31dce3ee4}</Project>
+      <Project>{EBF98B3B-3D1A-45EC-B2C9-0AC31DCE3EE4}</Project>
       <Name>Axiom.Demos.Xna.Xbox</Name>
+    </ProjectReference>
+    <ProjectReference Include="Content\Axiom.Content.ParticleFX.contentproj">
+      <Project>{DD044FE7-FF87-4498-AB23-95FAFE0DC668}</Project>
+      <Name>Axiom.Content.ParticleFX %28Content%29</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -41,10 +41,10 @@ using Axiom.Collections;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-// <ogresynchronization>
-//     <file name="AnimationState.h"   revision="1.16" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-//     <file name="AnimationState.cpp" revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-// </ogresynchronization>
+/// <ogresynchronization>
+///     <file name="AnimationState.h"   revision="1.16" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="AnimationState.cpp" revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom.Animating
@@ -113,7 +113,7 @@ namespace Axiom.Animating
 		/// 
 		/// </summary>
 		/// <param name="animationName"></param>
-        /// <param name="animationStates">The animation state set parent</param>
+		/// <param name="parent">The animation state set parent</param>
 		/// <param name="time"></param>
 		/// <param name="length"></param>
 		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
