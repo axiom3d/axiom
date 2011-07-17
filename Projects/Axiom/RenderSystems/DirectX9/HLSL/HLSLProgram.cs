@@ -377,25 +377,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		}
 
 		/// <summary>
-		///     Dervices parameter names from the constant table.
-		/// </summary>
-		/// <param name="parms"></param>
-		protected override void PopulateParameterNames( GpuProgramParameters parms )
-		{
-			Debug.Assert( constantTable != null );
-
-			D3D.ConstantTableDescription desc = constantTable.Description;
-
-			// iterate over the constants
-			for ( int i = 0; i < desc.Constants; i++ )
-			{
-				// Recursively descend through the structure levels
-				// Since D3D9 has no nice 'leaf' method like Cg (sigh)
-				ProcessParamElement( null, "", i, parms );
-			}
-		}
-
-		/// <summary>
 		///     Unloads data that is no longer needed.
 		/// </summary>
 		protected override void UnloadImpl()

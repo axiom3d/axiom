@@ -185,9 +185,15 @@ namespace Axiom.Graphics
 		///    Populate the passed parameters with name->index map, must be overridden.
 		/// </summary>
 		/// <param name="parms"></param>
-		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
+        protected virtual void PopulateParameterNames(GpuProgramParameters parms)
+		{
+            var defs = ConstantDefinitions;
+    		parms.SetNamedConstants( constantDefs );
+	    	// also set logical / physical maps for programs which use this
+            parms.SetLogicalIndexes(floatLogicalToPhysical, intLogicalToPhysical);
+		}
 
-        protected abstract void BuildConstantDefinitions();
+	    protected abstract void BuildConstantDefinitions();
 
         [OgreVersion(1, 7, 2790)]
 	    protected bool constantDefsBuilt;

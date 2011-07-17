@@ -61,12 +61,17 @@ namespace Axiom.Graphics
         {
         }
 
-        protected override void PopulateParameterNames( GpuProgramParameters parms )
+        protected override void BuildConstantDefinitions()
         {
         }
 
-        protected override void BuildConstantDefinitions()
+        protected override void PopulateParameterNames(GpuProgramParameters parms)
         {
+            // Skip the normal implementation
+			// Ensure we don't complain about missing parameter names
+
+            throw new NotImplementedException();
+            //IgnoreMissingParams = true;
         }
 
         protected override void load()

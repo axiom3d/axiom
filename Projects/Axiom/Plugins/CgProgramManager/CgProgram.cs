@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -82,7 +83,12 @@ namespace Axiom.CgPrograms
 		protected string selectedProfile;
 		protected int selectedCgProfile;
 
-		#endregion Fields
+	    private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap =
+	        new GpuProgramParameters.GpuConstantDefinitionMap();
+
+	    private string programString;
+
+	    #endregion Fields
 
 		#region Constructors
 
@@ -170,6 +176,7 @@ namespace Axiom.CgPrograms
 		/// <param name="parms"></param>
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
 		{
+		    base.PopulateParameterNames( parms );
 			Debug.Assert( cgProgram != IntPtr.Zero );
 
 			// Note use of 'leaf' format so we only get bottom-level params, not structs
@@ -249,7 +256,49 @@ namespace Axiom.CgPrograms
 
 	    protected override void BuildConstantDefinitions()
 	    {
-	        throw new NotImplementedException();
+	        // Derive parameter names from Cg
+	        CreateParameterMappingStructures( true );
+
+	        if ( string.IsNullOrEmpty(programString) )
+	            return;
+
+	        constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
+	        constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
+
+	        foreach (var iter in parametersMap)
+	        {
+	            var paramName = iter.Key;
+	            var def = iter.Value;
+
+	            constantDefs.Map.Add( iter.Key, iter.Value );
+
+	            // Record logical / physical mapping
+	            if ( def.IsFloat )
+	            {
+                    lock (floatLogicalToPhysical.Mutex)
+                    {
+                        floatLogicalToPhysical.Map.Add( def.LogicalIndex,
+                                                               new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+                                                                                   def.ArraySize*def.ElementSize,
+                                                                                   GpuProgramParameters.GpuParamVariability.Global) );
+                        floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+                    }
+	            }
+	            else
+	            {
+	                lock (intLogicalToPhysical.Mutex)
+	                {
+	                    intLogicalToPhysical.Map.Add( def.LogicalIndex,
+	                                                           new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+	                                                                               def.ArraySize*def.ElementSize,
+                                                                                   GpuProgramParameters.GpuParamVariability.Global));
+	                    intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+	                }
+	            }
+
+	            // Deal with array indexing
+	            constantDefs.GenerateConstantDefinitionArrayEntries( paramName, def );
+	        }
 	    }
 
 	    /// <summary>

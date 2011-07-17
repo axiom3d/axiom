@@ -41,6 +41,7 @@ using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
+using Axiom.Graphics.Collections;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -89,15 +90,15 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Packed list of integer constants
 		/// </summary>
-		protected IntConstantEntryList intConstants = new IntConstantEntryList();
+		protected IntConstantList intConstants = new IntConstantList();
 		/// <summary>
 		///    Table of Vector4 constants by index.
 		/// </summary>
-		protected FloatConstantEntryList floatConstants = new FloatConstantEntryList();
+		protected FloatConstantList floatConstants = new FloatConstantList();
 		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
-		protected AutoConstantEntryList autoConstantList = new AutoConstantEntryList();
+		protected AutoConstantsList autoConstantList = new AutoConstantsList();
 		/// <summary>
 		///    Lookup of constant indicies for named parameters.
 		/// </summary>
@@ -164,12 +165,17 @@ namespace Axiom.Graphics
 
         #region Constructors
 
+	    private int _myID;
+	    private static int _idCounter;
+
         /// <summary>
 		///		Default constructor.
 		/// </summary>
 		public GpuProgramParameters()
 		{
 			this.autoAddParamName = true;
+            var _myID = _idCounter++;
+            Debug.WriteLine( string.Format("GpuProgramParameters() = {0}", _myID) );
 		}
 
 		#endregion Constructors
@@ -196,55 +202,28 @@ namespace Axiom.Graphics
 
 		public GpuProgramParameters Clone()
 		{
-			GpuProgramParameters p = new GpuProgramParameters();
+		    throw new NotImplementedException();
+			var p = new GpuProgramParameters();
 
-			// copy int constants
-			for ( int i = 0; i < intConstants.Count; i++ )
-			{
-				IntConstantEntry e = intConstants[ i ] as IntConstantEntry;
-				if ( e.isSet )
-				{
-					p.SetConstant( i, e.val );
-				}
-			}
 
-			// copy float constants
-			for ( int i = 0; i < floatConstants.Count; i++ )
-			{
-				FloatConstantEntry e = floatConstants[ i ] as FloatConstantEntry;
-				if ( e.isSet )
-				{
-					p.SetConstant( i, e.val );
-				}
-			}
+            // let compiler perform shallow copies of structures 
+            // AutoConstantEntry, RealConstantEntry, IntConstantEntry
+		    p.floatConstants = new FloatConstantList( floatConstants );
+		    p.intConstants = new IntConstantList( intConstants );
+		    //p.autoConstantList = new AutoConstantEntryList( autoConstantList );
 
-			// copy auto constants
-			for ( int i = 0; i < autoConstantList.Count; i++ )
-			{
-				AutoConstantEntry entry = autoConstantList[ i ] as AutoConstantEntry;
-				p.SetAutoConstant( entry.Clone() );
-			}
+            // copy value members
+            p.floatLogicalToPhysical = floatLogicalToPhysical;
+            p.intLogicalToPhysical = intLogicalToPhysical;
+            //mNamedConstants = oth.mNamedConstants;
+            //copySharedParamSetUsage(oth.mSharedParamSets);
+            CopySharedParams();
 
-			// copy named params
-			foreach ( string key in namedParams.Keys )
-			{
-				p.MapParamNameToIndex( key, namedParams[ key ] );
-			}
-
-			for ( int i = 0; i < paramTypeList.Count; i++ )
-			{
-			}
-			foreach ( ParameterEntry pEntry in paramTypeList )
-			{
-				p.AddParameterToDefaultsList( pEntry.ParameterType, pEntry.ParameterName );
-			}
-
-			// copy value members
-		    p.floatLogicalToPhysical = floatLogicalToPhysical;
-		    p.intLogicalToPhysical = intLogicalToPhysical;
-		    CopySharedParams();
-
-			p.transposeMatrices = transposeMatrices;
+            //mCombinedVariability = oth.mCombinedVariability;
+            p.transposeMatrices = transposeMatrices;
+            //mIgnoreMissingParams = oth.mIgnoreMissingParams;
+            //mActivePassIterationIndex = oth.mActivePassIterationIndex;
+			
 			p.autoAddParamName = autoAddParamName;
 
 			return p;
@@ -258,8 +237,8 @@ namespace Axiom.Graphics
 		{
 			int i = 0;
 
-			FloatConstantEntry[] floatEntries = new FloatConstantEntry[ source.floatConstants.Count ];
-			IntConstantEntry[] intEntries = new IntConstantEntry[ source.intConstants.Count ];
+			var floatEntries = new float[ source.floatConstants.Count ];
+            var intEntries = new int[source.intConstants.Count];
 
 			// copy those float and int constants right on in
 			source.floatConstants.CopyTo( floatEntries );
@@ -283,33 +262,17 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="i"></param>
-		/// <returns></returns>
-		public FloatConstantEntry GetFloatConstant( int i )
+		public float GetFloatConstant( int i )
 		{
-			if ( i < floatConstants.Count )
-			{
-				return (FloatConstantEntry)floatConstants[ i ];
-			}
-
-			return null;
+			return floatConstants[ i ];
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="i"></param>
-		/// <returns></returns>
-		public IntConstantEntry GetIntConstant( int i )
+		public int GetIntConstant( int i )
 		{
-			if ( i < intConstants.Count )
-			{
-				return (IntConstantEntry)intConstants[ i ];
-			}
-
-			return null;
+			return intConstants[ i ];
 		}
 
 		/// <summary>
@@ -374,15 +337,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name">Name of the constant to retreive.</param>
 		/// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
-		public FloatConstantEntry GetNamedFloatConstant( string name )
+		public float GetNamedFloatConstant( string name )
 		{
-			int index;
-			if ( namedParams.TryGetValue(name, out index) )
-			{
-				return GetFloatConstant( index );
-			}
-
-			return null;
+            return GetFloatConstant(namedParams[name]);
 		}
 
 		/// <summary>
@@ -390,14 +347,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name">Name of the constant to retreive.</param>
 		/// <returns>A reference to the int constant entry with the specified name, else null if not found.</returns>
-		public IntConstantEntry GetNamedIntConstant( string name )
+		public int GetNamedIntConstant( string name )
 		{
-			int index;
-			if ( namedParams.TryGetValue(name, out index) )
-			{
-				return GetIntConstant( index );
-			}
-			return null;
+            return GetIntConstant(namedParams[name]);
 		}
 
 		/// <summary>
@@ -515,40 +467,50 @@ namespace Axiom.Graphics
 		///     before passing to the hardware.
 		/// </remarks>
 		/// <param name="index">Index of the contant register.</param>
-		/// <param name="val">Structure containing 3 packed float values.</param>
-		public void SetConstant( int index, Matrix4 val )
+		/// <param name="mat">Structure containing 3 packed float values.</param>
+		public void SetConstant( int index, Matrix4 mat )
 		{
-			Matrix4 mat;
+            floatConstants.Resize(index + 16);
 
 			// transpose the matrix if need be
 			if ( transposeMatrices )
 			{
-				mat = val.Transpose();
+                floatConstants[index + 0] = mat.m00;
+                floatConstants[index + 1] = mat.m10;
+                floatConstants[index + 2] = mat.m20;
+                floatConstants[index + 3] = mat.m30;
+                floatConstants[index + 4] = mat.m01;
+                floatConstants[index + 5] = mat.m11;
+                floatConstants[index + 6] = mat.m21;
+                floatConstants[index + 7] = mat.m31;
+                floatConstants[index + 8] = mat.m02;
+                floatConstants[index + 9] = mat.m12;
+                floatConstants[index + 10] = mat.m22;
+                floatConstants[index + 11] = mat.m32;
+                floatConstants[index + 12] = mat.m03;
+                floatConstants[index + 13] = mat.m13;
+                floatConstants[index + 14] = mat.m23;
+                floatConstants[index + 15] = mat.m33;
 			}
 			else
 			{
-				mat = val;
+                floatConstants[index + 0] = mat.m00;
+                floatConstants[index + 1] = mat.m01;
+                floatConstants[index + 2] = mat.m02;
+                floatConstants[index + 3] = mat.m03;
+                floatConstants[index + 4] = mat.m10;
+                floatConstants[index + 5] = mat.m11;
+                floatConstants[index + 6] = mat.m12;
+                floatConstants[index + 7] = mat.m13;
+                floatConstants[index + 8] = mat.m20;
+                floatConstants[index + 9] = mat.m21;
+                floatConstants[index + 10] = mat.m22;
+                floatConstants[index + 11] = mat.m23;
+                floatConstants[index + 12] = mat.m30;
+                floatConstants[index + 13] = mat.m31;
+                floatConstants[index + 14] = mat.m32;
+                floatConstants[index + 15] = mat.m33;
 			}
-
-            floatConstants.Resize(index + 1);
-            var entry = floatConstants[index];
-            entry.isSet = true;
-            entry.val[0] = mat.m00;
-            entry.val[1] = mat.m01;
-            entry.val[2] = mat.m02;
-            entry.val[3] = mat.m03;
-            entry.val[4] = mat.m10;
-            entry.val[5] = mat.m11;
-            entry.val[6] = mat.m12;
-            entry.val[7] = mat.m13;
-            entry.val[8] = mat.m20;
-            entry.val[9] = mat.m21;
-            entry.val[10] = mat.m22;
-            entry.val[11] = mat.m23;
-            entry.val[12] = mat.m30;
-            entry.val[13] = mat.m31;
-            entry.val[14] = mat.m32;
-            entry.val[15] = mat.m33;
 		}
 
 	    /// <summary>
@@ -580,13 +542,14 @@ namespace Axiom.Graphics
 
             throw new AxiomException("Validate this");
 			// copy in chunks of 4
+            /*
 			while ( count-- > 0 )
 			{
 				IntConstantEntry entry = (IntConstantEntry)intConstants[ index++ ];
 				entry.isSet = true;
 				Array.Copy( ints, srcIndex, entry.val, 0, 4 );
 				srcIndex += 4;
-			}
+			}*/
 		}
 
 		/// <summary>
@@ -621,13 +584,11 @@ namespace Axiom.Graphics
 		public void SetConstant( int index, float f0, float f1, float f2, float f3 )
 		{
 			// resize if necessary
-			floatConstants.Resize( index + 1 );
-			FloatConstantEntry entry = floatConstants[ index ];
-			entry.isSet = true;
-			entry.val[ 0 ] = f0;
-			entry.val[ 1 ] = f1;
-			entry.val[ 2 ] = f2;
-			entry.val[ 3 ] = f3;
+		    floatConstants.Resize( index + 4 );
+		    floatConstants[ index ] = f0;
+		    floatConstants[ index + 1 ] = f1;
+		    floatConstants[ index + 2 ] = f2;
+		    floatConstants[ index + 3 ] = f3;
 		}
 
 		/// <summary>
@@ -645,6 +606,7 @@ namespace Axiom.Graphics
 
 			// copy in chunks of 4
 		    throw new AxiomException( "Validate this" );
+            /*
 			while ( count-- > 0 )
 			{
 				FloatConstantEntry entry = floatConstants[ index++ ];
@@ -652,6 +614,7 @@ namespace Axiom.Graphics
 				Array.Copy( floats, srcIndex, entry.val, 0, 4 );
 				srcIndex += 4;
 			}
+             */
 		}
 
 		/// <summary>
@@ -848,21 +811,19 @@ namespace Axiom.Graphics
 						{
 							var mat = matrices[ j ];
 
-                            floatConstants.Resize(index + 1);
-                            var e = floatConstants[index++];
-                            e.isSet = true;
-                            e.val[0] = mat.m00;
-                            e.val[1] = mat.m01;
-                            e.val[2] = mat.m02;
-                            e.val[3] = mat.m03;
-                            e.val[4] = mat.m10;
-                            e.val[5] = mat.m11;
-                            e.val[6] = mat.m12;
-                            e.val[7] = mat.m13;
-                            e.val[8] = mat.m20;
-                            e.val[9] = mat.m21;
-                            e.val[10] = mat.m22;
-                            e.val[11] = mat.m23;
+						    floatConstants.Resize( index + 12 );
+						    floatConstants[ index++ ] = mat.m00;
+						    floatConstants[ index++ ] = mat.m01;
+						    floatConstants[ index++ ] = mat.m02;
+						    floatConstants[ index++ ] = mat.m03;
+						    floatConstants[ index++ ] = mat.m10;
+						    floatConstants[ index++ ] = mat.m11;
+						    floatConstants[ index++ ] = mat.m12;
+						    floatConstants[ index++ ] = mat.m13;
+						    floatConstants[ index++ ] = mat.m20;
+						    floatConstants[ index++ ] = mat.m21;
+						    floatConstants[ index++ ] = mat.m22;
+						    floatConstants[ index++ ] = mat.m23;
 						}
 
 						break;
@@ -1064,7 +1025,7 @@ namespace Axiom.Graphics
 		if (PassIterationNumberIndex != int.MaxValue)
 		{
 			// This is a physical index
-		    floatConstants[ PassIterationNumberIndex ].val[0]++;
+		    floatConstants[ PassIterationNumberIndex ]++;
 		}
 	}
 
@@ -1158,11 +1119,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets a packed array of all current integer contants.
 		/// </summary>
-		public IntConstantEntry[] IntConstants
+		public int[] IntConstants
 		{
 			get
 			{
-				IntConstantEntry[] ints = new IntConstantEntry[ intConstants.Count ];
+				var ints = new int[ intConstants.Count ];
 				intConstants.CopyTo( ints );
 				return ints;
 			}
@@ -1220,7 +1181,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
-		public AutoConstantEntryList AutoConstantList
+		public AutoConstantsList AutoConstantList
 		{
 			get
 			{
@@ -1242,14 +1203,24 @@ namespace Axiom.Graphics
 
 		#endregion Properties
 
-	    public float[] GetFloatPointer( int physicalIndex )
+	    public OffsetArray<float>.FixedPointer GetFloatPointer( int physicalIndex )
 	    {
-	        return floatConstants[ physicalIndex ].val;
+	        return floatConstants.Fix( physicalIndex );
 	    }
 
-        public int[] GetIntPointer( int physicalIndex )
+        public float[] GetFloatPointer()
         {
-            return intConstants[physicalIndex].val;
+            return floatConstants.ToArray();
+        }
+
+        public OffsetArray<int>.FixedPointer GetIntPointer( int physicalIndex )
+        {
+            return intConstants.Fix( physicalIndex );
+        }
+
+        public int[] GetIntPointer()
+        {
+            return intConstants.ToArray();
         }
 
         [OgreVersion(1, 7, 2790)]
@@ -1266,12 +1237,12 @@ namespace Axiom.Graphics
             if (floatIndexMap != null && floatIndexMap.BufferSize > floatConstants.Count)
             {
                 while (floatConstants.Count < floatIndexMap.BufferSize)
-                    floatConstants.Add( new FloatConstantEntry() );
+                    floatConstants.Add( 0.0f);
             }
             if (intIndexMap != null && intIndexMap.BufferSize > intConstants.Count)
             {
                 while (intConstants.Count < intIndexMap.BufferSize)
-                    intConstants.Add( new IntConstantEntry() );
+                    intConstants.Add( 0 );
             }
 	    }
 
@@ -1355,21 +1326,19 @@ namespace Axiom.Graphics
                         for (var j = 0; j < numMatrices; j++)
                         {
                             var mat = matrices[j];
-                            floatConstants.Resize(index + 1);
-                            var e = floatConstants[index++];
-                            e.isSet = true;
-                            e.val[0] = mat.m00;
-                            e.val[1] = mat.m01;
-                            e.val[2] = mat.m02;
-                            e.val[3] = mat.m03;
-                            e.val[4] = mat.m10;
-                            e.val[5] = mat.m11;
-                            e.val[6] = mat.m12;
-                            e.val[7] = mat.m13;
-                            e.val[8] = mat.m20;
-                            e.val[9] = mat.m21;
-                            e.val[10] = mat.m22;
-                            e.val[11] = mat.m23;
+                            floatConstants.Resize(index + 12);
+                            floatConstants[index++] = mat.m00;
+                            floatConstants[index++] = mat.m01;
+                            floatConstants[index++] = mat.m02;
+                            floatConstants[index++] = mat.m03;
+                            floatConstants[index++] = mat.m10;
+                            floatConstants[index++] = mat.m11;
+                            floatConstants[index++] = mat.m12;
+                            floatConstants[index++] = mat.m13;
+                            floatConstants[index++] = mat.m20;
+                            floatConstants[index++] = mat.m21;
+                            floatConstants[index++] = mat.m22;
+                            floatConstants[index++] = mat.m23;
                         }
 
                         break;
@@ -1481,7 +1450,7 @@ namespace Axiom.Graphics
 
                         // Expand at buffer end
                         for (var i = 0; i < requestedSize; i++)
-                            floatConstants.Add(new FloatConstantEntry());
+                            floatConstants.Add(0.0f);
 
                         // Record extended size for future GPU params re-using this information
                         floatLogicalToPhysical.BufferSize = floatConstants.Count;
@@ -1532,7 +1501,7 @@ namespace Axiom.Graphics
                         insertPos += physicalIndex;
 
                         for (var i = 0; i < insertCount; i++ )
-                            floatConstants.Insert(insertPos, new FloatConstantEntry());
+                            floatConstants.Insert(insertPos, 0.0f);
 
                         // shift all physical positions after this one
                         foreach (var i in floatLogicalToPhysical.Map)
@@ -1619,5 +1588,17 @@ namespace Axiom.Graphics
             var indexUse = GetFloatConstantLogicalIndexUse(logicalIndex, requestedSize, variability);
             return indexUse != null ? indexUse.PhysicalIndex : 0;
 	    }
+
+	    public void SetNamedConstant( string paramName, float[] realBuffer, int dims, int i )
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void WriteRawConstant( int i, float val )
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    
 	}
 }

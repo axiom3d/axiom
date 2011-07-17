@@ -197,13 +197,16 @@ namespace Axiom.RenderSystems.OpenGL
 		        if ((i.Value.Variability & mask) != 0)
 		        {
 			        var logicalIndex = i.Key;
-			        var pFloat = parms.GetFloatPointer(i.Value.PhysicalIndex);
-			        // Iterate over the params, set in 4-float chunks (low-level)
-			        for (var j = 0; j < i.Value.CurrentSize; j +=4)
+			        using (var pFloat = parms.GetFloatPointer(i.Value.PhysicalIndex))
 			        {
-                        Gl.glProgramLocalParameter4fARB(type, logicalIndex, pFloat[j+0], pFloat[j+1], pFloat[j+2], pFloat[j+3]);
-				        ++logicalIndex;
-			        }
+			            var ptr = pFloat.Pointer;
+                        for (var j = 0; j < i.Value.CurrentSize; j += 4)
+                        {
+                            Gl.glProgramLocalParameter4fvARB( type, logicalIndex, ptr );
+                            ptr = ptr.Offset( sizeof ( float )*4 );
+                            ++logicalIndex;
+                        }
+                    }
 		        }
 	        }
 		}

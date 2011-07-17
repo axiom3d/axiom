@@ -79,38 +79,6 @@ namespace Axiom.Graphics.Collections
 
 	/// <summary>
 	/// </summary>
-	public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry>
-	{
-	}
-
-	/// <summary>
-	/// </summary>
-	public class FloatConstantEntryList : List<GpuProgramParameters.FloatConstantEntry>
-	{
-		public void Resize( int size )
-		{
-			while ( this.Count < size )
-			{
-				Add( new GpuProgramParameters.FloatConstantEntry() );
-			}
-		}
-	}
-
-	/// <summary>
-	/// </summary>
-	public class IntConstantEntryList : List<GpuProgramParameters.IntConstantEntry>
-	{
-		public void Resize( int size )
-		{
-			while ( this.Count < size )
-			{
-				Add( new GpuProgramParameters.IntConstantEntry() );
-			}
-		}
-	}
-
-	/// <summary>
-	/// </summary>
 	public class RenderableList : List<IRenderable>
 	{
 	}
