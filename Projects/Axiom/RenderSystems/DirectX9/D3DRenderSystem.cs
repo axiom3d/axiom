@@ -80,9 +80,17 @@ namespace Axiom.RenderSystems.DirectX9
 
 	    private D3D9ResourceManager _resourceManager;
 
+        public static D3D9ResourceManager ResourceManager
+        {
+            get
+            {
+                return _D3D9RenderSystem._resourceManager;
+            }
+        }
+
 	    private D3D9DeviceManager _deviceManager;
 
-	    private RenderWindowList _renderWindows;
+	    private readonly RenderWindowList _renderWindows = new RenderWindowList();
 
 	    //private Dictionary<D3D.Device, int> _currentLights;
 	    private int _currentLights;
@@ -179,6 +187,9 @@ namespace Axiom.RenderSystems.DirectX9
 				manager = new D3D.Direct3D();
 			}
 
+		    _resourceManager = new D3D9ResourceManager();
+		    _deviceManager = new D3D9DeviceManager();
+
 			InitConfigOptions();
 
 			// init the texture stage descriptions
@@ -198,7 +209,14 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                throw new NotImplementedException(); 
+                var pDirect3D9 = _D3D9RenderSystem.manager;
+
+		        if (pDirect3D9 == null)
+		        {
+		            throw new AxiomException("Direct3D9 interface is NULL !!!");
+		        }
+
+		        return pDirect3D9;
             }
         }
 
@@ -487,7 +505,7 @@ namespace Axiom.RenderSystems.DirectX9
             LogManager.Instance.Write("D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} ",
                                        name, width, height, isFullScreen ? "fullscreen" : "windowed");
 
-		    LogManager.Instance.Write( "miscParams: {4}",
+		    LogManager.Instance.Write( "miscParams: {0}",
 		                               miscParams.Aggregate( new StringBuilder(),
 		                                                     ( s, kv ) =>
 		                                                     s.AppendFormat( "{0} = {1};", kv.Key, kv.Value ).AppendLine()
@@ -514,9 +532,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		    _renderWindows.Add( window );
 
-		    UpdateRenderSystemCapabilities();
+		    UpdateRenderSystemCapabilities( window );
 
-            AttachRenderTarget(window);
+            AttachRenderTarget( window );
 
 			return window;
 		}
@@ -1204,13 +1222,131 @@ namespace Axiom.RenderSystems.DirectX9
             throw new NotImplementedException();
 	    }
 
+        #region DetermineFSAASettings
+
         [OgreVersion(1, 7, "Not implemented yet")]
-        void DetermineFSAASettings(Device d3D9Device,
-        int fsaa, string fsaaHint, PixelFormat d3DPixelFormat,
-        bool fullScreen, out MultisampleType outMultisampleType, out int outMultisampleQuality)
+        internal void DetermineFSAASettings(Device d3d9Device,
+            int fsaa, string fsaaHint, Format d3DPixelFormat,
+            bool fullScreen, out MultisampleType outMultisampleType, out int outMultisampleQuality)
         {
-            throw new NotImplementedException();
+            outMultisampleType = MultisampleType.None;
+            outMultisampleQuality = 0;
+
+            var ok = false;
+		    var qualityHint = fsaaHint.Contains("Quality");
+		    var origFSAA = fsaa;
+
+		    var driverList = Direct3DDrivers;
+            var deviceDriver = _activeDriver;
+            var device = _deviceManager.GetDeviceFromD3D9Device(d3d9Device);
+
+            foreach (var currDriver in driverList)
+            {
+                if ( currDriver.AdapterNumber != device.AdapterNumber )
+                    continue;
+                deviceDriver = currDriver;
+                break;
+            }
+
+		    var tryCSAA = false;
+		    // NVIDIA, prefer CSAA if available for 8+
+		    // it would be tempting to use getCapabilities()->getVendor() == GPU_NVIDIA but
+		    // if this is the first window, caps will not be initialised yet
+		    if (deviceDriver.AdapterIdentifier.VendorId == 0x10DE && 
+			    fsaa >= 8)
+		    {
+			    tryCSAA	 = true;
+		    }
+            
+		    while (!ok)
+		    {
+			    // Deal with special cases
+			    if (tryCSAA)
+			    {
+				    // see http://developer.nvidia.com/object/coverage-sampled-aa.html
+				    switch(fsaa)
+				    {
+				    case 8:
+					    if (qualityHint)
+					    {
+					        outMultisampleType = MultisampleType.EightSamples;
+						    outMultisampleQuality = 0;
+					    }
+					    else
+					    {
+                            outMultisampleType = MultisampleType.FourSamples;
+						    outMultisampleQuality = 2;
+					    }
+					    break;
+				    case 16:
+					    if (qualityHint)
+					    {
+                            outMultisampleType = MultisampleType.EightSamples;
+						    outMultisampleQuality = 2;
+					    }
+					    else
+					    {
+                            outMultisampleType = MultisampleType.FourSamples;
+						    outMultisampleQuality = 4;
+					    }
+					    break;
+				    }
+			    }
+			    else // !CSAA
+			    {
+                    outMultisampleType = (MultisampleType)fsaa;
+				    outMultisampleQuality = 0;
+			    }
+
+		        int outQuality;
+		        var hr = manager.CheckDeviceMultisampleType(
+		            deviceDriver.AdapterNumber, DeviceType.Hardware, d3DPixelFormat,
+		            fullScreen, outMultisampleType, out outQuality );
+
+                if (hr && (!tryCSAA || outQuality > outMultisampleQuality))
+                {
+                    ok = true;
+                }
+			    else
+			    {
+				    // downgrade
+				    if (tryCSAA && fsaa == 8)
+				    {
+					    // for CSAA, we'll try downgrading with quality mode at all samples.
+					    // then try without quality, then drop CSAA
+					    if (qualityHint)
+					    {
+						    // drop quality first
+						    qualityHint = false;
+					    }
+					    else
+					    {
+						    // drop CSAA entirely 
+						    tryCSAA = false;
+					    }
+					    // return to original requested samples
+					    fsaa = origFSAA;
+				    }
+				    else
+				    {
+					    // drop samples
+					    --fsaa;
+
+					    if (fsaa == 1)
+					    {
+						    // ran out of options, no FSAA
+						    fsaa = 0;
+						    ok = true;
+					    }
+				    }
+			    }
+
+		    } // while !ok
         }
+
+        #endregion
+
+        #region DisplayMonitorCount
 
         [OgreVersion(1, 7)]
         public override int DisplayMonitorCount
@@ -1221,7 +1357,9 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-	    private D3D.Surface _getDepthStencilFor( D3D.Format fmt, D3D.MultisampleType multisample, int width, int height )
+        #endregion
+
+        private D3D.Surface _getDepthStencilFor( D3D.Format fmt, D3D.MultisampleType multisample, int width, int height )
 		{
 			D3D.Format dsfmt = GetDepthStencilFormatFor( fmt );
 			if ( dsfmt == D3D.Format.Unknown )
@@ -3211,6 +3349,35 @@ namespace Axiom.RenderSystems.DirectX9
 
 			//TODO fireEvent("DeviceRestored");
 		}
+
+        /// <summary>
+        /// This function is meant to add Depth Buffers to the pool that aren't released when the DepthBuffer
+        /// is deleted. This is specially useful to put the Depth Buffer created along with the window's
+        /// back buffer into the pool. All depth buffers introduced with this method go to POOL_DEFAULT
+        /// </summary>
+        public DepthBuffer AddManualDepthBuffer(Device depthSurfaceDevice, Surface depthSurface)
+	    {
+	        //If this depth buffer was already added, return that one
+		
+            foreach( var itor in depthBufferPool[PoolId.Default] )
+            {
+                if( ((D3D9DepthBuffer)itor).DepthBufferSurface == depthSurface )
+				return itor;
+            }
+
+		    //Nope, get the info about this depth buffer and create a new container fot it
+            var dsDesc = depthSurface.Description;
+		
+		    var newDepthBuffer = new D3D9DepthBuffer( PoolId.Default, this,
+												depthSurfaceDevice, depthSurface,
+												dsDesc.Format, dsDesc.Width, dsDesc.Height,
+												dsDesc.MultisampleType, dsDesc.MultisampleQuality, true );
+
+		    //Add the 'main' depth buffer to the pool
+            depthBufferPool[newDepthBuffer.PoolId].Add(newDepthBuffer);
+
+		    return newDepthBuffer;
+	    }
 	}
 
     /// <summary>
