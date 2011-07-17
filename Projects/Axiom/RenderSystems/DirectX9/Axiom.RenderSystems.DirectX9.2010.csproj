@@ -149,6 +149,7 @@
     <Compile Include="Plugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SilenceSlimDX.cs" />
     <Compile Include="VideoMode.cs">
       <SubType>Code</SubType>
     </Compile>
