@@ -396,58 +396,40 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                                     parameters.GetFloatPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X2:
-                                throw new NotImplementedException( "GpuProgramParameters need refactoring for this" );
-                                //Gl.glUniformMatrix2fvARB(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix2fvARB(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X3:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix2x3fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix2x3fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X4:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix2x4fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix2x4fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X2:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix3x2fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix3x2fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X3:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix3fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix3fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X4:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix3x4fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix3x4fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X2:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix4x2fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix4x2fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X3:
-                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
-                                //Gl.glUniformMatrix4x3fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                //break;
+                                Gl.glUniformMatrix4x3fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X4:
-#warning Temporary hack till GpuProgramParameters are refactored
-                                Gl.glUniform4fvARB(currentUniform.Location, glArraySize,
-                                    parameters.GetFloatPointer(def.PhysicalIndex));
-                                Gl.glUniform4fvARB(currentUniform.Location + 1, glArraySize,
-                                    parameters.GetFloatPointer(def.PhysicalIndex + 1));
-                                Gl.glUniform4fvARB(currentUniform.Location + 2, glArraySize,
-                                    parameters.GetFloatPointer(def.PhysicalIndex + 2));
-                                Gl.glUniform4fvARB(currentUniform.Location + 3, glArraySize,
-                                    parameters.GetFloatPointer(def.PhysicalIndex + 3));
-
-                                //Gl.glUniformMatrix4fv(currentUniform.Location, glArraySize,
-                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                Gl.glUniformMatrix4fv(currentUniform.Location, glArraySize,
+                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int1:
                                 Gl.glUniform1ivARB(currentUniform.Location, glArraySize,

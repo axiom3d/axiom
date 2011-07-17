@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Controllers;
@@ -129,6 +130,15 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7, 2790)]
 	    protected GpuLogicalBufferStruct floatLogicalToPhysical;
 
+        [OgreVersion(1, 7, 2790)]
+        public GpuLogicalBufferStruct FloatLogicalBufferStruct
+        {
+            get
+            {
+                return floatLogicalToPhysical;
+            }
+        }
+
 	    #endregion
 
         #region intLogicalToPhysical
@@ -138,6 +148,15 @@ namespace Axiom.Graphics
         /// </summary>
         [OgreVersion(1, 7, 2790)]
         protected GpuLogicalBufferStruct intLogicalToPhysical;
+
+        [OgreVersion(1, 7, 2790)]
+        public GpuLogicalBufferStruct IntLogicalBufferStruct
+        {
+            get
+            {
+                return intLogicalToPhysical;
+            }
+        }
 
         #endregion
 
@@ -221,6 +240,10 @@ namespace Axiom.Graphics
 			}
 
 			// copy value members
+		    p.floatLogicalToPhysical = floatLogicalToPhysical;
+		    p.intLogicalToPhysical = intLogicalToPhysical;
+		    CopySharedParams();
+
 			p.transposeMatrices = transposeMatrices;
 			p.autoAddParamName = autoAddParamName;
 
@@ -507,10 +530,25 @@ namespace Axiom.Graphics
 				mat = val;
 			}
 
-			SetConstant( index++, mat.m00, mat.m01, mat.m02, mat.m03 );
-			SetConstant( index++, mat.m10, mat.m11, mat.m12, mat.m13 );
-			SetConstant( index++, mat.m20, mat.m21, mat.m22, mat.m23 );
-			SetConstant( index, mat.m30, mat.m31, mat.m32, mat.m33 );
+            floatConstants.Resize(index + 1);
+            var entry = floatConstants[index];
+            entry.isSet = true;
+            entry.val[0] = mat.m00;
+            entry.val[1] = mat.m01;
+            entry.val[2] = mat.m02;
+            entry.val[3] = mat.m03;
+            entry.val[4] = mat.m10;
+            entry.val[5] = mat.m11;
+            entry.val[6] = mat.m12;
+            entry.val[7] = mat.m13;
+            entry.val[8] = mat.m20;
+            entry.val[9] = mat.m21;
+            entry.val[10] = mat.m22;
+            entry.val[11] = mat.m23;
+            entry.val[12] = mat.m30;
+            entry.val[13] = mat.m31;
+            entry.val[14] = mat.m32;
+            entry.val[15] = mat.m33;
 		}
 
 	    /// <summary>
@@ -540,6 +578,7 @@ namespace Axiom.Graphics
 			// resize if necessary
 			intConstants.Resize( index + count );
 
+            throw new AxiomException("Validate this");
 			// copy in chunks of 4
 			while ( count-- > 0 )
 			{
@@ -605,6 +644,7 @@ namespace Axiom.Graphics
 			floatConstants.Resize( index + count );
 
 			// copy in chunks of 4
+		    throw new AxiomException( "Validate this" );
 			while ( count-- > 0 )
 			{
 				FloatConstantEntry entry = floatConstants[ index++ ];
@@ -806,10 +846,23 @@ namespace Axiom.Graphics
 
 						for ( int j = 0; j < numMatrices; j++ )
 						{
-							Matrix4 m = matrices[ j ];
-							SetConstant( index++, m.m00, m.m01, m.m02, m.m03 );
-							SetConstant( index++, m.m10, m.m11, m.m12, m.m13 );
-							SetConstant( index++, m.m20, m.m21, m.m22, m.m23 );
+							var mat = matrices[ j ];
+
+                            floatConstants.Resize(index + 1);
+                            var e = floatConstants[index++];
+                            e.isSet = true;
+                            e.val[0] = mat.m00;
+                            e.val[1] = mat.m01;
+                            e.val[2] = mat.m02;
+                            e.val[3] = mat.m03;
+                            e.val[4] = mat.m10;
+                            e.val[5] = mat.m11;
+                            e.val[6] = mat.m12;
+                            e.val[7] = mat.m13;
+                            e.val[8] = mat.m20;
+                            e.val[9] = mat.m21;
+                            e.val[10] = mat.m22;
+                            e.val[11] = mat.m23;
 						}
 
 						break;
@@ -1299,12 +1352,24 @@ namespace Axiom.Graphics
                         numMatrices = source.WorldMatrixCount;
                         index = entry.PhysicalIndex;
 
-                        for (int j = 0; j < numMatrices; j++)
+                        for (var j = 0; j < numMatrices; j++)
                         {
-                            Matrix4 m = matrices[j];
-                            SetConstant(index++, m.m00, m.m01, m.m02, m.m03);
-                            SetConstant(index++, m.m10, m.m11, m.m12, m.m13);
-                            SetConstant(index++, m.m20, m.m21, m.m22, m.m23);
+                            var mat = matrices[j];
+                            floatConstants.Resize(index + 1);
+                            var e = floatConstants[index++];
+                            e.isSet = true;
+                            e.val[0] = mat.m00;
+                            e.val[1] = mat.m01;
+                            e.val[2] = mat.m02;
+                            e.val[3] = mat.m03;
+                            e.val[4] = mat.m10;
+                            e.val[5] = mat.m11;
+                            e.val[6] = mat.m12;
+                            e.val[7] = mat.m13;
+                            e.val[8] = mat.m20;
+                            e.val[9] = mat.m21;
+                            e.val[10] = mat.m22;
+                            e.val[11] = mat.m23;
                         }
 
                         break;
@@ -1390,6 +1455,169 @@ namespace Axiom.Graphics
                         throw new NotImplementedException();
                 }
             }
+	    }
+
+	    public void ClearNamedAutoConstant( string paramName )
+	    {
+	        throw new NotImplementedException();
+	    }
+
+        [OgreVersion(1, 7, 2790, "Not handling namedParams properly")]
+        protected GpuLogicalIndexUse GetFloatConstantLogicalIndexUse(
+            int logicalIndex, int requestedSize, GpuParamVariability variability)
+        {
+            if ( floatLogicalToPhysical == null )
+                return null;
+
+            GpuLogicalIndexUse indexUse = null;
+            lock(floatLogicalToPhysical.Mutex)
+            {
+                GpuLogicalIndexUse logi;
+                if (!floatLogicalToPhysical.Map.TryGetValue( logicalIndex, out logi ))
+                {
+                    if ( requestedSize != 0 )
+                    {
+                        var physicalIndex = floatConstants.Count;
+
+                        // Expand at buffer end
+                        for (var i = 0; i < requestedSize; i++)
+                            floatConstants.Add(new FloatConstantEntry());
+
+                        // Record extended size for future GPU params re-using this information
+                        floatLogicalToPhysical.BufferSize = floatConstants.Count;
+
+                        // low-level programs will not know about mapping ahead of time, so 
+                        // populate it. Other params objects will be able to just use this
+                        // accepted mapping since the constant structure will be the same
+
+                        // Set up a mapping for all items in the count
+                        var currPhys = physicalIndex;
+                        var count = requestedSize/4;
+
+                        GpuLogicalIndexUse insertedIterator = null;
+                        for ( var logicalNum = 0; logicalNum < count; ++logicalNum )
+                        {
+
+                            var it = new GpuLogicalIndexUse( currPhys, requestedSize, variability );
+                            floatLogicalToPhysical.Map.Add( logicalIndex + logicalNum,
+                                                            it);
+
+                            currPhys += 4;
+
+                            if ( logicalNum == 0 )
+                                insertedIterator = it;
+                        }
+
+                        indexUse = insertedIterator;
+                    }
+                    else
+                    {
+                        // no match & ignore
+                        return null;
+                    }
+
+                }
+                else
+                {
+                    var physicalIndex = logi.PhysicalIndex;
+                    indexUse = logi;
+                    // check size
+                    if ( logi.CurrentSize < requestedSize )
+                    {
+                        // init buffer entry wasn't big enough; could be a mistake on the part
+                        // of the original use, or perhaps a variable length we can't predict
+                        // until first actual runtime use e.g. world matrix array
+                        var insertCount = requestedSize - logi.CurrentSize;
+                        var insertPos = 0;
+                        insertPos += physicalIndex;
+
+                        for (var i = 0; i < insertCount; i++ )
+                            floatConstants.Insert(insertPos, new FloatConstantEntry());
+
+                        // shift all physical positions after this one
+                        foreach (var i in floatLogicalToPhysical.Map)
+                        {
+                            if ( i.Value.PhysicalIndex > physicalIndex )
+                                i.Value.PhysicalIndex += insertCount;
+                        }
+                        
+                        floatLogicalToPhysical.BufferSize += insertCount;
+                        foreach (var i in autoConstantList)
+                        {
+                            AutoConstantDefinition def;
+                            if ( i.PhysicalIndex > physicalIndex &&
+                                 GetAutoConstantDefinition( i.Type.ToString(), out def ) && 
+                                 def.ElementType == ElementType.Real )
+                            {
+                                i.PhysicalIndex += insertCount;
+                            }
+                        }
+                        if (namedParams != null)
+                        {
+                            /*
+                            foreach (var i in namedParams)
+                            {
+                                if ( i->second.isFloat() && i->second.physicalIndex > physicalIndex )
+                                    i->second.physicalIndex += insertCount;
+                            }
+                            mNamedConstants->floatBufferSize += insertCount;
+                             */
+                            throw new NotImplementedException( "implement correct" );
+                        }
+
+                        logi.CurrentSize += insertCount;
+                    }
+                }
+
+                if ( indexUse != null )
+                    indexUse.Variability= variability;
+
+                return indexUse;
+            }
+        }
+
+        [OgreVersion(1, 7, 2790)]
+        public void ClearAutoConstant(int index)
+        {
+
+            var indexUse = GetFloatConstantLogicalIndexUse( index, 0, GpuParamVariability.Global );
+
+            if ( indexUse != null )
+            {
+                indexUse.Variability = GpuParamVariability.Global;
+                var physicalIndex = indexUse.PhysicalIndex;
+                // update existing index if it exists
+
+                autoConstantList.RemoveAll( i => i.PhysicalIndex == physicalIndex );
+            }
+        }
+
+        public void SetConstant(int index, float[] val, int count)
+	    {
+            // Raw buffer size is 4x count
+            var rawCount = count * 4;
+            // get physical index
+            Debug.Assert( floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
+
+            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+
+            // Copy 
+            WriteRawConstants(physicalIndex, val, rawCount);
+	    }
+
+        private void WriteRawConstants(int physicalIndex, float[] val, int count)
+	    {
+            Debug.Assert(physicalIndex + count <= floatConstants.Count);
+            for (var i = 0; i < count; ++i)
+            {
+                floatConstants[ physicalIndex + i ] = val[ i ];
+            }
+	    }
+
+	    private int GetFloatConstantPhysicalIndex(int logicalIndex, int requestedSize, GpuParamVariability variability)
+	    {
+            var indexUse = GetFloatConstantLogicalIndexUse(logicalIndex, requestedSize, variability);
+            return indexUse != null ? indexUse.PhysicalIndex : 0;
 	    }
 	}
 }

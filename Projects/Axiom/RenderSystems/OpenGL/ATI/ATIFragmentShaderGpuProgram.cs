@@ -116,6 +116,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					if ( entry.isSet )
 					{
 						// send the params 4 at a time
+                        throw new AxiomException("Update this!");
 						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.val );
 					}
 				}

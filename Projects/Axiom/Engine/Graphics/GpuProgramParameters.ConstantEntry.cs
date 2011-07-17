@@ -119,14 +119,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///		Float parameter entry; contains both a group of 4 values and 
+		///		Float parameter entry; contains both a group of 16 values and 
 		///		an indicator to say if it's been set or not. This allows us to 
 		///		filter out constant entries which have not been set by the renderer
 		///		and may actually be being used internally by the program.
 		/// </summary>
 		public class FloatConstantEntry
 		{
-			public float[] val = new float[ 4 ];
+			public float[] val = new float[ 16 ];
 			public bool isSet = false;
 		}
 
@@ -144,14 +144,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///		Int parameter entry; contains both a group of 4 values and 
+		///		Int parameter entry; contains both a group of 16 values and 
 		///		an indicator to say if it's been set or not. This allows us to 
 		///		filter out constant entries which have not been set by the renderer
 		///		and may actually be being used internally by the program.
 		/// </summary>
 		public class IntConstantEntry
 		{
-			public int[] val = new int[ 4 ];
+			public int[] val = new int[ 16 ];
 			public bool isSet = false;
 		}
 

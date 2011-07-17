@@ -244,7 +244,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	            // Record logical / physical mapping
 	            if ( def.IsFloat )
 	            {
-                    lock(floatLogicalToPhysical.Mutex)
+                    lock (floatLogicalToPhysical.Mutex)
                     {
                         floatLogicalToPhysical.Map.Add( def.LogicalIndex,
                                                         new GpuProgramParameters.GpuLogicalIndexUse(

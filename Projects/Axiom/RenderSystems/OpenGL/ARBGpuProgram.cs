@@ -184,24 +184,28 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 
+        [OgreVersion(1, 7, 2790, "using 4f rather than 4fv for uniform upload")]
         public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
-			if ( !IsSupported )
-				return;
-			if ( parms.HasFloatConstants )
-			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
-				{
-					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
+            var type = programType;
+    
+	        // only supports float constants
+	        var floatStruct = parms.FloatLogicalBufferStruct;
 
-					if ( entry.isSet )
-					{
-						// MONO: the 4fv version does not work
-						float[] vals = entry.val;
-						Gl.glProgramLocalParameter4fARB( programType, index, vals[ 0 ], vals[ 1 ], vals[ 2 ], vals[ 3 ] );
-					}
-				}
-			}
+	        foreach (var i in floatStruct.Map)
+	        {
+		        if ((i.Value.Variability & mask) != 0)
+		        {
+			        var logicalIndex = i.Key;
+			        var pFloat = parms.GetFloatPointer(i.Value.PhysicalIndex);
+			        // Iterate over the params, set in 4-float chunks (low-level)
+			        for (var j = 0; j < i.Value.CurrentSize; j +=4)
+			        {
+                        Gl.glProgramLocalParameter4fARB(type, logicalIndex, pFloat[j+0], pFloat[j+1], pFloat[j+2], pFloat[j+3]);
+				        ++logicalIndex;
+			        }
+		        }
+	        }
 		}
 
 		#endregion Implementation of GLGpuProgram
