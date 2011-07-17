@@ -173,6 +173,7 @@ namespace Axiom.Graphics
 			UnloadImpl();
 
 			isHighLevelLoaded = false;
+		    constantDefsBuilt = false;
 		}
 
 		/// <summary>
@@ -187,6 +188,24 @@ namespace Axiom.Graphics
 		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
 
         protected abstract void BuildConstantDefinitions();
+
+        [OgreVersion(1, 7, 2790)]
+	    protected bool constantDefsBuilt;
+
+        [OgreVersion(1, 7, 2790)]
+        public override GpuProgramParameters.GpuNamedConstants ConstantDefinitions
+        {
+            get
+            {
+                if (!constantDefsBuilt)
+                {
+                    BuildConstantDefinitions();
+                    constantDefsBuilt = true;
+                }
+
+                return constantDefs;
+            }
+        }
 
 		/// <summary>
 		///    Creates a new parameters object compatible with this program definition.
