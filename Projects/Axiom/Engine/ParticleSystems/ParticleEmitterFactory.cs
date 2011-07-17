@@ -55,7 +55,7 @@ namespace Axiom.ParticleSystems
 	///		subclasses. They must also be registered with the ParticleSystemManager. All factories have
 	///		a name which identifies them, examples might be 'Point', 'Cone', or 'Box', and these can be 
 	///		also be used from XML particle system scripts.
-	/// </summary>
+    /// </remarks>
 	public abstract class ParticleEmitterFactory
 	{
 		#region Member variables

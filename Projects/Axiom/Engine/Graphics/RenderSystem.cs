@@ -449,7 +449,7 @@ namespace Axiom.Graphics
         /// A typical way for the rendering engine to cull triangles is based on the
         /// 'vertex winding' of triangles. Vertex winding refers to the direction in
         /// which the vertices are passed or indexed to in the rendering operation as viewed
-        /// from the camera, and will wither be clockwise or counterclockwise.  The default is <see cref="CullingMode.Clockwise"/>  
+        /// from the camera, and will wither be clockwise or counterclockwise.  The default is <see name="CullingMode.Clockwise"/>  
         /// i.e. that only triangles whose vertices are passed/indexed in counterclockwise order are rendered - this 
         /// is a common approach and is used in 3D studio models for example. You can alter this culling mode 
         /// if you wish but it is not advised unless you know what you are doing. You may wish to use the 
@@ -796,7 +796,7 @@ namespace Axiom.Graphics
         #region DisplayMonitorCount
 
         /// <summary>
-        /// Gets the number of display monitors. <see cref="Root.DisplayMonitorCount"/>
+        /// Gets the number of display monitors. <see name="Root.DisplayMonitorCount"/>
         /// </summary>
         [OgreVersion(1, 7)]
         public abstract int DisplayMonitorCount { get; }
@@ -826,7 +826,7 @@ namespace Axiom.Graphics
         #region AmbientLight
 
         /// <summary>
-        /// Sets the color & strength of the ambient (global directionless) light in the world.
+        /// Sets the color &amp; strength of the ambient (global directionless) light in the world.
         /// </summary>
         [OgreVersion(1, 7, "Axiom interface uses ColorEx while Ogre uses a ternary (r,g,b) setter")]
         public abstract ColorEx AmbientLight { set; }
@@ -1057,8 +1057,8 @@ namespace Axiom.Graphics
         /// <ol>
         /// <li>[Main thread]Call <see cref="PreExtraThreadsStarted"/></li>
         /// <li>[Main thread]Start other thread, wait</li>
-        /// <li>[Other thread]Call <see cref="RegisterThread"/>, notify main thread & continue</li>
-        /// <li>[Main thread]Wake up & call <see cref="PostExtraThreadsStarted"/></li>
+        /// <li>[Other thread]Call <see cref="RegisterThread"/>, notify main thread &amp; continue</li>
+        /// <li>[Main thread]Wake up &amp; call <see cref="PostExtraThreadsStarted"/></li>
         /// </ol>
         /// Once this init sequence is completed the threads are independent but
         /// this startup sequence must be respected.
@@ -1143,7 +1143,7 @@ namespace Axiom.Graphics
         /// Retrieves an existing DepthBuffer or creates a new one suited for the given RenderTarget and sets it.
         /// </summary>
         /// <remarks>
-        /// RenderTarget's pool ID is respected. <see cref="RenderTarget.DepthBufferPool"/>
+        /// RenderTarget's pool ID is respected. <see name="RenderTarget.DepthBufferPool"/>
         /// </remarks>
         /// <param name="renderTarget"></param>
         [OgreVersion(1, 7)]
@@ -2433,7 +2433,7 @@ it says it's incompatible with that RT");
         /// your batches of rendering is likely to ignore the stencil buffer, 
         /// update it with new values, or apply it to mask the output of the render.
         /// The stencil test is:<PRE>
-        /// (Reference Value & Mask) CompareFunction (Stencil Buffer Value & Mask)</PRE>
+        /// (Reference Value &amp; Mask) CompareFunction (Stencil Buffer Value &amp; Mask)</PRE>
         /// The result of this will cause one of 3 actions depending on whether the test fails,
         /// succeeds but with the depth buffer check still failing, or succeeds with the
         /// depth buffer check passing too.</para>

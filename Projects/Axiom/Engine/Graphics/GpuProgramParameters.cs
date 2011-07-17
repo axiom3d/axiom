@@ -405,13 +405,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Overloaded method.
 		/// </summary>
-		/// <param name="type">The type of automatic constant to set.</param>
-		/// <param name="index">
-		///    The location in the constant list to place this updated constant every time
-		///    it is changed. Note that because of the nature of the types, we know how big the
-		///    parameter details will be so you don't need to set that like you do for manual constants.
-		/// </param>
-		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
 		public void SetAutoConstant( AutoConstantEntry entry )
 		{
 			autoConstantList.Add( entry );
@@ -496,12 +489,13 @@ namespace Axiom.Graphics
 			SetConstant( index, mat.m30, mat.m31, mat.m32, mat.m33 );
 		}
 
-		/// <summary>
-		///    Sends a multiple matrix values to the program.
-		/// </summary>
-		/// <param name="index">Index of the contant register.</param>
-		/// <param name="val">Structure containing 3 packed float values.</param>
-		public void SetConstant( int index, Matrix4[] matrices, int count )
+	    /// <summary>
+	    ///    Sends a multiple matrix values to the program.
+	    /// </summary>
+	    /// <param name="index">Index of the contant register.</param>
+	    /// <param name="matrices">Values to set.</param>
+	    /// <param name="count">Number of matrices to set</param>
+	    public void SetConstant( int index, Matrix4[] matrices, int count )
 		{
 			for ( int i = 0; i < count; i++ )
 			{
@@ -536,7 +530,7 @@ namespace Axiom.Graphics
 		///    Provides a way to pass in the technique pass number
 		/// </summary>
 		/// <param name="index">Index of the contant register to start at.</param>
-		/// <param name="ints">Array of ints.</param>
+        /// <param name="value">Value of the constant.</param>
 		public void SetIntConstant( int index, int value )
 		{
 			SetConstant( index, value, 0f, 0f, 0f );
@@ -557,7 +551,10 @@ namespace Axiom.Graphics
 		///    consisting of four floats
 		/// </summary>
 		/// <param name="index">Index of the contant register to start at.</param>
-		/// <param name="f0,f1,f2,f3">The floats.</param>
+		/// <param name="f0">The floats.</param>
+        /// <param name="f1">The floats.</param>
+        /// <param name="f2">The floats.</param>
+        /// <param name="f3">The floats.</param>
 		public void SetConstant( int index, float f0, float f1, float f2, float f3 )
 		{
 			int srcIndex = 0;
@@ -575,7 +572,7 @@ namespace Axiom.Graphics
 		///    Sets an array of int values starting at the specified index.
 		/// </summary>
 		/// <param name="index">Index of the contant register to start at.</param>
-		/// <param name="ints">Array of floats.</param>
+        /// <param name="floats">Array of floats.</param>
 		public void SetConstant( int index, float[] floats )
 		{
 			int count = floats.Length / 4;
@@ -660,7 +657,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Sends 4 packed floating-point values to the program.
 		/// </summary>
-		/// <param name="index">Index of the contant register.</param>
+        /// <param name="name">Name of the contant register.</param>
 		/// <param name="val">Structure containing 4 packed float values.</param>
 		public void SetNamedConstant( string name, Vector4 val )
 		{

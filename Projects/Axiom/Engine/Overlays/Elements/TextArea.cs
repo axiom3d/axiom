@@ -108,9 +108,7 @@ namespace Axiom.Overlays.Elements
 		#region Methods
 
         /// <summary>
-        /// 
         /// </summary>
-		/// <param name="size"></param>
 		protected void CheckMemoryAllocation( int numChars )
 		{
 			if ( allocSize < numChars )
