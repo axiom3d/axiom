@@ -50,73 +50,64 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public Driver( D3D.AdapterInformation adapterInfo )
-		{
-			this._desktopMode = adapterInfo.CurrentDisplayMode;
-			this._name = adapterInfo.Details.DriverName;
-			this._description = adapterInfo.Details.Description;
-			this._adapterNum = adapterInfo.Adapter;
-			this._adapterIdentifier = adapterInfo.Details;
-
-			_videoModeList = new VideoModeCollection();
-		}
+	    public Driver( int adapterNumber, Capabilities deviceCaps,
+                AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode)
+	    {
+            _adapterNumber = adapterNumber;
+            _d3D9DeviceCaps = deviceCaps;
+		    _adapterIdentifier	= adapterIdentifier;
+		    _desktopDisplayMode = desktopDisplayMode;
+		    _videoModeList		= null;			
+	    }
 
 		#endregion Constructors
 
-		#region Properties
+        #region Properties
 
-		#region Name Property
-		private string _name;
-		/// <summary>
-		///
-		/// </summary>
-		public string Name
+        #region DriverName
+
+            [OgreVersion(1, 7)]
+		public string DriverName
 		{
 			get
 			{
-				return _name;
+				return _adapterIdentifier.DriverName;
 			}
 		}
 		#endregion Name Property
 
-		#region Description Property
-		private string _description;
-		/// <summary>
-		///
-		/// </summary>
-		public string Description
+		#region DriverDescription
+
+		public string DriverDescription
 		{
 			get
 			{
-				return _description;
+				return _adapterIdentifier.Description;
 			}
 		}
 		#endregion Description Property
 
 		#region AdapterNumber Property
-		private int _adapterNum;
-		/// <summary>
-		///
-		/// </summary>
+
+        [OgreVersion(1, 7)]
+		private readonly int _adapterNumber;
+
+        [OgreVersion(1, 7)]
 		public int AdapterNumber
 		{
 			get
 			{
-				return _adapterNum;
+                return _adapterNumber;
 			}
 		}
 		#endregion AdapterNumber Property
 
-        
-
 		#region AdapterIdentifier Property
-        private AdapterDetails _adapterIdentifier;
-		/// <summary>
-		///
-		/// </summary>
+
+        [OgreVersion(1, 7)]
+        private readonly AdapterDetails _adapterIdentifier;
+
+        [OgreVersion(1, 7)]
 		public AdapterDetails AdapterIdentifier
 		{
 			get
@@ -124,93 +115,59 @@ namespace Axiom.RenderSystems.DirectX9
 				return _adapterIdentifier;
 			}
 		}
+
 		#endregion AdapterIdentifier Property
 
 		#region DesktopMode Property
-		private D3D.DisplayMode _desktopMode;
-		/// <summary>
-		///
-		/// </summary>
-		public D3D.DisplayMode DesktopMode
+
+        [OgreVersion(1, 7)]
+		private readonly DisplayMode _desktopDisplayMode;
+
+        [OgreVersion(1, 7)]
+		public DisplayMode DesktopMode
 		{
 			get
 			{
-				return _desktopMode;
+				return _desktopDisplayMode;
 			}
 		}
+
 		#endregion DesktopMode Property
 
 		#region VideoModes Property
+
+        [OgreVersion(1, 7)]
 		private VideoModeCollection _videoModeList;
-		/// <summary>
-		///
-		/// </summary>
-		public VideoModeCollection VideoModes
+		
+        [OgreVersion(1, 7)]
+		public VideoModeCollection VideoModeList
 		{
 			get
 			{
+                if (_videoModeList == null)
+                    _videoModeList = new VideoModeCollection();
 				return _videoModeList;
 			}
 		}
+
 		#endregion VideoModes Property
 
-		#region D3DDevice Property
-		private D3D.Device _device;
-		/// <summary>
-		///
-		/// </summary>
-		public D3D.Device D3DDevice
-		{
-			get
-			{
-				return _device;
-			}
-			set
-			{
-				_device = value;
-			}
-		}
-		#endregion D3DDevice Property
+        #region D3D9DeviceCaps
 
-		#region Direct3D Property
-		private D3D.Direct3D _direct3D;
+        [OgreVersion(1, 7)]
+	    private readonly Capabilities _d3D9DeviceCaps;
 
-	    /// <summary>
-		/// This is the main Direct3D object
-		/// </summary>
-		public D3D.Direct3D Direct3D
-		{
-			get
-			{
-				return _direct3D;
-			}
-			set
-			{
-				_direct3D = value;
-			}
-		}
-
-        #endregion Direct3D Property
-
-        private bool d3d9DeviceCapsValid;
-
-	    private Capabilities d3d9DeviceCaps;
-
+        [OgreVersion(1, 7)]
 	    public Capabilities D3D9DeviceCaps
 	    {
 	        get
 	        {
-	            if (d3d9DeviceCapsValid == false)
-	            {
-	                throw new AxiomException( "Device caps are invalid!" );
-	            }
-
-		        return d3d9DeviceCaps;
+		        return _d3D9DeviceCaps;
 	        }
-	    }
+        }
 
-	    
+        #endregion
 
-		#endregion Properties
-	}
+        #endregion Properties
+    }
 }

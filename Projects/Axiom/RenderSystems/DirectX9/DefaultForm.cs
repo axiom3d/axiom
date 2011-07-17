@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Windows.Forms;
 using IO = System.IO;
 using SWF = System.Windows.Forms;
 
@@ -45,89 +46,99 @@ using Axiom.Graphics;
 namespace Axiom.RenderSystems.DirectX9
 {
 
-	public class DefaultForm : SWF.Form
+	public class DefaultForm : Form
 	{
-		private RenderWindow renderWindow;
+	    private readonly WindowClassStyle _classStyle;
+	    private readonly WindowsExtendedStyle _dwStyleEx;
+	    private readonly WindowStyles _windowStyle;
+	    private RenderWindow _renderWindow;
 
-		public DefaultForm()
+	    public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title, 
+            WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
+	    {
+	        _classStyle = classStyle;
+	        _dwStyleEx = dwStyleEx;
+	        _windowStyle = windowStyle;
+
+	        SuspendLayout();
+           
+            AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            BackColor = System.Drawing.Color.Black;
+            ClientSize = new System.Drawing.Size(640, 480);
+            Name = title;
+	        Left = left;
+	        Top = top;
+	        Width = winWidth;
+	        Height = winHeight;
+            if (parentHWnd != null)
+	            Parent = parentHWnd;
+
+            Load += DefaultFormLoad;
+            Deactivate += DefaultFormDeactivate;
+            Activated += DefaultFormActivated;
+            Closing += DefaultFormClose;
+            Resize += DefaultFormResize;
+
+            ResumeLayout(false);
+	    }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                cp.Style = (int)_windowStyle;
+                cp.ExStyle = (int)_dwStyleEx;
+                cp.ClassStyle = (int)_classStyle;
+                return cp;
+            }
+        }
+
+	    protected override void WndProc( ref Message m )
 		{
-			InitializeComponent();
-
-			this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
-			this.Activated += new System.EventHandler( this.DefaultForm_Activated );
-			this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
-			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
-		}
-
-		protected override void WndProc( ref SWF.Message m )
-		{
-			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+			if ( !Win32MessageHandling.WndProc( _renderWindow, ref m ) )
 				base.WndProc( ref m );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="e"></param>
-		public void DefaultForm_Deactivate( object source, System.EventArgs e )
+		public void DefaultFormDeactivate( object source, EventArgs e )
 		{
-			if ( renderWindow != null )
+			if ( _renderWindow != null )
 			{
-				renderWindow.IsActive = false;
+				_renderWindow.IsActive = false;
 			}
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="e"></param>
-		public void DefaultForm_Activated( object source, System.EventArgs e )
+		public void DefaultFormActivated( object source, EventArgs e )
 		{
-			if ( renderWindow != null )
+			if ( _renderWindow != null )
 			{
-				renderWindow.IsActive = true;
+				_renderWindow.IsActive = true;
 			}
 		}
 
-		private void InitializeComponent()
-		{
-			this.SuspendLayout();
-			//
-			// DefaultForm
-			//
-			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
-			this.BackColor = System.Drawing.Color.Black;
-			this.ClientSize = new System.Drawing.Size( 640, 480 );
-			this.Name = "DefaultForm";
-			this.Load += new System.EventHandler( this.DefaultForm_Load );
-			this.ResumeLayout( false );
-
-		}
-
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="e"></param>
-		public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
+		public void DefaultFormClose( object source, System.ComponentModel.CancelEventArgs e )
 		{
 			// set the window to inactive
-			if ( renderWindow != null )
+			if ( _renderWindow != null )
 			{
-				renderWindow.IsActive = false;
+				_renderWindow.IsActive = false;
 			}
 		}
 
-		private void DefaultForm_Load( object sender, System.EventArgs e )
+		private void DefaultFormLoad( object sender, EventArgs e )
 		{
 			try
 			{
-				IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
 				if ( strm != null )
 				{
-					this.Icon = new System.Drawing.Icon( strm );
+					Icon = new System.Drawing.Icon( strm );
 				}
 			}
 			catch ( IO.FileNotFoundException )
@@ -135,9 +146,9 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		private void DefaultForm_Resize( object sender, System.EventArgs e )
+		private void DefaultFormResize( object sender, EventArgs e )
 		{
-			Root.Instance.SuspendRendering = this.WindowState == SWF.FormWindowState.Minimized;
+			Root.Instance.SuspendRendering = WindowState == FormWindowState.Minimized;
 		}
 
 		/// <summary>
@@ -147,11 +158,11 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return renderWindow;
+				return _renderWindow;
 			}
 			set
 			{
-				renderWindow = value;
+				_renderWindow = value;
 			}
 		}
 	}
