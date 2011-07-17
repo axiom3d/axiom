@@ -41,8 +41,6 @@ namespace Axiom.Graphics
                 }
                 set
                 {
-                    if (value == 0x1C)
-                        LogManager.Instance.Write(".");
                     _physIndex = value;
                 }
             }

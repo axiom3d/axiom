@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-
+            throw new AxiomException("This needs upgrading");
 			programType = Gl.GL_FRAGMENT_SHADER_ATI;
 			programId = Gl.glGenFragmentShadersATI( 1 );
 		}

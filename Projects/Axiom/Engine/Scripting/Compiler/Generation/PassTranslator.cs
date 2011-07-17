@@ -1775,9 +1775,8 @@ namespace Axiom.Scripting.Compiler
 				pass.SetFragmentProgram( createdProgramName );
 				if ( pass.FragmentProgram.IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared parameters = pass.FragmentProgramParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
+					var parameters = pass.FragmentProgramParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
@@ -1792,9 +1791,8 @@ namespace Axiom.Scripting.Compiler
 				pass.SetVertexProgram( createdProgramName );
 				if ( pass.VertexProgram.IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared parameters = pass.VertexProgramParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
+					var parameters = pass.VertexProgramParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
@@ -1809,9 +1807,8 @@ namespace Axiom.Scripting.Compiler
 				pass.SetGeometryProgram( createdProgramName );
 				if ( pass.GeometryProgram.IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared parameters = pass.GeometryProgramParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
+					var parameters = pass.GeometryProgramParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 

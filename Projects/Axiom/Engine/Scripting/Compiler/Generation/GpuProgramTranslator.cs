@@ -137,6 +137,7 @@ namespace Axiom.Scripting.Compiler
 					if ( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+                        LogManager.Instance.Write("TranslateProgramParameters {0}", (Keywords)prop.Id);
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_SHARED_PARAMS_REF
@@ -238,7 +239,7 @@ namespace Axiom.Scripting.Compiler
 										else
 										{
 											// Find the number of parameters
-											bool isValid = true;
+											var isValid = true;
 											GpuProgramParameters.ElementType type = GpuProgramParameters.ElementType.Real;
 											int count = 0;
 											if ( atom1.Value.Contains( "float" ) )
@@ -270,17 +271,14 @@ namespace Axiom.Scripting.Compiler
 
 											if ( isValid )
 											{
-                                                // the following debug out is just to prevent unused var "type" warning
-											    //Console.WriteLine( "Not implemented, {0}", type );
-												//throw new NotImplementedException();
-                                                LogManager.Instance.Write("Invalid {0} attribute - unrecognised parameter type {1}", prop.Name, atom1.Value);
-#if UNREACHABLE_CODE
-    // First, clear out any offending auto constants
+                                                // First, clear out any offending auto constants
 												if ( named )
-												{ /*parameters->clearNamedAutoConstant(name);*/
+												{
+                                                    parameters.ClearNamedAutoConstant(name);
 												}
 												else
-												{ /*parameters->clearAutoConstant(index);*/
+												{ 
+                                                    parameters.ClearAutoConstant(index);
 												}
 
 												int roundedCount = count % 4 != 0 ? count + 4 - ( count % 4 ) : count;
@@ -292,10 +290,12 @@ namespace Axiom.Scripting.Compiler
 														try
 														{
 															if ( named )
-															{ /*parameters.SetNamedConstant(name, vals, count, 1);*/
+															{ 
+                                                                parameters.SetNamedConstant(name, vals, count, 1);
 															}
 															else
-															{ /*parameters.SetNamedConstant(index , vals, roundedCount/4);*/
+															{ 
+                                                                parameters.SetConstant(index , vals, roundedCount/4);
 															}
 														}
 														catch
@@ -317,12 +317,13 @@ namespace Axiom.Scripting.Compiler
 													{
 														try
 														{
-															//TODO
 															if ( named )
-															{ /*parameters.SetNamedConstant(name, vals, count, 1);*/
+															{ 
+                                                                parameters.SetNamedConstant(name, vals, count, 1);
 															}
 															else
-															{ /*parameters.SetNamedConstant(index , vals, roundedCount/4);*/
+															{ 
+                                                                parameters.SetConstant(index , vals, roundedCount/4);
 															}
 														}
 														catch
@@ -337,7 +338,7 @@ namespace Axiom.Scripting.Compiler
 															"incorrect float constant declaration" );
 													}
 												}
-#endif
+
 											}
 										}
 									}
@@ -707,9 +708,8 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && customParameters != null )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersShared ptr = prog.DefaultParameters;
-					//GpuProgramTranslator.TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
+					var ptr = prog.DefaultParameters;
+					GpuProgramTranslator.TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
 				}
 			}
 
@@ -944,9 +944,8 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
-					//GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
+					var ptr = prog.DefaultParameters;
+					GpuProgramTranslator.TranslateProgramParameters(compiler, ptr, (ObjectAbstractNode)parameters);
 				}
 			}
 		}

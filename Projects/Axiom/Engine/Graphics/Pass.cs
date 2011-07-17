@@ -1303,12 +1303,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				return _vertexProgramUsage.Params;
+				return _vertexProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				_vertexProgramUsage.Params = value;
+				_vertexProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1391,12 +1391,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				return _fragmentProgramUsage.Params;
+				return _fragmentProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				_fragmentProgramUsage.Params = value;
+				_fragmentProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1479,12 +1479,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
-				return _geometryProgramUsage.Params;
+				return _geometryProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
-				_geometryProgramUsage.Params = value;
+				_geometryProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1526,12 +1526,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				return shadowCasterVertexProgramUsage.Params;
+				return shadowCasterVertexProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				shadowCasterVertexProgramUsage.Params = value;
+				shadowCasterVertexProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1573,12 +1573,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				return _shadowCasterFragmentProgramUsage.Params;
+				return _shadowCasterFragmentProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				_shadowCasterFragmentProgramUsage.Params = value;
+				_shadowCasterFragmentProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1619,12 +1619,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				return _shadowReceiverVertexProgramUsage.Params;
+				return _shadowReceiverVertexProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				_shadowReceiverVertexProgramUsage.Params = value;
+				_shadowReceiverVertexProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1665,12 +1665,12 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				return _shadowReceiverFragmentProgramUsage.Params;
+				return _shadowReceiverFragmentProgramUsage.Parameters;
 			}
 			set
 			{
 				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				_shadowReceiverFragmentProgramUsage.Params = value;
+				_shadowReceiverFragmentProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1972,7 +1972,7 @@ namespace Axiom.Graphics
 			// vertex program
 			if ( _vertexProgramUsage != null )
 			{
-				target._vertexProgramUsage = _vertexProgramUsage.Clone();
+			    target._vertexProgramUsage = new GpuProgramUsage( _vertexProgramUsage, this );
 			}
 			else
 			{
@@ -1982,7 +1982,7 @@ namespace Axiom.Graphics
 			// shadow caster vertex program
 			if ( shadowCasterVertexProgramUsage != null )
 			{
-				target.shadowCasterVertexProgramUsage = shadowCasterVertexProgramUsage.Clone();
+				target.shadowCasterVertexProgramUsage = new GpuProgramUsage(shadowCasterVertexProgramUsage, this);
 			}
 			else
 			{
@@ -1992,7 +1992,7 @@ namespace Axiom.Graphics
 			// shadow receiver vertex program
 			if ( _shadowReceiverVertexProgramUsage != null )
 			{
-				target._shadowReceiverVertexProgramUsage = _shadowReceiverVertexProgramUsage.Clone();
+				target._shadowReceiverVertexProgramUsage = new GpuProgramUsage(_shadowReceiverVertexProgramUsage, this);
 			}
 			else
 			{
@@ -2002,7 +2002,7 @@ namespace Axiom.Graphics
 			// fragment program
 			if ( _fragmentProgramUsage != null )
 			{
-				target._fragmentProgramUsage = _fragmentProgramUsage.Clone();
+				target._fragmentProgramUsage = new GpuProgramUsage(_fragmentProgramUsage, this);
 			}
 			else
 			{
@@ -2012,7 +2012,7 @@ namespace Axiom.Graphics
 			// shadow caster fragment program
 			if ( _shadowCasterFragmentProgramUsage != null )
 			{
-				target._shadowCasterFragmentProgramUsage = _shadowCasterFragmentProgramUsage.Clone();
+				target._shadowCasterFragmentProgramUsage = new GpuProgramUsage(_shadowCasterFragmentProgramUsage, this);
 			}
 			else
 			{
@@ -2022,7 +2022,7 @@ namespace Axiom.Graphics
 			// shadow receiver fragment program
 			if ( _shadowReceiverFragmentProgramUsage != null )
 			{
-				target._shadowReceiverFragmentProgramUsage = _shadowReceiverFragmentProgramUsage.Clone();
+				target._shadowReceiverFragmentProgramUsage = new GpuProgramUsage(_shadowReceiverFragmentProgramUsage, this);
 			}
 			else
 			{
@@ -2518,10 +2518,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasFragmentProgram )
 				{
-					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
+					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
 
-				_fragmentProgramUsage.ProgramName = name;
+			    _fragmentProgramUsage.SetProgramName( name, resetParams );
 			}
 
 			// needs recompilation
@@ -2554,10 +2554,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasGeometryProgram )
 				{
-					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry );
+					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry, this );
 				}
 
-				_geometryProgramUsage.ProgramName = name;
+			    _geometryProgramUsage.SetProgramName( name, resetParams );
 			}
 
 			// needs recompilation
@@ -2578,10 +2578,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowCasterFragmentProgram )
 				{
-					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
+					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
 
-				_shadowCasterFragmentProgramUsage.ProgramName = name;
+			    _shadowCasterFragmentProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
@@ -2602,10 +2602,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowReceiverFragmentProgram )
 				{
-					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
+					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
 
-				_shadowReceiverFragmentProgramUsage.ProgramName = name;
+			    _shadowReceiverFragmentProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
@@ -2638,10 +2638,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasVertexProgram )
 				{
-					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
+					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
 
-				_vertexProgramUsage.ProgramName = name;
+			    _vertexProgramUsage.SetProgramName( name, resetParams );
 			}
 
 			// needs recompilation
@@ -2662,10 +2662,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowCasterVertexProgram )
 				{
-					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
+					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
 
-				shadowCasterVertexProgramUsage.ProgramName = name;
+			    shadowCasterVertexProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
@@ -2686,10 +2686,10 @@ namespace Axiom.Graphics
 				// create a new usage object
 				if ( !this.HasShadowReceiverVertexProgram )
 				{
-					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
+					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
 
-				_shadowReceiverVertexProgramUsage.ProgramName = name;
+			    _shadowReceiverVertexProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
@@ -2845,19 +2845,19 @@ namespace Axiom.Graphics
             if (HasVertexProgram)
             {
                 // Update vertex program auto params
-                _vertexProgramUsage.Params.UpdateAutoParams( source, mask );
+                _vertexProgramUsage.Parameters.UpdateAutoParams( source, mask );
             }
 
             if (HasGeometryProgram)
             {
                 // Update geometry program auto params
-                _geometryProgramUsage.Params.UpdateAutoParams(source, mask);
+                _geometryProgramUsage.Parameters.UpdateAutoParams(source, mask);
             }
 
             if (HasFragmentProgram)
             {
                 // Update fragment program auto params
-                _fragmentProgramUsage.Params.UpdateAutoParams(source, mask);
+                _fragmentProgramUsage.Parameters.UpdateAutoParams(source, mask);
             }
 	    }
 	}

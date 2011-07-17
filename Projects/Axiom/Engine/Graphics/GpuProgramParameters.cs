@@ -326,8 +326,25 @@ namespace Axiom.Graphics
 
         public GpuProgramParameters(GpuProgramParameters other)
         {
-            throw new NotImplementedException();
-            // should do a shallow copy here
+            // let compiler perform shallow copies of structures 
+            // AutoConstantEntry, RealConstantEntry, IntConstantEntry
+            floatConstants = new FloatConstantList(other.floatConstants); // vector<float> in ogre => shallow copy
+            intConstants = new IntConstantList(other.intConstants);         // vector<int> in ogre => shallow copy
+
+            autoConstants = new AutoConstantsList();                  // vector<AutoConstantEntry> in ogre => deep copy
+            foreach (var ac in other.autoConstants)
+                autoConstants.Add(ac.Clone());
+
+            // copy value members
+            floatLogicalToPhysical = other.floatLogicalToPhysical; // pointer in ogre => no Clone
+            intLogicalToPhysical = other.intLogicalToPhysical;     // pointer in ogre => no Clone
+            _namedConstants = other._namedConstants;               // pointer in ogre => no Clone
+            CopySharedParamSetUsage(other._sharedParamSets);
+
+            _combinedVariability = other._combinedVariability;
+            transposeMatrices = other.transposeMatrices;
+            ignoreMissingParameters = other.ignoreMissingParameters;
+            _activePassIterationIndex = other._activePassIterationIndex;
         }
 
 	    #endregion Constructors
@@ -354,6 +371,9 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7, 2790)]
         public void SetLogicalIndexes(GpuLogicalBufferStruct floatIndexMap, GpuLogicalBufferStruct intIndexMap)
         {
+            if (floatIndexMap == null)
+                Debugger.Break();
+
             floatLogicalToPhysical = floatIndexMap;
             intLogicalToPhysical = intIndexMap;
 
@@ -401,31 +421,7 @@ namespace Axiom.Graphics
 
         public GpuProgramParameters Clone()
 		{
-		    //throw new NotImplementedException();
-			var p = new GpuProgramParameters();
-
-
-            // let compiler perform shallow copies of structures 
-            // AutoConstantEntry, RealConstantEntry, IntConstantEntry
-		    p.floatConstants = new FloatConstantList( floatConstants ); // vector<float> in ogre => shallow copy
-            p.intConstants = new IntConstantList(intConstants);         // vector<int> in ogre => shallow copy
-            
-            p.autoConstants = new AutoConstantsList();                  // vector<AutoConstantEntry> in ogre => deep copy
-            foreach (var ac in autoConstants)
-                p.autoConstants.Add( ac.Clone() );
-
-            // copy value members
-            p.floatLogicalToPhysical = floatLogicalToPhysical; // pointer in ogre => no Clone
-            p.intLogicalToPhysical = intLogicalToPhysical;     // pointer in ogre => no Clone
-            p._namedConstants = _namedConstants;               // pointer in ogre => no Clone
-            p.CopySharedParamSetUsage(_sharedParamSets);
-
-            p._combinedVariability = _combinedVariability;
-            p.transposeMatrices = transposeMatrices;
-            p.ignoreMissingParameters = ignoreMissingParameters;
-            p._activePassIterationIndex = _activePassIterationIndex;
-
-			return p;
+            return new GpuProgramParameters( this );
 		}
 
 		/// <summary>
@@ -767,15 +763,16 @@ namespace Axiom.Graphics
         }
 
 	    /// <summary>
-		///    Sets an array of int values starting at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="val">Array of ints.</param>
-        [OgreVersion(1, 7, 2790)]
-        public void SetConstant(int index, int[] val)
+	    ///    Sets an array of int values starting at the specified index.
+	    /// </summary>
+	    /// <param name="index">Index of the contant register to start at.</param>
+	    /// <param name="val">Array of ints.</param>
+	    /// <param name="count"></param>
+	    [OgreVersion(1, 7, 2790)]
+        public void SetConstant(int index, int[] val, int count)
 		{
             // Raw buffer size is 4x count
-            var rawCount = val.Length;
+	        var rawCount = count*4;
             // get physical index
             Debug.Assert(intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
 
@@ -784,6 +781,7 @@ namespace Axiom.Graphics
             WriteRawConstants(physicalIndex, val, rawCount);
 		}
 
+        [OgreVersion(1, 7, 2790)]
         public void SetConstant(int index, float[] val, int count)
         {
             // Raw buffer size is 4x count
@@ -804,6 +802,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="index">Index of the contant register to start at.</param>
         /// <param name="value">Value of the constant.</param>
+        [Obsolete("Use SetConstant")]
 		public void SetIntConstant( int index, int value )
 		{
 			SetConstant( index, value, 0f, 0f, 0f );
@@ -986,7 +985,7 @@ namespace Axiom.Graphics
         }
 
         [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, int[] val, int count, int multiple)
+        public void SetNamedConstant(string name, int[] val, int count, int multiple = 4)
 		{
             var rawCount = count * multiple;
             // look up, and throw an exception if we're not ignoring missing

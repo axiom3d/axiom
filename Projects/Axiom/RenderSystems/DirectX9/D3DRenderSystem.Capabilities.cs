@@ -295,7 +295,7 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     rsc.SetCapability( Graphics.Capabilities.VertexTextureFetch );
                     // always 4 vertex texture units in vs_3_0, and never shared
-                    rsc.TextureUnitCount = 4;
+                    rsc.VertexTextureUnitCount = 4;
                     rsc.VertexTextureUnitsShared = false;
                 }
             }    

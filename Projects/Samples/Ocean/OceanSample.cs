@@ -245,9 +245,10 @@ namespace Axiom.Samples.Ocean
 
                                             if ( activeParameters != null )
                                             {
-                                                int idx = activeParameters.GetParamIndex( activeShaderDef.ParamName );
-                                                activeShaderDef.PhysicalIndex = idx;
-                                                throw new NotImplementedException( "Fix this" );
+                                                throw new NotImplementedException("Fix this");
+                                                //int idx = activeParameters.GetParamIndex( activeShaderDef.ParamName );
+                                                //activeShaderDef.PhysicalIndex = idx;
+                                                
                                                 //uniformVal = activeParameters.GetNamedFloatConstant( activeShaderDef.ParamName ).val[ activeShaderDef.ElementIndex ];
                                             }
                                         }
