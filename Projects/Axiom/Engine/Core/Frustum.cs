@@ -1395,7 +1395,7 @@ namespace Axiom.Core
 			// API specific
 			_projectionMatrixRS = renderSystem.ConvertProjectionMatrix( _projectionMatrix );
 			// API specific for Gpu Programs
-			_projectionMatrixRSDepth = renderSystem.ConvertProjectionMatrix( _projectionMatrix, true );
+			_projectionMatrixRSDepth = renderSystem.ConvertProjectionMatrix( _projectionMatrix, out null, true );
 
 			// Calculate bounding box (local)
 			// Box is from 0, down -Z, max dimensions as determined from far plane

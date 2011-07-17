@@ -663,7 +663,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                                 defs.IntBufferSize += def.ArraySize * def.ElementSize;
                             }
 
-                            defs.GpuConstantDefinitions.Add(paramName, def);
+                            defs.Map.Add(paramName, def);
                             defs.GenerateConstantDefinitionArrayEntries(paramName, def);
                         }
                     }
