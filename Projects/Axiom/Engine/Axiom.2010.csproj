@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="axiom.module" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstantSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animating\Animable.cs" />
@@ -188,9 +189,11 @@
     <Compile Include="Graphics\DepthBuffer.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="EventHandler.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinitionMap.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstant.cs" />
     <Compile Include="Graphics\GpuProgramParameters.LogicalBuffer.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />

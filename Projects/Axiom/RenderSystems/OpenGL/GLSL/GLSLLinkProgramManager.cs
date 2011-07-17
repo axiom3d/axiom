@@ -315,7 +315,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-        private void CompleteDefInfo(int gltype, GpuConstantDefinition defToUpdate)
+        private void CompleteDefInfo(int gltype, GpuProgramParameters.GpuConstantDefinition defToUpdate)
         {
             // decode uniform size and type
                 // Note GLSL never packs rows into float4's(from an API perspective anyway)
@@ -403,7 +403,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                 }
 
                 // GL doesn't pad
-            defToUpdate.ElementSize = GpuConstantDefinition.GetElementSize( defToUpdate.ConstantType, false );
+            defToUpdate.ElementSize = GpuProgramParameters.GpuConstantDefinition.GetElementSize( defToUpdate.ConstantType, false );
         }
 
         private bool CompleteParamSource(String paramName,
@@ -412,7 +412,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                 GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs,
                 GLSLLinkProgram.UniformReference refToUpdate)
         {
-            GpuConstantDefinition parami;
+            GpuProgramParameters.GpuConstantDefinition parami;
             if (vertexConstantDefs != null)
             {
 
@@ -556,7 +556,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             var currPos = src.IndexOf( "uniform" );
             while (currPos != -1)
             {
-                var def = new GpuConstantDefinition();
+                var def = new GpuProgramParameters.GpuConstantDefinition();
                 var paramName = "";
 
                 // Now check for using the word 'uniform' in a larger string & ignore
