@@ -352,7 +352,7 @@ namespace Axiom.Core
 
 						// Also set up hardware W buffer if appropriate
 						RenderSystem rend = Root.Instance.RenderSystem;
-						if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+						if ( null != rend && rend.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 						{
                             VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
                             decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );

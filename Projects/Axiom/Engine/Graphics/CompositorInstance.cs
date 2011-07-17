@@ -763,7 +763,7 @@ namespace Axiom.Graphics
 					float aspectRatio = camera.AspectRatio;
 
 					Viewport v = rendTarget.AddViewport( camera );
-					v.ClearEveryFrame = false;
+				    v.SetClearEveryFrame( false );
 					v.ShowOverlays = false;
 					v.BackgroundColor = new ColorEx( 0, 0, 0, 0 );
 					// Should restore aspect ratio, in case of auto aspect ratio
@@ -1197,7 +1197,7 @@ namespace Axiom.Graphics
 
 		public override void Execute( SceneManager sm, RenderSystem rs )
 		{
-			rs.ClearFrameBuffer( buffers, color, depth, stencil );
+			rs.ClearFrameBuffer( buffers, color, depth, (ushort)stencil );
 		}
 
 		#endregion CompositorInstance.CompositeRenderSystemOperation Implementation
@@ -1407,7 +1407,7 @@ namespace Axiom.Graphics
 			// Fire listener
 			Instance.OnMaterialRender( new CompositorInstanceMaterialEventArgs( this.PassId, Material ) );
 
-			Viewport vp = rs.ActiveViewport;
+			Viewport vp = rs.Viewport;
 			Rectangle2D rect = (Rectangle2D)CompositorManager.Instance.TexturedRectangle2D;
 			if ( QuadCornerModified )
 			{

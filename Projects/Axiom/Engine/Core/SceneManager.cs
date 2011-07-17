@@ -1568,7 +1568,7 @@ namespace Axiom.Core
 										  bool doBeginEndFrame )
 		{
 			// configure all necessary parameters
-			this.targetRenderSystem.SetViewport( vp );
+			this.targetRenderSystem.Viewport = vp;
 			this.targetRenderSystem.WorldMatrix = worldMatrix;
 			this.targetRenderSystem.ViewMatrix = viewMatrix;
 			this.targetRenderSystem.ProjectionMatrix = projMatrix;
@@ -1927,7 +1927,7 @@ namespace Axiom.Core
 
 				this.shadowDebugPass.CullingMode = CullingMode.None;
 
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					ShadowVolumeExtrudeProgram.Initialize();
 
@@ -1947,7 +1947,7 @@ namespace Axiom.Core
 			else
 			{
 				this.shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
 				}
@@ -1967,7 +1967,7 @@ namespace Axiom.Core
 													 ResourceGroupManager.InternalResourceGroupName );
 				this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
 
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					// Enable the finite point light extruder for now, just to get some params
 					this.shadowStencilPass.SetVertexProgram(
@@ -1986,7 +1986,7 @@ namespace Axiom.Core
 			else
 			{
 				this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
-				if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					this.finiteExtrusionParams = this.shadowStencilPass.VertexProgramParameters;
 				}
@@ -2295,7 +2295,7 @@ namespace Axiom.Core
 			// Set up scissor test (point & spot lights only)
 			bool scissored = false;
 			if ( light.Type != LightType.Directional &&
-				 this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.ScissorTest ) )
+				 this.targetRenderSystem.Capabilities.HasCapability( Capabilities.ScissorTest ) )
 			{
 				// Project the sphere onto the camera
 				float left, right, top, bottom;
@@ -2322,8 +2322,8 @@ namespace Axiom.Core
 			// Can we do a 2-sided stencil?
 			bool stencil2sided = false;
 
-			if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
-				 this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.StencilWrap ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
+				 this.targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilWrap ) )
 			{
 				// enable
 				stencil2sided = true;
@@ -2333,10 +2333,10 @@ namespace Axiom.Core
 			bool extrudeInSoftware = true;
 
 			bool finiteExtrude = !this.shadowUseInfiniteFarPlane ||
-								 !this.targetRenderSystem.HardwareCapabilities.HasCapability(
+								 !this.targetRenderSystem.Capabilities.HasCapability(
 									  Capabilities.InfiniteFarPlane );
 
-			if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 			{
 				extrudeInSoftware = false;
 				this.EnableHardwareShadowExtrusion( light, finiteExtrude );
@@ -2352,9 +2352,9 @@ namespace Axiom.Core
 
 			// Turn off color writing and depth writing
 			this.targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
-			this.targetRenderSystem.DepthWrite = false;
+			this.targetRenderSystem.DepthBufferWriteEnabled = false;
 			this.targetRenderSystem.StencilCheckEnabled = true;
-			this.targetRenderSystem.DepthFunction = CompareFunction.Less;
+			this.targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
 
 			// Calculate extrusion distance
 			float extrudeDistance = 0;
@@ -2525,7 +2525,7 @@ namespace Axiom.Core
 								 && ( ( flags & (int)ShadowRenderableFlags.IncludeLightCap ) ) > 0 )
 							{
 								// must always fail depth check
-								this.targetRenderSystem.DepthFunction = CompareFunction.AlwaysFail;
+								this.targetRenderSystem.DepthBufferFunction = CompareFunction.AlwaysFail;
 
 								Debug.Assert( sr.LightCapRenderable != null,
 											  "Shadow renderable is missing a separate light cap renderable!" );
@@ -2536,7 +2536,7 @@ namespace Axiom.Core
 																		tmpLightList,
 																		( i > 0 ) );
 								// reset depth function
-								this.targetRenderSystem.DepthFunction = CompareFunction.Less;
+                                this.targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
 							}
 						}
 					}
@@ -2805,12 +2805,12 @@ namespace Axiom.Core
 				//}
 
 				// set all required texture units for this pass, and disable ones not being used
-				int numTextureUnits = this.targetRenderSystem.HardwareCapabilities.TextureUnitCount;
+				int numTextureUnits = this.targetRenderSystem.Capabilities.TextureUnitCount;
 				if ( pass.HasFragmentProgram  && pass.FragmentProgram.IsSupported )
 				{
 					numTextureUnits = pass.FragmentProgram.SamplerCount;
 				}
-				else if ( Config.MaxTextureLayers < this.targetRenderSystem.HardwareCapabilities.TextureUnitCount )
+				else if ( Config.MaxTextureLayers < this.targetRenderSystem.Capabilities.TextureUnitCount )
 				{
 					numTextureUnits = Config.MaxTextureLayers;
 				}
@@ -2820,7 +2820,8 @@ namespace Axiom.Core
 					if ( i < pass.TextureUnitStageCount )
 					{
 						TextureUnitState texUnit = pass.GetTextureUnitState( i );
-						this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
+					    targetRenderSystem.SetTextureUnitSettings( i, texUnit );
+						//this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
 					}
 					else
 					{
@@ -2833,13 +2834,13 @@ namespace Axiom.Core
 				}
 
 				// Depth Settings
-				this.targetRenderSystem.DepthWrite = pass.DepthWrite;
-				this.targetRenderSystem.DepthCheck = pass.DepthCheck;
-				this.targetRenderSystem.DepthFunction = pass.DepthFunction;
-				this.targetRenderSystem.DepthBias = pass.DepthBiasConstant;
+				this.targetRenderSystem.DepthBufferWriteEnabled = pass.DepthWrite;
+				this.targetRenderSystem.DepthBufferCheckEnabled = pass.DepthCheck;
+				this.targetRenderSystem.DepthBufferFunction = pass.DepthFunction;
+				this.targetRenderSystem.SetDepthBias(pass.DepthBiasConstant);
 
 				// Aplha Reject Settings
-				this.targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, pass.AlphaRejectValue, pass.IsAlphaToCoverageEnabled );
+				this.targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, (byte)pass.AlphaRejectValue, pass.IsAlphaToCoverageEnabled );
 
 				// Color Write
 				// right now only using on/off, not per channel
@@ -2850,7 +2851,7 @@ namespace Axiom.Core
 				this.targetRenderSystem.CullingMode = pass.CullingMode;
 
 				// Shading mode
-				this.targetRenderSystem.ShadingMode = pass.ShadingMode;
+                //this.targetRenderSystem.ShadingMode = pass.ShadingMode;
 
 				// Polygon Mode
 				this.targetRenderSystem.PolygonMode = pass.PolygonMode;
@@ -3068,9 +3069,10 @@ namespace Axiom.Core
 			if ( useIdentityProj )
 			{
 				// Use identity projection matrix, still need to take RS depth into account
-				Matrix4 mat = this.targetRenderSystem.ConvertProjectionMatrix( Matrix4.Identity );
-				this.targetRenderSystem.ProjectionMatrix = mat;
-				this.lastProjectionWasIdentity = true;
+			    Matrix4 mat;
+                targetRenderSystem.ConvertProjectionMatrix(Matrix4.Identity, out mat);
+				targetRenderSystem.ProjectionMatrix = mat;
+				lastProjectionWasIdentity = true;
 			}
 		}
 
@@ -3831,7 +3833,7 @@ namespace Axiom.Core
 					{
 						// Note camera assignment is transient when multiple SMs
 						Viewport v = shadowRTT.AddViewport( cam );
-						v.ClearEveryFrame = true;
+						v.SetClearEveryFrame(true);
 						// remove overlays
 						v.ShowOverlays = false;
 					}
@@ -4279,7 +4281,7 @@ namespace Axiom.Core
 				if ( this.IsShadowTechniqueStencilBased )
 				{
 					// Firstly check that we have a stencil. Otherwise, forget it!
-					if ( !this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.StencilBuffer ) )
+					if ( !this.targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilBuffer ) )
 					{
 						LogManager.Instance.Write(
 							"WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling." );
@@ -4852,7 +4854,7 @@ namespace Axiom.Core
 			// to prevent dark caps getting clipped
 			if ( this.IsShadowTechniqueStencilBased &&
 				 camera.Far != 0 &&
-				 this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane ) &&
+				 this.targetRenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane ) &&
 				 this.shadowUseInfiniteFarPlane )
 			{
 				// infinite far distance
@@ -4943,16 +4945,19 @@ namespace Axiom.Core
 			//autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
 
 			// Set camera window clipping planes (if any)
-			if ( this.targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.UserClipPlanes ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.UserClipPlanes ) )
 			{
 				// TODO: Add ClipPlanes to RenderSystem.cs
 				if ( camera.IsWindowSet )
 				{
+				    targetRenderSystem.ResetClipPlanes();
 					IList<Plane> planeList = camera.WindowPlanes;
 					for ( ushort i = 0; i < 4; ++i )
 					{
-						this.targetRenderSystem.EnableClipPlane( i, true );
-						this.targetRenderSystem.SetClipPlane( i, planeList[ i ] );
+					    targetRenderSystem.AddClipPlane( planeList[ i ] );
+
+						//this.targetRenderSystem.EnableClipPlane( i, true );
+						//this.targetRenderSystem.SetClipPlane( i, planeList[ i ] );
 					}
 				}
 				// this disables any user-set clipplanes... this should be done manually
@@ -5300,7 +5305,7 @@ namespace Axiom.Core
 				{
 					// Note camera assignment is transient when multiple SMs
 					Viewport view = shadowRTT.AddViewport( cam );
-					view.ClearEveryFrame = true;
+					view.SetClearEveryFrame(true);
 					// remove overlays
 					view.ShowOverlays = false;
 				}
@@ -5451,7 +5456,7 @@ namespace Axiom.Core
 		{
 			this.currentViewport = viewport;
 			// Set viewport in render system
-			this.targetRenderSystem.SetViewport( viewport );
+			this.targetRenderSystem.Viewport = viewport;
 			// Set the active material scheme for this viewport
 			MaterialManager.Instance.ActiveScheme = viewport.MaterialScheme;
 		}
@@ -5557,7 +5562,8 @@ namespace Axiom.Core
 
 					if ( texUnit.HasViewRelativeTexCoordGen )
 					{
-						this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
+					    targetRenderSystem.SetTextureUnitSettings( i, texUnit );
+					    //this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
 					}
 				}
 
