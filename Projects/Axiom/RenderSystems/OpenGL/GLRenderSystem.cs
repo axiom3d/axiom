@@ -333,7 +333,7 @@ namespace Axiom.RenderSystems.OpenGL
 					}
 				}
 
-				// Initialise the main context
+				// Initialize the main context
 				_oneTimeContextInitialization();
 				if ( _currentContext != null )
 					_currentContext.Initialized = true;
@@ -470,7 +470,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///
 		/// </summary>
-		public override bool NormaliseNormals
+		public override bool NormalizeNormals
 		{
 			get
 			{
@@ -969,7 +969,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// render point sprites (textured quads) or plain points.
 		/// </summary>
 		/// <value></value>
-		public override bool PointSprites
+		public override bool PointSpritesEnabled
 		{
 			set
 			{
@@ -1685,7 +1685,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="autoCreateWindow"></param>
 		/// <param name="windowTitle">Title of the window to create.</param>
 		/// <returns></returns>
-		public override RenderWindow Initialise( bool autoCreateWindow, string windowTitle )
+		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
 			// register the GLSL program manage
 
@@ -1695,7 +1695,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
-			base.Initialise( autoCreateWindow, windowTitle );
+			base.Initialize( autoCreateWindow, windowTitle );
 
 			return autoWindow;
 		}
@@ -1836,7 +1836,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
-		public override void SetColourBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
+		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			// record this for later
 			colorWrite[ 0 ] = red ? 1 : 0;
@@ -2344,7 +2344,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
-		public override void SetTextureBorderColour( int stage, ColorEx borderColor )
+		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
 			float[] border = new float[] { borderColor.r, borderColor.g, borderColor.b, borderColor.a };
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
