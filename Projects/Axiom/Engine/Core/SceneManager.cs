@@ -3827,7 +3827,7 @@ namespace Axiom.Core
 					shadowTextureCameras.Add( cam );
 
 					// Create a viewport, if not there already
-					if ( shadowRTT.ViewportCount == 0 )
+					if ( shadowRTT.NumViewports == 0 )
 					{
 						// Note camera assignment is transient when multiple SMs
 						Viewport v = shadowRTT.AddViewport( cam );
@@ -5296,7 +5296,7 @@ namespace Axiom.Core
 				this.shadowTextureCameras.Add( cam );
 
 				// Create a viewport, if not there already
-				if ( shadowRTT.ViewportCount == 0 )
+				if ( shadowRTT.NumViewports == 0 )
 				{
 					// Note camera assignment is transient when multiple SMs
 					Viewport view = shadowRTT.AddViewport( cam );
