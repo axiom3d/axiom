@@ -186,6 +186,68 @@ namespace Axiom.Graphics
 
         #endregion
 
+        #region floatLogicalToPhysical
+
+        /// <summary>
+        /// Logical index to physical index map - for low-level programs
+        /// or high-level programs which pass params this way.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected GpuLogicalBufferStruct floatLogicalToPhysical;
+
+        [OgreVersion(1, 7, 2790)]
+        public GpuLogicalBufferStruct FloatLogicalBufferStruct
+        {
+            get
+            {
+                return floatLogicalToPhysical;
+            }
+        }
+
+        #endregion
+
+        #region intLogicalToPhysical
+
+        /// <summary>
+        /// Packed list of floating-point constants (physical indexing)
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected GpuLogicalBufferStruct intLogicalToPhysical;
+
+        [OgreVersion(1, 7, 2790)]
+        public GpuLogicalBufferStruct IntLogicalBufferStruct
+        {
+            get
+            {
+                return intLogicalToPhysical;
+            }
+        }
+
+        #endregion
+
+        [OgreVersion(1, 7, 2790)]
+	    private GpuNamedConstants _namedConstants;
+
+        /// <summary>
+        /// Mapping from parameter names to def - high-level programs are expected to populate this
+        /// </summary>
+        public GpuNamedConstants NamedConstants
+        {
+            set
+            {
+            }
+        }
+
+        #region _combinedVariability
+
+        /// <summary>
+        /// The combined variability masks of all parameters
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+	    private GpuParamVariability _combinedVariability;
+
+        #endregion
+
         /// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
@@ -213,60 +275,21 @@ namespace Axiom.Graphics
 
 		protected bool ignoreMissingParameters = false;
 
-        #region floatLogicalToPhysical
 
-        /// <summary>
-        /// Logical index to physical index map - for low-level programs
-        /// or high-level programs which pass params this way.
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-	    protected GpuLogicalBufferStruct floatLogicalToPhysical;
-
-        [OgreVersion(1, 7, 2790)]
-        public GpuLogicalBufferStruct FloatLogicalBufferStruct
-        {
-            get
-            {
-                return floatLogicalToPhysical;
-            }
-        }
-
-	    #endregion
-
-        #region intLogicalToPhysical
-
-        /// <summary>
-        /// Packed list of floating-point constants (physical indexing)
-        /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        protected GpuLogicalBufferStruct intLogicalToPhysical;
-
-        [OgreVersion(1, 7, 2790)]
-        public GpuLogicalBufferStruct IntLogicalBufferStruct
-        {
-            get
-            {
-                return intLogicalToPhysical;
-            }
-        }
-
-        #endregion
 
         #endregion Fields
 
         #region Constructors
 
-	    private int _myID;
-	    private static int _idCounter;
-
         /// <summary>
 		///		Default constructor.
 		/// </summary>
 		public GpuProgramParameters()
-		{
-			this.autoAddParamName = true;
-            var _myID = _idCounter++;
-            Debug.WriteLine( string.Format("GpuProgramParameters() = {0}", _myID) );
+        {
+            _combinedVariability = GpuParamVariability.Global;
+            transposeMatrices = false;
+            ignoreMissingParameters = false;
+            activePassIterationIndex = int.MaxValue;            
 		}
 
 		#endregion Constructors

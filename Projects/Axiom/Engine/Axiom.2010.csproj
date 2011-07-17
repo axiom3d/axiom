@@ -192,9 +192,9 @@
     <Compile Include="EventHandler.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinitionMap.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstant.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstants.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuLogicalBufferStruct.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuSharedParametersUsage.cs" />
     <Compile Include="Graphics\GpuProgramParameters.Lists.cs" />
