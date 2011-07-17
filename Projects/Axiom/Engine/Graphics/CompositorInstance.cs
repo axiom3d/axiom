@@ -755,7 +755,7 @@ namespace Axiom.Graphics
 				rendTarget.IsAutoUpdated = false;
 
 				// We may be sharing / reusing this texture, so test before adding viewport
-				if ( rendTarget.ViewportCount == 0 )
+				if ( rendTarget.NumViewports == 0 )
 				{
 					Camera camera = chain.Viewport.Camera;
 					// Save last viewport and current aspect ratio
@@ -939,7 +939,7 @@ namespace Axiom.Graphics
 			{
 				// Ok, inherit settings from target
 				RenderTarget target = chain.Viewport.Target;
-				hwGammaWrite = target.HardwareGammaEnabled;
+				hwGammaWrite = target.IsHardwareGammaEnabled;
 				fsaa = target.FSAA;
 				fsaaHint = target.FSAAHint;
 			}
