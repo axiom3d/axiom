@@ -189,6 +189,8 @@ namespace Axiom.Graphics
 		/// <param name="parms"></param>
 		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
 
+        protected abstract void BuildConstantDefinitions();
+
 		/// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>

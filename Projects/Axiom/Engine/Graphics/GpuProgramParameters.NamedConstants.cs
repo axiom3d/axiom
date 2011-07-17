@@ -48,6 +48,13 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
+        /// <summary>
+        /// Named Gpu constant lookup table
+        /// </summary>
+        public class GpuConstantDefinitionMap: Dictionary<string, GpuConstantDefinition>
+        {
+        }
+
 		/// <summary>
 		/// class collecting together the information for named constants.
 		/// </summary>
@@ -66,7 +73,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Dictionary of parameter names to GpuConstantDefinition
 			/// </summary>
-			public Dictionary<string, GpuConstantDefinition> GpuConstantDefinitions = new Dictionary<string, GpuConstantDefinition>();
+            public GpuConstantDefinitionMap GpuConstantDefinitions = new GpuConstantDefinitionMap();
 
 			private static bool _generateAllConstantDefinitionArrayEntries;
 
