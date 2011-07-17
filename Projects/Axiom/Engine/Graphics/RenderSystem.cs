@@ -2000,11 +2000,12 @@ it says it's incompatible with that RT");
                 {
                     for (var nSecWindow = nWindow + 1; nSecWindow < renderWindowDescriptions.Count; ++nSecWindow)
                     {
-                        if (curDesc.Name == renderWindowDescriptions[nSecWindow].Name)
+                        if ( curDesc.Name != renderWindowDescriptions[ nSecWindow ].Name )
                         {
-                            renderWindowFound = true;
-                            break;
+                            continue;
                         }
+                        renderWindowFound = true;
+                        break;
                     }
                 }
 
@@ -2401,7 +2402,7 @@ it says it's incompatible with that RT");
         /// This method allows you to 'mask off' rendering in all but a given rectangular area
         /// as identified by the parameters to this method.
         /// <p/>
-        /// Not all systems support this method. Check the <see cref="Axiom.Graphics.Capabilites"/> enum for the
+        /// Not all systems support this method. Check the <see cref="Capabilities"/> enum for the
         /// ScissorTest capability to see if it is supported.
         /// </remarks>
         /// <param name="enable">True to enable the scissor test, false to disable it.</param>
@@ -2479,8 +2480,8 @@ it says it's incompatible with that RT");
         /// are the amount of each type of light the object reflects (determining
         /// it's color under different types of light), whether it emits light
         /// itself, and how shiny it is. Textures are not dealt with here,
-        /// <see cref="SetTexture"/> method for details.
-        /// This method is used by <see cref="SetMaterial"/> so does not need to be called
+        /// <see cref="SetTexture(int, bool, Texture)"/> method for details.
+        /// This method is used by SetMaterial so does not need to be called
         /// direct if that method is being used.
         /// </summary>
         /// <param name="ambient">
