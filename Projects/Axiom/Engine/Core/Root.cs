@@ -1496,13 +1496,7 @@ namespace Axiom.Core
 			}
 		}
 
-	    public int NextFrameNumber
-	    {
-	        get
-	        {
-	            throw new NotImplementedException();
-	        }
-	    }
+        public int NextFrameNumber { get; private set; }
 
 	    #endregion MovableObjectFactory methods
 	}
