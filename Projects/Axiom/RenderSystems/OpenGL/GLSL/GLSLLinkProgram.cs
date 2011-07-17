@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             /// <summary>Which type of program params will this value come from?</summary>
             public GpuProgramType SourceProgType;
             /// <summary>The constant definition it relates to</summary>
-		    public GpuConstantDefinition ConstantDef;
+		    public GpuProgramParameters.GpuConstantDefinition ConstantDef;
 		}
 
         struct CustomAttribute

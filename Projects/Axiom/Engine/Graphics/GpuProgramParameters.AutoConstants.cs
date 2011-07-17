@@ -40,7 +40,7 @@ using System.Diagnostics;
 
 namespace Axiom.Graphics
 {
-    partial public class GpuProgramParameters
+    public partial class GpuProgramParameters
     {
         /// <summary>
         ///    Parameters that are available via the engine and automatically calculated for use in GPU programs.
