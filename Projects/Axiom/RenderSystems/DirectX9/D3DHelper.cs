@@ -509,7 +509,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( ( usage & BufferUsage.Dynamic ) != 0 )
 			{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
 				// Only add the dynamic flag for the default pool, and
 				// we use default pool when buffer is discardable
 				if ( ( usage & BufferUsage.Discardable ) != 0 )
@@ -587,9 +587,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			D3D.LockFlags ret = 0;
 			if ( locking == BufferLocking.Discard )
-			{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
-				// Only add the discard flag for dynamic usgae and default pool
+            {
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
+                // Only add the discard flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.Discard;
@@ -609,9 +609,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 			}
 			if ( locking == BufferLocking.NoOverwrite )
-			{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
-				// Only add the nooverwrite flag for dynamic usgae and default pool
+            {
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
+                // Only add the nooverwrite flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.NoOverwrite;

@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3DHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
-#if !NO_OGRE_D3D_MANAGE_BUFFERS
+#if !NO_AXIOM_D3D_MANAGE_BUFFERS
 			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
 				// If not system mem, use managed pool UNLESS buffer is discardable
 				// if discardable, keeping the software backing is expensive
