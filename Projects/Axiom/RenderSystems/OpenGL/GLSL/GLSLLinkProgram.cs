@@ -380,71 +380,89 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                         switch (def.ConstantType)
                         {
                             case GpuProgramParameters.GpuConstantType.Float1:
-                                Tao.OpenGl.Gl.glUniform1fvARB( currentUniform.Location, glArraySize, 
+                                Gl.glUniform1fvARB( currentUniform.Location, glArraySize, 
                                     parameters.GetFloatPointer( def.PhysicalIndex)  );
                                 break;
                             case GpuProgramParameters.GpuConstantType.Float2:
-                                Tao.OpenGl.Gl.glUniform2fvARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform2fvARB(currentUniform.Location, glArraySize,
                                     parameters.GetFloatPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Float3:
-                                Tao.OpenGl.Gl.glUniform3fvARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform3fvARB(currentUniform.Location, glArraySize,
                                     parameters.GetFloatPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Float4:
-                                Tao.OpenGl.Gl.glUniform4fvARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform4fvARB(currentUniform.Location, glArraySize,
                                     parameters.GetFloatPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X2:
-                                Tao.OpenGl.Gl.glUniformMatrix2fvARB(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException( "GpuProgramParameters need refactoring for this" );
+                                //Gl.glUniformMatrix2fvARB(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X3:
-                                Tao.OpenGl.Gl.glUniformMatrix2x3fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix2x3fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X4:
-                                Tao.OpenGl.Gl.glUniformMatrix2x4fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix2x4fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X2:
-                                Tao.OpenGl.Gl.glUniformMatrix3x2fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix3x2fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X3:
-                                Tao.OpenGl.Gl.glUniformMatrix3fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix3fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X4:
-                                Tao.OpenGl.Gl.glUniformMatrix3x4fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix3x4fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X2:
-                                Tao.OpenGl.Gl.glUniformMatrix4x2fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix4x2fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X3:
-                                Tao.OpenGl.Gl.glUniformMatrix4x3fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
-                                break;
+                                throw new NotImplementedException("GpuProgramParameters need refactoring for this");
+                                //Gl.glUniformMatrix4x3fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
+                                //break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X4:
-                                Tao.OpenGl.Gl.glUniformMatrix4fv(currentUniform.Location, glArraySize,
-                                    1, parameters.GetFloatPointer(def.PhysicalIndex));
+#warning Temporary hack till GpuProgramParameters are refactored
+                                Gl.glUniform4fvARB(currentUniform.Location, glArraySize,
+                                    parameters.GetFloatPointer(def.PhysicalIndex));
+                                Gl.glUniform4fvARB(currentUniform.Location + 1, glArraySize,
+                                    parameters.GetFloatPointer(def.PhysicalIndex + 1));
+                                Gl.glUniform4fvARB(currentUniform.Location + 2, glArraySize,
+                                    parameters.GetFloatPointer(def.PhysicalIndex + 2));
+                                Gl.glUniform4fvARB(currentUniform.Location + 3, glArraySize,
+                                    parameters.GetFloatPointer(def.PhysicalIndex + 3));
+
+                                //Gl.glUniformMatrix4fv(currentUniform.Location, glArraySize,
+                                //    1, parameters.GetFloatPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int1:
-                                Tao.OpenGl.Gl.glUniform1ivARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform1ivARB(currentUniform.Location, glArraySize,
                                     parameters.GetIntPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int2:
-                                Tao.OpenGl.Gl.glUniform2ivARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform2ivARB(currentUniform.Location, glArraySize,
                                     parameters.GetIntPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int3:
-                                Tao.OpenGl.Gl.glUniform3ivARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform3ivARB(currentUniform.Location, glArraySize,
                                     parameters.GetIntPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int4:
-                                Tao.OpenGl.Gl.glUniform4ivARB(currentUniform.Location, glArraySize,
+                                Gl.glUniform4ivARB(currentUniform.Location, glArraySize,
                                     parameters.GetIntPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Sampler1D:
@@ -453,7 +471,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                             case GpuProgramParameters.GpuConstantType.Sampler2DShadow:
                             case GpuProgramParameters.GpuConstantType.Sampler3D:
                             case GpuProgramParameters.GpuConstantType.SamplerCube:
-                                Tao.OpenGl.Gl.glUniform1ivARB(currentUniform.Location, 1,
+                                Gl.glUniform1ivARB(currentUniform.Location, 1,
                                     parameters.GetIntPointer(def.PhysicalIndex));
                                 break;
                             case GpuProgramParameters.GpuConstantType.Unknown:

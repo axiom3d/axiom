@@ -523,13 +523,13 @@ namespace Axiom.Graphics
         /// Record of logical to physical buffer maps. Mandatory for low-level
         /// programs or high-level programs which set their params the same way.
         /// </summary>
-        private GpuProgramParameters.GpuLogicalBufferStruct _floatLogicalToPhysical ;
+        protected GpuProgramParameters.GpuLogicalBufferStruct floatLogicalToPhysical ;
 
         /// <summary>
         /// Record of logical to physical buffer maps. Mandatory for low-level
         /// programs or high-level programs which set their params the same way.
         /// </summary>
-        private GpuProgramParameters.GpuLogicalBufferStruct _intLogicalToPhysical;
+        protected GpuProgramParameters.GpuLogicalBufferStruct intLogicalToPhysical;
 
         #region ConstantDefinitions Property
 
@@ -578,10 +578,10 @@ namespace Axiom.Graphics
                 CreateParameterMappingStructures();
                 constantDefs = value;
 
-                _floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
-                _intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
-                _floatLogicalToPhysical.Map.Clear();
-                _intLogicalToPhysical.Map.Clear();
+                floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
+                intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
+                floatLogicalToPhysical.Map.Clear();
+                intLogicalToPhysical.Map.Clear();
 
                 // need to set up logical mappings too for some rendersystems
                 foreach ( var pair in constantDefs.Map )
@@ -595,11 +595,11 @@ namespace Axiom.Graphics
                     var val = new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
                     if ( def.IsFloat )
                     {
-                        _floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+                        floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
                     }
                     else
                     {
-                        _intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+                        intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
                     }
                 }
             }
@@ -723,7 +723,7 @@ namespace Axiom.Graphics
                 newParams.SetNamedConstants( constantDefs );
             }
             // link shared logical / physical map for low-level use
-            newParams.SetLogicalIndexes( _floatLogicalToPhysical, _intLogicalToPhysical );
+            newParams.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
             
 
             // Copy in default parameters if present
@@ -833,10 +833,10 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7, 2790)]
         protected void CreateLogicalParameterMappingStructures(bool recreateIfExists)
         {
-            if (recreateIfExists || _floatLogicalToPhysical == null)
-                _floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
-            if (recreateIfExists || _intLogicalToPhysical == null)
-                _intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
+            if (recreateIfExists || floatLogicalToPhysical == null)
+                floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
+            if (recreateIfExists || intLogicalToPhysical == null)
+                intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
         }
 
         #endregion
