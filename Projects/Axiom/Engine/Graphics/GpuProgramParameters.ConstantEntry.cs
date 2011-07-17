@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Axiom.Core;
@@ -45,40 +46,7 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
-        /// <summary>
-        /// This class emulates the behaviour of a vector&lt;T&gt;
-        /// allowing T* access as IntPtr of a specified element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        [AxiomHelper(0, 8)]
-        public class OffsetArray<T> : List<T>
-        {
-            public struct FixedPointer : IDisposable
-            {
-                public IntPtr Pointer;
-                internal T[] Owner;
-
-                public void Dispose()
-                {
-                    Memory.UnpinObject(Owner);
-                }
-            }
-
-            private FixedPointer _ptr;
-
-            private readonly int _size = Marshal.SizeOf(typeof(T));
-
-            public FixedPointer Fix(int offset)
-            {
-                _ptr.Owner = ToArray();
-                _ptr.Pointer = Memory.PinObject(_ptr.Owner).Offset(_size * offset);
-
-                return _ptr;
-            }
-        }
-
-
-		/// <summary>
+	    /// <summary>
 		///    A structure for recording the use of automatic parameters.
 		/// </summary>
 		public class AutoConstantEntry
@@ -154,52 +122,6 @@ namespace Axiom.Graphics
             }
 
             public AutoConstantsList(AutoConstantsList other)
-            {
-                AddRange( other.GetRange( 0, other.Count ) );
-            }
-		}
-
-		/// <summary>
-		/// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public class FloatConstantList : OffsetArray<float>
-		{
-			public void Resize( int size )
-			{
-				while ( Count < size )
-				{
-					Add( 0.0f );
-				}
-			}
-
-            public FloatConstantList()
-            {
-            }
-
-            public FloatConstantList(FloatConstantList other)
-            {
-                AddRange( other.GetRange( 0, other.Count ) );
-            }
-		}
-
-		/// <summary>
-		/// </summary>
-        [OgreVersion(1, 7, 2790)]
-        public class IntConstantList : OffsetArray<int>
-		{
-			public void Resize( int size )
-			{
-				while ( Count < size )
-				{
-					Add( 0 );
-				}
-			}
-
-            public IntConstantList()
-            {
-            }
-
-            public IntConstantList(IntConstantList other)
             {
                 AddRange( other.GetRange( 0, other.Count ) );
             }
