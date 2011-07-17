@@ -50,7 +50,13 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7, 2790)]
         public class GpuConstantDefinitionMap : Dictionary<string, GpuConstantDefinition>
         {
-            public static readonly GpuConstantDefinitionMap Empty = new GpuConstantDefinitionMap();
+            public static GpuConstantDefinitionMap Empty
+            {
+                get
+                {
+                    return new GpuConstantDefinitionMap();
+                }
+            }
         }
 	}
 }

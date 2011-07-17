@@ -294,7 +294,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			GpuProgramParameters parms = base.CreateParameters();
 
-			//parms.TransposeMatrices = true;
+			parms.TransposeMatrices = true;
 
 			return parms;
 		}
