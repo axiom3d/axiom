@@ -359,16 +359,17 @@ namespace Axiom.ParticleSystems
 			return system;
 		}
 
-		/// <summary>
-		///		Internal method for creating a new emitter from a factory.
-		/// </summary>
-		/// <remarks>
-		///		Used internally by the engine to create new ParticleEmitter instances from named
-		///		factories. Applications should use the ParticleSystem.AddEmitter method instead,
-		///		which calls this method to create an instance.
-		/// </remarks>
-		/// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
-		internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
+	    /// <summary>
+	    ///		Internal method for creating a new emitter from a factory.
+	    /// </summary>
+	    /// <remarks>
+	    ///		Used internally by the engine to create new ParticleEmitter instances from named
+	    ///		factories. Applications should use the ParticleSystem.AddEmitter method instead,
+	    ///		which calls this method to create an instance.
+	    /// </remarks>
+	    /// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
+	    /// <param name="ps"></param>
+	    internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
 		{
 			ParticleEmitterFactory factory = emitterFactoryList[ emitterType ];
 

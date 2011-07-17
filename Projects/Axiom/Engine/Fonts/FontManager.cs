@@ -221,8 +221,6 @@ namespace Axiom.Fonts
 		/// <summary>
 		///    Parse a .fontdef script passed in as a chunk.
 		/// </summary>
-		/// <param name="stream"></param>
-		/// <param name="groupName"></param>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
 			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );

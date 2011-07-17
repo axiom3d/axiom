@@ -581,22 +581,23 @@ namespace Axiom.Animating
 
 		#region Public methods
 
-		/// <summary>
-		///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
-		/// </summary>
-		/// <remarks>
-		///		The KeyFrame objects held by this class are transformation snapshots at 
-		///		discrete points in time. Normally however, you want to interpolate between these
-		///		keyframes to produce smooth movement, and this method allows you to do this easily.
-		///		In animation terminology this is called 'tweening'. 
-		/// </remarks>
-		/// <param name="time">The time (in relation to the whole animation sequence).</param>
-		/// <returns>
-		///		A new keyframe object containing the interpolated transforms. Note that the
-		///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
-		///		spherically linearly interpolated (slerp) for the most natural result.
-		/// </returns>
-		public override KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf )
+	    /// <summary>
+	    ///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
+	    /// </summary>
+	    /// <remarks>
+	    ///		The KeyFrame objects held by this class are transformation snapshots at 
+	    ///		discrete points in time. Normally however, you want to interpolate between these
+	    ///		keyframes to produce smooth movement, and this method allows you to do this easily.
+	    ///		In animation terminology this is called 'tweening'. 
+	    /// </remarks>
+	    /// <param name="time">The time (in relation to the whole animation sequence).</param>
+	    ///<param name="kf"></param>
+	    ///<returns>
+	    ///		A new keyframe object containing the interpolated transforms. Note that the
+	    ///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
+	    ///		spherically linearly interpolated (slerp) for the most natural result.
+	    /// </returns>
+	    public override KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf )
 		{
 			// note: this is an un-attached keyframe
 			TransformKeyFrame result = (TransformKeyFrame)kf;
@@ -661,18 +662,19 @@ namespace Axiom.Animating
 			return result;
 		}
 
-		/// <summary>
-		///		Applies an animation track at a certain position to the target node.
-		/// </summary>
-		/// <remarks>
-		///		When a track has bee associated with a target node, you can eaisly apply the animation
-		///		to the target by calling this method.
-		/// </remarks>
-		/// <param name="time">The time position in the animation to apply.</param>
-		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-		///		other animations.</param>
-		/// <param name="accumulate"></param>
-		public override void Apply( float time, float weight, bool accumulate, float scale )
+	    /// <summary>
+	    ///		Applies an animation track at a certain position to the target node.
+	    /// </summary>
+	    /// <remarks>
+	    ///		When a track has bee associated with a target node, you can eaisly apply the animation
+	    ///		to the target by calling this method.
+	    /// </remarks>
+	    /// <param name="time">The time position in the animation to apply.</param>
+	    /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
+	    ///		other animations.</param>
+	    /// <param name="accumulate"></param>
+	    ///<param name="scale"></param>
+	    public override void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// call ApplyToNode with our target node
 			ApplyToNode( target, time, weight, accumulate, scale );
@@ -682,10 +684,6 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
 		/// </summary>
-		/// <param name="node"></param>
-		/// <param name="time"></param>
-		/// <param name="weight"></param>
-		/// <param name="accumulate"></param>
 		public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scale )
 		{
 			this.GetInterpolatedKeyFrame( time, kf );

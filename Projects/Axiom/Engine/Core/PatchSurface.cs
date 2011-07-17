@@ -321,7 +321,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <remarks>
 		///     The VertexDeclaration of the vertex buffer must be identical to the one passed into
-		///     <see cref="DefineSurface"/>.  In addition, there must be enough space in the buffer to
+		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.  In addition, there must be enough space in the buffer to
 		///     accommodate the patch at full detail level; you should check <see cref="RequiredVertexCount"/>
 		///     and <see cref="RequiredIndexCount"/> to determine this. This method does not create an internal
 		///     mesh for this patch and so GetMesh will return null if you call it after building the
@@ -883,7 +883,9 @@ namespace Axiom.Core
 		#region Properties
 
 		/// <summary>
-		///     Based on a previous call to <see cref="DefineSurface"/>, establishes the number of vertices required
+		///     Based on a previous call to 
+        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
+        ///     establishes the number of vertices required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
 		/// <remarks>
@@ -898,7 +900,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Based on a previous call to <see cref="DefineSurface"/>, establishes the number of indexes required
+		///     Based on a previous call to 
+        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
+        ///     establishes the number of indexes required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
 		public int RequiredIndexCount
@@ -943,7 +947,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Gets the bounds of this patch, only valid after calling <see cref="DefineSurface"/>.
+        ///     Gets the bounds of this patch, only valid after calling 
+        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
 		/// </summary>
 		public AxisAlignedBox Bounds
 		{
@@ -954,7 +959,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Gets the radius of the bounding sphere for this patch, only valid after <see cref="DefineSurface"/>
+        ///     Gets the radius of the bounding sphere for this patch, only valid after 
+        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>
 		///     has been called.
 		/// </summary>
 		public float BoundingSphereRadius
@@ -973,7 +979,7 @@ namespace Axiom.Core
 		///     the U and V directions can have different subdivision levels, this property
 		///     takes a single float value where 0 is the minimum detail (the control points)
 		///     and 1 is the maximum detail level as supplied to the original call to
-		///     <see cref="DefineSurface"/>.
+        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
 		/// </remarks>
 		public float SubdivisionFactor
 		{

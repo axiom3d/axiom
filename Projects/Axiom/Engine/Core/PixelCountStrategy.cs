@@ -127,7 +127,7 @@ namespace Axiom.Core
 						//estimate pixel count
 						return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
 					}
-					break;
+					// break;
 				case Projection.Orthographic:
 					{
 						// Compute orthographic area
@@ -140,7 +140,7 @@ namespace Axiom.Core
 						// Estimate pixel count
 						return ( boundingArea * viewportArea ) / orthoArea;
 					}
-					break;
+					// break;
 				default:
 					{
 						// This case is not covered for obvious reasons

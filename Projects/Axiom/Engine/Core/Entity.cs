@@ -77,7 +77,7 @@ namespace Axiom.Core
 	///		</para>
 	///		<para>
 	///		Entity and <see cref="SubEntity"/> classes are never created directly.
-	///		Use <see cref="SceneManager.CreateEntity"/> (passing a model name) to
+	///		Use <see cref="SceneManager.CreateEntity(string, string)"/> (passing a model name) to
 	///		create one.
 	///		</para>
 	///		<para>
@@ -246,10 +246,11 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal bool vertexAnimationAppliedThisFrame;
 
-		/// <summary>
-		///     Flag indicating whether we have a vertex program in use on any of our subentities
-		/// </summary>
-		private bool vertexProgramInUse;
+        // commented out all accesses as this was write only accessed
+		// <summary>
+		//     Flag indicating whether we have a vertex program in use on any of our subentities
+		// </summary>
+		//private bool vertexProgramInUse;
 
 		public ICollection SubEntities
 		{
@@ -829,11 +830,12 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Internal method called to notify the object that it has been attached to a node.
-		/// </summary>
-		/// <param name="node">Scene node to which we are being attached.</param>
-		internal override void NotifyAttached( Node node, bool isTagPoint )
+	    /// <summary>
+	    ///		Internal method called to notify the object that it has been attached to a node.
+	    /// </summary>
+	    /// <param name="node">Scene node to which we are being attached.</param>
+	    /// <param name="isTagPoint"></param>
+	    internal override void NotifyAttached( Node node, bool isTagPoint )
 		{
 			base.NotifyAttached( node, isTagPoint );
 			// Also notify LOD entities
@@ -2154,7 +2156,7 @@ namespace Axiom.Core
 		{
 			// init
 			this.hardwareAnimation = false;
-			this.vertexProgramInUse = false; // assume false because we just assign this
+			//this.vertexProgramInUse = false; // assume false because we just assign this
 			bool firstPass = true;
 
 			// check for each sub entity
@@ -2184,7 +2186,7 @@ namespace Axiom.Core
 				{
 					// If one material uses a vertex program, set this flag
 					// Causes some special processing like forcing a separate light cap
-					this.vertexProgramInUse = true;
+					//this.vertexProgramInUse = true;
 
 					if ( this.HasSkeleton )
 					{

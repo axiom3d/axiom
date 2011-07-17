@@ -334,7 +334,7 @@ namespace Axiom.Core
         /// <param name="resourceCount"></param>
         private delegate void ResourceGroupPrepareStarted( string groupName, int resourceCount );
 
-        private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
+        // private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
 
         /// <summary>
         /// 
@@ -342,14 +342,14 @@ namespace Axiom.Core
         /// <param name="resource"></param>
         private delegate void ResourcePrepareStarted( Resource resource );
 
-        private ResourcePrepareStarted _resourcePrepareStarted;
+        // private ResourcePrepareStarted _resourcePrepareStarted;
 
         /// <summary>
         /// 
         /// </summary>
         private delegate void ResourcePrepareEnded();
 
-        private ResourcePrepareEnded _resourcePrepareEnded;
+        //private ResourcePrepareEnded _resourcePrepareEnded;
 
         /// <summary>
         /// 
@@ -357,7 +357,7 @@ namespace Axiom.Core
         /// <param name="groupName"></param>
         private delegate void ResourceGroupPrepareEnded( string groupName );
 
-        private ResourceGroupPrepareEnded _resourceGroupPrepareEnded;
+        // private ResourceGroupPrepareEnded _resourceGroupPrepareEnded;
 
 		#endregion Delegates
 
@@ -837,10 +837,12 @@ namespace Axiom.Core
         /// <param name="resourceCount"></param>
         private void _fireResourceGroupPrepareStarted( string groupName, int resourceCount )
         {
+            /*
             if ( _resourceGroupPrepareStarted != null )
             {
                 _resourceGroupPrepareStarted( groupName, resourceCount );
             }
+             */
         }
 
         /// <summary>
@@ -849,10 +851,12 @@ namespace Axiom.Core
         /// <param name="resource"></param>
         private void _fireResourcePrepareStarted( Resource resource )
         {
+            /*
             if ( _resourcePrepareStarted != null )
             {
                 _resourcePrepareStarted( resource );
             }
+             */
         }
 
         /// <summary>
@@ -860,10 +864,12 @@ namespace Axiom.Core
         /// </summary>
         private void _fireResourcePrepareEnded()
         {
+            /*
             if ( _resourcePrepareEnded != null )
             {
                 _resourcePrepareEnded();
             }
+             */
         }
 
         /// <summary>
@@ -872,10 +878,12 @@ namespace Axiom.Core
         /// <param name="groupName"></param>
         private void _fireResourceGroupPrepareEnded( string groupName )
         {
+            /*
             if ( _resourceGroupPrepareEnded != null )
             {
                 _resourceGroupPrepareEnded( groupName );
             }
+             */
         }
 
 		#endregion Event Firing Methods
@@ -931,7 +939,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <remarks>
 		///	After creating a resource group, adding some resource locations, and
-		///	perhaps pre-declaring some resources using <see cref="DeclareResource"/> , but
+		///	perhaps pre-declaring some resources using <see cref="DeclareResource(string, string)"/> , but
 		///	before you need to use the resources in the group, you
 		///	should call this method to initialise the group. By calling this,
 		///	you are triggering the following processes:
@@ -940,17 +948,17 @@ namespace Axiom.Core
 		///		parsed from the resource locations, and resources within them are
 		///		created (but not loaded yet).</li>
 		///	<li>Creates all the resources which have just pre-declared using
-		///	<see cref="DeclareResource"/> (again, these are not loaded yet)</li>
+        ///	<see cref="DeclareResource(string, string)"/> (again, these are not loaded yet)</li>
 		///	</ol>
 		///	So what this essentially does is create a bunch of unloaded <see cref="Resource"/>  entries
 		///	in the respective ResourceManagers based on scripts, and resources
 		///	you've pre-declared. That means that code looking for these resources
 		///	will find them, but they won't be taking up much memory yet, until
-		///	they are either used, or they are loaded in bulk using <see cref="LoadResourceGroup"/>.
+		///	they are either used, or they are loaded in bulk using <see cref="LoadResourceGroup(string)"/>.
 		///	Loading the resource group in bulk is entirely optional, but has the
 		///	advantage of coming with progress reporting as resources are loaded.
 		/// <para>
-		///	Failure to call this method means that <see cref="LoadResourceGroup"/>  will do
+        ///	Failure to call this method means that <see cref="LoadResourceGroup(string)"/>  will do
 		///	nothing, and any resources you define in scripts will not be found.
 		///	Similarly, once you have called this method you won't be able to
 		///	pick up any new scripts or pre-declared resources, unless you
@@ -958,10 +966,10 @@ namespace Axiom.Core
 		///	method again.
 		/// </para>
 		/// <para>
-		///	When you call <see cref="Root.Initialize"/> , all resource groups that have already been
+		///	When you call <see cref="Root.Initialize(bool)"/> , all resource groups that have already been
 		///	created are automatically initialised too. Therefore you do not need to
 		///	call this method for groups you define and set up before you call
-		///	<see cref="Root.Initialize"/>. However, since one of the most useful features of
+        ///	<see cref="Root.Initialize(bool)"/>. However, since one of the most useful features of
 		///	resource groups is to set them up after the main system initialization
 		///	has occurred (e.g. a group per game level), you must remember to call this
 		///	method for the groups you create after this.
@@ -1402,49 +1410,56 @@ namespace Axiom.Core
 			AddResourceLocation( name, locType, DefaultResourceGroupName, false, false );
 		}
 
-		/// <param name="resGroup">
-		/// The name of the resource group for which this location is
-		/// to apply. ResourceGroupManager.DefaultResourceGroupName is the
-		/// default group which always exists, and can
-		/// be used for resources which are unlikely to be unloaded until application
-		/// shutdown. Otherwise it must be the name of a group; if it
-		/// has not already been created with createResourceGroup then it is created
-		/// automatically.
-		/// </param>
-		public void AddResourceLocation( string name, string locType, string resGroup )
+	    /// <param name="locType"></param>
+	    /// <param name="resGroup">
+	    /// The name of the resource group for which this location is
+	    /// to apply. ResourceGroupManager.DefaultResourceGroupName is the
+	    /// default group which always exists, and can
+	    /// be used for resources which are unlikely to be unloaded until application
+	    /// shutdown. Otherwise it must be the name of a group; if it
+	    /// has not already been created with createResourceGroup then it is created
+	    /// automatically.
+	    /// </param>
+	    /// <param name="name"></param>
+	    public void AddResourceLocation( string name, string locType, string resGroup )
 		{
 			AddResourceLocation( name, locType, resGroup, false, false );
 		}
 
-		/// <param name="recursive">
-		/// Whether subdirectories will be searched for files when using
-		/// a pattern match (such as *.material), and whether subdirectories will be
-		/// indexed. This can slow down initial loading of the archive and searches.
-		/// When opening a resource you still need to use the fully qualified name,
-		/// this allows duplicate names in alternate paths.
-		/// </param>
-		public void AddResourceLocation( string name, string locType, bool recursive )
+	    /// <param name="locType"></param>
+	    /// <param name="recursive">
+	    /// Whether subdirectories will be searched for files when using
+	    /// a pattern match (such as *.material), and whether subdirectories will be
+	    /// indexed. This can slow down initial loading of the archive and searches.
+	    /// When opening a resource you still need to use the fully qualified name,
+	    /// this allows duplicate names in alternate paths.
+	    /// </param>
+	    /// <param name="name"></param>
+	    public void AddResourceLocation( string name, string locType, bool recursive )
 		{
 			AddResourceLocation( name, locType, DefaultResourceGroupName, recursive, false );
 		}
 
-		/// <param name="resGroup">
-		/// The name of the resource group for which this location is
-		/// to apply. ResourceGroupManager.DefaultResourceGroupName is the
-		/// default group which always exists, and can
-		/// be used for resources which are unlikely to be unloaded until application
-		/// shutdown. Otherwise it must be the name of a group; if it
-		/// has not already been created with createResourceGroup then it is created
-		/// automatically.
-		/// </param>
-		/// <param name="recursive">
-		/// Whether subdirectories will be searched for files when using
-		/// a pattern match (such as *.material), and whether subdirectories will be
-		/// indexed. This can slow down initial loading of the archive and searches.
-		/// When opening a resource you still need to use the fully qualified name,
-		/// this allows duplicate names in alternate paths.
-		/// </param>
-		public void AddResourceLocation( string name, string locType, string resGroup, bool recursive, bool monitor )
+	    /// <param name="locType"></param>
+	    /// <param name="resGroup">
+	    /// The name of the resource group for which this location is
+	    /// to apply. ResourceGroupManager.DefaultResourceGroupName is the
+	    /// default group which always exists, and can
+	    /// be used for resources which are unlikely to be unloaded until application
+	    /// shutdown. Otherwise it must be the name of a group; if it
+	    /// has not already been created with createResourceGroup then it is created
+	    /// automatically.
+	    /// </param>
+	    /// <param name="recursive">
+	    /// Whether subdirectories will be searched for files when using
+	    /// a pattern match (such as *.material), and whether subdirectories will be
+	    /// indexed. This can slow down initial loading of the archive and searches.
+	    /// When opening a resource you still need to use the fully qualified name,
+	    /// this allows duplicate names in alternate paths.
+	    /// </param>
+	    /// <param name="name"></param>
+	    /// <param name="monitor"></param>
+	    public void AddResourceLocation( string name, string locType, string resGroup, bool recursive, bool monitor )
 		{
 			ResourceGroup grp = getResourceGroup( resGroup );
 			if ( grp == null )
@@ -1491,6 +1506,7 @@ namespace Axiom.Core
 			RemoveResourceLocation( locationName, DefaultResourceGroupName );
 		}
 
+		/// <param name="locationName"></param>
 		/// <param name="groupName">the name of the ResourceGroup</param>
 		public void RemoveResourceLocation( string locationName, string groupName )
 		{
@@ -1559,30 +1575,38 @@ namespace Axiom.Core
 			DeclareResource( name, resourceType, DefaultResourceGroupName, null, new NameValuePairList() );
 		}
 
-		/// <param name="groupName">The name of the group to which it will belong.</param>
-		public void DeclareResource( string name, string resourceType, string groupName )
+	    /// <param name="resourceType"></param>
+	    /// <param name="groupName">The name of the group to which it will belong.</param>
+	    /// <param name="name"></param>
+	    public void DeclareResource( string name, string resourceType, string groupName )
 		{
 			DeclareResource( name, resourceType, groupName, null, new NameValuePairList() );
 		}
 
-		/// <param name="loadParameters">
-		/// A list of name / value pairs which supply custom
-		/// parameters to the resource which will be required before it can
-		/// be loaded. These are specific to the resource type.
-		/// </param>
-		public void DeclareResource( string name, string resourceType, IManualResourceLoader loader,
+	    /// <param name="loader"></param>
+	    /// <param name="loadParameters">
+	    /// A list of name / value pairs which supply custom
+	    /// parameters to the resource which will be required before it can
+	    /// be loaded. These are specific to the resource type.
+	    /// </param>
+	    /// <param name="name"></param>
+	    /// <param name="resourceType"></param>
+	    public void DeclareResource( string name, string resourceType, IManualResourceLoader loader,
 									 NameValuePairList loadParameters )
 		{
 			DeclareResource( name, resourceType, DefaultResourceGroupName, loader, loadParameters );
 		}
 
-		/// <param name="groupName">The name of the group to which it will belong.</param>
-		/// <param name="loadParameters">
-		/// A list of name / value pairs which supply custom
-		/// parameters to the resource which will be required before it can
-		/// be loaded. These are specific to the resource type.
-		/// </param>
-		public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader,
+	    /// <param name="resourceType"></param>
+	    /// <param name="groupName">The name of the group to which it will belong.</param>
+	    /// <param name="loader"></param>
+	    /// <param name="loadParameters">
+	    /// A list of name / value pairs which supply custom
+	    /// parameters to the resource which will be required before it can
+	    /// be loaded. These are specific to the resource type.
+	    /// </param>
+	    /// <param name="name"></param>
+	    public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader,
 									 NameValuePairList loadParameters )
 		{
 			ResourceGroup grp = getResourceGroup( groupName );
@@ -1758,10 +1782,11 @@ namespace Axiom.Core
 			return OpenResources( pattern, DefaultResourceGroupName );
 		}
 
-		/// <param name="groupName">
-		/// The resource group; this determines which locations are searched.
-		/// </param>
-		public List<IO.Stream> OpenResources( string pattern, string groupName )
+	    /// <param name="pattern"></param>
+	    /// <param name="groupName">
+	    /// The resource group; this determines which locations are searched.
+	    /// </param>
+	    public List<IO.Stream> OpenResources( string pattern, string groupName )
 		{
 			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )

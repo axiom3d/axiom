@@ -267,7 +267,7 @@ namespace Axiom.Media
 				else    // NAN
 				{
 					m >>= 13;
-					return (ushort)( s | 0x7c00 | m | ( m == 0 ? 1u : 0u ) );
+					return (ushort)( (uint)s | 0x7c00 | (uint)m | ( m == 0 ? 1u : 0u ) );
 				}
 			}
 			else

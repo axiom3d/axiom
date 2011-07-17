@@ -44,6 +44,9 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+        // The whole thing is private and not used
+        // thus it is commented it out for now
+        /*
 		class GpuProgramParametersTranslator : Translator
 		{
 			private GpuProgramParameters _parameters;
@@ -71,5 +74,6 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
+         */
 	}
 }

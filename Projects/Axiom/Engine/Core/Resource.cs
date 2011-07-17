@@ -404,20 +404,24 @@ namespace Axiom.Core
 		{
 		}
 
-		/// <param name="isManual">
-		///     Is this resource manually loaded? If so, you should really
-		///     populate the loader parameter in order that the load process
-		///     can call the loader back when loading is required.
-		/// </param>
-		/// <param name="loader">
-		///     An IManualResourceLoader implementation which will be called
-		///     when the Resource wishes to load (should be supplied if you set
-		///     isManual to true). You can in fact leave this parameter null
-		///     if you wish, but the Resource will never be able to reload if
-		///     anything ever causes it to unload. Therefore provision of a proper
-		///     IManualResourceLoader instance is strongly recommended.
-		/// </param>
-		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+	    /// <param name="group"></param>
+	    /// <param name="isManual">
+	    ///     Is this resource manually loaded? If so, you should really
+	    ///     populate the loader parameter in order that the load process
+	    ///     can call the loader back when loading is required.
+	    /// </param>
+	    /// <param name="loader">
+	    ///     An IManualResourceLoader implementation which will be called
+	    ///     when the Resource wishes to load (should be supplied if you set
+	    ///     isManual to true). You can in fact leave this parameter null
+	    ///     if you wish, but the Resource will never be able to reload if
+	    ///     anything ever causes it to unload. Therefore provision of a proper
+	    ///     IManualResourceLoader instance is strongly recommended.
+	    /// </param>
+	    /// <param name="parent"></param>
+	    /// <param name="name"></param>
+	    /// <param name="handle"></param>
+	    protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
             : base()
 		{
 			_creator = parent;
@@ -630,7 +634,7 @@ namespace Axiom.Core
 					postLoad();
 				}
 			}
-			catch ( Exception ex )
+			catch ( Exception )
 			{
 				// Reset loading in-progress flag in case failed for some reason
 				lock ( _loadingStatusMutex )

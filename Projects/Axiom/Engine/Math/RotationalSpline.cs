@@ -134,13 +134,14 @@ namespace Axiom.Math
 			return Interpolate( segIndex, t, useShortestPath );
 		}
 
-		/// <summary>
-		///		Interpolates a single segment of the spline given a parametric value.
-		/// </summary>
-		/// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
-		/// <param name="t">Parametric value</param>
-		/// <returns>An interpolated point along the spline.</returns>
-		public Quaternion Interpolate( int index, Real t, bool useShortestPath )
+	    /// <summary>
+	    ///		Interpolates a single segment of the spline given a parametric value.
+	    /// </summary>
+	    /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
+	    /// <param name="t">Parametric value</param>
+	    /// <param name="useShortestPath"></param>
+	    /// <returns>An interpolated point along the spline.</returns>
+	    public Quaternion Interpolate( int index, Real t, bool useShortestPath )
 		{
 			Contract.Requires( index >= 0, "index", "Spline point index underrun." );
 			Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );

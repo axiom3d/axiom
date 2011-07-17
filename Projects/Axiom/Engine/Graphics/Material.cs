@@ -1062,6 +1062,7 @@ namespace Axiom.Graphics
 			this.CopyTo( target, true );
 		}
 
+		/// <param name="target"></param>
 		/// <param name="copyUniqueInfo">preserves the target's handle, group, name, and loading properties (unlike operator=) but copying everything else.</param>
 		public void CopyTo( Material target, bool copyUniqueInfo )
 		{
@@ -1139,7 +1140,6 @@ namespace Axiom.Graphics
 			return this.GetBestTechnique( lodIndex, null );
 		}
 
-		/// <param name="lodIndex"></param>
 		public Technique GetBestTechnique( int lodIndex, IRenderable renderable )
 		{
 			Technique technique = null;

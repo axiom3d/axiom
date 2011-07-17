@@ -812,7 +812,7 @@ namespace Axiom.Core
 		///		This method allows you to change the yaw behavior of the node - by default, it
 		///		yaws around it's own local Y axis when told to yaw with <see cref="TransformSpace.Local"/>,
 		///		this makes it yaw around a fixed axis.
-		///		You only really need this when you're using auto tracking (<see cref="SetAutoTracking"/>,
+		///		You only really need this when you're using auto tracking (<see cref="SetAutoTracking(bool)"/>,
 		///		because when you're manually rotating a node you can specify the <see cref="TransformSpace"/>
 		///		in which you wish to work anyway.
 		/// </remarks>
