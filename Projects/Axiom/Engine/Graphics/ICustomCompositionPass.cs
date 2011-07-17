@@ -51,7 +51,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Interface for custom composition passes, allowing custom operations (in addition to
 	/// the quad, scene and clear operations) in composition passes.
-    /// <seealso cref="CompositorManager.RegisterCustomCompositorPass"/>
+	/// <seealso cref="CompositorManager.RegisterCustomCompositionPass"/>
 	/// </summary>
 	public interface ICustomCompositionPass
 	{

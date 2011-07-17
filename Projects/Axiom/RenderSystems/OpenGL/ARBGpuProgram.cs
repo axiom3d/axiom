@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// MONO: Cannot compile programs when passing in the string as is for whatever reason.
 			// would get "Invalid vertex program header", which I assume means the source got mangled along the way
-			byte[] bytes = Encoding.ASCII.GetBytes( Source );
+			byte[] bytes = Encoding.ASCII.GetBytes( source );
 			// TODO: We pin the managed 'bytes' to get a pointer to data and get sure they won't move around in memory.
 			//       In case glProgramStringARB() doesn't store the pointer internally, we better free the handle yet in this method,
 			//       or rather utilize a fixed (byte* sourcePtr = bytes) statement, which cares for unpinning the data even in case
@@ -115,7 +115,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
 			IntPtr sourcePtr = _handle.AddrOfPinnedObject();
 
-			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, Source.Length, sourcePtr );
+			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr );
 
 			// check for any errors
 			if ( Gl.glGetError() == Gl.GL_INVALID_OPERATION )
@@ -183,8 +183,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisable( programType );
 		}
 
-
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		public override void BindParameters( GpuProgramParameters parms )
 		{
 			if ( !IsSupported )
 				return;

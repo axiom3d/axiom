@@ -99,6 +99,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Basic contructor.
 		/// </summary>
+		/// <param name="name"></param>
 		public SubMesh( /*string name*/ )
             : base()
 		{

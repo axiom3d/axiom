@@ -114,6 +114,7 @@ namespace Axiom.Collections
 		/// <summary>
 		/// Adds multiple items from a specified source collection
 		/// </summary>
+		/// <param name="from"></param>
 		public virtual void AddRange( IDictionary<string, T> source )
 		{
 			foreach ( KeyValuePair<string, T> entry in source )

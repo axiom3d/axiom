@@ -229,7 +229,7 @@ namespace Axiom.Graphics
 			{
 				// lock the real deal and flag it as locked
 				data = this.LockImpl( offset, length, locking );
-				isLocked = true;
+				isLocked = ( locking != BufferLocking.ReadOnly );
 			}
 
 			lockStart = offset;

@@ -133,25 +133,23 @@ namespace Axiom.Graphics
 			return Create( name, group, type, syntaxCode, false, null );
 		}
 
-	    /// <summary>
-	    ///    Creates a new GpuProgram.
-	    /// </summary>
-	    /// <param name="name">
-	    ///    Name of the program to create.
-	    /// </param>
-	    /// <param name="group"></param>
-	    /// <param name="type">
-	    ///    Type of the program to create, i.e. vertex or fragment.
-	    /// </param>
-	    /// <param name="syntaxCode">
-	    ///    Syntax of the program, i.e. vs_1_1, arbvp1, etc.
-	    /// </param>
-	    /// <param name="isManual"></param>
-	    /// <param name="loader"></param>
-	    /// <returns>
-	    ///    A new instance of GpuProgram.
-	    /// </returns>
-	    public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
+		/// <summary>
+		///    Creates a new GpuProgram.
+		/// </summary>
+		/// <param name="name">
+		///    Name of the program to create.
+		/// </param>
+		/// <param name="group"></param>
+		/// <param name="type">
+		///    Type of the program to create, i.e. vertex or fragment.
+		/// </param>
+		/// <param name="syntaxCode">
+		///    Syntax of the program, i.e. vs_1_1, arbvp1, etc.
+		/// </param>
+		/// <returns>
+		///    A new instance of GpuProgram.
+		/// </returns>
+		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
 		{
 			// Call creation implementation
 			GpuProgram ret = (GpuProgram)_create( name, nextHandle, group, isManual, loader, type, syntaxCode );
@@ -175,28 +173,26 @@ namespace Axiom.Graphics
 		/// <returns>A new instance of GpuProgram.</returns>
 		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 
-	    /// <summary>
-	    ///    Create a new, unloaded GpuProgram from a file of assembly.
-	    /// </summary>
-	    /// <remarks>
-	    ///    Use this method in preference to the 'load' methods if you wish to define
-	    ///    a GpuProgram, but not load it yet; useful for saving memory.
-	    /// </remarks>
-	    /// <param name="name">
-	    ///    The name of the program.
-	    /// </param>
-	    /// <param name="group"></param>
-	    /// <param name="fileName">
-	    ///    The file to load.
-	    /// </param>
-	    /// <param name="type"></param>
-	    /// <param name="syntaxCode">
-	    ///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
-	    /// </param>
-	    /// <returns>
-	    ///    An unloaded GpuProgram instance.
-	    /// </returns>
-	    public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
+		/// <summary>
+		///    Create a new, unloaded GpuProgram from a file of assembly.
+		/// </summary>
+		/// <remarks>
+		///    Use this method in preference to the 'load' methods if you wish to define
+		///    a GpuProgram, but not load it yet; useful for saving memory.
+		/// </remarks>
+		/// <param name="name">
+		///    The name of the program.
+		/// </param>
+		/// <param name="fileName">
+		///    The file to load.
+		/// </param>
+		/// <param name="syntaxCode">
+		///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
+		/// </param>
+		/// <returns>
+		///    An unloaded GpuProgram instance.
+		/// </returns>
+		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = Create( name, group, type, syntaxCode );
 
@@ -207,26 +203,24 @@ namespace Axiom.Graphics
 			return program;
 		}
 
-	    /// <summary>
-	    ///    Create a new, unloaded GpuProgram from a string of assembly code.
-	    /// </summary>
-	    /// <remarks>
-	    ///    Use this method in preference to the 'load' methods if you wish to define
-	    ///    a GpuProgram, but not load it yet; useful for saving memory.
-	    /// </remarks>
-	    /// <param name="name">
-	    ///    The name of the program.
-	    /// </param>
-	    /// <param name="group"></param>
-	    /// <param name="source">
-	    ///    The asm source of the program to create.
-	    /// </param>
-	    /// <param name="type"></param>
-	    /// <param name="syntaxCode">
-	    ///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
-	    /// </param>
-	    /// <returns>An unloaded GpuProgram instance.</returns>
-	    public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
+		/// <summary>
+		///    Create a new, unloaded GpuProgram from a string of assembly code.
+		/// </summary>
+		/// <remarks>
+		///    Use this method in preference to the 'load' methods if you wish to define
+		///    a GpuProgram, but not load it yet; useful for saving memory.
+		/// </remarks>
+		/// <param name="name">
+		///    The name of the program.
+		/// </param>
+		/// <param name="source">
+		///    The asm source of the program to create.
+		/// </param>
+		/// <param name="syntaxCode">
+		///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
+		/// </param>
+		/// <returns>An unloaded GpuProgram instance.</returns>
+		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = Create( name, group, type, syntaxCode );
 
@@ -260,28 +254,27 @@ namespace Axiom.Graphics
 			return syntaxCodes.Contains( syntaxCode );
 		}
 
-	    /// <summary>
-	    ///    Loads a GPU program from a file of assembly.
-	    /// </summary>
-	    /// <remarks>
-	    ///    This method creates a new program of the type specified as the second parameter.
-	    ///    As with all types of ResourceManager, this class will search for the file in
-	    ///    all resource locations it has been configured to look in.
-	    /// </remarks>
-	    /// <param name="name">
-	    ///    Identifying name of the program to load.
-	    /// </param>
-	    /// <param name="group"></param>
-	    /// <param name="fileName">
-	    ///    The file to load.
-	    /// </param>
-	    /// <param name="type">
-	    ///    Type of program to create.
-	    /// </param>
-	    /// <param name="syntaxCode">
-	    ///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
-	    /// </param>
-	    public virtual GpuProgram Load( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
+		/// <summary>
+		///    Loads a GPU program from a file of assembly.
+		/// </summary>
+		/// <remarks>
+		///    This method creates a new program of the type specified as the second parameter.
+		///    As with all types of ResourceManager, this class will search for the file in
+		///    all resource locations it has been configured to look in.
+		/// </remarks>
+		/// <param name="name">
+		///    Identifying name of the program to load.
+		/// </param>
+		/// <param name="fileName">
+		///    The file to load.
+		/// </param>
+		/// <param name="type">
+		///    Type of program to create.
+		/// </param>
+		/// <param name="syntaxCode">
+		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
+		/// </param>
+		public virtual GpuProgram Load( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = GetByName( name );
 
@@ -294,28 +287,27 @@ namespace Axiom.Graphics
 			return program;
 		}
 
-	    /// <summary>
-	    ///    Loads a GPU program from a string containing the assembly source.
-	    /// </summary>
-	    /// <remarks>
-	    ///    This method creates a new program of the type specified as the second parameter.
-	    ///    As with all types of ResourceManager, this class will search for the file in
-	    ///    all resource locations it has been configured to look in.
-	    /// </remarks>
-	    /// <param name="name">
-	    ///    Name used to identify this program.
-	    /// </param>
-	    /// <param name="group"></param>
-	    /// <param name="source">
-	    ///    Source code of the program to load.
-	    /// </param>
-	    /// <param name="type">
-	    ///    Type of program to create.
-	    /// </param>
-	    /// <param name="syntaxCode">
-	    ///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
-	    /// </param>
-	    public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
+		/// <summary>
+		///    Loads a GPU program from a string containing the assembly source.
+		/// </summary>
+		/// <remarks>
+		///    This method creates a new program of the type specified as the second parameter.
+		///    As with all types of ResourceManager, this class will search for the file in
+		///    all resource locations it has been configured to look in.
+		/// </remarks>
+		/// <param name="name">
+		///    Name used to identify this program.
+		/// </param>
+		/// <param name="source">
+		///    Source code of the program to load.
+		/// </param>
+		/// <param name="type">
+		///    Type of program to create.
+		/// </param>
+		/// <param name="syntaxCode">
+		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
+		/// </param>
+		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = GetByName( name );
 

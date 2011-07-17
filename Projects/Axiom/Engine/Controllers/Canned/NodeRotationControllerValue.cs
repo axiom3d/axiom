@@ -48,8 +48,7 @@ namespace Axiom.Controllers.Canned
 	/// </summary>
 	public class NodeRotationControllerValue : IControllerValue<float>
 	{
-        // commented out (read access only private)
-		//private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
+		private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
 		private Node node;
 		private Vector3 axis;
 
@@ -65,8 +64,7 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-                //return radians;
-			    return 0.0f;
+				return radians;
 			}
 			set
 			{

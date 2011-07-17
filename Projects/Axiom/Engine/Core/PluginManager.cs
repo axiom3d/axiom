@@ -138,6 +138,8 @@ namespace Axiom.Core
 		/// <summary>
 		///		Scans for plugin files in the current directory.
 		/// </summary>
+		///<param name="folder"></param>
+		///<returns></returns>
 		protected IList<ObjectCreator> ScanForPlugins()
 		{
 			return ScanForPlugins( "." );
@@ -212,6 +214,8 @@ namespace Axiom.Core
 		///		This function does NOT add the plugin to the PluginManager's
 		///		list of plugins.
 		/// </summary>
+		/// <param name="assemblyName">The assembly filename ("xxx.dll")</param>
+		/// <param name="className">The class ("MyNamespace.PluginClassname") that implemented IPlugin.</param>
 		/// <returns>The loaded plugin.</returns>
 		private static IPlugin LoadPlugin( ObjectCreator creator )
 		{

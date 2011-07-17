@@ -89,16 +89,16 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
-			switch ( type )
-			{
-				case GpuProgramType.Vertex:
-				//	return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+            switch (type)
+            {
+                case GpuProgramType.Vertex:
+                    return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 
-				case GpuProgramType.Fragment:
-				//	return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
-				default:
-					throw new NotSupportedException( "The program type is not supported." );
-			}
+                case GpuProgramType.Fragment:
+                    return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+                default:
+                    throw new NotSupportedException( "The program type is not supported." );
+            }
 		}
 
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
@@ -110,11 +110,11 @@ namespace Axiom.RenderSystems.Xna
             return null;
 			if ( createParams[ "type" ] == "vertex_program" )
 			{
-				//return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+				return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 			}
 			else
 			{
-				//return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
 			}
 		}
 

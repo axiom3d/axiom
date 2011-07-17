@@ -1250,12 +1250,7 @@ namespace Axiom.Serialization
 			}
 
 			// create/populate vertex buffer
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-					vertexSize,
-					data.vertexCount,
-					mesh.VertexBufferUsage,
-					mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			IntPtr bufferPtr = buffer.Lock( BufferLocking.Discard );
 
@@ -1722,10 +1717,10 @@ namespace Axiom.Serialization
 			VertexMorphKeyFrame mkf = track.CreateVertexMorphKeyFrame( time );
 			int vertexCount = track.TargetVertexData.vertexCount;
 			// create/populate vertex buffer
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-						VertexElement.GetTypeSize( VertexElementType.Float3 ),
-						vertexCount, BufferUsage.Static, true );
+            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            decl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+
+            HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexCount, BufferUsage.Static, true );
 			// lock the buffer for editing
 			IntPtr vertices = buffer.Lock( BufferLocking.Discard );
 			// stuff the floats into the normal buffer
@@ -2108,9 +2103,7 @@ namespace Axiom.Serialization
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// vertex buffers
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.
-				CreateVertexBuffer( data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			IntPtr posData = vBuffer.Lock( BufferLocking.Discard );
 
@@ -2129,11 +2122,7 @@ namespace Axiom.Serialization
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr normals = vBuffer.Lock( BufferLocking.Discard );
@@ -2152,11 +2141,7 @@ namespace Axiom.Serialization
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Tangent );
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr buf = vBuffer.Lock( BufferLocking.Discard );
@@ -2175,11 +2160,7 @@ namespace Axiom.Serialization
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Binormal );
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr buf = vBuffer.Lock( BufferLocking.Discard );
@@ -2199,11 +2180,7 @@ namespace Axiom.Serialization
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr colors = vBuffer.Lock( BufferLocking.Discard );
@@ -2224,18 +2201,10 @@ namespace Axiom.Serialization
 			short dim = ReadShort( reader );
 
 			// add a vertex element for the current tex coord set
-			data.vertexDeclaration.AddElement(
-				bindIdx, 0,
-				VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ),
-				VertexElementSemantic.TexCoords,
-				coordSet );
+			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ), VertexElementSemantic.TexCoords, coordSet );
 
 			// create the vertex buffer for the tex coords
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the vertex buffer
 			IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
@@ -2282,11 +2251,7 @@ namespace Axiom.Serialization
 				coordSet );
 
 			// create the vertex buffer for the tex coords
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the vertex buffer
 			IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );

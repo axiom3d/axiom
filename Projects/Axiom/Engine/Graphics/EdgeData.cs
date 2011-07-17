@@ -204,8 +204,8 @@ namespace Axiom.Graphics
 			public int[] vertIndex;
 			/// <summary>
 			///     Vertex indexes, relative to a shared vertex buffer with 
-			///     duplicates eliminated (this buffer is not exposed).
-            /// </summary>
+			//      duplicates eliminated (this buffer is not exposed).
+			/// </summary>
 			public int[] sharedVertIndex;
 			/// <summary>
 			///      Unit vector othogonal to this face, plus distance from origin.

@@ -648,7 +648,6 @@ namespace Axiom.Math
 			return PositionEquals( right, 1e-03f );
 		}
 
-        ///<param name="right">The vector to compare with</param>
 		/// <param name="tolerance">The amount that each element of the vector may vary by and still be considered equal.</param>
 		public bool PositionEquals( Vector3 right, Real tolerance )
 		{

@@ -101,6 +101,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Default constructor.
 		/// </summary>
+		/// <param name="name">Name of the high level program.</param>
+		/// <param name="type">Type of program, vertex or fragment.</param>
+		/// <param name="language">HLSL language this program is written in.</param>
 		public HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
@@ -140,11 +143,11 @@ namespace Axiom.Graphics
 		{
 			if ( !isHighLevelLoaded )
 			{
-				if ( LoadFromFile )
+				if ( loadFromFile )
 				{
-                    var stream = ResourceGroupManager.Instance.OpenResource(SourceFile);
-					var reader = new StreamReader( stream, System.Text.Encoding.UTF8 );
-					Source = reader.ReadToEnd();
+					Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
+					StreamReader reader = new StreamReader( stream, System.Text.Encoding.UTF8 );
+					source = reader.ReadToEnd();
 					stream.Close();
 				}
 
@@ -186,8 +189,6 @@ namespace Axiom.Graphics
 		/// <param name="parms"></param>
 		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
 
-        protected abstract void BuildConstantDefinitions();
-
 		/// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
@@ -213,9 +214,9 @@ namespace Axiom.Graphics
 			}
 
 			// copy in default parameters if present
-            if (HasDefaultParameters)
+			if ( defaultParams != null )
 			{
-                newParams.CopyConstantsFrom(DefaultParameters);
+				newParams.CopyConstantsFrom( defaultParams );
 			}
 
 			return newParams;
@@ -258,6 +259,12 @@ namespace Axiom.Graphics
 		///    Create method which needs to be implemented to return an
 		///    instance of a HighLevelGpuProgram.
 		/// </summary>
+		/// <param name="name">
+		///    Name of the program to create.
+		/// </param>
+		/// <param name="type">
+		///    Type of program to create, i.e. vertex or fragment.
+		/// </param>
 		/// <returns>
 		///    A newly created instance of HighLevelGpuProgram.
 		/// </returns>

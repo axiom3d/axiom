@@ -108,7 +108,7 @@ namespace Axiom.Core
 		#region Fields
 
 		/// <summary>
-		///     A list of textures available for shadow use.
+		///     A list of textures available for shadow use.</summary>
 		/// </summary>
 		protected List<WeakReference> textureList = new List<WeakReference>();
 		protected List<WeakReference> nullTextureList = new List<WeakReference>();
