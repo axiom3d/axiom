@@ -129,84 +129,85 @@ namespace Axiom.Graphics
 
         #region Fields
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected HardwareOcclusionQueryList hwOcclusionQueries = new HardwareOcclusionQueryList();
 
         /// <summary>
         /// List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>) by priority
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected RenderTargetPriorityMap prioritizedRenderTargets = new RenderTargetPriorityMap();
 
         /// <summary>
         /// List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>)
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected RenderTargetMap renderTargets = new RenderTargetMap();
 
         /// <summary>
         /// A reference to the texture management class specific to this implementation.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected TextureManager textureManager;
 
         /// <summary>
         /// Active render target.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected RenderTarget activeRenderTarget;
 
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int vSyncInterval;
 
         /// <summary>
         /// Capabilites of the current hardware (populated at startup).
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected RenderSystemCapabilities realCapabilities;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool useCustomCapabilities;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int currentPassIterationNum;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool vertexProgramBound;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool fragmentProgramBound;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool geometryProgramBound;
 
         /// <summary>
         /// Saved manual color blends
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected ColorEx[,] manualBlendColors = new ColorEx[Config.MaxTextureLayers, 2];
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int disabledTexUnitsFrom;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool derivedDepthBias;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected float derivedDepthBiasBase;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected float derivedDepthBiasMultiplier;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected float derivedDepthBiasSlopeScale;
 
 
         // The Active GPU programs and gpu program parameters
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected GpuProgramParameters activeVertexGpuProgramParameters;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected GpuProgramParameters activeGeometryGpuProgramParameters;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected GpuProgramParameters activeFragmentGpuProgramParameters;
 
-        [OgreVersion( 1, 7 )] protected DepthBufferMap depthBufferPool =
+        [OgreVersion(1, 7, 2790)] 
+        protected DepthBufferMap depthBufferPool =
             new DepthBufferMap
             {
                 { PoolId.Default, new DepthBufferVec() },
@@ -214,9 +215,9 @@ namespace Axiom.Graphics
                 { PoolId.NoDepth, new DepthBufferVec() }
             };
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool texProjRelative;
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Vector3 texProjRelativeOrigin;
 
         #endregion Fields
@@ -249,14 +250,14 @@ namespace Axiom.Graphics
         /// <summary>
         /// Set current render target to target, enabling its device context if needed
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract RenderTarget RenderTarget { set; }
 
         #endregion
 
         #region WaitForVerticalBlank
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool vSync;
 
         /// <summary>
@@ -273,7 +274,7 @@ namespace Axiom.Graphics
         /// <note>
         /// Has NO effect on windowed mode render targets. Only affects fullscreen mode.
         /// </note>
-        [OgreVersion(1, 7, CommentNoVirt)]
+        [OgreVersion(1, 7, 2790, CommentNoVirt)]
         public bool WaitForVerticalBlank
         {
             get
@@ -290,13 +291,13 @@ namespace Axiom.Graphics
 
         #region GlobalInstanceVertexBuffer
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private HardwareVertexBuffer globalInstanceVertexBuffer;
 
         /// <summary>
         /// a global vertex buffer for global instancing
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public HardwareVertexBuffer GlobalInstanceVertexBuffer
         {
             get
@@ -317,13 +318,13 @@ namespace Axiom.Graphics
 
         #region GlobalInstanceVertexBufferVertexDeclaration
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected VertexDeclaration globalInstanceVertexBufferVertexDeclaration;
 
         /// <summary>
         /// a vertex declaration for the global vertex buffer for the global instancing
         /// </summary>
-        [OgreVersion(1, 7, CommentNoVirt)]
+        [OgreVersion(1, 7, 2790, CommentNoVirt)]
         public VertexDeclaration GlobalInstanceVertexBufferVertexDeclaration
         {
             get
@@ -340,13 +341,13 @@ namespace Axiom.Graphics
 
         #region GlobalNumberOfInstances
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int globalNumberOfInstances;
 
         /// <summary>
         /// the number of global instances (this number will be multiply by the render op instance number) 
         /// </summary>
-        [OgreVersion(1, 7, CommentNoVirt)]
+        [OgreVersion(1, 7, 2790, CommentNoVirt)]
         public int GlobalNumberOfInstances
         {
             get
@@ -366,7 +367,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Are fixed-function lights provided in view space? Affects optimisation.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool AreFixedFunctionLightsInViewSpace
         {
             get
@@ -383,20 +384,20 @@ namespace Axiom.Graphics
         /// Sets whether or not rendering points using OT_POINT_LIST will 
         /// render point sprites (textured quads) or plain points.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract bool PointSpritesEnabled { set; }
 
         #endregion
 
         #region RenderSystemCapabilities
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected RenderSystemCapabilities currentCapabilities;
 
         /// <summary>
         /// Gets a set of hardware capabilities queryed by the current render system.
         /// </summary>
-        [OgreVersion(1, 7, CommentNoVirt)]
+        [OgreVersion(1, 7, 2790, CommentNoVirt)]
         public RenderSystemCapabilities MutableCapabilities
         {
             get
@@ -408,7 +409,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///  Gets the capabilities of the render system
         /// </summary>
-        [OgreVersion(1, 7, CommentNoVirt)]
+        [OgreVersion(1, 7, 2790, CommentNoVirt)]
         public RenderSystemCapabilities Capabilities
         {
             get
@@ -421,13 +422,13 @@ namespace Axiom.Graphics
 
         #region Viewport
 
-        [OgreVersion(1, 7, "Public due to Ogre design deficit: directly intruding into this using friend")] 
+        [OgreVersion(1, 7, 2790, "Public due to Ogre design deficit: directly intruding into this using friend")] 
         public Viewport activeViewport;
 
         /// <summary>
         /// Get or set the current active viewport for rendering.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual Viewport Viewport
         {
             get
@@ -444,7 +445,7 @@ namespace Axiom.Graphics
 
         #region CullingMode
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected CullingMode cullingMode;
 
         /// <summary>
@@ -460,7 +461,7 @@ namespace Axiom.Graphics
         /// if you wish but it is not advised unless you know what you are doing. You may wish to use the 
         /// <see cref="Graphics.CullingMode.None"/> option for mesh data that you cull yourself where the vertex winding is uncertain.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual CullingMode CullingMode
         {
             get
@@ -480,7 +481,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Sets whether or not the depth buffer check is performed before a pixel write
         /// </summary>
-        [OgreVersion(1, 7, "Default = true")]
+        [OgreVersion(1, 7, 2790, "Default = true")]
         public abstract bool DepthBufferCheckEnabled { set; }
 
         #endregion
@@ -490,7 +491,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Sets whether or not the depth buffer is updated after a pixel write.
         /// </summary>
-        [OgreVersion(1, 7, "Default = true")]
+        [OgreVersion(1, 7, 2790, "Default = true")]
         public abstract bool DepthBufferWriteEnabled { set; }
 
         #endregion
@@ -503,20 +504,20 @@ namespace Axiom.Graphics
         /// new and existing pixels in the depth buffer. Only an issue if the depth buffer check is enabled
         /// <see cref="DepthBufferCheckEnabled"/>
         /// </summary>
-        [OgreVersion(1, 7, "Default = (CompareFunction.LessEqual")]
+        [OgreVersion(1, 7, 2790, "Default = (CompareFunction.LessEqual")]
         public abstract CompareFunction DepthBufferFunction { set; }
 
         #endregion
 
         #region DriverVersion
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected DriverVersion driverVersion;
 
         /// <summary>
         ///  Returns the driver version.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual DriverVersion DriverVersion
         {
             get
@@ -532,7 +533,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///  Returns the driver version.
         /// </summary>
-        [OgreVersion(1, 7, "No RTSHADER support")]
+        [OgreVersion(1, 7, 2790, "No RTSHADER support")]
         public virtual string DefaultViewportMaterialScheme
         {
             get
@@ -545,15 +546,15 @@ namespace Axiom.Graphics
 
         #region ClipPlanes
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected PlaneList clipPlanes = new PlaneList();
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool clipPlanesDirty;
 
         /// <summary>
         ///  Returns the driver version.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual PlaneList ClipPlanes
         {
             set
@@ -577,7 +578,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets a dataset with the options set for the rendering system.
         /// </summary>
-        [OgreVersion(1, 7, "abstract in Ogre")]
+        [OgreVersion(1, 7, 2790, "abstract in Ogre")]
         [AxiomHelper(0, 8, "provides default backing field to reg options")]
         public virtual ConfigOptionMap ConfigOptions
         {
@@ -591,13 +592,13 @@ namespace Axiom.Graphics
 
         #region FaceCount
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int faceCount;
 
         /// <summary>
         /// Number of faces rendered during the current frame so far.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int FaceCount
         {
             get
@@ -610,13 +611,13 @@ namespace Axiom.Graphics
 
         #region BatchCount
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int batchCount;
 
         /// <summary>
         /// Number of batches rendered during the current frame so far.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int BatchCount
         {
             get
@@ -629,13 +630,13 @@ namespace Axiom.Graphics
 
         #region VertexCount
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int vertexCount;
 
         /// <summary>
         /// Number of vertices processed during the current frame so far.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int VertexCount
         {
             get
@@ -650,7 +651,7 @@ namespace Axiom.Graphics
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract VertexElementType ColorVertexElementType { get; }
 
         #endregion
@@ -660,7 +661,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Sets the current vertex declaration, ie the source of vertex data.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract VertexDeclaration VertexDeclaration { set; }
 
         #endregion
@@ -670,14 +671,14 @@ namespace Axiom.Graphics
         /// <summary>
         /// Sets the current vertex buffer binding state.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract VertexBufferBinding VertexBufferBinding { set; }
 
         #endregion
 
         #region CurrentPassIterationCount
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int currentPassIterationCount;
 
         /// <summary>
@@ -687,7 +688,7 @@ namespace Axiom.Graphics
         /// calling render() if multiple renderings of the same pass state are 
         /// required.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual int CurrentPassIterationCount
         {
             get
@@ -704,14 +705,14 @@ namespace Axiom.Graphics
 
         #region InvertVertexWinding
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool invertVertexWinding;
 
         /// <summary>
         /// Sets whether or not vertex windings set should be inverted; this can be important
         /// for rendering reflections.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual bool InvertVertexWinding
         {
             get
@@ -731,7 +732,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets the name of this RenderSystem based on it's assembly attribute Title.
         /// </summary>
-        [OgreVersion(1, 7, "abstract in Ogre")]
+        [OgreVersion(1, 7, 2790, "abstract in Ogre")]
         [AxiomHelper(0, 8, "Axiom uses reflection to supply a default value")]
         public virtual string Name
         {
@@ -753,7 +754,7 @@ namespace Axiom.Graphics
 
         protected event Action<string, NameValuePairList> eventListeners;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual event Action<string, NameValuePairList> Listener
         {
             add
@@ -795,10 +796,10 @@ namespace Axiom.Graphics
 
         #region RenderSystemEvents
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected List<string> eventNames = new List<string>();
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual List<string> RenderSystemEvents
         {
             get
@@ -814,17 +815,17 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets the number of display monitors. <see name="Root.DisplayMonitorCount"/>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract int DisplayMonitorCount { get; }
 
         #endregion
 
         #region WBufferEnabled
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool wBuffer;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool WBufferEnabled
         {
             get
@@ -844,10 +845,10 @@ namespace Axiom.Graphics
         /// <summary>
         /// Sets the color &amp; strength of the ambient (global directionless) light in the world.
         /// </summary>
-        [OgreVersion(1, 7, "Axiom interface uses ColorEx while Ogre uses a ternary (r,g,b) setter")]
+        [OgreVersion(1, 7, 2790, "Axiom interface uses ColorEx while Ogre uses a ternary (r,g,b) setter")]
         public abstract ColorEx AmbientLight { set; }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract ShadeOptions ShadingType { set; }
 
         #endregion
@@ -865,7 +866,7 @@ namespace Axiom.Graphics
         /// required to map the origin of a texel to the origin of a pixel in
         /// the horizontal direction.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Real HorizontalTexelOffset
         {
             get;
@@ -881,7 +882,7 @@ namespace Axiom.Graphics
         /// If true, dynamic lighting is performed on geometry with normals supplied, geometry without
         /// normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract bool LightingEnabled
         {
             set;
@@ -903,7 +904,7 @@ namespace Axiom.Graphics
         /// world geometry; set it on the Renderable because otherwise it will be
         /// overridden by material settings. 
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract bool NormalizeNormals
         {
             set;
@@ -916,7 +917,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets/Sets the current projection matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Matrix4 ProjectionMatrix
         {
             set;
@@ -929,7 +930,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets/Sets how to rasterise triangles, as points, wireframe or solid polys.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract PolygonMode PolygonMode
         {
             set;
@@ -947,7 +948,7 @@ namespace Axiom.Graphics
         /// buffer) can be turned on or off using this method. By default, stencilling is
         /// disabled.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract bool StencilCheckEnabled
         {
             set;
@@ -968,7 +969,7 @@ namespace Axiom.Graphics
         /// required to map the origin of a texel to the origin of a pixel in
         /// the vertical direction.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Real VerticalTexelOffset
         {
             get;
@@ -981,7 +982,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets/Sets the current view matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Matrix4 ViewMatrix
         {
             set;
@@ -994,7 +995,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Sets the current world matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Matrix4 WorldMatrix
         {
             set;
@@ -1014,7 +1015,7 @@ namespace Axiom.Graphics
         /// <see cref="SimpleRenderable.UseIdentityView"/>
         /// <see cref="SimpleRenderable.UseIdentityProjection"/>
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Real MinimumDepthInputValue
         {
             get;
@@ -1034,7 +1035,7 @@ namespace Axiom.Graphics
         /// <see cref="SimpleRenderable.UseIdentityView"/>
         /// <see cref="SimpleRenderable.UseIdentityProjection"/>
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract Real MaximumDepthInputValue
         {
             get;
@@ -1051,7 +1052,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Internal method for firing a rendersystem event
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected virtual void FireEvent(string name, NameValuePairList pars = null)
         {
             if (eventListeners != null)
@@ -1080,7 +1081,7 @@ namespace Axiom.Graphics
         /// Once this init sequence is completed the threads are independent but
         /// this startup sequence must be respected.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void PreExtraThreadsStarted();
 
         #endregion
@@ -1092,7 +1093,7 @@ namespace Axiom.Graphics
         /// after other threads which might access the rendering API are registered.
         /// <see cref="PreExtraThreadsStarted"/>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void PostExtraThreadsStarted();
 
         #endregion
@@ -1113,7 +1114,7 @@ namespace Axiom.Graphics
         /// This method takes no parameters - it must be called from the thread being
         /// registered and that context is enough.
         /// </note>        
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void RegisterThread();
 
 
@@ -1125,7 +1126,7 @@ namespace Axiom.Graphics
         /// Unregister an additional thread which may make calls to rendersystem-related objects.
         /// <see cref="RegisterThread"/>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void UnregisterThread();
 
         #endregion
@@ -1140,7 +1141,7 @@ namespace Axiom.Graphics
         /// capabilities has to be a subset of the real capabilities and the caller is 
         /// responsible for deallocating capabilities.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void UseCustomRenderSystemCapabilities(RenderSystemCapabilities capabilities)
         {
             if (realCapabilities != null)
@@ -1163,7 +1164,7 @@ namespace Axiom.Graphics
         /// RenderTarget's pool ID is respected. <see name="RenderTarget.DepthBufferPool"/>
         /// </remarks>
         /// <param name="renderTarget"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetDepthBufferFor(RenderTarget renderTarget)
         {
             var poolId = renderTarget.DepthBufferPool;
@@ -1210,7 +1211,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="constantBias"></param>
         /// <param name="slopeScaleBias"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetDepthBias(float constantBias, float slopeScaleBias = 0.0f);
 
         #endregion
@@ -1226,7 +1227,7 @@ it says it's incompatible with that RT");
         /// <param name="baseValue">The base value to which the multiplier should be added</param>
         /// <param name="multiplier">The amount of depth bias to apply per iteration</param>
         /// <param name="slopeScale">The constant slope scale bias for completeness</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetDerivedDepthBias(bool derive, float baseValue = 0.0f, float multiplier = 0.0f, float slopeScale = 0.0f)
         {
             derivedDepthBias = derive;
@@ -1244,7 +1245,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <remarks>Calling this method can cause the rendering system to modify the ConfigOptions collection.</remarks>
         /// <returns>Error message is configuration is invalid <see cref="String.Empty"/> if valid.</returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract string ValidateConfigOptions();
 
         #endregion
@@ -1255,7 +1256,7 @@ it says it's incompatible with that RT");
         /// Attaches a render target to this render system.
         /// </summary>
         /// <param name="target">Reference to the render target to attach to this render system.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void AttachRenderTarget(RenderTarget target)
         {
             Debug.Assert((int)target.Priority < NumRendertargetGroups);
@@ -1270,7 +1271,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// The RenderSystem will keep a count of tris rendered, this resets the count.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void BeginGeometryCount()
         {
             batchCount = vertexCount = faceCount = 0;
@@ -1285,7 +1286,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="name">Name of the render target to detach.</param>
         /// <returns>the render target that was detached</returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual RenderTarget DetachRenderTarget(string name)
         {
             RenderTarget ret;
@@ -1314,7 +1315,7 @@ it says it's incompatible with that RT");
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract string GetErrorDescription(int errorNumber);
 
         #endregion
@@ -1324,7 +1325,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Turns off a texture unit if not needed.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void DisableTextureUnit(int texUnit)
         {
             SetTexture(texUnit, false, (Texture)null);
@@ -1337,7 +1338,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Disables all texture units from the given unit upwards
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void DisableTextureUnitsFrom(int texUnit)
         {
             var disableTo = Config.MaxTextureLayers;
@@ -1357,7 +1358,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Utility method for initializing all render targets attached to this rendering system.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void InitRenderTargets()
         {
             // init stats for each render target
@@ -1374,7 +1375,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Add a user clipping plane.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void AddClipPlane(Plane p)
         {
             clipPlanes.Add(p);
@@ -1388,7 +1389,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Add a user clipping plane.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void AddClipPlane(Real a, Real b, Real c, Real d)
         {
             AddClipPlane(new Plane(new Vector3(a, b, c), d));
@@ -1401,7 +1402,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Clears the user clipping region.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void ResetClipPlanes()
         {
             if (clipPlanes.Count != 0)
@@ -1420,7 +1421,7 @@ it says it's incompatible with that RT");
         /// incase they were referring to it as their viewer. 
         /// </summary>
         /// <param name="camera">Camera being removed.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void NotifyCameraRemoved(Camera camera)
         {
             foreach (var item in renderTargets)
@@ -1437,7 +1438,7 @@ it says it's incompatible with that RT");
         /// Internal method used to set the underlying clip planes when needed
         /// </summary>
         /// <param name="clipPlanes"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected abstract void SetClipPlanesImpl(PlaneList clipPlanes);
 
         #endregion
@@ -1457,7 +1458,7 @@ it says it's incompatible with that RT");
         /// <param name="op">
         /// A rendering operation instance, which contains details of the operation to be performed.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void Render(RenderOperation op)
         {
             var val = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
@@ -1507,7 +1508,7 @@ it says it's incompatible with that RT");
         /// updates pass iteration rendering state including bound gpu program parameter pass iteration auto constant entry
         /// </summary>
         /// <returns>True if more iterations are required</returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool UpdatePassIterationRenderState()
         {
             if (currentPassIterationCount <= 1)
@@ -1545,7 +1546,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="texUnit"></param>
         /// <param name="tl"></param>
-        [OgreVersion(1, 7, "resolving texture from resourcemanager atm")]
+        [OgreVersion(1, 7, 2790, "resolving texture from resourcemanager atm")]
         public virtual void SetTextureUnitSettings(int texUnit, TextureUnitState tl)
         {
             // TODO: implement TextureUnitState.TexturePtr
@@ -1671,7 +1672,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Sets multiple world matrices (vertex blending).
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetWorldMatrices(Matrix4[] matrices, ushort count)
         {
             // Do nothing with these matrices here, it never used for now,
@@ -1688,7 +1689,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Shuts down the RenderSystem.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void Shutdown()
         {
             // Remove occlusion queries
@@ -1725,7 +1726,7 @@ it says it's incompatible with that RT");
         /// Internal method for updating all render targets attached to this rendering system.
         /// </summary>
         /// <param name="swapBuffers"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void UpdateAllRenderTargets(bool swapBuffers = true)
         {
             // Update all in order of priority
@@ -1751,7 +1752,7 @@ it says it's incompatible with that RT");
         /// Internal method for swapping all the buffers on all render targets,
         /// if <see cref="UpdateAllRenderTargets"/> was called with a 'false' parameter.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SwapAllRenderTargetBuffers(bool waitForVSync = true)
         {
             // Update all in order of priority
@@ -1779,7 +1780,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual RenderTarget GetRenderTarget(string name)
         {
             RenderTarget ret;
@@ -1813,7 +1814,7 @@ it says it's incompatible with that RT");
         /// plane must be in CAMERA (view) space.
         /// </param>
         /// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function transforms?</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void ApplyObliqueDepthProjection(ref Matrix4 projMatrix, Plane plane, bool forGpuProgram);
 
         #endregion
@@ -1824,7 +1825,7 @@ it says it's incompatible with that RT");
         /// Signifies the beginning of a frame, ie the start of rendering on a single viewport. Will occur
         /// several times per complete frame if multiple viewports exist.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void BeginFrame();
 
         #endregion
@@ -1837,7 +1838,7 @@ it says it's incompatible with that RT");
         /// will usually be called by the SceneManager, don't use this manually unless you know what
         /// you are doing.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual RenderSystemContext PauseFrame()
         {
             EndFrame();
@@ -1854,7 +1855,7 @@ it says it's incompatible with that RT");
         /// you are doing.
         /// </summary>
         /// <param name="context">the render system context, as returned by <see cref="PauseFrame"/></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void ResumeFrame(RenderSystemContext context)
         {
             BeginFrame();
@@ -1872,7 +1873,7 @@ it says it's incompatible with that RT");
         /// Only one GpuProgram of each type can be bound at once, binding another
         /// one will simply replace the existing one.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void BindGpuProgram(GpuProgram program)
         {
             switch (program.Type)
@@ -1900,7 +1901,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Bind Gpu program parameters.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms,
             GpuProgramParameters.GpuParamVariability mask);
 
@@ -1912,7 +1913,7 @@ it says it's incompatible with that RT");
         /// Only binds Gpu program parameters used for passes that have more than one iteration rendering
         /// </summary>
         /// <param name="gptype"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void BindGpuProgramPassIterationParameters(GpuProgramType gptype);
 
         #endregion
@@ -1929,7 +1930,7 @@ it says it's incompatible with that RT");
         /// <param name="color">The color to clear the color buffer with, if enabled.</param>
         /// <param name="depth">The value to initialize the depth buffer with, if enabled.</param>
         /// <param name="stencil">The value to initialize the stencil buffer with, if enabled.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void ClearFrameBuffer(FrameBufferType buffers, ColorEx color, Real depth, ushort stencil);
 
         public void ClearFrameBuffer(FrameBufferType buffers, ColorEx color, Real depth)
@@ -1957,7 +1958,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        [OgreVersion(1, 7, "Axiom uses slightly different interface")]
+        [OgreVersion(1, 7, 2790, "Axiom uses slightly different interface")]
         public virtual int ConvertColor(ColorEx color)
         {
             return VertexElement.ConvertColorValue(color, ColorVertexElementType);
@@ -1988,7 +1989,7 @@ it says it's incompatible with that RT");
         /// <param name="miscParams">
         /// A collection of addition rendersystem specific options.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen, NamedParameterList miscParams);
 
         #endregion
@@ -2005,7 +2006,7 @@ it says it's incompatible with that RT");
         /// </param>
         /// <param name="createdWindows">This array will hold the created render windows.</param>
         /// <returns>true on success.</returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual bool CreateRenderWindows(RenderWindowDescriptionList renderWindowDescriptions,
                         RenderWindowList createdWindows)
         {
@@ -2068,7 +2069,7 @@ it says it's incompatible with that RT");
         /// Surfaces can be bound and unbound at will. This fails if Capabilities.MultiRenderTargetsCount is smaller than 2.
         /// </Remarks>
         /// <returns></returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract MultiRenderTarget CreateMultiRenderTarget(string name);
 
         #endregion
@@ -2081,7 +2082,7 @@ it says it's incompatible with that RT");
         /// <see cref="HardwareOcclusionQuery.End"/> that pass the depth buffer test.
         /// </summary>
         /// <returns>An API specific implementation of an occlusion query.</returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract HardwareOcclusionQuery CreateHardwareOcclusionQuery();
 
         #endregion
@@ -2091,7 +2092,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Destroy a hardware occlusion query object. 
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void DestroyHardwareOcclusionQuery(HardwareOcclusionQuery hq)
         {
             if (hwOcclusionQueries.Remove(hq))
@@ -2107,7 +2108,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Ends rendering of a frame to the current viewport.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void EndFrame();
 
         #endregion
@@ -2121,7 +2122,7 @@ it says it's incompatible with that RT");
         /// <param name="windowTitle">Text to display on the window caption if not fullscreen.</param>
         /// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
         /// <remarks>All subclasses should call this method from within thier own intialize methods.</remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual RenderWindow Initialize(bool autoCreateWindow, string windowTitle = DefaultWindowTitle)
         {
             vertexProgramBound = false;
@@ -2137,7 +2138,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Reinitializes the Render System
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void Reinitialize();
 
         #endregion
@@ -2147,7 +2148,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Query the real capabilities of the GPU and driver in the RenderSystem
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract RenderSystemCapabilities CreateRenderSystemCapabilities();
 
         #endregion
@@ -2168,7 +2169,7 @@ it says it's incompatible with that RT");
         /// <param name="far">Far clipping plane distance.</param>
         /// <param name="dest"></param>
         /// <param name="forGpuPrograms"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void MakeOrthoMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false);
 
         #endregion
@@ -2186,7 +2187,7 @@ it says it's incompatible with that RT");
         /// <param name="matrix"></param>
         /// <param name="dest"></param>
         /// <param name="forGpuProgram"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void ConvertProjectionMatrix(Matrix4 matrix, out Matrix4 dest, bool forGpuProgram = false);
 
         #endregion
@@ -2207,7 +2208,7 @@ it says it's incompatible with that RT");
         /// <param name="far">Far clipping plane distance.</param>
         /// <param name="dest"></param>
         /// <param name="forGpuProgram"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void MakeProjectionMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram = false);
 
         /// <summary>
@@ -2218,7 +2219,7 @@ it says it's incompatible with that RT");
         /// Viewport coordinates are in camera coordinate frame, i.e. camera is 
         /// at the origin.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void MakeProjectionMatrix(Real left, Real right, Real bottom, Real top, 
 			Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram = false);
 
@@ -2232,14 +2233,14 @@ it says it's incompatible with that RT");
         /// <param name="func">The comparison function which must pass for a pixel to be written.</param>
         /// <param name="value">The value to compare each pixels alpha value to (0-255)</param>
         /// <param name="alphaToCoverage">Whether to enable alpha to coverage, if supported</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetAlphaRejectSettings(CompareFunction func, byte value, bool alphaToCoverage);
 
         #endregion
 
         #region SetTextureProjectionRelativeTo
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetTextureProjectionRelativeTo(bool enabled, Vector3 pos)
         {
             texProjRelative = true;
@@ -2259,7 +2260,7 @@ it says it's incompatible with that RT");
         /// attaching, and deleting it. Here's where API-specific magic happens.
         /// Don't call this directly unless you know what you're doing.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract DepthBuffer CreateDepthBufferFor(RenderTarget renderTarget);
 
         #endregion
@@ -2276,7 +2277,7 @@ it says it's incompatible with that RT");
         /// freeing GPU RAM.
         /// </remarks>
         /// <param name="bCleanManualBuffers"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void CleanupDepthBuffers(bool bCleanManualBuffers = true)
         {
             foreach (var itmap in depthBufferPool)
@@ -2309,7 +2310,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="name">the name of the option to alter</param>
         /// <param name="value">the value to set the option to</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetConfigOption(string name, string value);
 
         #endregion
@@ -2329,7 +2330,7 @@ it says it's incompatible with that RT");
         /// <param name="green">Writing enabled for green channel.</param>
         /// <param name="blue">Writing enabled for blue channel.</param>
         /// <param name="alpha">Writing enabled for alpha channel.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha);
 
         #endregion
@@ -2355,7 +2356,7 @@ it says it's incompatible with that RT");
         /// If false, the depth buffer is left unchanged even if a new pixel is written.
         /// </param>
         /// <param name="depthFunction">Sets the function required for the depth test.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetDepthBufferParams(bool depthTest = true, bool depthWrite = true, CompareFunction depthFunction = CompareFunction.LessEqual);
 
         #endregion
@@ -2365,7 +2366,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Sets the fog with the given params.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetFog(FogMode mode, ColorEx color, Real density,
             Real linearStart, Real linearEnd);
 
@@ -2407,7 +2408,7 @@ it says it's incompatible with that RT");
         /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
         /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
         /// <param name="op">The blend operation mode for combining pixels</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op = SceneBlendOperation.Add);
 
         #endregion
@@ -2427,7 +2428,7 @@ it says it's incompatible with that RT");
         /// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
         /// <param name="op">The blend operation mode for combining pixels</param>
         /// <param name="alphaOp">The blend operation mode for combining pixel alpha values</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetSeparateSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha,
             SceneBlendFactor destFactorAlpha, SceneBlendOperation op = SceneBlendOperation.Add, SceneBlendOperation alphaOp = SceneBlendOperation.Add);
 
@@ -2450,7 +2451,7 @@ it says it's incompatible with that RT");
         /// <param name="top">Top corner (in pixels).</param>
         /// <param name="right">Right corner (in pixels).</param>
         /// <param name="bottom">Bottom corner (in pixels).</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetScissorTest(bool enable, int left = 0, int top = 0, int right = 800, int bottom = 600);
 
         #endregion
@@ -2500,7 +2501,7 @@ it says it's incompatible with that RT");
         /// (you'll have to turn off culling) then these parameters will apply for front faces, 
         /// and the inverse of them will happen for back faces (keep remains the same).
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetStencilBufferParams(CompareFunction function = CompareFunction.AlwaysPass,
             int refValue = 0, int mask = -1,
             StencilOperation stencilFailOp = StencilOperation.Keep,
@@ -2557,7 +2558,7 @@ it says it's incompatible with that RT");
         /// taken from shininess) and TVC_EMISSIVE. TVC_NONE means that there will be no material property
         /// tracking the vertex colors.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular,
             ColorEx emissive, Real shininess, TrackVertexColor tracking = TrackVertexColor.None);
 
@@ -2573,7 +2574,7 @@ it says it's incompatible with that RT");
         /// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
         /// </remarks>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetPointParameters(Real size, bool attenuationEnabled,
             Real constant, Real linear, Real quadratic, Real minSize, Real maxSize);
 
@@ -2596,7 +2597,7 @@ it says it's incompatible with that RT");
         /// The name of the texture to use - this should have
         /// already been loaded with TextureManager.Load.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetTexture(int unit, bool enabled, string textureName)
         {
             // load the texture
@@ -2616,7 +2617,7 @@ it says it's incompatible with that RT");
         /// </param>
         /// <param name="enabled"></param>
         /// <param name="texture"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTexture(int unit, bool enabled, Texture texture);
 
         #endregion
@@ -2636,7 +2637,7 @@ it says it's incompatible with that RT");
         /// </remarks>
         /// <param name="unit"></param>
         /// <param name="texture"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetVertexTexture(int unit, Texture texture)
         {
             throw new NotSupportedException(
@@ -2652,7 +2653,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Tells the hardware how to treat texture coordinates.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureAddressingMode(int unit, UVWAddressing uvw);
 
         #endregion
@@ -2669,7 +2670,7 @@ it says it's incompatible with that RT");
         /// of levels, so +1 forces the mipmaps to one smaller level.
         /// </remarks>
         /// <note>Only does something if render system has capability RSC_MIPMAP_LOD_BIAS.</note>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureMipmapBias(int unit, float bias);
 
         #endregion
@@ -2681,7 +2682,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="borderColor"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureBorderColor(int unit, ColorEx borderColor);
 
         #endregion
@@ -2695,7 +2696,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="unit">Texture unit.</param>
         /// <param name="bm">Details of the blending modes.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureBlendMode(int unit, LayerBlendModeEx bm);
 
         #endregion
@@ -2708,7 +2709,7 @@ it says it's incompatible with that RT");
         /// <param name="unit">Texture stage to modify.</param>
         /// <param name="method">Calculation method to use</param>
         /// <param name="frustum">Frustum, only used for projective effects</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureCoordCalculation(int unit, TexCoordCalcMethod method, Frustum frustum = null);
 
         #endregion
@@ -2718,7 +2719,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Sets the index into the set of tex coords that will be currently used by the render system.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureCoordSet(int stage, int index);
 
         #endregion
@@ -2728,7 +2729,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Sets the maximal anisotropy for the specified texture unit.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureLayerAnisotropy(int unit, int maxAnisotropy);
 
         #endregion
@@ -2739,7 +2740,7 @@ it says it's incompatible with that RT");
         /// Sets the texture matrix for the specified stage.  Used to apply rotations, translations,
         /// and scaling to textures.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureMatrix(int stage, Matrix4 xform);
 
         #endregion
@@ -2752,7 +2753,7 @@ it says it's incompatible with that RT");
         /// <param name="unit">The texture unit to set the filtering options for.</param>
         /// <param name="type">The filter type.</param>
         /// <param name="filter">The filter to be used.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter);
 
         /// <summary>
@@ -2764,7 +2765,7 @@ it says it's incompatible with that RT");
         /// <param name="mipFilter">
         /// The filter used between mipmap levels, <see cref="FilterOptions.None"/> disables mipmapping.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetTextureUnitFiltering(int unit, FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter)
         {
             SetTextureUnitFiltering(unit, FilterType.Min, minFilter);
@@ -2779,7 +2780,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Unbinds the current GpuProgram of a given GpuProgramType.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void UnbindGpuProgram(GpuProgramType type)
         {
             switch (type)
@@ -2807,7 +2808,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Gets the bound status of a given GpuProgramType.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool IsGpuProgramBound(GpuProgramType type)
         {
             switch (type)
@@ -2829,7 +2830,7 @@ it says it's incompatible with that RT");
         /// </summary>
         /// <param name="lightList">List of lights.</param>
         /// <param name="limit">Max number of lights that can be used from the list currently.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public abstract void UseLights(LightList lightList, int limit);
 
         #endregion Methods
@@ -2840,7 +2841,7 @@ it says it's incompatible with that RT");
         /// Destroys a render target of any sort
         /// </summary>
         /// <param name="name"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void DestroyRenderTarget(string name)
         {
             var rt = DetachRenderTarget(name);
@@ -2855,7 +2856,7 @@ it says it's incompatible with that RT");
         /// Destroys a render window
         /// </summary>
         /// <param name="name"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void DestroyRenderWindow(string name)
         {
             DestroyRenderTarget(name);
@@ -2869,7 +2870,7 @@ it says it's incompatible with that RT");
         /// Destroys a render texture
         /// </summary>
         /// <param name="name"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void DestroyRenderTexture(string name)
         {
             DestroyRenderTarget(name);
@@ -2882,7 +2883,7 @@ it says it's incompatible with that RT");
         /// <summary>
         /// Initialize the render system from the capabilities
         /// </summary>
-        [OgreVersion( 1, 7 )]
+        [OgreVersion(1, 7, 2790)]
         public abstract void InitializeFromRenderSystemCapabilities(
             RenderSystemCapabilities caps, RenderTarget primary );
 

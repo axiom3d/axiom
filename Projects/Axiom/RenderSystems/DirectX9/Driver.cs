@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DriverName
 
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 		public string DriverName
 		{
 			get
@@ -89,10 +89,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region AdapterNumber Property
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private readonly int _adapterNumber;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public int AdapterNumber
 		{
 			get
@@ -104,10 +104,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region AdapterIdentifier Property
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private readonly AdapterDetails _adapterIdentifier;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public AdapterDetails AdapterIdentifier
 		{
 			get
@@ -120,10 +120,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region DesktopMode Property
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private readonly DisplayMode _desktopDisplayMode;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public DisplayMode DesktopMode
 		{
 			get
@@ -136,10 +136,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region VideoModes Property
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		private VideoModeCollection _videoModeList;
 		
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public VideoModeCollection VideoModeList
 		{
 			get
@@ -154,10 +154,10 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region D3D9DeviceCaps
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    private readonly Capabilities _d3D9DeviceCaps;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public Capabilities D3D9DeviceCaps
 	    {
 	        get

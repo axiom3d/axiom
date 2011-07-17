@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.DirectX9
     {
         #region internal classes
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected class BufferResources
         {
             public VertexBuffer Buffer;
@@ -71,7 +71,7 @@ namespace Axiom.RenderSystems.DirectX9
             public int LastUsedFrame;
         };
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected class DeviceToBufferResourcesMap: Dictionary<Device, BufferResources> 
         {
         }
@@ -81,37 +81,37 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// Map between device to buffer resources.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected DeviceToBufferResourcesMap mapDeviceToBufferResources = new DeviceToBufferResourcesMap();
 
         /// <summary>
         /// Buffer description.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected VertexBufferDescription bufferDesc;
 
         /// <summary>
         /// Source buffer resources when working with multiple devices.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected BufferResources sourceBuffer;
 
         /// <summary>
         /// Source buffer locked bytes.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private IntPtr sourceLockedBytes;
 
         /// <summary>
         /// Consistent system memory buffer for multiple devices support in case of write only buffers.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private IntPtr systemMemoryBuffer;
 
 
         #region Member variables
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    private static readonly object SDeviceAccessMutex = new object();
 
         [AxiomHelper(0, 8, "Holding a reference to SlimDX buffer in order to release it properly later")]
@@ -170,7 +170,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// Create the actual vertex buffer.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void CreateBuffer(Device d3d9Device, Pool ePool)
         {
             lock(SDeviceAccessMutex)
@@ -231,7 +231,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// Update the given buffer content.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    protected void UpdateBufferContent( BufferResources bufferResources )
 	    {
 	        if (bufferResources.OutOfDate)
@@ -295,7 +295,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region LockImpl
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking options )
 		{
 			lock(SDeviceAccessMutex)

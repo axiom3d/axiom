@@ -114,7 +114,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual bool HasInstanceData
         {
             get
@@ -182,7 +182,7 @@ namespace Axiom.Graphics
 			return buf;
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual bool IsBufferBound(short source)
         {
             return bindingMap.ContainsKey(source);

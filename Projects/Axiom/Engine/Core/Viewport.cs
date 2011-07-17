@@ -534,7 +534,7 @@ namespace Axiom.Core
 		/// potentially customised ordering and render state options. You should
 		/// create the named sequence through Root first, then set the name here.
 		/// </remarks>
-        [OgreVersion(1, 7, "Virtual in Ogre")]
+        [OgreVersion(1, 7, 2790, "Virtual in Ogre")]
 		public string RenderQueueInvocationSequenceName
 		{
 			get
@@ -559,7 +559,7 @@ namespace Axiom.Core
 	    /// <summary>
 	    /// the invocation sequence - will return null if using standard
 	    /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public RenderQueueInvocationSequence RenderQueueInvocationSequence { get; protected set; }
 
 		#endregion RenderQueueSequence Properties Property
@@ -569,7 +569,7 @@ namespace Axiom.Core
         /// <summary>
 		/// Gets the default depth buffer value to which the viewport is cleared.
 		/// </summary>
-        [OgreVersion(1, 7, "DepthClear in Ogre")]
+        [OgreVersion(1, 7, 2790, "DepthClear in Ogre")]
         public Real ClearDepth { get; set; }
 
         #endregion
@@ -586,7 +586,7 @@ namespace Axiom.Core
         ///		to false.
         ///	</remarks>
         ///	
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool ClearEveryFrame { get; protected set; }
 
         #endregion
@@ -596,7 +596,7 @@ namespace Axiom.Core
         /// <summary>
         /// Gets the buffers to clear every frame
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public FrameBufferType ClearBuffers { get; protected set; }
 
         #endregion
@@ -674,7 +674,7 @@ namespace Axiom.Core
 		///		Used by the target to update the viewport's dimensions
 		///		(usually the result of a change in target size).
 		///	</remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public void UpdateDimensions()
 		{
             var height = (Real)Target.Height;
@@ -727,7 +727,7 @@ namespace Axiom.Core
         /// which buffers to clear, if clear is set to true. Note you should
         /// not clear the stencil buffer here unless you know what you're doing.
         /// </param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetClearEveryFrame(bool inClear, FrameBufferType inBuffers = FrameBufferType.Color | FrameBufferType.Depth)
         {
             ClearEveryFrame = inClear;
@@ -742,7 +742,7 @@ namespace Axiom.Core
 		///		Instructs the viewport to updates its contents from the viewpoint of
 		///		the current camera.
 		/// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public void Update()
 		{
 			if ( Camera != null )
@@ -769,7 +769,7 @@ namespace Axiom.Core
         /// <param name="col">The color value to clear to, if <see cref="FrameBufferType.Color"/> is included</param>
         /// <param name="depth">The depth value to clear to, if  <see cref="FrameBufferType.Depth"/> is included</param>
         /// <param name="stencil">The stencil value to clear to, if <see cref="FrameBufferType.Stencil"/> is included</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Clear(FrameBufferType buffers, ColorEx col, Real depth, ushort stencil)
         {
             var rs = Root.Instance.RenderSystem;
@@ -787,7 +787,7 @@ namespace Axiom.Core
 
         #region ClearUpdatedFlag
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void ClearUpdatedFlag()
         {
             IsUpdated = false;
@@ -809,7 +809,7 @@ namespace Axiom.Core
 		/// <param name="top">Top edge of the viewport ([0.0, 1.0]).</param>
 		/// <param name="width">Width of the viewport ([0.0, 1.0]).</param>
 		/// <param name="height">Height of the viewport ([0.0, 1.0]).</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetDimensions(Real left, Real top, Real width, Real height)
 		{
 			Left = left;
@@ -827,7 +827,7 @@ namespace Axiom.Core
         /// <summary>
         /// Set the orientation mode of the viewport.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetOrientationMode(OrientationMode orientationMode, bool setDefault = true)
         {
 #if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
@@ -868,14 +868,14 @@ namespace Axiom.Core
 
         #region PointOrientedToScreen
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void PointOrientedToScreen(Vector2 v, OrientationMode orientationMode, out Vector2 outv)
         {
             PointOrientedToScreen( v.x, v.y, orientationMode, out outv.x, out outv.y );
         }
 
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void PointOrientedToScreen(Real orientedX, Real orientedY, OrientationMode orientationMode,
                                          out Real screenX, out Real screenY)
         {
@@ -913,7 +913,7 @@ namespace Axiom.Core
 		/// <param name="top">Top edge of the viewport (in pixels).</param>
 		/// <param name="width">Width of the viewport (in pixels).</param>
 		/// <param name="height">Height of the viewport (in pixels).</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public void GetActualDimensions( out int left, out int top, out int width, out int height )
 		{
 			left = ActualLeft;

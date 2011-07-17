@@ -123,10 +123,10 @@ namespace Axiom.Graphics
 
         #region IsInstanceData
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    protected bool isInstanceData;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool IsInstanceData
         {
             get
@@ -150,10 +150,10 @@ namespace Axiom.Graphics
 
         #region InstanceDataStepRate
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int instanceDataStepRate;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public int InstanceDataStepRate
         {
             get
