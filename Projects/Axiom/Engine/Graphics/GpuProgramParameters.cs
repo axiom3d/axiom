@@ -119,11 +119,32 @@ namespace Axiom.Graphics
 
 		protected bool ignoreMissingParameters = false;
 
-		#endregion Fields
+        #region floatLogicalToPhysical
 
-		#region Constructors
+        /// <summary>
+        /// Logical index to physical index map - for low-level programs
+        /// or high-level programs which pass params this way.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+	    protected GpuLogicalBufferStruct floatLogicalToPhysical;
 
-		/// <summary>
+	    #endregion
+
+        #region intLogicalToPhysical
+
+        /// <summary>
+        /// Packed list of floating-point constants (physical indexing)
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected GpuLogicalBufferStruct intLogicalToPhysical;
+
+        #endregion
+
+        #endregion Fields
+
+        #region Constructors
+
+        /// <summary>
 		///		Default constructor.
 		/// </summary>
 		public GpuProgramParameters()
@@ -148,6 +169,8 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void ClearAutoConstantType()
 		{
+            if (autoConstantList.Count != 0)
+                LogManager.Instance.Write( "x" );
 			autoConstantList.Clear();
 		}
 
@@ -1175,9 +1198,197 @@ namespace Axiom.Graphics
             return intConstants[physicalIndex].val;
         }
 
-	    public void SetLogicalIndexes( GpuLogicalBufferStruct floatLogicalToPhysical, GpuLogicalBufferStruct intLogicalToPhysical )
+        [OgreVersion(1, 7, 2790)]
+        public void SetLogicalIndexes(GpuLogicalBufferStruct floatIndexMap, GpuLogicalBufferStruct intIndexMap)
 	    {
-	        throw new NotImplementedException();
+            floatLogicalToPhysical = floatIndexMap;
+            intLogicalToPhysical = intIndexMap;
+
+            // resize the internal buffers
+            // Note that these will only contain something after the first parameter
+            // set has set some parameters
+
+            // Size and reset buffer (fill with zero to make comparison later ok)
+            if (floatIndexMap != null && floatIndexMap.BufferSize > floatConstants.Count)
+            {
+                while (floatConstants.Count < floatIndexMap.BufferSize)
+                    floatConstants.Add( new FloatConstantEntry() );
+            }
+            if (intIndexMap != null && intIndexMap.BufferSize > intConstants.Count)
+            {
+                while (intConstants.Count < intIndexMap.BufferSize)
+                    intConstants.Add( new IntConstantEntry() );
+            }
+	    }
+
+        /// <summary>
+        /// Update automatic parameters.
+        /// </summary>
+        /// <param name="source">The source of the parameters</param>
+        /// <param name="mask">A mask of GpuParamVariability which identifies which autos will need updating</param>
+	    public void UpdateAutoParams( AutoParamDataSource source, GpuParamVariability mask )
+	    {
+            // abort early if no autos
+            if (!HasAutoConstantType)
+                return;
+
+            // Axiom TODO: implement this early out opt
+            // abort early if variability doesn't match any param
+            //if (!(mask & _combinedVariability))
+            //    return; 
+
+            PassIterationNumberIndex = int.MaxValue;
+
+            // loop through and update all constants based on their type
+            foreach ( var entry in autoConstantList )
+            {
+                // Only update needed slots
+                if ((entry.Variability & mask) == 0)
+                    continue;
+
+                Matrix4[] matrices;
+                int numMatrices;
+                int index;
+
+                switch (entry.Type)
+                {
+                    case AutoConstantType.ViewMatrix:
+                        SetConstant(entry.PhysicalIndex, source.ViewMatrix);
+                        break;
+                    case AutoConstantType.InverseViewMatrix:
+                        SetConstant(entry.PhysicalIndex, source.InverseViewMatrix);
+                        break;
+                    case AutoConstantType.InverseTransposeViewMatrix:
+                        SetConstant(entry.PhysicalIndex, source.InverseTransposeViewMatrix);
+                        break;
+
+                    case AutoConstantType.ProjectionMatrix:
+                        SetConstant(entry.PhysicalIndex, source.ProjectionMatrix);
+                        break;
+
+                    case AutoConstantType.ViewProjMatrix:
+                        SetConstant(entry.PhysicalIndex, source.ViewProjectionMatrix);
+                        break;
+
+                    case AutoConstantType.RenderTargetFlipping:
+                        SetIntConstant(entry.PhysicalIndex, source.RenderTarget.RequiresTextureFlipping ? -1 : 1);
+                        break;
+
+                    case AutoConstantType.VertexWinding:
+                    {
+                        var rsys = Root.Instance.RenderSystem;
+                        SetIntConstant(entry.PhysicalIndex, rsys.InvertVertexWinding ? -1 : 1);
+                        break;
+                    }
+
+                    case AutoConstantType.AmbientLightColor:
+                        SetConstant( entry.PhysicalIndex, source.AmbientLight );
+                        break;
+
+                    case AutoConstantType.WorldMatrix:
+                        SetConstant(entry.PhysicalIndex, source.WorldMatrix);
+                        break;
+
+                    case AutoConstantType.WorldMatrixArray:
+                        SetConstant(entry.PhysicalIndex, source.WorldMatrixArray, source.WorldMatrixCount);
+                        break;
+
+                    case AutoConstantType.WorldMatrixArray3x4:
+                        matrices = source.WorldMatrixArray;
+                        numMatrices = source.WorldMatrixCount;
+                        index = entry.PhysicalIndex;
+
+                        for (int j = 0; j < numMatrices; j++)
+                        {
+                            Matrix4 m = matrices[j];
+                            SetConstant(index++, m.m00, m.m01, m.m02, m.m03);
+                            SetConstant(index++, m.m10, m.m11, m.m12, m.m13);
+                            SetConstant(index++, m.m20, m.m21, m.m22, m.m23);
+                        }
+
+                        break;
+
+                    case AutoConstantType.WorldViewMatrix:
+                        SetConstant(entry.PhysicalIndex, source.WorldViewMatrix);
+                        break;
+
+                    case AutoConstantType.WorldViewProjMatrix:
+                        SetConstant(entry.PhysicalIndex, source.WorldViewProjMatrix);
+                        break;
+
+                    case AutoConstantType.InverseWorldMatrix:
+                        SetConstant(entry.PhysicalIndex, source.InverseWorldMatrix);
+                        break;
+
+                    case AutoConstantType.InverseWorldViewMatrix:
+                        SetConstant(entry.PhysicalIndex, source.InverseWorldViewMatrix);
+                        break;
+
+                    case AutoConstantType.InverseTransposeWorldViewMatrix:
+                        SetConstant(entry.PhysicalIndex, source.InverseTransposeWorldViewMatrix);
+                        break;   
+
+                    case AutoConstantType.CameraPositionObjectSpace:
+                        SetConstant(entry.PhysicalIndex, source.CameraPositionObjectSpace);
+                        break;
+
+                    case AutoConstantType.CameraPosition:
+                        SetConstant(entry.PhysicalIndex, source.CameraPosition);
+                        break;
+
+                    case AutoConstantType.TextureViewProjMatrix:
+                        SetConstant(entry.PhysicalIndex, source.TextureViewProjectionMatrix);
+                        break;
+
+                    case AutoConstantType.Custom:
+                    case AutoConstantType.AnimationParametric:
+                        source.Renderable.UpdateCustomGpuParameter(entry, this);
+                        break;
+                    case AutoConstantType.FogParams:
+                        SetConstant(entry.PhysicalIndex, source.FogParams);
+                        break;
+                    case AutoConstantType.ViewDirection:
+                        SetConstant(entry.PhysicalIndex, source.ViewDirection);
+                        break;
+                    case AutoConstantType.ViewSideVector:
+                        SetConstant(entry.PhysicalIndex, source.ViewSideVector);
+                        break;
+                    case AutoConstantType.ViewUpVector:
+                        SetConstant(entry.PhysicalIndex, source.ViewUpVector);
+                        break;
+                    case AutoConstantType.NearClipDistance:
+                        SetConstant(entry.PhysicalIndex, source.NearClipDistance, 0f, 0f, 0f);
+                        break;
+                    case AutoConstantType.FarClipDistance:
+                        SetConstant(entry.PhysicalIndex, source.FarClipDistance, 0f, 0f, 0f);
+                        break;
+                    case AutoConstantType.MVShadowTechnique:
+                        SetConstant(entry.PhysicalIndex, source.MVShadowTechnique);
+                        break;
+                    case AutoConstantType.Time:
+                        SetConstant(entry.PhysicalIndex, source.Time * entry.FData, 0f, 0f, 0f);
+                        break;
+                    case AutoConstantType.Time_0_X:
+                        SetConstant(entry.PhysicalIndex, source.Time % entry.FData, 0f, 0f, 0f);
+                        break;
+                    case AutoConstantType.SinTime_0_X:
+                        SetConstant(entry.PhysicalIndex, Utility.Sin(source.Time % entry.FData), 0f, 0f, 0f);
+                        break;
+                    case AutoConstantType.Time_0_1:
+                        SetConstant(entry.PhysicalIndex, (float)(source.Time % 1), 0f, 0f, 0f);
+                        break;
+                    
+                    case AutoConstantType.PassNumber:
+                        SetIntConstant(entry.PhysicalIndex, source.PassNumber);
+                        break;
+                    case AutoConstantType.PassIterationNumber:
+                        SetConstant(entry.PhysicalIndex, 0.0f);
+                        PassIterationNumberIndex = entry.PhysicalIndex;
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
 	    }
 	}
 }

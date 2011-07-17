@@ -178,8 +178,7 @@ namespace Axiom.RenderSystems.OpenGL
 				case VertexElementSemantic.Specular:
 				case VertexElementSemantic.TexCoords:
 				default:
-					Debug.Assert( false, "Shouldn't be calling this for normal attributes" );
-					break;
+			        return false;
 				case VertexElementSemantic.Binormal:
 				case VertexElementSemantic.BlendIndices:
 				case VertexElementSemantic.BlendWeights:

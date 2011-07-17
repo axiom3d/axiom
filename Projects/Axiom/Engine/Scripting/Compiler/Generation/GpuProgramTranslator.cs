@@ -271,10 +271,11 @@ namespace Axiom.Scripting.Compiler
 											if ( isValid )
 											{
                                                 // the following debug out is just to prevent unused var "type" warning
-											    Console.WriteLine( "Not implemented, {0}", type );
-												throw new NotImplementedException();
+											    //Console.WriteLine( "Not implemented, {0}", type );
+												//throw new NotImplementedException();
+                                                LogManager.Instance.Write("Invalid {0} attribute - unrecognised parameter type {1}", prop.Name, atom1.Value);
 #if UNREACHABLE_CODE
-												// First, clear out any offending auto constants
+    // First, clear out any offending auto constants
 												if ( named )
 												{ /*parameters->clearNamedAutoConstant(name);*/
 												}
@@ -840,9 +841,8 @@ namespace Axiom.Scripting.Compiler
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//GpuProgramParametersSharedPtr ptr = prog->getDefaultParameters();
-					//GpuProgramTranslator::translateProgramParameters(compiler, ptr, reinterpret_cast<ObjectAbstractNode*>(params.get()));
+				    var ptr = prog.DefaultParameters;
+				    TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
 				}
 			}
 
