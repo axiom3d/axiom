@@ -111,14 +111,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
-					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-					if ( entry.isSet )
-					{
-						// send the params 4 at a time
-                        throw new AxiomException("Update this!");
-						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.val );
-					}
+                    using (var entry = parms.GetFloatPointer(index))
+                    {
+                        // send the params 4 at a time
+                        throw new AxiomException( "Update this!" );
+                        Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.Pointer );
+                    }
 				}
 			}
 		}

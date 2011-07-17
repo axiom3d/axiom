@@ -168,13 +168,11 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
-					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-					if ( entry.isSet )
+					using (var entry = parms.GetFloatPointer( index ))
 					{
 						// send the params 4 at a time
 					    throw new AxiomException( "Update this!" );
-						Gl.glProgramParameter4fvNV( programType, index, entry.val );
+						Gl.glProgramParameter4fvNV( programType, index, entry.Pointer );
 					}
 				}
 			}
@@ -226,12 +224,15 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 					if ( name != null )
 					{
-						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
+						using (var entry = parms.GetFloatPointer( index ))
+					    {
 
-						// send the params 4 at a time
-                        throw new AxiomException("Update this!");
-						Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ), entry.val ); // TAO 2.0
-						//Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+					        // send the params 4 at a time
+					        throw new AxiomException( "Update this!" );
+					        Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ),
+					                                         entry.Pointer ); // TAO 2.0
+					        //Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+					    }
 					}
 				}
 			}

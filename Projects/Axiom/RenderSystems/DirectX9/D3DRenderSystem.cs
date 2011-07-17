@@ -1712,10 +1712,10 @@ namespace Axiom.RenderSystems.DirectX9
                             if ((i.Value.Variability & variability) != 0)
                             {
                                 var logicalIndex = i.Key;
-                                var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex );
+                                var pFloat = parms.GetFloatPointer();
                                 var slotCount = i.Value.CurrentSize/4;
                                 Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
-                                ActiveD3D9Device.SetVertexShaderConstant(logicalIndex, pFloat, 0, slotCount);
+                                ActiveD3D9Device.SetVertexShaderConstant(logicalIndex, pFloat, i.Value.PhysicalIndex, slotCount);
                             }
                         }
                     }
@@ -1727,10 +1727,10 @@ namespace Axiom.RenderSystems.DirectX9
                             if ((i.Value.Variability & variability) != 0)
                             {
                                 var logicalIndex = i.Key;
-                                var pInt = parms.GetIntPointer(i.Value.PhysicalIndex);
+                                var pInt = parms.GetIntPointer();
                                 var slotCount = i.Value.CurrentSize / 4;
                                 Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
-                                ActiveD3D9Device.SetVertexShaderConstant(logicalIndex, pInt, 0, slotCount);
+                                ActiveD3D9Device.SetVertexShaderConstant(logicalIndex, pInt, i.Value.PhysicalIndex, slotCount);
                             }
                         }
                     }
@@ -1747,10 +1747,10 @@ namespace Axiom.RenderSystems.DirectX9
                             if ((i.Value.Variability & variability) != 0)
                             {
                                 var logicalIndex = i.Key;
-                                var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex );
+                                var pFloat = parms.GetFloatPointer( );
                                 var slotCount = i.Value.CurrentSize/4;
                                 Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
-                                ActiveD3D9Device.SetPixelShaderConstant(logicalIndex, pFloat, 0, slotCount);
+                                ActiveD3D9Device.SetPixelShaderConstant(logicalIndex, pFloat, i.Value.PhysicalIndex, slotCount);
                             }
                         }
                     }
@@ -1762,10 +1762,10 @@ namespace Axiom.RenderSystems.DirectX9
                             if ((i.Value.Variability & variability) != 0)
                             {
                                 var logicalIndex = i.Key;
-                                var pInt = parms.GetIntPointer(i.Value.PhysicalIndex);
+                                var pInt = parms.GetIntPointer( );
                                 var slotCount = i.Value.CurrentSize / 4;
                                 Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
-                                ActiveD3D9Device.SetPixelShaderConstant(logicalIndex, pInt, 0, slotCount);
+                                ActiveD3D9Device.SetPixelShaderConstant(logicalIndex, pInt, i.Value.PhysicalIndex, slotCount);
                             }
                         }
                     }

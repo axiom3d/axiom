@@ -153,6 +153,17 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </param>
 		protected abstract void LoadFromMicrocode( D3D.ShaderBytecode microcode );
 
+        public override GpuProgramParameters CreateParameters()
+        {
+            // Call superclass
+            var parms = base.CreateParameters();
+
+            // Need to transpose matrices if compiled with column-major matrices
+            //parms.TransposeMatrices = mColumnMajorMatrices;
+
+            return parms;
+        }
+
 		#endregion Methods
 
 		#region Properties

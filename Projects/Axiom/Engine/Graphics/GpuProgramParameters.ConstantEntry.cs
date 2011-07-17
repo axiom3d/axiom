@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
+using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -45,6 +45,39 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
+        /// <summary>
+        /// This class emulates the behaviour of a vector&lt;T&gt;
+        /// allowing T* access as IntPtr of a specified element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        [AxiomHelper(0, 8)]
+        public class OffsetArray<T> : List<T>
+        {
+            public struct FixedPointer : IDisposable
+            {
+                public IntPtr Pointer;
+                internal T[] Owner;
+
+                public void Dispose()
+                {
+                    Memory.UnpinObject(Owner);
+                }
+            }
+
+            private FixedPointer _ptr;
+
+            private readonly int _size = Marshal.SizeOf(typeof(T));
+
+            public FixedPointer Fix(int offset)
+            {
+                _ptr.Owner = ToArray();
+                _ptr.Pointer = Memory.PinObject(_ptr.Owner).Offset(_size * offset);
+
+                return _ptr;
+            }
+        }
+
+
 		/// <summary>
 		///    A structure for recording the use of automatic parameters.
 		/// </summary>
@@ -114,58 +147,62 @@ namespace Axiom.Graphics
 
 		/// <summary>
 		/// </summary>
-		public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry>
+		public class AutoConstantsList : List<AutoConstantEntry>
 		{
-		}
+            public AutoConstantsList()
+            {
+            }
 
-		/// <summary>
-		///		Float parameter entry; contains both a group of 16 values and 
-		///		an indicator to say if it's been set or not. This allows us to 
-		///		filter out constant entries which have not been set by the renderer
-		///		and may actually be being used internally by the program.
-		/// </summary>
-		public class FloatConstantEntry
-		{
-			public float[] val = new float[ 16 ];
-			public bool isSet = false;
+            public AutoConstantsList(AutoConstantsList other)
+            {
+                AddRange( other.GetRange( 0, other.Count ) );
+            }
 		}
 
 		/// <summary>
 		/// </summary>
-		public class FloatConstantEntryList : List<FloatConstantEntry>
+        [OgreVersion(1, 7, 2790)]
+        public class FloatConstantList : OffsetArray<float>
 		{
 			public void Resize( int size )
 			{
 				while ( Count < size )
 				{
-					Add( new FloatConstantEntry() );
+					Add( 0.0f );
 				}
 			}
-		}
 
-		/// <summary>
-		///		Int parameter entry; contains both a group of 16 values and 
-		///		an indicator to say if it's been set or not. This allows us to 
-		///		filter out constant entries which have not been set by the renderer
-		///		and may actually be being used internally by the program.
-		/// </summary>
-		public class IntConstantEntry
-		{
-			public int[] val = new int[ 16 ];
-			public bool isSet = false;
+            public FloatConstantList()
+            {
+            }
+
+            public FloatConstantList(FloatConstantList other)
+            {
+                AddRange( other.GetRange( 0, other.Count ) );
+            }
 		}
 
 		/// <summary>
 		/// </summary>
-		public class IntConstantEntryList : List<IntConstantEntry>
+        [OgreVersion(1, 7, 2790)]
+        public class IntConstantList : OffsetArray<int>
 		{
 			public void Resize( int size )
 			{
-				while ( this.Count < size )
+				while ( Count < size )
 				{
-					Add( new IntConstantEntry() );
+					Add( 0 );
 				}
 			}
+
+            public IntConstantList()
+            {
+            }
+
+            public IntConstantList(IntConstantList other)
+            {
+                AddRange( other.GetRange( 0, other.Count ) );
+            }
 		}
 	}
 }

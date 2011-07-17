@@ -152,15 +152,15 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
-					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
+					var entry = parms.GetFloatPointer( index );
 
-					if ( entry.isSet )
 					{
 						int combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
 						int pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
 
 						// send the params 4 at a time
-						Gl.glCombinerStageParameterfvNV( combinerStage, pname, entry.val );
+                        throw new AxiomException("Update this!");
+						Gl.glCombinerStageParameterfvNV( combinerStage, pname, entry.Pointer );
 					}
 				}
 			}

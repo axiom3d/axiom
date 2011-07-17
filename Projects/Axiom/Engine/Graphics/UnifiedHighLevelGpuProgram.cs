@@ -303,11 +303,6 @@ namespace Axiom.Graphics
 			throw new Exception( "The method or operation is not implemented." );
 		}
 
-		protected override void PopulateParameterNames( GpuProgramParameters parms )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
-
 		protected override void LoadFromSource()
 		{
 			throw new Exception( "The method or operation is not implemented." );
