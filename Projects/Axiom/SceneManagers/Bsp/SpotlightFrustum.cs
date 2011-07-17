@@ -67,7 +67,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				this.light = value;
 				this.lightNode = light.ParentNode;
-				this.lightPosition = light.DerivedPosition;
+				this.lightPosition = light.GetDerivedPosition();
 				this.lightOrientation = GetLightOrientation();
 
 				base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );

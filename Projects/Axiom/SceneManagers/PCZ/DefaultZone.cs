@@ -195,7 +195,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				if ( p != ignorePortal )
 				{
 					// calculate the direction vector from light to portal
-					Vector3 lightToPortal = p.getDerivedCP() - light.DerivedPosition;
+					Vector3 lightToPortal = p.getDerivedCP() - light.GetDerivedPosition();
 					if ( portalFrustum.IsObjectVisible( p ) )
 					{
 						// portal is facing the light, but some light types need to

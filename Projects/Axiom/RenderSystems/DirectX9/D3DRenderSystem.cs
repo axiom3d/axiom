@@ -2134,7 +2134,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 if ( light.Type != LightType.Directional )
                 {
-                    vec = light.DerivedPosition;
+                    vec = light.GetDerivedPosition();
                     nlight.Position = new DX.Vector3( vec.x, vec.y, vec.z );
                 }
 

@@ -910,7 +910,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							// NB treating spotlight as point for simplicity
 							// Just see if the lights attenuation range is within the frustum
 							lightInfo.range = l.AttenuationRange;
-							lightInfo.position = l.DerivedPosition;
+							lightInfo.position = l.GetDerivedPosition();
 							Sphere sphere = new Sphere( lightInfo.position, lightInfo.range );
 							if ( camera.IsObjectVisible( sphere ) )
 							{
@@ -946,7 +946,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				{
 					if ( IsShadowTechniqueTextureBased )
 					{
-						i.light.TempSquaredDist = ( camera.DerivedPosition - i.light.DerivedPosition ).LengthSquared;
+						i.light.TempSquaredDist = ( camera.DerivedPosition - i.light.GetDerivedPosition() ).LengthSquared;
 					}
 				}
 

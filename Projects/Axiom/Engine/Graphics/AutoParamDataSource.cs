@@ -94,6 +94,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected Matrix4 projectionMatrix;
 		protected bool projMatrixDirty;
+
+        protected Matrix4 inverseTransposeWorldMatrix;
+        protected bool inverseTransposeWorldMatrixDirty;
+
 		/// <summary>
 		///    Current view and projection matrices concatenated.
 		/// </summary>
@@ -214,7 +218,7 @@ namespace Axiom.Graphics
 			inverseWorldMatrixDirty = true;
 			inverseWorldViewMatrixDirty = true;
 			inverseViewMatrixDirty = true;
-			// inverseTransposeWorldMatrixDirty = true;
+			inverseTransposeWorldMatrixDirty = true;
 			inverseTransposeWorldViewMatrixDirty = true;
 			cameraPositionObjectSpaceDirty = true;
 			// cameraPositionDirty = true;
@@ -331,7 +335,7 @@ namespace Axiom.Graphics
 				inverseViewMatrixDirty = true;
 				inverseWorldViewMatrixDirty = true;
 				// inverseTransposeWorldMatrixDirty = true;
-				// inverseTransposeWorldViewMatrixDirty = true;
+				inverseTransposeWorldViewMatrixDirty = true;
 				cameraPositionObjectSpaceDirty = true;
 				viewMatrixDirty = true;
 				projMatrixDirty = true;
@@ -752,7 +756,7 @@ namespace Axiom.Graphics
 				{
 					// Calculate based on object space light distance
 					// compared to light attenuation range
-					Vector3 objPos = this.InverseWorldMatrix * light.DerivedPosition;
+					var objPos = this.InverseWorldMatrix.TransformAffine( light.GetDerivedPosition(true) );
 					return light.AttenuationRange - objPos.Length;
 				}
 			}
@@ -842,6 +846,32 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+	    public virtual Matrix4 InverseTransposeWorldMatrix
+	    {
+	        get
+	        {
+                if (inverseTransposeWorldMatrixDirty)
+                {
+                    inverseTransposeWorldMatrix = InverseWorldMatrix.Transpose();
+                    inverseTransposeWorldMatrixDirty = false;
+                }
+                return inverseTransposeWorldMatrix;
+	        }
+	    }
+
+	    public IRenderable CurrentRenderable
+	    {
+	        get
+	        {
+                return renderable;
+	        }
+	    }
+
+	    #endregion
+
+	    public virtual Vector4 GetLightAs4DVector( int index )
+	    {
+            return GetLight(index).GetAs4DVector(true);
+	    }
 	}
 }
