@@ -501,7 +501,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
 		{
             // getConstantDefinitions() not needed in Axiom as the getter already does this implicitly
-            parms.SetNamedConstants(ConstantDefinitions);
+            parms.NamedConstants = ConstantDefinitions;
             // Don't set logical / physical maps here, as we can't access parameters by logical index in GLHL.
 		}
 
