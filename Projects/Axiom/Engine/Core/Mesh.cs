@@ -2624,7 +2624,7 @@ namespace Axiom.Core
 		/// <param name="t">Parametric distance between the start and end buffer positions</param>
 		/// <param name="b1">Vertex buffer containing VertexElementType.Float3 entries for the start positions</param>
 		/// <param name="b2">Vertex buffer containing VertexElementType.Float3 entries for the end positions</param>
-		/// <param name="targetVertexData" VertexData destination; assumed to have a separate position
+		/// <param name="targetVertexData"> VertexData destination; assumed to have a separate position
 		///	     buffer already bound, and the number of vertices must agree with the
 		///   number in start and end
 		/// </param>
@@ -2674,9 +2674,9 @@ namespace Axiom.Core
 		///     you would be best to suppress hardware uploads of the position buffer
 		///     for the duration)
 		/// </remarks>
-		/// <param name="weight"Parametric weight to scale the offsets by</param>
-		/// <param name="vertexOffsetMap" Potentially sparse map of vertex index -> offset</param>
-		/// <param name="targetVertexData" VertexData destination; assumed to have a separate position
+		/// <param name="weight">Parametric weight to scale the offsets by</param>
+		/// <param name="vertexOffsetMap"> Potentially sparse map of vertex index -> offset</param>
+		/// <param name="targetVertexData"> VertexData destination; assumed to have a separate position
 		///	    buffer already bound, and the number of vertices must agree with the
 		///	    number in start and end
 		/// </param>

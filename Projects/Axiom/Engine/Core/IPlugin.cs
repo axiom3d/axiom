@@ -81,25 +81,25 @@ namespace Axiom.Core
 	/// </note>
 	public interface IPlugin
 	{
-		/// <summary>
-		/// Unique name for the plugin
-		/// </summary>
+		// <summary>
+		// Unique name for the plugin
+		// </summary>
 		//string Name
 		//{
 		//    get;
 		//}
 
-		/// <summary>
-		/// Perform the plugin initial installation sequence.
-		/// </summary>
-		/// <remarks>
-		/// An implementation must be supplied for this method. It must perform
-		/// the startup tasks necessary to install any rendersystem customizations
-		/// or anything else that is not dependent on system initialization, ie
-		/// only dependent on the core of Axiom. It must not perform any
-		/// operations that would create rendersystem-specific objects at this stage,
-		/// that should be done in Initialize().
-		/// </remarks>
+		// <summary>
+		// Perform the plugin initial installation sequence.
+		// </summary>
+		// <remarks>
+		// An implementation must be supplied for this method. It must perform
+		// the startup tasks necessary to install any rendersystem customizations
+		// or anything else that is not dependent on system initialization, ie
+		// only dependent on the core of Axiom. It must not perform any
+		// operations that would create rendersystem-specific objects at this stage,
+		// that should be done in Initialize().
+		// </remarks>
 		//void Install();
 
 		/// <summary>

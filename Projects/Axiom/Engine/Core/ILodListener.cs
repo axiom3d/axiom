@@ -125,7 +125,7 @@ namespace Axiom.Core
 	/// allowing you to register multiple listeners for different purposes.
 	///
 	/// For some uses, it may be advantageous to also subclass
-	/// <seealso cref="RenderQueueListener"/> as this interface makes available information
+	/// <seealso name="RenderQueueListener"/> as this interface makes available information
 	/// regarding render queue invocations.
 	///
 	/// It is important not to modify the scene graph during rendering, so,

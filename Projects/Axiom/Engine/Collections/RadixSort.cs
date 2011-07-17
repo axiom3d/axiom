@@ -65,7 +65,7 @@ namespace Axiom.Collections
 	/// and a variety of value types to sort on. In addition to providing the
 	/// container and value type on construction, you also need to supply a
 	/// functor object which will retrieve the value to compare on for each item
-	/// in the list. For example, if you had an <see cref="IList<T>" /> of instances
+    /// in the list. For example, if you had an <see cref="IList{T}" /> of instances
 	/// of an object of class 'Bibble', and you wanted to sort on
 	/// Bibble.Doobrie, you'd have to create a delegate like this:
 	/// <code>
@@ -81,7 +81,7 @@ namespace Axiom.Collections
 	/// the value type in the container, and the type of the value you want to
 	/// sort by. You can then call the sort function. E.g.
 	/// <code>
-	/// RadixSortSingle<BibbleList, Bibble> radixSorter;
+	/// RadixSortSingle&lt;BibbleList, Bibble&gt; radixSorter;
 	///
 	/// radixSorter.Sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
@@ -307,7 +307,7 @@ namespace Axiom.Collections
 	/// and a variety of value types to sort on. In addition to providing the
 	/// container and value type on construction, you also need to supply a
 	/// functor object which will retrieve the value to compare on for each item
-	/// in the list. For example, if you had an <see cref="IList<T>" /> of instances
+    /// in the list. For example, if you had an <see cref="IList{T}" /> of instances
 	/// of an object of class 'Bibble', and you wanted to sort on
 	/// Bibble.Doobrie, you'd have to create a delegate like this:
 	/// <code>
@@ -323,7 +323,7 @@ namespace Axiom.Collections
 	/// the value type in the container, and the type of the value you want to
 	/// sort by. You can then call the sort function. E.g.
 	/// <code>
-	/// RadixSortInt32<BibbleList, Bibble> radixSorter;
+	/// RadixSortInt32&lt;BibbleList, Bibble&gt; radixSorter;
 	///
 	/// radixSorter.Sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
@@ -550,7 +550,7 @@ namespace Axiom.Collections
 	/// and a variety of value types to sort on. In addition to providing the
 	/// container and value type on construction, you also need to supply a
 	/// functor object which will retrieve the value to compare on for each item
-	/// in the list. For example, if you had an <see cref="IList<T>" /> of instances
+	/// in the list. For example, if you had an <see cref="IList{T}" /> of instances
 	/// of an object of class 'Bibble', and you wanted to sort on
 	/// Bibble.Doobrie, you'd have to create a delegate like this:
 	/// <code>
@@ -566,7 +566,7 @@ namespace Axiom.Collections
 	/// the value type in the container, and the type of the value you want to
 	/// sort by. You can then call the sort function. E.g.
 	/// <code>
-	/// RadixSortUInt32<BibbleList, Bibble> radixSorter;
+	/// RadixSortUInt32&lt;BibbleList, Bibble&gt; radixSorter;
 	///
 	/// radixSorter.Sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
