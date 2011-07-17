@@ -148,7 +148,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				if ( attribute == "D3DBACKBUFFER" )
+				if ( attribute == "DDBACKBUFFER" )
 				{
 					D3D.Surface[] surfaces = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
 					/// Transfer surfaces
