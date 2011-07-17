@@ -521,7 +521,7 @@ namespace Axiom.Serialization
 		/// <summary>
 		/// Call this to 'rewind' the stream to just before the start of the current chunk. 
 		/// </summary>
-		/// <remarks>The most common case of wanting to use this is if you'd called <see cref="ReadChunkBegin"/>, 
+		/// <remarks>The most common case of wanting to use this is if you'd called <see cref="ReadChunkBegin()"/>, 
 		/// but the chunk you read wasn't one you wanted to process, and rather than
 		/// skipping over it (which <see cref="ReadChunkEnd"/> would do), you want to backtrack
 		/// and give something else an opportunity to read it. </remarks>
@@ -538,7 +538,7 @@ namespace Axiom.Serialization
 		/// <summary>
 		/// Finish the reading of a chunk.
 		/// </summary>
-		/// <remarks>You can call this method at any point after calling <see cref="ReadChunkBegin" />, even
+		/// <remarks>You can call this method at any point after calling <see cref="ReadChunkBegin()" />, even
 		/// if you didn't read all the rest of the data in the chunk. If you did 
 		/// not read to the end of a chunk, this method will automatically skip 
 		/// over the remainder of the chunk and position the stream just after it.</remarks>

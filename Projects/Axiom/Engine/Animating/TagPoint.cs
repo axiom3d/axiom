@@ -64,7 +64,8 @@ namespace Axiom.Animating
 	///		<p/>
 	///		The child objects themselves are not physically attached to this class; as it's name suggests
 	///		this class just 'tags' the area. The actual child objects are attached to the Entity using the
-	///		skeleton which has this tag point. Use <see cref="Entity.AttachObjectToBone"/> to attach
+	///		skeleton which has this tag point. Use 
+    ///		<see cref="Entity.AttachObjectToBone(string, MovableObject, Quaternion, Vector3)"/> to attach
 	///		the objects, which creates a new TagPoint on demand.
 	/// </remarks>
 	public class TagPoint : Bone

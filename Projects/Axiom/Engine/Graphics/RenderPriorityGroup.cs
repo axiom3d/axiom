@@ -113,11 +113,12 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		/// <summary>
-		///		Add a renderable to this group.
-		/// </summary>
-		/// <param name="renderable">Renderable to add to the queue.</param>
-		public void AddRenderable( IRenderable renderable, Technique technique )
+	    /// <summary>
+	    ///		Add a renderable to this group.
+	    /// </summary>
+	    /// <param name="renderable">Renderable to add to the queue.</param>
+	    /// <param name="technique"></param>
+	    public void AddRenderable( IRenderable renderable, Technique technique )
 		{
 			// Transparent and depth/colour settings mean depth sorting is required?
 			// Note: colour write disabled with depth check/write enabled means

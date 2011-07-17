@@ -341,12 +341,13 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Creates an VertexAnimationTrack. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <returns></returns>
-		public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexAnimationType animType )
+	    /// <summary>
+	    ///		Creates an VertexAnimationTrack. 
+	    /// </summary>
+	    /// <param name="handle">Handle to give the track, used for accessing the track later.</param>
+	    /// <param name="animType"></param>
+	    /// <returns></returns>
+	    public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexAnimationType animType )
 		{
 			VertexAnimationTrack track = new VertexAnimationTrack( this, handle, animType );
 
@@ -361,8 +362,8 @@ namespace Axiom.Animating
 	    /// </summary>
 	    /// <param name="handle">Handle to give the track, used for accessing the track later.</param>
 	    /// <param name="targetVertexData">Vertex object which will be affected by this track.</param>
-	    ///<param name="type"></param>
-	    ///<returns></returns>
+	    /// <param name="type"></param>
+	    /// <returns></returns>
 	    public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexData targetVertexData,
 													  VertexAnimationType type )
 		{
@@ -372,18 +373,19 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Applies an animation given a specific time point and weight.
-		/// </summary>
-		/// <remarks>
-		///		Where you have associated animation tracks with Node objects, you can eaily apply
-		///		an animation to those nodes by calling this method.
-		/// </remarks>
-		/// <param name="time">The time position in the animation to apply.</param>
-		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-		///		other animations.</param>
-		/// <param name="accumulate"></param>
-		public void Apply( float time, float weight, bool accumulate, float scale )
+	    /// <summary>
+	    ///		Applies an animation given a specific time point and weight.
+	    /// </summary>
+	    /// <remarks>
+	    ///		Where you have associated animation tracks with Node objects, you can eaily apply
+	    ///		an animation to those nodes by calling this method.
+	    /// </remarks>
+	    /// <param name="time">The time position in the animation to apply.</param>
+	    /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
+	    ///		other animations.</param>
+	    /// <param name="accumulate"></param>
+	    /// <param name="scale"></param>
+	    public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
 			foreach ( NodeAnimationTrack nodeTrack in nodeTrackList.Values )

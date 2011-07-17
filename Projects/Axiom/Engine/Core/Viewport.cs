@@ -41,6 +41,8 @@ using Axiom.Math;
 
 #endregion Namespace Declarations
 
+#pragma warning disable 628
+
 namespace Axiom.Core
 {
     // Viewport has been sealed in Axiom
@@ -943,3 +945,5 @@ namespace Axiom.Core
         #endregion
     }
 }
+
+#pragma warning enable 628

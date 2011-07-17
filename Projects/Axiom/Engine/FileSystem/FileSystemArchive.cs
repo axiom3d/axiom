@@ -114,8 +114,13 @@ namespace Axiom.FileSystem
 		{
 			findFiles( pattern, recursive, simpleList, detailList, "" );
 		}
-		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
-		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
+
+	    /// <param name="detailList"></param>
+	    /// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
+	    /// <param name="pattern"></param>
+	    /// <param name="recursive"></param>
+	    /// <param name="simpleList"></param>
+	    protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
 			if ( pattern == "" )
 				pattern = "*";
@@ -254,7 +259,7 @@ namespace Axiom.FileSystem
 													File.Create(_basePath + @"__testWrite.Axiom", 1 );
 #endif
 												}
-												catch ( Exception ex )
+												catch ( Exception )
 												{
 													IsReadOnly = true;
 												}

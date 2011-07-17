@@ -572,7 +572,6 @@ namespace Axiom.Overlays
 			if ( parent != null )
 			{
 				Rectangle parentRect;
-				Rectangle child;
 
 				parentRect = parent.ClippingRegion;
 

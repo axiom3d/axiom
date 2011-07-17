@@ -81,7 +81,8 @@ namespace Axiom.Core
 	///         This is not essential but will make the process more efficient by saving
 	///         memory reallocations.
 	///      -# Call <see cref="Begin"/> to begin entering data
-	///      -# For each vertex, call <see cref="Position"/>, <see cref="Normal"/>, <see cref="TextureCoord"/>, <see cref="Color"/>
+	///      -# For each vertex, call <see cref="Position(Vector3)"/>, 
+    ///      <see cref="Normal(Vector3)"/>, <see cref="TextureCoord(Vector3)"/>, <see cref="Color(ColorEx)"/>
 	///         to define your vertex data. Note that each time you call Position()
 	///         you start a new vertex. Note that the first vertex defines the
 	///         components of the vertex - you can't add more after that. For example
@@ -622,10 +623,11 @@ namespace Axiom.Core
 
 		///<summary>
 		/// A vertex position is slightly special among the other vertex data
-		/// methods like <see cref="Normal"/> and <see cref="TextureCoord"/>, since calling it indicates
+        /// methods like <see cref="Normal(Vector3)"/> and <see cref="TextureCoord(Vector3)"/>, 
+        /// since calling it indicates
 		/// the start of a new vertex. All other vertex data methods you call
 		/// after this are assumed to be adding more information (like normals or
-		/// texture coordinates) to the last vertex started with <see cref="Position"/>.
+        /// texture coordinates) to the last vertex started with <see cref="Position(Vector3)"/>.
 		/// </summary>
 		/// <param name="pos">Position as a <see cref="Vector3"/></param>
 		public virtual void Position( Vector3 pos )
@@ -709,7 +711,7 @@ namespace Axiom.Core
 		}
 
 		///<summary>
-		/// You can call this method multiple times between <see cref="Position"/> calls
+		/// You can call this method multiple times between <see cref="Position(Vector3)"/> calls
 		/// to add multiple texture coordinates to a vertex. Each one can have
 		/// between 1 and 3 dimensions, depending on your needs, although 2 is
 		/// most common. There are several versions of this method for the
@@ -874,7 +876,7 @@ namespace Axiom.Core
 			this.tempIndexBuffer[ rop.indexData.indexCount - 1 ] = idx;
 		}
 
-		/**
+		/*
 		@note
 			32-bit indexes are not supported on all cards which is why this
 			class only allows 16-bit indexes, for simplicity and ease of use.
@@ -1510,8 +1512,6 @@ namespace Axiom.Core
 					{
 						throw new AxiomException( "ManualObject.Technique - couldn't get object material." );
 					}
-
-					return null;
 				}
 			}
 
