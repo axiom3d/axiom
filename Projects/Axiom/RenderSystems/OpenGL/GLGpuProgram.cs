@@ -116,7 +116,8 @@ namespace Axiom.RenderSystems.OpenGL
 		///     Called when a program needs to bind the supplied parameters.
 		/// </summary>
 		/// <param name="parms"></param>
-		public virtual void BindParameters( GpuProgramParameters parms )
+        /// <param name="mask"></param>
+        public virtual void BindParameters(GpuProgramParameters parms, ushort mask)
 		{
 			// do nothing
 		}
@@ -168,7 +169,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#endregion Properties
 
-		internal bool IsAttributeValid( VertexElementSemantic semantic )
+		internal virtual bool IsAttributeValid( VertexElementSemantic semantic, uint index )
 		{
 			switch ( semantic )
 			{
@@ -191,29 +192,57 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
-		internal int AttributeIndex( VertexElementSemantic semantic )
-		{
-			switch ( semantic )
-			{
-				case VertexElementSemantic.Diffuse:
-				case VertexElementSemantic.Normal:
-				case VertexElementSemantic.Position:
-				case VertexElementSemantic.Specular:
-				case VertexElementSemantic.TexCoords:
-				default:
-					Debug.Assert( false, "Shouldn't be calling this for normal attributes" );
-					break;
-				case VertexElementSemantic.Binormal:
-					return 7;
-				case VertexElementSemantic.BlendIndices:
-					return 1;
-				case VertexElementSemantic.BlendWeights:
-					return 14;
-				case VertexElementSemantic.Tangent:
-					return 15;
+        internal static uint FixedAttributeIndex( VertexElementSemantic semantic, uint index )
+        {
+            // Some drivers (e.g. OS X on nvidia) incorrectly determine the attribute binding automatically
+            // and end up aliasing existing built-ins. So avoid! Fixed builtins are: 
 
-			}
-			return 0; // keeps compiler happy
+            //  a  builtin                          custom attrib name
+            // ----------------------------------------------
+            //      0  gl_Vertex                    vertex
+            //  1  n/a                                      blendWeights            
+            //      2  gl_Normal                    normal
+            //      3  gl_Color                             colour
+            //      4  gl_SecondaryColor    secondary_colour
+            //      5  gl_FogCoord                  fog_coord
+            //  7  n/a                                      blendIndices
+            //      8  gl_MultiTexCoord0    uv0
+            //      9  gl_MultiTexCoord1    uv1
+            //      10 gl_MultiTexCoord2    uv2
+            //      11 gl_MultiTexCoord3    uv3
+            //      12 gl_MultiTexCoord4    uv4
+            //      13 gl_MultiTexCoord5    uv5
+            //      14 gl_MultiTexCoord6    uv6, tangent
+            //      15 gl_MultiTexCoord7    uv7, binormal
+            switch (semantic)
+            {
+                case VertexElementSemantic.Position:
+                    return 0;
+                case VertexElementSemantic.BlendWeights:
+                    return 1;
+                case VertexElementSemantic.Normal:
+                    return 2;
+                case VertexElementSemantic.Diffuse:
+                    return 3;
+                case VertexElementSemantic.Specular:
+                    return 4;
+                case VertexElementSemantic.BlendIndices:
+                    return 7;
+                case VertexElementSemantic.TexCoords:
+                    return 8 + index;
+                case VertexElementSemantic.Tangent:
+                    return 14;
+                case VertexElementSemantic.Binormal:
+                    return 15;
+                default:
+                    Debug.Assert(false,  "Missing attribute!");
+                    return 0;
+            }
+        }
+
+        internal virtual uint AttributeIndex(VertexElementSemantic semantic, uint index)
+		{
+            return FixedAttributeIndex(semantic, index);
 		}
 
 
