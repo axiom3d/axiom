@@ -2756,8 +2756,22 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790, "Axiom specific implementation")]
 		private void MakeGLMatrix( ref Matrix4 matrix, float[] floats )
 		{
-			var mat = matrix.Transpose();
-			mat.MakeFloatArray( floats );
+            floats[0] = matrix.m00;
+            floats[1] = matrix.m10;
+            floats[2] = matrix.m20;
+            floats[3] = matrix.m30;
+            floats[4] = matrix.m01;
+            floats[5] = matrix.m11;
+            floats[6] = matrix.m21;
+            floats[7] = matrix.m31;
+            floats[8] = matrix.m02;
+            floats[9] = matrix.m12;
+            floats[10] = matrix.m22;
+            floats[11] = matrix.m32;
+            floats[12] = matrix.m03;
+            floats[13] = matrix.m13;
+            floats[14] = matrix.m23;
+            floats[15] = matrix.m33;
 		}
 
         #endregion

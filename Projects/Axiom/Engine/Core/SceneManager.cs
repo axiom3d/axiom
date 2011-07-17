@@ -2814,7 +2814,10 @@ namespace Axiom.Core
 				int numTextureUnits = this.targetRenderSystem.Capabilities.TextureUnitCount;
 				if ( pass.HasFragmentProgram  && pass.FragmentProgram.IsSupported )
 				{
-					numTextureUnits = pass.FragmentProgram.SamplerCount;
+                    // Axiom: This effectivley breaks GLSL.
+                    // besides this routine aint existing (anymore?) in 1.7.2
+                    // an upgrade of the scenemanager is recommended
+					//numTextureUnits = pass.FragmentProgram.SamplerCount;
 				}
 				else if ( Config.MaxTextureLayers < this.targetRenderSystem.Capabilities.TextureUnitCount )
 				{

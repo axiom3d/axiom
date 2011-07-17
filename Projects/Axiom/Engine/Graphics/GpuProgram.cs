@@ -482,7 +482,7 @@ namespace Axiom.Graphics
         /// Returns the maximum number of samplers that this fragment program has access
         /// to, based on the fragment program profile it uses.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [Obsolete("Not existing in ogre anymore?")]
         public abstract int SamplerCount
         {
             get;

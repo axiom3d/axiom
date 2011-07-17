@@ -655,17 +655,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                             if (def.IsFloat)
                             {
                                 def.PhysicalIndex = defs.FloatBufferSize;
-                                defs.FloatBufferSize += /*def.ArraySize * def.ElementSize*/ 1;
+                                defs.FloatBufferSize += def.ArraySize * def.ElementSize;
                             }
                             else
                             {
                                 def.PhysicalIndex = defs.IntBufferSize;
-                                defs.IntBufferSize += /*def.ArraySize * def.ElementSize*/ 1;
+                                defs.IntBufferSize += def.ArraySize * def.ElementSize;
                             }
 
                             defs.Map.Add(paramName, def);
-                            
-                            // Axiom: This is not stable yet
+
+#warning this aint working properly yet (fix this as soon we need array support for GLSL!)
                             //defs.GenerateConstantDefinitionArrayEntries(paramName, def);
                         }
                     }
