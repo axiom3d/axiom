@@ -36,12 +36,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Drawing;
 using Axiom.Core;
 using Axiom.Graphics;
 
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using Rectangle = Axiom.Core.Rectangle;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
@@ -321,7 +323,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 
 				case LayerBlendOperationEx.DotProduct:
-					if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.Dot3 ) )
+					if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.Dot3 ) )
 					{
 						d3dTexOp = D3D.TextureOperation.DotProduct3;
 					}
@@ -1030,5 +1032,67 @@ namespace Axiom.RenderSystems.DirectX9
 					return Axiom.Media.PixelFormat.A8R8G8B8;
 			}
 		}
+
+	    public static D3D.BlendOperation ConvertEnum( SceneBlendOperation op )
+	    {
+            switch (op)
+            {
+                case SceneBlendOperation.Add:
+                    return D3D.BlendOperation.Add;
+                case SceneBlendOperation.Max:
+                    return D3D.BlendOperation.Maximum;
+                case SceneBlendOperation.Min:
+                    return D3D.BlendOperation.Minimum;
+                case SceneBlendOperation.ReverseSubtract:
+                    return D3D.BlendOperation.ReverseSubtract;
+                case SceneBlendOperation.Subtract:
+                    return D3D.BlendOperation.Subtract;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static D3D.FillMode ConvertEnum(PolygonMode mode)
+        {
+            switch (mode)
+            {
+                case PolygonMode.Points:
+                    return D3D.FillMode.Point;
+                case PolygonMode.Wireframe:
+                    return D3D.FillMode.Wireframe;
+                case PolygonMode.Solid:
+                    return D3D.FillMode.Solid;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public static D3D.SamplerState ConvertEnum(FilterType type)
+	    {
+            switch (type)
+            {
+                case FilterType.Min:
+                    return D3D.SamplerState.MinFilter;
+                case FilterType.Mag:
+                    return D3D.SamplerState.MagFilter;
+                case FilterType.Mip:
+                    return D3D.SamplerState.MipFilter;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
+
+        public static D3D.ShadeMode ConvertEnum(ShadeOptions opt)
+	    {
+            switch (opt)
+            {
+                case ShadeOptions.Flat:
+                    return D3D.ShadeMode.Flat;
+                case ShadeOptions.Gouraud:
+                    return D3D.ShadeMode.Gouraud;
+                default:
+                    throw new NotImplementedException();
+            }
+	    }
 	}
 }

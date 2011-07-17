@@ -346,7 +346,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// colourDepth
 				if ( miscParams.ContainsKey( "colorDepth" ) )
 				{
-					this.ColorDepth = Int32.Parse( miscParams[ "colorDepth" ].ToString() );
+					colorDepth = Int32.Parse( miscParams[ "colorDepth" ].ToString() );
 				}
 
 				// depthBuffer [parseBool]
@@ -393,8 +393,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( externalHWnd == null )
 			{
-				Width = width;
-				Height = height;
+				this.width = width;
+				this.height = height;
 				this.top = top;
 				this.left = left;
 
@@ -467,10 +467,10 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// set the params of the window
-			this.Name = name;
-			this.ColorDepth = ColorDepth;
-			this.Width = width;
-			this.Height = height;
+			this.name = name;
+			this.colorDepth = ColorDepth;
+			this.width = width;
+			this.height = height;
 			this.IsFullScreen = isFullScreen;
 			this.isDepthBuffered = depthBuffer;
 			this.top = top;
@@ -629,7 +629,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					// Do we want to preserve the FPU mode? Might be useful for scientific apps
 					D3D.CreateFlags extraFlags = 0;
-					ConfigOptionCollection configOptions = Root.Instance.RenderSystem.ConfigOptions;
+					var configOptions = Root.Instance.RenderSystem.ConfigOptions;
 					ConfigOption FPUMode = configOptions[ "Floating-point mode" ];
 					if ( FPUMode.Value == "Consistent" )
 					{
@@ -702,7 +702,15 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override object this[ string attribute ]
+	    public override bool RequiresTextureFlipping
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
+	        }
+	    }
+
+	    public override object this[ string attribute ]
 		{
 			get
 			{
@@ -795,8 +803,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// CMH 4/24/2004 - Start
 			width = width < 10 ? 10 : width;
 			height = height < 10 ? 10 : height;
-			this.Height = height;
-			this.Width = width;
+			this.height = height;
+			this.width = width;
 		}
 
 		public override void WindowMovedOrResized()
@@ -836,8 +844,8 @@ namespace Axiom.RenderSystems.DirectX9
 					_swapChain = new D3D.SwapChain( _driver.D3DDevice, pp );
 					_d3dpp = pp;
 
-					Width = width;
-					Height = height;
+					this.width = width;
+					this.height = height;
 				}
 				catch ( Exception )
 				{
@@ -864,8 +872,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			else // primary windows must reset the device
 			{
-				_d3dpp.BackBufferWidth = Width = width;
-				_d3dpp.BackBufferHeight = Height = height;
+				_d3dpp.BackBufferWidth = this.width = width;
+				_d3dpp.BackBufferHeight = this.height = height;
 				( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
 			}
 
