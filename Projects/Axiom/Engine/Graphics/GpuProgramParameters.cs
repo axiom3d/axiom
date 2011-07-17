@@ -728,7 +728,7 @@ namespace Axiom.Graphics
 
         public void SetNamedConstants(GpuNamedConstants constantDefs)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void CopyMatchingNamedConstantsFrom(GpuProgramParameters source)
