@@ -36,9 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 using Axiom.Core;
 using Axiom.Graphics;
-
+using Axiom.Scripting;
 using Tao.OpenGl;
 
 using ResourceHandle = System.UInt64;
@@ -130,73 +131,80 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	    #endregion
 
         #region Embedded Classes
-        public class CmdAttach : ParamCommand
+
+        [ScriptableProperty("attach")]
+        private class CmdAttach : IPropertyCommand
         {
-            public override String DoGet(object target)
+            public string Get(object target)
             {
-                return ( (GLSLProgram)target).AttachedShaderNames;
+                return ((GLSLProgram)target).AttachedShaderNames;
             }
 
-            public override void DoSet( object target, string shaderNames )
+            public void Set(object target, string shaderNames)
             {
                 //get all the shader program names: there could be more than one
-                var vecShaderNames = shaderNames.Split( " \t".ToCharArray() );
+                var vecShaderNames = shaderNames.Split(" \t".ToCharArray());
                 var t = (GLSLProgram)target;
 
-                foreach ( var name in vecShaderNames )
+                foreach (var name in vecShaderNames)
                 {
-                    t.AttachChildShader( name );
+                    t.AttachChildShader(name);
                 }
-            }
-        };
-
-        public class CmdPreprocessorDefines : ParamCommand
-        {
-            public override string DoGet( object target )
-            {
-                return ( (GLSLProgram)target )._preprocessorDefines;
-            }
-
-            public override void DoSet( object target, string val )
-            {
-                ( (GLSLProgram)target )._preprocessorDefines = val;
             }
         }
 
-        public class CmdInputOperationType : ParamCommand
+
+        [ScriptableProperty("preprocessor_defines")]
+        public class CmdPreprocessorDefines : IPropertyCommand
         {
-            public override string DoGet( object target )
+            public string Get(object target)
+            {
+                return ((GLSLProgram)target)._preprocessorDefines;
+            }
+
+            public void Set(object target, string val)
+            {
+                ((GLSLProgram)target)._preprocessorDefines = val;
+            }
+        }
+
+        [ScriptableProperty("input_operation_type")]
+        public class CmdInputOperationType : IPropertyCommand
+        {
+            public string Get( object target )
             {
                 return OperationTypeToString(((GLSLProgram)target).InputOperationType);
             }
 
-            public override void DoSet( object target, string val )
+            public void Set( object target, string val )
             {
                 ( (GLSLProgram)target ).InputOperationType = ParseOperationType( val );
             }
         }
 
-        public class CmdOutputOperationType : ParamCommand
+        [ScriptableProperty("output_operation_type")]
+        public class CmdOutputOperationType : IPropertyCommand
         {
-            public override string DoGet(object target)
+            public string Get(object target)
             {
                 return OperationTypeToString(((GLSLProgram)target).OutputOperationType);
             }
 
-            public override void DoSet(object target, string val)
+            public void Set(object target, string val)
             {
                 ( (GLSLProgram)target ).OutputOperationType = ParseOperationType( val );
             }
         }
 
-        public class CmdMaxOutputVertices : ParamCommand
+        [ScriptableProperty("max_output_vertices")]
+        public class CmdMaxOutputVertices : IPropertyCommand
         {
-            public override string DoGet( object target )
+            public string Get( object target )
             {
                 return ((GLSLProgram)target).MaxOutputVertices.ToString();
             }
 
-            public override void DoSet( object target, string val )
+            public void Set( object target, string val )
             {
                 ( (GLSLProgram)target ).MaxOutputVertices = int.Parse( val );
             }
@@ -234,6 +242,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
         private readonly List<GpuProgram> attachedGLSLPrograms = new List<GpuProgram>();
 
+        private static readonly Dictionary<string, IPropertyCommand> _commandTable = new Dictionary<string, IPropertyCommand>();
+
 		#endregion Fields
 
 		#region Constructor
@@ -247,42 +257,15 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		    InputOperationType = OperationType.TriangleList;
             OutputOperationType = OperationType.TriangleList;
 		    MaxOutputVertices = 3;
-
-            throw new NotImplementedException(@"if (createParamDictionary(""GLSLProgram""))");
-            // add parameter command "attach" to the material serializer dictionary
-            /*
-             if (createParamDictionary("GLSLProgram"))
-        {
-            setupBaseParamDictionary();
-            ParamDictionary* dict = getParamDictionary();
-
-                        dict->addParameter(ParameterDef("preprocessor_defines", 
-                                "Preprocessor defines use to compile the program.",
-                                PT_STRING),&msCmdPreprocessorDefines);
-            dict->addParameter(ParameterDef("attach", 
-                "name of another GLSL program needed by this program",
-                PT_STRING),&msCmdAttach);
-                        dict->addParameter(
-                                ParameterDef("input_operation_type",
-                                "The input operation type for this geometry program. \
-                                Can be 'point_list', 'line_list', 'line_strip', 'triangle_list', \
-                                'triangle_strip' or 'triangle_fan'", PT_STRING),
-                                &msInputOperationTypeCmd);
-                        dict->addParameter(
-                                ParameterDef("output_operation_type",
-                                "The input operation type for this geometry program. \
-                                Can be 'point_list', 'line_strip' or 'triangle_strip'",
-                                 PT_STRING),
-                                 &msOutputOperationTypeCmd);
-                        dict->addParameter(
-                                ParameterDef("max_output_vertices", 
-                                "The maximum number of vertices a single run of this geometry program can output",
-                                PT_INT),&msMaxOutputVerticesCmd);
-        }
-             */ 
+            
             // Manually assign language now since we use it immediately
             this.syntaxCode = "glsl";
 		}
+
+        static GLSLProgram()
+        {
+            RegisterCommands();
+        }
 
 		#endregion Constructor
 
@@ -301,6 +284,22 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		#endregion Properties
 
 		#region Methods
+
+        /// <summary>
+        /// Axiom internal: registers all commands for IConfigurable dispatch
+        /// </summary>
+        private static void RegisterCommands()
+        {
+            //typeof(GLSLProgram).GetCustomAttributes( typeof(ScriptableProperty) )
+            foreach (var t in typeof(GLSLProgram).GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public))
+            {
+                var attr = t.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
+                foreach (var cmd in attr.Cast<ScriptablePropertyAttribute>())
+                {
+                    _commandTable.Add(cmd.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance(t));
+                }
+            }
+        }
 
 		/// <summary>
 		///		Attach another GLSL Shader to this one.
@@ -523,24 +522,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="name"></param>
 		/// <param name="val"></param>
 		/// <returns></returns>
-		// TODO: Refactor to command pattern
 		public override bool SetParam( string name, string val )
 		{
-			if ( name == "attach" )
-			{
-				//get all the shader program names: there could be more than one
-				string[] shaderNames = val.Split( new char[] { ' ', '\t' } );
+		    IPropertyCommand cmd;
+		    if (!_commandTable.TryGetValue( name, out cmd ))
+			    return false;
 
-				// attach the specified shaders to this program
-				for ( int i = 0; i < shaderNames.Length; i++ )
-				{
-					AttachChildShader( shaderNames[ i ] );
-				}
-
-				return true;
-			}
-
-			return false;
+            cmd.Set( this, val );
+		    return true;
 		}
 
 		/// <summary>
