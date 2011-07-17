@@ -44,6 +44,7 @@ using System.Text;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Media;
 using Axiom.Scripting;
 using Axiom.Core.Collections;
@@ -2485,14 +2486,19 @@ namespace Axiom.Serialization
 			// NB we assume that the first element of vecparams is taken up with either
 			// the index or the parameter name, which we ignore
 
+            var isNamed = false; // TODO: pass as arg
+		    var paramName = string.Empty; // TODO: pass as arg
+
 			int dims, roundedDims;
-			bool isFloat = false;
-			string type = parameters[ 1 ].ToLower();
+			bool isReal;
+            var isMatrix4x4 = false;
+			var type = parameters[ 1 ].ToLower();
 
 			if ( type == "matrix4x4" )
 			{
 				dims = 16;
-				isFloat = true;
+                isReal = true;
+                isMatrix4x4 = true;
 			}
 			else if ( type.IndexOf( "float" ) != -1 )
 			{
@@ -2507,7 +2513,7 @@ namespace Axiom.Serialization
 					dims = int.Parse( type.Substring( 5 ) );
 				}
 
-				isFloat = true;
+                isReal = true;
 			}
 			else if ( type.IndexOf( "int" ) != -1 )
 			{
@@ -2520,6 +2526,8 @@ namespace Axiom.Serialization
 					// the first 5 letters are "int", get the dim indicator at the end
 					dims = int.Parse( type.Substring( 3 ) );
 				}
+
+                isReal = false;
 			}
 			else
 			{
@@ -2534,6 +2542,14 @@ namespace Axiom.Serialization
 				return;
 			}
 
+            // clear any auto parameter bound to this constant, it would override this setting
+            // can cause problems overriding materials or changing default params
+            if (isNamed)
+                context.programParams.ClearNamedAutoConstant(paramName);
+            else
+                context.programParams.ClearAutoConstant(index);
+             
+
 			// Round dims to multiple of 4
 			if ( dims % 4 != 0 )
 			{
@@ -2544,26 +2560,56 @@ namespace Axiom.Serialization
 				roundedDims = dims;
 			}
 
-			int i = 0;
+			int i;
 
 			// now parse all the values
-			if ( isFloat )
+            if (isReal)
 			{
-				float[] buffer = new float[ roundedDims ];
+                var realBuffer = new float[roundedDims];
 
 				// do specified values
 				for ( i = 0; i < dims; i++ )
 				{
-					buffer[ i ] = StringConverter.ParseFloat( parameters[ i + 2 ] );
+                    realBuffer[i] = StringConverter.ParseFloat(parameters[i + 2]);
 				}
 
 				// fill up to multiple of 4 with zero
 				for ( ; i < roundedDims; i++ )
 				{
-					buffer[ i ] = 0.0f;
+                    realBuffer[i] = 0.0f;
 				}
 
-				context.programParams.SetConstant( index, buffer );
+                if (isMatrix4x4)
+                {
+                    // its a Matrix4x4 so pass as a Matrix4
+                    // use specialized setConstant that takes a matrix so matrix is transposed if required
+                    var m4X4 = new Matrix4(
+                        realBuffer[0],  realBuffer[1],  realBuffer[2],  realBuffer[3],
+                        realBuffer[4],  realBuffer[5],  realBuffer[6],  realBuffer[7],
+                        realBuffer[8],  realBuffer[9],  realBuffer[10], realBuffer[11],
+                        realBuffer[12], realBuffer[13], realBuffer[14], realBuffer[15]
+                        );
+				    if (isNamed)
+					    context.programParams.SetNamedConstant(paramName, m4X4);
+				    else
+					    context.programParams.SetConstant(index, m4X4);
+                }
+                else
+                {
+                    // Set
+                    if (isNamed)
+                    {
+                        // For named, only set up to the precise number of elements
+                        // (no rounding to 4 elements)
+                        // GLSL can support sub-float4 elements and we support that
+                        // in the buffer now. Note how we set the 'multiple' param to 1
+                        context.programParams.SetNamedConstant(paramName, realBuffer, dims, 1);
+                    }
+                    else
+                    {
+                        context.programParams.SetConstant(index, realBuffer, (int)(roundedDims * 0.25));
+                    }
+                }
 			}
 			else
 			{

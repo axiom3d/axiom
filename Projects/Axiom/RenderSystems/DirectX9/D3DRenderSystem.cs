@@ -1681,7 +1681,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region BindGpuProgramParameters
 
-        [OgreVersion(1, 7, 2790, "Partially outdated, need GpuProgramParameters updates")]
+        [OgreVersion(1, 7, 2790)]
         public override void BindGpuProgramParameters(GpuProgramType gptype, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability variability)
         {
             // special case pass iteration
@@ -1697,32 +1697,40 @@ namespace Axiom.RenderSystems.DirectX9
                 parms.CopySharedParams();
             }
 
+            var floatLogical = parms.FloatLogicalBufferStruct;
+            var intLogical = parms.IntLogicalBufferStruct;
+
             switch ( gptype )
             {
                 case GpuProgramType.Vertex:
                     activeVertexGpuProgramParameters = parms;
 
-                    if ( parms.HasFloatConstants )
+                    lock (floatLogical.Mutex)
                     {
-                        for ( var index = 0; index < parms.FloatConstantCount; index++ )
+                        foreach (var i in floatLogical.Map)
                         {
-                            var entry = parms.GetFloatConstant( index );
-
-                            if ( entry.isSet )
+                            if ((i.Value.Variability & variability) != 0)
                             {
-                                ActiveD3D9Device.SetVertexShaderConstant(index, entry.val, 0, 1);
+                                var logicalIndex = i.Key;
+                                var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex );
+                                var slotCount = i.Value.CurrentSize/4;
+                                Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
+                                ActiveD3D9Device.SetVertexShaderConstant(logicalIndex, pFloat, 0, slotCount);
                             }
                         }
                     }
-                    if (parms.HasIntConstants)
-                    {
-                        for (var index = 0; index < parms.IntConstantCount; index++)
-                        {
-                            var entry = parms.GetIntConstant(index);
 
-                            if (entry.isSet)
+                    lock (intLogical.Mutex)
+                    {
+                        foreach (var i in intLogical.Map)
+                        {
+                            if ((i.Value.Variability & variability) != 0)
                             {
-                                ActiveD3D9Device.SetVertexShaderConstant(index, entry.val, 0, 1);
+                                var logicalIndex = i.Key;
+                                var pInt = parms.GetIntPointer(i.Value.PhysicalIndex);
+                                var slotCount = i.Value.CurrentSize / 4;
+                                Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
+                                ActiveD3D9Device.SetVertexShaderConstant(logicalIndex, pInt, 0, slotCount);
                             }
                         }
                     }
@@ -1732,31 +1740,35 @@ namespace Axiom.RenderSystems.DirectX9
                 case GpuProgramType.Fragment:
                     activeFragmentGpuProgramParameters = parms;
 
-                    if (parms.HasFloatConstants)
+                    lock (floatLogical.Mutex)
                     {
-                        for (var index = 0; index < parms.FloatConstantCount; index++)
+                        foreach (var i in floatLogical.Map)
                         {
-                            var entry = parms.GetFloatConstant(index);
-
-                            if (entry.isSet)
+                            if ((i.Value.Variability & variability) != 0)
                             {
-                                ActiveD3D9Device.SetPixelShaderConstant(index, entry.val, 0, 1);
-                            }
-                        }
-                    }
-                    if ( parms.HasIntConstants )
-                    {
-                        for ( var index = 0; index < parms.IntConstantCount; index++ )
-                        {
-                            var entry = parms.GetIntConstant( index );
-
-                            if ( entry.isSet )
-                            {
-                                ActiveD3D9Device.SetPixelShaderConstant(index, entry.val, 0, 1);
+                                var logicalIndex = i.Key;
+                                var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex );
+                                var slotCount = i.Value.CurrentSize/4;
+                                Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
+                                ActiveD3D9Device.SetPixelShaderConstant(logicalIndex, pFloat, 0, slotCount);
                             }
                         }
                     }
 
+                    lock (intLogical.Mutex)
+                    {
+                        foreach (var i in intLogical.Map)
+                        {
+                            if ((i.Value.Variability & variability) != 0)
+                            {
+                                var logicalIndex = i.Key;
+                                var pInt = parms.GetIntPointer(i.Value.PhysicalIndex);
+                                var slotCount = i.Value.CurrentSize / 4;
+                                Debug.Assert(i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9");
+                                ActiveD3D9Device.SetPixelShaderConstant(logicalIndex, pInt, 0, slotCount);
+                            }
+                        }
+                    }
                     
                     break;
             }
