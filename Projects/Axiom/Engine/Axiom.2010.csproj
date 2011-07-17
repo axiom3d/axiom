@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="axiom.module" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuLogicalIndexUse.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstantSerializer.cs" />
   </ItemGroup>

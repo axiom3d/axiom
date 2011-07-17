@@ -514,12 +514,12 @@ namespace Axiom.Scripting.Compiler
 
 														try
 														{
-															//TODO
 															if ( named )
-															{ /*parameters->setNamedAutoConstantReal(name, def->acType, f);*/
+															{ 
+                                                                parameters.SetNamedAutoConstantReal(name, def.AutoConstantType, f);
 															}
 															else
-																parameters.SetAutoConstant( index, def.AutoConstantType, f );
+																parameters.SetAutoConstantReal( index, def.AutoConstantType, f );
 														}
 														catch
 														{
@@ -536,12 +536,12 @@ namespace Axiom.Scripting.Compiler
 															{
 																try
 																{
-																	//TODO
 																	if ( named )
-																	{ /*parameters->setNamedAutoConstantReal(name, def->acType, extraInfo);*/
+																	{
+                                                                        parameters.SetNamedAutoConstantReal(name, def.AutoConstantType, extraInfo);
 																	}
 																	else
-																		parameters.SetAutoConstant( index, def.AutoConstantType, extraInfo );
+																		parameters.SetAutoConstantReal( index, def.AutoConstantType, extraInfo );
 																}
 																catch
 																{

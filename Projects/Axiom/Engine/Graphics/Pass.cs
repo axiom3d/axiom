@@ -2763,42 +2763,6 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Update any automatic light parameters on this pass.
-		/// </summary>
-		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
-		{
-			// auto update vertex program parameters
-			if ( this.HasVertexProgram )
-			{
-				_vertexProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
-			}
-
-			// auto update fragment program parameters
-			if ( this.HasFragmentProgram )
-			{
-				_fragmentProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
-			}
-		}
-
-		/// <summary>
-		///    Update any automatic parameters (except lights) on this pass.
-		/// </summary>
-		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
-		{
-			// auto update vertex program parameters
-			if ( this.HasVertexProgram )
-			{
-				_vertexProgramUsage.Params.UpdateAutoParamsNoLights( source );
-			}
-
-			// auto update fragment program parameters
-			if ( this.HasFragmentProgram )
-			{
-				_fragmentProgramUsage.Params.UpdateAutoParamsNoLights( source );
-			}
-		}
-
-		/// <summary>
 		///		Mark the hash for this pass as dirty.	
 		/// </summary>
 		public void DirtyHash()

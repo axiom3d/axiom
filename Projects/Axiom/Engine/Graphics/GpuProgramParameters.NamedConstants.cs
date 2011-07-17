@@ -57,9 +57,9 @@ namespace Axiom.Graphics
         /// </remarks>
         /// </summary>
         /// <param name="name">The name to look up</param>
-        /// <param name="throwExceptionIfMissing"> If set to true, failure to find an entry
+        /// <param name="throwExceptionIfNotFound"> If set to true, failure to find an entry
         /// will throw an exception.</param>
-        public GpuConstantDefinition FindNamedConstantDefinition(string name, bool throwExceptionIfNotFound)
+        public GpuConstantDefinition FindNamedConstantDefinition(string name, bool throwExceptionIfNotFound = false)
 	    {
 
             if (namedParams == null)
