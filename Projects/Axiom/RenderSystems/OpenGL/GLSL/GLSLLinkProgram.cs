@@ -454,7 +454,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                             case GpuProgramParameters.GpuConstantType.Sampler3D:
                             case GpuProgramParameters.GpuConstantType.SamplerCube:
                                 var value = parameters.GetIntConstant( def.PhysicalIndex );
-                                Gl.glUniform1ivARB(currentUniform.Location, 1, ref value);
+                                Gl.glUniform1iARB(currentUniform.Location, value);
                                 break;
                             case GpuProgramParameters.GpuConstantType.Unknown:
                                 break;
