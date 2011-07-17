@@ -67,7 +67,8 @@ namespace Axiom.Serialization
 		/// <summary>
 		/// Use little endian (0x1000 is serialised as 0x00 0x10)
 		/// </summary>
-		Little
+		Little,
+	    Native
 	}
 
 	/// <summary>
