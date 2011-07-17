@@ -617,11 +617,29 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the position of the current camera in world space.
 		/// </summary>
-		public Vector3 CameraPosition
+		public Vector4 CameraPosition
 		{
 			get
 			{
-				return camera.DerivedPosition;
+                /*
+                if (mCameraPositionDirty)
+                {
+                    var vec3 = camera.DerivedPosition;
+                    if (mCameraRelativeRendering)
+                    {
+                        vec3 -= mCameraRelativePosition;
+                    }
+                    mCameraPosition[0] = vec3[0];
+                    mCameraPosition[1] = vec3[1];
+                    mCameraPosition[2] = vec3[2];
+                    mCameraPosition[3] = 1.0;
+                    mCameraPositionDirty = false;
+                }
+                return mCameraPosition;
+                 */
+
+			    var v = camera.DerivedDirection;
+                return new Vector4(v.x, v.y, v.z, 1.0f);
 			}
 		}
 

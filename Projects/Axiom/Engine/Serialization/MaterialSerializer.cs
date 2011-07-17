@@ -2681,15 +2681,15 @@ namespace Axiom.Serialization
 					}
 				}
 				if ( isFloat && extras )
-					context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
+					context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ] ) );
 				else if ( extras )
 					context.programParams.SetAutoConstant( index, constantType, int.Parse( parameters[ 2 ] ) );
 				else if ( constantType == GpuProgramParameters.AutoConstantType.Time )
 				{
 					if ( parameters.Length == 3 )
-						context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
+						context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ] ) );
 					else
-						context.programParams.SetAutoConstant( index, constantType, 1.0f );
+						context.programParams.SetAutoConstantReal( index, constantType, 1.0f );
 				}
 				else
 					context.programParams.SetAutoConstant( index, constantType, 0 );

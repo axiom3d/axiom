@@ -5534,8 +5534,9 @@ namespace Axiom.Core
 				{
 					// Tell auto params object about the renderable change
 					this.autoParamDataSource.Renderable = renderable;
-					pass.UpdateAutoParamsNoLights( this.autoParamDataSource );
-					if ( pass.HasVertexProgram )
+					//pass.UpdateAutoParamsNoLights( this.autoParamDataSource );
+
+                    if ( pass.HasVertexProgram )
 					{
 						passSurfaceAndLightParams = pass.VertexProgram.PassSurfaceAndLightStates;
 					}
@@ -5629,7 +5630,7 @@ namespace Axiom.Core
 							// Update any automatic gpu params for lights
 							// Other bits of information will have to be looked up
 							this.autoParamDataSource.SetCurrentLightList( lightListToUse );
-							pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
+							//pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 
 						    UpdateGpuProgramParameters( pass );
 						}
@@ -5656,7 +5657,7 @@ namespace Axiom.Core
 							// Update any automatic gpu params for lights
 							// Other bits of information will have to be looked up
 							this.autoParamDataSource.SetCurrentLightList( manualLightList );
-							pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
+							//pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 						}
 
 					    UpdateGpuProgramParameters( pass );
