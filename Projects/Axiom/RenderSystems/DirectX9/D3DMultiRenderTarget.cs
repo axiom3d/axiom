@@ -121,13 +121,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( this._targets[ 0 ] != null )
 			{
-				Width = this._targets[ 0 ].Width;
-				Height = this._targets[ 0 ].Height;
+				width = this._targets[ 0 ].Width;
+				height = this._targets[ 0 ].Height;
 			}
 			else
 			{
-				Width = 0;
-				Height = 0;
+				width = 0;
+				height = 0;
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region RenderTarget Implementation
 
-		public override void Update()
+		public override void Update(bool swapBuffers)
 		{
 			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
 			if ( rs.IsDeviceLost )

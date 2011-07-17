@@ -91,7 +91,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected bool showNodeAABs;
 		protected RenderOperation aaBGeometry = new RenderOperation();
 
-		protected MultiMap<Material, BspStaticFaceGroup> matFaceGroupMap = new MultiMap<Material, BspStaticFaceGroup>();
+		protected Collections.MultiMap<Material, BspStaticFaceGroup> matFaceGroupMap = new Collections.MultiMap<Material, BspStaticFaceGroup>();
 
 		protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
 		protected BspGeometry bspGeometry;
