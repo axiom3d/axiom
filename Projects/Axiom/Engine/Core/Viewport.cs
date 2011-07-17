@@ -946,4 +946,4 @@ namespace Axiom.Core
     }
 }
 
-#pragma warning enable 628
+#pragma warning disable 628
