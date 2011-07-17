@@ -165,6 +165,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		private HLSLIncludeHandler includeHandler;
 
+	    protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
+
 		#endregion Fields
 
 		#region Construction and Destruction
@@ -225,12 +227,55 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
+        #region BuildConstantDefinitions
+
+        [OgreVersion(1, 7, 2790)]
 	    protected override void BuildConstantDefinitions()
 	    {
-	        throw new NotImplementedException();
+            constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
+            constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
+
+	        foreach ( var iter in parametersMap )
+	        {
+	            var paramName = iter.Key;
+	            var def = iter.Value;
+	            constantDefs.Map.Add( iter.Key, iter.Value );
+
+	            // Record logical / physical mapping
+	            if ( def.IsFloat )
+	            {
+                    lock(floatLogicalToPhysical.Mutex)
+                    {
+                        floatLogicalToPhysical.Map.Add( def.LogicalIndex,
+                                                        new GpuProgramParameters.GpuLogicalIndexUse(
+                                                            def.PhysicalIndex,
+                                                            def.ArraySize*def.ElementSize,
+                                                            GpuProgramParameters.GpuParamVariability.Global ) );
+                        floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+                    }
+	            }
+	            else
+	            {
+                    lock (intLogicalToPhysical.Mutex)
+                    {
+                        intLogicalToPhysical.Map.Add( def.LogicalIndex,
+                                                      new GpuProgramParameters.GpuLogicalIndexUse(
+                                                          def.PhysicalIndex,
+                                                          def.ArraySize*def.ElementSize,
+                                                          GpuProgramParameters.GpuParamVariability.Global ) );
+
+                        intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+                    }
+	            }
+
+	            // Deal with array indexing
+	            constantDefs.GenerateConstantDefinitionArrayEntries( paramName, def );
+	        }
 	    }
 
-	    /// <summary>
+        #endregion
+
+        /// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
