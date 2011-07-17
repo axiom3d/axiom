@@ -331,7 +331,7 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// New one
-					GLRenderBuffer rb = new GLRenderBuffer( format, width, height );
+					GLRenderBuffer rb = new GLRenderBuffer( format, width, height, 0 );
 					_renderBufferMap[ key ] = new RBRef( rb );
 					retval.Buffer = rb;
 					retval.ZOffset = 0;

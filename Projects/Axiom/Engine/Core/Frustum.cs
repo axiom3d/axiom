@@ -2163,5 +2163,10 @@ namespace Axiom.Core
 		}
 
 		#endregion IDisposable Implementation
+
+	    public void CalcViewMatrixRelative( Vector3 texProjRelativeOrigin, out Matrix4 tmp )
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }

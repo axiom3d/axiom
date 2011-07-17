@@ -41,6 +41,22 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Core
 {
+    public static class IntPtrExtension
+    {
+        public static IntPtr Offset(this IntPtr p, int offset)
+        {
+#if !NET40
+            unsafe
+            {
+                var pb = (byte*)p.ToPointer();
+                return new IntPtr( pb + offset );
+            }
+#else
+            return p + offset;
+#endif
+        }
+    }
+
 	/// <summary>
 	///		Utility class for dealing with memory.
 	/// </summary>

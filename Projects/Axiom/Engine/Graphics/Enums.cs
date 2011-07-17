@@ -465,8 +465,15 @@ namespace Axiom.Graphics
 
         #endregion
 
-		// Supports MRTs with different bit depths
-        //RSC_MRT_DIFFERENT_BIT_DEPTHS = OGRE_CAPS_VALUE(CAPS_CATEGORY_COMMON_2, 5),
+        #region MRTDifferentBitDepths
+
+        /// <summary>
+        ///     Supports MRTs with different bit depths
+        /// </summary>
+        [OgreVersion(1, 7)]
+        MRTDifferentBitDepths = CapCategoryShift.Common2 | (1 << 5),
+
+        #endregion
 
         #region AlphaToCoverage
 
@@ -488,27 +495,81 @@ namespace Axiom.Graphics
 
         #endregion
 
-		// Supports a separate depth buffer for RTTs. D3D 9 & 10, OGL w/FBO (RSC_FBO implies this flag)
-		//RSC_RTT_SEPARATE_DEPTHBUFFER = OGRE_CAPS_VALUE(CAPS_CATEGORY_COMMON_2, 8),
-		// Supports using the MAIN depth buffer for RTTs. D3D 9&10, OGL w/FBO support unknown
-		// (undefined behavior?), OGL w/ copy supports it
-		//RSC_RTT_MAIN_DEPTHBUFFER_ATTACHABLE = OGRE_CAPS_VALUE(CAPS_CATEGORY_COMMON_2, 9),
-		// Supports attaching a depth buffer to an RTT that has width & height less or equal than RTT's.
-		// Otherwise must be of _exact_ same resolution. D3D 9, OGL 3.0 (not 2.0, not D3D10)
-		//RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL = OGRE_CAPS_VALUE(CAPS_CATEGORY_COMMON_2, 10),
-		// Supports using vertex buffers for instance data
-		//RSC_VERTEX_BUFFER_INSTANCE_DATA = OGRE_CAPS_VALUE(CAPS_CATEGORY_COMMON_2, 11),
-		// Supports using vertex buffers for instance data
-		//RSC_CAN_GET_COMPILED_SHADER_BUFFER = OGRE_CAPS_VALUE(CAPS_CATEGORY_COMMON_2, 12),
+        #region RTTSerperateDepthBuffer
 
-		// ***** DirectX specific caps *****
-		// Is DirectX feature "per stage constants" supported
-		//RSC_PERSTAGECONSTANT = OGRE_CAPS_VALUE(CAPS_CATEGORY_D3D9, 0),
+        /// <summary>
+        ///     Supports a separate depth buffer for RTTs. D3D 9 & 10, OGL w/FBO (RSC_FBO implies this flag)
+        /// </summary>
+        [OgreVersion(1, 7)]
+        RTTSerperateDepthBuffer = CapCategoryShift.Common2 | (1 << 8),
+
+        #endregion
+
+        #region RTTMainDepthbufferAttachable
+
+        /// <summary>
+        ///     Supports using the MAIN depth buffer for RTTs. D3D 9&10, OGL w/FBO support unknown
+        ///     (undefined behavior?), OGL w/ copy supports it
+        /// </summary>
+        [OgreVersion(1, 7)]
+        RTTMainDepthbufferAttachable = CapCategoryShift.Common2 | (1 << 9),
+
+        #endregion
+        
+        #region RTTDepthbufferResolutionLessEqual
+
+        /// <summary>
+        ///     Supports attaching a depth buffer to an RTT that has width & height less or equal than RTT's.
+        ///     Otherwise must be of _exact_ same resolution. D3D 9, OGL 3.0 (not 2.0, not D3D10)
+        /// </summary>
+        [OgreVersion(1, 7)]
+        RTTDepthbufferResolutionLessEqual = CapCategoryShift.Common2 | (1 << 10),
+
+        #endregion
+
+        #region VertexBufferInstanceData
+
+        /// <summary>
+        ///     Supports using vertex buffers for instance data
+        /// </summary>
+        [OgreVersion(1, 7)]
+        VertexBufferInstanceData = CapCategoryShift.Common2 | (1 << 11),
+
+        #endregion
+
+        #region CanGetCompiledShaderBuffer
+
+        /// <summary>
+        /// </summary>
+        [OgreVersion(1, 7)]
+        CanGetCompiledShaderBuffer = CapCategoryShift.Common2 | (1 << 12),
+
+        #endregion
+
+        // ***** DirectX specific caps *****
+
+        #region CanGetCompiledShaderBuffer
+
+        /// <summary>
+        /// Is DirectX feature "per stage constants" supported
+        /// </summary>
+        [OgreVersion(1, 7)]
+        PerStageConstant = CapCategoryShift.D3D | (1 << 0),
+
+        #endregion
 
 		// ***** GL Specific Caps *****
-		// Supports openGL GLEW version 1.5
-		//RSC_GL1_5_NOVBO    = OGRE_CAPS_VALUE(CAPS_CATEGORY_GL, 1),
-		
+
+        #region GL15NoVbo
+
+        /// <summary>
+        ///     Supports openGL GLEW version 1.5
+        /// </summary>
+        [OgreVersion(1, 7, "RSC_GL1_5_NOVBO in Ogre")]
+        GL15NoVbo = CapCategoryShift.GL | (1 << 1),
+
+        #endregion
+
         #region FrameBufferObjects
 
         /// <summary>
@@ -519,10 +580,25 @@ namespace Axiom.Graphics
 
         #endregion
 
-        // Support for Frame Buffer Objects ARB implementation (regular FBO is higher precedence)
-		//RSC_FBO_ARB          = OGRE_CAPS_VALUE(CAPS_CATEGORY_GL, 3),
-		// Support for Frame Buffer Objects ATI implementation (ARB FBO is higher precedence)
-        //RSC_FBO_ATI          = OGRE_CAPS_VALUE(CAPS_CATEGORY_GL, 4),
+        #region FrameBufferObjectsARB
+
+        /// <summary>
+        ///    Support for Frame Buffer Objects ARB implementation (regular FBO is higher precedence)
+        /// </summary>
+        [OgreVersion(1, 7, "RSC_FBO_ARB in Ogre")]
+        FrameBufferObjectsARB = CapCategoryShift.GL | (1 << 3),
+
+        #endregion
+
+        #region FrameBufferObjectsATI
+
+        /// <summary>
+        ///    Support for Frame Buffer Objects ATI implementation (ARB FBO is higher precedence)
+        /// </summary>
+        [OgreVersion(1, 7, "RSC_FBO_ATI in Ogre")]
+        FrameBufferObjectsATI = CapCategoryShift.GL | (1 << 4),
+
+        #endregion
 
         #region PBuffer
 
@@ -535,8 +611,15 @@ namespace Axiom.Graphics
 
         #endregion
 
-        // Support for GL 1.5 but without HW occlusion workaround
-        //RSC_GL1_5_NOHWOCCLUSION = OGRE_CAPS_VALUE(CAPS_CATEGORY_GL, 6),
+        #region GL15NoHardwareOcclusion
+
+        /// <summary>
+        ///     Support for GL 1.5 but without HW occlusion workaround
+        /// </summary>
+        [OgreVersion(1, 7, "RSC_GL1_5_NOHWOCCLUSION in Ogre")]
+        GL15NoHardwareOcclusion = CapCategoryShift.GL | (1 << 6),
+
+        #endregion
 
         #region PointExtendedParametersARB
 
