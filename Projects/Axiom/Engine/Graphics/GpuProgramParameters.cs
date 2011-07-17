@@ -74,10 +74,81 @@ namespace Axiom.Graphics
 	///    Capabilities for full details.
 	/// </remarks>
 	public partial class GpuProgramParameters
-	{
-		#region Structs
+    {
+        #region GpuParamVariability
 
-		public struct ParameterEntry
+        [OgreVersion(1, 7, 2790)]
+        [Flags]
+        public enum GpuParamVariability : ushort
+        {
+            /// <summary>
+            /// No variation except by manual setting - the default
+            /// </summary>
+            Global = 1,
+            /// <summary>
+            /// Varies per object (based on an auto param usually), but not per light setup
+            /// </summary>
+            PerObject = 2,
+            /// <summary>
+            /// Varies with light setup
+            /// </summary>
+            Lights = 4,
+            /// <summary>
+            /// Varies with pass iteration number
+            /// </summary>
+            PassIterationNumber = 8,
+            /// <summary>
+            /// Full mask (16-bit)
+            /// </summary>
+            All = 0xFFFF
+        }
+
+        #endregion
+
+        #region GpuConstantType
+
+        /// <summary>
+        /// Enumeration of the types of constant we may encounter in programs.
+        /// </summary>
+        /// <note>
+        /// Low-level programs, by definition, will always use either
+        /// float4 or int4 constant types since that is the fundamental underlying
+        /// type in assembler.
+        /// </note>
+        [OgreVersion(1, 7, 2790)]
+        public enum GpuConstantType
+        {
+            Float1 = 1,
+            Float2 = 2,
+            Float3 = 3,
+            Float4 = 4,
+            Sampler1D = 5,
+            Sampler2D = 6,
+            Sampler3D = 7,
+            SamplerCube = 8,
+            Sampler1DShadow = 9,
+            Sampler2DShadow = 10,
+            Matrix_2X2 = 11,
+            Matrix_2X3 = 12,
+            Matrix_2X4 = 13,
+            Matrix_3X2 = 14,
+            Matrix_3X3 = 15,
+            Matrix_3X4 = 16,
+            Matrix_4X2 = 17,
+            Matrix_4X3 = 18,
+            Matrix_4X4 = 19,
+            Int1 = 20,
+            Int2 = 21,
+            Int3 = 22,
+            Int4 = 23,
+            Unknown = 99
+        }
+
+        #endregion
+
+        #region Structs
+
+        public struct ParameterEntry
 		{
 			public GpuProgramParameterType ParameterType;
 			public string ParameterName;
@@ -87,15 +158,35 @@ namespace Axiom.Graphics
 
 		#region Fields
 
-		/// <summary>
-		///    Packed list of integer constants
+        #region floatConstants
+
+        /// <summary>
+        /// Definition of container that holds the current float constants.
 		/// </summary>
-		protected IntConstantList intConstants = new IntConstantList();
-		/// <summary>
-		///    Table of Vector4 constants by index.
-		/// </summary>
+        /// <remarks>
+        /// Not necessarily in direct index order to constant indexes, logical
+        /// to physical index map is derived from GpuProgram
+        /// </remarks>
+        [OgreVersion(1, 7, 2790)]
 		protected FloatConstantList floatConstants = new FloatConstantList();
-		/// <summary>
+
+        #endregion
+
+        #region intConstants
+
+        /// <summary>
+        /// Definition of container that holds the current integer constants.
+        /// </summary>
+        /// <remarks>
+        /// Not necessarily in direct index order to constant indexes, logical
+        /// to physical index map is derived from GpuProgram
+        /// </remarks>
+        [OgreVersion(1, 7, 2790)]
+        protected IntConstantList intConstants = new IntConstantList();
+
+        #endregion
+
+        /// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
 		protected AutoConstantsList autoConstantList = new AutoConstantsList();
@@ -1599,6 +1690,11 @@ namespace Axiom.Graphics
 	        throw new NotImplementedException();
 	    }
 
-	    
-	}
+
+	    [OgreVersion(1, 7, 2790, "Need to implement this!")]
+	    public void CopySharedParams()
+	    {
+	        //
+	    }
+    }
 }
