@@ -546,7 +546,7 @@ namespace Axiom.SceneManagers.Bsp
 
 				if ( shadMat == null )
 				{
-					// Colour layer
+					// Color layer
 					// NB no extension in Q3A(doh), have to try shader, .jpg, .tga
 					string tryName = q3lvl.Shaders[ shadIdx ].name;
 

@@ -2193,7 +2193,7 @@ namespace Axiom.RenderSystems.DirectX9
                     var opt = ConfigOptions[ "Video Mode" ];
                     if ( opt.Value == "" )
                     {
-                        opt.Value = "800 x 600 @ 32-bit colour";
+                        opt.Value = "800 x 600 @ 32-bit color";
                         viewModeChanged = true;
                     }
                 }

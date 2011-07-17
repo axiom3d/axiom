@@ -355,7 +355,7 @@ namespace Axiom.RenderSystems.DirectX9
                 if (miscParams.TryGetValue("displayFrequency", out opt))
 					_displayFrequency = Int32.Parse( opt.ToString() );
 
-				// colourDepth
+				// colorDepth
                 if (miscParams.TryGetValue("colorDepth", out opt))
 					colorDepth = Int32.Parse( opt.ToString() );
 
