@@ -1669,7 +1669,7 @@ namespace Axiom.Core
                 : base()
 			{
 				this.parent = parent;
-				// Initialise render op
+				// Initialize render op
 				this.renderOperation.indexData = new IndexData();
 				this.renderOperation.indexData.indexBuffer = indexBuffer;
 				this.renderOperation.indexData.indexStart = 0;

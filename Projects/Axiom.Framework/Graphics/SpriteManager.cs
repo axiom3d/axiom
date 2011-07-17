@@ -329,7 +329,7 @@ namespace Axiom.Framework.Graphics
             rs.SetFog( FogMode.None );
             rs.CullingMode = CullingMode.None;
             rs.SetDepthBufferParams( false, false );
-            rs.SetColourBufferWriteEnabled( true, true, true, false );
+            rs.SetColorBufferWriteEnabled( true, true, true, false );
             rs.ShadingMode = Shading.Gouraud;
             rs.PolygonMode = PolygonMode.Solid;
             rs.UnbindGpuProgram( GpuProgramType.Fragment );
