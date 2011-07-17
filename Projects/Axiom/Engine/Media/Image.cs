@@ -826,14 +826,14 @@ namespace Axiom.Media
 
 			// reassign buffer to temp image, make sure auto-delete is true
 			Image temp = new Image();
-			temp.FromDynamicImage( buffer, width, height, 1, format );
+			temp.FromDynamicImage( buffer, this.width, this.height, 1, format );
 			// do not delete[] m_pBuffer!  temp will destroy it
 
 			// set new dimensions, allocate new buffer
 			this.width = width;
 			this.height = height;
 			size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
-			buffer = new byte[ size ];
+		    SetBuffer( new byte[size] ); // AXIOM IMPORTANT: cant set buffer only as this wont sync the IntPtr!
 			numMipMaps = 0; // Loses precomputed mipmaps
 
 			// scale the image from temp into our resized buffer

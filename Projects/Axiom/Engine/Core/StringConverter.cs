@@ -396,17 +396,7 @@ namespace Axiom.Core
 
 		public static bool ParseInt( string value, out int num )
 		{
-			bool retVal = true;
-			try
-			{
-				num = Int32.Parse( value );
-			}
-			catch ( Exception )
-			{
-				num = 0;
-				retVal = false;
-			}
-			return retVal;
+		    return int.TryParse( value, out num);
 		}
 	}
 }
