@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -59,10 +60,6 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Fields
 
 		/// <summary>
-		///    Reference to the current D3D device object.
-		/// </summary>
-		protected D3D.Device device;
-		/// <summary>
 		///     Microsode set externally, most likely from the HLSL compiler.
 		/// </summary>
 		protected D3D.ShaderBytecode externalMicrocode;
@@ -85,7 +82,6 @@ namespace Axiom.RenderSystems.DirectX9
         protected D3DGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			this.device = device;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -131,7 +127,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// Loads this program to specified device
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        private void LoadImpl(Device d3D9Device)
+        protected void LoadImpl(Device d3D9Device)
 	    {
             if (externalMicrocode != null)
             {
@@ -161,7 +157,8 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         protected override void unload()
         {
-            externalMicrocode.Dispose();
+            if (externalMicrocode != null)
+                externalMicrocode.Dispose();
             externalMicrocode = null;
         }
 
@@ -286,16 +283,18 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields
 
-		/// <summary>
-		///    Reference to the current D3D VertexShader object.
-		/// </summary>
-		protected D3D.VertexShader vertexShader;
+        #region mapDeviceToVertexShader
 
-		#endregion Fields
+        [OgreVersion(1, 7, 2790)]
+	    protected readonly Dictionary<Device, VertexShader> mapDeviceToVertexShader = new Dictionary<Device, VertexShader>();
 
-		#region Construction and Destruction
+        #endregion
 
-		internal D3DVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+        #endregion Fields
+
+        #region Construction and Destruction
+
+        internal D3DVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
 			: base( parent, name, handle, group, isManual, loader, device )
 		{
 			Type = GpuProgramType.Vertex;
@@ -303,66 +302,96 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( vertexShader != null && !vertexShader.Disposed )
-						vertexShader.Dispose();
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
+		    unload();
 		}
 
 		#endregion Construction and Destruction
 
-		#region D3DGpuProgram Memebers
+        #region LoadFromMicrocode
 
-		protected override void LoadFromMicrocode( Device device, ShaderBytecode microcode )
-		{
-			// create the new vertex shader
-		    device = D3DRenderSystem.ActiveD3D9Device;
-			vertexShader = new D3D.VertexShader( device, microcode );
-		}
+        [OgreVersion(1, 7, 2790)]
+        protected override void LoadFromMicrocode(Device d3D9Device, ShaderBytecode microcode)
+        {
+            if ( d3D9Device == null )
+            {
+                foreach ( var curD3D9Device in D3DRenderSystem.ResourceCreationDevices )
+                {
+                    LoadFromMicrocode( curD3D9Device, microcode );
+                }
+            }
 
-		#endregion D3DGpuProgram Memebers
 
-		#region GpuProgram Members
+            VertexShader it;
+            if (mapDeviceToVertexShader.TryGetValue(d3D9Device, out it))
+            {
+                if (it != null)
+                    it.Dispose();
+            }
 
-		/// <summary>
-		///     Unloads the VertexShader object.
-		/// </summary>
+            if ( IsSupported )
+            {
+                // Create the shader
+                var vertexShader = new VertexShader(d3D9Device, microcode);
+                mapDeviceToVertexShader[ d3D9Device ] = vertexShader;
+            }
+            else
+            {
+                LogManager.Instance.Write( "Unsupported D3D9 vertex shader '" + _name + "' was not loaded." );
+                mapDeviceToVertexShader[ d3D9Device ] = null;
+            }
+        }
+
+        #endregion
+
+        #region unload
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void unload()
 		{
-			if ( vertexShader != null )
-			{
-				vertexShader.Dispose();
-			}
+            foreach ( var it in mapDeviceToVertexShader )
+            {
+                if (it.Value != null)
+                    it.Value.Dispose();
+            }
+            mapDeviceToVertexShader.Clear();
+
+            base.unload();
 		}
 
-		#endregion GpuProgram Members
+        #endregion
 
-		#region Properties
 
-		/// <summary>
+        #region Properties
+
+        #region VertexShader
+
+        /// <summary>
 		///    Used internally by the D3DRenderSystem to get a reference to the underlying
 		///    VertexShader object.
 		/// </summary>
-		internal D3D.VertexShader VertexShader
+		internal VertexShader VertexShader
 		{
 			get
 			{
-				return vertexShader;
+                var d3D9Device = D3DRenderSystem.ActiveD3D9Device;
+                VertexShader it;
+
+                // Find the shader of this device.
+                if (!mapDeviceToVertexShader.TryGetValue(d3D9Device, out it))
+                {
+                    // Shader was not found -> load it.
+                    LoadImpl(d3D9Device);
+                    it = mapDeviceToVertexShader[d3D9Device];
+                }
+			    
+
+				return it;
 			}
 		}
 
-		public override int SamplerCount
+        #endregion
+
+        public override int SamplerCount
 		{
 			get
 			{
@@ -380,10 +409,13 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields
 
-		/// <summary>
-		///    Reference to the current D3D PixelShader object.
-		/// </summary>
-		protected D3D.PixelShader pixelShader;
+        #region mapDeviceToPixelShader
+
+        [OgreVersion(1, 7, 2790)]
+        protected readonly Dictionary<Device, PixelShader> mapDeviceToPixelShader = new Dictionary<Device, PixelShader>();
+
+        #endregion
+
 
 		#endregion Fields
 
@@ -397,64 +429,97 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( pixelShader != null && !pixelShader.Disposed )
-						pixelShader.Dispose();
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
+            // have to call this here reather than in Resource destructor
+            // since calling virtual methods in base destructors causes crash
+            unload(); 
 		}
 
 		#endregion Construction and Destruction
 
-		#region D3DGpuProgram Memebers
 
-		protected override void LoadFromMicrocode( Device device, D3D.ShaderBytecode microcode )
-		{
-			// create a new pixel shader
-            device = D3DRenderSystem.ActiveD3D9Device;
-			pixelShader = new D3D.PixelShader( device, microcode );
-		}
+        #region LoadFromMicrocode
 
-		#endregion D3DGpuProgram Memebers
+        [OgreVersion(1, 7, 2790)]
+        protected override void LoadFromMicrocode(Device d3D9Device, ShaderBytecode microcode)
+        {
+            if (d3D9Device == null)
+            {
+                foreach (var curD3D9Device in D3DRenderSystem.ResourceCreationDevices)
+                {
+                    LoadFromMicrocode(curD3D9Device, microcode);
+                }
+            }
 
-		#region GpuProgram Members
 
-		/// <summary>
-		///     Unloads the PixelShader object.
-		/// </summary>
-		protected override void unload()
-		{
-			if ( pixelShader != null )
-			{
-				pixelShader.Dispose();
-			}
-		}
+            PixelShader it;
+            if (mapDeviceToPixelShader.TryGetValue(d3D9Device, out it))
+            {
+                if (it != null)
+                    it.Dispose();
+            }
 
-		#endregion GpuProgram Members
+            if (IsSupported)
+            {
+                // Create the shader
+                var vertexShader = new PixelShader(d3D9Device, microcode);
+                mapDeviceToPixelShader[d3D9Device] = vertexShader;
+            }
+            else
+            {
+                LogManager.Instance.Write("Unsupported D3D9 pixel shader '" + _name + "' was not loaded.");
+                mapDeviceToPixelShader[d3D9Device] = null;
+            }
+        }
+
+        #endregion
+
+        #region unload
+
+        [OgreVersion(1, 7, 2790)]
+        protected override void unload()
+        {
+            foreach (var it in mapDeviceToPixelShader)
+            {
+                if (it.Value != null)
+                    it.Value.Dispose();
+            }
+            mapDeviceToPixelShader.Clear();
+
+            base.unload();
+        }
+
+        #endregion
+
 
 		#region Properties
 
-		/// <summary>
-		///    Used internally by the D3DRenderSystem to get a reference to the underlying
-		///    PixelShader object.
-		/// </summary>
-		internal D3D.PixelShader PixelShader
-		{
-			get
-			{
-				return pixelShader;
-			}
-		}
+        #region PixelShader
+
+        /// <summary>
+        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
+        ///    VertexShader object.
+        /// </summary>
+        internal PixelShader PixelShader
+        {
+            get
+            {
+                var d3D9Device = D3DRenderSystem.ActiveD3D9Device;
+                PixelShader it;
+
+                // Find the shader of this device.
+                if (!mapDeviceToPixelShader.TryGetValue(d3D9Device, out it))
+                {
+                    // Shader was not found -> load it.
+                    LoadImpl(d3D9Device);
+                    it = mapDeviceToPixelShader[d3D9Device];
+                }
+
+
+                return it;
+            }
+        }
+
+        #endregion
 
 		public override int SamplerCount
 		{

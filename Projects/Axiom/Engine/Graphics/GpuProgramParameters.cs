@@ -379,7 +379,7 @@ namespace Axiom.Graphics
 
         public void AddParameterToDefaultsList( GpuProgramParameterType type, string name )
 		{
-			ParameterEntry p = new ParameterEntry();
+			var p = new ParameterEntry();
 			p.ParameterType = type;
 			p.ParameterName = name;
 			paramTypeList.Add( p );
@@ -401,29 +401,29 @@ namespace Axiom.Graphics
 
         public GpuProgramParameters Clone()
 		{
-		    throw new NotImplementedException();
+		    //throw new NotImplementedException();
 			var p = new GpuProgramParameters();
 
 
             // let compiler perform shallow copies of structures 
             // AutoConstantEntry, RealConstantEntry, IntConstantEntry
-		    p.floatConstants = new FloatConstantList( floatConstants );
-		    p.intConstants = new IntConstantList( intConstants );
-		    //p.autoConstantList = new AutoConstantEntryList( autoConstantList );
+		    p.floatConstants = new FloatConstantList( floatConstants ); // vector<float> in ogre => shallow copy
+            p.intConstants = new IntConstantList(intConstants);         // vector<int> in ogre => shallow copy
+            
+            p.autoConstants = new AutoConstantsList();                  // vector<AutoConstantEntry> in ogre => deep copy
+            foreach (var ac in autoConstants)
+                p.autoConstants.Add( ac.Clone() );
 
             // copy value members
-            p.floatLogicalToPhysical = floatLogicalToPhysical;
-            p.intLogicalToPhysical = intLogicalToPhysical;
-            //mNamedConstants = oth.mNamedConstants;
-            //copySharedParamSetUsage(oth.mSharedParamSets);
-            CopySharedParams();
+            p.floatLogicalToPhysical = floatLogicalToPhysical; // pointer in ogre => no Clone
+            p.intLogicalToPhysical = intLogicalToPhysical;     // pointer in ogre => no Clone
+            p._namedConstants = _namedConstants;               // pointer in ogre => no Clone
+            p.CopySharedParamSetUsage(_sharedParamSets);
 
-            //mCombinedVariability = oth.mCombinedVariability;
+            p._combinedVariability = _combinedVariability;
             p.transposeMatrices = transposeMatrices;
-            //mIgnoreMissingParams = oth.mIgnoreMissingParams;
-            //mActivePassIterationIndex = oth.mActivePassIterationIndex;
-			
-			p.autoAddParamName = autoAddParamName;
+            p.ignoreMissingParameters = ignoreMissingParameters;
+            p._activePassIterationIndex = _activePassIterationIndex;
 
 			return p;
 		}
@@ -783,6 +783,19 @@ namespace Axiom.Graphics
             // Copy 
             WriteRawConstants(physicalIndex, val, rawCount);
 		}
+
+        public void SetConstant(int index, float[] val, int count)
+        {
+            // Raw buffer size is 4x count
+            var rawCount = count * 4;
+            // get physical index
+            Debug.Assert(floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
+
+            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+
+            // Copy 
+            WriteRawConstants(physicalIndex, val, rawCount);
+        }
 
         #endregion
 
@@ -1561,19 +1574,6 @@ namespace Axiom.Graphics
 
         #endregion
 
-        public void SetConstant(int index, float[] val, int count)
-	    {
-            // Raw buffer size is 4x count
-            var rawCount = count * 4;
-            // get physical index
-            Debug.Assert( floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
-
-            var physicalIndex = GetFloatConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
-
-            // Copy 
-            WriteRawConstants(physicalIndex, val, rawCount);
-	    }
-
         #region GetFloatConstantPhysicalIndex
 
         [OgreVersion(1, 7, 2790)]
@@ -1911,10 +1911,15 @@ namespace Axiom.Graphics
 
         #endregion
 
-        [OgreVersion(1, 7, 2790, "Need to implement this!")]
+        #region CopySharedParams
+
+        [OgreVersion(1, 7, 2790)]
 	    public void CopySharedParams()
 	    {
-	        //
-	    }
+            foreach (var i in _sharedParamSets)
+                i.CopySharedParamsToTargetParams();
+        }
+
+        #endregion
     }
 }

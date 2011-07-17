@@ -37,6 +37,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -990,11 +991,11 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			float constantBias = float.Parse( values[ 0 ] );
+            float constantBias = float.Parse(values[0], CultureInfo.InvariantCulture);
 			float slopeScaleBias = 0.0f;
 			if ( values.Length > 1 )
 			{
-				slopeScaleBias = float.Parse( values[ 1 ] );
+                slopeScaleBias = float.Parse(values[1], CultureInfo.InvariantCulture);
 			}
 
 			context.pass.SetDepthBias( constantBias, slopeScaleBias );
@@ -2686,13 +2687,13 @@ namespace Axiom.Serialization
 					}
 				}
 				if ( isFloat && extras )
-					context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ] ) );
+					context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ], CultureInfo.InvariantCulture ) );
 				else if ( extras )
 					context.programParams.SetAutoConstant( index, constantType, int.Parse( parameters[ 2 ] ) );
 				else if ( constantType == GpuProgramParameters.AutoConstantType.Time )
 				{
 					if ( parameters.Length == 3 )
-						context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ] ) );
+						context.programParams.SetAutoConstantReal( index, constantType, float.Parse( parameters[ 2 ], CultureInfo.InvariantCulture ) );
 					else
 						context.programParams.SetAutoConstantReal( index, constantType, 1.0f );
 				}
@@ -2794,7 +2795,7 @@ namespace Axiom.Serialization
                     Real factor = 1.0f;
                     if (parameters.Length == 3)
                     {
-                        factor = float.Parse(parameters[2]);
+                        factor = float.Parse(parameters[2], CultureInfo.InvariantCulture);
                     }
 
 					if (isNamed)
@@ -2813,7 +2814,7 @@ namespace Axiom.Serialization
                         return;
                     }
 
-			        Real rData = float.Parse(parameters[2]);
+                    Real rData = float.Parse(parameters[2], CultureInfo.InvariantCulture);
 					if (isNamed)
 						context.programParams.SetNamedAutoConstantReal(paramName, 
 							autoConstantDef.AutoConstantType, rData);
