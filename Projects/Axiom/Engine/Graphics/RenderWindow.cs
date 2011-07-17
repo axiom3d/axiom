@@ -108,7 +108,7 @@ namespace Axiom.Graphics
 
 		#region IsFullScreen Property
 
-		private bool _isFullScreen;
+		protected bool isFullScreen;
 		/// <summary>
 		/// Returns true if window is running in fullscreen mode.
 		/// </summary>
@@ -116,11 +116,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isFullScreen;
+				return isFullScreen;
 			}
 			protected set
 			{
-				_isFullScreen = value;
+				isFullScreen = value;
 			}
 		}
 

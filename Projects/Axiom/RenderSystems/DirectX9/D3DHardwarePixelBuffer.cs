@@ -42,7 +42,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
+using System.Threading;
 using Root = Axiom.Core.Root;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -651,5 +651,21 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion Methods
+
+        #region Locking
+
+        internal static readonly object DeviceAccessMutex = new object();
+
+	    public static void LockDeviceAccess()
+	    {
+	        Monitor.Enter( DeviceAccessMutex );
+	    }
+
+        #endregion
+
+	    public static void UnlockDeviceAccess()
+	    {
+            Monitor.Exit(DeviceAccessMutex);
+	    }
 	}
 }
