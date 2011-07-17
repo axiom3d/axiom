@@ -326,23 +326,17 @@ namespace Axiom.Graphics
 		/// <param name="source">Set of params to use as the source.</param>
 		public void CopyConstantsFrom( GpuProgramParameters source )
 		{
-			int i = 0;
+		    floatConstants.Clear();
+		    floatConstants.AddRange( source.floatConstants );
 
-			var floatEntries = new float[ source.floatConstants.Count ];
-            var intEntries = new int[source.intConstants.Count];
-
-			// copy those float and int constants right on in
-			source.floatConstants.CopyTo( floatEntries );
-			source.intConstants.CopyTo( intEntries );
-
-			floatConstants.AddRange( floatEntries );
-			intConstants.AddRange( intEntries );
+            intConstants.Clear();
+            intConstants.AddRange(source.intConstants);
 
 			// Iterate over auto parameters
 			// Clear existing auto constants
 			ClearAutoConstantType();
 
-			for ( i = 0; i < source.autoConstantList.Count; i++ )
+			for ( var i = 0; i < source.autoConstantList.Count; i++ )
 			{
 				AutoConstantEntry entry = (AutoConstantEntry)source.autoConstantList[ i ];
 				SetAutoConstant( entry.Clone() );
@@ -1207,18 +1201,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///    Gets a packed array of all current integer contants.
-		/// </summary>
-		public int[] IntConstants
-		{
-			get
-			{
-				var ints = new int[ intConstants.Count ];
-				intConstants.CopyTo( ints );
-				return ints;
-			}
-		}
 
 		/// <summary>
 		///    Gets the number of int contants values currently set.
@@ -1301,7 +1283,7 @@ namespace Axiom.Graphics
 
         public float[] GetFloatPointer()
         {
-            return floatConstants.ToArray();
+            return floatConstants.Data;
         }
 
         public OffsetArray<int>.FixedPointer GetIntPointer( int physicalIndex )
@@ -1311,7 +1293,7 @@ namespace Axiom.Graphics
 
         public int[] GetIntPointer()
         {
-            return intConstants.ToArray();
+            return intConstants.Data;
         }
 
         [OgreVersion(1, 7, 2790)]

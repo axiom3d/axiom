@@ -196,8 +196,9 @@
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinitionMap.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstant.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuLogicalBufferStruct.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParametersUsage.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParameters.cs" />
     <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwareOcclusionQuery.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
