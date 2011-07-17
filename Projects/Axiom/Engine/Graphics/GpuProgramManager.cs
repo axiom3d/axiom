@@ -93,23 +93,6 @@ namespace Axiom.Graphics
 
 		#endregion Singleton implementation
 
-		#region Fields
-
-		/// <summary>
-		///    Collection of syntax codes that this program manager supports.
-		/// </summary>
-		protected List<string> syntaxCodes = new List<string>();
-
-		public ICollection<string> SupportedSyntaxes
-		{
-			get
-			{
-				return syntaxCodes;
-			}
-		}
-
-		#endregion
-
 		#region Methods
 
 		/// <summary>
@@ -257,7 +240,11 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public bool IsSyntaxSupported( string syntaxCode )
 		{
-			return syntaxCodes.Contains( syntaxCode );
+        	// Use the current render system
+        	  var rs =  Root.Instance.RenderSystem;
+
+            // Get the supported syntaxed from RenderSystemCapabilities 
+            return rs.Capabilities.IsShaderProfileSupported(syntaxCode);
 		}
 
 	    /// <summary>
@@ -326,15 +313,6 @@ namespace Axiom.Graphics
 
 			program.Load();
 			return program;
-		}
-
-		/// <summary>
-		///    Used internally to register support for a particular syntax code.
-		/// </summary>
-		/// <param name="code">The syntax code (i.e. vs_1_1).</param>
-		public void PushSyntaxCode( string code )
-		{
-			syntaxCodes.Add( code );
 		}
 
 		#endregion

@@ -467,6 +467,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
 		{
+		    throw new NotImplementedException( "Need to update this to 1.7" );
+		    /*
 			// Check we're not creating a secondary window when the primary
 			// was fullscreen
 			if ( _primaryWindow != null && _primaryWindow.IsFullScreen )
@@ -533,6 +535,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			return window;
+             */
 		}
 
 		public override MultiRenderTarget CreateMultiRenderTarget( string name )
@@ -1713,32 +1716,12 @@ namespace Axiom.RenderSystems.DirectX9
             _currentLights = Utility.Min(limit, lightList.Count);
 		}
 
-		/// <summary>
-		///   Convert the explicit portable encoding of color to a RenderSystem one.
-		/// </summary>
-		/// <param name="color">The color </param>
-		/// <returns>the RenderSystem specific int storage of the ColorEx version</returns>
-		public override int ConvertColor( ColorEx color )
-		{
-			return color.ToARGB();
-		}
+	    public override void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary )
+	    {
+	        throw new NotImplementedException();
+	    }
 
-		/// <summary>
-		///   Convert the RenderSystem's encoding of color to an explicit portable one.
-		/// </summary>
-		/// <param name="color">The color as an integer</param>
-		/// <returns>ColorEx version of the RenderSystem specific int storage of color</returns>
-		public override ColorEx ConvertColor( int color )
-		{
-			ColorEx colorEx;
-			colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
-			colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
-			colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
-			colorEx.b = (float)( ( color ) % 256 ) / 255;
-			return colorEx;
-		}
-
-        [OgreVersion(1, 7)]
+	    [OgreVersion(1, 7)]
         public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op = SceneBlendOperation.Add)
 		{
 			// set the render states after converting the incoming values to D3D.Blend
@@ -2779,6 +2762,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private void CheckCaps( D3D.Device device )
 		{
+		    throw new NotImplementedException( "Upgrade this to 1.7" );
+            /*
             if (realCapabilities == null)
                 realCapabilities = new RenderSystemCapabilities();
 
@@ -3107,6 +3092,7 @@ namespace Axiom.RenderSystems.DirectX9
 			realCapabilities.Log();
 
 		    currentCapabilities = realCapabilities;
+             */
 		}
 
 		/// <summary>
