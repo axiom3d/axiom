@@ -440,7 +440,7 @@ namespace Axiom.Core
 		///	by the active camera. However, if they want they can cancel this out
 		///	and use an identity projection, which effectively projects in 2D using
 		///	a {-1, 1} view space. Useful for overlay rendering. Normally you don't
-		//	need to change this. The default is false.
+		///	need to change this. The default is false.
 		/// </summary>
 		public bool UseIdentityProjection
 		{
@@ -847,7 +847,7 @@ namespace Axiom.Core
 		/// <remarks>
 		/// You will have to call this 3 times for each face for a triangle list,
 		/// or use the alternative 3-parameter version. Other operation types
-		/// require different numbers of indexes, <see cref="renderOperation.OperationType"/>.
+		/// require different numbers of indexes, <see cref="RenderOperation.operationType"/>.
 		/// 32-bit indexes are not supported on all cards which is why this
 		/// class only allows 16-bit indexes, for simplicity and ease of use.
 		/// </remarks>

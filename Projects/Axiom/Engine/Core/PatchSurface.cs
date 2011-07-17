@@ -182,16 +182,6 @@ namespace Axiom.Core
 		/// </param>
 		/// <param name="width">Specifies the width of the patch in control points.</param>
 		/// <param name="height">Specifies the height of the patch in control points.</param>
-		/// <param name="type">The type of surface.</param>
-		/// <param name="uMaxSubdivision">
-		///     If you want to manually set the top level of subdivision,
-		///     do it here, otherwise let the system decide.
-		/// </param>
-		/// <param name="vMaxSubdivisionLevel">
-		///     If you want to manually set the top level of subdivision,
-		///     do it here, otherwise let the system decide.
-		/// </param>
-		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
 		public void DefineSurface( Array controlPointArray, VertexDeclaration decl, int width, int height )
 		{
 			DefineSurface( controlPointArray, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
@@ -214,7 +204,7 @@ namespace Axiom.Core
 		///     The array is internally treated as a contiguous memory buffer without any gaps between the elements.
 		///     The format of the buffer is defined in the VertexDeclaration parameter.
 		/// </param>
-		/// <param name="decl">
+        /// <param name="declaration">
 		///     VertexDeclaration describing the contents of the buffer.
 		///     Note this declaration must _only_ draw on buffer source 0!
 		/// </param>
@@ -229,7 +219,7 @@ namespace Axiom.Core
 		///     If you want to manually set the top level of subdivision,
 		///     do it here, otherwise let the system decide.
 		/// </param>
-		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
+        /// <param name="visibleSide">Determines which side of the patch (or both) triangles are generated for.</param>
 		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
 			PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
 		{
@@ -791,20 +781,14 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="forMax"></param>
-		/// <returns></returns>
 		protected int GetAutoULevel()
 		{
 			return GetAutoULevel( false );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="forMax"></param>
-		/// <returns></returns>
 		protected int GetAutoULevel( bool forMax )
 		{
 			// determine levels
@@ -845,20 +829,14 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="forMax"></param>
-		/// <returns></returns>
 		protected int GetAutoVLevel()
 		{
 			return GetAutoVLevel( false );
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="forMax"></param>
-		/// <returns></returns>
 		protected int GetAutoVLevel( bool forMax )
 		{
 			Vector3 a = Vector3.Zero;

@@ -208,11 +208,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="meshLodUsageList"></param>
-		/// <returns></returns>
 		protected static ushort GetIndexAscending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
@@ -225,11 +221,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="meshLodUsageList"></param>
-		/// <returns></returns>
 		protected static ushort GetIndexDescending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;

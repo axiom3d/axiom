@@ -42,10 +42,10 @@ using Axiom.Graphics;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
-/// <ogresynchronization>
-///     <file name="KeyFrame.h"   revision="1.9" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-///     <file name="KeyFrame.cpp" revision="1.13" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
-/// </ogresynchronization>
+// <ogresynchronization>
+//     <file name="KeyFrame.h"   revision="1.9" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+//     <file name="KeyFrame.cpp" revision="1.13" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+// </ogresynchronization>
 #endregion
 
 namespace Axiom.Animating

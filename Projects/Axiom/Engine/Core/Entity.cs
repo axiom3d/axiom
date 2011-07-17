@@ -292,11 +292,7 @@ namespace Axiom.Core
 		#region Constructors
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="mesh"></param>
-		/// <param name="creator"></param>
 		internal Entity( string name, Mesh mesh )
 			: base( name )
 		{
@@ -789,7 +785,7 @@ namespace Axiom.Core
 		///		Internal implementation of detaching a 'child' object from this entity and
 		///		clearing the assignment of the parent node to the child entity.
 		/// </summary>
-		/// <param name="sceneObject">Object to detach.</param>
+        /// <param name="pObject">Object to detach.</param>
 		protected void DetachObjectImpl( MovableObject pObject )
 		{
 			TagPoint tagPoint = (TagPoint)pObject.ParentNode;
@@ -1656,7 +1652,7 @@ namespace Axiom.Core
 		/// Gets a reference to the entity representing the numbered manual level of detail.
 		/// </summary>
 		/// <remarks>
-		/// The zero-based index never includes the original entity, unlike <see cref="Mesh.GetLodLevel"/>.
+        /// The zero-based index never includes the original entity, unlike <see name="Mesh.GetLodLevel"/>.
 		/// </remarks>
 		/// <param name="index"></param>
 		/// <returns></returns>
@@ -2091,7 +2087,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Internal method to clone vertex data definitions but to remove blend buffers.
 		/// </summary>
-		/// <param name="sourceData">Vertex data to clone.</param>
+        /// <param name="source">Vertex data to clone.</param>
 		/// <returns>A cloned instance of 'source' without blending information.</returns>
 		protected internal VertexData CloneVertexDataRemoveBlendInfo( VertexData source )
 		{
@@ -2295,10 +2291,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public Entity Clone( string newName )
 		{
 			if ( Manager == null )

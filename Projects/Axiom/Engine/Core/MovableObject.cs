@@ -412,7 +412,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Detaches an object from a parent SceneNode or TagPoint, if attached.
 		/// </summary>
-		/// <param name="void"></param>
 		public virtual void DetachFromParent()
 		{
 			if ( IsInScene )
@@ -644,7 +643,7 @@ namespace Axiom.Core
 		///	Gets/Sets the visibility flags for this object.
 		/// </summary>
 		/// <remarks>
-		///	As well as a simple true/false value for visibility (as seen in <see cref="Visible"/>),
+        ///	As well as a simple true/false value for visibility (as seen in <see cref="IsVisible"/>),
 		///	you can also set visiblity flags which when 'and'ed with the SceneManager's
 		///	visibility mask can also make an object invisible.
 		/// </remarks>
