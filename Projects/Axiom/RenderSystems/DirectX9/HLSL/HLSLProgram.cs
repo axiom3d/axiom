@@ -183,6 +183,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			includeHandler = new HLSLIncludeHandler( this );
+		    columnMajorMatrices = true;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -208,10 +209,13 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		#region GpuProgram Members
 
-		/// <summary>
+        #region CreateLowLevelImpl
+
+        /// <summary>
 		///     Creates a low level implementation based on the results of the
 		///     high level shader compilation.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected override void CreateLowLevelImpl()
 		{
 			if ( !HasCompileError )
@@ -223,6 +227,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
 			}
 		}
+
+        #endregion
 
         #region BuildConstantDefinitions
 
@@ -243,7 +249,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	            {
                     lock (floatLogicalToPhysical.Mutex)
                     {
-                        //if (!floatLogicalToPhysical.Map.ContainsKey(def.LogicalIndex))
+                        if (!floatLogicalToPhysical.Map.ContainsKey(def.LogicalIndex))
                         floatLogicalToPhysical.Map.Add( def.LogicalIndex,
                                                         new GpuProgramParameters.GpuLogicalIndexUse(
                                                             def.PhysicalIndex,
@@ -256,7 +262,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	            {
                     lock (intLogicalToPhysical.Mutex)
                     {
-                        //if (!intLogicalToPhysical.Map.ContainsKey(def.LogicalIndex))
+                        if (!intLogicalToPhysical.Map.ContainsKey(def.LogicalIndex))
                         intLogicalToPhysical.Map.Add( def.LogicalIndex,
                                                       new GpuProgramParameters.GpuLogicalIndexUse(
                                                           def.PhysicalIndex,
@@ -293,9 +299,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			return parms;
 		}
 
-		/// <summary>
+        #region LoadFromSource
+
+        /// <summary>
 		///     Compiles the high level shader source to low level microcode.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected override void LoadFromSource()
 		{
             /*
@@ -310,7 +319,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 		}
 
-	    private void CompileMicrocode()
+        #endregion
+
+        private void CompileMicrocode()
 	    {
             ConstantTable constantTable = null;
             string errors = null;
@@ -415,19 +426,22 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 	    }
 
-	    /// <summary>
+        #region UnloadHighLevelImpl
+
+        /// <summary>
 		///     Unloads data that is no longer needed.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected override void UnloadHighLevelImpl()
 		{
 			if ( microcode != null )
-			{
 				microcode.Dispose();
-				microcode = null;
-			}
+            microcode = null;
 		}
 
-		/// <summary>
+        #endregion
+
+        /// <summary>
 		/// Returns whether this program can be supported on the current renderer and hardware.
 		/// </summary>
 		public override bool IsSupported
@@ -475,6 +489,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		#region Methods
 
+        #region ProcessParamElement
+
+        [OgreVersion(1, 7, 2790)]
 		protected void ProcessParamElement( ConstantTable constantTable, EffectHandle parent, string prefix, int index )
 		{
 			var constant = constantTable.GetConstant( parent, index );
@@ -566,13 +583,18 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		}
 
-	    protected void PopulateDef( ConstantDescription d3dDesc, GpuProgramParameters.GpuConstantDefinition def )
+        #endregion
+
+        #region PopulateDef
+
+        [OgreVersion(1, 7, 2790)]
+        protected void PopulateDef( ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
 	    {
-	        def.ArraySize = d3dDesc.Elements;
-		    switch(d3dDesc.Type)
+	        def.ArraySize = d3DDesc.Elements;
+		    switch(d3DDesc.Type)
 		    {
 		    case ParameterType.Int:
-			    switch(d3dDesc.Columns)
+			    switch(d3DDesc.Columns)
 			    {
 			        case 1:
 			            def.ConstantType = GpuProgramParameters.GpuConstantType.Int1;
@@ -589,22 +611,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			    } // columns
 		            break;
 		    case ParameterType.Float:
-			    switch(d3dDesc.Class)
+			    switch(d3DDesc.Class)
 			    {
 			    case ParameterClass.MatrixColumns:
                     case ParameterClass.MatrixRows:
 				    {
-					    int firstDim, secondDim;
-					    firstDim = d3dDesc.RegisterCount / d3dDesc.Elements;
-					    if (d3dDesc.Class == ParameterClass.MatrixRows)
-					    {
-						    secondDim = d3dDesc.Columns;
-					    }
-					    else
-					    {
-						    secondDim = d3dDesc.Rows;
-					    }
-					    switch(firstDim)
+					    var firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
+					    var secondDim = d3DDesc.Class == ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
+					    
+                        switch(firstDim)
 					    {
 					    case 2:
 						    switch(secondDim)
@@ -663,7 +678,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				    break;
 			    case ParameterClass.Scalar:
 			    case ParameterClass.Vector:
-				    switch(d3dDesc.Columns)
+				    switch(d3DDesc.Columns)
 				    {
 				    case 1:
 					    def.ConstantType = GpuProgramParameters.GpuConstantType.Float1;
@@ -691,7 +706,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 	    }
 
-	    private List<D3D.Macro> buildDefines( string defines )
+        #endregion
+
+        private List<D3D.Macro> buildDefines( string defines )
 		{
 			List<D3D.Macro> definesList = new List<D3D.Macro>();
 			D3D.Macro macro;

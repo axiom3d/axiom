@@ -1680,7 +1680,7 @@ namespace Axiom.RenderSystems.DirectX9
         #endregion
 
         #region BindGpuProgramParameters
-
+        
         [OgreVersion(1, 7, 2790)]
         public override void BindGpuProgramParameters(GpuProgramType gptype, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability variability)
         {

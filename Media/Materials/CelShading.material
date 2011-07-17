@@ -28,7 +28,7 @@ fragment_program Ogre/CelShadingHLSL_fp hlsl
 
 vertex_program Ogre/CelShadingVP unified
 {
-	delegate Ogre/CelShadingHLSL_vp
+	#delegate Ogre/CelShadingHLSL_vp
 	delegate Ogre/CelShadingCG_vp	
 	default_params
 	{
@@ -41,7 +41,7 @@ vertex_program Ogre/CelShadingVP unified
 
 fragment_program Ogre/CelShadingFP unified
 {
-	delegate Ogre/CelShadingHLSL_fp
+	#delegate Ogre/CelShadingHLSL_fp
 	delegate Ogre/CelShadingCG_fp
 }
 

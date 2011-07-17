@@ -869,9 +869,34 @@ namespace Axiom.Graphics
 
 	    #endregion
 
+        #region GetLightAs4DVector
+
+        [OgreVersion(1, 7, 2790)]
 	    public virtual Vector4 GetLightAs4DVector( int index )
 	    {
             return GetLight(index).GetAs4DVector(true);
 	    }
-	}
+
+        #endregion
+
+        #region GetLightDiffuseColor
+
+        [OgreVersion(1, 7, 2790)]
+	    public virtual ColorEx GetLightDiffuseColor( int index )
+	    {
+            return GetLight(index).Diffuse;
+        }
+
+        #endregion
+
+        #region GetLightSpecularColor
+
+        [OgreVersion(1, 7, 2790)]
+	    public ColorEx GetLightSpecularColor( int index )
+	    {
+            return GetLight(index).Specular;
+        }
+
+        #endregion
+    }
 }
