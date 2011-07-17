@@ -38,8 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using Axiom.Graphics.Collections;
 using Axiom.Media;
 using SlimDX.Direct3D9;
@@ -68,7 +70,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// DirectX9 Render System implementation.
 	/// </summary>
-	public class D3DRenderSystem : RenderSystem
+	public partial class D3DRenderSystem : RenderSystem
 	{
         // Not implemented methods / fields: 
         // static ResourceManager
@@ -76,7 +78,11 @@ namespace Axiom.RenderSystems.DirectX9
         // notifyOnDeviceLost
         // notifyOnDeviceReset
 
+	    private D3D9ResourceManager _resourceManager;
 
+	    private D3D9DeviceManager _deviceManager;
+
+	    private RenderWindowList _renderWindows;
 
 	    //private Dictionary<D3D.Device, int> _currentLights;
 	    private int _currentLights;
@@ -91,7 +97,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		internal D3D.Direct3D manager;
 
-		private Driver _activeDriver;
+	    internal Driver _activeDriver;
 
 	    private D3DHardwareBufferManager hardwareBufferManager;
 
@@ -187,6 +193,14 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 	    private static D3DRenderSystem _D3D9RenderSystem;
+
+        public static D3D.Direct3D Direct3D9
+        {
+            get
+            {
+                throw new NotImplementedException(); 
+            }
+        }
 
         public static Device ActiveD3D9Device
         {
@@ -465,80 +479,51 @@ namespace Axiom.RenderSystems.DirectX9
 		    return query;
 		}
 
+        #region CreateRenderWindow
+
+        [OgreVersion(1, 7)]
 		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
 		{
-		    throw new NotImplementedException( "Need to update this to 1.7" );
-		    /*
-			// Check we're not creating a secondary window when the primary
-			// was fullscreen
-			if ( _primaryWindow != null && _primaryWindow.IsFullScreen )
-			{
-				throw new Exception( "Cannot create secondary windows when the primary is full screen." );
-			}
+            LogManager.Instance.Write("D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} ",
+                                       name, width, height, isFullScreen ? "fullscreen" : "windowed");
 
-			if ( _primaryWindow != null && isFullScreen )
-			{
-				throw new ArgumentException( "Cannot create full screen secondary windows." );
-			}
+		    LogManager.Instance.Write( "miscParams: {4}",
+		                               miscParams.Aggregate( new StringBuilder(),
+		                                                     ( s, kv ) =>
+		                                                     s.AppendFormat( "{0} = {1};", kv.Key, kv.Value ).AppendLine()
+		                                   ).ToString()
+		        );
 
-			// Log a message
-			System.Text.StringBuilder strParams = new System.Text.StringBuilder();
-			if ( miscParams != null )
-			{
-				foreach ( KeyValuePair<string, object> entry in miscParams )
-				{
-					strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
-				}
-			}
-			LogManager.Instance.Write( "D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
-									   name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
+            // Make sure we don't already have a render target of the
+            // same name as the one supplied
+            if (renderTargets.ContainsKey(name))
+            {
+                throw new Exception(String.Format("A render target of the same name '{0}' already exists." +
+                                     "You cannot create a new window with this name.", name));
+            }
 
-			// Make sure we don't already have a render target of the
-			// same name as the one supplied
-			if ( renderTargets.ContainsKey( name ) )
-			{
-				throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +
-									 "You cannot create a new window with this name.", name ) );
-			}
+            var window = new D3DRenderWindow(_activeDriver, _primaryWindow != null ? device : null);
 
-			RenderWindow window = new D3DRenderWindow( _activeDriver, _primaryWindow != null ? device : null );
+            window.Create(name, width, height, isFullScreen, miscParams);
 
-			// create the window
-			window.Create( name, width, height, isFullScreen, miscParams );
+		    _resourceManager.LockDeviceAccess();
 
-			// add the new render target
-			AttachRenderTarget( window );
+		    _deviceManager.LinkRenderWindow( window );
 
-			// If this is the first window, get the D3D device and create the texture manager
-			if ( _primaryWindow == null )
-			{
-				_primaryWindow = (D3DRenderWindow)window;
-				device = (Device)window[ "D3DDEVICE" ];
+            _resourceManager.UnlockDeviceAccess();
 
-				// Create the texture manager for use by others
-				textureManager = new D3DTextureManager( manager, device );
-				// Also create hardware buffer manager
-				hardwareBufferManager = new D3DHardwareBufferManager( device );
+		    _renderWindows.Add( window );
 
-				// Create the GPU program manager
-				gpuProgramMgr = new D3DGpuProgramManager( device );
-				// create & register HLSL factory
-				HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
-				gpuProgramMgr.PushSyntaxCode( "hlsl" );
+		    UpdateRenderSystemCapabilities();
 
-				// Initialize the capabilities structures
-				this.CheckCaps( device );
-			}
-			else
-			{
-				_secondaryWindows.Add( (D3DRenderWindow)window );
-			}
+            AttachRenderTarget(window);
 
 			return window;
-             */
 		}
 
-		public override MultiRenderTarget CreateMultiRenderTarget( string name )
+        #endregion
+
+        public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
 			MultiRenderTarget retval = new D3DMultiRenderTarget( name );
 			AttachRenderTarget( retval );
@@ -2310,7 +2295,20 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        /// <summary>
+	    private D3D9DriverList _driverList;
+	    internal D3D9RenderWindowList renderWindows = new D3D9RenderWindowList();
+
+	    public D3D9DriverList Direct3DDrivers
+	    {
+	        get
+	        {
+                if( _driverList == null )
+			        _driverList = new D3D9DriverList();
+		        return _driverList;
+	        }
+	    }
+
+	    /// <summary>
         /// Sets the given renderstate to a new value
         /// </summary>
         /// <param name="state">The state to set</param>
@@ -3215,7 +3213,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 	}
 
-	/// <summary>
+    /// <summary>
 	///		Structure holding texture unit settings for every stage
 	/// </summary>
 	internal struct D3DTextureStageDesc

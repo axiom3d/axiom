@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using SlimDX.Direct3D9;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -185,7 +185,16 @@ namespace Axiom.RenderSystems.DirectX9
 				_direct3D = value;
 			}
 		}
-		#endregion Direct3D Property
+
+	    public Capabilities D3D9DeviceCaps
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
+	        }
+	    }
+
+	    #endregion Direct3D Property
 
 		#endregion Properties
 	}
