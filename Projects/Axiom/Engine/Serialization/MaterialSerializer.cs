@@ -2631,7 +2631,7 @@ namespace Axiom.Serialization
 					buffer[ i ] = 0;
 				}
 
-				context.programParams.SetConstant( index, buffer );
+                context.programParams.SetConstant(index, buffer, (int)(roundedDims * 0.25));
 			}
 		}
 

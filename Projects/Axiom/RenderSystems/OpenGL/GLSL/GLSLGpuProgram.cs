@@ -34,7 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.Diagnostics;
+using Axiom.Core;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -55,37 +56,59 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	{
 		#region Fields
 
-		/// <summary>
+        #region glslProgram
+
+        /// <summary>
 		///		GL Handle for the shader object.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected GLSLProgram glslProgram;
 
-		/// <summary>
+        #endregion
+
+        #region vertexShaderCount
+
+        /// <summary>
 		///		Keep track of the number of vertex shaders created.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected static int vertexShaderCount;
-		/// <summary>
+
+        #endregion
+
+        #region fragmentShaderCount
+
+        /// <summary>
 		///		Keep track of the number of fragment shaders created.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		protected static int fragmentShaderCount;
+
+        #endregion
+
+        #region geometryShaderCount
+
         /// <summary>
         ///		Keep track of the number of geometry shaders created.
         /// </summary>
+        [OgreVersion(1, 7, 2790)]
         protected static int geometryShaderCount;
 
+        #endregion
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Constructor
 
+        [OgreVersion(1, 7, 2790)]
 		public GLSLGpuProgram( GLSLProgram parent )
 			: base( parent.Creator, parent.Name, parent.Handle, parent.Group, false, null )
 		{
-			this.Type = parent.Type;
-			this.SyntaxCode = "glsl";
+            // store off the reference to the parent program
+            glslProgram = parent;
 
-			// store off the reference to the parent program
-			glslProgram = parent;
+		    type = parent.Type;
+		    syntaxCode = "glsl";
 
 			if ( parent.Type == GpuProgramType.Vertex )
 			{
@@ -101,19 +124,39 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 
 			// transfer skeletal animation status from parent
-			this.IsSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
+			isSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
 
 			// there is nothing to load
-			//LoadFromFile = false;
+            LoadFromFile = false;
 		}
 
 		#endregion Constructor
 
-		#region Properties
+        #region dispose
 
-		/// <summary>
+        [OgreVersion(1, 7,2790)]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                // have to call this here reather than in Resource destructor
+                // since calling virtual methods in base destructors causes crash
+                unload(); 
+            }
+
+            base.dispose(disposeManagedResources);
+        }
+
+        #endregion
+
+        #region Properties
+
+        #region GLSLProgram
+
+        /// <summary>
 		///		Gets the GLSLProgram for the shader object.
 		/// </summary>
+        [OgreVersion(1, 7, 2790)]
 		public GLSLProgram GLSLProgram
 		{
 			get
@@ -122,30 +165,62 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
-		#endregion Properties
+        #endregion
 
-		#region Resource Implementation
+        /*
+        // parent class already exposes this!
+        [OgreVersion(1, 7, 2790)]
+        public int ProgramID
+        {
+            get
+            {
+                return programId;
+            }
+        }
+         */
 
+        #endregion Properties
+
+        #region Resource Implementation
+
+        #region loadImpl
+
+        [OgreVersion(1, 7, 2790)]
 		protected override void load()
 		{
 			// nothing to do
 		}
 
-		protected override void unload()
+        #endregion
+
+        #region unloadImpl
+
+        [OgreVersion(1, 7, 2790)]
+        protected override void unload()
 		{
 			// nothing to do
 		}
 
+        #endregion
+
+        #region LoadFromSource
+
+        [OgreVersion(1, 7, 2790)]
         protected override void LoadFromSource()
         {
             // nothing to load
         }
 
-		#endregion Resource Implementation
+        #endregion
 
-		#region GpuProgram Implementation
+        #endregion Resource Implementation
 
-		public override void Bind()
+        #region GpuProgram Implementation
+
+        #region bindProgram
+
+        [OgreVersion(1, 7, 2790)]
+        public override void Bind()
 		{
 			// tell the Link Program Manager what shader is to become active
 			switch (Type)
@@ -162,6 +237,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
+        #endregion
+
+        #region unbindProgram
+
+        [OgreVersion(1, 7, 2790)]
         public override void Unbind()
         {
             // tell the Link Program Manager what shader is to become inactive
@@ -179,25 +259,47 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
+        #endregion
+
+        #region BindProgramParameters
+
+        [OgreVersion(1, 7, 2790)]
         public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
-			// activate the link program object
-			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+            try
+            {
+                // activate the link program object
+                GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
-			// pass on parameters from params to program object uniforms
-            linkProgram.UpdateUniforms(parms, mask, Type);
+                // pass on parameters from params to program object uniforms
+                linkProgram.UpdateUniforms(parms, mask, Type);
+            }
+            catch (Exception e)
+            {
+                LogManager.Instance.Write( "Remove this when validated" );
+                Debugger.Break();
+            }
 		}
 
+        #endregion
+
+        #region BindProgramPassIterationParameters
+
+        [OgreVersion(1, 7, 2790)]
         public override void BindProgramPassIterationParameters(GpuProgramParameters parms)
         {
             // activate the link program object
-            GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+            var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
             // pass on parameters from params to program object uniforms
             linkProgram.UpdatePassIterationUniforms(parms);
         }
 
-        /// @copydoc GLGpuProgram::getAttributeIndex
+        #endregion
+
+        #region AttributeIndex
+
+        [OgreVersion(1, 7, 2790)]
         internal override uint AttributeIndex(VertexElementSemantic semantic, uint index)
         {
             // get link program - only call this in the context of bound program
@@ -207,14 +309,18 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             {
                 return linkProgram.GetAttributeIndex(semantic, index);
             }
-            else
+            //else
             {
                 // fall back to default implementation, allow default bindings
                 return base.AttributeIndex( semantic, index );
             }
         }
 
-        /// @copydoc GLGpuProgram::isAttributeValid
+        #endregion
+
+        #region IsAttributeValid
+
+        [OgreVersion(1, 7, 2790)]
         internal override bool IsAttributeValid(VertexElementSemantic semantic, uint index)
         {
             // get link program - only call this in the context of bound program
@@ -224,13 +330,15 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             {
                 return true;
             } 
-            else
+            //else
             {
                 // fall back to default implementation, allow default bindings
                 return base.IsAttributeValid(semantic, index);
             }
         }
 
-		#endregion GpuProgram Implementation
-	}
+        #endregion
+
+        #endregion GpuProgram Implementation
+    }
 }

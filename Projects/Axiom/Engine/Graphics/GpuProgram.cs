@@ -76,7 +76,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Whether this source is being loaded from file or not.
         /// </summary>
-        protected bool LoadFromFile { get; private set; }
+        protected bool LoadFromFile { get; set; }
 
         #region SourceFile Property
 

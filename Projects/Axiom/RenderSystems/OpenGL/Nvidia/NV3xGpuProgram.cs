@@ -63,6 +63,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			: base( parent, name, handle, group, isManual, loader )
 		{
 
+		    throw new AxiomException( "This needs upgrading" );
 			// generate the program and store the unique name
 			Gl.glGenProgramsNV( 1, out programId );
 
@@ -152,6 +153,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+            throw new AxiomException( "This needs upgrading" );
 		}
 
 		#endregion Constructor
@@ -204,6 +206,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+            throw new AxiomException("This needs upgrading");
 		}
 
 		#endregion Constructor

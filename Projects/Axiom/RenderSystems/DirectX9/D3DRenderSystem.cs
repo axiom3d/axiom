@@ -2001,7 +2001,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 // Just pick the first driver
                 SetConfigOption( "Rendering Device", _driverList.First().DriverDescription );
-                return "Your DirectX driver name has changed since the last time you ran OGRE; " +
+                return "Your DirectX driver name has changed since the last time you ran Axiom; " +
                        "the 'Rendering Device' has been changed.";
             }
 
