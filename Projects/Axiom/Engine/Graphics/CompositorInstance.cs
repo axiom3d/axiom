@@ -976,7 +976,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Notify listeners of a material render.
 		/// </summary>
-		/// <param name="e"></param>
 		public void OnResourceCreated( CompositorInstanceResourceEventArgs args )
 		{
 			if ( ResourceCreated != null )

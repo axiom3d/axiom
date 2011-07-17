@@ -59,7 +59,7 @@ namespace Axiom.Graphics
 	///		texture coordinates (in order, with no gaps)</li>
 	///		<li>You must not have unused gaps in your buffers which are not referenced
 	///		by any <see cref="VertexElement"/></li>
-	///		<li>You must not cause the buffer & offset settings of 2 VertexElements to overlap</li>
+	///		<li>You must not cause the buffer &amp; offset settings of 2 VertexElements to overlap</li>
 	///		</ol>
 	///		Whilst GL and more modern graphics cards in D3D will allow you to defy these rules,
 	///		sticking to them will ensure that your buffers have the maximum compatibility.

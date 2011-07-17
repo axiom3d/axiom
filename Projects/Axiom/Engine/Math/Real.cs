@@ -632,33 +632,21 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="lhs"></param>
-		/// <param name="rhs"></param>
-		/// <param name="tolerance"></param>
-		/// <returns></returns>
 		public bool Equals( Real obj )
 		{
 			return this.Equals( obj, Tolerance );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="lhs"></param>
-		/// <param name="rhs"></param>
-		/// <param name="tolerance"></param>
-		/// <returns></returns>
 		public bool Equals( Real obj, Real tolerance )
 		{
 			return ( Utility.Abs( obj - this ) <= tolerance );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <returns></returns>
 		public override int GetHashCode()
 		{
 			return this._value.GetHashCode();

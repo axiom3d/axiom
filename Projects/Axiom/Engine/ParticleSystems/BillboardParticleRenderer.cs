@@ -262,8 +262,6 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Parses an attribute intended for the particle system itself.
 		/// </summary>
-		/// <param name="line"></param>
-		/// <param name="system"></param>
 		public override bool SetParameter( string attr, string val )
 		{
 			if ( attribParsers.ContainsKey( attr ) )

@@ -125,8 +125,8 @@ namespace Axiom.Core
 	/// classes.
 	/// </remarks>
 	/// Port started by jwace81
-	/// OGRE Source File: http://cvs.sourceforge.net/viewcvs.py/ogre/ogrenew/OgreMain/src/OgreStaticGeometry.cpp?rev=1.22&view=auto
-	/// OGRE Header File: http://cvs.sourceforge.net/viewcvs.py/ogre/ogrenew/OgreMain/include/OgreStaticGeometry.h?rev=1.14&view=auto
+	/// OGRE Source File: http://cvs.sourceforge.net/viewcvs.py/ogre/ogrenew/OgreMain/src/OgreStaticGeometry.cpp?rev=1.22&amp;view=auto
+	/// OGRE Header File: http://cvs.sourceforge.net/viewcvs.py/ogre/ogrenew/OgreMain/include/OgreStaticGeometry.h?rev=1.14&amp;view=auto
 	public partial class StaticGeometry
 	{
 		#region Structs
@@ -741,11 +741,10 @@ namespace Axiom.Core
 		///
 		///     Note: Must be called before 'build'.
 		/// </remarks>
-		/// <param name=ent>The Entity to use as a definition (the Mesh and Materials</param>
-		/// <param name=position>The world position at which to add this Entity</param>
-		/// <param name=orientation>The world orientation at which to add this Entity</param>
-		/// <param name=scale>The scale at which to add this entity</param>
-		/// <param name=position>The world position at which to add this Entity</position>
+		/// <param name="ent">The Entity to use as a definition (the Mesh and Materials</param>
+		/// <param name="position">The world position at which to add this Entity</param>
+		/// <param name="orientation">The world orientation at which to add this Entity</param>
+		/// <param name="scale">The scale at which to add this entity</param>
 		public void AddEntity( Entity ent, Vector3 position, Quaternion orientation, Vector3 scale )
 		{
 			Mesh msh = ent.Mesh;
@@ -791,7 +790,7 @@ namespace Axiom.Core
 		///     versions! We don't do this for you incase you are preparing this
 		///     in advance and so don't want the originals detached yet.
 		/// </note>
-		/// <param name=node>Pointer to the node to use to provide a set of Entity templates</param>
+		/// <param name="node">Pointer to the node to use to provide a set of Entity templates</param>
 		public void AddSceneNode( SceneNode node )
 		{
 			foreach ( MovableObject mobj in node.Objects )

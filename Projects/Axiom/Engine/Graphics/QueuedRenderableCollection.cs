@@ -95,11 +95,11 @@ namespace Axiom.Graphics
 	///<summary>Lowest level collection of renderables.</summary>
 	///<remarks>
 	///To iterate over items in this collection, you must call
-	///the accept method and supply a <see cref="QueuedRenderableVisitor"/>,
+	///the accept method and supply a <see cref="IQueuedRenderableVisitor"/>,
 	///the order of the iteration, and whether that iteration is
 	///over a <see cref="RenderablePass"/> list or a 2-level grouped list which 
 	///causes a visit call at the <see cref="Pass"/> level, and a call for each
-	///<see cref="Renderable"/> underneath.
+	///<see cref="IRenderable"/> underneath.
 	///</remarks>
 	public class QueuedRenderableCollection
 	{

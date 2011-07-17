@@ -101,9 +101,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Default constructor.
 		/// </summary>
-		/// <param name="name">Name of the high level program.</param>
-		/// <param name="type">Type of program, vertex or fragment.</param>
-		/// <param name="language">HLSL language this program is written in.</param>
 		public HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
@@ -261,12 +258,6 @@ namespace Axiom.Graphics
 		///    Create method which needs to be implemented to return an
 		///    instance of a HighLevelGpuProgram.
 		/// </summary>
-		/// <param name="name">
-		///    Name of the program to create.
-		/// </param>
-		/// <param name="type">
-		///    Type of program to create, i.e. vertex or fragment.
-		/// </param>
 		/// <returns>
 		///    A newly created instance of HighLevelGpuProgram.
 		/// </returns>

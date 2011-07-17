@@ -62,7 +62,7 @@ namespace Axiom.Core
 		/// partitioning for this class.
 		/// </summary>
 		/// <remarks>
-		/// The size & shape of regions entirely depends on the SceneManager
+		/// The size &amp; shape of regions entirely depends on the SceneManager
 		/// specific implementation. It is a MovableObject since it will be
 		/// attached to a node based on the local centre - in practice it
 		/// won't actually move (although in theory it could).
