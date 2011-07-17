@@ -3105,7 +3105,7 @@ namespace Axiom.RenderSystems.OpenGL
             if (currentGeometryProgram != null)
                 currentGeometryProgram.Bind();
 
-			// Must reset depth/colour write mask to according with user desired, otherwise,
+			// Must reset depth/color write mask to according with user desired, otherwise,
 			// clearFrameBuffer would be wrong because the value we are recorded may be
 			// difference with the really state stored in GL context.
 			Gl.glDepthMask( depthWrite ? 1 : 0 ); // Tao 2.0

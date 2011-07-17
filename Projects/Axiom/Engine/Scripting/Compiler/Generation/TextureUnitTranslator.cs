@@ -713,8 +713,8 @@ namespace Axiom.Scripting.Compiler
 								break;
 							#endregion ID_MIPMAP_BIAS
 
-							#region ID_COLOUR_OP
-							case Keywords.ID_COLOUR_OP:
+							#region ID_COLOR_OP
+							case Keywords.ID_COLOR_OP:
 								if ( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
@@ -722,7 +722,7 @@ namespace Axiom.Scripting.Compiler
 								else if ( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"colour_op must have at most 1 argument" );
+										"color_op must have at most 1 argument" );
 								}
 								else
 								{
@@ -760,19 +760,19 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_COLOUR_OP
+							#endregion ID_COLOR_OP
 
-							#region ID_COLOUR_OP_EX
-							case Keywords.ID_COLOUR_OP_EX:
+							#region ID_COLOR_OP_EX
+							case Keywords.ID_COLOR_OP_EX:
 								if ( prop.Values.Count < 3 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-										"colour_op_ex must have at least 3 arguments" );
+										"color_op_ex must have at least 3 arguments" );
 								}
 								else if ( prop.Values.Count > 10 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"colour_op_ex must have at most 10 arguments" );
+										"color_op_ex must have at most 10 arguments" );
 								}
 								else
 								{
@@ -974,10 +974,10 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_COLOUR_OP_EX
+							#endregion ID_COLOR_OP_EX
 
-							#region ID_COLOUR_OP_MULTIPASS_FALLBACK
-							case Keywords.ID_COLOUR_OP_MULTIPASS_FALLBACK:
+							#region ID_COLOR_OP_MULTIPASS_FALLBACK
+							case Keywords.ID_COLOR_OP_MULTIPASS_FALLBACK:
 								if ( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
@@ -985,7 +985,7 @@ namespace Axiom.Scripting.Compiler
 								else if ( prop.Values.Count > 2 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"colour_op_multiplass_fallback must have at most 2 arguments" );
+										"color_op_multiplass_fallback must have at most 2 arguments" );
 								}
 								else if ( prop.Values.Count == 1 )
 								{
@@ -1037,7 +1037,7 @@ namespace Axiom.Scripting.Compiler
 											"arguments must be valid scene blend factors" );
 								}
 								break;
-							#endregion ID_COLOUR_OP_MULTIPASS_FALLBACK
+							#endregion ID_COLOR_OP_MULTIPASS_FALLBACK
 
 							#region ID_ALPHA_OP_EX
 							case Keywords.ID_ALPHA_OP_EX:
