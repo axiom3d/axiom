@@ -948,7 +948,7 @@ namespace Axiom.Graphics
 			_isSupported = false;
 
 			// grab a ref to the current hardware caps
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
 			int numAvailTexUnits = caps.TextureUnitCount;
 
 			int passNum = 0;
