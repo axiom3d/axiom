@@ -2831,6 +2831,9 @@ namespace Axiom.Core
 					}
 				}
 
+                // Disable remaining texture units
+                targetRenderSystem.DisableTextureUnitsFrom(pass.TextureUnitStageCount);
+
 				// Depth Settings
 				this.targetRenderSystem.DepthBufferWriteEnabled = pass.DepthWrite;
 				this.targetRenderSystem.DepthBufferCheckEnabled = pass.DepthCheck;
