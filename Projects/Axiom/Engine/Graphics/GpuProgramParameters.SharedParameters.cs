@@ -47,7 +47,7 @@ namespace Axiom.Graphics
 	partial class GpuProgramParameters
 	{
 		
-        [OgreVersion(1,7)]
+        [OgreVersion(1, 7, 2790)]
         [Flags]
 		public enum GpuParamVariability: ushort
 		{
@@ -81,7 +81,7 @@ namespace Axiom.Graphics
 		/// float4 or int4 constant types since that is the fundamental underlying
 		/// type in assembler.
 		/// </note>
-		[OgreVersion(1,7)]
+		[OgreVersion(1, 7, 2790)]
 		public enum GpuConstantType
 		{
 			Float1 = 1,
@@ -123,14 +123,14 @@ namespace Axiom.Graphics
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public class FloatConstantList : ConstantList
         {
         }
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public class IntConstantList : ConstantList
         {
         }
@@ -162,17 +162,17 @@ namespace Axiom.Graphics
 		{
 			/// <summary>
 			/// </summary>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
 
 			/// <summary>
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			protected FloatConstantList FloatConstants = new FloatConstantList();
 
 			/// <summary>
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             protected IntConstantList IntConstants = new IntConstantList();
 
 			/// <summary>
@@ -188,14 +188,14 @@ namespace Axiom.Graphics
 		    /// <summary>
 		    /// Get the name of this shared parameter set
 		    /// </summary>
-		    [OgreVersion(1, 7)]
+		    [OgreVersion(1, 7, 2790)]
 		    public string Name { get; protected set; }
 
 		    /// <summary>
 		    /// Get the version number of this shared parameter set, can be used to identify when
 		    /// changes have occurred.
 		    /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public ulong Version { get; protected set; }
 
 
@@ -203,14 +203,14 @@ namespace Axiom.Graphics
 		    ///  Not used when copying data, but might be useful to RS using shared buffers
 		    ///  Get the frame in which this shared parameter set was last updated
 		    /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 		    public int FrameLastUpdated { get; protected set; }
 
 
 		    /// <summary>
 		    ///  Internal method that the RenderSystem might use to store optional data.
 		    /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public object RenderSystemData { get; protected set; }
 
 			/// <summary>
@@ -234,7 +234,7 @@ namespace Axiom.Graphics
 			/// user. Only parameters which have been predefined here may be later
 			/// updated.
 			/// </remarks>
-            [OgreVersion(1, 7, "will not expose ConstantDefinitionIterator")]
+            [OgreVersion(1, 7, 2790, "will not expose ConstantDefinitionIterator")]
 			public virtual void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize = 1 )
 			{
 				if ( NamedConstants.Map.ContainsKey( name ) )
@@ -274,7 +274,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			public virtual void RemoveConstantDefinition( string name )
 			{
 				GpuConstantDefinition def;
@@ -317,7 +317,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			public void RemoveAllConstantDefinitions()
 			{
 				NamedConstants.Map.Clear();
@@ -334,7 +334,7 @@ namespace Axiom.Graphics
 			/// You do not need to call this yourself, set is marked as dirty whenever
 			/// setNamedConstant or (non const) getFloatPointer et al are called.
 			/// </remarks>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public virtual void MarkDirty()
 			{
 				FrameLastUpdated = (int)Root.Instance.CurrentFrameCount;
@@ -343,7 +343,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get a specific GpuConstantDefinition for a named parameter.
 			/// </summary>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			public GpuConstantDefinition GetConstantDefinition( string name )
 			{
 				GpuConstantDefinition def;
@@ -360,7 +360,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, float value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -368,7 +368,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, int value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), false);
@@ -376,7 +376,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, Vector4 value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -384,7 +384,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, Vector3 value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -392,7 +392,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, Matrix4 value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -400,7 +400,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, Matrix3 value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -408,7 +408,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, Matrix4 value, int numEntries)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -416,7 +416,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, double value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -424,7 +424,7 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void SetNamedConstant(string name, ColorEx value)
             {
                 SetNamedConstant(name, BitConverterEx.GetBytes(value), true);
@@ -438,7 +438,7 @@ namespace Axiom.Graphics
             /// are different. Furthermore we cant differ serialized float -> byte[]
             /// from a serialized int -> byte[] so we need the additional hint
             /// </remarks>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public virtual void SetNamedConstant(string name, byte[] value, bool isFloat)
             {
                 GpuConstantDefinition def;
@@ -463,7 +463,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get a pointer to the 'nth' item in the float buffer
 			/// </summary>
-			[OgreVersion(1,7, "different interface due to serialization")]
+			[OgreVersion(1, 7, 2790, "different interface due to serialization")]
 			public byte[] GetFloatPointer( int pos )
 			{
 				return FloatConstants[ pos ];
@@ -472,7 +472,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get a pointer to the 'nth' item in the int buffer
 			/// </summary>
-            [OgreVersion(1, 7, "different interface due to serialization")]
+            [OgreVersion(1, 7, 2790, "different interface due to serialization")]
 			public byte[] GetIntPointer( int pos )
 			{
 				return IntConstants[ pos ];
@@ -668,7 +668,7 @@ namespace Axiom.Graphics
 
 			/// <summary>
 			/// </summary>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			protected void InitCopyData()
 			{
 				CopyDataList.Clear();
@@ -698,7 +698,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-        [OgreVersion(1, 7, "Need to implement this!")]
+        [OgreVersion(1, 7, 2790, "Need to implement this!")]
 	    public void CopySharedParams()
 	    {
             //

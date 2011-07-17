@@ -267,7 +267,7 @@ namespace Axiom.Core
 
 	    private OrientationMode _orientationMode;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public OrientationMode OrientationMode 
         {
             get

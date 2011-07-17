@@ -168,7 +168,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports generating mipmaps in hardware.
         /// </summary>
-        [OgreVersion(1, 7, "RSC_AUTOMIPMAP in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_AUTOMIPMAP in Ogre")]
         HardwareMipMaps = CapCategoryShift.Common | (1 << 0),
 
         #endregion
@@ -178,7 +178,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Supports anisotropic texture filtering
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         Blending = CapCategoryShift.Common | (1 << 1),
 
         #endregion
@@ -188,7 +188,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Supports anisotropic texture filtering
         /// </summary>
-        [OgreVersion(1, 7, "RSC_ANISOTROPY in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_ANISOTROPY in Ogre")]
         AnisotropicFiltering = CapCategoryShift.Common | (1 << 2),
 
         #endregion
@@ -198,7 +198,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports fixed-function DOT3 texture blend.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         Dot3 = CapCategoryShift.Common | (1 << 3),
 
         #endregion
@@ -208,7 +208,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports cube mapping.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         CubeMapping = CapCategoryShift.Common | (1 << 4),
 
         #endregion
@@ -218,7 +218,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports hardware stencil buffer.
         /// </summary>
-        [OgreVersion(1, 7, "RSC_HWSTENCIL in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_HWSTENCIL in Ogre")]
         StencilBuffer = CapCategoryShift.Common | (1 << 5),
 
         #endregion
@@ -228,7 +228,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports hardware vertex and index buffers.
         /// </summary>
-        [OgreVersion(1, 7, "RSC_VBO in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_VBO in Ogre")]
         VertexBuffer = CapCategoryShift.Common | (1 << 7),
 
         #endregion
@@ -238,7 +238,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports vertex programs (vertex shaders).
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         VertexPrograms = CapCategoryShift.Common | (1 << 9),
 
         #endregion
@@ -248,7 +248,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports fragment programs (pixel shaders).
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         FragmentPrograms = CapCategoryShift.Common | (1 << 10),
 
         #endregion
@@ -258,7 +258,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports performing a scissor test to exclude areas of the screen.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         ScissorTest = CapCategoryShift.Common | (1 << 11),
 
         #endregion
@@ -268,7 +268,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports separate stencil updates for both front and back faces.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         TwoSidedStencil = CapCategoryShift.Common | (1 << 12),
 
         #endregion
@@ -278,7 +278,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports wrapping the stencil value at the range extremeties.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         StencilWrap = CapCategoryShift.Common | (1 << 13),
 
         #endregion
@@ -288,7 +288,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Hardware occlusion queries.
         /// </summary>
-        [OgreVersion(1, 7, "RSC_HWOCCLUSION in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_HWOCCLUSION in Ogre")]
         HardwareOcculusion = CapCategoryShift.Common | (1 << 14),
 
         #endregion
@@ -298,7 +298,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		User clipping planes.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         UserClipPlanes = CapCategoryShift.Common | (1 << 15),
 
         #endregion
@@ -308,7 +308,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports the VET_UBYTE4 vertex element type
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         VertexFormatUByte4 = CapCategoryShift.Common | (1 << 16),
 
         #endregion
@@ -318,7 +318,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports infinite far plane projection
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         InfiniteFarPlane = CapCategoryShift.Common | (1 << 17),
 
         #endregion
@@ -328,7 +328,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports hardware render-to-texture (bigger than framebuffer)
         /// </summary>
-        [OgreVersion(1, 7, "RSC_HWRENDER_TO_TEXTURE in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_HWRENDER_TO_TEXTURE in Ogre")]
         HardwareRenderToTexture = CapCategoryShift.Common | (1 << 18),
 
         #endregion
@@ -338,7 +338,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports float textures and render targets
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         TextureFloat = CapCategoryShift.Common | (1 << 19),
 
         #endregion  
@@ -348,7 +348,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports non-power of two textures
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         NonPowerOf2Textures = CapCategoryShift.Common | (1 << 20),
 
         #endregion
@@ -358,7 +358,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports 3d (volume) textures
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         Texture3D = CapCategoryShift.Common | (1 << 21),
 
         #endregion
@@ -368,7 +368,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports basic point sprite rendering
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         PointSprites = CapCategoryShift.Common | (1 << 22),
 
         #endregion
@@ -378,7 +378,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports extra point parameters (minsize, maxsize, attenuation)
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         PointExtendedParameters = CapCategoryShift.Common | (1 << 23),
 
         #endregion
@@ -388,7 +388,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports vertex texture fetch
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         VertexTextureFetch = CapCategoryShift.Common | (1 << 24),
 
         #endregion
@@ -398,7 +398,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports mipmap LOD biasing
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         MipmapLODBias = CapCategoryShift.Common | (1 << 25),
 
         #endregion
@@ -408,7 +408,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports hardware geometry programs
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         GeometryPrograms = CapCategoryShift.Common | (1 << 26),
 
         #endregion
@@ -420,7 +420,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports compressed textures.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         TextureCompression = CapCategoryShift.Common2 | (1 << 0),
 
         #endregion
@@ -430,7 +430,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports compressed textures in the DXT/ST3C formats.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         TextureCompressionDXT = CapCategoryShift.Common2 | (1 << 1),
 
         #endregion
@@ -440,7 +440,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Supports compressed textures in the VTC format.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         TextureCompressionVTC = CapCategoryShift.Common2 | (1 << 2),
 
         #endregion
@@ -450,7 +450,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports compressed textures in the PVRTC format
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         TextureCompressionPVRTC = CapCategoryShift.Common2 | (1 << 3),
 
         #endregion
@@ -460,7 +460,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports fixed-function pipeline
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         FixedFunction = CapCategoryShift.Common2 | (1 << 4),
 
         #endregion
@@ -470,7 +470,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports MRTs with different bit depths
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         MRTDifferentBitDepths = CapCategoryShift.Common2 | (1 << 5),
 
         #endregion
@@ -480,7 +480,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports Alpha to Coverage (A2C)
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         AlphaToCoverage = CapCategoryShift.Common2 | (1 << 6),
 
         #endregion
@@ -490,7 +490,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports Blending operations other than +
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         AdvancedBlendOperations = CapCategoryShift.Common2 | (1 << 7),
 
         #endregion
@@ -500,7 +500,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports a separate depth buffer for RTTs. D3D 9 & 10, OGL w/FBO (RSC_FBO implies this flag)
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         RTTSerperateDepthBuffer = CapCategoryShift.Common2 | (1 << 8),
 
         #endregion
@@ -511,7 +511,7 @@ namespace Axiom.Graphics
         ///     Supports using the MAIN depth buffer for RTTs. D3D 9&10, OGL w/FBO support unknown
         ///     (undefined behavior?), OGL w/ copy supports it
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         RTTMainDepthbufferAttachable = CapCategoryShift.Common2 | (1 << 9),
 
         #endregion
@@ -522,7 +522,7 @@ namespace Axiom.Graphics
         ///     Supports attaching a depth buffer to an RTT that has width & height less or equal than RTT's.
         ///     Otherwise must be of _exact_ same resolution. D3D 9, OGL 3.0 (not 2.0, not D3D10)
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         RTTDepthbufferResolutionLessEqual = CapCategoryShift.Common2 | (1 << 10),
 
         #endregion
@@ -532,7 +532,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports using vertex buffers for instance data
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         VertexBufferInstanceData = CapCategoryShift.Common2 | (1 << 11),
 
         #endregion
@@ -541,7 +541,7 @@ namespace Axiom.Graphics
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         CanGetCompiledShaderBuffer = CapCategoryShift.Common2 | (1 << 12),
 
         #endregion
@@ -553,7 +553,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Is DirectX feature "per stage constants" supported
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         PerStageConstant = CapCategoryShift.D3D9 | (1 << 0),
 
         #endregion
@@ -565,7 +565,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Supports openGL GLEW version 1.5
         /// </summary>
-        [OgreVersion(1, 7, "RSC_GL1_5_NOVBO in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_GL1_5_NOVBO in Ogre")]
         GL15NoVbo = CapCategoryShift.GL | (1 << 1),
 
         #endregion
@@ -575,7 +575,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Support for Frame Buffer Objects (FBOs)
         /// </summary>
-        [OgreVersion(1, 7, "RSC_FBO in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_FBO in Ogre")]
         FrameBufferObjects = CapCategoryShift.GL | (1 << 2),
 
         #endregion
@@ -585,7 +585,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Support for Frame Buffer Objects ARB implementation (regular FBO is higher precedence)
         /// </summary>
-        [OgreVersion(1, 7, "RSC_FBO_ARB in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_FBO_ARB in Ogre")]
         FrameBufferObjectsARB = CapCategoryShift.GL | (1 << 3),
 
         #endregion
@@ -595,7 +595,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Support for Frame Buffer Objects ATI implementation (ARB FBO is higher precedence)
         /// </summary>
-        [OgreVersion(1, 7, "RSC_FBO_ATI in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_FBO_ATI in Ogre")]
         FrameBufferObjectsATI = CapCategoryShift.GL | (1 << 4),
 
         #endregion
@@ -606,7 +606,7 @@ namespace Axiom.Graphics
         ///     Support for PBuffer
         /// </summary>
         /// 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         PBuffer = CapCategoryShift.GL | (1 << 5),
 
         #endregion
@@ -616,7 +616,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Support for GL 1.5 but without HW occlusion workaround
         /// </summary>
-        [OgreVersion(1, 7, "RSC_GL1_5_NOHWOCCLUSION in Ogre")]
+        [OgreVersion(1, 7, 2790, "RSC_GL1_5_NOHWOCCLUSION in Ogre")]
         GL15NoHardwareOcclusion = CapCategoryShift.GL | (1 << 6),
 
         #endregion
@@ -626,7 +626,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Support for point parameters ARB implementation
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         PointExtendedParametersARB = CapCategoryShift.GL | (1 << 7),
 
         #endregion
@@ -636,7 +636,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Support for point parameters EXT implementation
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         PointExtendedParametersEXT = CapCategoryShift.GL | (1 << 8),
 
         #endregion
@@ -1374,7 +1374,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		Describes the various actions which can be taken on the stencil buffer.
 	///	</summary> 
-	[OgreVersion(1, 7)]
+	[OgreVersion(1, 7, 2790)]
 	public enum StencilOperation
 	{
 		/// <summary>
@@ -1444,7 +1444,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		Describes the ways to generate texture coordinates.
 	/// </summary>
-	[OgreVersion(1, 7)]
+	[OgreVersion(1, 7, 2790)]
 	public enum TexCoordCalcMethod
 	{
 		/// <summary>

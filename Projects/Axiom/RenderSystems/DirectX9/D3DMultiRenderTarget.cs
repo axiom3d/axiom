@@ -135,16 +135,33 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region RenderTarget Implementation
 
-		public override void Update(bool swapBuffers)
-		{
-			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-			if ( rs.IsDeviceLost )
-				return;
+        [OgreVersion(1, 7, 2790)]
+        public override void Update(bool swapBuffers)
+        {
+            var deviceManager = D3DRenderSystem.DeviceManager;
+            var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
 
-			base.Update();
-		}
+            if ( currRenderWindowDevice != null )
+            {
+                if ( currRenderWindowDevice.IsDeviceLost == false )
+                    base.Update( swapBuffers );
+            }
+            else
+            {
+                foreach ( var device in deviceManager )
+                {
+                    if ( device.IsDeviceLost == false )
+                    {
+                        deviceManager.ActiveRenderTargetDevice = device;
+                        base.Update( swapBuffers );
+                        deviceManager.ActiveRenderTargetDevice = null;
+                        ;
+                    }
+                }
+            }
+        }
 
-		public override object this[ string attribute ]
+	    public override object this[ string attribute ]
 		{
 			get
 			{
@@ -164,7 +181,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 		public override bool RequiresTextureFlipping
 		{
 			get

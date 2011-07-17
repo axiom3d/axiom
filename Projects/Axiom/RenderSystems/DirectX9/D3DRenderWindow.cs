@@ -262,7 +262,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region RenderWindow implementation
 
-		[OgreVersion(1, 7)]
+		[OgreVersion(1, 7, 2790)]
 		public override void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
 		{
 			SWF.Control parentHWnd = null;
@@ -632,7 +632,7 @@ namespace Axiom.RenderSystems.DirectX9
 			    winHeight = maxH;
 	    }
 
-	    [OgreVersion(1, 7)]
+	    [OgreVersion(1, 7, 2790)]
 	    public override bool RequiresTextureFlipping
 	    {
 	        get
@@ -641,21 +641,21 @@ namespace Axiom.RenderSystems.DirectX9
 	        }
 	    }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    protected SlimDX.Direct3D9.MultisampleType fsaaType;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int fsaaQuality;
 
         #region VSyncInterval
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    protected int vSyncInterval;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    protected bool isExternal;
 
-	    [OgreVersion(1, 7)]
+	    [OgreVersion(1, 7, 2790)]
         public int VSyncInterval
         {
             get
@@ -674,7 +674,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 
         // "Yet another of this Ogre idiotisms"
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool IsVSync
         {
             get
@@ -703,35 +703,35 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Device
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected D3D9Device device;
 
         /// <summary>
         /// Desired width after resizing
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int desiredWidth;
 
         /// <summary>
         /// Desired height after resizing
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected int desiredHeight;
 
 
         /// <summary>
         /// Fullscreen mode window style flags.	
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected WindowStyles fullscreenWinStyle;
 
         /// <summary>
         /// Windowed mode window style flags.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected WindowStyles windowedWinStyle;
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public D3D9Device Device
 	    {
 	        get
@@ -757,7 +757,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region IsDepthBuffered
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
 	    public bool IsDepthBuffered
 	    {
 	        get
@@ -770,7 +770,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region CustomAttribute
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override object this[ string attribute ]
 		{
 			get
@@ -915,7 +915,6 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				_d3dpp.BackBufferWidth = this.width = width;
 				_d3dpp.BackBufferHeight = this.height = height;
-				( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
 			}
 
 			// Notify viewports of resize
@@ -1134,7 +1133,9 @@ namespace Axiom.RenderSystems.DirectX9
 			// access device through driver
 			var device = D3DDevice;
 
-			if ( rs.IsDeviceLost )
+
+
+            if (D3DRenderSystem.DeviceManager.ActiveDevice.IsDeviceLost)
 			{
 				DX.Result result = device.TestCooperativeLevel();
 				if ( result.Code == D3D.ResultCode.DeviceLost.Code  )
@@ -1163,7 +1164,7 @@ namespace Axiom.RenderSystems.DirectX9
 					rs.RestoreLostDevice();
 
 					// Still lost?
-					if ( rs.IsDeviceLost )
+                    if (D3DRenderSystem.DeviceManager.ActiveDevice.IsDeviceLost)
 					{
 						// Wait a while
 						System.Threading.Thread.Sleep( 50 );

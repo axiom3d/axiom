@@ -119,19 +119,19 @@ namespace Axiom.Core
         /// <summary>
         /// Called prior to the scene being rendered with this camera
         /// </summary>
-        [OgreVersion(1, 7, "Merged from Listener subclass")]
+        [OgreVersion(1, 7, 2790, "Merged from Listener subclass")]
         public event CameraEventHandler CameraPreRenderScene;
 
         /// <summary>
         /// Called after the scene has been rendered with this camera
         /// </summary>
-        [OgreVersion(1, 7, "Merged from Listener subclass")]
+        [OgreVersion(1, 7, 2790, "Merged from Listener subclass")]
         public event CameraEventHandler CameraPostRenderScene;
 
         /// <summary>
         /// Called when the camera is being destroyed
         /// </summary>
-        [OgreVersion(1, 7, "Merged from Listener subclass")]
+        [OgreVersion(1, 7, 2790, "Merged from Listener subclass")]
         public event CameraEventHandler CameraDestroyed;
 
         #endregion
@@ -144,7 +144,7 @@ namespace Axiom.Core
         /// <summary>
         ///    Returns the current SceneManager that this camera is using.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public SceneManager SceneManager { get; protected set; }
 
         #endregion SceneManager Property
@@ -154,12 +154,12 @@ namespace Axiom.Core
         /// <summary>
         ///		Camera orientation.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Quaternion orientation;
         /// <summary>
         ///     Gets/Sets the camera's orientation.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Quaternion Orientation
         {
             get
@@ -181,12 +181,12 @@ namespace Axiom.Core
         /// <summary>
         ///		Camera position.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Vector3 position;
         /// <summary>
         ///     Gets/Sets the camera's position.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 Position
         {
             get
@@ -321,13 +321,13 @@ namespace Axiom.Core
         /// <summary>
         ///		Orientation derived from parent.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Quaternion derivedOrientation;
         /// <summary>
         ///	Gets the derived orientation of the camera, including any
         /// rotation inherited from a node attachment and reflection matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Quaternion DerivedOrientation
         {
             get
@@ -344,13 +344,13 @@ namespace Axiom.Core
         /// <summary>
         ///		Position derived from parent.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Vector3 derivedPosition;
         /// <summary>
         ///	Gets the derived position of the camera, including any
         /// rotation inherited from a node attachment and reflection matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 DerivedPosition
         {
             get
@@ -368,7 +368,7 @@ namespace Axiom.Core
         ///	Gets the derived direction of the camera, including any
         /// rotation inherited from a node attachment and reflection matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 DerivedDirection
         {
             get
@@ -388,7 +388,7 @@ namespace Axiom.Core
         ///	Gets the derived up vector of the camera, including any
         /// rotation inherited from a node attachment and reflection matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 DerivedUp
         {
             get
@@ -406,7 +406,7 @@ namespace Axiom.Core
         ///	Gets the derived right vector of the camera, including any
         /// rotation inherited from a node attachment and reflection matrix.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 DerivedRight
         {
             get
@@ -423,13 +423,13 @@ namespace Axiom.Core
         /// <summary>
         ///		Real world orientation of the camera.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Quaternion realOrientation;
         /// <summary>
         /// Gets the real world orientation of the camera, including any
         /// rotation inherited from a node attachment
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Quaternion RealOrientation
         {
             get
@@ -446,13 +446,13 @@ namespace Axiom.Core
         /// <summary>
         ///		Real world position of the camera.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Vector3 realPosition;
         /// <summary>
         /// Gets the real world orientation of the camera, including any
         /// rotation inherited from a node attachment
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 RealPosition
         {
             get
@@ -470,7 +470,7 @@ namespace Axiom.Core
         ///	Gets the derived direction of the camera, including any
         /// rotation inherited from a node attachment.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 RealDirection
         {
             get
@@ -490,7 +490,7 @@ namespace Axiom.Core
         ///	Gets the derived up vector of the camera, including any
         /// rotation inherited from a node attachment.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 RealUp
         {
             get
@@ -508,7 +508,7 @@ namespace Axiom.Core
         ///	Gets the derived right vector of the camera, including any
         /// rotation inherited from a node attachment.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Vector3 RealRight
         {
             get
@@ -578,7 +578,7 @@ namespace Axiom.Core
         ///		that behavior, allowing you to make the camera just render a
         ///		wireframe view, for example.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public PolygonMode PolygonMode { get; set; }
 
         #endregion PolygonMode Property
@@ -588,7 +588,7 @@ namespace Axiom.Core
         /// <summary>
         /// Gets the last count of triangles visible in the view of this camera.
         /// </summary>
-        [OgreVersion(1, 7, "NumRenderedFaces in Ogre")]
+        [OgreVersion(1, 7, 2790, "NumRenderedFaces in Ogre")]
         public int RenderedFaceCount { get; protected set; }
 
         #endregion RenderedFaceCount Property
@@ -599,7 +599,7 @@ namespace Axiom.Core
         /// <summary>
         /// Gets the last count of batches visible in the view of this camera.
         /// </summary>
-        [OgreVersion(1, 7, "NumRenderedBatches in Ogre")]
+        [OgreVersion(1, 7, 2790, "NumRenderedBatches in Ogre")]
         public int RenderedBatchCount { get; protected set; }
 
         #endregion RenderedBatchCount Property
@@ -628,7 +628,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Scene LOD factor used to adjust overall LOD.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected Real sceneLodFactor;
         /// <summary>
         ///     Sets the level-of-detail factor for this Camera.
@@ -647,7 +647,7 @@ namespace Axiom.Core
         ///     <p/>
         ///     Higher values increase the detail, so 2.0 doubles the normal detail and 0.5 halves it.
         /// </remarks>
-        [OgreVersion(1, 7, "default = 1.0")]
+        [OgreVersion(1, 7, 2790, "default = 1.0")]
         public Real LodBias
         {
             get
@@ -666,7 +666,7 @@ namespace Axiom.Core
 
         #region LodCamera Property
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         private Camera _lodCamera;
         /// <summary>
         /// Get/Sets a reference to the Camera which should be used to determine LOD settings.
@@ -681,7 +681,7 @@ namespace Axiom.Core
         /// To revert the camera to determining LOD based on itself, set this property with
         /// a reference to itself.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Camera LodCamera
         {
             get
@@ -701,12 +701,12 @@ namespace Axiom.Core
         /// <summary>
         ///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected float invSceneLodFactor;
         /// <summary>
         ///     Used for internal Lod calculations.
         /// </summary>
-        [OgreVersion(1, 7, "LodBiasInverse in Ogre")]
+        [OgreVersion(1, 7, 2790, "LodBiasInverse in Ogre")]
         public float InverseLodBias
         {
             get
@@ -739,12 +739,12 @@ namespace Axiom.Core
         /// <summary>
         ///		Is viewing window used.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected bool isWindowSet;
         /// <summary>
         ///		Gets the flag specifying if a viewport window is being used.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual bool IsWindowSet
         {
             get
@@ -760,12 +760,12 @@ namespace Axiom.Core
         /// <summary>
         /// Windowed viewport clip planes.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected List<Plane> windowClipPlanes = new List<Plane>();
         /// <summary>
         ///  Gets the window clip planes, only applicable if isWindowSet == true
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public IList<Plane> WindowPlanes
         {
             get
@@ -793,7 +793,7 @@ namespace Axiom.Core
         ///		using this camera, just the last once which was created referring
         ///		to it.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Viewport Viewport { get; protected set; }
 
         #endregion Viewport Property
@@ -809,7 +809,7 @@ namespace Axiom.Core
         ///		one viewport at the same time. Otherwise the aspect ratio for other
         ///		viewports may be wrong.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool AutoAspectRatio { get; set; }
 
         #endregion AutoAspectRatio Property
@@ -849,14 +849,14 @@ namespace Axiom.Core
         ///     to scene nodes like any other MovableObject), or another camera.
         ///     If you pass null to this property it reverts the camera to normal behaviour.
         /// </remarks>
-        [OgreVersion(1, 7, "CullingFrustum in Ogre")]
+        [OgreVersion(1, 7, 2790, "CullingFrustum in Ogre")]
         public Frustum CullFrustum { get; set; }
 
         #endregion Fields and Properties
 
         #region Constructors
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Camera(string name, SceneManager sceneManager)
             : base(name)
         {
@@ -1112,7 +1112,7 @@ namespace Axiom.Core
             }
         }
 
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override bool ProjectSphere(Sphere sphere, out float left, out float top, out float right, out float bottom)
         {
             if (null != CullFrustum)
@@ -1237,7 +1237,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Overridden to return a proper bounding radius for the camera.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public override float BoundingRadius
         {
             get
@@ -1257,7 +1257,7 @@ namespace Axiom.Core
         ///    Called by the scene manager to let this camera know how many faces were rendered within
         ///    view of this camera every frame.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         internal void NotifyRenderedFaces(int renderedFaceCount)
         {
             RenderedFaceCount = renderedFaceCount;
@@ -1267,7 +1267,7 @@ namespace Axiom.Core
         ///    Called by the scene manager to let this camera know how many batches were rendered within
         ///    view of this camera every frame.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         internal void NotifyRenderedBatches(int renderedBatchCount)
         {
             RenderedBatchCount = renderedBatchCount;
@@ -1280,7 +1280,7 @@ namespace Axiom.Core
         /// Moves the camera's position by the vector offset provided along world axes.
         /// </summary>
         /// <param name="offset"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Move(Vector3 offset)
         {
             position = position + offset;
@@ -1291,7 +1291,7 @@ namespace Axiom.Core
         /// Moves the camera's position by the vector offset provided along it's own axes (relative to orientation).
         /// </summary>
         /// <param name="offset"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void MoveRelative(Vector3 offset)
         {
             // Transform the axes of the relative vector by camera's local axes
@@ -1315,7 +1315,7 @@ namespace Axiom.Core
         ///		Pitches the camera up/down counter-clockwise around it's local x axis.
         /// </summary>
         /// <param name="degrees"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Pitch(float degrees)
         {
             var xAxis = orientation * Vector3.UnitX;
@@ -1328,7 +1328,7 @@ namespace Axiom.Core
         ///		Rolls the camera counter-clockwise, in degrees, around its local y axis.
         /// </summary>
         /// <param name="degrees"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Yaw(float degrees)
         {
             Vector3 yAxis;
@@ -1353,7 +1353,7 @@ namespace Axiom.Core
         ///		Rolls the camera counter-clockwise, in degrees, around its local z axis.
         /// </summary>
         /// <param name="degrees"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Roll(float degrees)
         {
             // Rotate around local Z axis
@@ -1367,7 +1367,7 @@ namespace Axiom.Core
         ///		Rotates the camera about an arbitrary axis.
         /// </summary>
         /// <param name="qnorm"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Rotate(Quaternion qnorm)
         {
             // Note the order of the mult, i.e. q comes after
@@ -1384,7 +1384,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="axis"></param>
         /// <param name="degrees"></param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void Rotate(Vector3 axis, float degrees)
         {
             var q = Quaternion.FromAngleAxis(
@@ -1468,7 +1468,7 @@ namespace Axiom.Core
         /// <param name="offset">If supplied, the camera targets this point in local space of the target node
         ///		instead of the origin of the target node. Good for fine tuning the look at point.
         ///	</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void SetAutoTracking(bool enabled, SceneNode target, Vector3 offset)
         {
             if (enabled)
@@ -1493,7 +1493,7 @@ namespace Axiom.Core
         /// <param name="top">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 0).</param>
         /// <param name="right">Relative to Viewport - 0 corresponds to left edge, 1 - to right edge (default - 1).</param>
         /// <param name="bottom">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 1).</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void SetWindow(float left, float top, float right, float bottom)
         {
             windowLeft = left;
@@ -1520,7 +1520,7 @@ namespace Axiom.Core
         /// <summary>
         /// Helper function for forwardIntersect that intersects rays with canonical plane
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         protected virtual IEnumerable<Vector4> GetRayForwardIntersect(Vector3 anchor, IEnumerable<Vector3> dir, Real planeOffset)
         {
 
@@ -1616,7 +1616,7 @@ namespace Axiom.Core
         /// <remarks>
         /// Forward projection may lead to intersections at infinity.
         /// </remarks>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void ForwardIntersect(Plane worldPlane, IList<Vector4> intersect3D)
         {
             if (intersect3D == null)
@@ -1725,7 +1725,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Cancel view window.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public virtual void ResetWindow()
         {
             isWindowSet = false;
@@ -1761,7 +1761,7 @@ namespace Axiom.Core
         ///     Ray instance to populate with result
         /// </param>
         /// <returns></returns>
-        [OgreVersion(1, 7, "Slightly different")]
+        [OgreVersion(1, 7, 2790, "Slightly different")]
         public void GetCameraToViewportRay(float screenX, float screenY, out Ray ray)
         {
             var inverseVP = (_projectionMatrix * _viewMatrix).Inverse();
@@ -1803,7 +1803,7 @@ namespace Axiom.Core
         ///     in normalized screen coordinates [0,1].
         /// </param>
         /// <returns></returns>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public Ray GetCameraToViewportRay(float screenX, float screenY)
         {
             Ray ret;
@@ -1901,7 +1901,7 @@ namespace Axiom.Core
         ///		Notifies this camera that a viewport is using it.
         /// </summary>
         /// <param name="viewport">Viewport that is using this camera.</param>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public void NotifyViewport(Viewport viewport)
         {
             Viewport = viewport;
@@ -1930,7 +1930,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Updates an auto-tracking camera.
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         internal void AutoTrack()
         {
             // assumes all scene nodes have been updated

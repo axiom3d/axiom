@@ -56,19 +56,19 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Total size of the float buffer required
 			/// </summary>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			public int FloatBufferSize;
 
 			/// <summary>
 			/// Total size of the int buffer required
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public int IntBufferSize;
 
 			/// <summary>
 			/// Dictionary of parameter names to GpuConstantDefinition
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public GpuConstantDefinitionMap Map = new GpuConstantDefinitionMap();
 
             /// <summary>
@@ -79,13 +79,13 @@ namespace Axiom.Graphics
             /// to save memory. Setting this value to <code>true</code> allows all of the entries
             /// to be generated and added to the map.
             /// </remarks>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             protected static bool GenerateAllConstantDefinitionArrayEntries;
 
 			/// <summary>
 			/// Indicates whether all array entries will be generated and added to the definitions map
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public static bool GenerateAllConstantDefinitionEntries
 			{
 				get
@@ -113,7 +113,7 @@ namespace Axiom.Graphics
 			///	all, you can address the larger arrays in a bulk fashion much more
 			///	easily anyway.
 			/// </remarks>
-			[OgreVersion(1, 7)]
+			[OgreVersion(1, 7, 2790)]
 			public void GenerateConstantDefinitionArrayEntries( String paramName, GpuConstantDefinition baseDef )
 			{
 				// Copy definition for use with arrays
@@ -145,7 +145,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Saves constant definitions to a file, compatible with GpuProgram::setManualNamedConstantsFile.
 			/// </summary>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
 			public void Save( string filename )
 			{
 				var ser = new GpuNamedConstantsSerializer();
@@ -156,7 +156,7 @@ namespace Axiom.Graphics
 			/// Loads constant definitions from a stream, compatible with GpuProgram::setManualNamedConstantsFile.
 			/// </summary>
 			/// <param name="stream"></param>
-            [OgreVersion(1, 7)]
+            [OgreVersion(1, 7, 2790)]
             public void Load( Stream stream )
 			{
 				var ser = new GpuNamedConstantsSerializer();

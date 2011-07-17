@@ -998,14 +998,14 @@ namespace Axiom.Graphics
         /// <summary>
         /// physical index for active pass iteration parameter real constant entry;
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public int PassIterationNumberIndex { get; protected set; }
 
 
         /// <summary>
         /// Does this parameters object have a pass iteration number constant?
         /// </summary>
-        [OgreVersion(1, 7)]
+        [OgreVersion(1, 7, 2790)]
         public bool HasPassIterationNumber
         {
             get
