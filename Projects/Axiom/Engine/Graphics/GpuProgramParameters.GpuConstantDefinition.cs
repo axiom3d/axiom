@@ -9,15 +9,21 @@ namespace Axiom.Graphics
         /// </summary>
         /// <note>
         /// Only available for high-level programs but is referenced generically
-        /// by     
+        /// by GpuProgramParameters
         /// </note>
         public class GpuConstantDefinition
         {
+            #region ConstantType
+
             /// <summary>
             /// Data type.
             /// </summary>
             [OgreVersion(1, 7, 2790)]
             public GpuConstantType ConstantType;
+
+            #endregion
+
+            #region PhysicalIndex
 
             /// <summary>
             /// Physical start index in buffer (either float or int buffer)
@@ -25,11 +31,19 @@ namespace Axiom.Graphics
             [OgreVersion(1, 7, 2790)]
             public int PhysicalIndex;
 
+            #endregion
+
+            #region LogicalIndex
+
             /// <summary>
             /// Logical index - used to communicate this constant to the rendersystem
             /// </summary>
             [OgreVersion(1, 7, 2790)]
             public int LogicalIndex;
+
+            #endregion
+
+            #region ElementSize
 
             /// <summary>
             /// Number of raw buffer slots per element
@@ -38,17 +52,29 @@ namespace Axiom.Graphics
             [OgreVersion(1, 7, 2790)]
             public int ElementSize;
 
+            #endregion
+
+            #region ArraySize
+
             /// <summary>
             /// Length of array
             /// </summary>
             [OgreVersion(1, 7, 2790)]
             public int ArraySize;
 
+            #endregion
+
+            #region Variability
+
             /// <summary>
             /// How this parameter varies (bitwise combination of GpuParamVariability)
             /// </summary>
             [OgreVersion(1, 7, 2790)]
             public GpuParamVariability Variability;
+
+            #endregion
+
+            #region IsFloat
 
             /// <summary>
             /// </summary>
@@ -63,33 +89,10 @@ namespace Axiom.Graphics
 
             /// <summary>
             /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public bool IsSampler
-            {
-                get
-                {
-                    return IsSamplerConst(ConstantType);
-                }
-            }
-
-            /// <summary>
-            /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public GpuConstantDefinition()
-            {
-                ConstantType = GpuConstantType.Unknown;
-                PhysicalIndex = Int32.MaxValue;
-                ElementSize = 0;
-                ArraySize = 1;
-                Variability = GpuParamVariability.Global;
-            }
-
-            /// <summary>
-            /// </summary>
             /// <returns>
             /// true when the curent ConstantType is a float based type
             /// </returns>
-            [OgreVersion(1, 7, 2790)]
+            [OgreVersion(1, 7, 2790, "IsFloat overload in OGRE")]
             public static bool IsFloatConst(GpuConstantType c)
             {
                 switch (c)
@@ -110,12 +113,27 @@ namespace Axiom.Graphics
                 }
             }
 
+            #endregion
+
+            #region IsSampler
+
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7, 2790)]
+            public bool IsSampler
+            {
+                get
+                {
+                    return IsSamplerConst(ConstantType);
+                }
+            }
+
             /// <summary>
             /// </summary>
             /// <returns>
             /// true when the curent ConstantType is an int based type
             /// </returns>
-            [OgreVersion(1, 7, 2790)]
+            [OgreVersion(1, 7, 2790, "IsSampler overload in OGRE")]
             public bool IsSamplerConst(GpuConstantType c)
             {
                 switch (c)
@@ -132,8 +150,13 @@ namespace Axiom.Graphics
                 }
             }
 
+            #endregion
+
+            #region GetElementSize
+
             /// <summary>
-            /// 
+            /// Get the element size of a given type, including whether to pad the 
+            /// elements into multiples of 4 (e.g. SM1 and D3D does, GLSL doesn't)
             /// </summary>
             /// <param name="ctype"></param>
             /// <param name="padToMultiplesOf4"></param>
@@ -218,6 +241,24 @@ namespace Axiom.Graphics
                     }
                 }
             }
+
+            #endregion
+
+            #region Constructor
+
+            /// <summary>
+            /// </summary>
+            [OgreVersion(1, 7, 2790)]
+            public GpuConstantDefinition()
+            {
+                ConstantType = GpuConstantType.Unknown;
+                PhysicalIndex = Int32.MaxValue;
+                ElementSize = 0;
+                ArraySize = 1;
+                Variability = GpuParamVariability.Global;
+            }
+
+            #endregion
         }
     }
 }
