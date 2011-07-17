@@ -1119,7 +1119,7 @@ namespace Axiom.Components.Terrain
                     // Check NPOT textures supported. We have to use NPOT textures to map
                     // texels to vertices directly!
                     if (!mNormalMapRequired && Root.Instance.RenderSystem
-                        .HardwareCapabilities.HasCapability(Capabilities.NonPowerOf2Textures))
+                        .Capabilities.HasCapability(Capabilities.NonPowerOf2Textures))
                     {
                         mNormalMapRequired = false;
                         LogManager.Instance.Write(LogMessageLevel.Critical, false,
