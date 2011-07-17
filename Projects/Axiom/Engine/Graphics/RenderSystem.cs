@@ -567,11 +567,20 @@ namespace Axiom.Graphics
 
         #region ConfigOptions
 
+        protected ConfigOptionMap configOptions = new ConfigOptionMap();
+
         /// <summary>
         /// Gets a dataset with the options set for the rendering system.
         /// </summary>
-        [OgreVersion(1, 7)]
-        public abstract ConfigOptionMap ConfigOptions { get; }
+        [OgreVersion(1, 7, "abstract in Ogre")]
+        [AxiomHelper(0, 8, "provides default backing field to reg options")]
+        public virtual ConfigOptionMap ConfigOptions
+        {
+            get
+            {
+                return configOptions;
+            }
+        }
 
         #endregion
 

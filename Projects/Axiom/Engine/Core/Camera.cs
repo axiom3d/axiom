@@ -579,7 +579,7 @@ namespace Axiom.Core
         ///		wireframe view, for example.
         /// </remarks>
         [OgreVersion(1, 7)]
-        public PolygonMode PolygonMode { get; protected set; }
+        public PolygonMode PolygonMode { get; set; }
 
         #endregion PolygonMode Property
 

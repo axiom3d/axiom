@@ -702,11 +702,12 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
+        [OgreVersion(1, 7)]
 	    public override bool RequiresTextureFlipping
 	    {
 	        get
 	        {
-	            throw new NotImplementedException();
+	            return false;
 	        }
 	    }
 
