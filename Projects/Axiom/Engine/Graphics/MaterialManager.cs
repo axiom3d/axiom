@@ -38,9 +38,11 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 
 using Axiom.Collections;
 using Axiom.Core;
+using Axiom.Core.Collections;
 using Axiom.Serialization;
 
 using ResourceHandle = System.UInt64;
@@ -78,7 +80,32 @@ namespace Axiom.Graphics
 		#region Delegates
 
 		delegate void PassAttributeParser( string[] values, Pass pass );
-		delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
+		
+        delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
+
+        public class SchemeNotFoundEventArgs : EventArgs
+        {
+            public ushort SchemeIndex { get; private set; }
+
+            public string SchemeName { get; private set; }
+
+            public Material OriginalMaterial { get; private set; }
+
+            public int LodIndex { get; private set; }
+
+            public IRenderable Renderable { get; private set; }
+
+            public SchemeNotFoundEventArgs(ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable)
+            {
+                SchemeIndex = schemeIndex;
+                Renderable = renderable;
+                LodIndex = lodIndex;
+                OriginalMaterial = originalMaterial;
+                SchemeName = schemeName;
+            }
+        }
+
+	    public delegate Technique SchemeNotFoundHandler(SchemeNotFoundEventArgs args);
 
 		#endregion
 
@@ -363,15 +390,65 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>Internal method for sorting out missing technique for a scheme</summary>
-		public Technique ArbitrateMissingTechniqueForActiveScheme( Material material, int lodIndex, IRenderable renderable )
-		{
-			return null;
-		}
 
-		#endregion
 
-		#region ResourceManager Implementation
+        private readonly MultiMap<string, SchemeNotFoundHandler> _listenerMap = new MultiMap<string, SchemeNotFoundHandler>();
+
+        /// <summary>
+        /// Add a listener to handle material events. 
+        /// If schemeName is supplied, the listener will only receive events for that certain scheme.
+        /// </summary>
+        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+        public virtual void AddListener(SchemeNotFoundHandler l, string schemeName = null)
+        {
+            _listenerMap.Add( schemeName ?? string.Empty, l );
+        }
+
+        /// <summary>
+        /// Remove a listener handling material events. 
+        /// If the listener was added with a custom scheme name, it needs to be supplied here as well.
+        /// </summary>
+        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+        public virtual void RemoveListener(SchemeNotFoundHandler l, string schemeName = null)
+        {
+            _listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
+        }
+
+
+	    /// <summary>Internal method for sorting out missing technique for a scheme</summary>
+        public Technique ArbitrateMissingTechniqueForActiveScheme(Material mat, int lodIndex, IRenderable rend)
+        {
+            var args = new SchemeNotFoundEventArgs(_activeSchemeIndex, _activeSchemeName, mat, lodIndex, rend);
+
+            //First, check the scheme specific listeners
+	        List<SchemeNotFoundHandler> handlers;
+	        if (_listenerMap.TryGetValue( _activeSchemeName, out handlers ))
+	        {
+                foreach (var i in handlers)
+                {
+                    var t = i(args);
+                    if (t != null)
+                        return t;
+                }
+            }
+
+            //If no success, check generic listeners
+		    if (_listenerMap.TryGetValue( string.Empty, out handlers ))
+		    {
+			    foreach (var i in handlers)
+			    {
+				    var t = i(args);
+				    if (t != null)
+					    return t;
+			    }
+		    }
+
+            return null;
+        }
+
+        #endregion
+
+	    #region ResourceManager Implementation
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
