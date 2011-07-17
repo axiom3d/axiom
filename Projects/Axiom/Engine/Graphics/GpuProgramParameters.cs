@@ -276,7 +276,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Lookup of constant indicies for named parameters.
 		/// </summary>
-		protected AxiomCollection<int> namedParams = new AxiomCollection<int>();
+		//protected AxiomCollection<int> namedParams = new AxiomCollection<int>();
 		/// <summary>
 		///     Specifies whether matrices need to be transposed prior to
 		///     being sent to the hardware.
@@ -443,11 +443,10 @@ namespace Axiom.Graphics
 			// Iterate over auto parameters
 			// Clear existing auto constants
 			ClearAutoConstants();
-
             autoConstants.AddRange(source.autoConstants.Select(x => x.Clone()));
 
-			// don't forget to copy the named param lookup as well
-			namedParams = new AxiomCollection<int>( source.namedParams );
+            _combinedVariability = source._combinedVariability;
+            CopySharedParamSetUsage(source._sharedParamSets);
 		}
 
 		/// <summary>
@@ -462,94 +461,6 @@ namespace Axiom.Graphics
 		public int GetIntConstant( int i )
 		{
 			return intConstants[ i ];
-		}
-
-		/// <summary>
-		///    Gets the constant index of the specified named param.
-		/// </summary>
-		/// <param name="name">
-		///    Name of the param.
-		/// </param>
-		/// <returns>
-		///    Constant index.
-		/// </returns>
-		public int GetParamIndex( string name )
-		{
-			if ( !namedParams.ContainsKey( name ) )
-			{
-				// name not found in map, should it be added to the map?
-				if ( autoAddParamName )
-				{
-					// determine index
-					// don't know which Constants list the name is for
-					// so pick the largest index
-					int index = floatConstants.Count > intConstants.Count ? floatConstants.Count : intConstants.Count;
-
-					floatConstants.Resize( index + 1 );
-					intConstants.Resize( index + 1 );
-					MapParamNameToIndex( name, index );
-					return index;
-				}
-				else
-				{
-					if ( this.ignoreMissingParameters )
-					{
-						return -1;
-					}
-					throw new Exception( string.Format( "Cannot find a param index for a param named '{0}'.", name ) );
-				}
-			}
-
-			return (int)namedParams[ name ];
-		}
-
-		/// <summary>
-		///		Given an index, this function will return the name of the parameter at that index.
-		/// </summary>
-		/// <param name="index">Index of the parameter to look up.</param>
-		/// <returns>Name of the param at the specified index.</returns>
-		public string GetNameByIndex( int index )
-		{
-			foreach ( DictionaryEntry entry in namedParams )
-			{
-				if ( (int)entry.Value == index )
-				{
-					return (string)entry.Key;
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		///		Gets a Named Float Constant entry if the name is found otherwise returns a null.
-		/// </summary>
-		/// <param name="name">Name of the constant to retreive.</param>
-		/// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
-		public float GetNamedFloatConstant( string name )
-		{
-            return GetFloatConstant(namedParams[name]);
-		}
-
-		/// <summary>
-		///		Gets a Named Int Constant entry if the name is found otherwise returns a null.
-		/// </summary>
-		/// <param name="name">Name of the constant to retreive.</param>
-		/// <returns>A reference to the int constant entry with the specified name, else null if not found.</returns>
-		public int GetNamedIntConstant( string name )
-		{
-            return GetIntConstant(namedParams[name]);
-		}
-
-		/// <summary>
-		///    Maps a parameter name to the specified constant index.
-		/// </summary>
-		/// <param name="name">Name of the param.</param>
-		/// <param name="index">Constant index of the param.</param>
-		public void MapParamNameToIndex( string name, int index )
-		{
-			// map the param name to a constant register index
-			namedParams[ name ] = index;
 		}
 
         #region SetAutoConstant
@@ -1319,17 +1230,6 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///		Gets the number of named parameters in this param set.
-		/// </summary>
-		public int NamedParamCount
-		{
-			get
-			{
-				return this.namedParams.Count;
-			}
-		}
-
-		/// <summary>
 		///     Specifies whether matrices need to be transposed prior to
 		///     being sent to the hardware.
 		/// </summary>
@@ -1503,7 +1403,7 @@ namespace Axiom.Graphics
                                 i.PhysicalIndex += insertCount;
                             }
                         }
-                        if (namedParams != null)
+                        if (_namedConstants != null)
                         {
                             foreach (var i in _namedConstants.Map)
                             {
@@ -1618,7 +1518,7 @@ namespace Axiom.Graphics
                                 i.PhysicalIndex += insertCount;
                             }
                         }
-                        if (namedParams != null)
+                        if (_namedConstants != null)
                         {
                             foreach (var i in _namedConstants.Map)
                             {

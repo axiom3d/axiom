@@ -319,7 +319,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					// load the source and attach the child shader only if supported
 					if ( IsSupported )
 					{
-						childShader.LoadHighLevelImpl();
+						childShader.LoadHighLevel();
 						// add to the constainer
 						attachedGLSLPrograms.Add( childShader );
                         AttachedShaderNames += name + " ";
@@ -546,7 +546,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		    return true;
 		}
 
-		protected override void UnloadImpl()
+		protected override void UnloadHighLevelImpl()
 		{
             // just clearing the reference here
             assemblerProgram = null;

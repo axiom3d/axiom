@@ -176,6 +176,8 @@ namespace Axiom.CgPrograms
 		/// <param name="parms"></param>
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
 		{
+		    throw new NotImplementedException();
+            /*
 		    base.PopulateParameterNames( parms );
 			Debug.Assert( cgProgram != IntPtr.Zero );
 
@@ -251,7 +253,7 @@ namespace Axiom.CgPrograms
 
 				// get the next param
 				param = Cg.cgGetNextLeafParameter( param );
-			}
+			}*/
 		}
 
 	    protected override void BuildConstantDefinitions()
@@ -304,7 +306,7 @@ namespace Axiom.CgPrograms
 	    /// <summary>
 		///    Unloads the Cg program.
 		/// </summary>
-		protected override void UnloadImpl()
+		protected override void UnloadHighLevelImpl()
 		{
 			// destroy this program if it had been loaded
 			if ( cgProgram != IntPtr.Zero )
