@@ -2688,9 +2688,9 @@ it says it's incompatible with that RT");
         /// and TextureLayer classes.
         /// </summary>
         /// <param name="unit">Texture unit.</param>
-        /// <param name="blendMode">Details of the blending modes.</param>
+        /// <param name="bm">Details of the blending modes.</param>
         [OgreVersion(1, 7)]
-        public abstract void SetTextureBlendMode(int unit, LayerBlendModeEx blendMode);
+        public abstract void SetTextureBlendMode(int unit, LayerBlendModeEx bm);
 
         #endregion
 

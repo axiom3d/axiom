@@ -2415,22 +2415,22 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
 	    [OgreVersion(1, 0, "TODO: update this to 1.7")]
-		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
+		public override void SetTextureBlendMode( int stage, LayerBlendModeEx bm )
 		{
-			var d3dTexOp = D3DHelper.ConvertEnum( blendMode.operation );
+			var d3dTexOp = D3DHelper.ConvertEnum( bm.operation );
 
 			// TODO: Verify byte ordering
-			if ( blendMode.operation == LayerBlendOperationEx.BlendManual )
+			if ( bm.operation == LayerBlendOperationEx.BlendManual )
 			{
-				device.SetRenderState( D3D.RenderState.TextureFactor, new ColorEx( blendMode.blendFactor, 0, 0, 0 ).ToARGB() );
+				device.SetRenderState( D3D.RenderState.TextureFactor, new ColorEx( bm.blendFactor, 0, 0, 0 ).ToARGB() );
 			}
 
-			if ( blendMode.blendType == LayerBlendType.Color )
+			if ( bm.blendType == LayerBlendType.Color )
 			{
 				// Make call to set operation
 				device.SetTextureStageState( stage, D3D.TextureStage.ColorOperation, d3dTexOp );
 			}
-			else if ( blendMode.blendType == LayerBlendType.Alpha )
+			else if ( bm.blendType == LayerBlendType.Alpha )
 			{
 				// Make call to set operation
 				device.SetTextureStageState( stage, D3D.TextureStage.AlphaOperation, d3dTexOp );
@@ -2441,16 +2441,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 			ColorEx manualD3D = D3DHelper.FromColor( factor );
 
-			if ( blendMode.blendType == LayerBlendType.Color )
+			if ( bm.blendType == LayerBlendType.Color )
 			{
-				manualD3D = new ColorEx( manualD3D.a, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b );
+				manualD3D = new ColorEx( manualD3D.a, bm.colorArg1.r, bm.colorArg1.g, bm.colorArg1.b );
 			}
-			else if ( blendMode.blendType == LayerBlendType.Alpha )
+			else if ( bm.blendType == LayerBlendType.Alpha )
 			{
-				manualD3D = new ColorEx( blendMode.alphaArg1, manualD3D.r, manualD3D.g, manualD3D.b );
+				manualD3D = new ColorEx( bm.alphaArg1, manualD3D.r, manualD3D.g, manualD3D.b );
 			}
 
-			LayerBlendSource blendSource = blendMode.source1;
+			LayerBlendSource blendSource = bm.source1;
 
 			for ( int i = 0; i < 2; i++ )
 			{
@@ -2463,7 +2463,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// pick proper argument settings
-				if ( blendMode.blendType == LayerBlendType.Color )
+				if ( bm.blendType == LayerBlendType.Color )
 				{
 					if ( i == 0 )
 					{
@@ -2474,7 +2474,7 @@ namespace Axiom.RenderSystems.DirectX9
 						device.SetTextureStageState( stage, D3D.TextureStage.ColorArg2, d3dTexArg );
 					}
 				}
-				else if ( blendMode.blendType == LayerBlendType.Alpha )
+				else if ( bm.blendType == LayerBlendType.Alpha )
 				{
 					if ( i == 0 )
 					{
@@ -2487,15 +2487,15 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// Source2
-				blendSource = blendMode.source2;
+				blendSource = bm.source2;
 
-				if ( blendMode.blendType == LayerBlendType.Color )
+				if ( bm.blendType == LayerBlendType.Color )
 				{
-					manualD3D = new ColorEx( manualD3D.a, blendMode.colorArg2.r, blendMode.colorArg2.g, blendMode.colorArg2.b );
+					manualD3D = new ColorEx( manualD3D.a, bm.colorArg2.r, bm.colorArg2.g, bm.colorArg2.b );
 				}
-				else if ( blendMode.blendType == LayerBlendType.Alpha )
+				else if ( bm.blendType == LayerBlendType.Alpha )
 				{
-					manualD3D = new ColorEx( blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b );
+					manualD3D = new ColorEx( bm.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b );
 				}
 			}
 		}
@@ -2819,8 +2819,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// blending between stages is definately supported
-            realCapabilities.SetCapability(Graphics.Capabilities.TextureBlending);
-            realCapabilities.SetCapability(Graphics.Capabilities.MultiTexturing);
+            realCapabilities.SetCapability(Graphics.Capabilities.Blending);
 
 			// Dot3 bump mapping?
 			if ( ( d3dCaps.TextureOperationCaps & D3D.TextureOperationCaps.DotProduct3 ) == D3D.TextureOperationCaps.DotProduct3 )

@@ -102,6 +102,7 @@
     <Compile Include="GLContext.cs" />
     <Compile Include="GLCopyingRenderTexture.cs" />
     <Compile Include="GLCopyingRTTManager.cs" />
+    <Compile Include="GLDepthBuffer.cs" />
     <Compile Include="GLFBOMultiRenderTarget.cs" />
     <Compile Include="GLFBORenderTexture.cs" />
     <Compile Include="GLFBORTTManager.cs" />
