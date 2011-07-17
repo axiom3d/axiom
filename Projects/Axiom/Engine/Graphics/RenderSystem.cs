@@ -1163,6 +1163,10 @@ namespace Axiom.Graphics
             var poolId = renderTarget.DepthBufferPool;
             //Find a depth buffer in the pool
 
+            // Axiom: emulate std::map [] access
+            if (!depthBufferPool.ContainsKey(poolId))
+                depthBufferPool[ poolId ] = new DepthBufferVec();
+
             var itor = depthBufferPool[poolId].GetEnumerator();
 
             var bAttached = false;
