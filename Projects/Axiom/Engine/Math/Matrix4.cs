@@ -504,6 +504,27 @@ namespace Axiom.Math
 			floats[ 14 ] = this.m32;
 			floats[ 15 ] = this.m33;
 		}
+
+        public void MakeFloatArray(float[] floats, int offset)
+        {
+            floats[offset++] = m00;
+            floats[offset++] = m01;
+            floats[offset++] = m02;
+            floats[offset++] = m03;
+            floats[offset++] = m10;
+            floats[offset++] = m11;
+            floats[offset++] = m12;
+            floats[offset++] = m13;
+            floats[offset++] = m20;
+            floats[offset++] = m21;
+            floats[offset++] = m22;
+            floats[offset++] = m23;
+            floats[offset++] = m30;
+            floats[offset++] = m31;
+            floats[offset++] = m32;
+            floats[offset] = m33;
+        }
+
 		/// <summary>
 		///     Extract the 3x3 matrix representing the current rotation. 
 		/// </summary>
