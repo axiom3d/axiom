@@ -235,7 +235,7 @@ namespace Axiom.Samples.Terrain
 			Camera.Near = 0.1f;
 			Camera.Far = 50000;
 
-			if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Graphics.Capabilities.InfiniteFarPlane ) )
+			if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Graphics.Capabilities.InfiniteFarPlane ) )
 			{
 				Camera.Far = 0;// enable infinite far clip distance if we can
 			}
