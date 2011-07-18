@@ -609,7 +609,7 @@ namespace Axiom.Core
         /// <summary>
         ///		SceneNode which this Camera will automatically track.
         /// </summary>
-        public SceneNode AutoTrackingTarget { get; protected set; }
+        public SceneNode AutoTrackingTarget { get; set; }
 
         #endregion AutoTrackingTarget Property
 

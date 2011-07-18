@@ -178,6 +178,7 @@
     <Compile Include="Core\Collections\CameraCollection.cs" />
     <Compile Include="Core\Collections\Lists.cs" />
     <Compile Include="Core\Collections\MovableObjectCollection.cs" />
+    <Compile Include="Core\Collections\MultiMap.cs" />
     <Compile Include="Core\Collections\NodeCollection.cs" />
     <Compile Include="Core\Collections\SceneManagerCollection.cs" />
     <Compile Include="Core\Collections\SceneNodeCollection.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Core\DisposableObject.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Frustum.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\IConfigurable.cs" />
@@ -232,6 +234,7 @@
     <Compile Include="Core\SceneManagerEnumerator.cs" />
     <Compile Include="Core\SceneNode.cs" />
     <Compile Include="Core\SceneQuery.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />
@@ -249,6 +252,7 @@
     <Compile Include="Core\Viewport.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="Core\WireBoundingBox.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="FileSystem\Archive.cs" />
     <Compile Include="FileSystem\ArchiveManager.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
@@ -261,6 +265,7 @@
     <Compile Include="Graphics\AutoParamDataSource.cs" />
     <Compile Include="Graphics\BufferStream.cs" />
     <Compile Include="Graphics\Collections\ConfigOptionCollection.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\Collections\Lists.cs" />
     <Compile Include="Graphics\Collections\RenderPriorityGroupList.cs" />
     <Compile Include="Graphics\Collections\RenderSystemCollection.cs" />
@@ -282,18 +287,27 @@
     </Compile>
     <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
     <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="Graphics\DepthBuffer.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\EdgeData.cs" />
     <Compile Include="Graphics\EdgeListBuilder.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\GpuProgram.cs" />
     <Compile Include="Graphics\GpuProgramManager.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />
     <Compile Include="Graphics\GpuProgramParameters.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinitionMap.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuLogicalBufferStruct.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuLogicalIndexUse.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstants.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstantSerializer.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParameters.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParametersUsage.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.Lists.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\GpuProgramUsage.cs" />
     <Compile Include="Graphics\HardwareBuffer.cs" />
     <Compile Include="Graphics\HardwareBufferManager.cs" />
@@ -327,6 +341,7 @@
     <Compile Include="Graphics\RenderTarget.cs" />
     <Compile Include="Graphics\RenderTexture.cs" />
     <Compile Include="Graphics\RenderWindow.cs" />
+    <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="Graphics\RibbonTrail.cs" />
     <Compile Include="Graphics\ShadowCaster.cs" />
     <Compile Include="Graphics\ShadowRenderable.cs" />
@@ -388,6 +403,7 @@
     <Compile Include="Media\PixelBox.cs" />
     <Compile Include="Media\PixelConverter.cs" />
     <Compile Include="Media\PixelUtil.cs" />
+    <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Overlays\Elements\BorderPanel.cs" />
     <Compile Include="Overlays\Elements\Factories.cs" />
     <Compile Include="Overlays\Elements\Panel.cs" />
