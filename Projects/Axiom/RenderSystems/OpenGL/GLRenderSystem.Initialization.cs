@@ -128,8 +128,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        public override void InitializeFromRenderSystemCapabilities(
-            RenderSystemCapabilities caps, RenderTarget primary )
+        public override void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary )
         {
             if ( caps.RendersystemName != Name )
             {
