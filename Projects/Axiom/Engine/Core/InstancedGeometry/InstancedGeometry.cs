@@ -881,7 +881,7 @@ namespace Axiom.Core
 				// Create new buffer
 				HardwareVertexBuffer newBuf =
 					HardwareBufferManager.Instance.CreateVertexBuffer(
-						oldBuf.VertexSize,
+						oldBuf.VertexDeclaration,
 						indexRemap.Count,
 						BufferUsage.Static );
 				// rebind

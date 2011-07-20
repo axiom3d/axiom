@@ -31,7 +31,7 @@ namespace Axiom.Demos
 
         public override void CreateScene()
         {
-            RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+            RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
             if ( !caps.HasCapability( Capabilities.Texture3D ) )
             {
                 throw new NotSupportedException( "Your card does not support 3d textures, so you can not run this Demo. Sorry!" );
@@ -238,8 +238,7 @@ namespace Axiom.Demos
             vdecl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.TexCoords );
             offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
-            HardwareVertexBuffer vbuffer = HardwareBufferManager.Instance
-                .CreateVertexBuffer( offset, nvertices, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vbuffer = HardwareBufferManager.Instance.CreateVertexBuffer( vdecl, nvertices, BufferUsage.StaticWriteOnly);
 
             vbuf.SetBinding( 0, vbuffer );
             vbuffer.WriteData( 0, vbuffer.Size, vertices, true );

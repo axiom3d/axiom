@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</ProjectGuid>
+    <ProjectGuid>{EB34FCD5-0CFB-41DA-BE80-1DFC703245B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctreeZone</RootNamespace>

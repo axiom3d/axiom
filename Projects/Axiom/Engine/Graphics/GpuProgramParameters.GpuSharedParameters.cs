@@ -158,7 +158,22 @@ namespace Axiom.Graphics
             #endregion
 
             #region AddConstantDefinition
-
+            /// <summary>
+			/// Add a new constant definition to this shared set of parameters.
+			/// </summary>
+			/// <param name="name"></param>
+			/// <param name="constType"></param>
+			/// <remarks>
+			/// Unlike GpuProgramParameters, where the parameter list is defined by the
+			/// program being compiled, this shared parameter set is defined by the
+			/// user. Only parameters which have been predefined here may be later
+			/// updated.
+			/// </remarks>
+            [OgreVersion(1, 7, 2790, "will not expose ConstantDefinitionIterator")]
+			public void AddConstantDefinition( string name, GpuConstantType constType )
+			{
+				AddConstantDefinition( name, constType, 1 );
+			}
             /// <summary>
 			/// Add a new constant definition to this shared set of parameters.
 			/// </summary>
@@ -172,7 +187,7 @@ namespace Axiom.Graphics
 			/// updated.
 			/// </remarks>
             [OgreVersion(1, 7, 2790, "will not expose ConstantDefinitionIterator")]
-			public void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize = 1 )
+			public void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
 			{
 				if ( NamedConstants.Map.ContainsKey( name ) )
 				{

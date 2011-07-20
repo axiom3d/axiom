@@ -398,11 +398,17 @@ namespace Axiom.Core
 				this.attenuationQuad = value;
 			}
 		}
-
 		/// <summary>
 		///		Gets the derived position of this light.
 		/// </summary>
-        public virtual Vector3 GetDerivedPosition(bool cameraRelative = false)
+        public virtual Vector3 GetDerivedPosition()
+		{
+			return GetDerivedPosition( false );
+		}
+		/// <summary>
+		///		Gets the derived position of this light.
+		/// </summary>
+        public virtual Vector3 GetDerivedPosition(bool cameraRelative )
 		{
 		    // this is called to force an update
 		    Update();
@@ -539,7 +545,23 @@ namespace Axiom.Core
 		///		calculations.
 		/// </remarks>
 		/// <returns>A 4D vector representation of the light.</returns>
-        public virtual Vector4 GetAs4DVector(bool cameraRelativeIfSet = false)
+        public virtual Vector4 GetAs4DVector()
+		{
+			return GetAs4DVector( false );
+		}
+
+		/// <summary>
+		///		Gets the details of this light as a 4D vector.
+		/// </summary>
+		/// <remarks>
+		///		Getting details of a light as a 4D vector can be useful for
+		///		doing general calculations between different light types; for
+		///		example the vector can represent both position lights (w=1.0f)
+		///		and directional lights (w=0.0f) and be used in the same
+		///		calculations.
+		/// </remarks>
+		/// <returns>A 4D vector representation of the light.</returns>
+        public virtual Vector4 GetAs4DVector( bool cameraRelativeIfSet )
 		{
 			Vector4 vec;
 

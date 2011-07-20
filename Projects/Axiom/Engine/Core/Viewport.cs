@@ -751,13 +751,27 @@ namespace Axiom.Core
 		/// (if any) before rendering every frame.
 		/// </remarks>
 		/// <param name="inClear">Whether or not to clear any buffers</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetClearEveryFrame( bool inClear )
+		{
+			SetClearEveryFrame( inClear, FrameBufferType.Color | FrameBufferType.Depth );
+		}
+
+		/// <summary>
+		/// Determines whether to clear the viewport before rendering.
+		/// </summary>
+		/// <remarks>
+		/// You can use this method to set which buffers are cleared
+		/// (if any) before rendering every frame.
+		/// </remarks>
+		/// <param name="inClear">Whether or not to clear any buffers</param>
 		/// <param name="inBuffers">
 		/// One or more values from FrameBufferType denoting
 		/// which buffers to clear, if clear is set to true. Note you should
 		/// not clear the stencil buffer here unless you know what you're doing.
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
-		public void SetClearEveryFrame( bool inClear, FrameBufferType inBuffers = FrameBufferType.Color | FrameBufferType.Depth )
+		public void SetClearEveryFrame( bool inClear, FrameBufferType inBuffers )
 		{
 			ClearEveryFrame = inClear;
 			ClearBuffers = inBuffers;
@@ -857,7 +871,16 @@ namespace Axiom.Core
 		/// Set the orientation mode of the viewport.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public void SetOrientationMode( OrientationMode orientationMode, bool setDefault = true )
+		public void SetOrientationMode( OrientationMode orientationMode )
+		{
+			SetOrientationMode( orientationMode, true );
+		}
+
+		/// <summary>
+		/// Set the orientation mode of the viewport.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetOrientationMode( OrientationMode orientationMode, bool setDefault )
 		{
 #if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
 			throw new AxiomException("Setting Viewport orientation mode is not supported");,

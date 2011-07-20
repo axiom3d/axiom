@@ -1304,6 +1304,19 @@ namespace Axiom.Graphics
         #endregion
 
         #region UpdateAutoUpdatedViewports
+        /// <summary>
+        /// Method for manual management of rendering - renders only viewports that are auto updated
+        /// </summary>
+        /// <remarks>
+        /// This also fires preViewportUpdate and postViewportUpdate, and manages statistics.
+        /// You should call it between <see cref="BeginUpdate"/> and 
+        /// <see cref="EndUpdate"/>.
+        /// </remarks>
+        [OgreVersion(1, 7, 2790)]
+        public void UpdateAutoUpdatedViewports()
+        {
+			UpdateAutoUpdatedViewports( true );
+		}
 
         /// <summary>
         /// Method for manual management of rendering - renders only viewports that are auto updated
@@ -1315,7 +1328,7 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <param name="updateStatistics"></param>
         [OgreVersion(1, 7, 2790)]
-        public virtual void UpdateAutoUpdatedViewports(bool updateStatistics = true)
+        public virtual void UpdateAutoUpdatedViewports(bool updateStatistics )
         {
             // Go through viewports in Z-order
             // Tell each to refresh
@@ -1472,6 +1485,33 @@ namespace Axiom.Graphics
         #endregion
 
         #region SwapBuffers
+        /// <summary>
+        ///		Swaps the frame buffers to display the next frame.
+        /// </summary>
+        /// <remarks>
+        ///		For targets that are double-buffered so that no
+        ///     'in-progress' versions of the scene are displayed
+        ///     during rendering. Once rendering has completed (to
+        ///		an off-screen version of the window) the buffers
+        ///		are swapped to display the new frame.
+        ///	</remarks>
+        /// <param name="waitForVSync">
+        ///		If true, the system waits for the
+        ///		next vertical blank period (when the CRT beam turns off
+        ///		as it travels from bottom-right to top-left at the
+        ///		end of the pass) before flipping. If false, flipping
+        ///		occurs no matter what the beam position. Waiting for
+        ///		a vertical blank can be slower (and limits the
+        ///		framerate to the monitor refresh rate) but results
+        ///		in a steadier image with no 'tearing' (a flicker
+        ///		resulting from flipping buffers when the beam is
+        ///		in the progress of drawing the last frame). 
+        ///</param>
+        [OgreVersion(1, 7, 2790)]
+        public void SwapBuffers()
+        {
+			SwapBuffers( true );
+        }
 
         /// <summary>
         ///		Swaps the frame buffers to display the next frame.
@@ -1496,7 +1536,7 @@ namespace Axiom.Graphics
         ///		in the progress of drawing the last frame). 
         ///</param>
         [OgreVersion(1, 7, 2790)]
-        public virtual void SwapBuffers(bool waitForVSync = true)
+        public virtual void SwapBuffers(bool waitForVSync )
         {
         }
 

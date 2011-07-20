@@ -961,7 +961,13 @@ namespace Axiom.Graphics
         }
 
         [OgreVersion(1, 7, 2790)]
-		public void SetNamedConstant( string name, float[] val, int count, int multiple = 4 )
+		public void SetNamedConstant( string name, float[] val, int count )
+		{
+			SetNamedConstant( name, val, count, 4 );
+		}
+
+        [OgreVersion(1, 7, 2790)]
+		public void SetNamedConstant( string name, float[] val, int count, int multiple )
 		{
             var rawCount = count * multiple;
             // look up, and throw an exception if we're not ignoring missing
@@ -985,7 +991,13 @@ namespace Axiom.Graphics
         }
 
         [OgreVersion(1, 7, 2790)]
-        public void SetNamedConstant(string name, int[] val, int count, int multiple = 4)
+        public void SetNamedConstant(string name, int[] val, int count )
+		{
+			SetNamedConstant( name, val, count, 4 );
+		}
+
+		[OgreVersion(1, 7, 2790)]
+        public void SetNamedConstant(string name, int[] val, int count, int multiple )
 		{
             var rawCount = count * multiple;
             // look up, and throw an exception if we're not ignoring missing
@@ -1650,8 +1662,12 @@ namespace Axiom.Graphics
         #endregion
 
         #region WriteRawConstant
+		public void WriteRawConstant(int physicalIndex, Vector4 val)
+		{
+			WriteRawConstant( physicalIndex, val );
+		}
 
-        public void WriteRawConstant(int physicalIndex, Vector4 val, int count = 4)
+        public void WriteRawConstant(int physicalIndex, Vector4 val, int count)
         {
             // remember, raw content access uses raw float count rather than float4
 		    // write either the number requested (for packed types) or up to 4

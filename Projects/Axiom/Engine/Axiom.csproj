@@ -101,6 +101,8 @@
     <Compile Include="Collections\RadixSort.cs" />
     <Compile Include="Collections\ReadOnlyDictionary~2.cs" />
     <Compile Include="Controllers\Canned\PassthroughControllerFunction.cs" />
+    <Compile Include="Core\Collections\MultiMap.cs" />
+    <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\BillboardChain.cs" />
     <Compile Include="Core\BitConverterEx.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
     <Compile Include="Core\SceneManagerEnumerator.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />
@@ -121,16 +124,21 @@
     <Compile Include="Core\StaticGeometry\MaterialBucket.cs" />
     <Compile Include="Core\StaticGeometry\Region.cs" />
     <Compile Include="Core\StaticGeometry\StaticGeometry.cs" />
+    <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\FreetypeWrapper.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
+    <Compile Include="Graphics\DepthBuffer.cs" />
     <Compile Include="Graphics\DriverVersion.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />
     <Compile Include="Graphics\CompositionTargetPass.cs" />
@@ -141,10 +149,17 @@
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
     <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinitionMap.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuLogicalBufferStruct.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuLogicalIndexUse.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstants.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstantSerializer.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParameters.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParametersUsage.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.Lists.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
     <Compile Include="Graphics\ICompositorLogic.cs" />
@@ -154,6 +169,7 @@
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
     <Compile Include="Graphics\RenderQueueInvocationSequence.cs" />
+    <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="Graphics\RibbonTrail.cs" />
     <Compile Include="Graphics\TriangleBuilder.cs" />
     <Compile Include="Graphics\UnifiedHighLevelGpuProgram.cs" />
@@ -164,6 +180,7 @@
     <Compile Include="Math\Tuple.cs" />
     <Compile Include="Media\LinearResampler.cs" />
     <Compile Include="Media\NearestResampler.cs" />
+    <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="ParticleSystems\BillboardParticleRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

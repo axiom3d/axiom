@@ -139,9 +139,7 @@ namespace Axiom.RenderSystems.DirectX9
 			    if (LoadFromFile)
 			    {
 				    // find & load source code
-                    var stream = 
-					    ResourceGroupManager.Instance.OpenResource(
-					    fileName, _group, true, this);
+					var stream = ResourceGroupManager.Instance.OpenResource( fileName, _group, true, this );
 				    source = stream.AsString();
 			    }
 

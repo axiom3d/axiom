@@ -244,6 +244,19 @@ namespace Axiom.Graphics
 
         #region SetProgramName
 
+		/// <summary>
+        ///    Sets the name of the program we're trying to link to.
+        /// </summary>
+        /// <remarks>
+        ///    Note that this will create a fresh set of parameters from the 
+        ///    new program being linked, so if you had previously set parameters 
+        ///    you will have to set them again. 
+        /// </remarks>
+        [OgreVersion(1, 7, 2790)]
+        public void SetProgramName( string name )
+        {
+			SetProgramName( name, true );
+		}
         /// <summary>
         ///    Sets the name of the program we're trying to link to.
         /// </summary>
@@ -253,7 +266,7 @@ namespace Axiom.Graphics
         ///    you will have to set them again. 
         /// </remarks>
         [OgreVersion(1, 7, 2790)]
-        public void SetProgramName(string name, bool resetParams = true)
+        public void SetProgramName( string name, bool resetParams )
         {
 
             if ( program != null )

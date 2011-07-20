@@ -170,7 +170,7 @@ namespace Axiom.Demos
 
             mReflectionViewport.ShowOverlays = false;
             mReflectionViewport.BackgroundColor = ColorEx.Blue;
-            mReflectionViewport.ClearEveryFrame = true;
+            mReflectionViewport.SetClearEveryFrame( true );
             mReflectionViewport.ShowSkies = false;
 
             reflTarget.BeforeUpdate += new RenderTargetEventHandler( PreRenderTargetUpdate );
@@ -360,8 +360,7 @@ namespace Axiom.Demos
             offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
             vdecl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords );
-            mVertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-                Marshal.SizeOf( typeof( VertexPositionTexture ) ),
+			mVertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(vdecl,
                 mNumVertices,
                 BufferUsage.DynamicWriteOnly );
 

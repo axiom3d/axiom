@@ -242,9 +242,14 @@ namespace Axiom.CgPrograms
         #endregion
 
         #region RecurseParams
+        [OgreVersion(1, 7, 2790)]
+		protected void RecurseParams(IntPtr parameter)
+		{
+			RecurseParams( parameter, 1 );
+		}
 
         [OgreVersion(1, 7, 2790)]
-        protected void RecurseParams(IntPtr parameter, int contextArraySize = 1)
+        protected void RecurseParams(IntPtr parameter, int contextArraySize )
 		{
 			// loop through the rest of the params
 			while ( parameter != IntPtr.Zero )
@@ -671,8 +676,7 @@ namespace Axiom.CgPrograms
                 var filename = inSource.Substring( startIt + 1, endIt - startIt - 1 );
 
                 // open included file
-                var resource = ResourceGroupManager.Instance.OpenResource( filename, resourceBeingLoaded.Group, true,
-                                                                           resourceBeingLoaded );
+                var resource = ResourceGroupManager.Instance.OpenResource( filename, resourceBeingLoaded.Group, true, resourceBeingLoaded );
 
                 // replace entire include directive line
                 // copy up to just before include
@@ -696,8 +700,7 @@ namespace Axiom.CgPrograms
                 outSource += ( resource.AsString() );
 
                 // Add #line to the end of the included file to correct the line count
-                outSource += ( "\n#line " + lineCount +
-                               "\"" + fileName + "\"\n" );
+                outSource += ( "\n#line " + lineCount + "\"" + fileName + "\"\n" );
 
                 startMarker = newLineAfter;
 

@@ -1086,7 +1086,17 @@ namespace Axiom.Graphics
 		/// Internal method for firing a rendersystem event
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		protected virtual void FireEvent( string name, NameValuePairList pars = null )
+		protected virtual void FireEvent( string name )
+		{
+			if ( eventListeners != null )
+				eventListeners( name, null );
+		}
+
+		/// <summary>
+		/// Internal method for firing a rendersystem event
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		protected virtual void FireEvent( string name, NameValuePairList pars )
 		{
 			if ( eventListeners != null )
 				eventListeners( name, pars );
@@ -1243,9 +1253,19 @@ it says it's incompatible with that RT" );
 		/// Sets the depth bias, NB you should use the Material version of this.
 		/// </summary>
 		/// <param name="constantBias"></param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetDepthBias( float constantBias )
+		{
+			SetDepthBias( constantBias, 0.0f );
+		}
+
+		/// <summary>
+		/// Sets the depth bias, NB you should use the Material version of this.
+		/// </summary>
+		/// <param name="constantBias"></param>
 		/// <param name="slopeScaleBias"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetDepthBias( float constantBias, float slopeScaleBias = 0.0f );
+		public abstract void SetDepthBias( float constantBias, float slopeScaleBias );
 
 		#endregion
 
@@ -1257,11 +1277,50 @@ it says it's incompatible with that RT" );
 		/// The depth bias set will be baseValue + iteration * multiplier
 		/// </summary>
 		/// <param name="derive">true to tell the RS to derive this automatically</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetDerivedDepthBias( bool derive )
+		{
+			SetDerivedDepthBias( derive, 0.0f, 0.0f, 0.0f );
+		}
+
+		/// <summary>
+		/// Tell the render system whether to derive a depth bias on its own based on 
+		/// the values passed to it in setCurrentPassIterationCount.
+		/// The depth bias set will be baseValue + iteration * multiplier
+		/// </summary>
+		/// <param name="derive">true to tell the RS to derive this automatically</param>
+		/// <param name="baseValue">The base value to which the multiplier should be added</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetDerivedDepthBias( bool derive, float baseValue )
+		{
+			SetDerivedDepthBias( derive, baseValue, 0.0f, 0.0f );
+		}
+
+		/// <summary>
+		/// Tell the render system whether to derive a depth bias on its own based on 
+		/// the values passed to it in setCurrentPassIterationCount.
+		/// The depth bias set will be baseValue + iteration * multiplier
+		/// </summary>
+		/// <param name="derive">true to tell the RS to derive this automatically</param>
+		/// <param name="baseValue">The base value to which the multiplier should be added</param>
+		/// <param name="multiplier">The amount of depth bias to apply per iteration</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetDerivedDepthBias( bool derive, float baseValue, float multiplier )
+		{
+			SetDerivedDepthBias( derive, baseValue, multiplier, 0.0f );
+		}
+
+		/// <summary>
+		/// Tell the render system whether to derive a depth bias on its own based on 
+		/// the values passed to it in setCurrentPassIterationCount.
+		/// The depth bias set will be baseValue + iteration * multiplier
+		/// </summary>
+		/// <param name="derive">true to tell the RS to derive this automatically</param>
 		/// <param name="baseValue">The base value to which the multiplier should be added</param>
 		/// <param name="multiplier">The amount of depth bias to apply per iteration</param>
 		/// <param name="slopeScale">The constant slope scale bias for completeness</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public virtual void SetDerivedDepthBias( bool derive, float baseValue = 0.0f, float multiplier = 0.0f, float slopeScale = 0.0f )
+		public virtual void SetDerivedDepthBias( bool derive, float baseValue, float multiplier, float slopeScale )
 		{
 			derivedDepthBias = derive;
 			derivedDepthBiasBase = baseValue;
@@ -1760,7 +1819,17 @@ it says it's incompatible with that RT" );
 		/// </summary>
 		/// <param name="swapBuffers"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public virtual void UpdateAllRenderTargets( bool swapBuffers = true )
+		public void UpdateAllRenderTargets()
+		{
+			UpdateAllRenderTargets( true );
+		}
+
+			/// <summary>
+		/// Internal method for updating all render targets attached to this rendering system.
+		/// </summary>
+		/// <param name="swapBuffers"></param>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual void UpdateAllRenderTargets( bool swapBuffers )
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
@@ -1783,10 +1852,20 @@ it says it's incompatible with that RT" );
 
 		/// <summary>
 		/// Internal method for swapping all the buffers on all render targets,
-		/// if <see cref="UpdateAllRenderTargets"/> was called with a 'false' parameter.
+		/// if <see cref="UpdateAllRenderTargets( bool )"/> was called with a 'false' parameter.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public virtual void SwapAllRenderTargetBuffers( bool waitForVSync = true )
+		public void SwapAllRenderTargetBuffers()
+		{
+			SwapAllRenderTargetBuffers( true );
+		}
+
+		/// <summary>
+		/// Internal method for swapping all the buffers on all render targets,
+		/// if <see cref="UpdateAllRenderTargets( bool )"/> was called with a 'false' parameter.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual void SwapAllRenderTargetBuffers( bool waitForVSync )
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
@@ -2152,11 +2231,23 @@ it says it's incompatible with that RT" );
 		/// Initialize the rendering engine.
 		/// </summary>
 		/// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
+		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
+		/// <remarks>All subclasses should call this method from within thier own intialize methods.</remarks>
+		[OgreVersion( 1, 7, 2790 )]
+		public RenderWindow Initialize( bool autoCreateWindow )
+		{
+			return Initialize( autoCreateWindow, DefaultWindowTitle );
+		}
+
+		/// <summary>
+		/// Initialize the rendering engine.
+		/// </summary>
+		/// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
 		/// <param name="windowTitle">Text to display on the window caption if not fullscreen.</param>
 		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
 		/// <remarks>All subclasses should call this method from within thier own intialize methods.</remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public virtual RenderWindow Initialize( bool autoCreateWindow, string windowTitle = DefaultWindowTitle )
+		public virtual RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
 			vertexProgramBound = false;
 			geometryProgramBound = false;
@@ -2187,7 +2278,24 @@ it says it's incompatible with that RT" );
 		#endregion
 
 		#region MakeOrthoMatrix
-
+		/// <summary>
+		/// Builds an orthographic projection matrix suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		/// Because different APIs have different requirements (some incompatible) for the
+		/// projection matrix, this method allows each to implement their own correctly and pass
+		/// back a generic Matrix4 for storage in the engine.
+		/// </remarks>
+		/// <param name="fov">Field of view angle.</param>
+		/// <param name="aspectRatio">Aspect ratio.</param>
+		/// <param name="near">Near clipping plane distance.</param>
+		/// <param name="far">Far clipping plane distance.</param>
+		/// <param name="dest"></param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
+		{
+			MakeOrthoMatrix( fov, aspectRatio, near, far, out dest, false );
+		}
 		/// <summary>
 		/// Builds an orthographic projection matrix suitable for this render system.
 		/// </summary>
@@ -2203,7 +2311,7 @@ it says it's incompatible with that RT" );
 		/// <param name="dest"></param>
 		/// <param name="forGpuPrograms"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false );
+		public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms );
 
 		#endregion
 
@@ -2219,9 +2327,25 @@ it says it's incompatible with that RT" );
 		/// </remarks>
 		/// <param name="matrix"></param>
 		/// <param name="dest"></param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest )
+		{
+			ConvertProjectionMatrix( matrix, out dest, false );
+		}
+
+		/// <summary>
+		/// Converts a uniform projection matrix to one suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		/// Because different APIs have different requirements (some incompatible) for the
+		/// projection matrix, this method allows each to implement their own correctly and pass
+		/// back a generic Matrix4 for storage in the engine.
+		/// </remarks>
+		/// <param name="matrix"></param>
+		/// <param name="dest"></param>
 		/// <param name="forGpuProgram"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram = false );
+		public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram );
 
 		#endregion
 
@@ -2240,9 +2364,28 @@ it says it's incompatible with that RT" );
 		/// <param name="near">Near clipping plane distance.</param>
 		/// <param name="far">Far clipping plane distance.</param>
 		/// <param name="dest"></param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
+		{
+			MakeProjectionMatrix( fov, aspectRatio, near, far, out dest, false );
+		}
+
+		/// <summary>
+		/// Builds a perspective projection matrix suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		/// Because different APIs have different requirements (some incompatible) for the
+		/// projection matrix, this method allows each to implement their own correctly and pass
+		/// back a generic Matrix4 for storage in the engine.
+		/// </remarks>
+		/// <param name="fov">Field of view angle.</param>
+		/// <param name="aspectRatio">Aspect ratio.</param>
+		/// <param name="near">Near clipping plane distance.</param>
+		/// <param name="far">Far clipping plane distance.</param>
+		/// <param name="dest"></param>
 		/// <param name="forGpuProgram"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram = false );
+		public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram );
 
 		/// <summary>
 		/// Builds a perspective projection matrix for the case when frustum is
@@ -2253,8 +2396,21 @@ it says it's incompatible with that RT" );
 		/// at the origin.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,
-			Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram = false );
+		public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,Real nearPlane, Real farPlane, out Matrix4 dest )
+		{
+			MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
+		}
+
+		/// <summary>
+		/// Builds a perspective projection matrix for the case when frustum is
+		/// not centered around camera.
+		/// </summary>
+		/// <remarks>
+		/// Viewport coordinates are in camera coordinate frame, i.e. camera is 
+		/// at the origin.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2790 )]
+		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram );
 
 		#endregion
 
@@ -2309,16 +2465,31 @@ it says it's incompatible with that RT" );
 		/// grown too big or they've used lots of depth buffers they don't need anymore,
 		/// freeing GPU RAM.
 		/// </remarks>
-		/// <param name="bCleanManualBuffers"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public void CleanupDepthBuffers( bool bCleanManualBuffers = true )
+		public void CleanupDepthBuffers()
+		{
+			CleanupDepthBuffers( true );
+		}
+	
+		/// <summary>
+		/// Removes all depth buffers. Should be called on device lost and shutdown
+		/// </summary>
+		/// <remarks>
+		/// Advanced users can call this directly with bCleanManualBuffers=false to
+		/// remove all depth buffers created for RTTs; when they think the pool has
+		/// grown too big or they've used lots of depth buffers they don't need anymore,
+		/// freeing GPU RAM.
+		/// </remarks>
+		/// <param name="cleanManualBuffers"></param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void CleanupDepthBuffers( bool cleanManualBuffers )
 		{
 			foreach ( var itmap in depthBufferPool )
 			{
 				var itor = itmap.Value.GetEnumerator();
 				while ( itor.MoveNext() )
 				{
-					if ( bCleanManualBuffers || !itor.Current.IsManual )
+					if ( cleanManualBuffers || !itor.Current.IsManual )
 						itor.Dispose();
 				}
 
@@ -2390,7 +2561,12 @@ it says it's incompatible with that RT" );
 		/// </param>
 		/// <param name="depthFunction">Sets the function required for the depth test.</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetDepthBufferParams( bool depthTest = true, bool depthWrite = true, CompareFunction depthFunction = CompareFunction.LessEqual );
+		public abstract void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction );
+		public void SetDepthBufferParams( ){ SetDepthBufferParams( true, true, CompareFunction.LessEqual );}
+		public void SetDepthBufferParams( bool depthTest, bool depthWrite )
+		{
+			SetDepthBufferParams( depthTest, depthWrite, CompareFunction.LessEqual );
+		}
 
 		#endregion
 
@@ -2404,7 +2580,13 @@ it says it's incompatible with that RT" );
 			Real linearStart, Real linearEnd );
 
 		[AxiomHelper( 0, 8, CommentDefOverride )]
-		public void SetFog( FogMode mode = FogMode.None )
+		public void SetFog()
+		{
+			SetFog( FogMode.None, ColorEx.White, Real.One, Real.Zero, Real.One );
+		}
+
+		[AxiomHelper( 0, 8, CommentDefOverride )]
+		public void SetFog( FogMode mode )
 		{
 			SetFog( mode, ColorEx.White, Real.One, Real.Zero, Real.One );
 		}
@@ -2440,9 +2622,24 @@ it says it's incompatible with that RT" );
 		/// </summary>
 		/// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
 		/// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
+		{
+			SetSceneBlending( src, dest, SceneBlendOperation.Add );
+		}
+
+		/// <summary>
+		/// Sets the global blending factors for combining subsequent renders with the existing frame contents.
+		/// The result of the blending operation is:
+		/// <p align="center">final = (texture * src) + (pixel * dest)</p>
+		/// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+		/// enumerated type.
+		/// </summary>
+		/// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
+		/// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
 		/// <param name="op">The blend operation mode for combining pixels</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op = SceneBlendOperation.Add );
+		public abstract void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op );
 
 		#endregion
 
@@ -2459,15 +2656,48 @@ it says it's incompatible with that RT" );
 		/// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
 		/// <param name="sourceFactorAlpha">The source factor in the above calculation for the alpha channel, i.e. multiplied by the texture alpha components.</param>
 		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+		{
+			SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha, SceneBlendOperation.Add, SceneBlendOperation.Add );
+		}
+
+		/// <summary>
+		/// Sets the global blending factors for combining subsequent renders with the existing frame contents.
+		/// The result of the blending operation is:
+		/// final = (texture * sourceFactor) + (pixel * destFactor).
+		/// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+		/// enumerated type.
+		/// </summary>
+		/// <param name="sourceFactor">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
+		/// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
+		/// <param name="sourceFactorAlpha">The source factor in the above calculation for the alpha channel, i.e. multiplied by the texture alpha components.</param>
+		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
 		/// <param name="op">The blend operation mode for combining pixels</param>
 		/// <param name="alphaOp">The blend operation mode for combining pixel alpha values</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha,
-			SceneBlendFactor destFactorAlpha, SceneBlendOperation op = SceneBlendOperation.Add, SceneBlendOperation alphaOp = SceneBlendOperation.Add );
+		public abstract void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp );
 
 		#endregion
 
 		#region SetScissorTest
+
+		/// <summary>
+		/// Sets the 'scissor region' ie the region of the target in which rendering can take place.
+		/// </summary>
+		/// <remarks>
+		/// This method allows you to 'mask off' rendering in all but a given rectangular area
+		/// as identified by the parameters to this method.
+		/// <p/>
+		/// Not all systems support this method. Check the <see cref="Capabilities"/> enum for the
+		/// ScissorTest capability to see if it is supported.
+		/// </remarks>
+		/// <param name="enable">True to enable the scissor test, false to disable it.</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetScissorTest( bool enable )
+		{
+			SetScissorTest( enable, 0, 0, 800, 600 );
+		}
 
 		/// <summary>
 		/// Sets the 'scissor region' ie the region of the target in which rendering can take place.
@@ -2485,11 +2715,126 @@ it says it's incompatible with that RT" );
 		/// <param name="right">Right corner (in pixels).</param>
 		/// <param name="bottom">Bottom corner (in pixels).</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetScissorTest( bool enable, int left = 0, int top = 0, int right = 800, int bottom = 600 );
+		public abstract void SetScissorTest( bool enable, int left, int top, int right, int bottom );
 
 		#endregion
 
 		#region SetStencilBufferParams
+
+		/// <summary>
+		/// This method allows you to set all the stencil buffer parameters in one call.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The stencil buffer is used to mask out pixels in the render target, allowing
+		/// you to do effects like mirrors, cut-outs, stencil shadows and more. Each of
+		/// your batches of rendering is likely to ignore the stencil buffer, 
+		/// update it with new values, or apply it to mask the output of the render.
+		/// The stencil test is:<PRE>
+		/// (Reference Value &amp; Mask) CompareFunction (Stencil Buffer Value &amp; Mask)</PRE>
+		/// The result of this will cause one of 3 actions depending on whether the test fails,
+		/// succeeds but with the depth buffer check still failing, or succeeds with the
+		/// depth buffer check passing too.</para>
+		/// <para>
+		/// Unlike other render states, stencilling is left for the application to turn
+		/// on and off when it requires. This is because you are likely to want to change
+		/// parameters between batches of arbitrary objects and control the ordering yourself.
+		/// In order to batch things this way, you'll want to use OGRE's separate render queue
+		/// groups (see RenderQueue) and register a RenderQueueListener to get notifications
+		/// between batches.</para>
+		/// <para>
+		/// There are individual state change methods for each of the parameters set using 
+		/// this method. 
+		/// Note that the default values in this method represent the defaults at system 
+		/// start up too.</para>
+		/// </remarks>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetStencilBufferParams()
+		{
+			SetStencilBufferParams(CompareFunction.AlwaysPass,0,-1,StencilOperation.Keep,StencilOperation.Keep,StencilOperation.Keep, false );
+		}
+		/// <summary>
+		/// This method allows you to set all the stencil buffer parameters in one call.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The stencil buffer is used to mask out pixels in the render target, allowing
+		/// you to do effects like mirrors, cut-outs, stencil shadows and more. Each of
+		/// your batches of rendering is likely to ignore the stencil buffer, 
+		/// update it with new values, or apply it to mask the output of the render.
+		/// The stencil test is:<PRE>
+		/// (Reference Value &amp; Mask) CompareFunction (Stencil Buffer Value &amp; Mask)</PRE>
+		/// The result of this will cause one of 3 actions depending on whether the test fails,
+		/// succeeds but with the depth buffer check still failing, or succeeds with the
+		/// depth buffer check passing too.</para>
+		/// <para>
+		/// Unlike other render states, stencilling is left for the application to turn
+		/// on and off when it requires. This is because you are likely to want to change
+		/// parameters between batches of arbitrary objects and control the ordering yourself.
+		/// In order to batch things this way, you'll want to use OGRE's separate render queue
+		/// groups (see RenderQueue) and register a RenderQueueListener to get notifications
+		/// between batches.</para>
+		/// <para>
+		/// There are individual state change methods for each of the parameters set using 
+		/// this method. 
+		/// Note that the default values in this method represent the defaults at system 
+		/// start up too.</para>
+		/// </remarks>
+		/// <param name="function">The comparison function applied.</param>
+		/// <param name="refValue">The reference value used in the comparison.</param>
+		/// <param name="mask">
+		/// The bitmask applied to both the stencil value and the reference value 
+		/// before comparison.
+		/// </param>
+		[OgreVersion(1, 7, 2790)]
+		public void SetStencilBufferParams( CompareFunction function, int refValue )
+		{
+			SetStencilBufferParams( function, refValue, -1, StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false );
+		}
+
+		/// <summary>
+		/// This method allows you to set all the stencil buffer parameters in one call.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The stencil buffer is used to mask out pixels in the render target, allowing
+		/// you to do effects like mirrors, cut-outs, stencil shadows and more. Each of
+		/// your batches of rendering is likely to ignore the stencil buffer, 
+		/// update it with new values, or apply it to mask the output of the render.
+		/// The stencil test is:<PRE>
+		/// (Reference Value &amp; Mask) CompareFunction (Stencil Buffer Value &amp; Mask)</PRE>
+		/// The result of this will cause one of 3 actions depending on whether the test fails,
+		/// succeeds but with the depth buffer check still failing, or succeeds with the
+		/// depth buffer check passing too.</para>
+		/// <para>
+		/// Unlike other render states, stencilling is left for the application to turn
+		/// on and off when it requires. This is because you are likely to want to change
+		/// parameters between batches of arbitrary objects and control the ordering yourself.
+		/// In order to batch things this way, you'll want to use OGRE's separate render queue
+		/// groups (see RenderQueue) and register a RenderQueueListener to get notifications
+		/// between batches.</para>
+		/// <para>
+		/// There are individual state change methods for each of the parameters set using 
+		/// this method. 
+		/// Note that the default values in this method represent the defaults at system 
+		/// start up too.</para>
+		/// </remarks>
+		/// <param name="function">The comparison function applied.</param>
+		/// <param name="refValue">The reference value used in the comparison.</param>
+		/// <param name="mask">
+		/// The bitmask applied to both the stencil value and the reference value 
+		/// before comparison.
+		/// </param>
+		/// <param name="stencilFailOp">The action to perform when the stencil check fails.</param>
+		/// <param name="depthFailOp">
+		/// The action to perform when the stencil check passes, but the depth buffer check still fails.
+		/// </param>
+		/// <param name="passOp">The action to take when both the stencil and depth check pass.</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp)
+		{
+			SetStencilBufferParams( function, refValue, mask, stencilFailOp, depthFailOp, passOp, false );
+		}
 
 		/// <summary>
 		/// This method allows you to set all the stencil buffer parameters in one call.
@@ -2535,16 +2880,55 @@ it says it's incompatible with that RT" );
 		/// and the inverse of them will happen for back faces (keep remains the same).
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetStencilBufferParams( CompareFunction function = CompareFunction.AlwaysPass,
-			int refValue = 0, int mask = -1,
-			StencilOperation stencilFailOp = StencilOperation.Keep,
-			StencilOperation depthFailOp = StencilOperation.Keep,
-			StencilOperation passOp = StencilOperation.Keep,
-			bool twoSidedOperation = false );
+		public abstract void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation );
 
 		#endregion
 
 		#region SetSurfaceParams
+
+		/// <summary>
+		/// Sets the surface properties to be used for future rendering.
+		/// 
+		/// This method sets the the properties of the surfaces of objects
+		/// to be rendered after it. In this context these surface properties
+		/// are the amount of each type of light the object reflects (determining
+		/// it's color under different types of light), whether it emits light
+		/// itself, and how shiny it is. Textures are not dealt with here,
+		/// <see cref="SetTexture(int, bool, Texture)"/> method for details.
+		/// This method is used by SetMaterial so does not need to be called
+		/// direct if that method is being used.
+		/// </summary>
+		/// <param name="ambient">
+		/// The amount of ambient (sourceless and directionless)
+		/// light an object reflects. Affected by the color/amount of ambient light in the scene.
+		/// </param>
+		/// <param name="diffuse">
+		/// The amount of light from directed sources that is
+		/// reflected (affected by color/amount of point, directed and spot light sources)
+		/// </param>
+		/// <param name="specular">
+		/// The amount of specular light reflected. This is also
+		/// affected by directed light sources but represents the color at the
+		/// highlights of the object.
+		/// </param>
+		/// <param name="emissive">
+		/// The color of light emitted from the object. Note that
+		/// this will make an object seem brighter and not dependent on lights in
+		/// the scene, but it will not act as a light, so will not illuminate other
+		/// objects. Use a light attached to the same SceneNode as the object for this purpose.
+		/// </param>
+		/// <param name="shininess">
+		/// A value which only has an effect on specular highlights (so
+		/// specular must be non-black). The higher this value, the smaller and crisper the
+		/// specular highlights will be, imitating a more highly polished surface.
+		/// This value is not constrained to 0.0-1.0, in fact it is likely to
+		/// be more (10.0 gives a modest sheen to an object).
+		/// </param>
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess )
+		{
+			SetSurfaceParams( ambient, diffuse, specular, emissive, shininess, TrackVertexColor.None );
+		}
 
 		/// <summary>
 		/// Sets the surface properties to be used for future rendering.
@@ -2592,8 +2976,7 @@ it says it's incompatible with that RT" );
 		/// tracking the vertex colors.
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular,
-			ColorEx emissive, Real shininess, TrackVertexColor tracking = TrackVertexColor.None );
+		public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking );
 
 		#endregion
 
@@ -2608,8 +2991,7 @@ it says it's incompatible with that RT" );
 		/// </remarks>
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetPointParameters( Real size, bool attenuationEnabled,
-			Real constant, Real linear, Real quadratic, Real minSize, Real maxSize );
+		public abstract void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear, Real quadratic, Real minSize, Real maxSize );
 
 		#endregion
 
@@ -2743,7 +3125,19 @@ it says it's incompatible with that RT" );
 		/// <param name="method">Calculation method to use</param>
 		/// <param name="frustum">Frustum, only used for projective effects</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetTextureCoordCalculation( int unit, TexCoordCalcMethod method, Frustum frustum = null );
+		public void SetTextureCoordCalculation( int unit, TexCoordCalcMethod method )
+		{
+			SetTextureCoordCalculation( unit, method, null );
+		}
+
+		/// <summary>
+		/// Sets a method for automatically calculating texture coordinates for a stage.
+		/// </summary>
+		/// <param name="unit">Texture stage to modify.</param>
+		/// <param name="method">Calculation method to use</param>
+		/// <param name="frustum">Frustum, only used for projective effects</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public abstract void SetTextureCoordCalculation( int unit, TexCoordCalcMethod method, Frustum frustum );
 
 		#endregion
 
@@ -2917,8 +3311,7 @@ it says it's incompatible with that RT" );
 		/// Initialize the render system from the capabilities
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void InitializeFromRenderSystemCapabilities(
-			RenderSystemCapabilities caps, RenderTarget primary );
+		public abstract void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary );
 
 
 		#endregion
