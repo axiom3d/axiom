@@ -1892,7 +1892,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region SetSceneBlending
 
         [OgreVersion(1, 7, 2790)]
-        public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op = SceneBlendOperation.Add)
+        public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op )
         {
             // set the render states after converting the incoming values to D3D.Blend
             if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
@@ -1916,8 +1916,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region SetSeparateSceneBlending
 
         [OgreVersion(1, 7, 2790)]
-        public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha,
-            SceneBlendFactor destFactorAlpha, SceneBlendOperation op = SceneBlendOperation.Add, SceneBlendOperation alphaOp = SceneBlendOperation.Add )
+        public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp )
         {
             if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
                  sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
@@ -1960,7 +1959,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region SetDepthBias
 
         [OgreVersion(1, 7, 2790)]
-        public override void SetDepthBias(float constantBias, float slopeScaleBias = 0.0f)
+        public override void SetDepthBias(float constantBias, float slopeScaleBias )
         {
             // Negate bias since D3D is backward
             // D3D also expresses the constant bias as an absolute value, rather than 
@@ -2460,10 +2459,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         [OgreVersion(1, 7, 2790)]
-        public override void SetStencilBufferParams( CompareFunction function = CompareFunction.AlwaysPass, 
-            int refValue = 0, int mask = -1, 
-            StencilOperation stencilFailOp = StencilOperation.Keep, StencilOperation depthFailOp = StencilOperation.Keep, 
-            StencilOperation passOp = StencilOperation.Keep, bool twoSidedOperation = false )
+        public override void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation )
         {
             bool flip;
 
@@ -2506,8 +2502,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region SetSurfaceParams
 
         [OgreVersion(1, 7, 2790)]
-        public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular,
-            ColorEx emissive, Real shininess, TrackVertexColor tracking = TrackVertexColor.None)
+        public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking )
         {
             // TODO: Cache color values to prune unneccessary setting
 

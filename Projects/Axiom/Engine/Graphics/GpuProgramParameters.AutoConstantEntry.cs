@@ -113,6 +113,18 @@ namespace Axiom.Graphics
             #endregion
 
             #region constructor
+            /// <summary>
+	        ///    Default constructor.
+	        /// </summary>
+	        /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+	        /// <param name="index">Index of the param.</param>
+	        /// <param name="data">Any additional info to go with the parameter.</param>
+	        /// <param name="variability">Variability of parameter</param>
+            [OgreVersion(1, 7, 2790)]
+	        public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability ) 
+				: this( type, index, data,variability, 4)
+			{
+			}
 
             /// <summary>
 	        ///    Default constructor.
@@ -123,8 +135,7 @@ namespace Axiom.Graphics
 	        /// <param name="variability">Variability of parameter</param>
 	        /// <param name="elementCount"></param>
             [OgreVersion(1, 7, 2790)]
-	        public AutoConstantEntry( AutoConstantType type, int index, int data, 
-                GpuParamVariability variability, int elementCount = 4 )
+	        public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability, int elementCount )
 			{
 				Type = type;
 				PhysicalIndex = index;
@@ -145,8 +156,21 @@ namespace Axiom.Graphics
 			/// <param name="variability">Variability of parameter</param>
             /// <param name="elementCount"></param>
             [OgreVersion(1, 7, 2790)]
-			public AutoConstantEntry( AutoConstantType type, int index, float fdata, 
-                GpuParamVariability variability, int elementCount = 4 )
+			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability ) 
+				: this( type, index, fdata, variability, 4 )
+			{
+			}
+
+			/// <summary>
+			///    Default constructor.
+			/// </summary>
+			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+			/// <param name="index">Index of the param.</param>
+			/// <param name="fdata">Any additional info to go with the parameter.</param>
+			/// <param name="variability">Variability of parameter</param>
+            /// <param name="elementCount"></param>
+            [OgreVersion(1, 7, 2790)]
+			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability, int elementCount )
 			{
 				Type = type;
 				PhysicalIndex = index;

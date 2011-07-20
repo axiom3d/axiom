@@ -396,12 +396,30 @@ namespace Axiom.Graphics
 
         /// <summary>
         /// Add a listener to handle material events. 
+        /// </summary>
+        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+        public virtual void AddListener(SchemeNotFoundHandler l )
+        {
+            _listenerMap.Add( string.Empty, l );
+        }
+
+        /// <summary>
+        /// Add a listener to handle material events. 
         /// If schemeName is supplied, the listener will only receive events for that certain scheme.
         /// </summary>
         [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-        public virtual void AddListener(SchemeNotFoundHandler l, string schemeName = null)
+        public virtual void AddListener(SchemeNotFoundHandler l, string schemeName )
         {
             _listenerMap.Add( schemeName ?? string.Empty, l );
+        }
+
+        /// <summary>
+        /// Remove a listener handling material events. 
+        /// </summary>
+        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+        public virtual void RemoveListener(SchemeNotFoundHandler l )
+        {
+            _listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
         }
 
         /// <summary>
@@ -409,7 +427,7 @@ namespace Axiom.Graphics
         /// If the listener was added with a custom scheme name, it needs to be supplied here as well.
         /// </summary>
         [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-        public virtual void RemoveListener(SchemeNotFoundHandler l, string schemeName = null)
+        public virtual void RemoveListener(SchemeNotFoundHandler l, string schemeName )
         {
             _listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
         }

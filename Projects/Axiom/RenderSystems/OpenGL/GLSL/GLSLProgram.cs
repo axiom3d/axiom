@@ -389,12 +389,20 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 	    }
 
         #region Compile
+        /// <summary>
+        /// compile source into shader object
+		/// </summary>
+        [OgreVersion(1, 7, 2790, "TODO: Completely missing preprocessor step")]
+		protected internal bool Compile( )
+		{
+			return Compile( true );
+		}
 
         /// <summary>
         /// compile source into shader object
 		/// </summary>
         [OgreVersion(1, 7, 2790, "TODO: Completely missing preprocessor step")]
-		protected internal bool Compile( bool checkErrors = true )
+		protected internal bool Compile( bool checkErrors )
 		{
             if (isCompiled)
             {

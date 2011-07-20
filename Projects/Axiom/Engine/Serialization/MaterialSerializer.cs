@@ -2481,14 +2481,19 @@ namespace Axiom.Serialization
 
 		#region Static Methods
 
-
-		protected static void ProcessManualProgramParam( 
-            bool isNamed, string commandName, 
-            string[] parameters, 
-            MaterialScriptContext context,
-            int index = 0,
-            string paramName = null
-             )
+		protected static void ProcessManualProgramParam( bool isNamed, string commandName, string[] parameters, MaterialScriptContext context )
+		{
+			ProcessManualProgramParam( isNamed, commandName, parameters, context, 0, null );
+		}
+		protected static void ProcessManualProgramParam( bool isNamed, string commandName, string[] parameters, MaterialScriptContext context,int index )
+		{
+			ProcessManualProgramParam( isNamed, commandName, parameters, context, index, null );
+		}
+		protected static void ProcessManualProgramParam( bool isNamed, string commandName, string[] parameters, MaterialScriptContext context, string paramName )
+		{
+			ProcessManualProgramParam( isNamed, commandName, parameters, context, 0, paramName );
+		}
+		protected static void ProcessManualProgramParam( bool isNamed, string commandName, string[] parameters, MaterialScriptContext context,int index , string paramName )
 		{
 			// NB we assume that the first element of vecparams is taken up with either
 			// the index or the parameter name, which we ignore
@@ -2635,6 +2640,18 @@ namespace Axiom.Serialization
 			}
 		}
 
+        protected static void ProcessAutoProgramParam(bool isNamed, string commandName, string[] parameters, MaterialScriptContext context )
+		{
+			ProcessAutoProgramParam( isNamed, commandName, parameters, context, 0, null );
+		}
+        protected static void ProcessAutoProgramParam(bool isNamed, string commandName, string[] parameters, MaterialScriptContext context, int index )
+		{
+			ProcessAutoProgramParam( isNamed, commandName, parameters, context, index, null );
+		}
+        protected static void ProcessAutoProgramParam(bool isNamed, string commandName, string[] parameters, MaterialScriptContext context, string paramName )
+		{
+			ProcessAutoProgramParam(isNamed, commandName, parameters, context, 0, paramName);
+		}
 		/// <summary>
 		///
 		/// </summary>
@@ -2642,8 +2659,7 @@ namespace Axiom.Serialization
 		/// <param name="commandName"></param>
 		/// <param name="parameters"></param>
 		/// <param name="context"></param>
-        protected static void ProcessAutoProgramParam(bool isNamed, string commandName,
-           string[] parameters, MaterialScriptContext context,  int index = 0,  string paramName = null )
+        protected static void ProcessAutoProgramParam(bool isNamed, string commandName, string[] parameters, MaterialScriptContext context, int index , string paramName )
 		{
             /*
 			bool extras = false;

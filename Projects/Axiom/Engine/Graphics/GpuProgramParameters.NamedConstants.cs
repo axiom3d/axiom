@@ -57,16 +57,30 @@ namespace Axiom.Graphics
         /// </remarks>
         /// </summary>
         /// <param name="name">The name to look up</param>
+        [OgreVersion(1, 7, 2790)]
+        public GpuConstantDefinition FindNamedConstantDefinition( string name )
+		{
+			return FindNamedConstantDefinition( name, false );
+		}
+        /// <summary>
+        /// Find a constant definition for a named parameter.
+        /// <remarks>
+        /// This method returns null if the named parameter did not exist, unlike
+        /// <see cref="GetConstantDefinition" /> which is more strict; unless you set the 
+        /// last parameter to true.
+        /// </remarks>
+        /// </summary>
+        /// <param name="name">The name to look up</param>
         /// <param name="throwExceptionIfNotFound"> If set to true, failure to find an entry
         /// will throw an exception.</param>
         [OgreVersion(1, 7, 2790)]
-        public GpuConstantDefinition FindNamedConstantDefinition(string name, bool throwExceptionIfNotFound = false)
+        public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound )
 	    {
 
             if (_namedConstants == null)
 		    {
                 if (throwExceptionIfNotFound)
-                    throw new AxiomException( "Named constants have not been initialised, perhaps a compile error." );
+                    throw new AxiomException( "Named constants have not been initialized, perhaps a compile error." );
 			    return null;
 		    }
 

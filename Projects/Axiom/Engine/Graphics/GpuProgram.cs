@@ -817,7 +817,16 @@ namespace Axiom.Graphics
         /// Create the internal params logical &amp; named mapping structures
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        protected void CreateParameterMappingStructures(bool recreateIfExists = true)
+        protected void CreateParameterMappingStructures()
+		{
+			CreateParameterMappingStructures( true );
+		}
+
+        /// <summary>
+        /// Create the internal params logical &amp; named mapping structures
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        protected void CreateParameterMappingStructures(bool recreateIfExists )
         {
             CreateLogicalParameterMappingStructures(recreateIfExists);
             CreateNamedParameterMappingStructures(recreateIfExists);

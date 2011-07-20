@@ -22,7 +22,13 @@ namespace Axiom.Graphics
             }
 
             [OgreVersion(1, 7, 2790)]
-            public void ExportNamedConstants(GpuNamedConstants pConsts, string filename, Endian endianMode = Endian.Native)
+            public void ExportNamedConstants(GpuNamedConstants pConsts, string filename )
+            {
+	            ExportNamedConstants( pConsts, filename, Endian.Native );
+            }
+
+            [OgreVersion(1, 7, 2790)]
+            public void ExportNamedConstants(GpuNamedConstants pConsts, string filename, Endian endianMode )
             {
                 using (var f = new FileStream(filename, FileMode.CreateNew, FileAccess.Write))
                     ExportNamedConstants(pConsts, f, endianMode);
