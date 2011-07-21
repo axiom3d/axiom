@@ -332,62 +332,59 @@ namespace Axiom.Core
 			pSphereVertex.IndexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, pSphereVertex.IndexData.indexCount, BufferUsage.StaticWriteOnly, false );
 			HardwareIndexBuffer iBuf = pSphereVertex.IndexData.indexBuffer;
 
-			unsafe
+			float[] pVertex = new float[ vBuf.Length / sizeof( float ) ];
+			vBuf.GetData( pVertex );
+
+			ushort[] pIndices = new ushort[ iBuf.Length / sizeof( ushort ) ];
+			iBuf.GetData( pIndices );
+
+			float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
+			float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );
+			ushort wVerticeIndex = 0;
+
+			// Generate the group of rings for the sphere
+			for ( int ring = 0; ring <= NUM_RINGS; ring++ )
 			{
+				float r0 = SPHERE_RADIUS * Utility.Sin( ring * fDeltaRingAngle );
+				float y0 = SPHERE_RADIUS * Utility.Cos( ring * fDeltaRingAngle );
 
-				float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
-
-				ushort* pIndices = (ushort*)iBuf.Lock( BufferLocking.Discard );
-
-				float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
-				float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );
-				ushort wVerticeIndex = 0;
-
-				// Generate the group of rings for the sphere
-				for ( int ring = 0; ring <= NUM_RINGS; ring++ )
+				// Generate the group of segments for the current ring
+				for ( int seg = 0; seg <= NUM_SEGMENTS; seg++ )
 				{
-					float r0 = SPHERE_RADIUS * Utility.Sin( ring * fDeltaRingAngle );
-					float y0 = SPHERE_RADIUS * Utility.Cos( ring * fDeltaRingAngle );
+					float x0 = r0 * Utility.Sin( seg * fDeltaSegAngle );
+					float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
 
-					// Generate the group of segments for the current ring
-					for ( int seg = 0; seg <= NUM_SEGMENTS; seg++ )
+					// Add one vertex to the strip which makes up the sphere
+					pVertex[ seg ] = x0;
+					pVertex[ seg ] = y0;
+					pVertex[ seg ] = z0;
+
+					Vector3 vNormal = new Vector3( x0, y0, z0 );
+					vNormal.Normalize();
+
+					pVertex[ seg ] = vNormal.x;
+					pVertex[ seg ] = vNormal.y;
+					pVertex[ seg ] = vNormal.z;
+
+					pVertex[ seg ] = (float)seg / (float)NUM_SEGMENTS;
+					pVertex[ seg ] = (float)ring / (float)NUM_RINGS;
+
+					if ( ring != NUM_RINGS )
 					{
-						float x0 = r0 * Utility.Sin( seg * fDeltaSegAngle );
-						float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
+						// each vertex (except the last) has six indicies pointing to it
+						pIndices[ seg ] = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
+						pIndices[ seg ] = (ushort)( wVerticeIndex );
+						pIndices[ seg ] = (ushort)( wVerticeIndex + NUM_SEGMENTS );
+						pIndices[ seg ] = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
+						pIndices[ seg ] = (ushort)( wVerticeIndex + 1 );
+						pIndices[ seg ] = (ushort)( wVerticeIndex );
+						wVerticeIndex++;
+					}
+				}; // end for seg
+			} // end for ring
 
-						// Add one vertex to the strip which makes up the sphere
-						*pVertex++ = x0;
-						*pVertex++ = y0;
-						*pVertex++ = z0;
-
-						Vector3 vNormal = new Vector3( x0, y0, z0 );
-						vNormal.Normalize();
-
-						*pVertex++ = vNormal.x;
-						*pVertex++ = vNormal.y;
-						*pVertex++ = vNormal.z;
-
-						*pVertex++ = (float)seg / (float)NUM_SEGMENTS;
-						*pVertex++ = (float)ring / (float)NUM_RINGS;
-
-						if ( ring != NUM_RINGS )
-						{
-							// each vertex (except the last) has six indicies pointing to it
-							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
-							*pIndices++ = (ushort)( wVerticeIndex );
-							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS );
-							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
-							*pIndices++ = (ushort)( wVerticeIndex + 1 );
-							*pIndices++ = (ushort)( wVerticeIndex );
-							wVerticeIndex++;
-						}
-					}; // end for seg
-				} // end for ring
-			}
-
-			// Unlock
-			vBuf.Unlock();
-			iBuf.Unlock();
+			vBuf.SetData( pVertex );
+			iBuf.SetData( pIndices );
 
 			// Generate face list
 			pSphereVertex.useSharedVertices = true;
