@@ -74,12 +74,12 @@ namespace Axiom.RenderSystems.Xna
 			_bufferType = ( type == IndexType.Size16 ) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
 
 			// create the buffer
-            if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
-            {
-                _xnaBuffer = new XFG.IndexBuffer(device, _bufferType, numIndices, XnaHelper.Convert(usage));
-            }
-            else 
-                _xnaBuffer = new XFG.IndexBuffer(device, _bufferType, numIndices, XFG.BufferUsage.None);
+			if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
+			{
+				_xnaBuffer = new XFG.IndexBuffer(device, _bufferType, numIndices, XnaHelper.Convert(usage));
+			}
+			else 
+				_xnaBuffer = new XFG.IndexBuffer(device, _bufferType, numIndices, XFG.BufferUsage.None);
 
 			_bufferBytes = new byte[ sizeInBytes ];
 			_bufferBytes.Initialize();

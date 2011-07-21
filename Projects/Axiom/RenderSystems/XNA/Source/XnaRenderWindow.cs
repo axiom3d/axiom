@@ -177,10 +177,10 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion PresentationParameters Property
 
-        public override bool RequiresTextureFlipping
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public override bool RequiresTextureFlipping
+		{
+			get { throw new NotImplementedException(); }
+		}
 
 		#endregion Fields and Properties
 
@@ -308,12 +308,12 @@ namespace Axiom.RenderSystems.Xna
 					depthBuffer = bool.Parse( miscParams[ "depthBuffer" ].ToString() );
 				}
 
-                //FSAA type should hold a bool value, because anti-aliasing is either enabled, or it isn't.
-                //// FSAA type
-                //if ( miscParams.ContainsKey( "FSAA" ) )
-                //{   
-                //    //_fsaaType = (XFG.MultiSampleType)miscParams[ "FSAA" ];
-                //}
+				//FSAA type should hold a bool value, because anti-aliasing is either enabled, or it isn't.
+				//// FSAA type
+				//if ( miscParams.ContainsKey( "FSAA" ) )
+				//{   
+				//    //_fsaaType = (XFG.MultiSampleType)miscParams[ "FSAA" ];
+				//}
 
 				// FSAA quality
 				if ( miscParams.ContainsKey( "FSAAQuality" ) )
@@ -417,7 +417,7 @@ namespace Axiom.RenderSystems.Xna
 
 			// set the params of the window
 			_name = name;
-            _colorDepth = colourDepth;
+			_colorDepth = colourDepth;
 			_width = width;
 			_height = height;
 			this.IsFullScreen = fullScreen;
@@ -437,142 +437,142 @@ namespace Axiom.RenderSystems.Xna
 			LogManager.Instance.Write( "[XNA] : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
 		}
 
-        private void CreateXnaResources()
-        {
-            XFG.GraphicsDevice device = _driver.XnaDevice;
+		private void CreateXnaResources()
+		{
+			XFG.GraphicsDevice device = _driver.XnaDevice;
 
-            if (_isSwapChain && device == null)
-            {
-                throw new Exception("Secondary window has not been given the device from the primary!");
-            }
+			if (_isSwapChain && device == null)
+			{
+				throw new Exception("Secondary window has not been given the device from the primary!");
+			}
 
-            if (_renderSurface != null)
-            {
-                _renderSurface.Dispose();
-                _renderSurface = null;
-            }
+			if (_renderSurface != null)
+			{
+				_renderSurface.Dispose();
+				_renderSurface = null;
+			}
 
-            XFG.GraphicsAdapter.UseReferenceDevice = false;
+			XFG.GraphicsAdapter.UseReferenceDevice = false;
 
-            if (_driver.Description.ToLower().Contains("nvperfhud"))
-            {
-                _useNVPerfHUD = true;
-                XFG.GraphicsAdapter.UseReferenceDevice = true;
-            }
+			if (_driver.Description.ToLower().Contains("nvperfhud"))
+			{
+				_useNVPerfHUD = true;
+				XFG.GraphicsAdapter.UseReferenceDevice = true;
+			}
 
-            _xnapp = new XFG.PresentationParameters();
+			_xnapp = new XFG.PresentationParameters();
 
-            this._xnapp.IsFullScreen = IsFullScreen;
-            this._xnapp.RenderTargetUsage = XFG.RenderTargetUsage.DiscardContents;
-            //this._xnapp.BackBufferCount = _vSync ? 2 : 1;
-            //this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
-            this._xnapp.DeviceWindowHandle = _windowHandle;
-            this._xnapp.BackBufferHeight = Height;
-            this._xnapp.BackBufferWidth = Width;
-            //this._xnapp.FullScreenRefreshRateInHz = IsFullScreen ? _displayFrequency : 0;
+			this._xnapp.IsFullScreen = IsFullScreen;
+			this._xnapp.RenderTargetUsage = XFG.RenderTargetUsage.DiscardContents;
+			//this._xnapp.BackBufferCount = _vSync ? 2 : 1;
+			//this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
+			this._xnapp.DeviceWindowHandle = _windowHandle;
+			this._xnapp.BackBufferHeight = Height;
+			this._xnapp.BackBufferWidth = Width;
+			//this._xnapp.FullScreenRefreshRateInHz = IsFullScreen ? _displayFrequency : 0;
 
-            if (_vSync)
-            {
-                this._xnapp.PresentationInterval = XFG.PresentInterval.One;
-            }
-            else
-            {
-                // NB not using vsync in windowed mode in D3D9 can cause jerking at low
-                // frame rates no matter what buffering modes are used (odd - perhaps a
-                // timer issue in D3D9 since GL doesn't suffer from this)
-                // low is < 200fps in this context
-                if (!IsFullScreen)
-                {
-                    LogManager.Instance.Write("[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.");
-                }
-                this._xnapp.PresentationInterval = XFG.PresentInterval.Immediate;
-            }
+			if (_vSync)
+			{
+				this._xnapp.PresentationInterval = XFG.PresentInterval.One;
+			}
+			else
+			{
+				// NB not using vsync in windowed mode in D3D9 can cause jerking at low
+				// frame rates no matter what buffering modes are used (odd - perhaps a
+				// timer issue in D3D9 since GL doesn't suffer from this)
+				// low is < 200fps in this context
+				if (!IsFullScreen)
+				{
+					LogManager.Instance.Write("[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.");
+				}
+				this._xnapp.PresentationInterval = XFG.PresentInterval.Immediate;
+			}
 
-            this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
-            if (ColorDepth > 16)
-            {
-                this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Color;
-            }
+			this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
+			if (ColorDepth > 16)
+			{
+				this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Color;
+			}
 
-            XFG.GraphicsAdapter currentAdapter = _driver.Adapter;
-            if (ColorDepth > 16)
-            {
+			XFG.GraphicsAdapter currentAdapter = _driver.Adapter;
+			if (ColorDepth > 16)
+			{
 
-                XFG.SurfaceFormat bestSurfaceFormat;
-                XFG.DepthFormat bestDepthStencilFormat;
-                int bestMultiSampleCount;
+				XFG.SurfaceFormat bestSurfaceFormat;
+				XFG.DepthFormat bestDepthStencilFormat;
+				int bestMultiSampleCount;
 
 
-                if ( false /* _isSwapChain */ )
-                {
-                    /*
-                    // Create swap chain
-                    try
-                    {
-                        _swapChain = new XFG.SwapChain( device, this._xnapp );
-                    }
-                    catch ( Exception )
-                    {
-                        // Try a second time, may fail the first time due to back buffer count,
-                        // which will be corrected by the runtime
-                        try
-                        {
-                            _swapChain = new XFG.SwapChain( device, this._xnapp );
-                        }
-                        catch ( Exception ex )
-                        {
-                            throw new Exception( "Unable to create an additional swap chain", ex );
-                        }
-                    }
+				if ( false /* _isSwapChain */ )
+				{
+					/*
+					// Create swap chain
+					try
+					{
+						_swapChain = new XFG.SwapChain( device, this._xnapp );
+					}
+					catch ( Exception )
+					{
+						// Try a second time, may fail the first time due to back buffer count,
+						// which will be corrected by the runtime
+						try
+						{
+							_swapChain = new XFG.SwapChain( device, this._xnapp );
+						}
+						catch ( Exception ex )
+						{
+							throw new Exception( "Unable to create an additional swap chain", ex );
+						}
+					}
 
-                    // Store references to buffers for convenience
-                    _renderSurface = _swapChain.GetBackBuffer( 0, XFG.BackBufferType.Mono );
+					// Store references to buffers for convenience
+					_renderSurface = _swapChain.GetBackBuffer( 0, XFG.BackBufferType.Mono );
 
-                    // Additional swap chains need their own depth buffer
-                    // to support resizing them
-                    if ( isDepthBuffered )
-                    {
-                        bool discard = ( this._xnapp.PresentationFlag & XFG.PresentFlag.DiscardDepthStencil ) == 0;
+					// Additional swap chains need their own depth buffer
+					// to support resizing them
+					if ( isDepthBuffered )
+					{
+						bool discard = ( this._xnapp.PresentationFlag & XFG.PresentFlag.DiscardDepthStencil ) == 0;
 
-                        try
-                        {
-                            _stencilBuffer = device.CreateDepthStencilSurface( Width, Height, this._xnapp.AutoDepthStencilFormat, this._xnapp.MultiSampleType, this._xnapp.MultiSampleQuality, discard );
-                        }
-                        catch ( Exception )
-                        {
-                            throw new Exception( "Unable to create a depth buffer for the swap chain" );
-                        }
-                    }
-                     */
-                }
-                else
-                {
-                    if (device == null) // We haven't created the device yet, this must be the first time
-                    {
-                        ConfigOptionMap configOptions = Root.Instance.RenderSystem.ConfigOptions;
-                        ConfigOption FPUMode = configOptions["Floating-point mode"];
+						try
+						{
+							_stencilBuffer = device.CreateDepthStencilSurface( Width, Height, this._xnapp.AutoDepthStencilFormat, this._xnapp.MultiSampleType, this._xnapp.MultiSampleQuality, discard );
+						}
+						catch ( Exception )
+						{
+							throw new Exception( "Unable to create a depth buffer for the swap chain" );
+						}
+					}
+					 */
+				}
+				else
+				{
+					if (device == null) // We haven't created the device yet, this must be the first time
+					{
+						ConfigOptionMap configOptions = Root.Instance.RenderSystem.ConfigOptions;
+						ConfigOption FPUMode = configOptions["Floating-point mode"];
 
-                        // Set default settings (use the one Axiom discovered as a default)
-                        XFG.GraphicsAdapter adapterToUse = Driver.Adapter;
+						// Set default settings (use the one Axiom discovered as a default)
+						XFG.GraphicsAdapter adapterToUse = Driver.Adapter;
 
-                        if (this._useNVPerfHUD)
-                        {
-                            // Look for 'NVIDIA NVPerfHUD' adapter
-                            // If it is present, override default settings
-                            foreach (XFG.GraphicsAdapter adapter in XFG.GraphicsAdapter.Adapters)
-                            {
-                                LogManager.Instance.Write("[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName, adapter.Description);
-                                if (adapter.Description.ToLower().Contains("perfhud"))
-                                {
-                                    LogManager.Instance.Write("[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName, adapter.Description);
-                                    adapterToUse = adapter;
-                                    XFG.GraphicsAdapter.UseReferenceDevice = true;
-                                    break;
-                                }
-                            }
-                        }
+						if (this._useNVPerfHUD)
+						{
+							// Look for 'NVIDIA NVPerfHUD' adapter
+							// If it is present, override default settings
+							foreach (XFG.GraphicsAdapter adapter in XFG.GraphicsAdapter.Adapters)
+							{
+								LogManager.Instance.Write("[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName, adapter.Description);
+								if (adapter.Description.ToLower().Contains("perfhud"))
+								{
+									LogManager.Instance.Write("[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName, adapter.Description);
+									adapterToUse = adapter;
+									XFG.GraphicsAdapter.UseReferenceDevice = true;
+									break;
+								}
+							}
+						}
 
-                        XFG.GraphicsProfile _profile = adapterToUse.IsProfileSupported(XFG.GraphicsProfile.HiDef) ? XFG.GraphicsProfile.HiDef : XFG.GraphicsProfile.Reach;
+						XFG.GraphicsProfile _profile = adapterToUse.IsProfileSupported(XFG.GraphicsProfile.HiDef) ? XFG.GraphicsProfile.HiDef : XFG.GraphicsProfile.Reach;
 						currentAdapter.QueryBackBufferFormat( _profile, this._xnapp.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8, _fsaaQuality, out bestSurfaceFormat, out bestDepthStencilFormat, out bestMultiSampleCount );
 
 						this._xnapp.DepthStencilFormat = bestDepthStencilFormat;
@@ -582,34 +582,34 @@ namespace Axiom.RenderSystems.Xna
 						//but fsaaQuality was chosen by the user, so I'm leaving this the same -DoubleA
 						this._xnapp.MultiSampleCount = _fsaaQuality;
 
-                        // create the XNA GraphicsDevice, trying for the best vertex support first, and settling for less if necessary
-                        try
-                        {
-                            // hardware vertex processing
-                            this._xnapp.DeviceWindowHandle = _windowHandle;
-                            device = new XFG.GraphicsDevice(adapterToUse, _profile, this._xnapp);
-                        }
-                        catch (Exception)
-                        {
-                            try
-                            {
-                                // Try a second time, may fail the first time due to back buffer count,
-                                // which will be corrected down to 1 by the runtime
-                                device = new XFG.GraphicsDevice(adapterToUse, _profile, this._xnapp);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw new Exception("Failed to create XNA GraphicsDevice", ex);
-                            }
-                        }
-                    }
-                    // update device in driver
-                    Driver.XnaDevice = device;
+						// create the XNA GraphicsDevice, trying for the best vertex support first, and settling for less if necessary
+						try
+						{
+							// hardware vertex processing
+							this._xnapp.DeviceWindowHandle = _windowHandle;
+							device = new XFG.GraphicsDevice(adapterToUse, _profile, this._xnapp);
+						}
+						catch (Exception)
+						{
+							try
+							{
+								// Try a second time, may fail the first time due to back buffer count,
+								// which will be corrected down to 1 by the runtime
+								device = new XFG.GraphicsDevice(adapterToUse, _profile, this._xnapp);
+							}
+							catch (Exception ex)
+							{
+								throw new Exception("Failed to create XNA GraphicsDevice", ex);
+							}
+						}
+					}
+					// update device in driver
+					Driver.XnaDevice = device;
 
-                    device.DeviceReset += new EventHandler<EventArgs>(OnResetDevice);
-                }
-            }
-        }
+					device.DeviceReset += new EventHandler<EventArgs>(OnResetDevice);
+				}
+			}
+		}
 		
 
 		/// <summary>
@@ -635,7 +635,7 @@ namespace Axiom.RenderSystems.Xna
 				}
 				if ( string.Equals(attribute, "XNAZBUFFER", StringComparison.CurrentCultureIgnoreCase ))
 				{
-                        return this._renderSurface.DepthStencilFormat;
+						return this._renderSurface.DepthStencilFormat;
 				}
 				return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
 			}
@@ -678,9 +678,9 @@ namespace Axiom.RenderSystems.Xna
 
 					// Dispose Other resources
 #if !(XBOX || XBOX360)
-                    if ( _windowHandle != IntPtr.Zero && !_isExternal && SWF.Control.FromHandle( _windowHandle ) != null )
+					if ( _windowHandle != IntPtr.Zero && !_isExternal && SWF.Control.FromHandle( _windowHandle ) != null )
 #else
-                    if (_windowHandle != IntPtr.Zero && !_isExternal )
+					if (_windowHandle != IntPtr.Zero && !_isExternal )
 #endif
 					{
 						WindowEventMonitor.Instance.UnregisterWindow( this );
@@ -762,9 +762,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			XFG.GraphicsDevice device = Driver.XnaDevice;
-            //in 3.1, this was XFG.ResolveTexture2D, an actual RenderTarget provides the exact same
-            //functionality, especially seeing as RenderTarget2D is a texture now.
-            //the difference is surface is actually set on the device -DoubleA
+			//in 3.1, this was XFG.ResolveTexture2D, an actual RenderTarget provides the exact same
+			//functionality, especially seeing as RenderTarget2D is a texture now.
+			//the difference is surface is actually set on the device -DoubleA
 			XFG.RenderTarget2D surface;
 			byte[] data = new byte[ dst.ConsecutiveSize ];
 			int pitch = 0;
@@ -775,12 +775,12 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			XFG.DisplayMode mode = device.DisplayMode;
-            surface = new XFG.RenderTarget2D(device, mode.Width, mode.Height, false, XFG.SurfaceFormat.Rgba64, XFG.DepthFormat.Depth24Stencil8); //XFG.ResolveTexture2D( device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32 );
+			surface = new XFG.RenderTarget2D(device, mode.Width, mode.Height, false, XFG.SurfaceFormat.Rgba64, XFG.DepthFormat.Depth24Stencil8); //XFG.ResolveTexture2D( device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32 );
 
 			if ( buffer == RenderTarget.FrameBuffer.Front )
 			{
 				// get the entire front buffer.  This is SLOW!!
-                device.SetRenderTarget(surface); 
+				device.SetRenderTarget(surface); 
 
 				if ( IsFullScreen )
 				{
@@ -927,13 +927,13 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-        public event EventHandler<EventArgs> DeviceCreated;
+		public event EventHandler<EventArgs> DeviceCreated;
 
-        public event EventHandler<EventArgs> DeviceDisposing;
+		public event EventHandler<EventArgs> DeviceDisposing;
 
-        public event EventHandler<EventArgs> DeviceReset;
+		public event EventHandler<EventArgs> DeviceReset;
 
-        public event EventHandler<EventArgs> DeviceResetting;
+		public event EventHandler<EventArgs> DeviceResetting;
 
 		public XFG.GraphicsDevice GraphicsDevice
 		{

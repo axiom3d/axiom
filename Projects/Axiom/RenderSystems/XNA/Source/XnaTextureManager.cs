@@ -56,33 +56,33 @@ namespace Axiom.RenderSystems.Xna
 		private XFG.GraphicsDevice _device;
 
 		public XnaTextureManager( XFG.GraphicsDevice device )
-            : base()
+			: base()
 		{
 			this._device = device;
 
 			Is32Bit = true;
 		}
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    this._device = null;
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		protected override void dispose(bool disposeManagedResources)
+		{
+			if (!this.IsDisposed)
+			{
+				if (disposeManagedResources)
+				{
+					this._device = null;
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose(disposeManagedResources);
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose(disposeManagedResources);
+		}
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{

@@ -189,7 +189,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-                return renderTarget.DepthStencilFormat;
+				return renderTarget.DepthStencilFormat;
 			}
 		}
 
@@ -552,14 +552,14 @@ namespace Axiom.RenderSystems.Xna
 #if !( XBOX || XBOX360 )
 			else
 			{
-                /* Use internal .dds loader instead */
-                //if ( Name.EndsWith( ".dds" ) )
-                //{
-                //    Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
-                //    _cubeTexture = XFG.TextureCube.FromFile( _device, stream );
-                //    stream.Close();
-                //}
-                //else
+				/* Use internal .dds loader instead */
+				//if ( Name.EndsWith( ".dds" ) )
+				//{
+				//    Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
+				//    _cubeTexture = XFG.TextureCube.FromFile( _device, stream );
+				//    stream.Close();
+				//}
+				//else
 				{
 					this.ConstructCubeFaceNames( Name );
 					// Load from 6 separate files
@@ -606,7 +606,7 @@ namespace Axiom.RenderSystems.Xna
 			//    Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
 			//    // load the cube texture from the image data stream directly
 			//    _volumeTexture = XFG.Texture3D.FromFile( _device, stream );
-                
+				
 			//    // store off a base reference
 			//    _texture = _volumeTexture;
 
@@ -634,36 +634,36 @@ namespace Axiom.RenderSystems.Xna
 
 			// how many mips to use?  make sure its at least one
 			int numMips = ( MipmapCount > 0 ) ? MipmapCount : 1;
-            
-            //see comment in CreateNormalTexture() -DoubleA
+			
+			//see comment in CreateNormalTexture() -DoubleA
 
-            //MipmapsHardwareGenerated = false;
-            //if ( _devCaps.TextureCapabilities.SupportsMipCubeMap )
-            //{
-            //    MipmapsHardwareGenerated = true /*this.CanAutoGenMipMaps( xnaUsage, XFG.ResourceType.TextureCube, xnaPixelFormat ) */;
-            //    if ( MipmapsHardwareGenerated )
-            //    {
-            //        numMips = 0;
-            //    }
-            //}
-            //else
-            //{
-            //    // no mip map support for this kind of texture
-            //    MipmapCount = 0;
-            //    numMips = 1;
-            //}
+			//MipmapsHardwareGenerated = false;
+			//if ( _devCaps.TextureCapabilities.SupportsMipCubeMap )
+			//{
+			//    MipmapsHardwareGenerated = true /*this.CanAutoGenMipMaps( xnaUsage, XFG.ResourceType.TextureCube, xnaPixelFormat ) */;
+			//    if ( MipmapsHardwareGenerated )
+			//    {
+			//        numMips = 0;
+			//    }
+			//}
+			//else
+			//{
+			//    // no mip map support for this kind of texture
+			//    MipmapCount = 0;
+			//    numMips = 1;
+			//}
 
 			if ( Usage == TextureUsage.RenderTarget )
 			{
-                renderTarget = (XFG.Texture)(new XFG.RenderTargetCube(_device, SrcWidth, _mipmapCount > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8)) as XFG.RenderTarget2D;
+				renderTarget = (XFG.Texture)(new XFG.RenderTargetCube(_device, SrcWidth, _mipmapCount > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8)) as XFG.RenderTarget2D;
 				_cubeTexture = ( (XFG.Texture)renderTarget ) as XFG.RenderTargetCube;
-                
+				
 				CreateDepthStencil();
 			}
 			else
 			{
 				// create the cube texture
-                _cubeTexture = new XFG.TextureCube(_device, SrcWidth, (_mipmapCount > 0) ? true : false, xnaPixelFormat);
+				_cubeTexture = new XFG.TextureCube(_device, SrcWidth, (_mipmapCount > 0) ? true : false, xnaPixelFormat);
 				// store base reference to the texture
 			}
 
@@ -673,15 +673,15 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( MipmapsHardwareGenerated )
 			{
-                //Generating mip maps API is no longer exposed. RenderTargets will auto-generate their mipmaps
-                //but for other textures you're S.O.L. -DoubleA. See Shawn Hargreaves response to this thread: http://forums.create.msdn.com/forums/p/71559/436835.aspx
+				//Generating mip maps API is no longer exposed. RenderTargets will auto-generate their mipmaps
+				//but for other textures you're S.O.L. -DoubleA. See Shawn Hargreaves response to this thread: http://forums.create.msdn.com/forums/p/71559/436835.aspx
 				//_texture.GenerateMipMaps( GetBestFilterMethod() );
 			}
 		}
 
 		/// <summary>
 		///Depth Stencil buffers are actually created whenever a RenderTarget is created.
-        ///This method is used as a layover from xna 3.1
+		///This method is used as a layover from xna 3.1
 		/// </summary>
 		private void CreateDepthStencil()
 		{
@@ -701,28 +701,28 @@ namespace Axiom.RenderSystems.Xna
 
 			// how many mips to use?  make sure its at least one
 			int numMips = ( MipmapCount > 0 ) ? MipmapCount : 1;
-           
-            //bloody 'ell, it's great that Xa 4.0 checks capabilities for the programmer, but it's incredibly annoying
-            //that it doesn't tell the programer anything about them. Anyway, there's no way for us to know if MipMaps are supported,
-            //but in the c'tor of the Texture is a paramater bool mipMap, which, if set to true and mipMaps aren't supported, Xna will take care of it
-            //-DoubleA
+		   
+			//bloody 'ell, it's great that Xa 4.0 checks capabilities for the programmer, but it's incredibly annoying
+			//that it doesn't tell the programer anything about them. Anyway, there's no way for us to know if MipMaps are supported,
+			//but in the c'tor of the Texture is a paramater bool mipMap, which, if set to true and mipMaps aren't supported, Xna will take care of it
+			//-DoubleA
 
-            //MipmapsHardwareGenerated = false;
-            //if ( _devCaps.TextureCapabilities.SupportsMipMap )
-            //{
-            //    MipmapsHardwareGenerated = CanAutoGenMipMaps( xnaUsage, XFG.ResourceType.Texture2D, xnaPixelFormat );
-            //    if ( MipmapsHardwareGenerated )
-            //    {
-            //        numMips = 0;
-            //    }
-            //}
-            //else
-            //{
-            //    // no mip map support for this kind of texture
-            //    this.MipmapCount = 0;
-            //    numMips = 1;
-            //}
-            
+			//MipmapsHardwareGenerated = false;
+			//if ( _devCaps.TextureCapabilities.SupportsMipMap )
+			//{
+			//    MipmapsHardwareGenerated = CanAutoGenMipMaps( xnaUsage, XFG.ResourceType.Texture2D, xnaPixelFormat );
+			//    if ( MipmapsHardwareGenerated )
+			//    {
+			//        numMips = 0;
+			//    }
+			//}
+			//else
+			//{
+			//    // no mip map support for this kind of texture
+			//    this.MipmapCount = 0;
+			//    numMips = 1;
+			//}
+			
 			if ( Usage == TextureUsage.RenderTarget )
 			{
 				renderTarget = new XFG.RenderTarget2D(_device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false, xnaPixelFormat, XFG.DepthFormat.Depth24Stencil8 );
@@ -739,49 +739,49 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( MipmapsHardwareGenerated )
 			{
-                //Generating mip maps API is no longer exposed. RenderTargets will auto-generate their mipmaps
-                //but for other textures you're S.O.L. -DoubleA. See Shawn Hargreaves response to this thread: http://forums.create.msdn.com/forums/p/71559/436835.aspx
+				//Generating mip maps API is no longer exposed. RenderTargets will auto-generate their mipmaps
+				//but for other textures you're S.O.L. -DoubleA. See Shawn Hargreaves response to this thread: http://forums.create.msdn.com/forums/p/71559/436835.aspx
 				//_texture.GenerateMipMaps( GetBestFilterMethod() );
 			}
 		}
 
-        //Was used to generate mipmaps, which is no longer supported for non-RenderTarget textures.
-        //private XFG.TextureFilter GetBestFilterMethod()
-        //{
-        //    // those MUST be initialized !!!
-        //    Debug.Assert( _device != null );
-        //    Debug.Assert( _texture != null );
+		//Was used to generate mipmaps, which is no longer supported for non-RenderTarget textures.
+		//private XFG.TextureFilter GetBestFilterMethod()
+		//{
+		//    // those MUST be initialized !!!
+		//    Debug.Assert( _device != null );
+		//    Debug.Assert( _texture != null );
 
-        //    XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps;
-        //    // Minification filter is used for mipmap generation
-        //    // Pick the best one supported for this tex type
-        //    switch ( this.TextureType )
-        //    {
-        //        case TextureType.OneD: // Same as 2D
-        //        case TextureType.TwoD:
-        //            filterCaps = _devCaps.TextureFilterCapabilities;
-        //            break;
-        //        case TextureType.ThreeD:
-        //            filterCaps = _devCaps.VertexTextureFilterCapabilities;
-        //            break;
-        //        case TextureType.CubeMap:
-        //            filterCaps = _devCaps.CubeTextureFilterCapabilities;
-        //            break;
-        //        default:
-        //            return XFG.TextureFilter.Point;
-        //    }
-        //    if ( filterCaps.SupportsMinifyGaussianQuad )
-        //        return XFG.TextureFilter.GaussianQuad;
-        //    if ( filterCaps.SupportsMinifyPyramidalQuad )
-        //        return XFG.TextureFilter.PyramidalQuad;
-        //    if ( filterCaps.SupportsMinifyAnisotropic )
-        //        return XFG.TextureFilter.Anisotropic;
-        //    if ( filterCaps.SupportsMinifyLinear )
-        //        return XFG.TextureFilter.Linear;
-        //    if ( filterCaps.SupportsMinifyPoint )
-        //        return XFG.TextureFilter.Point;
-        //    return XFG.TextureFilter.Point;
-        //}
+		//    XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps;
+		//    // Minification filter is used for mipmap generation
+		//    // Pick the best one supported for this tex type
+		//    switch ( this.TextureType )
+		//    {
+		//        case TextureType.OneD: // Same as 2D
+		//        case TextureType.TwoD:
+		//            filterCaps = _devCaps.TextureFilterCapabilities;
+		//            break;
+		//        case TextureType.ThreeD:
+		//            filterCaps = _devCaps.VertexTextureFilterCapabilities;
+		//            break;
+		//        case TextureType.CubeMap:
+		//            filterCaps = _devCaps.CubeTextureFilterCapabilities;
+		//            break;
+		//        default:
+		//            return XFG.TextureFilter.Point;
+		//    }
+		//    if ( filterCaps.SupportsMinifyGaussianQuad )
+		//        return XFG.TextureFilter.GaussianQuad;
+		//    if ( filterCaps.SupportsMinifyPyramidalQuad )
+		//        return XFG.TextureFilter.PyramidalQuad;
+		//    if ( filterCaps.SupportsMinifyAnisotropic )
+		//        return XFG.TextureFilter.Anisotropic;
+		//    if ( filterCaps.SupportsMinifyLinear )
+		//        return XFG.TextureFilter.Linear;
+		//    if ( filterCaps.SupportsMinifyPoint )
+		//        return XFG.TextureFilter.Point;
+		//    return XFG.TextureFilter.Point;
+		//}
 
 		/// <summary>
 		///
@@ -824,8 +824,8 @@ namespace Axiom.RenderSystems.Xna
 				 * ......RenderTargetCube inheritance path: Texture-TextureCube->RenderTargetCube
 				 * ??
 				 */
-                //not sure if this much (un)boxing will work, but we didn't even use this in Xna 3.1 anyway,
-                //I'm going to let it slide for now -DoubleA
+				//not sure if this much (un)boxing will work, but we didn't even use this in Xna 3.1 anyway,
+				//I'm going to let it slide for now -DoubleA
 				texture._cubeTexture = ( (XFG.Texture)renderTarget ) as XFG.TextureCube;
 				texture._texture = _cubeTexture;
 			}

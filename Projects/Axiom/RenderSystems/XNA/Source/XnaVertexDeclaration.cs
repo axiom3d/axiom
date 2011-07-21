@@ -134,10 +134,10 @@ namespace Axiom.RenderSystems.Xna
 					{
 						Axiom.Graphics.VertexElement element = 	(Axiom.Graphics.VertexElement)elements[ i ];
 
-                        //No hardware could actually use this property: http://blogs.msdn.com/b/shawnhar/archive/2010/04/19/vertex-data-in-xna-game-studio-4-0.aspx
+						//No hardware could actually use this property: http://blogs.msdn.com/b/shawnhar/archive/2010/04/19/vertex-data-in-xna-game-studio-4-0.aspx
 						//xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
-                        //the above link also explains why this property's unnecessary.
-                        //xnaElements[ i ].Stream = (short)element.Source; 
+						//the above link also explains why this property's unnecessary.
+						//xnaElements[ i ].Stream = (short)element.Source; 
 						xnaElements[ i ].Offset = (short)element.Offset;
 						
 

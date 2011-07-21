@@ -217,7 +217,7 @@ namespace Axiom.RenderSystems.Xna
 	public class XnaFragmentProgram : XnaGpuProgram
 	{
 
-        internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+		internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
 			: base( parent, name, handle, group, isManual, loader, device )
 		{
 		}

@@ -72,21 +72,21 @@ namespace Axiom.RenderSystems.Xna
 		#region Constructors
 
 		public XnaHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
-            : base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
+			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 			_device = dev;
-            if ( !( vertexDeclaration is XnaVertexDeclaration ) )
-            {
-                throw new AxiomException ("Invalid VertexDeclaration supplied, must be created by HardwareBufferManager.CreateVertexDeclaration()" );
-            }
-            if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
-            {
-                _buffer = new XFG.DynamicVertexBuffer(_device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration , numVertices, XnaHelper.Convert(usage));
-            }
-            else
-                _buffer = new XFG.VertexBuffer(_device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration, numVertices, XnaHelper.Convert(usage));
+			if ( !( vertexDeclaration is XnaVertexDeclaration ) )
+			{
+				throw new AxiomException ("Invalid VertexDeclaration supplied, must be created by HardwareBufferManager.CreateVertexDeclaration()" );
+			}
+			if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
+			{
+				_buffer = new XFG.DynamicVertexBuffer(_device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration , numVertices, XnaHelper.Convert(usage));
+			}
+			else
+				_buffer = new XFG.VertexBuffer(_device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration, numVertices, XnaHelper.Convert(usage));
 
-            _bufferBytes = new byte[ vertexDeclaration.GetVertexSize() * numVertices];
+			_bufferBytes = new byte[ vertexDeclaration.GetVertexSize() * numVertices];
 			_bufferBytes.Initialize();
 		}
 
