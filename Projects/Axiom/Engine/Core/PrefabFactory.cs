@@ -355,29 +355,29 @@ namespace Axiom.Core
 					float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
 
 					// Add one vertex to the strip which makes up the sphere
-					pVertex[ seg ] = x0;
-					pVertex[ seg ] = y0;
-					pVertex[ seg ] = z0;
+					pVertex[ seg * 8 ] = x0;
+					pVertex[ seg * 8 + 1 ] = y0;
+					pVertex[ seg * 8 + 2 ] = z0;
 
 					Vector3 vNormal = new Vector3( x0, y0, z0 );
 					vNormal.Normalize();
 
-					pVertex[ seg ] = vNormal.x;
-					pVertex[ seg ] = vNormal.y;
-					pVertex[ seg ] = vNormal.z;
+					pVertex[ seg * 8 + 3 ] = vNormal.x;
+					pVertex[ seg * 8 + 4 ] = vNormal.y;
+					pVertex[ seg * 8 + 5 ] = vNormal.z;
 
-					pVertex[ seg ] = (float)seg / (float)NUM_SEGMENTS;
-					pVertex[ seg ] = (float)ring / (float)NUM_RINGS;
+					pVertex[ seg * 8 + 6 ] = (float)seg / (float)NUM_SEGMENTS;
+					pVertex[ seg * 8 + 7 ] = (float)ring / (float)NUM_RINGS;
 
 					if ( ring != NUM_RINGS )
 					{
 						// each vertex (except the last) has six indicies pointing to it
-						pIndices[ seg ] = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
-						pIndices[ seg ] = (ushort)( wVerticeIndex );
-						pIndices[ seg ] = (ushort)( wVerticeIndex + NUM_SEGMENTS );
-						pIndices[ seg ] = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
-						pIndices[ seg ] = (ushort)( wVerticeIndex + 1 );
-						pIndices[ seg ] = (ushort)( wVerticeIndex );
+						pIndices[ seg * 6 ] = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
+						pIndices[ seg * 6 + 1 ] = (ushort)( wVerticeIndex );
+						pIndices[ seg * 6 + 2 ] = (ushort)( wVerticeIndex + NUM_SEGMENTS );
+						pIndices[ seg * 6 + 3 ] = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
+						pIndices[ seg * 6 + 4 ] = (ushort)( wVerticeIndex + 1 );
+						pIndices[ seg * 6 + 5 ] = (ushort)( wVerticeIndex );
 						wVerticeIndex++;
 					}
 				}; // end for seg
@@ -394,7 +394,6 @@ namespace Axiom.Core
 												   new Vector3( SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS ) );
 
 			mesh.BoundingSphereRadius = SPHERE_RADIUS;
-
 		}
 
 	}
