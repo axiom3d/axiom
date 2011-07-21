@@ -177,6 +177,11 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion PresentationParameters Property
 
+        public override bool RequiresTextureFlipping
+        {
+            get { throw new NotImplementedException(); }
+        }
+
 		#endregion Fields and Properties
 
 		#region Constructor
@@ -411,10 +416,10 @@ namespace Axiom.RenderSystems.Xna
 #endif
 
 			// set the params of the window
-			this.Name = name;
-            this.ColorDepth = colourDepth;
-			this.Width = width;
-			this.Height = height;
+			_name = name;
+            _colorDepth = colourDepth;
+			_width = width;
+			_height = height;
 			this.IsFullScreen = fullScreen;
 			this.isDepthBuffered = depthBuffer;
 			this.top = top;
@@ -544,7 +549,7 @@ namespace Axiom.RenderSystems.Xna
                 {
                     if (device == null) // We haven't created the device yet, this must be the first time
                     {
-                        ConfigOptionCollection configOptions = Root.Instance.RenderSystem.ConfigOptions;
+                        ConfigOptionMap configOptions = Root.Instance.RenderSystem.ConfigOptions;
                         ConfigOption FPUMode = configOptions["Floating-point mode"];
 
                         // Set default settings (use the one Axiom discovered as a default)
@@ -714,8 +719,8 @@ namespace Axiom.RenderSystems.Xna
 			// CMH 4/24/2004 - Start
 			width = width < 10 ? 10 : width;
 			height = height < 10 ? 10 : height;
-			this.Height = height;
-			this.Width = width;
+			_height = height;
+			_width = width;
 
 			if ( !IsFullScreen )
 			{

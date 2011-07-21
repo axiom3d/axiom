@@ -34,21 +34,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Linq;
-
-using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.Graphics;
+using Axiom.Core;
+using Axiom.Core.Collections;
+using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Math.Collections;
-using Axiom.Media;
-using Axiom.Graphics.Collections;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -228,6 +223,7 @@ namespace Axiom.Graphics
 		/// Base constructor.
 		/// </summary>
 		protected RenderSystem()
+            : base()
 		{
 			// This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
 			// This makes it the same as OpenGL and other right-handed systems

@@ -62,9 +62,9 @@ namespace Axiom.Graphics
 			pixelBuffer = buffer;
 			this.zOffset = zOffset;
 			Priority = RenderTargetPriority.RenderToTexture;
-			width = buffer.Width;
-			height = buffer.Height;
-			colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+			_width = buffer.Width;
+			_height = buffer.Height;
+			_colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )

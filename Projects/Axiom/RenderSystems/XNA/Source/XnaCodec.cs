@@ -52,6 +52,7 @@ namespace Axiom.RenderSystems.Xna
         private string imageExtension;
 
         public XnaCodec( string extension )
+            : base()
         {
             this.imageExtension = extension;
         }
