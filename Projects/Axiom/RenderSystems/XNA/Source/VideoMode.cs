@@ -56,15 +56,15 @@ namespace Axiom.RenderSystems.Xna
 		#endregion
 
 		#region Constructors
-        //Got rid of default constructor. XFG.DisplayMode can no longer be instantiated externally.
-        ///// <summary>
-        /////		Default constructor.
-        ///// </summary>
-        //public VideoMode()
-        //{
-        //    modeNum = ++modeCount;
-        //    displayMode = Adap
-        //}
+		//Got rid of default constructor. XFG.DisplayMode can no longer be instantiated externally.
+		///// <summary>
+		/////		Default constructor.
+		///// </summary>
+		//public VideoMode()
+		//{
+		//    modeNum = ++modeCount;
+		//    displayMode = Adap
+		//}
 
 		/// <summary>
 		///		Accepts a existing XNAVideoMode object.
@@ -137,13 +137,13 @@ namespace Axiom.RenderSystems.Xna
 			get
 			{
 #if (XBOX || XBOX360)
-                return 60; 
+				return 60; 
 #elif (WINDOWS_PHONE)
-                return 30;
+				return 30;
 #endif
-                //There is no longer an API to get the RefreshRate through XNA,
-                //not sure what to do about that.
-                return 0;
+				//There is no longer an API to get the RefreshRate through XNA,
+				//not sure what to do about that.
+				return 0;
 			}
 		}
 

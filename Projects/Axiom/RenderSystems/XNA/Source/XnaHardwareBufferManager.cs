@@ -118,7 +118,7 @@ namespace Axiom.RenderSystems.Xna
 			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
 		}
 
-        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
 			XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, _device, false, useShadowBuffer );
 			vertexBuffers.Add( buffer );

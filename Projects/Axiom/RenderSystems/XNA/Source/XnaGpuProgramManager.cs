@@ -55,31 +55,31 @@ namespace Axiom.RenderSystems.Xna
 		protected XFG.GraphicsDevice device;
 
 		internal XnaGpuProgramManager( XFG.GraphicsDevice device )
-            : base()
+			: base()
 		{
 			this.device = device;
 		}
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    this.device = null;
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		protected override void dispose(bool disposeManagedResources)
+		{
+			if (!this.IsDisposed)
+			{
+				if (disposeManagedResources)
+				{
+					this.device = null;
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose(disposeManagedResources);
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose(disposeManagedResources);
+		}
 
 		/// <summary>
 		///    Create the specified type of GpuProgram.
@@ -89,16 +89,16 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
-            switch (type)
-            {
-                case GpuProgramType.Vertex:
-                    return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+			switch (type)
+			{
+				case GpuProgramType.Vertex:
+					return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 
-                case GpuProgramType.Fragment:
-                    return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
-                default:
-                    throw new NotSupportedException( "The program type is not supported." );
-            }
+				case GpuProgramType.Fragment:
+					return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
+				default:
+					throw new NotSupportedException( "The program type is not supported." );
+			}
 		}
 
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				throw new Exception( "You must supply a 'type' parameter." );
 			}
-            return null;
+			return null;
 			if ( createParams[ "type" ] == "vertex_program" )
 			{
 				return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );

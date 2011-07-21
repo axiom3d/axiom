@@ -66,9 +66,9 @@ namespace Axiom.RenderSystems.Xna
 			Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
 
 			XnaResourceGroupManager.Instance.Initialize( new string[]
-                                                         {
-                                                             "png", "jpg", "bmp", "dds", "jpeg", "tiff"
-                                                         } );
+														 {
+															 "png", "jpg", "bmp", "dds", "jpeg", "tiff"
+														 } );
 
 			//new XnaMaterialManager();
 		}
@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			// nothing at the moment
 			renderSystem.Shutdown();
-            renderSystem = null;
+			renderSystem = null;
 		}
 
 		#endregion Implementation of IPlugin
