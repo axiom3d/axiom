@@ -33,15 +33,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
-
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
@@ -57,15 +53,15 @@ namespace Axiom.RenderSystems.Xna
 		public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
 			: base( buffer, 0 )
 		{
-			this.Name = name;
+			_name = name;
 		}
 
 		public void Rebind( XnaHardwarePixelBuffer buffer )
 		{
 			pixelBuffer = buffer;
-			Width = pixelBuffer.Width;
-			Height = pixelBuffer.Height;
-			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+			_width = pixelBuffer.Width;
+			_height = pixelBuffer.Height;
+			_colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		#region Axiom.Graphics.RenderTexture Implementation

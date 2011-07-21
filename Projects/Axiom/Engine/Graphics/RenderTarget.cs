@@ -243,7 +243,7 @@ namespace Axiom.Graphics
         /// Height of this render target.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        protected int height;
+        protected int _height;
         /// <summary>
         /// Gets the height of this render target.
         /// </summary>
@@ -252,7 +252,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return height;
+                return _height;
             }
         }
 
@@ -264,7 +264,7 @@ namespace Axiom.Graphics
         /// Width of this render target.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        protected int width;
+        protected int _width;
         /// <summary>
         /// Gets the width of this render target.
         /// </summary>
@@ -273,7 +273,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return width;
+                return _width;
             }
         }
 
@@ -285,7 +285,7 @@ namespace Axiom.Graphics
         /// Color depth of this render target.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        protected int colorDepth;
+        protected int _colorDepth;
         /// <summary>
         /// Gets the color depth of this render target.
         /// </summary>
@@ -294,7 +294,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return colorDepth;
+                return _colorDepth;
             }
         }
 
@@ -349,7 +349,7 @@ namespace Axiom.Graphics
         /// Unique name assigned to this render target.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        protected string name;
+        protected string _name;
         /// <summary>
         /// Gets the name of this render target.
         /// </summary>
@@ -358,7 +358,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return name;
+                return _name;
             }
         }
 
@@ -558,7 +558,7 @@ namespace Axiom.Graphics
         [AxiomHelper(0, 8, "Default initializes name")]
         protected RenderTarget(string name)
         {
-            this.name = name;
+            this._name = name;
             priority = RenderTargetPriority.Default;
             depthBufferPoolId = PoolId.Default;
             active = true;
@@ -777,7 +777,7 @@ namespace Axiom.Graphics
         public virtual Viewport AddViewport(Camera camera, float left, float top, float nwidth, float nheight, int zOrder)
         {
             if (ViewportList.ContainsKey(zOrder))
-                throw new AxiomException("Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", name, zOrder);
+                throw new AxiomException("Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", _name, zOrder);
 
             // create a new camera and add it to our internal collection
             var viewport = new Viewport(camera, this, left, top, nwidth, nheight, zOrder);
@@ -1400,9 +1400,9 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7, 2790)]
         public void GetMetrics(out int nwidth, out int nheight, out int ncolorDepth)
         {
-            nwidth = width;
-            nheight = height;
-            ncolorDepth = colorDepth;
+            nwidth = _width;
+            nheight = _height;
+            ncolorDepth = _colorDepth;
         }
 
         #endregion
@@ -1568,7 +1568,7 @@ namespace Axiom.Graphics
 
                     // Write final performance stats
                     if (LogManager.Instance != null)
-                        LogManager.Instance.Write("Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", name, stats.AverageFPS, stats.BestFPS, stats.WorstFPS);
+                        LogManager.Instance.Write("Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", _name, stats.AverageFPS, stats.BestFPS, stats.WorstFPS);
                 }
             }
             base.dispose(disposeManagedResources);

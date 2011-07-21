@@ -35,11 +35,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+
 
 #if !(XBOX || XBOX360 || SILVERLIGHT )
 using System.Windows.Forms;
@@ -48,8 +47,6 @@ using Axiom.Core;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Overlays;
-using Microsoft.Xna.Framework.GamerServices;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 using Axiom.Collections;
@@ -60,8 +57,6 @@ using Axiom.Media;
 
 namespace Axiom.RenderSystems.Xna
 {
-	///<summary>
-	///</summary>
 	public class XnaRenderSystem : RenderSystem, IServiceProvider
 	{
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -979,6 +974,56 @@ namespace Axiom.RenderSystems.Xna
 #endif
 			}
 		}
+
+        public override RenderTarget RenderTarget
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override bool PointSpritesEnabled
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override bool DepthBufferCheckEnabled
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override bool DepthBufferWriteEnabled
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override CompareFunction DepthBufferFunction
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override VertexElementType ColorVertexElementType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override VertexDeclaration VertexDeclaration
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override VertexBufferBinding VertexBufferBinding
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public override int DisplayMonitorCount
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override ShadeOptions ShadingType
+        {
+            set { throw new NotImplementedException(); }
+        }
 
 		#endregion Properties
 
@@ -2525,5 +2570,5 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion
 
-	}
+    }
 }
