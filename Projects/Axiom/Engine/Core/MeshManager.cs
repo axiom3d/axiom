@@ -620,207 +620,188 @@ namespace Axiom.Core
 			// grab a reference for easy access
 			HardwareIndexBuffer idxBuffer = subMesh.indexData.indexBuffer;
 
-			// lock the whole index buffer
-			IntPtr data = idxBuffer.Lock( BufferLocking.Discard );
+			short[] pIndex = new short[ idxBuffer.Length / sizeof( short ) ];
+			idxBuffer.GetData( pIndex );
+			int currentIndex = 0;
 
-			unsafe
+			while ( 0 < iterations-- )
 			{
-				short* pIndex = (short*)data.ToPointer();
+				// make tris in a zigzag pattern (strip compatible)
+				u = 0;
+				uInc = 1;
 
-				while ( 0 < iterations-- )
+				vCount = height - 1;
+
+				while ( 0 < vCount-- )
 				{
-					// make tris in a zigzag pattern (strip compatible)
-					u = 0;
-					uInc = 1;
+					uCount = width - 1;
 
-					vCount = height - 1;
-
-					while ( 0 < vCount-- )
+					while ( 0 < uCount-- )
 					{
-						uCount = width - 1;
+						// First Tri in cell
+						// -----------------
+						v1 = (short)( ( ( v + vInc ) * width ) + u );
+						v2 = (short)( ( v * width ) + u );
+						v3 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
+						// Output indexes
+						pIndex[ currentIndex ] = v1;
+						pIndex[ ++currentIndex ] = v2;
+						pIndex[ ++currentIndex ] = v3;
+						// Second Tri in cell
+						// ------------------
+						v1 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
+						v2 = (short)( ( v * width ) + u );
+						v3 = (short)( ( v * width ) + ( u + uInc ) );
+						// Output indexes
+						pIndex[ ++currentIndex ] = v1;
+						pIndex[ ++currentIndex ] = v2;
+						pIndex[ ++currentIndex ] = v3;
 
-						while ( 0 < uCount-- )
-						{
-							// First Tri in cell
-							// -----------------
-							v1 = (short)( ( ( v + vInc ) * width ) + u );
-							v2 = (short)( ( v * width ) + u );
-							v3 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
-							// Output indexes
-							*pIndex++ = v1;
-							*pIndex++ = v2;
-							*pIndex++ = v3;
-							// Second Tri in cell
-							// ------------------
-							v1 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
-							v2 = (short)( ( v * width ) + u );
-							v3 = (short)( ( v * width ) + ( u + uInc ) );
-							// Output indexes
-							*pIndex++ = v1;
-							*pIndex++ = v2;
-							*pIndex++ = v3;
+						// Next column
+						u += uInc;
 
-							// Next column
-							u += uInc;
+					} // while uCount
 
-						} // while uCount
+					v += vInc;
+					u = 0;
 
-						v += vInc;
-						u = 0;
+				} // while vCount
 
-					} // while vCount
+				v = height - 1;
+				vInc = -vInc;
+			} // while iterations
 
-					v = height - 1;
-					vInc = -vInc;
-				} // while iterations
-			}// unsafe
-
-			// unlock the buffer
-			idxBuffer.Unlock();
+			idxBuffer.SetData( pIndex );
 		}
 
 		private void _generatePlaneVertexData( HardwareVertexBuffer vbuf, int ySegments, int xSegments, float xSpace, float halfWidth, float ySpace, float halfHeight, Matrix4 transform, bool firstTime, bool normals, Matrix4 rotation, int numTexCoordSets, float xTexCoord, float yTexCoord, SubMesh subMesh, ref Vector3 min, ref Vector3 max, ref float maxSquaredLength )
 		{
 			Vector3 vec;
-			unsafe
+			float[] pData = new float[ vbuf.Length / sizeof( float ) ];
+			vbuf.GetData( pData );
+			int pDataIdx = 0;
+
+			for ( int y = 0; y <= ySegments; y++ )
 			{
-				// lock the vertex buffer
-				IntPtr data = vbuf.Lock( BufferLocking.Discard );
-
-				float* pData = (float*)data.ToPointer();
-
-				for ( int y = 0; y <= ySegments; y++ )
+				for ( int x = 0; x <= xSegments; x++ )
 				{
-					for ( int x = 0; x <= xSegments; x++ )
+					// centered on origin
+					vec.x = ( x * xSpace ) - halfWidth;
+					vec.y = ( y * ySpace ) - halfHeight;
+					vec.z = 0.0f;
+
+					vec = transform.TransformAffine( vec );
+
+					pData[ pDataIdx ] = vec.x;
+					pData[ ++pDataIdx ] = vec.y;
+					pData[ ++pDataIdx ] = vec.z;
+
+					// Build bounds as we go
+					if ( firstTime )
 					{
-						// centered on origin
-						vec.x = ( x * xSpace ) - halfWidth;
-						vec.y = ( y * ySpace ) - halfHeight;
-						vec.z = 0.0f;
+						min = vec;
+						max = vec;
+						maxSquaredLength = vec.LengthSquared;
+						firstTime = false;
+					}
+					else
+					{
+						min.Floor( vec );
+						max.Ceil( vec );
+						maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+					}
 
-						vec = transform.TransformAffine( vec );
+					if ( normals )
+					{
+						vec = Vector3.UnitZ;
+						vec = rotation.TransformAffine( vec );
 
-						*pData++ = vec.x;
-						*pData++ = vec.y;
-						*pData++ = vec.z;
+						pData[ ++pDataIdx ] = vec.x;
+						pData[ ++pDataIdx ] = vec.y;
+						pData[ ++pDataIdx ] = vec.z;
+					}
 
-						// Build bounds as we go
-						if ( firstTime )
-						{
-							min = vec;
-							max = vec;
-							maxSquaredLength = vec.LengthSquared;
-							firstTime = false;
-						}
-						else
-						{
-							min.Floor( vec );
-							max.Ceil( vec );
-							maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
-						}
+					for ( int i = 0; i < numTexCoordSets; i++ )
+					{
+						pData[ ++pDataIdx ] = x * xTexCoord;
+						pData[ ++pDataIdx ] = 1 - ( y * yTexCoord );
+					} // for texCoords
+				} // for x
+			} // for y
 
-						if ( normals )
-						{
-							vec = Vector3.UnitZ;
-							vec = rotation.TransformAffine( vec );
-
-							*pData++ = vec.x;
-							*pData++ = vec.y;
-							*pData++ = vec.z;
-						}
-
-						for ( int i = 0; i < numTexCoordSets; i++ )
-						{
-							*pData++ = x * xTexCoord;
-							*pData++ = 1 - ( y * yTexCoord );
-						} // for texCoords
-					} // for x
-				} // for y
-
-				// unlock the buffer
-				vbuf.Unlock();
-
-				subMesh.useSharedVertices = true;
-
-			} // unsafe
+			vbuf.SetData( pData );
+			subMesh.useSharedVertices = true;
 		}
 
 		private void _generateCurvedPlaneVertexData( HardwareVertexBuffer vbuf, int ySegments, int xSegments, float xSpace, float halfWidth, float ySpace, float halfHeight, Matrix4 transform, bool firstTime, bool normals, Matrix4 rotation, float curvature, int numTexCoordSets, float xTexCoord, float yTexCoord, SubMesh subMesh, ref Vector3 min, ref Vector3 max, ref float maxSquaredLength )
 		{
 			Vector3 vec;
-			unsafe
+			float[] pData = new float[ vbuf.Length / sizeof( float ) ];
+			vbuf.GetData( pData );
+			int pDataIdx = 0;
+
+			for ( int y = 0; y <= ySegments; y++ )
 			{
-				// lock the vertex buffer
-				IntPtr data = vbuf.Lock( BufferLocking.Discard );
-
-				float* pData = (float*)data.ToPointer();
-
-				for ( int y = 0; y <= ySegments; y++ )
+				for ( int x = 0; x <= xSegments; x++ )
 				{
-					for ( int x = 0; x <= xSegments; x++ )
+					// centered on origin
+					vec.x = ( x * xSpace ) - halfWidth;
+					vec.y = ( y * ySpace ) - halfHeight;
+
+					// Here's where curved plane is different from standard plane.  Amazing, I know.
+					Real diff_x = ( x - ( (Real)xSegments / 2 ) ) / (Real)xSegments;
+					Real diff_y = ( y - ( (Real)ySegments / 2 ) ) / (Real)ySegments;
+					Real dist = Utility.Sqrt( diff_x * diff_x + diff_y * diff_y );
+					vec.z = ( -Utility.Sin( ( 1 - dist ) * ( Utility.PI / 2 ) ) * curvature ) + curvature;
+
+					// Transform by orientation and distance
+					Vector3 pos = transform.TransformAffine( vec );
+
+					pData[ pDataIdx ] = pos.x;
+					pData[ ++pDataIdx ] = pos.y;
+					pData[ ++pDataIdx ] = pos.z;
+
+					// Build bounds as we go
+					if ( firstTime )
 					{
-						// centered on origin
-						vec.x = ( x * xSpace ) - halfWidth;
-						vec.y = ( y * ySpace ) - halfHeight;
+						min = vec;
+						max = vec;
+						maxSquaredLength = vec.LengthSquared;
+						firstTime = false;
+					}
+					else
+					{
+						min.Floor( vec );
+						max.Ceil( vec );
+						maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+					}
 
-						// Here's where curved plane is different from standard plane.  Amazing, I know.
-						Real diff_x = ( x - ( (Real)xSegments / 2 ) ) / (Real)xSegments;
-						Real diff_y = ( y - ( (Real)ySegments / 2 ) ) / (Real)ySegments;
-						Real dist = Utility.Sqrt( diff_x * diff_x + diff_y * diff_y );
-						vec.z = ( -Utility.Sin( ( 1 - dist ) * ( Utility.PI / 2 ) ) * curvature ) + curvature;
+					if ( normals )
+					{
+						// This part is kinda 'wrong' for curved planes... but curved planes are
+						//   very valuable outside sky planes, which don't typically need normals
+						//   so I'm not going to mess with it for now.
 
-						// Transform by orientation and distance
-						Vector3 pos = transform.TransformAffine( vec );
+						// Default normal is along unit Z
+						//vec = Vector3::UNIT_Z;
+						// Rotate
+						vec = rotation.TransformAffine( vec );
 
-						*pData++ = pos.x;
-						*pData++ = pos.y;
-						*pData++ = pos.z;
+						pData[ ++pDataIdx ] = vec.x;
+						pData[ ++pDataIdx ] = vec.y;
+						pData[ ++pDataIdx ] = vec.z;
+					}
 
-						// Build bounds as we go
-						if ( firstTime )
-						{
-							min = vec;
-							max = vec;
-							maxSquaredLength = vec.LengthSquared;
-							firstTime = false;
-						}
-						else
-						{
-							min.Floor( vec );
-							max.Ceil( vec );
-							maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
-						}
+					for ( int i = 0; i < numTexCoordSets; i++ )
+					{
+						pData[ ++pDataIdx ] = x * xTexCoord;
+						pData[ ++pDataIdx ] = 1 - ( y * yTexCoord );
+					} // for texCoords
+				} // for x
+			} // for y
 
-						if ( normals )
-						{
-							// This part is kinda 'wrong' for curved planes... but curved planes are
-							//   very valuable outside sky planes, which don't typically need normals
-							//   so I'm not going to mess with it for now.
-
-							// Default normal is along unit Z
-							//vec = Vector3::UNIT_Z;
-							// Rotate
-							vec = rotation.TransformAffine( vec );
-
-							*pData++ = vec.x;
-							*pData++ = vec.y;
-							*pData++ = vec.z;
-						}
-
-						for ( int i = 0; i < numTexCoordSets; i++ )
-						{
-							*pData++ = x * xTexCoord;
-							*pData++ = 1 - ( y * yTexCoord );
-						} // for texCoords
-					} // for x
-				} // for y
-
-				// unlock the buffer
-				vbuf.Unlock();
-
-				subMesh.useSharedVertices = true;
-
-			} // unsafe
+			vbuf.SetData( pData );
+			subMesh.useSharedVertices = true;
 		}
 
 		private void _generateCurvedIllusionPlaneVertexData( HardwareVertexBuffer vertexBuffer, int ySegments, int xSegments, float xSpace, float halfWidth, float ySpace, float halfHeight, Matrix4 xform, bool firstTime, bool normals, Quaternion orientation, float curvature, float uTiles, float vTiles, int numberOfTexCoordSets, ref Vector3 min, ref Vector3 max, ref float maxSquaredLength )
@@ -846,79 +827,75 @@ namespace Axiom.Core
 			Vector3 vec;
 			Vector3 norm;
 			float sphereDistance;
-			unsafe
+
+			float[] pData = new float[ vertexBuffer.Length / sizeof( float ) ];
+			vertexBuffer.GetData( pData );
+			int pDataIdx = 0;
+
+			for ( int y = 0; y < ySegments + 1; ++y )
 			{
-				// lock the vertex buffer
-				IntPtr data = vertexBuffer.Lock( BufferLocking.Discard );
-
-				float* pData = (float*)data.ToPointer();
-
-				for ( int y = 0; y < ySegments + 1; ++y )
+				for ( int x = 0; x < xSegments + 1; ++x )
 				{
-					for ( int x = 0; x < xSegments + 1; ++x )
+					// centered on origin
+					vec.x = ( x * xSpace ) - halfWidth;
+					vec.y = ( y * ySpace ) - halfHeight;
+					vec.z = 0.0f;
+
+					// transform by orientation and distance
+					vec = xform * vec;
+
+					// assign to geometry
+					pData[ pDataIdx ] = vec.x;
+					pData[ ++pDataIdx ] = vec.y;
+					pData[ ++pDataIdx ] = vec.z;
+
+					// build bounds as we go
+					if ( firstTime )
 					{
-						// centered on origin
-						vec.x = ( x * xSpace ) - halfWidth;
-						vec.y = ( y * ySpace ) - halfHeight;
-						vec.z = 0.0f;
+						min = vec;
+						max = vec;
+						maxSquaredLength = vec.LengthSquared;
+						firstTime = false;
+					}
+					else
+					{
+						min.Floor( vec );
+						max.Ceil( vec );
+						maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+					}
 
-						// transform by orientation and distance
-						vec = xform * vec;
+					if ( normals )
+					{
+						norm = Vector3.UnitZ;
+						norm = orientation * norm;
 
-						// assign to geometry
-						*pData++ = vec.x;
-						*pData++ = vec.y;
-						*pData++ = vec.z;
+						pData[ ++pDataIdx ] = vec.x;
+						pData[ ++pDataIdx ] = vec.y;
+						pData[ ++pDataIdx ] = vec.z;
+					}
 
-						// build bounds as we go
-						if ( firstTime )
-						{
-							min = vec;
-							max = vec;
-							maxSquaredLength = vec.LengthSquared;
-							firstTime = false;
-						}
-						else
-						{
-							min.Floor( vec );
-							max.Ceil( vec );
-							maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
-						}
+					// generate texture coordinates, normalize position, modify by orientation to return +y up
+					vec = orientation.Inverse() * vec;
+					vec.Normalize();
 
-						if ( normals )
-						{
-							norm = Vector3.UnitZ;
-							norm = orientation * norm;
+					// find distance to sphere
+					sphereDistance = Utility.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
 
-							*pData++ = vec.x;
-							*pData++ = vec.y;
-							*pData++ = vec.z;
-						}
+					vec.x *= sphereDistance;
+					vec.z *= sphereDistance;
 
-						// generate texture coordinates, normalize position, modify by orientation to return +y up
-						vec = orientation.Inverse() * vec;
-						vec.Normalize();
+					// use x and y on sphere as texture coordinates, tiled
+					float s = vec.x * ( 0.01f * uTiles );
+					float t = vec.z * ( 0.01f * vTiles );
+					for ( int i = 0; i < numberOfTexCoordSets; i++ )
+					{
+						pData[ ++pDataIdx ] = s;
+						pData[ ++pDataIdx ] = ( 1 - t );
+					}
+				} // x
+			} // y
 
-						// find distance to sphere
-						sphereDistance = Utility.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
-
-						vec.x *= sphereDistance;
-						vec.z *= sphereDistance;
-
-						// use x and y on sphere as texture coordinates, tiled
-						float s = vec.x * ( 0.01f * uTiles );
-						float t = vec.z * ( 0.01f * vTiles );
-						for ( int i = 0; i < numberOfTexCoordSets; i++ )
-						{
-							*pData++ = s;
-							*pData++ = ( 1 - t );
-						}
-					} // x
-				} // y
-
-				// unlock the buffer
-				vertexBuffer.Unlock();
-			} // unsafe
+			vertexBuffer.SetData( pData );
 		}
 
 		private void _getVertices( ref Vector3[] points, Axiom.Animating.Bone bone )
@@ -1083,12 +1060,12 @@ namespace Axiom.Core
 
 		protected internal void FireProcessMaterialName( Mesh mesh, string name )
 		{
-			_processMaterialNameEvent.Fire(this, new MeshSerializerArgs { Mesh = mesh, Name = name}, (args) => { return true; });
+			_processMaterialNameEvent.Fire( this, new MeshSerializerArgs { Mesh = mesh, Name = name }, ( args ) => { return true; } );
 		}
 
 		protected internal void FireProcessSkeletonName( Mesh mesh, string name )
 		{
-			_processSkeletonNameEvent.Fire(this, new MeshSerializerArgs { Mesh = mesh, Name = name}, (args) => { return true; });
+			_processSkeletonNameEvent.Fire( this, new MeshSerializerArgs { Mesh = mesh, Name = name }, ( args ) => { return true; } );
 		}
 
 		#endregion Methods
