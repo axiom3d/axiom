@@ -164,7 +164,7 @@ namespace Axiom.Framework.Configuration
 			this.lstOptions.ItemHeight = 14;
 			this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
 			this.lstOptions.Name = "lstOptions";
-			this.lstOptions.Size = new System.Drawing.Size( 407, 130 );
+			this.lstOptions.Size = new System.Drawing.Size( 407, 150 );
 			this.lstOptions.TabIndex = 0;
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
 			// 
@@ -173,9 +173,9 @@ namespace Axiom.Framework.Configuration
 			this.lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.lblRenderer.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.lblRenderer.Location = new System.Drawing.Point( 10, 185 );
+			this.lblRenderer.Location = new System.Drawing.Point( 0 , 185 );
 			this.lblRenderer.Name = "lblRenderer";
-			this.lblRenderer.Size = new System.Drawing.Size( 128, 24 );
+			this.lblRenderer.Size = new System.Drawing.Size( 150, 24 );
 			this.lblRenderer.TabIndex = 9;
 			this.lblRenderer.Text = "Rendering Subsystem:";
 			this.lblRenderer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -185,9 +185,9 @@ namespace Axiom.Framework.Configuration
 			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
+			this.cboRenderSystems.Location = new System.Drawing.Point( 155, 185 );
 			this.cboRenderSystems.Name = "cboRenderSystems";
-			this.cboRenderSystems.Size = new System.Drawing.Size( 285, 22 );
+			this.cboRenderSystems.Size = new System.Drawing.Size( 275, 22 );
 			this.cboRenderSystems.TabIndex = 8;
 			this.cboRenderSystems.SelectedIndexChanged += new System.EventHandler( this.RenderSystems_SelectedIndexChanged );
 			// 
@@ -224,7 +224,7 @@ namespace Axiom.Framework.Configuration
 			// WinFormConfigurationDialog
 			// 
 			//SWF.Application.AddMessageFilter( this );
-			this.ClientSize = new System.Drawing.Size( 442, 436 );
+			this.ClientSize = new System.Drawing.Size( 442, 455 );
 			this.ControlBox = false;
 			this.Controls.Add( this.cmdOk );
 			this.Controls.Add( this.cmdCancel );

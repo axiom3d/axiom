@@ -96,6 +96,10 @@
     <None Include="Axiom.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\Lib\Managed\XPlatform\FreeImage\FreeImageNET.dll.config">
+      <Link>FreeImageNET.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.2010.csproj">
