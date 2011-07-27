@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{68DBB62F-F98D-47B5-A769-C20B461227AB}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Axiom.RenderSystems.DirectX9</AssemblyName>
@@ -39,7 +39,6 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -87,8 +86,6 @@
     <Compile Include="D3DRenderSystem.cs" />
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="DriverCollection.cs" />
-    <Compile Include="hlsl\HLSLIncludeHandler.cs" />
-    <Compile Include="hlsl\OptimizationLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -140,16 +137,18 @@
     <Compile Include="VideoModeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="hlsl\HLSLProgram.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="hlsl\HLSLProgramFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Win32MessageHandling.cs" />
+    <Compile Include="HLSL\HLSLIncludeHandler.cs" />
+    <Compile Include="HLSL\OptimizationLevel.cs" />
+    <Compile Include="HLSL\HLSLProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HLSL\HLSLProgramFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectGuid>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.RenderSystems.Xna</RootNamespace>
@@ -32,7 +32,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\x86</OutputPath>
@@ -86,9 +85,6 @@
     <Compile Include="Source\FixedFunctionEmulation\TextureLayerState.cs" />
     <Compile Include="Source\FixedFunctionEmulation\VertexBufferDeclaration.cs" />
     <Compile Include="Source\FixedFunctionEmulation\VertexBufferElement.cs" />
-    <Compile Include="Source\hlsl\HLSLIncludeHandler.cs" />
-    <Compile Include="Source\hlsl\HLSLProgram.cs" />
-    <Compile Include="Source\hlsl\HLSLProgramFactory.cs" />
     <Compile Include="Source\Plugin.cs" />
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
@@ -114,6 +110,9 @@
     <Compile Include="Source\XnaTextureStageDescription.cs" />
     <Compile Include="Source\XnaTextureType.cs" />
     <Compile Include="Source\XnaVertexDeclaration.cs" />
+    <Compile Include="Source\HLSL\HLSLIncludeHandler.cs" />
+    <Compile Include="Source\HLSL\HLSLProgram.cs" />
+    <Compile Include="Source\HLSL\HLSLProgramFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
