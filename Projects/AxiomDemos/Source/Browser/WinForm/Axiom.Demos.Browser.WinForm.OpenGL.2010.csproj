@@ -1179,7 +1179,7 @@
       <Name>Axiom.SceneManagers.Octree.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Project>{2F61CAE2-E060-44F7-9F12-EF58F12923CD}</Project>
       <Name>Axiom.SceneManagers.PortalConnected.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.2010.csproj">
