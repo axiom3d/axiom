@@ -94,32 +94,32 @@ namespace Axiom.Serialization
 		/// </remarks>
 		/// <param name="mesh">Reference to the mesh to export.</param>
 		/// <param name="fileName">The destination file name.</param>
-		public void ExportMesh( Mesh mesh, string fileName )
+		public void ExportMesh(Mesh mesh, string fileName)
 		{
-			LogManager.Instance.Write( "MeshSerializer writing mesh data to {0} ...", fileName );
+			LogManager.Instance.Write("MeshSerializer writing mesh data to {0} ...", fileName);
 			this.mesh = mesh;
 			// Check that the mesh has it's bounds set
-			if ( mesh.BoundingBox.IsNull || mesh.BoundingSphereRadius == 0.0F )
+			if (mesh.BoundingBox.IsNull || mesh.BoundingSphereRadius == 0.0F)
 			{
-				throw new AxiomException( "The mesh you supplied does not have its bounds completely defined. Define them first before exporting." );
+				throw new AxiomException("The mesh you supplied does not have its bounds completely defined. Define them first before exporting.");
 			}
 
-			FileStream stream = new FileStream( fileName, FileMode.Create );
+			FileStream stream = new FileStream(fileName, FileMode.Create);
 			try
 			{
-				BinaryWriter writer = new BinaryWriter( stream );
-				WriteFileHeader( writer, version );
-				LogManager.Instance.Write( "File header written." );
-				LogManager.Instance.Write( "Writing mesh data..." );
-				WriteMesh( writer );
-				LogManager.Instance.Write( "Mesh data exported." );
+				BinaryWriter writer = new BinaryWriter(stream);
+				WriteFileHeader(writer, version);
+				LogManager.Instance.Write("File header written.");
+				LogManager.Instance.Write("Writing mesh data...");
+				WriteMesh(writer);
+				LogManager.Instance.Write("Mesh data exported.");
 			}
 			finally
 			{
-				if ( stream != null )
+				if (stream != null)
 				{
 					stream.Close();
-					LogManager.Instance.Write( "MeshSerializer export successful." );
+					LogManager.Instance.Write("MeshSerializer export successful.");
 				}
 
 			}
@@ -131,23 +131,23 @@ namespace Axiom.Serialization
 		/// <param name="stream"></param>
 		/// <param name="mesh"></param>
 		/// <returns></returns>
-		public DependencyInfo GetDependencyInfo( Stream stream, Mesh mesh )
+		public DependencyInfo GetDependencyInfo(Stream stream, Mesh mesh)
 		{
-			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.UTF8 );
+			BinaryReader reader = new BinaryReader(stream, System.Text.Encoding.UTF8);
 
 			// check header
-			ReadFileHeader( reader );
+			ReadFileHeader(reader);
 
 			MeshChunkID chunkID = 0;
 
 			// read until the end
-			while ( !IsEOF( reader ) )
+			while (!IsEOF(reader))
 			{
-				chunkID = ReadChunk( reader );
-				if ( chunkID == MeshChunkID.DependencyInfo )
+				chunkID = ReadChunk(reader);
+				if (chunkID == MeshChunkID.DependencyInfo)
 				{
 					DependencyInfo info = new DependencyInfo();
-					ReadDependencyInfo( reader, info );
+					ReadDependencyInfo(reader, info);
 					return info;
 				}
 				else
@@ -163,30 +163,30 @@ namespace Axiom.Serialization
 		/// </summary>
 		/// <param name="stream">A stream containing the .mesh data.</param>
 		/// <param name="mesh">Mesh to populate with the data.</param>
-		public void ImportMesh( Stream stream, Mesh mesh )
+		public void ImportMesh(Stream stream, Mesh mesh)
 		{
 			this.mesh = mesh;
 
-			BinaryReader reader = new BinaryReader( stream, System.Text.Encoding.UTF8 );
+			BinaryReader reader = new BinaryReader(stream, System.Text.Encoding.UTF8);
 
 			// check header
-			ReadFileHeader( reader );
+			ReadFileHeader(reader);
 
 			MeshChunkID chunkID = 0;
 
 			// read until the end
-			while ( !IsEOF( reader ) )
+			while (!IsEOF(reader))
 			{
-				chunkID = ReadChunk( reader );
+				chunkID = ReadChunk(reader);
 
-				switch ( chunkID )
+				switch (chunkID)
 				{
 					case MeshChunkID.DependencyInfo: // NOTE: This case and read is not in Ogre, why is it here?
 						DependencyInfo info = new DependencyInfo();
-						ReadDependencyInfo( reader, info );
+						ReadDependencyInfo(reader, info);
 						break;
 					case MeshChunkID.Mesh:
-						ReadMesh( reader );
+						ReadMesh(reader);
 						break;
 				}
 			}
@@ -194,9 +194,9 @@ namespace Axiom.Serialization
 
 		#region Protected
 
-		protected MeshChunkID ReadChunk( BinaryReader reader )
+		protected MeshChunkID ReadChunk(BinaryReader reader)
 		{
-			return (MeshChunkID)ReadFileChunk( reader );
+			return (MeshChunkID)ReadFileChunk(reader);
 		}
 
 		/// <summary>
@@ -204,107 +204,107 @@ namespace Axiom.Serialization
 		/// </summary>
 		/// <param name="reader"></param>
 		/// <param name="depends"></param>
-		protected void ReadDependencyInfo( BinaryReader reader, DependencyInfo depends )
+		protected void ReadDependencyInfo(BinaryReader reader, DependencyInfo depends)
 		{
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
 				// check out the next chunk
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					   ( chunkID == MeshChunkID.MeshDependency ||
+				while (!IsEOF(reader) &&
+					   (chunkID == MeshChunkID.MeshDependency ||
 						chunkID == MeshChunkID.SkeletonDependency ||
-						chunkID == MeshChunkID.MaterialDependency ) )
+						chunkID == MeshChunkID.MaterialDependency))
 				{
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.MeshDependency:
-							ReadMeshDependency( reader, depends );
+							ReadMeshDependency(reader, depends);
 							break;
 						case MeshChunkID.SkeletonDependency:
-							ReadSkeletonDependency( reader, depends );
+							ReadSkeletonDependency(reader, depends);
 							break;
 						case MeshChunkID.MaterialDependency:
-							ReadMaterialDependency( reader, depends );
+							ReadMaterialDependency(reader, depends);
 							break;
 					}
 				} // while
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// skip back so the continuation of the calling loop can look at the next chunk
 					// since we already read past it
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected void ReadMeshDependency( BinaryReader reader, DependencyInfo depends )
+		protected void ReadMeshDependency(BinaryReader reader, DependencyInfo depends)
 		{
 			int count = reader.ReadInt16();
-			for ( int i = 0; i < count; ++i )
+			for (int i = 0; i < count; ++i)
 			{
 				string name = reader.ReadString();
-				depends.meshes.Add( name );
+				depends.meshes.Add(name);
 			}
 		}
 
-		protected void ReadSkeletonDependency( BinaryReader reader, DependencyInfo depends )
+		protected void ReadSkeletonDependency(BinaryReader reader, DependencyInfo depends)
 		{
 			int count = reader.ReadInt16();
-			for ( int i = 0; i < count; ++i )
+			for (int i = 0; i < count; ++i)
 			{
 				string name = reader.ReadString();
-				depends.skeletons.Add( name );
+				depends.skeletons.Add(name);
 			}
 		}
 
-		protected void ReadMaterialDependency( BinaryReader reader, DependencyInfo depends )
+		protected void ReadMaterialDependency(BinaryReader reader, DependencyInfo depends)
 		{
 			int count = reader.ReadInt16();
-			for ( int i = 0; i < count; ++i )
+			for (int i = 0; i < count; ++i)
 			{
 				string name = reader.ReadString();
-				depends.materials.Add( name );
+				depends.materials.Add(name);
 			}
 		}
 
-		protected virtual void ReadSubMeshNameTable( BinaryReader reader )
+		protected virtual void ReadSubMeshNameTable(BinaryReader reader)
 		{
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) && ( chunkID == MeshChunkID.SubMeshNameTableElement ) )
+				while (!IsEOF(reader) && (chunkID == MeshChunkID.SubMeshNameTableElement))
 				{
 					// i'm not bothering with the name table business here, I don't see what the purpose is
 					// since we can simply name the submesh.  it appears this section always comes after all submeshes
 					// are read, so it should be safe
-					short index = ReadShort( reader );
-					string name = ReadString( reader );
+					short index = ReadShort(reader);
+					string name = ReadString(reader);
 
-					SubMesh sub = mesh.GetSubMesh( index );
+					SubMesh sub = mesh.GetSubMesh(index);
 
-					if ( sub != null )
+					if (sub != null)
 					{
 						sub.Name = name;
 					}
 
 					// If we're not end of file get the next chunk ID
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				}
 
 				// backpedal to the start of the chunk
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected virtual void ReadMesh( BinaryReader reader )
+		protected virtual void ReadMesh(BinaryReader reader)
 		{
 			MeshChunkID chunkID;
 
@@ -313,15 +313,15 @@ namespace Axiom.Serialization
 			mesh.AutoBuildEdgeLists = false;
 
 			// is this mesh animated?
-			isSkeletallyAnimated = ReadBool( reader );
+			isSkeletallyAnimated = ReadBool(reader);
 
 			// find all sub chunks
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				chunkID = ReadChunk( reader );
+				chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.Geometry ||
+				while (!IsEOF(reader) &&
+					(chunkID == MeshChunkID.Geometry ||
 					chunkID == MeshChunkID.SubMesh ||
 					chunkID == MeshChunkID.MeshSkeletonLink ||
 					chunkID == MeshChunkID.MeshBoneAssignment ||
@@ -332,59 +332,59 @@ namespace Axiom.Serialization
 					chunkID == MeshChunkID.Poses ||
 					chunkID == MeshChunkID.Animations ||
 					//chunkID == MeshChunkID.TableExtremes ||
-					chunkID == MeshChunkID.AttachmentPoint ) )
+					chunkID == MeshChunkID.AttachmentPoint))
 				{
 
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.Geometry:
 							mesh.SharedVertexData = new VertexData();
 
 							// read geometry into shared vertex data
-							ReadGeometry( reader, mesh.SharedVertexData );
+							ReadGeometry(reader, mesh.SharedVertexData);
 
 							// TODO: trap errors here
 							break;
 
 						case MeshChunkID.SubMesh:
 							// read the sub mesh data
-							ReadSubMesh( reader );
+							ReadSubMesh(reader);
 							break;
 
 						case MeshChunkID.MeshSkeletonLink:
 							// read skeleton link
-							ReadSkeletonLink( reader );
+							ReadSkeletonLink(reader);
 							break;
 
 						case MeshChunkID.MeshBoneAssignment:
 							// read mesh bone assignments
-							ReadMeshBoneAssignment( reader );
+							ReadMeshBoneAssignment(reader);
 							break;
 
 						case MeshChunkID.MeshLOD:
 							// Handle meshes with LOD
-							ReadMeshLodInfo( reader );
+							ReadMeshLodInfo(reader);
 							break;
 
 						case MeshChunkID.MeshBounds:
 							// read the pre-calculated bounding information
-							ReadBoundsInfo( reader );
+							ReadBoundsInfo(reader);
 							break;
 
 						case MeshChunkID.SubMeshNameTable:
-							ReadSubMeshNameTable( reader );
+							ReadSubMeshNameTable(reader);
 							break;
 
 						case MeshChunkID.EdgeLists:
-							ReadEdgeList( reader );
+							ReadEdgeList(reader);
 							break;
 
 						case MeshChunkID.Poses:
-							ReadPoses( reader );
+							ReadPoses(reader);
 							break;
 
 						case MeshChunkID.Animations:
-							ReadAnimations( reader );
+							ReadAnimations(reader);
 							break;
 
 						//case MeshChunkID.TableExtremes:
@@ -392,642 +392,672 @@ namespace Axiom.Serialization
 						//    break;
 
 						case MeshChunkID.AttachmentPoint:
-							ReadAttachmentPoint( reader );
+							ReadAttachmentPoint(reader);
 							break;
 					} // switch
 
 					// grab the next chunk
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				} // while
 
 				// backpedal to the start of the chunk
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected void WriteMesh( BinaryWriter writer )
+		protected void WriteMesh(BinaryWriter writer)
 		{
 			// cache header location
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
 
 			// Header
-			WriteChunk( writer, MeshChunkID.Mesh, 0 );
+			WriteChunk(writer, MeshChunkID.Mesh, 0);
 
 			// bool skeletallyAnimated
-			WriteBool( writer, mesh.HasSkeleton );
+			WriteBool(writer, mesh.HasSkeleton);
 
 			// Write shared geometry
-			if ( mesh.SharedVertexData != null )
+			if (mesh.SharedVertexData != null)
 			{
-				WriteGeometry( writer, mesh.SharedVertexData );
+				WriteGeometry(writer, mesh.SharedVertexData);
 			}
 
 			// Write Submeshes
-			for ( int i = 0; i < mesh.SubMeshCount; ++i )
+			for (int i = 0; i < mesh.SubMeshCount; ++i)
 			{
-				SubMesh subMesh = mesh.GetSubMesh( i );
-				LogManager.Instance.Write( "Writing submesh {0} ...", subMesh.Name );
-				WriteSubMesh( writer, subMesh );
-				LogManager.Instance.Write( "Submesh exported." );
+				SubMesh subMesh = mesh.GetSubMesh(i);
+				LogManager.Instance.Write("Writing submesh {0} ...", subMesh.Name);
+				WriteSubMesh(writer, subMesh);
+				LogManager.Instance.Write("Submesh exported.");
 			}
 
 			// Write skeleton info if required
-			if ( mesh.Skeleton != null )
+			if (mesh.Skeleton != null)
 			{
 				// Write skeleton link
-				LogManager.Instance.Write( "Exporting skeleton link..." );
-				WriteSkeletonLink( writer );
-				LogManager.Instance.Write( "Skeleton link exported." );
+				LogManager.Instance.Write("Exporting skeleton link...");
+				WriteSkeletonLink(writer);
+				LogManager.Instance.Write("Skeleton link exported.");
 
 				// Write bone assignments
-				LogManager.Instance.Write( "Exporting shared geometry bone assignments..." );
+				LogManager.Instance.Write("Exporting shared geometry bone assignments...");
 				Dictionary<int, List<VertexBoneAssignment>> weights = mesh.BoneAssignmentList;
-				foreach ( int v in weights.Keys )
+				foreach (int v in weights.Keys)
 				{
-					List<VertexBoneAssignment> vbaList = weights[ v ];
-					foreach ( VertexBoneAssignment vba in vbaList )
-						WriteMeshBoneAssignment( writer, vba );
+					List<VertexBoneAssignment> vbaList = weights[v];
+					foreach (VertexBoneAssignment vba in vbaList)
+						WriteMeshBoneAssignment(writer, vba);
 				}
-				LogManager.Instance.Write( "Shared geometry bone assignments exported." );
+				LogManager.Instance.Write("Shared geometry bone assignments exported.");
 			}
 
 			// Write LOD data if any
-			if ( mesh.LodLevelCount > 1 )
+			if (mesh.LodLevelCount > 1)
 			{
-				LogManager.Instance.Write( "Exporting LOD information..." );
-				this.WriteMeshLodInfo( writer );
-				LogManager.Instance.Write( "LOD information exported." );
+				LogManager.Instance.Write("Exporting LOD information...");
+				this.WriteMeshLodInfo(writer);
+				LogManager.Instance.Write("LOD information exported.");
 			}
 
 			// Write Bounds information
-			LogManager.Instance.Write( "Exporting bounds Information..." );
-			WriteMeshBounds( writer );
-			LogManager.Instance.Write( "Bounds information exported." );
+			LogManager.Instance.Write("Exporting bounds Information...");
+			WriteMeshBounds(writer);
+			LogManager.Instance.Write("Bounds information exported.");
 
 			// Write submesh name table
-			LogManager.Instance.Write( "Exporting submesh name table..." );
-			WriteSubMeshNameTable( writer );
-			LogManager.Instance.Write( "Submesh name table exported." );
+			LogManager.Instance.Write("Exporting submesh name table...");
+			WriteSubMeshNameTable(writer);
+			LogManager.Instance.Write("Submesh name table exported.");
 
 			// Write edge lists
-			LogManager.Instance.Write( "Exporting edge lists..." );
+			LogManager.Instance.Write("Exporting edge lists...");
 			//WriteEdgeLists( writer );
-			LogManager.Instance.Write( "Edge lists exported." );
+			LogManager.Instance.Write("Edge lists exported.");
 
 			//Write morph animation
-			LogManager.Instance.Write( "Exporting morph animations..." );
-			if ( mesh.PoseList.Count > 0 )
-				WritePoses( writer );
-			if ( mesh.HasVertexAnimation )
-				WriteAnimations( writer );
-			LogManager.Instance.Write( "Morph animations exported." );
+			LogManager.Instance.Write("Exporting morph animations...");
+			if (mesh.PoseList.Count > 0)
+				WritePoses(writer);
+			if (mesh.HasVertexAnimation)
+				WriteAnimations(writer);
+			LogManager.Instance.Write("Morph animations exported.");
 
 			// Write submesh extremes
-			LogManager.Instance.Write( "Exporting submesh extremes..." );
+			LogManager.Instance.Write("Exporting submesh extremes...");
 			//WriteExtremes( writer );
-			LogManager.Instance.Write( "Submesh extremes information exported." );
+			LogManager.Instance.Write("Submesh extremes information exported.");
 
 			// Write Attachment Points
-			LogManager.Instance.Write( "Exporting attachment points..." );
-			foreach ( AttachmentPoint ap in mesh.AttachmentPoints )
-				WriteAttachmentPoint( writer, ap );
-			LogManager.Instance.Write( "Attachment points exported." );
+			LogManager.Instance.Write("Exporting attachment points...");
+			foreach (AttachmentPoint ap in mesh.AttachmentPoints)
+				WriteAttachmentPoint(writer, ap);
+			LogManager.Instance.Write("Attachment points exported.");
 
 			// Some ending stuff...
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.Mesh, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.Mesh, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteSubMesh( BinaryWriter writer, SubMesh subMesh )
+		protected void WriteSubMesh(BinaryWriter writer, SubMesh subMesh)
 		{
 			// cache header location
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
 
 			// Header 
-			WriteChunk( writer, MeshChunkID.SubMesh, 0 );
+			WriteChunk(writer, MeshChunkID.SubMesh, 0);
 
 			// Name
-			WriteString( writer, subMesh.MaterialName );
+			WriteString(writer, subMesh.MaterialName);
 
 			// useSharedVertices
-			WriteBool( writer, subMesh.useSharedVertices );
+			WriteBool(writer, subMesh.useSharedVertices);
 
 			// indexCount
-			WriteUInt( writer, (uint)subMesh.indexData.indexCount );
+			WriteUInt(writer, (uint)subMesh.indexData.indexCount);
 
 			// indexes32bit
-			bool indexes32bit = ( subMesh.indexData.indexBuffer.Type == IndexType.Size32 );
-			WriteBool( writer, indexes32bit );
+			bool indexes32bit = (subMesh.indexData.indexBuffer.Type == IndexType.Size32);
+			WriteBool(writer, indexes32bit);
 
-			IntPtr buf = subMesh.indexData.indexBuffer.Lock( BufferLocking.Discard );
-			try
-			{
-				if ( indexes32bit )
-					WriteInts( writer, subMesh.indexData.indexCount, buf );
+
+				if (indexes32bit)
+				{
+					int[] buf = new int[subMesh.indexData.indexBuffer.Length * sizeof(int)];
+					subMesh.indexData.indexBuffer.GetData(buf);
+
+					try
+					{
+						WriteInts(writer, subMesh.indexData.indexCount, buf);
+					}
+					finally
+					{
+						subMesh.indexData.indexBuffer.SetData(buf);
+					}
+				}
 				else
-					WriteShorts( writer, subMesh.indexData.indexCount, buf );
+				{
+					short[] buf = new short[subMesh.indexData.indexBuffer.Length * sizeof(short)];
+					subMesh.indexData.indexBuffer.GetData(buf);
+
+					try
+					{
+						WriteShorts(writer, subMesh.indexData.indexCount, buf);
+					}
+					finally
+					{
+						subMesh.indexData.indexBuffer.SetData(buf);
+					}
 			}
-			finally
-			{
-				subMesh.indexData.indexBuffer.Unlock();
-			}
-			if ( !subMesh.useSharedVertices )
-				WriteGeometry( writer, subMesh.vertexData );
-			WriteSubMeshOperation( writer, subMesh );
+
+			if (!subMesh.useSharedVertices)
+				WriteGeometry(writer, subMesh.vertexData);
+
+			WriteSubMeshOperation(writer, subMesh);
 
 			Dictionary<int, List<VertexBoneAssignment>> weights = subMesh.BoneAssignmentList;
-			foreach ( int v in weights.Keys )
+			foreach (int v in weights.Keys)
 			{
-				List<VertexBoneAssignment> vbaList = weights[ v ];
-				foreach ( VertexBoneAssignment vba in vbaList )
-					WriteSubMeshBoneAssignment( writer, vba );
+				List<VertexBoneAssignment> vbaList = weights[v];
+				foreach (VertexBoneAssignment vba in vbaList)
+					WriteSubMeshBoneAssignment(writer, vba);
 			}
 
 			// Write the texture alias (not currently supported)
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.SubMesh, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.SubMesh, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteSubMeshBoneAssignment( BinaryWriter writer, VertexBoneAssignment vba )
+		protected void WriteSubMeshBoneAssignment(BinaryWriter writer, VertexBoneAssignment vba)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.SubMeshBoneAssignment, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.SubMeshBoneAssignment, 0);
 
-			WriteUInt( writer, (uint)vba.vertexIndex );
-			WriteUShort( writer, (ushort)vba.boneIndex );
-			WriteFloat( writer, vba.weight );
+			WriteUInt(writer, (uint)vba.vertexIndex);
+			WriteUShort(writer, (ushort)vba.boneIndex);
+			WriteFloat(writer, vba.weight);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.SubMeshBoneAssignment, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.SubMeshBoneAssignment, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteMeshBoneAssignment( BinaryWriter writer, VertexBoneAssignment vba )
+		protected void WriteMeshBoneAssignment(BinaryWriter writer, VertexBoneAssignment vba)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshBoneAssignment, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.MeshBoneAssignment, 0);
 
-			WriteUInt( writer, (uint)vba.vertexIndex );
-			WriteUShort( writer, (ushort)vba.boneIndex );
-			WriteFloat( writer, vba.weight );
+			WriteUInt(writer, (uint)vba.vertexIndex);
+			WriteUShort(writer, (ushort)vba.boneIndex);
+			WriteFloat(writer, vba.weight);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshBoneAssignment, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshBoneAssignment, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteSubMeshOperation( BinaryWriter writer, SubMesh subMesh )
+		protected void WriteSubMeshOperation(BinaryWriter writer, SubMesh subMesh)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.SubMeshOperation, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.SubMeshOperation, 0);
 
-			WriteUShort( writer, (ushort)subMesh.operationType );
+			WriteUShort(writer, (ushort)subMesh.operationType);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.SubMeshOperation, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.SubMeshOperation, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteGeometry( BinaryWriter writer, VertexData vertexData )
+		protected void WriteGeometry(BinaryWriter writer, VertexData vertexData)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.Geometry, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.Geometry, 0);
 
-			WriteUInt( writer, (uint)vertexData.vertexCount );
-			WriteGeometryVertexDeclaration( writer, vertexData.vertexDeclaration );
-			for ( short i = 0; i < vertexData.vertexBufferBinding.BindingCount; ++i )
-				WriteGeometryVertexBuffer( writer, i, vertexData.vertexBufferBinding.GetBuffer( i ) );
+			WriteUInt(writer, (uint)vertexData.vertexCount);
+			WriteGeometryVertexDeclaration(writer, vertexData.vertexDeclaration);
+			for (short i = 0; i < vertexData.vertexBufferBinding.BindingCount; ++i)
+				WriteGeometryVertexBuffer(writer, i, vertexData.vertexBufferBinding.GetBuffer(i));
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.Geometry, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.Geometry, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteGeometryVertexDeclaration( BinaryWriter writer, VertexDeclaration vertexDeclaration )
+		protected void WriteGeometryVertexDeclaration(BinaryWriter writer, VertexDeclaration vertexDeclaration)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.GeometryVertexDeclaration, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.GeometryVertexDeclaration, 0);
 
-			for ( int i = 0; i < vertexDeclaration.ElementCount; ++i )
-				WriteGeometryVertexElement( writer, vertexDeclaration.GetElement( i ) );
+			for (int i = 0; i < vertexDeclaration.ElementCount; ++i)
+				WriteGeometryVertexElement(writer, vertexDeclaration.GetElement(i));
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.GeometryVertexDeclaration, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.GeometryVertexDeclaration, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteGeometryVertexElement( BinaryWriter writer, VertexElement vertexElement )
+		protected void WriteGeometryVertexElement(BinaryWriter writer, VertexElement vertexElement)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.GeometryVertexElement, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.GeometryVertexElement, 0);
 
-			WriteUShort( writer, (ushort)vertexElement.Source );
-			WriteUShort( writer, (ushort)vertexElement.Type );
-			WriteUShort( writer, (ushort)vertexElement.Semantic );
-			WriteUShort( writer, (ushort)vertexElement.Offset );
-			WriteUShort( writer, (ushort)vertexElement.Index );
+			WriteUShort(writer, (ushort)vertexElement.Source);
+			WriteUShort(writer, (ushort)vertexElement.Type);
+			WriteUShort(writer, (ushort)vertexElement.Semantic);
+			WriteUShort(writer, (ushort)vertexElement.Offset);
+			WriteUShort(writer, (ushort)vertexElement.Index);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.GeometryVertexElement, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.GeometryVertexElement, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteGeometryVertexBuffer( BinaryWriter writer, short bindIndex, HardwareVertexBuffer vertexBuffer )
+		protected void WriteGeometryVertexBuffer(BinaryWriter writer, short bindIndex, HardwareVertexBuffer vertexBuffer)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.GeometryVertexBuffer, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.GeometryVertexBuffer, 0);
 
-			WriteShort( writer, bindIndex );
-			WriteShort( writer, (short)vertexBuffer.VertexSize );
-			IntPtr buf = vertexBuffer.Lock( BufferLocking.Discard );
+			WriteShort(writer, bindIndex);
+			WriteShort(writer, (short)vertexBuffer.VertexSize);
+            byte[] buf = new byte[vertexBuffer.Length * sizeof(byte)];
+			vertexBuffer.GetData(buf);
+
 			try
 			{
-				WriteGeometryVertexBufferData( writer, vertexBuffer.Length, buf );
+				WriteGeometryVertexBufferData(writer, vertexBuffer.Length, buf);
 			}
 			finally
 			{
-				vertexBuffer.Unlock();
+				vertexBuffer.SetData(buf);
 			}
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.GeometryVertexBuffer, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.GeometryVertexBuffer, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteGeometryVertexBufferData( BinaryWriter writer, int count, IntPtr buf )
+		protected void WriteGeometryVertexBufferData(BinaryWriter writer, int count, byte[] buf)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.GeometryVertexBufferData, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.GeometryVertexBufferData, 0);
 
-			WriteBytes( writer, count, buf );
+			WriteBytes(writer, count, buf);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.GeometryVertexBufferData, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.GeometryVertexBufferData, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteSkeletonLink( BinaryWriter writer )
+		protected void WriteSkeletonLink(BinaryWriter writer)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshSkeletonLink, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.MeshSkeletonLink, 0);
 
-			WriteString( writer, mesh.SkeletonName );
+			WriteString(writer, mesh.SkeletonName);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshSkeletonLink, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshSkeletonLink, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteMeshLodInfo( BinaryWriter writer )
+		protected void WriteMeshLodInfo(BinaryWriter writer)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			this.WriteMeshLodSummary( writer );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			this.WriteMeshLodSummary(writer);
 
 			// Start from 1 to skip the LOD 0 entry
-			for ( int i = 1; i < mesh.LodLevelCount; ++i )
+			for (int i = 1; i < mesh.LodLevelCount; ++i)
 			{
-				MeshLodUsage usage = mesh.GetLodLevel( i );
-				WriteMeshLodUsage( writer, usage, i );
+				MeshLodUsage usage = mesh.GetLodLevel(i);
+				WriteMeshLodUsage(writer, usage, i);
 			}
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshLOD, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshLOD, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected virtual void WriteMeshLodSummary( BinaryWriter writer )
+		protected virtual void WriteMeshLodSummary(BinaryWriter writer)
 		{
-			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
-			WriteString( writer, mesh.LodStrategy.Name );
-			WriteShort( writer, (short)mesh.LodLevelCount );
-			WriteBool( writer, mesh.IsLodManual );
+			WriteChunk(writer, MeshChunkID.MeshLOD, 0);
+			WriteString(writer, mesh.LodStrategy.Name);
+			WriteShort(writer, (short)mesh.LodLevelCount);
+			WriteBool(writer, mesh.IsLodManual);
 		}
 
-		protected void WriteMeshLodUsage( BinaryWriter writer, MeshLodUsage usage, int usageIndex )
+		protected void WriteMeshLodUsage(BinaryWriter writer, MeshLodUsage usage, int usageIndex)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshLODUsage, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.MeshLODUsage, 0);
 
-			if ( mesh.IsLodManual )
-				WriteMeshLodManual( writer, usage );
+			if (mesh.IsLodManual)
+				WriteMeshLodManual(writer, usage);
 			else
 			{
-				for ( int i = 0; i < mesh.SubMeshCount; ++i )
+				for (int i = 0; i < mesh.SubMeshCount; ++i)
 				{
-					SubMesh subMesh = mesh.GetSubMesh( i );
-					WriteMeshLodGenerated( writer, subMesh, usageIndex );
+					SubMesh subMesh = mesh.GetSubMesh(i);
+					WriteMeshLodGenerated(writer, subMesh, usageIndex);
 				}
 			}
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshLODUsage, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshLODUsage, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteMeshLodManual( BinaryWriter writer, MeshLodUsage usage )
+		protected void WriteMeshLodManual(BinaryWriter writer, MeshLodUsage usage)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshLODManual, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.MeshLODManual, 0);
 
-			WriteString( writer, usage.ManualName );
+			WriteString(writer, usage.ManualName);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshLODManual, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshLODManual, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteMeshLodGenerated( BinaryWriter writer, SubMesh subMesh, int usageIndex )
+		protected void WriteMeshLodGenerated(BinaryWriter writer, SubMesh subMesh, int usageIndex)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshLODGenerated, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.MeshLODGenerated, 0);
 
-			IndexData indexData = subMesh.lodFaceList[ usageIndex - 1 ];
-			bool indexes32bit = ( indexData.indexBuffer.Type == IndexType.Size32 );
+			IndexData indexData = subMesh.lodFaceList[usageIndex - 1];
+			bool indexes32bit = (indexData.indexBuffer.Type == IndexType.Size32);
 
-			WriteInt( writer, indexData.indexCount );
-			WriteBool( writer, indexes32bit );
+			WriteInt(writer, indexData.indexCount);
+			WriteBool(writer, indexes32bit);
 
 			// lock the buffer
-			IntPtr data = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
-
-			if ( indexes32bit )
-				WriteInts( writer, indexData.indexCount, data );
+			if (indexes32bit)
+			{
+				int[] data = new int[indexData.indexBuffer.Length * sizeof(int)];
+				indexData.indexBuffer.GetData(data);
+				WriteInts(writer, indexData.indexCount, data);
+				indexData.indexBuffer.SetData(data);
+			}
 			else
-				WriteShorts( writer, indexData.indexCount, data );
+			{
+				short[] data = new short[indexData.indexBuffer.Length * sizeof(short)];
+				indexData.indexBuffer.GetData(data);
+				WriteShorts(writer, indexData.indexCount, data);
+				indexData.indexBuffer.SetData(data);
+			}
 
-			indexData.indexBuffer.Unlock();
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshLODGenerated, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshLODGenerated, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteMeshBounds( BinaryWriter writer )
+		protected void WriteMeshBounds(BinaryWriter writer)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.MeshBounds, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.MeshBounds, 0);
 
-			WriteVector3( writer, mesh.BoundingBox.Minimum );
-			WriteVector3( writer, mesh.BoundingBox.Maximum );
-			WriteFloat( writer, mesh.BoundingSphereRadius );
+			WriteVector3(writer, mesh.BoundingBox.Minimum);
+			WriteVector3(writer, mesh.BoundingBox.Maximum);
+			WriteFloat(writer, mesh.BoundingSphereRadius);
 
 			// Save chunk size back into Header
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.MeshBounds, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.MeshBounds, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteSubMeshNameTable( BinaryWriter writer )
+		protected void WriteSubMeshNameTable(BinaryWriter writer)
 		{
 			// cache header location
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
 
 			// Header
-			WriteChunk( writer, MeshChunkID.SubMeshNameTable, 0 );
+			WriteChunk(writer, MeshChunkID.SubMeshNameTable, 0);
 
 			// Loop through and save out the index and names
-			for ( short i = 0; i < mesh.SubMeshCount; ++i )
+			for (short i = 0; i < mesh.SubMeshCount; ++i)
 			{
-				SubMesh subMesh = mesh.GetSubMesh( i );
-				WriteSubMeshNameTableElement( writer, i, subMesh.Name );
+				SubMesh subMesh = mesh.GetSubMesh(i);
+				WriteSubMeshNameTableElement(writer, i, subMesh.Name);
 			}
 
 			// Save chunk size back into Header
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.SubMeshNameTable, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.SubMeshNameTable, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteSubMeshNameTableElement( BinaryWriter writer, short i, string name )
+		protected void WriteSubMeshNameTableElement(BinaryWriter writer, short i, string name)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.SubMeshNameTableElement, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.SubMeshNameTableElement, 0);
 
-			WriteShort( writer, i );
-			WriteString( writer, name );
+			WriteShort(writer, i);
+			WriteString(writer, name);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.SubMeshNameTableElement, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.SubMeshNameTableElement, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WritePoses( BinaryWriter writer )
+		protected void WritePoses(BinaryWriter writer)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.Poses, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.Poses, 0);
 
-			foreach ( Pose pose in mesh.PoseList )
-				WritePose( writer, pose );
+			foreach (Pose pose in mesh.PoseList)
+				WritePose(writer, pose);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.Poses, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.Poses, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WritePose( BinaryWriter writer, Pose pose )
+		protected void WritePose(BinaryWriter writer, Pose pose)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.Pose, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.Pose, 0);
 
-			WriteString( writer, pose.Name );
-			WriteUShort( writer, pose.Target );
-			foreach ( KeyValuePair<int, Vector3> kvp in pose.VertexOffsetMap )
-				WritePoseVertex( writer, kvp.Key, kvp.Value );
+			WriteString(writer, pose.Name);
+			WriteUShort(writer, pose.Target);
+			foreach (KeyValuePair<int, Vector3> kvp in pose.VertexOffsetMap)
+				WritePoseVertex(writer, kvp.Key, kvp.Value);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.Pose, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.Pose, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WritePoseVertex( BinaryWriter writer, int vertexId, Vector3 offset )
+		protected void WritePoseVertex(BinaryWriter writer, int vertexId, Vector3 offset)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.PoseVertex, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.PoseVertex, 0);
 
-			WriteInt( writer, vertexId );
-			WriteVector3( writer, offset );
+			WriteInt(writer, vertexId);
+			WriteVector3(writer, offset);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.PoseVertex, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.PoseVertex, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteAnimations( BinaryWriter writer )
+		protected void WriteAnimations(BinaryWriter writer)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.Animations, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.Animations, 0);
 
-			for ( ushort animIndex = 0; animIndex < mesh.AnimationCount; ++animIndex )
+			for (ushort animIndex = 0; animIndex < mesh.AnimationCount; ++animIndex)
 			{
-				Animation anim = mesh.GetAnimation( animIndex );
-				WriteAnimation( writer, anim );
+				Animation anim = mesh.GetAnimation(animIndex);
+				WriteAnimation(writer, anim);
 			}
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.Animations, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.Animations, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteAnimation( BinaryWriter writer, Animation anim )
+		protected void WriteAnimation(BinaryWriter writer, Animation anim)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.Animation, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.Animation, 0);
 
-			WriteString( writer, anim.Name );
-			WriteFloat( writer, anim.Length );
-			foreach ( VertexAnimationTrack track in anim.VertexTracks.Values )
-				WriteAnimationTrack( writer, track );
+			WriteString(writer, anim.Name);
+			WriteFloat(writer, anim.Length);
+			foreach (VertexAnimationTrack track in anim.VertexTracks.Values)
+				WriteAnimationTrack(writer, track);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.Animation, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.Animation, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteAnimationTrack( BinaryWriter writer, VertexAnimationTrack track )
+		protected void WriteAnimationTrack(BinaryWriter writer, VertexAnimationTrack track)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.AnimationTrack, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.AnimationTrack, 0);
 
-			WriteUShort( writer, (ushort)track.AnimationType );
-			WriteUShort( writer, track.Handle );
-			foreach ( KeyFrame keyFrame in track.KeyFrames )
+			WriteUShort(writer, (ushort)track.AnimationType);
+			WriteUShort(writer, track.Handle);
+			foreach (KeyFrame keyFrame in track.KeyFrames)
 			{
-				if ( keyFrame is VertexMorphKeyFrame )
+				if (keyFrame is VertexMorphKeyFrame)
 				{
 					VertexMorphKeyFrame vmkf = keyFrame as VertexMorphKeyFrame;
-					WriteMorphKeyframe( writer, vmkf );
+					WriteMorphKeyframe(writer, vmkf);
 				}
-				else if ( keyFrame is VertexPoseKeyFrame )
+				else if (keyFrame is VertexPoseKeyFrame)
 				{
 					VertexPoseKeyFrame vpkf = keyFrame as VertexPoseKeyFrame;
-					WritePoseKeyframe( writer, vpkf );
+					WritePoseKeyframe(writer, vpkf);
 				}
 			}
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.AnimationTrack, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.AnimationTrack, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteMorphKeyframe( BinaryWriter writer, VertexMorphKeyFrame keyFrame )
+		protected void WriteMorphKeyframe(BinaryWriter writer, VertexMorphKeyFrame keyFrame)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.AnimationMorphKeyframe, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.AnimationMorphKeyframe, 0);
 
-			WriteFloat( writer, keyFrame.Time );
+			WriteFloat(writer, keyFrame.Time);
 			HardwareVertexBuffer vBuffer = keyFrame.VertexBuffer;
-			IntPtr vBufferPtr = vBuffer.Lock( BufferLocking.ReadOnly );
-			WriteFloats( writer, vBuffer.VertexCount * 3, vBufferPtr );
-			vBuffer.Unlock();
+			float[] data = new float[vBuffer.Length * sizeof(float)];
+			vBuffer.GetData(data);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.AnimationMorphKeyframe, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			WriteFloats(writer, vBuffer.VertexCount * 3, data);
+			vBuffer.SetData(data);
+
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.AnimationMorphKeyframe, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WritePoseKeyframe( BinaryWriter writer, VertexPoseKeyFrame keyFrame )
+		protected void WritePoseKeyframe(BinaryWriter writer, VertexPoseKeyFrame keyFrame)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.AnimationPoseKeyframe, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.AnimationPoseKeyframe, 0);
 
-			WriteFloat( writer, keyFrame.Time );
-			foreach ( PoseRef poseRef in keyFrame.PoseRefs )
-				WriteAnimationPoseRef( writer, poseRef );
+			WriteFloat(writer, keyFrame.Time);
+			foreach (PoseRef poseRef in keyFrame.PoseRefs)
+				WriteAnimationPoseRef(writer, poseRef);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.AnimationPoseKeyframe, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.AnimationPoseKeyframe, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteAnimationPoseRef( BinaryWriter writer, PoseRef poseRef )
+		protected void WriteAnimationPoseRef(BinaryWriter writer, PoseRef poseRef)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.AnimationPoseRef, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.AnimationPoseRef, 0);
 
-			WriteUShort( writer, poseRef.PoseIndex );
-			WriteFloat( writer, poseRef.Influence );
+			WriteUShort(writer, poseRef.PoseIndex);
+			WriteFloat(writer, poseRef.Influence);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.AnimationPoseRef, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.AnimationPoseRef, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected void WriteAttachmentPoint( BinaryWriter writer, AttachmentPoint ap )
+		protected void WriteAttachmentPoint(BinaryWriter writer, AttachmentPoint ap)
 		{
-			long start_offset = writer.Seek( 0, SeekOrigin.Current );
-			WriteChunk( writer, MeshChunkID.AttachmentPoint, 0 );
+			long start_offset = writer.Seek(0, SeekOrigin.Current);
+			WriteChunk(writer, MeshChunkID.AttachmentPoint, 0);
 
-			WriteString( writer, ap.Name );
-			WriteVector3( writer, ap.Position );
-			WriteQuat( writer, ap.Orientation );
+			WriteString(writer, ap.Name);
+			WriteVector3(writer, ap.Position);
+			WriteQuat(writer, ap.Orientation);
 
-			long end_offset = writer.Seek( 0, SeekOrigin.Current );
-			writer.Seek( (int)start_offset, SeekOrigin.Begin );
-			WriteChunk( writer, MeshChunkID.AttachmentPoint, (int)( end_offset - start_offset ) );
-			writer.Seek( (int)end_offset, SeekOrigin.Begin );
+			long end_offset = writer.Seek(0, SeekOrigin.Current);
+			writer.Seek((int)start_offset, SeekOrigin.Begin);
+			WriteChunk(writer, MeshChunkID.AttachmentPoint, (int)(end_offset - start_offset));
+			writer.Seek((int)end_offset, SeekOrigin.Begin);
 		}
 
-		protected virtual void ReadSubMesh( BinaryReader reader )
+		protected virtual void ReadSubMesh(BinaryReader reader)
 		{
 			MeshChunkID chunkID;
 
 			SubMesh subMesh = mesh.CreateSubMesh();
 
 			// get the material name
-			string materialName = ReadString( reader );
+			string materialName = ReadString(reader);
 
-			MeshManager.Instance.FireProcessMaterialName( this.mesh, materialName );
+			MeshManager.Instance.FireProcessMaterialName(this.mesh, materialName);
 
 			subMesh.MaterialName = materialName;
 
 			// use shared vertices?
-			subMesh.useSharedVertices = ReadBool( reader );
+			subMesh.useSharedVertices = ReadBool(reader);
 
 			subMesh.indexData.indexStart = 0;
-			subMesh.indexData.indexCount = ReadInt( reader );
+			subMesh.indexData.indexCount = ReadInt(reader);
 
 			// does this use 32 bit index buffer
-			bool idx32bit = ReadBool( reader );
+			bool idx32bit = ReadBool(reader);
 
 			HardwareIndexBuffer idxBuffer = null;
 
-			if ( idx32bit )
+			if (idx32bit)
 			{
 				// create the index buffer
 				idxBuffer =
@@ -1036,15 +1066,15 @@ namespace Axiom.Serialization
 					IndexType.Size32,
 					subMesh.indexData.indexCount,
 					mesh.IndexBufferUsage,
-					mesh.UseIndexShadowBuffer );
+					mesh.UseIndexShadowBuffer);
 
-				IntPtr indices = idxBuffer.Lock( BufferLocking.Discard );
+				int[] data = new int[idxBuffer.Length * sizeof(int)];
+				idxBuffer.GetData(data);
 
 				// read the ints into the buffer data
-				ReadInts( reader, subMesh.indexData.indexCount, indices );
-
-				// unlock the buffer to commit					
-				idxBuffer.Unlock();
+				ReadInts(reader, subMesh.indexData.indexCount, data);
+					
+				idxBuffer.SetData(data);
 			}
 			else
 			{ // 16-bit
@@ -1055,112 +1085,112 @@ namespace Axiom.Serialization
 					IndexType.Size16,
 					subMesh.indexData.indexCount,
 					mesh.IndexBufferUsage,
-					mesh.UseIndexShadowBuffer );
+					mesh.UseIndexShadowBuffer);
 
-				IntPtr indices = idxBuffer.Lock( BufferLocking.Discard );
+                short[] data = new short[idxBuffer.Length * sizeof(short)];
 
 				// read the shorts into the buffer data
-				ReadShorts( reader, subMesh.indexData.indexCount, indices );
+				ReadShorts(reader, subMesh.indexData.indexCount, data);
 
-				idxBuffer.Unlock();
+				idxBuffer.SetData(data);
 			}
 
 			// save the index buffer
 			subMesh.indexData.indexBuffer = idxBuffer;
 
 			// Geometry chunk (optional, only present if useSharedVertices = false)
-			if ( !subMesh.useSharedVertices )
+			if (!subMesh.useSharedVertices)
 			{
-				chunkID = ReadChunk( reader );
+				chunkID = ReadChunk(reader);
 
-				if ( chunkID != MeshChunkID.Geometry )
+				if (chunkID != MeshChunkID.Geometry)
 				{
-					throw new AxiomException( "Missing geometry data in mesh file." );
+					throw new AxiomException("Missing geometry data in mesh file.");
 				}
 
 				subMesh.vertexData = new VertexData();
 
 				// read the geometry data
-				ReadGeometry( reader, subMesh.vertexData );
+				ReadGeometry(reader, subMesh.vertexData);
 			}
 
 			// get the next chunkID
-			chunkID = ReadChunk( reader );
+			chunkID = ReadChunk(reader);
 
 			// walk through all the bone assignments for this submesh
-			while ( !IsEOF( reader ) &&
-				( chunkID == MeshChunkID.SubMeshBoneAssignment ||
-				chunkID == MeshChunkID.SubMeshOperation ) )
+			while (!IsEOF(reader) &&
+				(chunkID == MeshChunkID.SubMeshBoneAssignment ||
+				chunkID == MeshChunkID.SubMeshOperation))
 			{
 
-				switch ( chunkID )
+				switch (chunkID)
 				{
 					case MeshChunkID.SubMeshBoneAssignment:
-						ReadSubMeshBoneAssignment( reader, subMesh );
+						ReadSubMeshBoneAssignment(reader, subMesh);
 						break;
 
 					case MeshChunkID.SubMeshOperation:
-						ReadSubMeshOperation( reader, subMesh );
+						ReadSubMeshOperation(reader, subMesh);
 						break;
 				}
 
 				// read the next chunkID
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
-					chunkID = ReadChunk( reader );
+					chunkID = ReadChunk(reader);
 				}
 			} // while
 
 			// walk back to the beginning of the last chunk ID read since
 			// we already moved past it and it wasnt of interest to us
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				Seek( reader, -ChunkOverheadSize );
+				Seek(reader, -ChunkOverheadSize);
 			}
 		}
 
-		protected virtual void ReadSubMeshOperation( BinaryReader reader, SubMesh sub )
+		protected virtual void ReadSubMeshOperation(BinaryReader reader, SubMesh sub)
 		{
-			sub.operationType = (OperationType)ReadShort( reader );
+			sub.operationType = (OperationType)ReadShort(reader);
 		}
 
-		protected virtual void ReadGeometry( BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometry(BinaryReader reader, VertexData data)
 		{
 			data.vertexStart = 0;
-			data.vertexCount = ReadInt( reader );
+			data.vertexCount = ReadInt(reader);
 
 			// find optional geometry chunks
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.GeometryVertexDeclaration ||
-					chunkID == MeshChunkID.GeometryVertexBuffer ) )
+				while (!IsEOF(reader) &&
+					(chunkID == MeshChunkID.GeometryVertexDeclaration ||
+					chunkID == MeshChunkID.GeometryVertexBuffer))
 				{
 
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.GeometryVertexDeclaration:
-							ReadGeometryVertexDeclaration( reader, data );
+							ReadGeometryVertexDeclaration(reader, data);
 							break;
 
 						case MeshChunkID.GeometryVertexBuffer:
-							ReadGeometryVertexBuffer( reader, data );
+							ReadGeometryVertexBuffer(reader, data);
 							break;
 					}
 
 					// get the next chunk
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				}
 
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to start of non-submesh chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 
 				// TODO : Implement color conversions
@@ -1175,199 +1205,200 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadGeometryVertexDeclaration( BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryVertexDeclaration(BinaryReader reader, VertexData data)
 		{
 			// find optional geometry chunks
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.GeometryVertexElement ) )
+				while (!IsEOF(reader) &&
+					(chunkID == MeshChunkID.GeometryVertexElement))
 				{
 
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.GeometryVertexElement:
-							ReadGeometryVertexElement( reader, data );
+							ReadGeometryVertexElement(reader, data);
 							break;
 					}
 
 					// get the next chunk
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				}
 
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to start of non-submesh chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected virtual void ReadGeometryVertexElement( BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryVertexElement(BinaryReader reader, VertexData vData)
 		{
-			short source = ReadShort( reader );
-			VertexElementType type = (VertexElementType)ReadUShort( reader );
-			VertexElementSemantic semantic = (VertexElementSemantic)ReadUShort( reader );
-			short offset = ReadShort( reader );
-			short index = ReadShort( reader );
+			short source = ReadShort(reader);
+			VertexElementType type = (VertexElementType)ReadUShort(reader);
+			VertexElementSemantic semantic = (VertexElementSemantic)ReadUShort(reader);
+			short offset = ReadShort(reader);
+			short index = ReadShort(reader);
 
 			// add the element to the declaration for the current vertex data
-			data.vertexDeclaration.AddElement( source, offset, type, semantic, index );
+			vData.vertexDeclaration.AddElement(source, offset, type, semantic, index);
 
-			if ( type == VertexElementType.Color )
+			if (type == VertexElementType.Color)
 			{
-				LogManager.Instance.Write( "Warning: VET_COLOUR element type is deprecated, you should use " +
+				LogManager.Instance.Write("Warning: VET_COLOUR element type is deprecated, you should use " +
 										   "one of the more specific types to indicate the byte order. " +
-										   "Use OgreMeshUpgrade on {0} as soon as possible. ", mesh.Name );
+										   "Use OgreMeshUpgrade on {0} as soon as possible. ", mesh.Name);
 			}
 		}
 
-		protected virtual void ReadGeometryVertexBuffer( BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryVertexBuffer(BinaryReader reader, VertexData vData)
 		{
 			// Index to bind this buffer to
-			short bindIdx = ReadShort( reader );
+			short bindIdx = ReadShort(reader);
 
 			// Per-vertex size, must agree with declaration at this index
-			short vertexSize = ReadShort( reader );
+			short vertexSize = ReadShort(reader);
 
 			// check for vertex data header
-			MeshChunkID chunkID = ReadChunk( reader );
+			MeshChunkID chunkID = ReadChunk(reader);
 
-			if ( chunkID != MeshChunkID.GeometryVertexBufferData )
+			if (chunkID != MeshChunkID.GeometryVertexBufferData)
 			{
-				throw new AxiomException( "Can't find vertex buffer data area!" );
+				throw new AxiomException("Can't find vertex buffer data area!");
 			}
 
 			// check that vertex size agrees
-			if ( data.vertexDeclaration.GetVertexSize( bindIdx ) != vertexSize )
+			if (vData.vertexDeclaration.GetVertexSize(bindIdx) != vertexSize)
 			{
-				throw new AxiomException( "Vertex buffer size does not agree with vertex declaration!" );
+				throw new AxiomException("Vertex buffer size does not agree with vertex declaration!");
 			}
 
 			// create/populate vertex buffer
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer(vData.vertexDeclaration.Clone(bindIdx), vData.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
-			IntPtr bufferPtr = buffer.Lock( BufferLocking.Discard );
+			byte[] data = new byte[buffer.Length * sizeof(byte)];
+			buffer.GetData(data);
 
-			ReadBytes( reader, data.vertexCount * vertexSize, bufferPtr );
+			ReadBytes(reader, vData.vertexCount * vertexSize, data);
 
-			buffer.Unlock();
+			buffer.SetData(data);
 
 			// set binding
-			data.vertexBufferBinding.SetBinding( bindIdx, buffer );
+			vData.vertexBufferBinding.SetBinding(bindIdx, buffer);
 		}
 
-		protected virtual void ReadSkeletonLink( BinaryReader reader )
+		protected virtual void ReadSkeletonLink(BinaryReader reader)
 		{
-			mesh.SkeletonName = ReadString( reader );
+			mesh.SkeletonName = ReadString(reader);
 
-			MeshManager.Instance.FireProcessSkeletonName( this.mesh, this.mesh.SkeletonName );
+			MeshManager.Instance.FireProcessSkeletonName(this.mesh, this.mesh.SkeletonName);
 		}
 
-		protected virtual void ReadMeshBoneAssignment( BinaryReader reader )
-		{
-			VertexBoneAssignment assignment = new VertexBoneAssignment();
-
-			// read the data from the file
-			assignment.vertexIndex = ReadInt( reader );
-			assignment.boneIndex = ReadUShort( reader );
-			assignment.weight = ReadFloat( reader );
-
-			// add the assignment to the mesh
-			mesh.AddBoneAssignment( assignment );
-		}
-
-		protected virtual void ReadSubMeshBoneAssignment( BinaryReader reader, SubMesh sub )
+		protected virtual void ReadMeshBoneAssignment(BinaryReader reader)
 		{
 			VertexBoneAssignment assignment = new VertexBoneAssignment();
 
 			// read the data from the file
-			assignment.vertexIndex = ReadInt( reader );
-			assignment.boneIndex = ReadUShort( reader );
-			assignment.weight = ReadFloat( reader );
+			assignment.vertexIndex = ReadInt(reader);
+			assignment.boneIndex = ReadUShort(reader);
+			assignment.weight = ReadFloat(reader);
 
 			// add the assignment to the mesh
-			sub.AddBoneAssignment( assignment );
+			mesh.AddBoneAssignment(assignment);
 		}
 
-		protected virtual void ReadMeshLodInfo( BinaryReader reader )
+		protected virtual void ReadSubMeshBoneAssignment(BinaryReader reader, SubMesh sub)
+		{
+			VertexBoneAssignment assignment = new VertexBoneAssignment();
+
+			// read the data from the file
+			assignment.vertexIndex = ReadInt(reader);
+			assignment.boneIndex = ReadUShort(reader);
+			assignment.weight = ReadFloat(reader);
+
+			// add the assignment to the mesh
+			sub.AddBoneAssignment(assignment);
+		}
+
+		protected virtual void ReadMeshLodInfo(BinaryReader reader)
 		{
 			// Read the strategy to be used for this mesh
-			string strategyName = this.ReadString( reader );
-			LodStrategy strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
+			string strategyName = this.ReadString(reader);
+			LodStrategy strategy = LodStrategyManager.Instance.GetStrategy(strategyName);
 			this.mesh.LodStrategy = strategy;
 
 			// number of lod levels
-			short lodLevelCount = ReadShort( reader );
+			short lodLevelCount = ReadShort(reader);
 			// bool manual;  (true for manual alternate meshes, false for generated)
-			this.mesh.IsLodManual = this.ReadBool( reader ); //readBools(stream, &(pMesh->mIsLodManual), 1);
+			this.mesh.IsLodManual = this.ReadBool(reader); //readBools(stream, &(pMesh->mIsLodManual), 1);
 
 			// Preallocate submesh lod face data if not manual
-			if ( !this.mesh.IsLodManual )
+			if (!this.mesh.IsLodManual)
 			{
-				for ( ushort i = 0; i < this.mesh.SubMeshCount; ++i )
+				for (ushort i = 0; i < this.mesh.SubMeshCount; ++i)
 				{
-					SubMesh sm = this.mesh.GetSubMesh( i );
+					SubMesh sm = this.mesh.GetSubMesh(i);
 
 					// TODO: Create typed collection and implement resize
-					for ( int j = 1; j < lodLevelCount; j++ )
+					for (int j = 1; j < lodLevelCount; j++)
 					{
-						sm.lodFaceList.Add( null );
+						sm.lodFaceList.Add(null);
 					}
 				}
 
 				MeshChunkID chunkId;
 				// Loop from 1 rather than 0 (full detail index is not in file)
-				for ( int i = 1; i < lodLevelCount; i++ )
+				for (int i = 1; i < lodLevelCount; i++)
 				{
-					chunkId = this.ReadChunk( reader );
+					chunkId = this.ReadChunk(reader);
 
-					if ( chunkId != MeshChunkID.MeshLODUsage )
-						throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", this.mesh.Name );
+					if (chunkId != MeshChunkID.MeshLODUsage)
+						throw new AxiomException("Missing MeshLODUsage stream in '{0}'.", this.mesh.Name);
 
 					// Read depth
 					MeshLodUsage usage = new MeshLodUsage();
-					usage.Value = ReadFloat( reader );
-					usage.UserValue = Utility.Sqrt( usage.Value );
+					usage.Value = ReadFloat(reader);
+					usage.UserValue = Utility.Sqrt(usage.Value);
 
-					if ( this.mesh.IsLodManual )
+					if (this.mesh.IsLodManual)
 					{
-						this.ReadMeshLodUsageManual( reader, i, ref usage );
+						this.ReadMeshLodUsageManual(reader, i, ref usage);
 					}
 					else //(!pMesh->isLodManual)
 					{
-						this.ReadMeshLodUsageGenerated( reader, i, ref usage );
+						this.ReadMeshLodUsageGenerated(reader, i, ref usage);
 					}
 					usage.EdgeData = null;
 
 					// Save usage
-					this.mesh.MeshLodUsageList.Add( usage );
+					this.mesh.MeshLodUsageList.Add(usage);
 				}
-				Debug.Assert( mesh.LodLevelCount == lodLevelCount );
+				Debug.Assert(mesh.LodLevelCount == lodLevelCount);
 			}
 		}
 
-		protected virtual void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
+		protected virtual void ReadMeshLodUsageManual(BinaryReader reader, int lodNum, ref MeshLodUsage usage)
 		{
-			MeshChunkID chunkId = ReadChunk( reader );
+			MeshChunkID chunkId = ReadChunk(reader);
 
-			if ( chunkId != MeshChunkID.MeshLODManual )
+			if (chunkId != MeshChunkID.MeshLODManual)
 			{
-				throw new AxiomException( "Missing MeshLODManual chunk in '{0}'.", mesh.Name );
+				throw new AxiomException("Missing MeshLODManual chunk in '{0}'.", mesh.Name);
 			}
 
-			usage.ManualName = ReadString( reader );
+			usage.ManualName = ReadString(reader);
 
 			// clearing the reference just in case
 			usage.ManualMesh = null;
 		}
 
-		protected virtual void ReadMeshLodUsageGenerated( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
+		protected virtual void ReadMeshLodUsageGenerated(BinaryReader reader, int lodNum, ref MeshLodUsage usage)
 		{
 			usage.ManualName = "";
 			usage.ManualMesh = null;
@@ -1375,45 +1406,46 @@ namespace Axiom.Serialization
 			// get one set of detail per submesh
 			MeshChunkID chunkId;
 
-			for ( int i = 0; i < mesh.SubMeshCount; i++ )
+			for (int i = 0; i < mesh.SubMeshCount; i++)
 			{
-				chunkId = ReadChunk( reader );
+				chunkId = ReadChunk(reader);
 
-				if ( chunkId != MeshChunkID.MeshLODGenerated )
+				if (chunkId != MeshChunkID.MeshLODGenerated)
 				{
-					throw new AxiomException( "Missing MeshLodGenerated chunk in '{0}'", mesh.Name );
+					throw new AxiomException("Missing MeshLodGenerated chunk in '{0}'", mesh.Name);
 				}
 
 				// get the current submesh
-				SubMesh sm = mesh.GetSubMesh( i );
+				SubMesh sm = mesh.GetSubMesh(i);
 
 				// drop another index data object into the list
 				IndexData indexData = new IndexData();
-				sm.lodFaceList[ lodNum - 1 ] = indexData;
+				sm.lodFaceList[lodNum - 1] = indexData;
 
 				// number of indices
-				indexData.indexCount = ReadInt( reader );
+				indexData.indexCount = ReadInt(reader);
 
-				bool is32bit = ReadBool( reader );
+				bool is32bit = ReadBool(reader);
 
 				// create an appropriate index buffer and stuff in the data
-				if ( is32bit )
+				if (is32bit)
 				{
 					indexData.indexBuffer =
 						HardwareBufferManager.Instance.CreateIndexBuffer(
 						IndexType.Size32,
 						indexData.indexCount,
 						mesh.IndexBufferUsage,
-						mesh.UseIndexShadowBuffer );
+						mesh.UseIndexShadowBuffer);
 
 					// lock the buffer
-					IntPtr data = indexData.indexBuffer.Lock( BufferLocking.Discard );
+					int[] data = new int[indexData.indexBuffer.Length * sizeof(int)];
+					indexData.indexBuffer.GetData(data);
 
 					// stuff the data into the index buffer
-					ReadInts( reader, indexData.indexCount, data );
+					ReadInts(reader, indexData.indexCount, data);
 
 					// unlock the index buffer
-					indexData.indexBuffer.Unlock();
+					indexData.indexBuffer.SetData(data);
 				}
 				else
 				{
@@ -1422,342 +1454,345 @@ namespace Axiom.Serialization
 						IndexType.Size16,
 						indexData.indexCount,
 						mesh.IndexBufferUsage,
-						mesh.UseIndexShadowBuffer );
+						mesh.UseIndexShadowBuffer);
 
 					// lock the buffer
-					IntPtr data = indexData.indexBuffer.Lock( BufferLocking.Discard );
+					short[] data = new short[indexData.indexBuffer.Length * sizeof(short)];
+					indexData.indexBuffer.GetData(data);
 
 					// stuff the data into the index buffer
-					ReadShorts( reader, indexData.indexCount, data );
+					ReadShorts(reader, indexData.indexCount, data);
 
 					// unlock the index buffer
-					indexData.indexBuffer.Unlock();
+					indexData.indexBuffer.SetData(data);
 				}
 			}
 		}
 
-		protected virtual void ReadBoundsInfo( BinaryReader reader )
+		protected virtual void ReadBoundsInfo(BinaryReader reader)
 		{
 			// min abb extent
-			Vector3 min = ReadVector3( reader );
+			Vector3 min = ReadVector3(reader);
 
 			// max abb extent
-			Vector3 max = ReadVector3( reader );
+			Vector3 max = ReadVector3(reader);
 
 			// set the mesh's aabb
-			mesh.BoundingBox = new AxisAlignedBox( min, max );
+			mesh.BoundingBox = new AxisAlignedBox(min, max);
 
 			// set the bounding sphere radius
-			mesh.BoundingSphereRadius = ReadFloat( reader );
+			mesh.BoundingSphereRadius = ReadFloat(reader);
 		}
 
-		protected virtual void ReadEdgeList( BinaryReader reader )
+		protected virtual void ReadEdgeList(BinaryReader reader)
 		{
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.EdgeListLOD )
+				while (!IsEOF(reader) &&
+					chunkID == MeshChunkID.EdgeListLOD)
 				{
 
 					// process single LOD
-					short lodIndex = ReadShort( reader );
+					short lodIndex = ReadShort(reader);
 
 					// If manual, no edge data here, loaded from manual mesh
-					bool isManual = ReadBool( reader );
+					bool isManual = ReadBool(reader);
 
 					// Only load in non-manual levels; others will be connected up by Mesh on demand
-					if ( !isManual )
+					if (!isManual)
 					{
-						MeshLodUsage usage = mesh.GetLodLevel( lodIndex );
+						MeshLodUsage usage = mesh.GetLodLevel(lodIndex);
 
 						usage.EdgeData = new EdgeData();
 
 						// ToDo Assign to usage.EdgeData.IsClosed
-						bool isClosed = ReadBool( reader );
+						bool isClosed = ReadBool(reader);
 
-						int triCount = ReadInt( reader );
-						int edgeGroupCount = ReadInt( reader );
+						int triCount = ReadInt(reader);
+						int edgeGroupCount = ReadInt(reader);
 
 						// TODO: Resize triangle list
 						// TODO: Resize edge groups
 
-						for ( int i = 0; i < triCount; i++ )
+						for (int i = 0; i < triCount; i++)
 						{
 							EdgeData.Triangle tri = new EdgeData.Triangle();
 
-							tri.indexSet = ReadInt( reader );
-							tri.vertexSet = ReadInt( reader );
+							tri.indexSet = ReadInt(reader);
+							tri.vertexSet = ReadInt(reader);
 
-							tri.vertIndex[ 0 ] = ReadInt( reader );
-							tri.vertIndex[ 1 ] = ReadInt( reader );
-							tri.vertIndex[ 2 ] = ReadInt( reader );
+							tri.vertIndex[0] = ReadInt(reader);
+							tri.vertIndex[1] = ReadInt(reader);
+							tri.vertIndex[2] = ReadInt(reader);
 
-							tri.sharedVertIndex[ 0 ] = ReadInt( reader );
-							tri.sharedVertIndex[ 1 ] = ReadInt( reader );
-							tri.sharedVertIndex[ 2 ] = ReadInt( reader );
+							tri.sharedVertIndex[0] = ReadInt(reader);
+							tri.sharedVertIndex[1] = ReadInt(reader);
+							tri.sharedVertIndex[2] = ReadInt(reader);
 
-							tri.normal = ReadVector4( reader );
+							tri.normal = ReadVector4(reader);
 
-							usage.EdgeData.triangles.Add( tri );
+							usage.EdgeData.triangles.Add(tri);
 						}
 
-						for ( int eg = 0; eg < edgeGroupCount; eg++ )
+						for (int eg = 0; eg < edgeGroupCount; eg++)
 						{
-							chunkID = ReadChunk( reader );
+							chunkID = ReadChunk(reader);
 
-							if ( chunkID != MeshChunkID.EdgeListGroup )
+							if (chunkID != MeshChunkID.EdgeListGroup)
 							{
-								throw new AxiomException( "Missing EdgeListGroup chunk." );
+								throw new AxiomException("Missing EdgeListGroup chunk.");
 							}
 
 							EdgeData.EdgeGroup edgeGroup = new EdgeData.EdgeGroup();
 
-							edgeGroup.vertexSet = ReadInt( reader );
+							edgeGroup.vertexSet = ReadInt(reader);
 
-							int egtriStart = ReadInt( reader );
-							int egTriCount = ReadInt( reader );
+							int egtriStart = ReadInt(reader);
+							int egTriCount = ReadInt(reader);
 
-							int edgeCount = ReadInt( reader );
+							int edgeCount = ReadInt(reader);
 
 							// TODO: Resize the edge group list
 
-							for ( int e = 0; e < edgeCount; e++ )
+							for (int e = 0; e < edgeCount; e++)
 							{
 								EdgeData.Edge edge = new EdgeData.Edge();
 
-								edge.triIndex[ 0 ] = ReadInt( reader );
-								edge.triIndex[ 1 ] = ReadInt( reader );
+								edge.triIndex[0] = ReadInt(reader);
+								edge.triIndex[1] = ReadInt(reader);
 
-								edge.vertIndex[ 0 ] = ReadInt( reader );
-								edge.vertIndex[ 1 ] = ReadInt( reader );
+								edge.vertIndex[0] = ReadInt(reader);
+								edge.vertIndex[1] = ReadInt(reader);
 
-								edge.sharedVertIndex[ 0 ] = ReadInt( reader );
-								edge.sharedVertIndex[ 1 ] = ReadInt( reader );
+								edge.sharedVertIndex[0] = ReadInt(reader);
+								edge.sharedVertIndex[1] = ReadInt(reader);
 
-								edge.isDegenerate = ReadBool( reader );
+								edge.isDegenerate = ReadBool(reader);
 
 								// add the edge to the list
-								edgeGroup.edges.Add( edge );
+								edgeGroup.edges.Add(edge);
 							}
 
 							// Populate edgeGroup.vertexData references
 							// If there is shared vertex data, vertexSet 0 is that, 
 							// otherwise 0 is first dedicated
-							if ( mesh.SharedVertexData != null )
+							if (mesh.SharedVertexData != null)
 							{
-								if ( edgeGroup.vertexSet == 0 )
+								if (edgeGroup.vertexSet == 0)
 								{
 									edgeGroup.vertexData = mesh.SharedVertexData;
 								}
 								else
 								{
-									edgeGroup.vertexData = mesh.GetSubMesh( edgeGroup.vertexSet - 1 ).vertexData;
+									edgeGroup.vertexData = mesh.GetSubMesh(edgeGroup.vertexSet - 1).vertexData;
 								}
 							}
 							else
 							{
-								edgeGroup.vertexData = mesh.GetSubMesh( edgeGroup.vertexSet ).vertexData;
+								edgeGroup.vertexData = mesh.GetSubMesh(edgeGroup.vertexSet).vertexData;
 							}
 
 							// add the edge group to the list
-							usage.EdgeData.edgeGroups.Add( edgeGroup );
+							usage.EdgeData.edgeGroups.Add(edgeGroup);
 						}
 					}
 
 					// grab the next chunk
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				}
 
 				// grab the next chunk
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 
 			mesh.IsEdgeListBuilt = true;
 		}
 
-		protected virtual void ReadPoses( BinaryReader reader )
+		protected virtual void ReadPoses(BinaryReader reader)
 		{
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.Pose )
+				while (!IsEOF(reader) &&
+					chunkID == MeshChunkID.Pose)
 				{
 
-					string name = ReadString( reader );
-					ushort target = ReadUShort( reader );
-					Pose pose = mesh.CreatePose( target, name );
+					string name = ReadString(reader);
+					ushort target = ReadUShort(reader);
+					Pose pose = mesh.CreatePose(target, name);
 
-					while ( !IsEOF( reader ) &&
-						   ( chunkID = ReadChunk( reader ) ) == MeshChunkID.PoseVertex )
+					while (!IsEOF(reader) &&
+						   (chunkID = ReadChunk(reader)) == MeshChunkID.PoseVertex)
 					{
 
-						int vertexIndex = ReadInt( reader );
-						Vector3 offset = ReadVector3( reader );
-						pose.VertexOffsetMap[ vertexIndex ] = offset;
+						int vertexIndex = ReadInt(reader);
+						Vector3 offset = ReadVector3(reader);
+						pose.VertexOffsetMap[vertexIndex] = offset;
 					}
 				}
 
 				// grab the next chunk
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected virtual void ReadAnimations( BinaryReader reader )
+		protected virtual void ReadAnimations(BinaryReader reader)
 		{
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.Animation )
+				while (!IsEOF(reader) &&
+					chunkID == MeshChunkID.Animation)
 				{
 
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.Animation:
-							ReadAnimation( reader );
+							ReadAnimation(reader);
 							break;
 					}
-					if ( !IsEOF( reader ) )
-						chunkID = ReadChunk( reader );
+					if (!IsEOF(reader))
+						chunkID = ReadChunk(reader);
 				}
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected void ReadAnimation( BinaryReader reader )
+		protected void ReadAnimation(BinaryReader reader)
 		{
-			string name = ReadString( reader );
-			float length = ReadFloat( reader );
-			Animation anim = mesh.CreateAnimation( name, length );
+			string name = ReadString(reader);
+			float length = ReadFloat(reader);
+			Animation anim = mesh.CreateAnimation(name, length);
 
 			// Read the tracks for this animation
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) &&
-					   chunkID == MeshChunkID.AnimationTrack )
+				MeshChunkID chunkID = ReadChunk(reader);
+				while (!IsEOF(reader) &&
+					   chunkID == MeshChunkID.AnimationTrack)
 				{
 
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.AnimationTrack:
-							ReadAnimationTrack( reader, anim );
+							ReadAnimationTrack(reader, anim);
 							break;
 					}
-					if ( !IsEOF( reader ) )
-						chunkID = ReadChunk( reader );
+					if (!IsEOF(reader))
+						chunkID = ReadChunk(reader);
 				}
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected void ReadAnimationTrack( BinaryReader reader, Animation anim )
+		protected void ReadAnimationTrack(BinaryReader reader, Animation anim)
 		{
-			ushort type = ReadUShort( reader );
-			ushort target = ReadUShort( reader );
+			ushort type = ReadUShort(reader);
+			ushort target = ReadUShort(reader);
 
-			VertexAnimationTrack track = anim.CreateVertexTrack( target,
-																mesh.GetVertexDataByTrackHandle( target ),
-																(VertexAnimationType)type );
+			VertexAnimationTrack track = anim.CreateVertexTrack(target,
+																mesh.GetVertexDataByTrackHandle(target),
+																(VertexAnimationType)type);
 			// Now read the key frames for this track
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) &&
-					   ( chunkID == MeshChunkID.AnimationMorphKeyframe ||
-						chunkID == MeshChunkID.AnimationPoseKeyframe ) )
+				MeshChunkID chunkID = ReadChunk(reader);
+				while (!IsEOF(reader) &&
+					   (chunkID == MeshChunkID.AnimationMorphKeyframe ||
+						chunkID == MeshChunkID.AnimationPoseKeyframe))
 				{
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.AnimationMorphKeyframe:
-							ReadMorphKeyframe( reader, track );
+							ReadMorphKeyframe(reader, track);
 							break;
 						case MeshChunkID.AnimationPoseKeyframe:
-							ReadPoseKeyframe( reader, track );
+							ReadPoseKeyframe(reader, track);
 							break;
 					}
-					if ( !IsEOF( reader ) )
-						chunkID = ReadChunk( reader );
+					if (!IsEOF(reader))
+						chunkID = ReadChunk(reader);
 				}
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected void ReadMorphKeyframe( BinaryReader reader, VertexAnimationTrack track )
+		protected void ReadMorphKeyframe(BinaryReader reader, VertexAnimationTrack track)
 		{
-			float time = ReadFloat( reader );
-			VertexMorphKeyFrame mkf = track.CreateVertexMorphKeyFrame( time );
+			float time = ReadFloat(reader);
+			VertexMorphKeyFrame mkf = track.CreateVertexMorphKeyFrame(time);
 			int vertexCount = track.TargetVertexData.vertexCount;
 			// create/populate vertex buffer
 			VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			decl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+			decl.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
 
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexCount, BufferUsage.Static, true );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer(decl, vertexCount, BufferUsage.Static, true);
 			// lock the buffer for editing
-			IntPtr vertices = buffer.Lock( BufferLocking.Discard );
+			float[] vertices = new float[buffer.Length * sizeof(float)];
+			buffer.GetData(vertices);
+
 			// stuff the floats into the normal buffer
-			ReadFloats( reader, vertexCount * 3, vertices );
+			ReadFloats(reader, vertexCount * 3, vertices);
 			// unlock the buffer to commit
-			buffer.Unlock();
+			buffer.SetData(vertices);
 			mkf.VertexBuffer = buffer;
 		}
 
-		protected void ReadPoseKeyframe( BinaryReader reader, VertexAnimationTrack track )
+		protected void ReadPoseKeyframe(BinaryReader reader, VertexAnimationTrack track)
 		{
-			float time = ReadFloat( reader );
-			VertexPoseKeyFrame vkf = track.CreateVertexPoseKeyFrame( time );
+			float time = ReadFloat(reader);
+			VertexPoseKeyFrame vkf = track.CreateVertexPoseKeyFrame(time);
 
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) &&
-					   chunkID == MeshChunkID.AnimationPoseRef )
+				MeshChunkID chunkID = ReadChunk(reader);
+				while (!IsEOF(reader) &&
+					   chunkID == MeshChunkID.AnimationPoseRef)
 				{
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.AnimationPoseRef:
 							{
-								ushort poseIndex = ReadUShort( reader );
-								float influence = ReadFloat( reader );
-								vkf.AddPoseReference( poseIndex, influence );
+								ushort poseIndex = ReadUShort(reader);
+								float influence = ReadFloat(reader);
+								vkf.AddPoseReference(poseIndex, influence);
 								break;
 							}
 					}
-					if ( !IsEOF( reader ) )
-						chunkID = ReadChunk( reader );
+					if (!IsEOF(reader))
+						chunkID = ReadChunk(reader);
 				}
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
@@ -1765,19 +1800,19 @@ namespace Axiom.Serialization
 		/// <summary>
 		///    Reads attachment point information from the file.
 		/// </summary>
-		protected void ReadAttachmentPoint( BinaryReader reader )
+		protected void ReadAttachmentPoint(BinaryReader reader)
 		{
 			// attachment point name
-			string name = ReadString( reader );
+			string name = ReadString(reader);
 
 			// read and set the position of the bone
-			Vector3 position = ReadVector3( reader );
+			Vector3 position = ReadVector3(reader);
 
 			// read and set the orientation of the bone
-			Quaternion q = ReadQuat( reader );
+			Quaternion q = ReadQuat(reader);
 
 			// create the attachment point
-			AttachmentPoint ap = mesh.CreateAttachmentPoint( name, q, position );
+			AttachmentPoint ap = mesh.CreateAttachmentPoint(name, q, position);
 		}
 
 		#endregion Protected
@@ -1804,67 +1839,67 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		protected override void ReadMeshLodInfo( BinaryReader reader )
+		protected override void ReadMeshLodInfo(BinaryReader reader)
 		{
 			MeshChunkID chunkId;
 
 			// number of lod levels
-			short lodLevelCount = ReadShort( reader );
+			short lodLevelCount = ReadShort(reader);
 
 			// load manual?
-			mesh.IsLodManual = ReadBool( reader );
+			mesh.IsLodManual = ReadBool(reader);
 
 			// preallocate submesh lod face data if not manual
-			if ( !mesh.IsLodManual )
+			if (!mesh.IsLodManual)
 			{
-				for ( int i = 0; i < mesh.SubMeshCount; i++ )
+				for (int i = 0; i < mesh.SubMeshCount; i++)
 				{
-					SubMesh sub = mesh.GetSubMesh( i );
+					SubMesh sub = mesh.GetSubMesh(i);
 
 					// TODO: Create typed collection and implement resize
-					for ( int j = 1; j < lodLevelCount; j++ )
+					for (int j = 1; j < lodLevelCount; j++)
 					{
-						sub.lodFaceList.Add( null );
+						sub.lodFaceList.Add(null);
 					}
 					//sub.lodFaceList.Resize(mesh.lodCount - 1);
 				}
 			}
 
 			// Loop from 1 rather than 0 (full detail index is not in file)
-			for ( int i = 1; i < lodLevelCount; i++ )
+			for (int i = 1; i < lodLevelCount; i++)
 			{
-				chunkId = ReadChunk( reader );
+				chunkId = ReadChunk(reader);
 
-				if ( chunkId != MeshChunkID.MeshLODUsage )
+				if (chunkId != MeshChunkID.MeshLODUsage)
 				{
-					throw new AxiomException( "Missing MeshLodUsage chunk in mesh '{0}'", mesh.Name );
+					throw new AxiomException("Missing MeshLodUsage chunk in mesh '{0}'", mesh.Name);
 				}
 
 				// camera depth
 				MeshLodUsage usage = new MeshLodUsage();
-				usage.Value = ReadFloat( reader );
-				usage.UserValue = Utility.Sqrt( usage.Value );
+				usage.Value = ReadFloat(reader);
+				usage.UserValue = Utility.Sqrt(usage.Value);
 
-				if ( mesh.IsLodManual )
+				if (mesh.IsLodManual)
 				{
-					ReadMeshLodUsageManual( reader, i, ref usage );
+					ReadMeshLodUsageManual(reader, i, ref usage);
 				}
 				else
 				{
-					ReadMeshLodUsageGenerated( reader, i, ref usage );
+					ReadMeshLodUsageGenerated(reader, i, ref usage);
 				}
 
 				// push lod usage onto the mesh lod list
-				mesh.MeshLodUsageList.Add( usage );
+				mesh.MeshLodUsageList.Add(usage);
 			}
-			Debug.Assert( mesh.LodLevelCount == lodLevelCount );
+			Debug.Assert(mesh.LodLevelCount == lodLevelCount);
 		}
 
-		protected override void WriteMeshLodSummary( BinaryWriter writer )
+		protected override void WriteMeshLodSummary(BinaryWriter writer)
 		{
-			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
-			WriteShort( writer, (short)mesh.LodLevelCount );
-			WriteBool( writer, mesh.IsLodManual );
+			WriteChunk(writer, MeshChunkID.MeshLOD, 0);
+			WriteShort(writer, (short)mesh.LodLevelCount);
+			WriteBool(writer, mesh.IsLodManual);
 		}
 
 		#endregion Methods
@@ -1889,127 +1924,127 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		protected override void ReadEdgeList( BinaryReader reader )
+		protected override void ReadEdgeList(BinaryReader reader)
 		{
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.EdgeListLOD )
+				while (!IsEOF(reader) &&
+					chunkID == MeshChunkID.EdgeListLOD)
 				{
 
 					// process single LOD
-					short lodIndex = ReadShort( reader );
+					short lodIndex = ReadShort(reader);
 
 					// If manual, no edge data here, loaded from manual mesh
-					bool isManual = ReadBool( reader );
+					bool isManual = ReadBool(reader);
 
 					// Only load in non-manual levels; others will be connected up by Mesh on demand
-					if ( !isManual )
+					if (!isManual)
 					{
-						MeshLodUsage usage = mesh.GetLodLevel( lodIndex );
+						MeshLodUsage usage = mesh.GetLodLevel(lodIndex);
 
 						usage.EdgeData = new EdgeData();
 
-						int triCount = ReadInt( reader );
-						int edgeGroupCount = ReadInt( reader );
+						int triCount = ReadInt(reader);
+						int edgeGroupCount = ReadInt(reader);
 
 						// TODO: Resize triangle list
 						// TODO: Resize edge groups
 
-						for ( int i = 0; i < triCount; i++ )
+						for (int i = 0; i < triCount; i++)
 						{
 							EdgeData.Triangle tri = new EdgeData.Triangle();
 
-							tri.indexSet = ReadInt( reader );
-							tri.vertexSet = ReadInt( reader );
+							tri.indexSet = ReadInt(reader);
+							tri.vertexSet = ReadInt(reader);
 
-							tri.vertIndex[ 0 ] = ReadInt( reader );
-							tri.vertIndex[ 1 ] = ReadInt( reader );
-							tri.vertIndex[ 2 ] = ReadInt( reader );
+							tri.vertIndex[0] = ReadInt(reader);
+							tri.vertIndex[1] = ReadInt(reader);
+							tri.vertIndex[2] = ReadInt(reader);
 
-							tri.sharedVertIndex[ 0 ] = ReadInt( reader );
-							tri.sharedVertIndex[ 1 ] = ReadInt( reader );
-							tri.sharedVertIndex[ 2 ] = ReadInt( reader );
+							tri.sharedVertIndex[0] = ReadInt(reader);
+							tri.sharedVertIndex[1] = ReadInt(reader);
+							tri.sharedVertIndex[2] = ReadInt(reader);
 
-							tri.normal = ReadVector4( reader );
+							tri.normal = ReadVector4(reader);
 
-							usage.EdgeData.triangles.Add( tri );
+							usage.EdgeData.triangles.Add(tri);
 						}
 
-						for ( int eg = 0; eg < edgeGroupCount; eg++ )
+						for (int eg = 0; eg < edgeGroupCount; eg++)
 						{
-							chunkID = ReadChunk( reader );
+							chunkID = ReadChunk(reader);
 
-							if ( chunkID != MeshChunkID.EdgeListGroup )
+							if (chunkID != MeshChunkID.EdgeListGroup)
 							{
-								throw new AxiomException( "Missing EdgeListGroup chunk." );
+								throw new AxiomException("Missing EdgeListGroup chunk.");
 							}
 
 							EdgeData.EdgeGroup edgeGroup = new EdgeData.EdgeGroup();
 
-							edgeGroup.vertexSet = ReadInt( reader );
+							edgeGroup.vertexSet = ReadInt(reader);
 
-							int edgeCount = ReadInt( reader );
+							int edgeCount = ReadInt(reader);
 
 							// TODO: Resize the edge group list
 
-							for ( int e = 0; e < edgeCount; e++ )
+							for (int e = 0; e < edgeCount; e++)
 							{
 								EdgeData.Edge edge = new EdgeData.Edge();
 
-								edge.triIndex[ 0 ] = ReadInt( reader );
-								edge.triIndex[ 1 ] = ReadInt( reader );
+								edge.triIndex[0] = ReadInt(reader);
+								edge.triIndex[1] = ReadInt(reader);
 
-								edge.vertIndex[ 0 ] = ReadInt( reader );
-								edge.vertIndex[ 1 ] = ReadInt( reader );
+								edge.vertIndex[0] = ReadInt(reader);
+								edge.vertIndex[1] = ReadInt(reader);
 
-								edge.sharedVertIndex[ 0 ] = ReadInt( reader );
-								edge.sharedVertIndex[ 1 ] = ReadInt( reader );
+								edge.sharedVertIndex[0] = ReadInt(reader);
+								edge.sharedVertIndex[1] = ReadInt(reader);
 
-								edge.isDegenerate = ReadBool( reader );
+								edge.isDegenerate = ReadBool(reader);
 
 								// add the edge to the list
-								edgeGroup.edges.Add( edge );
+								edgeGroup.edges.Add(edge);
 							}
 
 							// Populate edgeGroup.vertexData references
 							// If there is shared vertex data, vertexSet 0 is that, 
 							// otherwise 0 is first dedicated
-							if ( mesh.SharedVertexData != null )
+							if (mesh.SharedVertexData != null)
 							{
-								if ( edgeGroup.vertexSet == 0 )
+								if (edgeGroup.vertexSet == 0)
 								{
 									edgeGroup.vertexData = mesh.SharedVertexData;
 								}
 								else
 								{
-									edgeGroup.vertexData = mesh.GetSubMesh( edgeGroup.vertexSet - 1 ).vertexData;
+									edgeGroup.vertexData = mesh.GetSubMesh(edgeGroup.vertexSet - 1).vertexData;
 								}
 							}
 							else
 							{
-								edgeGroup.vertexData = mesh.GetSubMesh( edgeGroup.vertexSet ).vertexData;
+								edgeGroup.vertexData = mesh.GetSubMesh(edgeGroup.vertexSet).vertexData;
 							}
 
 							// add the edge group to the list
-							usage.EdgeData.edgeGroups.Add( edgeGroup );
+							usage.EdgeData.edgeGroups.Add(edgeGroup);
 						}
 					}
 
 					// grab the next chunk
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				}
 
 				// grab the next chunk
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// backpedal to the start of chunk
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 
@@ -2035,188 +2070,194 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		protected override void ReadMesh( BinaryReader reader )
+		protected override void ReadMesh(BinaryReader reader)
 		{
-			base.ReadMesh( reader );
+			base.ReadMesh(reader);
 
 			// always automatically build edge lists for this version
 			mesh.AutoBuildEdgeLists = true;
 		}
 
-		protected override void ReadGeometry( BinaryReader reader, VertexData data )
+		protected override void ReadGeometry(BinaryReader reader, VertexData data)
 		{
 			short texCoordSet = 0;
 
 			short bindIdx = 0;
 
 			data.vertexStart = 0;
-			data.vertexCount = ReadInt( reader );
+			data.vertexCount = ReadInt(reader);
 
-			ReadGeometryPositions( bindIdx++, reader, data );
+			ReadGeometryPositions(bindIdx++, reader, data);
 
-			if ( !IsEOF( reader ) )
+			if (!IsEOF(reader))
 			{
 				// check out the next chunk
-				MeshChunkID chunkID = ReadChunk( reader );
+				MeshChunkID chunkID = ReadChunk(reader);
 
 				// keep going as long as we have more optional buffer chunks
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.GeometryNormals ||
+				while (!IsEOF(reader) &&
+					(chunkID == MeshChunkID.GeometryNormals ||
 					chunkID == MeshChunkID.GeometryColors ||
-					chunkID == MeshChunkID.GeometryTexCoords ) )
+					chunkID == MeshChunkID.GeometryTexCoords))
 				{
 
-					switch ( chunkID )
+					switch (chunkID)
 					{
 						case MeshChunkID.GeometryNormals:
-							ReadGeometryNormals( bindIdx++, reader, data );
+							ReadGeometryNormals(bindIdx++, reader, data);
 							break;
 
 						case MeshChunkID.GeometryColors:
-							ReadGeometryColors( bindIdx++, reader, data );
+							ReadGeometryColors(bindIdx++, reader, data);
 							break;
 
 						case MeshChunkID.GeometryTexCoords:
-							ReadGeometryTexCoords( bindIdx++, reader, data, texCoordSet++ );
+							ReadGeometryTexCoords(bindIdx++, reader, data, texCoordSet++);
 							break;
 
 					} // switch
 
 					// read the next chunk
-					if ( !IsEOF( reader ) )
+					if (!IsEOF(reader))
 					{
-						chunkID = ReadChunk( reader );
+						chunkID = ReadChunk(reader);
 					}
 				} // while
 
-				if ( !IsEOF( reader ) )
+				if (!IsEOF(reader))
 				{
 					// skip back so the continuation of the calling loop can look at the next chunk
 					// since we already read past it
-					Seek( reader, -ChunkOverheadSize );
+					Seek(reader, -ChunkOverheadSize);
 				}
 			}
 		}
 
-		protected virtual void ReadGeometryPositions( short bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryPositions(short bindIdx, BinaryReader reader, VertexData data)
 		{
-			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+			data.vertexDeclaration.AddElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position);
 
 			// vertex buffers
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(data.vertexDeclaration.Clone(bindIdx), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
-			IntPtr posData = vBuffer.Lock( BufferLocking.Discard );
+			float[] posData = new float[vBuffer.Length * sizeof(float)];
+			vBuffer.GetData(posData);
 
 			// ram the floats into the buffer data
-			ReadFloats( reader, data.vertexCount * 3, posData );
+			ReadFloats(reader, data.vertexCount * 3, posData);
 
 			// unlock the buffer
-			vBuffer.Unlock();
+			vBuffer.SetData(posData);
 
 			// bind the position data
-			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
+			data.vertexBufferBinding.SetBinding(bindIdx, vBuffer);
 		}
 
-		protected virtual void ReadGeometryNormals( short bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryNormals(short bindIdx, BinaryReader reader, VertexData data)
 		{
 			// add an element for normals
-			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
+			data.vertexDeclaration.AddElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal);
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(data.vertexDeclaration.Clone(bindIdx), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
 			// lock the buffer for editing
-			IntPtr normals = vBuffer.Lock( BufferLocking.Discard );
+			float[] normals = new float[vBuffer.Length * sizeof(float)];
+			vBuffer.GetData(normals);
 
 			// stuff the floats into the normal buffer
-			ReadFloats( reader, data.vertexCount * 3, normals );
+			ReadFloats(reader, data.vertexCount * 3, normals);
 
 			// unlock the buffer to commit
-			vBuffer.Unlock();
+			vBuffer.SetData(normals);
 
 			// bind this buffer
-			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
+			data.vertexBufferBinding.SetBinding(bindIdx, vBuffer);
 		}
-		protected virtual void ReadGeometryTangents( short bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryTangents(short bindIdx, BinaryReader reader, VertexData data)
 		{
 			// add an element for normals
-			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Tangent );
+			data.vertexDeclaration.AddElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Tangent);
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(data.vertexDeclaration.Clone(bindIdx), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
 			// lock the buffer for editing
-			IntPtr buf = vBuffer.Lock( BufferLocking.Discard );
+			float[] buf = new float[vBuffer.Length * sizeof(float)];
+			vBuffer.GetData(buf);
 
 			// stuff the floats into the buffer
-			ReadFloats( reader, data.vertexCount * 3, buf );
+			ReadFloats(reader, data.vertexCount * 3, buf);
 
 			// unlock the buffer to commit
-			vBuffer.Unlock();
+			vBuffer.SetData(buf);
 
 			// bind this buffer
-			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
+			data.vertexBufferBinding.SetBinding(bindIdx, vBuffer);
 		}
-		protected virtual void ReadGeometryBinormals( short bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryBinormals(short bindIdx, BinaryReader reader, VertexData data)
 		{
 			// add an element for normals
-			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Binormal );
+			data.vertexDeclaration.AddElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Binormal);
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(data.vertexDeclaration.Clone(bindIdx), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
 			// lock the buffer for editing
-			IntPtr buf = vBuffer.Lock( BufferLocking.Discard );
+			float[] buf = new float[vBuffer.Length * sizeof(float)];
+			vBuffer.GetData(buf);
 
 			// stuff the floats into the buffer
-			ReadFloats( reader, data.vertexCount * 3, buf );
+			ReadFloats(reader, data.vertexCount * 3, buf);
 
 			// unlock the buffer to commit
-			vBuffer.Unlock();
+			vBuffer.SetData(buf);
 
 			// bind this buffer
-			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
+			data.vertexBufferBinding.SetBinding(bindIdx, vBuffer);
 		}
 
-		protected virtual void ReadGeometryColors( short bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryColors(short bindIdx, BinaryReader reader, VertexData data)
 		{
 			// add an element for normals
-			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
+			data.vertexDeclaration.AddElement(bindIdx, 0, VertexElementType.Color, VertexElementSemantic.Diffuse);
 
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(data.vertexDeclaration.Clone(bindIdx), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
 			// lock the buffer for editing
-			IntPtr colors = vBuffer.Lock( BufferLocking.Discard );
+			int[] colors = new int[vBuffer.Length * sizeof(int)];
+			vBuffer.GetData(colors);
 
 			// stuff the floats into the normal buffer
-			ReadInts( reader, data.vertexCount, colors );
+			ReadInts(reader, data.vertexCount, colors);
 
 			// unlock the buffer to commit
-			vBuffer.Unlock();
+			vBuffer.SetData(colors);
 
 			// bind this buffer
-			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
+			data.vertexBufferBinding.SetBinding(bindIdx, vBuffer);
 		}
 
-		protected virtual void ReadGeometryTexCoords( short bindIdx, BinaryReader reader, VertexData data, int coordSet )
+		protected virtual void ReadGeometryTexCoords(short bindIdx, BinaryReader reader, VertexData data, int coordSet)
 		{
 			// get the number of texture dimensions (1D, 2D, 3D, etc)
-			short dim = ReadShort( reader );
+			short dim = ReadShort(reader);
 
 			// add a vertex element for the current tex coord set
-			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ), VertexElementSemantic.TexCoords, coordSet );
+			data.vertexDeclaration.AddElement(bindIdx, 0, VertexElement.MultiplyTypeCount(VertexElementType.Float1, dim), VertexElementSemantic.TexCoords, coordSet);
 
 			// create the vertex buffer for the tex coords
-			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(data.vertexDeclaration.Clone(bindIdx), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
 			// lock the vertex buffer
-			IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
+			float[] texCoords = new float[vBuffer.Length * sizeof(float)];
+			vBuffer.GetData(texCoords);
 
 			// blast the tex coord data into the buffer
-			ReadFloats( reader, data.vertexCount * dim, texCoords );
+			ReadFloats(reader, data.vertexCount * dim, texCoords);
 
 			// unlock the buffer to commit
-			vBuffer.Unlock();
+			vBuffer.SetData(texCoords);
 
 			// bind the tex coord buffer
-			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
+			data.vertexBufferBinding.SetBinding(bindIdx, vBuffer);
 		}
 
 		#endregion Methods
@@ -2238,7 +2279,7 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		protected override void ReadGeometryTexCoords( short bindIdx, BinaryReader reader, VertexData data, int coordSet )
+		protected override void ReadGeometryTexCoords(short bindIdx, BinaryReader reader, VertexData data, int coordSet)
 		{
 			// get the number of texture dimensions (1D, 2D, 3D, etc)
 			ushort dim = ReadUShort( reader );
@@ -2254,31 +2295,25 @@ namespace Axiom.Serialization
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ), data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			// lock the vertex buffer
-			IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
+			float[] pTex = new float[vBuffer.Length * sizeof(float)];
 
 			// blast the tex coord data into the buffer
-			ReadFloats( reader, data.vertexCount * dim, texCoords );
+			vBuffer.GetData(pTex);
 
 			// Adjust individual v values to (1 - v)
 			if ( dim == 2 )
 			{
 				int count = 0;
-
-				unsafe
-				{
-					float* pTex = (float*)texCoords.ToPointer();
-
 					for ( int i = 0; i < data.vertexCount; i++ )
 					{
 						count++; // skip u
 						pTex[ count ] = 1.0f - pTex[ count ]; // v = 1 - v
 						count++;
 					}
-				}
 			}
 
 			// unlock the buffer to commit
-			vBuffer.Unlock();
+			vBuffer.SetData(pTex);
 
 			// bind the tex coord buffer
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
