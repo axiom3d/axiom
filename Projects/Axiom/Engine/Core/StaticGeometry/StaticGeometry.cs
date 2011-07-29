@@ -602,7 +602,7 @@ namespace Axiom.Core
 				}
 				Debug.Assert( geomLink.vertexData.vertexStart == 0,
 					"Cannot use vertexStart > 0 on indexed geometry due to " +
-					"rendersystem incompatibilities - see the docs!" );
+					"render system incompatibilities - see the docs!" );
 			}
 			return lodList;
 		}
