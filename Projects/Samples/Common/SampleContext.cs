@@ -466,7 +466,7 @@ namespace Axiom.Samples
 #endif
 			pl.Add( new SIS.Parameter( "x11_keyboard_grab", false ) );
 			pl.Add( new SIS.Parameter( "x11_mouse_grab", false ) );
-			pl.Add( new SIS.Parameter( "x11_mouse_hide", false ) );
+			pl.Add( new SIS.Parameter( "x11_mouse_hide", true ) );
 
 			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
 
@@ -483,7 +483,7 @@ namespace Axiom.Samples
 		protected virtual void CreateInputDevices()
 		{
 #if !(XBOX || XBOX360 )
-			this.Keyboard = this.InputManager.CreateInputObject<SIS.Keyboard>( true, "" );
+			this.Keyboard = this.InputManager.CreateInputObject<SIS.Keyboard>( true, String.Empty );
 			this.Mouse = this.InputManager.CreateInputObject<SIS.Mouse>( true, String.Empty );
 
 			this.Keyboard.EventListener = this;

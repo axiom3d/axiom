@@ -164,7 +164,7 @@ namespace Axiom.Framework.Configuration
 			this.lstOptions.ItemHeight = 14;
 			this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
 			this.lstOptions.Name = "lstOptions";
-			this.lstOptions.Size = new System.Drawing.Size( 407, 150 );
+			this.lstOptions.Size = new System.Drawing.Size( 407, 138 );
 			this.lstOptions.TabIndex = 0;
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
 			// 
