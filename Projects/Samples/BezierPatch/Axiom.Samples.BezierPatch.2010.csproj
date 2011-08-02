@@ -77,10 +77,12 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.2010</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

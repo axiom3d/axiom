@@ -42,56 +42,56 @@ using System.Collections.Generic;
 namespace Axiom.Graphics.Collections
 {
 	/// <summary>
-	///     Generics: List<VertexElement>
+	///     Generics: List&lt;VertexElement&gt;
 	/// </summary>
 	public class VertexElementList : List<VertexElement>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<TextureEffect>
+	///     Generics: List&lt;TextureEffect&lt;
 	/// </summary>
 	public class TextureEffectList : List<TextureEffect>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<RenderTexture>
+	///     Generics: List&lt;RenderTexture&gt;
 	/// </summary>
 	public class RenderTextureList : List<RenderTexture>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<Pass>
+	///     Generics: List&lt;Pass&gt;
 	/// </summary>
 	public class PassList : List<Pass>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<Technique>
+	///     Generics: List&lt;Technique&gt;
 	/// </summary>
 	public class TechniqueList : List<Technique>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<TextureUnitState>
+	///     Generics: List&lt;TextureUnitState&gt;
 	/// </summary>
 	public class TextureUnitStateList : List<TextureUnitState>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<AutoConstantEntry>
+	///     Generics: List&lt;AutoConstantEntry&gt;
 	/// </summary>
 	public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<AutoConstantEntry>
+	///     Generics: List&gt;AutoConstantEntry&lt;
 	/// </summary>
 	public class FloatConstantEntryList : List<GpuProgramParameters.FloatConstantEntry>
 	{
@@ -105,7 +105,7 @@ namespace Axiom.Graphics.Collections
 	}
 
 	/// <summary>
-	///     Generics: List<AutoConstantEntry>
+	///     Generics: List&lt;AutoConstantEntry&gt;
 	/// </summary>
 	public class IntConstantEntryList : List<GpuProgramParameters.IntConstantEntry>
 	{
@@ -119,56 +119,56 @@ namespace Axiom.Graphics.Collections
 	}
 
 	/// <summary>
-	///     Generics: List<IRenderable>
+	///     Generics: List&lt;IRenderable&gt;
 	/// </summary>
 	public class RenderableList : List<IRenderable>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<EdgeData.Triangle>
+	///     Generics: List&lt;EdgeData.Triangle&gt;
 	/// </summary>
 	public class TriangleList : List<EdgeData.Triangle>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<EdgeData.Edge>
+	///     Generics: List&lt;EdgeData.Edge&gt;
 	/// </summary>
 	public class EdgeList : List<EdgeData.Edge>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<EdgeData.EdgeGroup>
+	///     Generics: List&lt;EdgeData.EdgeGroup&gt;
 	/// </summary>
 	public class EdgeGroupList : List<EdgeData.EdgeGroup>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<VertexData>
+	///     Generics: List&lt;VertexData&gt;
 	/// </summary>
 	public class VertexDataList : List<VertexData>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<IndexData>
+	///     Generics: List&lt;IndexData&gt;
 	/// </summary>
 	public class IndexDataList : List<IndexData>
 	{
 	}
 
 	/// <summary>
-	///     Generics: List<ShadowRenderable>
+	///     Generics: List&lt;ShadowRenderable&gt;
 	/// </summary>
 	public class ShadowRenderableList : List<ShadowRenderable>
 	{
 	}
 
 	/// <summary>
-	///		Generics: List<RenderOperation>
+	///		Generics: List&lt;RenderOperation>&gt;
 	/// </summary>
 	public class OperationTypeList : List<OperationType>
 	{

@@ -1099,9 +1099,7 @@ namespace Axiom.RenderSystems.DirectX9
 				return;
 			}
 
-			// Don't call the class base implementation first, since
-			// we can compute the equivalent faster without calling it
-			// base.Render(op);
+			base.Render( op );
 
 			SetVertexDeclaration( op.vertexData.vertexDeclaration );
 			SetVertexBufferBinding( op.vertexData.vertexBufferBinding );
@@ -2122,9 +2120,9 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
 		{
 			// set the device sampler states accordingly
-            device.SetSamplerState( stage, D3D.SamplerState.AddressU, D3DHelper.ConvertEnum( uvw.U ) );
-            device.SetSamplerState( stage, D3D.SamplerState.AddressV, D3DHelper.ConvertEnum( uvw.V ) );
-            device.SetSamplerState( stage, D3D.SamplerState.AddressW, D3DHelper.ConvertEnum( uvw.W ) );
+			device.SetSamplerState( stage, D3D.SamplerState.AddressU, D3DHelper.ConvertEnum( uvw.U ) );
+			device.SetSamplerState( stage, D3D.SamplerState.AddressV, D3DHelper.ConvertEnum( uvw.V ) );
+			device.SetSamplerState( stage, D3D.SamplerState.AddressW, D3DHelper.ConvertEnum( uvw.W ) );
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )

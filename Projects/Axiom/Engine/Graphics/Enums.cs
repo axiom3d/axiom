@@ -813,17 +813,21 @@ namespace Axiom.Graphics
 		/// <summary></summary>
 		[ScriptEnum( "dest_colour" )]
 		[ScriptEnum( "dest_color" )]
+		[ScriptEnum( "dest_color" )]
 		DestColor,
 		/// <summary></summary>
 		[ScriptEnum( "src_colour" )]
+		[ScriptEnum( "src_color" )]
 		[ScriptEnum( "src_color" )]
 		SourceColor,
 		/// <summary></summary>
 		[ScriptEnum( "one_minus_dest_colour" )]
 		[ScriptEnum( "one_minus_dest_color" )]
+		[ScriptEnum( "one_minus_dest_color" )]
 		OneMinusDestColor,
 		/// <summary></summary>
 		[ScriptEnum( "one_minus_src_colour" )]
+		[ScriptEnum( "one_minus_src_color" )]
 		[ScriptEnum( "one_minus_src_color" )]
 		OneMinusSourceColor,
 		/// <summary></summary>

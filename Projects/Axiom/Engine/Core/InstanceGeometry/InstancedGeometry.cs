@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Linq;
 
 using Axiom.Animating;
 using Axiom.Graphics;
@@ -584,6 +585,31 @@ namespace Axiom.Core.InstanceGeometry
 
 
 		BatchInstance mInstancedGeometryInstance;
+		public BatchInstance InstancedGeometryInstance
+		{
+			get
+			{
+				if ( mInstancedGeometryInstance == null )
+				{
+					int index = 0;
+					// Make a name
+					StringBuilder str = new StringBuilder();
+					str.AppendFormat( "{0}:{1}", mName, index );
+
+					mInstancedGeometryInstance = new BatchInstance( /* this, str.ToString(), mOwner, index */);
+					mOwner.InjectMovableObject( mInstancedGeometryInstance );
+					mInstancedGeometryInstance.IsVisible = mVisible;
+					mInstancedGeometryInstance.CastShadows = mCastShadows;
+					if ( mRenderQueueIDSet )
+					{
+						mInstancedGeometryInstance.RenderQueueGroup = (RenderQueueGroupID)mRenderQueueID;
+					}
+					mBatchInstanceMap.Add( index, mInstancedGeometryInstance );
+				}
+				return mInstancedGeometryInstance;
+			}
+		}
+
 		/// <summary>
 		/// this is just a pointer to the base skeleton that will be used for each animated object in the batches
 		/// This pointer has a value only during the creation of the InstancedGeometry
@@ -611,6 +637,13 @@ namespace Axiom.Core.InstanceGeometry
 		/// Map of BatchInstances
 		/// </summary>
 		Dictionary<int, BatchInstance> mBatchInstanceMap = new Dictionary<int, BatchInstance>();
+		public IEnumerable<BatchInstance> BatchInstances
+		{
+			get
+			{
+				return mBatchInstanceMap.Values;
+			}
+		}
 		/// <summary>
 		/// This vector stores all the renderOperation used in the batch. 
 		/// </summary>
@@ -747,6 +780,68 @@ namespace Axiom.Core.InstanceGeometry
 				SceneNode sceneNode = (SceneNode)iter;
 				AddSceneNode( sceneNode );
 			}
+		}
+
+		/// <summary>
+		/// Build the geometry. 
+		/// </summary>
+		/// <remarks>
+		/// Based on all the entities which have been added, and the batching
+		/// options which have been set, this method constructs the batched
+		/// geometry structures required. The batches are added to the scene
+		/// and will be rendered unless you specifically hide them.
+		/// </remarks>
+		public void Build()
+		{
+			// Make sure there's nothing from previous builds
+			Destroy();
+
+			// Firstly allocate meshes to BatchInstances
+			foreach ( QueuedSubMesh qsm in mQueuedSubMeshes )
+			{
+				BatchInstance batchInstance = InstancedGeometryInstance;
+				//batchInstance.Assign(qsm);
+			}
+
+			// Now tell each BatchInstance to build itself
+			foreach ( KeyValuePair<int, BatchInstance> item in mBatchInstanceMap )
+			{
+				//item.Value.Build();
+			}
+
+		}
+
+		/// <summary>
+		/// Destroys all the built geometry state (reverse of build).
+		/// </summary>
+		/// <remarks>
+		/// You can call <see cref="Build"/> again after this and it will pick up all the
+		/// same entities / nodes you queued last time.
+		/// </remarks>
+		public void Destroy()
+		{
+
+		}
+
+		/// <summary>
+		/// Add a new batch instance
+		/// </summary>
+		/// <remarks>
+		/// This method add a new instance of the whole batch, by creating a new 
+		/// BatchInstance, containing new lod buckets, material buckets and geometry buckets.
+		/// The new geometry buckets will use the same buffers as the base bucket.
+		/// </remarks>
+		public void AddBatchInstance()
+		{
+			BatchInstance lastBatchInstance = BatchInstances.Last();
+			uint index = lastBatchInstance != null ? lastBatchInstance.ID + 1 : 0;
+			//BatchInstance newInstance = new BatchInstance( this, mName + ":" + index.ToString(), mOwner, index );
+
+			//newInstance.AttachToScene();
+			//mOwner.InjectMovableObject(newInstance);
+			//newInstance.IsVisible = mVisible;
+			//newInstance.CastShadows = mCastShadows;
+			//mBatchInstanceMap[(int)index] = newInstance;
 		}
 
 		/// <summary>
@@ -1063,7 +1158,7 @@ namespace Axiom.Core.InstanceGeometry
 		/// <summary>
 		/// Hides or shows all the batches.
 		/// </summary>
-		public virtual bool Visible
+		public virtual bool IsVisible
 		{
 			get
 			{

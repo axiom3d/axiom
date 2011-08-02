@@ -70,7 +70,7 @@ namespace Axiom.Framework
 			Engine = new Root( ConfigurationManager.LogFilename );
 
 			// add event handlers for frame events
-			Engine.FrameStarted += Engine_FrameRenderingQueued;
+			Engine.FrameRenderingQueued += Engine_FrameRenderingQueued;
 		}
 		
 		public virtual void LoadConfiguration()

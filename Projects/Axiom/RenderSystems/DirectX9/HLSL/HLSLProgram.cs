@@ -547,6 +547,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					optimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof( OptimizationLevel ) );
 					break;
 
+                case "includes_skeletal_animation":
+                    this.IsSkeletalAnimationIncluded = true;
+                    break;
 				default:
 					LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
 					handled = false;

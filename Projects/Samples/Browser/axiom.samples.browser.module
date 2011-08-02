@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Framework>$(Framework)</Framework>
     <ProjectBase>Axiom.Samples.Browser</ProjectBase>
-    <ProjectFile Condition="'$(Framework)'=='DotNet'">$(ProjectBase).Win32.csproj</ProjectFile>
+    <ProjectFile Condition="'$(Framework)|$(Platform)'=='DotNet|x86'">$(ProjectBase).Win32.csproj</ProjectFile>
     <ProjectFile Condition="'$(Framework)'=='Mono'">$(ProjectBase).Linux.csproj</ProjectFile>
-    <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
+    <!--ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile-->
     <ImagePath Condition="'$(Framework)'=='DotNet'">samples\Net35</ImagePath>
     <ImagePath Condition="'$(Framework)'=='Mono'">samples\Mono</ImagePath>
-    <ImagePath Condition="'$(Platform)'=='Xbox'">samples\Xbox</ImagePath>
+    <!--ImagePath Condition="'$(Platform)'=='Xbox'">samples\Xbox</ImagePath-->
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
   </PropertyGroup>
 
@@ -30,7 +30,7 @@
     
     <!-- Binary Dependencies -->
 
-    <!-- PLatform Manager -->
+    <!-- Platform Manager -->
     
     <File Include="$(ImageDir)\bin\$(Platform)\$(Configuration)\Axiom.Platforms.Win32.dll" Condition="'$(Framework)'=='DotNet'">
       <ImagePath>$(ImagePath)</ImagePath>

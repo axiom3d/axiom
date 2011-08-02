@@ -56,7 +56,7 @@ namespace Axiom.Samples.DynamicTexture
 			Metadata[ "Description" ] = "Demonstrates how to create and use dynamically changing textures.";
 			Metadata[ "Thumbnail" ] = "thumb_dyntex.png";
 			Metadata[ "Category" ] = "Unsorted";
-			Metadata["Help"] = "Use the left mouse button to wipe away the frost. It's cold though, so the frost will return after a while.";
+			Metadata[ "Help" ] = "Use the left mouse button to wipe away the frost. It's cold though, so the frost will return after a while.";
 		}
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
@@ -69,7 +69,7 @@ namespace Axiom.Samples.DynamicTexture
 			if ( result.Count != 0 )
 			{
 				// using the point of intersection, find the corresponding texel on our texture
-				Vector3 pt = ray.GetPoint( result[ result.Count - 1].Distance );
+				Vector3 pt = ray.GetPoint( result[ result.Count - 1 ].Distance );
 				mBrushPos = ( ( new Vector2( pt.x, -pt.y ) ) * ( 1.0f / mPlaneSize ) + ( new Vector2( 0.5, 0.5 ) ) ) * TEXTURE_SIZE;
 			}
 
@@ -209,7 +209,7 @@ namespace Axiom.Samples.DynamicTexture
 		protected override void CleanupContent()
 		{
 			TextureManager.Instance.Remove( "thaw" );
-            ParticleSystemManager.Instance.RemoveSystem( "Snow" );
+			ParticleSystemManager.Instance.RemoveSystem( "Snow" );
 		}
 	}
 }

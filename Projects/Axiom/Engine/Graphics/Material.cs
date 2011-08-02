@@ -1013,20 +1013,20 @@ namespace Axiom.Graphics
 			this._compilationRequired = true;
 		}
 
-        /// <see cref="ApplyTextureAliases(Dictionary&lt;string,string&gt, bool)"/>
-        public bool ApplyTextureAliases( Dictionary<string, string> aliasList )
-        {
-            return ApplyTextureAliases( aliasList, true );
-        }
+		/// <see cref="ApplyTextureAliases(Dictionary&lt;string,string&gt, bool)"/>
+		public bool ApplyTextureAliases( Dictionary<string, string> aliasList )
+		{
+			return ApplyTextureAliases( aliasList, true );
+		}
 
-        /// <summary>
-        /// Applies texture names to Texture Unit State with matching texture name aliases.
-        /// All techniques, passes, and Texture Unit States within the material are checked.
-        /// If matching texture aliases are found then true is returned.
-        /// </summary>
-        /// <param name="aliasList">is a map container of texture alias, texture name pairs</param>
-        /// <param name="apply">set true to apply the texture aliases else just test to see if texture alias matches are found.</param>
-        /// <returns>True if matching texture aliases were found in the material.</returns>
+		/// <summary>
+		/// Applies texture names to Texture Unit State with matching texture name aliases.
+		/// All techniques, passes, and Texture Unit States within the material are checked.
+		/// If matching texture aliases are found then true is returned.
+		/// </summary>
+		/// <param name="aliasList">is a map container of texture alias, texture name pairs</param>
+		/// <param name="apply">set true to apply the texture aliases else just test to see if texture alias matches are found.</param>
+		/// <returns>True if matching texture aliases were found in the material.</returns>
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
 			// iterate through all techniques and apply texture aliases
@@ -1431,8 +1431,8 @@ namespace Axiom.Graphics
 				{
 					this.RemoveAllTechniques();
 
-                    if ( this.IsLoaded )
-                        this.unload();
+					if ( this.IsLoaded )
+						this.unload();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -1467,5 +1467,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Object overloads
-    }
+	}
 }

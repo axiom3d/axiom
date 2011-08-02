@@ -52,7 +52,7 @@ namespace Axiom.Overlays
 	/// 	<p/>
 	/// 	Each OverlayElementFactory creates a single type of OverlayElement, 
 	/// 	identified by a 'type name' which must be unique.
-	/// </summary>
+	/// </remarks>
 	public interface IOverlayElementFactory
 	{
 		#region Methods

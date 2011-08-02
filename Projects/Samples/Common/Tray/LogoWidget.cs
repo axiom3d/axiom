@@ -41,16 +41,7 @@ namespace Axiom.Samples
 		public LogoWidget( string name, string typeName, string templateName )
 			: base( name, typeName, templateName )
 		{
-			element = OverlayManager.Instance.Elements.CreateElement( typeName, name );
-			element.MetricsMode = MetricsMode.Pixels;
-			element.MaterialName = "SdkTrays/Logo";
-			element.HorizontalAlignment = HorizontalAlignment.Center;
-			element.Width = 128;
-			element.Height = 39;
-			element.Enabled = true;
-			element.IsVisible = true;
-			element.Text = "Test";
-			element.Material.Load();
+			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( templateName, typeName, name );
 		}
 		#endregion construction
 	}

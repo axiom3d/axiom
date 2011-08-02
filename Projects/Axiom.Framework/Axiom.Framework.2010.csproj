@@ -82,10 +82,11 @@
     <Reference Include="System.Configuration" />
     <Reference Include="SharpInputSystem.Core, Version=0.4.0.28422, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\X11\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AxiomEnvironment.cs" />
     <Compile Include="Configuration\AxiomConfigurationSection.csd.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

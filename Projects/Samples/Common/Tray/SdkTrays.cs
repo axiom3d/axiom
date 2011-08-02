@@ -672,13 +672,13 @@ namespace Axiom.Samples
 		/// </summary>
 		public void RefreshCursor()
 		{
-            int cursorX = 0, cursorY = 0;
-            if (Mouse != null)
-            { 
-                cursorX = Mouse.MouseState.X.Absolute;
-                cursorY = Mouse.MouseState.Y.Absolute;
-            }
-            cursor.SetPosition( cursorX , cursorY );
+			int cursorX = 0, cursorY = 0;
+			if ( Mouse != null )
+			{
+				cursorX = Mouse.MouseState.X.Absolute;
+				cursorY = Mouse.MouseState.Y.Absolute;
+			}
+			cursor.SetPosition( cursorX, cursorY );
 		}
 
 		/// <summary>
@@ -1945,7 +1945,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// This event is fired when the script has been fully parsed.
 		/// </summary>
-		public void ScriptParseEnded(string scriptName, bool skipped)
+		public void ScriptParseEnded( string scriptName, bool skipped )
 		{
 			LoadBar.Progress = LoadBar.Progress + loadInc;
 			mWindow.Update();
@@ -2054,37 +2054,37 @@ namespace Axiom.Samples
 		{
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="groupName"></param>
-        public void ResourceGroupPrepareEnded( string groupName )
-        {
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="groupName"></param>
+		public void ResourceGroupPrepareEnded( string groupName )
+		{
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void ResourcePrepareEnded()
-        {
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public void ResourcePrepareEnded()
+		{
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="resource"></param>
-        public void ResourcePrepareStarted( Resource resource )
-        {
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="resource"></param>
+		public void ResourcePrepareStarted( Resource resource )
+		{
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="groupName"></param>
-        /// <param name="resourceCount"></param>
-        public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
-        {
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="groupName"></param>
+		/// <param name="resourceCount"></param>
+		public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
+		{
+		}
 
 		#endregion
 

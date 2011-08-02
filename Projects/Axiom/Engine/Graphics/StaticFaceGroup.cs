@@ -53,8 +53,8 @@ namespace Axiom.Graphics
 	///     held in the SubMesh class, for immovable objects like scenery there
 	///     needs to ba little more flexibility in the grouping since the group is
 	///     likely to be a small part of a huge set of geometry. In addition, because
-	///     the faces are unmoving certain optimisations can be performed, e.g.
-	///     precalculating a world-coordinate bounding box and normal.
+	///     the faces are unmoving certain optimizations can be performed, e.g.
+	///     pre-calculating a world-coordinate bounding box and normal.
 	///     <p/>
 	///     Exactly how this class is used depends on the format of the large
 	///     static geometry used in the level. An example would be the use of this
@@ -63,7 +63,7 @@ namespace Axiom.Graphics
 	///     details of the vertices itself, or in fact that it holds the vertex indices
 	///     itself. Everything is manipulated via pointers so if you want this
 	///     class to point into a block of geometry data it can.
-	/// </summary>
+	/// </remarks>
 	public class StaticFaceGroup
 	{
 		/// <summary>

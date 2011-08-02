@@ -55,7 +55,7 @@ namespace Axiom.Graphics
 	{
 		#region Constants and Enumerations
 		/// <summary>
-        /// illumination pass state type
+		/// illumination pass state type
 		/// </summary>
 		protected enum IlluminationPassesCompilationPhase
 		{
@@ -64,112 +64,120 @@ namespace Axiom.Graphics
 			Compiled = 1
 		}
 
-        /// <summary>
-        /// Rule controlling whether technique is deemed supported based on GPU vendor
-        /// </summary>
-        public struct GPUVendorRule
-        {
-            public GPUVendor Vendor { get; set; }
-            public bool Include { get; set; }
+		/// <summary>
+		/// Rule controlling whether technique is deemed supported based on GPU vendor
+		/// </summary>
+		public struct GPUVendorRule
+		{
+			public GPUVendor Vendor
+			{
+				get;
+				set;
+			}
+			public bool Include
+			{
+				get;
+				set;
+			}
 
-            public GPUVendorRule( GPUVendor v, bool ie )
-                : this()
-            {
-                Vendor = v;
-                Include = ie;
-            }
+			public GPUVendorRule( GPUVendor v, bool ie )
+				: this()
+			{
+				Vendor = v;
+				Include = ie;
+			}
 
-            #region System.Object overrides
+			#region System.Object overrides
 
-            public override bool Equals( object obj )
-            {
-                if ( obj == null )
-                    return false;
+			public override bool Equals( object obj )
+			{
+				if ( obj == null )
+					return false;
 
-                if ( !( obj is GPUVendorRule ) )
-                    return false;
+				if ( !( obj is GPUVendorRule ) )
+					return false;
 
-                GPUVendorRule v = (GPUVendorRule)obj;
+				GPUVendorRule v = (GPUVendorRule)obj;
 
-                return ( v.Vendor == Vendor ) && ( v.Include == Include );
-            }
+				return ( v.Vendor == Vendor ) && ( v.Include == Include );
+			}
 
-            public override int GetHashCode()
-            {
-                return Vendor.GetHashCode();
-            }
-            #endregion System.Object overrides
+			public override int GetHashCode()
+			{
+				return Vendor.GetHashCode();
+			}
+			#endregion System.Object overrides
 
-            public static bool operator ==( GPUVendorRule a, GPUVendorRule b )
-            {
-                if ( Object.ReferenceEquals( a, b ) )
-                    return true;
+			public static bool operator ==( GPUVendorRule a, GPUVendorRule b )
+			{
+				if ( Object.ReferenceEquals( a, b ) )
+					return true;
 
-                return ( a.Vendor == b.Vendor ) && ( a.Include == b.Include );
-            }
+				return ( a.Vendor == b.Vendor ) && ( a.Include == b.Include );
+			}
 
-            public static bool operator !=( GPUVendorRule a, GPUVendorRule b )
-            {
-                return !( a == b );
-            }
-        };
+			public static bool operator !=( GPUVendorRule a, GPUVendorRule b )
+			{
+				return !( a == b );
+			}
+		};
 
-        /// <summary>
-        /// Rule controlling whether technique is deemed supported based on GPU device name
-        /// </summary>
-        public struct GPUDeviceNameRule
-        {
-            public string DevicePattern;
+		/// <summary>
+		/// Rule controlling whether technique is deemed supported based on GPU device name
+		/// </summary>
+		public struct GPUDeviceNameRule
+		{
+			public string DevicePattern;
 
-            public bool Include;
+			public bool Include;
 
-            public bool CaseSensitive;
+			public bool CaseSensitive;
 
-            public GPUDeviceNameRule( string pattern, bool ie, bool caseSen )
-                : this()
-            {
-                DevicePattern = pattern;
-                Include = ie;
-                CaseSensitive = caseSen;
-            }
+			public GPUDeviceNameRule( string pattern, bool ie, bool caseSen )
+				: this()
+			{
+				DevicePattern = pattern;
+				Include = ie;
+				CaseSensitive = caseSen;
+			}
 
-            #region System.Object overrides
+			#region System.Object overrides
 
-            public override bool Equals( object obj )
-            {
-                if ( obj == null )
-                    return false;
+			public override bool Equals( object obj )
+			{
+				if ( obj == null )
+					return false;
 
-                if ( !( obj is GPUDeviceNameRule ) )
-                    return false;
+				if ( !( obj is GPUDeviceNameRule ) )
+					return false;
 
-                GPUDeviceNameRule d = (GPUDeviceNameRule)obj;
+				GPUDeviceNameRule d = (GPUDeviceNameRule)obj;
 
-                return ( d.DevicePattern == DevicePattern ) && ( d.Include == Include ) && ( d.CaseSensitive == CaseSensitive );
-            }
+				return ( d.DevicePattern == DevicePattern ) && ( d.Include == Include ) && ( d.CaseSensitive == CaseSensitive );
+			}
 
-            public override int GetHashCode()
-            {
-                if ( DevicePattern != null )
-                    return DevicePattern.GetHashCode();
+			public override int GetHashCode()
+			{
+				if ( DevicePattern != null )
+					return DevicePattern.GetHashCode();
 
-                return base.GetHashCode();
-            }
-            #endregion System.Object overrides
+				return base.GetHashCode();
+			}
+			#endregion System.Object overrides
 
-            public static bool operator ==( GPUDeviceNameRule a, GPUDeviceNameRule b )
-            {
-                if ( Object.ReferenceEquals( a, b ) )
-                    return true;
+			public static bool operator ==( GPUDeviceNameRule a, GPUDeviceNameRule b )
+			{
+				if ( Object.ReferenceEquals( a, b ) )
+					return true;
 
-                return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) && ( a.CaseSensitive == b.CaseSensitive );
-            }
+				return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) && ( a.CaseSensitive == b.CaseSensitive );
+			}
 
-            public static bool operator !=( GPUDeviceNameRule a, GPUDeviceNameRule b )
-            {
-                return !( a == b );
-            }
-        };
+			public static bool operator !=( GPUDeviceNameRule a, GPUDeviceNameRule b )
+			{
+				return !( a == b );
+			}
+		};
 
 		#endregion Constants and Enumerations
 
@@ -180,8 +188,8 @@ namespace Axiom.Graphics
 		/// </summary>
 		private List<Pass> _passes = new List<Pass>();
 
-        protected List<GPUVendorRule> _GPUVendorRules = new List<GPUVendorRule>();
-        protected List<GPUDeviceNameRule> _GPUDeviceNameRules = new List<GPUDeviceNameRule>();
+		protected List<GPUVendorRule> _GPUVendorRules = new List<GPUVendorRule>();
+		protected List<GPUDeviceNameRule> _GPUDeviceNameRules = new List<GPUDeviceNameRule>();
 
 		#region IlluminationPasses Property
 		IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
@@ -807,7 +815,7 @@ namespace Axiom.Graphics
 
 			set
 			{
-                _schemeName = value;
+				_schemeName = value;
 				_schemeIndex = MaterialManager.Instance.GetSchemeIndex( _schemeName );
 			}
 		}
@@ -1560,45 +1568,45 @@ namespace Axiom.Graphics
 
 		#endregion
 
-        /// <summary>
-        /// Add a rule which manually influences the support for this technique based
-	    /// on a GPU vendor.
-        /// </summary>
-        /// <remarks>
-        /// You can use this facility to manually control whether a technique is
-	    /// considered supported, based on a GPU vendor. You can add inclusive
+		/// <summary>
+		/// Add a rule which manually influences the support for this technique based
+		/// on a GPU vendor.
+		/// </summary>
+		/// <remarks>
+		/// You can use this facility to manually control whether a technique is
+		/// considered supported, based on a GPU vendor. You can add inclusive
 		/// or exclusive rules, and you can add as many of each as you like. If
 		///	at least one inclusive rule is added, a	technique is considered 
 		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
 		///	added, the technique is considered unsupported if it matches any of
 		///	those inclusive rules.
-        ///	Note that any rule for the same vendor will be removed before adding this one.
-        ///	/// </remarks>
-        /// <param name="rule"></param>
-        internal void AddGPUVenderRule( GPUVendorRule rule )
-        {
-            // remove duplicates
-            RemoveGPUVendorRule( rule );
-            _GPUVendorRules.Add( rule );
-        }
+		///	Note that any rule for the same vendor will be removed before adding this one.
+		///	/// </remarks>
+		/// <param name="rule"></param>
+		internal void AddGPUVenderRule( GPUVendorRule rule )
+		{
+			// remove duplicates
+			RemoveGPUVendorRule( rule );
+			_GPUVendorRules.Add( rule );
+		}
 
-        /// <summary>
-        /// Removes a matching vendor rule.
-        /// </summary>
-        /// <see cref="AddGPUVenderRule"/>
-        /// <param name="rule"></param>
-        internal void RemoveGPUVendorRule( GPUVendorRule rule )
-        {
-            if ( _GPUVendorRules.Contains( rule ) )
-                _GPUVendorRules.Remove( rule );
-        }
+		/// <summary>
+		/// Removes a matching vendor rule.
+		/// </summary>
+		/// <see cref="AddGPUVenderRule"/>
+		/// <param name="rule"></param>
+		internal void RemoveGPUVendorRule( GPUVendorRule rule )
+		{
+			if ( _GPUVendorRules.Contains( rule ) )
+				_GPUVendorRules.Remove( rule );
+		}
 
-        /// <summary>
-        /// Add a rule which manually influences the support for this technique based
+		/// <summary>
+		/// Add a rule which manually influences the support for this technique based
 		///	on a pattern that matches a GPU device name (e.g. '*8800*').
-        /// </summary>
-        /// <remarks>
-        /// You can use this facility to manually control whether a technique is
+		/// </summary>
+		/// <remarks>
+		/// You can use this facility to manually control whether a technique is
 		///	considered supported, based on a GPU device name pattern. You can add inclusive
 		///	or exclusive rules, and you can add as many of each as you like. If
 		///	at least one inclusive rule is added, a	technique is considered 
@@ -1606,25 +1614,25 @@ namespace Axiom.Graphics
 		///	added, the technique is considered unsupported if it matches any of
 		///	those inclusive rules. The pattern you supply can include wildcard
 		///	characters ('*') if you only want to match part of the device name.
-        ///	Note that any rule for the same device pattern will be removed before adding this one.
-        /// </remarks>
-        /// <param name="rule"></param>
-        internal void AddGPUDeviceNameRule( GPUDeviceNameRule rule )
-        {
-            // remove duplicates
-            RemoveGPUDeviceNameRule( rule );
-            _GPUDeviceNameRules.Add( rule );
-        }
+		///	Note that any rule for the same device pattern will be removed before adding this one.
+		/// </remarks>
+		/// <param name="rule"></param>
+		internal void AddGPUDeviceNameRule( GPUDeviceNameRule rule )
+		{
+			// remove duplicates
+			RemoveGPUDeviceNameRule( rule );
+			_GPUDeviceNameRules.Add( rule );
+		}
 
-        /// <summary>
-        /// Removes a matching device name rule.
-        /// </summary>
-        /// <see cref="AddGPUDeviceNameRule"/>
-        /// <param name="rule"></param>
-        internal void RemoveGPUDeviceNameRule( GPUDeviceNameRule rule )
-        {
-            if ( _GPUDeviceNameRules.Contains( rule ) )
-                _GPUDeviceNameRules.Remove( rule );
-        }
-    }
+		/// <summary>
+		/// Removes a matching device name rule.
+		/// </summary>
+		/// <see cref="AddGPUDeviceNameRule"/>
+		/// <param name="rule"></param>
+		internal void RemoveGPUDeviceNameRule( GPUDeviceNameRule rule )
+		{
+			if ( _GPUDeviceNameRules.Contains( rule ) )
+				_GPUDeviceNameRules.Remove( rule );
+		}
+	}
 }
