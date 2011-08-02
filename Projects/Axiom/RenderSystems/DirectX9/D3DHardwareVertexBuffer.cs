@@ -149,7 +149,7 @@ namespace Axiom.RenderSystems.DirectX9
 		//---------------------------------------------------------------------
 		public bool ReleaseIfDefaultPool()
 		{
-			if ( d3dPool == D3D.Pool.Default || d3dBuffer.IsDefaultPool || d3dBuffer.Description.Pool == D3D.Pool.Default )
+			if ( d3dPool == D3D.Pool.Default )
 			{
 				if ( d3dBuffer != null )
 				{
