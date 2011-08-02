@@ -69,9 +69,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-    <Reference Include="SharpInputSystem.Core, Version=0.4.0.28422, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="SharpInputSystem.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\X11\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -77,12 +77,14 @@
     <None Include="Materials\Ocean.material" />
     <None Include="Materials\OgreHead.material" />
     <None Include="Materials\Penguin.material" />
+    <None Include="Materials\Razor.material" />
     <None Include="Materials\Rockwall.material" />
     <None Include="Materials\SphereMappedRustySteel.material" />
     <None Include="Materials\StormySkyBox.material" />
     <None Include="Meshes\ogrehead.mesh" />
     <None Include="Meshes\penguin.mesh" />
     <None Include="Meshes\penguin.skeleton" />
+    <None Include="Meshes\razor.mesh" />
     <None Include="Particles\Aureola.particle" />
     <None Include="Particles\Fireworks.particle" />
     <None Include="Particles\GreenyNimbus.particle" />
@@ -189,6 +191,12 @@
     <None Include="Programs\varianceshadowreceiverfp.cg" />
     <None Include="Programs\varianceshadowreceivervp.cg" />
     <None Include="Materials\smoke.material" />
+    <None Include="Textures\dirt_grayrocky_diffusespecular.dds" />
+    <None Include="Textures\dirt_grayrocky_normalheight.dds" />
+    <None Include="Textures\grass_green-01_diffusespecular.dds" />
+    <None Include="Textures\grass_green-01_normalheight.dds" />
+    <None Include="Textures\growth_weirdfungus-03_diffusespecular.dds" />
+    <None Include="Textures\growth_weirdfungus-03_normalheight.dds" />
     <None Include="Textures\NoiseVolume.dds" />
     <None Include="Textures\rockwall.tga" />
     <None Include="Textures\rockwall_NH.tga" />
@@ -202,6 +210,7 @@
     <Content Include="Textures\axiomlogo.png" />
     <Content Include="Textures\basic_droplet.png" />
     <Content Include="Textures\BumpyMetal.jpg" />
+    <Content Include="Textures\clouds.jpg" />
     <Content Include="Textures\flare.png" />
     <Content Include="Textures\flaretrail.png" />
     <Content Include="Textures\frost.png" />
@@ -211,6 +220,8 @@
     <Content Include="Textures\smoke.png" />
     <Content Include="Textures\smokecolors.png" />
     <Content Include="Textures\spheremap.png" />
+    <Content Include="Textures\terrain.png" />
+    <Content Include="Textures\texmap2.jpg" />
     <Content Include="Textures\tusk.jpg" />
     <Content Include="Thumbnails\thumb_bezier.png" />
     <Content Include="Thumbnails\thumb_bsp.png" />

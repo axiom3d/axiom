@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -48,7 +48,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;AXIOM_USENEWCOMPILERS</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
@@ -93,6 +93,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -138,6 +139,9 @@
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\ILodListener.cs" />
+    <Compile Include="Core\InstanceGeometry\InstancedEntity.cs" />
+    <Compile Include="Core\InstanceGeometry\InstancedGeometry.cs" />
+    <Compile Include="Core\InstanceGeometry\InstanceManager.cs" />
     <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
@@ -758,11 +762,11 @@
     <Compile Include="Scripting\Compiler\AbstractTreeBuilder.cs" />
     <Compile Include="Scripting\Compiler\AST\AbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\AtomAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
-    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />

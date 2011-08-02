@@ -63,7 +63,6 @@ namespace Axiom.Utilities
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		/// <param name="message"></param>
 		/// <returns></returns>
 		public static ArgumentNullException CreateArgumentItemNullException( int index, string arrayName )
 		{

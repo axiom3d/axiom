@@ -50,7 +50,7 @@ namespace Axiom.Core
 	/// <summary>
 	/// Level of detail strategy based on distance from camera.
 	/// </summary>
-	public class DistanceLodStrategy : LodStrategy,  ISingleton<DistanceLodStrategy>
+	public class DistanceLodStrategy : LodStrategy, ISingleton<DistanceLodStrategy>
 	{
 		#region Fields and Properties
 
@@ -91,13 +91,13 @@ namespace Axiom.Core
 		protected internal DistanceLodStrategy()
 			: base( StrategyName )
 		{
-            if ( instance == null )
-            {
-                instance = this;
-                ReferenceViewValue = float.NaN;
-            }
-            else
-                throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+			if ( instance == null )
+			{
+				instance = this;
+				ReferenceViewValue = float.NaN;
+			}
+			else
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 		}
 
 		/// <summary>
@@ -207,23 +207,23 @@ namespace Axiom.Core
 
 		#endregion LodStrategy Implemention
 
-        #region ISingleton<DistanceLodStrategy> Members
+		#region ISingleton<DistanceLodStrategy> Members
 
-        protected static DistanceLodStrategy instance;
+		protected static DistanceLodStrategy instance;
 
-        public static DistanceLodStrategy Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+		public static DistanceLodStrategy Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
 
-        public bool Initialize( params object[] args )
-        {
-            throw new NotImplementedException();
-        }
+		public bool Initialize( params object[] args )
+		{
+			throw new NotImplementedException();
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

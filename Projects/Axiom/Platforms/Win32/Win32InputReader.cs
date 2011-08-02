@@ -570,7 +570,32 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		private void InitializeBufferedMouse()
 		{
-			throw new NotImplementedException();
+			LogManager.Instance.Write( "Initializing buffered mouse" );
+			// create the device
+
+			mouseDevice = new DI.Mouse( dinput );
+
+			mouseDevice.Properties.AxisMode = DI.DeviceAxisMode.Absolute;
+
+			// set the device format so DInput knows this device is a mouse
+			//mouseDevice.SetDataFormat(DeviceDataFormat.Mouse);
+
+			// set the buffer size to use for input
+			mouseDevice.Properties.BufferSize = BufferSize;
+			if ( ownMouse )
+			{
+				mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Exclusive | DI.CooperativeLevel.Foreground );
+			}
+			else
+			{
+				mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Nonexclusive | DI.CooperativeLevel.Background );
+			}
+
+			//CooperativeLevelFlags excl = ownMouse ? CooperativeLevelFlags.Exclusive : CooperativeLevelFlags.NonExclusive;
+			//CooperativeLevelFlags background = (backgroundMouse && !ownMouse) ? CooperativeLevelFlags.Background : CooperativeLevelFlags.Foreground;
+
+			// set cooperation level
+			//mouseDevice.SetCooperativeLevel(control.FindForm(), excl | background);
 		}
 
 		/// <summary>
@@ -634,7 +659,6 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		private void CaptureBufferedMouse()
 		{
-			// TODO: Implement
 		}
 
 		/// <summary>

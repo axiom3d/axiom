@@ -21,38 +21,6 @@
       <Platform>Xbox</Platform>
     </Module>
 
-    <Module Include="AxiomDemos\axiom.demos.module">
-      <Configuration>Release</Configuration>
-      <Platform>x86</Platform>
-      <Properties>
-        RenderSystem=DirectX
-      </Properties>
-    </Module>
-
-    <Module Include="AxiomDemos\axiom.demos.module">
-      <Configuration>Release</Configuration>
-      <Platform>x86</Platform>
-      <Properties>
-        RenderSystem=OpenGL
-      </Properties>
-    </Module>
-
-    <Module Include="AxiomDemos\axiom.demos.module">
-      <Configuration>Release</Configuration>
-      <Platform>x86</Platform>
-      <Properties>
-        RenderSystem=Xna
-      </Properties>
-    </Module>
-
-    <Module Include="AxiomDemos\axiom.demos.module">
-      <Configuration>Release</Configuration>
-      <Platform>Xbox</Platform>
-      <Properties>
-        RenderSystem=Xna
-      </Properties>
-    </Module>
-
     <Module Include="Samples\axiom.samples.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
@@ -69,24 +37,17 @@
       </Properties>
     </Module>
 
-    <Module Include="Samples\axiom.samples.module">
-      <Configuration>Release</Configuration>
-      <Platform>Xbox</Platform>
-      <Properties>
-        Framework=DotNet
-      </Properties>
-    </Module>
-
     <Module Include="Tests\axiom.tests.module">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
     </Module>
   </ItemGroup>
-
-  <ItemGroup>
-    <File Include="..\Media\**\*" >
-      <ImagePath>$(ImagePath)\demos\media</ImagePath>
-    </File>
-  </ItemGroup>
-
+  
+  <Target Name="AfterImage">
+	<SvnExport RepositoryPath="file://$(MSBuildProjectDirectory)/Samples/Media" 
+			   LocalPath="$(ImagePath)\demos\media">
+	  <Output TaskParameter="Revision" PropertyName="Revision" />
+	</SvnExport>
+  </Target>
+  
 </Project>

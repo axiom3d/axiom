@@ -43,7 +43,7 @@ namespace Axiom.Samples
 	{
 		protected Camera mCamera;
 		/// <summary>
-		/// Swaps the camera on our camera mananager for another camera.
+		/// Swaps the camera on our camera manager for another camera.
 		/// </summary>
 		public Camera Camera
 		{

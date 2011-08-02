@@ -2,8 +2,8 @@
   <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
 
   <ItemGroup>
-    <!--
     <Module Include="Browser\axiom.samples.browser.module" />
+    <!--
     <Module Include="Browser\axiom.samples.common.module" />
     <Module Include="Browser\axiom.samples.bezierpatch.module" />
     <Module Include="Browser\axiom.samples.bsp.module" />

@@ -309,7 +309,7 @@ namespace Axiom.Samples
 			// manually call sample callback to ensure correct order
 			if ( CurrentSample != null && !IsSamplePaused )
 			{
-				CurrentSample.FrameStarted( evt );
+				CurrentSample.FrameEnded( evt );
 			}
 
 			// quit if window was closed

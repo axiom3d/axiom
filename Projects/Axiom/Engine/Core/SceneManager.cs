@@ -3096,7 +3096,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Used to first the QueueEnded event.
+		///		Used to fire the QueueEnded event.
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns>True if the queue should be repeated.</returns>

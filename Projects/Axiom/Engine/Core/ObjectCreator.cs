@@ -101,18 +101,18 @@ namespace Axiom.Core
 				 || type.BaseType.Name == typeof( T ).Name )
 			{
 #else
-            bool typeFound = false;
-            for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
-            {
-                if ( type.GetInterfaces()[ i ] == typeof( T ) )
-                {
-                    typeFound = true;
-                    break;
-                }
-            }
+			bool typeFound = false;
+			for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
+			{
+				if ( type.GetInterfaces()[ i ] == typeof( T ) )
+				{
+					typeFound = true;
+					break;
+				}
+			}
 
-            if ( typeFound )
-            {
+			if ( typeFound )
+			{
 #endif
 				try
 				{
@@ -200,14 +200,14 @@ namespace Axiom.Core
 						types.Add( new ObjectCreator( assembly, type ) );
 					}
 #else
-                    for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
-                    {
-                        if ( type.GetInterfaces()[ i ] == baseType )
-                        {
-    					    types.Add( new ObjectCreator( assembly, type ) );
-                            break;
-                        }
-                    }
+					for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
+					{
+						if ( type.GetInterfaces()[ i ] == baseType )
+						{
+							types.Add( new ObjectCreator( assembly, type ) );
+							break;
+						}
+					}
 #endif
 				}
 			}
@@ -228,11 +228,11 @@ namespace Axiom.Core
 			}
 
 #else
-            catch( Exception ex )
-            {
-                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
-                LogManager.Instance.Write("Loader Exceptions:");
-            }
+			catch( Exception ex )
+			{
+				LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+				LogManager.Instance.Write("Loader Exceptions:");
+			}
 #endif
 
 			return types;

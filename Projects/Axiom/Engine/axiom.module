@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <ProjectBase>Axiom</ProjectBase>
-    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).csproj</ProjectFile>
+    <ProjectFile Condition="'$(Platform)'=='x86'">$(ProjectBase).2010.csproj</ProjectFile>
     <ProjectFile Condition="'$(Platform)'=='Xbox'">$(ProjectBase).$(Platform).csproj</ProjectFile>
     <ImagePath>bin\$(Platform)\$(Configuration)</ImagePath>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
@@ -28,7 +28,7 @@
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
-    <File Include="$(OutputPath)\$(ProjectBase).XML"  Condition="'$(Configuration)'=='Release'">
+    <File Include="$(OutputPath)\$(ProjectBase).XML" Condition="'$(Configuration)'=='Release'">
       <ImagePath>$(ImagePath)</ImagePath>
     </File>
 
