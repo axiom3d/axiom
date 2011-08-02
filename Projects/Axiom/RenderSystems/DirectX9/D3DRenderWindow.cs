@@ -1086,7 +1086,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( rs.IsDeviceLost )
 			{
 				DX.Result result = device.TestCooperativeLevel();
-				if ( result.Code == D3D.ResultCode.DeviceLost.Code  )
+				if ( result.Code != D3D.ResultCode.DeviceNotReset.Code  )
 				{
 					System.Threading.Thread.Sleep( 50 );
 					return;
@@ -1114,7 +1114,7 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 					else
 					{
-						// Update dimensions incase changed
+						// Update dimensions in case changed
 						foreach ( Viewport entry in this.viewportList.Values )
 						{
 							entry.UpdateDimensions();
