@@ -101,6 +101,10 @@
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.2010.csproj">
+      <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
+      <Name>Axiom.Platforms.Win32.2010</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.csproj">
       <Project>{3FA3E842-91DE-4A78-99A8-DE3546763136}</Project>
       <Name>Axiom.Plugins.FreeImageCodecs</Name>
