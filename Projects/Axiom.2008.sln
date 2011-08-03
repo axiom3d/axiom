@@ -104,6 +104,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.Linux
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.OctreeZone", "Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.csproj", "{B19D8BB9-E642-4ACB-8B90-091B61D3F06D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.FreeImageCodecs", "Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.csproj", "{3FA3E842-91DE-4A78-99A8-DE3546763136}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -1258,6 +1260,38 @@ Global
 		{B19D8BB9-E642-4ACB-8B90-091B61D3F06D}.Xna Release|Mixed Platforms.Build.0 = Debug|x86
 		{B19D8BB9-E642-4ACB-8B90-091B61D3F06D}.Xna Release|x86.ActiveCfg = Debug|x86
 		{B19D8BB9-E642-4ACB-8B90-091B61D3F06D}.Xna Release|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Release|Mixed Platforms.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.DirectX Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Release|Mixed Platforms.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.OpenGL Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|x86.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Debug|x86.ActiveCfg = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Debug|x86.Build.0 = Debug|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Release|Mixed Platforms.Build.0 = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Release|x86.ActiveCfg = Release|x86
+		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Xna Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1282,6 +1316,7 @@ Global
 		{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{7440613A-4487-46BE-998E-25F554ACE980} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{B19D8BB9-E642-4ACB-8B90-091B61D3F06D} = {DC26813F-4527-477E-8068-272E10CF5C37}
+		{3FA3E842-91DE-4A78-99A8-DE3546763136} = {DC26813F-4527-477E-8068-272E10CF5C37}
 		{C7286349-8DBA-4A39-991C-3D848AB10CCE} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{EE5785DC-D49E-44DD-BFDA-DD776C012704} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
 		{9ABE0570-61D4-4C81-BDD4-860ABADFDA6E} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}

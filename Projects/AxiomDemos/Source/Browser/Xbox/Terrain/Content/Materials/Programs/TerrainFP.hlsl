@@ -12,7 +12,7 @@ struct VS_OUTPUT
 	float2 Texcoord0 : TEXCOORD0;
 	float4 Color: COLOR0;
 	float4 ColorSpec: COLOR1;
-	float4 fogDist : COLOR;
+	float4 fogDist: COLOR2;
 };
 
 sampler2D Texture0 : register(s0);

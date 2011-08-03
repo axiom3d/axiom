@@ -76,9 +76,8 @@
     <Compile Include="Tray\WidgetEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem, Version=0.3.0.20113, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.dll</HintPath>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

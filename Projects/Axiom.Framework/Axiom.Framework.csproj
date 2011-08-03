@@ -37,9 +37,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem, Version=0.3.0.17339, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpInputSystem.Core, Version=0.4.0.28422, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.dll</HintPath>
+      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

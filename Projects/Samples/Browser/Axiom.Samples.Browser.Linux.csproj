@@ -59,9 +59,11 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem, Version=0.3.0.20005, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.dll</HintPath>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.X11">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\X11\SharpInputSystem.X11.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
