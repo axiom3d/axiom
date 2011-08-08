@@ -499,60 +499,59 @@ namespace Axiom.Core
 				vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
 
 			// lock the buffer for reading
-			IntPtr bufPtr = vbuf.Lock( BufferLocking.ReadOnly );
+			//IntPtr bufPtr = vbuf.Lock( BufferLocking.ReadOnly );
 
 			uint numCommon = 0;
-			unsafe
+			byte[] pVertex = new byte[ vbuf.Length / sizeof( byte ) ];
+			vbuf.GetData( pVertex );
+
+			float* pFloat;
+			Vector3 pos;
+			// Map for identifying duplicate position vertices
+			Dictionary<Vector3, uint> commonVertexMap = new Dictionary<Vector3, uint>();
+			for ( uint i = 0; i < vertexData.vertexCount; ++i, pVertex += vbuf.VertexSize )
 			{
-				byte* pVertex = (byte*)bufPtr.ToPointer();
+				pFloat = (float*)( pVertex + posElem.Offset );
+				pos.x = *pFloat++;
+				pos.y = *pFloat++;
+				pos.z = *pFloat++;
 
-				float* pFloat;
-				Vector3 pos;
-				// Map for identifying duplicate position vertices
-				Dictionary<Vector3, uint> commonVertexMap = new Dictionary<Vector3, uint>();
-				for ( uint i = 0; i < vertexData.vertexCount; ++i, pVertex += vbuf.VertexSize )
+				work.faceVertList[ (int)i ] = new PMFaceVertex();
+
+				// Try to find this position in the existing map 
+				if ( !commonVertexMap.ContainsKey( pos ) )
 				{
-					pFloat = (float*)( pVertex + posElem.Offset );
-					pos.x = *pFloat++;
-					pos.y = *pFloat++;
-					pos.z = *pFloat++;
+					// Doesn't exist, so create it
+					PMVertex commonVert = new PMVertex();
+					commonVert.SetDetails( pos, numCommon );
+					commonVert.removed = false;
+					commonVert.toBeRemoved = false;
+					commonVert.seam = false;
+					// Add it to our working set
+					work.vertList[ (int)numCommon ] = commonVert;
 
-					work.faceVertList[ (int)i ] = new PMFaceVertex();
+					// Enter it in the map
+					commonVertexMap.Add( pos, numCommon );
+					// Increment common index
+					++numCommon;
 
-					// Try to find this position in the existing map 
-					if ( !commonVertexMap.ContainsKey( pos ) )
-					{
-						// Doesn't exist, so create it
-						PMVertex commonVert = new PMVertex();
-						commonVert.SetDetails( pos, numCommon );
-						commonVert.removed = false;
-						commonVert.toBeRemoved = false;
-						commonVert.seam = false;
-						// Add it to our working set
-						work.vertList[ (int)numCommon ] = commonVert;
+					work.faceVertList[ (int)i ].commonVertex = commonVert;
+					work.faceVertList[ (int)i ].realIndex = i;
+				}
+				else
+				{
+					// Exists already, reference it
+					PMVertex existingVert = work.vertList[ (int)commonVertexMap[ pos ] ];
 
-						// Enter it in the map
-						commonVertexMap.Add( pos, numCommon );
-						// Increment common index
-						++numCommon;
+					work.faceVertList[ (int)i ].commonVertex = existingVert;
+					work.faceVertList[ (int)i ].realIndex = i;
 
-						work.faceVertList[ (int)i ].commonVertex = commonVert;
-						work.faceVertList[ (int)i ].realIndex = i;
-					}
-					else
-					{
-						// Exists already, reference it
-						PMVertex existingVert = work.vertList[ (int)commonVertexMap[ pos ] ];
-
-						work.faceVertList[ (int)i ].commonVertex = existingVert;
-						work.faceVertList[ (int)i ].realIndex = i;
-
-						// Also tag original as a seam since duplicates at this location
-						work.faceVertList[ (int)i ].commonVertex.seam = true;
-					}
+					// Also tag original as a seam since duplicates at this location
+					work.faceVertList[ (int)i ].commonVertex.seam = true;
 				}
 			}
-			vbuf.Unlock();
+			//vbuf.Unlock();
+			vbuf.SetData( pVertex );
 
 			numCommonVertices = numCommon;
 
@@ -560,37 +559,40 @@ namespace Axiom.Core
 			uint numTris = (uint)indexData.indexCount / 3;
 			HardwareIndexBuffer ibuf = indexData.indexBuffer;
 			bool use32bitindexes = ( ibuf.Type == IndexType.Size32 );
-			IntPtr indexBufferPtr = ibuf.Lock( BufferLocking.ReadOnly );
-			unsafe
+
+			ushort[] pShort = null;
+			uint[] pInt = null;
+
+			if ( use32bitindexes )
 			{
-				ushort* pShort = null;
-				uint* pInt = null;
-
-				if ( use32bitindexes )
-				{
-					pInt = (uint*)indexBufferPtr.ToPointer();
-				}
-				else
-				{
-					pShort = (ushort*)indexBufferPtr.ToPointer();
-				}
-				work.triList = new PMTriangle[ (int)numTris ]; // assumed tri list
-				for ( uint i = 0; i < numTris; ++i )
-				{
-					// use 32-bit index always since we're not storing
-					uint vindex = use32bitindexes ? *pInt++ : *pShort++;
-					PMFaceVertex v0 = work.faceVertList[ (int)vindex ];
-					vindex = use32bitindexes ? *pInt++ : *pShort++;
-					PMFaceVertex v1 = work.faceVertList[ (int)vindex ];
-					vindex = use32bitindexes ? *pInt++ : *pShort++;
-					PMFaceVertex v2 = work.faceVertList[ (int)vindex ];
-
-					work.triList[ (int)i ] = new PMTriangle();
-					work.triList[ (int)i ].SetDetails( i, v0, v1, v2 );
-					work.triList[ (int)i ].removed = false;
-				}
+				pInt = new uint[ ibuf.Length / sizeof( uint ) ];
+				ibuf.GetData( pInt );
 			}
-			ibuf.Unlock();
+			else
+			{
+				pShort = new ushort[ ibuf.Length / sizeof( ushort ) ];
+				ibuf.GetData( pShort );
+			}
+			work.triList = new PMTriangle[ (int)numTris ]; // assumed tri list
+			for ( uint i = 0; i < numTris; ++i )
+			{
+				// use 32-bit index always since we're not storing
+				uint vindex = use32bitindexes ? pInt[ i * 3 ] : pShort[ i * 3 ];
+				PMFaceVertex v0 = work.faceVertList[ (int)vindex ];
+				vindex = use32bitindexes ? pInt[ i * 3 + 1 ] : pShort[ i * 3 + 1 ];
+				PMFaceVertex v1 = work.faceVertList[ (int)vindex ];
+				vindex = use32bitindexes ? pInt[ i * 3 + 2 ] : pShort[ i * 3 + 2 ];
+				PMFaceVertex v2 = work.faceVertList[ (int)vindex ];
+
+				work.triList[ (int)i ] = new PMTriangle();
+				work.triList[ (int)i ].SetDetails( i, v0, v1, v2 );
+				work.triList[ (int)i ].removed = false;
+			}
+
+			if ( use32bitindexes )
+				ibuf.SetData( pInt );
+			else
+				ibuf.SetData( pShort );
 		}
 
 		/// Internal method for initialising the edge collapse costs
@@ -850,39 +852,49 @@ namespace Axiom.Core
 																 BufferUsage.StaticWriteOnly,
 																 false );
 
-			IntPtr bufPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
+			HardwareIndexBuffer bufPtr = indexData.indexBuffer;
 
-			unsafe
+			ushort[] pShort = null;
+			uint[] pInt = null;
+
+			if ( use32bitindexes )
 			{
-				ushort* pShort = null;
-				uint* pInt = null;
-				if ( use32bitindexes )
-					pInt = (uint*)bufPtr.ToPointer();
-				else
-					pShort = (ushort*)bufPtr.ToPointer();
-				// Use the first working data buffer, they are all the same index-wise
-				PMWorkingData work = this.workingDataList[ 0 ];
-				foreach ( PMTriangle tri in work.triList )
-				{
-					if ( !tri.removed )
-					{
-						if ( use32bitindexes )
-						{
-							*pInt++ = tri.vertex[ 0 ].realIndex;
-							*pInt++ = tri.vertex[ 1 ].realIndex;
-							*pInt++ = tri.vertex[ 2 ].realIndex;
-						}
-						else
-						{
-							*pShort++ = (ushort)tri.vertex[ 0 ].realIndex;
-							*pShort++ = (ushort)tri.vertex[ 1 ].realIndex;
-							*pShort++ = (ushort)tri.vertex[ 2 ].realIndex;
-						}
-					}
-				}
+				pInt = new uint[ bufPtr.Length / sizeof( uint ) ];
+				bufPtr.GetData( pInt );
+			}
+			else
+			{
+				pShort = new ushort[ bufPtr.Length / sizeof( ushort ) ];
+				bufPtr.GetData( pShort );
 			}
 
-			indexData.indexBuffer.Unlock();
+			// Use the first working data buffer, they are all the same index-wise
+			PMWorkingData work = this.workingDataList[ 0 ];
+			int i = 0;
+			foreach ( PMTriangle tri in work.triList )
+			{
+				if ( !tri.removed )
+				{
+					if ( use32bitindexes )
+					{
+						pInt[ i * 3 ] = tri.vertex[ 0 ].realIndex;
+						pInt[ i * 3 + 1 ] = tri.vertex[ 1 ].realIndex;
+						pInt[ i * 3 + 2 ] = tri.vertex[ 2 ].realIndex;
+					}
+					else
+					{
+						pShort[ i * 3 ] = (ushort)tri.vertex[ 0 ].realIndex;
+						pShort[ i * 3 + 1 ] = (ushort)tri.vertex[ 1 ].realIndex;
+						pShort[ i * 3 + 2 ] = (ushort)tri.vertex[ 2 ].realIndex;
+					}
+				}
+				i++;
+			}
+
+			if ( use32bitindexes )
+				bufPtr.SetData( pInt );
+			else
+				bufPtr.SetData( pShort );
 		}
 
 		/// <summary>
