@@ -98,21 +98,15 @@ namespace Axiom.Core
 		/// <param name="srcOffset">Offset (in bytes) at which to copy from the source pointer.</param>
 		/// <param name="destOffset">Offset (in bytes) at which to begin copying to the destination pointer.</param>
 		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( IntPtr src, IntPtr dest, int srcOffset, int destOffset, int length )
+		public static void Copy( byte[] src, ref byte[] dest, int srcOffset, int destOffset, int length )
 		{
 			// TODO: Block copy would be faster, find a cross platform way to do it
-			unsafe
+			for ( int i = 0; i < length; i++ )
 			{
-				byte* pSrc = (byte*)src.ToPointer();
-				byte* pDest = (byte*)dest.ToPointer();
-
-				for ( int i = 0; i < length; i++ )
-				{
-					pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
-				}
+				dest[ i + destOffset ] = src[ i + srcOffset ];
 			}
 		}
-		#endregion Copy Method
+        #endregion Copy Method
 
 		/// <summary>
 		///     Sets the memory to 0 starting at the specified offset for the specified byte length.
@@ -120,16 +114,11 @@ namespace Axiom.Core
 		/// <param name="dest">Destination pointer.</param>
 		/// <param name="offset">Byte offset to start.</param>
 		/// <param name="length">Number of bytes to set.</param>
-		public static void Set( IntPtr dest, int offset, int length )
+		public static void Set( ref byte[] dest, int offset, int length )
 		{
-			unsafe
+			for ( int i = 0; i < length; i++ )
 			{
-				byte* ptr = (byte*)dest.ToPointer();
-
-				for ( int i = 0; i < length; i++ )
-				{
-					ptr[ i + offset ] = 0;
-				}
+				dest[ i + offset ] = 0;
 			}
 		}
 
@@ -138,7 +127,7 @@ namespace Axiom.Core
 			return Marshal.SizeOf( type );
 		}
 
-		#region Pinned Object Access
+        #region Pinned Object Access
 
 		private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
 		public static IntPtr PinMemory( object obj )
@@ -170,7 +159,7 @@ namespace Axiom.Core
 			}
 		}
 
-		#endregion Pinned Object Access
+        #endregion Pinned Object Access
 
 		public IMemoryBuffer Allocate( IntPtr pinnedMemory, long size )
 		{
@@ -181,7 +170,7 @@ namespace Axiom.Core
 
 #endif
 
-		public IMemoryBuffer Allocate( Array data )
+        public IMemoryBuffer Allocate( Array data )
 		{
 			Type t = data.GetValue( 0 ).GetType();
 
