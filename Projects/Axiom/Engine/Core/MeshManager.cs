@@ -1131,29 +1131,26 @@ namespace Axiom.Core
 			_getVertices( ref vertices, mesh.Skeleton.RootBone );
 
 			// Generate vertex data
-			unsafe
+			// lock the vertex buffer
+			float[] data = new float[vertexBuffer.Length * sizeof(float)];
+            vertexBuffer.GetData(data);
+        
+			int index = 0;
+
+			foreach ( Vector3 vec in vertices )
 			{
-				// lock the vertex buffer
-				IntPtr data = vertexBuffer.Lock( BufferLocking.Discard );
+				// assign to geometry
+				data[index] = vec.x;
+				data[index += 1] = vec.y;
+				data[index += 1] = vec.z;
+				// fake normals
+				data[index += 1] = 0;
+				data[index += 1] = 1;
+				data[index += 1] = 0;
+                index += 1;
+			}
 
-				float* pData = (float*)data.ToPointer();
-
-				foreach ( Vector3 vec in vertices )
-				{
-					// assign to geometry
-					*pData++ = vec.x;
-					*pData++ = vec.y;
-					*pData++ = vec.z;
-					// fake normals
-					*pData++ = 0;
-					*pData++ = 1;
-					*pData++ = 0;
-				}
-
-				// unlock the buffer
-				vertexBuffer.Unlock();
-			} // unsafe
-
+			vertexBuffer.SetData(data);
 
 			// Generate index data
 			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, faces.Length * boneCount, BufferUsage.StaticWriteOnly );
@@ -1193,9 +1190,9 @@ namespace Axiom.Core
 			return mesh;
 		}
 #endif
-		#endregion CreateBoneMesh
+        #endregion CreateBoneMesh
 
-		public new Mesh this[ string name ]
+        public new Mesh this[ string name ]
 		{
 			get
 			{
