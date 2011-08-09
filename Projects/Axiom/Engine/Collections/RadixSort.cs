@@ -276,15 +276,7 @@ namespace Axiom.Collections
 
 		private byte _getByte( int byteIndex, System.Single val )
 		{
-#if !AXIOM_USE_SAFE_CODE
 			return BitConverter.GetBytes( val )[ byteIndex ];
-#else
-
-			unsafe
-			{
-				return ((byte*)&val)[ byteIndex ];
-			}
-#endif
 		}
 
 		#endregion Methods
@@ -519,15 +511,7 @@ namespace Axiom.Collections
 
 		private byte _getByte( int byteIndex, System.Int32 val )
 		{
-#if !AXIOM_USE_SAFE_CODE
 			return BitConverter.GetBytes( val )[ byteIndex ];
-#else
-
-			unsafe
-			{
-				return ((byte*)&val)[ byteIndex ];
-			}
-#endif
 		}
 
 		#endregion Methods
@@ -762,15 +746,7 @@ namespace Axiom.Collections
 
 		private byte _getByte( int byteIndex, System.UInt32 val )
 		{
-#if !AXIOM_USE_SAFE_CODE
 			return BitConverter.GetBytes( val )[ byteIndex ];
-#else
-
-			unsafe
-			{
-				return ((byte*)&val)[ byteIndex ];
-			}
-#endif
 		}
 
 		#endregion Methods
