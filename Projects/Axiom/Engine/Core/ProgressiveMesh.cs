@@ -500,9 +500,9 @@ namespace Axiom.Core
             Dictionary<Vector3, uint> commonVertexMap = new Dictionary<Vector3, uint>();
             for ( uint i = 0; i < vertexData.vertexCount; ++i, pVertexIdx += vbuf.VertexSize )
             {
-                pos.x = BitConverter.ToSingle( pVertex, pVertexIdx );
-                pos.y = BitConverter.ToSingle( pVertex, pVertexIdx + sizeof( float ) );
-                pos.z = BitConverter.ToSingle( pVertex, pVertexIdx + sizeof( float ) * 2 );
+                pos.x = BitConverter.ToSingle( pVertex, pVertexIdx + posElem.Offset );
+                pos.y = BitConverter.ToSingle( pVertex, pVertexIdx + posElem.Offset + sizeof( float ) );
+                pos.z = BitConverter.ToSingle( pVertex, pVertexIdx + posElem.Offset + sizeof( float ) * 2 );
 
                 work.faceVertList[ (int)i ] = new PMFaceVertex();
 
