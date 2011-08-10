@@ -161,10 +161,10 @@ namespace Axiom.RenderSystems.OpenGL
 			float displayFrequency = 60f;
 			string border = "resizable";
 
-			this.name = name;
-			this.width = width;
-			this.height = height;
-			this.colorDepth = 32;
+			this._name = name;
+			this._width = width;
+			this._height = height;
+			this._colorDepth = 32;
 			this.fullScreen = fullScreen;
 			displayDevice = DisplayDevice.Default;
 
@@ -190,7 +190,7 @@ namespace Axiom.RenderSystems.OpenGL
 							break;
 						case "colourDepth":
 						case "colorDepth":
-							colorDepth = Int32.Parse( entry.Value.ToString() );
+							_colorDepth = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "vsync":
 							vsync = entry.Value.ToString() == "No" ? false : true;
