@@ -66,8 +66,8 @@ namespace Axiom.RenderSystems.OpenGL
 			_fbo.BindSurface( 0, target );
 
 			// Get attributes
-			width = _fbo.Width;
-			height = _fbo.Height;
+			this._width = _fbo.Width;
+			this._height = _fbo.Height;
 		}
 
 		#endregion Construction and Destruction

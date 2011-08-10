@@ -494,8 +494,8 @@ namespace Axiom.RenderSystems.DirectX9
 			        top += monitorInfo.WorkingArea.Top;
 			    }
 
-			    this.width = desiredWidth = width;
-			    this.height = desiredHeight = height;
+				this._width = desiredWidth = width;
+				this._height = desiredHeight = height;
 			    this.top = top;
 			    this.left = left;
 
@@ -515,10 +515,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 			            // Calculate window dimensions required
 			            // to get the requested client area
-			            rc = new System.Drawing.Rectangle( 0, 0, this.width, this.height );
+			            rc = new System.Drawing.Rectangle( 0, 0, this._width, this._height );
 			            AdjustWindowRect( ref rc, GetWindowStyle( fullScreen ), false );
-			            this.width = rc.Right - rc.Left;
-			            this.height = rc.Bottom - rc.Top;
+			            this._width = rc.Right - rc.Left;
+			            this._height = rc.Bottom - rc.Top;
 
 			            // Clamp window rect to the nearest display monitor.
 			            if ( this.left < monitorInfo.WorkingArea.Left )
@@ -579,17 +579,17 @@ namespace Axiom.RenderSystems.DirectX9
             // width and height represent interior drawable area
 		    rc = hWnd.ClientRectangle;
 		   
-		    this.width = rc.Right;
-		    this.height = rc.Bottom;
+		    this._width = rc.Right;
+		    this._height = rc.Bottom;
 
-		    this.name = name;
+		    this._name = name;
             depthBufferPoolId = depthBuffer ? PoolId.Default : PoolId.NoDepth;
 		    this.depthBuffer = null;
-		    this.colorDepth = colorDepth;
+		    this._colorDepth = colorDepth;
 
 
 		    LogManager.Instance.Write("D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp",
-                this.name, this.width, this.height, this.colorDepth);
+                this._name, this._width, this._height, this.ColorDepth);
 
 		    active = true;
 		    _isClosed = false;
@@ -856,8 +856,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// CMH 4/24/2004 - Start
 			width = width < 10 ? 10 : width;
 			height = height < 10 ? 10 : height;
-			this.height = height;
-			this.width = width;
+			this._height = height;
+			this._width = width;
 		}
 
 		public override void WindowMovedOrResized()
@@ -895,8 +895,8 @@ namespace Axiom.RenderSystems.DirectX9
 					_swapChain = new D3D.SwapChain( D3DDevice, pp );
 					_d3dpp = pp;
 
-					this.width = width;
-					this.height = height;
+					this._width = width;
+					this._height = height;
 				}
 				catch ( Exception )
 				{
@@ -913,8 +913,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			else // primary windows must reset the device
 			{
-				_d3dpp.BackBufferWidth = this.width = width;
-				_d3dpp.BackBufferHeight = this.height = height;
+				_d3dpp.BackBufferWidth = this._width = width;
+				_d3dpp.BackBufferHeight = this._height = height;
 			}
 
 			// Notify viewports of resize
@@ -1218,8 +1218,8 @@ namespace Axiom.RenderSystems.DirectX9
 		    presentParams.BackBufferCount			= vSync ? 2 : 1;
 		    presentParams.EnableAutoDepthStencil	= (depthBufferPoolId != PoolId.NoDepth);
 		    presentParams.DeviceWindowHandle = hWnd.Handle;
-		    presentParams.BackBufferWidth			= width;
-		    presentParams.BackBufferHeight			= height;
+		    presentParams.BackBufferWidth			= _width;
+		    presentParams.BackBufferHeight			= _height;
 		    presentParams.FullScreenRefreshRateInHertz = isFullScreen ? _displayFrequency : 0;
 		
 		    if (presentParams.BackBufferWidth == 0)		
@@ -1278,10 +1278,10 @@ namespace Axiom.RenderSystems.DirectX9
 		    }
 
 		    presentParams.BackBufferFormat		= Format.R5G6B5;
-		    if( colorDepth > 16 )
+		    if ( _colorDepth > 16 )
 			    presentParams.BackBufferFormat = Format.X8R8G8B8;
 
-		    if (colorDepth > 16 )
+		    if ( _colorDepth > 16 )
 		    {
                 // Try to create a 32-bit depth, 8-bit stencil
 

@@ -1664,7 +1664,7 @@ namespace Axiom.Graphics
         #region WriteRawConstant
 		public void WriteRawConstant(int physicalIndex, Vector4 val)
 		{
-			WriteRawConstant( physicalIndex, val );
+			WriteRawConstant( physicalIndex, val, 1 );
 		}
 
         public void WriteRawConstant(int physicalIndex, Vector4 val, int count)
