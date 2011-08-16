@@ -258,7 +258,8 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					throw new AxiomException( "DeviceLost can only be set to true." );
+					_deviceLost = false;
+					//throw new AxiomException( "DeviceLost can only be set to true." );
 				}
 			}
 		}
@@ -2884,9 +2885,13 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				SlimDX.Result result = device.Reset( _primaryWindow.PresentationParameters );
-				//SlimDX.Result result = device.TestCooperativeLevel();
+
 				if ( result.Code == D3D.ResultCode.DeviceLost.Code )
 					return;
+				if ( result.Code != D3D.ResultCode.Success.Code )
+				{
+					throw new AxiomException( "Cannot reset device!" + result.Description );
+				}
 			}
 			catch ( SlimDX.SlimDXException dlx )
 			{
