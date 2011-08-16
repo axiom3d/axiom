@@ -870,7 +870,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Notify viewports of resize
 			foreach ( Viewport entry in this.viewportList.Values )
 			{
-				//entry.UpdateDimensions();
+				entry.UpdateDimensions();
 			}
 		}
 
@@ -909,7 +909,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// Skip if the device is already lost
 			if ( rs.IsDeviceLost || testLostDevice() )
 			{
-				rs.IsDeviceLost = true;
+				if ( !rs.IsDeviceLost ) 
+					rs.IsDeviceLost = true;
 				return;
 			}
 
@@ -1083,17 +1084,18 @@ namespace Axiom.RenderSystems.DirectX9
 			// access device through driver
 			D3D.Device device = _driver.D3DDevice;
 
-			if ( rs.IsDeviceLost )
+			if ( testLostDevice() || rs.IsDeviceLost )
 			{
 				DX.Result result = device.TestCooperativeLevel();
-				if ( result.Code != D3D.ResultCode.DeviceNotReset.Code  )
+				if ( result.Code == D3D.ResultCode.DeviceNotReset.Code )
 				{
 					System.Threading.Thread.Sleep( 50 );
 					return;
 				}
-				else /* if ( result.Code == D3D.ResultCode.DeviceNotReset.Code ) */
+				else if ( result.Code == D3D.ResultCode.DeviceNotReset.Code )
 				{
 					// device lost, and we can reset
+					LogManager.Instance.Write( "!!! Attempting to restore lost device!" );
 					rs.RestoreLostDevice();
 
 					// Still lost?
@@ -1121,8 +1123,10 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 					}
 				}
-				//else if ( result.Code != D3D.ResultCode.Success.Code )
-				//    return;
+				else if ( result.Code != D3D.ResultCode.Success.Code )
+					return;
+				else
+					rs.IsDeviceLost = false;
 			}
 
 			base.Update( swapBuffers );
