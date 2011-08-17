@@ -109,6 +109,7 @@ namespace Droid
 		private void _setupResources()
 		{
 			ResourceGroupManager.Instance.AddResourceLocation( @"Media/Archives/AxiomCore.zip", "AndroidZipAsset" );
+			ResourceGroupManager.Instance.AddResourceLocation( @"Media", "AndroidFolderAsset" );
 		}
 
 		private void _loadPlugins()

@@ -57,7 +57,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="numIndexes"></param>
 		/// <param name="usage"></param>
 		public GLESDefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
-			: base( idxType, numIndexes, usage, true, false )// always software, never shadowed
+			: base( null, idxType, numIndexes, usage, true, false )// always software, never shadowed
 		{
 			if ( idxType == IndexType.Size32 )
 			{

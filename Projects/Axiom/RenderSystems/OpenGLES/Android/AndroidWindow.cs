@@ -215,6 +215,14 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 
 		}
 
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return false;
+			}
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>

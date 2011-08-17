@@ -87,7 +87,7 @@ namespace Axiom.Fonts
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
-            : base()
+			: base()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
@@ -284,7 +284,7 @@ namespace Axiom.Fonts
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					// Unegister scripting with resource group manager
 					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
-                    Singleton<FontManager>.Destroy();
+					Singleton<FontManager>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but

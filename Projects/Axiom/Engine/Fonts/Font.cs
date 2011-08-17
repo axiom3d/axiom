@@ -384,7 +384,7 @@ namespace Axiom.Fonts
 		}
 
 		/// <summary>
-		///		Retrieves the texture coordinates for the specifed character in this font.
+		///		Retrieves the texture coordinates for the specified character in this font.
 		/// </summary>
 		/// <param name="c"></param>
 		/// <param name="u1"></param>
@@ -558,7 +558,6 @@ namespace Axiom.Fonts
 		#region Implementation of IManualResourceLoader
 		public void LoadResource( Resource resource )
 		{
-			// TODO : Revisit after checking current Imaging support in Mono.
 			
 #if !( XBOX || XBOX360 || ANDROID || IPHONE)
 			string current = Environment.CurrentDirectory;
@@ -760,6 +759,7 @@ namespace Axiom.Fonts
             //str.WriteLine( "}" );
             //str.Close();
             //file.Close();
+
 
 #endif
 		}

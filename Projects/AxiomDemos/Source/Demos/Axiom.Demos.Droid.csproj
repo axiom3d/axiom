@@ -13,6 +13,9 @@
     <AssemblyName>Axiom.Demos</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>R.cs</AndroidResgenFile>
+    <AndroidSupportedAbis>armeabi</AndroidSupportedAbis>
+    <AndroidStoreUncompressedFileExtensions />
+    <TargetFrameworkVersion>v2.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +26,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <MonoDroidLinkMode>SdkOnly</MonoDroidLinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,17 +60,12 @@
     <Compile Include="FacialAnimation.cs" />
     <Compile Include="FrustumCulling.cs" />
     <Compile Include="Grass.cs" />
-    <Compile Include="LoadingBar.cs" />
     <Compile Include="MousePicking.cs" />
-    <Compile Include="MultipleSceneManager.cs" />
     <Compile Include="OffsetMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BezierPatch.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="bsp.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CameraTrack.cs">

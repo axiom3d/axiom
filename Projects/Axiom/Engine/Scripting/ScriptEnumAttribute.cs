@@ -128,7 +128,7 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		/// Looks up the script attibute for the enumeration value
+		/// Looks up the script attribute for the enumeration value
 		/// </summary>
 		/// <param name="enumValue">The enumeration value</param>
 		/// <param name="type">The Enumeration</param>

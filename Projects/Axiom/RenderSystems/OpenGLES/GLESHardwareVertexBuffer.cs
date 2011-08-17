@@ -65,8 +65,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		public GLESHardwareVertexBuffer( HardwareBufferManager mgr, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
-			: base( numVertices, vertexSize, usage, false, useShadowBuffer )
+		public GLESHardwareVertexBuffer( HardwareBufferManagerBase mgr, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
+			: base( mgr, numVertices, vertexSize, usage, false, useShadowBuffer )
 		{
 			if ( !useShadowBuffer )
 			{

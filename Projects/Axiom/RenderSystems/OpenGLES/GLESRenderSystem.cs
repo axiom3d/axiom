@@ -65,7 +65,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			return new IntPtr( i );
 		}
 
-		#region - private -
 		Light[] _lights = new Light[ MaxLights ];
 		/// View matrix to set world against
 		Matrix4 _ViewMatrix;
@@ -455,9 +454,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			throw new NotImplementedException();
 		}
 
-		#endregion
-
-		#region - Abstracts -
 
 		/// <summary>
 		/// 
@@ -952,8 +948,8 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		private void _oneTimeContextInitialization()
 		{
-			//OpenGL.Disable(All.Dither);
-			//GLESConfig.GlCheckError(this);
+			OpenGL.Disable( All.Dither );
+			GLESConfig.GlCheckError( this );
 			//int fsaa_active = 0;
 			//OpenGL.GetInteger(All.SampleBuffers, ref fsaa_active);
 			//GLESConfig.GlCheckError(this);
@@ -2303,19 +2299,20 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="texAddressingMode"></param>
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
+		public override void SetTextureAddressingMode( int stage, UVWAddressing texAddressingMode )
 		{
 			if ( !ActivateGLTextureUnit( stage ) )
 				return;
 
-			OpenGL.TexParameter( All.Texture2D, All.TextureWrapS, (int)GetTextureAddressingMode( texAddressingMode ) );
+			OpenGL.TexParameter( All.Texture2D, All.TextureWrapS, (int)GetTextureAddressingMode( texAddressingMode.U ) );
 			GLESConfig.GlCheckError( this );
 
-			OpenGL.TexParameter( All.Texture2D, All.TextureWrapT, (int)GetTextureAddressingMode( texAddressingMode ) );
+			OpenGL.TexParameter( All.Texture2D, All.TextureWrapT, (int)GetTextureAddressingMode( texAddressingMode.V ) );
 			GLESConfig.GlCheckError( this );
 
 			ActivateGLTextureUnit( 0 );
 		}
+
 		///// <summary>
 		///// 
 		///// </summary>
@@ -2750,8 +2747,6 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new NotImplementedException();
 			}
 		}
-
-		#endregion
 
 		/// <summary>
 		/// 

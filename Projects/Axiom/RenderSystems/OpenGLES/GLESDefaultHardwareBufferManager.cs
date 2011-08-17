@@ -50,11 +50,16 @@ namespace Axiom.RenderSystems.OpenGLES
 	///  rendering system (which is required to create a 'real' hardware
 	///  buffer manager.
 	/// </remarks>
-	public class GLESDefaultHardwareBufferManager : HardwareBufferManager
+	public class GLESDefaultHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+		public GLESDefaultHardwareBufferManagerBase()
+			: base()
 		{
-			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+		}
+
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration declaration, int numVerts, BufferUsage usage )
+		{
+			return CreateVertexBuffer( declaration, numVerts, usage, false );
 		}
 
 		/// <summary>
@@ -65,9 +70,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration declaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			return new GLESDefaultHardwareVertexBuffer( vertexSize, numVerts, usage );
+			return new GLESDefaultHardwareVertexBuffer( declaration, numVerts, usage );
 		}
 
 		/// <summary>
@@ -95,6 +100,14 @@ namespace Axiom.RenderSystems.OpenGLES
 			return new GLESDefaultHardwareIndexBuffer( type, numIndices, usage );
 		}
 
+	}
+
+	public class GLESDefaultHardwareBufferManager : HardwareBufferManager
+	{
+		public GLESDefaultHardwareBufferManager()
+			: base( new GLESDefaultHardwareBufferManagerBase() )
+		{
+		}
 	}
 }
 
