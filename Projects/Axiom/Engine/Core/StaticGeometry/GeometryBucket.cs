@@ -38,13 +38,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.IO;
-
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Collections;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -385,15 +381,17 @@ namespace Axiom.Core
 
 			#region Protected Methods
 
-			protected unsafe byte* CopyVertices( HardwareVertexBuffer srcBuf, byte* pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
+			protected byte[] CopyVertices( HardwareVertexBuffer srcBuf, byte[] pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
 			{
-				// lock source
-				IntPtr src = srcBuf.Lock( BufferLocking.ReadOnly );
 				int bufInc = srcBuf.VertexSize;
 
-				byte* pSrc = (byte*)src.ToPointer();
-				float* pSrcReal;
-				float* pDstReal;
+                byte[] pSrc = new byte[ srcBuf.Length / sizeof( byte ) ];
+                srcBuf.GetData( pSrc );
+
+                float[] pSrcReal = new float[ 3 ];
+                float[] pDstReal = new float[ 3 ];
+                int pSrcIdx = 0, pDstIdx = 0;
+
 				Vector3 temp = Vector3.Zero;
 
 				// Calculate elem sizes outside the loop
@@ -410,34 +408,43 @@ namespace Axiom.Core
 					for ( int i = 0; i < elems.Count; i++ )
 					{
 						VertexElement elem = elems[ i ];
-						pSrcReal = (float*)( pSrc + elem.Offset );
-						pDstReal = (float*)( pDst + elem.Offset );
+                        
+                        for ( int idx = 0; idx < 3; ++idx )
+                        {
+                            pSrcReal[ idx ] = BitConverter.ToSingle( pSrc, pSrcIdx + elem.Offset + ( sizeof( float ) * idx ) );
+                            pDstReal[ idx ] = BitConverter.ToSingle( pDst, pDstIdx + elem.Offset + ( sizeof( float ) * idx ) );
+                        }
 
 						switch ( elem.Semantic )
 						{
 							case VertexElementSemantic.Position:
-								temp.x = *pSrcReal++;
-								temp.y = *pSrcReal++;
-								temp.z = *pSrcReal++;
+                                temp.x = pSrcReal[ 0 ];
+                                temp.y = pSrcReal[ 1 ];
+                                temp.z = pSrcReal[ 2 ];
+
 								// transform
 								temp = ( geom.orientation * ( temp * geom.scale ) );
-								*pDstReal++ = temp.x + positionDelta.x;
-								*pDstReal++ = temp.y + positionDelta.y;
-								*pDstReal++ = temp.z + positionDelta.z;
+                                pDstReal[ 0 ] = temp.x + positionDelta.x;
+                                pDstReal[ 1 ] = temp.y + positionDelta.y;
+                                pDstReal[ 2 ] = temp.z + positionDelta.z;
 								break;
-							case VertexElementSemantic.Normal:
+							
+                            case VertexElementSemantic.Normal:
 							case VertexElementSemantic.Tangent:
 							case VertexElementSemantic.Binormal:
-								temp.x = *pSrcReal++;
-								temp.y = *pSrcReal++;
-								temp.z = *pSrcReal++;
+                                temp.x = pSrcReal[ 0 ];
+                                temp.y = pSrcReal[ 1 ];
+                                temp.z = pSrcReal[ 2 ];
+
 								// rotation only
 								temp = geom.orientation * temp;
-								*pDstReal++ = temp.x;
-								*pDstReal++ = temp.y;
-								*pDstReal++ = temp.z;
+                                pDstReal[ 0 ] = temp.x;
+								pDstReal[ 1 ] = temp.y;
+								pDstReal[ 2 ] = temp.z;
+
 								break;
-							default:
+							
+                            default:
 								// just raw copy
 								int size = elemSizes[ i ];
 								// Optimize the loop for the case that
@@ -461,11 +468,11 @@ namespace Axiom.Core
 					}
 
 					// Increment both pointers
-					pDst += bufInc;
-					pSrc += bufInc;
+                    pDstIdx += bufInc;
+                    pSrcIdx += bufInc;
 				}
 
-				srcBuf.Unlock();
+                srcBuf.SetData( pSrc );
 				return pDst;
 			}
 
