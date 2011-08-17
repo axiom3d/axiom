@@ -158,7 +158,7 @@ namespace Axiom.Core
 
 			public GeometryBucket( MaterialBucket parent, string formatString,
 								  VertexData vData, IndexData iData )
-                : base()
+				: base()
 			{
 				// Clone the structure from the example
 				this.parent = parent;
@@ -252,10 +252,21 @@ namespace Axiom.Core
 
 				// create index buffer, and lock
 				if ( logLevel <= 1 )
-					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}",
-						indexType, indexData.indexCount );
+					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}", indexType, indexData.indexCount );
 				indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount, BufferUsage.StaticWriteOnly );
-				IntPtr indexBufferIntPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
+				short[] p16DstIdx, p16SrcIdx;
+				int[] p32DstIdx, p32SrcIdx;
+				if ( indexType == IndexType.Size32 )
+				{
+					p32DstIdx = new int[ indexData.indexCount ];
+					indexData.indexBuffer.GetData( p32DstIdx );
+				}
+				else
+				{
+					p16DstIdx = new short[ indexData.indexCount ];
+					indexData.indexBuffer.GetData( p16DstIdx );
+				}
+
 
 				// create all vertex buffers, and lock
 				short b;
@@ -264,54 +275,56 @@ namespace Axiom.Core
 				List<List<VertexElement>> bufferElements = new List<List<VertexElement>>();
 				unsafe
 				{
-					byte*[] destBufferPtrs = new byte*[ binds.BindingCount ];
+					byte[][] destBufferPtrs = new byte[ binds.BindingCount ][];
 					for ( b = 0; b < binds.BindingCount; ++b )
 					{
 						int vertexCount = vertexData.vertexCount;
 						if ( logLevel <= 1 )
-							LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}",
-								b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
+							LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}", b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
 						// Need to double the vertex count for the position buffer
 						// if we're doing stencil shadows
 						if ( stencilShadows && b == posBufferIdx )
 						{
 							vertexCount = vertexCount * 2;
 							if ( vertexCount > maxVertexIndex )
-								throw new Exception( "Index range exceeded when using stencil shadows, consider " +
-															 "reducing your region size or reducing poly count" );
+								throw new Exception( "Index range exceeded when using stencil shadows, consider reducing your region size or reducing poly count." );
 						}
 						HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
 						binds.SetBinding( b, vbuf );
-						IntPtr pLock = vbuf.Lock( BufferLocking.Discard );
-						destBufferPtrs[ b ] = (byte*)pLock.ToPointer();
+						byte[] tmp = new byte[ vbuf.VertexCount * vbuf.VertexSize ];
+						vbuf.GetData( tmp );
+						destBufferPtrs[ b ] = tmp;
 						// Pre-cache vertex elements per buffer
 						bufferElements.Add( dcl.FindElementBySource( b ) );
 					}
 
 					// iterate over the geometry items
-					int indexOffset = 0;
+					int srcIndexOffset = 0;
+					int dstIndexCount = 0;
 					IEnumerator iter = queuedGeometry.GetEnumerator();
 					Vector3 regionCenter = parent.Parent.Parent.Center;
-					int* pDestInt = (int*)indexBufferIntPtr.ToPointer();
-					ushort* pDestUShort = (ushort*)indexBufferIntPtr.ToPointer();
+
 					foreach ( QueuedGeometry geom in queuedGeometry )
 					{
 						// copy indexes across with offset
 						IndexData srcIdxData = geom.geometry.indexData;
-						IntPtr srcIntPtr = srcIdxData.indexBuffer.Lock( BufferLocking.ReadOnly );
+
 						if ( indexType == IndexType.Size32 )
 						{
-							int* pSrcInt = (int*)srcIntPtr.ToPointer();
+							p32SrcIdx = new int[ srcIdxData.indexCount ];
+							srcIdxData.indexBuffer.GetData( p32SrcIdx );
+
 							for ( int i = 0; i < srcIdxData.indexCount; i++ )
-								*pDestInt++ = ( *pSrcInt++ ) + indexOffset;
+								p32DstIdx[ dstIndexCount++ ] = p32SrcIdx[ i + srcIndexOffset ];
 						}
 						else
 						{
-							ushort* pSrcUShort = (ushort*)( srcIntPtr.ToPointer() );
+							p16SrcIdx = new short[ srcIdxData.indexCount ];
+							srcIdxData.indexBuffer.GetData( p16SrcIdx );
+
 							for ( int i = 0; i < srcIdxData.indexCount; i++ )
-								*pDestUShort++ = (ushort)( ( *pSrcUShort++ ) + indexOffset );
+								p16DstIdx[ dstIndexCount++ ] = p16SrcIdx[ i + srcIndexOffset ];
 						}
-						srcIdxData.indexBuffer.Unlock();
 
 						// Now deal with vertex buffers
 						// we can rely on buffer counts / formats being the same
@@ -320,7 +333,7 @@ namespace Axiom.Core
 						for ( b = 0; b < binds.BindingCount; ++b )
 							// Iterate over vertices
 							destBufferPtrs[ b ] = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
-						indexOffset += geom.geometry.vertexData.vertexCount;
+						srcIndexOffset += geom.geometry.vertexData.vertexCount;
 					}
 				}
 
@@ -350,8 +363,8 @@ namespace Axiom.Core
 						RenderSystem rend = Root.Instance.RenderSystem;
 						if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 						{
-                            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-                            decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
+							VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+							decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
 							buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
 							// Fill the first half with 1.0, second half with 0.0
 							float* pW = (float*)buf.Lock( BufferLocking.Discard ).ToPointer();
@@ -383,14 +396,13 @@ namespace Axiom.Core
 
 			protected byte[] CopyVertices( HardwareVertexBuffer srcBuf, byte[] pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
 			{
+				// lock source
+				byte[] pSrc = new byte[ srcBuf.Length ];
+				srcBuf.GetData( pSrc );
 				int bufInc = srcBuf.VertexSize;
-
-                byte[] pSrc = new byte[ srcBuf.Length / sizeof( byte ) ];
-                srcBuf.GetData( pSrc );
-
-                float[] pSrcReal = new float[ 3 ];
-                float[] pDstReal = new float[ 3 ];
-                int pSrcIdx = 0, pDstIdx = 0;
+				float[] pSrcReal = new float[ 3 ];
+				float[] pDstReal = new float[ 3 ];
+				int pSrcIdx = 0, pDstIdx = 0;
 
 				Vector3 temp = Vector3.Zero;
 
@@ -402,49 +414,57 @@ namespace Axiom.Core
 				// Move the position offset calculation outside the loop
 				Vector3 positionDelta = geom.position - regionCenter;
 
+				int srcIdx, dstIdx = 0;
+
 				for ( int v = 0; v < geom.geometry.vertexData.vertexCount; ++v )
 				{
 					// iterate over vertex elements
 					for ( int i = 0; i < elems.Count; i++ )
 					{
 						VertexElement elem = elems[ i ];
-                        
-                        for ( int idx = 0; idx < 3; ++idx )
-                        {
-                            pSrcReal[ idx ] = BitConverter.ToSingle( pSrc, pSrcIdx + elem.Offset + ( sizeof( float ) * idx ) );
-                            pDstReal[ idx ] = BitConverter.ToSingle( pDst, pDstIdx + elem.Offset + ( sizeof( float ) * idx ) );
-                        }
+
+						for ( int idx = 0; idx < 3; ++idx )
+						{
+							pSrcReal[ idx ] = BitConverter.ToSingle( pSrc, pSrcIdx + elem.Offset + ( sizeof( float ) * idx ) );
+							pDstReal[ idx ] = BitConverter.ToSingle( pDst, pDstIdx + elem.Offset + ( sizeof( float ) * idx ) );
+						}
 
 						switch ( elem.Semantic )
 						{
 							case VertexElementSemantic.Position:
-                                temp.x = pSrcReal[ 0 ];
-                                temp.y = pSrcReal[ 1 ];
-                                temp.z = pSrcReal[ 2 ];
+								temp.x = pSrcReal[ 0 ];
+								temp.y = pSrcReal[ 1 ];
+								temp.z = pSrcReal[ 2 ];
 
 								// transform
 								temp = ( geom.orientation * ( temp * geom.scale ) );
-                                pDstReal[ 0 ] = temp.x + positionDelta.x;
-                                pDstReal[ 1 ] = temp.y + positionDelta.y;
-                                pDstReal[ 2 ] = temp.z + positionDelta.z;
+
+								pDstReal[ 0 ] = temp.x + positionDelta.x;
+								pDstReal[ 1 ] = temp.y + positionDelta.y;
+								pDstReal[ 2 ] = temp.z + positionDelta.z;
+
+								// TODO: Need to copy pDestReal to pDest at the correct offset
 								break;
-							
-                            case VertexElementSemantic.Normal:
+
+							case VertexElementSemantic.Normal:
 							case VertexElementSemantic.Tangent:
 							case VertexElementSemantic.Binormal:
-                                temp.x = pSrcReal[ 0 ];
-                                temp.y = pSrcReal[ 1 ];
-                                temp.z = pSrcReal[ 2 ];
+								temp.x = pSrcReal[ 0 ];
+								temp.y = pSrcReal[ 1 ];
+								temp.z = pSrcReal[ 2 ];
 
 								// rotation only
 								temp = geom.orientation * temp;
-                                pDstReal[ 0 ] = temp.x;
+
+								pDstReal[ 0 ] = temp.x;
 								pDstReal[ 1 ] = temp.y;
 								pDstReal[ 2 ] = temp.z;
 
+								// TODO: Need to copy pDestReal to pDest at the correct offset
+
 								break;
-							
-                            default:
+
+							default:
 								// just raw copy
 								int size = elemSizes[ i ];
 								// Optimize the loop for the case that
@@ -453,26 +473,23 @@ namespace Axiom.Core
 								{
 									int cnt = size / 4;
 									while ( cnt-- > 0 )
-										*pDstReal++ = *pSrcReal++;
+										pDst[ dstIdx++ ] = pSrc[ srcIdx++ ];
 								}
 								else
 								{
 									// Fall back to the byte-by-byte copy
-									byte* pbSrc = (byte*)pSrcReal;
-									byte* pbDst = (byte*)pDstReal;
 									while ( size-- > 0 )
-										*pbDst++ = *pbSrc++;
+										pDst[ dstIdx++ ] = pSrc[ srcIdx++ ];
 								}
 								break;
 						}
 					}
 
 					// Increment both pointers
-                    pDstIdx += bufInc;
-                    pSrcIdx += bufInc;
+					pDstIdx += bufInc;
+					pSrcIdx += bufInc;
 				}
 
-                srcBuf.SetData( pSrc );
 				return pDst;
 			}
 
@@ -550,31 +567,31 @@ namespace Axiom.Core
 			/// <summary>
 			///     Dispose the hardware index and vertex buffers
 			/// </summary>
-            protected override void dispose(bool disposeManagedResources)
-            {
-                if (!this.IsDisposed)
-                {
-                    if (disposeManagedResources)
-                    {
-                        if (indexData != null)
-                        {
-                            if (!indexData.IsDisposed)
-                                indexData.Dispose();
+			protected override void dispose( bool disposeManagedResources )
+			{
+				if ( !this.IsDisposed )
+				{
+					if ( disposeManagedResources )
+					{
+						if ( indexData != null )
+						{
+							if ( !indexData.IsDisposed )
+								indexData.Dispose();
 
-                            indexData = null;
-                        }
+							indexData = null;
+						}
 
-                        if (vertexData != null)
-                        {
-                            if (!vertexData.IsDisposed)
-                                this.vertexData.Dispose();
+						if ( vertexData != null )
+						{
+							if ( !vertexData.IsDisposed )
+								this.vertexData.Dispose();
 
-                            vertexData = null;
-                        }
-                    }
-                }
-                base.dispose(disposeManagedResources);
-            }
+							vertexData = null;
+						}
+					}
+				}
+				base.dispose( disposeManagedResources );
+			}
 
 			#endregion IRenderable members
 
