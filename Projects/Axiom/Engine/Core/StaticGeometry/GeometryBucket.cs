@@ -253,7 +253,8 @@ namespace Axiom.Core
 				// create index buffer, and lock
 				if ( logLevel <= 1 )
 					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}", indexType, indexData.indexCount );
-				indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount, BufferUsage.StaticWriteOnly );
+				
+                indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount, BufferUsage.StaticWriteOnly );
 				short[] p16DstIdx, p16SrcIdx;
 				int[] p32DstIdx, p32SrcIdx;
 				if ( indexType == IndexType.Size32 )
@@ -273,72 +274,70 @@ namespace Axiom.Core
 				short posBufferIdx = dcl.FindElementBySemantic( VertexElementSemantic.Position ).Source;
 
 				List<List<VertexElement>> bufferElements = new List<List<VertexElement>>();
-				unsafe
-				{
-					byte[][] destBufferPtrs = new byte[ binds.BindingCount ][];
-					for ( b = 0; b < binds.BindingCount; ++b )
-					{
-						int vertexCount = vertexData.vertexCount;
-						if ( logLevel <= 1 )
-							LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}", b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
-						// Need to double the vertex count for the position buffer
-						// if we're doing stencil shadows
-						if ( stencilShadows && b == posBufferIdx )
-						{
-							vertexCount = vertexCount * 2;
-							if ( vertexCount > maxVertexIndex )
-								throw new Exception( "Index range exceeded when using stencil shadows, consider reducing your region size or reducing poly count." );
-						}
-						HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
-						binds.SetBinding( b, vbuf );
-						byte[] tmp = new byte[ vbuf.VertexCount * vbuf.VertexSize ];
-						vbuf.GetData( tmp );
-						destBufferPtrs[ b ] = tmp;
-						// Pre-cache vertex elements per buffer
-						bufferElements.Add( dcl.FindElementBySource( b ) );
-					}
 
-					// iterate over the geometry items
-					int srcIndexOffset = 0;
-					int dstIndexCount = 0;
-					IEnumerator iter = queuedGeometry.GetEnumerator();
-					Vector3 regionCenter = parent.Parent.Parent.Center;
+                byte[][] destBufferPtrs = new byte[ binds.BindingCount ][];
+                for ( b = 0; b < binds.BindingCount; ++b )
+                {
+                    int vertexCount = vertexData.vertexCount;
+                    if ( logLevel <= 1 )
+                        LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}", b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
+                    // Need to double the vertex count for the position buffer
+                    // if we're doing stencil shadows
+                    if ( stencilShadows && b == posBufferIdx )
+                    {
+                        vertexCount = vertexCount * 2;
+                        if ( vertexCount > maxVertexIndex )
+                            throw new Exception( "Index range exceeded when using stencil shadows, consider reducing your region size or reducing poly count." );
+                    }
+                    HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
+                    binds.SetBinding( b, vbuf );
+                    byte[] tmp = new byte[ vbuf.VertexCount * vbuf.VertexSize ];
+                    vbuf.GetData( tmp );
+                    destBufferPtrs[ b ] = tmp;
+                    // Pre-cache vertex elements per buffer
+                    bufferElements.Add( dcl.FindElementBySource( b ) );
+                }
 
-					foreach ( QueuedGeometry geom in queuedGeometry )
-					{
-						// copy indexes across with offset
-						IndexData srcIdxData = geom.geometry.indexData;
+                // iterate over the geometry items
+                int srcIndexOffset = 0;
+                int dstIndexCount = 0;
+                IEnumerator iter = queuedGeometry.GetEnumerator();
+                Vector3 regionCenter = parent.Parent.Parent.Center;
 
-						if ( indexType == IndexType.Size32 )
-						{
-							p32SrcIdx = new int[ srcIdxData.indexCount ];
-							srcIdxData.indexBuffer.GetData( p32SrcIdx );
+                foreach ( QueuedGeometry geom in queuedGeometry )
+                {
+                    // copy indexes across with offset
+                    IndexData srcIdxData = geom.geometry.indexData;
 
-							for ( int i = 0; i < srcIdxData.indexCount; i++ )
-								p32DstIdx[ dstIndexCount++ ] = p32SrcIdx[ i + srcIndexOffset ];
-						}
-						else
-						{
-							p16SrcIdx = new short[ srcIdxData.indexCount ];
-							srcIdxData.indexBuffer.GetData( p16SrcIdx );
+                    if ( indexType == IndexType.Size32 )
+                    {
+                        p32SrcIdx = new int[ srcIdxData.indexCount ];
+                        srcIdxData.indexBuffer.GetData( p32SrcIdx );
 
-							for ( int i = 0; i < srcIdxData.indexCount; i++ )
-								p16DstIdx[ dstIndexCount++ ] = p16SrcIdx[ i + srcIndexOffset ];
-						}
+                        for ( int i = 0; i < srcIdxData.indexCount; i++ )
+                            p32DstIdx[ dstIndexCount++ ] = p32SrcIdx[ i + srcIndexOffset ];
+                    }
+                    else
+                    {
+                        p16SrcIdx = new short[ srcIdxData.indexCount ];
+                        srcIdxData.indexBuffer.GetData( p16SrcIdx );
 
-						// Now deal with vertex buffers
-						// we can rely on buffer counts / formats being the same
-						VertexData srcVData = geom.geometry.vertexData;
-						VertexBufferBinding srcBinds = srcVData.vertexBufferBinding;
-						for ( b = 0; b < binds.BindingCount; ++b )
-							// Iterate over vertices
-							destBufferPtrs[ b ] = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
-						srcIndexOffset += geom.geometry.vertexData.vertexCount;
-					}
-				}
+                        for ( int i = 0; i < srcIdxData.indexCount; i++ )
+                            p16DstIdx[ dstIndexCount++ ] = p16SrcIdx[ i + srcIndexOffset ];
+                    }
+
+                    // Now deal with vertex buffers
+                    // we can rely on buffer counts / formats being the same
+                    VertexData srcVData = geom.geometry.vertexData;
+                    VertexBufferBinding srcBinds = srcVData.vertexBufferBinding;
+                    for ( b = 0; b < binds.BindingCount; ++b )
+                        // Iterate over vertices
+                        destBufferPtrs[ b ] = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
+                    srcIndexOffset += geom.geometry.vertexData.vertexCount;
+                }
 
 				// unlock everything
-				indexData.indexBuffer.Unlock();
+				//indexData.indexBuffer.Unlock();
 				for ( b = 0; b < binds.BindingCount; ++b )
 					binds.GetBuffer( b ).Unlock();
 
@@ -346,36 +345,40 @@ namespace Axiom.Core
 				// the early half of the buffer to the latter part
 				if ( stencilShadows )
 				{
-					unsafe
-					{
-						HardwareVertexBuffer buf = binds.GetBuffer( posBufferIdx );
-						IntPtr src = buf.Lock( BufferLocking.Normal );
-						byte* pSrc = (byte*)src.ToPointer();
-						// Point dest at second half (remember vertexcount is original count)
-						byte* pDst = pSrc + buf.VertexSize * vertexData.vertexCount;
+                    HardwareVertexBuffer buf = binds.GetBuffer( posBufferIdx );
+                    byte[] pSrc = new byte[ buf.Length / sizeof( byte ) ];
+                    buf.GetData( pSrc );
 
-						int count = buf.VertexSize * buf.VertexCount;
-						while ( count-- > 0 )
-							*pDst++ = *pSrc++;
-						buf.Unlock();
+                    // Point dest at second half (remember vertexcount is original count)
+                    byte* pDst = pSrc + buf.VertexSize * vertexData.vertexCount;
 
-						// Also set up hardware W buffer if appropriate
-						RenderSystem rend = Root.Instance.RenderSystem;
-						if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
-						{
-							VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-							decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
-							buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
-							// Fill the first half with 1.0, second half with 0.0
-							float* pW = (float*)buf.Lock( BufferLocking.Discard ).ToPointer();
-							for ( int v = 0; v < vertexData.vertexCount; ++v )
-								*pW++ = 1.0f;
-							for ( int v = 0; v < vertexData.vertexCount; ++v )
-								*pW++ = 0.0f;
-							buf.Unlock();
-							vertexData.hardwareShadowVolWBuffer = buf;
-						}
-					}
+                    int count = buf.VertexSize * buf.VertexCount;
+                    while ( count-- > 0 )
+                        *pDst++ = *pSrc++;
+
+                    buf.SetData( pSrc );
+
+                    // Also set up hardware W buffer if appropriate
+                    RenderSystem rend = Root.Instance.RenderSystem;
+                    if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+                    {
+                        VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                        decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
+                        buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
+
+                        // Fill the first half with 1.0, second half with 0.0
+                        float[] pW = new float[ buf.Length / sizeof( float ) ];
+                        buf.GetData( pW );
+
+                        for ( int v = 0; v < vertexData.vertexCount; ++v )
+                            pW[ v ] = 1.0f;
+                        
+                        for ( int v = vertexData.vertexCount; v < vertexData.vertexCount * 2; ++v )
+                            pW[ v ] = 0.0f;
+                        
+                        buf.SetData( pW );
+                        vertexData.hardwareShadowVolWBuffer = buf;
+                    }
 				}
 			}
 
@@ -414,7 +417,7 @@ namespace Axiom.Core
 				// Move the position offset calculation outside the loop
 				Vector3 positionDelta = geom.position - regionCenter;
 
-				int srcIdx, dstIdx = 0;
+				int srcIdx = 0, dstIdx = 0;
 
 				for ( int v = 0; v < geom.geometry.vertexData.vertexCount; ++v )
 				{
