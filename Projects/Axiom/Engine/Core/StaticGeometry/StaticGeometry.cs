@@ -531,7 +531,7 @@ namespace Axiom.Core
             VertexElement posElem =
                 vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
             HardwareVertexBuffer vbuf = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
-            byte[] vertex = new byte[ vbuf.Length / sizeof( byte ) ];
+            byte[] vertex = new byte[ vbuf.Length ];
             vbuf.GetData( vertex );
 
             Vector3 min = Vector3.Zero;
@@ -675,10 +675,10 @@ namespace Axiom.Core
                 // indexes in the old buffer, but note that we're not guaranteed to
                 // address every vertex (which is kinda why we're here)
 
-                byte[] pSrcBase = new byte[ oldBuf.Length / sizeof( byte ) ];
+                byte[] pSrcBase = new byte[ oldBuf.Length ];
                 oldBuf.GetData( pSrcBase );
 
-                byte[] pDstBase = new byte[ newBuf.Length / sizeof( byte ) ];
+                byte[] pDstBase = new byte[ newBuf.Length ];
                 newBuf.GetData( pDstBase );
 
                 int vertexSize = oldBuf.VertexSize;
