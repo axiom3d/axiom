@@ -491,7 +491,7 @@ namespace Axiom.Core
                 vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
 
             uint numCommon = 0;
-            byte[] pVertex = new byte[ vbuf.Length / sizeof( byte ) ];
+            byte[] pVertex = new byte[ vbuf.Length ];
             vbuf.GetData( pVertex );
 
             int pVertexIdx = 0;

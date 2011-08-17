@@ -2344,7 +2344,7 @@ namespace Axiom.Core
             Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,
                 "Blend indices must be VET_UBYTE4" );
 
-            pBlendIdx = new byte[ srcIdxBuf.Length / sizeof( byte ) ];
+            pBlendIdx = new byte[ srcIdxBuf.Length ];
             srcIdxBuf.GetData( pBlendIdx );
 
             if ( srcWeightBuf == srcIdxBuf )

@@ -346,7 +346,7 @@ namespace Axiom.Core
 				if ( stencilShadows )
 				{
                     HardwareVertexBuffer buf = binds.GetBuffer( posBufferIdx );
-                    byte[] pSrc = new byte[ buf.Length / sizeof( byte ) ];
+                    byte[] pSrc = new byte[ buf.Length ];
                     buf.GetData( pSrc );
 
                     // Point dest at second half (remember vertexcount is original count)
