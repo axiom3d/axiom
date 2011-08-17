@@ -169,7 +169,60 @@ namespace Axiom.Platform.Android
 
 		public override void EncodeToFile( System.IO.Stream input, string fileName, object codecData )
 		{
-			throw new NotImplementedException();
+			/*
+			File sdImageMainDirectory = "/sdcard/myImages";
+
+			We initialize some variables.
+
+			FileOutputStream fileOutputStream = null;
+
+			The image file name
+
+			String nameFile = “myImage”
+
+			Now, the quality of the image. This is a value between 0 and 100. 0 meaning compress for small size, 100 meaning compress for max quality. Some formats, like PNG which is lossless, will ignore the quality setting (via Google Android Reference)
+
+			int quality = 50;
+
+			We create the options we are going to use in our compression (adding the sample size)
+
+			BitmapFactory.Options options=new BitmapFactory.Options();
+
+			options.inSampleSize = 5;
+
+			We create the Bitmap from the imageData (byte array) and we throw it to the FileOutputStream with the name and the compression given (In this case JPEG)
+
+			Bitmap myImage = BitmapFactory.decodeByteArray(imageData, 0,imageData.length,options);
+
+			fileOutputStream = new FileOutputStream(sdImageMainDirectory.toString() +"/" + nameFile + ".jpg");
+
+			BufferedOutputStream bos = new BufferedOutputStream(fileOutputStream);
+
+			myImage.compress(CompressFormat.JPEG, quality, bos);
+
+			bos.flush();
+
+			bos.close();
+
+
+
+			Read more: http://www.brighthub.com/mobile/google-android/articles/64048.aspx#ixzz1C59A5vl9 
+			 */
+			byte[] imageData = new byte[input.Length];
+			input.Read( imageData, 0, imageData.Length );
+			LogManager.Instance.Write( "Saving '" + fileName + "'" + imageData.Length.ToString() + " bytes." );
+			System.IO.FileStream fileOutputStream = null;
+			int quality = 50;
+			Bitmap myImage = BitmapFactory.DecodeByteArray( imageData, 0, imageData.Length );
+			fileOutputStream = new System.IO.FileStream( fileName, System.IO.FileMode.OpenOrCreate );
+			if ( null != fileOutputStream && null != myImage )
+			{
+				myImage.Compress( global::Android.Graphics.Bitmap.CompressFormat.Png, quality, fileOutputStream );
+				fileOutputStream.Flush();
+				fileOutputStream.Close();
+			}
+			else
+				LogManager.Instance.Write( "Failed to Open or create '" + fileName + "'" );
 		}
 
 
