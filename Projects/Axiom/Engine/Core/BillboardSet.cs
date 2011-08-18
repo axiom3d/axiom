@@ -901,7 +901,6 @@ namespace Axiom.Core
 				Quaternion rotation = Quaternion.FromAngleAxis( bb.rotationInRadians, axis );
 				Vector3 pt;
 
-				unsafe
 				{
 					//float* posPtr = (float*)this.lockPtr.ToPointer();
 					byte[] posPtr = this.lockPtr;

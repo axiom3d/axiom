@@ -432,7 +432,7 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		/// <param name="lockedBuffer"></param>
-		protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
+		protected void DistributeControlPoints( IntPtr lockedBuffer )
 		{
 			// Insert original control points into expanded mesh
 			int uStep = 1 << uLevel;
@@ -564,7 +564,7 @@ namespace Axiom.Core
 		/// <param name="leftIndex"></param>
 		/// <param name="rightIndex"></param>
 		/// <param name="destIndex"></param>
-		protected unsafe void InterpolateVertexData( IntPtr lockedBuffer, int leftIndex, int rightIndex, int destIndex )
+		protected void InterpolateVertexData( IntPtr lockedBuffer, int leftIndex, int rightIndex, int destIndex )
 		{
 			int vertexSize = declaration.GetVertexSize( 0 );
 			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -650,7 +650,7 @@ namespace Axiom.Core
 		/// <summary>
 		///
 		/// </summary>
-		protected unsafe void MakeTriangles()
+		protected void MakeTriangles()
 		{
 			// Our vertex buffer is subdivided to the highest level, we need to generate tris
 			// which step over the vertices we don't need for this level of detail.

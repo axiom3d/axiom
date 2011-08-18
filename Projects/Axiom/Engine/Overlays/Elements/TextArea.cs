@@ -212,7 +212,7 @@ namespace Axiom.Overlays.Elements
 		/// <summary>
 		/// 
 		/// </summary>
-		protected unsafe void UpdateColors()
+		protected void UpdateColors()
 		{
 			// convert to API specific color values
 			int topColor = Root.Instance.ConvertColor( colorTop );

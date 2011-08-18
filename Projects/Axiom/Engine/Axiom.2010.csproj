@@ -51,7 +51,7 @@
     <OutputPath>bin\x86\</OutputPath>
     <DefineConstants>TRACE;DEBUG;AXIOM_SAFE_ONLY</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
     <WarningLevel>4</WarningLevel>
     <FileAlignment>4096</FileAlignment>

@@ -110,7 +110,7 @@ namespace Axiom.Graphics
 		/// <param name="positionBuffer">The updated position buffer, must contain ONLY xyz.</param>
 		public void UpdateFaceNormals( int vertexSet, HardwareVertexBuffer positionBuffer )
 		{
-			unsafe
+
 			{
 				Debug.Assert( positionBuffer.VertexSize == sizeof( float ) * 3, "Position buffer should contain only positions!" );
 
