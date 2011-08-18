@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -239,23 +238,68 @@ namespace Axiom.Math
 			{
 				Debug.Assert( index >= 0 && index < 4, "Indexer boundaries overrun in Vector4." );
 
+#if AXIOM_UNSAFE_CODE
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						return *( pX + index );
 				}
+#else
+                switch ( index )
+                {
+                    case 0:
+                        return this.x;
+
+                    case 1:
+                        return this.y;
+
+                    case 2:
+                        return this.z;
+
+                    case 3:
+                        return this.w;
+
+                    default:
+                        throw new Axiom.Core.AxiomException( "Indexer boundaries overrun in Vector4." );
+                }
+#endif
 			}
-			set
+
+            set
 			{
 				Debug.Assert( index >= 0 && index < 4, "Indexer boundaries overrun in Vector4." );
 
+#if AXIOM_UNSAFE_CODE
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						*( pX + index ) = value;
 				}
+#else
+                switch ( index )
+                {
+                    case 0:
+                        this.x = value;
+                        break;
+
+                    case 1:
+                        this.y = value;
+                        break;
+
+                    case 2:
+                        this.z = value;
+                        break;
+
+                    case 3:
+                        this.w = value;
+                        break;
+
+                    default:
+                        throw new Axiom.Core.AxiomException( "Indexer boundaries overrun in Vector4." );
+                }
+#endif
 			}
 		}
 
