@@ -202,13 +202,13 @@ namespace Axiom.Core
 			nullTextureList.Add( new WeakReference( shadowTex ) );
 
 			// Populate the texture based on format
-			shadowTex.GetBuffer().Lock( BufferLocking.Discard );
-			PixelBox box = shadowTex.GetBuffer().CurrentLock;
-
+			//shadowTex.GetBuffer().Lock( BufferLocking.Discard );
+			//PixelBox box = shadowTex.GetBuffer().CurrentLock;
+			byte[] data = new byte[shadowTex.GetBuffer().Length];
 			//set high values across all bytes of the format
-			PixelConverter.PackColor( 1.0f, 1.0f, 1.0f, 1.0f, format, box.Data );
+			PixelConverter.PackColor( 1.0f, 1.0f, 1.0f, 1.0f, format, data );
 
-			shadowTex.GetBuffer().Unlock();
+			shadowTex.GetBuffer().SetData( data );
 
 			return shadowTex;
 		}
