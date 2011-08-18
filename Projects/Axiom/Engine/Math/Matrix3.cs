@@ -175,15 +175,9 @@ namespace Axiom.Math
 		/// <returns>A Vector3 representing one of the Matrix columns.</returns>
 		public Vector3 GetColumn( int col )
 		{
-			Debug.Assert( col >= 0 && col < 3, "Attempt to retreive a column of a Matrix3 greater than 2." );
+			Debug.Assert( col >= 0 && col < 3, "Attempt to retrieve a column of a Matrix3 greater than 2." );
 
-			unsafe
-			{
-				fixed ( Real* pM = &m00 )
-					return new Vector3( *( pM + col ),        //m[0,col], 
-										*( pM + 3 + col ),    //m[1,col], 
-										*( pM + 6 + col ) );  //m[2,col]);
-			}
+			return new Vector3( this[ 0, col ], this[ 1, col ], this[ 2, col ] );
 		}
 
 		/// <summary>
@@ -564,22 +558,46 @@ namespace Axiom.Math
 			get
 			{
 				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
-
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
 						return *( pM + ( ( 3 * row ) + col ) );
 				}
+#else
+				if ( ( row * 3 ) + col == 0 ) return m00;
+				if ( ( row * 3 ) + col == 1 ) return m01;
+				if ( ( row * 3 ) + col == 2 ) return m02;
+				if ( ( row * 3 ) + col == 3 ) return m10;
+				if ( ( row * 3 ) + col == 4 ) return m11;
+				if ( ( row * 3 ) + col == 5 ) return m12;
+				if ( ( row * 3 ) + col == 6 ) return m20;
+				if ( ( row * 3 ) + col == 7 ) return m21;
+				if ( ( row * 3 ) + col == 8 ) return m22;
+				return 0;
+#endif
 			}
 			set
 			{
 				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
-
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
 						*( pM + ( ( 3 * row ) + col ) ) = value;
 				}
+#else
+				if ( ( row * 3 ) + col == 0 ) m00 = value;
+				if ( ( row * 3 ) + col == 1 ) m01 = value;
+				if ( ( row * 3 ) + col == 2 ) m02 = value;
+				if ( ( row * 3 ) + col == 3 ) m10 = value;
+				if ( ( row * 3 ) + col == 4 ) m11 = value;
+				if ( ( row * 3 ) + col == 5 ) m12 = value;
+				if ( ( row * 3 ) + col == 6 ) m20 = value;
+				if ( ( row * 3 ) + col == 7 ) m21 = value;
+				if ( ( row * 3 ) + col == 8 ) m22 = value;
+#endif
+
 			}
 		}
 
@@ -591,6 +609,7 @@ namespace Axiom.Math
 			get
 			{
 				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
+#if AXIOM_UNSAFE_CODE
 
 				unsafe
 				{
@@ -599,11 +618,23 @@ namespace Axiom.Math
 						return *( pMatrix + index );
 					}
 				}
+#else
+				if ( index == 0 ) return m00;
+				if ( index == 1 ) return m01;
+				if ( index == 2 ) return m02;
+				if ( index == 3 ) return m10;
+				if ( index == 4 ) return m11;
+				if ( index == 5 ) return m12;
+				if ( index == 6 ) return m20;
+				if ( index == 7 ) return m21;
+				if ( index == 8 ) return m22;
+				return 0;
+#endif
 			}
 			set
 			{
 				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
-
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pMatrix = &m00 )
@@ -611,6 +642,17 @@ namespace Axiom.Math
 						*( pMatrix + index ) = value;
 					}
 				}
+#else
+				if ( index == 0 ) m00 = value;
+				if ( index == 1 ) m01 = value;
+				if ( index == 2 ) m02 = value;
+				if ( index == 3 ) m10 = value;
+				if ( index == 4 ) m11 = value;
+				if ( index == 5 ) m12 = value;
+				if ( index == 6 ) m20 = value;
+				if ( index == 7 ) m21 = value;
+				if ( index == 8 ) m22 = value;
+#endif
 			}
 		}
 
@@ -667,17 +709,9 @@ namespace Axiom.Math
 		public override int GetHashCode()
 		{
 			int hashCode = 0;
-
-			unsafe
-			{
-				fixed ( Real* pM = &m00 )
-				{
-					for ( int i = 0; i < 9; i++ )
-						hashCode ^= (int)( *( pM + i ) );
-				}
-
-				return hashCode;
-			}
+			for ( int i = 0; i < 9; i++ )
+				hashCode ^= (int)this[ i ];
+			return hashCode;
 		}
 
 		/// <summary>
