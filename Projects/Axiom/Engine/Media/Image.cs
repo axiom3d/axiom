@@ -599,7 +599,10 @@ namespace Axiom.Media
 
 		public ColorEx GetColorAt( int x, int y, int z )
 		{
-			return PixelConverter.UnpackColor( Format, new IntPtr( this.bufPtr.ToInt32() + PixelUtil.GetNumElemBytes( format ) * ( z * Width * Height + Width * y + x ) ) );
+			byte[] buf = new byte[ PixelUtil.GetNumElemBytes( format ) ];
+			int offset = PixelUtil.GetNumElemBytes( format ) * ( z * Width * Height + Width * y + x );
+			Array.Copy( buffer, offset, buf, 0, buf.Length );
+			return PixelConverter.UnpackColor( Format, buf );
 		}
 
 		/// <summary>
