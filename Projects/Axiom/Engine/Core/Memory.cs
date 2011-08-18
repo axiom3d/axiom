@@ -58,16 +58,6 @@ namespace Axiom.Core
 		#endregion Constructor
 
 		#region Copy Method
-		/// <summary>
-		///		Method for copying data from one IntPtr to another.
-		/// </summary>
-		/// <param name="src">Source pointer.</param>
-		/// <param name="dest">Destination pointer.</param>
-		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( IntPtr src, IntPtr dest, int length )
-		{
-			Copy( src, dest, 0, 0, length );
-		}
 
 		/// <summary>
 		///		Method for copying data from one IntPtr to another.
@@ -81,7 +71,7 @@ namespace Axiom.Core
 		{
 			for ( int i = 0; i < length; i++ )
 			{
-                dest[i + destOffset] = src[i + srcOffset];
+				dest[ i + destOffset ] = src[ i + srcOffset ];
 			}
 		}
 
@@ -119,11 +109,11 @@ namespace Axiom.Core
 		/// <param name="dest">Destination pointer.</param>
 		/// <param name="offset">Byte offset to start.</param>
 		/// <param name="length">Number of bytes to set.</param>
-        public static void Set(byte[] dest, int offset, int length)
+		public static void Set( byte[] dest, int offset, int length )
 		{
 			for ( int i = 0; i < length; i++ )
 			{
-                dest[i + offset] = 0;
+				dest[ i + offset ] = 0;
 			}
 		}
 
