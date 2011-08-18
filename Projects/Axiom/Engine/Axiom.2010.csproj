@@ -818,7 +818,9 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Serialization\StreamSerializer.cs" />
+    <Compile Include="Serialization\StreamSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
