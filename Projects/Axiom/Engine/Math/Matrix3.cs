@@ -557,7 +557,8 @@ namespace Axiom.Math
 		{
 			get
 			{
-				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
+				Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
+
 #if AXIOM_UNSAFE_CODE
 				unsafe
 				{
@@ -579,7 +580,7 @@ namespace Axiom.Math
 			}
 			set
 			{
-				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
+				Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
 #if AXIOM_UNSAFE_CODE
 				unsafe
 				{
@@ -608,9 +609,9 @@ namespace Axiom.Math
 		{
 			get
 			{
-				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
-#if AXIOM_UNSAFE_CODE
+				Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix3 linear indexer out of bounds.");
 
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pMatrix = &m00 )

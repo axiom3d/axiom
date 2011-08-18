@@ -949,23 +949,68 @@ namespace Axiom.Math
 		{
 			get
 			{
-				//Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
+				Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
 
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
-						return *( pM + ( ( 4 * row ) + col ) );
+						return *( pM + ( ( 3 * row ) + col ) );
 				}
+#else
+				switch ( ( row * 4 ) + col )
+				{
+					case   0: return m00;
+					case   1: return m01;
+					case   2: return m02;
+					case   3: return m03;
+					case   4: return m10;
+					case   5: return m11;
+					case   6: return m12;
+					case   7: return m13;
+					case   8: return m20;
+					case   9: return m21;
+					case  10: return m22;
+					case  11: return m23;
+					case  12: return m30;
+					case  13: return m31;
+					case  14: return m31;
+					case  15: return m33;
+				}
+				return 0;
+#endif
 			}
 			set
 			{
 				//Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
 
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
-						*( pM + ( ( 4 * row ) + col ) ) = value;
+						*( pM + ( ( 3 * row ) + col ) ) = value;
 				}
+#else
+				switch ( ( row * 4 ) + col )
+				{
+					case   0: m00 = value; break;
+					case   1: m01 = value; break;
+					case   2: m02 = value; break;
+					case   3: m03 = value; break;
+					case   4: m10 = value; break;
+					case   5: m11 = value; break;
+					case   6: m12 = value; break;
+					case   7: m13 = value; break;
+					case   8: m20 = value; break;
+					case   9: m21 = value; break;
+					case  10: m22 = value; break;
+					case  11: m23 = value; break;
+					case  12: m30 = value; break;
+					case  13: m31 = value; break;
+					case  14: m32 = value; break;
+					case  15: m33 = value; break;
+				}
+#endif
 			}
 		}
 
@@ -980,27 +1025,71 @@ namespace Axiom.Math
 		{
 			get
 			{
-				//Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
+				Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
 
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
-					fixed ( Real* pMatrix = &this.m00 )
+					fixed ( Real* pMatrix = &m00 )
 					{
 						return *( pMatrix + index );
 					}
 				}
+#else
+				switch ( index )
+				{
+					case  0: return m00;
+					case  1: return m01;
+					case  2: return m02;
+					case  3: return m03;
+					case  4: return m10;
+					case  5: return m11;
+					case  6: return m12;
+					case  7: return m13;
+					case  8: return m20;
+					case  9: return m21;
+					case 10: return m22;
+					case 11: return m23;
+					case 12: return m30;
+					case 13: return m31;
+					case 14: return m32;
+					case 15: return m33;
+				} return 0;
+#endif
 			}
 			set
 			{
-				//Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
+				Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
 
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
-					fixed ( Real* pMatrix = &this.m00 )
+					fixed ( Real* pMatrix = &m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
 				}
+#else
+				switch ( index )
+				{
+					case  0: m00 = value; break;
+					case  1: m01 = value; break;
+					case  2: m02 = value; break;
+					case  3: m03 = value; break;
+					case  4: m10 = value; break;
+					case  5: m11 = value; break;
+					case  6: m12 = value; break;
+					case  7: m13 = value; break;
+					case  8: m20 = value; break;
+					case  9: m21 = value; break;
+					case 10: m22 = value; break;
+					case 11: m23 = value; break;
+					case 12: m30 = value; break;
+					case 13: m31 = value; break;
+					case 14: m32 = value; break;
+					case 15: m33 = value; break;
+				}
+#endif
 			}
 		}
 
@@ -1037,16 +1126,8 @@ namespace Axiom.Math
 		public override int GetHashCode()
 		{
 			int hashCode = 0;
-
-			unsafe
-			{
-				fixed ( Real* pM = &m00 )
-				{
-					for ( int i = 0; i < 16; i++ )
-						hashCode ^= (int)( *( pM + i ) );
-				}
-			}
-
+			for ( int i = 0; i < 16; i++ )
+				hashCode ^= (int)this[ i ];
 			return hashCode;
 		}
 
