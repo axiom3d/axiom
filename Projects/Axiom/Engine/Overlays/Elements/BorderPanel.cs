@@ -176,7 +176,7 @@ namespace Axiom.Overlays.Elements
 			vbuf.GetData( idxPtr );
 
 			int index = 0;
-			unsafe
+
 			{
 				//float* idxPtr = (float*)data.ToPointer();
 
@@ -414,7 +414,7 @@ namespace Axiom.Overlays.Elements
 				byte[] bytes;
 
 				int index = 0;
-				unsafe
+
 				{
 					//short* idxPtr = (short*)data.ToPointer();
 
@@ -753,7 +753,6 @@ namespace Axiom.Overlays.Elements
 
 			index = 0;
 
-			unsafe
 			{
 				//float* posPtr = (float*)data.ToPointer();
 

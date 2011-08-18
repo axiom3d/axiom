@@ -162,17 +162,17 @@ namespace Axiom.Media
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
 
-        /// <see cref="GetFormatFromName(string, bool, bool)"/>
-        public static PixelFormat GetFormatFromName( string name )
-        {
-            return GetFormatFromName( name, false, false );
-        }
+		/// <see cref="GetFormatFromName(string, bool, bool)"/>
+		public static PixelFormat GetFormatFromName( string name )
+		{
+			return GetFormatFromName( name, false, false );
+		}
 
-        /// <see cref="GetFormatFromName(string, bool, bool)"/>
-        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
-        {
-            return GetFormatFromName( name, accessibleOnly, false );
-        }
+		/// <see cref="GetFormatFromName(string, bool, bool)"/>
+		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
+		{
+			return GetFormatFromName( name, accessibleOnly, false );
+		}
 
 		/// <summary>
 		/// Gets the format from given name.
