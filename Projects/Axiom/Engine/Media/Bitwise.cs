@@ -158,64 +158,63 @@ namespace Axiom.Media
 		/**
 		 * Write a n*8 bits integer value to memory in native endian.
 		 */
-		public static void IntWrite( IntPtr dest, int n, uint value )
+		public static void IntWrite( byte[] dest, int n, uint value )
 		{
-            unsafe
-            {
-                switch (n)
-                {
-                    case 1:
-                        ((byte*)dest)[0] = (byte)value;
-                        break;
-                    case 2:
-                        ((ushort*)dest)[0] = (ushort)value;
-                        break;
-                    case 3:
+			byte[] tmp;
+			switch ( n )
+			{
+				case 1:
+					tmp = BitConverter.GetBytes( (byte)value );
+					tmp.CopyTo( dest, 0 );
+					break;
+				case 2:
+					tmp = BitConverter.GetBytes( (ushort)value );
+					tmp.CopyTo( dest, 0 );
+					break;
+				case 3:
 #if BIG_ENDIAN
-                    ((byte*)dest)[0] = (byte)((value >> 16) & 0xFF);
-                    ((byte*)dest)[1] = (byte)((value >> 8) & 0xFF);
-                    ((byte*)dest)[2] = (byte)(value & 0xFF);
+					tmp = BitConverter.GetBytes( value );
+					dest[ 0 ] = tmp[ 2 ];
+					dest[ 1 ] = tmp[ 1 ];
+					dest[ 2 ] = tmp[ 0 ];
 #else
-                        ((byte*)dest)[2] = (byte)((value >> 16) & 0xFF);
-                        ((byte*)dest)[1] = (byte)((value >> 8) & 0xFF);
-                        ((byte*)dest)[0] = (byte)(value & 0xFF);
+					tmp = BitConverter.GetBytes( value );
+					dest[ 2 ] = tmp[ 2 ];
+					dest[ 1 ] = tmp[ 1 ];
+					dest[ 0 ] = tmp[ 0 ];
 #endif
-                        break;
-                    case 4:
-                        ((uint*)dest)[0] = (uint)value;
-                        break;
-                }
-            }
+					break;
+				case 4:
+					tmp = BitConverter.GetBytes( value );
+					tmp.CopyTo( dest, 0 );
+					break;
+			}
 		}
 
 		///<summary>
 		///    Read a n*8 bits integer value to memory in native endian.
 		///</summary>
-		public static uint IntRead( IntPtr src, int n )
+		public static uint IntRead( byte[] src, int n )
 		{
-            unsafe
-            {
-                switch (n)
-                {
-                    case 1:
-                        return ((byte*)src)[0];
-                    case 2:
-                        return ((ushort*)src)[0];
-                    case 3:
+			byte[] tmp;
+			switch ( n )
+			{
+				case 1:
+					return src[ 0 ];
+				case 2:
+					return BitConverter.ToUInt16( src, 0 );
+				case 3:
 #if BIG_ENDIAN
-                    return ((uint)((byte*)src)[0]<<16)|
-                            ((uint)((byte*)src)[1]<<8)|
-                            ((uint)((byte*)src)[2]);
+					tmp = new byte[] { 0, src[ 2 ], src[ 1 ], src[ 0 ] };
+					return BitConverter.ToUInt32( tmp, 0 );
 #else
-                        return ((uint)((byte*)src)[0]) |
-                                ((uint)((byte*)src)[1] << 8) |
-                                ((uint)((byte*)src)[2] << 16);
+					tmp = new byte[] { 0, src[ 0 ], src[ 1 ], src[ 2 ] };
+					return BitConverter.ToUInt32( tmp, 0 );
 #endif
-                    case 4:
-                        return ((uint*)src)[0];
-                }
-                return 0; // ?
-            }
+				case 4:
+					return BitConverter.ToUInt32( src, 0 );
+			}
+			return 0; // ?
 		}
 
 		private static float[] floatConversionBuffer = new float[] { 0f };
@@ -227,15 +226,17 @@ namespace Axiom.Media
 		///</summary>
 		public static ushort FloatToHalf( float f )
 		{
-			uint i;
-			floatConversionBuffer[ 0 ] = f;
-			unsafe
-			{
-				fixed ( float* pFloat = floatConversionBuffer )
-				{
-					i = *( (uint*)pFloat );
-				}
-			}
+			byte[] buf = BitConverter.GetBytes( f );
+			uint i = BitConverter.ToUInt32( buf, 0 );
+
+			//floatConversionBuffer[ 0 ] = f;
+			//unsafe
+			//{
+			//    fixed ( float* pFloat = floatConversionBuffer )
+			//    {
+			//        i = *( (uint*)pFloat );
+			//    }
+			//}
 			return FloatToHalfI( i );
 		}
 
@@ -287,14 +288,17 @@ namespace Axiom.Media
 		///</summary>
 		public static float HalfToFloat( ushort y )
 		{
-			uintConversionBuffer[ 0 ] = HalfToFloatI( y );
-			unsafe
-			{
-				fixed ( uint* pUint = uintConversionBuffer )
-				{
-					return *( (float*)pUint );
-				}
-			}
+			uint i = HalfToFloatI( y );
+			byte[] buf = BitConverter.GetBytes( i );
+			return BitConverter.ToSingle( buf, 0 );
+			//uintConversionBuffer[ 0 ] = HalfToFloatI( y );
+			//unsafe
+			//{
+			//    fixed ( uint* pUint = uintConversionBuffer )
+			//    {
+			//        return *( (float*)pUint );
+			//    }
+			//}
 		}
 
 		///<summary>
