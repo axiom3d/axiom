@@ -121,6 +121,8 @@ namespace Axiom.Serialization
 		}
 	}
 
+#if AXIOM_UNSAFE_CODE
+
 	/// <summary>
 	/// Utility class providing helper methods for reading / writing structured data held in a Stream.
 	/// </summary>
@@ -373,7 +375,7 @@ namespace Axiom.Serialization
 		/// and can only be changed if autoHeader is true, since real format is stored in the header. 
 		/// Defaults to float unless you're using AXIOM_DOUBLE_PRECISION.</param>
 		public StreamSerializer( Stream stream, Endian endianMode, bool autoHeader, RealStorageFormat realFormat )
-            : base()
+			: base()
 		{
 			mStream = stream;
 			mEndian = endianMode;
@@ -1002,27 +1004,28 @@ namespace Axiom.Serialization
 
 		#region IDisposable Implementation
 
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    lock (this)
-                    {
-                        if (this.mChunkStack.Count != 0)
-                        {
-                            Debug.WriteLine("Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated.");
-                        }
-                        mChunkStack.Clear();
-                        mStream.Dispose();
-                        mStream = null;
-                    }
-                }
-            }
+		protected override void dispose(bool disposeManagedResources)
+		{
+			if (!this.IsDisposed)
+			{
+				if (disposeManagedResources)
+				{
+					lock (this)
+					{
+						if (this.mChunkStack.Count != 0)
+						{
+							Debug.WriteLine("Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated.");
+						}
+						mChunkStack.Clear();
+						mStream.Dispose();
+						mStream = null;
+					}
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose(disposeManagedResources);
+		}
 		#endregion IDisposable Implementation
 	}
+#endif
 }
