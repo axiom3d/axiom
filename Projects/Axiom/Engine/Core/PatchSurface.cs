@@ -34,14 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-
-using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Math.Collections;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -692,33 +688,28 @@ namespace Axiom.Core
 			// Calc num indexes
 			currentIndexCount = ( currentWidth - 1 ) * ( currentHeight - 1 ) * 6 * iterations;
 
-			int v1, v2, v3;
-			int count = 0;
+            int v1, v2, v3;
+            int count = 0;
 
-			// Lock just the section of the buffer we need
-			IntPtr shortBuffer = IntPtr.Zero;
-			IntPtr intBuffer = IntPtr.Zero;
-			short* p16 = null;
-			int* p32 = null;
+            // Lock just the section of the buffer we need
+            short[] p16 = null;
+            int[] p32 = null;
+            int offset = indexOffset, length = requiredIndexCount;
 
-			if ( use32bitindexes )
-			{
-				intBuffer = indexBuffer.Lock(
-					indexOffset * sizeof( int ),
-					requiredIndexCount * sizeof( int ),
-					BufferLocking.NoOverwrite );
-
-				p32 = (int*)intBuffer;
-			}
-			else
-			{
-				shortBuffer = indexBuffer.Lock(
-					indexOffset * sizeof( short ),
-					requiredIndexCount * sizeof( short ),
-					BufferLocking.NoOverwrite );
-
-				p16 = (short*)shortBuffer;
-			}
+            if ( use32bitindexes )
+            {
+                offset *= sizeof( int );
+                length *= sizeof( int );
+                p32 = new int[ length ];
+                indexBuffer.GetData( offset, p32, 0, length );
+            }
+            else
+            {
+                offset *= sizeof( short );
+                length *= sizeof( short );
+                p16 = new short[ length ];
+                indexBuffer.GetData( offset, p16, 0, length );
+            }
 
 			while ( iterations-- > 0 )
 			{
@@ -784,11 +775,14 @@ namespace Axiom.Core
 				v = meshHeight - 1;
 				vInc = -vInc;
 
-			}
+            }
 
-			// don't forget to unlock!
-			indexBuffer.Unlock();
-		}
+            // don't forget to unlock!
+            if ( use32bitindexes )
+                indexBuffer.SetData( offset, p32, 0, length, false );
+            else
+                indexBuffer.SetData( offset, p16, 0, length, false );
+        }
 
 		/// <summary>
 		///

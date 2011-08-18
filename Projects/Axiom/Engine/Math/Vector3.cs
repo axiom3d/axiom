@@ -440,22 +440,60 @@ namespace Axiom.Math
 				Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
 
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						return *( pX + index );
 				}
+#else
+                switch ( index )
+                {
+                    case 0:
+                        return this.x;
+
+                    case 1:
+                        return this.y;
+
+                    case 2:
+                        return this.z;
+
+                    default:
+                        throw new Axiom.Core.AxiomException( "Indexer boundaries overrun in Vector3." );
+                }
+#endif
 			}
-			set
+			
+            set
 			{
 				Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
 
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+#if AXIOM_UNSAFE_CODE
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						*( pX + index ) = value;
 				}
+#else
+                switch ( index )
+                {
+                    case 0:
+                        this.x = value;
+                        break;
+
+                    case 1:
+                        this.y = value;
+                        break;
+
+                    case 2:
+                        this.z = value;
+                        break;
+
+                    default:
+                        throw new Axiom.Core.AxiomException( "Indexer boundaries overrun in Vector3." );
+                }
+#endif
 			}
 		}
 
