@@ -353,7 +353,7 @@ namespace Axiom.Graphics
 							// Basically we just memcpy the vertex excluding the position
 							if ( prePosVertexSize > 0 )
 							{
-								Memory.Copy( baseSrcPtr, baseDestRemPtr, baseSrcOffset, baseDestRemOffset, prePosVertexSize );
+                                Memory.Copy( baseSrcPtr, baseDestRemPtr, baseSrcOffset, baseDestRemOffset, prePosVertexSize );
 							}
 
 							if ( postPosVertexSize > 0 )
@@ -386,33 +386,32 @@ namespace Axiom.Graphics
 				// So we should force the deallocation of any temporary copies
 				HardwareBufferManager.Instance.ForceReleaseBufferCopies( vbuf );
 
-				if ( useVertexPrograms )
-				{
-					unsafe
-					{
-						VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
-						decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
+                if ( useVertexPrograms )
+                {
+                    VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                    decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
 
-						// Now it's time to set up the w buffer
-						hardwareShadowVolWBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, newVertexCount, BufferUsage.StaticWriteOnly, false );
+                    // Now it's time to set up the w buffer
+                    hardwareShadowVolWBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, newVertexCount, BufferUsage.StaticWriteOnly, false );
 
-						// Fill the first half with 1.0, second half with 0.0
-						IntPtr wPtr = hardwareShadowVolWBuffer.Lock( BufferLocking.Discard );
-						float* pDest = (float*)wPtr.ToPointer();
-						int destCount = 0;
+                    // Fill the first half with 1.0, second half with 0.0
+                    float[] pDest = new float[ hardwareShadowVolWBuffer.Length / sizeof( float ) ];
+                    hardwareShadowVolWBuffer.GetData( pDest );
 
-						for ( int v = 0; v < oldVertexCount; v++ )
-						{
-							pDest[ destCount++ ] = 1.0f;
-						}
-						for ( int v = 0; v < oldVertexCount; v++ )
-						{
-							pDest[ destCount++ ] = 0.0f;
-						}
-					} // unsafe
+                    int destCount = 0;
 
-					hardwareShadowVolWBuffer.Unlock();
-				} // if vertexPrograms
+                    for ( int v = 0; v < oldVertexCount; v++ )
+                    {
+                        pDest[ destCount++ ] = 1.0f;
+                    }
+
+                    for ( int v = 0; v < oldVertexCount; v++ )
+                    {
+                        pDest[ destCount++ ] = 0.0f;
+                    }
+
+                    hardwareShadowVolWBuffer.SetData( pDest );
+                } // if vertexPrograms
 
 				short newPosBufferSource = 0;
 
