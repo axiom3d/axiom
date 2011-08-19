@@ -60,8 +60,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			this._fbo = new GLESFrameBufferObject( manager, fsaa );
 			GLESConfig.GlCheckError( this );
 
-			Width = _fbo.Width;
-			Height = _fbo.Height;
+			this._width = _fbo.Width;
+			this._height = _fbo.Height;
 		}
 
 		#endregion Construction and Destruction

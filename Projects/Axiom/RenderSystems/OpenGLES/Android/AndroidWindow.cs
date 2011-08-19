@@ -135,10 +135,10 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 			float displayFrequency = 60f;
 			string border = "resizable";
 
-			this.Name = name;
-			this.Width = width;
-			this.Height = height;
-			this.ColorDepth = 32;
+			this._name = name;
+			this._width = width;
+			this._height = height;
+			this._colorDepth = 32;
 			this.IsFullScreen = fullScreen;
 
 			#region Parameter Handling
@@ -159,11 +159,11 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 							top = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "fsaa":
-							FSAA = Int32.Parse( entry.Value.ToString() );
+							fsaa = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "colourDepth":
 						case "colorDepth":
-							ColorDepth = Int32.Parse( entry.Value.ToString() );
+							_colorDepth = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "vsync":
 							vsync = entry.Value.ToString() == "No" ? false : true;

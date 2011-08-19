@@ -45,6 +45,8 @@ namespace Droid
 				//new AndroidAssetArchive( this.Context.Assets );
 
 				// instantiate the Root singleton
+				( new Axiom.Platform.Android.AndroidLogManager() ).Initialize();
+
 				_engine = new Root( "AxiomDemos.log" );
 
 				( new Axiom.RenderSystems.OpenGLES.GLESPlugin() ).Initialize();

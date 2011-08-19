@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// Stored options
 		/// </summary>
-		protected ConfigOptionCollection _options;
+		protected ConfigOptionMap _options;
 
 		/// <summary>
 		/// This contains the complete list of supported extensions
@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// 
 		/// </summary>
-		public virtual ConfigOptionCollection ConfigOptions
+		public virtual ConfigOptionMap ConfigOptions
 		{
 			get
 			{
@@ -169,7 +169,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		public GLESSupport()
 		{
-			_options = new ConfigOptionCollection();
+			_options = new ConfigOptionMap();
 			_extensionList = new List<string>();
 		}
 

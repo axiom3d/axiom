@@ -58,7 +58,7 @@ namespace Axiom.Core
 	{
 
 		public Singleton()
-		{		
+		{
 			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
 				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
 		}
@@ -80,12 +80,12 @@ namespace Axiom.Core
 				try
 				{
 					if ( SingletonFactory.instance != null )
-					return SingletonFactory.instance;
+						return SingletonFactory.instance;
 					lock ( SingletonFactory.singletonLock )
 					{
 						SingletonFactory.instance = new T();
 						return SingletonFactory.instance;
-				}
+					}
 				}
 				catch ( /*TypeInitialization*/Exception )
 				{
