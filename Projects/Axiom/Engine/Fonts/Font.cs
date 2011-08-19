@@ -559,7 +559,7 @@ namespace Axiom.Fonts
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
 			
-#if !( XBOX || XBOX360 || ANDROID || IPHONE)
+#if ( !( XBOX || XBOX360 || ANDROID || IPHONE ) && AXIOM_UNSAFE_CODE )
 			string current = Environment.CurrentDirectory;
 
 			IntPtr ftLibrary = IntPtr.Zero;
