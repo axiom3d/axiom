@@ -411,7 +411,7 @@ namespace Axiom.Graphics
 			/// <param name="value"></param>
 			public void SetNamedConstant( string name, float value )
 			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
+				this.SetNamedConstant( name, BitConverter.GetBytes( value ), true );
 			}
 
 			/// <summary>
@@ -421,7 +421,7 @@ namespace Axiom.Graphics
 			/// <param name="value"></param>
 			public void SetNamedConstant( string name, int value )
 			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), false );
+				this.SetNamedConstant( name, BitConverter.GetBytes( value ), false );
 			}
 
 			/// <summary>
@@ -469,7 +469,7 @@ namespace Axiom.Graphics
 			/// </summary>
 			/// <param name="name"></param>
 			/// <param name="value"></param>
-			public void SetNamedConstant( string name, Matrix4 value, int numEntries )
+			public void SetNamedConstant( string name, Matrix4[] value, int numEntries )
 			{
 				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
 			}
@@ -481,7 +481,7 @@ namespace Axiom.Graphics
 			/// <param name="value"></param>
 			public void SetNamedConstant( string name, double value )
 			{
-				this.SetNamedConstant( name, BitConverterEx.GetBytes( value ), true );
+				this.SetNamedConstant( name, BitConverter.GetBytes( value ), true );
 			}
 
 			/// <summary>
@@ -662,8 +662,6 @@ namespace Axiom.Graphics
 					CopyDataEntry e = i;
 					if ( e.DstDefinition.IsFloat )
 					{
-						unsafe
-						{
 							byte[] src = this._sharedParameters.GetFloatPointer( e.SrcDefinition.PhysicalIndex );
 #warning implement: _parameters.GetFloatPointer(e.DstDefinition.PhysicalIndex);
 							byte[] dst = null;
@@ -694,27 +692,18 @@ namespace Axiom.Graphics
 									int iterations = e.DstDefinition.ElementSize / 4
 													 * e.DstDefinition.ArraySize;
 									int valsPerIteration = e.SrcDefinition.ElementSize / iterations;
-									IntPtr pSrc = Memory.PinObject( src );
-									IntPtr pDst = Memory.PinObject( dst );
+									//IntPtr pSrc = Memory.PinObject( src );
+									//IntPtr pDst = Memory.PinObject( dst );
 									for ( int l = 0; l < iterations; ++l )
 									{
-										Memory.Copy( pSrc, pDst, sizeof( float ) * valsPerIteration );
-
-										float* pfSrc = (float*)pSrc;
-										float* pfDSt = (float*)pDst;
-										pfSrc += valsPerIteration;
-										pfDSt += 4;
+										Array.Copy( src, dst, sizeof( float ) * valsPerIteration );
+#warning implement: src, dst probably need to be offset for correct copy
 									}
-									Memory.UnpinObject( src );
-									Memory.UnpinObject( dst );
 								}
 							}
-						}
 					}
 					else
 					{
-						unsafe
-						{
 							byte[] src = this._sharedParameters.GetIntPointer( e.SrcDefinition.PhysicalIndex );
 #warning implement: _parameters.GetIntPointer(e.DstDefinition.PhysicalIndex);
 							byte[] dst = null;
@@ -730,21 +719,12 @@ namespace Axiom.Graphics
 								int iterations = e.DstDefinition.ElementSize / 4
 												 * e.DstDefinition.ArraySize;
 								int valsPerIteration = e.SrcDefinition.ElementSize / iterations;
-								IntPtr pSrc = Memory.PinObject( src );
-								IntPtr pDst = Memory.PinObject( dst );
 								for ( int l = 0; l < iterations; ++l )
 								{
-									Memory.Copy( pSrc, pDst, sizeof( int ) * valsPerIteration );
-
-									int* pfSrc = (int*)pSrc;
-									int* pfDSt = (int*)pDst;
-									pfSrc += valsPerIteration;
-									pfDSt += 4;
+									Array.Copy( src, dst, sizeof( int ) * valsPerIteration );
+#warning implement: src, dst probably need to be offset for correct copy
 								}
-								Memory.UnpinObject( src );
-								Memory.UnpinObject( dst );
 							}
-						}
 					}
 				}
 			}

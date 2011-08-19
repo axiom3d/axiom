@@ -37,12 +37,93 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+using Axiom.Math;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	public static class BitConverterEx
 	{
+		public static byte[] GetBytes( Vector2 vector2 )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 2 ];
+
+			BitConverter.GetBytes( vector2.x ).CopyTo( buffer, 0 );
+			BitConverter.GetBytes( vector2.y ).CopyTo( buffer, 4 );
+
+			return buffer;
+		}
+
+		public static byte[] GetBytes( Vector3 vector3 )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 3 ];
+
+			BitConverter.GetBytes( vector3.x ).CopyTo( buffer, 0 );
+			BitConverter.GetBytes( vector3.y ).CopyTo( buffer, 4 );
+			BitConverter.GetBytes( vector3.z ).CopyTo( buffer, 8 );
+
+			return buffer;
+		}
+
+		public static byte[] GetBytes( Vector4 vector4 )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 4 ];
+
+			BitConverter.GetBytes( vector4.x ).CopyTo( buffer, 0 );
+			BitConverter.GetBytes( vector4.y ).CopyTo( buffer, 4 );
+			BitConverter.GetBytes( vector4.z ).CopyTo( buffer, 8 );
+			BitConverter.GetBytes( vector4.w ).CopyTo( buffer, 12 );
+
+			return buffer;
+		}
+
+		public static byte[] GetBytes( ColorEx colorex )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 4 ];
+
+			BitConverter.GetBytes( colorex.a ).CopyTo( buffer, 0 );
+			BitConverter.GetBytes( colorex.r ).CopyTo( buffer, 4 );
+			BitConverter.GetBytes( colorex.g ).CopyTo( buffer, 8 );
+			BitConverter.GetBytes( colorex.b ).CopyTo( buffer, 12 );
+
+			return buffer;
+		}
+
+		public static byte[] GetBytes( Matrix3 matrix3 )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 3 * 3 ];
+
+			for ( int index = 0; index < 9; index++ )
+			{
+				BitConverter.GetBytes( matrix3[ index ] ).CopyTo( buffer, index * 4 );
+			}
+
+			return buffer;
+		}
+
+		public static byte[] GetBytes( Matrix4 matrix4 )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 4 * 4];
+			for ( int index = 0; index < 16; index++ )
+			{
+				BitConverter.GetBytes( matrix4[ index ] ).CopyTo( buffer, index * 4 );
+			}
+			return buffer;
+		}
+
+		public static byte[] GetBytes( Matrix4[] matrix4 )
+		{
+			byte[] buffer = new byte[ sizeof( float ) * 4 * 4 * matrix4.Length ];
+			for ( int element = 0; element < matrix4.Length; element++ )
+				for ( int index = 0; index < 16; index++ )
+				{
+					BitConverter.GetBytes( matrix4[ element ][ index ] ).CopyTo( buffer, ( element * 16 * 4 ) + ( index * 4 ) );
+				}
+			return buffer;
+		}
+
+#if AXIOM_UNSAFE_CODE
 		public static byte[] GetBytes<T>( T value )
 		{
 			int size;
@@ -90,6 +171,7 @@ namespace Axiom.Core
 			Memory.UnpinObject( buffer );
 			Memory.UnpinObject( dest );
 		}
+#endif
 
 
 	}
