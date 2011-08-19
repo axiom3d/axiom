@@ -121,7 +121,10 @@ namespace Axiom.Media
 							x1y2z2 * ( ( 1.0f - sxf ) * syf * szf ) +
 							x2y2z2 * ( sxf * syf * szf );
 
-						PixelConverter.PackColor( accum, dst.Format, new IntPtr( dst.Data.ToInt32() + dstOffset ) );
+						byte[] data = new byte[ dstelemsize ];
+						PixelConverter.PackColor( accum, dst.Format, data );
+						dst.Data.SetData( data, dstOffset, dstelemsize );
+
 						dstOffset += dstelemsize;
 					}
 					dstOffset += dstelemsize * dst.RowSkip;
@@ -130,14 +133,11 @@ namespace Axiom.Media
 			}
 		}
 
-		void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, IntPtr src, PixelBox srcbox, int elemsize )
+		void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, IMemoryBuffer src, PixelBox srcbox, int elemsize )
 		{
-			unsafe
-			{
-				byte* pSrc = (byte*)src;
-				IntPtr data = (IntPtr)( pSrc + elemsize * ( ( x ) + ( y ) * srcbox.RowPitch + ( z ) * srcbox.SlicePitch ) );
-				dst = PixelConverter.UnpackColor( format, data );
-			}
+			byte[] data = new byte[ elemsize ];
+			src.GetData( data, elemsize * ( ( x ) + ( y ) * srcbox.RowPitch + ( z ) * srcbox.SlicePitch ), elemsize );
+			dst = PixelConverter.UnpackColor( format, data );
 		}
 
 		#endregion Methods
