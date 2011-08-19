@@ -106,7 +106,7 @@ namespace Axiom.Core
 	/// <summary>
 	///     Log class for writing debug/log data to files.
 	/// </summary>
-	public sealed class Log : IDisposable
+	public class Log : IDisposable
 	{
 		#region Fields
 
@@ -121,19 +121,19 @@ namespace Axiom.Core
 		/// <summary>
 		///     Level of detail for this log.
 		/// </summary>
-		private LoggingLevel logLevel;
+		protected LoggingLevel logLevel;
 		/// <summary>
 		///     Debug output enabled?
 		/// </summary>
-		private bool debugOutput;
+		protected bool debugOutput;
 		/// <summary>
 		///		flag to indicate object already disposed.
 		/// </summary>
-		private bool _isDisposed;
+		protected bool _isDisposed;
 		/// <summary>
 		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
 		/// </summary>
-		const int LogThreshold = 4;
+		protected const int LogThreshold = 4;
 
 		private string mLogName;
 
@@ -258,7 +258,7 @@ namespace Axiom.Core
 		///     When message includes string formatting tokens, these are the values to
 		///     inject into the formatted string.
 		/// </param>
-		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
+		public virtual void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
 			if ( _isDisposed )
 				return;
@@ -294,7 +294,7 @@ namespace Axiom.Core
 			FireMessageLogged( level, maskDebug, message );
 		}
 
-		private void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
+		protected void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
 		{
 			// Now fire the MessageLogged event
 			if ( this.MessageLogged != null )
