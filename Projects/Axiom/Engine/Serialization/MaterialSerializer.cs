@@ -1309,16 +1309,16 @@ namespace Axiom.Serialization
 		protected static bool ParseShading( string parameters, MaterialScriptContext context )
 		{
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup( parameters, typeof( Shading ) );
+			object val = ScriptEnumAttribute.Lookup( parameters, typeof( ShadeOptions ) );
 
 			// if a value was found, assign it
 			if ( val != null )
 			{
-				context.pass.ShadingMode = (Shading)val;
+				context.pass.ShadingMode = (ShadeOptions)val;
 			}
 			else
 			{
-				string legalValues = ScriptEnumAttribute.GetLegalValues( typeof( Shading ) );
+				string legalValues = ScriptEnumAttribute.GetLegalValues( typeof( ShadeOptions ) );
 				LogParseError( context, "Bad shading attribute, valid parameters are {0}.", legalValues );
 			}
 

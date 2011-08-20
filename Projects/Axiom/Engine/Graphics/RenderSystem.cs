@@ -212,7 +212,8 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool texProjRelative;
-		[OgreVersion( 1, 7, 2790 )]
+		
+        [OgreVersion( 1, 7, 2790 )]
 		protected Vector3 texProjRelativeOrigin;
 
 		#endregion Fields
@@ -874,17 +875,24 @@ namespace Axiom.Graphics
 			set;
 		}
 
-		[OgreVersion( 1, 7, 2790 )]
-		public abstract ShadeOptions ShadingType
-		{
-			set;
-		}
-
 		#endregion
 
-		#region HorizontalTexelOffset
+        #region ShadingType
 
-		/// <summary>
+        /// <summary>
+        /// Sets the type of light shading required (default = Gouraud).
+        /// </summary>
+        [OgreVersion( 1, 7, 2790 )]
+        public abstract ShadeOptions ShadingType
+        {
+            set;
+        }
+
+        #endregion
+
+        #region HorizontalTexelOffset
+
+        /// <summary>
 		/// Returns the horizontal texel offset value required for mapping 
 		/// texel origins to pixel origins in this rendersystem.
 		/// </summary>
@@ -906,7 +914,7 @@ namespace Axiom.Graphics
 		#region LightingEnabled
 
 		/// <summary>
-		/// Gets/Sets whether or not dynamic lighting is enabled.
+		/// Sets whether or not dynamic lighting is enabled.
 		/// <p/>
 		/// If true, dynamic lighting is performed on geometry with normals supplied, geometry without
 		/// normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
@@ -922,7 +930,7 @@ namespace Axiom.Graphics
 		#region NormalizeNormals
 
 		/// <summary>
-		/// Get/Sets whether or not normals are to be automatically normalized.
+		/// Sets whether or not normals are to be automatically normalized.
 		/// </summary>
 		/// <remarks>
 		/// This is useful when, for example, you are scaling SceneNodes such that
@@ -944,7 +952,7 @@ namespace Axiom.Graphics
 		#region ProjectionMatrix
 
 		/// <summary>
-		/// Gets/Sets the current projection matrix.
+		/// Sets the current projection matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract Matrix4 ProjectionMatrix
@@ -957,7 +965,7 @@ namespace Axiom.Graphics
 		#region PolygonMode
 
 		/// <summary>
-		/// Gets/Sets how to rasterise triangles, as points, wireframe or solid polys.
+		/// Sets how to rasterise triangles, as points, wireframe or solid polys.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract PolygonMode PolygonMode
@@ -1009,7 +1017,7 @@ namespace Axiom.Graphics
 		#region ViewMatrix
 
 		/// <summary>
-		/// Gets/Sets the current view matrix.
+		/// Sets the current view matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract Matrix4 ViewMatrix
@@ -2071,7 +2079,6 @@ it says it's incompatible with that RT" );
 		{
 			return VertexElement.ConvertColorValue( color, ColorVertexElementType );
 		}
-
 
 		#endregion
 

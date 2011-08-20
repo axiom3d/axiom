@@ -234,7 +234,6 @@
     <Compile Include="Core\SceneManagerEnumerator.cs" />
     <Compile Include="Core\SceneNode.cs" />
     <Compile Include="Core\SceneQuery.cs" />
-    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />

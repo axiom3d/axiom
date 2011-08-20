@@ -1087,15 +1087,15 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FLAT:
-												_pass.ShadingMode = Shading.Flat;
+												_pass.ShadingMode = ShadeOptions.Flat;
 												break;
 
 											case Keywords.ID_GOURAUD:
-												_pass.ShadingMode = Shading.Gouraud;
+												_pass.ShadingMode = ShadeOptions.Gouraud;
 												break;
 
 											case Keywords.ID_PHONG:
-												_pass.ShadingMode = Shading.Phong;
+												_pass.ShadingMode = ShadeOptions.Phong;
 												break;
 
 											default:

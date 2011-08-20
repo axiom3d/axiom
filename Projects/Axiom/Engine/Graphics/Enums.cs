@@ -1292,7 +1292,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Types for deciding how to shade geometry primitives.
 	/// </summary>
-	public enum Shading
+	public enum ShadeOptions
 	{
 		/// <summary>
 		///		Draw with a single color.

@@ -950,14 +950,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Shading options for this pass.
 		/// </summary>
-		private Shading _shadingMode;
+		private ShadeOptions _shadingMode;
 		/// <summary>
 		///    Sets the type of light shading required.
 		/// </summary>
 		/// <value>
 		///    The default shading method is Gouraud shading.
 		/// </value>
-		public Shading ShadingMode
+		public ShadeOptions ShadingMode
 		{
 			get
 			{
@@ -1866,7 +1866,7 @@ namespace Axiom.Graphics
 			_lightingEnabled = true;
 			_runOnlyForOneLightType = true;
 			_onlyLightType = LightType.Point;
-			_shadingMode = Shading.Gouraud;
+			_shadingMode = ShadeOptions.Gouraud;
 
 			// Default max lights to the global max
 			_maxSimultaneousLights = Config.MaxSimultaneousLights;
