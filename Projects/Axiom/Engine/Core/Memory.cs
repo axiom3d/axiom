@@ -67,7 +67,7 @@ namespace Axiom.Core
 		/// <param name="srcOffset">Offset at which to copy from the source pointer.</param>
 		/// <param name="destOffset">Offset at which to begin copying to the destination pointer.</param>
 		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( byte[] src, ref byte[] dest, int srcOffset, int destOffset, int length )
+		public static void Copy( byte[] src, byte[] dest, int srcOffset, int destOffset, int length )
 		{
 			for ( int i = 0; i < length; i++ )
 			{
