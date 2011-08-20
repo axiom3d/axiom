@@ -155,7 +155,6 @@
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
     <Compile Include="Core\SceneManagerEnumerator.cs" />
-    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />
