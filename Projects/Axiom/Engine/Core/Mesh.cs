@@ -1134,25 +1134,23 @@ namespace Axiom.Core
 
 
 			// Assign data
-			IntPtr ptr = vbuf.Lock( BufferLocking.Discard );
-
-			unsafe
-			{
-				byte* pBase = (byte*)ptr.ToPointer();
+			
+				byte[] pBase = new byte[ vbuf.Length ];
+				vbuf.GetData( pBase );
+				byte[] conversion;
 
 				// Iterate by vertex
-				float* pWeight;
-				byte* pIndex;
+				int pWeight = 0;
+				int pIndex = 0;
 
 				//for ( int v = 0; v < targetVertexData.vertexCount; v++ )
 				foreach ( KeyValuePair<int, List<VertexBoneAssignment>> boneAssignment in boneAssignments )
 				{
 					/// Convert to specific pointers
-					pWeight = (float*)( (byte*)pBase + weightElem.Offset );
-					pIndex = pBase + idxElem.Offset;
+					pWeight += weightElem.Offset;
+					pIndex += idxElem.Offset;
 
 					// get the bone assignment enumerator and move to the first one in the list
-					//List<VertexBoneAssignment> vbaList = boneAssignments[ v ];
 					List<VertexBoneAssignment> vbaList = boneAssignment.Value;
 
 					for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
@@ -1162,22 +1160,26 @@ namespace Axiom.Core
 						{
 							VertexBoneAssignment ba = vbaList[ bone ];
 							// If so, write weight
-							*pWeight++ = ba.weight;
-							*pIndex++ = (byte)ba.boneIndex;
+							conversion = BitConverter.GetBytes( ba.weight );
+							Array.Copy( conversion, 0, pBase, pWeight, 4 );
+							pWeight += 4; 
+							pBase[ pIndex++ ] = (byte)ba.boneIndex;
 						}
 						else
 						{
 							// Ran out of assignments for this vertex, use weight 0 to indicate empty
-							*pWeight++ = 0.0f;
-							*pIndex++ = 0;
+							pBase[ pWeight++ ] = 0;
+							pBase[ pWeight++ ] = 0;
+							pBase[ pWeight++ ] = 0;
+							pBase[ pWeight++ ] = 0;
+							pBase[ pIndex++ ] = 0;
 						}
 					}
 
-					pBase += vbuf.VertexSize;
+					pWeight += idxElem.Size;
+					pIndex += weightElem.Size;
 				}
-			}
-
-			vbuf.Unlock();
+				vbuf.SetData( pBase );
 		}
 
 		/// <summary>
