@@ -1134,52 +1134,52 @@ namespace Axiom.Core
 
 
 			// Assign data
-			
-				byte[] pBase = new byte[ vbuf.Length ];
-				vbuf.GetData( pBase );
-				byte[] conversion;
 
-				// Iterate by vertex
-				int pWeight = 0;
-				int pIndex = 0;
+			byte[] pBase = new byte[ vbuf.Length ];
+			vbuf.GetData( pBase );
+			byte[] conversion;
 
-				//for ( int v = 0; v < targetVertexData.vertexCount; v++ )
-				foreach ( KeyValuePair<int, List<VertexBoneAssignment>> boneAssignment in boneAssignments )
+			// Iterate by vertex
+			int pWeight = 0;
+			int pIndex = 0;
+
+			//for ( int v = 0; v < targetVertexData.vertexCount; v++ )
+			foreach ( KeyValuePair<int, List<VertexBoneAssignment>> boneAssignment in boneAssignments )
+			{
+				/// Convert to specific pointers
+				pWeight += weightElem.Offset;
+				pIndex += idxElem.Offset;
+
+				// get the bone assignment enumerator and move to the first one in the list
+				List<VertexBoneAssignment> vbaList = boneAssignment.Value;
+
+				for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
 				{
-					/// Convert to specific pointers
-					pWeight += weightElem.Offset;
-					pIndex += idxElem.Offset;
-
-					// get the bone assignment enumerator and move to the first one in the list
-					List<VertexBoneAssignment> vbaList = boneAssignment.Value;
-
-					for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
+					// Do we still have data for this vertex?
+					if ( bone < vbaList.Count )
 					{
-						// Do we still have data for this vertex?
-						if ( bone < vbaList.Count )
-						{
-							VertexBoneAssignment ba = vbaList[ bone ];
-							// If so, write weight
-							conversion = BitConverter.GetBytes( ba.weight );
-							Array.Copy( conversion, 0, pBase, pWeight, 4 );
-							pWeight += 4; 
-							pBase[ pIndex++ ] = (byte)ba.boneIndex;
-						}
-						else
-						{
-							// Ran out of assignments for this vertex, use weight 0 to indicate empty
-							pBase[ pWeight++ ] = 0;
-							pBase[ pWeight++ ] = 0;
-							pBase[ pWeight++ ] = 0;
-							pBase[ pWeight++ ] = 0;
-							pBase[ pIndex++ ] = 0;
-						}
+						VertexBoneAssignment ba = vbaList[ bone ];
+						// If so, write weight
+						conversion = BitConverter.GetBytes( ba.weight );
+						Array.Copy( conversion, 0, pBase, pWeight, 4 );
+						pWeight += 4;
+						pBase[ pIndex++ ] = (byte)ba.boneIndex;
 					}
-
-					pWeight += idxElem.Size;
-					pIndex += weightElem.Size;
+					else
+					{
+						// Ran out of assignments for this vertex, use weight 0 to indicate empty
+						pBase[ pWeight++ ] = 0;
+						pBase[ pWeight++ ] = 0;
+						pBase[ pWeight++ ] = 0;
+						pBase[ pWeight++ ] = 0;
+						pBase[ pIndex++ ] = 0;
+					}
 				}
-				vbuf.SetData( pBase );
+
+				pWeight += idxElem.Size;
+				pIndex += weightElem.Size;
+			}
+			vbuf.SetData( pBase );
 		}
 
 		/// <summary>
@@ -1233,8 +1233,11 @@ namespace Axiom.Core
 				HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
 
 				// now copy the original data across
-				IntPtr srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
-				IntPtr destPtr = newBuffer.Lock( BufferLocking.Discard );
+				byte[] srcPtr = new byte[ origBuffer.Length ];
+				byte[] destPtr = new byte[ newBuffer.Length ];
+
+				origBuffer.GetData( srcPtr );
+				newBuffer.GetData( destPtr );
 
 				int vertSize = origBuffer.VertexSize;
 
@@ -1254,9 +1257,8 @@ namespace Axiom.Core
 					dstOffset += elemSize;
 				}
 
-				// unlock those buffers!
-				origBuffer.Unlock();
-				newBuffer.Unlock();
+				// unlock those buffers!				
+				newBuffer.SetData( destPtr );
 
 				// rebind the new buffer
 				binding.SetBinding( prevTexCoordElem.Source, newBuffer );
@@ -2219,361 +2221,361 @@ namespace Axiom.Core
 		/// </param>
 		/// <param name="matrices">An array of matrices to be used to blend.</param>
 		/// <param name="blendNormals">If true, normals are blended as well as positions.</param>
-        public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
-        {
-            // Source vectors
-            Vector3 sourcePos = Vector3.Zero;
-            Vector3 sourceNorm = Vector3.Zero;
-            Vector3 sourceTan = Vector3.Zero;
-            Vector3 sourceBinorm = Vector3.Zero;
-            // Accumulation vectors
-            Vector3 accumVecPos = Vector3.Zero;
-            Vector3 accumVecNorm = Vector3.Zero;
-            Vector3 accumVecTan = Vector3.Zero;
-            Vector3 accumVecBinorm = Vector3.Zero;
+		public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
+		{
+			// Source vectors
+			Vector3 sourcePos = Vector3.Zero;
+			Vector3 sourceNorm = Vector3.Zero;
+			Vector3 sourceTan = Vector3.Zero;
+			Vector3 sourceBinorm = Vector3.Zero;
+			// Accumulation vectors
+			Vector3 accumVecPos = Vector3.Zero;
+			Vector3 accumVecNorm = Vector3.Zero;
+			Vector3 accumVecTan = Vector3.Zero;
+			Vector3 accumVecBinorm = Vector3.Zero;
 
-            HardwareVertexBuffer srcPosBuf = null, srcNormBuf = null, srcTanBuf = null, srcBinormBuf = null;
-            HardwareVertexBuffer destPosBuf = null, destNormBuf = null, destTanBuf = null, destBinormBuf = null;
-            HardwareVertexBuffer srcIdxBuf = null, srcWeightBuf = null;
+			HardwareVertexBuffer srcPosBuf = null, srcNormBuf = null, srcTanBuf = null, srcBinormBuf = null;
+			HardwareVertexBuffer destPosBuf = null, destNormBuf = null, destTanBuf = null, destBinormBuf = null;
+			HardwareVertexBuffer srcIdxBuf = null, srcWeightBuf = null;
 
-            bool weightsIndexesShareBuffer = false;
+			bool weightsIndexesShareBuffer = false;
 
-            // Get elements for source
-            VertexElement srcElemPos =
-                sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-            VertexElement srcElemNorm =
-                sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-            VertexElement srcElemTan =
-                sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
-            VertexElement srcElemBinorm =
-                sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
-            VertexElement srcElemBlendIndices =
-                sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-            VertexElement srcElemBlendWeights =
-                sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
+			// Get elements for source
+			VertexElement srcElemPos =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement srcElemNorm =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement srcElemTan =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement srcElemBinorm =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
+			VertexElement srcElemBlendIndices =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+			VertexElement srcElemBlendWeights =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 
-            Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights" );
+			Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights" );
 
-            // Get elements for target
-            VertexElement destElemPos =
-                targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-            VertexElement destElemNorm =
-                targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-            VertexElement destElemTan =
-                targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
-            VertexElement destElemBinorm =
-                targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
+			// Get elements for target
+			VertexElement destElemPos =
+				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement destElemNorm =
+				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement destElemTan =
+				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement destElemBinorm =
+				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
 
-            // Do we have normals and want to blend them?
-            bool includeNormals = blendNormals && ( srcElemNorm != null ) && ( destElemNorm != null );
-            bool includeTangents = blendTangents && ( srcElemTan != null ) && ( destElemTan != null );
-            bool includeBinormals = blendBinorms && ( srcElemBinorm != null ) && ( destElemBinorm != null );
+			// Do we have normals and want to blend them?
+			bool includeNormals = blendNormals && ( srcElemNorm != null ) && ( destElemNorm != null );
+			bool includeTangents = blendTangents && ( srcElemTan != null ) && ( destElemTan != null );
+			bool includeBinormals = blendBinorms && ( srcElemBinorm != null ) && ( destElemBinorm != null );
 
-            // Get buffers for source
-            srcPosBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemPos.Source );
-            srcIdxBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBlendIndices.Source );
-            srcWeightBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBlendWeights.Source );
-            if ( includeNormals )
-                srcNormBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemNorm.Source );
-            if ( includeTangents )
-                srcTanBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemTan.Source );
-            if ( includeBinormals )
-                srcBinormBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBinorm.Source );
+			// Get buffers for source
+			srcPosBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemPos.Source );
+			srcIdxBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBlendIndices.Source );
+			srcWeightBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBlendWeights.Source );
+			if ( includeNormals )
+				srcNormBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemNorm.Source );
+			if ( includeTangents )
+				srcTanBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemTan.Source );
+			if ( includeBinormals )
+				srcBinormBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBinorm.Source );
 
-            // note: reference comparison
-            weightsIndexesShareBuffer = ( srcIdxBuf == srcWeightBuf );
+			// note: reference comparison
+			weightsIndexesShareBuffer = ( srcIdxBuf == srcWeightBuf );
 
-            // Get buffers for target
-            destPosBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemPos.Source );
-            if ( includeNormals )
-                destNormBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemNorm.Source );
-            if ( includeTangents )
-                destTanBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemTan.Source );
-            if ( includeBinormals )
-                destBinormBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemBinorm.Source );
+			// Get buffers for target
+			destPosBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemPos.Source );
+			if ( includeNormals )
+				destNormBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemNorm.Source );
+			if ( includeTangents )
+				destTanBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemTan.Source );
+			if ( includeBinormals )
+				destBinormBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemBinorm.Source );
 
-            // Lock source buffers for reading
-            Debug.Assert( srcElemPos.Offset == 0, "Positions must be first element in dedicated buffer!" );
+			// Lock source buffers for reading
+			Debug.Assert( srcElemPos.Offset == 0, "Positions must be first element in dedicated buffer!" );
 
-            float[] pSrcPos = null, pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
-            float[] pDestPos = null, pDestNorm = null, pDestTan = null, pDestBinorm = null;
-            float[] pBlendWeight = null;
-            byte[] pBlendIdx = null;
+			float[] pSrcPos = null, pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
+			float[] pDestPos = null, pDestNorm = null, pDestTan = null, pDestBinorm = null;
+			float[] pBlendWeight = null;
+			byte[] pBlendIdx = null;
 
-            pSrcPos = new float[ srcPosBuf.Length / sizeof( float ) ];
-            srcPosBuf.GetData( pSrcPos );
+			pSrcPos = new float[ srcPosBuf.Length / sizeof( float ) ];
+			srcPosBuf.GetData( pSrcPos );
 
-            if ( includeNormals )
-            {
-                if ( srcNormBuf == srcPosBuf )
-                    pSrcNorm = pSrcPos;
-                else
-                {
-                    pSrcNorm = new float[ srcNormBuf.Length / sizeof( float ) ];
-                    srcNormBuf.GetData( pSrcNorm );
-                }
-            }
+			if ( includeNormals )
+			{
+				if ( srcNormBuf == srcPosBuf )
+					pSrcNorm = pSrcPos;
+				else
+				{
+					pSrcNorm = new float[ srcNormBuf.Length / sizeof( float ) ];
+					srcNormBuf.GetData( pSrcNorm );
+				}
+			}
 
-            if ( includeTangents )
-            {
-                if ( srcTanBuf == srcPosBuf )
-                    pSrcTan = pSrcPos;
-                else if ( srcTanBuf == srcNormBuf )
-                    pSrcTan = pSrcNorm;
-                else
-                {
-                    pSrcTan = new float[ srcTanBuf.Length / sizeof( float ) ];
-                    srcTanBuf.GetData( pSrcTan );
-                }
-            }
+			if ( includeTangents )
+			{
+				if ( srcTanBuf == srcPosBuf )
+					pSrcTan = pSrcPos;
+				else if ( srcTanBuf == srcNormBuf )
+					pSrcTan = pSrcNorm;
+				else
+				{
+					pSrcTan = new float[ srcTanBuf.Length / sizeof( float ) ];
+					srcTanBuf.GetData( pSrcTan );
+				}
+			}
 
-            if ( includeBinormals )
-            {
-                if ( srcBinormBuf == srcPosBuf )
-                    pSrcBinorm = pSrcPos;
-                else if ( srcBinormBuf == srcNormBuf )
-                    pSrcBinorm = pSrcNorm;
-                else if ( srcBinormBuf == srcTanBuf )
-                    pSrcBinorm = pSrcTan;
-                else
-                {
-                    pSrcBinorm = new float[ srcBinormBuf.Length / sizeof( float ) ];
-                    srcBinormBuf.GetData( pSrcBinorm );
-                }
-            }
+			if ( includeBinormals )
+			{
+				if ( srcBinormBuf == srcPosBuf )
+					pSrcBinorm = pSrcPos;
+				else if ( srcBinormBuf == srcNormBuf )
+					pSrcBinorm = pSrcNorm;
+				else if ( srcBinormBuf == srcTanBuf )
+					pSrcBinorm = pSrcTan;
+				else
+				{
+					pSrcBinorm = new float[ srcBinormBuf.Length / sizeof( float ) ];
+					srcBinormBuf.GetData( pSrcBinorm );
+				}
+			}
 
-            // Indices must be 4 bytes
-            Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,
-                "Blend indices must be VET_UBYTE4" );
+			// Indices must be 4 bytes
+			Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,
+				"Blend indices must be VET_UBYTE4" );
 
-            pBlendIdx = new byte[ srcIdxBuf.Length ];
-            srcIdxBuf.GetData( pBlendIdx );
+			pBlendIdx = new byte[ srcIdxBuf.Length ];
+			srcIdxBuf.GetData( pBlendIdx );
 
-            if ( srcWeightBuf == srcIdxBuf )
-                pBlendWeight = (float*)pBlendIdx;
-            else
-            {
-                pBlendWeight = new float[ srcWeightBuf.Length / sizeof( float ) ];
-                srcWeightBuf.GetData( pBlendWeight );
-            }
+			if ( srcWeightBuf == srcIdxBuf )
+				pBlendWeight = (float*)pBlendIdx;
+			else
+			{
+				pBlendWeight = new float[ srcWeightBuf.Length / sizeof( float ) ];
+				srcWeightBuf.GetData( pBlendWeight );
+			}
 
-            int numWeightsPerVertex = VertexElement.GetTypeCount( srcElemBlendWeights.Type );
+			int numWeightsPerVertex = VertexElement.GetTypeCount( srcElemBlendWeights.Type );
 
-            // Lock destination buffers for writing
-            pDestPos = new float[ destPosBuf.Length / sizeof( float ) ];
-            destPosBuf.GetData( pDestPos );
+			// Lock destination buffers for writing
+			pDestPos = new float[ destPosBuf.Length / sizeof( float ) ];
+			destPosBuf.GetData( pDestPos );
 
-            if ( includeNormals )
-            {
-                if ( destNormBuf == destPosBuf )
-                    pDestNorm = pDestPos;
-                else
-                {
-                    pDestNorm = new float[ destNormBuf.Length / sizeof( float ) ];
-                    destNormBuf.GetData( pDestNorm );
-                }
-            }
+			if ( includeNormals )
+			{
+				if ( destNormBuf == destPosBuf )
+					pDestNorm = pDestPos;
+				else
+				{
+					pDestNorm = new float[ destNormBuf.Length / sizeof( float ) ];
+					destNormBuf.GetData( pDestNorm );
+				}
+			}
 
-            if ( includeTangents )
-            {
-                if ( destTanBuf == destPosBuf )
-                    pDestTan = pDestPos;
-                else if ( destTanBuf == destNormBuf )
-                    pDestTan = pDestNorm;
-                else
-                {
-                    pDestTan = new float[ destTanBuf.Length / sizeof( float ) ];
-                    destTanBuf.GetData( pDestTan );
-                }
-            }
+			if ( includeTangents )
+			{
+				if ( destTanBuf == destPosBuf )
+					pDestTan = pDestPos;
+				else if ( destTanBuf == destNormBuf )
+					pDestTan = pDestNorm;
+				else
+				{
+					pDestTan = new float[ destTanBuf.Length / sizeof( float ) ];
+					destTanBuf.GetData( pDestTan );
+				}
+			}
 
-            if ( includeBinormals )
-            {
-                if ( destBinormBuf == destPosBuf )
-                    pDestBinorm = pDestPos;
-                else if ( destBinormBuf == destNormBuf )
-                    pDestBinorm = pDestNorm;
-                else if ( destBinormBuf == destTanBuf )
-                    pDestBinorm = pDestTan;
-                else
-                {
-                    pDestBinorm = new float[ destBinormBuf.Length / sizeof( float ) ];
-                    destBinormBuf.GetData( pDestBinorm );
-                }
-            }
+			if ( includeBinormals )
+			{
+				if ( destBinormBuf == destPosBuf )
+					pDestBinorm = pDestPos;
+				else if ( destBinormBuf == destNormBuf )
+					pDestBinorm = pDestNorm;
+				else if ( destBinormBuf == destTanBuf )
+					pDestBinorm = pDestTan;
+				else
+				{
+					pDestBinorm = new float[ destBinormBuf.Length / sizeof( float ) ];
+					destBinormBuf.GetData( pDestBinorm );
+				}
+			}
 
-            // Loop per vertex
-            for ( int vertIdx = 0; vertIdx < targetVertexData.vertexCount; vertIdx++ )
-            {
-                int srcPosOffset = ( vertIdx * srcPosBuf.VertexSize + srcElemPos.Offset ) / 4;
-                // Load source vertex elements
-                sourcePos.x = pSrcPos[ srcPosOffset ];
-                sourcePos.y = pSrcPos[ srcPosOffset + 1 ];
-                sourcePos.z = pSrcPos[ srcPosOffset + 2 ];
+			// Loop per vertex
+			for ( int vertIdx = 0; vertIdx < targetVertexData.vertexCount; vertIdx++ )
+			{
+				int srcPosOffset = ( vertIdx * srcPosBuf.VertexSize + srcElemPos.Offset ) / 4;
+				// Load source vertex elements
+				sourcePos.x = pSrcPos[ srcPosOffset ];
+				sourcePos.y = pSrcPos[ srcPosOffset + 1 ];
+				sourcePos.z = pSrcPos[ srcPosOffset + 2 ];
 
-                if ( includeNormals )
-                {
-                    int srcNormOffset = ( vertIdx * srcNormBuf.VertexSize + srcElemNorm.Offset ) / 4;
-                    sourceNorm.x = pSrcNorm[ srcNormOffset ];
-                    sourceNorm.y = pSrcNorm[ srcNormOffset + 1 ];
-                    sourceNorm.z = pSrcNorm[ srcNormOffset + 2 ];
-                }
+				if ( includeNormals )
+				{
+					int srcNormOffset = ( vertIdx * srcNormBuf.VertexSize + srcElemNorm.Offset ) / 4;
+					sourceNorm.x = pSrcNorm[ srcNormOffset ];
+					sourceNorm.y = pSrcNorm[ srcNormOffset + 1 ];
+					sourceNorm.z = pSrcNorm[ srcNormOffset + 2 ];
+				}
 
-                if ( includeTangents )
-                {
-                    int srcTanOffset = ( vertIdx * srcTanBuf.VertexSize + srcElemTan.Offset ) / 4;
-                    sourceTan.x = pSrcTan[ srcTanOffset ];
-                    sourceTan.y = pSrcTan[ srcTanOffset + 1 ];
-                    sourceTan.z = pSrcTan[ srcTanOffset + 2 ];
-                }
+				if ( includeTangents )
+				{
+					int srcTanOffset = ( vertIdx * srcTanBuf.VertexSize + srcElemTan.Offset ) / 4;
+					sourceTan.x = pSrcTan[ srcTanOffset ];
+					sourceTan.y = pSrcTan[ srcTanOffset + 1 ];
+					sourceTan.z = pSrcTan[ srcTanOffset + 2 ];
+				}
 
-                if ( includeBinormals )
-                {
-                    int srcBinormOffset = ( vertIdx * srcBinormBuf.VertexSize + srcElemBinorm.Offset ) / 4;
-                    sourceBinorm.x = pSrcBinorm[ srcBinormOffset ];
-                    sourceBinorm.y = pSrcBinorm[ srcBinormOffset + 1 ];
-                    sourceBinorm.z = pSrcBinorm[ srcBinormOffset + 2 ];
-                }
+				if ( includeBinormals )
+				{
+					int srcBinormOffset = ( vertIdx * srcBinormBuf.VertexSize + srcElemBinorm.Offset ) / 4;
+					sourceBinorm.x = pSrcBinorm[ srcBinormOffset ];
+					sourceBinorm.y = pSrcBinorm[ srcBinormOffset + 1 ];
+					sourceBinorm.z = pSrcBinorm[ srcBinormOffset + 2 ];
+				}
 
-                // Load accumulators
-                accumVecPos = Vector3.Zero;
-                accumVecNorm = Vector3.Zero;
-                accumVecTan = Vector3.Zero;
-                accumVecBinorm = Vector3.Zero;
+				// Load accumulators
+				accumVecPos = Vector3.Zero;
+				accumVecNorm = Vector3.Zero;
+				accumVecTan = Vector3.Zero;
+				accumVecBinorm = Vector3.Zero;
 
-                int blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
-                int blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
+				int blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
+				int blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
 
-                // Loop per blend weight
-                for ( int blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
-                {
-                    float blendWeight = pBlendWeight[ blendWeightOffset + blendIdx ];
-                    int blendMatrixIdx = pBlendIdx[ blendMatrixOffset + blendIdx ];
-                    // Blend by multiplying source by blend matrix and scaling by weight
-                    // Add to accumulator
-                    // NB weights must be normalised!!
-                    if ( blendWeight != 0.0f )
-                    {
-                        // Blend position, use 3x4 matrix
-                        Matrix4 mat = matrices[ blendMatrixIdx ];
-                        BlendPosVector( ref accumVecPos, ref mat, ref sourcePos, blendWeight );
+				// Loop per blend weight
+				for ( int blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
+				{
+					float blendWeight = pBlendWeight[ blendWeightOffset + blendIdx ];
+					int blendMatrixIdx = pBlendIdx[ blendMatrixOffset + blendIdx ];
+					// Blend by multiplying source by blend matrix and scaling by weight
+					// Add to accumulator
+					// NB weights must be normalised!!
+					if ( blendWeight != 0.0f )
+					{
+						// Blend position, use 3x4 matrix
+						Matrix4 mat = matrices[ blendMatrixIdx ];
+						BlendPosVector( ref accumVecPos, ref mat, ref sourcePos, blendWeight );
 
-                        if ( includeNormals )
-                        {
-                            // Blend normal
-                            // We should blend by inverse transpose here, but because we're assuming the 3x3
-                            // aspect of the matrix is orthogonal (no non-uniform scaling), the inverse transpose
-                            // is equal to the main 3x3 matrix
-                            // Note because it's a normal we just extract the rotational part, saves us renormalising here
-                            BlendDirVector( ref accumVecNorm, ref mat, ref sourceNorm, blendWeight );
-                        }
+						if ( includeNormals )
+						{
+							// Blend normal
+							// We should blend by inverse transpose here, but because we're assuming the 3x3
+							// aspect of the matrix is orthogonal (no non-uniform scaling), the inverse transpose
+							// is equal to the main 3x3 matrix
+							// Note because it's a normal we just extract the rotational part, saves us renormalising here
+							BlendDirVector( ref accumVecNorm, ref mat, ref sourceNorm, blendWeight );
+						}
 
-                        if ( includeTangents )
-                        {
-                            BlendDirVector( ref accumVecTan, ref mat, ref sourceTan, blendWeight );
-                        }
+						if ( includeTangents )
+						{
+							BlendDirVector( ref accumVecTan, ref mat, ref sourceTan, blendWeight );
+						}
 
-                        if ( includeBinormals )
-                        {
-                            BlendDirVector( ref accumVecBinorm, ref mat, ref sourceBinorm, blendWeight );
-                        }
-                    }
-                }
+						if ( includeBinormals )
+						{
+							BlendDirVector( ref accumVecBinorm, ref mat, ref sourceBinorm, blendWeight );
+						}
+					}
+				}
 
-                // Stored blended vertex in hardware buffer
-                int dstPosOffset = ( vertIdx * destPosBuf.VertexSize + destElemPos.Offset ) / 4;
-                pDestPos[ dstPosOffset ] = accumVecPos.x;
-                pDestPos[ dstPosOffset + 1 ] = accumVecPos.y;
-                pDestPos[ dstPosOffset + 2 ] = accumVecPos.z;
+				// Stored blended vertex in hardware buffer
+				int dstPosOffset = ( vertIdx * destPosBuf.VertexSize + destElemPos.Offset ) / 4;
+				pDestPos[ dstPosOffset ] = accumVecPos.x;
+				pDestPos[ dstPosOffset + 1 ] = accumVecPos.y;
+				pDestPos[ dstPosOffset + 2 ] = accumVecPos.z;
 
-                // Stored blended vertex in temp buffer
-                if ( includeNormals )
-                {
-                    // Normalise
-                    accumVecNorm.Normalize();
-                    int dstNormOffset = ( vertIdx * destNormBuf.VertexSize + destElemNorm.Offset ) / 4;
-                    pDestNorm[ dstNormOffset ] = accumVecNorm.x;
-                    pDestNorm[ dstNormOffset + 1 ] = accumVecNorm.y;
-                    pDestNorm[ dstNormOffset + 2 ] = accumVecNorm.z;
-                }
+				// Stored blended vertex in temp buffer
+				if ( includeNormals )
+				{
+					// Normalise
+					accumVecNorm.Normalize();
+					int dstNormOffset = ( vertIdx * destNormBuf.VertexSize + destElemNorm.Offset ) / 4;
+					pDestNorm[ dstNormOffset ] = accumVecNorm.x;
+					pDestNorm[ dstNormOffset + 1 ] = accumVecNorm.y;
+					pDestNorm[ dstNormOffset + 2 ] = accumVecNorm.z;
+				}
 
-                // Stored blended vertex in temp buffer
-                if ( includeTangents )
-                {
-                    // Normalise
-                    accumVecTan.Normalize();
-                    int dstTanOffset = ( vertIdx * destTanBuf.VertexSize + destElemTan.Offset ) / 4;
-                    pDestTan[ dstTanOffset ] = accumVecTan.x;
-                    pDestTan[ dstTanOffset + 1 ] = accumVecTan.y;
-                    pDestTan[ dstTanOffset + 2 ] = accumVecTan.z;
-                }
+				// Stored blended vertex in temp buffer
+				if ( includeTangents )
+				{
+					// Normalise
+					accumVecTan.Normalize();
+					int dstTanOffset = ( vertIdx * destTanBuf.VertexSize + destElemTan.Offset ) / 4;
+					pDestTan[ dstTanOffset ] = accumVecTan.x;
+					pDestTan[ dstTanOffset + 1 ] = accumVecTan.y;
+					pDestTan[ dstTanOffset + 2 ] = accumVecTan.z;
+				}
 
-                // Stored blended vertex in temp buffer
-                if ( includeBinormals )
-                {
-                    // Normalise
-                    accumVecBinorm.Normalize();
-                    int dstBinormOffset = ( vertIdx * destBinormBuf.VertexSize + destElemBinorm.Offset ) / 4;
-                    pDestBinorm[ dstBinormOffset ] = accumVecBinorm.x;
-                    pDestBinorm[ dstBinormOffset + 1 ] = accumVecBinorm.y;
-                    pDestBinorm[ dstBinormOffset + 2 ] = accumVecBinorm.z;
-                }
-            }
+				// Stored blended vertex in temp buffer
+				if ( includeBinormals )
+				{
+					// Normalise
+					accumVecBinorm.Normalize();
+					int dstBinormOffset = ( vertIdx * destBinormBuf.VertexSize + destElemBinorm.Offset ) / 4;
+					pDestBinorm[ dstBinormOffset ] = accumVecBinorm.x;
+					pDestBinorm[ dstBinormOffset + 1 ] = accumVecBinorm.y;
+					pDestBinorm[ dstBinormOffset + 2 ] = accumVecBinorm.z;
+				}
+			}
 
-            // Unlock source buffers
-            srcPosBuf.SetData( pSrcPos );
-            srcIdxBuf.SetData( pBlendIdx );
+			// Unlock source buffers
+			srcPosBuf.SetData( pSrcPos );
+			srcIdxBuf.SetData( pBlendIdx );
 
-            if ( srcWeightBuf != srcIdxBuf )
-            {
-                srcWeightBuf.SetData( pBlendWeight );
-            }
+			if ( srcWeightBuf != srcIdxBuf )
+			{
+				srcWeightBuf.SetData( pBlendWeight );
+			}
 
-            if ( includeNormals &&
-                srcNormBuf != srcPosBuf )
-            {
-                srcNormBuf.SetData( pSrcNorm );
-            }
+			if ( includeNormals &&
+				srcNormBuf != srcPosBuf )
+			{
+				srcNormBuf.SetData( pSrcNorm );
+			}
 
-            if ( includeTangents &&
-                srcTanBuf != srcPosBuf &&
-                srcTanBuf != srcNormBuf )
-            {
-                srcTanBuf.SetData( pSrcTan );
-            }
+			if ( includeTangents &&
+				srcTanBuf != srcPosBuf &&
+				srcTanBuf != srcNormBuf )
+			{
+				srcTanBuf.SetData( pSrcTan );
+			}
 
-            if ( includeBinormals &&
-                srcBinormBuf != srcPosBuf &&
-                srcBinormBuf != srcNormBuf &&
-                srcBinormBuf != srcTanBuf )
-            {
-                srcBinormBuf.SetData( pSrcBinorm );
-            }
+			if ( includeBinormals &&
+				srcBinormBuf != srcPosBuf &&
+				srcBinormBuf != srcNormBuf &&
+				srcBinormBuf != srcTanBuf )
+			{
+				srcBinormBuf.SetData( pSrcBinorm );
+			}
 
-            // Unlock destination buffers
-            destPosBuf.SetData( pDestPos );
+			// Unlock destination buffers
+			destPosBuf.SetData( pDestPos );
 
-            if ( includeNormals &&
-                destNormBuf != destPosBuf )
-            {
-                destNormBuf.SetData( pDestNorm );
-            }
+			if ( includeNormals &&
+				destNormBuf != destPosBuf )
+			{
+				destNormBuf.SetData( pDestNorm );
+			}
 
-            if ( includeTangents &&
-                destTanBuf != destPosBuf &&
-                destTanBuf != destNormBuf )
-            {
-                destTanBuf.SetData( pDestTan );
-            }
+			if ( includeTangents &&
+				destTanBuf != destPosBuf &&
+				destTanBuf != destNormBuf )
+			{
+				destTanBuf.SetData( pDestTan );
+			}
 
-            if ( includeBinormals &&
-                destBinormBuf != destPosBuf &&
-                destBinormBuf != destNormBuf &&
-                destBinormBuf != destTanBuf )
-            {
-                destBinormBuf.SetData( pDestBinorm );
-            }
-        }
+			if ( includeBinormals &&
+				destBinormBuf != destPosBuf &&
+				destBinormBuf != destNormBuf &&
+				destBinormBuf != destTanBuf )
+			{
+				destBinormBuf.SetData( pDestBinorm );
+			}
+		}
 
 		public static void BlendDirVector( ref Vector3 accumVec, ref Matrix4 mat, ref Vector3 srcVec, float blendWeight )
 		{
