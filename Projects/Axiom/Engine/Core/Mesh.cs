@@ -1128,7 +1128,6 @@ namespace Axiom.Core
 			}
 
 			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( bindIndex ), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
-
 			// bind new buffer
 			bind.SetBinding( bindIndex, vbuf );
 
@@ -1176,8 +1175,8 @@ namespace Axiom.Core
 					}
 				}
 
-				pWeight += idxElem.Size;
-				pIndex += weightElem.Size;
+				pWeight += vbuf.VertexSize - weightElem.Size;
+				pIndex += vbuf.VertexSize - idxElem.Size;
 			}
 			vbuf.SetData( pBase );
 		}
@@ -2241,30 +2240,20 @@ namespace Axiom.Core
 			bool weightsIndexesShareBuffer = false;
 
 			// Get elements for source
-			VertexElement srcElemPos =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement srcElemNorm =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement srcElemTan =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
-			VertexElement srcElemBinorm =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
-			VertexElement srcElemBlendIndices =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-			VertexElement srcElemBlendWeights =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
+			VertexElement srcElemPos = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement srcElemNorm =	sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement srcElemTan = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement srcElemBinorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
+			VertexElement srcElemBlendIndices =	sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+			VertexElement srcElemBlendWeights =	sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 
 			Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights" );
 
 			// Get elements for target
-			VertexElement destElemPos =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement destElemNorm =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement destElemTan =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
-			VertexElement destElemBinorm =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
+			VertexElement destElemPos =	targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement destElemNorm = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement destElemTan =	targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement destElemBinorm = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
 
 			// Do we have normals and want to blend them?
 			bool includeNormals = blendNormals && ( srcElemNorm != null ) && ( destElemNorm != null );
@@ -2299,7 +2288,7 @@ namespace Axiom.Core
 
 			float[] pSrcPos = null, pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
 			float[] pDestPos = null, pDestNorm = null, pDestTan = null, pDestBinorm = null;
-			float[] pBlendWeight = null;
+			byte[] pBlendWeight = null;
 			byte[] pBlendIdx = null;
 
 			pSrcPos = new float[ srcPosBuf.Length / sizeof( float ) ];
@@ -2345,17 +2334,16 @@ namespace Axiom.Core
 			}
 
 			// Indices must be 4 bytes
-			Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,
-				"Blend indices must be VET_UBYTE4" );
+			Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,	"Blend indices must be VET_UBYTE4" );
 
 			pBlendIdx = new byte[ srcIdxBuf.Length ];
 			srcIdxBuf.GetData( pBlendIdx );
 
 			if ( srcWeightBuf == srcIdxBuf )
-				pBlendWeight = (float*)pBlendIdx;
+				pBlendWeight = pBlendIdx;
 			else
 			{
-				pBlendWeight = new float[ srcWeightBuf.Length / sizeof( float ) ];
+				pBlendWeight = new byte[ srcWeightBuf.Length ];
 				srcWeightBuf.GetData( pBlendWeight );
 			}
 
@@ -2443,13 +2431,13 @@ namespace Axiom.Core
 				accumVecTan = Vector3.Zero;
 				accumVecBinorm = Vector3.Zero;
 
-				int blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
+				int blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset );
 				int blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
 
 				// Loop per blend weight
 				for ( int blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
 				{
-					float blendWeight = pBlendWeight[ blendWeightOffset + blendIdx ];
+					float blendWeight = BitConverter.ToSingle( pBlendWeight, blendWeightOffset + blendIdx );
 					int blendMatrixIdx = pBlendIdx[ blendMatrixOffset + blendIdx ];
 					// Blend by multiplying source by blend matrix and scaling by weight
 					// Add to accumulator
