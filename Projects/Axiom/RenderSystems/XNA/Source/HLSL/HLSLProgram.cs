@@ -34,17 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.RenderSystems.Xna.Content;
-
 using ResourceHandle = System.UInt64;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -100,23 +93,30 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
 		protected override void LoadHighLevelImpl()
 		{
-			isHighLevelLoaded = true;
+			highLevelLoaded = true;
 		}
 
-		/// <summary>
-		///     Derives parameter names from the constant table.
-		/// </summary>
-		/// <param name="parms"></param>
-		protected override void PopulateParameterNames( GpuProgramParameters parms )
-		{
-		}
+        /// <summary>
+        ///     Unloads data that is no longer needed.
+        /// </summary>
 
-		/// <summary>
-		///     Unloads data that is no longer needed.
-		/// </summary>
-		protected override void UnloadImpl()
-		{
-		}
+        protected override void UnloadHighLevelImpl()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Derives parameter names from the constant table.
+        /// </summary>
+        /// <param name="parms"></param>
+        protected override void PopulateParameterNames( GpuProgramParameters parms )
+        {
+        }
+
+        protected override void BuildConstantDefinitions()
+        {
+            throw new NotImplementedException();
+        }
 
 		public override bool IsSupported
 		{
@@ -136,18 +136,19 @@ namespace Axiom.RenderSystems.Xna.HLSL
 					case "ps_1_2":
 					case "ps_1_3":
 						return 4;
-					case "ps_1_4":
+					
+                    case "ps_1_4":
 						return 6;
-					case "ps_2_0":
+					
+                    case "ps_2_0":
 					case "ps_2_x":
 					case "ps_3_0":
 					case "ps_3_x":
 						return 16;
-					default:
+					
+                    default:
 						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", target );
 				}
-
-				// return 0;
 			}
 		}
 
@@ -191,5 +192,5 @@ namespace Axiom.RenderSystems.Xna.HLSL
 		}
 
 		#endregion IConfigurable Members
-	}
+    }
 }

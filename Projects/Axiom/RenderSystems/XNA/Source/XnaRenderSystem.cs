@@ -143,9 +143,6 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Helper Methods
 
-		/// <summary>
-		/// 
-		/// </summary>
 		private void _setVertexBufferBinding( VertexBufferBinding binding )
 		{
 			Dictionary<short, HardwareVertexBuffer> bindings = binding.Bindings;
@@ -443,7 +440,6 @@ namespace Axiom.RenderSystems.Xna
 		}
 #endif
 
-
 		/// <summary>
 		///		Helper method to go through and interrogate hardware capabilities.
 		/// </summary>
@@ -734,13 +730,169 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Properties
 
-		private ColorEx _ambientLight = ColorEx.White;
+        #region RenderTarget
+
+        /// <summary>
+        /// Set current render target to target, enabling its device context if needed
+        /// </summary>
+        public override RenderTarget RenderTarget
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region PointSpritesEnabled
+
+        /// <summary>
+        /// Sets whether or not rendering points using OT_POINT_LIST will 
+        /// render point sprites (textured quads) or plain points.
+        /// </summary>
+        public override bool PointSpritesEnabled
+        {
+            set
+            {
+                //if ( value )
+                //    throw new AxiomException( "XNA does not support PointSprites." );
+            }
+        }
+
+        #endregion
+
+        #region CullingMode
+
+        /// <summary>
+        /// Gets/Sets the culling mode for the render system based on the 'vertex winding'.
+        /// </summary>
+        /// <remarks>
+        /// A typical way for the rendering engine to cull triangles is based on the
+        /// 'vertex winding' of triangles. Vertex winding refers to the direction in
+        /// which the vertices are passed or indexed to in the rendering operation as viewed
+        /// from the camera, and will wither be clockwise or counterclockwise.  The default is <see name="CullingMode.Clockwise"/>  
+        /// i.e. that only triangles whose vertices are passed/indexed in counterclockwise order are rendered - this 
+        /// is a common approach and is used in 3D studio models for example. You can alter this culling mode 
+        /// if you wish but it is not advised unless you know what you are doing. You may wish to use the 
+        /// <see cref="Graphics.CullingMode.None"/> option for mesh data that you cull yourself where the vertex winding is uncertain.
+        /// </remarks>
+        public override CullingMode CullingMode
+        {
+            get
+            {
+                return cullingMode;
+            }
+            set
+            {
+                cullingMode = value;
+
+                bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
+                StateManager.RasterizerState.CullMode = XnaHelper.Convert( value, flip );
+            }
+        }
+
+        #endregion
+
+        #region DepthBufferCheckEnabled
+
+        /// <summary>
+        /// Sets whether or not the depth buffer check is performed before a pixel write
+        /// </summary>
+        public override bool DepthBufferCheckEnabled
+        {
+            set
+            {
+                StateManager.DepthStencilState.DepthBufferEnable = value;
+            }
+        }
+
+        #endregion
+
+        #region DepthBufferWriteEnabled
+
+        /// <summary>
+        /// Sets whether or not the depth buffer is updated after a pixel write.
+        /// </summary>
+        public override bool DepthBufferWriteEnabled
+        {
+            set
+            {
+                StateManager.DepthStencilState.DepthBufferWriteEnable = value;
+            }
+        }
+
+        #endregion
+
+        #region DepthBufferFunction
+
+        /// <summary>
+        /// Sets the comparison function for the depth buffer check.
+        /// Advanced use only - allows you to choose the function applied to compare the depth values of
+        /// new and existing pixels in the depth buffer. Only an issue if the depth buffer check is enabled
+        /// <see cref="DepthBufferCheckEnabled"/>
+        /// </summary>
+        public override CompareFunction DepthBufferFunction
+        {
+            set
+            {
+                StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( value );
+            }
+        }
+
+        #endregion
+
+        #region ColorVertexElementType
+
+        public override VertexElementType ColorVertexElementType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region VertexDeclaration
+
+        /// <summary>
+        /// Sets the current vertex declaration, ie the source of vertex data.
+        /// </summary>
+        public override VertexDeclaration VertexDeclaration
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region VertexBufferBinding
+
+        /// <summary>
+        /// Sets the current vertex buffer binding state.
+        /// </summary>
+        public override VertexBufferBinding VertexBufferBinding
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region DisplayMonitorCount
+
+        /// <summary>
+        /// Gets the number of display monitors. <see name="Root.DisplayMonitorCount"/>
+        /// </summary>
+        public override int DisplayMonitorCount
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        #endregion
+
+        #region AmbientLight
+
+        private ColorEx _ambientLight = ColorEx.White;
+
+        /// <summary>
+        /// Sets the color &amp; strength of the ambient (global directionless) light in the world.
+        /// </summary>
 		public override ColorEx AmbientLight
 		{
-			get
-			{
-				return _ambientLight;
-			}
 			set
 			{
 				_ambientLight = value;
@@ -752,301 +904,292 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override CullingMode CullingMode
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				cullingMode = value;
+        #endregion
 
-				bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
-				StateManager.RasterizerState.CullMode = XnaHelper.Convert( value, flip );
-			}
-		}
+        #region ShadingType
 
-		public override bool DepthWrite
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				StateManager.DepthStencilState.DepthBufferWriteEnable = value;
-			}
-		}
+        /// <summary>
+        /// Sets the type of light shading required (default = Gouraud).
+        /// </summary>
+        public override ShadeOptions ShadingType
+        {
+            set { throw new NotImplementedException(); }
+        }
 
-		public override bool DepthCheck
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				StateManager.DepthStencilState.DepthBufferEnable = value;
-			}
-		}
+        #endregion
 
-		public override CompareFunction DepthFunction
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( value );
-			}
-		}
+        #region HorizontalTexelOffset
 
-		public override float DepthBias
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				//throw new Exception( "The method or operation is not implemented." );
-				//StateManager.DepthStencilState.DepthBias = (float)value;
-			}
-		}
+        /// <summary>
+        /// Returns the horizontal texel offset value required for mapping 
+        /// texel origins to pixel origins in this rendersystem.
+        /// </summary>
+        /// <remarks>
+        /// Since rendersystems sometimes disagree on the origin of a texel, 
+        /// mapping from texels to pixels can sometimes be problematic to 
+        /// implement generically. This method allows you to retrieve the offset
+        /// required to map the origin of a texel to the origin of a pixel in
+        /// the horizontal direction.
+        /// </remarks>
+        public override Real HorizontalTexelOffset
+        {
+            // Xna considers the origin to be in the center of a pixel?
+            get
+            {
+                return -0.5f;
+            }
+        }
 
-		public override float HorizontalTexelOffset
-		{
-			// Xna considers the origin to be in the center of a pixel?
-			get
-			{
-				return -0.5f;
-			}
-		}
+        #endregion
 
-		private bool _lightingEnabled;
-		public override bool LightingEnabled
-		{
-			get
-			{
-				return _lightingEnabled;
-			}
-			set
-			{
-				_lightingEnabled = value;
-				basicEffect.LightingEnabled = _lightingEnabled;
+        #region LightingEnabled
+
+        private bool _lightingEnabled;
+
+        /// <summary>
+        /// Sets whether or not dynamic lighting is enabled.
+        /// <p/>
+        /// If true, dynamic lighting is performed on geometry with normals supplied, geometry without
+        /// normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
+        /// </summary>
+        public override bool LightingEnabled
+        {
+            set
+            {
+                _lightingEnabled = value;
+                basicEffect.LightingEnabled = _lightingEnabled;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightingEnabled = value;
 #endif
-			}
-		}
+            }
+        }
 
-		public override bool NormalizeNormals
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				//throw new Exception( "The method or operation is not implemented." );
-			}
-		}
+        #endregion
 
-		private Matrix4 _projectionMatrix;
-		public override Matrix4 ProjectionMatrix
-		{
-			get
-			{
-				return _projectionMatrix;
-			}
-			set
-			{
-				_projectionMatrix = value;
+        #region NormalizeNormals
 
-				basicEffect.Projection = XnaHelper.Convert(_projectionMatrix);
-				skinnedEffect.Projection = basicEffect.Projection;
+        /// <summary>
+        /// Sets whether or not normals are to be automatically normalized.
+        /// </summary>
+        /// <remarks>
+        /// This is useful when, for example, you are scaling SceneNodes such that
+        /// normals may not be unit-length anymore. Note though that this has an
+        /// overhead so should not be turn on unless you really need it.
+        /// <p/>
+        /// You should not normally call this direct unless you are rendering
+        /// world geometry; set it on the Renderable because otherwise it will be
+        /// overridden by material settings. 
+        /// </remarks>
+        public override bool NormalizeNormals
+        {
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region ProjectionMatrix
+
+        private Matrix4 _projectionMatrix;
+
+        /// <summary>
+        /// Sets the current projection matrix.
+        /// </summary>
+        public override Matrix4 ProjectionMatrix
+        {
+            set
+            {
+                _projectionMatrix = value;
+
+                basicEffect.Projection = XnaHelper.Convert( _projectionMatrix );
+                skinnedEffect.Projection = basicEffect.Projection;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
 
-			}
-		}
+            }
+        }
 
-		public override PolygonMode PolygonMode
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				switch ( value )
-				{
-					case PolygonMode.Points:
+        #endregion
 
-						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
+        #region PolygonMode
 
-						break;
-					case PolygonMode.Wireframe:
-						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
-						break;
-					case PolygonMode.Solid:
-						StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
-						break;
-				}
-			}
-		}
+        /// <summary>
+        /// Sets how to rasterise triangles, as points, wireframe or solid polys.
+        /// </summary>
+        public override PolygonMode PolygonMode
+        {
+            set
+            {
+                switch ( value )
+                {
+                    case PolygonMode.Points:
+                        StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
+                        break;
 
-		public override Shading ShadingMode
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				//throw new Exception("The method or operation is not implemented.");
-			}
-		}
+                    case PolygonMode.Wireframe:
+                        StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
+                        break;
+                    
+                    case PolygonMode.Solid:
+                        StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
+                        break;
+                }
+            }
+        }
 
-		public override bool StencilCheckEnabled
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-			set
-			{
-				StateManager.DepthStencilState.StencilEnable = value;
-			}
-		}
+        #endregion
 
-		public override float VerticalTexelOffset
-		{
-			get
-			{
-				// Xna considers the origin to be in the center of a pixel ?
-				return -0.5f;
-			}
-		}
+        #region StencilCheckEnabled
 
-		public override Matrix4 ViewMatrix
-		{
-			get
-			{
-				return _viewMatrix;
-			}
-			set
-			{
-				// flip the transform portion of the matrix for DX and its left-handed coord system
-				// save latest view matrix
-				_viewMatrix = value;
-				_viewMatrix.m20 = -_viewMatrix.m20;
-				_viewMatrix.m21 = -_viewMatrix.m21;
-				_viewMatrix.m22 = -_viewMatrix.m22;
-				_viewMatrix.m23 = -_viewMatrix.m23;
+        /// <summary>
+        /// Turns stencil buffer checking on or off. 
+        /// </summary>
+        /// <remarks>
+        /// Stencilling (masking off areas of the rendering target based on the stencil 
+        /// buffer) can be turned on or off using this method. By default, stencilling is
+        /// disabled.
+        /// </remarks>
+        public override bool StencilCheckEnabled
+        {
+            set
+            {
+                StateManager.DepthStencilState.StencilEnable = value;
+            }
+        }
 
-				basicEffect.View = XnaHelper.Convert(_viewMatrix);
-				skinnedEffect.View = basicEffect.View;
+        #endregion
+
+        #region VerticalTexelOffset
+
+        /// <summary>
+        /// Returns the vertical texel offset value required for mapping 
+        /// texel origins to pixel origins in this rendersystem.
+        /// </summary>
+        /// <remarks>
+        /// Since rendersystems sometimes disagree on the origin of a texel, 
+        /// mapping from texels to pixels can sometimes be problematic to 
+        /// implement generically. This method allows you to retrieve the offset
+        /// required to map the origin of a texel to the origin of a pixel in
+        /// the vertical direction.
+        /// </remarks>
+        public override Real VerticalTexelOffset
+        {
+            get
+            {
+                // Xna considers the origin to be in the center of a pixel ?
+                return -0.5f;
+            }
+        }
+
+        #endregion
+
+        #region ViewMatrix
+
+        /// <summary>
+        /// Sets the current view matrix.
+        /// </summary>
+        public override Matrix4 ViewMatrix
+        {
+            set
+            {
+                // flip the transform portion of the matrix for DX and its left-handed coord system
+                // save latest view matrix
+                _viewMatrix = value;
+                _viewMatrix.m20 = -_viewMatrix.m20;
+                _viewMatrix.m21 = -_viewMatrix.m21;
+                _viewMatrix.m22 = -_viewMatrix.m22;
+                _viewMatrix.m23 = -_viewMatrix.m23;
+
+                basicEffect.View = XnaHelper.Convert( _viewMatrix );
+                skinnedEffect.View = basicEffect.View;
 
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ViewMatrix = _viewMatrix;
 #endif
-			}
-		}
+            }
+        }
 
-		private Matrix4 _worldMatrix;
-		public override Axiom.Math.Matrix4 WorldMatrix
-		{
-			get
-			{
-				return _worldMatrix;
-			}
-			set
-			{
-				_worldMatrix = value;
-				basicEffect.World = XnaHelper.Convert(_worldMatrix);
-				basicEffect.World = basicEffect.World;
+        #endregion
+
+        #region WorldMatrix
+
+        private Matrix4 _worldMatrix;
+
+        /// <summary>
+        /// Sets the current world matrix.
+        /// </summary>
+        public override Axiom.Math.Matrix4 WorldMatrix
+        {
+            get
+            {
+                return _worldMatrix;
+            }
+            set
+            {
+                _worldMatrix = value;
+                basicEffect.World = XnaHelper.Convert( _worldMatrix );
+                basicEffect.World = basicEffect.World;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
 #endif
-			}
-		}
+            }
+        }
 
-		public override RenderTarget RenderTarget
-		{
-			set { throw new NotImplementedException(); }
-		}
+        #endregion
 
-		public override bool PointSpritesEnabled
-		{
-			set { throw new NotImplementedException(); }
-		}
+        #region MinimumDepthInputValue
 
-		public override bool DepthBufferCheckEnabled
-		{
-			set { throw new NotImplementedException(); }
-		}
+        /// <summary>
+        /// Gets the maximum (closest) depth value to be used when rendering using identity transforms.
+        /// </summary>
+        /// <remarks>
+        /// When using identity transforms you can manually set the depth
+        /// of a vertex; however the input values required differ per
+        /// rendersystem. This method lets you retrieve the correct value.
+        /// <see cref="SimpleRenderable.UseIdentityView"/>
+        /// <see cref="SimpleRenderable.UseIdentityProjection"/>
+        /// </remarks>
+        public override Real MinimumDepthInputValue
+        {
+            get
+            {
+                // Range [0.0f, 1.0f]
+                return 0.0f;
+            }
+        }
 
-		public override bool DepthBufferWriteEnabled
-		{
-			set { throw new NotImplementedException(); }
-		}
+        #endregion
 
-		public override CompareFunction DepthBufferFunction
-		{
-			set { throw new NotImplementedException(); }
-		}
+        #region MaximumDepthInputValue
 
-		public override VertexElementType ColorVertexElementType
-		{
-			get { throw new NotImplementedException(); }
-		}
+        /// <summary>
+        /// Gets the maximum (farthest) depth value to be used when rendering using identity transforms.
+        /// </summary>
+        /// <remarks>
+        /// When using identity transforms you can manually set the depth
+        /// of a vertex; however the input values required differ per
+        /// rendersystem. This method lets you retrieve the correct value.
+        /// <see cref="SimpleRenderable.UseIdentityView"/>
+        /// <see cref="SimpleRenderable.UseIdentityProjection"/>
+        /// </remarks>
+        public override Real MaximumDepthInputValue
+        {
+            get
+            {
+                // Range [0.0f, 1.0f]
+                // XNA inverts even identity view matrixes so maximum INPUT is -1.0f
+                return -1.0f;
+            }
+        }
 
-		public override VertexDeclaration VertexDeclaration
-		{
-			set { throw new NotImplementedException(); }
-		}
-
-		public override VertexBufferBinding VertexBufferBinding
-		{
-			set { throw new NotImplementedException(); }
-		}
-
-		public override int DisplayMonitorCount
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public override ShadeOptions ShadingType
-		{
-			set { throw new NotImplementedException(); }
-		}
+        #endregion
 
 		#endregion Properties
 
 		#region Methods
-
-		public override Real MinimumDepthInputValue
-		{
-			get
-			{
-				// Range [0.0f, 1.0f]
-				return 0.0f;
-			}
-		}
-
-		public override Real MaximumDepthInputValue
-		{
-			get
-			{
-				// Range [0.0f, 1.0f]
-				// XNA inverts even identity view matrixes so maximum INPUT is -1.0f
-				return -1.0f;
-			}
-		}
 
 		public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
 		{
@@ -1246,6 +1389,12 @@ namespace Axiom.RenderSystems.Xna
 			_device.Clear( flags, col, depth, stencil );
 		}
 
+        /// <summary>
+        /// Converts the Axiom.Core.ColorEx value to a int.  Each API may need the 
+        /// bytes of the packed color data in different orders. i.e. OpenGL - ABGR, D3D - ARGB
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
 		public override int ConvertColor( ColorEx color )
 		{
 			return color.ToARGB();
@@ -1313,7 +1462,7 @@ namespace Axiom.RenderSystems.Xna
 				// Create the texture manager for use by others
 				textureManager = new XnaTextureManager( _device );
 				// Also create hardware buffer manager
-				hardwareBufferManager = new XnaHardwareBufferManager( _device );
+                hardwareBufferManager = new XnaHardwareBufferManager( _device );
 
 				// Create the GPU program manager
 				gpuProgramMgr = new XnaGpuProgramManager( _device );
@@ -1613,7 +1762,6 @@ namespace Axiom.RenderSystems.Xna
 		bool needToUnmapVS = false;
 		bool needToUnmapFS = false;
 
-
 		public override void Render( RenderOperation op )
 		{
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
@@ -1796,26 +1944,30 @@ namespace Axiom.RenderSystems.Xna
 					primType = XFG.PrimitiveType.LineList; /* XNA 4.0 doesn't support PointList so using LineList instead */
 					primCount = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
 					break;
+
 				case OperationType.LineList:
 					primType = XFG.PrimitiveType.LineList;
 					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 2;
 					break;
+
 				case OperationType.LineStrip:
 					primType = XFG.PrimitiveType.LineStrip;
 					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 1;
 					break;
+
 				case OperationType.TriangleList:
 					primType = XFG.PrimitiveType.TriangleList;
 					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 3;
 					break;
+
 				case OperationType.TriangleStrip:
 					primType = XFG.PrimitiveType.TriangleStrip;
 					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
 					break;
+
 				case OperationType.TriangleFan:
 					throw new Exception("XNA 4.0 doesn't support TriangleFan");
 					//primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
-					break;
 			} // switch(primType)
 
 			try
@@ -2052,39 +2204,18 @@ namespace Axiom.RenderSystems.Xna
 #endif
 		}
 
-		/// <summary>
-		/// Sets whether or not rendering points using PointList will 
-		/// render point sprites (textured quads) or plain points.
-		/// </summary>
-		/// <value></value>
-		public override bool PointSprites
-		{
-			set
-			{
-				//if ( value )
-				//    throw new AxiomException( "XNA does not support PointSprites." );
-			}
-		}
-
-		/// <summary>
-		/// Sets the size of points and how they are attenuated with distance.
-		/// <remarks>
-		/// When performing point rendering or point sprite rendering,
-		/// point size can be attenuated with distance. The equation for
-		/// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
-		/// </remarks>
-		/// </summary>
-		/// <param name="size"></param>
-		/// <param name="attenuationEnabled"></param>
-		/// <param name="constant"></param>
-		/// <param name="linear"></param>
-		/// <param name="quadratic"></param>
-		/// <param name="minSize"></param>
-		/// <param name="maxSize"></param>
-		public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
-		{
-			// throw new AxiomException( "XNA does not support PointSprites." );
-		}
+        /// <summary>
+        /// Sets the size of points and how they are attenuated with distance.
+        /// <remarks>
+        /// When performing point rendering or point sprite rendering,
+        /// point size can be attenuated with distance. The equation for
+        /// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
+        /// </remarks>
+        /// </summary>
+        public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear, Real quadratic, Real minSize, Real maxSize )
+        {
+            // throw new AxiomException( "XNA does not support PointSprites." );
+        }
 
 		public override void SetTexture( int stage, bool enabled, Texture texture )
 		{
@@ -2393,7 +2524,6 @@ namespace Axiom.RenderSystems.Xna
 
 				// clear the updated flag
 				viewport.IsUpdated = false;
-
 			}
 		}
 
@@ -2546,6 +2676,132 @@ namespace Axiom.RenderSystems.Xna
 #endif
 		}
 
+        public override void PreExtraThreadsStarted()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void PostExtraThreadsStarted()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void RegisterThread()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UnregisterThread()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetDepthBias( float constantBias, float slopeScaleBias )
+        {
+            //throw new Exception( "The method or operation is not implemented." );
+            //StateManager.DepthStencilState.DepthBias = (float)value;
+        }
+
+        public override string ValidateConfigOptions()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string GetErrorDescription( int errorNumber )
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void SetClipPlanesImpl( Math.Collections.PlaneList clipPlanes )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void BindGpuProgramPassIterationParameters( GpuProgramType gptype )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Reinitialize()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override RenderSystemCapabilities CreateRenderSystemCapabilities()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetAlphaRejectSettings( CompareFunction func, byte value, bool alphaToCoverage )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetFog( FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp )
+        {
+            throw new NotImplementedException();
+        }
+
+        //public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking )
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public override void SetTextureMipmapBias( int unit, float bias )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary )
+        {
+            throw new NotImplementedException();
+        }
+
 		#endregion Methods
 
 		#endregion Axiom.Core.RenderSystem Implementation
@@ -2569,6 +2825,5 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion
-
-	}
+    }
 }

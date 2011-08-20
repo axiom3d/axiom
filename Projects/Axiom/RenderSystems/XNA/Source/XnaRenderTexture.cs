@@ -66,17 +66,18 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Axiom.Graphics.RenderTexture Implementation
 
-		public override void Update()
-		{
-			XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
-			// TODO: Implement XnaRenderSystem.IsDeviceLost
-			//if ( rs.IsDeviceLost )
-			//{
-			//    return;
-			//}
+        //TODO
+        //public override void Update()
+        //{
+        //    XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+        //    // TODO: Implement XnaRenderSystem.IsDeviceLost
+        //    //if ( rs.IsDeviceLost )
+        //    //{
+        //    //    return;
+        //    //}
 
-			base.Update();
-		}
+        //    base.Update();
+        //}
 
 		public override object this[ string attribute ]
 		{
@@ -95,14 +96,16 @@ namespace Axiom.RenderSystems.Xna
 							surface[ 0 ] = ( (XnaHardwarePixelBuffer)pixelBuffer ).RenderTarget;
 						}
 						return surface;
+
 					case "HWND":
 						return null;
+
 					case "BUFFER":
 						return (HardwarePixelBuffer)pixelBuffer;
+
 					default:
 						return null;
 				}
-				return null;
 			}
 		}
 

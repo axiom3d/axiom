@@ -645,7 +645,7 @@ namespace Axiom.Graphics
 		/// property there.
 		/// <see ref="Pass.ShadingMode"></see>
 		/// </remarks>
-		public Shading ShadingMode
+		public ShadeOptions ShadingMode
 		{
 			set
 			{
