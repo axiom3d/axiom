@@ -812,27 +812,26 @@ namespace Axiom.Core
 
 			bool sharedGeometryDone = false;
 
-			unsafe
 			{
 				// setup a new 3D tex coord buffer for every submesh
 				for ( int sm = 0; sm < numSubMeshes; sm++ )
 				{
 					// the face indices buffer, read only
-					ushort* pIdx = null;
+					ushort[] pIdx = null;
 					// pointer to 2D tex.coords, read only
-					float* p2DTC = null;
+					int p2DTC;
 					// pointer to 3D tex.coords, write/read (discard)
-					float* p3DTC = null;
+					int p3DTC;
 					// vertex position buffer, read only
-					float* pVPos = null;
+					int pVPos;
 
 					SubMesh subMesh = GetSubMesh( sm );
 
 					// get index buffer pointer
 					IndexData idxData = subMesh.indexData;
 					HardwareIndexBuffer buffIdx = idxData.indexBuffer;
-					IntPtr indices = buffIdx.Lock( BufferLocking.ReadOnly );
-					pIdx = (ushort*)indices.ToPointer();
+					pIdx = new ushort[ buffIdx.Length / sizeof( ushort ) ];
+					buffIdx.GetData( pIdx );
 
 					// get vertex pointer
 					VertexData usedVertexData;
@@ -872,7 +871,7 @@ namespace Axiom.Core
 
 					HardwareVertexBuffer srcBuffer = null, destBuffer = null, posBuffer = null;
 
-					IntPtr srcPtr, destPtr, posPtr;
+					float[] srcPtr, destPtr, posPtr;
 					int srcInc, destInc, posInc;
 
 					srcBuffer = binding.GetBuffer( srcElem.Source );
@@ -881,19 +880,21 @@ namespace Axiom.Core
 					if ( srcElem.Source == destElem.Source )
 					{
 						// lock source for read and write
-						srcPtr = srcBuffer.Lock( BufferLocking.Normal );
-
+						srcPtr = new float[ srcBuffer.Length / sizeof( float ) ];
+						srcBuffer.GetData( srcPtr );
 						srcInc = srcBuffer.VertexSize;
 						destPtr = srcPtr;
 						destInc = srcInc;
 					}
 					else
 					{
-						srcPtr = srcBuffer.Lock( BufferLocking.ReadOnly );
+						srcPtr = new float[ srcBuffer.Length / sizeof( float ) ];
+						srcBuffer.GetData( srcPtr );
 						srcInc = srcBuffer.VertexSize;
 						destBuffer = binding.GetBuffer( destElem.Source );
 						destInc = destBuffer.VertexSize;
-						destPtr = destBuffer.Lock( BufferLocking.Normal );
+						destPtr = new float[ destBuffer.Length / sizeof( float ) ];
+						destBuffer.GetData( destPtr );
 					}
 
 					VertexElement elemPos = decl.FindElementBySemantic( VertexElementSemantic.Position );
@@ -912,7 +913,8 @@ namespace Axiom.Core
 					{
 						// a different buffer
 						posBuffer = binding.GetBuffer( elemPos.Source );
-						posPtr = posBuffer.Lock( BufferLocking.ReadOnly );
+						posPtr = new float[ posBuffer.Length / sizeof( float ) ];
+						posBuffer.GetData( posPtr );
 						posInc = posBuffer.VertexSize;
 					}
 
@@ -930,45 +932,36 @@ namespace Axiom.Core
 							// get indices of vertices that form a polygon in the position buffer
 							vertIdx[ i ] = pIdx[ vCount++ ];
 
-							IntPtr tmpPtr = new IntPtr( posPtr.ToInt64() + elemPos.Offset + ( posInc * vertIdx[ i ] ) );
-
-							pVPos = (float*)tmpPtr.ToPointer();
+							pVPos = elemPos.Offset + ( posInc * vertIdx[ i ] );
 
 							// get the vertex positions from the position buffer
-							vertPos[ i ].x = pVPos[ 0 ];
-							vertPos[ i ].y = pVPos[ 1 ];
-							vertPos[ i ].z = pVPos[ 2 ];
+							vertPos[ i ].x = posPtr[ pVPos + 0 ];
+							vertPos[ i ].y = posPtr[ pVPos + 1 ];
+							vertPos[ i ].z = posPtr[ pVPos + 2 ];
 
 							// get the vertex tex coords from the 2D tex coord buffer
-							tmpPtr = new IntPtr( srcPtr.ToInt64() + srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
-							p2DTC = (float*)tmpPtr.ToPointer();
+							p2DTC = srcElem.Offset + ( srcInc * vertIdx[ i ] );
 
-							u[ i ] = p2DTC[ 0 ];
-							v[ i ] = p2DTC[ 1 ];
+							u[ i ] = srcPtr[ p2DTC + 0 ];
+							v[ i ] = srcPtr[ p2DTC + 1 ];
 						} // for v = 1 to 3
 
 						// calculate the tangent space vector
-						Vector3 tangent =
-							Utility.CalculateTangentSpaceVector(
-								vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ],
-								u[ 0 ], v[ 0 ], u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
+						Vector3 tangent = Utility.CalculateTangentSpaceVector( vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ], u[ 0 ], v[ 0 ], u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
 
 						// write new tex.coords
 						// note we only write the tangent, not the binormal since we can calculate
 						// the binormal in the vertex program
-						byte* vBase = (byte*)destPtr.ToPointer();
 
 						for ( i = 0; i < 3; i++ )
 						{
 							// write values (they must be 0 and we must add them so we can average
 							// all the contributions from all the faces
-							IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + ( destInc * vertIdx[ i ] ) );
+							p3DTC = destElem.Offset + ( destInc * vertIdx[ i ] );
 
-							p3DTC = (float*)tmpPtr.ToPointer();
-
-							p3DTC[ 0 ] += tangent.x;
-							p3DTC[ 1 ] += tangent.y;
-							p3DTC[ 2 ] += tangent.z;
+							destPtr[ p3DTC + 0 ] += tangent.x;
+							destPtr[ p3DTC + 1 ] += tangent.y;
+							destPtr[ p3DTC + 2 ] += tangent.z;
 						} // for v = 1 to 3
 					} // for each face
 
@@ -976,43 +969,34 @@ namespace Axiom.Core
 
 					int offset = 0;
 
-					byte* qBase = (byte*)destPtr.ToPointer();
 
 					// loop through and normalize all 3d tex coords
 					for ( int n = 0; n < numVerts; n++ )
 					{
-						IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + offset );
 
-						p3DTC = (float*)tmpPtr.ToPointer();
+						p3DTC = destElem.Offset + offset;
 
 						// read the 3d tex coord
-						Vector3 temp = new Vector3( p3DTC[ 0 ], p3DTC[ 1 ], p3DTC[ 2 ] );
+						Vector3 temp = new Vector3( destPtr[ p3DTC + 0 ], destPtr[ p3DTC + 1 ], destPtr[ p3DTC + 2 ] );
 
 						// normalize the tex coord
 						temp.Normalize();
 
 						// write it back to the buffer
-						p3DTC[ 0 ] = temp.x;
-						p3DTC[ 1 ] = temp.y;
-						p3DTC[ 2 ] = temp.z;
+						destPtr[ p3DTC + 0 ] = temp.x;
+						destPtr[ p3DTC + 1 ] = temp.y;
+						destPtr[ p3DTC + 2 ] = temp.z;
 
 						offset += destInc;
 					}
 
 					// unlock all used buffers
-					srcBuffer.Unlock();
 
 					if ( destBuffer != null )
 					{
-						destBuffer.Unlock();
+						destBuffer.SetData( destPtr );
 					}
 
-					if ( posBuffer != null )
-					{
-						posBuffer.Unlock();
-					}
-
-					buffIdx.Unlock();
 				} // for each subMesh
 			} // unsafe
 		}
@@ -2241,18 +2225,18 @@ namespace Axiom.Core
 
 			// Get elements for source
 			VertexElement srcElemPos = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement srcElemNorm =	sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement srcElemNorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
 			VertexElement srcElemTan = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
 			VertexElement srcElemBinorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
-			VertexElement srcElemBlendIndices =	sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-			VertexElement srcElemBlendWeights =	sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
+			VertexElement srcElemBlendIndices = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+			VertexElement srcElemBlendWeights = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 
 			Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights" );
 
 			// Get elements for target
-			VertexElement destElemPos =	targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement destElemPos = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 			VertexElement destElemNorm = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement destElemTan =	targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement destElemTan = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
 			VertexElement destElemBinorm = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
 
 			// Do we have normals and want to blend them?
@@ -2334,7 +2318,7 @@ namespace Axiom.Core
 			}
 
 			// Indices must be 4 bytes
-			Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,	"Blend indices must be VET_UBYTE4" );
+			Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4, "Blend indices must be VET_UBYTE4" );
 
 			pBlendIdx = new byte[ srcIdxBuf.Length ];
 			srcIdxBuf.GetData( pBlendIdx );
