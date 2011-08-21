@@ -582,7 +582,15 @@ namespace Axiom.Core
 
 			mesh = new PatchMesh( this, name, nextHandle, group );
 
-			mesh.Define( controlPointBuffer, declaration, width, height, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide, vbUsage, ibUsage, vbUseShadow, ibUseShadow );
+			System.IO.MemoryStream ms = new System.IO.MemoryStream();
+			System.IO.StreamWriter sw = new System.IO.StreamWriter( ms );
+			foreach ( object obj in controlPointBuffer )
+			{
+				sw.Write( obj );
+			}
+			sw.Flush();
+
+			mesh.Define( ms.GetBuffer(), declaration, width, height, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide, vbUsage, ibUsage, vbUseShadow, ibUseShadow );
 
 			mesh.Load();
 

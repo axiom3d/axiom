@@ -188,7 +188,7 @@ namespace Axiom.Core
 		///     do it here, otherwise let the system decide.
 		/// </param>
 		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
-		public void DefineSurface( Array controlPointArray, VertexDeclaration decl, int width, int height )
+		public void DefineSurface( byte[] controlPointArray, VertexDeclaration decl, int width, int height )
 		{
 			DefineSurface( controlPointArray, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
 		}
@@ -226,8 +226,7 @@ namespace Axiom.Core
 		///     do it here, otherwise let the system decide.
 		/// </param>
 		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
-		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
-			PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
+		public void DefineSurface( byte[] controlPointArray, VertexDeclaration declaration, int width, int height, PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
 		{
 
 			if ( height == 0 || width == 0 )
@@ -236,9 +235,6 @@ namespace Axiom.Core
 			}
 
 			//pin the input to have a pointer
-			Memory.UnpinObject( controlPointArray );
-			this.controlPointBuffer = Memory.PinObject( controlPointArray );
-
 			this.type = type;
 			this.controlWidth = width;
 			this.controlHeight = height;
@@ -250,16 +246,13 @@ namespace Axiom.Core
 			VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
 			int vertSize = declaration.GetVertexSize( 0 );
 
-			unsafe
+			int pVert = 0;
+			for ( int i = 0; i < controlCount; i++ )
 			{
-				byte* pVert = (byte*)controlPointBuffer;
-				float* pReal = null;
-				for ( int i = 0; i < controlCount; i++ )
-				{
-					pReal = (float*)( pVert + ( i * vertSize ) + elem.Offset );
-					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
-				}
+				pVert += ( i * vertSize ) + elem.Offset;
+				controlPoints.Add( new Vector3( controlPointArray[ pVert + 0 ], controlPointArray[ pVert + 1 ], controlPointArray[ pVert + 2 ] ) );
 			}
+
 			this.side = visibleSide;
 
 			// Determine max level
@@ -688,28 +681,28 @@ namespace Axiom.Core
 			// Calc num indexes
 			currentIndexCount = ( currentWidth - 1 ) * ( currentHeight - 1 ) * 6 * iterations;
 
-            int v1, v2, v3;
-            int count = 0;
+			int v1, v2, v3;
+			int count = 0;
 
-            // Lock just the section of the buffer we need
-            short[] p16 = null;
-            int[] p32 = null;
-            int offset = indexOffset, length = requiredIndexCount;
+			// Lock just the section of the buffer we need
+			short[] p16 = null;
+			int[] p32 = null;
+			int offset = indexOffset, length = requiredIndexCount;
 
-            if ( use32bitindexes )
-            {
-                offset *= sizeof( int );
-                length *= sizeof( int );
-                p32 = new int[ length ];
-                indexBuffer.GetData( offset, p32, 0, length );
-            }
-            else
-            {
-                offset *= sizeof( short );
-                length *= sizeof( short );
-                p16 = new short[ length ];
-                indexBuffer.GetData( offset, p16, 0, length );
-            }
+			if ( use32bitindexes )
+			{
+				offset *= sizeof( int );
+				length *= sizeof( int );
+				p32 = new int[ length ];
+				indexBuffer.GetData( offset, p32, 0, length );
+			}
+			else
+			{
+				offset *= sizeof( short );
+				length *= sizeof( short );
+				p16 = new short[ length ];
+				indexBuffer.GetData( offset, p16, 0, length );
+			}
 
 			while ( iterations-- > 0 )
 			{
@@ -775,14 +768,14 @@ namespace Axiom.Core
 				v = meshHeight - 1;
 				vInc = -vInc;
 
-            }
+			}
 
-            // don't forget to unlock!
-            if ( use32bitindexes )
-                indexBuffer.SetData( offset, p32, 0, length, false );
-            else
-                indexBuffer.SetData( offset, p16, 0, length, false );
-        }
+			// don't forget to unlock!
+			if ( use32bitindexes )
+				indexBuffer.SetData( offset, p32, 0, length, false );
+			else
+				indexBuffer.SetData( offset, p16, 0, length, false );
+		}
 
 		/// <summary>
 		///
