@@ -76,7 +76,7 @@ namespace Axiom.Core
 		}
 
 
-		public void Define( Array controlPointArray, VertexDeclaration declaration,
+		public void Define( byte[] controlPointArray, VertexDeclaration declaration,
 			int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
 							BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
 		{
@@ -90,8 +90,7 @@ namespace Axiom.Core
 			// define the surface
 			// NB clone the declaration to make it independent
 			vertexDeclaration = (VertexDeclaration)declaration.Clone();
-			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height,
-				PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
+			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height, PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
 		}
 
 		public float Subdivision
