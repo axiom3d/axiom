@@ -434,7 +434,7 @@ namespace Axiom.Core
 			VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
 			VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
 
-			int pSrc 0;
+			int pSrc = 0;
 			int pDest;
 			int vertexSize = declaration.GetVertexSize( 0 );
 			int pSrcReal, pDestReal;
