@@ -1410,6 +1410,7 @@ it says it's incompatible with that RT" );
 		#region GetErrorDescription
 
 		/// <summary>
+        /// Returns a description of an error code.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract string GetErrorDescription( int errorNumber );
@@ -2189,9 +2190,9 @@ it says it's incompatible with that RT" );
 
 		#endregion
 
-		#region HardwareOcclusionQuery
+        #region CreateHardwareOcclusionQuery
 
-		/// <summary>
+        /// <summary>
 		/// Requests an API implementation of a hardware occlusion query used to test for the number
 		/// of fragments rendered between calls to <see cref="HardwareOcclusionQuery.Begin"/> and 
 		/// <see cref="HardwareOcclusionQuery.End"/> that pass the depth buffer test.
@@ -2299,6 +2300,7 @@ it says it's incompatible with that RT" );
 		{
 			MakeOrthoMatrix( fov, aspectRatio, near, far, out dest, false );
 		}
+
 		/// <summary>
 		/// Builds an orthographic projection matrix suitable for this render system.
 		/// </summary>
@@ -2399,7 +2401,7 @@ it says it's incompatible with that RT" );
 		/// at the origin.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,Real nearPlane, Real farPlane, out Matrix4 dest )
+		public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest )
 		{
 			MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
 		}
