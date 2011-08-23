@@ -3255,7 +3255,11 @@ it says it's incompatible with that RT" );
 			return false;
 		}
 
-		/// <summary>
+        #endregion
+
+        #region UseLights
+
+        /// <summary>
 		/// Tells the rendersystem to use the attached set of lights (and no others) 
 		/// up to the number specified (this allows the same list to be used with different
 		/// count limits).
@@ -3265,7 +3269,7 @@ it says it's incompatible with that RT" );
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void UseLights( LightList lightList, int limit );
 
-		#endregion Methods
+		#endregion
 
 		#region DestroyRenderTarget
 
