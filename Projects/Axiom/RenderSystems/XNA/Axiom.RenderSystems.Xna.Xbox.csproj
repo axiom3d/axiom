@@ -142,6 +142,7 @@
     <Compile Include="Source\XnaMaterial.cs" />
     <Compile Include="Source\XnaMaterialManager.cs" />
     <Compile Include="Source\XnaPass.cs" />
+    <None Include="Source\XnaRenderSystem.Capabilities.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />
     <Compile Include="Source\XnaRenderTexture.cs" />
     <Compile Include="Source\XnaRenderWindow.cs" />
