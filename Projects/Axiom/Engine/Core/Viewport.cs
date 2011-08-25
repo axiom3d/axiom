@@ -34,8 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
-using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -335,7 +333,7 @@ namespace Axiom.Core
 		#region IsUpdated Property
 
 		/// <summary>
-		///		Gets/Sets the IsUpdated value.
+		///	Gets/Sets the IsUpdated value.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public bool IsUpdated
@@ -452,7 +450,6 @@ namespace Axiom.Core
 
 		#endregion VisibilityMask Property
 
-
 		#region OrientationMode
 
 #if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
@@ -530,7 +527,6 @@ namespace Axiom.Core
 		}
 
 		#endregion
-
 
 		#region RenderQueueSequence Properties Property
 

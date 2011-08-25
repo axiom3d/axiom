@@ -33,12 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Graphics;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
-using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
@@ -46,7 +43,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 namespace Axiom.RenderSystems.Xna
 {
 	/// <summary>
-	/// 	Summary description for XnaHardwareBufferManager.
+	/// Summary description for XnaHardwareBufferManager.
 	/// </summary>
 	public class XnaHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
@@ -65,7 +62,7 @@ namespace Axiom.RenderSystems.Xna
 		public XnaHardwareBufferManagerBase( XFG.GraphicsDevice device )
 			: base()
 		{
-			this._device = device;
+			_device = device;
 		}
 
 		#endregion
@@ -87,7 +84,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				if ( disposeManagedResources )
 				{
-					this._device = null;
+					_device = null;
 				}
 
 				// There are no unmanaged resources to release, but
@@ -132,7 +129,7 @@ namespace Axiom.RenderSystems.Xna
 			return decl;
 		}
 
-		#endregion
+		#endregion Methods
 
 		#endregion HardwareBufferManager Implementation
 	}

@@ -345,8 +345,8 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( externalHWnd == IntPtr.Zero )
 			{
-				Width = width;
-				Height = height;
+				_width = width;
+				_height = height;
 				this.top = top;
 				this.left = left;
 
