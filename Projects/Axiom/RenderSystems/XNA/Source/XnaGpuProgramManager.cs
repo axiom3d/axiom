@@ -96,7 +96,8 @@ namespace Axiom.RenderSystems.Xna
 
 				case GpuProgramType.Fragment:
 					return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
-				default:
+				
+                default:
 					throw new NotSupportedException( "The program type is not supported." );
 			}
 		}

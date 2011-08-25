@@ -34,12 +34,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.Xna.Framework.Content;
-
+using System.IO;
 using Axiom.Core;
+using Microsoft.Xna.Framework.Content;
 
 #endregion Namespace Declarations
 
@@ -57,11 +54,12 @@ namespace Axiom.RenderSystems.Xna.Content
 		{
 		}
 
-		protected override System.IO.Stream OpenStream( string assetName )
+		protected override Stream OpenStream( string assetName )
 		{
-			if ( System.IO.Path.GetExtension( assetName ) != "xnb" )
-				assetName = System.IO.Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
-			return ResourceGroupManager.Instance.OpenResource( assetName );
+			if ( Path.GetExtension( assetName ) != ".xnb" )
+				assetName = Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
+			
+            return ResourceGroupManager.Instance.OpenResource( assetName );
 		}
 	}
 }

@@ -79,7 +79,6 @@ namespace Axiom.Core
 		/// </summary>
 		private static void _createPlane( Mesh mesh )
 		{
-
 			SubMesh sub = mesh.CreateSubMesh();
 			float[] vertices = new float[ 32 ] {
 				-100, -100, 0,	// pos

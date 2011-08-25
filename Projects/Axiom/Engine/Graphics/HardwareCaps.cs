@@ -117,6 +117,7 @@ namespace Axiom.Graphics
 			}
 		}
 		#endregion
+
 		#region TextureUnitCount Property
 
 		/// <summary>
@@ -730,7 +731,6 @@ namespace Axiom.Graphics
         }
 
 		#endregion Methods
-
 
         #region ShaderProfiles
 
