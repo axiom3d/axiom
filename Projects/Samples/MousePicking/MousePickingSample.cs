@@ -170,7 +170,7 @@ namespace Axiom.Samples.MousePicking
 
 			// create an entity to reference this mesh
 			Entity planeEntity = SceneManager.CreateEntity( "Floor", "FloorPlane" );
-			planeEntity.MaterialName = "Examples/RustySteel";
+			planeEntity.MaterialName = "Examples/Rockwall";
 			SceneManager.RootSceneNode.CreateChildSceneNode().AttachObject( planeEntity );
 
 			// create an entity to have follow the path
