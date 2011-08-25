@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="axiom.rendersystem.xna.xbox.module" />
+    <Compile Include="Source\XnaRenderSystem.Capabilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
