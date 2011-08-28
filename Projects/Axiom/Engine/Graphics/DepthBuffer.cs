@@ -225,7 +225,7 @@ namespace Axiom.Graphics
             Debug.Assert(success);
         }
 
-        protected class RenderTargetSet : HashSet<RenderTarget>
+        protected class RenderTargetSet : List<RenderTarget>
         {
         }
 
