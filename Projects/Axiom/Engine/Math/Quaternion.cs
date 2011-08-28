@@ -1019,7 +1019,7 @@ namespace Axiom.Math
 
 		#region Parse from string
 
-		public Quaternion Parse( string quat )
+		public static Quaternion Parse( string quat )
 		{
 			// the format is "Quaternion(w, x, y, z)"
 			if ( !quat.StartsWith( "Quaternion(" ) )
