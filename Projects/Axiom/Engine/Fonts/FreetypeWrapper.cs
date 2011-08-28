@@ -52,7 +52,7 @@ SOFTWARE.
 #endregion
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -1271,13 +1271,11 @@ namespace Axiom.Fonts
 		private const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 		#endregion CallingConvention CALLING_CONVENTION
 		#endregion Private Constants
-		/// <summary>
-		/// 
-		/// </summary>
-		public static Hashtable ErrorStrings;
+
+		public static Dictionary<int, string> ErrorStrings;
 		static FT()
 		{
-			ErrorStrings = new Hashtable();
+			ErrorStrings = new Dictionary<int, string>();
 			ErrorStrings[ 0x00 ] = "no error";
 
 

@@ -82,7 +82,7 @@ namespace Axiom.Graphics
         Nokia = 10,
     };
 
-    public class ShaderProfiles : HashSet<string>
+    public class ShaderProfiles : List<string>
     {
     }
 
