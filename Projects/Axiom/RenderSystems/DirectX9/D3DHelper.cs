@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
 				Driver driver = new Driver( adapterInfo.Adapter,
-                    adapterInfo.GetCaps(DeviceType.Hardware), adapterInfo.Details, adapterInfo.CurrentDisplayMode);
+					adapterInfo.GetCaps( DeviceType.Hardware ), adapterInfo.Details, adapterInfo.CurrentDisplayMode );
 
 				int lastWidth = 0, lastHeight = 0;
 				D3D.Format lastFormat = 0;
@@ -588,9 +588,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			D3D.LockFlags ret = 0;
 			if ( locking == BufferLocking.Discard )
-            {
+			{
 #if !NO_AXIOM_D3D_MANAGE_BUFFERS
-                // Only add the discard flag for dynamic usgae and default pool
+				// Only add the discard flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.Discard;
@@ -610,9 +610,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 			}
 			if ( locking == BufferLocking.NoOverwrite )
-            {
+			{
 #if !NO_AXIOM_D3D_MANAGE_BUFFERS
-                // Only add the nooverwrite flag for dynamic usgae and default pool
+				// Only add the nooverwrite flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
 					( usage & BufferUsage.Discardable ) != 0 )
 					ret |= D3D.LockFlags.NoOverwrite;
@@ -750,13 +750,13 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		/// <param name="shading"></param>
 		/// <returns></returns>
-		public static D3D.ShadeMode ConvertEnum( Shading shading )
+		public static D3D.ShadeMode ConvertEnum( ShadeOptions shading )
 		{
 			switch ( shading )
 			{
-				case Shading.Flat:
+				case ShadeOptions.Flat:
 					return D3D.ShadeMode.Flat;
-				case Shading.Gouraud:
+				case ShadeOptions.Gouraud:
 					return D3D.ShadeMode.Gouraud;
 				//case Shading.Phong:
 				//    return D3D.ShadeMode.Phong;
@@ -769,14 +769,14 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		/// <param name="shading"></param>
 		/// <returns></returns>
-		public static Shading ConvertEnum( D3D.ShadeMode shading )
+		public static ShadeOptions ConvertEnum( D3D.ShadeMode shading )
 		{
 			switch ( shading )
 			{
 				case D3D.ShadeMode.Flat:
-					return Shading.Flat;
+					return ShadeOptions.Flat;
 				case D3D.ShadeMode.Gouraud:
-					return Shading.Gouraud;
+					return ShadeOptions.Gouraud;
 				//case D3D.ShadeMode.Phong:
 				//    return Shading.Phong;
 			}
@@ -1034,122 +1034,122 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-	    public static D3D.BlendOperation ConvertEnum( SceneBlendOperation op )
-	    {
-            switch (op)
-            {
-                case SceneBlendOperation.Add:
-                    return D3D.BlendOperation.Add;
-                case SceneBlendOperation.Max:
-                    return D3D.BlendOperation.Maximum;
-                case SceneBlendOperation.Min:
-                    return D3D.BlendOperation.Minimum;
-                case SceneBlendOperation.ReverseSubtract:
-                    return D3D.BlendOperation.ReverseSubtract;
-                case SceneBlendOperation.Subtract:
-                    return D3D.BlendOperation.Subtract;
-                default:
-                    throw new NotImplementedException();
-            }
-	    }
+		public static D3D.BlendOperation ConvertEnum( SceneBlendOperation op )
+		{
+			switch ( op )
+			{
+				case SceneBlendOperation.Add:
+					return D3D.BlendOperation.Add;
+				case SceneBlendOperation.Max:
+					return D3D.BlendOperation.Maximum;
+				case SceneBlendOperation.Min:
+					return D3D.BlendOperation.Minimum;
+				case SceneBlendOperation.ReverseSubtract:
+					return D3D.BlendOperation.ReverseSubtract;
+				case SceneBlendOperation.Subtract:
+					return D3D.BlendOperation.Subtract;
+				default:
+					throw new NotImplementedException();
+			}
+		}
 
-        public static D3D.FillMode ConvertEnum(PolygonMode mode)
-        {
-            switch (mode)
-            {
-                case PolygonMode.Points:
-                    return D3D.FillMode.Point;
-                case PolygonMode.Wireframe:
-                    return D3D.FillMode.Wireframe;
-                case PolygonMode.Solid:
-                    return D3D.FillMode.Solid;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
+		public static D3D.FillMode ConvertEnum( PolygonMode mode )
+		{
+			switch ( mode )
+			{
+				case PolygonMode.Points:
+					return D3D.FillMode.Point;
+				case PolygonMode.Wireframe:
+					return D3D.FillMode.Wireframe;
+				case PolygonMode.Solid:
+					return D3D.FillMode.Solid;
+				default:
+					throw new NotImplementedException();
+			}
+		}
 
-        public static D3D.SamplerState ConvertEnum(FilterType type)
-	    {
-            switch (type)
-            {
-                case FilterType.Min:
-                    return D3D.SamplerState.MinFilter;
-                case FilterType.Mag:
-                    return D3D.SamplerState.MagFilter;
-                case FilterType.Mip:
-                    return D3D.SamplerState.MipFilter;
-                default:
-                    throw new NotImplementedException();
-            }
-	    }
+		public static D3D.SamplerState ConvertEnum( FilterType type )
+		{
+			switch ( type )
+			{
+				case FilterType.Min:
+					return D3D.SamplerState.MinFilter;
+				case FilterType.Mag:
+					return D3D.SamplerState.MagFilter;
+				case FilterType.Mip:
+					return D3D.SamplerState.MipFilter;
+				default:
+					throw new NotImplementedException();
+			}
+		}
 
-        public static D3D.ShadeMode ConvertEnum(ShadeOptions opt)
-	    {
-            switch (opt)
-            {
-                case ShadeOptions.Flat:
-                    return D3D.ShadeMode.Flat;
-                case ShadeOptions.Gouraud:
-                    return D3D.ShadeMode.Gouraud;
-                default:
-                    throw new NotImplementedException();
-            }
-	    }
+		public static D3D.ShadeMode ConvertEnum( ShadeOptions opt )
+		{
+			switch ( opt )
+			{
+				case ShadeOptions.Flat:
+					return D3D.ShadeMode.Flat;
+				case ShadeOptions.Gouraud:
+					return D3D.ShadeMode.Gouraud;
+				default:
+					throw new NotImplementedException();
+			}
+		}
 
-        public static TextureOperation ConvertEnum(LayerBlendOperationEx lbo, SlimDX.Direct3D9.Capabilities devCaps)
-	    {
-            switch (lbo)
-            {
-                case LayerBlendOperationEx.Source1:
-                    return TextureOperation.SelectArg1;
-                case LayerBlendOperationEx.Source2:
-                    return TextureOperation.SelectArg2;
-                case LayerBlendOperationEx.Modulate:
-                    return TextureOperation.Modulate;
-                case LayerBlendOperationEx.ModulateX2:
-                    return TextureOperation.Modulate2X;
-                case LayerBlendOperationEx.ModulateX4:
-                    return TextureOperation.Modulate4X;
-                case LayerBlendOperationEx.Add:
-                    return TextureOperation.Add;
-                case LayerBlendOperationEx.AddSigned:
-                    return TextureOperation.AddSigned;
-                case LayerBlendOperationEx.AddSmooth:
-                    return TextureOperation.AddSmooth;
-                case LayerBlendOperationEx.Subtract:
-                    return TextureOperation.Subtract;
-                case LayerBlendOperationEx.BlendDiffuseAlpha:
-                    return TextureOperation.BlendDiffuseAlpha;
-                case LayerBlendOperationEx.BlendTextureAlpha:
-                    return TextureOperation.BlendTextureAlpha;
-                case LayerBlendOperationEx.BlendCurrentAlpha:
-                    return TextureOperation.BlendCurrentAlpha;
-                case LayerBlendOperationEx.BlendManual:
-                    return TextureOperation.BlendFactorAlpha;
-                case LayerBlendOperationEx.DotProduct:
-                    return (devCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3) != 0 ? TextureOperation.DotProduct3 : TextureOperation.Modulate;
-                case LayerBlendOperationEx.BlendDiffuseColor:
-                    return (devCaps.TextureOperationCaps & TextureOperationCaps.Lerp) != 0 ? TextureOperation.Lerp : TextureOperation.Modulate;
-            }
-            return 0;
-	    }
+		public static TextureOperation ConvertEnum( LayerBlendOperationEx lbo, SlimDX.Direct3D9.Capabilities devCaps )
+		{
+			switch ( lbo )
+			{
+				case LayerBlendOperationEx.Source1:
+					return TextureOperation.SelectArg1;
+				case LayerBlendOperationEx.Source2:
+					return TextureOperation.SelectArg2;
+				case LayerBlendOperationEx.Modulate:
+					return TextureOperation.Modulate;
+				case LayerBlendOperationEx.ModulateX2:
+					return TextureOperation.Modulate2X;
+				case LayerBlendOperationEx.ModulateX4:
+					return TextureOperation.Modulate4X;
+				case LayerBlendOperationEx.Add:
+					return TextureOperation.Add;
+				case LayerBlendOperationEx.AddSigned:
+					return TextureOperation.AddSigned;
+				case LayerBlendOperationEx.AddSmooth:
+					return TextureOperation.AddSmooth;
+				case LayerBlendOperationEx.Subtract:
+					return TextureOperation.Subtract;
+				case LayerBlendOperationEx.BlendDiffuseAlpha:
+					return TextureOperation.BlendDiffuseAlpha;
+				case LayerBlendOperationEx.BlendTextureAlpha:
+					return TextureOperation.BlendTextureAlpha;
+				case LayerBlendOperationEx.BlendCurrentAlpha:
+					return TextureOperation.BlendCurrentAlpha;
+				case LayerBlendOperationEx.BlendManual:
+					return TextureOperation.BlendFactorAlpha;
+				case LayerBlendOperationEx.DotProduct:
+					return ( devCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3 ) != 0 ? TextureOperation.DotProduct3 : TextureOperation.Modulate;
+				case LayerBlendOperationEx.BlendDiffuseColor:
+					return ( devCaps.TextureOperationCaps & TextureOperationCaps.Lerp ) != 0 ? TextureOperation.Lerp : TextureOperation.Modulate;
+			}
+			return 0;
+		}
 
-        public static TextureArgument ConvertEnum(LayerBlendSource lbs, bool perStageConstants)
-	    {
-            switch (lbs)
-            {
-                case LayerBlendSource.Current:
-                    return TextureArgument.Current;
-                case LayerBlendSource.Texture:
-                    return TextureArgument.Texture;
-                case LayerBlendSource.Diffuse:
-                    return TextureArgument.Diffuse;
-                case LayerBlendSource.Specular:
-                    return TextureArgument.Specular;
-                case LayerBlendSource.Manual:
-                    return perStageConstants ? TextureArgument.Constant : TextureArgument.TFactor;
-            }
-            return 0;
-	    }
+		public static TextureArgument ConvertEnum( LayerBlendSource lbs, bool perStageConstants )
+		{
+			switch ( lbs )
+			{
+				case LayerBlendSource.Current:
+					return TextureArgument.Current;
+				case LayerBlendSource.Texture:
+					return TextureArgument.Texture;
+				case LayerBlendSource.Diffuse:
+					return TextureArgument.Diffuse;
+				case LayerBlendSource.Specular:
+					return TextureArgument.Specular;
+				case LayerBlendSource.Manual:
+					return perStageConstants ? TextureArgument.Constant : TextureArgument.TFactor;
+			}
+			return 0;
+		}
 	}
 }
