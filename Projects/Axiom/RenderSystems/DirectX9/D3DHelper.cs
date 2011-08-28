@@ -746,25 +746,6 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///    Converts our Shading enum to the D3D ShadingMode equivalent.
-		/// </summary>
-		/// <param name="shading"></param>
-		/// <returns></returns>
-		public static D3D.ShadeMode ConvertEnum( ShadeOptions shading )
-		{
-			switch ( shading )
-			{
-				case ShadeOptions.Flat:
-					return D3D.ShadeMode.Flat;
-				case ShadeOptions.Gouraud:
-					return D3D.ShadeMode.Gouraud;
-				//case Shading.Phong:
-				//    return D3D.ShadeMode.Phong;
-			}
-
-			return 0;
-		}
-		/// <summary>
 		///    Converts the D3D ShadingMode to our Shading enum equivalent.
 		/// </summary>
 		/// <param name="shading"></param>
