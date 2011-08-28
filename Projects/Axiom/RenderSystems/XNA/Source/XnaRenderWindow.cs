@@ -34,17 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.IO;
-
-using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.Graphics.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Graphics.Collections;
 using Axiom.Media;
-
 using RenderTarget = Axiom.Graphics.RenderTarget;
-using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
@@ -177,16 +172,27 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion PresentationParameters Property
 
+        #region RequiresTextureFlipping Property
+
+        /// <summary>
+        /// Signals whether textures should be flipping before this target
+        /// is updated.  Required for render textures in some API's.
+        /// </summary>
 		public override bool RequiresTextureFlipping
 		{
-			get { throw new NotImplementedException(); }
+			get
+            {
+                return false;
+            }
 		}
 
-		#endregion Fields and Properties
+        #endregion RequiresTextureFlipping Property
 
-		#region Constructor
+        #endregion Fields and Properties
 
-		/// <summary>
+        #region Constructor
+
+        /// <summary>
 		///
 		/// </summary>
 		/// <param name="driver">The root driver</param>
@@ -610,36 +616,34 @@ namespace Axiom.RenderSystems.Xna
 				}
 			}
 		}
-		
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="attribute"></param>
-		/// <returns></returns>
-		public override object this[ string attribute ]
-		{
-			get
-			{
-				if ( string.Equals(attribute, "XNABACKBUFFER", StringComparison.CurrentCultureIgnoreCase ))
-				{
-						return this._renderSurface;
-				}
-				if ( string.Equals(attribute, "XNADEVICE", StringComparison.CurrentCultureIgnoreCase ))
-				{
-						return Driver.XnaDevice;
-				}
-				if ( string.Equals(attribute, "WINDOW", StringComparison.CurrentCultureIgnoreCase ))
-				{
-						return this._windowHandle;
-				}
-				if ( string.Equals(attribute, "XNAZBUFFER", StringComparison.CurrentCultureIgnoreCase ))
-				{
-						return this._renderSurface.DepthStencilFormat;
-				}
-				return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
-			}
-		}
+        public override object this[ string attribute ]
+        {
+            get
+            {
+                if ( string.Equals( attribute, "XNABACKBUFFER", StringComparison.CurrentCultureIgnoreCase ) )
+                {
+                    return _renderSurface;
+                }
+
+                if ( string.Equals( attribute, "XNADEVICE", StringComparison.CurrentCultureIgnoreCase ) )
+                {
+                    return Driver.XnaDevice;
+                }
+
+                if ( string.Equals( attribute, "WINDOW", StringComparison.CurrentCultureIgnoreCase ) )
+                {
+                    return _windowHandle;
+                }
+
+                if ( string.Equals( attribute, "XNAZBUFFER", StringComparison.CurrentCultureIgnoreCase ) )
+                {
+                    return _renderSurface.DepthStencilFormat;
+                }
+
+                return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
+            }
+        }
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -649,12 +653,12 @@ namespace Axiom.RenderSystems.Xna
 				{
 					// Dispose managed resources.
 					// dispose of our back buffer if need be
-					if ( this._renderSurface != null )
+					if ( _renderSurface != null )
 					{
-						if ( !this._renderSurface.IsDisposed )
-							this._renderSurface.Dispose();
+						if ( !_renderSurface.IsDisposed )
+							_renderSurface.Dispose();
 
-						this._renderSurface = null;
+						_renderSurface = null;
 					}
 
 					// dispose of our stencil buffer if need be

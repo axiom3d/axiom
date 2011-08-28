@@ -669,6 +669,9 @@ namespace Axiom.RenderSystems.Xna
 		{
 			set
 			{
+                if ( value == null )
+                    return;
+
 				if ( activeViewport != value || value.IsUpdated )
 				{
 					// store this viewport and it's target
@@ -1295,7 +1298,8 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		protected override void SetClipPlanesImpl( PlaneList clipPlanes )
 		{
-			throw new NotImplementedException();
+            //TODO
+			//throw new NotImplementedException();
 		}
 
 		#endregion
@@ -1957,7 +1961,7 @@ namespace Axiom.RenderSystems.Xna
 													"You cannot create a new window with this name.", name ) );
 			}
 
-			RenderWindow window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? _device : null );
+			var window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? _device : null );
 
 			// create the window
 			window.Create( name, width, height, isFullScreen, miscParams );
@@ -1982,22 +1986,7 @@ namespace Axiom.RenderSystems.Xna
 				_gpuProgramMgr = new XnaGpuProgramManager( _device );
 
 				// Initialize the capabilities structures
-				if ( realCapabilities == null )
-				{
-					realCapabilities = _checkHardwareCapabilities( XFG.GraphicsProfile.HiDef );
-
-					// create & register HLSL factory
-					realCapabilities.AddShaderProfile( "hlsl" );
-
-					// if we are using custom capabilities, then 
-					// mCurrentCapabilities has already been loaded
-					if ( !useCustomCapabilities )
-						currentCapabilities = realCapabilities;
-
-					FireEvent( "RenderSystemCapabilitiesCreated" );
-
-					InitializeFromRenderSystemCapabilities( currentCapabilities, window );
-				}
+                _checkHardwareCapabilities( window );
 			}
 			else
 			{
@@ -2902,7 +2891,8 @@ namespace Axiom.RenderSystems.Xna
 		/// <note>Only does something if render system has capability RSC_MIPMAP_LOD_BIAS.</note>
 		public override void SetTextureMipmapBias( int unit, float bias )
 		{
-			throw new NotImplementedException();
+            //TODO
+			//throw new NotImplementedException();
 		}
 
 		#endregion
