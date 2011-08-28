@@ -162,11 +162,11 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		private HLSLIncludeHandler includeHandler;
 
-	    protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
+		protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
 
-        //protected int parametersMapSizeAsBuffer;
+		//protected int parametersMapSizeAsBuffer;
 
-	    #endregion Fields
+		#endregion Fields
 
 		#region Construction and Destruction
 
@@ -183,7 +183,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			includeHandler = new HLSLIncludeHandler( this );
-		    columnMajorMatrices = true;
+			columnMajorMatrices = true;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -209,13 +209,13 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		#region GpuProgram Members
 
-        #region CreateLowLevelImpl
+		#region CreateLowLevelImpl
 
-        /// <summary>
+		/// <summary>
 		///     Creates a low level implementation based on the results of the
 		///     high level shader compilation.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected override void CreateLowLevelImpl()
 		{
 			if ( !HasCompileError )
@@ -228,59 +228,59 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 		}
 
-        #endregion
+		#endregion
 
-        #region BuildConstantDefinitions
+		#region BuildConstantDefinitions
 
-        [OgreVersion(1, 7, 2790)]
-	    protected override void BuildConstantDefinitions()
-	    {
-            constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
-            constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
+		[OgreVersion( 1, 7, 2790 )]
+		protected override void BuildConstantDefinitions()
+		{
+			constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
+			constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
 
-	        foreach ( var iter in parametersMap )
-	        {
-	            var paramName = iter.Key;
-	            var def = iter.Value;
-	            constantDefs.Map.Add( iter.Key, iter.Value );
+			foreach ( var iter in parametersMap )
+			{
+				var paramName = iter.Key;
+				var def = iter.Value;
+				constantDefs.Map.Add( iter.Key, iter.Value );
 
-	            // Record logical / physical mapping
-	            if ( def.IsFloat )
-	            {
-                    lock (floatLogicalToPhysical.Mutex)
-                    {
-                        if (!floatLogicalToPhysical.Map.ContainsKey(def.LogicalIndex))
-                        floatLogicalToPhysical.Map.Add( def.LogicalIndex,
-                                                        new GpuProgramParameters.GpuLogicalIndexUse(
-                                                            def.PhysicalIndex,
-                                                            def.ArraySize*def.ElementSize,
-                                                            GpuProgramParameters.GpuParamVariability.Global ) );
-                        floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-                    }
-	            }
-	            else
-	            {
-                    lock (intLogicalToPhysical.Mutex)
-                    {
-                        if (!intLogicalToPhysical.Map.ContainsKey(def.LogicalIndex))
-                        intLogicalToPhysical.Map.Add( def.LogicalIndex,
-                                                      new GpuProgramParameters.GpuLogicalIndexUse(
-                                                          def.PhysicalIndex,
-                                                          def.ArraySize*def.ElementSize,
-                                                          GpuProgramParameters.GpuParamVariability.Global ) );
+				// Record logical / physical mapping
+				if ( def.IsFloat )
+				{
+					lock ( floatLogicalToPhysical.Mutex )
+					{
+						if ( !floatLogicalToPhysical.Map.ContainsKey( def.LogicalIndex ) )
+							floatLogicalToPhysical.Map.Add( def.LogicalIndex,
+															new GpuProgramParameters.GpuLogicalIndexUse(
+																def.PhysicalIndex,
+																def.ArraySize * def.ElementSize,
+																GpuProgramParameters.GpuParamVariability.Global ) );
+						floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+					}
+				}
+				else
+				{
+					lock ( intLogicalToPhysical.Mutex )
+					{
+						if ( !intLogicalToPhysical.Map.ContainsKey( def.LogicalIndex ) )
+							intLogicalToPhysical.Map.Add( def.LogicalIndex,
+														  new GpuProgramParameters.GpuLogicalIndexUse(
+															  def.PhysicalIndex,
+															  def.ArraySize * def.ElementSize,
+															  GpuProgramParameters.GpuParamVariability.Global ) );
 
-                        intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-                    }
-	            }
+						intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+					}
+				}
 
-	            // Deal with array indexing
-	            constantDefs.GenerateConstantDefinitionArrayEntries( paramName, def );
-	        }
-	    }
+				// Deal with array indexing
+				constantDefs.GenerateConstantDefinitionArrayEntries( paramName, def );
+			}
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
+		/// <summary>
 		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
@@ -299,156 +299,156 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			return parms;
 		}
 
-        #region LoadFromSource
+		#region LoadFromSource
 
-        /// <summary>
+		/// <summary>
 		///     Compiles the high level shader source to low level microcode.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected override void LoadFromSource()
 		{
-            /*
-            if (GpuProgramManager.Instance.IsMicrocodeAvailableInCache("D3D9_HLSL_" + _name))
-            {
-                GetMicrocodeFromCache();
-            }
-            else
-             */
-            {
-                CompileMicrocode();
-            }
+			/*
+			if (GpuProgramManager.Instance.IsMicrocodeAvailableInCache("D3D9_HLSL_" + _name))
+			{
+				GetMicrocodeFromCache();
+			}
+			else
+			 */
+			{
+				CompileMicrocode();
+			}
 		}
 
-        #endregion
+		#endregion
 
-        private void CompileMicrocode()
-	    {
-            ConstantTable constantTable = null;
-            string errors = null;
-            var defines = buildDefines(preprocessorDefines);
+		private void CompileMicrocode()
+		{
+			ConstantTable constantTable = null;
+			string errors = null;
+			var defines = buildDefines( preprocessorDefines );
 
-            var compileFlags = ShaderFlags.None;
-            var parseFlags = ShaderFlags.None;
+			var compileFlags = ShaderFlags.None;
+			var parseFlags = ShaderFlags.None;
 
-            parseFlags |= columnMajorMatrices ? ShaderFlags.PackMatrixColumnMajor : ShaderFlags.PackMatrixRowMajor;
+			parseFlags |= columnMajorMatrices ? ShaderFlags.PackMatrixColumnMajor : ShaderFlags.PackMatrixRowMajor;
 
 #if DEBUG
-            compileFlags |= ShaderFlags.Debug;
-            parseFlags |= ShaderFlags.Debug;
+			compileFlags |= ShaderFlags.Debug;
+			parseFlags |= ShaderFlags.Debug;
 #endif
-            switch (optimizationLevel)
-            {
-                case OptimizationLevel.Default:
-                    compileFlags |= ShaderFlags.OptimizationLevel1;
-                    parseFlags |= ShaderFlags.OptimizationLevel1;
-                    break;
-                case OptimizationLevel.None:
-                    compileFlags |= ShaderFlags.SkipOptimization;
-                    parseFlags |= ShaderFlags.SkipOptimization;
-                    break;
-                case OptimizationLevel.LevelZero:
-                    compileFlags |= ShaderFlags.OptimizationLevel0;
-                    parseFlags |= ShaderFlags.OptimizationLevel0;
-                    break;
-                case OptimizationLevel.LevelOne:
-                    compileFlags |= ShaderFlags.OptimizationLevel1;
-                    parseFlags |= ShaderFlags.OptimizationLevel1;
-                    break;
-                case OptimizationLevel.LevelTwo:
-                    compileFlags |= ShaderFlags.OptimizationLevel2;
-                    parseFlags |= ShaderFlags.OptimizationLevel2;
-                    break;
-                case OptimizationLevel.LevelThree:
-                    compileFlags |= ShaderFlags.OptimizationLevel3;
-                    parseFlags |= ShaderFlags.OptimizationLevel3;
-                    break;
-            }
+			switch ( optimizationLevel )
+			{
+				case OptimizationLevel.Default:
+					compileFlags |= ShaderFlags.OptimizationLevel1;
+					parseFlags |= ShaderFlags.OptimizationLevel1;
+					break;
+				case OptimizationLevel.None:
+					compileFlags |= ShaderFlags.SkipOptimization;
+					parseFlags |= ShaderFlags.SkipOptimization;
+					break;
+				case OptimizationLevel.LevelZero:
+					compileFlags |= ShaderFlags.OptimizationLevel0;
+					parseFlags |= ShaderFlags.OptimizationLevel0;
+					break;
+				case OptimizationLevel.LevelOne:
+					compileFlags |= ShaderFlags.OptimizationLevel1;
+					parseFlags |= ShaderFlags.OptimizationLevel1;
+					break;
+				case OptimizationLevel.LevelTwo:
+					compileFlags |= ShaderFlags.OptimizationLevel2;
+					parseFlags |= ShaderFlags.OptimizationLevel2;
+					break;
+				case OptimizationLevel.LevelThree:
+					compileFlags |= ShaderFlags.OptimizationLevel3;
+					parseFlags |= ShaderFlags.OptimizationLevel3;
+					break;
+			}
 
-            // compile the high level shader to low level microcode
-            // note, we need to pack matrices in row-major format for HLSL
-            var effectCompiler = new EffectCompiler(Source, defines.ToArray(), includeHandler, parseFlags);
-	       
-
-            try
-            {
-                microcode = effectCompiler.CompileShader(new EffectHandle(entry),
-                                                          target,
-                                                          compileFlags,
-                                                          out errors,
-                                                          out constantTable);
-            }
-            catch (Direct3D9Exception ex)
-            {
-                throw new AxiomException("HLSL: Unable to compile high level shader {0}:\n{1}", ex, Name);
-            }
-            finally
-            {
-                // check for errors
-                if ( !String.IsNullOrEmpty( errors ) )
-                {
-                    if ( microcode != null )
-                    {
-                        if ( LogManager.Instance != null )
-                        {
-                            LogManager.Instance.Write( "HLSL: Warnings while compiling high level shader {0}:\n{1}",
-                                                       Name, errors );
-                        }
-                    }
-                    else
-                    {
-                        throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
-                    }
-                }
+			// compile the high level shader to low level microcode
+			// note, we need to pack matrices in row-major format for HLSL
+			var effectCompiler = new EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
 
 
-                // Get contents of the constant table
-                var desc = constantTable.Description;
-                CreateParameterMappingStructures( true );
+			try
+			{
+				microcode = effectCompiler.CompileShader( new EffectHandle( entry ),
+														  target,
+														  compileFlags,
+														  out errors,
+														  out constantTable );
+			}
+			catch ( Direct3D9Exception ex )
+			{
+				throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", ex, Name );
+			}
+			finally
+			{
+				// check for errors
+				if ( !String.IsNullOrEmpty( errors ) )
+				{
+					if ( microcode != null )
+					{
+						if ( LogManager.Instance != null )
+						{
+							LogManager.Instance.Write( "HLSL: Warnings while compiling high level shader {0}:\n{1}",
+													   Name, errors );
+						}
+					}
+					else
+					{
+						throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
+					}
+				}
 
 
-                // Iterate over the constants
-                for ( var i = 0; i < desc.Constants; ++i )
-                {
-                    // Recursively descend through the structure levels
-                    ProcessParamElement( constantTable, null, "", i );
-                }
+				// Get contents of the constant table
+				var desc = constantTable.Description;
+				CreateParameterMappingStructures( true );
 
-                constantTable.Dispose();
 
-                /*
-                if ( GpuProgramManager.Instance.SaveMicrocodesToCache )
-                {
-                    AddMicrocodeToCache();
-                }*/
+				// Iterate over the constants
+				for ( var i = 0; i < desc.Constants; ++i )
+				{
+					// Recursively descend through the structure levels
+					ProcessParamElement( constantTable, null, "", i );
+				}
 
-                effectCompiler.Dispose();
-            }
+				constantTable.Dispose();
 
-	    }
+				/*
+				if ( GpuProgramManager.Instance.SaveMicrocodesToCache )
+				{
+					AddMicrocodeToCache();
+				}*/
 
-        #region UnloadHighLevelImpl
+				effectCompiler.Dispose();
+			}
 
-        /// <summary>
+		}
+
+		#region UnloadHighLevelImpl
+
+		/// <summary>
 		///     Unloads data that is no longer needed.
 		/// </summary>
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected override void UnloadHighLevelImpl()
 		{
 			if ( microcode != null )
 				microcode.Dispose();
-            microcode = null;
+			microcode = null;
 		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
+		/// <summary>
 		/// Returns whether this program can be supported on the current renderer and hardware.
 		/// </summary>
 		public override bool IsSupported
 		{
 			get
 			{
-                if (HasCompileError || !IsRequiredCapabilitiesSupported())
+				if ( HasCompileError || !IsRequiredCapabilitiesSupported() )
 				{
 					return false;
 				}
@@ -489,9 +489,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		#region Methods
 
-        #region ProcessParamElement
+		#region ProcessParamElement
 
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected void ProcessParamElement( ConstantTable constantTable, EffectHandle parent, string prefix, int index )
 		{
 			var constant = constantTable.GetConstant( parent, index );
@@ -508,207 +508,207 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				paramName = paramName.Remove( 0, 1 );
 			}
 
-            // Also trim the '[0]' suffix if it exists, we will add our own indexing later
-            if (paramName.EndsWith("[0]"))
-            {
-                paramName.Remove( paramName.Length - 3 );
-            }
+			// Also trim the '[0]' suffix if it exists, we will add our own indexing later
+			if ( paramName.EndsWith( "[0]" ) )
+			{
+				paramName.Remove( paramName.Length - 3 );
+			}
 
 
-            if (desc.Class == ParameterClass.Struct)
-            {
-                // work out a new prefix for the nextest members if its an array, we need the index
-                 prefix = prefix + paramName + ".";
-                // Cascade into struct
-                for (var i = 0; i < desc.StructMembers; ++i)
-                {
-                    ProcessParamElement(constantTable, constant, prefix, i);
-                }
-            }
-            else
-            {
-                // process params
-                if ( desc.Type == ParameterType.Float ||
-                     desc.Type == ParameterType.Int ||
-                     desc.Type == ParameterType.Bool )
-                {
+			if ( desc.Class == ParameterClass.Struct )
+			{
+				// work out a new prefix for the nextest members if its an array, we need the index
+				prefix = prefix + paramName + ".";
+				// Cascade into struct
+				for ( var i = 0; i < desc.StructMembers; ++i )
+				{
+					ProcessParamElement( constantTable, constant, prefix, i );
+				}
+			}
+			else
+			{
+				// process params
+				if ( desc.Type == ParameterType.Float ||
+					 desc.Type == ParameterType.Int ||
+					 desc.Type == ParameterType.Bool )
+				{
 
-                    var paramIndex = desc.RegisterIndex;
-                    var name = prefix + paramName;
+					var paramIndex = desc.RegisterIndex;
+					var name = prefix + paramName;
 
-                    var def = new GpuProgramParameters.GpuConstantDefinition();
-                    def.LogicalIndex = paramIndex;
-                    // populate type, array size & element size
-                    PopulateDef( desc, def );
-                    if ( def.IsFloat )
-                    {
-                        def.PhysicalIndex = floatLogicalToPhysical.BufferSize;
-                        lock ( floatLogicalToPhysical.Mutex )
-                        {
-                            floatLogicalToPhysical.Map.Add( paramIndex,
-                                                            new GpuProgramParameters.GpuLogicalIndexUse(
-                                                                def.PhysicalIndex,
-                                                                def.ArraySize*def.ElementSize,
-                                                                GpuProgramParameters.GpuParamVariability.Global ) );
+					var def = new GpuProgramParameters.GpuConstantDefinition();
+					def.LogicalIndex = paramIndex;
+					// populate type, array size & element size
+					PopulateDef( desc, def );
+					if ( def.IsFloat )
+					{
+						def.PhysicalIndex = floatLogicalToPhysical.BufferSize;
+						lock ( floatLogicalToPhysical.Mutex )
+						{
+							floatLogicalToPhysical.Map.Add( paramIndex,
+															new GpuProgramParameters.GpuLogicalIndexUse(
+																def.PhysicalIndex,
+																def.ArraySize * def.ElementSize,
+																GpuProgramParameters.GpuParamVariability.Global ) );
 
 
-                            floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-                        }
-                    }
-                    else
-                    {
-                        def.PhysicalIndex = intLogicalToPhysical.BufferSize;
-                        lock ( intLogicalToPhysical.Mutex )
-                        {
-                            intLogicalToPhysical.Map.Add( paramIndex,
-                                                          new GpuProgramParameters.GpuLogicalIndexUse(
-                                                              def.PhysicalIndex,
-                                                              def.ArraySize*def.ElementSize,
-                                                              GpuProgramParameters.GpuParamVariability.Global ) );
-                            intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-                        }
-                    }
+							floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+						}
+					}
+					else
+					{
+						def.PhysicalIndex = intLogicalToPhysical.BufferSize;
+						lock ( intLogicalToPhysical.Mutex )
+						{
+							intLogicalToPhysical.Map.Add( paramIndex,
+														  new GpuProgramParameters.GpuLogicalIndexUse(
+															  def.PhysicalIndex,
+															  def.ArraySize * def.ElementSize,
+															  GpuProgramParameters.GpuParamVariability.Global ) );
+							intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+						}
+					}
 
-                    if ( !parametersMap.ContainsKey( paramName ) )
-                    {
-                        parametersMap.Add( paramName, def );
-                        /*
-                        parametersMapSizeAsBuffer += sizeof ( int );
-                        parametersMapSizeAsBuffer += paramName.Length;
-                        parametersMapSizeAsBuffer += Marshal.SizeOf( def );
-                         */
-                    }
-                }
-            }
+					if ( !parametersMap.ContainsKey( paramName ) )
+					{
+						parametersMap.Add( paramName, def );
+						/*
+						parametersMapSizeAsBuffer += sizeof ( int );
+						parametersMapSizeAsBuffer += paramName.Length;
+						parametersMapSizeAsBuffer += Marshal.SizeOf( def );
+						 */
+					}
+				}
+			}
 
 		}
 
-        #endregion
+		#endregion
 
-        #region PopulateDef
+		#region PopulateDef
 
-        [OgreVersion(1, 7, 2790)]
-        protected void PopulateDef( ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
-	    {
-	        def.ArraySize = d3DDesc.Elements;
-		    switch(d3DDesc.Type)
-		    {
-		    case ParameterType.Int:
-			    switch(d3DDesc.Columns)
-			    {
-			        case 1:
-			            def.ConstantType = GpuProgramParameters.GpuConstantType.Int1;
-			            break;
-			        case 2:
-			            def.ConstantType = GpuProgramParameters.GpuConstantType.Int2;
-			            break;
-			        case 3:
-			            def.ConstantType = GpuProgramParameters.GpuConstantType.Int3;
-			            break;
-			        case 4:
-			            def.ConstantType = GpuProgramParameters.GpuConstantType.Int4;
-			            break;
-			    } // columns
-		            break;
-		    case ParameterType.Float:
-			    switch(d3DDesc.Class)
-			    {
-			    case ParameterClass.MatrixColumns:
-                    case ParameterClass.MatrixRows:
-				    {
-					    var firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
-					    var secondDim = d3DDesc.Class == ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
-					    
-                        switch(firstDim)
-					    {
-					    case 2:
-						    switch(secondDim)
-						    {
-						    case 2:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X2;
-							    def.ElementSize = 8; // HLSL always packs
-							    break;
-						    case 3:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X3;
-							    def.ElementSize = 8; // HLSL always packs
-							    break;
-						    case 4:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X4;
-							    def.ElementSize = 8; 
-							    break;
-						    } // columns
-						    break;
-					    case 3:
-						    switch(secondDim)
-						    {
-						    case 2:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X2;
-							    def.ElementSize = 12; // HLSL always packs
-							    break;
-						    case 3:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X3;
-							    def.ElementSize = 12; // HLSL always packs
-							    break;
-						    case 4:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X4;
-							    def.ElementSize = 12; 
-							    break;
-						    } // columns
-						    break;
-					    case 4:
-						    switch(secondDim)
-						    {
-						    case 2:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X2;
-							    def.ElementSize = 16; // HLSL always packs
-							    break;
-						    case 3:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X3;
-							    def.ElementSize = 16; // HLSL always packs
-							    break;
-						    case 4:
-							    def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X4;
-							    def.ElementSize = 16; 
-							    break;
-						    } // secondDim
-						    break;
+		[OgreVersion( 1, 7, 2790 )]
+		protected void PopulateDef( ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
+		{
+			def.ArraySize = d3DDesc.Elements;
+			switch ( d3DDesc.Type )
+			{
+				case ParameterType.Int:
+					switch ( d3DDesc.Columns )
+					{
+						case 1:
+							def.ConstantType = GpuProgramParameters.GpuConstantType.Int1;
+							break;
+						case 2:
+							def.ConstantType = GpuProgramParameters.GpuConstantType.Int2;
+							break;
+						case 3:
+							def.ConstantType = GpuProgramParameters.GpuConstantType.Int3;
+							break;
+						case 4:
+							def.ConstantType = GpuProgramParameters.GpuConstantType.Int4;
+							break;
+					} // columns
+					break;
+				case ParameterType.Float:
+					switch ( d3DDesc.Class )
+					{
+						case ParameterClass.MatrixColumns:
+						case ParameterClass.MatrixRows:
+							{
+								var firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
+								var secondDim = d3DDesc.Class == ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
 
-					    } // firstDim
-				    }
-				    break;
-			    case ParameterClass.Scalar:
-			    case ParameterClass.Vector:
-				    switch(d3DDesc.Columns)
-				    {
-				    case 1:
-					    def.ConstantType = GpuProgramParameters.GpuConstantType.Float1;
-					    break;
-				    case 2:
-					    def.ConstantType = GpuProgramParameters.GpuConstantType.Float2;
-					    break;
-				    case 3:
-					    def.ConstantType = GpuProgramParameters.GpuConstantType.Float3;
-					    break;
-				    case 4:
-					    def.ConstantType = GpuProgramParameters.GpuConstantType.Float4;
-					    break;
-				    } // columns
-				    break;
-			    }
-		            break;
-		    default:
-			    // not mapping samplers, don't need to take the space 
-			    break;
-		    };
+								switch ( firstDim )
+								{
+									case 2:
+										switch ( secondDim )
+										{
+											case 2:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X2;
+												def.ElementSize = 8; // HLSL always packs
+												break;
+											case 3:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X3;
+												def.ElementSize = 8; // HLSL always packs
+												break;
+											case 4:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X4;
+												def.ElementSize = 8;
+												break;
+										} // columns
+										break;
+									case 3:
+										switch ( secondDim )
+										{
+											case 2:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X2;
+												def.ElementSize = 12; // HLSL always packs
+												break;
+											case 3:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X3;
+												def.ElementSize = 12; // HLSL always packs
+												break;
+											case 4:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X4;
+												def.ElementSize = 12;
+												break;
+										} // columns
+										break;
+									case 4:
+										switch ( secondDim )
+										{
+											case 2:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X2;
+												def.ElementSize = 16; // HLSL always packs
+												break;
+											case 3:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X3;
+												def.ElementSize = 16; // HLSL always packs
+												break;
+											case 4:
+												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X4;
+												def.ElementSize = 16;
+												break;
+										} // secondDim
+										break;
 
-		    // D3D9 pads to 4 elements
-            def.ElementSize = GpuProgramParameters.GpuConstantDefinition.GetElementSize(def.ConstantType, true);
+								} // firstDim
+							}
+							break;
+						case ParameterClass.Scalar:
+						case ParameterClass.Vector:
+							switch ( d3DDesc.Columns )
+							{
+								case 1:
+									def.ConstantType = GpuProgramParameters.GpuConstantType.Float1;
+									break;
+								case 2:
+									def.ConstantType = GpuProgramParameters.GpuConstantType.Float2;
+									break;
+								case 3:
+									def.ConstantType = GpuProgramParameters.GpuConstantType.Float3;
+									break;
+								case 4:
+									def.ConstantType = GpuProgramParameters.GpuConstantType.Float4;
+									break;
+							} // columns
+							break;
+					}
+					break;
+				default:
+					// not mapping samplers, don't need to take the space 
+					break;
+			};
 
-	    }
+			// D3D9 pads to 4 elements
+			def.ElementSize = GpuProgramParameters.GpuConstantDefinition.GetElementSize( def.ConstantType, true );
 
-        #endregion
+		}
 
-        private List<D3D.Macro> buildDefines( string defines )
+		#endregion
+
+		private List<D3D.Macro> buildDefines( string defines )
 		{
 			List<D3D.Macro> definesList = new List<D3D.Macro>();
 			D3D.Macro macro;
