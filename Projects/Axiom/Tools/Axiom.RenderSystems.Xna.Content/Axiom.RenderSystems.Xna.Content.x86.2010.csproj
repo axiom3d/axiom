@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.RenderSystems.Xna.Content</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.Xna.Content</AssemblyName>
-    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
+    <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaCrossPlatformGroupID>f95b7adf-1a1c-4092-8e5d-b3ff12a5f548</XnaCrossPlatformGroupID>
     <FileUpgradeFlags>
