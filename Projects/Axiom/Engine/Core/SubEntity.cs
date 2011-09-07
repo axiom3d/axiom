@@ -719,7 +719,7 @@ namespace Axiom.Core
 				// set the parametric morph value
 				gpuParams.SetConstant( entry.PhysicalIndex, val );
 			}
-			else if ( customParams[ entry.Data ] != null )
+			else if ( customParams.Count > entry.Data && customParams[ entry.Data ] != null )
 			{
 				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
