@@ -1398,7 +1398,6 @@ namespace Axiom.Graphics
 				( (Technique)this.SupportedTechniques[ i ] ).Unload();
 			}
 
-            this.RemoveAllTechniques();
 		}
 
 		/// <summary>
