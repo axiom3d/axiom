@@ -40,7 +40,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Collections.ObjectModel;
-using System.Reflection.Emit;
 
 #endregion Namespace Declarations
 
