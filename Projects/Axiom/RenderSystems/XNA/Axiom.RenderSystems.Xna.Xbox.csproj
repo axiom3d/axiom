@@ -142,7 +142,7 @@
     <Compile Include="Source\XnaMaterial.cs" />
     <Compile Include="Source\XnaMaterialManager.cs" />
     <Compile Include="Source\XnaPass.cs" />
-    <None Include="Source\XnaRenderSystem.Capabilities.cs" />
+    <Compile Include="Source\XnaRenderSystem.Capabilities.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />
     <Compile Include="Source\XnaRenderTexture.cs" />
     <Compile Include="Source\XnaRenderWindow.cs" />
@@ -153,12 +153,6 @@
     <Compile Include="Source\XnaTextureStageDescription.cs" />
     <Compile Include="Source\XnaTextureType.cs" />
     <Compile Include="Source\XnaVertexDeclaration.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Xbox.csproj">
-      <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
-      <Name>Axiom.Xna.Xbox</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="axiom.rendersystem.xna.xbox.module" />
@@ -184,6 +178,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Axiom.Xna.Xbox.csproj">
+      <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
+      <Name>Axiom.Xna.Xbox</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

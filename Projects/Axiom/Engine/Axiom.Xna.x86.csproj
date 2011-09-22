@@ -201,6 +201,7 @@
     <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\ITimer.cs" />
     <Compile Include="Core\Light.cs" />
+    <Compile Include="Core\List~1Extensions.cs" />
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\Log.cs" />
