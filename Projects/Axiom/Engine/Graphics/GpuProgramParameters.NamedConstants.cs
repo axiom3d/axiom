@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.IO;
 using Axiom.Core;
@@ -81,15 +82,17 @@ namespace Axiom.Graphics
 		    {
                 if (throwExceptionIfNotFound)
                     throw new AxiomException( "Named constants have not been initialized, perhaps a compile error." );
-			    return null;
+                Debug.WriteLine("Named constants have not been initialized, perhaps a compile error.");
+                return null;
 		    }
 
             GpuConstantDefinition def;
             if (!_namedConstants.Map.TryGetValue(name, out def))
 		    {
-			    if (throwExceptionIfNotFound)
-			        throw new AxiomException( "Parameter called " + name + " does not exist. " );
-			    return null;
+                if (throwExceptionIfNotFound)
+                    throw new AxiomException("Parameter called " + name + " does not exist. ");
+                Debug.WriteLine("Parameter called " + name + " does not exist. ");
+                return null;
 		    }
             return def;
 	    }

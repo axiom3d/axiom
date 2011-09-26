@@ -94,7 +94,7 @@ namespace Axiom.Demos
 			catch ( Exception )
 			{
 			}
-			cboRenderSystems.Enabled = false;
+			//cboRenderSystems.Enabled = false;
 		}
 
 		protected override void Dispose( bool disposing )
@@ -290,21 +290,24 @@ namespace Axiom.Demos
 			// Register [Enter] and [Esc] keys for Default buttons
 			Application.AddMessageFilter( this );
 			cmdOk.NotifyDefault( true );
-            try
-            {
-                foreach (RenderSystem renderSystem in Root.Instance.RenderSystems)
+			try
+			{
+                if (!DesignMode)
                 {
-                    LoadRenderSystemConfig(this, renderSystem);
-                    cboRenderSystems.Items.Add(renderSystem);
+                    foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
+                    {
+                        LoadRenderSystemConfig( this, renderSystem );
+                        cboRenderSystems.Items.Add( renderSystem );
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
-                throw;
-            }
+			}
+			catch (Exception ex)
+			{
+				LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+				throw;
+			}
 
-		    if ( cboRenderSystems.Items.Count > 0 )
+			if ( cboRenderSystems.Items.Count > 0 )
 				cboRenderSystems.SelectedIndex = 0;
 		}
 

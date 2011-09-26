@@ -85,13 +85,12 @@ namespace Axiom.Graphics
 
 		public static void ParseScript( CompositorManager compositorManager, Stream data, string groupName, string fileName )
 		{
-			string file = ( (FileStream)data ).Name;
-			string line = "";
-			CompositorScriptContext context = new CompositorScriptContext();
-			context.filename = file;
+			var line = "";
+			var context = new CompositorScriptContext();
+		    context.filename = fileName + ( data is FileStream ? " (" + ( data as FileStream ).Name + ")" : "" );
 			context.lineNo = 0;
 
-			StreamReader script = new StreamReader( data, System.Text.Encoding.UTF8 );
+			var script = new StreamReader( data, System.Text.Encoding.UTF8 );
 
 			// parse through the data to the end
 			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
@@ -105,7 +104,7 @@ namespace Axiom.Graphics
 				{
 					context.line = line;
 					splitCmd = SplitByWhitespace( line, 2 );
-					string token = splitCmd[ 0 ];
+					var token = splitCmd[ 0 ];
 					args = SplitArgs( splitCmd.Length == 2 ? splitCmd[ 1 ] : "" );
 					arg = ( args.Length > 0 ? args[ 0 ] : "" );
 					if ( context.section == CompositorScriptSection.None )
@@ -115,7 +114,7 @@ namespace Axiom.Graphics
 							LogError( context, "First token is not 'compositor'!" );
 							break; // Give up
 						}
-						string compositorName = RemoveQuotes( splitCmd[ 1 ].Trim() );
+						var compositorName = RemoveQuotes( splitCmd[ 1 ].Trim() );
 						context.compositor = (Compositor)compositorManager.Create( compositorName, groupName );
 						context.section = CompositorScriptSection.Compositor;
 						context.seenOpen = false;
@@ -286,7 +285,7 @@ namespace Axiom.Graphics
 									case "input":
 										if ( !OptionCount( context, token, 3, args.Length ) )
 											break;
-										int index = 0;
+										var index = 0;
 										if ( args.Length == 3 )
 											index = ParseInt( context, args[ 2 ] );
 										context.pass.SetInput( ParseInt( context, args[ 0 ] ), args[ 1 ].Trim(), index );
@@ -312,8 +311,8 @@ namespace Axiom.Graphics
 								switch ( token )
 								{
 									case "buffers":
-										FrameBufferType fb = (FrameBufferType)0;
-										foreach ( string cb in args )
+										var fb = (FrameBufferType)0;
+										foreach ( var cb in args )
 										{
 											switch ( cb )
 											{
@@ -425,7 +424,7 @@ namespace Axiom.Graphics
 
 		static void LogError( CompositorScriptContext context, string error, params object[] substitutions )
 		{
-			StringBuilder errorBuilder = new StringBuilder();
+			var errorBuilder = new StringBuilder();
 
 			// log compositor name only if filename not specified
 			if ( context.filename == null && context.compositor != null )
@@ -496,7 +495,7 @@ namespace Axiom.Graphics
 		{
 			if ( OptionCount( context, introducer, 1, args.Length ) )
 			{
-				string arg = args[ 0 ];
+				var arg = args[ 0 ];
 				if ( arg == "on" )
 					return true;
 				else if ( arg == "off" )
@@ -511,7 +510,7 @@ namespace Axiom.Graphics
 
 		static int ParseInt( CompositorScriptContext context, string s )
 		{
-			string n = s.Trim();
+			var n = s.Trim();
 			try
 			{
 				return int.Parse( n );
@@ -526,7 +525,7 @@ namespace Axiom.Graphics
 
 		static uint ParseUint( CompositorScriptContext context, string s )
 		{
-			string n = s.Trim();
+			var n = s.Trim();
 			try
 			{
 				return uint.Parse( n );
@@ -541,7 +540,7 @@ namespace Axiom.Graphics
 
 		static float ParseFloat( CompositorScriptContext context, string s )
 		{
-			string n = s.Trim();
+			var n = s.Trim();
 			try
 			{
 			    return float.Parse( n, CultureInfo.InvariantCulture );
@@ -563,10 +562,10 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				float r = ParseFloat( context, args[ 0 ] );
-				float g = ParseFloat( context, args[ 0 ] );
-				float b = ParseFloat( context, args[ 0 ] );
-				float a = ParseFloat( context, args[ 0 ] );
+				var r = ParseFloat( context, args[ 0 ] );
+				var g = ParseFloat( context, args[ 0 ] );
+				var b = ParseFloat( context, args[ 0 ] );
+				var a = ParseFloat( context, args[ 0 ] );
 
 				return new ColorEx( a, r, g, b );
 			}
@@ -583,7 +582,7 @@ namespace Axiom.Graphics
 					formatPos += 2;
 				}
 
-				CompositionTechnique.TextureDefinition textureDef = context.technique.CreateTextureDefinition( args[ 0 ] );
+				var textureDef = context.technique.CreateTextureDefinition( args[ 0 ] );
 				if ( args[ widthPos ] == "target_width" )
 				{
 					textureDef.Width = 0;

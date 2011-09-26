@@ -73,20 +73,20 @@ namespace Axiom.Scripting.Compiler
 				if ( !(node is ObjectAbstractNode) )
 					return;
 
-				ObjectAbstractNode objNode = (ObjectAbstractNode)node;
+				var objNode = (ObjectAbstractNode)node;
 
 				// Abstract objects are completely skipped
 				if ( objNode != null && objNode.IsAbstract )
 					return;
 
 				// Retrieve the translator to use
-				Translator translator = ScriptCompilerManager.Instance.GetTranslator( node );
+				var translator = ScriptCompilerManager.Instance.GetTranslator( node );
 
 				if ( translator != null )
 					translator.Translate( compiler, node );
 				else
 				{
-					string msg = string.Format( "token {0} is not recognized", objNode.Cls );
+					var msg = string.Format( "token {0} is not recognized", objNode.Cls );
 					compiler.AddError( CompileErrorCode.UnexpectedToken, node.File, node.Line, msg );
 				}
 			}
@@ -124,7 +124,7 @@ namespace Axiom.Scripting.Compiler
 				if ( !(node is AtomAbstractNode) )
 					return false;
 
-				AtomAbstractNode atom = (AtomAbstractNode)node;
+				var atom = (AtomAbstractNode)node;
 				if ( atom.Id != 1 && atom.Id != 2 )
 					return false;
 
@@ -148,7 +148,7 @@ namespace Axiom.Scripting.Compiler
 				if ( !(node is AtomAbstractNode) )
 					return false;
 
-				AtomAbstractNode atom = (AtomAbstractNode)node;
+				var atom = (AtomAbstractNode)node;
 				result = atom.Value;
 				return true;
 			}
@@ -169,7 +169,7 @@ namespace Axiom.Scripting.Compiler
 				if ( !(node is AtomAbstractNode) )
 					return false;
 
-				AtomAbstractNode atom = (AtomAbstractNode)node;
+				var atom = (AtomAbstractNode)node;
 				if ( !atom.IsNumber )
 					return false;
 
@@ -262,13 +262,13 @@ namespace Axiom.Scripting.Compiler
 			/// <returns>true if successful</returns>
 			protected static bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result, int maxEntries )
 			{
-				Real[] vals = new Real[ 4 ] { 0, 0, 0, 0 };
+				var vals = new Real[ 4 ] { 0, 0, 0, 0 };
 				result = ColorEx.White;
 
 				if ( nodes == null )
 					return false;
 
-				int n = 0;
+				var n = 0;
 				while ( i != nodes.Count && n < maxEntries )
 				{
 					if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
@@ -302,7 +302,7 @@ namespace Axiom.Scripting.Compiler
 				if ( nodes == null )
 					return false;
 
-				int n = 0;
+				var n = 0;
 				while ( i != nodes.Count && n < 16 )
 				{
 					if ( i != nodes.Count )
@@ -330,13 +330,13 @@ namespace Axiom.Scripting.Compiler
 			/// <returns>true if successful</returns>
 			protected static bool getInts( IList<AbstractNode> nodes, int i, out int[] vals, int count )
 			{
-				bool success = true;
+				var success = true;
 				vals = new int[ count ];
 
 				if ( nodes == null )
 					return false;
 
-				int n = 0;
+				var n = 0;
 				while ( n < count )
 				{
 					if ( i != nodes.Count )
@@ -368,13 +368,13 @@ namespace Axiom.Scripting.Compiler
 			/// <returns>true if successful</returns>
 			protected static bool getFloats( IList<AbstractNode> nodes, int i, out float[] vals, int count )
 			{
-				bool success = true;
+				var success = true;
 				vals = new float[ count ];
 
 				if ( nodes == null )
 					return false;
 
-				int n = 0;
+				var n = 0;
 				while ( n < count )
 				{
 					if ( i != nodes.Count )
@@ -418,20 +418,20 @@ namespace Axiom.Scripting.Compiler
 				if ( !(node is AtomAbstractNode) )
 					return false;
 
-				AtomAbstractNode atom = (AtomAbstractNode)node;
+				var atom = (AtomAbstractNode)node;
 				if ( compiler.KeywordMap.ContainsValue( atom.Id ) )
 				{
-					String keyText = string.Empty;
+					var keyText = string.Empty;
 
 					// For this ID, find the script Token 
-					foreach ( KeyValuePair<string, uint> item in compiler.KeywordMap )
+					foreach ( var item in compiler.KeywordMap )
 					{
 						if ( item.Value == atom.Id )
 							keyText = item.Key;
 					}
 
 					// Now reflect over the enumeration to find the Token value
-					object val = ScriptEnumAttribute.Lookup( keyText, typeof( T ) );
+					var val = ScriptEnumAttribute.Lookup( keyText, typeof( T ) );
 					if ( val != null )
 					{
 						property = (T)val;

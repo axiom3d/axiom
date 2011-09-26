@@ -83,7 +83,7 @@ namespace Axiom.Scripting.Compiler
 						return;
 					}
 
-					ImportAbstractNode impl = new ImportAbstractNode();
+					var impl = new ImportAbstractNode();
 					impl.Line = node.Line;
 					impl.File = node.File;
 					impl.Target = node.Children[ 0 ].Token;
@@ -110,12 +110,12 @@ namespace Axiom.Scripting.Compiler
 						return;
 					}
 
-					String name = node.Children[ 0 ].Token;
-					String value = node.Children[ 1 ].Token;
+					var name = node.Children[ 0 ].Token;
+					var value = node.Children[ 1 ].Token;
 
 					if ( _current != null && _current is ObjectAbstractNode )
 					{
-						ObjectAbstractNode ptr = (ObjectAbstractNode)_current;
+						var ptr = (ObjectAbstractNode)_current;
 						ptr.SetVariable( name, value );
 					}
 					else
@@ -132,7 +132,7 @@ namespace Axiom.Scripting.Compiler
 						return;
 					}
 
-					VariableGetAbstractNode impl = new VariableGetAbstractNode( _current );
+					var impl = new VariableGetAbstractNode( _current );
 					impl.Line = node.Line;
 					impl.File = node.File;
 					impl.Name = node.Token;
@@ -160,13 +160,13 @@ namespace Axiom.Scripting.Compiler
 							return;
 						}
 
-						ObjectAbstractNode impl = new ObjectAbstractNode( _current );
+						var impl = new ObjectAbstractNode( _current );
 						impl.Line = node.Line;
 						impl.File = node.File;
 						impl.IsAbstract = false;
 
 						// Create a temporary detail list
-						List<ConcreteNode> temp = new List<ConcreteNode>();
+						var temp = new List<ConcreteNode>();
 						if ( node.Token == "abstract" )
 						{
 							impl.IsAbstract = true;
@@ -181,7 +181,7 @@ namespace Axiom.Scripting.Compiler
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
 						iter.MoveNext();
 						impl.Cls = iter.Current.Token;
-						bool validNode = iter.MoveNext();
+						var validNode = iter.MoveNext();
 
 						// Get the name
 						// Unless the type is in the exclusion list
@@ -197,7 +197,7 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( iter.Current.Type == ConcreteNodeType.Variable )
 							{
-								VariableGetAbstractNode var = new VariableGetAbstractNode( impl );
+								var var = new VariableGetAbstractNode( impl );
 								var.File = iter.Current.File;
 								var.Line = iter.Current.Line;
 								var.Name = iter.Current.Token;
@@ -205,7 +205,7 @@ namespace Axiom.Scripting.Compiler
 							}
 							else
 							{
-								AtomAbstractNode atom = new AtomAbstractNode( impl );
+								var atom = new AtomAbstractNode( impl );
 								atom.File = iter.Current.File;
 								atom.Line = iter.Current.Line;
 								atom.Value = iter.Current.Token;
@@ -218,7 +218,7 @@ namespace Axiom.Scripting.Compiler
 						if ( validNode && iter.Current.Type == ConcreteNodeType.Colon )
 						{
 							// Children of the ':' are bases
-							foreach ( ConcreteNode j in iter.Current.Children )
+							foreach ( var j in iter.Current.Children )
 								impl.Bases.Add( j.Token );
 
 							validNode = iter.MoveNext();
@@ -242,7 +242,7 @@ namespace Axiom.Scripting.Compiler
 					// Otherwise, it is a property
 					else
 					{
-						PropertyAbstractNode impl = new PropertyAbstractNode( _current );
+						var impl = new PropertyAbstractNode( _current );
 						impl.Line = node.Line;
 						impl.File = node.File;
 						impl.Name = node.Token;
@@ -265,7 +265,7 @@ namespace Axiom.Scripting.Compiler
 				// Otherwise, it is a standard atom
 				else
 				{
-					AtomAbstractNode impl = new AtomAbstractNode( _current );
+					var impl = new AtomAbstractNode( _current );
 					impl.Line = node.Line;
 					impl.File = node.File;
 					impl.Value = node.Token;
@@ -284,12 +284,12 @@ namespace Axiom.Scripting.Compiler
 					{
 						if ( _current is PropertyAbstractNode )
 						{
-							PropertyAbstractNode impl = (PropertyAbstractNode)_current;
+							var impl = (PropertyAbstractNode)_current;
 							impl.Values.Add( asn );
 						}
 						else
 						{
-							ObjectAbstractNode impl = (ObjectAbstractNode)_current;
+							var impl = (ObjectAbstractNode)_current;
 							impl.Children.Add( asn );
 						}
 					}
@@ -302,7 +302,7 @@ namespace Axiom.Scripting.Compiler
 
 			static public void Visit( AbstractTreeBuilder visitor, IList<ConcreteNode> nodes )
 			{
-				foreach ( ConcreteNode node in nodes )
+				foreach ( var node in nodes )
 					visitor.visit( node );
 			}
 

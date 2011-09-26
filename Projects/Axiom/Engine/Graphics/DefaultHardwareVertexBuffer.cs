@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -61,87 +62,49 @@ namespace Axiom.Graphics
 			mpData = new byte[ base.sizeInBytes ];
 		}
 
-		public override void ReadData( int offset, int length, IntPtr dest )
+        public override void ReadData(int offset, int length, BufferBase dest)
+        {
+            var data = Memory.PinObject(mpData).Offset(offset);
+            Memory.Copy(dest, data, length);
+            Memory.UnpinObject(mpData);
+        }
+
+        public override void WriteData(int offset, int length, Array data, bool discardWholeBuffer)
+        {
+            var pSource = Memory.PinObject(data);
+            var pIntData = Memory.PinObject(mpData).Offset(offset);
+            Memory.Copy(pSource, pIntData, length);
+            Memory.UnpinObject(data);
+            Memory.UnpinObject(mpData);
+        }
+
+	    public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
+        {
+            var pIntData = Memory.PinObject(mpData).Offset(offset);
+            Memory.Copy(src, pIntData, length);
+            Memory.UnpinObject(mpData);
+        }
+
+	    public override void Unlock()
 		{
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr data = Memory.PinObject( mpData );
-			Memory.Copy( dest, data, length );
-			Memory.UnpinObject( mpData );
+            Memory.UnpinObject(mpData);
+            base.isLocked = false;
 		}
 
-		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
-		{
-			IntPtr pSource = Memory.PinObject( data );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
-			Memory.Copy( pSource, pIntData, length );
-			Memory.UnpinObject( data );
-			Memory.UnpinObject( mpData );
-		}
-
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-		{
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
-			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( mpData );
-		}
-
-		public override void Unlock()
-		{
-			base.isLocked = false;
-		}
-
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+        public override BufferBase Lock(int offset, int length, BufferLocking locking)
 		{
 			base.isLocked = true;
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
+            return Memory.PinObject(mpData).Offset(offset);
 		}
 
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking locking)
 		{
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed ( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
+            return Memory.PinObject(mpData).Offset(offset);
 		}
 
 		protected override void UnlockImpl()
 		{
-			// nothing to do
+            Memory.UnpinObject(mpData);
 		}
 	}
 }

@@ -40,6 +40,7 @@ using System.Runtime.InteropServices;
 
 using Axiom;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
@@ -424,7 +425,9 @@ namespace Axiom.SceneManagers.Bsp
 			// FVF in those older drivers.
 			// Lock just the non-patch area for now.
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
 				BspVertex vert = new BspVertex();
 				TextureLightMap texLightMap = new TextureLightMap();
@@ -434,21 +437,21 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					QuakeVertexToBspVertex( q3lvl.Vertices[ v ], out vert, out texLightMap );
 
-					BspVertex* bvptr = &vert;
-					TextureLightMap* tlptr = &texLightMap;
+					using(var bvptr = BufferBase.Wrap(vert))
+					using (var tlptr = BufferBase.Wrap(texLightMap))
+					{
+						vbuf.WriteData(
+							v * ManagedBufferBspVertex.Size,
+							ManagedBufferBspVertex.Size,
+							bvptr
+							);
 
-					vbuf.WriteData(
-						v * sizeof( BspVertex ),
-						sizeof( BspVertex ),
-						(IntPtr)bvptr
-						);
-
-					texLightBuf.WriteData(
-						v * sizeof( TextureLightMap ),
-						sizeof( TextureLightMap ),
-						(IntPtr)tlptr
-						);
-
+						texLightBuf.WriteData(
+							v * ManagedBufferTextureLightMap.Size,
+							ManagedBufferTextureLightMap.Size,
+							tlptr
+							);
+					}
 				}
 			}
 
@@ -479,13 +482,25 @@ namespace Axiom.SceneManagers.Bsp
 
 			// Create an index buffer manually in system memory, allow space for patches
 			indexes = HardwareBufferManager.Instance.CreateIndexBuffer(
+#if SILVERLIGHT
+				IndexType.Size16,
+#else
 				IndexType.Size32,
+#endif
 				numIndexes,
 				BufferUsage.Dynamic
 				);
 
 			// Write main indexes
-			indexes.WriteData( 0, Marshal.SizeOf( typeof( uint ) ) * q3lvl.NumElements, q3lvl.Elements, true );
+#if SILVERLIGHT
+			var idx = indexes.Lock( BufferLocking.Normal ).ToUShortPointer();
+			var q3i = q3lvl.Elements;
+			for (var i = 0; i < q3lvl.NumElements; i++)
+				idx[i] = (ushort)q3i[i];
+			indexes.Unlock();
+#else
+			indexes.WriteData( 0, Memory.SizeOf( typeof ( uint ) ) * q3lvl.NumElements, q3lvl.Elements, true );
+#endif
 			rgm.notifyWorldGeometryStageEnded();
 
 			// now build patch information
@@ -578,7 +593,7 @@ namespace Axiom.SceneManagers.Bsp
 						{
 							// Set replace on all first layer textures for now
 							tex.SetColorOperation( LayerBlendOperation.Replace );
-                            tex.SetTextureAddressingMode( TextureAddressing.Wrap );
+							tex.SetTextureAddressingMode( TextureAddressing.Wrap );
 							// for ambient lighting
 							tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
 						}
@@ -595,7 +610,7 @@ namespace Axiom.SceneManagers.Bsp
 							tex.TextureCoordSet = 1;
 
 							// Clamp
-                            tex.SetTextureAddressingMode( TextureAddressing.Clamp );
+							tex.SetTextureAddressingMode( TextureAddressing.Clamp );
 						}
 
 						shadMat.CullingMode = CullingMode.None;
@@ -1184,6 +1199,180 @@ namespace Axiom.SceneManagers.Bsp
 			useLightmaps = true;
 			ambientEnabled = false;
 			ambientRatio = 1;
+		}
+	}
+
+	public static partial class BufferBaseExtensions
+	{
+#if AXIOM_SAFE_ONLY
+		public static ITypePointer<BspVertex> ToBspVertexPointer(this BufferBase buffer)
+		{
+			if (buffer is ITypePointer<BspVertex>)
+				return buffer as ITypePointer<BspVertex>;
+			return new ManagedBufferBspVertex(buffer as ManagedBuffer);
+		}
+#else
+		public static unsafe BspVertex* ToBspVertexPointer(this BufferBase buffer)
+		{
+			return (BspVertex*) buffer.Pin();
+		}
+#endif
+	}
+
+	public class ManagedBufferBspVertex : ManagedBuffer, ITypePointer<BspVertex>
+	{
+		public ManagedBufferBspVertex(ManagedBuffer buffer) : base(buffer) { }
+
+		internal static readonly int Size = Memory.SizeOf( typeof(BspVertex) );
+
+		BspVertex ITypePointer<BspVertex>.this[int index]
+		{
+			get
+			{
+				var buf = Buf;
+				index = index * Size + IdxPtr;
+				return new BspVertex
+					   {
+						   position = new Vector3
+									  {
+										  x = new FourByte
+											  {
+												  b0 = buf[ index++ ],
+												  b1 = buf[ index++ ],
+												  b2 = buf[ index++ ],
+												  b3 = buf[ index++ ]
+											  }.Float,
+										  y = new FourByte
+											  {
+												  b0 = buf[ index++ ],
+												  b1 = buf[ index++ ],
+												  b2 = buf[ index++ ],
+												  b3 = buf[ index++ ]
+											  }.Float,
+										  z = new FourByte
+											  {
+												  b0 = buf[ index++ ],
+												  b1 = buf[ index++ ],
+												  b2 = buf[ index++ ],
+												  b3 = buf[ index++ ]
+											  }.Float
+									  },
+						   normal = new Vector3
+									{
+										x = new FourByte
+											{
+												b0 = buf[ index++ ],
+												b1 = buf[ index++ ],
+												b2 = buf[ index++ ],
+												b3 = buf[ index++ ]
+											}.Float,
+										y = new FourByte
+											{
+												b0 = buf[ index++ ],
+												b1 = buf[ index++ ],
+												b2 = buf[ index++ ],
+												b3 = buf[ index++ ]
+											}.Float,
+										z = new FourByte
+											{
+												b0 = buf[ index++ ],
+												b1 = buf[ index++ ],
+												b2 = buf[ index++ ],
+												b3 = buf[ index++ ]
+											}.Float
+									},
+						   texCoords = new Vector2
+									   {
+										   x = new FourByte
+											   {
+												   b0 = buf[ index++ ],
+												   b1 = buf[ index++ ],
+												   b2 = buf[ index++ ],
+												   b3 = buf[ index++ ]
+											   }.Float,
+										   y = new FourByte
+											   {
+												   b0 = buf[ index++ ],
+												   b1 = buf[ index++ ],
+												   b2 = buf[ index++ ],
+												   b3 = buf[ index++ ]
+											   }.Float
+									   },
+						   lightMap = new Vector2
+									  {
+										  x = new FourByte
+											  {
+												  b0 = buf[ index++ ],
+												  b1 = buf[ index++ ],
+												  b2 = buf[ index++ ],
+												  b3 = buf[ index++ ]
+											  }.Float,
+										  y = new FourByte
+											  {
+												  b0 = buf[ index++ ],
+												  b1 = buf[ index++ ],
+												  b2 = buf[ index++ ],
+												  b3 = buf[ index ]
+											  }.Float
+									  }
+					   };
+			}
+			set
+			{
+				var f = new FourByte();
+				var buf = Buf;
+				index = index * Size + IdxPtr;
+				f.Float = value.position.x;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.position.y;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.position.z;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.normal.x;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.normal.y;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.normal.z;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.texCoords.x;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.texCoords.y;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.lightMap.x;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index++] = f.b3;
+				f.Float = value.lightMap.y;
+				buf[index++] = f.b0;
+				buf[index++] = f.b1;
+				buf[index++] = f.b2;
+				buf[index] = f.b3;
+			}
 		}
 	}
 }

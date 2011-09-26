@@ -181,13 +181,13 @@ namespace Axiom.Graphics
 				{
 					this.RemoveAllTechniques();
 
-					foreach ( KeyValuePair<string, MultiRenderTarget> item in globalMRTs )
+					foreach ( var item in globalMRTs )
 					{
 						item.Value.Dispose();
 					}
 					globalMRTs.Clear();
 
-					foreach ( KeyValuePair<string, Texture> item in globalTextures )
+					foreach ( var item in globalTextures )
 					{
 						item.Value.Dispose();
 					}
@@ -226,7 +226,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public CompositionTechnique CreateTechnique()
 		{
-			CompositionTechnique t = new CompositionTechnique( this );
+			var t = new CompositionTechnique( this );
 			techniques.Add( t );
 			compilationRequired = true;
 			return t;
@@ -274,7 +274,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public CompositionTechnique GetSupportedTechniqueByScheme( string schemeName )
 		{
-			foreach ( CompositionTechnique t in supportedTechniques )
+			foreach ( var t in supportedTechniques )
 			{
 				if ( t.SchemeName == schemeName )
 				{
@@ -282,7 +282,7 @@ namespace Axiom.Graphics
 				}
 			}
 			// didn't find a matching one
-			foreach ( CompositionTechnique t in supportedTechniques )
+			foreach ( var t in supportedTechniques )
 			{
 				if ( String.IsNullOrEmpty( t.SchemeName ) )
 				{
@@ -306,7 +306,7 @@ namespace Axiom.Graphics
 				return ret;
 
 			//Try MRT
-			string mrtName = GetMRTLocalName( name, mrtIndex );
+			var mrtName = GetMRTLocalName( name, mrtIndex );
 			if ( !globalTextures.TryGetValue( name, out ret ) )
 				return ret;
 
@@ -357,7 +357,7 @@ namespace Axiom.Graphics
 			// Sift out supported techniques
 			supportedTechniques.Clear();
 			// Try looking for exact technique support with no texture fallback
-			foreach ( CompositionTechnique t in techniques )
+			foreach ( var t in techniques )
 			{
 				// Look for exact texture support first
 				if ( t.IsSupported( false ) )
@@ -369,7 +369,7 @@ namespace Axiom.Graphics
 			if ( supportedTechniques.Count == 0 )
 			{
 				// Check again, being more lenient with textures
-				foreach ( CompositionTechnique t in techniques )
+				foreach ( var t in techniques )
 				{
 					// Allow texture support with degraded pixel format
 					if ( t.IsSupported( true ) )
@@ -393,12 +393,12 @@ namespace Axiom.Graphics
 
 			//To make sure that we are consistent, it is demanded that all composition
 			//techniques define the same set of global textures.
-			List<string> globalTextureNames = new List<string>();
+			var globalTextureNames = new List<string>();
 
 			//Initialize global textures from first supported technique
-			CompositionTechnique firstTechnique = supportedTechniques[ 0 ];
+			var firstTechnique = supportedTechniques[ 0 ];
 
-			foreach ( CompositionTechnique.TextureDefinition def in firstTechnique.TextureDefinitions )
+			foreach ( var def in firstTechnique.TextureDefinitions )
 			{
 				if ( def.Scope == CompositionTechnique.TextureScope.Global )
 				{
@@ -422,37 +422,37 @@ namespace Axiom.Graphics
 					RenderTarget renderTarget = null;
 					if ( def.PixelFormats.Count > 1 )
 					{
-						string MRTBaseName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
-						MultiRenderTarget mrt =
+						var MRTBaseName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
+						var mrt =
 							Root.Instance.RenderSystem.CreateMultiRenderTarget( MRTBaseName );
 						globalMRTs.Add( def.Name, mrt );
 
 						// create and bind individual surfaces
-						int atch = 0;
-						foreach ( PixelFormat p in def.PixelFormats )
+						var atch = 0;
+						foreach ( var p in def.PixelFormats )
 						{
-							string texName = MRTBaseName + "/" + atch.ToString();
-							Texture tex =
+							var texName = MRTBaseName + "/" + atch.ToString();
+							var tex =
 								TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
 																	 TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null,
 																	 def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
 
-							RenderTexture rt = tex.GetBuffer().GetRenderTarget();
+							var rt = tex.GetBuffer().GetRenderTarget();
 							rt.IsAutoUpdated = false;
 							mrt.BindSurface( atch, rt );
 							// Also add to local textures so we can look up
-							string mrtLocalName = GetMRTLocalName( def.Name, atch );
+							var mrtLocalName = GetMRTLocalName( def.Name, atch );
 							globalTextures.Add( mrtLocalName, tex );
 						}
 						renderTarget = mrt;
 					}
 					else
 					{
-						string texName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
+						var texName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
 						// space in the name mixup the cegui in the compositor demo
 						// this is an auto generated name - so no spaces can't hart us.
 						texName = texName.Replace( " ", "_" );
-						Texture tex =
+						var tex =
 							TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
 																 TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null,
 																 def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
@@ -464,11 +464,11 @@ namespace Axiom.Graphics
 			}
 
 			//Validate that all other supported techniques expose the same set of global textures.
-			foreach ( CompositionTechnique technique in supportedTechniques )
+			foreach ( var technique in supportedTechniques )
 			{
-				bool isConsistent = true;
-				int numGlobals = 0;
-				foreach ( CompositionTechnique.TextureDefinition texDef in technique.TextureDefinitions )
+				var isConsistent = true;
+				var numGlobals = 0;
+				foreach ( var texDef in technique.TextureDefinitions )
 				{
 					if ( texDef.Scope == CompositionTechnique.TextureScope.Global )
 					{
@@ -496,13 +496,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void FreeGlobalTextures()
 		{
-			foreach ( Texture tex in globalTextures.Values )
+			foreach ( var tex in globalTextures.Values )
 			{
 				TextureManager.Instance.Remove( tex.Name );
 			}
 			globalTextures.Clear();
 
-			foreach ( MultiRenderTarget mrt in globalMRTs.Values )
+			foreach ( var mrt in globalMRTs.Values )
 			{
 				Root.Instance.RenderSystem.DestroyRenderTarget( mrt.Name );
 			}

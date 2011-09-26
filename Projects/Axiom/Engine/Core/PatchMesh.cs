@@ -103,14 +103,14 @@ namespace Axiom.Core
 			set
 			{
 				patchSurface.SubdivisionFactor = value;
-				SubMesh sm = GetSubMesh( 0 );
+				var sm = GetSubMesh( 0 );
 				sm.indexData.indexCount = patchSurface.CurrentIndexCount;
 			}
 		}
 
 		protected override void load()
 		{
-			SubMesh sm = CreateSubMesh();
+			var sm = CreateSubMesh();
 			sm.vertexData = new VertexData();
 			sm.useSharedVertices = false;
 
@@ -119,7 +119,7 @@ namespace Axiom.Core
 			sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
 			sm.vertexData.vertexDeclaration = vertexDeclaration;
 
-			HardwareVertexBuffer buffer =
+			var buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.Clone( 0 ), sm.vertexData.vertexCount,	VertexBufferUsage, UseVertexShadowBuffer );
 
 			// bind the vertex buffer

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,102 +23,100 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
-using Axiom.Collections;
+using Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	///     Summary description for XnaTextureManager.
-	/// </summary>
-	public class XnaTextureManager : TextureManager
-	{
-		/// <summary>Reference to the XNA device.</summary>
-		private XFG.GraphicsDevice _device;
+    /// <summary>
+    ///     Summary description for XnaTextureManager.
+    /// </summary>
+    public class XnaTextureManager : TextureManager
+    {
+        /// <summary>Reference to the XNA device.</summary>
+        private GraphicsDevice _device;
 
-		public XnaTextureManager( XFG.GraphicsDevice device )
-			: base()
-		{
-			this._device = device;
+        public XnaTextureManager( GraphicsDevice device )
+        {
+            _device = device;
 
-			Is32Bit = true;
-		}
+            Is32Bit = true;
+        }
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		protected override void dispose(bool disposeManagedResources)
-		{
-			if (!this.IsDisposed)
-			{
-				if (disposeManagedResources)
-				{
-					this._device = null;
-				}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    _device = null;
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose(disposeManagedResources);
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			return new XnaTexture( this, name, handle, group, isManual, loader, _device );
-		}
+        protected override Resource _create( string name, ulong handle, string group, bool isManual,
+                                             IManualResourceLoader loader, NameValuePairList createParams )
+        {
+            return new XnaTexture( this, name, handle, group, isManual, loader, _device );
+        }
 
-		public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
-		{
-			return PixelFormat.X8R8G8B8;
-		}
+        public override PixelFormat GetNativeFormat(TextureType ttype, PixelFormat format, Graphics.TextureUsage usage)
+        {
+            return PixelFormat.A8B8G8R8;
+        }
 
 
-		public void ReleaseDefaultPoolResources()
-		{
-			int count = 0;
-			foreach ( XnaTexture tex in resources.Values )
-			{
-				//TODO : Implement XnaTexture.ReleaseIfDefaultPool()
-				//if ( tex.ReleaseIfDefaultPool() )
-				//    count++;
-			}
-			LogManager.Instance.Write( "[XNA] : TextureManager released: {0} unmanaged textures", count );
-		}
+        public void ReleaseDefaultPoolResources()
+        {
+            var count = 0;
+            foreach ( XnaTexture tex in resources.Values )
+            {
+                //TODO : Implement XnaTexture.ReleaseIfDefaultPool()
+                //if ( tex.ReleaseIfDefaultPool() )
+                //    count++;
+            }
+            LogManager.Instance.Write( "[XNA] : TextureManager released: {0} unmanaged textures", count );
+        }
 
-		public void RecreateDefaultPoolResources()
-		{
-			int count = 0;
-			foreach ( XnaTexture tex in resources.Values )
-			{
-				//TODO : Implement XnaTexture.RecreateIfDefaultPool()
-				//if ( tex.RecreateIfDefaultPool( device ) )
-				//    count++;
-			}
-			LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
-		}
-
-	}
+        public void RecreateDefaultPoolResources()
+        {
+            var count = 0;
+            foreach ( XnaTexture tex in resources.Values )
+            {
+                //TODO : Implement XnaTexture.RecreateIfDefaultPool()
+                //if ( tex.RecreateIfDefaultPool( device ) )
+                //    count++;
+            }
+            LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
+        }
+    }
 }

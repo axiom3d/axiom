@@ -375,19 +375,19 @@ namespace Axiom.Graphics
 				viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
 				viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
 				// Create base "original scene" compositor
-				Compositor baseCompositor = (Compositor)CompositorManager.Instance.Load( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName );
+				var baseCompositor = (Compositor)CompositorManager.Instance.Load( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName );
 				originalScene = new CompositorInstance( baseCompositor.GetSupportedTechniqueByScheme(), this );
 			}
 
 			filter.Touch();
-			CompositionTechnique tech = filter.GetSupportedTechniqueByScheme( scheme );
+			var tech = filter.GetSupportedTechniqueByScheme( scheme );
 			if ( tech == null )
 			{
 				// Warn user
 				LogManager.Instance.Write( "CompositorChain: Compositor " + filter.Name + " has no supported techniques." );
 				return null;
 			}
-			CompositorInstance t = new CompositorInstance( tech, this );
+			var t = new CompositorInstance( tech, this );
 
 			if ( addPosition == lastCompositor )
 			{
@@ -418,7 +418,7 @@ namespace Axiom.Graphics
 		///<param name="position">Position in filter chain of filter to remove</param>
 		public void RemoveCompositor( int position )
 		{
-			CompositorInstance instance = instances[ position ];
+			var instance = instances[ position ];
 			instances.RemoveAt( position );
 			instance = null;
 			dirty = true;
@@ -429,7 +429,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveAllCompositors()
 		{
-			foreach ( CompositorInstance compositorInstance in instances )
+			foreach ( var compositorInstance in instances )
 			{
 				compositorInstance.Dispose();
 			}
@@ -475,9 +475,9 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public CompositorInstance GetPreviousInstance( CompositorInstance curr, bool activeOnly )
 		{
-			bool found = false;
-			int begin = instances.Count - 1;
-			int end = 0;
+			var found = false;
+			var begin = instances.Count - 1;
+			var end = 0;
 			for ( ; begin >= end; begin-- )
 			{
 				if ( found )
@@ -514,8 +514,8 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public CompositorInstance GetNextInstance( CompositorInstance curr, bool activeOnly )
 		{
-			bool found = false;
-			for ( int i = 0; i < instances.Count; i++ )
+			var found = false;
+			for ( var i = 0; i < instances.Count; i++ )
 			{
 				if ( found )
 				{
@@ -542,16 +542,16 @@ namespace Axiom.Graphics
 		/// <param name="state"></param>
 		public void SetCompositorEnabled( int position, bool state )
 		{
-			CompositorInstance instance = GetCompositor( position );
+			var instance = GetCompositor( position );
 			if ( !state && instance.IsEnabled )
 			{
 				// If we're disabling a 'middle' compositor in a chain, we have to be
 				// careful about textures which might have been shared by non-adjacent
 				// instances which have now become adjacent.
-				CompositorInstance nextInstance = GetNextInstance( instance, true );
+				var nextInstance = GetNextInstance( instance, true );
 				if ( nextInstance != null )
 				{
-					foreach ( CompositionTargetPass tp in nextInstance.Technique.TargetPasses )
+					foreach ( var tp in nextInstance.Technique.TargetPasses )
 					{
 						if ( tp.InputMode == CompositorInputMode.Previous )
 						{
@@ -590,7 +590,7 @@ namespace Axiom.Graphics
 			// target Rendertarget will not yet have been set as current.
 			// ( RenderSystem.Viewport = ... ) if it would have been, the rendering
 			// order would be screwed up and problems would arise with copying rendertextures.
-			Camera cam = viewport.Camera;
+			var cam = viewport.Camera;
 			if ( cam == null )
 			{
 				return;
@@ -598,7 +598,7 @@ namespace Axiom.Graphics
 			cam.SceneManager.ActiveCompositorChain = this;
 
 			// Iterate over compiled state
-			foreach ( CompositeTargetOperation op in compiledState )
+			foreach ( var op in compiledState )
 			{
 				// Skip if this is a target that should only be initialised initially
 				if ( op.OnlyInitial && op.HasBeenRendered )
@@ -619,7 +619,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public void AfterRenderTargetUpdate( RenderTargetEventArgs evt )
 		{
-			Camera cam = viewport.Camera;
+			var cam = viewport.Camera;
 			if ( cam != null )
 			{
 				cam.SceneManager.ActiveCompositorChain = null;
@@ -638,8 +638,8 @@ namespace Axiom.Graphics
 			}
 
 			// set original scene details from viewport
-			CompositionPass pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
-			CompositionTargetPass passParent = pass.Parent;
+			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
+			var passParent = pass.Parent;
 			if ( pass.ClearBuffers != viewport.ClearBuffers ||
 				pass.ClearColor != viewport.BackgroundColor ||
 				passParent.VisibilityMask != viewport.VisibilityMask ||
@@ -654,7 +654,7 @@ namespace Axiom.Graphics
 				Compile();
 			}
 
-			Camera camera = viewport.Camera;
+			var camera = viewport.Camera;
 			if ( camera != null )
 			{
 				// Prepare for output operation
@@ -667,7 +667,7 @@ namespace Axiom.Graphics
 		///</summary>
 		protected void PreTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
 		{
-			SceneManager sm = cam.SceneManager;
+			var sm = cam.SceneManager;
 			// Set up render target listener
 			listener.SetOperation( op, sm, sm.TargetRenderSystem );
 			listener.Viewport = vp;
@@ -700,7 +700,7 @@ namespace Axiom.Graphics
 		///</summary>
 		protected void PostTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
 		{
-			SceneManager sm = cam.SceneManager;
+			var sm = cam.SceneManager;
 			// Unregister our listener
 			sm.QueueStarted -= listener.OnRenderQueueStarted;
 			sm.QueueEnded -= listener.OnRenderQueueEnded;
@@ -751,20 +751,20 @@ namespace Axiom.Graphics
 			LogManager.Instance.Write( "[CORE] Compiling CompositorChain." );
 			ClearCompiledState();
 
-			bool compositorsEnabled = false;
+			var compositorsEnabled = false;
 
 			// force default scheme so materials for compositor quads will determined correctly
-			MaterialManager matMgr = MaterialManager.Instance;
-			string prevMaterialScheme = matMgr.ActiveScheme;
+			var matMgr = MaterialManager.Instance;
+			var prevMaterialScheme = matMgr.ActiveScheme;
 			matMgr.ActiveScheme = MaterialManager.DefaultSchemeName;
 
 			// Set previous CompositorInstance for each compositor in the list
-			CompositorInstance lastComposition = originalScene;
+			var lastComposition = originalScene;
 			originalScene.PreviousInstance = null;
-			CompositionPass pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
+			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
 			pass.ClearBuffers = viewport.ClearBuffers;
 			pass.ClearColor = viewport.BackgroundColor;
-			foreach ( CompositorInstance instance in instances )
+			foreach ( var instance in instances )
 			{
 				if ( instance.IsEnabled )
 				{

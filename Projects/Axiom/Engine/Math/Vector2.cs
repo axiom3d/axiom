@@ -142,12 +142,12 @@ namespace Axiom.Math
 		///	<returns>The previous length of the vector.</returns>
 		public Real Normalize()
 		{
-			Real length = Utility.Sqrt( this.x * this.x + this.y * this.y );
+			var length = Utility.Sqrt( this.x * this.x + this.y * this.y );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
-				Real inverseLength = 1.0f / length;
+				var inverseLength = 1.0f / length;
 
 				this.x *= inverseLength;
 				this.y *= inverseLength;
@@ -162,7 +162,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector2 ToNormalized()
 		{
-			Vector2 vec = this;
+			var vec = this;
 			vec.Normalize();
 
 			return vec;
@@ -350,7 +350,7 @@ namespace Axiom.Math
 			if ( !s.StartsWith( "Vector2(" ) )
 				throw new FormatException();
 
-			string[] values = s.Substring( 8 ).TrimEnd( '}' ).Split( ',' );
+			var values = s.Substring( 8 ).TrimEnd( '}' ).Split( ',' );
 
 			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
 							   Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );

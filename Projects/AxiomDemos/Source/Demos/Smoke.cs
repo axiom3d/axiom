@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 
@@ -12,7 +12,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Smoke.
 	/// </summary>
-	public class Smoke : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Smoke : TechDemo
 	{
 		public override void CreateScene()
 		{

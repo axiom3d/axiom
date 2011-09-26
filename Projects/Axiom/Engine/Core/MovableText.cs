@@ -280,7 +280,7 @@ namespace Axiom.Core
 		private void _translate3Dto2DPixels( Camera camera, Vector3 vertex, out int x, out int y )
 		{
 			// calculate hsc screen coordinates
-			Vector3 hsc = _translate3Dto2D( camera, vertex );
+			var hsc = _translate3Dto2D( camera, vertex );
 			// convert to window position in pixels
 			//RenderTarget *rt = Root.Instance.RenderTarget(in.getName());
 			//if ( !rt )
@@ -291,7 +291,7 @@ namespace Axiom.Core
 
 		private void _setupGeometry()
 		{
-			int vertexCount = _caption.Length * 6;
+			var vertexCount = _caption.Length * 6;
 			if ( renderOperation.vertexData != null )
 			{
 				renderOperation.vertexData = null;
@@ -307,9 +307,9 @@ namespace Axiom.Core
 			renderOperation.operationType = OperationType.TriangleList;
 			renderOperation.useIndices = false;
 
-			VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
-			VertexBufferBinding bind = renderOperation.vertexData.vertexBufferBinding;
-			int offset = 0;
+			var decl = renderOperation.vertexData.vertexDeclaration;
+			var bind = renderOperation.vertexData.vertexBufferBinding;
+			var offset = 0;
 
 			// create/bind positions/tex.ccord. buffer
 			if ( decl.FindElementBySemantic( VertexElementSemantic.Position ) == null )
@@ -319,20 +319,20 @@ namespace Axiom.Core
 			if ( decl.FindElementBySemantic( VertexElementSemantic.TexCoords ) == null )
 				decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POS_TEX_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POS_TEX_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( POS_TEX_BINDING, vbuf );
 
 			// Colors - store these in a separate buffer because they change less often
 			if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
 				decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
-			HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+			var cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( COLOR_BINDING, cbuf );
 
-			int charlen = _caption.Length;
+			var charlen = _caption.Length;
 
-			float largestWidth = 0.0f;
-			float left = 0f * 2.0f - 1.0f;
-			float top = -( ( 0f * 2.0f ) - 1.0f );
+			var largestWidth = 0.0f;
+			var left = 0f * 2.0f - 1.0f;
+			var top = -( ( 0f * 2.0f ) - 1.0f );
 
 			// Derive space with from a capital A
 			if ( _spaceWidth == 0 )
@@ -340,19 +340,19 @@ namespace Axiom.Core
 
 			// for calculation of AABB
 			Vector3 min, max, currPos;
-			float maxSquaredRadius = 0.0f;
-			bool first = true;
+			var maxSquaredRadius = 0.0f;
+			var first = true;
 
 			min = max = currPos = Vector3.NegativeUnitY;
 			// Use iterator
-			bool newLine = true;
-			float len = 0.0f;
+			var newLine = true;
+			var len = 0.0f;
 
 			if ( _verticalAlignment == VerticalAlignment.Above )
 			{
 				// Raise the first line of the caption
 				top += _characterHeight;
-				for ( int i = 0; i != charlen; i++ )
+				for ( var i = 0; i != charlen; i++ )
 				{
 					if ( _caption[ i ] == '\n' )
 						top += _characterHeight * 2.0f;
@@ -360,18 +360,20 @@ namespace Axiom.Core
 			}
 
 			//Real *pPCBuff = static_cast<Real*>(ptbuf.lock(HardwareBuffer::HBL_DISCARD));
-			IntPtr ipPos = vbuf.Lock( BufferLocking.Discard );
-			int cntPos = 0;
+			var ipPos = vbuf.Lock( BufferLocking.Discard );
+			var cntPos = 0;
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* pPCBuff = (float*)ipPos.ToPointer();
+				var pPCBuff = ipPos.ToFloatPointer();
 
-				for ( int i = 0; i != charlen; i++ )
+				for ( var i = 0; i != charlen; i++ )
 				{
 					if ( newLine )
 					{
 						len = 0.0f;
-						for ( int j = i; j != charlen && _caption[ j ] != '\n'; j++ )
+						for ( var j = i; j != charlen && _caption[ j ] != '\n'; j++ )
 						{
 							if ( _caption[ j ] == ' ' )
 								len += _spaceWidth;
@@ -398,7 +400,7 @@ namespace Axiom.Core
 						continue;
 					}
 
-					float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
+					var horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
 					Real u1, u2, v1, v2;
 					_font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
 
@@ -537,7 +539,7 @@ namespace Axiom.Core
 					// Go back up with top
 					top += _characterHeight * 2.0f;
 
-					float currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
+					var currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
 					if ( currentWidth > largestWidth )
 						largestWidth = currentWidth;
 				}
@@ -563,12 +565,14 @@ namespace Axiom.Core
 			// Convert to system-specific
 			int color;
 			color = Root.Instance.ConvertColor( _color );
-			HardwareVertexBuffer cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
-			IntPtr ipPos = cbuf.Lock( BufferLocking.Discard );
+			var cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+			var ipPos = cbuf.Lock( BufferLocking.Discard );
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				int* pPos = (int*)ipPos.ToPointer();
-				for ( int i = 0; i < renderOperation.vertexData.vertexCount; i++ )
+				var pPos = ipPos.ToIntPointer();
+				for ( var i = 0; i < renderOperation.vertexData.vertexCount; i++ )
 					pPos[ i ] = color;
 			}
 			cbuf.Unlock();
@@ -581,13 +585,13 @@ namespace Axiom.Core
 		{
 			if ( this.IsVisible && camera != null )
 			{
-				Matrix3 scale3x3 = Matrix3.Identity;
+				var scale3x3 = Matrix3.Identity;
 
 				// store rotation in a matrix
-				Matrix3 rot3x3 = camera.DerivedOrientation.ToRotationMatrix();
+				var rot3x3 = camera.DerivedOrientation.ToRotationMatrix();
 
 				// parent node position
-				Vector3 ppos = ParentNode.DerivedPosition + Vector3.UnitY * _additionalHeight;
+				var ppos = ParentNode.DerivedPosition + Vector3.UnitY * _additionalHeight;
 
 				// apply scale
 				scale3x3.m00 = ParentNode.DerivedScale.x / 2.0f;
@@ -669,7 +673,7 @@ namespace Axiom.Core
 				throw new AxiomException( "'fontName' parameter required when constructing MovableText." );
 			}
 
-			MovableText text = new MovableText( name, caption, fontName );
+			var text = new MovableText( name, caption, fontName );
 			text.MovableType = this.Type;
 			return text;
 		}

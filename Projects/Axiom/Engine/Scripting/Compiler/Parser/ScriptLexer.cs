@@ -68,16 +68,16 @@ namespace Axiom.Scripting.Compiler.Parser
 		public IList<ScriptToken> Tokenize( String str, String source )
 		{
 			const char varOpener = '$', quote = '"', slash = '/', backslash = '\\', openbrace = '{', closebrace = '}', colon = ':', star = '*';
-			char c = (char)0;
-			char lastChar = (char)0;
+			var c = (char)0;
+			var lastChar = (char)0;
 
-			StringBuilder lexeme = new StringBuilder();
+			var lexeme = new StringBuilder();
 			uint line = 1, lastQuote = 0;
-			ScriptState state = ScriptState.Ready;
+			var state = ScriptState.Ready;
 
-			List<ScriptToken> tokens = new List<ScriptToken>();
+			var tokens = new List<ScriptToken>();
 
-			for ( int index = 0; index < str.Length; index++ )
+			for ( var index = 0; index < str.Length; index++ )
 			{
 				lastChar = c;
 				c = str[ index ];
@@ -278,11 +278,11 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			const char newline = '\n', openBrace = '{', closeBrace = '}', colon = ':', quote = '\"', var = '$';
 
-			ScriptToken token = new ScriptToken();
+			var token = new ScriptToken();
 			token.lexeme = lexeme.ToString();
 			token.line = line;
 			token.file = source;
-			bool ignore = false;
+			var ignore = false;
 
 			// Check the user token map first
 			if ( lexeme.Length == 1 && lexeme[ 0 ] == newline )

@@ -92,9 +92,9 @@ namespace Axiom.Graphics
 		/// </param>
 		public void UpdateTriangleLightFacing( Vector4 lightPos )
 		{
-			for ( int i = 0; i < triangles.Count; i++ )
+			for ( var i = 0; i < triangles.Count; i++ )
 			{
-				Triangle tri = (Triangle)triangles[ i ];
+				var tri = (Triangle)triangles[ i ];
 
 				float dot = tri.normal.Dot( lightPos );
 
@@ -110,30 +110,32 @@ namespace Axiom.Graphics
 		/// <param name="positionBuffer">The updated position buffer, must contain ONLY xyz.</param>
 		public void UpdateFaceNormals( int vertexSet, HardwareVertexBuffer positionBuffer )
 		{
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
 				Debug.Assert( positionBuffer.VertexSize == sizeof( float ) * 3, "Position buffer should contain only positions!" );
 
 				// Lock buffer for reading
-				IntPtr posPtr = positionBuffer.Lock( BufferLocking.ReadOnly );
-				float* pVert = (float*)posPtr.ToPointer();
+				var posPtr = positionBuffer.Lock( BufferLocking.ReadOnly );
+				var pVert = posPtr.ToFloatPointer();
 
 				// Iterate over the triangles
-				for ( int i = 0; i < triangles.Count; i++ )
+				for ( var i = 0; i < triangles.Count; i++ )
 				{
-					Triangle t = (Triangle)triangles[ i ];
+					var t = (Triangle)triangles[ i ];
 
 					// Only update tris which are using this vertex set
 					if ( t.vertexSet == vertexSet )
 					{
-						int offset = t.vertIndex[ 0 ] * 3;
-						Vector3 v1 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
+						var offset = t.vertIndex[ 0 ] * 3;
+						var v1 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
 						offset = t.vertIndex[ 1 ] * 3;
-						Vector3 v2 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
+						var v2 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
 						offset = t.vertIndex[ 2 ] * 3;
-						Vector3 v3 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
+						var v3 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
 						t.normal = Utility.CalculateFaceNormal( v1, v2, v3 );
 					}
@@ -150,23 +152,23 @@ namespace Axiom.Graphics
 			log.Write( "Edge Data" );
 			log.Write( "---------" );
 
-			for ( int i = 0; i < triangles.Count; i++ )
+			for ( var i = 0; i < triangles.Count; i++ )
 			{
-				Triangle t = (Triangle)triangles[ i ];
+				var t = (Triangle)triangles[ i ];
 
 				log.Write( "Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]",
 					i, t.indexSet, t.vertexSet, t.vertIndex[ 0 ], t.vertIndex[ 1 ], t.vertIndex[ 2 ] );
 			}
 
-			for ( int i = 0; i < edgeGroups.Count; i++ )
+			for ( var i = 0; i < edgeGroups.Count; i++ )
 			{
-				EdgeGroup group = (EdgeGroup)edgeGroups[ i ];
+				var group = (EdgeGroup)edgeGroups[ i ];
 
 				log.Write( "Edge Group vertexSet={0}", group.vertexSet );
 
-				for ( int j = 0; j < group.edges.Count; j++ )
+				for ( var j = 0; j < group.edges.Count; j++ )
 				{
-					Edge e = (Edge)group.edges[ j ];
+					var e = (Edge)group.edges[ j ];
 
 					log.Write( "Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]",
 						j, e.triIndex[ 0 ], e.triIndex[ 1 ], e.vertIndex[ 0 ], e.vertIndex[ 1 ], e.isDegenerate );

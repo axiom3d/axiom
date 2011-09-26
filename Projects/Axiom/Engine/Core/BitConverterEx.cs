@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -47,21 +48,22 @@ namespace Axiom.Core
 		{
 			int size;
 			byte[] buffer;
-			IntPtr dst;
+			BufferBase dst;
 			if ( !typeof( T ).IsArray )
 			{
-				size = Marshal.SizeOf( typeof( T ) );
+				size = Memory.SizeOf( typeof( T ) );
 				buffer = new byte[ size ];
 				dst = Memory.PinObject( buffer );
-				Marshal.StructureToPtr( value, dst, true );
+				Marshal.StructureToPtr( value, dst.Pin(), true );
+			    dst.UnPin();
 			}
 			else
 			{
-				size = Marshal.SizeOf( typeof( T ).GetElementType() ) * (int)typeof( T ).GetProperty( "Length" ).GetValue( value, null );
+				size = Memory.SizeOf( typeof( T ).GetElementType() ) * (int)typeof( T ).GetProperty( "Length" ).GetValue( value, null );
 				buffer = new byte[ size ];
 				dst = Memory.PinObject( buffer );
 
-				IntPtr src = Memory.PinObject( value );
+                var src = Memory.PinObject(value as Array);
 				Memory.Copy( src, dst, size );
 				Memory.UnpinObject( value );
 			}
@@ -73,24 +75,23 @@ namespace Axiom.Core
 
 		public static T SetBytes<T>( byte[] buffer )
 		{
-			int size = Marshal.SizeOf( typeof( T ) );
-			IntPtr src = Memory.PinObject( buffer );
-			T retStruct = (T)Marshal.PtrToStructure( src, typeof( T ) );
+			var size = Memory.SizeOf( typeof( T ) );
+			var src = Memory.PinObject( buffer );
+            var retStruct = src.Pin().PtrToStructure<T>();
+		    src.UnPin();
 			Memory.UnpinObject( buffer );
 			return retStruct;
 		}
 
 		public static void SetBytes<T>( byte[] buffer, out T[] dest )
 		{
-			int size = buffer.Length / Marshal.SizeOf( typeof( T ) );
+			var size = buffer.Length / Memory.SizeOf( typeof( T ) );
 			dest = new T[ size ];
-			IntPtr src = Memory.PinObject( buffer );
-			IntPtr dst = Memory.PinObject( dest );
+            var src = Memory.PinObject(buffer);
+            var dst = Memory.PinObject(dest);
 			Memory.Copy( src, dst, buffer.Length );
 			Memory.UnpinObject( buffer );
 			Memory.UnpinObject( dest );
 		}
-
-
 	}
 }

@@ -104,9 +104,9 @@ namespace Axiom.Graphics
 		protected virtual void chooseDelegate()
 		{
 			_chosenDelegate = null;
-			foreach ( string delegateName in _delegateNames )
+			foreach ( var delegateName in _delegateNames )
 			{
-				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
+				var program = HighLevelGpuProgramManager.Instance[ delegateName ];
 				if ( program != null && program.IsSupported )
 				{
 					_chosenDelegate = program;
@@ -270,8 +270,8 @@ namespace Axiom.Graphics
 			else
 			{
 				//return a default set
-				GpuProgramParameters p = GpuProgramManager.Instance.CreateParameters();
-				//TODO : p.IgnoreMissingParameters = true;
+				var p = GpuProgramManager.Instance.CreateParameters();
+				p.IgnoreMissingParameters = true;
 				return p;
 			}
 		}

@@ -366,14 +366,14 @@ namespace Axiom.Core
 			// allocate enough space for everything
 			this.chainElementList = new List<Element>( this.chainCount * this.maxElementsPerChain );
 
-			for ( int i = 0; i < this.chainCount * this.maxElementsPerChain; ++i )
+			for ( var i = 0; i < this.chainCount * this.maxElementsPerChain; ++i )
 				this.chainElementList.Add( new Element() );
 
 			this.vertexData.vertexCount = this.chainElementList.Capacity * 2;
 
 			// configure chains
 			this.chainSegmentList = new List<ChainSegment>( this.chainCount );
-			for ( int i = 0; i < this.chainCount; ++i )
+			for ( var i = 0; i < this.chainCount; ++i )
 			{
 				this.chainSegmentList.Add( new ChainSegment() );
 				this.chainSegmentList[ i ].start = i * this.maxElementsPerChain;
@@ -385,10 +385,10 @@ namespace Axiom.Core
 		{
 			if ( this.vertexDeclDirty )
 			{
-				VertexDeclaration decl = this.vertexData.vertexDeclaration;
+				var decl = this.vertexData.vertexDeclaration;
 				decl.RemoveAllElements();
 
-				int offset = 0;
+				var offset = 0;
 				// Add a description for the buffer of the positions of the vertices
 				decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 				offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
@@ -423,7 +423,7 @@ namespace Axiom.Core
 			if ( this.buffersNeedRecreating )
 			{
 				// Create the vertex buffer (always dynamic due to the camera adjust)
-				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexData.vertexDeclaration.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexData.vertexDeclaration.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// (re)Bind the buffer
 				// Any existing buffer will lose its reference count and be destroyed
@@ -440,25 +440,27 @@ namespace Axiom.Core
 		protected virtual void UpdateVertexBuffer( Camera camera )
 		{
 			this.SetupBuffers();
-			HardwareVertexBuffer buffer = this.vertexData.vertexBufferBinding.GetBuffer( 0 );
-			IntPtr bufferPtr = buffer.Lock( BufferLocking.Discard );
+			var buffer = this.vertexData.vertexBufferBinding.GetBuffer( 0 );
+			var bufferPtr = buffer.Lock( BufferLocking.Discard );
 
-			Vector3 camPosition = camera.DerivedPosition;
-			Vector3 eyePosition = ParentNode.DerivedOrientation.Inverse() * ( camPosition - ParentNode.DerivedPosition ) / ParentNode.DerivedScale;
+			var camPosition = camera.DerivedPosition;
+			var eyePosition = ParentNode.DerivedOrientation.Inverse() * ( camPosition - ParentNode.DerivedPosition ) / ParentNode.DerivedScale;
 
 			Vector3 chainTangent;
 
-			unsafe
-			{
-				byte* bufferStart = (byte*)bufferPtr.ToPointer();
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+				var bufferStart = bufferPtr;
 
-				foreach ( ChainSegment segment in this.chainSegmentList )
+				foreach ( var segment in this.chainSegmentList )
 				{
 					// Skip 0 or 1 element segment counts
 					if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 					{
-						int laste = segment.head;
-						for ( int e = segment.head; ; ++e )
+						var laste = segment.head;
+						for ( var e = segment.head; ; ++e )
 						{
 							// Wrap forwards
 							if ( e == this.maxElementsPerChain )
@@ -466,14 +468,14 @@ namespace Axiom.Core
 								e = 0;
 							}
 
-							Element element = this.chainElementList[ e + segment.start ];
-							ushort baseIndex = (ushort)( ( e + segment.start ) * 2 );
+							var element = this.chainElementList[ e + segment.start ];
+							var baseIndex = (ushort)( ( e + segment.start ) * 2 );
 
 							// Determine base pointer to vertex #1
-							byte* pBase = bufferStart + buffer.VertexSize * baseIndex;
+							var pBase = bufferStart + buffer.VertexSize * baseIndex;
 
 							// Get index of next item
-							int nexte = e + 1;
+							var nexte = e + 1;
 							if ( nexte == this.maxElementsPerChain )
 							{
 								nexte = 0;
@@ -495,74 +497,76 @@ namespace Axiom.Core
 								chainTangent = this.chainElementList[ nexte + segment.start ].Position - this.chainElementList[ laste + segment.start ].Position;
 							}
 
-							Vector3 p1ToEye = eyePosition - element.Position;
-							Vector3 perpendicular = chainTangent.Cross( p1ToEye );
+							var p1ToEye = eyePosition - element.Position;
+							var perpendicular = chainTangent.Cross( p1ToEye );
 							perpendicular.Normalize();
 							perpendicular *= ( element.Width * 0.5f );
 
-							Vector3 pos0 = element.Position - perpendicular;
-							Vector3 pos1 = element.Position + perpendicular;
+							var pos0 = element.Position - perpendicular;
+							var pos1 = element.Position + perpendicular;
 
-							float* pFloat = (float*)pBase;
+							var pFloat = pBase.ToFloatPointer();
 							// pos1
-							*pFloat++ = pos0.x;
-							*pFloat++ = pos0.y;
-							*pFloat++ = pos0.z;
+							pFloat[0] = pos0.x;
+                            pFloat[1] = pos0.y;
+                            pFloat[2] = pos0.z;
 
-							pBase = (byte*)pFloat;
+						    pBase += sizeof(float)*3;
 
 							if ( this.useVertexColor )
 							{
-								int* pColor = (int*)pBase;
-								*pColor++ = Root.Instance.ConvertColor( element.Color );
-								pBase = (byte*)pColor;
+								var pColor = pBase.ToIntPointer();
+								pColor[0] = Root.Instance.ConvertColor( element.Color );
+							    pBase += sizeof(int);
 							}
 
 							if ( this.useTexCoords )
 							{
-								pFloat = (float*)pBase;
-								if ( this.texCoordDirection == TexCoordDirection.U )
+                                pFloat = pBase.ToFloatPointer();
+                                if (this.texCoordDirection == TexCoordDirection.U)
 								{
-									*pFloat++ = element.TexCoord;
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
+                                    pFloat[0] = element.TexCoord;
+                                    pFloat[1] = this.otherTexCoordRange[0];
 								}
 								else
 								{
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-									*pFloat++ = element.TexCoord;
+                                    pFloat[0] = this.otherTexCoordRange[0];
+                                    pFloat[1] = element.TexCoord;
 								}
-								pBase = (byte*)pFloat;
+							    pBase += sizeof(float)*2;
 							}
+
+                            pFloat = pBase.ToFloatPointer();
 
 							// pos2
-							*pFloat++ = pos1.x;
-							*pFloat++ = pos1.y;
-							*pFloat++ = pos1.z;
+                            pFloat[0] = pos1.x;
+                            pFloat[1] = pos1.y;
+                            pFloat[2] = pos1.z;
 
-							pBase = (byte*)pFloat;
+                            pBase += sizeof(float) * 3;
 
 							if ( this.useVertexColor )
 							{
-								int* pColor = (int*)pBase;
-								*pColor++ = Root.Instance.ConvertColor( element.Color );
-								pBase = (byte*)pColor;
+                                var pColor = pBase.ToIntPointer();
+                                pColor[0] = Root.Instance.ConvertColor(element.Color);
+                                pBase += sizeof(int);
 							}
 
 							if ( this.useTexCoords )
 							{
-								pFloat = (float*)pBase;
-								if ( this.texCoordDirection == TexCoordDirection.U )
-								{
-									*pFloat++ = element.TexCoord;
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-								}
-								else
-								{
-									*pFloat++ = this.otherTexCoordRange[ 0 ];
-									*pFloat++ = element.TexCoord;
-								}
-								pBase = (byte*)pFloat;
-							}
+                                pFloat = pBase.ToFloatPointer();
+                                if (this.texCoordDirection == TexCoordDirection.U)
+                                {
+                                    pFloat[0] = element.TexCoord;
+                                    pFloat[1] = this.otherTexCoordRange[0];
+                                }
+                                else
+                                {
+                                    pFloat[0] = this.otherTexCoordRange[0];
+                                    pFloat[1] = element.TexCoord;
+                                }
+                                pBase += sizeof(float) * 2;
+                            }
 
 							if ( e == segment.tail )
 							{
@@ -582,24 +586,27 @@ namespace Axiom.Core
 
 			if ( this.indexContentDirty )
 			{
-				IntPtr pBufferBase = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var pBufferBase = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
 				this.indexData.indexCount = 0;
 
-				unsafe
-				{
-					ushort* pShort = (ushort*)pBufferBase.ToPointer();
-					// indexes
-					foreach ( ChainSegment segment in this.chainSegmentList )
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+					var pShort = pBufferBase.ToUShortPointer();
+                    var idx = 0;
+                    // indexes
+					foreach ( var segment in this.chainSegmentList )
 					{
 						// Skip 0 or 1 element segment counts
 						if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 						{
 							// Start from head + 1 since it's only useful in pairs
-							int laste = segment.head;
+							var laste = segment.head;
 
 							while ( true )
 							{
-								int e = laste + 1;
+								var e = laste + 1;
 								// Wrap Forwards
 								if ( e == this.maxElementsPerChain )
 								{
@@ -607,15 +614,15 @@ namespace Axiom.Core
 								}
 								// indexes of this element are (e * 2) and (e * 2) + 1
 								// indexes of the last element are the same, -2
-								ushort baseIndex = (ushort)( ( e + segment.start ) * 2 );
-								ushort lastBaseIndex = (ushort)( ( laste + segment.start ) * 2 );
+								var baseIndex = (ushort)( ( e + segment.start ) * 2 );
+								var lastBaseIndex = (ushort)( ( laste + segment.start ) * 2 );
 
-								*pShort++ = lastBaseIndex;
-								*pShort++ = (ushort)( lastBaseIndex + 1 );
-								*pShort++ = baseIndex;
-								*pShort++ = (ushort)( lastBaseIndex + 1 );
-								*pShort++ = (ushort)( baseIndex + 1 );
-								*pShort++ = baseIndex;
+								pShort[idx++] = lastBaseIndex;
+                                pShort[idx++] = (ushort)(lastBaseIndex + 1);
+                                pShort[idx++] = baseIndex;
+                                pShort[idx++] = (ushort)(lastBaseIndex + 1);
+                                pShort[idx++] = (ushort)(baseIndex + 1);
+                                pShort[idx++] = baseIndex;
 
 								this.indexData.indexCount += 6;
 
@@ -642,11 +649,11 @@ namespace Axiom.Core
 				this.aabb.IsNull = true;
 				Vector3 widthVector;
 
-				foreach ( ChainSegment segment in this.chainSegmentList )
+				foreach ( var segment in this.chainSegmentList )
 				{
 					if ( segment.head != SEGMENT_EMPTY )
 					{
-						for ( int i = segment.head; ; ++i )
+						for ( var i = segment.head; ; ++i )
 						{
 							// Wrap forwards
 							if ( i == this.maxElementsPerChain )
@@ -654,7 +661,7 @@ namespace Axiom.Core
 								i = 0;
 							}
 
-							Element element = this.chainElementList[ segment.start + i ];
+							var element = this.chainElementList[ segment.start + i ];
 
 							widthVector.x = widthVector.y = widthVector.z = element.Width;
 							this.aabb.Merge( element.Position - widthVector );
@@ -690,7 +697,7 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			ChainSegment segment = this.chainSegmentList[ chainIndex ];
+			var segment = this.chainSegmentList[ chainIndex ];
 			if ( segment.head == SEGMENT_EMPTY )
 			{
 				// Tail starts at end, head grows backwards
@@ -745,7 +752,7 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			ChainSegment segment = this.chainSegmentList[ chainIndex ];
+			var segment = this.chainSegmentList[ chainIndex ];
 			if ( segment.head == SEGMENT_EMPTY )
 				return; // nothing to remove
 
@@ -779,13 +786,13 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			ChainSegment segment = this.chainSegmentList[ chainIndex ];
+			var segment = this.chainSegmentList[ chainIndex ];
 			if ( segment.head == SEGMENT_EMPTY )
 			{
 				throw new Exception( "Chain segement is empty" );
 			}
 
-			int index = segment.head + elementIndex;
+			var index = segment.head + elementIndex;
 			// adjust for the edge and start
 			index = ( index % this.maxElementsPerChain ) + segment.start;
 
@@ -805,9 +812,9 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			ChainSegment segment = this.chainSegmentList[ chainIndex ];
+			var segment = this.chainSegmentList[ chainIndex ];
 
-			int index = segment.head + elementIndex;
+			var index = segment.head + elementIndex;
 			// adjust for the edge and start
 			index = ( index % this.maxElementsPerChain ) + segment.start;
 
@@ -1110,11 +1117,11 @@ namespace Axiom.Core
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
-			int maxElements = 20;
-			int numberOfChains = 1;
-			bool useTextureCoords = true;
-			bool useVertexColors = true;
-			bool isDynamic = true;
+			var maxElements = 20;
+			var numberOfChains = 1;
+			var useTextureCoords = true;
+			var useVertexColors = true;
+			var isDynamic = true;
 
 			// optional parameters
 			if ( param != null )

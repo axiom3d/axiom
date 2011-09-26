@@ -247,7 +247,8 @@ namespace Axiom.RenderSystems.OpenGL
 					throw new ArgumentException( "Compressed images must be consecutive, in the source format" );
 				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
 				// for compressed formate
-				Gl.glGetCompressedTexImageARB( _faceTarget, _level, data.Data );
+				Gl.glGetCompressedTexImageARB( _faceTarget, _level, data.Data.Pin() );
+			    data.Data.UnPin();
 			}
 			else
 			{
@@ -263,7 +264,8 @@ namespace Axiom.RenderSystems.OpenGL
 				// We can only get the entire texture
 				Gl.glGetTexImage( _faceTarget, _level,
 								  GLPixelUtil.GetGLOriginFormat( data.Format ), GLPixelUtil.GetGLOriginDataType( data.Format ),
-								  data.Data );
+                                  data.Data.Pin());
+                data.Data.UnPin();
 				// Restore defaults
 				Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, 0 );
 				Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, 0 );
@@ -289,7 +291,8 @@ namespace Axiom.RenderSystems.OpenGL
 							box.Left,
 							box.Width,
 							format, box.ConsecutiveSize,
-							box.Data );
+							box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
@@ -297,14 +300,16 @@ namespace Axiom.RenderSystems.OpenGL
 							box.Left, box.Top,
 							box.Width, box.Height,
 							format, box.ConsecutiveSize,
-							box.Data );
+                            box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_3D:
 						Gl.glCompressedTexSubImage3DARB( Gl.GL_TEXTURE_3D, _level,
 							box.Left, box.Top, box.Front,
 							box.Width, box.Height, box.Depth,
 							format, box.ConsecutiveSize,
-							box.Data );
+                            box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 				}
 			}
@@ -325,7 +330,8 @@ namespace Axiom.RenderSystems.OpenGL
 							Gl.GL_TEXTURE_1D, internalFormat,
 							box.Width,
 							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+							box.Data.Pin() );
+				        box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
@@ -333,7 +339,8 @@ namespace Axiom.RenderSystems.OpenGL
 							_faceTarget,
 							internalFormat, box.Width, box.Height,
 							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+                            box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_3D:
 						/* Requires GLU 1.3 which is harder to come by than cards doing hardware mipmapping
@@ -348,7 +355,8 @@ namespace Axiom.RenderSystems.OpenGL
 							Gl.GL_TEXTURE_3D, 0, internalFormat,
 							box.Width, box.Height, box.Depth, 0,
 							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+                            box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 				}
 			}
@@ -370,7 +378,8 @@ namespace Axiom.RenderSystems.OpenGL
 							box.Left,
 							box.Width,
 							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+                            box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
@@ -378,7 +387,8 @@ namespace Axiom.RenderSystems.OpenGL
 							box.Left, box.Top,
 							box.Width, box.Height,
 							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+							box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_3D:
 						Gl.glTexSubImage3D(
@@ -386,7 +396,8 @@ namespace Axiom.RenderSystems.OpenGL
 							box.Left, box.Top, box.Front,
 							box.Width, box.Height, box.Depth,
 							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+                            box.Data.Pin());
+				        box.Data.UnPin();
 						break;
 				}
 			}

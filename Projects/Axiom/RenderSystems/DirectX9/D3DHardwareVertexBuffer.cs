@@ -41,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using SlimDX;
@@ -100,13 +101,13 @@ namespace Axiom.RenderSystems.DirectX9
         /// Source buffer locked bytes.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        private IntPtr sourceLockedBytes;
+        private BufferBase sourceLockedBytes;
 
         /// <summary>
         /// Consistent system memory buffer for multiple devices support in case of write only buffers.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        private IntPtr systemMemoryBuffer;
+        private BufferBase systemMemoryBuffer;
 
 
         #region Member variables
@@ -141,16 +142,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 		        // Set source buffer to NULL.
 		        sourceBuffer = null;
-		        sourceLockedBytes  = IntPtr.Zero;
+		        sourceLockedBytes  = null;
 
 		        // Allocate the system memory buffer.
 		        if (((usage & BufferUsage.WriteOnly) != 0) && D3DRenderSystem.ResourceManager.AutoHardwareBufferManagement)
 		        {
-		            systemMemoryBuffer = Marshal.AllocHGlobal(Size);
+                    systemMemoryBuffer = BufferBase.Wrap(new byte[Size]);
 		        }
 		        else
 		        {			
-			        systemMemoryBuffer = IntPtr.Zero;
+			        systemMemoryBuffer = null;
 		        }
 
                 // Create buffer resource(s).
@@ -236,7 +237,7 @@ namespace Axiom.RenderSystems.DirectX9
 	    {
 	        if (bufferResources.OutOfDate)
 		    {
-			    if (systemMemoryBuffer != IntPtr.Zero)
+			    if (systemMemoryBuffer != null)
 			    {
 				    UpdateBufferResources(systemMemoryBuffer, bufferResources);
 			    }
@@ -247,7 +248,7 @@ namespace Axiom.RenderSystems.DirectX9
 				    sourceLockedBytes = LockBuffer(sourceBuffer, 0, Size);
 				    UpdateBufferResources(sourceLockedBytes, bufferResources);
 				    UnlockBuffer(sourceBuffer);
-				    sourceLockedBytes = IntPtr.Zero;
+				    sourceLockedBytes = null;
 			    }			
 		    }
 	    }
@@ -259,7 +260,7 @@ namespace Axiom.RenderSystems.DirectX9
             Memory.UnpinObject( ptr );
         }
 
-        protected void UpdateBufferResources(IntPtr p0, BufferResources bufferResources)
+        protected void UpdateBufferResources(BufferBase p0, BufferResources bufferResources)
 	    {
 	        throw new NotImplementedException();
 	    }
@@ -280,13 +281,13 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region LockBuffer
 
-        protected IntPtr LockBuffer( BufferResources bufferResources, int offset, int length)
+        protected BufferBase LockBuffer(BufferResources bufferResources, int offset, int length)
 	    {
 	        _pSourceBytes = bufferResources.Buffer.Lock(
 	            offset,
 	            length,
 	            D3DHelper.ConvertEnum(sourceBuffer.LockOptions, usage) );
-		    return _pSourceBytes.DataPointer;
+            return BufferBase.Wrap(_pSourceBytes.DataPointer, length);
 	    }
 
         #endregion
@@ -296,7 +297,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region LockImpl
 
         [OgreVersion(1, 7, 2790)]
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking options )
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking options)
 		{
 			lock(SDeviceAccessMutex)
 			{
@@ -329,7 +330,7 @@ namespace Axiom.RenderSystems.DirectX9
 			    }
 
 			    // Case we use system memory buffer -> just return it
-			    if ( systemMemoryBuffer != IntPtr.Zero)
+			    if ( systemMemoryBuffer != null)
 			    {
                     return systemMemoryBuffer.Offset(offset);
 			    }
@@ -359,7 +360,7 @@ namespace Axiom.RenderSystems.DirectX9
 		                 bufferResources.Buffer != null &&
 		                 nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
 		            {
-		                if ( systemMemoryBuffer != IntPtr.Zero )
+		                if ( systemMemoryBuffer != null )
 		                {
 		                    UpdateBufferResources( systemMemoryBuffer.Offset(bufferResources.LockOffset), bufferResources );
 		                }
@@ -371,18 +372,18 @@ namespace Axiom.RenderSystems.DirectX9
 		        }
 
 		        // Unlock the source buffer.
-		        if ( systemMemoryBuffer == IntPtr.Zero )
+		        if ( systemMemoryBuffer == null )
 		        {
 		            UnlockBuffer( sourceBuffer );
-		            sourceLockedBytes = IntPtr.Zero;
+		            sourceLockedBytes = null;
 		        }
 		    }
 		}
 
-	    public override void ReadData( int offset, int length, IntPtr dest )
+        public override void ReadData(int offset, int length, BufferBase dest)
 		{
 			// lock the buffer for reading
-			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+			var src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
@@ -398,10 +399,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="length"></param>
 		/// <param name="src"></param>
 		/// <param name="discardWholeBuffer"></param>
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+        public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
 		{
 			// lock the buffer real quick
-			IntPtr dest = Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			var dest = Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 			// copy that data in there
 			Memory.Copy( src, dest, length );
 
@@ -423,10 +424,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-            if (systemMemoryBuffer != IntPtr.Zero)
+            if (systemMemoryBuffer != null)
             {
-                Marshal.FreeHGlobal(systemMemoryBuffer);
-                systemMemoryBuffer = IntPtr.Zero;
+                systemMemoryBuffer = null;
             }
 
 		    // If it is available, make the call to the

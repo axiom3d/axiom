@@ -1,4 +1,5 @@
-﻿using Axiom.Math;
+﻿using Axiom.CrossPlatform;
+using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Animating;
@@ -162,17 +163,18 @@ namespace Axiom.Samples.VolumeTexture
 
 			unsafe
 			{
-				uint* pbptr = (uint*)pb.Data;
+                var pbptr = (BufferBase)pb.Data.Clone();
 				for ( int z = pb.Front; z < pb.Back; z++ )
 				{
 					for ( int y = pb.Top; y < pb.Bottom; y++ )
 					{
+                        pbptr += pb.Left * sizeof(uint);
 						for ( int x = pb.Left; x < pb.Right; x++ )
 						{
 							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) ||
 								x == pb.Left || x == ( pb.Right - 1 ) )
 							{
-								pbptr[ x ] = 0;
+                                pbptr.ToUIntPointer()[0] = 0;
 							}
 							else
 							{
@@ -182,12 +184,15 @@ namespace Axiom.Samples.VolumeTexture
 								if ( val > vcut )
 									val = vcut;
 
-                                PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, (System.IntPtr)(&pbptr[ x ]) );
+							    PixelConverter.PackColor( (float)x/pb.Width, (float)y/pb.Height, (float)z/pb.Depth,
+							                              ( 1.0f - ( val*vscale ) )*0.7f, PixelFormat.A8R8G8B8,
+							                              pbptr );
 							}
+						    pbptr++;
 						}
-						pbptr += pb.RowPitch;
+                        pbptr += (pb.RowPitch - pb.Right) * sizeof(uint);
 					}
-					pbptr += pb.SliceSkip;
+                    pbptr += pb.SliceSkip * sizeof(uint);
 				}
 				buffer.Unlock();
 			}

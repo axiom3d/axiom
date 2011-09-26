@@ -121,7 +121,7 @@ namespace Axiom.Overlays.Elements
 		internal BorderPanel( string name )
 			: base( name )
 		{
-			for ( int x = 0; x < 8; x++ )
+			for ( var x = 0; x < 8; x++ )
 			{
 				borderUV[ x ] = new CellUV();
 			}
@@ -168,13 +168,15 @@ namespace Axiom.Overlays.Elements
 
 			// No choice but to lock / unlock each time here, but lock only small sections
 
-			HardwareVertexBuffer vbuf =	renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
+			var vbuf =	renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
 			// Can't use discard since this discards whole buffer
-			IntPtr data = vbuf.Lock( BufferLocking.Discard );
-			int index = 0;
+			var data = vbuf.Lock( BufferLocking.Discard );
+			var index = 0;
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* idxPtr = (float*)data.ToPointer();
+				var idxPtr = data.ToFloatPointer();
 
 				for ( short i = 0; i < 8; i++ )
 				{
@@ -325,7 +327,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override void Initialize()
 		{
-			bool init = !isInitialized;
+			var init = !isInitialized;
 			base.Initialize();
 
 			// superclass will handle the interior panel area
@@ -338,18 +340,18 @@ namespace Axiom.Overlays.Elements
 				renderOp2.vertexData.vertexStart = 0;
 
 				// get a reference to the vertex declaration
-				VertexDeclaration decl = renderOp2.vertexData.vertexDeclaration;
+				var decl = renderOp2.vertexData.vertexDeclaration;
 				// Position and texture coords each have their own buffers to allow
 				// each to be edited separately with the discard flag
 				decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 				decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 				// position buffer
-				HardwareVertexBuffer buffer =
+				var buffer =
 					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind position
-				VertexBufferBinding binding = renderOp2.vertexData.vertexBufferBinding;
+				var binding = renderOp2.vertexData.vertexBufferBinding;
 				binding.SetBinding( POSITION, buffer );
 
 				// texcoord buffer
@@ -385,15 +387,17 @@ namespace Axiom.Overlays.Elements
 						BufferUsage.StaticWriteOnly );
 
 				// lock this bad boy
-				IntPtr data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
-				int index = 0;
+				var data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var index = 0;
+#if !AXIOM_SAFE_ONLY
 				unsafe
+#endif
 				{
-					short* idxPtr = (short*)data.ToPointer();
+					var idxPtr = data.ToShortPointer();
 
 					for ( short cell = 0; cell < 8; cell++ )
 					{
-						short val = (short)( cell * 4 );
+						var val = (short)( cell * 4 );
 						idxPtr[ index++ ] = val;
 						idxPtr[ index++ ] = (short)( val + 1 );
 						idxPtr[ index++ ] = (short)( val + 2 );
@@ -521,23 +525,25 @@ namespace Axiom.Overlays.Elements
 		/// <param name="v2">Bottom right v.</param>
 		public void SetCellUV( BorderCell cell, float u1, float v1, float u2, float v2 )
 		{
-			int cellIndex = (int)cell;
+			var cellIndex = (int)cell;
 
 			// no choice but to lock/unlock each time here, locking only what we want to modify
-			HardwareVertexBuffer buffer =
+			var buffer =
 				renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
 
 			// can't use discard, or it will discard the whole buffer, wiping out the positions too
-			IntPtr data = buffer.Lock(
-				cellIndex * 8 * Marshal.SizeOf( typeof( float ) ),
-				Marshal.SizeOf( typeof( float ) ) * 8,
+			var data = buffer.Lock(
+				cellIndex * 8 * Memory.SizeOf( typeof( float ) ),
+				Memory.SizeOf( typeof( float ) ) * 8,
 				BufferLocking.Normal );
 
-			int index = 0;
+			var index = 0;
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* texPtr = (float*)data.ToPointer();
+				var texPtr = data.ToFloatPointer();
 
 				texPtr[ index++ ] = u1;
 				texPtr[ index++ ] = v1;
@@ -602,19 +608,21 @@ namespace Axiom.Overlays.Elements
 			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize * 2 );
 
 			// get a reference to the buffer
-			HardwareVertexBuffer buffer =
+			var buffer =
 				renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			// lock this bad boy
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
-			int index = 0;
+			var data = buffer.Lock( BufferLocking.Discard );
+			var index = 0;
 
 			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
 			//float zValue = -1;
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* posPtr = (float*)data.ToPointer();
-				for ( int cell = 0; cell < 8; cell++ )
+				var posPtr = data.ToFloatPointer();
+				for ( var cell = 0; cell < 8; cell++ )
 				{
 					posPtr[ index++ ] = lefts[ cell ];
 					posPtr[ index++ ] = tops[ cell ];
@@ -644,9 +652,11 @@ namespace Axiom.Overlays.Elements
 
 			index = 0;
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* posPtr = (float*)data.ToPointer();
+				var posPtr = data.ToFloatPointer();
 
 				posPtr[ index++ ] = lefts[ 1 ];
 				posPtr[ index++ ] = tops[ 3 ];
@@ -817,7 +827,7 @@ namespace Axiom.Overlays.Elements
 		#region ScriptableObject Interface Command Classes
 
 		[ScriptableProperty( "border_size", "", typeof( BorderPanel ) )]
-		private class BorderSizeAttributeCommand : IPropertyCommand
+        public class BorderSizeAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -862,7 +872,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_material", "", typeof( BorderPanel ) )]
-		private class BorderMaterialHeightAttributeCommand : IPropertyCommand
+        public class BorderMaterialHeightAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -902,7 +912,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_topleft_uv", "", typeof( BorderPanel ) )]
-		private class BorderTopLeftUVAttributeCommand : IPropertyCommand
+        public class BorderTopLeftUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -950,7 +960,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_topright_uv", "", typeof( BorderPanel ) )]
-		private class BorderTopRightUVAttributeCommand : IPropertyCommand
+        public class BorderTopRightUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -998,7 +1008,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_bottomleft_uv", "", typeof( BorderPanel ) )]
-		private class BorderBottomLeftUVAttributeCommand : IPropertyCommand
+        public class BorderBottomLeftUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1046,7 +1056,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_bottomright_uv", "", typeof( BorderPanel ) )]
-		private class BorderBottomRightUVAttributeCommand : IPropertyCommand
+        public class BorderBottomRightUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1094,7 +1104,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_left_uv", "", typeof( BorderPanel ) )]
-		private class BorderLeftUVAttributeCommand : IPropertyCommand
+        public class BorderLeftUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1142,7 +1152,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_top_uv", "", typeof( BorderPanel ) )]
-		private class BorderTopUVAttributeCommand : IPropertyCommand
+        public class BorderTopUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1190,7 +1200,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_right_uv", "", typeof( BorderPanel ) )]
-		private class BorderRightUVAttributeCommand : IPropertyCommand
+        public class BorderRightUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1238,7 +1248,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "border_bottom_uv", "", typeof( BorderPanel ) )]
-		private class BorderBottomUVAttributeCommand : IPropertyCommand
+        public class BorderBottomUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 

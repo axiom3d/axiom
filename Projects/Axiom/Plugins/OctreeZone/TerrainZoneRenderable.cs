@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using System.Collections;
@@ -176,9 +177,9 @@ namespace OctreeZone
 
 		public int NumNeighbors()
 		{
-			int n = 0;
+			var n = 0;
 
-			for ( int i = 0; i < 4; i++ )
+			for ( var i = 0; i < 4; i++ )
 			{
 				if ( mNeighbors[ i ] != null )
 					n++;
@@ -189,7 +190,7 @@ namespace OctreeZone
 
 		public bool HasNeighborRenderLevel( int i )
 		{
-			for ( int j = 0; j < 4; j++ )
+			for ( var j = 0; j < 4; j++ )
 			{
 				if ( mNeighbors[ j ] != null && mNeighbors[ j ].mRenderLevel == i )
 					return true;
@@ -239,12 +240,15 @@ namespace OctreeZone
 				mMinLevelDistSqr = null;
 		}
 
-		public unsafe void Initialize( int startx, int startz, Real[] pageHeightData )
+#if !AXIOM_SAFE_ONLY
+        unsafe
+#endif
+        public void Initialize( int startx, int startz, Real[] pageHeightData )
 		{
 
 			if ( mOptions.maxGeoMipMapLevel != 0 )
 			{
-				int i = (int)1 << ( mOptions.maxGeoMipMapLevel - 1 );
+				var i = (int)1 << ( mOptions.maxGeoMipMapLevel - 1 );
 
 				if ( ( i + 1 ) > mOptions.tileSize )
 				{
@@ -267,11 +271,11 @@ namespace OctreeZone
 			renderOperation.vertexData = mTerrain;
 			renderOperation.indexData = GetIndexData();
 
-			VertexDeclaration decl = mTerrain.vertexDeclaration;
-			VertexBufferBinding bind = mTerrain.vertexBufferBinding;
+			var decl = mTerrain.vertexDeclaration;
+			var bind = mTerrain.vertexBufferBinding;
 
 			// positions
-			int offset = 0;
+			var offset = 0;
 			decl.AddElement( MAIN_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 			if ( mOptions.lit )
@@ -313,48 +317,48 @@ namespace OctreeZone
 
 			mMinLevelDistSqr = new Real[ mOptions.maxGeoMipMapLevel ];
 
-			int endx = startx + mOptions.tileSize;
+			var endx = startx + mOptions.tileSize;
 
-			int endz = startz + mOptions.tileSize;
+			var endz = startz + mOptions.tileSize;
 
 			Vector3 left, down, here;
 
-			VertexElement poselem = decl.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement texelem0 = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
-			VertexElement texelem1 = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
+			var poselem = decl.FindElementBySemantic( VertexElementSemantic.Position );
+			var texelem0 = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
+			var texelem1 = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
 			//fixed ( float* pSysPos = mPositionBuffer )
 			{
-				int pos = 0;
-				byte* pBase = (byte*)mMainBuffer.Lock( BufferLocking.Discard );
+				var pos = 0;
+				var pBase = mMainBuffer.Lock( BufferLocking.Discard );
 
-				for ( int j = startz; j < endz; j++ )
+				for ( var j = startz; j < endz; j++ )
 				{
-					for ( int i = startx; i < endx; i++ )
+					for ( var i = startx; i < endx; i++ )
 					{
-						float* pPos = (float*)( pBase + poselem.Offset );
-						float* pTex0 = (float*)( pBase + texelem0.Offset );
-						float* pTex1 = (float*)( pBase + texelem1.Offset );
+					    var pPos = ( pBase + poselem.Offset ).ToFloatPointer();
+					    var pTex0 = ( pBase + texelem0.Offset ).ToFloatPointer();
+					    var pTex1 = ( pBase + texelem1.Offset ).ToFloatPointer();
 						//poselem.baseVertexPointerToElement(pBase, &pPos);
 
 						//texelem0.baseVertexPointerToElement(pBase, &pTex0);
 						//texelem1.baseVertexPointerToElement(pBase, &pTex1);
 
-						Real height = pageHeightData[ j * mOptions.pageSize + i ];
+						var height = pageHeightData[ j * mOptions.pageSize + i ];
 						height = height * mOptions.scale.y; // scale height
 
 						//*pSysPos++ = *pPos++ = (float) i*mOptions.scale.x; //x
 						//*pSysPos++ = *pPos++ = height; // y
 						//*pSysPos++ = *pPos++ = (float) j*mOptions.scale.z; //z
 
-						mPositionBuffer[ pos++ ] = *pPos++ = (float)i * mOptions.scale.x; //x
-						mPositionBuffer[ pos++ ] = *pPos++ = height; // y
-						mPositionBuffer[ pos++ ] = *pPos++ = (float)j * mOptions.scale.z; //z
+						mPositionBuffer[ pos++ ] = pPos[0] = (float)i * mOptions.scale.x; //x
+						mPositionBuffer[ pos++ ] = pPos[1] = height; // y
+						mPositionBuffer[ pos++ ] = pPos[2] = (float)j * mOptions.scale.z; //z
 
-						*pTex0++ = (float)i / (float)( mOptions.pageSize - 1 );
-						*pTex0++ = (float)j / (float)( mOptions.pageSize - 1 );
+                        pTex0[0] = (float)i / (float)(mOptions.pageSize - 1);
+                        pTex0[1] = (float)j / (float)(mOptions.pageSize - 1);
 
-						*pTex1++ = ( (float)i / (float)( mOptions.tileSize - 1 ) ) * mOptions.detailTile;
-						*pTex1++ = ( (float)j / (float)( mOptions.tileSize - 1 ) ) * mOptions.detailTile;
+                        pTex1[0] = ((float)i / (float)(mOptions.tileSize - 1)) * mOptions.detailTile;
+                        pTex1[1] = ((float)j / (float)(mOptions.tileSize - 1)) * mOptions.detailTile;
 
 						if ( height < min )
 							min = (Real)height;
@@ -387,7 +391,7 @@ namespace OctreeZone
 					mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>( mOptions.maxGeoMipMapLevel - 1 );
 				}
 
-				Real C = CalculateCFactor();
+				var C = CalculateCFactor();
 
 				CalculateMinLevelDist2( C );
 			}
@@ -412,7 +416,7 @@ namespace OctreeZone
 			// Turn off detail compression at higher FOVs
 			A = 1.0f;
 
-			int vertRes = mOptions.primaryCamera.Viewport.ActualHeight;
+			var vertRes = mOptions.primaryCamera.Viewport.ActualHeight;
 
 			T = 2 * (Real)mOptions.maxPixelError / (Real)vertRes;
 
@@ -473,11 +477,11 @@ namespace OctreeZone
 			float x_pct = ( x - start.x ) / ( end.x - start.x );
 			float z_pct = ( z - start.z ) / ( end.z - start.z );
 
-			float x_pt = x_pct * (float)( mOptions.tileSize - 1 );
-			float z_pt = z_pct * (float)( mOptions.tileSize - 1 );
+			var x_pt = x_pct * (float)( mOptions.tileSize - 1 );
+			var z_pt = z_pct * (float)( mOptions.tileSize - 1 );
 
-			int x_index = (int)x_pt;
-			int z_index = (int)z_pt;
+			var x_index = (int)x_pt;
+			var z_index = (int)z_pt;
 
 			// If we got to the far right / bottom edge, move one back
 			if ( x_index == mOptions.tileSize - 1 )
@@ -502,12 +506,12 @@ namespace OctreeZone
 
 			//bilinear interpolate to find the height.
 
-			float t1 = Vertex( x_index, z_index, 1 );
-			float t2 = Vertex( x_index + 1, z_index, 1 );
-			float b1 = Vertex( x_index, z_index + 1, 1 );
-			float b2 = Vertex( x_index + 1, z_index + 1, 1 );
+			var t1 = Vertex( x_index, z_index, 1 );
+			var t2 = Vertex( x_index + 1, z_index, 1 );
+			var b1 = Vertex( x_index, z_index + 1, 1 );
+			var b2 = Vertex( x_index + 1, z_index + 1, 1 );
 
-			float midpoint = ( b1 + t2 ) / 2.0f;
+			var midpoint = ( b1 + t2 ) / 2.0f;
 
 			if ( x_pct + z_pct <= 1 )
 			{
@@ -518,10 +522,10 @@ namespace OctreeZone
 				t1 = midpoint + ( midpoint - b2 );
 			}
 
-			float t = ( t1 * ( 1 - x_pct ) ) + ( t2 * ( x_pct ) );
-			float b = ( b1 * ( 1 - x_pct ) ) + ( b2 * ( x_pct ) );
+			var t = ( t1 * ( 1 - x_pct ) ) + ( t2 * ( x_pct ) );
+			var b = ( b1 * ( 1 - x_pct ) ) + ( b2 * ( x_pct ) );
 
-			float h = ( t * ( 1 - z_pct ) ) + ( b * ( z_pct ) );
+			var h = ( t * ( 1 - z_pct ) ) + ( b * ( z_pct ) );
 
 			return h;
 		}
@@ -564,8 +568,8 @@ namespace OctreeZone
 
 		public bool IntersectSegment( Vector3 start, Vector3 end, ref Vector3 result )
 		{
-			Vector3 dir = end - start;
-			Vector3 ray = start;
+			var dir = end - start;
+			var ray = start;
 
 			//special case...
 			if ( dir.x == 0 && dir.z == 0 )
@@ -585,7 +589,7 @@ namespace OctreeZone
 			//dir.y *= mScale.y;
 			//dir.z *= mScale.z;
 
-			AxisAlignedBox box = BoundingBox;
+			var box = BoundingBox;
 			//start with the next one...
 			ray += dir;
 
@@ -597,7 +601,7 @@ namespace OctreeZone
 			{
 
 
-				float h = GetHeightAt( ray.x, ray.z );
+				var h = GetHeightAt( ray.x, ray.z );
 
 				if ( ray.y <= h )
 				{
@@ -634,17 +638,17 @@ namespace OctreeZone
 		public void GenerateVertexLighting( Vector3 sunlight, ColorEx ambient )
 		{
 
-			Vector3 pt = Vector3.Zero;
-			Vector3 normal = Vector3.Zero;
+			var pt = Vector3.Zero;
+			var normal = Vector3.Zero;
 			Vector3 light;
 
-			HardwareVertexBuffer vbuf = mTerrain.vertexBufferBinding.GetBuffer( (short)MAIN_BINDING );
+			var vbuf = mTerrain.vertexBufferBinding.GetBuffer( (short)MAIN_BINDING );
 
-			VertexElement elem = mTerrain.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
+			var elem = mTerrain.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
 			//for each point in the terrain, see if it's in the line of sight for the sun.
-			for ( int i = 0; i < mOptions.tileSize; i++ )
+			for ( var i = 0; i < mOptions.tileSize; i++ )
 			{
-				for ( int j = 0; j < mOptions.tileSize; j++ )
+				for ( var j = 0; j < mOptions.tileSize; j++ )
 				{
 					//  printf( "Checking %f,%f,%f ", pt.x, pt.y, pt.z );
 					pt.x = Vertex( i, j, 0 );
@@ -662,7 +666,7 @@ namespace OctreeZone
 
 						float l = light.Dot( normal );
 
-						ColorEx v = new ColorEx();
+						var v = new ColorEx();
 						v.r = ambient.r + l;
 						v.g = ambient.g + l;
 						v.b = ambient.b + l;
@@ -685,20 +689,21 @@ namespace OctreeZone
 						if ( v.b < 0 )
 							v.b = 0;
 
-						IntPtr colour = new IntPtr( Root.Instance.ConvertColor( v ) );
+						var colour = new IntPtr( Root.Instance.ConvertColor( v ) );
 						//Check: Should be a better way...
-						vbuf.WriteData(
-							( Index( i, j ) * vbuf.VertexSize ) + elem.Offset,
-							sizeof( int ), colour );
+					    var bufcolour = BufferBase.Wrap( colour );
+					    vbuf.WriteData(
+					        ( Index( i, j )*vbuf.VertexSize ) + elem.Offset,
+					        sizeof ( int ), bufcolour );
 					}
 
 					else
 					{
-						IntPtr colour = new IntPtr( Root.Instance.ConvertColor( ambient ) );
-
+						var colour = new IntPtr( Root.Instance.ConvertColor( ambient ) );
+                        var bufcolour = BufferBase.Wrap(colour);
 						vbuf.WriteData(
 							( Index( i, j ) * vbuf.VertexSize ) + elem.Offset,
-							sizeof( int ), colour );
+							sizeof( int ), bufcolour );
 					}
 
 				}
@@ -715,17 +720,17 @@ namespace OctreeZone
 			}
 
 
-			Vector3 cpos = cam.DerivedPosition;
-			AxisAlignedBox aabb = GetWorldBoundingBox( true );
-			Vector3 diff = new Vector3( 0, 0, 0 );
+			var cpos = cam.DerivedPosition;
+			var aabb = GetWorldBoundingBox( true );
+			var diff = new Vector3( 0, 0, 0 );
 			diff.Floor( cpos - aabb.Minimum );
 			diff.Ceil( cpos - aabb.Maximum );
 
-			Real L = diff.LengthSquared;
+			var L = diff.LengthSquared;
 
 			mRenderLevel = -1;
 
-			for ( int i = 0; i < mOptions.maxGeoMipMapLevel; i++ )
+			for ( var i = 0; i < mOptions.maxGeoMipMapLevel; i++ )
 			{
 				if ( mMinLevelDistSqr[ i ] > L )
 				{
@@ -740,7 +745,7 @@ namespace OctreeZone
 			if ( mOptions.lodMorph )
 			{
 				// Get the next LOD level down
-				int nextLevel = mNextLevelDown[ mRenderLevel ];
+				var nextLevel = mNextLevelDown[ mRenderLevel ];
 				if ( nextLevel == 0 )
 				{
 					// No next level, so never morph
@@ -750,12 +755,12 @@ namespace OctreeZone
 				{
 					// Set the morph such that the morph happens in the last 0.25 of
 					// the distance range
-					Real range = mMinLevelDistSqr[ nextLevel ] - mMinLevelDistSqr[ mRenderLevel ];
+					var range = mMinLevelDistSqr[ nextLevel ] - mMinLevelDistSqr[ mRenderLevel ];
 					if ( range > 0 )
 					{
-						Real percent = ( L - mMinLevelDistSqr[ mRenderLevel ] ) / range;
+						var percent = ( L - mMinLevelDistSqr[ mRenderLevel ] ) / range;
 						// scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
-						Real rescale = 1.0f / ( 1.0f - mOptions.lodMorphStart );
+						var rescale = 1.0f / ( 1.0f - mOptions.lodMorphStart );
 						mLODMorphFactor = Math.Max( ( percent - mOptions.lodMorphStart ) * rescale, 0.0 );
 					}
 					else
@@ -834,7 +839,7 @@ namespace OctreeZone
 		//-----------------------------------------------------------------------
 		public bool CheckSize( int n )
 		{
-			for ( int i = 0; i < 10; i++ )
+			for ( var i = 0; i < 10; i++ )
 			{
 				if ( ( ( 1 << i ) + 1 ) == n )
 					return true;
@@ -843,33 +848,34 @@ namespace OctreeZone
 			return false;
 		}
 
-		public unsafe void CalculateNormals()
+#if !AXIOM_SAFE_ONLY
+        unsafe
+#endif
+        public void CalculateNormals()
 		{
 
-			Vector3 norm = Vector3.Zero;
+			var norm = Vector3.Zero;
 
 			Debug.Assert( mOptions.lit, "No normals present" );
 
-			HardwareVertexBuffer vbuf = mTerrain.vertexBufferBinding.GetBuffer( (short)MAIN_BINDING );
-			VertexElement elem = mTerrain.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			char* pBase = (char*)vbuf.Lock( BufferLocking.Discard );
-			float* pNorm = null;
+			var vbuf = mTerrain.vertexBufferBinding.GetBuffer( (short)MAIN_BINDING );
+			var elem = mTerrain.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			var pBase = vbuf.Lock( BufferLocking.Discard );
 
-			for ( int j = 0; j < mOptions.tileSize; j++ )
+			for ( var j = 0; j < mOptions.tileSize; j++ )
 			{
-				for ( int i = 0; i < mOptions.tileSize; i++ )
+				for ( var i = 0; i < mOptions.tileSize; i++ )
 				{
 
 					GetNormalAt( Vertex( i, j, 0 ), Vertex( i, j, 2 ), ref norm );
 
 					//  printf( "Normal = %5f,%5f,%5f\n", norm.x, norm.y, norm.z );
 					//elem.baseVertexPointerToElement(pBase, &pNorm);
-					//Check: Is this right?
-					*pNorm = ( *pBase ) + elem.Offset;
+					var pNorm = ( pBase  + elem.Offset).ToFloatPointer();
 
-					*pNorm++ = norm.x;
-					*pNorm++ = norm.y;
-					*pNorm++ = norm.z;
+					pNorm[0] = norm.x;
+                    pNorm[1] = norm.y;
+					pNorm[2] = norm.z;
 					pBase += vbuf.VertexSize;
 				}
 
@@ -877,23 +883,30 @@ namespace OctreeZone
 			vbuf.Unlock();
 		}
 
-		unsafe public void CalculateMinLevelDist2( Real C )
+#if !AXIOM_SAFE_ONLY
+        unsafe
+#endif
+        public void CalculateMinLevelDist2(Real C)
 		{
 			//level 0 has no delta.
 			mMinLevelDistSqr[ 0 ] = 0;
 
 			int i, j;
 
-			for ( int level = 1; level < mOptions.maxGeoMipMapLevel; level++ )
+			for ( var level = 1; level < mOptions.maxGeoMipMapLevel; level++ )
 			{
 				mMinLevelDistSqr[ level ] = 0;
 
-				int step = 1 << level;
+				var step = 1 << level;
 				// The step of the next higher LOD
-				int higherstep = step >> 1;
+				var higherstep = step >> 1;
 
+#if AXIOM_SAFE_ONLY
+                ITypePointer<float> pDeltas = null;
+#else
 				float* pDeltas = null;
-				IntPtr dataPtr;
+#endif
+                BufferBase dataPtr;
 				if ( mOptions.lodMorph )
 				{
 					// Create a set of delta values (store at index - 1 since 0 has none)
@@ -902,7 +915,7 @@ namespace OctreeZone
 
 					dataPtr = mDeltaBuffers[ level - 1 ].Lock( BufferLocking.Normal );
 
-					pDeltas = (float*)dataPtr.ToPointer();
+					pDeltas = dataPtr.ToFloatPointer();
 				}
 
 				for ( j = 0; j < mOptions.tileSize - step; j += step )
@@ -920,15 +933,15 @@ namespace OctreeZone
 						x---x
 						*/
 
-						Vector3 v1 = new Vector3( Vertex( i, j, 0 ), Vertex( i, j, 1 ), Vertex( i, j, 2 ) );
-						Vector3 v2 = new Vector3( Vertex( i + step, j, 0 ), Vertex( i + step, j, 1 ), Vertex( i + step, j, 2 ) );
-						Vector3 v3 = new Vector3( Vertex( i, j + step, 0 ), Vertex( i, j + step, 1 ), Vertex( i, j + step, 2 ) );
-						Vector3 v4 = new Vector3( Vertex( i + step, j + step, 0 ), Vertex( i + step, j + step, 1 ), Vertex( i + step, j + step, 2 ) );
+						var v1 = new Vector3( Vertex( i, j, 0 ), Vertex( i, j, 1 ), Vertex( i, j, 2 ) );
+						var v2 = new Vector3( Vertex( i + step, j, 0 ), Vertex( i + step, j, 1 ), Vertex( i + step, j, 2 ) );
+						var v3 = new Vector3( Vertex( i, j + step, 0 ), Vertex( i, j + step, 1 ), Vertex( i, j + step, 2 ) );
+						var v4 = new Vector3( Vertex( i + step, j + step, 0 ), Vertex( i + step, j + step, 1 ), Vertex( i + step, j + step, 2 ) );
 
 						Plane t1, t2;
 						t1 = new Plane();
 						t2 = new Plane();
-						bool backwardTri = false;
+						var backwardTri = false;
 						if ( !mOptions.useTriStrips || j % 2 == 0 )
 						{
 							t1.Redefine( v1, v3, v2 );
@@ -942,15 +955,15 @@ namespace OctreeZone
 						}
 
 						// include the bottommost row of vertices if this is the last row
-						int zubound = ( j == ( mOptions.tileSize - step ) ? step : step - 1 );
-						for ( int z = 0; z <= zubound; z++ )
+						var zubound = ( j == ( mOptions.tileSize - step ) ? step : step - 1 );
+						for ( var z = 0; z <= zubound; z++ )
 						{
 							// include the rightmost col of vertices if this is the last col
-							int xubound = ( i == ( mOptions.tileSize - step ) ? step : step - 1 );
-							for ( int x = 0; x <= xubound; x++ )
+							var xubound = ( i == ( mOptions.tileSize - step ) ? step : step - 1 );
+							for ( var x = 0; x <= xubound; x++ )
 							{
-								int fulldetailx = i + x;
-								int fulldetailz = j + z;
+								var fulldetailx = i + x;
+								var fulldetailz = j + z;
 								if ( fulldetailx % step == 0 &&
 									fulldetailz % step == 0 )
 								{
@@ -958,11 +971,11 @@ namespace OctreeZone
 									continue;
 								}
 
-								Real zpct = (Real)z / (Real)step;
-								Real xpct = (Real)x / (Real)step;
+								var zpct = (Real)z / (Real)step;
+								var xpct = (Real)x / (Real)step;
 
 								//interpolated height
-								Vector3 actualPos = new Vector3(
+								var actualPos = new Vector3(
 									Vertex( fulldetailx, fulldetailz, 0 ),
 									Vertex( fulldetailx, fulldetailz, 1 ),
 									Vertex( fulldetailx, fulldetailz, 2 ) );
@@ -990,7 +1003,7 @@ namespace OctreeZone
 								//Check: not sure about fabs used here...
 								Real delta = Math.Abs( interp_h - actual_h );
 
-								Real D2 = delta * delta * C * C;
+								var D2 = delta * delta * C * C;
 
 								if ( mMinLevelDistSqr[ level ] < D2 )
 									mMinLevelDistSqr[ level ] = D2;
@@ -1043,7 +1056,7 @@ namespace OctreeZone
 
 			// Now reverse traverse the list setting the 'next level down'
 			Real lastDist = -1;
-			int lastIndex = 0;
+			var lastIndex = 0;
 			for ( i = mOptions.maxGeoMipMapLevel - 1; i >= 0; --i )
 			{
 				if ( i == mOptions.maxGeoMipMapLevel - 1 )
@@ -1071,11 +1084,11 @@ namespace OctreeZone
 		public HardwareVertexBuffer CreateDeltaBuffer()
 		{
 			// Delta buffer is a 1D float buffer of height offsets
-            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
             decl.AddElement(0, 0, VertexElementType.Float1, VertexElementSemantic.Position);
-			HardwareVertexBuffer buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, mOptions.tileSize * mOptions.tileSize, BufferUsage.WriteOnly );
+			var buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, mOptions.tileSize * mOptions.tileSize, BufferUsage.WriteOnly );
 			// Fill the buffer with zeros, we will only fill in delta
-			IntPtr pVoid = buf.Lock( BufferLocking.Discard );
+			var pVoid = buf.Lock( BufferLocking.Discard );
 			Memory.Set( pVoid, 0, ( mOptions.tileSize * mOptions.tileSize ) * sizeof( float ) );
 			//memset(pVoid, 0, mOptions.tileSize*mOptions.tileSize*sizeof (float));
 			buf.Unlock();
@@ -1120,7 +1133,7 @@ namespace OctreeZone
 			}
 
 			// Check preexisting
-			Hashtable levelIndex = mTerrainZone.LevelIndex;
+			var levelIndex = mTerrainZone.LevelIndex;
 			//IndexMap::iterator ii = levelIndex[ mRenderLevel ].find( stitchFlags );
 			IndexData indexData;
 
@@ -1149,43 +1162,44 @@ namespace OctreeZone
 		public IndexData GenerateTriStripIndexes( uint stitchFlags )
 		{
 			// The step used for the current level
-			int step = 1 << mRenderLevel;
+			var step = 1 << mRenderLevel;
 			// The step used for the lower level
-			int lowstep = 1 << ( mRenderLevel + 1 );
+			var lowstep = 1 << ( mRenderLevel + 1 );
 
-			int numIndexes = 0;
+			var numIndexes = 0;
 
 			// Calculate the number of indexes required
 			// This is the number of 'cells' at this detail level x 2
 			// plus 3 degenerates to turn corners
-			int numTrisAcross = ( ( ( mOptions.tileSize - 1 ) / step ) * 2 ) + 3;
+			var numTrisAcross = ( ( ( mOptions.tileSize - 1 ) / step ) * 2 ) + 3;
 			// Num indexes is number of tris + 2
-			int new_length = numTrisAcross * ( ( mOptions.tileSize - 1 ) / step ) + 2;
+			var new_length = numTrisAcross * ( ( mOptions.tileSize - 1 ) / step ) + 2;
 			//this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
-			IndexData indexData = new IndexData();
+			var indexData = new IndexData();
 			indexData.indexBuffer =
 				HardwareBufferManager.Instance.CreateIndexBuffer(
 				IndexType.Size16,
 				new_length, BufferUsage.StaticWriteOnly );//, false);
 
 			mTerrainZone.IndexCache.mCache.Add( indexData );
+#if !AXIOM_SAFE_ONLY
 			unsafe
-			{
-
-
-				ushort* pIdx = (ushort*)indexData.indexBuffer.Lock( 0, indexData.indexBuffer.Size, BufferLocking.Discard );
+#endif
+            {
+				var pIdx = indexData.indexBuffer.Lock( 0, indexData.indexBuffer.Size, BufferLocking.Discard ).ToUShortPointer();
+			    var idx = 0;
 
 				// Stripified mesh
-				for ( int j = 0; j < mOptions.tileSize - 1; j += step )
+				for ( var j = 0; j < mOptions.tileSize - 1; j += step )
 				{
 					int i;
 					// Forward strip
 					// We just do the |/ here, final | done after
 					for ( i = 0; i < mOptions.tileSize - 1; i += step )
 					{
-						int[] x = new int[ 4 ];
-						int[] y = new int[ 4 ];
+						var x = new int[ 4 ];
+						var y = new int[ 4 ];
 						x[ 0 ] = x[ 1 ] = i;
 						x[ 2 ] = x[ 3 ] = i + step;
 						y[ 0 ] = y[ 2 ] = j;
@@ -1238,18 +1252,18 @@ namespace OctreeZone
 						if ( i == 0 )
 						{
 							// Starter
-							*pIdx++ = (ushort)Index( x[ 0 ], y[ 0 ] );
+							pIdx[idx++] = (ushort)Index( x[ 0 ], y[ 0 ] );
 							numIndexes++;
 						}
-						*pIdx++ = (ushort)Index( x[ 1 ], y[ 1 ] );
+                        pIdx[idx++] = (ushort)Index(x[1], y[1]);
 						numIndexes++;
-						*pIdx++ = (ushort)Index( x[ 2 ], y[ 2 ] );
+                        pIdx[idx++] = (ushort)Index(x[2], y[2]);
 						numIndexes++;
 
 						if ( i == mOptions.tileSize - 1 - step )
 						{
 							// Emit extra index to finish row
-							*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] );
+                            pIdx[idx++] = (ushort)Index(x[3], y[3]);
 							numIndexes++;
 							if ( j < mOptions.tileSize - 1 - step )
 							{
@@ -1267,8 +1281,8 @@ namespace OctreeZone
 					// Backward strip
 					for ( i = mOptions.tileSize - 1; i > 0; i -= step )
 					{
-						int[] x = new int[ 4 ];
-						int[] y = new int[ 4 ];
+						var x = new int[ 4 ];
+						var y = new int[ 4 ];
 						x[ 0 ] = x[ 1 ] = i;
 						x[ 2 ] = x[ 3 ] = i - step;
 						y[ 0 ] = y[ 2 ] = j;
@@ -1318,23 +1332,23 @@ namespace OctreeZone
 						if ( i == mOptions.tileSize )
 						{
 							// Starter
-							*pIdx++ = (ushort)Index( x[ 0 ], y[ 0 ] );
+                            pIdx[idx++] = (ushort)Index(x[0], y[0]);
 							numIndexes++;
 						}
-						*pIdx++ = (ushort)Index( x[ 1 ], y[ 1 ] );
+                        pIdx[idx++] = (ushort)Index(x[1], y[1]);
 						numIndexes++;
-						*pIdx++ = (ushort)Index( x[ 2 ], y[ 2 ] );
+                        pIdx[idx++] = (ushort)Index(x[2], y[2]);
 						numIndexes++;
 
 						if ( i == step )
 						{
 							// Emit extra index to finish row
-							*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] );
+                            pIdx[idx++] = (ushort)Index(x[3], y[3]);
 							numIndexes++;
 							if ( j < mOptions.tileSize - 1 - step )
 							{
 								// Emit this index once more (this is to turn around)
-								*pIdx++ = (ushort)Index( x[ 3 ], y[ 3 ] );
+                                pIdx[idx++] = (ushort)Index(x[3], y[3]);
 								numIndexes++;
 							}
 						}
@@ -1351,20 +1365,23 @@ namespace OctreeZone
 
 		}
 
-		public unsafe IndexData GenerateTriListIndexes( uint stitchFlags )
+#if !AXIOM_SAFE_ONLY
+        unsafe
+#endif
+        public IndexData GenerateTriListIndexes( uint stitchFlags )
 		{
 
-			int numIndexes = 0;
-			int step = 1 << mRenderLevel;
+			var numIndexes = 0;
+			var step = 1 << mRenderLevel;
 
 			IndexData indexData;
 
-			int north = ( stitchFlags & STITCH_NORTH ) != 0 ? step : 0;
-			int south = ( stitchFlags & STITCH_SOUTH ) != 0 ? step : 0;
-			int east = ( stitchFlags & STITCH_EAST ) != 0 ? step : 0;
-			int west = ( stitchFlags & STITCH_WEST ) != 0 ? step : 0;
+			var north = ( stitchFlags & STITCH_NORTH ) != 0 ? step : 0;
+			var south = ( stitchFlags & STITCH_SOUTH ) != 0 ? step : 0;
+			var east = ( stitchFlags & STITCH_EAST ) != 0 ? step : 0;
+			var west = ( stitchFlags & STITCH_WEST ) != 0 ? step : 0;
 
-			int new_length = ( mOptions.tileSize / step ) * ( mOptions.tileSize / step ) * 2 * 2 * 2;
+			var new_length = ( mOptions.tileSize / step ) * ( mOptions.tileSize / step ) * 2 * 2 * 2;
 			//this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
 			indexData = new IndexData();
@@ -1374,55 +1391,59 @@ namespace OctreeZone
 
 			mTerrainZone.IndexCache.mCache.Add( indexData );
 
-			ushort* pIdx = (ushort*)indexData.indexBuffer.Lock( 0,
+			var ppIdx = indexData.indexBuffer.Lock( 0,
 				indexData.indexBuffer.Size,
 				BufferLocking.Discard );
+            var pIdx = ppIdx.ToUShortPointer();
+		    var idx = 0;
 
 			// Do the core vertices, minus stitches
-			for ( int j = north; j < mOptions.tileSize - 1 - south; j += step )
+			for ( var j = north; j < mOptions.tileSize - 1 - south; j += step )
 			{
-				for ( int i = west; i < mOptions.tileSize - 1 - east; i += step )
+				for ( var i = west; i < mOptions.tileSize - 1 - east; i += step )
 				{
 					//triangles
-					*pIdx++ = Index( i, j + step );
+                    pIdx[idx++] = Index(i, j + step);
 					numIndexes++; // original order: 2
-					*pIdx++ = Index( i + step, j );
+                    pIdx[idx++] = Index(i + step, j);
 					numIndexes++; // original order: 3
-					*pIdx++ = Index( i, j );
+                    pIdx[idx++] = Index(i, j);
 					numIndexes++; // original order: 1
 
-					*pIdx++ = Index( i + step, j + step );
+                    pIdx[idx++] = Index(i + step, j + step);
 					numIndexes++; // original order: 2
-					*pIdx++ = Index( i + step, j );
+                    pIdx[idx++] = Index(i + step, j);
 					numIndexes++; // original order: 3
-					*pIdx++ = Index( i, j + step );
+                    pIdx[idx++] = Index(i, j + step);
 					numIndexes++; // original order: 1
 				}
 			}
+
+		    ppIdx.Ptr += idx*sizeof ( ushort );
 
 			// North stitching
 			if ( north > 0 )
 			{
 				numIndexes += StitchEdge( Neighbor.NORTH, mRenderLevel, mNeighbors[ (int)Neighbor.NORTH ].mRenderLevel,
-					west > 0, east > 0, &pIdx );
+                    west > 0, east > 0, ppIdx);
 			}
 			// East stitching
 			if ( east > 0 )
 			{
 				numIndexes += StitchEdge( Neighbor.EAST, mRenderLevel, mNeighbors[ (int)Neighbor.EAST ].mRenderLevel,
-					north > 0, south > 0, &pIdx );
+                    north > 0, south > 0, ppIdx);
 			}
 			// South stitching
 			if ( south > 0 )
 			{
 				numIndexes += StitchEdge( Neighbor.SOUTH, mRenderLevel, mNeighbors[ (int)Neighbor.SOUTH ].mRenderLevel,
-					east > 0, west > 0, &pIdx );
+                    east > 0, west > 0, ppIdx);
 			}
 			// West stitching
 			if ( west > 0 )
 			{
 				numIndexes += StitchEdge( Neighbor.WEST, mRenderLevel, mNeighbors[ (int)Neighbor.WEST ].mRenderLevel,
-					south > 0, north > 0, &pIdx );
+                    south > 0, north > 0, ppIdx);
 			}
 
 
@@ -1465,7 +1486,10 @@ namespace OctreeZone
 
 		}
 
-		public unsafe int StitchEdge( Neighbor neighbor, int hiLOD, int loLOD, bool omitFirstTri, bool omitLastTri, ushort** ppIdx )
+#if !AXIOM_SAFE_ONLY
+        unsafe
+#endif
+        public int StitchEdge( Neighbor neighbor, int hiLOD, int loLOD, bool omitFirstTri, bool omitLastTri, BufferBase ppIdx )
 		{
 			Debug.Assert( loLOD > hiLOD, "TerrainZoneRenderable.StitchEdge" );
 			/*
@@ -1498,21 +1522,22 @@ namespace OctreeZone
 			*/
 
 			// Get pointer to be updated
-			ushort* pIdx = *ppIdx;
+			var pIdx = ppIdx.ToUShortPointer();
+		    var idx = 0;
 
 			// Work out the steps ie how to increment indexes
 			// Step from one vertex to another in the high detail version
-			int step = 1 << hiLOD;
+			var step = 1 << hiLOD;
 			// Step from one vertex to another in the low detail version
-			int superstep = 1 << loLOD;
+			var superstep = 1 << loLOD;
 			// Step half way between low detail steps
-			int halfsuperstep = superstep >> 1;
+			var halfsuperstep = superstep >> 1;
 
 			// Work out the starting points and sign of increments
 			// We always work the strip clockwise
 			int startx, starty, endx, rowstep;
 			startx = starty = endx = rowstep = 0;
-			bool horizontal = false;
+			var horizontal = false;
 			switch ( neighbor )
 			{
 				case Neighbor.NORTH:
@@ -1550,33 +1575,33 @@ namespace OctreeZone
 					break;
 			};
 
-			int numIndexes = 0;
+			var numIndexes = 0;
 
-			for ( int j = startx; j != endx; j += superstep )
+			for ( var j = startx; j != endx; j += superstep )
 			{
 				int k;
 				for ( k = 0; k != halfsuperstep; k += step )
 				{
-					int jk = j + k;
+					var jk = j + k;
 					//skip the first bit of the corner?
 					if ( j != startx || k != 0 || !omitFirstTri )
 					{
 						if ( horizontal )
 						{
-							*pIdx++ = Index( jk, starty + rowstep );
+                            pIdx[idx++] = Index(jk, starty + rowstep);
 							numIndexes++; // original order: 2
-							*pIdx++ = Index( jk + step, starty + rowstep );
+                            pIdx[idx++] = Index(jk + step, starty + rowstep);
 							numIndexes++; // original order: 3
-							*pIdx++ = Index( j, starty );
+                            pIdx[idx++] = Index(j, starty);
 							numIndexes++; // original order: 1
 						}
 						else
 						{
-							*pIdx++ = Index( starty + rowstep, jk );
+                            pIdx[idx++] = Index(starty + rowstep, jk);
 							numIndexes++; // original order: 2
-							*pIdx++ = Index( starty + rowstep, jk + step );
+                            pIdx[idx++] = Index(starty + rowstep, jk + step);
 							numIndexes++; // original order: 3
-							*pIdx++ = Index( starty, j );
+                            pIdx[idx++] = Index(starty, j);
 							numIndexes++; // original order: 1
 						}
 					}
@@ -1585,51 +1610,51 @@ namespace OctreeZone
 				// Middle tri
 				if ( horizontal )
 				{
-					*pIdx++ = Index( j + halfsuperstep, starty + rowstep );
+                    pIdx[idx++] = Index(j + halfsuperstep, starty + rowstep);
 					numIndexes++; // original order: 2
-					*pIdx++ = Index( j + superstep, starty );
+                    pIdx[idx++] = Index(j + superstep, starty);
 					numIndexes++; // original order: 3
-					*pIdx++ = Index( j, starty );
+                    pIdx[idx++] = Index(j, starty);
 					numIndexes++; // original order: 1
 				}
 				else
 				{
-					*pIdx++ = Index( starty + rowstep, j + halfsuperstep );
+                    pIdx[idx++] = Index(starty + rowstep, j + halfsuperstep);
 					numIndexes++; // original order: 2
-					*pIdx++ = Index( starty, j + superstep );
+                    pIdx[idx++] = Index(starty, j + superstep);
 					numIndexes++; // original order: 3
-					*pIdx++ = Index( starty, j );
+                    pIdx[idx++] = Index(starty, j);
 					numIndexes++; // original order: 1
 				}
 
 				for ( k = halfsuperstep; k != superstep; k += step )
 				{
-					int jk = j + k;
+					var jk = j + k;
 					if ( j != endx - superstep || k != superstep - step || !omitLastTri )
 					{
 						if ( horizontal )
 						{
-							*pIdx++ = Index( jk, starty + rowstep );
+                            pIdx[idx++] = Index(jk, starty + rowstep);
 							numIndexes++; // original order: 2
-							*pIdx++ = Index( jk + step, starty + rowstep );
+                            pIdx[idx++] = Index(jk + step, starty + rowstep);
 							numIndexes++; // original order: 3
-							*pIdx++ = Index( j + superstep, starty );
+                            pIdx[idx++] = Index(j + superstep, starty);
 							numIndexes++; // original order: 1
 						}
 						else
 						{
-							*pIdx++ = Index( starty + rowstep, jk );
+                            pIdx[idx++] = Index(starty + rowstep, jk);
 							numIndexes++; // original order: 2
-							*pIdx++ = Index( starty + rowstep, jk + step );
+                            pIdx[idx++] = Index(starty + rowstep, jk + step);
 							numIndexes++; // original order: 3
-							*pIdx++ = Index( starty, j + superstep );
+                            pIdx[idx++] = Index(starty, j + superstep);
 							numIndexes++; // original order: 1
 						}
 					}
 				}
 			}
 
-			*ppIdx = pIdx;
+		    ppIdx.Ptr += idx*sizeof ( ushort );
 
 			return numIndexes;
 
@@ -1794,7 +1819,7 @@ namespace OctreeZone
 		/// <returns></returns>
 		public override float GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 diff = mCenter - camera.DerivedPosition;
+			var diff = mCenter - camera.DerivedPosition;
 			// Use squared length to avoid square root
 			return diff.LengthSquared;
 		}

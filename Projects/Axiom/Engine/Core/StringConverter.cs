@@ -92,7 +92,7 @@ namespace Axiom.Core
 
 		#region String.Split() replacements
 
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 		public static string[] Split( string s, char[] separators )
 		{
 			return s.Split( separators, 0, StringSplitOptions.None );
@@ -104,7 +104,7 @@ namespace Axiom.Core
 		}
 #else
 
-		public static string[] Split( string s, char[] separators, int count )
+        public static string[] Split( string s, char[] separators, int count )
 		{
 			return Split(s, separators, count, StringSplitOptions.None );
 		}
@@ -278,7 +278,7 @@ namespace Axiom.Core
 		public static ColorEx ParseColor( string val )
 		{
 			ColorEx color;
-			string[] vals = val.Split( ' ' );
+			var vals = val.Split( ' ' );
 
 			color.r = ParseFloat( vals[ 0 ] );
 			color.g = ParseFloat( vals[ 1 ] );
@@ -293,7 +293,7 @@ namespace Axiom.Core
 		/// </summary>
 		public static Vector3 ParseVector3( string[] values )
 		{
-			Vector3 vec = new Vector3();
+			var vec = new Vector3();
 			vec.x = ParseFloat( values[ 0 ] );
 			vec.y = ParseFloat( values[ 1 ] );
 			vec.z = ParseFloat( values[ 2 ] );
@@ -307,9 +307,9 @@ namespace Axiom.Core
 		/// <param name="val"></param>
 		public static Vector3 ParseVector3( string val )
 		{
-			string[] values = val.Split( ' ' );
+			var values = val.Split( ' ' );
 
-			Vector3 vec = new Vector3();
+			var vec = new Vector3();
 			vec.x = ParseFloat( values[ 0 ] );
 			vec.y = ParseFloat( values[ 1 ] );
 			vec.z = ParseFloat( values[ 2 ] );
@@ -322,7 +322,7 @@ namespace Axiom.Core
 		/// </summary>
 		public static Vector4 ParseVector4( string[] values )
 		{
-			Vector4 vec = new Vector4();
+			var vec = new Vector4();
 			vec.x = ParseFloat( values[ 0 ] );
 			vec.y = ParseFloat( values[ 1 ] );
 			vec.z = ParseFloat( values[ 2 ] );

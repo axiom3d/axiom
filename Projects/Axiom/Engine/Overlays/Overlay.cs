@@ -269,9 +269,9 @@ namespace Axiom.Overlays
 		protected void Initialize()
 		{
 			// add 2d elements
-			for ( int i = 0; i < elementList.Count; i++ )
+			for ( var i = 0; i < elementList.Count; i++ )
 			{
-				OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+				var container = (OverlayElementContainer)elementList[ i ];
 				container.Initialize();
 			}
 			this.isInitialised = true;
@@ -287,9 +287,9 @@ namespace Axiom.Overlays
 			if ( OverlayManager.Instance.HasViewportChanged )
 			{
 
-				for ( int i = 0; i < elementList.Count; i++ )
+				for ( var i = 0; i < elementList.Count; i++ )
 				{
-					OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+					var container = (OverlayElementContainer)elementList[ i ];
 					container.NotifyViewport();
 				}
 			}
@@ -300,9 +300,9 @@ namespace Axiom.Overlays
 				if ( isTransformUpdated )
 				{
 					GetWorldTransforms( xform );
-					for ( int i = 0; i < elementList.Count; i++ )
+					for ( var i = 0; i < elementList.Count; i++ )
 					{
-						OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+						var container = (OverlayElementContainer)elementList[ i ];
 						container.NotifyWorldTransforms( xform );
 					}
 					isTransformUpdated = false;
@@ -314,8 +314,8 @@ namespace Axiom.Overlays
 				rootNode.Update( true, false );
 
 				// set up the default queue group for the objects about to be added
-				RenderQueueGroupID oldGroupID = queue.DefaultRenderGroup;
-				ushort oldPriority = queue.DefaultRenderablePriority;
+				var oldGroupID = queue.DefaultRenderGroup;
+				var oldPriority = queue.DefaultRenderablePriority;
 
 				queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
 				queue.DefaultRenderablePriority = (ushort)( ( zOrder * 100 ) - 1 );
@@ -326,9 +326,9 @@ namespace Axiom.Overlays
 				queue.DefaultRenderablePriority = oldPriority;
 
 				// add 2d elements
-				for ( int i = 0; i < elementList.Count; i++ )
+				for ( var i = 0; i < elementList.Count; i++ )
 				{
-					OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+					var container = (OverlayElementContainer)elementList[ i ];
 					container.Update();
 					container.UpdateRenderQueue( queue );
 				}
@@ -344,15 +344,15 @@ namespace Axiom.Overlays
 		public virtual OverlayElement FindElementAt( float x, float y )
 		{
 			OverlayElement ret = null;
-			int currZ = -1;
+			var currZ = -1;
 
-			for ( int i = 0; i < elementList.Count; i++ )
+			for ( var i = 0; i < elementList.Count; i++ )
 			{
-				OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
-				int z = container.ZOrder;
+				var container = (OverlayElementContainer)elementList[ i ];
+				var z = container.ZOrder;
 				if ( z > currZ )
 				{
-					OverlayElement elementFound = container.FindElementAt( x, y );
+					var elementFound = container.FindElementAt( x, y );
 					if ( elementFound != null )
 					{
 						currZ = elementFound.ZOrder;
@@ -475,8 +475,8 @@ namespace Axiom.Overlays
 			//    1. Scale
 			//    2. Rotate
 			//    3. Translate
-			Matrix3 rot3x3 = Matrix3.Identity;
-			Matrix3 scale3x3 = Matrix3.Zero;
+			var rot3x3 = Matrix3.Identity;
+			var scale3x3 = Matrix3.Zero;
 
 			rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( (Real)rotate ) );
 			scale3x3.m00 = scaleX;
@@ -494,9 +494,9 @@ namespace Axiom.Overlays
 		/// </summary>
 		protected void AssignZOrders()
 		{
-			int zorder = this.zOrder * 100;
+			var zorder = this.zOrder * 100;
 			// notify attached 2d elements
-			for ( int i = 0; i < elementList.Count; i++ )
+			for ( var i = 0; i < elementList.Count; i++ )
 			{
 				zorder = ( (OverlayElementContainer)elementList[ i ] ).NotifyZOrder( zorder );
 			}

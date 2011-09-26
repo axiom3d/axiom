@@ -114,10 +114,10 @@ namespace Axiom.Core
 		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
 		{
 			// Determine x FOV based on aspect ratio
-			Radian fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
+			var fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
 
 			// Determine viewport area
-			float viewportArea = viewportHeight * viewportWidth;
+			var viewportArea = viewportHeight * viewportWidth;
 
 			// Compute reference view value based on viewport area and FOVs
 			ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
@@ -152,13 +152,13 @@ namespace Axiom.Core
 				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
 
 				// Get camera viewport
-				Viewport viewport = cam.Viewport;
+				var viewport = cam.Viewport;
 
 				// Get viewport area
 				float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
 
 				// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-				Matrix4 projectionMatrix = cam.ProjectionMatrix;
+				var projectionMatrix = cam.ProjectionMatrix;
 
 				// Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
 				float biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];

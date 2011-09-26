@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 #if NET_2_0
@@ -58,7 +59,7 @@ namespace System.Collections {
 		}
 
 		[Serializable]
-		internal class KeyMarker: IObjectReference
+		internal class KeyMarker //: IObjectReference
 		{
 			public readonly static KeyMarker Removed = new KeyMarker();
 			public object GetRealObject (StreamingContext context)

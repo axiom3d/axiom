@@ -109,7 +109,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override Media.PixelFormat GetNativeFormat( TextureType ttype, Media.PixelFormat format, TextureUsage usage )
 		{
 			// Adjust requested parameters to capabilities
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 #warning check TextureCompressionVTC == RSC_TEXTURE_COMPRESSION_PVRTC
 			// Check compressed texture support
 			// if a compressed format not supported, revert to A8R8G8B8

@@ -321,7 +321,7 @@ namespace Axiom.Animating
 				throw new Exception( "An animation with the name already exists" );
 			}
 
-			Animation anim = new Animation( name, length );
+			var anim = new Animation( name, length );
 
 			animationList.Add( name, anim );
 
@@ -375,7 +375,7 @@ namespace Axiom.Animating
 			}
 
 			// create the new bone, and add it to both lookup lists
-			Bone bone = new Bone( name, nextAutoHandle, this );
+			var bone = new Bone( name, nextAutoHandle, this );
 			boneList.Add( bone.Handle, bone );
 			namedBoneList.Add( bone.Name, bone );
 
@@ -400,7 +400,7 @@ namespace Axiom.Animating
 			}
 
 			// create the new bone, and add it to both lookup lists
-			Bone bone = new Bone( nextAutoHandle, this );
+			var bone = new Bone( nextAutoHandle, this );
 			boneList.Add( bone.Handle, bone );
 			namedBoneList.Add( bone.Name, bone );
 
@@ -432,7 +432,7 @@ namespace Axiom.Animating
 			}
 
 			// create the new bone, and add it to both lookup lists
-			Bone bone = new Bone( name, handle, this );
+			var bone = new Bone( name, handle, this );
 			boneList.Add( bone.Handle, bone );
 			namedBoneList.Add( bone.Name, bone );
 
@@ -454,9 +454,9 @@ namespace Axiom.Animating
 			rootBones.Clear();
 
 			// get the first bone in the list
-			Bone currentBone = boneList[ 0 ];
+			var currentBone = boneList[ 0 ];
 
-			foreach ( Bone bone in boneList.Values )
+			foreach ( var bone in boneList.Values )
 			{
 				if ( bone.Parent == null )
 				{
@@ -573,8 +573,8 @@ namespace Axiom.Animating
 				reverse transform by the Bone's original derived position/orientation, then transform
 				by the new derived position / orientation.
 			*/
-			int i = 0;
-			foreach ( Bone bone in boneList.Values )
+			var i = 0;
+			foreach ( var bone in boneList.Values )
 			{
 				matrices[ i++ ] = bone.FullTransform * bone.BindDerivedInverseTransform;
 			}
@@ -590,7 +590,7 @@ namespace Axiom.Animating
 		public virtual void InitAnimationState( AnimationStateSet animSet )
 		{
 			animSet.RemoveAllAnimationStates();
-			foreach ( Animation anim in animationList.Values )
+			foreach ( var anim in animationList.Values )
 			{
 				animSet.CreateAnimationState( anim.Name, 0, anim.Length );
 			}
@@ -630,7 +630,7 @@ namespace Axiom.Animating
 		public virtual void Reset( bool resetManualBones )
 		{
 			// set all bones back to their binding pose
-			for ( int i = 0; i < boneList.Count; i++ )
+			for ( var i = 0; i < boneList.Count; i++ )
 			{
 				if ( !boneList.Values[ i ].IsManuallyControlled || resetManualBones )
 				{
@@ -655,9 +655,9 @@ namespace Axiom.Animating
 			Reset();
 
 			// per animation state
-			foreach ( AnimationState animState in animSet.EnabledAnimationStates )
+			foreach ( var animState in animSet.EnabledAnimationStates )
 			{
-				Animation anim = GetAnimation( animState.Name );
+				var anim = GetAnimation( animState.Name );
 				// tolerate state entries for animations we're not aware of
 				if ( anim != null )
 				{
@@ -676,7 +676,7 @@ namespace Axiom.Animating
 			UpdateTransforms();
 
 			// set all bones back to their binding pose
-			for ( int i = 0; i < boneList.Count; i++ )
+			for ( var i = 0; i < boneList.Count; i++ )
 			{
 				boneList.Values[ i ].SetBindingPose();
 			}
@@ -687,7 +687,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public virtual void UpdateTransforms()
 		{
-			for ( int i = 0; i < rootBones.Count; i++ )
+			for ( var i = 0; i < rootBones.Count; i++ )
 			{
 				rootBones[ i ].Update( true, false );
 			}
@@ -704,8 +704,8 @@ namespace Axiom.Animating
 		public virtual AttachmentPoint CreateAttachmentPoint( string name, ushort parentHandle,
 															 Quaternion rotation, Vector3 translation )
 		{
-			Bone parentBone = boneList[ parentHandle ];
-			AttachmentPoint ap = new AttachmentPoint( name, parentBone.Name, rotation, translation );
+			var parentBone = boneList[ parentHandle ];
+			var ap = new AttachmentPoint( name, parentBone.Name, rotation, translation );
 			attachmentPoints.Add( ap );
 			return ap;
 		}
@@ -716,8 +716,8 @@ namespace Axiom.Animating
 		/// <param name="fileName"></param>
 		public void DumpContents( string fileName )
 		{
-			FileStream fs = File.Open( fileName, FileMode.Create );
-			StreamWriter writer = new StreamWriter( fs );
+			var fs = File.Open( fileName, FileMode.Create );
+			var writer = new StreamWriter( fs );
 			writer.AutoFlush = true;
 
 			writer.WriteLine( "-= Debug output of skeleton  {0} =-", this.Name );
@@ -725,12 +725,12 @@ namespace Axiom.Animating
 			writer.WriteLine( "== Bones ==" );
 			writer.WriteLine( "Number of bones: {0}", boneList.Count );
 
-			Quaternion q = new Quaternion();
+			var q = new Quaternion();
 			Real angle = 0;
-			Vector3 axis = new Vector3();
+			var axis = new Vector3();
 
 			// write each bone out
-			foreach ( Bone bone in boneList.Values )
+			foreach ( var bone in boneList.Values )
 			{
 				writer.WriteLine( "-- Bone {0} --", bone.Handle );
 				writer.Write( "Position: {0}", bone.Position );
@@ -746,23 +746,23 @@ namespace Axiom.Animating
 			writer.WriteLine( "Number of animations: {0}", animationList.Count );
 
 			// animations
-			foreach ( Animation anim in animationList.Values )
+			foreach ( var anim in animationList.Values )
 			{
 				writer.WriteLine( "-- Animation '{0}' (length {1}) --", anim.Name, anim.Length );
 				writer.WriteLine( "Number of tracks: {0}", anim.NodeTracks.Count );
 
 				// tracks
-				foreach ( NodeAnimationTrack track in anim.NodeTracks.Values )
+				foreach ( var track in anim.NodeTracks.Values )
 				{
 					writer.WriteLine( "  -- AnimationTrack {0} --", track.Handle );
 					writer.WriteLine( "  Affects bone: {0}", ( (Bone)track.TargetNode ).Handle );
 					writer.WriteLine( "  Number of keyframes: {0}", track.KeyFrames.Count );
 
 					// key frames
-					int kf = 0;
+					var kf = 0;
 					for ( ushort i = 0; i < track.KeyFrames.Count; i++ )
 					{
-						TransformKeyFrame keyFrame = track.GetNodeKeyFrame( i );
+						var keyFrame = track.GetNodeKeyFrame( i );
 						writer.WriteLine( "    -- KeyFrame {0} --", kf++ );
 						writer.Write( "    Time index: {0}", keyFrame.Time );
 						writer.WriteLine( "    Translation: {0}", keyFrame.Translate );
@@ -793,13 +793,13 @@ namespace Axiom.Animating
 			LogManager.Instance.Write( "Skeleton: Loading '{0}'...", Name );
 
 			// load the skeleton file
-			Stream data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+			var data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 
 			// instantiate a new skeleton reader
-			OgreSkeletonSerializer reader = new OgreSkeletonSerializer();
+			var reader = new OgreSkeletonSerializer();
 			reader.ImportSkeleton( data, this );
 
-			string extension = Path.GetExtension( Name );
+			var extension = Path.GetExtension( Name );
 
 			//TODO: Load any linked skeletons
 			//LinkedSkeletonAnimSourceList::iterator i;

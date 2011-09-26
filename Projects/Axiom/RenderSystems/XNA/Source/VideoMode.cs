@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -49,13 +50,14 @@ namespace Axiom.RenderSystems.Xna
 	{
 		#region Member variables
 
-		private XFG.DisplayMode displayMode;
+		private readonly DisplayMode displayMode;
 		private int modeNum;
-		static int modeCount = 0;
+		private static int modeCount;
 
 		#endregion
 
 		#region Constructors
+
 		//Got rid of default constructor. XFG.DisplayMode can no longer be instantiated externally.
 		///// <summary>
 		/////		Default constructor.
@@ -78,7 +80,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Accepts a existing Direct3D.DisplayMode object.
 		/// </summary>
-		public VideoMode( XFG.DisplayMode videoMode )
+		public VideoMode( DisplayMode videoMode )
 		{
 			modeNum = ++modeCount;
 			displayMode = videoMode;
@@ -121,7 +123,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Format of this video mode.
 		/// </summary>
-		public XFG.SurfaceFormat Format
+		public SurfaceFormat Format
 		{
 			get
 			{
@@ -137,7 +139,7 @@ namespace Axiom.RenderSystems.Xna
 			get
 			{
 #if (XBOX || XBOX360)
-				return 60; 
+				return 60;
 #elif (WINDOWS_PHONE)
 				return 30;
 #endif
@@ -155,7 +157,7 @@ namespace Axiom.RenderSystems.Xna
 			get
 			{
 				if ( //displayMode.Format == XFG.SurfaceFormat.Bgr32 ||
-					displayMode.Format == XFG.SurfaceFormat.Color)// ||
+					displayMode.Format == SurfaceFormat.Color ) // ||
 					//displayMode.Format == XFG.SurfaceFormat.Bgr24 )
 				{
 					return 32;
@@ -170,7 +172,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Gets the XNA.DisplayMode object associated with this video mode.
 		/// </summary>
-		public XFG.DisplayMode DisplayMode
+		public DisplayMode DisplayMode
 		{
 			get
 			{
@@ -184,7 +186,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
+			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, ColorDepth );
 		}
 
 		#endregion

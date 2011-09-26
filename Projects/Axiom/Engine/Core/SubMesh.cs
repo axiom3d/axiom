@@ -149,7 +149,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
-			int maxBones = parent.RationalizeBoneAssignments( vertexData.vertexCount, boneAssignmentList );
+			var maxBones = parent.RationalizeBoneAssignments( vertexData.vertexCount, boneAssignmentList );
 
 			// return if no bone assigments
 			if ( maxBones != 0 )
@@ -280,7 +280,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				int numFaces = 0;
+				var numFaces = 0;
 				if ( indexData == null )
 					return 0;
 				if ( operationType == OperationType.TriangleList )
@@ -372,7 +372,7 @@ namespace Axiom.Core
                             vertexData.Dispose();
                     }
 					
-                    foreach ( IndexData data in lodFaceList )
+                    foreach ( var data in lodFaceList )
 					{
                         if (!data.IsDisposed)
 						    data.Dispose();

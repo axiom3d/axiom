@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
@@ -15,7 +15,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for TextureBlending.
 	/// </summary>
-	public class TextureFX : TechDemo
+    [Export(typeof(TechDemo))]
+    public class TextureFX : TechDemo
 	{
 		public override void CreateScene()
 		{

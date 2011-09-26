@@ -100,7 +100,7 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
-			AtomAbstractNode node = new AtomAbstractNode( Parent );
+			var node = new AtomAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
 			node.Id = this.Id;

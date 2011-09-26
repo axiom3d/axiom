@@ -950,14 +950,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Shading options for this pass.
 		/// </summary>
-		private ShadeOptions _shadingMode;
+		private Shading _shadingMode;
 		/// <summary>
 		///    Sets the type of light shading required.
 		/// </summary>
 		/// <value>
 		///    The default shading method is Gouraud shading.
 		/// </value>
-		public ShadeOptions ShadingMode
+		public Shading ShadingMode
 		{
 			get
 			{
@@ -1185,7 +1185,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( int i = 0; i < textureUnitStates.Count; i++ )
+				for ( var i = 0; i < textureUnitStates.Count; i++ )
 				{
 					( (TextureUnitState)textureUnitStates[ i ] ).TextureAnisotropy = value;
 				}
@@ -1205,7 +1205,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( int i = 0; i < textureUnitStates.Count; i++ )
+				for ( var i = 0; i < textureUnitStates.Count; i++ )
 				{
 					( (TextureUnitState)textureUnitStates[ i ] ).SetTextureFiltering( value );
 				}
@@ -1866,7 +1866,7 @@ namespace Axiom.Graphics
 			_lightingEnabled = true;
 			_runOnlyForOneLightType = true;
 			_onlyLightType = LightType.Point;
-			_shadingMode = ShadeOptions.Gouraud;
+			_shadingMode = Shading.Gouraud;
 
 			// Default max lights to the global max
 			_maxSimultaneousLights = Config.MaxSimultaneousLights;
@@ -1878,7 +1878,13 @@ namespace Axiom.Graphics
 			DirtyHash();
 		}
 
-		#endregion Construction and Destruction
+        ~Pass()
+        {
+            if (_fragmentProgramUsage != null)
+                _fragmentProgramUsage.Dispose();
+        }
+
+	    #endregion Construction and Destruction
 
 		#region Methods
 
@@ -1911,7 +1917,7 @@ namespace Axiom.Graphics
 	    /// <returns></returns>
 	    public Pass Clone( Technique parent, int index )
 		{
-			Pass newPass = new Pass( parent, index );
+			var newPass = new Pass( parent, index );
 
 			CopyTo( newPass );
 
@@ -2036,10 +2042,10 @@ namespace Axiom.Graphics
 
 			// Copy texture units
 
-			for ( int i = 0; i < textureUnitStates.Count; i++ )
+			for ( var i = 0; i < textureUnitStates.Count; i++ )
 			{
-				TextureUnitState newState = new TextureUnitState( target );
-				TextureUnitState src = (TextureUnitState)textureUnitStates[ i ];
+				var newState = new TextureUnitState( target );
+				var src = (TextureUnitState)textureUnitStates[ i ];
 				src.CopyTo( newState );
 
 				target.textureUnitStates.Add( newState );
@@ -2054,7 +2060,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public TextureUnitState CreateTextureUnitState()
 		{
-			TextureUnitState state = new TextureUnitState( this );
+			var state = new TextureUnitState( this );
 			textureUnitStates.Add( state );
 			// needs recompilation
 			_parent.NotifyNeedsRecompile();
@@ -2085,7 +2091,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public TextureUnitState CreateTextureUnitState( string textureName, int texCoordSet )
 		{
-			TextureUnitState state = new TextureUnitState( this );
+			var state = new TextureUnitState( this );
 			state.SetTextureName( textureName );
 			state.TextureCoordSet = texCoordSet;
 			textureUnitStates.Add( state );
@@ -2115,7 +2121,7 @@ namespace Axiom.Graphics
 			// it is assumed this is only being called when the Material is being loaded
 
 			// load each texture unit state
-			for ( int i = 0; i < textureUnitStates.Count; i++ )
+			for ( var i = 0; i < textureUnitStates.Count; i++ )
 			{
 				( (TextureUnitState)textureUnitStates[ i ] ).Load();
 			}
@@ -2185,7 +2191,7 @@ namespace Axiom.Graphics
 			   the first 2 gives us the most benefit for now.
 		   */
 			_hashCode = ( _index << 28 );
-			int count = TextureUnitStageCount;
+			var count = TextureUnitStageCount;
 
 			// Fix from Multiverse
 			//    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
@@ -2238,7 +2244,7 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the TextureUnitState to remove from this pass.</param>
 		public void RemoveTextureUnitState( int index )
 		{
-			TextureUnitState state = (TextureUnitState)textureUnitStates[ index ];
+			var state = (TextureUnitState)textureUnitStates[ index ];
 
 			if ( state != null )
 				RemoveTextureUnitState( state );
@@ -2718,18 +2724,18 @@ namespace Axiom.Graphics
 
 			if ( textureUnitStates.Count > numUnits )
 			{
-				int start = textureUnitStates.Count - numUnits;
+				var start = textureUnitStates.Count - numUnits;
 
-				Pass newPass = _parent.CreatePass();
+				var newPass = _parent.CreatePass();
 
 				// get a reference ot the texture unit state at the split position
-				TextureUnitState state = (TextureUnitState)textureUnitStates[ start ];
+				var state = (TextureUnitState)textureUnitStates[ start ];
 
 				// set the new pass to fallback using scene blending
 				newPass.SetSceneBlending( state.ColorBlendFallbackSource, state.ColorBlendFallbackDest );
 
 				// add the rest of the texture units to the new pass
-				for ( int i = start; i < textureUnitStates.Count; i++ )
+				for ( var i = start; i < textureUnitStates.Count; i++ )
 				{
 					state = (TextureUnitState)textureUnitStates[ i ];
 					newPass.AddTextureUnitState( state );
@@ -2750,7 +2756,7 @@ namespace Axiom.Graphics
 		internal void Unload()
 		{
 			// load each texture unit state
-			for ( int i = 0; i < textureUnitStates.Count; i++ )
+			for ( var i = 0; i < textureUnitStates.Count; i++ )
 			{
 				( (TextureUnitState)textureUnitStates[ i ] ).Unload();
 			}
@@ -2794,9 +2800,9 @@ namespace Axiom.Graphics
 			_graveyardList.Clear();
 
 			// recalc the hashcode for each pass
-			for ( int i = 0; i < _dirtyList.Count; i++ )
+			for ( var i = 0; i < _dirtyList.Count; i++ )
 			{
-				Pass pass = (Pass)_dirtyList[ i ];
+				var pass = (Pass)_dirtyList[ i ];
 				pass.RecalculateHash();
 			}
 
@@ -2807,9 +2813,9 @@ namespace Axiom.Graphics
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
 			// iterate through all TextureUnitStates and apply texture aliases
-			bool testResult = false;
+			var testResult = false;
 
-			foreach ( TextureUnitState tus in textureUnitStates )
+			foreach ( var tus in textureUnitStates )
 			{
 				if ( tus.ApplyTextureAliases( aliasList, apply ) )
 					testResult = true;

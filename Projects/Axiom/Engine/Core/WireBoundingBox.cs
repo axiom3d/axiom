@@ -95,14 +95,14 @@ namespace Axiom.Core
 			renderOperation.useIndices = false;
 
 			// get a reference to the vertex declaration and buffer binding
-			VertexDeclaration decl = vertexData.vertexDeclaration;
-			VertexBufferBinding binding = vertexData.vertexBufferBinding;
+			var decl = vertexData.vertexDeclaration;
+			var binding = vertexData.vertexBufferBinding;
 
 			// add elements for position and color only
 			decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// create a new hardware vertex buffer for the position data
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );
@@ -130,10 +130,10 @@ namespace Axiom.Core
 
 		protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
 		{
-			Vector3 vmax = aab.Maximum;
-			Vector3 vmin = aab.Minimum;
+			var vmax = aab.Maximum;
+			var vmin = aab.Minimum;
 
-			float sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
+			var sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
 			//mRadius = System.Math.Sqrt(sqLen);
 
 			float maxx = vmax.x;
@@ -144,98 +144,99 @@ namespace Axiom.Core
 			float miny = vmin.y;
 			float minz = vmin.z;
 
-			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
+			var buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
 
-			IntPtr posPtr = buffer.Lock( BufferLocking.Discard );
-
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* pPos = (float*)posPtr.ToPointer();
+                var posPtr = buffer.Lock(BufferLocking.Discard).ToFloatPointer();                
+                var pPos = 0;
 
 				// line 0
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = minz;
+                posPtr[pPos++] = minx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = minz;
 				// line 1
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = maxz;
 				// line 2
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = minz;
 				// line 3
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = maxz;
 				// line 4
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = minz;
 				// line 5
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = maxz;
 				// line 6
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = minz;
 				// line 7
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = maxz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = maxz;
 				// line 8
-				*pPos++ = minx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = maxz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = maxz;
 				// line 9
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = minz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = minz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = maxz;
 				// line 10
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
-				*pPos++ = maxx;
-				*pPos++ = maxy;
-				*pPos++ = maxz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = maxz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = maxy;
+				posPtr[pPos++] = maxz;
 				// line 11
-				*pPos++ = minx;
-				*pPos++ = miny;
-				*pPos++ = maxz;
-				*pPos++ = maxx;
-				*pPos++ = miny;
-				*pPos = maxz;
+				posPtr[pPos++] = minx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos++] = maxz;
+				posPtr[pPos++] = maxx;
+				posPtr[pPos++] = miny;
+				posPtr[pPos] = maxz;
 			}
 			buffer.Unlock();
 		}

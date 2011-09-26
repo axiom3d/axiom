@@ -456,7 +456,7 @@ namespace Axiom.Core
 				return parent.GetVertexDataForBinding();
 			else
 			{
-				VertexDataBindChoice c =
+				var c =
 					parent.ChooseVertexDataForBinding(
 						subMesh.VertexAnimationType != VertexAnimationType.None );
 				switch ( c )
@@ -501,13 +501,13 @@ namespace Axiom.Core
 				if ( parent.IsSkeletonAnimated )
 				{
 					// use cached bone matrices of the parent entity
-					for ( int i = 0; i < parent.numBoneMatrices; i++ )
+					for ( var i = 0; i < parent.numBoneMatrices; i++ )
 					{
 						matrices[ i ] = parent.boneWorldMatrices[ i ];
 					}
 				}
 				else
-					for ( int i = 0; i < matrices.Length; i++ )
+					for ( var i = 0; i < matrices.Length; i++ )
 					{
 						matrices[ i ] = parent.ParentNodeFullTransform;
 					}
@@ -575,7 +575,7 @@ namespace Axiom.Core
 			if ( cachedCamera == camera )
 				return cachedCameraDist;
 
-			Node node = Parent.ParentNode;
+			var node = Parent.ParentNode;
 			Debug.Assert( node != null );
 			Real dist;
 #warning SubMesh.ExtremityPoints implementation needed.
@@ -611,7 +611,7 @@ namespace Axiom.Core
 			get
 			{
 				// get the parent entitie's parent node
-				Node node = parent.ParentNode;
+				var node = parent.ParentNode;
 
 				Debug.Assert( node != null );
 
@@ -627,7 +627,7 @@ namespace Axiom.Core
 			get
 			{
 				// get the parent entitie's parent node
-				Node node = parent.ParentNode;
+				var node = parent.ParentNode;
 
 				Debug.Assert( node != null );
 
@@ -707,10 +707,10 @@ namespace Axiom.Core
 				// Set up to 4 values, or up to limit of hardware animation entries
 				// Pack into 4-element constants offset based on constant data index
 				// If there are more than 4 entries, this will be called more than once
-				Vector4 val = Vector4.Zero;
+				var val = Vector4.Zero;
 
-				int animIndex = entry.Data * 4;
-				for ( int i = 0; i < 4 &&
+				var animIndex = entry.Data * 4;
+				for ( var i = 0; i < 4 &&
 					animIndex < hardwareVertexAnimVertexData.HWAnimationDataList.Count;
 					++i, ++animIndex )
 				{
@@ -747,13 +747,13 @@ namespace Axiom.Core
 				!vertexAnimationAppliedThisFrame &&
 				( !hardwareAnimation || subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
 			{
-				VertexElement srcPosElem =
+				var srcPosElem =
 					subMesh.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				HardwareVertexBuffer srcBuf =
+				var srcBuf =
 					subMesh.vertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
 
 				// Bind to software
-				VertexElement destPosElem =
+				var destPosElem =
 					softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 				softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
 			}

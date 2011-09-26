@@ -39,22 +39,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
-using Axiom.Core;
 using Axiom.Media;
-using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    class XnaCodec : ImageCodec
+    internal class XnaCodec : ImageCodec
     {
-        private string imageExtension;
+        private readonly string imageExtension;
 
         public XnaCodec( string extension )
-            : base()
         {
-            this.imageExtension = extension;
+            imageExtension = extension;
         }
 
         #region Overrides of ImageCodec
@@ -70,10 +67,10 @@ namespace Axiom.RenderSystems.Xna
         /// </returns>
         public override object Decode( Stream input, Stream output, params object[] args )
         {
-            byte[] data = new byte[ input.Length ];
+            var data = new byte[input.Length];
             input.Read( data, 0, (int)input.Length );
             output.Write( data, 0, (int)input.Length );
-            if ( input.GetType() == typeof( XnaImageCodecStream ) )
+            if ( input.GetType() == typeof ( XnaImageCodecStream ) )
             {
                 return ( (XnaImageCodecStream)input ).ImageData;
             }

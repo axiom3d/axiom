@@ -31,6 +31,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaUpgrade>
     </XnaUpgrade>
     <XnaOutputType>Library</XnaOutputType>
@@ -59,7 +62,7 @@
     <OutputPath>bin\Xbox\Debug\</OutputPath>
     <DocumentationFile>
     </DocumentationFile>
-    <DefineConstants>TRACE;DEBUG;XBOX;XBOX360</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -75,7 +78,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release\</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.SceneManagers.Bsp.XML</DocumentationFile>
-    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>

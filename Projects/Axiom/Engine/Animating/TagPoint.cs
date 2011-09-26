@@ -197,7 +197,7 @@ namespace Axiom.Animating
 			// // We need to tell parent entities node
 			if ( parentEntity != null )
 			{
-				Node n = parentEntity.ParentNode;
+				var n = parentEntity.ParentNode;
 
 				if ( n != null )
 				{
@@ -216,17 +216,17 @@ namespace Axiom.Animating
 			// Include Entity transform
 			if ( parentEntity != null )
 			{
-				Node entityParentNode = parentEntity.ParentNode;
+				var entityParentNode = parentEntity.ParentNode;
 				if ( entityParentNode != null )
 				{
-					Quaternion parentQ = entityParentNode.DerivedOrientation;
+					var parentQ = entityParentNode.DerivedOrientation;
 					if ( InheritParentEntityOrientation )
 					{
 						derivedOrientation = parentQ * derivedOrientation;
 					}
 
 					// Incorporate parent entity scale
-					Vector3 parentScale = entityParentNode.Scale;
+					var parentScale = entityParentNode.Scale;
 					if ( InheritParentEntityScale )
 					{
 						derivedScale *= parentScale;

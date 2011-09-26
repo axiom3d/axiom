@@ -73,28 +73,28 @@ namespace Axiom.Media
 			// srcdata stays at beginning, pdst is a moving pointer
 			//byte* srcdata = (byte*)src.Data;
 			//byte* pdst = (byte*)dst.Data;
-			int dstOffset = 0;
+			var dstOffset = 0;
 
 			// sx_48,sy_48,sz_48 represent current position in source
 			// using 16/48-bit fixed precision, incremented by steps
-			ulong stepx = ( (ulong)src.Width << 48 ) / (ulong)dst.Width;
-			ulong stepy = ( (ulong)src.Height << 48 ) / (ulong)dst.Height;
-			ulong stepz = ( (ulong)src.Depth << 48 ) / (ulong)dst.Depth;
+			var stepx = ( (ulong)src.Width << 48 ) / (ulong)dst.Width;
+			var stepy = ( (ulong)src.Height << 48 ) / (ulong)dst.Height;
+			var stepz = ( (ulong)src.Depth << 48 ) / (ulong)dst.Depth;
 
 			// note: ((stepz>>1) - 1) is an extra half-step increment to adjust
 			// for the center of the destination pixel, not the top-left corner
-			ulong sz_48 = ( stepz >> 1 ) - 1;
-			for ( uint z = (uint)dst.Front; z < dst.Back; z++, sz_48 += stepz )
+			var sz_48 = ( stepz >> 1 ) - 1;
+			for ( var z = (uint)dst.Front; z < dst.Back; z++, sz_48 += stepz )
 			{
-				uint srczoff = (uint)( sz_48 >> 48 ) * (uint)src.SlicePitch;
+				var srczoff = (uint)( sz_48 >> 48 ) * (uint)src.SlicePitch;
 
-				ulong sy_48 = ( stepy >> 1 ) - 1;
-				for ( uint y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
+				var sy_48 = ( stepy >> 1 ) - 1;
+				for ( var y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
 				{
-					uint srcyoff = (uint)( sy_48 >> 48 ) * (uint)src.RowPitch;
+					var srcyoff = (uint)( sy_48 >> 48 ) * (uint)src.RowPitch;
 
-					ulong sx_48 = ( stepx >> 1 ) - 1;
-					for ( uint x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
+					var sx_48 = ( stepx >> 1 ) - 1;
+					for ( var x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
 					{
 						Memory.Copy( src.Data, dst.Data, (int)( elementSize * ( (uint)( sx_48 >> 48 ) + srcyoff + srczoff ) ), dstOffset, elementSize );
 						dstOffset += elementSize;

@@ -109,7 +109,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "colour0", "Initial 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color0Command : IPropertyCommand
+        public class Color0Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -130,7 +130,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour1", "1st 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color1Command : IPropertyCommand
+        public class Color1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -152,7 +152,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour2", "2nd 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color2Command : IPropertyCommand
+        public class Color2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -174,7 +174,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour3", "3rd 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color3Command : IPropertyCommand
+        public class Color3Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -195,7 +195,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour4", "4th 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color4Command : IPropertyCommand
+        public class Color4Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -216,7 +216,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour5", "5th 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color5Command : IPropertyCommand
+        public class Color5Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -237,7 +237,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time0", "Initial 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time0Command : IPropertyCommand
+        public class Time0Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -258,7 +258,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time1", "1st 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time1Command : IPropertyCommand
+        public class Time1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -279,7 +279,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time2", "2nd 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time2Command : IPropertyCommand
+        public class Time2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -300,7 +300,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time3", "3rd 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time3Command : IPropertyCommand
+        public class Time3Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -321,7 +321,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time4", "4th 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time4Command : IPropertyCommand
+        public class Time4Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -342,7 +342,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time5", "5th 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time5Command : IPropertyCommand
+        public class Time5Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 

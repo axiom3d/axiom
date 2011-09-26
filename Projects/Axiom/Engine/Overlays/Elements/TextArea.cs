@@ -118,14 +118,14 @@ namespace Axiom.Overlays.Elements
 
 				// 6 verts per char since we're doing tri lists without indexes
 				// Allocate space for positions & texture coords
-				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
-				VertexBufferBinding binding = renderOperation.vertexData.vertexBufferBinding;
+				var decl = renderOperation.vertexData.vertexDeclaration;
+				var binding = renderOperation.vertexData.vertexBufferBinding;
 
 				renderOperation.vertexData.vertexCount = numChars * 6;
 
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
-				HardwareVertexBuffer buffer =
+				var buffer =
 					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
@@ -155,9 +155,9 @@ namespace Axiom.Overlays.Elements
 				// Combine positions and texture coords since they tend to change together
 				// since character sizes are different
 				renderOperation.vertexData = new VertexData();
-				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+				var decl = renderOperation.vertexData.vertexDeclaration;
 
-				int offset = 0;
+				var offset = 0;
 
 				// positions
 				decl.AddElement( POSITION_TEXCOORD_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
@@ -210,41 +210,44 @@ namespace Axiom.Overlays.Elements
 		/// <summary>
 		/// 
 		/// </summary>
-		protected unsafe void UpdateColors()
+		protected void UpdateColors()
 		{
-			// convert to API specific color values
-			int topColor = Root.Instance.ConvertColor( colorTop );
-			int bottomColor = Root.Instance.ConvertColor( colorBottom );
+		    // convert to API specific color values
+		    var topColor = Root.Instance.ConvertColor(colorTop);
+		    var bottomColor = Root.Instance.ConvertColor(colorBottom);
 
-			// get the seperate color buffer
-			HardwareVertexBuffer buffer =
-				renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+		    // get the seperate color buffer
+		    var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer(COLOR_BINDING);
 
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
-			int* colPtr = (int*)data.ToPointer();
-			int index = 0;
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                var data = buffer.Lock(BufferLocking.Discard);
+                var colPtr = data.ToIntPointer();
+                var index = 0;
 
-			for ( int i = 0; i < allocSize; i++ )
-			{
-				// first tri (top, bottom, top);
-				colPtr[ index++ ] = topColor;
-				colPtr[ index++ ] = bottomColor;
-				colPtr[ index++ ] = topColor;
+                for (var i = 0; i < allocSize; i++)
+                {
+                    // first tri (top, bottom, top);
+                    colPtr[index++] = topColor;
+                    colPtr[index++] = bottomColor;
+                    colPtr[index++] = topColor;
 
-				// second tri (top, bottom, bottom);
-				colPtr[ index++ ] = topColor;
-				colPtr[ index++ ] = bottomColor;
-				colPtr[ index++ ] = bottomColor;
-			}
-
-			// unlock this bad boy
-			buffer.Unlock();
+                    // second tri (top, bottom, bottom);
+                    colPtr[index++] = topColor;
+                    colPtr[index++] = bottomColor;
+                    colPtr[index++] = bottomColor;
+                }
+            }
+		    // unlock this bad boy
+		    buffer.Unlock();
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected unsafe void UpdateGeometry()
+		protected void UpdateGeometry()
 		{
 			if ( font == null || text == null || !this.isGeomPositionsOutOfDate )
 			{
@@ -252,18 +255,18 @@ namespace Axiom.Overlays.Elements
 				return;
 			}
 
-			int charLength = text.Length;
+			var charLength = text.Length;
 			// make sure the buffers are big enough
 			CheckMemoryAllocation( charLength );
 
 			renderOperation.vertexData.vertexCount = charLength * 6;
 
 			// get pos/tex buffer
-			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
-			float largestWidth = 0.0f;
-			float left = this.DerivedLeft * 2.0f - 1.0f;
-			float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
+			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
+			var data = buffer.Lock( BufferLocking.Discard );
+			var largestWidth = 0.0f;
+			var left = this.DerivedLeft * 2.0f - 1.0f;
+			var top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
 			if ( spaceWidth == 0 )
@@ -272,20 +275,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 
-			bool newLine = true;
-			int index = 0;
+			var newLine = true;
+			var index = 0;
 
 			// go through each character and process
-			for ( int i = 0; i < charLength; i++ )
+			for ( var i = 0; i < charLength; i++ )
 			{
-				char c = text[ i ];
+				var c = text[ i ];
 
 				if ( newLine )
 				{
-					float length = 0.0f;
+					var length = 0.0f;
 
 					// precalc the length of this line
-					for ( int j = i; j < charLength && text[ j ] != '\n'; j++ )
+					for ( var j = i; j < charLength && text[ j ] != '\n'; j++ )
 					{
 						if ( text[ j ] == ' ' )
 						{
@@ -328,73 +331,78 @@ namespace Axiom.Overlays.Elements
 					continue;
 				}
 
-				float horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
+				var horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
 				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
 				font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
 
-				// each vert is (x, y, z, u, v)
-				// first tri
-				// upper left
-				float* vertPtr = (float*)data.ToPointer();
-				vertPtr[ index++ ] = left;
-				vertPtr[ index++ ] = top;
-				vertPtr[ index++ ] = -1.0f;
-				vertPtr[ index++ ] = u1;
-				vertPtr[ index++ ] = v1;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    // each vert is (x, y, z, u, v)
+                    // first tri
+                    // upper left
+                    var vertPtr = data.ToFloatPointer();
+                    vertPtr[index++] = left;
+                    vertPtr[index++] = top;
+                    vertPtr[index++] = -1.0f;
+                    vertPtr[index++] = u1;
+                    vertPtr[index++] = v1;
 
-				top -= charHeight * 2.0f;
+                    top -= charHeight*2.0f;
 
-				// bottom left
-				vertPtr[ index++ ] = left;
-				vertPtr[ index++ ] = top;
-				vertPtr[ index++ ] = -1.0f;
-				vertPtr[ index++ ] = u1;
-				vertPtr[ index++ ] = v2;
+                    // bottom left
+                    vertPtr[index++] = left;
+                    vertPtr[index++] = top;
+                    vertPtr[index++] = -1.0f;
+                    vertPtr[index++] = u1;
+                    vertPtr[index++] = v2;
 
+                    top += charHeight*2.0f;
+                    left += horizHeight*charHeight*2.0f;
+
+                    // top right
+                    vertPtr[index++] = left;
+                    vertPtr[index++] = top;
+                    vertPtr[index++] = -1.0f;
+                    vertPtr[index++] = u2;
+                    vertPtr[index++] = v1;
+
+                    // second tri
+
+                    // top right (again)
+                    vertPtr[index++] = left;
+                    vertPtr[index++] = top;
+                    vertPtr[index++] = -1.0f;
+                    vertPtr[index++] = u2;
+                    vertPtr[index++] = v1;
+
+                    top -= charHeight*2.0f;
+                    left -= horizHeight*charHeight*2.0f;
+
+                    // bottom left (again)
+                    vertPtr[index++] = left;
+                    vertPtr[index++] = top;
+                    vertPtr[index++] = -1.0f;
+                    vertPtr[index++] = u1;
+                    vertPtr[index++] = v2;
+
+                    left += horizHeight*charHeight*2.0f;
+
+                    // bottom right
+                    vertPtr[index++] = left;
+                    vertPtr[index++] = top;
+                    vertPtr[index++] = -1.0f;
+                    vertPtr[index++] = u2;
+                    vertPtr[index++] = v2;
+                }
+
+			    // go back up with top
 				top += charHeight * 2.0f;
-				left += horizHeight * charHeight * 2.0f;
 
-				// top right
-				vertPtr[ index++ ] = left;
-				vertPtr[ index++ ] = top;
-				vertPtr[ index++ ] = -1.0f;
-				vertPtr[ index++ ] = u2;
-				vertPtr[ index++ ] = v1;
-
-				// second tri
-
-				// top right (again)
-				vertPtr[ index++ ] = left;
-				vertPtr[ index++ ] = top;
-				vertPtr[ index++ ] = -1.0f;
-				vertPtr[ index++ ] = u2;
-				vertPtr[ index++ ] = v1;
-
-				top -= charHeight * 2.0f;
-				left -= horizHeight * charHeight * 2.0f;
-
-				// bottom left (again)
-				vertPtr[ index++ ] = left;
-				vertPtr[ index++ ] = top;
-				vertPtr[ index++ ] = -1.0f;
-				vertPtr[ index++ ] = u1;
-				vertPtr[ index++ ] = v2;
-
-				left += horizHeight * charHeight * 2.0f;
-
-				// bottom right
-				vertPtr[ index++ ] = left;
-				vertPtr[ index++ ] = top;
-				vertPtr[ index++ ] = -1.0f;
-				vertPtr[ index++ ] = u2;
-				vertPtr[ index++ ] = v2;
-
-				// go back up with top
-				top += charHeight * 2.0f;
-
-				float currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
+				var currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
 
 				if ( currentWidth > largestWidth )
 				{
@@ -666,7 +674,7 @@ namespace Axiom.Overlays.Elements
 		#region ScriptableObject Interface Command Classes
 
 		[ScriptableProperty( "char_height", "", typeof( TextArea ) )]
-		private class CharacterHeightAttributeCommand : IPropertyCommand
+        public class CharacterHeightAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -706,7 +714,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "space_width", "", typeof( TextArea ) )]
-		private class SpaceWidthAttributeCommand : IPropertyCommand
+        public class SpaceWidthAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -746,7 +754,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "font_name", "", typeof( TextArea ) )]
-		private class FontNameAttributeCommand : IPropertyCommand
+        public class FontNameAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -786,7 +794,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
-		private class HorizontalAlignmentAttributeCommand : IPropertyCommand
+        public class HorizontalAlignmentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -826,7 +834,7 @@ namespace Axiom.Overlays.Elements
 		}
 		[ScriptableProperty( "color", "", typeof( TextArea ) )]
 		[ScriptableProperty( "colour", "", typeof( TextArea ) )]
-		private class ColorAttributeCommand : IPropertyCommand
+        public class ColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -867,7 +875,7 @@ namespace Axiom.Overlays.Elements
 
 		[ScriptableProperty( "color_top", "", typeof( TextArea ) )]
 		[ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
-		private class TopColorAttributeCommand : IPropertyCommand
+        public class TopColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -908,7 +916,7 @@ namespace Axiom.Overlays.Elements
 
 		[ScriptableProperty( "color_bottom", "", typeof( TextArea ) )]
 		[ScriptableProperty( "colour_bottom", "", typeof( TextArea ) )]
-		private class BottomColorAttributeCommand : IPropertyCommand
+        public class BottomColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 

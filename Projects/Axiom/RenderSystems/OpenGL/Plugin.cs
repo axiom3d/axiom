@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Utilities;
@@ -47,6 +47,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for Plugin.
 	/// </summary>
+	[Export(typeof(IPlugin))]
 	public sealed class Plugin : IPlugin
 	{
 		#region Implementation of IPlugin

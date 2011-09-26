@@ -176,6 +176,11 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         public override Matrix4 WorldMatrix
         {
+            get
+            {
+                var mat = ActiveD3D9Device.GetTransform(TransformState.World);
+                return ConvertD3DMatrix(ref mat);
+            }
             set
             {
                 ActiveD3D9Device.SetTransform(TransformState.World, MakeD3DMatrix(value));
@@ -193,6 +198,10 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         public override Matrix4 ViewMatrix
         {
+            get
+            {
+                return viewMatrix;
+            }
             set
             {
                 // flip the transform portion of the matrix for DX and its left-handed coord system
@@ -221,6 +230,20 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         public override Matrix4 ProjectionMatrix
         {
+            get
+            {
+                var mat = ActiveD3D9Device.GetTransform(TransformState.Projection);
+
+                if (activeRenderTarget.RequiresTextureFlipping)
+                {
+                    mat.M12 = -mat.M12;
+                    mat.M22 = -mat.M22;
+                    mat.M32 = -mat.M32;
+                    mat.M42 = -mat.M42;
+                }
+
+                return ConvertD3DMatrix(ref mat);
+            }
             set
             {
                 var mat = MakeD3DMatrix(value);

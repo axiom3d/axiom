@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
@@ -19,7 +19,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Shadows.
 	/// </summary>
-	public class Shadows : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Shadows : TechDemo
 	{
 		Entity athene;
 		AnimationState animState;

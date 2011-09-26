@@ -239,7 +239,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "red1", "Initial red.", typeof( ParticleAffector ) )]
-		class Red1Command : IPropertyCommand
+        public class Red1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -258,7 +258,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "red2", "Final red.", typeof( ParticleAffector ) )]
-		class Red2Command : IPropertyCommand
+        public class Red2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -277,7 +277,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "green1", "Initial green.", typeof( ParticleAffector ) )]
-		class Green1Command : IPropertyCommand
+        public class Green1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -296,7 +296,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "green2", "Final green.", typeof( ParticleAffector ) )]
-		class Green2Command : IPropertyCommand
+        public class Green2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -315,7 +315,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "blue1", "Initial blue.", typeof( ParticleAffector ) )]
-		class Blue1Command : IPropertyCommand
+        public class Blue1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -334,7 +334,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "blue2", "Final blue.", typeof( ParticleAffector ) )]
-		class Blue2Command : IPropertyCommand
+        public class Blue2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -353,7 +353,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "alpha1", "Initial alpha.", typeof( ParticleAffector ) )]
-		class Alpha1Command : IPropertyCommand
+        public class Alpha1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -372,7 +372,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "alpha2", "Final alpha.", typeof( ParticleAffector ) )]
-		class Alpha2Command : IPropertyCommand
+        public class Alpha2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -391,7 +391,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "state_change", "Rate of state changing.", typeof( ParticleAffector ) )]
-		class StateChangeCommand : IPropertyCommand
+        public class StateChangeCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 

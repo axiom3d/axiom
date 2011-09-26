@@ -130,7 +130,7 @@ namespace Axiom.Core
 
 		public int ToRGBA()
 		{
-			int result = 0;
+			var result = 0;
 
 			result += ( (int)( r * 255.0f ) ) << 24;
 			result += ( (int)( g * 255.0f ) ) << 16;
@@ -147,7 +147,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int ToABGR()
 		{
-			int result = 0;
+			var result = 0;
 
 			result += ( (int)( a * 255.0f ) ) << 24;
 			result += ( (int)( b * 255.0f ) ) << 16;
@@ -163,7 +163,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int ToARGB()
 		{
-			int result = 0;
+			var result = 0;
 
 			result += ( (int)( a * 255.0f ) ) << 24;
 			result += ( (int)( r * 255.0f ) ) << 16;
@@ -232,7 +232,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator *( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a *= right.a;
 			retVal.r *= right.r;
 			retVal.g *= right.g;
@@ -242,7 +242,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator *( ColorEx left, float scalar )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a *= scalar;
 			retVal.r *= scalar;
 			retVal.g *= scalar;
@@ -253,7 +253,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator /( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a /= right.a;
 			retVal.r /= right.r;
 			retVal.g /= right.g;
@@ -263,7 +263,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator /( ColorEx left, float scalar )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a /= scalar;
 			retVal.r /= scalar;
 			retVal.g /= scalar;
@@ -273,7 +273,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator -( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a -= right.a;
 			retVal.r -= right.r;
 			retVal.g -= right.g;
@@ -283,7 +283,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator +( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a += right.a;
 			retVal.r += right.r;
 			retVal.g += right.g;
@@ -2557,7 +2557,7 @@ namespace Axiom.Core
 			ColorEx retVal;
 			if ( parsableText == null )
 				throw new ArgumentException( "The parsableText parameter cannot be null." );
-			string[] vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
+			var vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
 			if ( vals.Length < 3 )
 				throw new FormatException( string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)",
 														parsableText ) );
@@ -2629,7 +2629,7 @@ namespace Axiom.Core
 		/// <returns>0 if they are equal, 1 if they are not.</returns>
 		public int CompareTo( object obj )
 		{
-			ColorEx other = (ColorEx)obj;
+			var other = (ColorEx)obj;
 
 			if ( this.a == other.a &&
 				this.r == other.r &&

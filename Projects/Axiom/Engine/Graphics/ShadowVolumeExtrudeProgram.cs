@@ -608,7 +608,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public static string GetProgramName( Programs type )
 		{
-			int index = (int)type;
+			var index = (int)type;
 
 			if ( index < programNames.Length )
 			{
@@ -687,18 +687,18 @@ namespace Axiom.Graphics
 			// only need to initialize once
 			if ( !isInitialized )
 			{
-				string syntax = "";
+				var syntax = "";
 
 				// flags for which of the programs use finite extrusion
-				bool[] vertexProgramFinite =
+				var vertexProgramFinite =
 					new bool[] { false, false, false, false, true, true, true, true };
 
 				// flags for which of the programs use debug rendering
-				bool[] vertexProgramDebug =
+				var vertexProgramDebug =
 					new bool[] { false, true, false, true, false, true, false, true };
 
 				// types of lights that each of the programs target
-				LightType[] vertexProgramLightTypes =
+				var vertexProgramLightTypes =
 					new LightType[] { 
 							LightType.Point, LightType.Point, 
 							LightType.Directional, LightType.Directional,
@@ -721,15 +721,15 @@ namespace Axiom.Graphics
 				}
 
 				// create the programs
-				for ( int i = 0; i < programNames.Length; i++ )
+				for ( var i = 0; i < programNames.Length; i++ )
 				{
 					// sanity check to make sure it doesn't already exist
 					if ( GpuProgramManager.Instance.GetByName( programNames[ i ] ) == null )
 					{
-						string source = ShadowVolumeExtrudeProgram.GetProgramSource( vertexProgramLightTypes[ i ], syntax, vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
+						var source = ShadowVolumeExtrudeProgram.GetProgramSource( vertexProgramLightTypes[ i ], syntax, vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
 
 						// create the program from the static source
-						GpuProgram program = GpuProgramManager.Instance.CreateProgramFromString( programNames[ i ], ResourceGroupManager.InternalResourceGroupName, source, GpuProgramType.Vertex, syntax );
+						var program = GpuProgramManager.Instance.CreateProgramFromString( programNames[ i ], ResourceGroupManager.InternalResourceGroupName, source, GpuProgramType.Vertex, syntax );
 
 						// load the program
 						program.Load();
@@ -748,7 +748,7 @@ namespace Axiom.Graphics
 			if ( isInitialized )
 			{
 				// destroy shadow volume extruders
-				foreach ( string programName in programNames )
+				foreach ( var programName in programNames )
 				{
 					// TODO: Toast the programs
 					//GpuProgramManager.Instance.Remove(programName);

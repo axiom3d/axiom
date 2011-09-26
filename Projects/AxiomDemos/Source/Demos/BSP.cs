@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -17,6 +17,7 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for BspDemo.
 	/// </summary>
+	[Export(typeof(TechDemo))]
 	public class Bsp : TechDemo
 	{
 		private string bspPath;

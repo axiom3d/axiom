@@ -995,9 +995,9 @@ namespace Axiom.Core
                     if (IsReflected)
                     {
                         // Calculate reflected orientation, use up-vector as fallback axis.
-                        Vector3 dir = realOrientation * Vector3.NegativeUnitZ;
-                        Vector3 rdir = dir.Reflect(ReflectionPlane.Normal);
-                        Vector3 up = realOrientation * Vector3.UnitY;
+                        var dir = realOrientation * Vector3.NegativeUnitZ;
+                        var rdir = dir.Reflect(ReflectionPlane.Normal);
+                        var up = realOrientation * Vector3.UnitY;
                         derivedOrientation = dir.GetRotationTo(rdir, up) * realOrientation;
 
                         // Calculate reflected position.
@@ -1683,23 +1683,23 @@ namespace Axiom.Core
             float wvpTop = vpTop - windowTop * vpHeight;
             float wvpBottom = vpTop - windowBottom * vpHeight;
 
-            Vector3 vpUpLeft = new Vector3(wvpLeft, wvpTop, -Near);
-            Vector3 vpUpRight = new Vector3(wvpRight, wvpTop, -Near);
-            Vector3 vpBottomLeft = new Vector3(wvpLeft, wvpBottom, -Near);
-            Vector3 vpBottomRight = new Vector3(wvpRight, wvpBottom, -Near);
+            var vpUpLeft = new Vector3(wvpLeft, wvpTop, -Near);
+            var vpUpRight = new Vector3(wvpRight, wvpTop, -Near);
+            var vpBottomLeft = new Vector3(wvpLeft, wvpBottom, -Near);
+            var vpBottomRight = new Vector3(wvpRight, wvpBottom, -Near);
 
-            Matrix4 inv = _viewMatrix.Inverse();
+            var inv = _viewMatrix.Inverse();
 
-            Vector3 vwUpLeft = inv.TransformAffine(vpUpLeft);
-            Vector3 vwUpRight = inv.TransformAffine(vpUpRight);
-            Vector3 vwBottomLeft = inv.TransformAffine(vpBottomLeft);
-            Vector3 vwBottomRight = inv.TransformAffine(vpBottomRight);
+            var vwUpLeft = inv.TransformAffine(vpUpLeft);
+            var vwUpRight = inv.TransformAffine(vpUpRight);
+            var vwBottomLeft = inv.TransformAffine(vpBottomLeft);
+            var vwBottomRight = inv.TransformAffine(vpBottomRight);
 
             windowClipPlanes.Clear();
 
             if (ProjectionType == Projection.Perspective)
             {
-                Vector3 pos = GetPositionForViewUpdate();
+                var pos = GetPositionForViewUpdate();
 
                 windowClipPlanes.Add(new Plane(pos, vwBottomLeft, vwUpLeft));
                 windowClipPlanes.Add(new Plane(pos, vwUpLeft, vwUpRight));
@@ -1708,8 +1708,8 @@ namespace Axiom.Core
             }
             else
             {
-                Vector3 x_axis = new Vector3(inv.m00, inv.m01, inv.m02);
-                Vector3 y_axis = new Vector3(inv.m10, inv.m11, inv.m12);
+                var x_axis = new Vector3(inv.m00, inv.m01, inv.m02);
+                var y_axis = new Vector3(inv.m10, inv.m11, inv.m12);
                 x_axis.Normalize();
                 y_axis.Normalize();
 

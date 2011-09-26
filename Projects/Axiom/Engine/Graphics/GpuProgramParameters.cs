@@ -294,7 +294,7 @@ namespace Axiom.Graphics
 		protected List<ParameterEntry> paramTypeList = new List<ParameterEntry>();
 		//protected ArrayList paramIndexTypes = new ArrayList();
 
-		protected bool ignoreMissingParameters = false;
+	    protected bool ignoreMissingParameters = true;// false;
 
         #region _activePassIterationIndex
 
@@ -320,7 +320,6 @@ namespace Axiom.Graphics
         {
             _combinedVariability = GpuParamVariability.Global;
             transposeMatrices = false;
-            ignoreMissingParameters = false;
             _activePassIterationIndex = int.MaxValue;            
 		}
 
@@ -715,6 +714,24 @@ namespace Axiom.Graphics
         {
             // TODO: optimize this in case of GC pressure problems
             SetConstant(index, new[] { f0, f1, f2, f3 });
+        }
+
+        /// <summary>
+        ///    Sets an array of int values starting at the specified index.
+        /// </summary>
+        /// <param name="index">Index of the contant register to start at.</param>
+        /// <param name="val">Array of ints.</param>
+        [OgreVersion(1, 7, 2790)]
+        public void SetConstant(int index, int[] val)
+        {
+            // Raw buffer size is 4x count
+            var rawCount = val.Length;
+            // get physical index
+            Debug.Assert(intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!");
+
+            var physicalIndex = GetIntConstantPhysicalIndex(index, rawCount, GpuParamVariability.Global);
+            // Copy 
+            WriteRawConstants(physicalIndex, val, rawCount);
         }
 
 

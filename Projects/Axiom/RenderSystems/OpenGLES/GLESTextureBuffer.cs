@@ -288,7 +288,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="dstBox"></param>
 		public void BlitFromTexture( GLESTextureBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
-			if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.FrameBufferObjects ) )
+			if ( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FrameBufferObjects ) )
 			{
 				// the following code depends on FBO support, it crashes if FBO is not supported.
 				// TODO - write PBUFFER version of this function or a version that doesn't require FBO

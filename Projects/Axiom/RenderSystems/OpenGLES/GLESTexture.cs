@@ -248,7 +248,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			OpenGL.TexParameter( All.Texture2D, All.TextureWrapT, (int)All.ClampToEdge );
 			GLESConfig.GlCheckError( this );
 			// If we can do automip generation and the user desires this, do so
-			MipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps ) && !PixelUtil.IsCompressed( Format );
+			MipmapsHardwareGenerated = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareMipMaps ) && !PixelUtil.IsCompressed( Format );
 
 			if ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap && RequestedMipmapCount > 0 && MipmapsHardwareGenerated )
 			{

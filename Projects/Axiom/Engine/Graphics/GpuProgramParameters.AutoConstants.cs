@@ -955,9 +955,9 @@ namespace Axiom.Graphics
             // find a constant definition that matches name by iterating through the 
             // constant definition array
             def = new AutoConstantDefinition();
-            bool nameFound = false;
-            int i = 0;
-            int numDefs = AutoConstantDictionary.Length;
+            var nameFound = false;
+            var i = 0;
+            var numDefs = AutoConstantDictionary.Length;
             while ( !nameFound && ( i < numDefs ) )
             {
                 if ( name == AutoConstantDictionary[ i ].Name )

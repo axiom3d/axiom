@@ -174,8 +174,9 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 					{
 						// send the params 4 at a time
 					    throw new AxiomException( "Update this!" );
-						Gl.glProgramParameter4fvNV( programType, index, entry.Pointer );
-					}
+						Gl.glProgramParameter4fvNV( programType, index, entry.Pointer.Pin() );
+                        entry.Pointer.UnPin();
+                    }
 				}
 			}
 		}

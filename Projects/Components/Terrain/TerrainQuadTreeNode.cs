@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Collections;
@@ -1213,23 +1214,25 @@ namespace Axiom.Components.Terrain
         /// <param name="posBuff"></param>
         /// <param name="deltaBuf"></param>
         /// <param name="rect"></param>
-        protected unsafe void UpdateVertexBuffer(HardwareVertexBuffer posBuff, HardwareVertexBuffer deltaBuf, Rectangle rect)
+        protected void UpdateVertexBuffer(HardwareVertexBuffer posBuff, HardwareVertexBuffer deltaBuf, Rectangle rect)
         {
+#if !AXIOM_SAFE_ONLY
             unsafe
+#endif
             {
-                Debug.Assert(rect.Left >= mOffsetX && rect.Right <= mBoundaryX &&
-                    rect.Top >= mOffsetY && rect.Bottom <= mBoundaryY);
+                Debug.Assert( rect.Left >= mOffsetX && rect.Right <= mBoundaryX &&
+                              rect.Top >= mOffsetY && rect.Bottom <= mBoundaryY );
                 // potentially reset our bounds depending on coverage of the update
-                ResetBounds(rect);
+                ResetBounds( rect );
                 //main data
-                ushort inc = (ushort)((mTerrain.Size - 1) / (mVertexDataRecord.Resolution - 1));
-                long destOffsetX = rect.Left <= mOffsetX ? 0 : (rect.Left - mOffsetX) / inc;
-                long destOffsetY = rect.Top <= mOffsetY ? 0 : (rect.Top - mOffsetY) / inc;
+                ushort inc = (ushort)( ( mTerrain.Size - 1 )/( mVertexDataRecord.Resolution - 1 ) );
+                long destOffsetX = rect.Left <= mOffsetX ? 0 : ( rect.Left - mOffsetX )/inc;
+                long destOffsetY = rect.Top <= mOffsetY ? 0 : ( rect.Top - mOffsetY )/inc;
                 // Fill the buffers
 
                 BufferLocking lockmode;
-                if (destOffsetX != 0 || destOffsetY != 0 || rect.Right - rect.Left < mSize
-                     || rect.Bottom - rect.Top < mSize)
+                if ( destOffsetX != 0 || destOffsetY != 0 || rect.Right - rect.Left < mSize
+                     || rect.Bottom - rect.Top < mSize )
                 {
                     lockmode = BufferLocking.Normal;
                 }
@@ -1237,486 +1240,509 @@ namespace Axiom.Components.Terrain
                 {
                     lockmode = BufferLocking.Discard;
                 }
-                float uvScale = 1.0f / (mTerrain.Size - 1);
-                float* pBaseHeight = (float*)mTerrain.GetHeightData(rect.Left, rect.Top);
-                float* pBaseDelta = (float*)mTerrain.GetDeltaData(rect.Left, rect.Top);
-                ushort rowskip = (ushort)(mTerrain.Size * inc);
+                float uvScale = 1.0f/( mTerrain.Size - 1 );
+                var pBaseHeight = mTerrain.GetHeightData( rect.Left, rect.Top );
+                var pBaseDelta = mTerrain.GetDeltaData( rect.Left, rect.Top );
+                ushort rowskip = (ushort)( mTerrain.Size*inc );
                 ushort destPosRowSkip = 0, destDeltaRowSkip = 0;
-                byte* pRootPosBuf = (byte*)0;
-                byte* pRootDeltaBuf = (byte*)0;
-                byte* pRowPosBuf = (byte*)0;
-                byte* pRowDeltaBuf = (byte*)0;
-                if (posBuff != null)
+                BufferBase pRootPosBuf = null;
+                BufferBase pRootDeltaBuf = null;
+                BufferBase pRowPosBuf = null;
+                BufferBase pRowDeltaBuf = null;
+                if ( posBuff != null )
                 {
-                    destPosRowSkip = (ushort)(mVertexDataRecord.Size * posBuff.VertexSize);
-                    pRootPosBuf = (byte*)posBuff.Lock(lockmode);
+                    destPosRowSkip = (ushort)( mVertexDataRecord.Size*posBuff.VertexSize );
+                    pRootPosBuf = posBuff.Lock( lockmode );
                     pRowPosBuf = pRootPosBuf;
                     // skip dest buffer in by left/top
-                    pRowPosBuf += destOffsetY * destPosRowSkip + destOffsetX * posBuff.VertexSize;
+                    pRowPosBuf += destOffsetY*destPosRowSkip + destOffsetX*posBuff.VertexSize;
                 }
-                if (deltaBuf != null)
+                if ( deltaBuf != null )
                 {
-                    destDeltaRowSkip = (ushort)(mVertexDataRecord.Size * deltaBuf.VertexSize);
-                    pRootDeltaBuf = (byte*)deltaBuf.Lock(lockmode);
+                    destDeltaRowSkip = (ushort)( mVertexDataRecord.Size*deltaBuf.VertexSize );
+                    pRootDeltaBuf = deltaBuf.Lock( lockmode );
                     pRowDeltaBuf = pRootDeltaBuf;
                     // skip dest buffer in by left/top
-                    pRowDeltaBuf += destOffsetY * destDeltaRowSkip + destOffsetX * deltaBuf.VertexSize;
+                    pRowDeltaBuf += destOffsetY*destDeltaRowSkip + destOffsetX*deltaBuf.VertexSize;
                 }
                 Vector3 pos = Vector3.Zero;
 
-                for (ushort y = (ushort)rect.Top; y < rect.Bottom; y += inc)
+                for ( ushort y = (ushort)rect.Top; y < rect.Bottom; y += inc )
                 {
 
-                    float* pHeight = (float*)pBaseHeight;
-                    float* pDelta = (float*)pBaseDelta;
-                    float* pPosBuf = (float*)pRowPosBuf;
-                    float* pDeltaBuf = (float*)pRowDeltaBuf;
-                    for (ushort x = (ushort)rect.Left; x < rect.Right; x += inc)
+                    var pHeight = pBaseHeight.ToFloatPointer();
+                    var pHIdx = 0;
+                    var pDelta = pBaseDelta.ToFloatPointer();
+                    var pDIdx = 0;
+                    var pPosBuf = pRowPosBuf.ToFloatPointer();
+                    var pPosIdx = 0;
+                    var pDeltaBuf = pRowDeltaBuf.ToFloatPointer();
+                    var pDeltaIdx = 0;
+                    for ( ushort x = (ushort)rect.Left; x < rect.Right; x += inc )
                     {
-                        if (pPosBuf != (float*)IntPtr.Zero)
+                        if ( pPosBuf != null )
                         {
-                            if (*pHeight != 0)
+                            if ( pHeight[ pHIdx ] != 0 )
                             {
-                                float val = *pHeight;
-                               // LogManager.Instance.Write("GetPoint(" + x.ToString() + " " + y.ToString() + " " + val.ToString());
+                                float val = pHeight[ pHIdx ];
+                                // LogManager.Instance.Write("GetPoint(" + x.ToString() + " " + y.ToString() + " " + val.ToString());
                             }
-                            mTerrain.GetPoint(x, y, *pHeight, ref pos);
+                            mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
                             // Update bounds *before* making relative
-                            MergeIntoBounds(x, y, pos);
+                            MergeIntoBounds( x, y, pos );
                             // relative to local centre
                             pos -= mLocalCentre;
-                            pHeight += inc;
+                            pHIdx += inc;
 
-                            *pPosBuf++ = pos.x;
-                            *pPosBuf++ = pos.y;
-                            *pPosBuf++ = pos.z;
+                            pPosBuf[ pPosIdx++ ] = pos.x;
+                            pPosBuf[ pPosIdx++ ] = pos.y;
+                            pPosBuf[ pPosIdx++ ] = pos.z;
 
                             // UVs - base UVs vary from 0 to 1, all other values
                             // will be derived using scalings
-                            *pPosBuf++ = x * uvScale;
-                            *pPosBuf++ = 1.0f - (y * uvScale);
+                            pPosBuf[ pPosIdx++ ] = x*uvScale;
+                            pPosBuf[ pPosIdx++ ] = 1.0f - ( y*uvScale );
                         }
 
-                        if (pDeltaBuf != (float*)IntPtr.Zero)
+                        if ( pDeltaBuf != null )
                         {
                             //delta
-                            *pDeltaBuf++ = *pDelta;
-                            pDelta += inc;
+                            pDeltaBuf[ pDeltaIdx++ ] = pDelta[ pDIdx ];
+                            pDIdx += inc;
                             // delta LOD threshold
                             // we want delta to apply to LODs no higher than this value
                             // at runtime this will be combined with a per-renderable parameter
                             // to ensure we only apply morph to the correct LOD
-                            *pDeltaBuf++ = (float)mTerrain.GetLODLevelWhenVertexEliminated(x, y) - 1.0f;
+                            pDeltaBuf[ pDeltaIdx++ ] = (float)mTerrain.GetLODLevelWhenVertexEliminated( x, y ) - 1.0f;
                         }
-                    }//end for
+                    } //end for
 
                     pBaseHeight += rowskip;
                     pBaseDelta += rowskip;
-                    if (pRowPosBuf != (byte*)IntPtr.Zero)
+                    if ( pRowPosBuf != null )
                         pRowPosBuf += destPosRowSkip;
-                    if (pRowDeltaBuf != (byte*)IntPtr.Zero)
+                    if ( pRowDeltaBuf != null )
                         pRowDeltaBuf += destDeltaRowSkip;
 
-                }//end for
+                } //end for
 
                 // Skirts now
                 // skirt spacing based on top-level resolution (* inc to cope with resolution which is not the max)
-                ushort skirtSpacing = (ushort)(mVertexDataRecord.SkirtRowColSkip * inc);
+                ushort skirtSpacing = (ushort)( mVertexDataRecord.SkirtRowColSkip*inc );
                 Vector3 skirtOffset = Vector3.Zero;
-                mTerrain.GetVector(0, 0, -mTerrain.SkirtSize, ref skirtOffset);
+                mTerrain.GetVector( 0, 0, -mTerrain.SkirtSize, ref skirtOffset );
                 // skirt rows
                 // clamp rows to skirt spacing (round up)
                 long skirtStartX = rect.Left;
                 long skirtStartY = rect.Top;
-                if (skirtStartY % skirtSpacing != 0)
-                    skirtStartY += skirtSpacing - (skirtStartY % skirtSpacing);
+                if ( skirtStartY%skirtSpacing != 0 )
+                    skirtStartY += skirtSpacing - ( skirtStartY%skirtSpacing );
 
-                skirtStartY = System.Math.Max(skirtStartY, (long)mOffsetY);
-                pBaseHeight = (float*)mTerrain.GetHeightData(skirtStartX, skirtStartY);
-                if (posBuff != null)
+                skirtStartY = System.Math.Max( skirtStartY, (long)mOffsetY );
+                pBaseHeight = mTerrain.GetHeightData( skirtStartX, skirtStartY );
+                if ( posBuff != null )
                 {
                     // position dest buffer just after the main vertex data
-                    pRowPosBuf = pRootPosBuf + posBuff.VertexSize *
-                        mVertexDataRecord.Size * mVertexDataRecord.Size;
+                    pRowPosBuf = pRootPosBuf + posBuff.VertexSize*
+                                 mVertexDataRecord.Size*mVertexDataRecord.Size;
                     // move it onwards to skip the skirts we don't need to update
-                    pRowPosBuf += destPosRowSkip * (skirtStartY - mOffsetY) / skirtSpacing;
-                    pRowPosBuf += posBuff.VertexSize * (skirtStartX - mOffsetX);
+                    pRowPosBuf += destPosRowSkip*( skirtStartY - mOffsetY )/skirtSpacing;
+                    pRowPosBuf += posBuff.VertexSize*( skirtStartX - mOffsetX );
                 }
-                if (deltaBuf != null)
+                if ( deltaBuf != null )
                 {
                     // position dest buffer just after the main vertex data
                     pRowDeltaBuf = pRootDeltaBuf + deltaBuf.VertexSize
-                        * mVertexDataRecord.Size * mVertexDataRecord.Size;
+                                   *mVertexDataRecord.Size*mVertexDataRecord.Size;
                     // move it onwards to skip the skirts we don't need to update
-                    pRowDeltaBuf += destDeltaRowSkip * (skirtStartY - mOffsetY) / skirtSpacing;
-                    pRowDeltaBuf += deltaBuf.VertexSize * (skirtStartX - mOffsetX);
+                    pRowDeltaBuf += destDeltaRowSkip*( skirtStartY - mOffsetY )/skirtSpacing;
+                    pRowDeltaBuf += deltaBuf.VertexSize*( skirtStartX - mOffsetX );
                 }
 
-                for (ushort y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += skirtSpacing)
+                for ( ushort y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += skirtSpacing )
                 {
-                    float* pHeight = (float*)pBaseHeight;
-                    float* pPosBuf = (float*)pRowPosBuf;
-                    float* pDeltaBuf = (float*)pRowDeltaBuf;
-                    for (ushort x = (ushort)skirtStartX; x < (ushort)rect.Right; x += inc)
+                    var pHeight = pBaseHeight.ToFloatPointer();
+                    var pHIdx = 0;
+                    var pPosBuf = pRowPosBuf.ToFloatPointer();
+                    var pPosIdx = 0;
+                    var pDeltaBuf = pRowDeltaBuf.ToFloatPointer();
+                    var pDeltaIdx = 0;
+                    for ( ushort x = (ushort)skirtStartX; x < (ushort)rect.Right; x += inc )
                     {
-                        if (pPosBuf != (float*)IntPtr.Zero)
+                        if ( pPosBuf != null )
                         {
-                            mTerrain.GetPoint(x, y, *pHeight, ref pos);
+                            mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
                             // relative to local centre
                             pos -= mLocalCentre;
-                            pHeight += inc;
+                            pHIdx += inc;
                             pos += skirtOffset;
-                            *pPosBuf++ = pos.x;
-                            *pPosBuf++ = pos.y;
-                            *pPosBuf++ = pos.z;
+                            pPosBuf[ pPosIdx++ ] = pos.x;
+                            pPosBuf[ pPosIdx++ ] = pos.y;
+                            pPosBuf[ pPosIdx++ ] = pos.z;
 
                             // UVs - same as base
-                            *pPosBuf++ = x * uvScale;
-                            *pPosBuf++ = 1.0f - (y * uvScale);
+                            pPosBuf[ pPosIdx++ ] = x*uvScale;
+                            pPosBuf[ pPosIdx++ ] = 1.0f - ( y*uvScale );
                         }
-                        if (pDeltaBuf != (float*)IntPtr.Zero)
+                        if ( pDeltaBuf != null )
                         {
                             // delta (none)
-                            *pDeltaBuf++ = 0;
+                            pDeltaBuf[ pDeltaIdx++ ] = 0;
                             // delta threshold (irrelevant)
-                            *pDeltaBuf++ = 99;
+                            pDeltaBuf[ pDeltaIdx++ ] = 99;
                         }
-                    }//end for
-                    pBaseHeight += mTerrain.Size * skirtSpacing;
-                    if (pRowPosBuf != (byte*)IntPtr.Zero)
+                    } //end for
+                    pBaseHeight += mTerrain.Size*skirtSpacing;
+                    if ( pRowPosBuf != null )
                         pRowPosBuf += destPosRowSkip;
-                    if (pRowDeltaBuf != (byte*)IntPtr.Zero)
+                    if ( pRowDeltaBuf != null )
                         pRowDeltaBuf += destDeltaRowSkip;
-                }//end for
+                } //end for
 
                 // skirt cols
                 // clamp cols to skirt spacing (round up)
                 skirtStartX = rect.Left;
-                if (skirtStartX % skirtSpacing != 0)
-                    skirtStartX += skirtSpacing - (skirtStartX % skirtSpacing);
+                if ( skirtStartX%skirtSpacing != 0 )
+                    skirtStartX += skirtSpacing - ( skirtStartX%skirtSpacing );
                 skirtStartY = rect.Top;
-                skirtStartX = System.Math.Max(skirtStartX, (long)mOffsetX);
+                skirtStartX = System.Math.Max( skirtStartX, (long)mOffsetX );
 
-                if (posBuff != null)
+                if ( posBuff != null )
                 {
                     // position dest buffer just after the main vertex data and skirt rows
                     pRowPosBuf = pRootPosBuf + posBuff.VertexSize
-                        * mVertexDataRecord.Size * mVertexDataRecord.Size;
+                                 *mVertexDataRecord.Size*mVertexDataRecord.Size;
                     // skip the row skirts
-                    pRowPosBuf += mVertexDataRecord.NumSkirtRowsCols * mVertexDataRecord.Size * posBuff.VertexSize;
+                    pRowPosBuf += mVertexDataRecord.NumSkirtRowsCols*mVertexDataRecord.Size*posBuff.VertexSize;
                     // move it onwards to skip the skirts we don't need to update
-                    pRowPosBuf += destPosRowSkip * (skirtStartX - mOffsetX) / skirtSpacing;
-                    pRowPosBuf += posBuff.VertexSize * (skirtStartY - mOffsetY);
+                    pRowPosBuf += destPosRowSkip*( skirtStartX - mOffsetX )/skirtSpacing;
+                    pRowPosBuf += posBuff.VertexSize*( skirtStartY - mOffsetY );
                 }
-                if (deltaBuf != null)
+                if ( deltaBuf != null )
                 {
                     // Deltaition dest buffer just after the main vertex data and skirt rows
                     pRowDeltaBuf = pRootDeltaBuf + deltaBuf.VertexSize
-                        * mVertexDataRecord.Size * mVertexDataRecord.Size;
+                                   *mVertexDataRecord.Size*mVertexDataRecord.Size;
 
                     // skip the row skirts
-                    pRowDeltaBuf += mVertexDataRecord.NumSkirtRowsCols * mVertexDataRecord.Size * deltaBuf.VertexSize;
+                    pRowDeltaBuf += mVertexDataRecord.NumSkirtRowsCols*mVertexDataRecord.Size*deltaBuf.VertexSize;
                     // move it onwards to skip the skirts we don't need to update
-                    pRowDeltaBuf += destDeltaRowSkip * (skirtStartX - mOffsetX) / skirtSpacing;
-                    pRowDeltaBuf += deltaBuf.VertexSize * (skirtStartY - mOffsetY);
+                    pRowDeltaBuf += destDeltaRowSkip*( skirtStartX - mOffsetX )/skirtSpacing;
+                    pRowDeltaBuf += deltaBuf.VertexSize*( skirtStartY - mOffsetY );
                 }
-                for (ushort x = (ushort)skirtStartX; x < (ushort)rect.Right; x += skirtSpacing)
+                for ( ushort x = (ushort)skirtStartX; x < (ushort)rect.Right; x += skirtSpacing )
                 {
-                    float* pPosBuf = (float*)pRowPosBuf;
-                    float* pDeltaBuf = (float*)pRowDeltaBuf;
-                    for (ushort y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += inc)
+                    var pPosBuf = pRowPosBuf.ToFloatPointer();
+                    var pPosIdx = 0;
+                    var pDeltaBuf = pRowDeltaBuf.ToFloatPointer();
+                    var pDeltaIdx = 0;
+                    for ( ushort y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += inc )
                     {
-                        if (pPosBuf != (float*)IntPtr.Zero)
+                        if ( pPosBuf != null )
                         {
                             //float* hTmp = (float*)mTerrain.GetHeightData(x, y);
-                            
-                            mTerrain.GetPoint(x, y, mTerrain.GetHeightAtPoint(x, y), ref pos);
+
+                            mTerrain.GetPoint( x, y, mTerrain.GetHeightAtPoint( x, y ), ref pos );
                             // relative to local centre
                             pos -= mLocalCentre;
                             pos += skirtOffset;
 
-                            *pPosBuf++ = pos.x;
-                            *pPosBuf++ = pos.y;
-                            *pPosBuf++ = pos.z;
+                            pPosBuf[ pPosIdx++ ] = pos.x;
+                            pPosBuf[ pPosIdx++ ] = pos.y;
+                            pPosBuf[ pPosIdx++ ] = pos.z;
 
                             // UVs - same as base
-                            *pPosBuf++ = x * uvScale;
-                            *pPosBuf++ = 1.0f - (y * uvScale);
+                            pPosBuf[ pPosIdx++ ] = x*uvScale;
+                            pPosBuf[ pPosIdx++ ] = 1.0f - ( y*uvScale );
 
-                            
+
                         }
-                        if (pDeltaBuf != (float*)IntPtr.Zero)
+                        if ( pDeltaBuf != null )
                         {
                             // delta (none)
-                            *pDeltaBuf++ = 0;
+                            pDeltaBuf[ pDeltaIdx++ ] = 0;
                             // delta threshold (irrelevant)
-                            *pDeltaBuf++ = 99;
+                            pDeltaBuf[ pDeltaIdx++ ] = 99;
                         }
-                        
 
-                    }//end for
-                    if (pRowPosBuf != (byte*)IntPtr.Zero)
+
+                    } //end for
+                    if ( pRowPosBuf != null )
                         pRowPosBuf += destPosRowSkip;
-                    if (pRowDeltaBuf != (byte*)IntPtr.Zero)
+                    if ( pRowDeltaBuf != null )
                         pRowDeltaBuf += destDeltaRowSkip;
-                    
-                }//end for
-                if (posBuff != null)
+
+                } //end for
+                if ( posBuff != null )
                     posBuff.Unlock();
-                if (deltaBuf != null)
+                if ( deltaBuf != null )
                     deltaBuf.Unlock();
             }
         }
 
-        unsafe void UpdateVertexBufferr(HardwareVertexBuffer posbuf, HardwareVertexBuffer deltabuf, Rectangle rect)
+        void UpdateVertexBufferr(HardwareVertexBuffer posbuf, HardwareVertexBuffer deltabuf, Rectangle rect)
         {
-            // potentially reset our bounds depending on coverage of the update
-		ResetBounds(rect);
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                // potentially reset our bounds depending on coverage of the update
+                ResetBounds( rect );
 
-		// Main data
-		ushort inc = (ushort)((mTerrain.Size-1) / (mVertexDataRecord.Resolution-1));
-		long destOffsetX = rect.Left <= mOffsetX ? 0 : (rect.Left - mOffsetX) / inc;
-		long destOffsetY = rect.Top <= mOffsetY ? 0 : (rect.Top - mOffsetY) / inc;
-		// Fill the buffers
-		
-		BufferLocking lockMode;
-		if (destOffsetX != 0 || destOffsetY != 0|| rect.Right - rect.Left < mSize
-			|| rect.Bottom - rect.Top < mSize)
-		{
-			lockMode = BufferLocking.Normal;
-		}
-		else
-		{
-			lockMode = BufferLocking.Discard;
-		}
+                // Main data
+                ushort inc = (ushort)( ( mTerrain.Size - 1 )/( mVertexDataRecord.Resolution - 1 ) );
+                long destOffsetX = rect.Left <= mOffsetX ? 0 : ( rect.Left - mOffsetX )/inc;
+                long destOffsetY = rect.Top <= mOffsetY ? 0 : ( rect.Top - mOffsetY )/inc;
+                // Fill the buffers
 
-		Real uvScale = 1.0 / (mTerrain.Size - 1);
-		float* pBaseHeight = (float*)mTerrain.GetHeightData(rect.Left, rect.Top);
-		float* pBaseDelta = (float*)mTerrain.GetDeltaData(rect.Left, rect.Top);
-		ushort rowskip = (ushort)(mTerrain.Size * inc);
-		ushort destPosRowSkip = 0, destDeltaRowSkip = 0;
-		byte* pRootPosBuf = (byte*)IntPtr.Zero;
-		byte* pRootDeltaBuf = (byte*)IntPtr.Zero;
-		byte* pRowPosBuf = (byte*)IntPtr.Zero;
-		byte* pRowDeltaBuf = (byte*)IntPtr.Zero;
+                BufferLocking lockMode;
+                if ( destOffsetX != 0 || destOffsetY != 0 || rect.Right - rect.Left < mSize
+                     || rect.Bottom - rect.Top < mSize )
+                {
+                    lockMode = BufferLocking.Normal;
+                }
+                else
+                {
+                    lockMode = BufferLocking.Discard;
+                }
 
-		if (posbuf != null)
-		{
-			destPosRowSkip = (ushort)(mVertexDataRecord.Size * posbuf.VertexSize);
-			pRootPosBuf = (byte*)(posbuf.Lock(lockMode));
-			pRowPosBuf = pRootPosBuf;
-			// skip dest buffer in by left/top
-			pRowPosBuf += destOffsetY * destPosRowSkip + destOffsetX * posbuf.VertexSize;
-		}
-		if (deltabuf != null)
-		{
-			destDeltaRowSkip = (ushort)(mVertexDataRecord.Size * deltabuf.VertexSize);
-			pRootDeltaBuf = (byte*)(deltabuf.Lock(lockMode));
-			pRowDeltaBuf = pRootDeltaBuf;
-			// skip dest buffer in by left/top
-			pRowDeltaBuf += destOffsetY * destDeltaRowSkip + destOffsetX * deltabuf.VertexSize;
-		}
-		Vector3 pos = Vector3.Zero;
+                Real uvScale = 1.0/( mTerrain.Size - 1 );
+                var pBaseHeight = mTerrain.GetHeightData( rect.Left, rect.Top );
+                var pBaseDelta = mTerrain.GetDeltaData( rect.Left, rect.Top );
+                ushort rowskip = (ushort)( mTerrain.Size*inc );
+                ushort destPosRowSkip = 0, destDeltaRowSkip = 0;
+                BufferBase pRootPosBuf = null;
+                BufferBase pRootDeltaBuf = null;
+                BufferBase pRowPosBuf = null;
+                BufferBase pRowDeltaBuf = null;
 
-        int posIndex = 0;
-        for (ushort y = (ushort)rect.Top; y < rect.Bottom; y += inc)
-		{
-			float* pHeight = pBaseHeight;
-			float* pDelta = pBaseDelta;
-			float* pPosBuf = (float*)(pRowPosBuf);
-			float* pDeltaBuf = (float*)(pRowDeltaBuf);
-            for (ushort x = (ushort)rect.Left; x < rect.Right; x += inc)
-			{
-				if (pPosBuf != (float*)IntPtr.Zero)
-				{
-					mTerrain.GetPoint(x, y, pBaseHeight[posIndex], ref pos);
-					// Update bounds *before* making relative
-					MergeIntoBounds(x, y, pos);
-					// relative to local centre
-					pos -= mLocalCentre;
+                if ( posbuf != null )
+                {
+                    destPosRowSkip = (ushort)( mVertexDataRecord.Size*posbuf.VertexSize );
+                    pRootPosBuf = posbuf.Lock( lockMode );
+                    pRowPosBuf = pRootPosBuf;
+                    // skip dest buffer in by left/top
+                    pRowPosBuf += destOffsetY*destPosRowSkip + destOffsetX*posbuf.VertexSize;
+                }
+                if ( deltabuf != null )
+                {
+                    destDeltaRowSkip = (ushort)( mVertexDataRecord.Size*deltabuf.VertexSize );
+                    pRootDeltaBuf = deltabuf.Lock( lockMode );
+                    pRowDeltaBuf = pRootDeltaBuf;
+                    // skip dest buffer in by left/top
+                    pRowDeltaBuf += destOffsetY*destDeltaRowSkip + destOffsetX*deltabuf.VertexSize;
+                }
+                Vector3 pos = Vector3.Zero;
 
-					//pHeight += inc;
-                    posIndex += inc;
+                for ( ushort y = (ushort)rect.Top; y < rect.Bottom; y += inc )
+                {
+                    var pHeight = pBaseHeight.ToFloatPointer();
+                    var pHIdx = 0;
+                    var pDelta = pBaseDelta.ToFloatPointer();
+                    var pDIdx = 0;
+                    var pPosBuf = pRowPosBuf.ToFloatPointer();
+                    var pPosIdx = 0;
+                    var pDeltaBuf = pRowDeltaBuf.ToFloatPointer();
+                    var pDeltaIdx = 0;
+                    for ( ushort x = (ushort)rect.Left; x < rect.Right; x += inc )
+                    {
+                        if ( pPosBuf != null )
+                        {
+                            mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
+                            // Update bounds *before* making relative
+                            MergeIntoBounds( x, y, pos );
+                            // relative to local centre
+                            pos -= mLocalCentre;
 
-					*pPosBuf++ = pos.x;
-					*pPosBuf++ = pos.y;
-					*pPosBuf++ = pos.z;
+                            //pHeight += inc;
+                            pHIdx += inc;
 
-					// UVs - base UVs vary from 0 to 1, all other values
-					// will be derived using scalings
-					*pPosBuf++ = x * uvScale;
-					*pPosBuf++ = 1.0 - (y * uvScale);
+                            pPosBuf[ pPosIdx++ ] = pos.x;
+                            pPosBuf[ pPosIdx++ ] = pos.y;
+                            pPosBuf[ pPosIdx++ ] = pos.z;
 
-				}
+                            // UVs - base UVs vary from 0 to 1, all other values
+                            // will be derived using scalings
+                            pPosBuf[ pPosIdx++ ] = x*uvScale;
+                            pPosBuf[ pPosIdx++ ] = 1.0 - ( y*uvScale );
 
-				if (pDeltaBuf != (float*)IntPtr.Zero)
-				{
-					// delta
-					*pDeltaBuf++ = *pDelta;
-					pDelta += inc;
-					// delta LOD threshold
-					// we want delta to apply to LODs no higher than this value
-					// at runtime this will be combined with a per-renderable parameter
-					// to ensure we only apply morph to the correct LOD
-					*pDeltaBuf++ = (float)mTerrain.GetLODLevelWhenVertexEliminated(x, y) - 1.0f;
+                        }
 
-				}
+                        if ( pDeltaBuf != null )
+                        {
+                            // delta
+                            pDeltaBuf[ pDeltaIdx++ ] = pDelta[ pDIdx ];
+                            pDIdx += inc;
+                            // delta LOD threshold
+                            // we want delta to apply to LODs no higher than this value
+                            // at runtime this will be combined with a per-renderable parameter
+                            // to ensure we only apply morph to the correct LOD
+                            pDeltaBuf[ pDeltaIdx++ ] = (float)mTerrain.GetLODLevelWhenVertexEliminated( x, y ) - 1.0f;
 
-				
-			}
-			//pBaseHeight += rowskip;
-            posIndex += rowskip;
-			pBaseDelta += rowskip;
-			if (pRowPosBuf != (float*)IntPtr.Zero)
-				pRowPosBuf += destPosRowSkip;
-			if (pRowDeltaBuf!= (float*)IntPtr.Zero)
-				pRowDeltaBuf += destDeltaRowSkip;
-
-		}
+                        }
 
 
-		// Skirts now
-		// skirt spacing based on top-level resolution (* inc to cope with resolution which is not the max)
-        ushort skirtSpacing = (ushort)(mVertexDataRecord.SkirtRowColSkip * inc);
-		Vector3 skirtOffset = Vector3.Zero;
-		mTerrain.GetVector(0, 0, -mTerrain.SkirtSize, ref skirtOffset);
+                    }
+                    //pBaseHeight += rowskip;
+                    pHIdx += rowskip;
+                    pBaseDelta += rowskip;
+                    if ( pRowPosBuf != null )
+                        pRowPosBuf += destPosRowSkip;
+                    if ( pRowDeltaBuf != null )
+                        pRowDeltaBuf += destDeltaRowSkip;
 
-		// skirt rows
-		// clamp rows to skirt spacing (round up)
-		long skirtStartX = rect.Left;
-		long skirtStartY = rect.Top;
-		if (skirtStartY % skirtSpacing != 0)
-			skirtStartY += skirtSpacing - (skirtStartY % skirtSpacing);
-		skirtStartY = System.Math.Max(skirtStartY, (long)mOffsetY);
-		pBaseHeight = (float*)mTerrain.GetHeightData(skirtStartX, skirtStartY);
-		if (posbuf != null)
-		{
-			// position dest buffer just after the main vertex data
-			pRowPosBuf = pRootPosBuf + posbuf.VertexSize 
-				* mVertexDataRecord.Size * mVertexDataRecord.Size;
-			// move it onwards to skip the skirts we don't need to update
-			pRowPosBuf += destPosRowSkip * (skirtStartY - mOffsetY) / skirtSpacing;
-			pRowPosBuf += posbuf.VertexSize * (skirtStartX - mOffsetX);
-		}
-		if (deltabuf != null)
-		{
-			// position dest buffer just after the main vertex data
-			pRowDeltaBuf = pRootDeltaBuf + deltabuf.VertexSize 
-				* mVertexDataRecord.Size * mVertexDataRecord.Size;
-			// move it onwards to skip the skirts we don't need to update
-			pRowDeltaBuf += destDeltaRowSkip * (skirtStartY - mOffsetY) / skirtSpacing;
-			pRowDeltaBuf += deltabuf.VertexSize * (skirtStartX - mOffsetX);
-		}
-        for (ushort y = (ushort)skirtStartY; y < rect.Bottom; y += skirtSpacing)
-		{
-			float* pHeight = pBaseHeight;
-			float* pPosBuf = (float*)(pRowPosBuf);
-			float* pDeltaBuf = (float*)(pRowDeltaBuf);
-            for (ushort x = (ushort)skirtStartX; x < rect.Right; x += inc)
-			{
-				if (pPosBuf != (float*)IntPtr.Zero)
-				{
-					mTerrain.GetPoint(x, y, *pHeight, ref pos);
-					// relative to local centre
-					pos -= mLocalCentre;
-					pHeight += inc;
+                }
 
-					pos += skirtOffset;
 
-					*pPosBuf++ = pos.x;
-					*pPosBuf++ = pos.y;
-					*pPosBuf++ = pos.z;
+                // Skirts now
+                // skirt spacing based on top-level resolution (* inc to cope with resolution which is not the max)
+                ushort skirtSpacing = (ushort)( mVertexDataRecord.SkirtRowColSkip*inc );
+                Vector3 skirtOffset = Vector3.Zero;
+                mTerrain.GetVector( 0, 0, -mTerrain.SkirtSize, ref skirtOffset );
 
-					// UVs - same as base
-					*pPosBuf++ = x * uvScale;
-					*pPosBuf++ = 1.0 - (y * uvScale);
+                // skirt rows
+                // clamp rows to skirt spacing (round up)
+                long skirtStartX = rect.Left;
+                long skirtStartY = rect.Top;
+                if ( skirtStartY%skirtSpacing != 0 )
+                    skirtStartY += skirtSpacing - ( skirtStartY%skirtSpacing );
+                skirtStartY = System.Math.Max( skirtStartY, (long)mOffsetY );
+                pBaseHeight = mTerrain.GetHeightData( skirtStartX, skirtStartY );
+                if ( posbuf != null )
+                {
+                    // position dest buffer just after the main vertex data
+                    pRowPosBuf = pRootPosBuf + posbuf.VertexSize
+                                 *mVertexDataRecord.Size*mVertexDataRecord.Size;
+                    // move it onwards to skip the skirts we don't need to update
+                    pRowPosBuf += destPosRowSkip*( skirtStartY - mOffsetY )/skirtSpacing;
+                    pRowPosBuf += posbuf.VertexSize*( skirtStartX - mOffsetX );
+                }
+                if ( deltabuf != null )
+                {
+                    // position dest buffer just after the main vertex data
+                    pRowDeltaBuf = pRootDeltaBuf + deltabuf.VertexSize
+                                   *mVertexDataRecord.Size*mVertexDataRecord.Size;
+                    // move it onwards to skip the skirts we don't need to update
+                    pRowDeltaBuf += destDeltaRowSkip*( skirtStartY - mOffsetY )/skirtSpacing;
+                    pRowDeltaBuf += deltabuf.VertexSize*( skirtStartX - mOffsetX );
+                }
+                for ( ushort y = (ushort)skirtStartY; y < rect.Bottom; y += skirtSpacing )
+                {
+                    var pHeight = pBaseHeight.ToFloatPointer();
+                    var pHIdx = 0;
+                    var pPosBuf = pRowPosBuf.ToFloatPointer();
+                    var pPosIdx = 0;
+                    var pDeltaBuf = pRowDeltaBuf.ToFloatPointer();
+                    var pDeltaIdx = 0;
+                    for ( ushort x = (ushort)skirtStartX; x < rect.Right; x += inc )
+                    {
+                        if ( pPosBuf != null )
+                        {
+                            mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
+                            // relative to local centre
+                            pos -= mLocalCentre;
+                            pHIdx += inc;
 
-				}
+                            pos += skirtOffset;
 
-				if (pDeltaBuf != (float*)IntPtr.Zero)
-				{
-					// delta (none)
-					*pDeltaBuf++ = 0; 
-					// delta threshold (irrelevant)
-					*pDeltaBuf++ = 99;
-				}
-			}
-			pBaseHeight += mTerrain.Size * skirtSpacing;
-			if (pRowPosBuf != (byte*)IntPtr.Zero)
-				pRowPosBuf += destPosRowSkip;
-			if (pRowDeltaBuf != (byte*)IntPtr.Zero)
-				pRowDeltaBuf += destDeltaRowSkip;
-		}
-		// skirt cols
-		// clamp cols to skirt spacing (round up)
-		skirtStartX = rect.Left;
-		if (skirtStartX % skirtSpacing != 0)
-			skirtStartX += skirtSpacing - (skirtStartX % skirtSpacing);
-		skirtStartY = rect.Top;
-		skirtStartX = System.Math.Max(skirtStartX, (long)mOffsetX);
-		if (posbuf != null)
-		{
-			// position dest buffer just after the main vertex data and skirt rows
-			pRowPosBuf = pRootPosBuf + posbuf.VertexSize 
-				* mVertexDataRecord.Size * mVertexDataRecord.Size;
-			// skip the row skirts
-			pRowPosBuf += mVertexDataRecord.NumSkirtRowsCols * mVertexDataRecord.Size * posbuf.VertexSize;
-			// move it onwards to skip the skirts we don't need to update
-			pRowPosBuf += destPosRowSkip * (skirtStartX - mOffsetX) / skirtSpacing;
-			pRowPosBuf += posbuf.VertexSize * (skirtStartY - mOffsetY);
-		}
-		if (deltabuf != null)
-		{
-			// Deltaition dest buffer just after the main vertex data and skirt rows
-			pRowDeltaBuf = pRootDeltaBuf + deltabuf.VertexSize 
-				* mVertexDataRecord.Size * mVertexDataRecord.Size;
-			// skip the row skirts
-			pRowDeltaBuf += mVertexDataRecord.NumSkirtRowsCols * mVertexDataRecord.Size * deltabuf.VertexSize;
-			// move it onwards to skip the skirts we don't need to update
-			pRowDeltaBuf += destDeltaRowSkip * (skirtStartX - mOffsetX) / skirtSpacing;
-			pRowDeltaBuf += deltabuf.VertexSize * (skirtStartY - mOffsetY);
-		}
+                            pPosBuf[ pPosIdx++ ] = pos.x;
+                            pPosBuf[ pPosIdx++ ] = pos.y;
+                            pPosBuf[ pPosIdx++ ] = pos.z;
 
-        for (ushort x = (ushort)skirtStartX; x < rect.Right; x += skirtSpacing)
-		{
-			float* pPosBuf = (float*)(pRowPosBuf);
-			float* pDeltaBuf = (float*)(pRowDeltaBuf);
-            for (ushort y = (ushort)skirtStartY; y < rect.Bottom; y += inc)
-			{
-				if (pPosBuf != (float*)IntPtr.Zero)
-				{
-					mTerrain.GetPoint(x, y, mTerrain.GetHeightAtPoint(x, y), ref pos);
-					// relative to local centre
-					pos -= mLocalCentre;
-					pos += skirtOffset;
+                            // UVs - same as base
+                            pPosBuf[ pPosIdx++ ] = x*uvScale;
+                            pPosBuf[ pPosIdx++ ] = 1.0 - ( y*uvScale );
 
-					*pPosBuf++ = pos.x;
-					*pPosBuf++ = pos.y;
-					*pPosBuf++ = pos.z;
+                        }
 
-					// UVs - same as base
-					*pPosBuf++ = x * uvScale;
-					*pPosBuf++ = 1.0 - (y * uvScale);
-				}
-				if (pDeltaBuf != (float*)IntPtr.Zero)
-				{
-					// delta (none)
-					*pDeltaBuf++ = 0; 
-					// delta threshold (irrelevant)
-					*pDeltaBuf++ = 99;
-				}
-			}
-			if (pRowPosBuf != (byte*)IntPtr.Zero)
-				pRowPosBuf += destPosRowSkip;
-			if (pRowDeltaBuf != (byte*)IntPtr.Zero)
-				pRowDeltaBuf += destDeltaRowSkip;
-		}
+                        if ( pDeltaBuf != null )
+                        {
+                            // delta (none)
+                            pDeltaBuf[ pDeltaIdx++ ] = 0;
+                            // delta threshold (irrelevant)
+                            pDeltaBuf[ pDeltaIdx++ ] = 99;
+                        }
+                    }
+                    pBaseHeight += mTerrain.Size*skirtSpacing;
+                    if ( pRowPosBuf != null )
+                        pRowPosBuf += destPosRowSkip;
+                    if ( pRowDeltaBuf != null )
+                        pRowDeltaBuf += destDeltaRowSkip;
+                }
+                // skirt cols
+                // clamp cols to skirt spacing (round up)
+                skirtStartX = rect.Left;
+                if ( skirtStartX%skirtSpacing != 0 )
+                    skirtStartX += skirtSpacing - ( skirtStartX%skirtSpacing );
+                skirtStartY = rect.Top;
+                skirtStartX = System.Math.Max( skirtStartX, (long)mOffsetX );
+                if ( posbuf != null )
+                {
+                    // position dest buffer just after the main vertex data and skirt rows
+                    pRowPosBuf = pRootPosBuf + posbuf.VertexSize
+                                 *mVertexDataRecord.Size*mVertexDataRecord.Size;
+                    // skip the row skirts
+                    pRowPosBuf += mVertexDataRecord.NumSkirtRowsCols*mVertexDataRecord.Size*posbuf.VertexSize;
+                    // move it onwards to skip the skirts we don't need to update
+                    pRowPosBuf += destPosRowSkip*( skirtStartX - mOffsetX )/skirtSpacing;
+                    pRowPosBuf += posbuf.VertexSize*( skirtStartY - mOffsetY );
+                }
+                if ( deltabuf != null )
+                {
+                    // Deltaition dest buffer just after the main vertex data and skirt rows
+                    pRowDeltaBuf = pRootDeltaBuf + deltabuf.VertexSize
+                                   *mVertexDataRecord.Size*mVertexDataRecord.Size;
+                    // skip the row skirts
+                    pRowDeltaBuf += mVertexDataRecord.NumSkirtRowsCols*mVertexDataRecord.Size*deltabuf.VertexSize;
+                    // move it onwards to skip the skirts we don't need to update
+                    pRowDeltaBuf += destDeltaRowSkip*( skirtStartX - mOffsetX )/skirtSpacing;
+                    pRowDeltaBuf += deltabuf.VertexSize*( skirtStartY - mOffsetY );
+                }
 
-		if (posbuf != null)
-			posbuf.Unlock();
-		if (deltabuf != null)
-			deltabuf.Unlock();
+                for ( ushort x = (ushort)skirtStartX; x < rect.Right; x += skirtSpacing )
+                {
+                    var pPosBuf = pRowPosBuf.ToFloatPointer();
+                    var pPosIdx = 0;
+                    var pDeltaBuf = pRowDeltaBuf.ToFloatPointer();
+                    var pDeltaIdx = 0;
+                    for ( ushort y = (ushort)skirtStartY; y < rect.Bottom; y += inc )
+                    {
+                        if ( pPosBuf != null )
+                        {
+                            mTerrain.GetPoint( x, y, mTerrain.GetHeightAtPoint( x, y ), ref pos );
+                            // relative to local centre
+                            pos -= mLocalCentre;
+                            pos += skirtOffset;
+
+                            pPosBuf[ pPosIdx++ ] = pos.x;
+                            pPosBuf[ pPosIdx++ ] = pos.y;
+                            pPosBuf[ pPosIdx++ ] = pos.z;
+
+                            // UVs - same as base
+                            pPosBuf[ pPosIdx++ ] = x*uvScale;
+                            pPosBuf[ pPosIdx++ ] = 1.0 - ( y*uvScale );
+                        }
+                        if ( pDeltaBuf != null )
+                        {
+                            // delta (none)
+                            pDeltaBuf[ pDeltaIdx++ ] = 0;
+                            // delta threshold (irrelevant)
+                            pDeltaBuf[ pDeltaIdx++ ] = 99;
+                        }
+                    }
+                    if ( pRowPosBuf != null )
+                        pRowPosBuf += destPosRowSkip;
+                    if ( pRowDeltaBuf != null )
+                        pRowDeltaBuf += destDeltaRowSkip;
+                }
+
+                if ( posbuf != null )
+                    posbuf.Unlock();
+                if ( deltabuf != null )
+                    deltabuf.Unlock();
+            }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1919,116 +1945,123 @@ namespace Axiom.Components.Terrain
             // and one extra index, which is the degenerate triangle and also turning
             // around the winding
             VertexDataRecord vdr = this.VertextDataRecord;
-            int mainIndexPerRow = batchSize * 2 + 1;
+            int mainIndexPerRow = batchSize*2 + 1;
             int numRows = batchSize - 1;
-            int mainIndexCount = mainIndexPerRow * numRows;
+            int mainIndexCount = mainIndexPerRow*numRows;
             // skirts share edges, so they take 1 less row per side than batchSize, 
             // but with 2 extra at the end (repeated) to finish the strip
             // * 2 for the vertical line, * 4 for the sides, +2 to finish
-            int skirtIndexCount = (batchSize - 1) * 2 * 4 + 2;
+            int skirtIndexCount = ( batchSize - 1 )*2*4 + 2;
 
             destData.indexStart = 0;
             destData.indexCount = mainIndexCount + skirtIndexCount;
-            destData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer(IndexType.Size16, destData.indexCount, BufferUsage.Static,false);
+            destData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+                                                                                     destData.indexCount,
+                                                                                     BufferUsage.Static, false );
 
 #warning IndexBuffer.Bind(DefaultHardwareIndexBuffer);
+#if !AXIOM_SAFE_ONLY
             unsafe
+#endif
             {
-                ushort* pI = (ushort*)(destData.indexBuffer.Lock(BufferLocking.Discard));
-                ushort* basepI = pI;
+                var pI = destData.indexBuffer.Lock( BufferLocking.Discard ).ToUShortPointer();
+                var basepI = pI;
+                var pIdx = 0;
 
                 // Ratio of the main terrain resolution in relation to this vertex data resolution
-                int resolutionRatio = (mTerrain.Size - 1) / (vdr.Resolution - 1);
+                int resolutionRatio = ( mTerrain.Size - 1 )/( vdr.Resolution - 1 );
                 // At what frequency do we sample the vertex data we're using?
                 // mSize is the coverage in terms of the original terrain data (not split to fit in 16-bit)
-                int vertexIncrement = ( mSize -1 )/ (batchSize -1);
+                int vertexIncrement = ( mSize - 1 )/( batchSize - 1 );
                 // however, the vertex data we're referencing may not be at the full resolution anyway
                 vertexIncrement /= resolutionRatio;
-                int rowSize = vdr.Size * vertexIncrement;
-                
+                int rowSize = vdr.Size*vertexIncrement;
+
                 // Start on the right
-                ushort currentVertex = (ushort)((batchSize - 1) * vertexIncrement);
+                ushort currentVertex = (ushort)( ( batchSize - 1 )*vertexIncrement );
                 // but, our quad area might not start at 0 in this vertex data
                 // offsets are at main terrain resolution, remember
-                ushort columnStart = (ushort)((mOffsetX - mNodeWithVertexData.mOffsetX) / resolutionRatio);
-                ushort rowStart = (ushort)((mOffsetY - mNodeWithVertexData.mOffsetY) / resolutionRatio);
-                currentVertex +=(ushort)((rowStart * vdr.Size) + columnStart);
+                ushort columnStart = (ushort)( ( mOffsetX - mNodeWithVertexData.mOffsetX )/resolutionRatio );
+                ushort rowStart = (ushort)( ( mOffsetY - mNodeWithVertexData.mOffsetY )/resolutionRatio );
+                currentVertex += (ushort)( ( rowStart*vdr.Size ) + columnStart );
                 bool rightToLeft = true;
-                for (ushort r = 0; r < (ushort)numRows; ++r)
+                for ( ushort r = 0; r < (ushort)numRows; ++r )
                 {
 
-                    for (ushort c = 0; c < batchSize; ++c)
+                    for ( ushort c = 0; c < batchSize; ++c )
                     {
-                        *pI++ = currentVertex;
-                        *pI++ = (ushort)(currentVertex + rowSize);
+                        pI[ pIdx++ ] = currentVertex;
+                        pI[ pIdx++ ] = (ushort)( currentVertex + rowSize );
 
                         // don't increment / decrement at a border, keep this vertex for next
                         // row as we 'snake' across the tile
-                        if (c + 1 < batchSize)
+                        if ( c + 1 < batchSize )
                         {
-                            currentVertex = rightToLeft ?
-                                (ushort)(currentVertex - vertexIncrement) : (ushort)(currentVertex + vertexIncrement);
+                            currentVertex = rightToLeft
+                                                ? (ushort)( currentVertex - vertexIncrement )
+                                                : (ushort)( currentVertex + vertexIncrement );
                         }
                     }
                     rightToLeft = !rightToLeft;
                     currentVertex += (ushort)rowSize;
                     // issue one extra index to turn winding around
-                    *pI++ = currentVertex;
+                    pI[ pIdx++ ] = currentVertex;
 
                 }
 
-                 // Skirts
-                 for (ushort s = 0; s < 4; ++s)
-                 {
-                     // edgeIncrement is the index offset from one original edge vertex to the next
-                     // in this row or column. Columns skip based on a row size here
-                     // skirtIncrement is the index offset from one skirt vertex to the next, 
-                     // because skirts are packed in rows/cols then there is no row multiplier for
-                     // processing columns
-                     int edgeIncrement = 0, skirtIncrement = 0;
-                     switch (s)
-                     {
-                         case 0: //top
-                             edgeIncrement = -(int)vertexIncrement;
-                             skirtIncrement = -(int)vertexIncrement;
-                             break;
-                         case 1:// left
-                             edgeIncrement = -(int)rowSize;
-                             skirtIncrement = -(int)vertexIncrement;
-                             break;
-                         case 2://bottom
-                             edgeIncrement = (int)vertexIncrement;
-                             skirtIncrement = (int)vertexIncrement;
-                             break;
-                         case 3://right
-                             edgeIncrement = (int)rowSize;
-                             skirtIncrement = (int)vertexIncrement;
-                             break;
-                     }
-                     // Skirts are stored in contiguous rows / columns (rows 0/2, cols 1/3)
-                    ushort skirtIndex = CalcSkirtVertexIndex(currentVertex, (s % 2) != 0);
+                // Skirts
+                for ( ushort s = 0; s < 4; ++s )
+                {
+                    // edgeIncrement is the index offset from one original edge vertex to the next
+                    // in this row or column. Columns skip based on a row size here
+                    // skirtIncrement is the index offset from one skirt vertex to the next, 
+                    // because skirts are packed in rows/cols then there is no row multiplier for
+                    // processing columns
+                    int edgeIncrement = 0, skirtIncrement = 0;
+                    switch ( s )
+                    {
+                        case 0: //top
+                            edgeIncrement = -(int)vertexIncrement;
+                            skirtIncrement = -(int)vertexIncrement;
+                            break;
+                        case 1: // left
+                            edgeIncrement = -(int)rowSize;
+                            skirtIncrement = -(int)vertexIncrement;
+                            break;
+                        case 2: //bottom
+                            edgeIncrement = (int)vertexIncrement;
+                            skirtIncrement = (int)vertexIncrement;
+                            break;
+                        case 3: //right
+                            edgeIncrement = (int)rowSize;
+                            skirtIncrement = (int)vertexIncrement;
+                            break;
+                    }
+                    // Skirts are stored in contiguous rows / columns (rows 0/2, cols 1/3)
+                    ushort skirtIndex = CalcSkirtVertexIndex( currentVertex, ( s%2 ) != 0 );
 
-                     for (ushort c = 0; c < (ushort)(batchSize - 1); ++c)
-                     {
-                         *pI++ = currentVertex;
-                         *pI++ = skirtIndex;
+                    for ( ushort c = 0; c < (ushort)( batchSize - 1 ); ++c )
+                    {
+                        pI[ pIdx++ ] = currentVertex;
+                        pI[ pIdx++ ] = skirtIndex;
 
-                         currentVertex += (ushort)edgeIncrement;
-                         skirtIndex += (ushort)skirtIncrement;
-                     }
-                     if (s == 3)
-                     {
-                         // we issue an extra 2 indices to finish the skirt off
-                         *pI++ = currentVertex;
-                         *pI++ = skirtIndex;
-                         currentVertex += (ushort)edgeIncrement;
-                         skirtIndex += (ushort)skirtIncrement;
-                     }
-                 }//end for
-                ushort val = (ushort)(pI - basepI);
+                        currentVertex += (ushort)edgeIncrement;
+                        skirtIndex += (ushort)skirtIncrement;
+                    }
+                    if ( s == 3 )
+                    {
+                        // we issue an extra 2 indices to finish the skirt off
+                        pI[ pIdx++ ] = currentVertex;
+                        pI[ pIdx++ ] = skirtIndex;
+                        currentVertex += (ushort)edgeIncrement;
+                        skirtIndex += (ushort)skirtIncrement;
+                    }
+                } //end for
+                ushort val = (ushort)pIdx; //(pI - basepI);
                 //Debug.Assert(val == (ushort)destData.indexCount, "wrong indices");
-            }//end unsafe
+            } //end unsafe
         }
+
         /// <summary>
         /// 
         /// </summary>

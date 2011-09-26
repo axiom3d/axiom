@@ -110,7 +110,7 @@ namespace Axiom.Math.Collections
         /// <param name="item"></param>
         public void Remove( object item )
         {
-            int index = objectList.IndexOf( item );
+            var index = objectList.IndexOf( item );
 
             if ( index != -1 )
                 objectList.RemoveAt( index );

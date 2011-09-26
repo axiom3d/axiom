@@ -69,7 +69,7 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 				if ( obj != null )
 				{
 					if ( string.IsNullOrEmpty( obj.Name ) )
@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler
 				// Create a material with the given name
 				object mat;
 				ScriptCompilerEvent evt = new CreateMaterialScriptCompilerEvent( node.File, obj.Name, compiler.ResourceGroup );
-				bool processed = compiler._fireEvent( ref evt, out mat );
+				var processed = compiler._fireEvent( ref evt, out mat );
 
 				if ( !processed )
 				{
@@ -95,7 +95,7 @@ namespace Axiom.Scripting.Compiler
 					// In order to avoid the above mentioned exception, the implementation was changed, but
 					// it need to be checked when ResourceManager._add will be updated to the latest version
 
-					Material checkForExistingMat = (Material)MaterialManager.Instance.GetByName( obj.Name );
+					var checkForExistingMat = (Material)MaterialManager.Instance.GetByName( obj.Name );
 
 					if ( checkForExistingMat == null )
 						_material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
@@ -116,19 +116,19 @@ namespace Axiom.Scripting.Compiler
 				obj.Context = _material;
 				_material.Origin = obj.File;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_LOD_VALUES
 							case Keywords.ID_LOD_VALUES:
 								{
-									LodValueList lods = new LodValueList();
-									foreach ( AbstractNode j in prop.Values )
+									var lods = new LodValueList();
+									foreach ( var j in prop.Values )
 									{
 										Real v = 0;
 										if ( getReal( j, out v ) )
@@ -150,8 +150,8 @@ namespace Axiom.Scripting.Compiler
 									_material.LodStrategy = strategy;
 
 									// Real in lod distances
-									LodValueList lods = new LodValueList();
-									foreach ( AbstractNode j in prop.Values )
+									var lods = new LodValueList();
+									foreach ( var j in prop.Values )
 									{
 										Real v = 0;
 										if ( getReal( j, out v ) )
@@ -178,11 +178,11 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									string strategyName = string.Empty;
-									bool result = getString( prop.Values[ 0 ], out strategyName );
+									var strategyName = string.Empty;
+									var result = getString( prop.Values[ 0 ], out strategyName );
 									if ( result )
 									{
-										LodStrategy strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
+										var strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
 
 										result = strategy != null;
 
@@ -212,7 +212,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = true;
+									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_material.ReceiveShadows = val;
 									else
@@ -235,7 +235,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = true;
+									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_material.TransparencyCastsShadows = val;
 									else

@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
@@ -106,7 +107,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="length"></param>
 		/// <param name="locking"></param>
 		/// <returns></returns>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking locking)
 		{
 			int access = 0;
 
@@ -155,7 +156,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			isLocked = true;
 
-			return new IntPtr( ptr.ToInt64() + offset );
+            return BufferBase.Wrap(new IntPtr(ptr.ToInt64() + offset), length);
 		}
 
 		/// <summary>
@@ -180,14 +181,14 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="length"></param>
 		/// <param name="src"></param>
 		/// <param name="discardWholeBuffer"></param>
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+        public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
 		{
 			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID );
 
 			if ( useShadowBuffer )
 			{
 				// lock the buffer for reading
-				IntPtr dest = shadowBuffer.Lock( offset, length,
+				var dest = shadowBuffer.Lock( offset, length,
 					discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
 				// copy that data in there
@@ -213,7 +214,8 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
 				new IntPtr( offset ),
 				new IntPtr( length ),
-				src ); // TAO 2.0
+				src.Pin() ); // TAO 2.0
+            src.UnPin();
 			//Gl.glBufferSubDataARB(
 			//    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
 			//    offset,
@@ -227,12 +229,12 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
 		/// <param name="dest"></param>
-		public override void ReadData( int offset, int length, IntPtr dest )
+        public override void ReadData(int offset, int length, BufferBase dest)
 		{
 			if ( useShadowBuffer )
 			{
 				// lock the buffer for reading
-				IntPtr src = shadowBuffer.Lock( offset, length, BufferLocking.ReadOnly );
+				var src = shadowBuffer.Lock( offset, length, BufferLocking.ReadOnly );
 
 				// copy that data in there
 				Memory.Copy( src, dest, length );
@@ -248,13 +250,13 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
 					new IntPtr( offset ),
 					new IntPtr( length ),
-					dest ); // TAO 2.0
-
-				//Gl.glGetBufferSubDataARB(
-				//    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
-				//    offset,
-				//    length,
-				//    dest );
+					dest.Pin() ); // TAO 2.0
+			    dest.UnPin();
+			    //Gl.glGetBufferSubDataARB(
+			    //    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
+			    //    offset,
+			    //    length,
+			    //    dest );
 			}
 		}
 

@@ -61,9 +61,9 @@ namespace Axiom.Scripting
 		/// <param name="end"></param>
 		public static string Combine( string[] items, int start, int end )
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
-			for ( int i = start; i < end; i++ )
+			for ( var i = start; i < end; i++ )
 			{
 				sb.AppendFormat( System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[ i ] );
 			}
@@ -77,7 +77,7 @@ namespace Axiom.Scripting
 		/// </summary>
 		public static void LogParserError( string attribute, string context, string reason )
 		{
-			string error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
+			var error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
 
 			LogManager.Instance.Write( error );
 		}
@@ -90,7 +90,7 @@ namespace Axiom.Scripting
 		/// <returns></returns>
 		public static string ReadLine( TextReader reader )
 		{
-			string line = reader.ReadLine();
+			var line = reader.ReadLine();
 
 			if ( line != null )
 			{
@@ -103,14 +103,14 @@ namespace Axiom.Scripting
 					return line;
 				}
 
-				StringBuilder sb = new StringBuilder();
+				var sb = new StringBuilder();
 
-				string[] values = line.Split( ' ' );
+				var values = line.Split( ' ' );
 
 				// reduce big space gaps between values down to a single space
-				for ( int i = 0; i < values.Length; i++ )
+				for ( var i = 0; i < values.Length; i++ )
 				{
-					string val = values[ i ];
+					var val = values[ i ];
 
 					if ( val.Length != 0 )
 					{
@@ -134,7 +134,7 @@ namespace Axiom.Scripting
 		public static string[] GetParams( string[] all )
 		{
 			// create a seperate parm list that has the command removed
-			string[] parms = new string[ all.Length - 1 ];
+			var parms = new string[ all.Length - 1 ];
 			Array.Copy( all, 1, parms, 0, parms.Length );
 
 			return parms;
@@ -145,7 +145,7 @@ namespace Axiom.Scripting
 		/// </summary>
 		public static void SkipToNextOpenBrace( TextReader reader )
 		{
-			string line = "";
+			var line = "";
 			while ( line != null && line != "{" )
 			{
 				line = ReadLine( reader );
@@ -158,7 +158,7 @@ namespace Axiom.Scripting
 		/// <param name="reader"></param>
 		public static void SkipToNextCloseBrace( TextReader reader )
 		{
-			string line = "";
+			var line = "";
 			while ( line != null && line != "}" )
 			{
 				line = ReadLine( reader );

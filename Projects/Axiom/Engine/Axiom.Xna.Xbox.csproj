@@ -15,6 +15,9 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -46,7 +49,7 @@
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xbox\Debug</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XBOX;XBOX360;XNA;NET_2_0</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360;XNA;NET_2_0;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -62,7 +65,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.XML</DocumentationFile>
-    <DefineConstants>TRACE;XBOX;XBOX360;NET_2_0;XNA</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360;NET_2_0;XNA;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -156,7 +159,7 @@
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Frustum.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
-    <Compile Include="Core\List~1Extensions.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\StringInterface.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
@@ -245,6 +248,7 @@
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\Font.cs" />
     <Compile Include="Fonts\FontManager.cs" />
+    <Compile Include="Fonts\FreetypeWrapper.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\AutoParamDataSource.cs" />
     <Compile Include="Graphics\BufferStream.cs" />

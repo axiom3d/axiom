@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,119 +23,117 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-
+using System.Text;
 using Axiom.Graphics;
-using Axiom.RenderSystems.Xna.HLSL;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class VertexBufferDeclaration
-	{
-		#region Fields and Properties
+    internal class VertexBufferDeclaration
+    {
+        #region Fields and Properties
 
-		protected List<VertexBufferElement> vertexBufferElements;
-		public IEnumerable<VertexBufferElement> VertexBufferElements
-		{
-			get
-			{
-				return vertexBufferElements;
-			}
-			set
-			{
-				vertexBufferElements = (List<VertexBufferElement>)value;
-			}
-		}
+        protected List<VertexBufferElement> vertexBufferElements;
 
-		public bool HasColor
-		{
-			get
-			{
-				return ( GetVertexElementSemanticCount( VertexElementSemantic.Diffuse ) > 0 );
-			}
-		}
+        public IEnumerable<VertexBufferElement> VertexBufferElements
+        {
+            get
+            {
+                return vertexBufferElements;
+            }
+            set
+            {
+                vertexBufferElements = (List<VertexBufferElement>)value;
+            }
+        }
 
-		public bool HasTexCoord
-		{
-			get
-			{
-				return ( GetVertexElementSemanticCount( VertexElementSemantic.TexCoords ) > 0 );
-			}
-		}
+        public bool HasColor
+        {
+            get
+            {
+                return ( GetVertexElementSemanticCount( VertexElementSemantic.Diffuse ) > 0 );
+            }
+        }
 
-		public ushort TexCoordCount
-		{
-			get
-			{
-				return GetVertexElementSemanticCount( VertexElementSemantic.TexCoords );
-			}
-		}
+        public bool HasTexCoord
+        {
+            get
+            {
+                return ( GetVertexElementSemanticCount( VertexElementSemantic.TexCoords ) > 0 );
+            }
+        }
 
-		#endregion Fields and Properties
+        public ushort TexCoordCount
+        {
+            get
+            {
+                return GetVertexElementSemanticCount( VertexElementSemantic.TexCoords );
+            }
+        }
 
-		#region Methods
+        #endregion Fields and Properties
 
-		public ushort GetVertexElementSemanticCount( VertexElementSemantic semantic )
-		{
-			ushort count = 0;
-			foreach ( VertexBufferElement vbe in vertexBufferElements )
-			{
-				if ( vbe.VertexElementSemantic == semantic )
-				{
-					count++;
-				}
-			}
-			return count;
-		}
+        #region Methods
 
-		#endregion Methods
+        public ushort GetVertexElementSemanticCount( VertexElementSemantic semantic )
+        {
+            ushort count = 0;
+            foreach ( var vbe in vertexBufferElements )
+            {
+                if ( vbe.VertexElementSemantic == semantic )
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
 
-		#region System.Object Implementation
+        #endregion Methods
 
-		public override bool Equals( object obj )
-		{
-			return obj.GetHashCode() == GetHashCode();
-		}
+        #region System.Object Implementation
 
-		public override int GetHashCode()
-		{
-			int hashcode = 0;
-			foreach ( VertexBufferElement vbe in vertexBufferElements )
-			{
-				hashcode ^= vbe.GetHashCode();
-				//hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
-			}
-			return hashcode;
-		}
+        public override bool Equals( object obj )
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
 
-		public override string ToString()
-		{
-			System.Text.StringBuilder result = new System.Text.StringBuilder();
-			foreach ( VertexBufferElement vbe in vertexBufferElements )
-			{
-				result.Append( vbe.ToString() + ";\n" );
-			}
-			return result.ToString();
-		}
+        public override int GetHashCode()
+        {
+            var hashcode = 0;
+            foreach ( var vbe in vertexBufferElements )
+            {
+                hashcode ^= vbe.GetHashCode();
+                //hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
+            }
+            return hashcode;
+        }
 
-		#endregion System.Object Implementation
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            foreach ( var vbe in vertexBufferElements )
+            {
+                result.Append( vbe + ";\n" );
+            }
+            return result.ToString();
+        }
 
-	}
+        #endregion System.Object Implementation
+    }
 }

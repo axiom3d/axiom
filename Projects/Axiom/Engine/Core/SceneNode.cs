@@ -346,7 +346,7 @@ namespace Axiom.Core
 				{
 					this.isInSceneGraph = value;
 					// notify children
-					foreach ( Node child in childNodes.Values )
+					foreach ( var child in childNodes.Values )
 					{
 						( (SceneNode)child ).IsInSceneGraph = this.isInSceneGraph;
 					}
@@ -502,7 +502,7 @@ namespace Axiom.Core
 		public virtual void DetachAllObjects()
 		{
 			// notify each object that it was removed (sending in null sets its parent scene node to null)
-			foreach ( MovableObject obj in objectList.Values )
+			foreach ( var obj in objectList.Values )
 			{
 				obj.NotifyAttached( null );
 			}
@@ -558,8 +558,8 @@ namespace Axiom.Core
 		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( int index )
 		{
-			int i = 0;
-			foreach ( MovableObject mo in this.objectList.Values )
+			var i = 0;
+			foreach ( var mo in this.objectList.Values )
 			{
 				if ( i == index )
 					return mo;
@@ -584,7 +584,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void RemoveAndDestroyChild( String name )
 		{
-			SceneNode child = (SceneNode)this.GetChild( name );
+			var child = (SceneNode)this.GetChild( name );
 			RemoveAndDestroyChild( child );
 		}
 
@@ -662,7 +662,7 @@ namespace Axiom.Core
             base.UpdateFromParent();
 
             // Notify objects that it has been moved
-            foreach(MovableObject currentObject in this.objectList.Values)
+            foreach(var currentObject in this.objectList.Values)
                 currentObject.NotifyMoved();
         }
 
@@ -707,7 +707,7 @@ namespace Axiom.Core
 
 			// add visible objects to the render queue
 			//objectListMeter.Enter();
-			foreach ( MovableObject obj in objectList.Values )
+			foreach ( var obj in objectList.Values )
 			{
 				// tell attached object about current camera in case it wants to know
 				//notifyCameraMeter.Enter();
@@ -754,8 +754,8 @@ namespace Axiom.Core
 
 		public override Node.DebugRenderable GetDebugRenderable()
 		{
-			Vector3 hs = this.worldAABB.HalfSize;
-			Real sz = Utility.Min( hs.x, hs.y );
+			var hs = this.worldAABB.HalfSize;
+			var sz = Utility.Min( hs.x, hs.y );
 			sz = Utility.Min( sz, hs.z );
 			sz = Utility.Max( sz, (Real)1.0 );
 			return base.GetDebugRenderable( sz );
@@ -786,7 +786,7 @@ namespace Axiom.Core
 			float radius = worldBoundingSphere.Radius = 0;
 
 			// update bounds from attached objects
-			foreach ( MovableObject obj in objectList.Values )
+			foreach ( var obj in objectList.Values )
 			{
 				// update
 				worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
@@ -1001,7 +1001,7 @@ namespace Axiom.Core
 			}
 			else
 			{
-				Quaternion localToUnitZ = localDirection.GetRotationTo( Vector3.UnitZ );
+				var localToUnitZ = localDirection.GetRotationTo( Vector3.UnitZ );
 				zAdjustVec = localToUnitZ * vec;
 			}
 
@@ -1011,10 +1011,10 @@ namespace Axiom.Core
 
 			if ( isYawFixed )
 			{
-				Vector3 xVec = yawFixedAxis.Cross( zAdjustVec );
+				var xVec = yawFixedAxis.Cross( zAdjustVec );
 				xVec.Normalize();
 
-				Vector3 yVec = zAdjustVec.Cross( xVec );
+				var yVec = zAdjustVec.Cross( xVec );
 				yVec.Normalize();
 
 				targetOrientation = Quaternion.FromAxes( xVec, yVec, zAdjustVec );
@@ -1139,7 +1139,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected override Node CreateChildImpl( string name )
 		{
-			SceneNode newNode = creator.CreateSceneNode( name );
+			var newNode = creator.CreateSceneNode( name );
 			return newNode;
 		}
 

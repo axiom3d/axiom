@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
@@ -11,7 +12,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Controllers.
 	/// </summary>
-	public class FacialAnimation : TechDemo
+    [Export(typeof(TechDemo))]
+    public class FacialAnimation : TechDemo
 	{
 		#region Member variables
 

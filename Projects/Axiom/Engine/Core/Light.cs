@@ -643,7 +643,7 @@ namespace Axiom.Core
 		{
 			const float THRESHOLD = -1e-06f;
 
-			float n = camera.Near;
+			var n = camera.Near;
 
 			// First check if the light is close to the near plane, since
 			// in this case we have to build a degenerate clip volume
@@ -651,15 +651,15 @@ namespace Axiom.Core
 			this.nearClipVolume.outside = PlaneSide.Negative;
 
 			// Homogenous position
-			Vector4 lightPos = this.GetAs4DVector();
+			var lightPos = this.GetAs4DVector();
 			// 3D version (not the same as DerivedPosition, is -direction for
 			// directional lights)
-			Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
+			var lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
 
 			// Get eye-space light position
 			// use 4D vector so directional lights still work
-			Vector4 eyeSpaceLight = camera.ViewMatrix * lightPos;
-			Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
+			var eyeSpaceLight = camera.ViewMatrix * lightPos;
+			var eyeToWorld = camera.ViewMatrix.Inverse();
 
 			// Find distance to light, project onto -Z axis
 			float d = eyeSpaceLight.Dot( new Vector4( 0, 0, -1, -n ) );
@@ -668,19 +668,19 @@ namespace Axiom.Core
 			{
 				// light is not too close to the near plane
 				// First find the worldspace positions of the corners of the viewport
-				Vector3[] corners = camera.WorldSpaceCorners;
+				var corners = camera.WorldSpaceCorners;
 
 				// Iterate over world points and form side planes
-				Vector3 normal = Vector3.Zero;
-				Vector3 lightDir = Vector3.Zero;
+				var normal = Vector3.Zero;
+				var lightDir = Vector3.Zero;
 
-				for ( int i = 0; i < 4; i++ )
+				for ( var i = 0; i < 4; i++ )
 				{
 					// Figure out light dir
 					lightDir = lightPos3 - ( corners[ i ] * lightPos.w );
 					// Cross with anticlockwise corner, therefore normal points in
 					// Note: C++ mod returns 3 for the first case where C# returns -1
-					int test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
+					var test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
 
 					normal = ( corners[ i ] - corners[ test ] ).Cross( lightDir );
 					normal.Normalize();
@@ -749,27 +749,27 @@ namespace Axiom.Core
 		internal virtual PlaneBoundedVolumeList GetFrustumClipVolumes( Camera camera )
 		{
 			// Homogenous light position
-			Vector4 lightPos = this.GetAs4DVector();
+			var lightPos = this.GetAs4DVector();
 
 			// 3D version (not the same as DerivedPosition, is -direction for
 			// directional lights)
-			Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
+			var lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
 			Vector3 lightDir;
 
-			Vector3[] clockwiseVerts = new Vector3[ 4 ];
+			var clockwiseVerts = new Vector3[ 4 ];
 
-			Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
+			var eyeToWorld = camera.ViewMatrix.Inverse();
 
 			// Get worldspace frustum corners
-			Vector3[] corners = camera.WorldSpaceCorners;
+			var corners = camera.WorldSpaceCorners;
 
-			bool infiniteViewDistance = ( camera.Far == 0 );
+			var infiniteViewDistance = ( camera.Far == 0 );
 
 			this.frustumClipVolumes.Clear();
 
-			for ( int n = 0; n < 6; n++ )
+			for ( var n = 0; n < 6; n++ )
 			{
-				FrustumPlane frustumPlane = (FrustumPlane)n;
+				var frustumPlane = (FrustumPlane)n;
 
 				// skip far plane if infinite view frustum
 				if ( infiniteViewDistance && ( frustumPlane == FrustumPlane.Far ) )
@@ -777,9 +777,9 @@ namespace Axiom.Core
 					continue;
 				}
 
-				Plane plane = camera[ frustumPlane ];
+				var plane = camera[ frustumPlane ];
 
-				Vector4 planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+				var planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 
 				// planes face inwards, we need to know if light is on negative side
 				float d = planeVec.Dot( lightPos );
@@ -790,7 +790,7 @@ namespace Axiom.Core
 					// clockwise verts mean we can cross-product and always get normals
 					// facing into the volume we create
 					this.frustumClipVolumes.Add( new PlaneBoundedVolume() );
-					PlaneBoundedVolume vol =
+					var vol =
 							(PlaneBoundedVolume)this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
 
 					switch ( frustumPlane )
@@ -837,14 +837,14 @@ namespace Axiom.Core
 					// Iterate over world points and form side planes
 					Vector3 normal;
 
-					for ( int i = 0; i < 4; i++ )
+					for ( var i = 0; i < 4; i++ )
 					{
 						// Figure out light dir
 						lightDir = lightPos3 - ( clockwiseVerts[ i ] * lightPos.w );
 
 						// Cross with anticlockwise corner, therefore normal points in
 						// Note: C++ mod returns 3 for the first case where C# returns -1
-						int test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
+						var test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
 
 						// Cross with anticlockwise corner, therefore normal points in
 						normal = ( clockwiseVerts[ i ] - clockwiseVerts[ test ] ).Cross( lightDir );
@@ -1126,7 +1126,7 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Vector4 val )
 			{
-				Vector4 v = this.light.GetAs4DVector();
+				var v = this.light.GetAs4DVector();
 				this.SetValue( new Vector4( v.x + val.x, v.y + val.y, v.z + val.z, v.w + val.w ) );
 			}
 
@@ -1158,7 +1158,7 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( ColorEx val )
 			{
-				ColorEx c = this.light.Diffuse;
+				var c = this.light.Diffuse;
 				this.SetValue( new ColorEx( c.a * val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
 			}
 
@@ -1190,7 +1190,7 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( ColorEx val )
 			{
-				ColorEx c = this.light.Specular;
+				var c = this.light.Specular;
 				this.SetValue( new ColorEx( c.a + val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
 			}
 
@@ -1341,7 +1341,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual int CompareTo( object obj )
 		{
-			Light other = obj as Light;
+			var other = obj as Light;
 
 			if ( other.tempSquaredDist > this.tempSquaredDist )
 			{
@@ -1371,7 +1371,7 @@ namespace Axiom.Core
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
-			Light light = new Light( name );
+			var light = new Light( name );
 
 			if ( param != null )
 			{
@@ -1418,7 +1418,7 @@ namespace Axiom.Core
 
 				if ( param.ContainsKey( "attenuation" ) )
 				{
-					Vector4 attenuation = Vector4.Parse( param[ "attenuation" ].ToString() );
+					var attenuation = Vector4.Parse( param[ "attenuation" ].ToString() );
 					light.SetAttenuation( attenuation.x, attenuation.y, attenuation.z, attenuation.w );
 				}
 

@@ -264,9 +264,9 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Material[] materials = new Material[ this.subEntityList.Count ];
-				int i = 0;
-				foreach ( SubEntity se in this.subEntityList )
+				var materials = new Material[ this.subEntityList.Count ];
+				var i = 0;
+				foreach ( var se in this.subEntityList )
 				{
 					materials[ i++ ] = se.Material;
 				}
@@ -278,9 +278,9 @@ namespace Axiom.Core
 		{
 			get
 			{
-				string[] materials = new string[ this.subEntityList.Count ];
-				int i = 0;
-				foreach ( SubEntity se in this.subEntityList )
+				var materials = new string[ this.subEntityList.Count ];
+				var i = 0;
+				foreach ( var se in this.subEntityList )
 				{
 					materials[ i++ ] = se.MaterialName;
 				}
@@ -321,12 +321,12 @@ namespace Axiom.Core
 			// Check if mesh is using manual LOD
 			if ( mesh.IsLodManual )
 			{
-				for ( int i = 1; i < mesh.LodLevelCount; i++ )
+				for ( var i = 1; i < mesh.LodLevelCount; i++ )
 				{
-					MeshLodUsage usage = mesh.GetLodLevel( i );
+					var usage = mesh.GetLodLevel( i );
 
 					// manually create entity
-					Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", this.name, i ), usage.ManualMesh );
+					var lodEnt = new Entity( string.Format( "{0}Lod{1}", this.name, i ), usage.ManualMesh );
 					this.lodEntityList.Add( lodEnt );
 				}
 			}
@@ -447,12 +447,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				float radius = this.mesh.BoundingSphereRadius;
+				var radius = this.mesh.BoundingSphereRadius;
 
 				// scale by the largest scale factor
 				if ( this.parentNode != null )
 				{
-					Vector3 s = this.parentNode.DerivedScale;
+					var s = this.parentNode.DerivedScale;
 					radius *= Utility.Max( s.x, Utility.Max( s.y, s.z ) );
 				}
 
@@ -469,12 +469,12 @@ namespace Axiom.Core
 			get
 			{
 				AxisAlignedBox box;
-				AxisAlignedBox fullBox = AxisAlignedBox.Null;
+				var fullBox = AxisAlignedBox.Null;
 
-				foreach ( MovableObject child in childObjectList.Values )
+				foreach ( var child in childObjectList.Values )
 				{
 					box = child.BoundingBox;
-					TagPoint tagPoint = (TagPoint)child.ParentNode;
+					var tagPoint = (TagPoint)child.ParentNode;
 
 					box.Transform( tagPoint.FullLocalTransform );
 
@@ -535,9 +535,9 @@ namespace Axiom.Core
 			{
 				if ( String.IsNullOrEmpty( this.materialName ) )
 				{
-					foreach ( SubEntity ent in this.subEntityList )
+					foreach ( var ent in this.subEntityList )
 					{
-						string defaultMaterial = ent.SubMesh.MaterialName;
+						var defaultMaterial = ent.SubMesh.MaterialName;
 						if ( !String.IsNullOrEmpty( defaultMaterial ) )
 						{
 							this.materialName = defaultMaterial;
@@ -553,9 +553,9 @@ namespace Axiom.Core
 				//if null or empty string then reset the material to that defined by the mesh
 				if ( String.IsNullOrEmpty( value ) )
 				{
-					foreach ( SubEntity ent in this.subEntityList )
+					foreach ( var ent in this.subEntityList )
 					{
-						string defaultMaterial = ent.SubMesh.MaterialName;
+						var defaultMaterial = ent.SubMesh.MaterialName;
 						if ( !String.IsNullOrEmpty( defaultMaterial ) )
 						{
 							ent.MaterialName = defaultMaterial;
@@ -566,7 +566,7 @@ namespace Axiom.Core
 				else
 				{
 					// assign the material name to all sub entities
-					foreach ( SubEntity se in this.subEntityList )
+					foreach ( var se in this.subEntityList )
 					{
 						se.MaterialName = this.materialName;
 					}
@@ -693,7 +693,7 @@ namespace Axiom.Core
 				throw new AxiomException( "Entity '{0}' has no skeleton to attach an object to.", this.name );
 			}
 
-			Bone bone = this.skeletonInstance.GetBone( boneName );
+			var bone = this.skeletonInstance.GetBone( boneName );
 			if ( bone == null )
 			{
 				throw new AxiomException( "Entity '{0}' does not have a skeleton with a bone named '{1}'.",
@@ -701,7 +701,7 @@ namespace Axiom.Core
 										  boneName );
 			}
 
-			TagPoint tagPoint = this.skeletonInstance.CreateTagPointOnBone( bone, offsetOrientation, offsetPosition );
+			var tagPoint = this.skeletonInstance.CreateTagPointOnBone( bone, offsetOrientation, offsetPosition );
 
 			tagPoint.ParentEntity = this;
 			tagPoint.ChildObject = sceneObject;
@@ -731,7 +731,7 @@ namespace Axiom.Core
 
 		public MovableObject DetachObjectFromBone( string name )
 		{
-			MovableObject obj = this.childObjectList[ name ];
+			var obj = this.childObjectList[ name ];
 			if ( obj == null )
 			{
 				throw new AxiomException( "Child object named '{0}' not found.  Entity.DetachObjectFromBone", name );
@@ -754,7 +754,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public void DetachObjectFromBone( MovableObject obj )
 		{
-			foreach ( MovableObject child in this.childObjectList.Values )
+			foreach ( var child in this.childObjectList.Values )
 			{
 				if ( child == obj )
 				{
@@ -789,7 +789,7 @@ namespace Axiom.Core
         /// <param name="pObject">Object to detach.</param>
 		protected void DetachObjectImpl( MovableObject pObject )
 		{
-			TagPoint tagPoint = (TagPoint)pObject.ParentNode;
+			var tagPoint = (TagPoint)pObject.ParentNode;
 
 			// free the TagPoint so we can reuse it later
 			//TODO: NO idea what this does!
@@ -800,7 +800,7 @@ namespace Axiom.Core
 
 		protected void DetachAllObjectsImpl()
 		{
-			foreach ( MovableObject child in this.childObjectList.Values )
+			foreach ( var child in this.childObjectList.Values )
 			{
 				this.DetachObjectImpl( child );
 			}
@@ -839,7 +839,7 @@ namespace Axiom.Core
 		{
 			base.NotifyAttached( node, isTagPoint );
 			// Also notify LOD entities
-			foreach ( Entity lodEntity in this.lodEntityList )
+			foreach ( var lodEntity in this.lodEntityList )
 			{
 				lodEntity.NotifyAttached( node, isTagPoint );
 			}
@@ -851,10 +851,10 @@ namespace Axiom.Core
 		protected void BuildSubEntities()
 		{
 			// loop through the models meshes and create sub entities from them
-			for ( int i = 0; i < this.mesh.SubMeshCount; i++ )
+			for ( var i = 0; i < this.mesh.SubMeshCount; i++ )
 			{
-				SubMesh subMesh = this.mesh.GetSubMesh( i );
-				SubEntity sub = new SubEntity();
+				var subMesh = this.mesh.GetSubMesh( i );
+				var sub = new SubEntity();
 				sub.Parent = this;
 				sub.SubMesh = subMesh;
 
@@ -872,7 +872,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected void CacheBoneMatrices()
 		{
-			ulong currentFrameCount = Root.Instance.CurrentFrameCount;
+			var currentFrameCount = Root.Instance.CurrentFrameCount;
 
 			if ( this.frameBonesLastUpdated[ 0 ] == currentFrameCount )
 			{
@@ -889,7 +889,7 @@ namespace Axiom.Core
 			if ( this.mesh.IsLodManual && this.meshLodIndex > 1 )
 			{
 				// use lower detail skeleton
-				Mesh lodMesh = this.mesh.GetLodLevel( this.meshLodIndex ).ManualMesh;
+				var lodMesh = this.mesh.GetLodLevel( this.meshLodIndex ).ManualMesh;
 
 				if ( !lodMesh.HasSkeleton )
 				{
@@ -906,17 +906,17 @@ namespace Axiom.Core
 			// TODO: Skeleton instance sharing
 
 			// update the child object's transforms
-			foreach ( MovableObject child in this.childObjectList.Values )
+			foreach ( var child in this.childObjectList.Values )
 			{
 				child.ParentNode.Update( true, true );
 			}
 
 			// apply the current world transforms to these too, since these are used as
 			// replacement world matrices
-			Matrix4 worldXform = this.ParentNodeFullTransform;
+			var worldXform = this.ParentNodeFullTransform;
 			this.numBoneMatrices = this.skeletonInstance.BoneCount;
 
-			for ( int i = 0; i < this.numBoneMatrices; i++ )
+			for ( var i = 0; i < this.numBoneMatrices; i++ )
 			{
 				this.boneMatrices[ i ] = worldXform * this.boneMatrices[ i ];
 			}
@@ -935,7 +935,7 @@ namespace Axiom.Core
 				return this.HasSkeleton ? this.skelAnimVertexData : this.softwareVertexAnimVertexData;
 			}
 
-			foreach ( SubEntity se in this.subEntityList )
+			foreach ( var se in this.subEntityList )
 			{
 				if ( originalData == se.SubMesh.vertexData )
 				{
@@ -959,7 +959,7 @@ namespace Axiom.Core
 				return null;
 			}
 
-			foreach ( SubEntity subEnt in this.subEntityList )
+			foreach ( var subEnt in this.subEntityList )
 			{
 				if ( original == subEnt.SubMesh.vertexData )
 				{
@@ -982,18 +982,18 @@ namespace Axiom.Core
 			}
 
 			// we only do these tasks if they have not already been done this frame
-			Root root = Root.Instance;
-			ulong currentFrameNumber = root.CurrentFrameCount;
-			bool stencilShadows = false;
+			var root = Root.Instance;
+			var currentFrameNumber = root.CurrentFrameCount;
+			var stencilShadows = false;
 			if ( this.CastShadows && root.SceneManager != null )
 			{
 				stencilShadows = root.SceneManager.IsShadowTechniqueStencilBased;
 			}
-			bool swAnimation = !this.hardwareAnimation || stencilShadows || this.softwareAnimationRequests > 0;
+			var swAnimation = !this.hardwareAnimation || stencilShadows || this.softwareAnimationRequests > 0;
 			// Blend normals in s/w only if we're not using h/w animation,
 			// since shadows only require positions
-			bool blendNormals = !this.hardwareAnimation || this.softwareAnimationNormalsRequests > 0;
-			bool animationDirty = this.frameAnimationLastUpdated != currentFrameNumber
+			var blendNormals = !this.hardwareAnimation || this.softwareAnimationNormalsRequests > 0;
+			var animationDirty = this.frameAnimationLastUpdated != currentFrameNumber
 				// 				                  || (HasSkeleton && Skeleton.ManualBonesDirty)
 					;
 			if ( animationDirty ||
@@ -1015,7 +1015,7 @@ namespace Axiom.Core
 							this.tempVertexAnimInfo.BindTempCopies( this.softwareVertexAnimVertexData,
 																	this.hardwareAnimation );
 						}
-						foreach ( SubEntity subEntity in this.subEntityList )
+						foreach ( var subEntity in this.subEntityList )
 						{
 							if ( subEntity.IsVisible && subEntity.SoftwareVertexAnimVertexData != null &&
 								 subEntity.SubMesh.VertexAnimationType != VertexAnimationType.None )
@@ -1034,8 +1034,8 @@ namespace Axiom.Core
 
 					if ( swAnimation )
 					{
-						bool blendTangents = blendNormals;
-						bool blendBinormals = blendNormals;
+						var blendTangents = blendNormals;
+						var blendBinormals = blendNormals;
 						if ( this.skelAnimVertexData != null )
 						{
 							// Blend shared geometry
@@ -1058,7 +1058,7 @@ namespace Axiom.Core
 
 						// Now check the per subentity vertex data to see if it needs to be
 						// using software blend
-						foreach ( SubEntity subEntity in this.subEntityList )
+						foreach ( var subEntity in this.subEntityList )
 						{
 							// Blend dedicated geometry
 							if ( subEntity.IsVisible && subEntity.SkelAnimVertexData != null )
@@ -1100,9 +1100,9 @@ namespace Axiom.Core
 			if ( HasSkeleton && animationDirty || lastParentXform != ParentNodeFullTransform )
 			{
 				lastParentXform = ParentNodeFullTransform;
-				for ( int i = 0; i < childObjectList.Count; i++ )
+				for ( var i = 0; i < childObjectList.Count; i++ )
 				{
-					MovableObject child = childObjectList[ i ];
+					var child = childObjectList[ i ];
 					child.ParentNode.Update( true, true );
 
 				}
@@ -1114,7 +1114,7 @@ namespace Axiom.Core
 					{
 						boneWorldMatrices = new Matrix4[ numBoneMatrices ];
 					}
-					for ( int i = 0; i < numBoneMatrices; i++ )
+					for ( var i = 0; i < numBoneMatrices; i++ )
 					{
 						boneWorldMatrices[ i ] = Matrix4.Multiply( lastParentXform, boneMatrices[ i ] );
 					}
@@ -1134,7 +1134,7 @@ namespace Axiom.Core
 				vdata.AllocateHardwareAnimationElements( numberOfElements );
 			}
 			// Initialize parametrics incase we don't use all of them
-			for ( int i = 0; i < vdata.HWAnimationDataList.Count; i++ )
+			for ( var i = 0; i < vdata.HWAnimationDataList.Count; i++ )
 			{
 				vdata.HWAnimationDataList[ i ].Parametric = 0.0f;
 			}
@@ -1147,7 +1147,7 @@ namespace Axiom.Core
 		/// </summary>
 		private void ApplyVertexAnimation( bool hardwareAnimation, bool stencilShadows )
 		{
-			bool swAnim = !hardwareAnimation || stencilShadows || ( this.softwareAnimationRequests > 0 );
+			var swAnim = !hardwareAnimation || stencilShadows || ( this.softwareAnimationRequests > 0 );
 
 			// make sure we have enough hardware animation elements to play with
 			if ( hardwareAnimation )
@@ -1162,10 +1162,10 @@ namespace Axiom.Core
 																		this.hardwarePoseCount
 																: (ushort)1 );
 				}
-				foreach ( SubEntity subEntity in this.subEntityList )
+				foreach ( var subEntity in this.subEntityList )
 				{
-					SubMesh subMesh = subEntity.SubMesh;
-					VertexAnimationType type = subMesh.VertexAnimationType;
+					var subMesh = subEntity.SubMesh;
+					var type = subMesh.VertexAnimationType;
 					if ( type != VertexAnimationType.None && !subMesh.useSharedVertices )
 					{
 						this.InitHardwareAnimationElements( subEntity.HardwareVertexAnimVertexData,
@@ -1182,22 +1182,22 @@ namespace Axiom.Core
 				if ( this.softwareVertexAnimVertexData != null &&
 					 this.mesh.SharedVertexDataAnimationType == VertexAnimationType.Pose )
 				{
-					VertexElement elem =
+					var elem =
 							this.softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic(
 									VertexElementSemantic.Position );
-					HardwareVertexBuffer buf =
+					var buf =
 							this.softwareVertexAnimVertexData.vertexBufferBinding.GetBuffer( elem.Source );
 					buf.SuppressHardwareUpdate( true );
 				}
-				foreach ( SubEntity subEntity in this.subEntityList )
+				foreach ( var subEntity in this.subEntityList )
 				{
-					SubMesh subMesh = subEntity.SubMesh;
+					var subMesh = subEntity.SubMesh;
 					if ( !subMesh.useSharedVertices && subMesh.VertexAnimationType == VertexAnimationType.Pose )
 					{
-						VertexData data = subEntity.SoftwareVertexAnimVertexData;
-						VertexElement elem =
+						var data = subEntity.SoftwareVertexAnimVertexData;
+						var elem =
 								data.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-						HardwareVertexBuffer buf = data.vertexBufferBinding.GetBuffer( elem.Source );
+						var buf = data.vertexBufferBinding.GetBuffer( elem.Source );
 						buf.SuppressHardwareUpdate( true );
 					}
 				}
@@ -1207,9 +1207,9 @@ namespace Axiom.Core
 			// Note - you should only apply one morph animation to each set of vertex data
 			// at once; if you do more, only the last one will actually apply
 			this.MarkBuffersUnusedForAnimation();
-			foreach ( AnimationState state in this.animationState.EnabledAnimationStates )
+			foreach ( var state in this.animationState.EnabledAnimationStates )
 			{
-				Animation anim = this.mesh.GetAnimation( state.Name );
+				var anim = this.mesh.GetAnimation( state.Name );
 				if ( anim != null )
 				{
 					anim.Apply( this,
@@ -1228,23 +1228,23 @@ namespace Axiom.Core
 				if ( this.softwareVertexAnimVertexData != null &&
 					 this.mesh.SharedVertexDataAnimationType == VertexAnimationType.Pose )
 				{
-					VertexElement elem =
+					var elem =
 							this.softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic(
 									VertexElementSemantic.Position );
-					HardwareVertexBuffer buf =
+					var buf =
 							this.softwareVertexAnimVertexData.vertexBufferBinding.GetBuffer( elem.Source );
 					buf.SuppressHardwareUpdate( false );
 				}
-				foreach ( SubEntity subEntity in this.subEntityList )
+				foreach ( var subEntity in this.subEntityList )
 				{
-					SubMesh subMesh = subEntity.SubMesh;
+					var subMesh = subEntity.SubMesh;
 					if ( !subMesh.useSharedVertices &&
 						 subMesh.VertexAnimationType == VertexAnimationType.Pose )
 					{
-						VertexData data = subEntity.SoftwareVertexAnimVertexData;
-						VertexElement elem =
+						var data = subEntity.SoftwareVertexAnimVertexData;
+						var elem =
 								data.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-						HardwareVertexBuffer buf = data.vertexBufferBinding.GetBuffer( elem.Source );
+						var buf = data.vertexBufferBinding.GetBuffer( elem.Source );
 						buf.SuppressHardwareUpdate( false );
 					}
 				}
@@ -1257,7 +1257,7 @@ namespace Axiom.Core
 		protected void MarkBuffersUnusedForAnimation()
 		{
 			this.vertexAnimationAppliedThisFrame = false;
-			foreach ( SubEntity subEntity in this.subEntityList )
+			foreach ( var subEntity in this.subEntityList )
 			{
 				subEntity.MarkBuffersUnusedForAnimation();
 			}
@@ -1286,20 +1286,20 @@ namespace Axiom.Core
 				 !this.vertexAnimationAppliedThisFrame &&
 				 ( !hardwareAnimation || this.mesh.SharedVertexDataAnimationType == VertexAnimationType.Morph ) )
 			{
-				VertexElement srcPosElem =
+				var srcPosElem =
 						this.mesh.SharedVertexData.vertexDeclaration.FindElementBySemantic(
 								VertexElementSemantic.Position );
-				HardwareVertexBuffer srcBuf =
+				var srcBuf =
 						this.mesh.SharedVertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
 
 				// Bind to software
-				VertexElement destPosElem =
+				var destPosElem =
 						this.softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic(
 								VertexElementSemantic.Position );
 				this.softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
 			}
 
-			foreach ( SubEntity subEntity in this.subEntityList )
+			foreach ( var subEntity in this.subEntityList )
 			{
 				subEntity.RestoreBuffersForUnusedAnimation( hardwareAnimation );
 			}
@@ -1339,13 +1339,13 @@ namespace Axiom.Core
 		public bool TempVertexAnimBuffersBound()
 		{
 			// Do we still have temp buffers for software vertex animation bound?
-			bool ret = true;
+			var ret = true;
 			if ( this.mesh.SharedVertexData != null &&
 				 this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None )
 			{
 				ret = ret && this.tempVertexAnimInfo.BuffersCheckedOut( true, false );
 			}
-			foreach ( SubEntity subEntity in this.subEntityList )
+			foreach ( var subEntity in this.subEntityList )
 			{
 				if ( !subEntity.SubMesh.useSharedVertices &&
 					 subEntity.SubMesh.VertexAnimationType != VertexAnimationType.None )
@@ -1366,7 +1366,7 @@ namespace Axiom.Core
 					return false;
 				}
 			}
-			foreach ( SubEntity subEntity in this.subEntityList )
+			foreach ( var subEntity in this.subEntityList )
 			{
 				if ( subEntity.IsVisible && subEntity.skelAnimVertexData != null )
 				{
@@ -1381,7 +1381,7 @@ namespace Axiom.Core
 
 		public VertexData GetVertexDataForBinding()
 		{
-			VertexDataBindChoice c =
+			var c =
 					this.ChooseVertexDataForBinding( this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None );
 			switch ( c )
 			{
@@ -1708,14 +1708,14 @@ namespace Axiom.Core
 			if ( this.parentNode != null )
 			{
 				// Get mesh lod strategy
-				LodStrategy meshStrategy = mesh.LodStrategy;
+				var meshStrategy = mesh.LodStrategy;
 				// Get the appropriate lod value
 				Real lodValue = meshStrategy.GetValue( this, camera );
 				// Bias the lod value
-				Real biasedMeshLodValue = lodValue * this.meshLodFactorTransformed;
+				var biasedMeshLodValue = lodValue * this.meshLodFactorTransformed;
 
 				// Get the index at this biased depth
-				int newMeshLodIndex = this.mesh.GetLodIndex( biasedMeshLodValue );
+				var newMeshLodIndex = this.mesh.GetLodIndex( biasedMeshLodValue );
 
 				// Apply maximum detail restriction (remember lower = higher detail)
 				this.meshLodIndex = (int)Utility.Max( this.maxMeshLodIndex, this.meshLodIndex );
@@ -1741,13 +1741,13 @@ namespace Axiom.Core
 				lodValue *= this.materialLodFactorTransformed;
 
 				// apply the material LOD to all sub entities
-				foreach ( SubEntity subEntity in subEntityList )
+				foreach ( var subEntity in subEntityList )
 				{
 					// Get sub-entity material
-					Material material = subEntity.Material;
+					var material = subEntity.Material;
 
 					// Get material lod strategy
-					LodStrategy materialStrategy = material.LodStrategy;
+					var materialStrategy = material.LodStrategy;
 
 					// Recalculate lod value if strategies do not match
 					Real biasedMaterialLodValue;
@@ -1757,7 +1757,7 @@ namespace Axiom.Core
 						biasedMaterialLodValue = materialStrategy.GetValue( this, camera ) * materialStrategy.TransformBias( this.materialLodFactor );
 
 					// Get the index at this biased depth
-					int idx = material.GetLodIndex( biasedMaterialLodValue );
+					var idx = material.GetLodIndex( biasedMaterialLodValue );
 					// Apply maximum detail restriction (remember lower = higher detail)
 					idx = (int)Utility.Max( this.maxMaterialLodIndex, idx );
 					// Apply minimum detail restriction (remember higher = lower detail)
@@ -1783,7 +1783,7 @@ namespace Axiom.Core
 			}
 
 			// Notify child objects (tag points)
-			foreach ( MovableObject child in this.childObjectList.Values )
+			foreach ( var child in this.childObjectList.Values )
 			{
 				child.NotifyCurrentCamera( camera );
 			}
@@ -1813,7 +1813,7 @@ namespace Axiom.Core
 				Debug.Assert( this.meshLodIndex - 1 < this.lodEntityList.Count,
 							  "No LOD EntityList - did you build the manual LODs after creating the entity?" );
 
-				Entity lodEnt = this.lodEntityList[ this.meshLodIndex - 1 ];
+				var lodEnt = this.lodEntityList[ this.meshLodIndex - 1 ];
 
 				// index - 1 as we skip index 0 (original LOD)
 				if ( this.HasSkeleton && lodEnt.HasSkeleton )
@@ -1828,7 +1828,7 @@ namespace Axiom.Core
 			}
 
 			// add all visible sub entities to the render queue
-			foreach ( SubEntity se in this.subEntityList )
+			foreach ( var se in this.subEntityList )
 			{
 				if ( se.IsVisible )
 				{
@@ -1843,7 +1843,7 @@ namespace Axiom.Core
 				this.UpdateAnimation();
 
 				// Update render queue with child objects (tag points)
-				foreach ( MovableObject child in this.childObjectList.Values )
+				foreach ( var child in this.childObjectList.Values )
 				{
 					if ( child.IsVisible )
 					{
@@ -1869,7 +1869,7 @@ namespace Axiom.Core
 				Debug.Assert( this.meshLodIndex - 1 < this.lodEntityList.Count,
 							  "No LOD EntityList - did you build the manual LODs after creating the entity?" );
 
-				Entity lodEnt = lodEntityList[ meshLodIndex - 1 ];
+				var lodEnt = lodEntityList[ meshLodIndex - 1 ];
 
 				// index - 1 as we skip index 0 (original LOD)
 				if ( this.HasSkeleton && lodEnt.HasSkeleton )
@@ -1904,41 +1904,41 @@ namespace Axiom.Core
 			this.UpdateAnimation();
 
 			// Calculate the object space light details
-			Vector4 lightPos = light.GetAs4DVector();
+			var lightPos = light.GetAs4DVector();
 
 			// Only use object-space light if we're not doing transforms
 			// Since when animating the positions are already transformed into
 			// world space so we need world space light position
-			bool isAnimated = this.HasSkeleton || this.mesh.HasVertexAnimation;
+			var isAnimated = this.HasSkeleton || this.mesh.HasVertexAnimation;
 			if ( !isAnimated )
 			{
-				Matrix4 world2Obj = this.parentNode.FullTransform.Inverse();
+				var world2Obj = this.parentNode.FullTransform.Inverse();
 
 				lightPos = world2Obj * lightPos;
 			}
 
 			// We need to search the edge list for silhouette edges
-			EdgeData edgeList = this.GetEdgeList();
+			var edgeList = this.GetEdgeList();
 
 			// Init shadow renderable list if required
-			bool init = ( this.shadowRenderables.Count == 0 );
+			var init = ( this.shadowRenderables.Count == 0 );
 
 			if ( init )
 			{
 				this.shadowRenderables.Capacity = edgeList.edgeGroups.Count;
 			}
 
-			bool updatedSharedGeomNormals = false;
+			var updatedSharedGeomNormals = false;
 
 			EntityShadowRenderable esr = null;
 			EdgeData.EdgeGroup egi;
 
 			// note: using capacity for the loop since no items are in the list yet.
 			// capacity is set to how large the collection will be in the end
-			for ( int i = 0; i < this.shadowRenderables.Capacity; i++ )
+			for ( var i = 0; i < this.shadowRenderables.Capacity; i++ )
 			{
 				egi = (EdgeData.EdgeGroup)edgeList.edgeGroups[ i ];
-				VertexData data = ( isAnimated
+				var data = ( isAnimated
 											? this.FindBlendedVertexData( egi.vertexData )
 											:
 													egi.vertexData );
@@ -1946,7 +1946,7 @@ namespace Axiom.Core
 				{
 					// Try to find corresponding SubEntity; this allows the
 					// linkage of visibility between ShadowRenderable and SubEntity
-					SubEntity subEntity = this.FindSubEntityForVertexData( egi.vertexData );
+					var subEntity = this.FindSubEntityForVertexData( egi.vertexData );
 
 					// Create a new renderable, create a separate light cap if
 					// we're using hardware skinning since otherwise we get
@@ -1987,8 +1987,8 @@ namespace Axiom.Core
 						// with the latest animated positions
 						if ( !extrudeVertices )
 						{
-							IntPtr srcPtr = esr.PositionBuffer.Lock( BufferLocking.Normal );
-							IntPtr destPtr = new IntPtr( srcPtr.ToInt64() + ( egi.vertexData.vertexCount * 12 ) );
+							var srcPtr = esr.PositionBuffer.Lock( BufferLocking.Normal );
+						    var destPtr = srcPtr + (egi.vertexData.vertexCount*12);
 
 							// 12 = sizeof(float) * 3
 							Memory.Copy( srcPtr, destPtr, 12 * egi.vertexData.vertexCount );
@@ -2080,7 +2080,7 @@ namespace Axiom.Core
 			}
 
 			// prepare temp blending buffers for subentites as well
-			foreach ( SubEntity se in this.subEntityList )
+			foreach ( var se in this.subEntityList )
 			{
 				se.PrepareTempBlendBuffers();
 			}
@@ -2094,10 +2094,10 @@ namespace Axiom.Core
 		protected internal VertexData CloneVertexDataRemoveBlendInfo( VertexData source )
 		{
 			// Clone without copying data
-			VertexData ret = source.Clone( false );
-			VertexElement blendIndexElem =
+			var ret = source.Clone( false );
+			var blendIndexElem =
 					source.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-			VertexElement blendWeightElem =
+			var blendWeightElem =
 					source.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 
 			// Remove blend index
@@ -2157,16 +2157,16 @@ namespace Axiom.Core
 			// init
 			this.hardwareAnimation = false;
 			//this.vertexProgramInUse = false; // assume false because we just assign this
-			bool firstPass = true;
+			var firstPass = true;
 
 			// check for each sub entity
-			foreach ( SubEntity subEntity in this.subEntityList )
+			foreach ( var subEntity in this.subEntityList )
 			{
 				// grab the material and make sure it is loaded first
-				Material m = subEntity.Material;
+				var m = subEntity.Material;
 				m.Load();
 
-				Technique t = m.GetBestTechnique();
+				var t = m.GetBestTechnique();
 
 				if ( t == null )
 				{
@@ -2174,7 +2174,7 @@ namespace Axiom.Core
 					continue;
 				}
 
-				Pass p = t.GetPass( 0 );
+				var p = t.GetPass( 0 );
 
 				if ( p == null )
 				{
@@ -2192,7 +2192,7 @@ namespace Axiom.Core
 					{
 						// All materials must support skinning for us to consider using
 						// hardware animation - if one fails we use software
-						bool skeletallyAnimated = p.VertexProgram.IsSkeletalAnimationIncluded;
+						var skeletallyAnimated = p.VertexProgram.IsSkeletalAnimationIncluded;
 						subEntity.HardwareSkinningEnabled = skeletallyAnimated;
 						subEntity.VertexProgramInUse = true;
 						if ( firstPass )
@@ -2206,7 +2206,7 @@ namespace Axiom.Core
 						}
 					}
 
-					VertexAnimationType animType = VertexAnimationType.None;
+					var animType = VertexAnimationType.None;
 					if ( subEntity.SubMesh.useSharedVertices )
 					{
 						animType = this.mesh.SharedVertexDataAnimationType;
@@ -2277,9 +2277,9 @@ namespace Axiom.Core
 		/// <param name="source">Reference to animation state set which will use as source.</param>
 		public void CopyAnimationStateSubset( AnimationStateSet target, AnimationStateSet source )
 		{
-			foreach ( AnimationState targetState in target.Values )
+			foreach ( var targetState in target.Values )
 			{
-				AnimationState sourceState = source.GetAnimationState( targetState.Name );
+				var sourceState = source.GetAnimationState( targetState.Name );
 
 				if ( sourceState == null )
 				{
@@ -2302,13 +2302,13 @@ namespace Axiom.Core
 			}
 
 			// create a new entity using the current mesh (uses same instance, not a copy for speed)
-			Entity clone = this.Manager.CreateEntity( newName, this.mesh.Name );
+			var clone = this.Manager.CreateEntity( newName, this.mesh.Name );
 
 			// loop through each subentity and set the material up for the clone
-			for ( int i = 0; i < this.subEntityList.Count; i++ )
+			for ( var i = 0; i < this.subEntityList.Count; i++ )
 			{
-				SubEntity subEntity = subEntityList[ i ];
-				SubEntity cloneSubEntity = clone.GetSubEntity( i );
+				var subEntity = subEntityList[ i ];
+				var cloneSubEntity = clone.GetSubEntity( i );
 				cloneSubEntity.MaterialName = subEntity.MaterialName;
 				cloneSubEntity.IsVisible = subEntity.IsVisible;
 			}
@@ -2642,7 +2642,7 @@ namespace Axiom.Core
 			{
 				throw new AxiomException( "'mesh' parameter required when constructing an Entity." );
 			}
-			Entity ent = new Entity( name, pMesh );
+			var ent = new Entity( name, pMesh );
 			ent.MovableType = this.Type;
 			return ent;
 		}

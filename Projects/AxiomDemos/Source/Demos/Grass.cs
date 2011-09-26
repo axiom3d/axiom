@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
 
 using Axiom.Math;
@@ -72,7 +73,8 @@ namespace Axiom.Demos
 		#endregion IControllerValue<float> Members
 	}
 
-	public class Grass : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Grass : TechDemo
 	{
 		protected const float GRASS_HEIGHT = 300;
 		protected const float GRASS_WIDTH = 250;
@@ -190,9 +192,12 @@ namespace Axiom.Demos
 			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl, 12, BufferUsage.StaticWriteOnly );
 
 			int i;
-			unsafe
-			{
-				float* pData = (float*)( vbuf.Lock( BufferLocking.Discard ).ToPointer() );
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+				var pData = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
+			    var idx = 0;
 
 				Vector3 baseVec = new Vector3( GRASS_WIDTH / 2, 0, 0 );
 				Vector3 vec = baseVec;
@@ -201,52 +206,52 @@ namespace Axiom.Demos
 				for ( i = 0; i < 3; ++i )
 				{
 					//position
-					*pData++ = -vec.x;
-					*pData++ = GRASS_HEIGHT;
-					*pData++ = -vec.z;
+					pData[idx++] = -vec.x;
+                    pData[idx++] = GRASS_HEIGHT;
+                    pData[idx++] = -vec.z;
 					// normal
-					*pData++ = 0;
-					*pData++ = 1;
-					*pData++ = 0;
+                    pData[idx++] = 0;
+                    pData[idx++] = 1;
+					pData[idx++] = 0;
 					// uv
-					*pData++ = 0;
-					*pData++ = 0;
+					pData[idx++] = 0;
+					pData[idx++] = 0;
 
 					// position
-					*pData++ = vec.x;
-					*pData++ = GRASS_HEIGHT;
-					*pData++ = vec.z;
+					pData[idx++] = vec.x;
+					pData[idx++] = GRASS_HEIGHT;
+					pData[idx++] = vec.z;
 					// normal
-					*pData++ = 0;
-					*pData++ = 1;
-					*pData++ = 0;
+					pData[idx++] = 0;
+					pData[idx++] = 1;
+					pData[idx++] = 0;
 					// uv
-					*pData++ = 1;
-					*pData++ = 0;
+					pData[idx++] = 1;
+					pData[idx++] = 0;
 
 					// position
-					*pData++ = -vec.x;
-					*pData++ = 0;
-					*pData++ = -vec.z;
+					pData[idx++] = -vec.x;
+					pData[idx++] = 0;
+					pData[idx++] = -vec.z;
 					// normal
-					*pData++ = 0;
-					*pData++ = 1;
-					*pData++ = 0;
+					pData[idx++] = 0;
+					pData[idx++] = 1;
+					pData[idx++] = 0;
 					// uv
-					*pData++ = 0;
-					*pData++ = 1;
+					pData[idx++] = 0;
+					pData[idx++] = 1;
 
 					// position
-					*pData++ = vec.x;
-					*pData++ = 0;
-					*pData++ = vec.z;
+					pData[idx++] = vec.x;
+					pData[idx++] = 0;
+					pData[idx++] = vec.z;
 					// normal
-					*pData++ = 0;
-					*pData++ = 1;
-					*pData++ = 0;
+					pData[idx++] = 0;
+					pData[idx++] = 1;
+					pData[idx++] = 0;
 					// uv
-					*pData++ = 1;
-					*pData++ = 1;
+					pData[idx++] = 1;
+					pData[idx++] = 1;
 
 					vec = rot * vec;
 				} //for
@@ -258,20 +263,23 @@ namespace Axiom.Demos
 			sm.indexData.indexCount = 6 * 3;
 			sm.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6 * 3, BufferUsage.StaticWriteOnly );
 
-			unsafe
-			{
-				ushort* pI = (ushort*)( sm.indexData.indexBuffer.Lock( BufferLocking.Discard ) ).ToPointer();
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+				var pI = ( sm.indexData.indexBuffer.Lock( BufferLocking.Discard ) ).ToUShortPointer();
+			    var idx = 0;
 
 				for ( i = 0; i < 3; ++i )
 				{
 					int off = i * 4;
-					*pI++ = (ushort)( off );
-					*pI++ = (ushort)( off + 3 );
-					*pI++ = (ushort)( off + 1 );
+                    pI[idx++] = (ushort)(off);
+                    pI[idx++] = (ushort)(off + 3);
+                    pI[idx++] = (ushort)(off + 1);
 
-					*pI++ = (ushort)( off + 0 );
-					*pI++ = (ushort)( off + 2 );
-					*pI++ = (ushort)( off + 3 );
+                    pI[idx++] = (ushort)(off + 0);
+                    pI[idx++] = (ushort)(off + 2);
+                    pI[idx++] = (ushort)(off + 3);
 				}
 			}
 

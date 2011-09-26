@@ -66,14 +66,14 @@ namespace Axiom.Graphics
 		/// Creates a vertex buffer
         public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			DefaultHardwareVertexBuffer vb = new DefaultHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage );
+			var vb = new DefaultHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage );
 			return vb;
 		}
 
 		/// Create a hardware vertex buffer
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType itype, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-			DefaultHardwareIndexBuffer ib = new DefaultHardwareIndexBuffer( itype, numIndices, usage );
+			var ib = new DefaultHardwareIndexBuffer( itype, numIndices, usage );
 			return ib;
 		}
 

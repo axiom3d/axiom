@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,32 +23,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Graphics;
-using Axiom.RenderSystems.Xna.HLSL;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-
-
 	/// <summary>
 	/// Class defining a fixed function state.
 	/// </summary>
@@ -63,7 +59,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	/// Usually you will get better performance if you use the PP and not the FFP shader emulation.
 	/// The second common use for this class is to generate the base code for a new shader.
 	/// </remarks>
-	class FixedFunctionState
+	internal class FixedFunctionState
 	{
 		#region Fields and Properties
 
@@ -81,6 +77,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}*/
 
 		protected GeneralFixedFunctionState generalFFState = GeneralFixedFunctionState.Create();
+
 		public GeneralFixedFunctionState GeneralFixedFunctionState
 		{
 			get
@@ -94,6 +91,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		protected List<LightType> lights = new List<LightType>();
+
 		public IList<LightType> Lights
 		{
 			get
@@ -107,6 +105,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		protected List<TextureLayerState> textureLayerStates = new List<TextureLayerState>();
+
 		public IList<TextureLayerState> TextureLayerStates
 		{
 			get
@@ -123,13 +122,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#region Construction and Destruction
 
-		public FixedFunctionState()
-		{
-		}
-
 		#endregion Construction and Destruction
 
 		#region Methods
+
 		#endregion Methods
 
 		#region Object Overrides
@@ -141,10 +137,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public override int GetHashCode()
 		{
-			int hashCode = generalFFState.GetHashCode();
-			foreach ( TextureLayerState tls in textureLayerStates )
+			var hashCode = generalFFState.GetHashCode();
+			foreach ( var tls in textureLayerStates )
 				hashCode ^= tls.GetHashCode();
-			foreach ( LightType light in lights )
+			foreach ( var light in lights )
 				hashCode ^= light.GetHashCode();
 			hashCode ^= textureLayerStates.Count;
 			hashCode ^= lights.Count;

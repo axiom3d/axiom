@@ -54,9 +54,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		public GLESRenderTexture( string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
 			: base( target.Buffer, target.ZOffset )
 		{
-			this._name = name;
-			this.hwGamma = writeGamma;
-			this.fsaa = fsaa;
+			Name = name;
+			HardwareGammaEnabled = writeGamma;
+			FSAA = fsaa;
 		}
 
 		#region RenderTexture Implementation

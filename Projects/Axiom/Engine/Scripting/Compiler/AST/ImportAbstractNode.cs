@@ -58,7 +58,7 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
-			ImportAbstractNode node = new ImportAbstractNode();
+			var node = new ImportAbstractNode();
 			node.File = File;
 			node.Line = Line;
 			node.Target = Target;

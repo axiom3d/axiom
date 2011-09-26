@@ -177,6 +177,15 @@ namespace Axiom.Math
 		{
 			Debug.Assert( col >= 0 && col < 3, "Attempt to retreive a column of a Matrix3 greater than 2." );
 
+#if AXIOM_SAFE_ONLY
+            switch(col)
+            {
+                case 0: return new Vector3(m00, m01, m02);
+                case 1: return new Vector3(m10, m11, m12);
+                case 2: return new Vector3(m20, m21, m22);
+            }
+		    throw new IndexOutOfRangeException("Attempt to retreive a column of a Matrix3 greater than 2.");
+#else
 			unsafe
 			{
 				fixed ( Real* pM = &m00 )
@@ -184,6 +193,7 @@ namespace Axiom.Math
 										*( pM + 3 + col ),    //m[1,col], 
 										*( pM + 6 + col ) );  //m[2,col]);
 			}
+#endif
 		}
 
 		/// <summary>
@@ -222,17 +232,17 @@ namespace Axiom.Math
 		/// <param name="roll"></param>
 		public void FromEulerAnglesXYZ( Real yaw, Real pitch, Real roll )
 		{
-			Real cos = Utility.Cos( yaw );
-			Real sin = Utility.Sin( yaw );
-			Matrix3 xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
+			var cos = Utility.Cos( yaw );
+			var sin = Utility.Sin( yaw );
+			var xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
 
 			cos = Utility.Cos( pitch );
 			sin = Utility.Sin( pitch );
-			Matrix3 yMat = new Matrix3( cos, 0, sin, 0, 1, 0, -sin, 0, cos );
+			var yMat = new Matrix3( cos, 0, sin, 0, 1, 0, -sin, 0, cos );
 
 			cos = Utility.Cos( roll );
 			sin = Utility.Sin( roll );
-			Matrix3 zMat = new Matrix3( cos, -sin, 0, sin, cos, 0, 0, 0, 1 );
+			var zMat = new Matrix3( cos, -sin, 0, sin, cos, 0, 0, 0, 1 );
 
 			this = xMat * ( yMat * zMat );
 		}
@@ -254,7 +264,7 @@ namespace Axiom.Math
 				else
 				{
 					// WARNING. Not a unique solution.
-					Real fRmY = (Real)Utility.ATan2( -m20, m22 );
+					var fRmY = (Real)Utility.ATan2( -m20, m22 );
 					rAngle = 0.0f; // any angle works
 					yAngle = rAngle - fRmY;
 				}
@@ -262,7 +272,7 @@ namespace Axiom.Math
 			else
 			{
 				// WARNING. Not a unique solution.
-				Real fRpY = Utility.ATan2( -m20, m22 );
+				var fRpY = Utility.ATan2( -m20, m22 );
 				rAngle = 0.0f; // any angle works
 				yAngle = fRpY - rAngle;
 			}
@@ -294,7 +304,7 @@ namespace Axiom.Math
 		public static Matrix3 operator *( Matrix3 left, Matrix3 right )
 		{
 
-			Matrix3 result = new Matrix3();
+			var result = new Matrix3();
 
 			result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
 			result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21;
@@ -330,7 +340,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 operator *( Vector3 vector, Matrix3 matrix )
 		{
-			Vector3 product = new Vector3();
+			var product = new Vector3();
 
 			product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
 			product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
@@ -358,7 +368,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 operator *( Matrix3 matrix, Vector3 vector )
 		{
-			Vector3 product = new Vector3();
+			var product = new Vector3();
 
 			product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
 			product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
@@ -386,7 +396,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator *( Matrix3 matrix, Real scalar )
 		{
-			Matrix3 result = new Matrix3();
+			var result = new Matrix3();
 
 			result.m00 = matrix.m00 * scalar;
 			result.m01 = matrix.m01 * scalar;
@@ -420,7 +430,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator *( Real scalar, Matrix3 matrix )
 		{
-			Matrix3 result = new Matrix3();
+			var result = new Matrix3();
 
 			result.m00 = matrix.m00 * scalar;
 			result.m01 = matrix.m01 * scalar;
@@ -454,11 +464,11 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator +( Matrix3 left, Matrix3 right )
 		{
-			Matrix3 result = new Matrix3();
+			var result = new Matrix3();
 
-			for ( int row = 0; row < 3; row++ )
+			for ( var row = 0; row < 3; row++ )
 			{
-				for ( int col = 0; col < 3; col++ )
+				for ( var col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] + right[ row, col ];
 				}
@@ -486,11 +496,11 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator -( Matrix3 left, Matrix3 right )
 		{
-			Matrix3 result = new Matrix3();
+			var result = new Matrix3();
 
-			for ( int row = 0; row < 3; row++ )
+			for ( var row = 0; row < 3; row++ )
 			{
-				for ( int col = 0; col < 3; col++ )
+				for ( var col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] - right[ row, col ];
 				}
@@ -516,7 +526,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator -( Matrix3 matrix )
 		{
-			Matrix3 result = new Matrix3();
+			var result = new Matrix3();
 
 			result.m00 = -matrix.m00;
 			result.m01 = -matrix.m01;
@@ -565,22 +575,83 @@ namespace Axiom.Math
 			{
 				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (row)
+                {
+                    case 0:
+                        switch (col)
+                        {
+                            case 0: return m00;
+                            case 1: return m01;
+                            case 2: return m02;
+                        }
+                        break;
+                    case 1:
+                        switch (col)
+                        {
+                            case 0: return m10;
+                            case 1: return m11;
+                            case 2: return m12;
+                        }
+                        break;
+                    case 2:
+                        switch (col)
+                        {
+                            case 0: return m20;
+                            case 1: return m21;
+                            case 2: return m22;
+                        }
+                        break;
+                }
+			    throw new IndexOutOfRangeException("Attempt to access Matrix3 indexer out of bounds.");
+#else
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
 						return *( pM + ( ( 3 * row ) + col ) );
 				}
-			}
+#endif
+            }
 			set
 			{
 				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (row)
+                {
+                    case 0:
+                        switch (col)
+                        {
+                            case 0: m00 = value; break;
+                            case 1: m01 = value; break;
+                            case 2: m02 = value; break;
+                        }
+                        break;
+                    case 1:
+                        switch (col)
+                        {
+                            case 0: m10 = value; break;
+                            case 1: m11 = value; break;
+                            case 2: m12 = value; break;
+                        }
+                        break;
+                    case 2:
+                        switch (col)
+                        {
+                            case 0: m20 = value; break;
+                            case 1: m21 = value; break;
+                            case 2: m22 = value; break;
+                        }
+                        break;
+                }
+#else
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
 						*( pM + ( ( 3 * row ) + col ) ) = value;
 				}
-			}
+#endif
+            }
 		}
 
 		/// <summary>
@@ -590,8 +661,23 @@ namespace Axiom.Math
 		{
 			get
 			{
-				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
+				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix3 linear indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: return m00;
+                    case 1: return m01;
+                    case 2: return m02;
+                    case 3: return m10;
+                    case 4: return m11;
+                    case 5: return m12;
+                    case 6: return m20;
+                    case 7: return m21;
+                    case 8: return m22;                    
+                }
+                throw new IndexOutOfRangeException("Attempt to access Matrix3 indexer out of bounds.");
+#else
 				unsafe
 				{
 					fixed ( Real* pMatrix = &m00 )
@@ -599,11 +685,26 @@ namespace Axiom.Math
 						return *( pMatrix + index );
 					}
 				}
-			}
+#endif
+            }
 			set
 			{
-				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
+				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix3 linear indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: m00 = value; break;
+                    case 1: m01 = value; break;
+                    case 2: m02 = value; break;
+                    case 3: m10 = value; break;
+                    case 4: m11 = value; break;
+                    case 5: m12 = value; break;
+                    case 6: m20 = value; break;
+                    case 7: m21 = value; break;
+                    case 8: m22 = value; break;
+                }
+#else
 				unsafe
 				{
 					fixed ( Real* pMatrix = &m00 )
@@ -611,7 +712,8 @@ namespace Axiom.Math
 						*( pMatrix + index ) = value;
 					}
 				}
-			}
+#endif
+            }
 		}
 
 		#endregion
@@ -622,11 +724,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				Real cofactor00 = m11 * m22 - m12 * m21;
-				Real cofactor10 = m12 * m20 - m10 * m22;
-				Real cofactor20 = m10 * m21 - m11 * m20;
+				var cofactor00 = m11 * m22 - m12 * m21;
+				var cofactor10 = m12 * m20 - m10 * m22;
+				var cofactor20 = m10 * m21 - m11 * m20;
 
-				Real result =
+				var result =
 					m00 * cofactor00 +
 					m01 * cofactor10 +
 					m02 * cofactor20;
@@ -646,7 +748,7 @@ namespace Axiom.Math
 		/// <returns>A string representation of a vector3.</returns>
 		public override string ToString()
 		{
-			StringBuilder builder = new StringBuilder();
+			var builder = new StringBuilder();
 
 			builder.AppendFormat( " | {0} {1} {2} |\n", m00, m01, m02 );
 			builder.AppendFormat( " | {0} {1} {2} |\n", m10, m11, m12 );
@@ -666,19 +768,23 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			int hashCode = 0;
-
+#if AXIOM_SAFE_ONLY
+		    return (int) (m00) ^ (int) (m01) ^ (int) (m02) ^ 
+		           (int) (m10) ^ (int) (m11) ^ (int) (m12) ^ 
+		           (int) (m20) ^ (int) (m21) ^ (int) (m22);
+#else
+			var hashCode = 0;
 			unsafe
 			{
 				fixed ( Real* pM = &m00 )
 				{
-					for ( int i = 0; i < 9; i++ )
+					for ( var i = 0; i < 9; i++ )
 						hashCode ^= (int)( *( pM + i ) );
 				}
-
-				return hashCode;
 			}
-		}
+            return hashCode;
+#endif
+        }
 
 		/// <summary>
 		///		Compares this Matrix to another object.  This should be done because the 

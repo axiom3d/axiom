@@ -646,6 +646,8 @@ namespace Axiom.Graphics
 
 		#endregion
 
+        TextureBlending = CapCategoryShift.Common2 | (1 << 25),
+        MultiTexturing = CapCategoryShift.Common2 | (1 << 26),   
 	}
 
 	/// <summary>
@@ -1297,7 +1299,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Types for deciding how to shade geometry primitives.
 	/// </summary>
-	public enum ShadeOptions
+	public enum Shading
 	{
 		/// <summary>
 		///		Draw with a single color.
@@ -1752,7 +1754,6 @@ namespace Axiom.Graphics
 		Color_ARGB = 10,
 		/// GL style compact colour
 		Color_ABGR = 11
-
 	}
 
 	/// <summary>

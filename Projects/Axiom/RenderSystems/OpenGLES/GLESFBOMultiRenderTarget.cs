@@ -84,8 +84,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			_fbo.BindSurface( attachment, fbobj.GetSurface( 0 ) );
 			GLESConfig.GlCheckError( this );
 
-			this._width = _fbo.Width;
-			this._height = _fbo.Height;
+			Width = _fbo.Width;
+			Height = _fbo.Height;
 		}
 
 		/// <summary>
@@ -97,8 +97,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			_fbo.UnbindSurface( attachment );
 			GLESConfig.GlCheckError( attachment );
 
-			this._width = _fbo.Width;
-			this._height = _fbo.Height;
+			Width = _fbo.Width;
+			Height = _fbo.Height;
 		}
 		/// <summary>
 		/// 

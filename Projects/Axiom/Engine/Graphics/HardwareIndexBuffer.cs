@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -86,11 +87,11 @@ namespace Axiom.Graphics
 
 			if ( type == IndexType.Size32 )
 			{
-				indexSize = Marshal.SizeOf( typeof( int ) );
+				indexSize = Memory.SizeOf( typeof( int ) );
 			}
 			else
 			{
-				indexSize = Marshal.SizeOf( typeof( short ) );
+				indexSize = Memory.SizeOf( typeof( short ) );
 			}
 
 			sizeInBytes *= indexSize;

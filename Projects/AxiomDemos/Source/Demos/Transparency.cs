@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Controllers;
 using Axiom.Core;
@@ -14,7 +14,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Transparency.
 	/// </summary>
-	public class Transparency : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Transparency : TechDemo
 	{
 		#region Methods
 

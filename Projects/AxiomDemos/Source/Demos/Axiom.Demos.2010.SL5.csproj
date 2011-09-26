@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{37E70F5A-96E6-429B-96DD-41A513DF96B4}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.Demos</RootNamespace>
+    <AssemblyName>Axiom.Demos</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.ComponentModel.Composition.Initialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Data.Services.Client, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Data, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Compositor.cs" />
+    <Compile Include="CubeMapping.cs" />
+    <Compile Include="Dot3Bump.cs" />
+    <Compile Include="DynamicTextures.cs" />
+    <Compile Include="FacialAnimation.cs" />
+    <Compile Include="FrustumCulling.cs" />
+    <Compile Include="Grass.cs" />
+    <Compile Include="LoadingBar.cs" />
+    <Compile Include="MousePicking.cs" />
+    <Compile Include="MultipleSceneManager.cs" />
+    <Compile Include="OffsetMapping.cs" />
+    <Compile Include="PCZTestApp.cs" />
+    <Compile Include="BezierPatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bsp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CameraTrack.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CelShading.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EnvMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Fresnel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HardwareOcclusion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lights.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ParticleFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RenderToTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RoomObject.cs" />
+    <Compile Include="Shadows.cs" />
+    <Compile Include="SkeletalAnimation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyBox.cs" />
+    <Compile Include="SkyDome.cs" />
+    <Compile Include="SkyPlane.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Smoke.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TechDemo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terrain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TextureFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Transparency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tutorial1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Water.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Axiom\Engine\Axiom.2010.SL5.csproj">
+      <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
+      <Name>Axiom.2010.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.SL5.csproj">
+      <Project>{DF2663E8-5CCB-4D39-AE18-AA71F05157F5}</Project>
+      <Name>Axiom.Plugins.OctreeZone.2010.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.SL5.csproj">
+      <Project>{63A38F72-2DBC-4F94-9C1A-4C2C85999216}</Project>
+      <Name>Axiom.SceneManagers.Octree.2010.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.SL5.csproj">
+      <Project>{C9FFCF3D-BFF5-4701-8084-DD178E6A902F}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected.2010.SL5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
+</Project>

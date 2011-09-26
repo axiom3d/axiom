@@ -66,14 +66,14 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
-			PropertyAbstractNode node = new PropertyAbstractNode( Parent );
+			var node = new PropertyAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
 			node.Name = Name;
 			node.Id = Id;
-			foreach ( AbstractNode an in Values )
+			foreach ( var an in Values )
 			{
-				AbstractNode newNode = (AbstractNode)( an.Clone() );
+				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Values.Add( newNode );
 			}

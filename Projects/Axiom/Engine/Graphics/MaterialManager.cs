@@ -352,7 +352,7 @@ namespace Axiom.Graphics
 		{
 			if ( _schemes.ContainsValue( index ) )
 			{
-				foreach ( KeyValuePair<String, ushort> item in _schemes )
+				foreach ( var item in _schemes )
 				{
 					if ( item.Value == index )
 					{

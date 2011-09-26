@@ -65,7 +65,7 @@ namespace Axiom.Math
 	[Serializable]
 	public struct Real : ISerializable, IComparable<Real>, IConvertible, IXmlSerializable
 #else
-	public struct Real : IComparable<Real>, IConvertible
+    public struct Real : IComparable<Real>, IConvertible
 #endif
 	{
 		#region Fields
@@ -655,7 +655,7 @@ namespace Axiom.Math
 		#endregion System.Object Overrides
 
 #if !( XBOX || XBOX360 )
-		#region ISerializable Implementation
+        #region ISerializable Implementation
 
 		/// <summary>
 		/// 
@@ -678,12 +678,12 @@ namespace Axiom.Math
 			info.AddValue( "value", _value );
 		}
 
-		#endregion ISerializable Implementation
+        #endregion ISerializable Implementation
 #endif
 
-		#region IComparable<Real> Members
+        #region IComparable<Real> Members
 
-		/// <summary>
+        /// <summary>
 		/// 
 		/// </summary>
 		/// <param name="other"></param>
@@ -832,8 +832,8 @@ namespace Axiom.Math
 
 		public static float[] ToFloatArray( Real[] real )
 		{
-			float[] floatArray = new float[ real.Length ];
-			for ( int myIndex = 0; myIndex < real.Length; myIndex++ )
+			var floatArray = new float[ real.Length ];
+			for ( var myIndex = 0; myIndex < real.Length; myIndex++ )
 			{
 				floatArray[ myIndex ] = real[ myIndex ];
 			}
@@ -867,7 +867,7 @@ namespace Axiom.Math
 #if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
 			try
 			{
-				string v = reader.ReadElementContentAsString();
+				var v = reader.ReadElementContentAsString();
 				this._value = float.Parse( v, CultureInfo.InvariantCulture );
 			}
 			catch ( Exception e )

@@ -65,13 +65,13 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
-				Compositor compositor = (Compositor)obj.Parent.Context;
+				var compositor = (Compositor)obj.Parent.Context;
 				_Technique = compositor.CreateTechnique();
 				obj.Context = _Technique;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -79,15 +79,15 @@ namespace Axiom.Scripting.Compiler
 					}
 					else if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_TEXTURE
 							case Keywords.ID_TEXTURE:
 								{
-									int atomIndex = 1;
+									var atomIndex = 1;
 
-									AbstractNode it = getNodeAt( prop.Values, 0 );
+									var it = getNodeAt( prop.Values, 0 );
 
 									if ( it is AtomAbstractNode )
 									{
@@ -95,17 +95,17 @@ namespace Axiom.Scripting.Compiler
 										return;
 									}
 									// Save the first atom, should be name
-									AtomAbstractNode atom0 = (AtomAbstractNode)it;
+									var atom0 = (AtomAbstractNode)it;
 
 									int width = 0, height = 0;
 									float widthFactor = 1.0f, heightFactor = 1.0f;
 									bool widthSet = false, heightSet = false, formatSet = false;
-									bool pooled = false;
-									bool hwGammaWrite = false;
-									bool fsaa = true;
+									var pooled = false;
+									var hwGammaWrite = false;
+									var fsaa = true;
 
-									CompositionTechnique.TextureScope scope = CompositionTechnique.TextureScope.Local;
-									List<PixelFormat> formats = new List<PixelFormat>();
+									var scope = CompositionTechnique.TextureScope.Local;
+									var formats = new List<PixelFormat>();
 
 									while ( atomIndex < prop.Values.Count )
 									{
@@ -115,7 +115,7 @@ namespace Axiom.Scripting.Compiler
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 											return;
 										}
-										AtomAbstractNode atom = (AtomAbstractNode)it;
+										var atom = (AtomAbstractNode)it;
 
 										switch ( (Keywords)atom.Id )
 										{
@@ -132,8 +132,8 @@ namespace Axiom.Scripting.Compiler
 											case Keywords.ID_TARGET_WIDTH_SCALED:
 											case Keywords.ID_TARGET_HEIGHT_SCALED:
 												{
-													bool pSetFlag = false;
-													int pSize = 0;
+													var pSetFlag = false;
+													var pSize = 0;
 													float pFactor = 0;
 													if ( atom.Id == (uint)Keywords.ID_TARGET_WIDTH_SCALED )
 													{
@@ -213,7 +213,7 @@ namespace Axiom.Scripting.Compiler
 												else
 												{
 													// pixel format?
-													PixelFormat format = PixelUtil.GetFormatFromName( atom.Value, true );
+													var format = PixelUtil.GetFormatFromName( atom.Value, true );
 													if ( format == PixelFormat.Unknown )
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
@@ -232,7 +232,7 @@ namespace Axiom.Scripting.Compiler
 									}
 
 									// No errors, create
-									CompositionTechnique.TextureDefinition def = _Technique.CreateTextureDefinition( atom0.Value );
+									var def = _Technique.CreateTextureDefinition( atom0.Value );
 									def.Width = width;
 									def.Height = height;
 									def.WidthFactor = widthFactor;
@@ -261,7 +261,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									string texName = string.Empty, refCompName = string.Empty, refTexName = string.Empty;
 
-									AbstractNode it = getNodeAt( prop.Values, 0 );
+									var it = getNodeAt( prop.Values, 0 );
 									if ( !getString( it, out texName ) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -282,7 +282,7 @@ namespace Axiom.Scripting.Compiler
 										"texture_ref must have 3 string arguments" );
 									}
 
-									CompositionTechnique.TextureDefinition refTexDef = _Technique.CreateTextureDefinition( texName );
+									var refTexDef = _Technique.CreateTextureDefinition( texName );
 
 									refTexDef.ReferenceCompositorName = refCompName;
 									refTexDef.ReferenceTextureName = refTexName;
@@ -303,8 +303,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									string scheme = string.Empty;
+									var i0 = getNodeAt( prop.Values, 0 );
+									var scheme = string.Empty;
 
 									if ( getString( i0, out scheme ) )
 										_Technique.SchemeName = scheme;
@@ -328,8 +328,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									string logicName = string.Empty;
+									var i0 = getNodeAt( prop.Values, 0 );
+									var logicName = string.Empty;
 
 									if ( getString( i0, out logicName ) )
 										_Technique.CompositorLogicName = logicName;

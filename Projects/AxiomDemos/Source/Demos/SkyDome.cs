@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Math;
@@ -11,7 +11,8 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.Demos
 {
-	public class SkyDome : TechDemo
+    [Export(typeof(TechDemo))]
+    public class SkyDome : TechDemo
 	{
 		#region Fields
 		private float curvature = 1;

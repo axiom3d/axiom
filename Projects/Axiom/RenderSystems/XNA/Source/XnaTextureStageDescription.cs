@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,48 +23,51 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Graphics;
 using Axiom.Core;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Graphics;
+using Texture = Microsoft.Xna.Framework.Graphics.Texture;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	///		Structure holding texture unit settings for every stage
-	/// </summary>
-	internal struct XnaTextureStageDescription
-	{
-		public bool Enabled;
-		/// the type of the texture
-		public TextureType texType;
-		/// wich texCoordIndex to use
-		public int coordIndex;
-		/// type of auto tex. calc. used
-		public TexCoordCalcMethod autoTexCoordType;
-		/// Frustum, used if the above is projection
-		public Frustum frustum;
-		/// texture 
-		public XFG.Texture tex;
+    /// <summary>
+    ///		Structure holding texture unit settings for every stage
+    /// </summary>
+    internal struct XnaTextureStageDescription
+    {
+        public bool Enabled;
 
-		//keep the blending 
-		public LayerBlendModeEx layerBlendMode;
-	}
+        /// the type of the texture
+        public TextureType texType;
 
+        /// wich texCoordIndex to use
+        public int coordIndex;
+
+        /// type of auto tex. calc. used
+        public TexCoordCalcMethod autoTexCoordType;
+
+        /// Frustum, used if the above is projection
+        public Frustum frustum;
+
+        /// texture 
+        public Texture tex;
+
+        //keep the blending 
+        public LayerBlendModeEx layerBlendMode;
+    }
 }

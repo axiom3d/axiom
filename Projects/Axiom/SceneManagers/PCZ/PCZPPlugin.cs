@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
 using Axiom.Core;
 
@@ -44,6 +45,7 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
+	[Export(typeof(IPlugin))]
 	public class PCZPPlugin : IPlugin
 	{
 		public void Initialize()

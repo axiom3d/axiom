@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Text;
+using Axiom.CrossPlatform;
 using FI = FreeImageAPI;
 using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
@@ -60,7 +61,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 			_type = type;
 			_freeImageType = freeImageType;
 		}
-		public static void Initialize()
+
+        public static void Initialize()
 		{
 			if ( !FI.FreeImage.IsAvailable() )
 			{
@@ -146,10 +148,11 @@ namespace Axiom.Plugins.FreeImageCodecs
 			// Buffer stream into memory (TODO: override IO functions instead?)
 			byte[] data = new byte[ (int)input.Length ];
 			input.Read( data, 0, data.Length );
-			IntPtr datPtr = Memory.PinObject( data );
-			FI.FIMEMORY fiMem = FI.FreeImage.OpenMemory( datPtr, (uint)data.Length );
+			var datPtr = Memory.PinObject( data );
+			FI.FIMEMORY fiMem = FI.FreeImage.OpenMemory( datPtr.Pin(), (uint)data.Length );
 			FI.FREE_IMAGE_FORMAT ff = (FI.FREE_IMAGE_FORMAT)_freeImageType;
 			FI.FIBITMAP fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiMem, FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
+		    datPtr.UnPin();
 			if ( fiBitmap.IsNull )
 			{
 			    Debugger.Break();
@@ -284,28 +287,22 @@ namespace Axiom.Plugins.FreeImageCodecs
 					break;
 			}
 
-			IntPtr srcData = FI.FreeImage.GetBits( fiBitmap );
 			int srcPitch = (int)FI.FreeImage.GetPitch( fiBitmap );
 			// Final data - invert image and trim pitch at the same time
 			int dstPitch = imgData.width * PixelUtil.GetNumElemBytes( imgData.format );
 			imgData.size = dstPitch * imgData.height;
-			// Bind output buffer
+            var srcData = BufferBase.Wrap(FI.FreeImage.GetBits(fiBitmap), imgData.size);
+            // Bind output buffer
 			byte[] outPutData = new byte[ imgData.size ];
-			unsafe
-			{
-				fixed ( byte* pDstPtr = outPutData )//(byte*)Memory.PinObject( outPutData );
-				{
-					byte* pDst = pDstPtr;
-					byte* pSrc = (byte*)IntPtr.Zero;
-					byte* byteSrcData = (byte*)srcData;
-					for ( int y = 0; y < imgData.height; y++ )
-					{
-						pSrc = byteSrcData + ( imgData.height - y - 1 ) * srcPitch;
-						Memory.Copy( (IntPtr)pSrc, (IntPtr)pDst, dstPitch );
-						pDst += dstPitch;
-					}
-				}
-			}
+
+            var pDst = BufferBase.Wrap(outPutData);
+            for (int y = 0; y < imgData.height; y++)
+            {
+                var pSrc = srcData + (imgData.height - y - 1) * srcPitch;
+                Memory.Copy(pSrc, pDst, dstPitch);
+                pDst += dstPitch;
+            }
+
 			//for ( int z = 0; z < outPutData.Length; z += 4 )
 			//{
 			//    byte tmp = outPutData[ z ];
@@ -317,10 +314,10 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FreeImage.Unload( fiBitmap );
 			FI.FreeImage.CloseMemory( fiMem );
 
-
 			return imgData;
 		}
-		/// <summary>
+
+        /// <summary>
 		/// 
 		/// </summary>
 		/// <param name="input"></param>
@@ -335,7 +332,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 			{
 				byte[] data = new byte[ (int)input.Length ];
 				input.Read( data, 0, data.Length );
-				IntPtr dataPtr = Memory.PinObject( data );
+				var dataPtr = Memory.PinObject( data );
 				PixelBox src = new PixelBox( imgData.width, imgData.height, imgData.depth, imgData.format, dataPtr );
 
 				// The required format, which will adjust to the format
@@ -458,7 +455,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				input.Position = 0;
 				byte[] srcData = new byte[ (int)input.Length ];
 				input.Read( srcData, 0, srcData.Length );
-				IntPtr srcDataPtr = Memory.PinObject( srcData );
+				var srcDataPtr = Memory.PinObject( srcData );
 				int bpp = PixelUtil.GetNumElemBits( requiredFormat );
 				if ( !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, bpp ) )
 				{
@@ -519,21 +516,20 @@ namespace Axiom.Plugins.FreeImageCodecs
 				int dstPitch = (int)FI.FreeImage.GetPitch( ret );
 				int srcPitch = imgData.width * PixelUtil.GetNumElemBytes( requiredFormat );
 				// Copy data, invert scanlines and respect FreeImage pitch
-				IntPtr pSrc = srcDataPtr;
-				IntPtr pDest = FI.FreeImage.GetBits( ret );
-				unsafe
-				{
-					byte* byteSrcData = (byte*)( pSrc );
-					byte* byteDstData = (byte*)( pDest );
-					for ( int y = 0; y < imgData.height; y++ )
-					{
-						byteSrcData = byteSrcData + ( imgData.height - y - 1 ) * srcPitch;
-						Memory.Copy( pSrc, pDest, srcPitch );
-						byteDstData += dstPitch;
-					}
-				}
+				var pSrc = srcDataPtr;
+                using (var pDest = BufferBase.Wrap(FI.FreeImage.GetBits(ret), imgData.height * srcPitch))
+                {
+                    var byteSrcData = pSrc;
+                    var byteDstData = pDest;
+                    for ( int y = 0; y < imgData.height; y++ )
+                    {
+                        byteSrcData = byteSrcData + ( imgData.height - y - 1 )*srcPitch;
+                        Memory.Copy( pSrc, pDest, srcPitch );
+                        byteDstData += dstPitch;
+                    }
+                }
 
-				if ( conversionRequired )
+			    if ( conversionRequired )
 				{
 					// delete temporary conversion area
 					Memory.UnpinObject( srcData );
@@ -542,6 +538,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 			}
 			return ret;
 		}
+
 		public override void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args )
 		{
 
@@ -571,6 +568,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		private static void FreeImageSaveErrorHandler( FI.FREE_IMAGE_FORMAT fif, string message )
 		{
 		}
+
 		private static void FreeImageLoadErrorHandler( FI.FREE_IMAGE_FORMAT fif, string message )
 		{
 			string format = FI.FreeImage.GetFormatFromFIF( fif );

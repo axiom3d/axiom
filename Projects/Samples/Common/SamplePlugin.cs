@@ -20,6 +20,7 @@
 //THE SOFTWARE.
 #endregion License
 
+using System.ComponentModel.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples
@@ -27,6 +28,7 @@ namespace Axiom.Samples
 	/// <summary>
 	/// Utility class used to hold a set of samples in an Axiom plugin.
 	/// </summary>
+    [Export(typeof(IPlugin))]
 	public class SamplePlugin : IPlugin
 	{
 		#region Fields and Properties

@@ -116,8 +116,8 @@ namespace Axiom.Controllers.Canned
 
 		public override float Execute( float sourceValue )
 		{
-			float input = AdjustInput( sourceValue * frequency ) % 1f;
-			float output = 0.0f;
+			var input = AdjustInput( sourceValue * frequency ) % 1f;
+			var output = 0.0f;
 
 			// first, get output in range [-1,1] (typical for waveforms)
 			switch ( type )
@@ -159,7 +159,7 @@ namespace Axiom.Controllers.Canned
 
 		protected override float AdjustInput( float input )
 		{
-			float adjusted = base.AdjustInput( input );
+			var adjusted = base.AdjustInput( input );
 
 			// if not using delta accumulation, adjust by phase value
 			if ( !useDeltaInput )

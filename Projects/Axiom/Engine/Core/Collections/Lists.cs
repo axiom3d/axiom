@@ -97,8 +97,8 @@ namespace Axiom.Core.Collections
 	{
 		public void Resize( int size )
 		{
-			int[] data = this.ToArray();
-			int[] newData = new int[ size ];
+			var data = this.ToArray();
+			var newData = new int[ size ];
 			Array.Copy( data, 0, newData, 0, size );
 			Clear();
 			AddRange( newData );
@@ -111,8 +111,8 @@ namespace Axiom.Core.Collections
 	{
 		public void Resize( int size )
 		{
-			float[] data = this.ToArray();
-			float[] newData = new float[ size ];
+			var data = this.ToArray();
+			var newData = new float[ size ];
 			Array.Copy( data, 0, newData, 0, size );
 			Clear();
 			AddRange( newData );

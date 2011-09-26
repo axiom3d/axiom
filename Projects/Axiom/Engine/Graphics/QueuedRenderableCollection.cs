@@ -182,8 +182,8 @@ namespace Axiom.Graphics
 				if ( x == y )
 					return 0;
 
-				float adepth = x.renderable.GetSquaredViewDepth( Camera );
-				float bdepth = y.renderable.GetSquaredViewDepth( Camera );
+				var adepth = x.renderable.GetSquaredViewDepth( Camera );
+				var bdepth = y.renderable.GetSquaredViewDepth( Camera );
 
 				if ( adepth == bdepth )
 				{
@@ -236,7 +236,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Clear()
 		{
-			foreach ( KeyValuePair<Pass, List<IRenderable>> item in _grouped )
+			foreach ( var item in _grouped )
 			{
 				// Clear the list associated with this pass, but leave the pass entry
 				item.Value.Clear();
@@ -392,7 +392,7 @@ namespace Axiom.Graphics
 		/// Internal visitor implementation
 		private void acceptVisitorGrouped( IQueuedRenderableVisitor visitor )
 		{
-			foreach ( KeyValuePair<Pass, List<IRenderable>> item in _grouped )
+			foreach ( var item in _grouped )
 			{
 				// Fast bypass if this group is now empty
 				if ( item.Value.Count == 0 )
@@ -402,7 +402,7 @@ namespace Axiom.Graphics
 				if ( !visitor.Visit( item.Key ) )
 					continue;
 
-				foreach ( IRenderable renderable in item.Value )
+				foreach ( var renderable in item.Value )
 				{
 					// Visit Renderable
 					visitor.Visit( renderable );
@@ -415,7 +415,7 @@ namespace Axiom.Graphics
 		private void acceptVisitorDescending( IQueuedRenderableVisitor visitor )
 		{
 			// List is already in descending order, so iterate forward
-			foreach ( RenderablePass renderablePass in _sortedDescending )
+			foreach ( var renderablePass in _sortedDescending )
 			{
 				visitor.Visit( renderablePass );
 			}
@@ -425,7 +425,7 @@ namespace Axiom.Graphics
 		private void acceptVisitorAscending( IQueuedRenderableVisitor visitor )
 		{
 			// List is in descending order, so iterate in reverse
-			for ( int index = _sortedDescending.Count - 1; index >= 0; ++index )
+			for ( var index = _sortedDescending.Count - 1; index >= 0; ++index )
 			{
 				visitor.Visit( _sortedDescending[ index ] );
 			}

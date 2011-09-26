@@ -362,7 +362,7 @@ namespace Axiom.Animating
 		/// <returns>0 if they are the same, -1 otherwise.</returns>
 		public int CompareTo( object obj )
 		{
-			AnimationState other = obj as AnimationState;
+			var other = obj as AnimationState;
 
 			if ( animationName == other.animationName &&
 				isEnabled == other.isEnabled &&

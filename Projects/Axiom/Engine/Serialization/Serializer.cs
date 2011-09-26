@@ -38,6 +38,7 @@ using System.IO;
 using System.Text;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -100,28 +101,30 @@ namespace Axiom.Serialization
 	    /// <param name="reader"></param>
 	    /// <param name="count">Number of values to read.</param>
 	    /// <param name="dest">Pointer to copy the values into.</param>
-	    protected void ReadBytes( BinaryReader reader, int count, IntPtr dest )
-		{
-			// blast the data into the buffer
+        protected void ReadBytes(BinaryReader reader, int count, BufferBase dest)
+	    {
+	        // blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
-			{
-				byte* pointer = (byte*)dest.ToPointer();
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-				for ( int i = 0; i < count; i++ )
+#endif
+	        {
+	            var pointer = dest.ToBytePointer();
+#if !(XBOX || XBOX360)
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadByte();
 				}
 #else
-				for ( int i =0; i <count ; i+=4 )
-				{
-						pointer[i + 3] = reader.ReadByte();
-						pointer[i + 2] = reader.ReadByte();
-						pointer[i+1] = reader.ReadByte();
-						pointer[i] = reader.ReadByte();
-			}
+	            for ( var i = 0; i < count; i += 4 )
+	            {
+	                pointer[ i + 3 ] = reader.ReadByte();
+	                pointer[ i + 2 ] = reader.ReadByte();
+	                pointer[ i + 1 ] = reader.ReadByte();
+	                pointer[ i ] = reader.ReadByte();
+	            }
 #endif
-			}
-		}
+	        }
+	    }
 
 	    /// <summary>
 	    ///		Writes a specified number of bytes.
@@ -129,13 +132,15 @@ namespace Axiom.Serialization
 	    /// <param name="writer"></param>
 	    /// <param name="count">Number of values to write.</param>
 	    /// <param name="src">Pointer that holds the values.</param>
-	    protected void WriteBytes( BinaryWriter writer, int count, IntPtr src )
+        protected void WriteBytes(BinaryWriter writer, int count, BufferBase src)
 		{
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				byte* pointer = (byte*)src.ToPointer();
+				var pointer = src.ToBytePointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -148,14 +153,16 @@ namespace Axiom.Serialization
 	    /// <param name="reader"></param>
 	    /// <param name="count">Number of values to read.</param>
 	    /// <param name="dest">Pointer to copy the values into.</param>
-	    protected void ReadFloats( BinaryReader reader, int count, IntPtr dest )
+        protected void ReadFloats(BinaryReader reader, int count, BufferBase dest)
 		{
 			// blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* pointer = (float*)dest.ToPointer();
+				var pointer = dest.ToFloatPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadFloat(reader);
 				}
@@ -168,13 +175,15 @@ namespace Axiom.Serialization
 	    /// <param name="writer"></param>
 	    /// <param name="count">Number of values to write.</param>
 	    /// <param name="src">Pointer that holds the values.</param>
-	    protected void WriteFloats( BinaryWriter writer, int count, IntPtr src )
+        protected void WriteFloats(BinaryWriter writer, int count, BufferBase src)
 		{
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* pointer = (float*)src.ToPointer();
+				var pointer = src.ToFloatPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -189,16 +198,18 @@ namespace Axiom.Serialization
 	    /// <param name="count">Number of values to read.</param>
 	    /// <param name="dest">Pointer to copy the values into.</param>
 	    /// <param name="destArray">A float array that is to have the values copied into it at the same time as 'dest'.</param>
-	    protected void ReadFloats( BinaryReader reader, int count, IntPtr dest, float[] destArray )
+        protected void ReadFloats(BinaryReader reader, int count, BufferBase dest, float[] destArray)
 		{
 			// blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* pointer = (float*)dest.ToPointer();
+				var pointer = dest.ToFloatPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
-					float val = ReadFloat( reader );
+					var val = ReadFloat( reader );
 					pointer[ i ] = val;
 					destArray[ i ] = val;
 				}
@@ -217,7 +228,7 @@ namespace Axiom.Serialization
 
 		protected float ReadFloat( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[4];
+            var inputdata = new byte[4];
             reader.Read(inputdata, 0, 4);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -233,7 +244,7 @@ namespace Axiom.Serialization
 
         protected int ReadInt(BinaryReader reader)
 		{
-            byte[] inputdata = new byte[4];
+            var inputdata = new byte[4];
             reader.Read(inputdata, 0, 4);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -249,7 +260,7 @@ namespace Axiom.Serialization
 
 		protected uint ReadUInt( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[4];
+            var inputdata = new byte[4];
             reader.Read(inputdata, 0, 4);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -266,7 +277,7 @@ namespace Axiom.Serialization
 
 		protected long ReadLong( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[8];
+            var inputdata = new byte[8];
             reader.Read(inputdata, 0, 8);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -283,7 +294,7 @@ namespace Axiom.Serialization
 
 		protected ulong ReadULong( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[8];
+            var inputdata = new byte[8];
             reader.Read(inputdata, 0, 8);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -300,7 +311,7 @@ namespace Axiom.Serialization
 
 		protected short ReadShort( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[2];
+            var inputdata = new byte[2];
             reader.Read(inputdata, 0, 2);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -317,7 +328,7 @@ namespace Axiom.Serialization
 
 		protected ushort ReadUShort( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[2];
+            var inputdata = new byte[2];
             reader.Read(inputdata, 0, 2);
             // The file format store integral types in little endian order
             if (!BitConverter.IsLittleEndian)
@@ -338,14 +349,16 @@ namespace Axiom.Serialization
 	    /// <param name="reader"></param>
 	    /// <param name="count">Number of values to read.</param>
 	    /// <param name="dest">Pointer to copy the values into.</param>
-	    protected void ReadInts( BinaryReader reader, int count, IntPtr dest )
+        protected void ReadInts(BinaryReader reader, int count, BufferBase dest)
 		{
 			// blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				int* pointer = (int*)dest.ToPointer();
+				var pointer = dest.ToIntPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadInt( reader );
 				}
@@ -358,14 +371,16 @@ namespace Axiom.Serialization
 	    /// <param name="writer"></param>
 	    /// <param name="count">Number of values to write.</param>
 	    /// <param name="src">Pointer that holds the values.</param>
-	    protected void WriteInts( BinaryWriter writer, int count, IntPtr src )
+	    protected void WriteInts( BinaryWriter writer, int count, BufferBase src )
 		{
 			// blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				int* pointer = (int*)src.ToPointer();
+				var pointer = src.ToIntPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -378,13 +393,15 @@ namespace Axiom.Serialization
 	    /// <param name="reader"></param>
 	    /// <param name="count">Number of values to read.</param>
 	    /// <param name="dest">Pointer to copy the values into.</param>
-	    protected void ReadShorts( BinaryReader reader, int count, IntPtr dest )
+        protected void ReadShorts(BinaryReader reader, int count, BufferBase dest)
 		{
 			// blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				short* pointer = (short*)dest.ToPointer();
-				for ( int i = 0; i < count; i++ )
+				var pointer = dest.ToShortPointer();
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadShort( reader );
 				}
@@ -397,14 +414,16 @@ namespace Axiom.Serialization
 	    /// <param name="writer"></param>
 	    /// <param name="count">Number of values to write.</param>
 	    /// <param name="src">Pointer that holds the values.</param>
-	    protected void WriteShorts( BinaryWriter writer, int count, IntPtr src )
+        protected void WriteShorts(BinaryWriter writer, int count, BufferBase src)
 		{
 			// blast the data into the buffer
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				short* pointer = (short*)src.ToPointer();
+				var pointer = src.ToShortPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -438,7 +457,7 @@ namespace Axiom.Serialization
 	    /// <returns>A string formed from characters up to the first instance of the specified delimeter.</returns>
 	    protected string ReadString( BinaryReader reader, char delimiter )
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			char c;
 
@@ -460,7 +479,7 @@ namespace Axiom.Serialization
 	    /// <param name="writer"></param>
 	    protected void WriteString( BinaryWriter writer, string str, char delimiter )
 		{
-			StringBuilder sb = new StringBuilder( str );
+			var sb = new StringBuilder( str );
 			sb.Append( delimiter );
 			writer.Write( sb.ToString().ToCharArray() );
 		}
@@ -471,7 +490,7 @@ namespace Axiom.Serialization
 		/// <returns></returns>
 		protected Quaternion ReadQuat( BinaryReader reader )
 		{
-			Quaternion quat = new Quaternion();
+			var quat = new Quaternion();
 
 			quat.x = ReadFloat( reader );
             quat.y = ReadFloat(reader);
@@ -498,7 +517,7 @@ namespace Axiom.Serialization
 		/// <returns></returns>
 		protected Vector3 ReadVector3( BinaryReader reader )
 		{
-			Vector3 vector = new Vector3();
+			var vector = new Vector3();
 
 			vector.x = ReadFloat( reader );
 			vector.y = ReadFloat( reader );
@@ -523,7 +542,7 @@ namespace Axiom.Serialization
 		/// <returns></returns>
 		protected Vector4 ReadVector4( BinaryReader reader )
 		{
-			Vector4 vector = new Vector4();
+			var vector = new Vector4();
 
 			vector.x = ReadFloat( reader );
 			vector.y = ReadFloat( reader );
@@ -551,7 +570,7 @@ namespace Axiom.Serialization
 		protected short ReadFileChunk( BinaryReader reader )
 		{
 			// get the chunk id
-			short id = ReadShort( reader );
+			var id = ReadShort( reader );
 #if ( XBOX || XBOX360 )
             if (id == 0)
             {
@@ -598,7 +617,7 @@ namespace Axiom.Serialization
 			// better hope this is the header
 			if ( headerID == (short)MeshChunkID.Header )
 			{
-				string fileVersion = ReadString( reader );
+				var fileVersion = ReadString( reader );
 
 				// read the version string
 				if ( version != fileVersion )

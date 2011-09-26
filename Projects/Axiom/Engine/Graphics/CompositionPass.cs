@@ -622,8 +622,8 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				int count = 0;
-				for ( int i = 0; i < inputs.Length; ++i )
+				var count = 0;
+				for ( var i = 0; i < inputs.Length; ++i )
 				{
 					if ( !string.IsNullOrEmpty( inputs[ i ].Name ) )
 						count = i + 1;
@@ -640,7 +640,7 @@ namespace Axiom.Graphics
 		///</remarks>	
 		public void ClearAllInputs()
 		{
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for ( var i = 0; i < Config.MaxTextureLayers; i++ )
 				inputs[ i ].Name = String.Empty;
 		}
 

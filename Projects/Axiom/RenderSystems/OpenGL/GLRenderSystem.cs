@@ -96,8 +96,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private BaseGLSupport _glSupport;
 
-		private GLContext _mainContext;
-		private GLContext _currentContext;
+        internal GLContext _mainContext;
+		internal GLContext _currentContext;
 
 
 		/// <summary>
@@ -455,16 +455,21 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override ColorEx AmbientLight
 		{
+            get
+            {
+                return _ambientLight;
+            }
 			set
 			{
 				// create a float[4]  to contain the RGBA data
-				value.ToArrayRGBA( _tempColorVals );
+                (_ambientLight = value).ToArrayRGBA(_tempColorVals);
 				_tempColorVals[ 3 ] = 1.0f;
 
 				// set the ambient color
 				Gl.glLightModelfv( Gl.GL_LIGHT_MODEL_AMBIENT, _tempColorVals );
 			}
 		}
+        private ColorEx _ambientLight = ColorEx.White;
 
         #endregion
 
@@ -476,7 +481,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override bool LightingEnabled
 		{
-			set
+            get
+            {
+                return _lightingEnabled;
+            }
+            set
 			{
                 if (_lightingEnabled == value)
 					return;
@@ -501,7 +510,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override bool NormalizeNormals
 		{
-			set
+            get
+            {
+                return _normalizingEnabled;
+            }
+            set
 			{
                 if (_normalizingEnabled == value)
                     return;
@@ -528,7 +541,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override PolygonMode PolygonMode
 		{
-			set
+            get
+            {
+                return _lastPolygonMode;
+            }
+            set
 			{
                 if (value == _lastPolygonMode)
 					return;
@@ -567,6 +584,10 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
         public override ShadeOptions ShadingType
         {
+            get
+            {
+                return _lastShadingType;
+            }
             set 
             {
                 if (_lastShadingType == value)
@@ -595,7 +616,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override bool StencilCheckEnabled
 		{
-			set
+            get
+            {
+                return _lastStencilCheckEnabled;
+            }
+            set
 			{
                 if (_lastStencilCheckEnabled != value)
                     return;
@@ -2103,11 +2128,19 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region ProjectionMatrix
 
+	    private Matrix4 _projectionMatrix;
+
         [OgreVersion(1, 7, 2790)]
 		public override Matrix4 ProjectionMatrix
 		{
-			set
-			{
+            get
+            {
+                return _projectionMatrix;
+            }
+            set
+            {
+                _projectionMatrix = value;
+
 				// create a float[16] from our Matrix4
 				MakeGLMatrix( ref value, _tempMatrix );
 
@@ -2143,7 +2176,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override Matrix4 ViewMatrix
 		{
-			set
+            get
+            {
+                return viewMatrix;
+            }
+            set
 			{
 				viewMatrix = value;
 
@@ -2170,7 +2207,11 @@ namespace Axiom.RenderSystems.OpenGL
         [OgreVersion(1, 7, 2790)]
 		public override Matrix4 WorldMatrix
 		{
-			set
+            get
+            {
+                return worldMatrix;
+            }
+            set
 			{
 				//store the new world matrix locally
 				worldMatrix = value;

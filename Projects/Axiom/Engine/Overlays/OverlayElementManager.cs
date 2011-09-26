@@ -175,7 +175,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public OverlayElement CreateElement( string typeName, string instanceName, bool isTemplate )
 		{
-			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
+			var elements = GetElementTable( isTemplate );
 
 			if ( elements.ContainsKey( instanceName ) )
 			{
@@ -183,7 +183,7 @@ namespace Axiom.Overlays
 				return (OverlayElement)elements[ instanceName ];
 			}
 
-			OverlayElement element = CreateElementFromFactory( typeName, instanceName );
+			var element = CreateElementFromFactory( typeName, instanceName );
 
 			// register
 			elements.Add( instanceName, element );
@@ -230,9 +230,9 @@ namespace Axiom.Overlays
 			}
 			else
 			{
-				OverlayElement template = GetElement( templateName, true );
+				var template = GetElement( templateName, true );
 
-				string typeToCreate = "";
+				var typeToCreate = "";
 				if ( String.IsNullOrEmpty( typeName ) )
 				{
 					typeToCreate = template.GetType().Name;
@@ -261,7 +261,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public OverlayElement CloneOverlayElementFromTemplate( string template, string name )
 		{
-			OverlayElement element = GetElement( template, true );
+			var element = GetElement( template, true );
 			return element.Clone( name );
 		}
 
@@ -285,7 +285,7 @@ namespace Axiom.Overlays
 		{
 			Contract.RequiresNotEmpty( name, "name" );
 
-			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
+			var elements = GetElementTable( isTemplate );
 
 			if ( !elements.ContainsKey( name ) )
 			{
@@ -324,7 +324,7 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		public void DestroyElement( string name, bool isTemplate )
 		{
-			Dictionary<string, OverlayElement> elements = isTemplate ? _elementTemplates : _elementInstances;
+			var elements = isTemplate ? _elementTemplates : _elementInstances;
 			if ( !elements.ContainsKey( name ) )
 			{
 				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
@@ -349,7 +349,7 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		public void DestroyElement( OverlayElement element, bool isTemplate )
 		{
-			Dictionary<string, OverlayElement> elements = isTemplate ? _elementTemplates : _elementInstances;
+			var elements = isTemplate ? _elementTemplates : _elementInstances;
 			if ( !elements.ContainsValue( element ) )
 			{
 				throw new Exception( "OverlayElement with the name '" + element.Name + "' not found to destroy." );

@@ -133,7 +133,7 @@ namespace Axiom.Core
 		/// <returns>true if the queue will be rendered, false otherwise</returns>
 		public virtual bool IsRenderQueueToBeProcessed( RenderQueueGroupID queueId )
 		{
-			bool inList = _queue.Contains( queueId );
+			var inList = _queue.Contains( queueId );
 			return ( inList && _mode == SpecialCaseRenderQueueMode.Include )
 				|| ( !inList && _mode == SpecialCaseRenderQueueMode.Exclude );
 		}

@@ -163,7 +163,7 @@ namespace Axiom.Samples.DynamicTexture
 		private void UpdateTexture( byte freezeAmount )
 		{
 			mTexBuf.Lock( BufferLocking.Discard );
-			IntPtr dataPtr = mTexBuf.CurrentLock.Data;
+			var dataPtr = mTexBuf.CurrentLock.Data;
 
 			// get access to raw texel data
 			int temperature;
@@ -171,7 +171,7 @@ namespace Axiom.Samples.DynamicTexture
 			int dataIdx = 0;
 			unsafe
 			{
-				byte* data = (byte*)dataPtr.ToPointer();
+				var data = dataPtr.ToBytePointer();
 				{
 					// go through every texel...
 					for ( int y = 0; y < TEXTURE_SIZE; y++ )

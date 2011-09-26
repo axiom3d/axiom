@@ -142,25 +142,25 @@ namespace Axiom.Core
 				return;
 
 			// get the projection of the object's AABB into screen space
-			AxisAlignedBox bbox = this.parent.GetWorldBoundingBox( true );//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+			var bbox = this.parent.GetWorldBoundingBox( true );//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();
-			Matrix4 mat = this.camera.ViewMatrix;
+			var mat = this.camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
-			Vector3[] corners = bbox.Corners;
+			var corners = bbox.Corners;
 
 
-			float min_x = 1.0f;
-			float max_x = 0.0f;
-			float min_y = 1.0f;
-			float max_y = 0.0f;
+			var min_x = 1.0f;
+			var max_x = 0.0f;
+			var min_y = 1.0f;
+			var max_y = 0.0f;
 
 			// expand the screen-space bounding-box so that it completely encloses
 			// the object's AABB
-			for ( int i = 0; i < 8; i++ )
+			for ( var i = 0; i < 8; i++ )
 			{
-				Vector3 corner = corners[ i ];
+				var corner = corners[ i ];
 
 				// multiply the AABB corner vertex by the view matrix to
 				// get a camera-space vertex

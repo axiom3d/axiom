@@ -63,10 +63,10 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
 				// Create the technique from the material
-				Material material = (Material)obj.Parent.Context;
+				var material = (Material)obj.Parent.Context;
 				_technique = material.CreateTechnique();
 				obj.Context = _technique;
 
@@ -75,11 +75,11 @@ namespace Axiom.Scripting.Compiler
 					_technique.Name = obj.Name;
 
 				// Set the properties for the technique
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 
 						switch ( (Keywords)prop.Id )
 						{
@@ -145,7 +145,7 @@ namespace Axiom.Scripting.Compiler
 									string matName;
 									if ( getString( prop.Values[ 0 ], out matName ) )
 									{
-										string evtMatName = string.Empty;
+										var evtMatName = string.Empty;
 
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
 											ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
@@ -174,11 +174,11 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									string matName = string.Empty;
+									var i0 = getNodeAt( prop.Values, 0 );
+									var matName = string.Empty;
 									if ( getString( i0, out matName ) )
 									{
-										string evtName = string.Empty;
+										var evtName = string.Empty;
 
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
 											ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
@@ -208,14 +208,14 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									AbstractNode i1 = getNodeAt( prop.Values, 1 );
+									var i0 = getNodeAt( prop.Values, 0 );
+									var i1 = getNodeAt( prop.Values, 1 );
 
-									Technique.GPUVendorRule rule = new Technique.GPUVendorRule();
+									var rule = new Technique.GPUVendorRule();
 									if ( i0 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom0 = (AtomAbstractNode)i0;
-										Keywords atom0Id = (Keywords)atom0.Id;
+										var atom0 = (AtomAbstractNode)i0;
+										var atom0Id = (Keywords)atom0.Id;
 
 										if ( atom0Id == Keywords.ID_INCLUDE )
 										{
@@ -231,7 +231,7 @@ namespace Axiom.Scripting.Compiler
 												"gpu_vendor_rule cannot accept \"" + i0.Value + "\" as first argument" );
 										}
 
-										string vendor = string.Empty;
+										var vendor = string.Empty;
 										if ( !getString( i1, out vendor ) )
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -268,14 +268,14 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									AbstractNode i1 = getNodeAt( prop.Values, 1 );
+									var i0 = getNodeAt( prop.Values, 0 );
+									var i1 = getNodeAt( prop.Values, 1 );
 
-									Technique.GPUDeviceNameRule rule = new Technique.GPUDeviceNameRule();
+									var rule = new Technique.GPUDeviceNameRule();
 									if ( i0 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom0 = (AtomAbstractNode)i0;
-										Keywords atom0Id = (Keywords)atom0.Id;
+										var atom0 = (AtomAbstractNode)i0;
+										var atom0Id = (Keywords)atom0.Id;
 
 										if ( atom0Id == Keywords.ID_INCLUDE )
 										{
@@ -299,7 +299,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( prop.Values.Count == 3 )
 										{
-											AbstractNode i2 = getNodeAt( prop.Values, 2 );
+											var i2 = getNodeAt( prop.Values, 2 );
 											if ( !getBoolean( i2, out rule.CaseSensitive ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,

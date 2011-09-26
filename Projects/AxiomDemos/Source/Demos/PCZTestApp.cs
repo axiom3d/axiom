@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Demos;
 using Axiom.Graphics;
@@ -8,7 +9,8 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace PCZDemo
 {
-	public class PCZTestApp : TechDemo
+    [Export(typeof(TechDemo))]
+    public class PCZTestApp : TechDemo
 	{
 		SceneNode mCameraNode;
 		PCZSceneNode buildingNode;

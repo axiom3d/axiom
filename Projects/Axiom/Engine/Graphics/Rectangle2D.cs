@@ -73,12 +73,12 @@ namespace Axiom.Graphics
 			renderOperation.useIndices = false;
 			renderOperation.operationType = OperationType.TriangleStrip;
 
-			VertexDeclaration decl = vertexData.vertexDeclaration;
-			VertexBufferBinding binding = vertexData.vertexBufferBinding;
+			var decl = vertexData.vertexDeclaration;
+			var binding = vertexData.vertexBufferBinding;
 
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-			HardwareVertexBuffer buffer =
+			var buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( POSITION, buffer );
@@ -90,24 +90,27 @@ namespace Axiom.Graphics
 
 			binding.SetBinding( NORMAL, buffer );
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
-			{
-				float* pNorm = (float*)buffer.Lock( BufferLocking.Discard );
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
+#endif
+		    {
+		        var pNormBuf = buffer.Lock(BufferLocking.Discard).ToFloatPointer();
+				var pNorm = 0;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 1.0f;
 
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 1.0f;
 
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 1.0f;
 
-				*pNorm++ = 0.0f;
-				*pNorm++ = 0.0f;
-				*pNorm++ = 1.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm++] = 0.0f;
+                pNormBuf[pNorm] = 1.0f;
 
 				buffer.Unlock();
 			}
@@ -208,14 +211,14 @@ namespace Axiom.Graphics
 		/// <param name="updateAABB"></param>
 		public void SetCorners( float left, float top, float right, float bottom, bool updateAABB )
 		{
-			float[] data = new float[] {
+			var data = new float[] {
 				left, top, -1,
 				left, bottom, -1,
 				right, top, -1, // Fix for Issue #1187096
 				right, bottom, -1
 			};
 
-			HardwareVertexBuffer buffer =
+			var buffer =
 				vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			buffer.WriteData( 0, buffer.Size, data, true );
@@ -231,25 +234,28 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void SetNormals( Vector3 topLeft, Vector3 bottomLeft, Vector3 topRight, Vector3 bottomRight )
 		{
-			HardwareVertexBuffer vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
+			var vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				float* pfloat = (float*)vbuf.Lock( BufferLocking.Discard );
-				*pfloat++ = topLeft.x;
-				*pfloat++ = topLeft.y;
-				*pfloat++ = topLeft.z;
+                var pfloatBuf = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
+                var pfloat = 0;
+                pfloatBuf[pfloat++] = topLeft.x;
+                pfloatBuf[pfloat++] = topLeft.y;
+                pfloatBuf[pfloat++] = topLeft.z;
 
-				*pfloat++ = bottomLeft.x;
-				*pfloat++ = bottomLeft.y;
-				*pfloat++ = bottomLeft.z;
+                pfloatBuf[pfloat++] = bottomLeft.x;
+                pfloatBuf[pfloat++] = bottomLeft.y;
+                pfloatBuf[pfloat++] = bottomLeft.z;
 
-				*pfloat++ = topRight.x;
-				*pfloat++ = topRight.y;
-				*pfloat++ = topRight.z;
+                pfloatBuf[pfloat++] = topRight.x;
+                pfloatBuf[pfloat++] = topRight.y;
+                pfloatBuf[pfloat++] = topRight.z;
 
-				*pfloat++ = bottomRight.x;
-				*pfloat++ = bottomRight.y;
-				*pfloat++ = bottomRight.z;
+                pfloatBuf[pfloat++] = bottomRight.x;
+                pfloatBuf[pfloat++] = bottomRight.y;
+                pfloatBuf[pfloat] = bottomRight.z;
 
 				vbuf.Unlock();
 			}

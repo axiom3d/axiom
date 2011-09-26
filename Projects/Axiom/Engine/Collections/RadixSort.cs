@@ -161,13 +161,13 @@ namespace Axiom.Collections
 			_sortArea2 = new SortEntry[ _sortSize ];
 
 			// Perform alpha pass to count
-			System.Single prevValue = valueFunction( container[ 0 ] );
-			bool needsSorting = false;
-			int u = 0;
-			foreach ( TContainerValueType item in container )
+			var prevValue = valueFunction( container[ 0 ] );
+			var needsSorting = false;
+			var u = 0;
+			foreach ( var item in container )
 			{
 				// get sort value
-				System.Single val = valueFunction( item );
+				var val = valueFunction( item );
 				// cheap check to see if needs sorting (temporal coherence)
 				if ( !needsSorting && ( ( (IComparable<System.Single>)val ).CompareTo( prevValue ) < 0 ) )
 					needsSorting = true;
@@ -179,7 +179,7 @@ namespace Axiom.Collections
 				_sortArea1[ u++ ] = ne;
 
 				// increase counters
-				for ( int p = 0; p < _passCount; ++p )
+				for ( var p = 0; p < _passCount; ++p )
 				{
 					_counters[ p, _getByte( p, val ) ]++;
 				}
@@ -195,11 +195,11 @@ namespace Axiom.Collections
 			_src = _sortArea1;
 			_dest = _sortArea2;
 
-			for ( int p = 0; p < _passCount - 1; ++p )
+			for ( var p = 0; p < _passCount - 1; ++p )
 			{
 				_sortPass( p );
 				// flip src/dst
-				SortEntry[] tmp = _src;
+				var tmp = _src;
 				_src = _dest;
 				_dest = tmp;
 			}
@@ -208,7 +208,7 @@ namespace Axiom.Collections
 			finalPass( _passCount - 1, prevValue );
 
 			// Copy everything back
-			for ( int c = 0; c < _sortSize; c++ )
+			for ( var c = 0; c < _sortSize; c++ )
 			{
 				container[ c ] = _dest[ c ].Value;
 			}
@@ -219,9 +219,9 @@ namespace Axiom.Collections
 			// floats need to be special cased since negative numbers will come
 			// after positives (high bit = sign) and will be in reverse order
 			// (no ones-complement of the +ve value)
-			int negativeCount = 0;
+			var negativeCount = 0;
 			// all negative values are in entries 128+ in most significant byte
-			for ( int i = 128; i < 256; ++i )
+			for ( var i = 128; i < 256; ++i )
 			{
 				negativeCount += _counters[ byteIndex, i ];
 			}
@@ -233,16 +233,16 @@ namespace Axiom.Collections
 			// backwards in our offsets
 			_offsets[ 0 ] = negativeCount;
 			_offsets[ 255 ] = _counters[ byteIndex, 255 ];
-			for ( int i = 1; i < 128; ++i )
+			for ( var i = 1; i < 128; ++i )
 			{
 				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 				_offsets[ 255 - i ] = _offsets[ 255 - i + 1 ] + _counters[ byteIndex, 255 - i ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in _src )
+			foreach ( var item in _src )
 			{
-				byte byteVal = _getByte( byteIndex, item.Key );
+				var byteVal = _getByte( byteIndex, item.Key );
 				if ( byteVal > 127 )
 				{
 					// -ve; pre-decrement since offsets set to count
@@ -261,13 +261,13 @@ namespace Axiom.Collections
 			// Calculate offsets
 			// Basically this just leaves gaps for duplicate entries to fill
 			_offsets[ 0 ] = 0;
-			for ( int i = 1; i < 256; ++i )
+			for ( var i = 1; i < 256; ++i )
 			{
 				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in _src )
+			foreach ( var item in _src )
 			{
 				_dest[ _offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
 			}
@@ -280,7 +280,9 @@ namespace Axiom.Collections
 			return BitConverter.GetBytes( val )[ byteIndex ];
 #else
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
 				return ((byte*)&val)[ byteIndex ];
 			}
@@ -403,13 +405,13 @@ namespace Axiom.Collections
 			_sortArea2 = new SortEntry[ _sortSize ];
 
 			// Perform alpha pass to count
-			System.Int32 prevValue = valueFunction( container[ 0 ] );
-			bool needsSorting = false;
-			int u = 0;
-			foreach ( TContainerValueType item in container )
+			var prevValue = valueFunction( container[ 0 ] );
+			var needsSorting = false;
+			var u = 0;
+			foreach ( var item in container )
 			{
 				// get sort value
-				System.Int32 val = valueFunction( item );
+				var val = valueFunction( item );
 				// cheap check to see if needs sorting (temporal coherence)
 				if ( !needsSorting && ( ( (IComparable<System.Int32>)val ).CompareTo( prevValue ) < 0 ) )
 					needsSorting = true;
@@ -421,7 +423,7 @@ namespace Axiom.Collections
 				_sortArea1[ u++ ] = ne;
 
 				// increase counters
-				for ( int p = 0; p < _passCount; ++p )
+				for ( var p = 0; p < _passCount; ++p )
 				{
 					_counters[ p, _getByte( p, val ) ]++;
 				}
@@ -437,11 +439,11 @@ namespace Axiom.Collections
 			_src = _sortArea1;
 			_dest = _sortArea2;
 
-			for ( int p = 0; p < _passCount - 1; ++p )
+			for ( var p = 0; p < _passCount - 1; ++p )
 			{
 				_sortPass( p );
 				// flip src/dst
-				SortEntry[] tmp = _src;
+				var tmp = _src;
 				_src = _dest;
 				_dest = tmp;
 			}
@@ -451,7 +453,7 @@ namespace Axiom.Collections
 			finalPass( _passCount - 1, prevValue );
 
 			// Copy everything back
-			for ( int c = 0; c < _sortSize; c++ )
+			for ( var c = 0; c < _sortSize; c++ )
 			{
 				container[ c ] = _dest[ c ].Value;
 			}
@@ -462,9 +464,9 @@ namespace Axiom.Collections
 			// floats need to be special cased since negative numbers will come
 			// after positives (high bit = sign) and will be in reverse order
 			// (no ones-complement of the +ve value)
-			int negativeCount = 0;
+			var negativeCount = 0;
 			// all negative values are in entries 128+ in most significant byte
-			for ( int i = 128; i < 256; ++i )
+			for ( var i = 128; i < 256; ++i )
 			{
 				negativeCount += _counters[ byteIndex, i ];
 			}
@@ -476,16 +478,16 @@ namespace Axiom.Collections
 			// backwards in our offsets			_
 			_offsets[ 0 ] = negativeCount;
 			_offsets[ 255 ] = _counters[ byteIndex, 255 ];
-			for ( int i = 1; i < 128; ++i )
+			for ( var i = 1; i < 128; ++i )
 			{
 				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 				_offsets[ 255 - i ] = _offsets[ 255 - i + 1 ] + _counters[ byteIndex, 255 - i ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in _src )
+			foreach ( var item in _src )
 			{
-				byte byteVal = _getByte( byteIndex, item.Key );
+				var byteVal = _getByte( byteIndex, item.Key );
 				if ( byteVal > 127 )
 				{
 					// -ve; pre-decrement since offsets set to count
@@ -504,13 +506,13 @@ namespace Axiom.Collections
 			// Calculate offsets
 			// Basically this just leaves gaps for duplicate entries to fill
 			_offsets[ 0 ] = 0;
-			for ( int i = 1; i < 256; ++i )
+			for ( var i = 1; i < 256; ++i )
 			{
 				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in _src )
+			foreach ( var item in _src )
 			{
 				_dest[ _offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
 			}
@@ -523,7 +525,9 @@ namespace Axiom.Collections
 			return BitConverter.GetBytes( val )[ byteIndex ];
 #else
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
 				return ((byte*)&val)[ byteIndex ];
 			}
@@ -646,13 +650,13 @@ namespace Axiom.Collections
 			_sortArea2 = new SortEntry[ _sortSize ];
 
 			// Perform alpha pass to count
-			System.UInt32 prevValue = valueFunction( container[ 0 ] );
-			bool needsSorting = false;
-			int u = 0;
-			foreach ( TContainerValueType item in container )
+			var prevValue = valueFunction( container[ 0 ] );
+			var needsSorting = false;
+			var u = 0;
+			foreach ( var item in container )
 			{
 				// get sort value
-				System.UInt32 val = valueFunction( item );
+				var val = valueFunction( item );
 				// cheap check to see if needs sorting (temporal coherence)
 				if ( !needsSorting && ( ( (IComparable<System.UInt32>)val ).CompareTo( prevValue ) < 0 ) )
 					needsSorting = true;
@@ -664,7 +668,7 @@ namespace Axiom.Collections
 				_sortArea1[ u++ ] = ne;
 
 				// increase counters
-				for ( int p = 0; p < _passCount; ++p )
+				for ( var p = 0; p < _passCount; ++p )
 				{
 					_counters[ p, _getByte( p, val ) ]++;
 				}
@@ -680,11 +684,11 @@ namespace Axiom.Collections
 			_src = _sortArea1;
 			_dest = _sortArea2;
 
-			for ( int p = 0; p < _passCount - 1; ++p )
+			for ( var p = 0; p < _passCount - 1; ++p )
 			{
 				_sortPass( p );
 				// flip src/dst
-				SortEntry[] tmp = _src;
+				var tmp = _src;
 				_src = _dest;
 				_dest = tmp;
 			}
@@ -694,7 +698,7 @@ namespace Axiom.Collections
 			finalPass( _passCount - 1, prevValue );
 
 			// Copy everything back
-			for ( int c = 0; c < _sortSize; c++ )
+			for ( var c = 0; c < _sortSize; c++ )
 			{
 				container[ c ] = _dest[ c ].Value;
 			}
@@ -705,9 +709,9 @@ namespace Axiom.Collections
 			// floats need to be special cased since negative numbers will come
 			// after positives (high bit = sign) and will be in reverse order
 			// (no ones-complement of the +ve value)
-			int negativeCount = 0;
+			var negativeCount = 0;
 			// all negative values are in entries 128+ in most significant byte
-			for ( int i = 128; i < 256; ++i )
+			for ( var i = 128; i < 256; ++i )
 			{
 				negativeCount += _counters[ byteIndex, i ];
 			}
@@ -719,16 +723,16 @@ namespace Axiom.Collections
 			// backwards in our offsets			_
 			_offsets[ 0 ] = negativeCount;
 			_offsets[ 255 ] = _counters[ byteIndex, 255 ];
-			for ( int i = 1; i < 128; ++i )
+			for ( var i = 1; i < 128; ++i )
 			{
 				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 				_offsets[ 255 - i ] = _offsets[ 255 - i + 1 ] + _counters[ byteIndex, 255 - i ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in _src )
+			foreach ( var item in _src )
 			{
-				byte byteVal = _getByte( byteIndex, item.Key );
+				var byteVal = _getByte( byteIndex, item.Key );
 				if ( byteVal > 127 )
 				{
 					// -ve; pre-decrement since offsets set to count
@@ -747,13 +751,13 @@ namespace Axiom.Collections
 			// Calculate offsets
 			// Basically this just leaves gaps for duplicate entries to fill
 			_offsets[ 0 ] = 0;
-			for ( int i = 1; i < 256; ++i )
+			for ( var i = 1; i < 256; ++i )
 			{
 				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in _src )
+			foreach ( var item in _src )
 			{
 				_dest[ _offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
 			}
@@ -766,7 +770,9 @@ namespace Axiom.Collections
 			return BitConverter.GetBytes( val )[ byteIndex ];
 #else
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
 				return ((byte*)&val)[ byteIndex ];
 			}

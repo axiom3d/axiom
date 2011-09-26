@@ -113,7 +113,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Quaternion operator *( Quaternion left, Quaternion right )
 		{
-			Quaternion q = new Quaternion();
+			var q = new Quaternion();
 
 			q.w = left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z;
 			q.x = left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y;
@@ -154,7 +154,7 @@ namespace Axiom.Math
 		{
 			// nVidia SDK implementation
 			Vector3 uv, uuv;
-			Vector3 qvec = new Vector3( quat.x, quat.y, quat.z );
+			var qvec = new Vector3( quat.x, quat.y, quat.z );
 
 			uv = qvec.Cross( vector );
 			uuv = qvec.Cross( uv );
@@ -308,15 +308,15 @@ namespace Axiom.Math
 		{
 			get
 			{
-				Real fTx = 2.0f * x;
-				Real fTy = 2.0f * y;
-				Real fTz = 2.0f * z;
-				Real fTwy = fTy * w;
-				Real fTwz = fTz * w;
-				Real fTxy = fTy * x;
-				Real fTxz = fTz * x;
-				Real fTyy = fTy * y;
-				Real fTzz = fTz * z;
+				var fTx = 2.0f * x;
+				var fTy = 2.0f * y;
+				var fTz = 2.0f * z;
+				var fTwy = fTy * w;
+				var fTwz = fTz * w;
+				var fTxy = fTy * x;
+				var fTxz = fTz * x;
+				var fTyy = fTy * y;
+				var fTzz = fTz * z;
 
 				return new Vector3( 1.0f - ( fTyy + fTzz ), fTxy + fTwz, fTxz - fTwy );
 			}
@@ -329,15 +329,15 @@ namespace Axiom.Math
 		{
 			get
 			{
-				Real fTx = 2.0f * x;
-				Real fTy = 2.0f * y;
-				Real fTz = 2.0f * z;
-				Real fTwx = fTx * w;
-				Real fTwz = fTz * w;
-				Real fTxx = fTx * x;
-				Real fTxy = fTy * x;
-				Real fTyz = fTz * y;
-				Real fTzz = fTz * z;
+				var fTx = 2.0f * x;
+				var fTy = 2.0f * y;
+				var fTz = 2.0f * z;
+				var fTwx = fTx * w;
+				var fTwz = fTz * w;
+				var fTxx = fTx * x;
+				var fTxy = fTy * x;
+				var fTyz = fTz * y;
+				var fTzz = fTz * z;
 
 				return new Vector3( fTxy - fTwz, 1.0f - ( fTxx + fTzz ), fTyz + fTwx );
 			}
@@ -350,15 +350,15 @@ namespace Axiom.Math
 		{
 			get
 			{
-				Real fTx = 2.0f * x;
-				Real fTy = 2.0f * y;
-				Real fTz = 2.0f * z;
-				Real fTwx = fTx * w;
-				Real fTwy = fTy * w;
-				Real fTxx = fTx * x;
-				Real fTxz = fTz * x;
-				Real fTyy = fTy * y;
-				Real fTyz = fTz * y;
+				var fTx = 2.0f * x;
+				var fTy = 2.0f * y;
+				var fTz = 2.0f * z;
+				var fTwx = fTx * w;
+				var fTwy = fTy * w;
+				var fTxx = fTx * x;
+				var fTxz = fTz * x;
+				var fTyy = fTy * y;
+				var fTyz = fTz * y;
 
 				return new Vector3( fTxz + fTwy, fTyz - fTwx, 1.0f - ( fTxx + fTyy ) );
 			}
@@ -407,7 +407,7 @@ namespace Axiom.Math
 			}
 			get
 			{
-				Real test = x * y + z * w;
+				var test = x * y + z * w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 					return 0f;
 				return (Real)Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z );
@@ -425,7 +425,7 @@ namespace Axiom.Math
 			}
 			get
 			{
-				Real test = x * y + z * w;
+				var test = x * y + z * w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 					return Utility.Sign( test ) * 2 * Utility.ATan2( x, w );
 				return Utility.ATan2( 2 * y * w - 2 * x * z, 1 - 2 * y * y - 2 * z * z );
@@ -442,7 +442,7 @@ namespace Axiom.Math
 			}
 			get
 			{
-				Real test = x * y + z * w;
+				var test = x * y + z * w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 					return Utility.Sign( test ) * Utility.PI / 2;
 				return (Real)Utility.ASin( 2 * test );
@@ -469,19 +469,19 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Quaternion Slerp( Real time, Quaternion quatA, Quaternion quatB, bool useShortestPath )
 		{
-			Real cos = quatA.Dot( quatB );
+			var cos = quatA.Dot( quatB );
 
-			Real angle = (Real)Utility.ACos( cos );
+			var angle = (Real)Utility.ACos( cos );
 
 			if ( Utility.Abs( angle ) < EPSILON )
 			{
 				return quatA;
 			}
 
-			Real sin = Utility.Sin( angle );
-			Real inverseSin = 1.0f / sin;
-			Real coeff0 = Utility.Sin( ( 1.0f - time ) * angle ) * inverseSin;
-			Real coeff1 = Utility.Sin( time * angle ) * inverseSin;
+			var sin = Utility.Sin( angle );
+			var inverseSin = 1.0f / sin;
+			var coeff0 = Utility.Sin( ( 1.0f - time ) * angle ) * inverseSin;
+			var coeff1 = Utility.Sin( time * angle ) * inverseSin;
 
 			Quaternion result;
 
@@ -489,7 +489,7 @@ namespace Axiom.Math
 			{
 				coeff0 = -coeff0;
 				// taking the complement requires renormalisation
-				Quaternion t = coeff0 * quatA + coeff1 * quatB;
+				var t = coeff0 * quatA + coeff1 * quatB;
 				t.Normalize();
 				result = t;
 			}
@@ -518,7 +518,7 @@ namespace Axiom.Math
 		public static Quaternion Nlerp( Real fT, Quaternion rkP, Quaternion rkQ, bool shortestPath )
 		{
 			Quaternion result;
-			Real fCos = rkP.Dot( rkQ );
+			var fCos = rkP.Dot( rkQ );
 			if ( fCos < 0.0f && shortestPath )
 			{
 				result = rkP + fT * ( ( -rkQ ) - rkP );
@@ -540,10 +540,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Quaternion FromAngleAxis( Real angle, Vector3 axis )
 		{
-			Quaternion quat = new Quaternion();
+			var quat = new Quaternion();
 
-			Real halfAngle = 0.5f * angle;
-			Real sin = Utility.Sin( halfAngle );
+			var halfAngle = 0.5f * angle;
+			var sin = Utility.Sin( halfAngle );
 
 			quat.w = Utility.Cos( halfAngle );
 			quat.x = sin * axis.x;
@@ -563,11 +563,11 @@ namespace Axiom.Math
 		/// </summary>
 		public static Quaternion Squad( Real t, Quaternion p, Quaternion a, Quaternion b, Quaternion q, bool useShortestPath )
 		{
-			Real slerpT = 2.0f * t * ( 1.0f - t );
+			var slerpT = 2.0f * t * ( 1.0f - t );
 
 			// use spherical linear interpolation
-			Quaternion slerpP = Slerp( t, p, q, useShortestPath );
-			Quaternion slerpQ = Slerp( t, a, b );
+			var slerpP = Slerp( t, p, q, useShortestPath );
+			var slerpQ = Slerp( t, a, b );
 
 			// run another Slerp on the results of the first 2, and return the results
 			return Slerp( slerpT, slerpP, slerpQ );
@@ -604,8 +604,8 @@ namespace Axiom.Math
 		public void ToEulerAngles( out Real pitch, out Real yaw, out Real roll )
 		{
 
-			Real halfPi = Utility.PI / 2;
-			Real test = x * y + z * w;
+			var halfPi = Utility.PI / 2;
+			var test = x * y + z * w;
 			if ( test > 0.499f )
 			{ // singularity at north pole
 				yaw = 2 * Utility.ATan2( x, w );
@@ -620,9 +620,9 @@ namespace Axiom.Math
 			}
 			else
 			{
-				Real sqx = x * x;
-				Real sqy = y * y;
-				Real sqz = z * z;
+				var sqx = x * x;
+				var sqy = y * y;
+				var sqz = z * z;
 				yaw = Utility.ATan2( 2 * y * w - 2 * x * z, 1 - 2 * sqy - 2 * sqz );
 				roll = (Real)Utility.ASin( 2 * test );
 				pitch = Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz );
@@ -693,7 +693,7 @@ namespace Axiom.Math
 		/// </summary>
 		public void Normalize()
 		{
-			Real factor = 1.0f / Utility.Sqrt( this.Norm );
+			var factor = 1.0f / Utility.Sqrt( this.Norm );
 
 			w = w * factor;
 			x = x * factor;
@@ -712,12 +712,12 @@ namespace Axiom.Math
 			// The quaternion representing the rotation is
 			//   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
-			Real sqrLength = x * x + y * y + z * z;
+			var sqrLength = x * x + y * y + z * z;
 
 			if ( sqrLength > 0.0f )
 			{
 				angle = 2.0f * (Real)Utility.ACos( w );
-				Real invLength = Utility.InvSqrt( sqrLength );
+				var invLength = Utility.InvSqrt( sqrLength );
 				axis.x = x * invLength;
 				axis.y = y * invLength;
 				axis.z = z * invLength;
@@ -737,20 +737,20 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Matrix3 ToRotationMatrix()
 		{
-			Matrix3 rotation = new Matrix3();
+			var rotation = new Matrix3();
 
-			Real tx = 2.0f * this.x;
-			Real ty = 2.0f * this.y;
-			Real tz = 2.0f * this.z;
-			Real twx = tx * this.w;
-			Real twy = ty * this.w;
-			Real twz = tz * this.w;
-			Real txx = tx * this.x;
-			Real txy = ty * this.x;
-			Real txz = tz * this.x;
-			Real tyy = ty * this.y;
-			Real tyz = tz * this.y;
-			Real tzz = tz * this.z;
+			var tx = 2.0f * this.x;
+			var ty = 2.0f * this.y;
+			var tz = 2.0f * this.z;
+			var twx = tx * this.w;
+			var twy = ty * this.w;
+			var twz = tz * this.w;
+			var txx = tx * this.x;
+			var txy = ty * this.x;
+			var txz = tz * this.x;
+			var tyy = ty * this.y;
+			var tyz = tz * this.y;
+			var tzz = tz * this.z;
 
 			rotation.m00 = 1.0f - ( tyy + tzz );
 			rotation.m01 = txy - twz;
@@ -771,10 +771,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Quaternion Inverse()
 		{
-			Real norm = this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z;
+			var norm = this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z;
 			if ( norm > 0.0f )
 			{
-				Real inverseNorm = 1.0f / norm;
+				var inverseNorm = 1.0f / norm;
 				return new Quaternion( this.w * inverseNorm, -this.x * inverseNorm, -this.y * inverseNorm, -this.z * inverseNorm );
 			}
 			else
@@ -808,7 +808,7 @@ namespace Axiom.Math
 			yAxis = new Vector3();
 			zAxis = new Vector3();
 
-			Matrix3 rotation = this.ToRotationMatrix();
+			var rotation = this.ToRotationMatrix();
 
 			xAxis.x = rotation.m00;
 			xAxis.y = rotation.m10;
@@ -831,7 +831,7 @@ namespace Axiom.Math
 		/// <param name="zAxis"></param>
 		public static Quaternion FromAxes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
-			Matrix3 rotation = new Matrix3();
+			var rotation = new Matrix3();
 
 			rotation.m00 = xAxis.x;
 			rotation.m10 = xAxis.y;
@@ -858,9 +858,9 @@ namespace Axiom.Math
 			// Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
 			// article "Quaternion Calculus and Fast Animation".
 
-			Quaternion result = Quaternion.Zero;
+			var result = Quaternion.Zero;
 
-			Real trace = matrix.m00 + matrix.m11 + matrix.m22;
+			var trace = matrix.m00 + matrix.m11 + matrix.m22;
 
 			Real root = 0.0f;
 
@@ -880,20 +880,32 @@ namespace Axiom.Math
 			{
 				// |result.w| <= 1/2
 
-				int i = 0;
+				var i = 0;
 				if ( matrix.m11 > matrix.m00 )
 					i = 1;
 				if ( matrix.m22 > matrix[ i, i ] )
 					i = 2;
 
-				int j = next[ i ];
-				int k = next[ j ];
+				var j = next[ i ];
+				var k = next[ j ];
 
 				root = Utility.Sqrt( matrix[ i, i ] - matrix[ j, j ] - matrix[ k, k ] + 1.0f );
 
+#if AXIOM_SAFE_ONLY
+                var pi = 0.5f * root;
+                root = 0.5f / root;                                                                                                       
+                var pw = (matrix[k, j] - matrix[j, k]) * root;
+                var pj = (matrix[j, i] + matrix[i, j]) * root;
+                var pk = (matrix[k, i] + matrix[i, k]) * root;
+			    result = i == 0
+			                 ? new Quaternion(pw, pi, pj, pk)
+			                 : i == 1
+			                       ? new Quaternion(pw, pk, pi, pj)
+			                       : new Quaternion(pw, pj, pk, pi);
+#else
 				unsafe
 				{
-					Real* apkQuat = &result.x;
+					var apkQuat = &result.x;
 
 					apkQuat[ i ] = 0.5f * root;
 					root = 0.5f / root;
@@ -903,6 +915,7 @@ namespace Axiom.Math
 					apkQuat[ j ] = ( matrix[ j, i ] + matrix[ i, j ] ) * root;
 					apkQuat[ k ] = ( matrix[ k, i ] + matrix[ i, k ] ) * root;
 				}
+#endif
 			}
 
 			return result;
@@ -920,16 +933,16 @@ namespace Axiom.Math
 			// sin(A)*(x*i+y*j+z*k) since sin(A)/A has limit 1.
 
 			// start off with a zero quat
-			Quaternion result = Quaternion.Zero;
+			var result = Quaternion.Zero;
 
 			if ( Utility.Abs( w ) < 1.0f )
 			{
-				Real angle = (Real)Utility.ACos( w );
-				Real sin = Utility.Sin( angle );
+				var angle = (Real)Utility.ACos( w );
+				var sin = Utility.Sin( angle );
 
 				if ( Utility.Abs( sin ) >= EPSILON )
 				{
-					Real coeff = angle / sin;
+					var coeff = angle / sin;
 					result.x = coeff * x;
 					result.y = coeff * y;
 					result.z = coeff * z;
@@ -955,17 +968,17 @@ namespace Axiom.Math
 			// exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
 			// use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-			Real angle = Utility.Sqrt( x * x + y * y + z * z );
-			Real sin = Utility.Sin( angle );
+			var angle = Utility.Sqrt( x * x + y * y + z * z );
+			var sin = Utility.Sin( angle );
 
 			// start off with a zero quat
-			Quaternion result = Quaternion.Zero;
+			var result = Quaternion.Zero;
 
 			result.w = Utility.Cos( angle );
 
 			if ( Utility.Abs( sin ) >= EPSILON )
 			{
-				Real coeff = sin / angle;
+				var coeff = sin / angle;
 
 				result.x = coeff * x;
 				result.y = coeff * y;
@@ -1002,15 +1015,15 @@ namespace Axiom.Math
 
 		public override bool Equals( object obj )
 		{
-			Quaternion quat = (Quaternion)obj;
+			var quat = (Quaternion)obj;
 
 			return quat == this;
 		}
 
 		public bool Equals( Quaternion rhs, Real tolerance )
 		{
-			Real fCos = Dot( rhs );
-			Real angle = (Real)Utility.ACos( fCos );
+			var fCos = Dot( rhs );
+			var angle = (Real)Utility.ACos( fCos );
 
 			return Utility.Abs( angle ) <= tolerance;
 		}
@@ -1025,7 +1038,7 @@ namespace Axiom.Math
 			if ( !quat.StartsWith( "Quaternion(" ) )
 				throw new FormatException();
 
-			string[] values = quat.Substring( 11 ).TrimEnd( ')' ).Split( ',' );
+			var values = quat.Substring( 11 ).TrimEnd( ')' ).Split( ',' );
 
 			return new Quaternion( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
 								  Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ),

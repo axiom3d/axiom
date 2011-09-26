@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 			: base( target.Buffer, target.ZOffset )
 		{
-			this._name = name;
+			this.name = name;
 			this.HwGamma = writeGamma;
 			this.Fsaa = fsaa;
 		}

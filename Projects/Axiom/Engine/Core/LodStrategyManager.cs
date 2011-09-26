@@ -93,11 +93,11 @@ namespace Axiom.Core
             : base()
 		{
 			// Add default (distance) strategy
-			DistanceLodStrategy distanceStrategy = new DistanceLodStrategy();
+			var distanceStrategy = new DistanceLodStrategy();
 			AddStrategy( distanceStrategy );
 
 			// Add new pixel-count strategy
-			PixelCountStrategy pixelCountStrategy = new PixelCountStrategy();
+			var pixelCountStrategy = new PixelCountStrategy();
 			AddStrategy( pixelCountStrategy );
 
 			// Set the default strategy

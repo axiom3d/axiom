@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{81D366A6-24BD-4C8B-AC18-0EEFF2D38E18}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.SceneManagers.PortalConnected</RootNamespace>
+    <AssemblyName>Axiom.SceneManagers.PortalConnected</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SLWP7\</OutputPath>
+	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SLWP7\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SLWP7\</OutputPath>
+	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SLWP7\</IntermediateOutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\MEF-WP7\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Capsule.cs" />
+    <Compile Include="DefaultZone.cs" />
+    <Compile Include="PCPlane.cs" />
+    <Compile Include="PCZCamera.cs" />
+    <Compile Include="PCZFrustum.cs" />
+    <Compile Include="PCZLight.cs" />
+    <Compile Include="PCZoneFactory.cs" />
+    <Compile Include="PCZPPlugin.cs" />
+    <Compile Include="PCZSceneManager.cs" />
+    <Compile Include="PCZSceneNode.cs" />
+    <Compile Include="PCZSceneQuery.cs" />
+    <Compile Include="Portal.cs" />
+    <Compile Include="Segment.cs" />
+    <Compile Include="PCZone.cs" />
+    <Compile Include="VisibleObjectsBoundsInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Axiom.2010.SLWP7.csproj">
+      <Project>{8BEFBF14-F299-4713-B220-01E355E35E08}</Project>
+      <Name>Axiom.2010.SLWP7</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

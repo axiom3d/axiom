@@ -99,8 +99,8 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			Real segment = t * ( pointList.Count - 1 );
-			int segIndex = (int)segment;
+			var segment = t * ( pointList.Count - 1 );
+			var segIndex = (int)segment;
 
 			// apportion t
 			t = segment - segIndex;
@@ -140,14 +140,14 @@ namespace Axiom.Math
 			// t^3
 			t3 = t2 * t;
 
-			Vector4 powers = new Vector4( t3, t2, t, 1 );
+			var powers = new Vector4( t3, t2, t, 1 );
 
 			// Algorithm is result = powers * hermitePoly * Matrix4(point1, point2, tangent1, tangent2)
-			Vector3 point1 = pointList[ index ];
-			Vector3 point2 = pointList[ index + 1 ];
-			Vector3 tangent1 = tangentList[ index ];
-			Vector3 tangent2 = tangentList[ index + 1 ];
-			Matrix4 point = new Matrix4();
+			var point1 = pointList[ index ];
+			var point2 = pointList[ index + 1 ];
+			var tangent1 = tangentList[ index ];
+			var tangent2 = tangentList[ index + 1 ];
+			var point = new Matrix4();
 
 			// create the matrix 4 with the 2 point and tangent values
 			point.m00 = point1.x;
@@ -168,7 +168,7 @@ namespace Axiom.Math
 			point.m33 = 1.0f;
 
 			// get the final result in a Vector4
-			Vector4 result = powers * hermitePoly * point;
+			var result = powers * hermitePoly * point;
 
 			// return the final result
 			return new Vector3( result.x, result.y, result.z );

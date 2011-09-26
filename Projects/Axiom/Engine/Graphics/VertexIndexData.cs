@@ -167,14 +167,14 @@ namespace Axiom.Graphics
 		/// <returns>A cloned vertex data object.</returns>
 		public VertexData Clone( bool copyData )
 		{
-			VertexData dest = new VertexData();
+			var dest = new VertexData();
 
 			// Copy vertex buffers in turn
-			Dictionary<short, HardwareVertexBuffer> bindings = vertexBufferBinding.Bindings;
+			var bindings = vertexBufferBinding.Bindings;
 
-			foreach ( short source in bindings.Keys )
+			foreach ( var source in bindings.Keys )
 			{
-				HardwareVertexBuffer srcbuf = bindings[ source ];
+				var srcbuf = bindings[ source ];
 				HardwareVertexBuffer dstBuf;
 
 				if ( copyData )
@@ -201,9 +201,9 @@ namespace Axiom.Graphics
 			dest.vertexCount = this.vertexCount;
 
 			// Copy elements
-			for ( int i = 0; i < vertexDeclaration.ElementCount; i++ )
+			for ( var i = 0; i < vertexDeclaration.ElementCount; i++ )
 			{
-				VertexElement element = vertexDeclaration.GetElement( i );
+				var element = vertexDeclaration.GetElement( i );
 
 				dest.vertexDeclaration.AddElement( element.Source, element.Offset, element.Type, element.Semantic, element.Index );
 			}
@@ -264,8 +264,8 @@ namespace Axiom.Graphics
 			*/
 
 			// Upfront, lets check whether we have vertex program capability
-			RenderSystem renderSystem = Root.Instance.RenderSystem;
-			bool useVertexPrograms = false;
+			var renderSystem = Root.Instance.RenderSystem;
+			var useVertexPrograms = false;
 
 			if ( renderSystem != null && renderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 			{
@@ -273,15 +273,15 @@ namespace Axiom.Graphics
 			}
 
 			// Look for a position element
-			VertexElement posElem =	vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			var posElem =	vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 
 			if ( posElem != null )
 			{
-				short posOldSource = posElem.Source;
+				var posOldSource = posElem.Source;
 
-				HardwareVertexBuffer vbuf = vertexBufferBinding.GetBuffer( posOldSource );
+				var vbuf = vertexBufferBinding.GetBuffer( posOldSource );
 
-				bool wasSharedBuffer = false;
+				var wasSharedBuffer = false;
 
 				// Are there other elements in the buffer except for the position?
 				if ( vbuf.VertexSize > posElem.Size )
@@ -292,12 +292,12 @@ namespace Axiom.Graphics
 				}
 
 				HardwareVertexBuffer newPosBuffer = null, newRemainderBuffer = null;
-                VertexDeclaration newRemainderDeclaration = (VertexDeclaration)vertexDeclaration.Clone();
+                var newRemainderDeclaration = (VertexDeclaration)vertexDeclaration.Clone();
 
 				if ( wasSharedBuffer )
 				{
-                    bool found = false;
-                    int index = 0;
+                    var found = false;
+                    var index = 0;
                     do 
                     {
                         if (newRemainderDeclaration.GetElement(index).Semantic == VertexElementSemantic.Position)
@@ -312,25 +312,25 @@ namespace Axiom.Graphics
 				}
 
 				// Allocate new position buffer, will be FLOAT3 and 2x the size
-				int oldVertexCount = vbuf.VertexCount;
-				int newVertexCount = oldVertexCount * 2;
+				var oldVertexCount = vbuf.VertexCount;
+				var newVertexCount = oldVertexCount * 2;
 
-                VertexDeclaration newPosDecl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                var newPosDecl = HardwareBufferManager.Instance.CreateVertexDeclaration();
                 newPosDecl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
                 newPosBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( newPosDecl, newVertexCount, vbuf.Usage, vbuf.HasShadowBuffer );
 
 				// Iterate over the old buffer, copying the appropriate elements and initializing the rest
-				IntPtr baseSrcPtr = vbuf.Lock( BufferLocking.ReadOnly );
+				var baseSrcPtr = vbuf.Lock( BufferLocking.ReadOnly );
 
 				// Point first destination pointer at the start of the new position buffer,
 				// the other one half way along
-				IntPtr destPtr = newPosBuffer.Lock( BufferLocking.Discard );
+				var destPtr = newPosBuffer.Lock( BufferLocking.Discard );
 				// oldVertexCount * 3 * 4, since we are dealing with byte offsets here
-				IntPtr dest2Ptr = new IntPtr( destPtr.ToInt64() + ( oldVertexCount * 12 ) );
+				var dest2Ptr = destPtr + ( oldVertexCount * 12 );
 
-				int prePosVertexSize = 0;
-				int postPosVertexSize = 0;
-				int postPosVertexOffset = 0;
+				var prePosVertexSize = 0;
+				var postPosVertexSize = 0;
+				var postPosVertexOffset = 0;
 
 				if ( wasSharedBuffer )
 				{
@@ -342,22 +342,24 @@ namespace Axiom.Graphics
 					// the 2 separate bits together should be the same size as the remainder buffer vertex
 					Debug.Assert( newRemainderBuffer.VertexSize == ( prePosVertexSize + postPosVertexSize ) );
 
-					IntPtr baseDestRemPtr = newRemainderBuffer.Lock( BufferLocking.Discard );
+					var baseDestRemPtr = newRemainderBuffer.Lock( BufferLocking.Discard );
 
-					int baseSrcOffset = 0;
-					int baseDestRemOffset = 0;
+					var baseSrcOffset = 0;
+					var baseDestRemOffset = 0;
 
+#if !AXIOM_SAFE_ONLY
 					unsafe
+#endif
 					{
-						float* pDest = (float*)destPtr.ToPointer();
-						float* pDest2 = (float*)dest2Ptr.ToPointer();
+						var pDest = destPtr.ToFloatPointer();
+						var pDest2 = dest2Ptr.ToFloatPointer();
 
 						int destCount = 0, dest2Count = 0;
 
 						// Iterate over the vertices
-						for ( int v = 0; v < oldVertexCount; v++ )
+						for ( var v = 0; v < oldVertexCount; v++ )
 						{
-							float* pSrc = (float*)( (byte*)baseSrcPtr.ToPointer() + posElem.Offset + baseSrcOffset );
+						    var pSrc = (baseSrcPtr + (posElem.Offset + baseSrcOffset)).ToFloatPointer();
 
 							// Copy position, into both buffers
 							pDest[ destCount++ ] = pDest2[ dest2Count++ ] = pSrc[ 0 ];
@@ -403,24 +405,26 @@ namespace Axiom.Graphics
 
 				if ( useVertexPrograms )
 				{
+#if !AXIOM_SAFE_ONLY
 					unsafe
+#endif
 					{
-                        VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                        var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
                         decl.AddElement(0, 0, VertexElementType.Float1, VertexElementSemantic.Position);
 
 						// Now it's time to set up the w buffer
 						hardwareShadowVolWBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl,	newVertexCount,	BufferUsage.StaticWriteOnly, false );
 
 						// Fill the first half with 1.0, second half with 0.0
-						IntPtr wPtr = hardwareShadowVolWBuffer.Lock( BufferLocking.Discard );
-						float* pDest = (float*)wPtr.ToPointer();
-						int destCount = 0;
+						var wPtr = hardwareShadowVolWBuffer.Lock( BufferLocking.Discard );
+						var pDest = wPtr.ToFloatPointer();
+						var destCount = 0;
 
-						for ( int v = 0; v < oldVertexCount; v++ )
+						for ( var v = 0; v < oldVertexCount; v++ )
 						{
 							pDest[ destCount++ ] = 1.0f;
 						}
-						for ( int v = 0; v < oldVertexCount; v++ )
+						for ( var v = 0; v < oldVertexCount; v++ )
 						{
 							pDest[ destCount++ ] = 0.0f;
 						}
@@ -450,9 +454,9 @@ namespace Axiom.Graphics
 
 				// Now, alter the vertex declaration to change the position source
 				// and the offsets of elements using the same buffer
-				for ( int i = 0; i < vertexDeclaration.ElementCount; i++ )
+				for ( var i = 0; i < vertexDeclaration.ElementCount; i++ )
 				{
-					VertexElement element = vertexDeclaration.GetElement( i );
+					var element = vertexDeclaration.GetElement( i );
 
 					if ( element.Semantic == VertexElementSemantic.Position )
 					{
@@ -489,19 +493,19 @@ namespace Axiom.Graphics
 		{
 			// Find first free texture coord set
 			short texCoord = 0;
-			for ( int i = 0; i < vertexDeclaration.ElementCount; i++ )
+			for ( var i = 0; i < vertexDeclaration.ElementCount; i++ )
 			{
-				VertexElement element = vertexDeclaration.GetElement( i );
+				var element = vertexDeclaration.GetElement( i );
 				if ( element.Semantic == VertexElementSemantic.TexCoords )
 					++texCoord;
 			}
 			Debug.Assert( texCoord <= Config.MaxTextureCoordSets );
 
 			// Increase to correct size
-			for ( int c = HWAnimationDataList.Count; c < count; ++c )
+			for ( var c = HWAnimationDataList.Count; c < count; ++c )
 			{
 				// Create a new 3D texture coordinate set
-				HardwareAnimationData data = new HardwareAnimationData();
+				var data = new HardwareAnimationData();
 				data.TargetVertexElement = vertexDeclaration.AddElement( vertexBufferBinding.NextIndex, 0, VertexElementType.Float3, VertexElementSemantic.TexCoords, texCoord++ );
 
 				HWAnimationDataList.Add( data );
@@ -587,7 +591,7 @@ namespace Axiom.Graphics
 		/// <returns>A copy of this IndexData object.</returns>
 		public IndexData Clone( bool copyData )
 		{
-			IndexData clone = new IndexData();
+			var clone = new IndexData();
 
 			if ( indexBuffer != null )
 			{

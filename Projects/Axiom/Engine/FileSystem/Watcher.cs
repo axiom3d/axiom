@@ -46,16 +46,16 @@ namespace Axiom.FileSystem
 	public class Watcher
 	{
 		#region Fields and Properties
-#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE)
+#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE || SILVERLIGHT)
 		private readonly FileSystemWatcher _monitor;
 #endif
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public Watcher( string path, bool recurse )
-		{
-#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE)
+        public Watcher( string path, bool recurse )
+        {
+#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE || SILVERLIGHT)
 			// Initialize FileSystemWatcher
 			this._monitor = new FileSystemWatcher();
 			this._monitor.Path = path;
@@ -73,14 +73,14 @@ namespace Axiom.FileSystem
 
 			// Begin watching.
 			this._monitor.EnableRaisingEvents = true;
+            LogManager.Instance.Write( "File monitor created for {0}.", path );
 #endif
-			LogManager.Instance.Write( "File monitor created for {0}.", path );
-		}
+        }
 
 		#endregion Construction and Destruction
 
 		#region Methods
-#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE)
+#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IPHONE || SILVERLIGHT)
 		private static void OnChanged( object source, FileSystemEventArgs e )
 		{
 			// Specify what is done when a file is changed, created, or deleted.

@@ -111,7 +111,7 @@ namespace Axiom.Math
 			temp = matrix * corners[ 0 ];
 			min = max = temp;
 
-			for ( int i = 1; i < corners.Length; i++ )
+			for ( var i = 1; i < corners.Length; i++ )
 			{
 				// Transform and check extents
 				temp = matrix * corners[ i ];
@@ -202,7 +202,7 @@ namespace Axiom.Math
 		/// <returns>New bounding box</returns>
 		public static AxisAlignedBox FromDimensions( Vector3 center, Vector3 size )
 		{
-			Vector3 halfSize = .5f * size;
+			var halfSize = .5f * size;
 
 			return new AxisAlignedBox( center - halfSize, center + halfSize );
 		}
@@ -367,11 +367,11 @@ namespace Axiom.Math
 			if ( !Intersects( b2 ) )
 				return new AxisAlignedBox();
 
-			Vector3 intMin = Vector3.Zero;
-			Vector3 intMax = Vector3.Zero;
+			var intMin = Vector3.Zero;
+			var intMax = Vector3.Zero;
 
-			Vector3 b2max = b2.maxVector;
-			Vector3 b2min = b2.minVector;
+			var b2max = b2.maxVector;
+			var b2min = b2.minVector;
 
 			if ( b2max.x > maxVector.x && maxVector.x > b2min.x )
 				intMax.x = maxVector.x;
@@ -431,8 +431,8 @@ namespace Axiom.Math
 			}
 			set
 			{
-				Vector3 center = Center;
-				Vector3 halfSize = .5f * value;
+				var center = Center;
+				var halfSize = .5f * value;
 				minVector = center - halfSize;
 				maxVector = center + halfSize;
 				UpdateCorners();
@@ -450,7 +450,7 @@ namespace Axiom.Math
 			}
 			set
 			{
-				Vector3 halfSize = .5f * Size;
+				var halfSize = .5f * Size;
 				minVector = value - halfSize;
 				maxVector = value + halfSize;
 				UpdateCorners();
@@ -569,7 +569,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				AxisAlignedBox nullBox = new AxisAlignedBox();
+				var nullBox = new AxisAlignedBox();
 				// make sure it is set to null
 				nullBox.IsNull = true;
 				nullBox.isInfinite = false;
@@ -590,7 +590,7 @@ namespace Axiom.Math
 				if ( isInfinite )
 					return Real.PositiveInfinity;
 
-				Vector3 diff = Maximum - Minimum;
+				var diff = Maximum - Minimum;
 				return diff.x * diff.y * diff.z;
 			}
 		}

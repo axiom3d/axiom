@@ -67,9 +67,9 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
-				Technique technique = (Technique)obj.Parent.Context;
+				var technique = (Technique)obj.Parent.Context;
 				_pass = technique.CreatePass();
 				obj.Context = _pass;
 
@@ -78,11 +78,11 @@ namespace Axiom.Scripting.Compiler
 					_pass.Name = obj.Name;
 
 				// Set the properties for the material
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 
 						switch ( (Keywords)prop.Id )
 						{
@@ -106,7 +106,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										ColorEx val = ColorEx.White;
+										var val = ColorEx.White;
 										if ( getColor( prop.Values, 0, out val ) )
 											_pass.Ambient = val;
 										else
@@ -190,14 +190,14 @@ namespace Axiom.Scripting.Compiler
 											AbstractNode i0 = getNodeAt( prop.Values, 0 ),
 											i1 = getNodeAt( prop.Values, 1 ),
 											i2 = getNodeAt( prop.Values, 2 );
-											ColorEx val = new ColorEx( 0, 0, 0, 0 );
+											var val = new ColorEx( 0, 0, 0, 0 );
 											if ( getFloat( i0, out val.r ) && getFloat( i1, out val.g ) && getFloat( i2, out val.b ) )
 											{
 												if ( prop.Values.Count == 4 )
 												{
 													_pass.Specular = val;
 
-													AbstractNode i3 = getNodeAt( prop.Values, 3 );
+													var i3 = getNodeAt( prop.Values, 3 );
 
 													Real shininess = 0.0f;
 													if ( getReal( i3, out shininess ) )
@@ -208,7 +208,7 @@ namespace Axiom.Scripting.Compiler
 												}
 												else
 												{
-													AbstractNode i3 = getNodeAt( prop.Values, 3 );
+													var i3 = getNodeAt( prop.Values, 3 );
 													if ( !getFloat( i3, out val.a ) )
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -217,7 +217,7 @@ namespace Axiom.Scripting.Compiler
 													else
 														_pass.Specular = val;
 
-													AbstractNode i4 = getNodeAt( prop.Values, 4 );
+													var i4 = getNodeAt( prop.Values, 4 );
 
 													Real shininess = 0.0f;
 													if ( getReal( i4, out shininess ) )
@@ -286,7 +286,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
@@ -462,7 +462,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 
 										switch ( (Keywords)atom.Id )
 										{
@@ -618,7 +618,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = true;
+									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_pass.DepthCheck = val;
 									else
@@ -641,7 +641,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = true;
+									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_pass.DepthWrite = val;
 									else
@@ -718,7 +718,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									float val = 0.0f;
+									var val = 0.0f;
 									if ( getFloat( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
@@ -750,7 +750,7 @@ namespace Axiom.Scripting.Compiler
 									{
 										if ( i1 != null )
 										{
-											int val = 0;
+											var val = 0;
 											if ( getInt( i1, out val ) )
 												_pass.SetAlphaRejectSettings( func, val );
 											else
@@ -780,7 +780,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = true;
+									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_pass.IsAlphaToCoverageEnabled = val;
 									else
@@ -803,7 +803,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
@@ -829,7 +829,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
@@ -855,7 +855,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = true;
+									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
@@ -896,7 +896,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_AMBIENT:
@@ -944,7 +944,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_CLOCKWISE:
@@ -989,7 +989,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FRONT:
@@ -1032,7 +1032,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
@@ -1058,7 +1058,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_pass.LightingEnabled = val;
 									else
@@ -1083,19 +1083,19 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FLAT:
-												_pass.ShadingMode = ShadeOptions.Flat;
+												_pass.ShadingMode = Shading.Flat;
 												break;
 
 											case Keywords.ID_GOURAUD:
-												_pass.ShadingMode = ShadeOptions.Gouraud;
+												_pass.ShadingMode = Shading.Gouraud;
 												break;
 
 											case Keywords.ID_PHONG:
-												_pass.ShadingMode = ShadeOptions.Phong;
+												_pass.ShadingMode = Shading.Phong;
 												break;
 
 											default:
@@ -1128,7 +1128,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_SOLID:
@@ -1171,7 +1171,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
@@ -1198,11 +1198,11 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										FogMode mode = FogMode.None;
-										ColorEx clr = ColorEx.White;
+										var mode = FogMode.None;
+										var clr = ColorEx.White;
 
 										Real dens = 0.001, start = 0.0f, end = 1.0f;
 
@@ -1210,7 +1210,7 @@ namespace Axiom.Scripting.Compiler
 										{
 											if ( i1 is AtomAbstractNode )
 											{
-												AtomAbstractNode atom = (AtomAbstractNode)i1;
+												var atom = (AtomAbstractNode)i1;
 												switch ( (Keywords)atom.Id )
 												{
 													case Keywords.ID_NONE:
@@ -1314,7 +1314,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_pass.ColorWriteEnabled = val;
 									else
@@ -1337,7 +1337,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									int val = 0;
+									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 										_pass.MaxSimultaneousLights = val;
 									else
@@ -1381,17 +1381,17 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
+									var i0 = getNodeAt( prop.Values, 0 );
 									if ( i0 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)i0;
+										var atom = (AtomAbstractNode)i0;
 										if ( atom.Id == (uint)Keywords.ID_ONCE )
 										{
 											_pass.IteratePerLight = false;
 										}
 										else if ( atom.Id == (uint)Keywords.ID_ONCE_PER_LIGHT )
 										{
-											AbstractNode i1 = getNodeAt( prop.Values, 1 );
+											var i1 = getNodeAt( prop.Values, 1 );
 											if ( i1 != null && i1 is AtomAbstractNode )
 											{
 												atom = (AtomAbstractNode)i1;
@@ -1429,13 +1429,13 @@ namespace Axiom.Scripting.Compiler
 											//TODO
 											_pass.IterationCount = Int32.Parse( atom.Value );
 
-											AbstractNode i1 = getNodeAt( prop.Values, 1 );
+											var i1 = getNodeAt( prop.Values, 1 );
 											if ( i1 != null && i1 is AtomAbstractNode )
 											{
 												atom = (AtomAbstractNode)i1;
 												if ( atom.Id == (uint)Keywords.ID_PER_LIGHT )
 												{
-													AbstractNode i2 = getNodeAt( prop.Values, 2 );
+													var i2 = getNodeAt( prop.Values, 2 );
 													if ( i2 != null && i2 is AtomAbstractNode )
 													{
 														atom = (AtomAbstractNode)i2;
@@ -1469,7 +1469,7 @@ namespace Axiom.Scripting.Compiler
 												}
 												else if ( atom.Id == (uint)Keywords.ID_PER_N_LIGHTS )
 												{
-													AbstractNode i2 = getNodeAt( prop.Values, 2 );
+													var i2 = getNodeAt( prop.Values, 2 );
 													if ( i2 != null && i2 is AtomAbstractNode )
 													{
 														atom = (AtomAbstractNode)i2;
@@ -1479,7 +1479,7 @@ namespace Axiom.Scripting.Compiler
 															//mPass->setLightCountPerIteration(
 															//    static_cast<unsigned short>(StringConverter::parseInt(atom->value)));
 
-															AbstractNode i3 = getNodeAt( prop.Values, 3 );
+															var i3 = getNodeAt( prop.Values, 3 );
 															if ( i3 != null && i3 is AtomAbstractNode )
 															{
 																atom = (AtomAbstractNode)i3;
@@ -1574,7 +1574,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 										_pass.PointSpritesEnabled = val;
 									else
@@ -1597,7 +1597,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										if ( val )
@@ -1611,7 +1611,7 @@ namespace Axiom.Scripting.Compiler
 
 												if ( i1 != null && i1 is AtomAbstractNode )
 												{
-													AtomAbstractNode atom = (AtomAbstractNode)i1;
+													var atom = (AtomAbstractNode)i1;
 													if ( atom.IsNumber )
 														constant = atom.Number;
 													else
@@ -1625,7 +1625,7 @@ namespace Axiom.Scripting.Compiler
 
 												if ( i2 != null && i2 is AtomAbstractNode )
 												{
-													AtomAbstractNode atom = (AtomAbstractNode)i2;
+													var atom = (AtomAbstractNode)i2;
 													if ( atom.IsNumber )
 														linear = atom.Number;
 													else
@@ -1639,7 +1639,7 @@ namespace Axiom.Scripting.Compiler
 
 												if ( i3 != null && i3 is AtomAbstractNode )
 												{
-													AtomAbstractNode atom = (AtomAbstractNode)i3;
+													var atom = (AtomAbstractNode)i3;
 													if ( atom.IsNumber )
 														quadratic = atom.Number;
 													else
@@ -1728,7 +1728,7 @@ namespace Axiom.Scripting.Compiler
 					} // end of if ( i is PropertyAbstractNode )
 					else if ( i is ObjectAbstractNode )
 					{
-						ObjectAbstractNode child = (ObjectAbstractNode)i;
+						var child = (ObjectAbstractNode)i;
 						switch ( (Keywords)child.Id )
 						{
 							case Keywords.ID_FRAGMENT_PROGRAM_REF:
@@ -1767,7 +1767,7 @@ namespace Axiom.Scripting.Compiler
 			protected void _translateFragmentProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
-				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
+				var pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
 				if ( pass == null )
 					return;
@@ -1783,7 +1783,7 @@ namespace Axiom.Scripting.Compiler
 			protected void _translateVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
-				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
+				var pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
 				if ( pass == null )
 					return;
@@ -1799,7 +1799,7 @@ namespace Axiom.Scripting.Compiler
 			protected void _translateGeometryProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
-				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
+				var pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
 				if ( pass == null )
 					return;
@@ -1815,7 +1815,7 @@ namespace Axiom.Scripting.Compiler
 			protected void _translateShadowCasterVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
-				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
+				var pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
 				if ( pass == null )
 					return;
@@ -1833,7 +1833,7 @@ namespace Axiom.Scripting.Compiler
 			protected void _translateShadowReceiverVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
-				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
+				var pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
 				if ( pass == null )
 					return;
@@ -1851,7 +1851,7 @@ namespace Axiom.Scripting.Compiler
 			protected void _translateShadowReceiverFragmentProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
-				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
+				var pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
 				if ( pass == null )
 					return;
@@ -1888,7 +1888,7 @@ namespace Axiom.Scripting.Compiler
 					return null;
 				}
 
-				Pass pass = (Pass)node.Parent.Context;
+				var pass = (Pass)node.Parent.Context;
 				return pass;
 			}
 		}

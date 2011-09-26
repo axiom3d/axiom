@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -158,31 +159,34 @@ namespace Axiom.Media
 		/**
 		 * Write a n*8 bits integer value to memory in native endian.
 		 */
-		public static void IntWrite( IntPtr dest, int n, uint value )
+        public static void IntWrite(BufferBase dest, int n, uint value)
 		{
+#if !AXIOM_SAFE_ONLY
             unsafe
+#endif
             {
                 switch (n)
                 {
                     case 1:
-                        ((byte*)dest)[0] = (byte)value;
+                        dest.ToBytePointer()[0] = (byte) value;
                         break;
                     case 2:
-                        ((ushort*)dest)[0] = (ushort)value;
+                        dest.ToUShortPointer()[0] = (ushort) value;
                         break;
                     case 3:
+                        var d = dest.ToBytePointer();
 #if BIG_ENDIAN
-                    ((byte*)dest)[0] = (byte)((value >> 16) & 0xFF);
-                    ((byte*)dest)[1] = (byte)((value >> 8) & 0xFF);
-                    ((byte*)dest)[2] = (byte)(value & 0xFF);
+                        d[0] = (byte)((value >> 16) & 0xFF);
+                        d[1] = (byte)((value >> 8) & 0xFF);
+                        d[2] = (byte)(value & 0xFF);
 #else
-                        ((byte*)dest)[2] = (byte)((value >> 16) & 0xFF);
-                        ((byte*)dest)[1] = (byte)((value >> 8) & 0xFF);
-                        ((byte*)dest)[0] = (byte)(value & 0xFF);
+                        d[2] = (byte)((value >> 16) & 0xFF);
+                        d[1] = (byte)((value >> 8) & 0xFF);
+                        d[0] = (byte)(value & 0xFF);
 #endif
                         break;
                     case 4:
-                        ((uint*)dest)[0] = (uint)value;
+                        dest.ToUIntPointer()[0] = value;
                         break;
                 }
             }
@@ -191,35 +195,35 @@ namespace Axiom.Media
 		///<summary>
 		///    Read a n*8 bits integer value to memory in native endian.
 		///</summary>
-		public static uint IntRead( IntPtr src, int n )
+        public static uint IntRead(BufferBase src, int n)
 		{
+#if !AXIOM_SAFE_ONLY
             unsafe
+#endif
             {
                 switch (n)
                 {
                     case 1:
-                        return ((byte*)src)[0];
+                        return src.ToBytePointer()[0];;
                     case 2:
-                        return ((ushort*)src)[0];
+                        return src.ToUShortPointer()[0];
                     case 3:
+                        var s = src.ToBytePointer();
 #if BIG_ENDIAN
-                    return ((uint)((byte*)src)[0]<<16)|
-                            ((uint)((byte*)src)[1]<<8)|
-                            ((uint)((byte*)src)[2]);
+                        return (uint) (s[0] << 16 |
+                                       (s[1] << 8) |
+                                       (s[2]));
 #else
-                        return ((uint)((byte*)src)[0]) |
-                                ((uint)((byte*)src)[1] << 8) |
-                                ((uint)((byte*)src)[2] << 16);
+                        return (uint) (s[0] |
+                                       (s[1] << 8) |
+                                       (s[2] << 16));
 #endif
                     case 4:
-                        return ((uint*)src)[0];
+                        return src.ToUIntPointer()[0];
                 }
                 return 0; // ?
             }
 		}
-
-		private static float[] floatConversionBuffer = new float[] { 0f };
-		private static uint[] uintConversionBuffer = new uint[] { 0 };
 
 		///<summary>
 		///    Convert a float32 to a float16 (NV_half_float)
@@ -227,16 +231,7 @@ namespace Axiom.Media
 		///</summary>
 		public static ushort FloatToHalf( float f )
 		{
-			uint i;
-			floatConversionBuffer[ 0 ] = f;
-			unsafe
-			{
-				fixed ( float* pFloat = floatConversionBuffer )
-				{
-					i = *( (uint*)pFloat );
-				}
-			}
-			return FloatToHalfI( i );
+		    return FloatToHalfI(new FourByte { Float = f }.UInt);
 		}
 
 		///<summary>
@@ -244,9 +239,9 @@ namespace Axiom.Media
 		///</summary>
 		public static ushort FloatToHalfI( uint i )
 		{
-			int s = (int)( i >> 16 ) & 0x00008000;
-			int e = (int)( ( i >> 23 ) & 0x000000ff ) - ( 127 - 15 );
-			int m = (int)i & 0x007fffff;
+			var s = (int)( i >> 16 ) & 0x00008000;
+			var e = (int)( ( i >> 23 ) & 0x000000ff ) - ( 127 - 15 );
+			var m = (int)i & 0x007fffff;
 
 			if ( e <= 0 )
 			{
@@ -287,14 +282,7 @@ namespace Axiom.Media
 		///</summary>
 		public static float HalfToFloat( ushort y )
 		{
-			uintConversionBuffer[ 0 ] = HalfToFloatI( y );
-			unsafe
-			{
-				fixed ( uint* pUint = uintConversionBuffer )
-				{
-					return *( (float*)pUint );
-				}
-			}
+            return new FourByte { UInt = HalfToFloatI(y) }.Float;
 		}
 
 		///<summary>
@@ -303,10 +291,10 @@ namespace Axiom.Media
 		///</summary>
 		public static uint HalfToFloatI( ushort y )
 		{
-			uint yuint = (uint)y;
-			uint s = ( yuint >> 15 ) & 0x00000001;
-			uint e = ( yuint >> 10 ) & 0x0000001f;
-			uint m = yuint & 0x000003ff;
+			var yuint = (uint)y;
+			var s = ( yuint >> 15 ) & 0x00000001;
+			var e = ( yuint >> 10 ) & 0x0000001f;
+			var m = yuint & 0x000003ff;
 
 			if ( e == 0 )
 			{

@@ -37,49 +37,51 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using Axiom.RenderSystems.Xna.Content;
+using System.ComponentModel.Composition;
+using Axiom.Core;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	/// Summary description for Plugin.
-	/// </summary>
-	public sealed class Plugin : Axiom.Core.IPlugin
-	{
-		#region Fields
+    /// <summary>
+    /// Summary description for Plugin.
+    /// </summary>
+    [Export(typeof(IPlugin))]
+    public sealed class Plugin : IPlugin
+    {
+        #region Fields
 
-		/// <summary>
-		///     Reference to the render system instance.
-		/// </summary>
-		private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
+        /// <summary>
+        ///     Reference to the render system instance.
+        /// </summary>
+        private RenderSystem renderSystem = new XnaRenderSystem();
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Implementation of IPlugin
+        #region Implementation of IPlugin
 
-		public void Initialize()
-		{
-			// add an instance of this plugin to the list of available RenderSystems
-			Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
+        public void Initialize()
+        {
+            // add an instance of this plugin to the list of available RenderSystems
+            Root.Instance.RenderSystems.Add( "Xna", renderSystem );
 
-			XnaResourceGroupManager.Instance.Initialize( new string[]
-														 {
-															 "png", "jpg", "bmp", "dds", "jpeg", "tiff"
-														 } );
+            ResourceGroupManager.Instance.Initialize( new[]
+                                                      {
+                                                          "png", "jpg", "bmp", "dds", "jpeg", "tiff"
+                                                      } );
 
-			//new XnaMaterialManager();
-		}
+            //new XnaMaterialManager();
+        }
 
-		public void Shutdown()
-		{
-			// nothing at the moment
-			renderSystem.Shutdown();
-			renderSystem = null;
-		}
+        public void Shutdown()
+        {
+            // nothing at the moment
+            renderSystem.Shutdown();
+            renderSystem = null;
+        }
 
-		#endregion Implementation of IPlugin
-	}
+        #endregion Implementation of IPlugin
+    }
 }

@@ -38,6 +38,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -60,7 +61,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Pointer to the raw data we will be writing to.
 		/// </summary>
-		protected IntPtr data;
+        protected BufferBase data;
 		/// <summary>
 		///     Reference to the hardware buffer who owns this stream.
 		/// </summary>
@@ -80,7 +81,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="owner">Reference to the hardware buffer who owns this stream.</param>
 		/// <param name="data">Pointer to the raw data we will be writing to.</param>
-		internal BufferStream( HardwareBuffer owner, IntPtr data )
+        internal BufferStream(HardwareBuffer owner, BufferBase data)
 		{
 			this.data = data;
 			this.owner = owner;
@@ -176,7 +177,7 @@ namespace Axiom.Graphics
 
 		public void Write( System.Array val, int offset )
 		{
-			int count = Marshal.SizeOf( val.GetType().GetElementType() ) * val.Length;
+			var count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
 
 			Write( val, offset, count );
 		}
@@ -195,7 +196,7 @@ namespace Axiom.Graphics
 				throw new AxiomException( "Cannot write to a buffer stream when the buffer is not locked." );
 			}
 
-			long newOffset = position + offset;
+			var newOffset = position + offset;
 
 			// ensure we won't go past the end of the stream
 			if ( newOffset + count > this.Length )
@@ -204,22 +205,24 @@ namespace Axiom.Graphics
 			}
 
 			// pin the array so we can get a pointer to it
-			GCHandle handle = GCHandle.Alloc( val, GCHandleType.Pinned );
+		    var handle = Memory.PinObject(val);
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
 				// get byte pointers for the source and target
-				byte* b = (byte*)handle.AddrOfPinnedObject().ToPointer();
-				byte* dataPtr = (byte*)data.ToPointer();
+				var b = handle.ToBytePointer();
+				var dataPtr = data.ToBytePointer();
 
 				// copy the data from the source to the target
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
-					dataPtr[ i + newOffset ] = b[ i ];
+					dataPtr[ (int)(i + newOffset) ] = b[ i ];
 				}
 			}
 
-			handle.Free();
+            Memory.UnpinObject(val);
 		}
 
 		/// <summary>

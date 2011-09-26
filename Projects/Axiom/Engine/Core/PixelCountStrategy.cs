@@ -101,7 +101,7 @@ namespace Axiom.Core
 		protected override Real getValue( MovableObject movableObject, Camera camera )
 		{
 			// Get viewport
-			Viewport viewport = camera.Viewport;
+			var viewport = camera.Viewport;
 
 			// Get viewport area
 			float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
@@ -115,14 +115,14 @@ namespace Axiom.Core
 				case Projection.Perspective:
 					{
 						// Get camera distance
-						float distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
+						var distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
 
 						// Check for 0 distance
 						if ( distanceSquared <= float.Epsilon )
 							return BaseValue;
 
 						// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-						Matrix4 projectionMatrix = camera.ProjectionMatrix;
+						var projectionMatrix = camera.ProjectionMatrix;
 
 						//estimate pixel count
 						return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
@@ -131,7 +131,7 @@ namespace Axiom.Core
 				case Projection.Orthographic:
 					{
 						// Compute orthographic area
-						float orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
+						var orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
 
 						// Check for 0 orthographic area
 						if ( orthoArea <= float.Epsilon )

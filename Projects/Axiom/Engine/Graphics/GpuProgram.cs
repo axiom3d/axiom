@@ -872,7 +872,7 @@ namespace Axiom.Graphics
 
         [ScriptableProperty("type", "'vertex_program', 'geometry_program' or 'fragment_program'")]
         [OgreVersion(1, 7, 2790)]
-        protected class TypePropertyCommand : IPropertyCommand<GpuProgram>
+        public class TypePropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -916,7 +916,7 @@ namespace Axiom.Graphics
 
         [ScriptableProperty("syntax", "Syntax code, e.g. vs_1_1")]
         [OgreVersion(1, 7, 2790)]
-        protected class SyntaxPropertyCommand : IPropertyCommand<GpuProgram>
+        public class SyntaxPropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -941,7 +941,7 @@ namespace Axiom.Graphics
 
         [OgreVersion(1, 7, 2790)]
         [ScriptableProperty("includes_skeletal_animation", "Whether this vertex program includes skeletal animation")]
-        protected class IncludesSkeletalAnimationPropertyCommand : IPropertyCommand<GpuProgram>
+        public class IncludesSkeletalAnimationPropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -966,7 +966,7 @@ namespace Axiom.Graphics
 
         [OgreVersion(1, 7, 2790)]
         [ScriptableProperty("includes_morph_animation", "Whether this vertex program includes morph animation")]
-        protected class IncludesMorphAnimationPropertyCommand : IPropertyCommand<GpuProgram>
+        public class IncludesMorphAnimationPropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -991,7 +991,7 @@ namespace Axiom.Graphics
 
         [OgreVersion(1, 7, 2790)]
         [ScriptableProperty("includes_pose_animation", "The number of poses this vertex program supports for pose animation")]
-        protected class IncludesPoseAnimationPropertyCommand : IPropertyCommand<GpuProgram>
+        public class IncludesPoseAnimationPropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -1016,7 +1016,7 @@ namespace Axiom.Graphics
 
         [OgreVersion(1, 7, 2790)]
         [ScriptableProperty("uses_vertex_texture_fetch", "Whether this vertex program requires vertex texture fetch support.")]
-        protected class IsVertexTextureFetchRequiredPropertyCommand : IPropertyCommand<GpuProgram>
+        public class IsVertexTextureFetchRequiredPropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -1041,7 +1041,7 @@ namespace Axiom.Graphics
 
         [OgreVersion(1, 7, 2790)]
         [ScriptableProperty("manual_named_constants", "File containing named parameter mappings for low-level programs.")]
-        protected class ManualNamedConstantsFilePropertyCommand : IPropertyCommand<GpuProgram>
+        public class ManualNamedConstantsFilePropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 
@@ -1066,7 +1066,7 @@ namespace Axiom.Graphics
 
         [OgreVersion(1, 7, 2790)]
         [ScriptableProperty("uses_adjacency_information", "Whether this geometry program requires adjacency information from the input primitives.")]
-        protected class IsAdjacencyInfoRequiredPropertyCommand : IPropertyCommand<GpuProgram>
+        public class IsAdjacencyInfoRequiredPropertyCommand : IPropertyCommand<GpuProgram>
         {
             #region IPropertyCommand Members
 

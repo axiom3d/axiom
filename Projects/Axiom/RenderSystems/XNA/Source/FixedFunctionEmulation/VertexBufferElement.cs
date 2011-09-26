@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,52 +23,55 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-
-using Axiom.Core;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	struct VertexBufferElement
-	{
-		#region Fields
+    internal struct VertexBufferElement
+    {
+        #region Fields
 
-		public VertexElementSemantic VertexElementSemantic;
-		public VertexElementType VertexElementType;
-		public ushort VertexElementIndex;
+        public VertexElementSemantic VertexElementSemantic;
+        public VertexElementType VertexElementType;
+        public ushort VertexElementIndex;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region System.Object Implementation
+        #region System.Object Implementation
 
-		public override bool Equals( object obj )
-		{
-			return obj.GetHashCode() == GetHashCode();
-		}
+        public override bool Equals( object obj )
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
 
-		public override int GetHashCode()
-		{
-			return VertexElementSemantic.GetHashCode() ^ VertexElementType.GetHashCode() ^ VertexElementIndex.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            return VertexElementSemantic.GetHashCode() ^ VertexElementType.GetHashCode() ^
+                   VertexElementIndex.GetHashCode();
+        }
 
-		public override string ToString()
-		{
-			return String.Format( "{1} {2}{0}", VertexElementIndex, VertexElementType, VertexElementSemantic );
-		}
-		#endregion System.Object Implementation
-	}
+        public override string ToString()
+        {
+            return String.Format( "{1} {2}{0}", VertexElementIndex, VertexElementType, VertexElementSemantic );
+        }
+
+        #endregion System.Object Implementation
+    }
 }

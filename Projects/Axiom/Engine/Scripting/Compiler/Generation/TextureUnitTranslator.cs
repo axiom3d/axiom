@@ -68,9 +68,9 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
-				Pass pass = (Pass)obj.Parent.Context;
+				var pass = (Pass)obj.Parent.Context;
 				_textureunit = pass.CreateTextureUnitState();
 				obj.Context = _textureunit;
 
@@ -79,11 +79,11 @@ namespace Axiom.Scripting.Compiler
 					_textureunit.Name = obj.Name;
 
 				// Set the properties for the material
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_TEXTURE_ALIAS
@@ -122,22 +122,22 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode j = getNodeAt( prop.Values, 0 );
-									int index = 1;
+									var j = getNodeAt( prop.Values, 0 );
+									var index = 1;
 									string val;
 									if ( getString( j, out val ) )
 									{
-										TextureType texType = TextureType.TwoD;
-										bool isAlpha = false;
-										bool sRGBRead = false;
-										PixelFormat format = PixelFormat.Unknown;
-										int mipmaps = -1;//MIP_DEFAULT;
+										var texType = TextureType.TwoD;
+										var isAlpha = false;
+										var sRGBRead = false;
+										var format = PixelFormat.Unknown;
+										var mipmaps = -1;//MIP_DEFAULT;
 
 										while ( j != null )
 										{
 											if ( j is AtomAbstractNode )
 											{
-												AtomAbstractNode atom = (AtomAbstractNode)j;
+												var atom = (AtomAbstractNode)j;
 												switch ( (Keywords)atom.Id )
 												{
 													case Keywords.ID_1D:
@@ -190,7 +190,7 @@ namespace Axiom.Scripting.Compiler
 
 										compiler._fireEvent( ref evt );
 
-										string textureName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+										var textureName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
 										_textureunit.SetTextureName( textureName, texType );
 										_textureunit.DesiredFormat = format;
@@ -213,7 +213,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i1 = getNodeAt( prop.Values, 1 );
+									var i1 = getNodeAt( prop.Values, 1 );
 									if ( i1 is AtomAbstractNode && ( (AtomAbstractNode)i ).IsNumber )
 									{
 										// Short form
@@ -229,7 +229,7 @@ namespace Axiom.Scripting.Compiler
 													ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val0 );
 
 												compiler._fireEvent( ref evt );
-												string evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+												var evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
 												_textureunit.SetAnimatedTextureName( evtName, val1, val2 );
 											}
@@ -249,19 +249,19 @@ namespace Axiom.Scripting.Compiler
 									{
 										// Long form has n number of frames
 										Real duration = 0;
-										AbstractNode inNode = getNodeAt( prop.Values, prop.Values.Count - 1 );
+										var inNode = getNodeAt( prop.Values, prop.Values.Count - 1 );
 										if ( getReal( inNode, out duration ) )
 										{
-											string[] names = new string[ prop.Values.Count - 1 ];
-											int n = 0;
+											var names = new string[ prop.Values.Count - 1 ];
+											var n = 0;
 
-											AbstractNode j = prop.Values[ 0 ];
-											int index = 0;
+											var j = prop.Values[ 0 ];
+											var index = 0;
 											while ( j != inNode )
 											{
 												if ( j is AtomAbstractNode )
 												{
-													string name = ( (AtomAbstractNode)j ).Value;
+													var name = ( (AtomAbstractNode)j ).Value;
 
 #warning check this if statement
 													// Run the name through the listener
@@ -315,7 +315,7 @@ namespace Axiom.Scripting.Compiler
 											ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, atom0.Value );
 
 										compiler._fireEvent( ref evt );
-										string evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+										var evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
 										_textureunit.SetCubicTextureName( evtName, atom1.Id == (uint)Keywords.ID_COMBINED_UVW );
 									}
@@ -343,7 +343,7 @@ namespace Axiom.Scripting.Compiler
 											atom4 = (AtomAbstractNode)i4, atom5 = (AtomAbstractNode)i5,
 											atom6 = (AtomAbstractNode)i6;
 
-										string[] names = new string[ 6 ];
+										var names = new string[ 6 ];
 										names[ 0 ] = atom0.Value;
 										names[ 1 ] = atom1.Value;
 										names[ 2 ] = atom2.Value;
@@ -354,7 +354,7 @@ namespace Axiom.Scripting.Compiler
 										if ( compiler.Listener != null )
 										{
 											// Run each name through the listener
-											for ( int j = 0; j < 6; ++j )
+											for ( var j = 0; j < 6; ++j )
 											{
 												ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
 													ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, names[ j ] );
@@ -389,7 +389,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									int val = 0;
+									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 										_textureunit.TextureCoordSet = val;
 									else
@@ -411,11 +411,11 @@ namespace Axiom.Scripting.Compiler
 										i1 = getNodeAt( prop.Values, 1 ),
 										i2 = getNodeAt( prop.Values, 2 );
 
-									UVWAddressing mode = new UVWAddressing( TextureAddressing.Wrap );
+									var mode = new UVWAddressing( TextureAddressing.Wrap );
 
 									if ( i0 != null && i0 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)i0;
+										var atom = (AtomAbstractNode)i0;
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_WRAP:
@@ -445,7 +445,7 @@ namespace Axiom.Scripting.Compiler
 
 									if ( i1 != null && i1 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)i1;
+										var atom = (AtomAbstractNode)i1;
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_WRAP:
@@ -473,7 +473,7 @@ namespace Axiom.Scripting.Compiler
 
 									if ( i2 != null && i2 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)i2;
+										var atom = (AtomAbstractNode)i2;
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_WRAP:
@@ -532,7 +532,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
@@ -676,7 +676,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									int val = 0;
+									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 										_textureunit.TextureAnisotropy = val;
 									else
@@ -728,7 +728,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_REPLACE:
@@ -786,7 +786,7 @@ namespace Axiom.Scripting.Compiler
 											atom1 = (AtomAbstractNode)i1,
 											atom2 = (AtomAbstractNode)i2;
 
-										LayerBlendOperationEx op = LayerBlendOperationEx.Add;
+										var op = LayerBlendOperationEx.Add;
 										LayerBlendSource source1 = LayerBlendSource.Current, source2 = LayerBlendSource.Texture;
 										ColorEx arg1 = ColorEx.White, arg2 = ColorEx.White;
 										Real manualBlend = 0.0f;
@@ -917,7 +917,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( op == LayerBlendOperationEx.BlendManual )
 										{
-											AbstractNode i3 = getNodeAt( prop.Values, 3 );
+											var i3 = getNodeAt( prop.Values, 3 );
 											if ( i3 != null )
 											{
 												if ( !getReal( i3, out manualBlend ) )
@@ -931,8 +931,8 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										AbstractNode j = getNodeAt( prop.Values, 3 );
-										int index = 3;
+										var j = getNodeAt( prop.Values, 3 );
+										var index = 3;
 										if ( op == LayerBlendOperationEx.BlendManual )
 											j = getNodeAt( prop.Values, ++index );
 
@@ -991,7 +991,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
@@ -1063,7 +1063,7 @@ namespace Axiom.Scripting.Compiler
 											atom1 = (AtomAbstractNode)i1,
 											atom2 = (AtomAbstractNode)i2;
 
-										LayerBlendOperationEx op = LayerBlendOperationEx.Add;
+										var op = LayerBlendOperationEx.Add;
 										LayerBlendSource source1 = LayerBlendSource.Current, source2 = LayerBlendSource.Texture;
 										Real arg1 = 0.0f, arg2 = 0.0f;
 										Real manualBlend = 0.0f;
@@ -1194,7 +1194,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( op == LayerBlendOperationEx.BlendManual )
 										{
-											AbstractNode i3 = getNodeAt( prop.Values, 3 );
+											var i3 = getNodeAt( prop.Values, 3 );
 											if ( i3 != null )
 											{
 												if ( !getReal( i3, out manualBlend ) )
@@ -1208,8 +1208,8 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										AbstractNode j = getNodeAt( prop.Values, 3 );
-										int index = 3;
+										var j = getNodeAt( prop.Values, 3 );
+										var index = 3;
 										if ( op == LayerBlendOperationEx.BlendManual )
 											j = getNodeAt( prop.Values, ++index );
 
@@ -1270,7 +1270,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( atom.Id )
 										{
 											case (uint)BuiltIn.ID_OFF:
@@ -1449,8 +1449,8 @@ namespace Axiom.Scripting.Compiler
 										i3 is AtomAbstractNode && i4 is AtomAbstractNode && i5 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
-										TextureTransform type = TextureTransform.Rotate;
-										WaveformType wave = WaveformType.Sine;
+										var type = TextureTransform.Rotate;
+										var wave = WaveformType.Sine;
 										Real baseVal = 0.0f, freq = 0.0f, phase = 0.0f, amp = 0.0f;
 
 										switch ( (Keywords)atom0.Id )
@@ -1557,7 +1557,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_VERTEX:

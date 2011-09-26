@@ -1,7 +1,7 @@
 ﻿#region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Math;
@@ -11,7 +11,8 @@ using Axiom.Graphics;
 
 namespace Axiom.Demos
 {
-	class MousePicking : TechDemo
+    [Export(typeof(TechDemo))]
+    public class MousePicking : TechDemo
 	{
 
 		#region Fields & Properties

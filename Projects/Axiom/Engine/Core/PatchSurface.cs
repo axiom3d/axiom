@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
@@ -66,7 +67,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Buffer containing the system-memory control points.
 		/// </summary>
-		protected IntPtr controlPointBuffer;
+		protected BufferBase controlPointBuffer;
 		/// <summary>
 		///     Type of surface.
 		/// </summary>
@@ -241,16 +242,17 @@ namespace Axiom.Core
 
 			// Copy positions into Vector3 vector
 			controlPoints.Clear();
-			VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
-			int vertSize = declaration.GetVertexSize( 0 );
+			var elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
+			var vertSize = declaration.GetVertexSize( 0 );
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				byte* pVert = (byte*)controlPointBuffer;
-				float* pReal = null;
-				for ( int i = 0; i < controlCount; i++ )
+				var pVert = controlPointBuffer;
+				for ( var i = 0; i < controlCount; i++ )
 				{
-					pReal = (float*)( pVert + ( i * vertSize ) + elem.Offset );
+					var pReal = ( pVert + (( i * vertSize ) + elem.Offset )).ToFloatPointer();
 					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
 				}
 			}
@@ -284,18 +286,18 @@ namespace Axiom.Core
 
 			// Calculate number of required vertices / indexes at max resolution
 			requiredVertexCount = meshWidth * meshHeight;
-			int iterations = ( side == VisibleSide.Both ) ? 2 : 1;
+			var iterations = ( side == VisibleSide.Both ) ? 2 : 1;
 			requiredIndexCount = ( meshWidth - 1 ) * ( meshHeight - 1 ) * 2 * iterations * 3;
 
 			// Calculate bounds based on control points
-			Vector3 min = Vector3.Zero;
-			Vector3 max = Vector3.Zero;
-			float maxSqRadius = 0.0f;
-			bool first = true;
+			var min = Vector3.Zero;
+			var max = Vector3.Zero;
+			var maxSqRadius = 0.0f;
+			var first = true;
 
-			for ( int i = 0; i < controlPoints.Count; i++ )
+			for ( var i = 0; i < controlPoints.Count; i++ )
 			{
-				Vector3 vec = controlPoints[ i ];
+				var vec = controlPoints[ i ];
 				if ( first )
 				{
 					min = max = vec;
@@ -344,7 +346,7 @@ namespace Axiom.Core
 			indexOffset = indexStart;
 
 			// lock just the region we are interested in
-			IntPtr lockedBuffer = vertexBuffer.Lock(
+			var lockedBuffer = vertexBuffer.Lock(
 				vertexOffset * declaration.GetVertexSize( 0 ),
 				requiredVertexCount * declaration.GetVertexSize( 0 ),
 				BufferLocking.NoOverwrite );
@@ -353,17 +355,17 @@ namespace Axiom.Core
 
 			// subdivide the curves to the max
 			// Do u direction first, so need to step over v levels not done yet
-			int vStep = 1 << maxVLevel;
-			int uStep = 1 << maxULevel;
+			var vStep = 1 << maxVLevel;
+			var uStep = 1 << maxULevel;
 
 			// subdivide this row in u
-			for ( int v = 0; v < meshHeight; v += vStep )
+			for ( var v = 0; v < meshHeight; v += vStep )
 			{
 				SubdivideCurve( lockedBuffer, v * meshWidth, uStep, meshWidth / uStep, uLevel );
 			}
 
 			// Now subdivide in v direction, this time all the u direction points are there so no step
-			for ( int u = 0; u < meshWidth; u++ )
+			for ( var u = 0; u < meshWidth; u++ )
 			{
 				SubdivideCurve( lockedBuffer, u, vStep * meshWidth, meshHeight / vStep, vLevel );
 			}
@@ -391,11 +393,11 @@ namespace Axiom.Core
 			const float subdiv = 10;
 			int level;
 
-			float test = subdiv * subdiv;
+			var test = subdiv * subdiv;
 
-			Vector3 s = Vector3.Zero;
-			Vector3 t = Vector3.Zero;
-			Vector3 d = Vector3.Zero;
+			var s = Vector3.Zero;
+			var t = Vector3.Zero;
+			var d = Vector3.Zero;
 
 			for ( level = 0; level < maxLevels - 1; level++ )
 			{
@@ -422,83 +424,85 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		/// <param name="lockedBuffer"></param>
-		protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
+		protected void DistributeControlPoints( BufferBase lockedBuffer )
 		{
-			// Insert original control points into expanded mesh
-			int uStep = 1 << uLevel;
-			int vStep = 1 << vLevel;
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                // Insert original control points into expanded mesh
+                var uStep = 1 << uLevel;
+                var vStep = 1 << vLevel;
 
 
-			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
-			VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
-			VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
+                var elemPos = declaration.FindElementBySemantic(VertexElementSemantic.Position);
+                var elemNorm = declaration.FindElementBySemantic(VertexElementSemantic.Normal);
+                var elemTex0 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
+                var elemTex1 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
+                var elemDiffuse = declaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
 
-			byte* pSrc = (byte*)controlPointBuffer;
-			byte* pDest;
-			int vertexSize = declaration.GetVertexSize( 0 );
-			float* pSrcReal, pDestReal;
-			int* pSrcRGBA, pDestRGBA;
+                var pSrc = controlPointBuffer;
+                var vertexSize = declaration.GetVertexSize(0);
 
-			for ( int v = 0; v < meshHeight; v += vStep )
-			{
-				// set dest by v from base
-				pDest = (byte*)( lockedBuffer ) + ( vertexSize * meshWidth * v );
+                for (var v = 0; v < meshHeight; v += vStep)
+                {
+                    // set dest by v from base
+                    var pDest = lockedBuffer + (vertexSize*meshWidth*v);
 
-				for ( int u = 0; u < meshWidth; u += uStep )
-				{
-					// Copy Position
-					pSrcReal = (float*)( (byte*)pSrc + elemPos.Offset );
-					pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
-					*pDestReal++ = *pSrcReal++;
-					*pDestReal++ = *pSrcReal++;
-					*pDestReal++ = *pSrcReal++;
+                    for (var u = 0; u < meshWidth; u += uStep)
+                    {
+                        // Copy Position
+                        var pSrcReal = (pSrc + elemPos.Offset).ToFloatPointer();
+                        var pDestReal = (pDest + elemPos.Offset).ToFloatPointer();
+                        pDestReal[0] = pSrcReal[0];
+                        pDestReal[1] = pSrcReal[1];
+                        pDestReal[2] = pSrcReal[2];
 
-					// Copy Normals
-					if ( elemNorm != null )
-					{
-						pSrcReal = (float*)( (byte*)pSrc + elemNorm.Offset );
-						pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
-						*pDestReal++ = *pSrcReal++;
-						*pDestReal++ = *pSrcReal++;
-						*pDestReal++ = *pSrcReal++;
-					}
+                        // Copy Normals
+                        if (elemNorm != null)
+                        {
+                            pSrcReal = (pSrc + elemNorm.Offset).ToFloatPointer();
+                            pDestReal = (pDest + elemNorm.Offset).ToFloatPointer();
+                            pDestReal[0] = pSrcReal[0];
+                            pDestReal[1] = pSrcReal[1];
+                            pDestReal[2] = pSrcReal[2];
+                        }
 
-					// Copy Diffuse
-					if ( elemDiffuse != null )
-					{
-						pSrcRGBA = (int*)( (byte*)pSrc + elemDiffuse.Offset );
-						pDestRGBA = (int*)( (byte*)pDest + elemDiffuse.Offset );
-						*pDestRGBA++ = *pSrcRGBA++;
-					}
+                        // Copy Diffuse
+                        if (elemDiffuse != null)
+                        {
+                            var pSrcRGBA = (pSrc + elemDiffuse.Offset).ToIntPointer();
+                            var pDestRGBA = (pDest + elemDiffuse.Offset).ToIntPointer();
+                            pDestRGBA[0] = pSrcRGBA[0];
+                        }
 
-					// Copy texture coords
-					if ( elemTex0 != null )
-					{
-						pSrcReal = (float*)( (byte*)pSrc + elemTex0.Offset );
-						pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
-						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
-						{
-							*pDestReal++ = *pSrcReal++;
-						}
-					}
-					if ( elemTex1 != null )
-					{
-						pSrcReal = (float*)( (byte*)pSrc + elemTex1.Offset );
-						pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
-						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
-						{
-							*pDestReal++ = *pSrcReal++;
-						}
-					}
+                        // Copy texture coords
+                        if (elemTex0 != null)
+                        {
+                            pSrcReal = (pSrc + elemTex0.Offset).ToFloatPointer();
+                            pDestReal = (pDest + elemTex0.Offset).ToFloatPointer();
+                            for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex0.Type); dim++)
+                            {
+                                pDestReal[dim] = pSrcReal[dim];
+                            }
+                        }
+                        if (elemTex1 != null)
+                        {
+                            pSrcReal = (pSrc + elemTex1.Offset).ToFloatPointer();
+                            pDestReal = (pDest + elemTex1.Offset).ToFloatPointer();
+                            for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex1.Type); dim++)
+                            {
+                                pDestReal[dim] = pSrcReal[dim];
+                            }
+                        }
 
-					// Increment source by one vertex
-					pSrc += vertexSize;
-					// Increment dest by 1 vertex * uStep
-					pDest += vertexSize * uStep;
-				} // u
-			} // v
+                        // Increment source by one vertex
+                        pSrc += vertexSize;
+                        // Increment dest by 1 vertex * uStep
+                        pDest += vertexSize*uStep;
+                    } // u
+                } // v
+            }
 		}
 
 		/// <summary>
@@ -509,14 +513,14 @@ namespace Axiom.Core
 		/// <param name="stepSize"></param>
 		/// <param name="numSteps"></param>
 		/// <param name="iterations"></param>
-		protected void SubdivideCurve( IntPtr lockedBuffer, int startIdx, int stepSize, int numSteps, int iterations )
+		protected void SubdivideCurve( BufferBase lockedBuffer, int startIdx, int stepSize, int numSteps, int iterations )
 		{
 			// Subdivides a curve within a sparsely populated buffer (gaps are already there to be interpolated into)
 			int leftIdx, rightIdx, destIdx, halfStep, maxIdx;
 			bool firstSegment;
 
 			maxIdx = startIdx + ( numSteps * stepSize );
-			int step = stepSize;
+			var step = stepSize;
 
 			while ( iterations-- > 0 )
 			{
@@ -554,104 +558,107 @@ namespace Axiom.Core
 		/// <param name="leftIndex"></param>
 		/// <param name="rightIndex"></param>
 		/// <param name="destIndex"></param>
-		protected unsafe void InterpolateVertexData( IntPtr lockedBuffer, int leftIndex, int rightIndex, int destIndex )
+		protected void InterpolateVertexData( BufferBase lockedBuffer, int leftIndex, int rightIndex, int destIndex )
 		{
-			int vertexSize = declaration.GetVertexSize( 0 );
-			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
-			VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
-			VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                var vertexSize = declaration.GetVertexSize(0);
+                var elemPos = declaration.FindElementBySemantic(VertexElementSemantic.Position);
+                var elemNorm = declaration.FindElementBySemantic(VertexElementSemantic.Normal);
+                var elemDiffuse = declaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
+                var elemTex0 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
+                var elemTex1 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
 
-			float* pDestReal, pLeftReal, pRightReal;
-			byte* pDestChar, pLeftChar, pRightChar;
-			byte* pDest, pLeft, pRight;
+                //byte* pDestChar, pLeftChar, pRightChar;
 
-			// Set up pointers & interpolate
-			pDest = ( (byte*)lockedBuffer + ( vertexSize * destIndex ) );
-			pLeft = ( (byte*)lockedBuffer + ( vertexSize * leftIndex ) );
-			pRight = ( (byte*)lockedBuffer + ( vertexSize * rightIndex ) );
+                // Set up pointers & interpolate
+                var pDest = (lockedBuffer + (vertexSize*destIndex));
+                var pLeft = (lockedBuffer + (vertexSize*leftIndex));
+                var pRight = (lockedBuffer + (vertexSize*rightIndex));
 
-			// Position
-			pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
-			pLeftReal = (float*)( (byte*)pLeft + elemPos.Offset );
-			pRightReal = (float*)( (byte*)pRight + elemPos.Offset );
+                // Position
+                var pDestReal = (pDest + elemPos.Offset).ToFloatPointer();
+                var pLeftReal = (pLeft + elemPos.Offset).ToFloatPointer();
+                var pRightReal = (pRight + elemPos.Offset).ToFloatPointer();
 
-			*pDestReal++ = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
-			*pDestReal++ = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
-			*pDestReal++ = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
+                pDestReal[0] = (pLeftReal[0] + pRightReal[0])*0.5f;
+                pDestReal[1] = (pLeftReal[1] + pRightReal[1])*0.5f;
+                pDestReal[2] = (pLeftReal[2] + pRightReal[2])*0.5f;
 
-			if ( elemNorm != null )
-			{
-				// Normals
-				pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
-				pLeftReal = (float*)( (byte*)pLeft + elemNorm.Offset );
-				pRightReal = (float*)( (byte*)pRight + elemNorm.Offset );
+                if (elemNorm != null)
+                {
+                    // Normals
+                    pDestReal = (pDest + elemNorm.Offset).ToFloatPointer();
+                    pLeftReal = (pLeft + elemNorm.Offset).ToFloatPointer();
+                    pRightReal = (pRight + elemNorm.Offset).ToFloatPointer();
 
-				Vector3 norm = Vector3.Zero;
-				norm.x = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
-				norm.y = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
-				norm.z = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
-				norm.Normalize();
+                    var norm = Vector3.Zero;
+                    norm.x = (pLeftReal[0] + pRightReal[0])*0.5f;
+                    norm.y = (pLeftReal[1] + pRightReal[1])*0.5f;
+                    norm.z = (pLeftReal[2] + pRightReal[2])*0.5f;
+                    norm.Normalize();
 
-				*pDestReal++ = norm.x;
-				*pDestReal++ = norm.y;
-				*pDestReal++ = norm.z;
-			}
-			if ( elemDiffuse != null )
-			{
-				// Blend each byte individually
-				pDestChar = (byte*)( pDest + elemDiffuse.Offset );
-				pLeftChar = (byte*)( pLeft + elemDiffuse.Offset );
-				pRightChar = (byte*)( pRight + elemDiffuse.Offset );
+                    pDestReal[0] = norm.x;
+                    pDestReal[1] = norm.y;
+                    pDestReal[2] = norm.z;
+                }
+                if (elemDiffuse != null)
+                {
+                    // Blend each byte individually
+                    var pDestChar = (pDest + elemDiffuse.Offset).ToBytePointer();
+                    var pLeftChar = (pLeft + elemDiffuse.Offset).ToBytePointer();
+                    var pRightChar = (pRight + elemDiffuse.Offset).ToBytePointer();
 
-				// 4 bytes to RGBA
-				*pDestChar++ = (byte)( ( ( *pLeftChar++ ) + ( *pRightChar++ ) ) * 0.5f );
-				*pDestChar++ = (byte)( ( ( *pLeftChar++ ) + ( *pRightChar++ ) ) * 0.5f );
-				*pDestChar++ = (byte)( ( ( *pLeftChar++ ) + ( *pRightChar++ ) ) * 0.5f );
-				*pDestChar++ = (byte)( ( ( *pLeftChar++ ) + ( *pRightChar++ ) ) * 0.5f );
-			}
-			if ( elemTex0 != null )
-			{
-				// Blend each byte individually
-				pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
-				pLeftReal = (float*)( (byte*)pLeft + elemTex0.Offset );
-				pRightReal = (float*)( (byte*)pRight + elemTex0.Offset );
+                    // 4 bytes to RGBA
+                    pDestChar[0] = (byte) ((pLeftChar[0] + pRightReal[0])*0.5f);
+                    pDestChar[1] = (byte) ((pLeftChar[1] + pRightChar[1])*0.5f);
+                    pDestChar[2] = (byte) ((pLeftChar[2] + pRightChar[2])*0.5f);
+                    pDestChar[3] = (byte) ((pLeftChar[3] + pRightChar[3])*0.5f);
+                }
+                if (elemTex0 != null)
+                {
+                    // Blend each byte individually
+                    pDestReal = (pDest + elemTex0.Offset).ToFloatPointer();
+                    pLeftReal = (pLeft + elemTex0.Offset).ToFloatPointer();
+                    pRightReal = (pRight + elemTex0.Offset).ToFloatPointer();
 
-				for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
-				{
-					*pDestReal++ = ( ( *pLeftReal++ ) + ( *pRightReal++ ) ) * 0.5f;
-				}
-			}
-			if ( elemTex1 != null )
-			{
-				// Blend each byte individually
-				pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
-				pLeftReal = (float*)( (byte*)pLeft + elemTex1.Offset );
-				pRightReal = (float*)( (byte*)pRight + elemTex1.Offset );
+                    for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex0.Type); dim++)
+                    {
+                        pDestReal[dim] = (pLeftReal[dim] + pRightReal[dim])*0.5f;
+                    }
+                }
+                if (elemTex1 != null)
+                {
+                    // Blend each byte individually
+                    pDestReal = (pDest + elemTex1.Offset).ToFloatPointer();
+                    pLeftReal = (pLeft + elemTex1.Offset).ToFloatPointer();
+                    pRightReal = (pRight + elemTex1.Offset).ToFloatPointer();
 
-				for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
-				{
-					*pDestReal++ = ( ( *pLeftReal++ ) + ( *pRightReal++ ) ) * 0.5f;
-				}
-			}
+                    for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex1.Type); dim++)
+                    {
+                        pDestReal[dim] = (pLeftReal[dim] + pRightReal[dim])*0.5f;
+                    }
+                }
+            }
 		}
 
 		/// <summary>
 		///
 		/// </summary>
-		protected unsafe void MakeTriangles()
+		protected void MakeTriangles()
 		{
 			// Our vertex buffer is subdivided to the highest level, we need to generate tris
 			// which step over the vertices we don't need for this level of detail.
 
 			// Calculate steps
-			int vStep = 1 << ( maxVLevel - vLevel );
-			int uStep = 1 << ( maxULevel - uLevel );
-			int currentWidth = ( LevelWidth( uLevel ) - 1 ) * ( ( controlWidth - 1 ) / 2 ) + 1;
-			int currentHeight = ( LevelWidth( vLevel ) - 1 ) * ( ( controlHeight - 1 ) / 2 ) + 1;
+			var vStep = 1 << ( maxVLevel - vLevel );
+			var uStep = 1 << ( maxULevel - uLevel );
+			var currentWidth = ( LevelWidth( uLevel ) - 1 ) * ( ( controlWidth - 1 ) / 2 ) + 1;
+			var currentHeight = ( LevelWidth( vLevel ) - 1 ) * ( ( controlHeight - 1 ) / 2 ) + 1;
 
-			bool use32bitindexes = ( indexBuffer.Type == IndexType.Size32 );
+			var use32bitindexes = ( indexBuffer.Type == IndexType.Size32 );
 
 			// The mesh is built, just make a list of indexes to spit out the triangles
 			int vInc, uInc;
@@ -683,101 +690,95 @@ namespace Axiom.Core
 			currentIndexCount = ( currentWidth - 1 ) * ( currentHeight - 1 ) * 6 * iterations;
 
 			int v1, v2, v3;
-			int count = 0;
+			var count = 0;
 
-			// Lock just the section of the buffer we need
-			IntPtr shortBuffer = IntPtr.Zero;
-			IntPtr intBuffer = IntPtr.Zero;
-			short* p16 = null;
-			int* p32 = null;
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                // Lock just the section of the buffer we need
+                var p32 = use32bitindexes
+                              ? indexBuffer.Lock(
+                                  indexOffset*sizeof(int),
+                                  requiredIndexCount*sizeof(int),
+                                  BufferLocking.NoOverwrite).ToIntPointer()
+                              : null;
+                var p16 = !use32bitindexes
+                              ? indexBuffer.Lock(
+                                  indexOffset*sizeof(short),
+                                  requiredIndexCount*sizeof(short),
+                                  BufferLocking.NoOverwrite).ToShortPointer()
+                              : null;
 
-			if ( use32bitindexes )
-			{
-				intBuffer = indexBuffer.Lock(
-					indexOffset * sizeof( int ),
-					requiredIndexCount * sizeof( int ),
-					BufferLocking.NoOverwrite );
+                while (iterations-- > 0)
+                {
+                    // Make tris in a zigzag pattern (compatible with strips)
+                    u = 0;
+                    uInc = uStep; // Start with moving +u
 
-				p32 = (int*)intBuffer;
-			}
-			else
-			{
-				shortBuffer = indexBuffer.Lock(
-					indexOffset * sizeof( short ),
-					requiredIndexCount * sizeof( short ),
-					BufferLocking.NoOverwrite );
+                    vCount = currentHeight - 1;
+                    while (vCount-- > 0)
+                    {
+                        uCount = currentWidth - 1;
 
-				p16 = (short*)shortBuffer;
-			}
+                        while (uCount-- > 0)
+                        {
+                            // First Tri in cell
+                            // -----------------
+                            v1 = ((v + vInc)*meshWidth) + u;
+                            v2 = (v*meshWidth) + u;
+                            v3 = ((v + vInc)*meshWidth) + (u + uInc);
 
-			while ( iterations-- > 0 )
-			{
-				// Make tris in a zigzag pattern (compatible with strips)
-				u = 0;
-				uInc = uStep; // Start with moving +u
+                            // Output indexes
+                            if (use32bitindexes)
+                            {
+                                p32[count++] = v1;
+                                p32[count++] = v2;
+                                p32[count++] = v3;
+                            }
+                            else
+                            {
+                                p16[count++] = (short) v1;
+                                p16[count++] = (short) v2;
+                                p16[count++] = (short) v3;
+                            }
+                            // Second Tri in cell
+                            // ------------------
+                            v1 = ((v + vInc)*meshWidth) + (u + uInc);
+                            v2 = (v*meshWidth) + u;
+                            v3 = (v*meshWidth) + (u + uInc);
 
-				vCount = currentHeight - 1;
-				while ( vCount-- > 0 )
-				{
-					uCount = currentWidth - 1;
+                            // Output indexes
+                            if (use32bitindexes)
+                            {
+                                p32[count++] = v1;
+                                p32[count++] = v2;
+                                p32[count++] = v3;
+                            }
+                            else
+                            {
+                                p16[count++] = (short) v1;
+                                p16[count++] = (short) v2;
+                                p16[count++] = (short) v3;
+                            }
 
-					while ( uCount-- > 0 )
-					{
-						// First Tri in cell
-						// -----------------
-						v1 = ( ( v + vInc ) * meshWidth ) + u;
-						v2 = ( v * meshWidth ) + u;
-						v3 = ( ( v + vInc ) * meshWidth ) + ( u + uInc );
+                            // Next column
+                            u += uInc;
+                        }
+                        // Next row
+                        v += vInc;
+                        u = 0;
+                    }
 
-						// Output indexes
-						if ( use32bitindexes )
-						{
-							p32[ count++ ] = v1;
-							p32[ count++ ] = v2;
-							p32[ count++ ] = v3;
-						}
-						else
-						{
-							p16[ count++ ] = (short)v1;
-							p16[ count++ ] = (short)v2;
-							p16[ count++ ] = (short)v3;
-						}
-						// Second Tri in cell
-						// ------------------
-						v1 = ( ( v + vInc ) * meshWidth ) + ( u + uInc );
-						v2 = ( v * meshWidth ) + u;
-						v3 = ( v * meshWidth ) + ( u + uInc );
+                    // Reverse vInc for double sided
+                    v = meshHeight - 1;
+                    vInc = -vInc;
 
-						// Output indexes
-						if ( use32bitindexes )
-						{
-							p32[ count++ ] = v1;
-							p32[ count++ ] = v2;
-							p32[ count++ ] = v3;
-						}
-						else
-						{
-							p16[ count++ ] = (short)v1;
-							p16[ count++ ] = (short)v2;
-							p16[ count++ ] = (short)v3;
-						}
+                }
 
-						// Next column
-						u += uInc;
-					}
-					// Next row
-					v += vInc;
-					u = 0;
-				}
-
-				// Reverse vInc for double sided
-				v = meshHeight - 1;
-				vInc = -vInc;
-
-			}
-
-			// don't forget to unlock!
-			indexBuffer.Unlock();
+                // don't forget to unlock!
+                indexBuffer.Unlock();
+            }
 		}
 
 		/// <summary>
@@ -793,16 +794,16 @@ namespace Axiom.Core
 		{
 			// determine levels
 			// Derived from work by Bart Sekura in Rogl
-			Vector3 a = Vector3.Zero;
-			Vector3 b = Vector3.Zero;
-			Vector3 c = Vector3.Zero;
+			var a = Vector3.Zero;
+			var b = Vector3.Zero;
+			var c = Vector3.Zero;
 
-			bool found = false;
+			var found = false;
 
 			// Find u level
-			for ( int v = 0; v < controlHeight; v++ )
+			for ( var v = 0; v < controlHeight; v++ )
 			{
-				for ( int u = 0; u < controlWidth - 1; u += 2 )
+				for ( var u = 0; u < controlWidth - 1; u += 2 )
 				{
 					a = controlPoints[ v * controlWidth + u + 0 ];
 					b = controlPoints[ v * controlWidth + u + 1 ];
@@ -839,15 +840,15 @@ namespace Axiom.Core
 		/// </summary>
 		protected int GetAutoVLevel( bool forMax )
 		{
-			Vector3 a = Vector3.Zero;
-			Vector3 b = Vector3.Zero;
-			Vector3 c = Vector3.Zero;
+			var a = Vector3.Zero;
+			var b = Vector3.Zero;
+			var c = Vector3.Zero;
 
-			bool found = false;
+			var found = false;
 
-			for ( int u = 0; u < controlWidth; u++ )
+			for ( var u = 0; u < controlWidth; u++ )
 			{
-				for ( int v = 0; v < controlHeight - 1; v += 2 )
+				for ( var v = 0; v < controlHeight - 1; v += 2 )
 				{
 					a = controlPoints[ v * controlWidth + u ];
 					b = controlPoints[ ( v + 1 ) * controlWidth + u ];

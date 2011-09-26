@@ -131,10 +131,10 @@ namespace Axiom.ParticleSystems
 		public virtual void CopyTo( ParticleAffector affector )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( string key in commandTable.Keys )
+			foreach ( var key in commandTable.Keys )
 			{
 				// get the value of the param from this instance
-				string val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
+				var val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
 
 				// set the param on the target instance
 				affector.SetParam( key, val );
@@ -166,7 +166,7 @@ namespace Axiom.ParticleSystems
 		{
 			if ( commandTable.ContainsKey( name ) )
 			{
-				IPropertyCommand command = (IPropertyCommand)commandTable[ name ];
+				var command = (IPropertyCommand)commandTable[ name ];
 
 				command.Set( this, val );
 
@@ -184,26 +184,26 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		protected void RegisterCommands()
 		{
-			Type baseType = GetType();
+			var baseType = GetType();
 
 			do
 			{
-				Type[] types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
+				var types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
 
 				// loop through all methods and look for ones marked with attributes
-				for ( int i = 0; i < types.Length; i++ )
+				for ( var i = 0; i < types.Length; i++ )
 				{
 					// get the current method in the loop
-					Type type = types[ i ];
+					var type = types[ i ];
 
 					// get as many command attributes as there are on this type
-					ScriptablePropertyAttribute[] commandAtts =
+					var commandAtts =
 						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true );
 
 					// loop through each one we found and register its command
-					for ( int j = 0; j < commandAtts.Length; j++ )
+					for ( var j = 0; j < commandAtts.Length; j++ )
 					{
-						ScriptablePropertyAttribute commandAtt = commandAtts[ j ];
+						var commandAtt = commandAtts[ j ];
 
 						commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
 					} // for

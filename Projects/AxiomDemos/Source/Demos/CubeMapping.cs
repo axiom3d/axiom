@@ -2,9 +2,10 @@
 
 using System;
 using System.Collections;
-
+using System.ComponentModel.Composition;
 using Axiom.Collections;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.Math;
@@ -19,6 +20,7 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for EnvMapping.
 	/// </summary>
+	[Export(typeof(TechDemo))]
 	public class CubeMapping : TechDemo
 	{
 		#region Perlin noise data and algorithms
@@ -382,9 +384,16 @@ namespace Axiom.Demos
 		/// <summary>
 		///
 		/// </summary>
-		private unsafe void UpdateNoise()
+#if !AXIOM_SAFE_ONLY
+unsafe
+#endif
+		private void UpdateNoise()
 		{
+#if AXIOM_SAFE_ONLY
+			ITypePointer<float> sharedNormals = null;
+#else
 			float* sharedNormals = null;
+#endif
 
 			for ( int i = 0; i < clonedMesh.SubMeshCount; i++ )
 			{
@@ -406,7 +415,7 @@ namespace Axiom.Demos
 				}
 				else
 				{
-					float* normals = NormalsGetCleared( subMesh.vertexData );
+					var normals = NormalsGetCleared( subMesh.vertexData );
 
 					UpdateVertexDataNoiseAndNormals(
 						subMesh.vertexData,
@@ -431,7 +440,11 @@ namespace Axiom.Demos
 		/// <param name="orgdata"></param>
 		/// <param name="indexData"></param>
 		/// <param name="normals"></param>
-		private unsafe void UpdateVertexDataNoiseAndNormals( VertexData dstData, VertexData orgData, IndexData indexData, float* normals )
+#if AXIOM_SAFE_ONLY
+		private void UpdateVertexDataNoiseAndNormals(VertexData dstData, VertexData orgData, IndexData indexData, ITypePointer<float> normals)
+#else
+		private unsafe void UpdateVertexDataNoiseAndNormals(VertexData dstData, VertexData orgData, IndexData indexData, float* normals)
+#endif
 		{
 			// destination vertex buffer
 			VertexElement dstPosElement = dstData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -442,12 +455,12 @@ namespace Axiom.Demos
 			HardwareVertexBuffer orgPosBuffer = orgData.vertexBufferBinding.GetBuffer( orgPosElement.Source );
 
 			// lock the buffers
-			IntPtr dstPosData = dstPosBuffer.Lock( BufferLocking.Discard );
-			IntPtr orgPosData = orgPosBuffer.Lock( BufferLocking.ReadOnly );
+			var dstPosData = dstPosBuffer.Lock( BufferLocking.Discard );
+			var orgPosData = orgPosBuffer.Lock( BufferLocking.ReadOnly );
 
 			// get some raw pointer action goin on
-			float* dstPosPtr = (float*)dstPosData.ToPointer();
-			float* orgPosPtr = (float*)orgPosData.ToPointer();
+			var dstPosPtr = dstPosData.ToFloatPointer();
+			var orgPosPtr = orgPosData.ToFloatPointer();
 
 			// make noise
 			int numVerts = orgPosBuffer.VertexCount;
@@ -472,7 +485,7 @@ namespace Axiom.Demos
 			// calculate normals
 			HardwareIndexBuffer indexBuffer = indexData.indexBuffer;
 
-			short* vertexIndices = (short*)indexBuffer.Lock( BufferLocking.ReadOnly );
+			var vertexIndices = indexBuffer.Lock( BufferLocking.ReadOnly ).ToShortPointer();
 			int numFaces = indexData.indexCount / 3;
 
 			for ( int i = 0, index = 0; i < numFaces; i++, index += 3 )
@@ -515,12 +528,16 @@ namespace Axiom.Demos
 		/// </summary>
 		/// <param name="vertexData"></param>
 		/// <returns></returns>
-		private unsafe float* NormalsGetCleared( VertexData vertexData )
+#if AXIOM_SAFE_ONLY
+		private ITypePointer<float> NormalsGetCleared(VertexData vertexData)
+#else
+		private unsafe float* NormalsGetCleared(VertexData vertexData)
+#endif
 		{
 			VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
 			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( element.Source );
-			IntPtr data = buffer.Lock( BufferLocking.Discard );
-			float* normPtr = (float*)data.ToPointer();
+			var data = buffer.Lock( BufferLocking.Discard );
+			var normPtr = data.ToFloatPointer();
 
 			for ( int i = 0; i < buffer.VertexCount; i++ )
 			{
@@ -535,12 +552,16 @@ namespace Axiom.Demos
 		/// </summary>
 		/// <param name="vertexData"></param>
 		/// <param name="normals"></param>
+#if AXIOM_SAFE_ONLY
+		private void NormalsSaveNormalized( VertexData vertexData, ITypePointer<float> normals )
+#else
 		private unsafe void NormalsSaveNormalized( VertexData vertexData, float* normals )
+#endif
 		{
 			VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
 			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( element.Source );
 
-			IntPtr temp = buffer.Lock( BufferLocking.Normal );
+			var temp = buffer.Lock( BufferLocking.Normal );
 
 			int numVerts = buffer.VertexCount;
 

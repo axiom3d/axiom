@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,161 +23,162 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Graphics;
-
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
+using VertexElement = Axiom.Graphics.VertexElement;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	/// 	Summary description for XnaVertexDeclaration.
-	/// </summary>
-	public class XnaVertexDeclaration : VertexDeclaration
-	{
-		#region Member variables
+    /// <summary>
+    /// 	Summary description for XnaVertexDeclaration.
+    /// </summary>
+    public class XnaVertexDeclaration : VertexDeclaration
+    {
+        #region Member variables
 
-		private XFG.GraphicsDevice _device;
-		private XFG.VertexDeclaration _xnaVertexDecl;
-		private bool needsRebuild;
+        private GraphicsDevice _device;
+        private Microsoft.Xna.Framework.Graphics.VertexDeclaration _xnaVertexDecl;
+        private bool needsRebuild;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public XnaVertexDeclaration( XFG.GraphicsDevice device )
-		{
-			this._device = device;
-		}
+        public XnaVertexDeclaration( GraphicsDevice device )
+        {
+            _device = device;
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
-		{
-			Axiom.Graphics.VertexElement element = base.AddElement( source, offset, type, semantic, index );
+        public override VertexElement AddElement( short source, int offset, VertexElementType type,
+                                                  VertexElementSemantic semantic, int index )
+        {
+            var element = base.AddElement( source, offset, type, semantic, index );
 
-			needsRebuild = true;
+            needsRebuild = true;
 
-			return element;
-		}
+            return element;
+        }
 
-		public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
-		{
-			Axiom.Graphics.VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
+        public override VertexElement InsertElement( int position, short source, int offset, VertexElementType type,
+                                                     VertexElementSemantic semantic, int index )
+        {
+            var element = base.InsertElement( position, source, offset, type, semantic, index );
 
-			needsRebuild = true;
+            needsRebuild = true;
 
-			return element;
-		}
+            return element;
+        }
 
-		public override void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
-		{
-			base.ModifyElement( elemIndex, source, offset, type, semantic, index );
+        public override void ModifyElement( int elemIndex, short source, int offset, VertexElementType type,
+                                            VertexElementSemantic semantic, int index )
+        {
+            base.ModifyElement( elemIndex, source, offset, type, semantic, index );
 
-			needsRebuild = true;
-		}
-
-
-		public override void RemoveElement( VertexElementSemantic semantic, int index )
-		{
-			base.RemoveElement( semantic, index );
-
-			needsRebuild = true;
-		}
-
-		public override void RemoveElement( int index )
-		{
-			base.RemoveElement( index );
-
-			needsRebuild = true;
-		}
+            needsRebuild = true;
+        }
 
 
-		#endregion
+        public override void RemoveElement( VertexElementSemantic semantic, int index )
+        {
+            base.RemoveElement( semantic, index );
 
-		#region Properties
+            needsRebuild = true;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public XFG.VertexDeclaration XFGVertexDeclaration
-		{
-			get
-			{
-				// rebuild declaration if things have changed
-				if ( needsRebuild )
-				{
-					if ( _xnaVertexDecl != null )
-						_xnaVertexDecl.Dispose();
+        public override void RemoveElement( int index )
+        {
+            base.RemoveElement( index );
 
-					// create elements array
-					XFG.VertexElement[] xnaElements = new XFG.VertexElement[ elements.Count ];
+            needsRebuild = true;
+        }
 
-					// loop through and configure each element for D3D
-					for ( int i = 0; i < elements.Count; i++ )
-					{
-						Axiom.Graphics.VertexElement element = 	(Axiom.Graphics.VertexElement)elements[ i ];
+        #endregion
 
-						//No hardware could actually use this property: http://blogs.msdn.com/b/shawnhar/archive/2010/04/19/vertex-data-in-xna-game-studio-4-0.aspx
-						//xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
-						//the above link also explains why this property's unnecessary.
-						//xnaElements[ i ].Stream = (short)element.Source; 
-						xnaElements[ i ].Offset = (short)element.Offset;
-						
+        #region Properties
 
-						xnaElements[ i ].VertexElementFormat = XnaHelper.Convert( element.Type, true );
+        /// <summary>
+        /// 
+        /// </summary>
+        public Microsoft.Xna.Framework.Graphics.VertexDeclaration XFGVertexDeclaration
+        {
+            get
+            {
+                // rebuild declaration if things have changed
+                if ( needsRebuild )
+                {
+                    if ( _xnaVertexDecl != null )
+                        _xnaVertexDecl.Dispose();
 
-						xnaElements[ i ].VertexElementUsage = XnaHelper.Convert( element.Semantic );
+                    // create elements array
+                    var xnaElements = new Microsoft.Xna.Framework.Graphics.VertexElement[elements.Count];
 
-						// set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
-						switch ( element.Semantic )
-						{
-							case VertexElementSemantic.Diffuse:
-								xnaElements[ i ].UsageIndex = 0;
-								break;
+                    // loop through and configure each element for D3D
+                    for ( var i = 0; i < elements.Count; i++ )
+                    {
+                        var element = elements[ i ];
 
-							case VertexElementSemantic.Specular:
-								xnaElements[ i ].UsageIndex = 1;
-								break;
-
-							default:
-								xnaElements[ i ].UsageIndex = (byte)element.Index;
-								break;
-						} //  switch
-
-					} // for
-
-					// create the new declaration
-
-					_xnaVertexDecl = new XFG.VertexDeclaration( xnaElements );
+                        //No hardware could actually use this property: http://blogs.msdn.com/b/shawnhar/archive/2010/04/19/vertex-data-in-xna-game-studio-4-0.aspx
+                        //xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
+                        //the above link also explains why this property's unnecessary.
+                        //xnaElements[ i ].Stream = (short)element.Source; 
+                        xnaElements[ i ].Offset = (short)element.Offset;
 
 
-					// reset the flag
-					needsRebuild = false;
-				}
+                        xnaElements[ i ].VertexElementFormat = XnaHelper.Convert( element.Type, true );
 
-				return _xnaVertexDecl;
-			}
-		}
+                        xnaElements[ i ].VertexElementUsage = XnaHelper.Convert( element.Semantic );
 
-		#endregion
+                        // set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
+                        switch ( element.Semantic )
+                        {
+                            case VertexElementSemantic.Diffuse:
+                                xnaElements[ i ].UsageIndex = 0;
+                                break;
 
-	}
+                            case VertexElementSemantic.Specular:
+                                xnaElements[ i ].UsageIndex = 1;
+                                break;
+
+                            default:
+                                xnaElements[ i ].UsageIndex = (byte)element.Index;
+                                break;
+                        } //  switch
+                    } // for
+
+                    // create the new declaration
+
+                    _xnaVertexDecl = new Microsoft.Xna.Framework.Graphics.VertexDeclaration( xnaElements );
+
+
+                    // reset the flag
+                    needsRebuild = false;
+                }
+
+                return _xnaVertexDecl;
+            }
+        }
+
+        #endregion
+    }
 }

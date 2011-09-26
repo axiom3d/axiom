@@ -54,7 +54,7 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
-			VariableSetAbstractNode node = new VariableSetAbstractNode( Parent );
+			var node = new VariableSetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
 			node.Name = Name;

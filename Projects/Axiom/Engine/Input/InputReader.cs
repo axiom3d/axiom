@@ -210,7 +210,7 @@ namespace Axiom.Input
 		/// </summary>
 		public static char GetKeyChar( KeyCodes keyCode, ModifierKeys modifiers )
 		{
-			bool isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
+			var isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
 
 			switch ( keyCode )
 			{
@@ -344,7 +344,7 @@ namespace Axiom.Input
 						break;
 				}
 
-				Axiom.Input.KeyEventArgs e = new Axiom.Input.KeyEventArgs( key, modifiers );
+				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
 				OnKeyDown( e );
 			}
 			else
@@ -367,7 +367,7 @@ namespace Axiom.Input
 						break;
 				}
 
-				Axiom.Input.KeyEventArgs e = new Axiom.Input.KeyEventArgs( key, modifiers );
+				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
 				OnKeyUp( e );
 			}
 		}

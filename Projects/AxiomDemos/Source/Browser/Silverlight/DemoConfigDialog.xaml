@@ -1,0 +1,21 @@
+﻿<controls:ChildWindow x:Class="Axiom.Demos.Browser.Silverlight.DemoConfigDialog"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls"
+           xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
+		   xmlns:sl="clr-namespace:Axiom.Demos.Browser.Silverlight" mc:Ignorable="d"
+           Width="auto" Height="auto" Title="Demo Setup" 
+           d:DesignHeight="674"
+                      >
+    <Grid Height="auto" Name="form" VerticalAlignment="Top">
+        <sl:ConfigDialog VerticalAlignment="Top" x:Name="cd" BorderThickness="0"/>
+        <Grid HorizontalAlignment="Center" Margin="0,466,0,0" Name="grpAvailableDemos" VerticalAlignment="Top" Height="155" Width="420">
+            <sdk:Label Height="22" Margin="8,1,0,0" Name="grpAvailableDemosText" Width="180" Content="Rendering System Options" HorizontalContentAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <ListBox Height="123" Margin="7,20,0,0" Name="lstDemos" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionChanged="lstDemos_SelectionChanged" KeyDown="lstDemos_KeyDown" MouseLeftButtonUp="lstDemos_MouseLeftButtonUp"/>
+            <Image Height="123" HorizontalAlignment="Left" Margin="210,20,0,0" Name="picPreview" Stretch="Fill" VerticalAlignment="Top" Width="200" MouseLeftButtonDown="picPreview_MouseLeftButtonDown" />
+        </Grid>
+
+    </Grid>
+</controls:ChildWindow>

@@ -242,7 +242,7 @@ namespace Axiom.Core
 			{
 				if ( this.parentIsTagPoint )
 				{
-					TagPoint tp = (TagPoint)this.parentNode;
+					var tp = (TagPoint)this.parentNode;
 					return tp.ParentEntity.ParentSceneNode;
 				}
 				else
@@ -274,7 +274,7 @@ namespace Axiom.Core
 				if ( !isVisible || beyondFarDistance || renderingDisabled )
 					return false;
 
-				SceneManager sm = Root.Instance.SceneManager;
+				var sm = Root.Instance.SceneManager;
 				return ( sm != null ) && ( ( visibilityFlags & sm.CombinedVisibilityMask ) != 0 );
 			}
 			set
@@ -294,7 +294,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				string oldName = name;
+				var oldName = name;
 				name = value;
 				if ( ObjectRenamed != null )
 					ObjectRenamed( this, oldName );
@@ -391,12 +391,12 @@ namespace Axiom.Core
 				{
 					if ( this.parentIsTagPoint )
 					{
-						TagPoint tp = (TagPoint)this.ParentNode;
+						var tp = (TagPoint)this.ParentNode;
 						return tp.ParentEntity.IsInScene;
 					}
 					else
 					{
-						SceneNode sn = (SceneNode)this.ParentNode;
+						var sn = (SceneNode)this.ParentNode;
 						return sn.IsInSceneGraph;
 					}
 				}
@@ -420,12 +420,12 @@ namespace Axiom.Core
 			{
 				if ( parentIsTagPoint )
 				{
-					TagPoint tp = (TagPoint)parentNode;
+					var tp = (TagPoint)parentNode;
 					tp.ParentEntity.DetachObjectFromBone( this );
 				}
 				else
 				{
-					SceneNode sn = (SceneNode)parentNode;
+					var sn = (SceneNode)parentNode;
 					sn.DetachObject( this );
 				}
 			}
@@ -459,16 +459,16 @@ namespace Axiom.Core
 			// Query from parent entity if exists
 			if ( parentIsTagPoint )
 			{
-				TagPoint tp = (TagPoint)parentNode;
+				var tp = (TagPoint)parentNode;
 				return tp.ParentEntity.QueryLights();
 			}
 
 			if ( parentNode != null )
 			{
-				SceneNode sn = (SceneNode)parentNode;
+				var sn = (SceneNode)parentNode;
 
 				// Make sure we only update this only if need.
-				ulong frame = sn.Creator.LightsDirtyCounter;
+				var frame = sn.Creator.LightsDirtyCounter;
 				if ( lightListUpdated != frame )
 				{
 					lightListUpdated = frame;
@@ -888,7 +888,7 @@ namespace Axiom.Core
 	    ///<param name="isTagPoint"></param>
 	    internal virtual void NotifyAttached( Node node, bool isTagPoint )
 		{
-			bool parentChanged = ( node != this.parentNode );
+			var parentChanged = ( node != this.parentNode );
 			this.parentNode = node;
 			this.parentIsTagPoint = isTagPoint;
 			// Mark light list being dirty, simply decrease
@@ -928,10 +928,10 @@ namespace Axiom.Core
 			{
 				if ( camera.UseRenderingDistance && upperDistance > 0 )
 				{
-					float rad = this.BoundingRadius;
-					float squaredDepth = parentNode.GetSquaredViewDepth( camera.LodCamera );
+					var rad = this.BoundingRadius;
+					var squaredDepth = parentNode.GetSquaredViewDepth( camera.LodCamera );
 					// Max distance to still render
-					float maxDist = upperDistance + rad;
+					var maxDist = upperDistance + rad;
 					if ( squaredDepth > Utility.Sqr( maxDist ) )
 					{
 						beyondFarDistance = true;
@@ -1132,7 +1132,7 @@ namespace Axiom.Core
 		/// <returns>A new MovableObject</returns>
 		public MovableObject CreateInstance( string name, SceneManager manager, NamedParameterList param )
 		{
-			MovableObject m = this._createInstance( name, param );
+			var m = this._createInstance( name, param );
 			m.Creator = this;
 			m.Manager = manager;
 			m.MovableType = this.Type;

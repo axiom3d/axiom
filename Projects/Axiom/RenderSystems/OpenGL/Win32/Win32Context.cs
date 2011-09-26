@@ -122,6 +122,17 @@ namespace Axiom.RenderSystems.OpenGL
 			return new Win32Context( _hDeviceContext, newCtx );
 		}
 
-		#endregion GLContext Implementation
-	}
+        private bool vSync;
+        public override bool VSync
+        {
+            get { return vSync; }
+            set
+            {
+                if (Wgl.IsExtensionSupported("wglSwapIntervalEXT"))
+                    Wgl.wglSwapIntervalEXT((vSync = value) ? 1 : 0);
+            }
+        }
+        
+        #endregion GLContext Implementation
+    }
 }

@@ -138,7 +138,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public Bone CreateChild( ushort handle, Vector3 translate, Quaternion rotate )
 		{
-			Bone bone = creator.CreateBone( handle );
+			var bone = creator.CreateBone( handle );
 			bone.Translate( translate );
 			bone.Rotate( rotate );
 			this.AddChild( bone );
@@ -251,7 +251,7 @@ namespace Axiom.Animating
 		{
 			if ( obj is VertexBoneAssignment )
 			{
-				VertexBoneAssignment v = (VertexBoneAssignment)obj;
+				var v = (VertexBoneAssignment)obj;
 
 				if ( weight > v.weight )
 					return 1;

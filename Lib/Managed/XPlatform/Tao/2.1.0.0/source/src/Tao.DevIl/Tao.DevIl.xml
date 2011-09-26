@@ -833,6 +833,608 @@
             <param name="Surface"></param>
             <returns></returns>
         </member>
+        <member name="T:Tao.DevIl.Ilu">
+            <summary>
+                DevIL (Developer's Image Library) ILU binding for .NET.
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.CALLING_CONVENTION">
+            <summary>
+                Specifies the calling convention.
+            </summary>
+            <remarks>
+                Specifies <see cref="F:System.Runtime.InteropServices.CallingConvention.Cdecl"/> for Windows and
+                Linux.
+            </remarks>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_NATIVE_LIBRARY">
+            <summary>
+            Specifies the DevIL ILU native library used in the bindings
+            </summary>
+            <remarks>
+            The Windows dll is specified here universally - note that
+            under Mono the non-windows native library can be mapped using
+            the ".config" file mechanism.  Kudos to the Mono team for this
+            simple yet elegant solution.
+            </remarks>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_VERSION_1_6_8">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_VERSION">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_FILTER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_NEAREST">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_LINEAR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_BILINEAR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_BOX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_TRIANGLE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_BELL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_BSPLINE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_LANCZOS3">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_MITCHELL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_INVALID_ENUM">
+            <summary>
+            A Parameter was invalid or out of range
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_OUT_OF_MEMORY">
+            <summary>
+            Could not allocate enough memory in an operation
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_INTERNAL_ERROR">
+            <summary>
+            A serious error has occurred.
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_INVALID_VALUE">
+            <summary>
+            An invalid value was passed to a function or was in a file
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_ILLEGAL_OPERATION">
+            <summary>
+            	The operation attempted is not allowable in the current state. The function returns with no ill side effects. Generally there is currently no image bound or it has been deleted via ilDeleteImages. You should use ilGenImages and ilBindImage before calling the function.
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_INVALID_PARAM">
+            <summary>
+            A Parameter was invalid or out of range
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_PLACEMENT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_LOWER_LEFT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_LOWER_RIGHT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_UPPER_LEFT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_UPPER_RIGHT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_CENTER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_CONVOLUTION_MATRIX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_VERSION_NUM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.Ilu.ILU_VENDOR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluAlienify">
+            <summary>
+            The story behind this function is actually sorta funny. I had been using a picture of me (contact me if you want it! =) as a test image, and I started working on some colour matrix filters. Well, my first attempt screwed-up, because I had changed the equations to accomodate my bgr image, but I transposed the equations entirely wrong. I got a really neat output, though, where I looked like an alien. =) I decided to keep the screw-up and placed it in iluAlienify. I can't say I've ever run across a filter like this before.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluBlurAvg(System.Int32)">
+            <summary>
+            iluBlurAvg blurs an image using an averaging convolution filter. The filter is applied up to Iter number of times, giving more of a blurring effect the higher Iter is.
+            </summary>
+            <param name="Iter">Number of iterations of blurring to perform.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluBlurGaussian(System.Int32)">
+            <summary>
+            iluBlurGaussian blurs an image using a Gaussian convolution filter, which usually gives better results than the filter used by iluBlurAvg. The filter is applied up to Iter number of times, giving more of a blurring effect the higher Iter is.
+            </summary>
+            <param name="Iter">Number of iterations of blurring to perform.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluBuildMipmaps">
+            <summary>
+            iluBuildMipmaps generates power-of-2 mipmaps for an image. If the image does not have power-of-2 dimensions, then the image is resized via iluScale. Mipmaps are then generated for the image, down to a 1x1 image. To use the mipmaps, see ilActiveMipmap.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluColoursUsed">
+            <summary>
+            iluColoursUsed creates a copy of the image data, quicksorts it and counts the number of unique colours in the image. This value is returned without affecting the original image.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluCompareImage(System.Int32)">
+            <summary>
+            iluCompareImage compares the current image to the image having the name in Comp. If both images are identical, IL_TRUE is returned. IL_FALSE is returned if the images are not identical. The bound image before calling this function remains the bound image after calling ilCompareImage.
+            </summary>
+            <param name="Comp">The image to compare with.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluContrast(System.Single)">
+            <summary>
+            iluContrast changes the contrast of an image by using interpolation and extrapolation. Common values for Contrast are in the range -0.5 to 1.7. Anything below 0.0 generates a negative of the image with varying contrast. 1.0 outputs the original image. 0.0 - 1.0 lowers the contrast of the image. 1.0 - 1.7 increases the contrast of the image. This effect is caused by interpolating (or extrapolating) the source image with a totally grey image.
+            </summary>
+            <param name="Contrast">The factor to contrast by</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluCrop(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            iluCrop "crops" the current image to new dimensions. The new image appears the same as the original, but portions of the image are clipped-off, depending on the values of the parameters of these functions. If XOff + Width, YOff + Height or ZOff + Depth is larger than the current image's dimensions, ILU_ILLEGAL_OPERATION is set. If ZOff is minus or equal to one the crop will be done only on 2 dimensions
+            </summary>
+            <param name="XOff">Number of pixels to skip in the x direction.</param>
+            <param name="YOff">Number of pixels to skip in the y direction.</param>
+            <param name="ZOff">Number of pixels to skip in the z direction.</param>
+            <param name="Width">Number of pixels to preserve in the x direction.</param>
+            <param name="Height">Number of pixels to preserve in the y direction.</param>
+            <param name="Depth">Number of pixels to preserve in the z direction.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluDeleteImage(System.Int32)">
+            <summary>
+            iluDeleteImage is a convenience function to delete a single image instead of calling ilDeleteImages
+            </summary>
+            <param name="Id">The image name to delete</param>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEdgeDetectE">
+            <summary>
+            iluEdgeDetectP detects the edges in the current image by combining two convolution filters. The filters used are Prewitt filters.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEdgeDetectP">
+            <summary>
+            iluEdgeDetectP detects the edges in the current image by combining two convolution filters. The filters used are Prewitt filters.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEdgeDetectS">
+            <summary>
+            iluEdgeDetectS detects the edges in the current image by combining two convolution filters. The filters used are Sobel filters.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEmboss">
+            <summary>
+            iluEmboss embosses an image, causing it to have a "relief" feel to it using a convolution filter:
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEnlargeCanvas(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            iluEnlargeCanvas enlarges the canvas of the current image, clearing the background to the colour specified in ilClearColour. To control the placement of the image, use iluImageParameter
+            </summary>
+            <param name="Width">New image width - must be larger than the current image's width.</param>
+            <param name="Height">New image height - must be larger than the current image's width.</param>
+            <param name="Depth">New image depth - must be larger than the current image's width.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEnlargeImage(System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="XDim"></param>
+            <param name="YDim"></param>
+            <param name="ZDim"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluEqualize">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluErrorString(System.Int32)">
+            <summary>
+            iluErrorString returns a human-readable string of the error in Error. This can be useful for displaying the human-readable error in your program to let the user know wtf just happened.
+            </summary>
+            <param name="Error">Enum that describes the string to be retrieved.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluConvolution(System.Int32[],System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="matrix"></param>
+            <param name="scale"></param>
+            <param name="bias"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluFlipImage">
+            <summary>
+            iluFlipImage inverts an image over the x axis. The image will be upside-down after calling this function. If this function is called twice in succession, the image is restored to its original state. A version of this function in OpenIL is used throughout internally when loading images to correct images that would otherwise be upside-down. Using ilOriginFunc will essentially tell the library which way is up.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluGammaCorrect(System.Single)">
+            <summary>
+            reater than 1.0, the image is brightened. It uses interpolation so it's slower then iluGammaCorrectScale
+            </summary>
+            <param name="Gamma">Gamma correction.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluGenImage">
+            <summary>
+            iluGenImage is a convenience function to delete a single image instead of calling ilGenImages
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluGetImageInfo(Tao.DevIl.ILinfo@)">
+            <summary>
+            The iluGetImageInfo function retrieves information about the current image in an ILinfo struct. This is useful when you are repeatedly calling ilGetInteger and is more efficient in this case.
+            </summary>
+            <param name="Info">ILinfo struct to receive the image information.</param>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluGetInteger(System.Int32)">
+            <summary>
+            The iluGetInteger function returns the value of a selected mode
+            </summary>
+            <param name="Mode">The mode value to be returned.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluGetIntegerv(System.Int32,System.Int32@)">
+            <summary>
+            The iluGetIntegerv function returns the mode value in the Param parameter.
+            </summary>
+            <param name="Mode">The mode value to be returned.</param>
+            <param name="Param">When used, the value is stored here instead of returned..</param>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluGetString(System.Int32)">
+            <summary>
+            iluGetString returns a constant human-readable string describing the current OpenILU implementation.
+            </summary>
+            <param name="StringName">Enum that describes the string to be retrieved.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluImageParameter(System.Int32,System.Int32)">
+            <summary>
+            iluImageParameter modifies the behaviour of some ilu functions. Right now, it controls the behaviour of iluEnlargeCanvas and iluScale. For ILU_FILTER, values for Param other than ILU_NEAREST, ILU_LINEAR and ILU_BILINEAR are higher-quality scaling filters and take longer to perform.
+            </summary>
+            <param name="PName">Parameter name</param>
+            <param name="Param">Behaviour to use</param>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluInit">
+            <summary>
+            iluInit starts ILU and must be called prior to using ILU
+            </summary>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluInvertAlpha">
+            <summary>
+            iluInvertAlpha inverts the alpha of the currently bound image.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluLoadImage(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="FileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluMirror">
+            <summary>
+            iluMirror mirrors an image across its y axis, making it appear backwards.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluNegative">
+            <summary>
+            iluNegative creates a negative version of an image, like it was viewed as a picture negative instead of the actual picture. The effect is caused by inverting the image's colours, such as a green pixel would become purple (red-blue).
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluNoisify(System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="Tolerance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluPixelize(System.Int32)">
+            <summary>
+            iluPixelize performs the effect that can be seen on television, where people want their identity to remain anonymous, so the editors cover the person's face with a very blocky pixelized version. PixSize specifies how blocky the image should be, with 1 being the lowest blockiness (doesn't change the image).
+            </summary>
+            <param name="PixSize">New pixel size</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluRegionfv(Tao.DevIl.ILpointf[],System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="Points"></param>
+            <param name="n"></param>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluRegioniv(Tao.DevIl.ILpointi[],System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="Points"></param>
+            <param name="n"></param>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluReplaceColour(System.Byte,System.Byte,System.Byte,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="Red"></param>
+            <param name="Green"></param>
+            <param name="Blue"></param>
+            <param name="Tolerance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluRotate(System.Single)">
+            <summary>
+            iluRotate simply rotates an image about the center by Angle degrees. The background where there is space left by the rotation will be set to the clear colour.
+            </summary>
+            <param name="Angle">Angle in degrees to rotate the image.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluRotate3D(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+            <param name="Angle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluSaturate1f(System.Single)">
+            <summary>
+            iluSaturate1f applies a saturation consistent with the IL_LUMINANCE conversion values to red, green and blue.
+            </summary>
+            <param name="Saturation">Amount of saturation to apply to the current bound image. the value must go from -1.0 to 1.0</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluSaturate4f(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            iluScaleColours scales the individual colour components of the current bound image. Using 1.0f as any of the parameters yields that colour component's original plane in the new image.
+            </summary>
+            <param name="r">Amount of red to use from the original image</param>
+            <param name="g">Amount of green to use from the original image</param>
+            <param name="b">Amount of blue to use from the original image</param>
+            <param name="Saturation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluScale(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            The iluScale function scales the image to the new dimensions specified, shrinking or enlarging the image, depending on the image's original dimensions. There are different filters that can be used to scale an image, and which filter to use can be specified via iluImageParameter.
+            </summary>
+            <param name="Width">New width of the image.</param>
+            <param name="Height">New height of the image.</param>
+            <param name="Depth">New depth of the image.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluScaleColours(System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="r"></param>
+            <param name="g"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluSharpen(System.Single,System.Int32)">
+            <summary>
+            iluSharpen can actually either sharpen or blur an image, depending on the value of Factor. iluBlurAvg and iluBlurGaussian are much faster for blurring, though. When Factor is 1.0, the image goes unchanged. When Factor is in the range 0.0 - 1.0, the current image is blurred. When Factor is in the range 1.0 - 2.5, the current image is sharpened. To achieve a more pronounced sharpening/blurring effect, simply increase the number of iterations by increasing the value passed in Iter.
+            </summary>
+            <param name="Factor">Factor to sharpen by.</param>
+            <param name="Iter">Number of iterations to perform on the image.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluSwapColours">
+            <summary>
+            iluSwapColours "swaps" the colour order of the current image. If the current image is in bgr(a) format, iluSwapColours will change the image to use rgb(a) format, or vice-versa. This can be helpful when you want to manipulate the image data yourself but only want to use a certain colour order. To determine the current colour order, call ilGetInteger with the IL_IMAGE_FORMAT parameter.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tao.DevIl.Ilu.iluWave(System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="Angle"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tao.DevIl.ILinfo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Id">
+            <summary>
+            /\
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Depth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Bpp">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.SizeOfData">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Origin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.Palette">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.PalType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.PalSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.CubeFlags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.NumNext">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.NumMips">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILinfo.NumLayers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.DevIl.ILpointf">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILpointf.x">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILpointf.y">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.DevIl.ILpointi">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILpointi.x">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.DevIl.ILpointi.y">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:Tao.DevIl.Il">
             <summary>
                 DevIL (Developer's Image Library) IL binding for .NET, implementing DevIL 1.6.8 RC2.
@@ -2834,608 +3436,6 @@
             </summary>
             <param name="str"></param>
             <returns></returns>
-        </member>
-        <member name="T:Tao.DevIl.Ilu">
-            <summary>
-                DevIL (Developer's Image Library) ILU binding for .NET.
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.CALLING_CONVENTION">
-            <summary>
-                Specifies the calling convention.
-            </summary>
-            <remarks>
-                Specifies <see cref="F:System.Runtime.InteropServices.CallingConvention.Cdecl"/> for Windows and
-                Linux.
-            </remarks>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_NATIVE_LIBRARY">
-            <summary>
-            Specifies the DevIL ILU native library used in the bindings
-            </summary>
-            <remarks>
-            The Windows dll is specified here universally - note that
-            under Mono the non-windows native library can be mapped using
-            the ".config" file mechanism.  Kudos to the Mono team for this
-            simple yet elegant solution.
-            </remarks>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_VERSION_1_6_8">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_VERSION">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_FILTER">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_NEAREST">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_LINEAR">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_BILINEAR">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_BOX">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_TRIANGLE">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_BELL">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_BSPLINE">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_LANCZOS3">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_SCALE_MITCHELL">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_INVALID_ENUM">
-            <summary>
-            A Parameter was invalid or out of range
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_OUT_OF_MEMORY">
-            <summary>
-            Could not allocate enough memory in an operation
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_INTERNAL_ERROR">
-            <summary>
-            A serious error has occurred.
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_INVALID_VALUE">
-            <summary>
-            An invalid value was passed to a function or was in a file
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_ILLEGAL_OPERATION">
-            <summary>
-            	The operation attempted is not allowable in the current state. The function returns with no ill side effects. Generally there is currently no image bound or it has been deleted via ilDeleteImages. You should use ilGenImages and ilBindImage before calling the function.
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_INVALID_PARAM">
-            <summary>
-            A Parameter was invalid or out of range
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_PLACEMENT">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_LOWER_LEFT">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_LOWER_RIGHT">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_UPPER_LEFT">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_UPPER_RIGHT">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_CENTER">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_CONVOLUTION_MATRIX">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_VERSION_NUM">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.Ilu.ILU_VENDOR">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluAlienify">
-            <summary>
-            The story behind this function is actually sorta funny. I had been using a picture of me (contact me if you want it! =) as a test image, and I started working on some colour matrix filters. Well, my first attempt screwed-up, because I had changed the equations to accomodate my bgr image, but I transposed the equations entirely wrong. I got a really neat output, though, where I looked like an alien. =) I decided to keep the screw-up and placed it in iluAlienify. I can't say I've ever run across a filter like this before.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluBlurAvg(System.Int32)">
-            <summary>
-            iluBlurAvg blurs an image using an averaging convolution filter. The filter is applied up to Iter number of times, giving more of a blurring effect the higher Iter is.
-            </summary>
-            <param name="Iter">Number of iterations of blurring to perform.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluBlurGaussian(System.Int32)">
-            <summary>
-            iluBlurGaussian blurs an image using a Gaussian convolution filter, which usually gives better results than the filter used by iluBlurAvg. The filter is applied up to Iter number of times, giving more of a blurring effect the higher Iter is.
-            </summary>
-            <param name="Iter">Number of iterations of blurring to perform.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluBuildMipmaps">
-            <summary>
-            iluBuildMipmaps generates power-of-2 mipmaps for an image. If the image does not have power-of-2 dimensions, then the image is resized via iluScale. Mipmaps are then generated for the image, down to a 1x1 image. To use the mipmaps, see ilActiveMipmap.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluColoursUsed">
-            <summary>
-            iluColoursUsed creates a copy of the image data, quicksorts it and counts the number of unique colours in the image. This value is returned without affecting the original image.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluCompareImage(System.Int32)">
-            <summary>
-            iluCompareImage compares the current image to the image having the name in Comp. If both images are identical, IL_TRUE is returned. IL_FALSE is returned if the images are not identical. The bound image before calling this function remains the bound image after calling ilCompareImage.
-            </summary>
-            <param name="Comp">The image to compare with.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluContrast(System.Single)">
-            <summary>
-            iluContrast changes the contrast of an image by using interpolation and extrapolation. Common values for Contrast are in the range -0.5 to 1.7. Anything below 0.0 generates a negative of the image with varying contrast. 1.0 outputs the original image. 0.0 - 1.0 lowers the contrast of the image. 1.0 - 1.7 increases the contrast of the image. This effect is caused by interpolating (or extrapolating) the source image with a totally grey image.
-            </summary>
-            <param name="Contrast">The factor to contrast by</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluCrop(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            iluCrop "crops" the current image to new dimensions. The new image appears the same as the original, but portions of the image are clipped-off, depending on the values of the parameters of these functions. If XOff + Width, YOff + Height or ZOff + Depth is larger than the current image's dimensions, ILU_ILLEGAL_OPERATION is set. If ZOff is minus or equal to one the crop will be done only on 2 dimensions
-            </summary>
-            <param name="XOff">Number of pixels to skip in the x direction.</param>
-            <param name="YOff">Number of pixels to skip in the y direction.</param>
-            <param name="ZOff">Number of pixels to skip in the z direction.</param>
-            <param name="Width">Number of pixels to preserve in the x direction.</param>
-            <param name="Height">Number of pixels to preserve in the y direction.</param>
-            <param name="Depth">Number of pixels to preserve in the z direction.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluDeleteImage(System.Int32)">
-            <summary>
-            iluDeleteImage is a convenience function to delete a single image instead of calling ilDeleteImages
-            </summary>
-            <param name="Id">The image name to delete</param>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEdgeDetectE">
-            <summary>
-            iluEdgeDetectP detects the edges in the current image by combining two convolution filters. The filters used are Prewitt filters.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEdgeDetectP">
-            <summary>
-            iluEdgeDetectP detects the edges in the current image by combining two convolution filters. The filters used are Prewitt filters.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEdgeDetectS">
-            <summary>
-            iluEdgeDetectS detects the edges in the current image by combining two convolution filters. The filters used are Sobel filters.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEmboss">
-            <summary>
-            iluEmboss embosses an image, causing it to have a "relief" feel to it using a convolution filter:
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEnlargeCanvas(System.Int32,System.Int32,System.Int32)">
-            <summary>
-            iluEnlargeCanvas enlarges the canvas of the current image, clearing the background to the colour specified in ilClearColour. To control the placement of the image, use iluImageParameter
-            </summary>
-            <param name="Width">New image width - must be larger than the current image's width.</param>
-            <param name="Height">New image height - must be larger than the current image's width.</param>
-            <param name="Depth">New image depth - must be larger than the current image's width.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEnlargeImage(System.Single,System.Single,System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="XDim"></param>
-            <param name="YDim"></param>
-            <param name="ZDim"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluEqualize">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluErrorString(System.Int32)">
-            <summary>
-            iluErrorString returns a human-readable string of the error in Error. This can be useful for displaying the human-readable error in your program to let the user know wtf just happened.
-            </summary>
-            <param name="Error">Enum that describes the string to be retrieved.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluConvolution(System.Int32[],System.Int32,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="matrix"></param>
-            <param name="scale"></param>
-            <param name="bias"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluFlipImage">
-            <summary>
-            iluFlipImage inverts an image over the x axis. The image will be upside-down after calling this function. If this function is called twice in succession, the image is restored to its original state. A version of this function in OpenIL is used throughout internally when loading images to correct images that would otherwise be upside-down. Using ilOriginFunc will essentially tell the library which way is up.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluGammaCorrect(System.Single)">
-            <summary>
-            reater than 1.0, the image is brightened. It uses interpolation so it's slower then iluGammaCorrectScale
-            </summary>
-            <param name="Gamma">Gamma correction.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluGenImage">
-            <summary>
-            iluGenImage is a convenience function to delete a single image instead of calling ilGenImages
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluGetImageInfo(Tao.DevIl.ILinfo@)">
-            <summary>
-            The iluGetImageInfo function retrieves information about the current image in an ILinfo struct. This is useful when you are repeatedly calling ilGetInteger and is more efficient in this case.
-            </summary>
-            <param name="Info">ILinfo struct to receive the image information.</param>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluGetInteger(System.Int32)">
-            <summary>
-            The iluGetInteger function returns the value of a selected mode
-            </summary>
-            <param name="Mode">The mode value to be returned.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluGetIntegerv(System.Int32,System.Int32@)">
-            <summary>
-            The iluGetIntegerv function returns the mode value in the Param parameter.
-            </summary>
-            <param name="Mode">The mode value to be returned.</param>
-            <param name="Param">When used, the value is stored here instead of returned..</param>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluGetString(System.Int32)">
-            <summary>
-            iluGetString returns a constant human-readable string describing the current OpenILU implementation.
-            </summary>
-            <param name="StringName">Enum that describes the string to be retrieved.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluImageParameter(System.Int32,System.Int32)">
-            <summary>
-            iluImageParameter modifies the behaviour of some ilu functions. Right now, it controls the behaviour of iluEnlargeCanvas and iluScale. For ILU_FILTER, values for Param other than ILU_NEAREST, ILU_LINEAR and ILU_BILINEAR are higher-quality scaling filters and take longer to perform.
-            </summary>
-            <param name="PName">Parameter name</param>
-            <param name="Param">Behaviour to use</param>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluInit">
-            <summary>
-            iluInit starts ILU and must be called prior to using ILU
-            </summary>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluInvertAlpha">
-            <summary>
-            iluInvertAlpha inverts the alpha of the currently bound image.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluLoadImage(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="FileName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluMirror">
-            <summary>
-            iluMirror mirrors an image across its y axis, making it appear backwards.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluNegative">
-            <summary>
-            iluNegative creates a negative version of an image, like it was viewed as a picture negative instead of the actual picture. The effect is caused by inverting the image's colours, such as a green pixel would become purple (red-blue).
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluNoisify(System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="Tolerance"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluPixelize(System.Int32)">
-            <summary>
-            iluPixelize performs the effect that can be seen on television, where people want their identity to remain anonymous, so the editors cover the person's face with a very blocky pixelized version. PixSize specifies how blocky the image should be, with 1 being the lowest blockiness (doesn't change the image).
-            </summary>
-            <param name="PixSize">New pixel size</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluRegionfv(Tao.DevIl.ILpointf[],System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="Points"></param>
-            <param name="n"></param>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluRegioniv(Tao.DevIl.ILpointi[],System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="Points"></param>
-            <param name="n"></param>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluReplaceColour(System.Byte,System.Byte,System.Byte,System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="Red"></param>
-            <param name="Green"></param>
-            <param name="Blue"></param>
-            <param name="Tolerance"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluRotate(System.Single)">
-            <summary>
-            iluRotate simply rotates an image about the center by Angle degrees. The background where there is space left by the rotation will be set to the clear colour.
-            </summary>
-            <param name="Angle">Angle in degrees to rotate the image.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluRotate3D(System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="x"></param>
-            <param name="y"></param>
-            <param name="z"></param>
-            <param name="Angle"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluSaturate1f(System.Single)">
-            <summary>
-            iluSaturate1f applies a saturation consistent with the IL_LUMINANCE conversion values to red, green and blue.
-            </summary>
-            <param name="Saturation">Amount of saturation to apply to the current bound image. the value must go from -1.0 to 1.0</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluSaturate4f(System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            iluScaleColours scales the individual colour components of the current bound image. Using 1.0f as any of the parameters yields that colour component's original plane in the new image.
-            </summary>
-            <param name="r">Amount of red to use from the original image</param>
-            <param name="g">Amount of green to use from the original image</param>
-            <param name="b">Amount of blue to use from the original image</param>
-            <param name="Saturation"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluScale(System.Int32,System.Int32,System.Int32)">
-            <summary>
-            The iluScale function scales the image to the new dimensions specified, shrinking or enlarging the image, depending on the image's original dimensions. There are different filters that can be used to scale an image, and which filter to use can be specified via iluImageParameter.
-            </summary>
-            <param name="Width">New width of the image.</param>
-            <param name="Height">New height of the image.</param>
-            <param name="Depth">New depth of the image.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluScaleColours(System.Single,System.Single,System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="r"></param>
-            <param name="g"></param>
-            <param name="b"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluSharpen(System.Single,System.Int32)">
-            <summary>
-            iluSharpen can actually either sharpen or blur an image, depending on the value of Factor. iluBlurAvg and iluBlurGaussian are much faster for blurring, though. When Factor is 1.0, the image goes unchanged. When Factor is in the range 0.0 - 1.0, the current image is blurred. When Factor is in the range 1.0 - 2.5, the current image is sharpened. To achieve a more pronounced sharpening/blurring effect, simply increase the number of iterations by increasing the value passed in Iter.
-            </summary>
-            <param name="Factor">Factor to sharpen by.</param>
-            <param name="Iter">Number of iterations to perform on the image.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluSwapColours">
-            <summary>
-            iluSwapColours "swaps" the colour order of the current image. If the current image is in bgr(a) format, iluSwapColours will change the image to use rgb(a) format, or vice-versa. This can be helpful when you want to manipulate the image data yourself but only want to use a certain colour order. To determine the current colour order, call ilGetInteger with the IL_IMAGE_FORMAT parameter.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Tao.DevIl.Ilu.iluWave(System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="Angle"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Tao.DevIl.ILinfo">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Id">
-            <summary>
-            /\
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Data">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Width">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Height">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Depth">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Bpp">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.SizeOfData">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Format">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Type">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Origin">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.Palette">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.PalType">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.PalSize">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.CubeFlags">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.NumNext">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.NumMips">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILinfo.NumLayers">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Tao.DevIl.ILpointf">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILpointf.x">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILpointf.y">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Tao.DevIl.ILpointi">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILpointi.x">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Tao.DevIl.ILpointi.y">
-            <summary>
-            
-            </summary>
         </member>
     </members>
 </doc>

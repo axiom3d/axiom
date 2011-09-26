@@ -45,8 +45,6 @@ namespace Droid
 				//new AndroidAssetArchive( this.Context.Assets );
 
 				// instantiate the Root singleton
-				( new Axiom.Platform.Android.AndroidLogManager() ).Initialize();
-
 				_engine = new Root( "AxiomDemos.log" );
 
 				( new Axiom.RenderSystems.OpenGLES.GLESPlugin() ).Initialize();
@@ -111,7 +109,6 @@ namespace Droid
 		private void _setupResources()
 		{
 			ResourceGroupManager.Instance.AddResourceLocation( @"Media/Archives/AxiomCore.zip", "AndroidZipAsset" );
-			ResourceGroupManager.Instance.AddResourceLocation( @"Media", "AndroidFolderAsset" );
 		}
 
 		private void _loadPlugins()

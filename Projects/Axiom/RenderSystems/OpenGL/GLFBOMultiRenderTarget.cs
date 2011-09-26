@@ -85,8 +85,8 @@ namespace Axiom.RenderSystems.OpenGL
 			// Initialize?
 
 			// Set width and height
-			this._width = this._fbo.Width;
-			this._height = this._fbo.Height;
+			this.width = this._fbo.Width;
+			this.height = this._fbo.Height;
 
 		}
 
@@ -97,8 +97,8 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void UnbindSurface( int attachment )
 		{
 			this._fbo.UnbindSurface( attachment );
-			this._width = this._fbo.Width;
-			this._height = this._fbo.Height;
+			this.width = this._fbo.Width;
+			this.height = this._fbo.Height;
 		}
 
 		#endregion Methods

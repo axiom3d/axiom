@@ -36,7 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+#if SILVERLIGHT
+using System.IO.IsolatedStorage;
+#endif
 
 #endregion Namespace Declarations
 
@@ -106,10 +108,13 @@ namespace Axiom.Core
 	/// <summary>
 	///     Log class for writing debug/log data to files.
 	/// </summary>
-	public class Log : IDisposable
+	public sealed class Log : IDisposable
 	{
 		#region Fields
 
+#if SILVERLIGHT
+	    private IsolatedStorageFile file;
+#endif
 		/// <summary>
 		///     File stream used for kepping the log file open.
 		/// </summary>
@@ -121,19 +126,19 @@ namespace Axiom.Core
 		/// <summary>
 		///     Level of detail for this log.
 		/// </summary>
-		protected LoggingLevel logLevel;
+		private LoggingLevel logLevel;
 		/// <summary>
 		///     Debug output enabled?
 		/// </summary>
-		protected bool debugOutput;
+		private bool debugOutput;
 		/// <summary>
 		///		flag to indicate object already disposed.
 		/// </summary>
-		protected bool _isDisposed;
+		private bool _isDisposed;
 		/// <summary>
 		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
 		/// </summary>
-		protected const int LogThreshold = 4;
+		const int LogThreshold = 4;
 
 		private string mLogName;
 
@@ -171,8 +176,13 @@ namespace Axiom.Core
 				{
 #if !( ANDROID )
 
-					// create the log file, or open
-					log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
+                    // create the log file, or open
+#if SILVERLIGHT
+                    file = IsolatedStorageFile.GetUserStoreForApplication();
+                    log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+#else
+                    log = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+#endif
 
 					// get a stream writer using the file stream
 					writer = new StreamWriter( log );
@@ -258,7 +268,7 @@ namespace Axiom.Core
 		///     When message includes string formatting tokens, these are the values to
 		///     inject into the formatted string.
 		/// </param>
-		public virtual void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
+		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
 			if ( _isDisposed )
 				return;
@@ -294,12 +304,12 @@ namespace Axiom.Core
 			FireMessageLogged( level, maskDebug, message );
 		}
 
-		protected void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
+		private void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
 		{
 			// Now fire the MessageLogged event
 			if ( this.MessageLogged != null )
 			{
-				LogListenerEventArgs args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
+				var args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
 				this.MessageLogged( this, args );
 			}
 		}
@@ -323,7 +333,12 @@ namespace Axiom.Core
 
 				if ( log != null )
 					log.Close();
-			}
+
+#if SILVERLIGHT
+                if (file != null)
+                    file.Dispose();
+#endif
+            }
 			catch
 			{
 			}

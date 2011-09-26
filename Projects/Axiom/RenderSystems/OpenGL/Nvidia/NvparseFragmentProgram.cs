@@ -160,8 +160,9 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 						// send the params 4 at a time
                         throw new AxiomException("Update this!");
-						Gl.glCombinerStageParameterfvNV( combinerStage, pname, entry.Pointer );
-					}
+						Gl.glCombinerStageParameterfvNV( combinerStage, pname, entry.Pointer.Pin() );
+                        entry.Pointer.UnPin();
+                    }
 				}
 			}
 		}

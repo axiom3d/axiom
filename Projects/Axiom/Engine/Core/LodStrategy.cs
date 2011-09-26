@@ -124,7 +124,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedAscending( LodValueList values )
 		{
-			for ( int i = 0; i < values.Count; i++ )
+			for ( var i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
 				if ( i + 1 < values.Count )
@@ -143,7 +143,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedDescending( LodValueList values )
 		{
-			for ( int i = 0; i < values.Count; i++ )
+			for ( var i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
 				if ( i + 1 < values.Count )
@@ -182,7 +182,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
 				if ( meshLodUsageList[ i ].Value > value )
 					return (ushort)( index - 1 );
@@ -199,7 +199,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
 				if ( meshLodUsageList[ i ].Value < value )
 					return (ushort)( index - 1 );
@@ -212,7 +212,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
+			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
 				if ( materialLodValueList[ i ] > value )
 					return (ushort)( index - 1 );
@@ -225,7 +225,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
+			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
 				if ( materialLodValueList[ i ] < value )
 					return (ushort)( index - 1 );

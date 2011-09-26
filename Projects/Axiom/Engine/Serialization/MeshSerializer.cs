@@ -100,7 +100,7 @@ namespace Axiom.Serialization
 		public void ExportMesh( Mesh mesh, string fileName )
 		{
 			// call implementation
-			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[ currentVersion ];
+			var serializer = (MeshSerializerImpl)implementations[ currentVersion ];
 			serializer.ExportMesh( mesh, fileName );
 		}
 
@@ -111,10 +111,10 @@ namespace Axiom.Serialization
 		/// <param name="mesh">Reference to the Mesh object which will receive the data. Should be blank already.</param>
 		public void ImportMesh( Stream stream, Mesh mesh )
 		{
-			BinaryReader reader = new BinaryReader( stream );
+			var reader = new BinaryReader( stream );
 
 			// read the header ID
-			ushort headerID = ReadUShort( reader );
+			var headerID = ReadUShort( reader );
 
 			if ( headerID != (ushort)MeshChunkID.Header )
 			{
@@ -122,7 +122,7 @@ namespace Axiom.Serialization
 			}
 
 			// read version
-			string fileVersion = ReadString( reader );
+			var fileVersion = ReadString( reader );
 
 			// set jump back to the start of the reader
 			Seek( reader, 0, SeekOrigin.Begin );
@@ -136,7 +136,7 @@ namespace Axiom.Serialization
 			LogManager.Instance.Write( "Mesh: Loading '{0}'...", mesh.Name );
 
 			// call implementation
-			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[ fileVersion ];
+			var serializer = (MeshSerializerImpl)implementations[ fileVersion ];
 			serializer.ImportMesh( stream, mesh );
 
 			// warn on old version of mesh
@@ -148,10 +148,10 @@ namespace Axiom.Serialization
 
 		public DependencyInfo GetDependencyInfo( Stream stream, Mesh mesh )
 		{
-			BinaryReader reader = new BinaryReader( stream );
+			var reader = new BinaryReader( stream );
 
 			// read the header ID
-			ushort headerID = ReadUShort( reader );
+			var headerID = ReadUShort( reader );
 
 			if ( headerID != (ushort)MeshChunkID.Header )
 			{
@@ -159,7 +159,7 @@ namespace Axiom.Serialization
 			}
 
 			// read version
-			string fileVersion = ReadString( reader );
+			var fileVersion = ReadString( reader );
 
 			// set jump back to the start of the reader
 			Seek( reader, 0, SeekOrigin.Begin );
@@ -173,8 +173,8 @@ namespace Axiom.Serialization
 			LogManager.Instance.Write( "Mesh: Fetching dependency info '{0}'...", mesh.Name );
 
 			// call implementation
-			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[ fileVersion ];
-			DependencyInfo rv = serializer.GetDependencyInfo( stream, mesh );
+			var serializer = (MeshSerializerImpl)implementations[ fileVersion ];
+			var rv = serializer.GetDependencyInfo( stream, mesh );
 
 			// warn on old version of mesh
 			if ( fileVersion != currentVersion )

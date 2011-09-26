@@ -442,32 +442,32 @@ namespace Axiom.Animating
 			switch ( type )
 			{
 				case AnimableType.Int:
-					int i1 = (int)k1;
-					int i2 = (int)k2;
+					var i1 = (int)k1;
+					var i2 = (int)k2;
 					return (Object)(int)( i1 + ( i2 - i1 ) * time );
 				case AnimableType.Float:
-					float f1 = (float)k1;
-					float f2 = (float)k2;
+					var f1 = (float)k1;
+					var f2 = (float)k2;
 					return (Object)( f1 + ( f2 - f1 ) * time );
 				case AnimableType.Vector2:
-					Vector2 v21 = (Vector2)k1;
-					Vector2 v22 = (Vector2)k2;
+					var v21 = (Vector2)k1;
+					var v22 = (Vector2)k2;
 					return (Object)( v21 + ( v22 - v21 ) * time );
 				case AnimableType.Vector3:
-					Vector3 v31 = (Vector3)k1;
-					Vector3 v32 = (Vector3)k2;
+					var v31 = (Vector3)k1;
+					var v32 = (Vector3)k2;
 					return (Object)( v31 + ( v32 - v31 ) * time );
 				case AnimableType.Vector4:
-					Vector4 v41 = (Vector4)k1;
-					Vector4 v42 = (Vector4)k2;
+					var v41 = (Vector4)k1;
+					var v42 = (Vector4)k2;
 					return (Object)( v41 + ( v42 - v41 ) * time );
 				case AnimableType.Quaternion:
-					Quaternion q1 = (Quaternion)k1;
-					Quaternion q2 = (Quaternion)k2;
+					var q1 = (Quaternion)k1;
+					var q2 = (Quaternion)k2;
 					return (Object)( q1 + ( q2 + ( -1 * q1 ) ) * time );
 				case AnimableType.ColorEx:
-					ColorEx c1 = (ColorEx)k1;
-					ColorEx c2 = (ColorEx)k2;
+					var c1 = (ColorEx)k1;
+					var c2 = (ColorEx)k2;
 					return (Object)( new ColorEx( c1.a + ( c2.a - c1.a ) * time,
 												c1.r + ( c2.r - c1.r ) * time,
 												c1.g + ( c2.g - c1.g ) * time,
@@ -483,22 +483,22 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					return (Object)(int)( ( (int)k ) * v );
 				case AnimableType.Float:
-					float f = (float)k;
+					var f = (float)k;
 					return (Object)( f * v );
 				case AnimableType.Vector2:
-					Vector2 v2 = (Vector2)k;
+					var v2 = (Vector2)k;
 					return (Object)( v2 * v );
 				case AnimableType.Vector3:
-					Vector3 v3 = (Vector3)k;
+					var v3 = (Vector3)k;
 					return (Object)( v3 * v );
 				case AnimableType.Vector4:
-					Vector4 v4 = (Vector4)k;
+					var v4 = (Vector4)k;
 					return (Object)( v4 * v );
 				case AnimableType.Quaternion:
-					Quaternion q = (Quaternion)k;
+					var q = (Quaternion)k;
 					return (Object)( q * v );
 				case AnimableType.ColorEx:
-					ColorEx c = (ColorEx)k;
+					var c = (ColorEx)k;
 					return (Object)( new ColorEx( c.a * v, c.r * v, c.g * v, c.b * v ) );
 			}
 			throw new Exception( string.Format( "In AmiableValue.InterpolateValues, unknown type {0}", type ) );
