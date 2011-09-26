@@ -1,3 +1,4 @@
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Input;
@@ -6,7 +7,8 @@ using Axiom.Media;
 
 namespace Axiom.Demos
 {
-	partial class Compositor : TechDemo
+	[Export(typeof(TechDemo))]
+	public partial class Compositor : TechDemo
 	{
 		private SceneNode _spinny;
 		private int _compositorIndex = -1;

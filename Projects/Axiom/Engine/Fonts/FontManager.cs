@@ -87,7 +87,7 @@ namespace Axiom.Fonts
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
-			: base()
+            : base()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
@@ -115,8 +115,8 @@ namespace Axiom.Fonts
 		/// <param name="font"></param>
 		protected void parseAttribute( string line, Font font )
 		{
-			string[] parms = line.Split( new char[] { ' ', '\t' } );
-			string attrib = parms[ 0 ].ToLower();
+			var parms = line.Split( new char[] { ' ', '\t' } );
+			var attrib = parms[ 0 ].ToLower();
 
 			switch ( attrib )
 			{
@@ -158,7 +158,7 @@ namespace Axiom.Fonts
 						return;
 					}
 
-					char glyph = parms[ 1 ][ 0 ];
+					var glyph = parms[ 1 ][ 0 ];
 
 					// set the texcoords for this glyph
 					font.SetGlyphTexCoords(
@@ -223,7 +223,7 @@ namespace Axiom.Fonts
 		/// </summary>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			StreamReader script = new StreamReader( stream, System.Text.Encoding.UTF8 );
+			var script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 
 			Font font = null;
 
@@ -284,7 +284,7 @@ namespace Axiom.Fonts
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					// Unegister scripting with resource group manager
 					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
-					Singleton<FontManager>.Destroy();
+                    Singleton<FontManager>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but

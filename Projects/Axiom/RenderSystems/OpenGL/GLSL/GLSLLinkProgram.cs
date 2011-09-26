@@ -381,71 +381,71 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                         {
                             case GpuProgramParameters.GpuConstantType.Float1:
                                 using (var ptr  = parameters.GetFloatPointer( def.PhysicalIndex))
-                                    Gl.glUniform1fvARB( currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform1fvARB( currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Float2:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniform2fvARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform2fvARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Float3:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniform3fvARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform3fvARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Float4:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniform4fvARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform4fvARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X2:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix2fvARB(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix2fvARB(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X3:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix2x3fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix2x3fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_2X4:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix2x4fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix2x4fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X2:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix3x2fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix3x2fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X3:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix3fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix3fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_3X4:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix3x4fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix3x4fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X2:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix4x2fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix4x2fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X3:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix4x3fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix4x3fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Matrix_4X4:
                                 using (var ptr = parameters.GetFloatPointer(def.PhysicalIndex))
-                                    Gl.glUniformMatrix4fv(currentUniform.Location, glArraySize, 1, ptr.Pointer);
+                                    Gl.glUniformMatrix4fv(currentUniform.Location, glArraySize, 1, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int1:
                                 using (var ptr = parameters.GetIntPointer(def.PhysicalIndex))
-                                    Gl.glUniform1ivARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform1ivARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int2:
                                 using (var ptr = parameters.GetIntPointer(def.PhysicalIndex))
-                                    Gl.glUniform2ivARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform2ivARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int3:
                                 using (var ptr = parameters.GetIntPointer(def.PhysicalIndex))
-                                    Gl.glUniform3ivARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform3ivARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Int4:
                                 using (var ptr = parameters.GetIntPointer(def.PhysicalIndex))
-                                    Gl.glUniform4ivARB(currentUniform.Location, glArraySize, ptr.Pointer);
+                                    Gl.glUniform4ivARB(currentUniform.Location, glArraySize, ptr.Pointer.Pin());
                                 break;
                             case GpuProgramParameters.GpuConstantType.Sampler1D:
                             case GpuProgramParameters.GpuConstantType.Sampler1DShadow:

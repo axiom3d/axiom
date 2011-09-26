@@ -213,7 +213,7 @@ namespace Axiom.Framework.Graphics
             // write quads to the hardware buffer, and remember chunks
             unsafe
             {
-                Vertex* buffer = (Vertex*)hardwareBuffer.Lock( BufferLocking.Discard );
+                Vertex* buffer = (Vertex*)hardwareBuffer.Lock( BufferLocking.Discard ).Pin();
 
                 LinkedListNode<Sprite> node = sprites.First;
                 Sprite currSpr;

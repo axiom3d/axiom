@@ -161,10 +161,10 @@ namespace Axiom.RenderSystems.OpenGL
 			float displayFrequency = 60f;
 			string border = "resizable";
 
-			this._name = name;
-			this._width = width;
-			this._height = height;
-			this._colorDepth = 32;
+			this.name = name;
+			this.width = width;
+			this.height = height;
+			this.colorDepth = 32;
 			this.fullScreen = fullScreen;
 			displayDevice = DisplayDevice.Default;
 
@@ -190,7 +190,7 @@ namespace Axiom.RenderSystems.OpenGL
 							break;
 						case "colourDepth":
 						case "colorDepth":
-							_colorDepth = Int32.Parse( entry.Value.ToString() );
+							colorDepth = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "vsync":
 							vsync = entry.Value.ToString() == "No" ? false : true;
@@ -339,7 +339,8 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
 
 			Gl.glReadBuffer( ( buffer == RenderTarget.FrameBuffer.Front ) ? Gl.GL_FRONT : Gl.GL_BACK );
-			Gl.glReadPixels( dst.Left, dst.Top, dst.Width, dst.Height, format, type, dst.Data );
+			Gl.glReadPixels( dst.Left, dst.Top, dst.Width, dst.Height, format, type, dst.Data.Pin() );
+		    dst.Data.UnPin();
 
 			// restore default alignment
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 4 );
@@ -350,9 +351,11 @@ namespace Axiom.RenderSystems.OpenGL
 				int rowSpan = dst.Width * PixelUtil.GetNumElemBytes( dst.Format );
 				int height = dst.Height;
 				byte[] tmpData = new byte[ rowSpan * height ];
+#if !AXIOM_SAFE_ONLY
 				unsafe
-				{
-					byte* dataPtr = (byte*)dst.Data.ToPointer();
+#endif
+                {
+					var dataPtr = dst.Data.ToBytePointer();
 					//int *srcRow = (uchar *)dst.data, *tmpRow = tmpData + (height - 1) * rowSpan;
 
 					for ( int row = height - 1, tmpRow = 0; row >= 0; row--, tmpRow++ )
@@ -363,7 +366,7 @@ namespace Axiom.RenderSystems.OpenGL
 						}
 					}
 				}
-				IntPtr tmpDataHandle = Memory.PinObject( tmpData );
+				var tmpDataHandle = Memory.PinObject( tmpData );
 				Memory.Copy( tmpDataHandle, dst.Data, rowSpan * height );
 				Memory.UnpinObject( tmpData );
 			}

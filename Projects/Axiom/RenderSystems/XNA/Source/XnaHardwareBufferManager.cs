@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,144 +23,145 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using Axiom.Graphics;
+using Microsoft.Xna.Framework.Graphics;
+using BufferUsage = Axiom.Graphics.BufferUsage;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
-
-using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
+    /// <summary>
 	/// Summary description for XnaHardwareBufferManager.
-	/// </summary>
-	public class XnaHardwareBufferManagerBase : HardwareBufferManagerBase
-	{
-		#region Member variables
+    /// </summary>
+    public class XnaHardwareBufferManagerBase : HardwareBufferManagerBase
+    {
+        #region Member variables
 
-		protected XFG.GraphicsDevice _device;
+        protected GraphicsDevice _device;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <param name="device"></param>
-		public XnaHardwareBufferManagerBase( XFG.GraphicsDevice device )
-			: base()
-		{
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <param name="device"></param>
+        public XnaHardwareBufferManagerBase( GraphicsDevice device )
+        {
 			_device = device;
-		}
+        }
 
-		#endregion
+        #endregion
 
-		#region HardwareBufferManager Implementation
+        #region HardwareBufferManager Implementation
 
-		#region Properties
+        #region Properties
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !this.IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
 					_device = null;
-				}
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-		{
-			// call overloaded method with no shadow buffer
-			return CreateIndexBuffer( type, numIndices, usage, false );
-		}
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+        {
+            // call overloaded method with no shadow buffer
+            return CreateIndexBuffer( type, numIndices, usage, false );
+        }
 
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-		{
-			XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( this, type, numIndices, usage, _device, false, useShadowBuffer );
-			indexBuffers.Add( buffer );
-			return buffer;
-		}
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        {
+            var buffer = new XnaHardwareIndexBuffer( this, type, numIndices, usage, _device, false, useShadowBuffer );
+            indexBuffers.Add( buffer );
+            return buffer;
+        }
 
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
-		{
-			// call overloaded method with no shadow buffer
-			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
-		}
+        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
+        {
+            // call overloaded method with no shadow buffer
+            return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
+        }
 
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
-		{
-			XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, _device, false, useShadowBuffer );
-			vertexBuffers.Add( buffer );
-			return buffer;
-		}
+        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+        {
+            var buffer = new XnaHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, _device, false, useShadowBuffer );
+            vertexBuffers.Add( buffer );
+            return buffer;
+        }
 
-		public override VertexDeclaration CreateVertexDeclaration()
-		{
-			VertexDeclaration decl = new XnaVertexDeclaration( _device );
-			vertexDeclarations.Add( decl );
-			return decl;
-		}
+        public override VertexDeclaration CreateVertexDeclaration()
+        {
+            VertexDeclaration decl = new XnaVertexDeclaration( _device );
+            vertexDeclarations.Add( decl );
+            return decl;
+        }
 
 		#endregion Methods
 
-		#endregion HardwareBufferManager Implementation
-	}
+        #endregion HardwareBufferManager Implementation
+    }
 
-	public class XnaHardwareBufferManager : HardwareBufferManager
-	{
-		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
-			: base( new XnaHardwareBufferManagerBase( device ) )
-		{
-		}
+    public class XnaHardwareBufferManager : HardwareBufferManager
+    {
+        public XnaHardwareBufferManager( GraphicsDevice device )
+            : base( new XnaHardwareBufferManagerBase( device ) )
+        {
+        }
 
-		public void ReleaseDefaultPoolResources()
-		{
-			//( (D3DHardwareBufferManagerBase)_baseInstance ).ReleaseDefaultPoolResources();
-		}
+        public void ReleaseDefaultPoolResources()
+        {
+            //( (D3DHardwareBufferManagerBase)_baseInstance ).ReleaseDefaultPoolResources();
+        }
 
-		public void RecreateDefaultPoolResources()
-		{
-			//( (D3DHardwareBufferManagerBase)_baseInstance ).RecreateDefaultPoolResources();
-		}
+        public void RecreateDefaultPoolResources()
+        {
+            //( (D3DHardwareBufferManagerBase)_baseInstance ).RecreateDefaultPoolResources();
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( disposeManagedResources )
-			{
-				_baseInstance.Dispose();
-				_baseInstance = null;
-			}
-			base.dispose( disposeManagedResources );
-		}
-
-	}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( disposeManagedResources )
+            {
+                _baseInstance.Dispose();
+                _baseInstance = null;
+            }
+            base.dispose( disposeManagedResources );
+        }
+    }
 }

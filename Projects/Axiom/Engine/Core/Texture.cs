@@ -37,6 +37,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Axiom.CrossPlatform;
 using Marshal = System.Runtime.InteropServices.Marshal;
 
 using Axiom.Graphics;
@@ -296,10 +297,10 @@ namespace Axiom.Core
 			{
 				return _mipmapCount;
 			}
-			set
-			{
-				_requestedMipmapCount = _mipmapCount = value;
-			}
+            set
+            {
+                _requestedMipmapCount = _mipmapCount = value;
+            }
 		}
 
 		#endregion MipmapCount Property
@@ -728,7 +729,7 @@ namespace Axiom.Core
 
 			if ( TextureManager.Instance != null )
 			{
-				TextureManager mgr = TextureManager.Instance;
+				var mgr = TextureManager.Instance;
 				MipmapCount = mgr.DefaultMipmapCount;
 				SetDesiredBitDepths( mgr.PreferredIntegerBitDepth, mgr.PreferredFloatBitDepth );
 			}
@@ -786,7 +787,7 @@ namespace Axiom.Core
 		public void LoadRawData( Stream data, int width, int height, PixelFormat format )
 		{
 			// load the raw data
-			Image image = Image.FromRawStream( data, width, height, format );
+			var image = Image.FromRawStream( data, width, height, format );
 
 			// call the polymorphic LoadImage implementation
 			LoadImage( image );
@@ -838,10 +839,10 @@ namespace Axiom.Core
 			}
 
 			// The custom mipmaps in the image have priority over everything
-			int imageMips = images[ 0 ].NumMipMaps;
+			var imageMips = images[ 0 ].NumMipMaps;
 			if ( imageMips > 0 )
 			{
-				_mipmapCount = _requestedMipmapCount = imageMips;
+                MipmapCount = imageMips;
 				// Disable flag for auto mip generation
 				_usage &= ~TextureUsage.AutoMipMap;
 			}
@@ -870,7 +871,7 @@ namespace Axiom.Core
 
 			// Say what we're doing
 			{ // Scoped
-				StringBuilder msg = new StringBuilder();
+				var msg = new StringBuilder();
 				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with",
 										_name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ),
 										images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
@@ -885,7 +886,7 @@ namespace Axiom.Core
 				msg.AppendFormat( " from {0}.\n\t", multiImage ? "multiple Images" : "an Image" );
 
 				// Print data about first destination surface
-				HardwarePixelBuffer buf = GetBuffer( 0, 0 );
+				var buf = GetBuffer( 0, 0 );
 				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width, buf.Height, buf.Depth );
 
 				LogManager.Instance.Write( msg.ToString() );
@@ -893,9 +894,9 @@ namespace Axiom.Core
 
 			// Main loading loop
 			// imageMips == 0 if the image has no custom mipmaps, otherwise contains the number of custom mips
-			for ( int mip = 0; mip <= imageMips; ++mip )
+            for (var mip = 0; mip <= imageMips; ++mip)
 			{
-				for ( int i = 0; i < faces; ++i )
+				for ( var i = 0; i < faces; ++i )
 				{
 					PixelBox src;
 					if ( multiImage )
@@ -912,42 +913,42 @@ namespace Axiom.Core
 							src.Format = PixelFormat.A8;
 					}
 
-					if ( _gamma != 1.0f )
-					{
-						// Apply gamma correction
-						// Do not overwrite original image but do gamma correction in temporary buffer
-						int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
-						byte[] buff = new byte[ bufSize ];
-						unsafe
-						{
-							fixed ( void* pBuf = &buff[ 0 ] )
-							{
-								IntPtr buffer = new IntPtr( pBuf );
+                    if (_gamma != 1.0f)
+                    {
+                        // Apply gamma correction
+                        // Do not overwrite original image but do gamma correction in temporary buffer
+                        var bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
+                        var buff = new byte[bufSize];
+                        var buffer = BufferBase.Wrap( buff );
+#if !AXIOM_SAFE_ONLY
+                        unsafe
+#endif
+                        {
 
-								try
-								{
-									PixelBox corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
-									PixelConverter.BulkPixelConversion( src, corrected );
+                            try
+                            {
+                                var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
+                                PixelConverter.BulkPixelConversion( src, corrected );
 
-									Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
+                                Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize,
+                                                  PixelUtil.GetNumElemBits( src.Format ) );
 
-									// Destination: entire texture. BlitFromMemory does
-									// the scaling to a power of two for us when needed
-									GetBuffer( i, mip ).BlitFromMemory( corrected );
-								}
-								finally
-								{
-									//Marshal.FreeHGlobal( buffer );
-								}
-							}
-						}
-					}
-					else
-					{
-						// Destination: entire texture. BlitFromMemory does
-						// the scaling to a power of two for us when needed
-						GetBuffer( i, mip ).BlitFromMemory( src );
-					}
+                                // Destination: entire texture. BlitFromMemory does
+                                // the scaling to a power of two for us when needed
+                                GetBuffer( i, mip ).BlitFromMemory( corrected );
+                            }
+                            finally
+                            {
+                                //Marshal.FreeHGlobal( buffer );
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Destination: entire texture. BlitFromMemory does
+                        // the scaling to a power of two for us when needed
+                        GetBuffer(i, mip).BlitFromMemory(src);
+                    }
 				}
 			}
 			// Update size (the final size, not including temp space)

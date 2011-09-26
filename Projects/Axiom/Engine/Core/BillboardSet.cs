@@ -43,6 +43,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using Axiom.Collections;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -144,7 +145,7 @@ namespace Axiom.Core
 
 		protected bool pointRendering = false;
 		protected bool accurateFacing = false;
-		protected IntPtr lockPtr = IntPtr.Zero;
+		protected BufferBase lockPtr;
 		protected int ptrOffset = 0;
 		protected Vector3[] vOffset = new Vector3[ 4 ];
 		protected Camera currentCamera;
@@ -232,7 +233,7 @@ namespace Axiom.Core
 		internal void BeginBillboards()
 		{
 			// Make sure we aren't calling this more than once
-			Debug.Assert( this.lockPtr == IntPtr.Zero );
+			Debug.Assert( this.lockPtr == null );
 
 			/* NOTE: most engines generate world coordinates for the billboards
 			   directly, taking the world axes of the camera as offsets to the
@@ -336,7 +337,7 @@ namespace Axiom.Core
 			}
 			else // not all default size and not point rendering
 			{
-				Vector3[] vOwnOffset = new Vector3[ 4 ];
+				var vOwnOffset = new Vector3[ 4 ];
 				// If it has own dimensions, or self-oriented, gen offsets
 				if ( this.billboardType == BillboardType.OrientedSelf ||
 					 this.billboardType == BillboardType.PerpendicularSelf ||
@@ -368,9 +369,9 @@ namespace Axiom.Core
 		internal void EndBillboards()
 		{
 			// Make sure we aren't double unlocking
-			Debug.Assert( this.lockPtr != IntPtr.Zero );
+			Debug.Assert( this.lockPtr != null );
 			this.mainBuffer.Unlock();
-			this.lockPtr = IntPtr.Zero;
+			this.lockPtr = null;
 		}
 
 		protected void SetBounds( AxisAlignedBox box, float radius )
@@ -410,13 +411,13 @@ namespace Axiom.Core
 		/// <param name="size"></param>
 		protected virtual void IncreasePool( int size )
 		{
-			int oldSize = this.billboardPool.Count;
+			var oldSize = this.billboardPool.Count;
 
 			// expand the capacity a bit
 			this.billboardPool.Capacity += size;
 
 			// add fresh Billboard objects to the new slots
-			for ( int i = oldSize; i < size; ++i )
+			for ( var i = oldSize; i < size; ++i )
 			{
 				this.billboardPool.Add( new Billboard() );
 			}
@@ -480,11 +481,11 @@ namespace Axiom.Core
 			{
 				//  (float)X / X is guaranteed to be == 1.0f for X up to 8 million, so
 				//  our range of 1..256 is quite enough to guarantee perfect coverage.
-				float top = (float)v / (float)stacks;
-				float bottom = ( (float)v + 1 ) / (float)stacks;
+				var top = (float)v / (float)stacks;
+				var bottom = ( (float)v + 1 ) / (float)stacks;
 				for ( uint u = 0; u < slices; ++u )
 				{
-					RectangleF r = new RectangleF();
+					var r = new RectangleF();
 					r.Left = (float)u / (float)slices;
 					r.Top = top;
 					r.Width = ( (float)u + 1 ) / (float)slices - r.Left;
@@ -711,17 +712,19 @@ namespace Axiom.Core
 
 		protected void GenerateVertices( Vector3[] offsets, Billboard bb )
 		{
-			int color = Root.Instance.ConvertColor( bb.Color );
+			var color = Root.Instance.ConvertColor( bb.Color );
 			// Texcoords
 			Debug.Assert( bb.UseTexcoordRect || bb.TexcoordIndex < this.textureCoords.Count );
-			RectangleF r = bb.UseTexcoordRect ? bb.TexcoordRect : this.textureCoords[ bb.TexcoordIndex ];
+			var r = bb.UseTexcoordRect ? bb.TexcoordRect : this.textureCoords[ bb.TexcoordIndex ];
 
 			if ( this.pointRendering )
 			{
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    var posPtr = this.lockPtr.ToFloatPointer();
+                    var colPtr = this.lockPtr.ToIntPointer();
 
 					// Single vertex per billboard, ignore offsets
 					// position
@@ -734,11 +737,13 @@ namespace Axiom.Core
 			}
 			else if ( this.allDefaultRotation || bb.Rotation == 0 )
 			{
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
-					float* texPtr = (float*)posPtr;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    var posPtr = this.lockPtr.ToFloatPointer();
+                    var colPtr = this.lockPtr.ToIntPointer();
+                    var texPtr = posPtr;
 
 					// Left-top
 					// Positions
@@ -789,17 +794,19 @@ namespace Axiom.Core
 			{
 				// TODO: Cache axis when billboard type is BillboardType.Point or
 				//       BillboardType.PerpendicularCommon
-				Vector3 axis = ( offsets[ 3 ] - offsets[ 0 ] ).Cross( offsets[ 2 ] - offsets[ 1 ] );
+				var axis = ( offsets[ 3 ] - offsets[ 0 ] ).Cross( offsets[ 2 ] - offsets[ 1 ] );
 				axis.Normalize();
 
-				Quaternion rotation = Quaternion.FromAngleAxis( bb.rotationInRadians, axis );
+				var rotation = Quaternion.FromAngleAxis( bb.rotationInRadians, axis );
 				Vector3 pt;
 
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
-					float* texPtr = (float*)posPtr;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    var posPtr = this.lockPtr.ToFloatPointer();
+                    var colPtr = this.lockPtr.ToIntPointer();
+                    var texPtr = posPtr;
 
 					// Left-top
 					// Positions
@@ -855,21 +862,23 @@ namespace Axiom.Core
 				float cos_rot = Utility.Cos( bb.rotationInRadians );
 				float sin_rot = Utility.Sin( bb.rotationInRadians );
 
-				float width = ( r.Right - r.Left ) / 2;
-				float height = ( r.Bottom - r.Top ) / 2;
-				float mid_u = r.Left + width;
-				float mid_v = r.Top + height;
+				var width = ( r.Right - r.Left ) / 2;
+				var height = ( r.Bottom - r.Top ) / 2;
+				var mid_u = r.Left + width;
+				var mid_v = r.Top + height;
 
-				float cos_rot_w = cos_rot * width;
-				float cos_rot_h = cos_rot * height;
-				float sin_rot_w = sin_rot * width;
-				float sin_rot_h = sin_rot * height;
+				var cos_rot_w = cos_rot * width;
+				var cos_rot_h = cos_rot * height;
+				var sin_rot_w = sin_rot * width;
+				var sin_rot_h = sin_rot * height;
 
-				unsafe
-				{
-					float* posPtr = (float*)this.lockPtr.ToPointer();
-					int* colPtr = (int*)posPtr;
-					float* texPtr = (float*)posPtr;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    var posPtr = this.lockPtr.ToFloatPointer();
+                    var colPtr = this.lockPtr.ToIntPointer();
+                    var texPtr = posPtr;
 
 					// Left-top
 					// Positions
@@ -995,7 +1004,7 @@ namespace Axiom.Core
 			}
 
 			// get the next free billboard from the queue
-			Billboard newBillboard = this.freeBillboards[ 0 ];
+			var newBillboard = this.freeBillboards[ 0 ];
 			this.freeBillboards.RemoveAt( 0 );
 
 			// add the billboard to the active list
@@ -1011,14 +1020,14 @@ namespace Axiom.Core
 			newBillboard.NotifyOwner( this );
 
 			// Merge into bounds
-			float adjust = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
-			Vector3 adjustVec = new Vector3( adjust, adjust, adjust );
-			Vector3 newMin = position - adjustVec;
-			Vector3 newMax = position + adjustVec;
+			var adjust = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
+			var adjustVec = new Vector3( adjust, adjust, adjust );
+			var newMin = position - adjustVec;
+			var newMax = position + adjustVec;
 
 			this.aab.Merge( new AxisAlignedBox( newMin, newMax ) );
 
-			float sqlen = (float)Utility.Max( newMin.LengthSquared, newMax.LengthSquared );
+			var sqlen = (float)Utility.Max( newMin.LengthSquared, newMax.LengthSquared );
 			this.boundingRadius = (float)Utility.Max( this.boundingRadius, Utility.Sqrt( sqlen ) );
 
 			return newBillboard;
@@ -1066,10 +1075,10 @@ namespace Axiom.Core
 			this.vertexData.vertexStart = 0;
 
 			// Vertex declaration
-			VertexDeclaration decl = this.vertexData.vertexDeclaration;
-			VertexBufferBinding binding = this.vertexData.vertexBufferBinding;
+			var decl = this.vertexData.vertexDeclaration;
+			var binding = this.vertexData.vertexBufferBinding;
 
-			int offset = 0;
+			var offset = 0;
 			decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 			decl.AddElement( 0, offset, VertexElementType.Color, VertexElementSemantic.Diffuse );
@@ -1115,11 +1124,13 @@ namespace Axiom.Core
 				*/
 
 				// lock the index buffer
-				IntPtr idxPtr = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var idxPtr = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
 
+#if !AXIOM_SAFE_ONLY
 				unsafe
+#endif
 				{
-					ushort* pIdx = (ushort*)idxPtr.ToPointer();
+					var pIdx = idxPtr.ToUShortPointer();
 
 					for ( int idx, idxOffset, bboard = 0; bboard < this.poolSize; ++bboard )
 					{
@@ -1174,14 +1185,14 @@ namespace Axiom.Core
 
 		protected void RemoveBillboard( int index )
 		{
-			Billboard tmp = this.activeBillboards[ index ];
+			var tmp = this.activeBillboards[ index ];
 			this.activeBillboards.RemoveAt( index );
 			this.freeBillboards.Add( tmp );
 		}
 
 		protected void RemoveBillboard( Billboard bill )
 		{
-			int index = this.activeBillboards.IndexOf( bill );
+			var index = this.activeBillboards.IndexOf( bill );
 			Debug.Assert( index >= 0, "Billboard is not in the active list" );
 			RemoveBillboard( index );
 		}
@@ -1199,13 +1210,13 @@ namespace Axiom.Core
 			}
 			else
 			{
-				float maxSqLen = -1.0f;
-				Vector3 min = new Vector3( float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity );
-				Vector3 max = new Vector3( float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity );
+				var maxSqLen = -1.0f;
+				var min = new Vector3( float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity );
+				var max = new Vector3( float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity );
 
-				foreach ( Billboard billboard in this.activeBillboards )
+				foreach ( var billboard in this.activeBillboards )
 				{
-					Vector3 pos = billboard.Position;
+					var pos = billboard.Position;
 					min.Floor( pos );
 					max.Ceil( pos );
 
@@ -1213,8 +1224,8 @@ namespace Axiom.Core
 				}
 
 				// adjust for billboard size
-				float adjust = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
-				Vector3 vecAdjust = new Vector3( adjust, adjust, adjust );
+				var adjust = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
+				var vecAdjust = new Vector3( adjust, adjust, adjust );
 				min -= vecAdjust;
 				max += vecAdjust;
 
@@ -1282,9 +1293,9 @@ namespace Axiom.Core
 				// If we're driving this from our own data, allocate billboards
 				if ( !this.externalData )
 				{
-					int size = value;
+					var size = value;
 					// Never shrink below Count
-					int currentSize = this.billboardPool.Count;
+					var currentSize = this.billboardPool.Count;
 					if ( currentSize >= size )
 					{
 						return;
@@ -1293,7 +1304,7 @@ namespace Axiom.Core
 					this.IncreasePool( size );
 
 					// add new items to the queue
-					for ( int i = currentSize; i < size; ++i )
+					for ( var i = currentSize; i < size; ++i )
 					{
 						this.freeBillboards.Add( this.billboardPool[ i ] );
 					}
@@ -1382,15 +1393,18 @@ namespace Axiom.Core
 						 1.0f, 0.0f };
 
 					// lock the index buffer
-					IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
+					var idxPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
 
 					// get the texcoord buffer
 					vBuffer = vertexData.vertexBufferBinding.GetBuffer(TEXCOORD);
 
 					// lock the texcoord buffer
-					IntPtr texPtr = vBuffer.Lock(BufferLocking.Discard);
+					var texPtr = vBuffer.Lock(BufferLocking.Discard);
 
-					unsafe {
+#if !AXIOM_SAFE_ONLY
+					unsafe
+#endif
+                    {
 						ushort* pIdx = (ushort*)idxPtr.ToPointer();
 						float* pTex = (float*)texPtr.ToPointer();
 
@@ -1874,7 +1888,7 @@ namespace Axiom.Core
 				//    SortBillboards(currentCamera);
 
 				this.BeginBillboards();
-				foreach ( Billboard billboard in this.activeBillboards )
+				foreach ( var billboard in this.activeBillboards )
 				{
 					this.InjectBillboard( billboard );
 				}
@@ -1893,7 +1907,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				bool enabled = value;
+				var enabled = value;
 				// Override point rendering if not supported
 				if ( enabled
 					 && !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.PointSprites ) )
@@ -1940,8 +1954,8 @@ namespace Axiom.Core
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
 			// may have parameters
-			bool externalData = false;
-			int poolSize = 0;
+			var externalData = false;
+			var poolSize = 0;
 
 			if ( param != null )
 			{

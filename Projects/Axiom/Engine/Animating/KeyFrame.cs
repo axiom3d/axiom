@@ -152,21 +152,21 @@ namespace Axiom.Animating
 			set
 			{
 				// hack for python scripting, which insists on passing in a double
-				NumericAnimationTrack tmpParent = parentTrack as NumericAnimationTrack;
+				var tmpParent = parentTrack as NumericAnimationTrack;
 				if ( tmpParent != null )
 				{
 					if ( tmpParent.TargetAnimable.Type == AnimableType.Float )
 					{
 						if ( value is double )
 						{
-							double d = (double)value;
-							float tmp = (float)d;
+							var d = (double)value;
+							var tmp = (float)d;
 							value = tmp;
 						}
 						else if ( value is int )
 						{
-							int i = (int)value;
-							float tmp = (float)i;
+							var i = (int)value;
+							var tmp = (float)i;
 							value = tmp;
 						}
 					}
@@ -454,7 +454,7 @@ namespace Axiom.Animating
 		/// <param name="poseIndex">The pose index (not the index of the reference)</param>
 		public void RemovePoseReference( ushort poseIndex )
 		{
-			for ( int i = 0; i < poseRefs.Count; i++ )
+			for ( var i = 0; i < poseRefs.Count; i++ )
 			{
 				if ( poseRefs[ i ].poseIndex == poseIndex )
 				{

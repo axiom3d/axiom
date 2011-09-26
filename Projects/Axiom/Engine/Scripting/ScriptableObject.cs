@@ -103,15 +103,15 @@ namespace Axiom.Scripting
 	{
 		public readonly string ScriptPropertyName;
 		
-        public ScriptablePropertyAttribute( string scriptPropertyName )
+		public ScriptablePropertyAttribute( string scriptPropertyName )
 		{
 			ScriptPropertyName = scriptPropertyName;
 		}
 
-        public ScriptablePropertyAttribute(string scriptPropertyName, string description )
-        {
-            ScriptPropertyName = scriptPropertyName;
-        }
+		public ScriptablePropertyAttribute(string scriptPropertyName, string description )
+		{
+			ScriptPropertyName = scriptPropertyName;
+		}
 
 		public ScriptablePropertyAttribute( string scriptPropertyName, string description, Type owner )
 		{
@@ -137,7 +137,7 @@ namespace Axiom.Scripting
 		///
 		/// </summary>
 		protected ScriptableObject()
-            : base()
+			: base()
 		{
 			_classParameters = _getTypePropertyMap( this.GetType() );
 			_properties = new ScriptableProperties( this );
@@ -160,52 +160,39 @@ namespace Axiom.Scripting
 			return list;
 		}
 
-		private static void _initializeTypeProperties( Type type, Dictionary<string, IPropertyCommand> list )
+		private static void _initializeTypeProperties(Type type, Dictionary<string, IPropertyCommand> list)
 		{
 			// Load the IPropertyCommands from the parent Type
-			Type parent = type.BaseType;
-			if ( parent != typeof( System.Object ) )
+			var parent = type.BaseType;
+			if ( parent != typeof ( System.Object ) )
 			{
-				foreach ( KeyValuePair<string, IPropertyCommand> item in _getTypePropertyMap( parent ) )
+				foreach ( var item in _getTypePropertyMap( parent ) )
 				{
 					list.Add( item.Key, item.Value );
 				}
 				parent = parent.BaseType;
 			}
 
-			foreach ( Type nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
-			{
-#if !(XBOX || XBOX360)
-				if ( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
-												{
-													if ( typeObj.ToString() == criteriaObj.ToString() )
-														return true;
-													else
-														return false;
-												}
-											, typeof( IPropertyCommand ).FullName ).Length != 0 )
+			foreach ( var nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
+            {
+#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360)
+				if ( nestType.FindInterfaces( ( typeObj, criteriaObj ) => typeObj.ToString() == criteriaObj.ToString(),
+											  typeof ( IPropertyCommand ).FullName ).Length != 0 )
+#else
+                foreach ( Type iface in nestType.GetInterfaces() )
+					if ( iface.FullName == typeof ( IPropertyCommand ).FullName )
+#endif
 				{
-					foreach ( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
+					foreach (
+						ScriptablePropertyAttribute attr in
+							nestType.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true ) )
 					{
-						IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance( nestType );
+						var propertyCommand = (IPropertyCommand)Activator.CreateInstance( nestType );
 						list.Add( attr.ScriptPropertyName, propertyCommand );
 					}
 				}
-#else
-				foreach ( Type iface in nestType.GetInterfaces() )
-				{
-					if ( iface.FullName == typeof(IPropertyCommand).FullName )
-					{
-						foreach (ScriptablePropertyAttribute attr in nestType.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true))
-						{
-							IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance(nestType);
-							list.Add(attr.ScriptPropertyName, propertyCommand);
-						}
-					}
-				}
-#endif
 			}
-				}
+		}
 
 		#endregion Static Implementation
 
@@ -229,7 +216,7 @@ namespace Axiom.Scripting
 		/// <param name="parameters">the list of properties to set</param>
 		public void SetParameters( NameValuePairList parameters )
 		{
-			foreach ( KeyValuePair<String, String> item in parameters )
+			foreach ( var item in parameters )
 			{
 				this.Properties[ item.Key ] = item.Value;
 			}

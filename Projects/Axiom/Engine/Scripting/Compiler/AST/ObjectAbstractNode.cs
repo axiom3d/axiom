@@ -115,7 +115,7 @@ namespace Axiom.Scripting.Compiler.AST
 			if ( _environment.ContainsKey( inName ) )
 				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
 
-			ObjectAbstractNode parentNode = (ObjectAbstractNode)this.Parent;
+			var parentNode = (ObjectAbstractNode)this.Parent;
 			while ( parentNode != null )
 			{
 				if ( parentNode._environment.ContainsKey( inName ) )
@@ -134,22 +134,22 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
-			ObjectAbstractNode node = new ObjectAbstractNode( Parent );
+			var node = new ObjectAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
 			node.Name = this.Name;
 			node.Cls = this.Cls;
 			node.Id = this.Id;
 			node.IsAbstract = this.IsAbstract;
-			foreach ( AbstractNode an in this.Children )
+			foreach ( var an in this.Children )
 			{
-				AbstractNode newNode = (AbstractNode)( an.Clone() );
+				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Children.Add( newNode );
 			}
-			foreach ( AbstractNode an in this.Values )
+			foreach ( var an in this.Values )
 			{
-				AbstractNode newNode = (AbstractNode)( an.Clone() );
+				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Values.Add( newNode );
 			}

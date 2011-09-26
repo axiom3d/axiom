@@ -254,7 +254,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// A target pass is supported if all passes are supported
-				foreach ( CompositionPass pass in passes )
+				foreach ( var pass in passes )
 				{
 					if ( !pass.IsSupported )
 						return false;
@@ -288,7 +288,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public CompositionPass CreatePass()
 		{
-			CompositionPass t = new CompositionPass( this );
+			var t = new CompositionPass( this );
 			passes.Add( t );
 			return t;
 		}

@@ -16,7 +16,6 @@ using Axiom.Demos;
 
 namespace Droid
 {
-	[Activity( MainLauncher = true, Label = "Axiom Demo Browser" )]
 	public class DemoListActivity : ListActivity
 	{
 		private string[] demos;

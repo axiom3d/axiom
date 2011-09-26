@@ -537,7 +537,7 @@ namespace Axiom.Core
 		public bool OnQueryResult( MovableObject sceneObject, float distance )
 		{
 			// create an entry and add it to the cached result list
-			RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
+			var entry = new RaySceneQueryResultEntry();
 			entry.Distance = distance;
 			entry.SceneObject = sceneObject;
 			entry.worldFragment = null;
@@ -550,7 +550,7 @@ namespace Axiom.Core
 		bool IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
 		{
 			// create an entry and add it to the cached result list
-			RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
+			var entry = new RaySceneQueryResultEntry();
 			entry.Distance = distance;
 			entry.SceneObject = null;
 			entry.worldFragment = fragment;
@@ -612,7 +612,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int CompareTo( object obj )
 		{
-			RaySceneQueryResultEntry entry = obj as RaySceneQueryResultEntry;
+			var entry = obj as RaySceneQueryResultEntry;
 
 			if ( Distance < entry.Distance )
 			{

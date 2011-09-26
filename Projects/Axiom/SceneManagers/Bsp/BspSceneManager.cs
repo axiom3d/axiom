@@ -41,13 +41,14 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
 using System.Data;
 #endif
 
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Core.Collections;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.SceneManagers.Bsp.Collections;
@@ -149,7 +150,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			level = null;
 
-            new BspResourceManager();
+			new BspResourceManager();
 		}
 
 		#endregion Constructor
@@ -246,7 +247,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			if ( Path.GetExtension( filename ).ToLower() == ".xml" )
 			{
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
 				DataSet optionData = new DataSet();
 				optionData.ReadXml( filename );
 
@@ -591,14 +592,14 @@ namespace Axiom.SceneManagers.Bsp
 				tex.SetAlphaOperation( LayerBlendOperationEx.Modulate );
 				tex.AlphaBlendMode.source2 = LayerBlendSource.Diffuse;
 				tex.TextureCoordSet = 2;
-                tex.SetTextureAddressingMode( TextureAddressing.Clamp );
+				tex.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				// The geometry texture without lightmap. Use the light texture on this
 				// pass, the appropriate texture will be rendered at RenderTextureLighting
 				tex = textureLightPass.CreateTextureUnitState( texLight.Name );
 				tex.SetColorOperation( LayerBlendOperation.Modulate );
 				tex.SetAlphaOperation( LayerBlendOperationEx.Modulate );
-                tex.SetTextureAddressingMode( TextureAddressing.Wrap );
+				tex.SetTextureAddressingMode( TextureAddressing.Wrap );
 
 				textureLightPass.SetSceneBlending( SceneBlendType.TransparentAlpha );
 
@@ -726,7 +727,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Caches a face group for imminent rendering.
 		/// </summary>
-		protected int CacheGeometry( IntPtr indexes, BspStaticFaceGroup faceGroup )
+		protected int CacheGeometry(BufferBase indexes, BspStaticFaceGroup faceGroup)
 		{
 			// Skip sky always
 			if ( faceGroup.isSky )
@@ -754,21 +755,30 @@ namespace Axiom.SceneManagers.Bsp
 				return 0;
 			}
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				uint* src = (uint*)level.Indexes.Lock(
-					idxStart * sizeof( uint ),
-					numIdx * sizeof( uint ),
-					BufferLocking.ReadOnly );
-				uint* pIndexes = (uint*)indexes;
-
 				// Offset the indexes here
 				// we have to do this now rather than up-front because the
 				// indexes are sometimes reused to address different vertex chunks
-				for ( int i = 0; i < numIdx; i++ )
-					*pIndexes++ = (uint)( *src++ + vertexStart );
-
-				level.Indexes.Unlock();
+                var idxSize = level.Indexes.IndexSize;
+			    var idxSrc = level.Indexes.Lock( idxStart*idxSize, numIdx*idxSize, BufferLocking.ReadOnly );
+                if (level.Indexes.Type == IndexType.Size16)
+                {
+                    var src = idxSrc.ToUShortPointer();
+                    var pIndexes = indexes.ToUShortPointer();
+                    for (int i = 0; i < numIdx; i++)
+                        pIndexes[i] = (ushort)(src[i] + vertexStart);
+                }
+                else
+                {
+                    var src = idxSrc.ToUIntPointer();
+                    var pIndexes = indexes.ToUIntPointer();
+                    for (int i = 0; i < numIdx; i++)
+                        pIndexes[i] = (uint)(src[i] + vertexStart);
+                }
+			    level.Indexes.Unlock();
 			}
 
 			// return number of elements
@@ -778,89 +788,114 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Caches a face group and calculates texture lighting coordinates.
 		/// </summary>
-		unsafe protected int CacheLightGeometry( TextureLight light, uint* pIndexes, TextureLightMap* pTexLightMaps, BspVertex* pVertices, BspStaticFaceGroup faceGroup )
+		protected int CacheLightGeometry( TextureLight light, BufferBase pIndexesBuf, BufferBase pTexLightMapsBuf, BufferBase pVerticesBuf, BspStaticFaceGroup faceGroup)
 		{
-			// Skip sky always
-			if ( faceGroup.isSky )
-				return 0;
-
-			int idxStart = 0;
-			int numIdx = 0;
-			int vertexStart = 0;
-
-			if ( faceGroup.type == FaceGroup.FaceList )
+#if !AXIOM_SAFE_ONLY
+			unsafe
+#endif
 			{
-				idxStart = faceGroup.elementStart;
-				numIdx = faceGroup.numElements;
-				vertexStart = faceGroup.vertexStart;
-			}
-			else if ( faceGroup.type == FaceGroup.Patch )
-			{
-				idxStart = faceGroup.patchSurf.IndexOffset;
-				numIdx = faceGroup.patchSurf.CurrentIndexCount;
-				vertexStart = faceGroup.patchSurf.VertexOffset;
-			}
-			else
-			{
-				// Unsupported face type
-				return 0;
-			}
+				// Skip sky always
+				if ( faceGroup.isSky )
+					return 0;
 
-			uint* src = (uint*)level.Indexes.Lock(
-				idxStart * sizeof( uint ),
-				numIdx * sizeof( uint ),
-				BufferLocking.ReadOnly );
+				int idxStart = 0;
+				int numIdx = 0;
+				int vertexStart = 0;
 
-			int maxIndex = 0;
-			for ( int i = 0; i < numIdx; i++ )
-			{
-				int index = (int)*( src + i );
-				if ( index > maxIndex )
-					maxIndex = index;
-			}
-
-			Vector3[] vertexPos = new Vector3[ maxIndex + 1 ];
-			bool[] vertexIsStored = new bool[ maxIndex + 1 ];
-
-			for ( int i = 0; i < numIdx; i++ )
-			{
-				uint index = *( src + i );
-				if ( !vertexIsStored[ index ] )
+				if ( faceGroup.type == FaceGroup.FaceList )
 				{
-					vertexPos[ index ] = ( *( pVertices + vertexStart + index ) ).position;
-					vertexIsStored[ index ] = true;
+					idxStart = faceGroup.elementStart;
+					numIdx = faceGroup.numElements;
+					vertexStart = faceGroup.vertexStart;
 				}
-			}
-
-			Vector2[] texCoors;
-			ColorEx[] colors;
-
-			bool res = light.CalculateTexCoordsAndColors( faceGroup.plane, vertexPos, out texCoors, out colors );
-
-			if ( res )
-			{
-				for ( int i = 0; i <= maxIndex; i++ )
+				else if ( faceGroup.type == FaceGroup.Patch )
 				{
-					pTexLightMaps[ vertexStart + i ].color = Root.Instance.RenderSystem.ConvertColor( colors[ i ] );
-					pTexLightMaps[ vertexStart + i ].textureLightMap = texCoors[ i ];
+					idxStart = faceGroup.patchSurf.IndexOffset;
+					numIdx = faceGroup.patchSurf.CurrentIndexCount;
+					vertexStart = faceGroup.patchSurf.VertexOffset;
+				}
+				else
+				{
+					// Unsupported face type
+					return 0;
 				}
 
-				// Offset the indexes here
-				// we have to do this now rather than up-front because the
-				// indexes are sometimes reused to address different vertex chunks
+			    var idxSize = level.Indexes.IndexSize;
+			    var idxSrc = level.Indexes.Lock( idxStart*idxSize, numIdx*idxSize, BufferLocking.ReadOnly );
+#if SILVERLIGHT
+                var src = idxSrc.ToUShortPointer();
+#else
+				var src = idxSrc.ToUIntPointer();
+#endif
+
+                int maxIndex = 0;
 				for ( int i = 0; i < numIdx; i++ )
-					*pIndexes++ = (uint)( *src++ + vertexStart );
+				{
+					int index = (int)src[ i ];
+					if ( index > maxIndex )
+						maxIndex = index;
+				}
 
-				level.Indexes.Unlock();
+				Vector3[] vertexPos = new Vector3[maxIndex + 1];
+				bool[] vertexIsStored = new bool[maxIndex + 1];
 
-				// return number of elements
-				return numIdx;
-			}
-			else
-			{
-				level.Indexes.Unlock();
+				for ( int i = 0; i < numIdx; i++ )
+				{
+					var index = (int)src[ i ];
+					var pVertices = pVerticesBuf.ToBspVertexPointer();
+					if ( !vertexIsStored[ index ] )
+					{
+						vertexPos[ index ] = pVertices[ vertexStart + index ].position;
+						vertexIsStored[ index ] = true;
+					}
+					pVerticesBuf.UnPin();
+				}
 
-				return 0;
+				Vector2[] texCoors;
+				ColorEx[] colors;
+
+				bool res = light.CalculateTexCoordsAndColors( faceGroup.plane, vertexPos, out texCoors, out colors );
+
+				if ( res )
+				{
+					var pTexLightMaps = pTexLightMapsBuf.ToTextureLightMapPointer();
+					for ( int i = 0; i <= maxIndex; i++ )
+					{
+						pTexLightMaps[ vertexStart + i ] =
+							new TextureLightMap
+							{
+								color = Root.Instance.RenderSystem.ConvertColor( colors[ i ] ),
+								textureLightMap = texCoors[ i ]
+							};
+					}
+					pTexLightMapsBuf.UnPin();
+
+					// Offset the indexes here
+					// we have to do this now rather than up-front because the
+					// indexes are sometimes reused to address different vertex chunks
+                    if (level.Indexes.Type == IndexType.Size16)
+                    {
+                        var pIndexes = pIndexesBuf.ToUShortPointer();
+                        for (int i = 0; i < numIdx; i++)
+                            pIndexes[i] = (ushort)(src[i] + vertexStart);
+                    }
+                    else
+                    {
+                        var pIndexes = pIndexesBuf.ToUIntPointer();
+                        for (int i = 0; i < numIdx; i++)
+                            pIndexes[i] = (uint)(src[i] + vertexStart);
+                    }
+					level.Indexes.Unlock();
+
+					// return number of elements
+					return numIdx;
+				}
+				else
+				{
+					level.Indexes.Unlock();
+
+					return 0;
+				}
 			}
 		}
 
@@ -887,11 +922,11 @@ namespace Axiom.SceneManagers.Bsp
 			// Check should we be rendering
 			if ( !SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( worldGeometryRenderQueueId ) )
 				return;
-            if ( level == null )
-            {
-                LogManager.Instance.Write( "BSPSceneManager [Warning]: Skip RenderStaticGeometry, no level was set!" );
-                return;
-            }
+			if ( level == null )
+			{
+				LogManager.Instance.Write( "BSPSceneManager [Warning]: Skip RenderStaticGeometry, no level was set!" );
+				return;
+			}
 			// no world transform required
 			targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
@@ -933,16 +968,21 @@ namespace Axiom.SceneManagers.Bsp
 				renderOp.indexData.indexCount = 0;
 
 				// lock index buffer ready to receive data
+#if !AXIOM_SAFE_ONLY
 				unsafe
+#endif
 				{
-					uint* pIdx = (uint*)renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+					var pIdx = renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+					var sizeOfElement = renderOp.indexData.indexBuffer.Type == IndexType.Size32
+											? sizeof(uint)
+											: sizeof(ushort);
 
 					for ( int i = 0; i < faceGrp.Count; i++ )
 					{
 						// Cache each
-						int numElems = CacheGeometry( (IntPtr)pIdx, faceGrp[ i ] );
+						int numElems = CacheGeometry( pIdx, faceGrp[ i ] );
 						renderOp.indexData.indexCount += numElems;
-						pIdx += numElems;
+						pIdx += numElems * sizeOfElement;
 					}
 
 					// Unlock the buffer
@@ -985,8 +1025,11 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					Pass pass = thisMaterial.GetTechnique( 0 ).GetPass( 0 );
 					// Get the plain geometry texture
-					TextureUnitState geometryTex = pass.GetTextureUnitState( 0 );
-					targetRenderSystem.SetTexture( 0, true, geometryTex.TextureName );
+					if (pass.TextureUnitStageCount > 0)
+					{
+						TextureUnitState geometryTex = pass.GetTextureUnitState( 0 );
+						targetRenderSystem.SetTexture(0, true, geometryTex.TextureName);
+					}
 
 					if ( pass.TextureUnitStageCount > 1 )
 					{
@@ -1097,11 +1140,13 @@ namespace Axiom.SceneManagers.Bsp
 				HardwareVertexBuffer lightTexCoordBuffer = level.VertexData.vertexBufferBinding.GetBuffer( 1 );
 
 				// lock index buffer ready to receive data
+#if !AXIOM_SAFE_ONLY
 				unsafe
+#endif
 				{
-					BspVertex* pVertices = (BspVertex*)bspVertexBuffer.Lock( BufferLocking.ReadOnly );
-					TextureLightMap* pTexLightMap = (TextureLightMap*)lightTexCoordBuffer.Lock( BufferLocking.Discard );
-					uint* pIdx = (uint*)renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+					var pVertices = bspVertexBuffer.Lock( BufferLocking.ReadOnly );
+					var pTexLightMap = lightTexCoordBuffer.Lock( BufferLocking.Discard );
+					var pIdx = renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
 
 					for ( int i = 0; i < faceGrp.Count; i++ )
 					{
@@ -1132,7 +1177,7 @@ namespace Axiom.SceneManagers.Bsp
 
 				targetRenderSystem.SetTexture( 1, true, geometryTex.TextureName );
 				// OpenGL requires the addressing mode to be set before every render operation
-                targetRenderSystem.SetTextureAddressingMode( 0, new UVWAddressing( TextureAddressing.Clamp ) );
+				targetRenderSystem.SetTextureAddressingMode( 0, new UVWAddressing( TextureAddressing.Clamp ) );
 				targetRenderSystem.Render( renderOp );
 			}
 		}
@@ -1184,9 +1229,14 @@ namespace Axiom.SceneManagers.Bsp
 			renderOp.indexData.indexCount = 0;
 
 			// lock index buffer ready to receive data
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				uint* pIdx = (uint*)renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var pIdx = renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var sizeOfElement = renderOp.indexData.indexBuffer.Type == IndexType.Size32
+										? sizeof(uint)
+										: sizeof(ushort);
 
 				// For each material in turn, cache rendering data
 				IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
@@ -1212,9 +1262,9 @@ namespace Axiom.SceneManagers.Bsp
 							// face is in shadow's frustum
 
 							// Cache each
-							int numElems = CacheGeometry( (IntPtr)pIdx, faceGrp[ i ] );
+							int numElems = CacheGeometry( pIdx, faceGrp[ i ] );
 							renderOp.indexData.indexCount += numElems;
-							pIdx += numElems;
+							pIdx += numElems * sizeOfElement;
 						}
 					}
 				}
@@ -1301,9 +1351,9 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region Fields
 
-        Collections.MultiMap<MovableObject, MovableObject> objIntersections = new Collections.MultiMap<MovableObject, MovableObject>();
+		Collections.MultiMap<MovableObject, MovableObject> objIntersections = new Collections.MultiMap<MovableObject, MovableObject>();
 
-        Collections.MultiMap<MovableObject, BspBrush> brushIntersections = new Collections.MultiMap<MovableObject, BspBrush>();
+		Collections.MultiMap<MovableObject, BspBrush> brushIntersections = new Collections.MultiMap<MovableObject, BspBrush>();
 
 		List<MovableObject> objectsDone = new List<MovableObject>( 100 );
 

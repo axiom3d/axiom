@@ -140,7 +140,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "plane_point", "A point on the deflector plane. Together with the normal vector it defines the plane.", typeof( ParticleAffector ) )]
-		private class PlanePointCommand : IPropertyCommand
+        public class PlanePointCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
@@ -156,7 +156,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "plane_normal", "The normal vector of the deflector plane. Together with the point it defines the plane.", typeof( ParticleAffector ) )]
-		private class PlaneNormalCommand : IPropertyCommand
+        public class PlaneNormalCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
@@ -172,7 +172,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "bounce", "The amount of bouncing when a particle is deflected. 0 means no deflection and 1 stands for 100 percent reflection.", typeof( ParticleAffector ) )]
-		private class BounceCommand : IPropertyCommand
+        public class BounceCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{

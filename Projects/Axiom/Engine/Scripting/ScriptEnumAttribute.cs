@@ -95,23 +95,23 @@ namespace Axiom.Scripting
 		public static object Lookup( string val, Type type )
 		{
 			// get the list of fields in the enum
-			FieldInfo[] fields = type.GetFields();
+			var fields = type.GetFields();
 
 			// loop through each one and see if it is mapped to the supplied value
-			for ( int i = 0; i < fields.Length; i++ )
+			for ( var i = 0; i < fields.Length; i++ )
 			{
-				FieldInfo field = fields[ i ];
+				var field = fields[ i ];
 
 				// find custom attributes declared for this field
-				object[] atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
+				var atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
 
 				// if we found 1, take a look at it
 				if ( atts.Length > 0 )
 				{
-					for ( int index = 0; index < atts.Length; index++ )
+					for ( var index = 0; index < atts.Length; index++ )
 					{
 						// convert the first element to the right type (assume there is only 1 attribute)
-						ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ index ];
+						var scriptAtt = (ScriptEnumAttribute)atts[ index ];
 
 						// if the values match
 						if ( scriptAtt.ScriptValue.ToLower() == val.ToLower() )
@@ -128,7 +128,7 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		/// Looks up the script attribute for the enumeration value
+		/// Looks up the script attibute for the enumeration value
 		/// </summary>
 		/// <param name="enumValue">The enumeration value</param>
 		/// <param name="type">The Enumeration</param>
@@ -136,23 +136,23 @@ namespace Axiom.Scripting
 		public static string GetScriptAttribute( int enumValue, Type type )
 		{
 			// get the list of fields in the enum
-			FieldInfo[] fields = type.GetFields();
+			var fields = type.GetFields();
 
 			// loop through each one and see if it is mapped to the supplied value
-			for ( int i = 0; i < fields.Length; i++ )
+			for ( var i = 0; i < fields.Length; i++ )
 			{
-				FieldInfo field = fields[ i ];
+				var field = fields[ i ];
 				if ( type == field.FieldType.UnderlyingSystemType &&
 					(int)field.GetValue( null ) == enumValue )
 				{
 					// find custom attributes declared for this field
-					object[] atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
+					var atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
 
 					// if we found 1, take a look at it
 					if ( atts.Length > 0 )
 					{
 						// convert the first element to the right type (assume there is only 1 attribute)
-						ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
+						var scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
 
 						// if the values match
 						return scriptAtt.ScriptValue;
@@ -175,26 +175,26 @@ namespace Axiom.Scripting
 		/// </returns>
 		public static string GetLegalValues( Type type )
 		{
-			StringBuilder legalValues = new StringBuilder();
+			var legalValues = new StringBuilder();
 
 			// get the list of fields in the enum
-			FieldInfo[] fields = type.GetFields();
+			var fields = type.GetFields();
 
 			// loop through each one and see if it is mapped to the supplied value
-			for ( int i = 0; i < fields.Length; i++ )
+			for ( var i = 0; i < fields.Length; i++ )
 			{
-				FieldInfo field = fields[ i ];
+				var field = fields[ i ];
 
 				// find custom attributes declared for this field
-				object[] atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
+				var atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
 
 				// if we found 1, take a look at it
 				if ( atts.Length > 0 )
 				{
-					for ( int index = 0; index < atts.Length; index++ )
+					for ( var index = 0; index < atts.Length; index++ )
 					{
 						// convert the first element to the right type (assume there is only 1 attribute)
-						ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
+						var scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
 
 						// if the values match
 						legalValues.AppendFormat( "'{0}',", scriptAtt.ScriptValue );

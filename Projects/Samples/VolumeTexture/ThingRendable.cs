@@ -176,7 +176,7 @@ namespace Axiom.Samples.VolumeTexture
 			unsafe
 			{
 				// Transfer vertices and normals
-				float* vIdx = (float*)( vertexBuffer.Lock( BufferLocking.Discard ) );
+				var vIdx = vertexBuffer.Lock( BufferLocking.Discard ).ToFloatPointer();
 				int elemsize = 1 * 3; // position only
 				int planesize = 4 * elemsize; // four vertices per plane
 				for ( int x = 0; x < count; x++ )

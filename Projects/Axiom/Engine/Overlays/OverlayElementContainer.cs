@@ -109,7 +109,7 @@ namespace Axiom.Overlays
 				container.Initialize();
 			}
 
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				child.Initialize();
 			}
@@ -126,7 +126,7 @@ namespace Axiom.Overlays
             {
                 if (disposeManagedResources)
                 {
-                    foreach (OverlayElement currentChild in children.Values)
+                    foreach (var currentChild in children.Values)
                     {
                         if (!currentChild.IsDisposed)
                             currentChild.Dispose();
@@ -134,7 +134,7 @@ namespace Axiom.Overlays
                     children.Clear();
                     children = null;
 
-                    foreach (OverlayElement currentChild in childContainers.Values)
+                    foreach (var currentChild in childContainers.Values)
                     {
                         if (!currentChild.IsDisposed)
                             currentChild.Dispose();
@@ -202,7 +202,7 @@ namespace Axiom.Overlays
 		/// <param name="name"></param>
 		public virtual void RemoveChild( string name )
 		{
-			OverlayElement element = GetChild( name );
+			var element = GetChild( name );
 			children.Remove( name );
 
 			// remove from container list (if found)
@@ -231,7 +231,7 @@ namespace Axiom.Overlays
 			// call baseclass method
 			base.PositionsOutOfDate();
 
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				child.PositionsOutOfDate();
 			}
@@ -242,7 +242,7 @@ namespace Axiom.Overlays
 			// call base class method
 			base.Update();
 
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				child.Update();
 			}
@@ -256,7 +256,7 @@ namespace Axiom.Overlays
 			//One for us
 			zOrder++;
 
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				zOrder = child.NotifyZOrder( zOrder );
 			}
@@ -270,7 +270,7 @@ namespace Axiom.Overlays
 			base.NotifyWorldTransforms( xform );
 
 			// Update children
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				child.NotifyWorldTransforms( xform );
 			}
@@ -280,7 +280,7 @@ namespace Axiom.Overlays
 		{
 			base.NotifyViewport();
 			// Update children
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				child.NotifyViewport();
 			}
@@ -291,7 +291,7 @@ namespace Axiom.Overlays
 			// call the base class method
 			base.NotifyParent( parent, overlay );
 
-			foreach ( OverlayElement child in children.Values )
+			foreach ( var child in children.Values )
 			{
 				child.NotifyParent( this, overlay );
 			}
@@ -306,7 +306,7 @@ namespace Axiom.Overlays
 
 				if ( updateChildren )
 				{
-					foreach ( OverlayElement child in children.Values )
+					foreach ( var child in children.Values )
 					{
 						child.UpdateRenderQueue( queue );
 					}
@@ -323,21 +323,21 @@ namespace Axiom.Overlays
 		{
 			OverlayElement ret = null;
 
-			int currZ = -1;
+			var currZ = -1;
 
 			if ( isVisible )
 			{
 				ret = base.FindElementAt( x, y );	//default to the current container if no others are found
 				if ( ret != null && childrenProcessEvents )
 				{
-					foreach ( OverlayElement currentOverlayElement in children.Values )
+					foreach ( var currentOverlayElement in children.Values )
 					{
 						if ( currentOverlayElement.IsVisible && currentOverlayElement.Enabled )
 						{
-							int z = currentOverlayElement.ZOrder;
+							var z = currentOverlayElement.ZOrder;
 							if ( z > currZ )
 							{
-								OverlayElement elementFound = currentOverlayElement.FindElementAt( x, y );
+								var elementFound = currentOverlayElement.FindElementAt( x, y );
 								if ( elementFound != null )
 								{
 									currZ = z;
@@ -387,11 +387,11 @@ namespace Axiom.Overlays
 
 			if ( templateOverlay.IsContainer && IsContainer )
 			{
-				foreach ( OverlayElement oldChildElement in ( (OverlayElementContainer)templateOverlay ).Children.Values )
+				foreach ( var oldChildElement in ( (OverlayElementContainer)templateOverlay ).Children.Values )
 				{
 					if ( oldChildElement.IsCloneable )
 					{
-						OverlayElement newChildElement = OverlayManager.Instance.Elements.CreateElement(
+						var newChildElement = OverlayManager.Instance.Elements.CreateElement(
 							oldChildElement.GetType().Name,
 							Name + "/" + oldChildElement.Name );
 						newChildElement.CopyFromTemplate( oldChildElement );
@@ -407,11 +407,11 @@ namespace Axiom.Overlays
 
 			newContainer = (OverlayElementContainer)( base.Clone( instanceName ) );
 
-			foreach ( OverlayElement oldChildElement in Children.Values )
+			foreach ( var oldChildElement in Children.Values )
 			{
 				if ( oldChildElement.IsCloneable )
 				{
-					OverlayElement newChildElement = oldChildElement.Clone( instanceName );
+					var newChildElement = oldChildElement.Clone( instanceName );
 					newContainer.AddChild( newChildElement );
 				}
 			}

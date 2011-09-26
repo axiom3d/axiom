@@ -301,7 +301,7 @@ namespace Axiom.Core
 	    /// <returns></returns>
 	    public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
 		{
-			Texture ret = (Texture)Create( name, group, true, loader, null );
+			var ret = (Texture)Create( name, group, true, loader, null );
 			ret.TextureType = type;
 			ret.Width = width;
 			ret.Height = height;
@@ -457,9 +457,9 @@ namespace Axiom.Core
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
-			Axiom.Math.Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
+			var result = CreateOrRetrieve( name, group );
 
-			Texture texture = (Texture)result.First;
+			var texture = (Texture)result.First;
 
 			// was it created?
 			if ( result.Second == true )
@@ -508,7 +508,7 @@ namespace Axiom.Core
 		public Texture LoadImage( string name, string group, Image image, TextureType texType, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// create a new texture
-			Texture texture = (Texture)Create( name, group, true, null, null );
+			var texture = (Texture)Create( name, group, true, null, null );
 
 			texture.TextureType = texType;
 			// set the number of mipmaps to use for this texture
@@ -583,7 +583,7 @@ namespace Axiom.Core
 
 		public bool IsEquivalentFormatSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
-			PixelFormat supportedFormat = GetNativeFormat( ttype, format, usage );
+			var supportedFormat = GetNativeFormat( ttype, format, usage );
 			// Assume that same or greater number of bits means quality not degraded
 			return PixelUtil.GetNumElemBits( supportedFormat ) >= PixelUtil.GetNumElemBits( format );
 		}

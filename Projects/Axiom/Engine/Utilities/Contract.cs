@@ -205,7 +205,7 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( name );
 			RequiresNotNull( items, name );
 
-			for ( int i = 0; i < items.Count; i++ )
+			for ( var i = 0; i < items.Count; i++ )
 			{
 				if ( items[ i ] == null )
 				{

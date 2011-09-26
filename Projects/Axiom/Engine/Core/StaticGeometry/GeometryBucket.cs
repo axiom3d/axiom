@@ -40,7 +40,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
-
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Collections;
@@ -183,16 +183,16 @@ namespace Axiom.Core
 
 				// Check to see if we have blend indices / blend weights
 				// remove them if so, they can try to blend non-existent bones!
-				VertexElement blendIndices =
+				var blendIndices =
 					vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-				VertexElement blendWeights =
+				var blendWeights =
 					vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 				if ( blendIndices != null && blendWeights != null )
 				{
 					Debug.Assert( blendIndices.Source == blendWeights.Source,
 								 "Blend indices and weights should be in the same buffer" );
 					// Get the source
-					short source = blendIndices.Source;
+					var source = blendIndices.Source;
 					Debug.Assert( blendIndices.Size + blendWeights.Size ==
 						vertexData.vertexBufferBinding.GetBuffer( source ).VertexSize,
 						"Blend indices and blend buffers should have buffer to themselves!" );
@@ -251,27 +251,30 @@ namespace Axiom.Core
 			public void Build( bool stencilShadows, int logLevel )
 			{
 				// Ok, here's where we transfer the vertices and indexes to the shared buffers
-				VertexDeclaration dcl = vertexData.vertexDeclaration;
-				VertexBufferBinding binds = vertexData.vertexBufferBinding;
+				var dcl = vertexData.vertexDeclaration;
+				var binds = vertexData.vertexBufferBinding;
 
 				// create index buffer, and lock
 				if ( logLevel <= 1 )
 					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}",
 						indexType, indexData.indexCount );
 				indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount, BufferUsage.StaticWriteOnly );
-				IntPtr indexBufferIntPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
+                var indexBufferIntPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
 
 				// create all vertex buffers, and lock
 				short b;
-				short posBufferIdx = dcl.FindElementBySemantic( VertexElementSemantic.Position ).Source;
+				var posBufferIdx = dcl.FindElementBySemantic( VertexElementSemantic.Position ).Source;
 
-				List<List<VertexElement>> bufferElements = new List<List<VertexElement>>();
-				unsafe
-				{
-					byte*[] destBufferPtrs = new byte*[ binds.BindingCount ];
+				var bufferElements = new List<List<VertexElement>>();
+				
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+					var destBufferPtrs = new BufferBase[ binds.BindingCount ];
 					for ( b = 0; b < binds.BindingCount; ++b )
 					{
-						int vertexCount = vertexData.vertexCount;
+						var vertexCount = vertexData.vertexCount;
 						if ( logLevel <= 1 )
 							LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}",
 								b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
@@ -284,46 +287,47 @@ namespace Axiom.Core
 								throw new Exception( "Index range exceeded when using stencil shadows, consider " +
 															 "reducing your region size or reducing poly count" );
 						}
-						HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
+						var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
 						binds.SetBinding( b, vbuf );
-						IntPtr pLock = vbuf.Lock( BufferLocking.Discard );
-						destBufferPtrs[ b ] = (byte*)pLock.ToPointer();
+                        var pLock = vbuf.Lock(BufferLocking.Discard);
+						destBufferPtrs[ b ] = pLock;
 						// Pre-cache vertex elements per buffer
 						bufferElements.Add( dcl.FindElementBySource( b ) );
 					}
 
 					// iterate over the geometry items
-					int indexOffset = 0;
+					var indexOffset = 0;
 					IEnumerator iter = queuedGeometry.GetEnumerator();
-					Vector3 regionCenter = parent.Parent.Parent.Center;
-					int* pDestInt = (int*)indexBufferIntPtr.ToPointer();
-					ushort* pDestUShort = (ushort*)indexBufferIntPtr.ToPointer();
-					foreach ( QueuedGeometry geom in queuedGeometry )
+					var regionCenter = parent.Parent.Parent.Center;
+                    var pDestInt = indexBufferIntPtr.ToIntPointer();
+                    var pDestUShort = indexBufferIntPtr.ToUShortPointer();
+                    foreach (var geom in queuedGeometry)
 					{
 						// copy indexes across with offset
-						IndexData srcIdxData = geom.geometry.indexData;
-						IntPtr srcIntPtr = srcIdxData.indexBuffer.Lock( BufferLocking.ReadOnly );
-						if ( indexType == IndexType.Size32 )
-						{
-							int* pSrcInt = (int*)srcIntPtr.ToPointer();
-							for ( int i = 0; i < srcIdxData.indexCount; i++ )
-								*pDestInt++ = ( *pSrcInt++ ) + indexOffset;
-						}
-						else
-						{
-							ushort* pSrcUShort = (ushort*)( srcIntPtr.ToPointer() );
-							for ( int i = 0; i < srcIdxData.indexCount; i++ )
-								*pDestUShort++ = (ushort)( ( *pSrcUShort++ ) + indexOffset );
-						}
-						srcIdxData.indexBuffer.Unlock();
+                        var srcIdxData = geom.geometry.indexData;
+                        var srcIntPtr = srcIdxData.indexBuffer.Lock(BufferLocking.ReadOnly);						
+                        if (indexType == IndexType.Size32)
+                        {
+                            var pSrcInt = srcIntPtr.ToIntPointer();
+                            for (var i = 0; i < srcIdxData.indexCount; i++)
+                                pDestInt[i] = pSrcInt[i] + indexOffset;
+                        }
+                        else
+                        {
+                            var pSrcUShort = srcIntPtr.ToUShortPointer();
+                            for (var i = 0; i < srcIdxData.indexCount; i++)
+                                pDestUShort[i] = (ushort)(pSrcUShort[i] + indexOffset);
+                        }
+                        
+                        srcIdxData.indexBuffer.Unlock();
 
 						// Now deal with vertex buffers
 						// we can rely on buffer counts / formats being the same
-						VertexData srcVData = geom.geometry.vertexData;
-						VertexBufferBinding srcBinds = srcVData.vertexBufferBinding;
+						var srcVData = geom.geometry.vertexData;
+						var srcBinds = srcVData.vertexBufferBinding;
 						for ( b = 0; b < binds.BindingCount; ++b )
 							// Iterate over vertices
-							destBufferPtrs[ b ] = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
+							destBufferPtrs[ b ].Ptr = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
 						indexOffset += geom.geometry.vertexData.vertexCount;
 					}
 				}
@@ -337,32 +341,35 @@ namespace Axiom.Core
 				// the early half of the buffer to the latter part
 				if ( stencilShadows )
 				{
-					unsafe
+#if !AXIOM_SAFE_ONLY
+                    unsafe
+#endif
 					{
-						HardwareVertexBuffer buf = binds.GetBuffer( posBufferIdx );
-						IntPtr src = buf.Lock( BufferLocking.Normal );
-						byte* pSrc = (byte*)src.ToPointer();
+						var buf = binds.GetBuffer( posBufferIdx );
+                        var src = buf.Lock(BufferLocking.Normal);
+                        var pSrc = src.ToBytePointer();
 						// Point dest at second half (remember vertexcount is original count)
-						byte* pDst = pSrc + buf.VertexSize * vertexData.vertexCount;
+                        var pDst = (src + (buf.VertexSize * vertexData.vertexCount)).ToBytePointer();
 
-						int count = buf.VertexSize * buf.VertexCount;
-						while ( count-- > 0 )
-							*pDst++ = *pSrc++;
+						var count = buf.VertexSize * buf.VertexCount;
+                        while (count-- > 0)
+                            pDst[count] = pSrc[count];
 						buf.Unlock();
 
 						// Also set up hardware W buffer if appropriate
-						RenderSystem rend = Root.Instance.RenderSystem;
+						var rend = Root.Instance.RenderSystem;
 						if ( null != rend && rend.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 						{
-                            VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                            var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
                             decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
 							buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
 							// Fill the first half with 1.0, second half with 0.0
-							float* pW = (float*)buf.Lock( BufferLocking.Discard ).ToPointer();
-							for ( int v = 0; v < vertexData.vertexCount; ++v )
-								*pW++ = 1.0f;
-							for ( int v = 0; v < vertexData.vertexCount; ++v )
-								*pW++ = 0.0f;
+						    var pbuf = buf.Lock(BufferLocking.Discard).ToFloatPointer();
+							var pW = 0;
+                            for (var v = 0; v < vertexData.vertexCount; ++v)
+                                pbuf[pW++] = 1.0f;
+							for ( var v = 0; v < vertexData.vertexCount; ++v )
+                                pbuf[pW++] = 0.0f;
 							buf.Unlock();
 							vertexData.hardwareShadowVolWBuffer = buf;
 						}
@@ -385,88 +392,90 @@ namespace Axiom.Core
 
 			#region Protected Methods
 
-			protected unsafe byte* CopyVertices( HardwareVertexBuffer srcBuf, byte* pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
+            protected int CopyVertices(HardwareVertexBuffer srcBuf, BufferBase pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter)
 			{
-				// lock source
-				IntPtr src = srcBuf.Lock( BufferLocking.ReadOnly );
-				int bufInc = srcBuf.VertexSize;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    // lock source
+                    var src = srcBuf.Lock(BufferLocking.ReadOnly);
+                    var bufInc = srcBuf.VertexSize;
 
-				byte* pSrc = (byte*)src.ToPointer();
-				float* pSrcReal;
-				float* pDstReal;
-				Vector3 temp = Vector3.Zero;
+                    var temp = Vector3.Zero;
 
-				// Calculate elem sizes outside the loop
-				int[] elemSizes = new int[ elems.Count ];
-				for ( int i = 0; i < elems.Count; i++ )
-					elemSizes[ i ] = VertexElement.GetTypeSize( elems[ i ].Type );
+                    // Calculate elem sizes outside the loop
+                    var elemSizes = new int[elems.Count];
+                    for (var i = 0; i < elems.Count; i++)
+                        elemSizes[i] = VertexElement.GetTypeSize(elems[i].Type);
 
-				// Move the position offset calculation outside the loop
-				Vector3 positionDelta = geom.position - regionCenter;
+                    // Move the position offset calculation outside the loop
+                    var positionDelta = geom.position - regionCenter;
 
-				for ( int v = 0; v < geom.geometry.vertexData.vertexCount; ++v )
-				{
-					// iterate over vertex elements
-					for ( int i = 0; i < elems.Count; i++ )
-					{
-						VertexElement elem = elems[ i ];
-						pSrcReal = (float*)( pSrc + elem.Offset );
-						pDstReal = (float*)( pDst + elem.Offset );
+                    for (var v = 0; v < geom.geometry.vertexData.vertexCount; ++v)
+                    {
+                        // iterate over vertex elements
+                        for (var i = 0; i < elems.Count; i++)
+                        {
+                            var elem = elems[i];
+                            var pSrcReal = (src + elem.Offset).ToFloatPointer();
+                            var pDstReal = (pDst + elem.Offset).ToFloatPointer();
 
-						switch ( elem.Semantic )
-						{
-							case VertexElementSemantic.Position:
-								temp.x = *pSrcReal++;
-								temp.y = *pSrcReal++;
-								temp.z = *pSrcReal++;
-								// transform
-								temp = ( geom.orientation * ( temp * geom.scale ) );
-								*pDstReal++ = temp.x + positionDelta.x;
-								*pDstReal++ = temp.y + positionDelta.y;
-								*pDstReal++ = temp.z + positionDelta.z;
-								break;
-							case VertexElementSemantic.Normal:
-							case VertexElementSemantic.Tangent:
-							case VertexElementSemantic.Binormal:
-								temp.x = *pSrcReal++;
-								temp.y = *pSrcReal++;
-								temp.z = *pSrcReal++;
-								// rotation only
-								temp = geom.orientation * temp;
-								*pDstReal++ = temp.x;
-								*pDstReal++ = temp.y;
-								*pDstReal++ = temp.z;
-								break;
-							default:
-								// just raw copy
-								int size = elemSizes[ i ];
-								// Optimize the loop for the case that
-								// these things are in units of 4
-								if ( ( size & 0x3 ) == 0x3 )
-								{
-									int cnt = size / 4;
-									while ( cnt-- > 0 )
-										*pDstReal++ = *pSrcReal++;
-								}
-								else
-								{
-									// Fall back to the byte-by-byte copy
-									byte* pbSrc = (byte*)pSrcReal;
-									byte* pbDst = (byte*)pDstReal;
-									while ( size-- > 0 )
-										*pbDst++ = *pbSrc++;
-								}
-								break;
-						}
-					}
+                            switch (elem.Semantic)
+                            {
+                                case VertexElementSemantic.Position:
+                                    temp.x = pSrcReal[0];
+                                    temp.y = pSrcReal[1];
+                                    temp.z = pSrcReal[2];
+                                    // transform
+                                    temp = (geom.orientation*(temp*geom.scale));
+                                    pDstReal[0] = temp.x + positionDelta.x;
+                                    pDstReal[1] = temp.y + positionDelta.y;
+                                    pDstReal[2] = temp.z + positionDelta.z;
+                                    break;
+                                case VertexElementSemantic.Normal:
+                                case VertexElementSemantic.Tangent:
+                                case VertexElementSemantic.Binormal:
+                                    temp.x = pSrcReal[0];
+                                    temp.y = pSrcReal[1];
+                                    temp.z = pSrcReal[2];
+                                    // rotation only
+                                    temp = geom.orientation*temp;
+                                    pDstReal[0] = temp.x;
+                                    pDstReal[1] = temp.y;
+                                    pDstReal[2] = temp.z;
+                                    break;
+                                default:
+                                    // just raw copy
+                                    var size = elemSizes[i];
+                                    // Optimize the loop for the case that
+                                    // these things are in units of 4
+                                    if ((size & 0x3) == 0x3)
+                                    {
+                                        var cnt = size/4;
+                                        while (cnt-- > 0)
+                                            pDstReal[cnt] = pSrcReal[cnt];
+                                    }
+                                    else
+                                    {
+                                        // Fall back to the byte-by-byte copy
+                                        var pbSrc = (src + elem.Offset).ToBytePointer();
+                                        var pbDst = (pDst + elem.Offset).ToBytePointer();
+                                        while (size-- > 0)
+                                            pbDst[size] = pbSrc[size];
+                                    }
+                                    break;
+                            }
+                        }
 
-					// Increment both pointers
-					pDst += bufInc;
-					pSrc += bufInc;
-				}
+                        // Increment both pointers
+                        pDst.Ptr += bufInc;
+                        src.Ptr += bufInc;
+                    }
 
-				srcBuf.Unlock();
-				return pDst;
+                    srcBuf.Unlock();
+                    return pDst.Ptr;
+                }
 			}
 
 			#endregion Protected Methods

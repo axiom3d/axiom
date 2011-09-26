@@ -64,9 +64,9 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
-				CompositionTargetPass target = (CompositionTargetPass)obj.Parent.Context;
+				var target = (CompositionTargetPass)obj.Parent.Context;
 				_Pass = target.CreatePass();
 				obj.Context = _Pass;
 
@@ -76,7 +76,7 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 					return;
 				}
-				string type = string.Empty;
+				var type = string.Empty;
 				if ( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
@@ -86,7 +86,7 @@ namespace Axiom.Scripting.Compiler
 				_Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof( CompositorPassType ) );
 				if ( _Pass.Type == CompositorPassType.RenderCustom )
 				{
-					string customType = string.Empty;
+					var customType = string.Empty;
 					//This is the ugly one liner for safe access to the second parameter.
 					if ( obj.Values.Count < 2 || !getString( obj.Values[ 1 ], out customType ) )
 					{
@@ -102,7 +102,7 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -110,7 +110,7 @@ namespace Axiom.Scripting.Compiler
 					}
 					else if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_MATERIAL
@@ -127,7 +127,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									string val = string.Empty;
+									var val = string.Empty;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
@@ -159,11 +159,11 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
-									int id = 0;
-									string name = string.Empty;
+									var id = 0;
+									var name = string.Empty;
 									if ( getInt( i0, out id ) && getString( i1, out name ) )
 									{
-										int index = 0;
+										var index = 0;
 
 										if ( !getInt( i2, out index ) )
 										{
@@ -305,7 +305,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE )
 											_Pass.SetQuadFarCorners( true, true );
 										else if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE )

@@ -65,7 +65,7 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
 				_Pass = (CompositionPass)obj.Parent.Context;
 
@@ -75,7 +75,7 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.UnexpectedToken, obj.File, obj.Line );
 				}
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -83,14 +83,14 @@ namespace Axiom.Scripting.Compiler
 					}
 					else if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_BUFFERS
 							case Keywords.ID_BUFFERS:
 								{
 									FrameBufferType buffers = 0;
-									foreach ( AbstractNode k in prop.Values )
+									foreach ( var k in prop.Values )
 									{
 										if ( k is AtomAbstractNode )
 										{
@@ -130,7 +130,7 @@ namespace Axiom.Scripting.Compiler
 										return;
 									}
 
-									ColorEx val = ColorEx.White;
+									var val = ColorEx.White;
 									if ( getColor( prop.Values, 0, out val ) )
 										_Pass.ClearColor = val;
 									else
@@ -165,7 +165,7 @@ namespace Axiom.Scripting.Compiler
 										return;
 									}
 
-									int val = 0;
+									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 										_Pass.ClearStencil = val;
 									else

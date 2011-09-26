@@ -166,13 +166,13 @@ namespace Axiom.Graphics
 			{
 				throw new InvalidOperationException( "Cannot monitor any more nodes, chain count exceeded." );
 			}
-			int segmentIndex = this.nodeList.Count;
-			ChainSegment segment = this.chainSegmentList[ segmentIndex ];
+			var segmentIndex = this.nodeList.Count;
+			var segment = this.chainSegmentList[ segmentIndex ];
 
 			// setup this segment
 			segment.head = segment.tail = SEGMENT_EMPTY;
 			// Create new element, v coord is always 0.0f
-			Element e = new Element( node.DerivedPosition,
+			var e = new Element( node.DerivedPosition,
 									 this.initialWidth[ segmentIndex ],
 									 0.0f,
 									 this.initialColor[ segmentIndex ] );
@@ -279,15 +279,15 @@ namespace Axiom.Graphics
 		public virtual void TimeUpdate( float time )
 		{
 			// Apply all segment effects
-			for ( int s = 0; s < this.chainSegmentList.Count; ++s )
+			for ( var s = 0; s < this.chainSegmentList.Count; ++s )
 			{
-				ChainSegment segment = this.chainSegmentList[ s ];
+				var segment = this.chainSegmentList[ s ];
 				if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 				{
-					for ( int e = segment.head + 1; ; ++e )
+					for ( var e = segment.head + 1; ; ++e )
 					{
 						e = e % this.maxElementsPerChain;
-						Element element = this.chainElementList[ segment.start + e ];
+						var element = this.chainElementList[ segment.start + e ];
 						element.Width = element.Width - ( time * this.deltaWidth[ s ] );
 						element.Width = Utility.Max( 0.0f, element.Width );
 						element.Color = element.Color - ( this.deltaColor[ s ] * time );
@@ -307,8 +307,8 @@ namespace Axiom.Graphics
 
 		protected virtual void ManageController()
 		{
-			bool needController = false;
-			for ( int i = 0; i < this.chainCount; ++i )
+			var needController = false;
+			for ( var i = 0; i < this.chainCount; ++i )
 			{
 				if ( this.deltaWidth[ i ] != 0 || this.deltaColor[ i ] != ColorEx.Black )
 				{
@@ -320,7 +320,7 @@ namespace Axiom.Graphics
 			if ( this.fadeController == null && needController )
 			{
 				// setup fading via frame time controller
-				ControllerManager mgr = ControllerManager.Instance;
+				var mgr = ControllerManager.Instance;
 				this.fadeController = mgr.CreateFrameTimePassthroughController( this.timeControllerValue );
 			}
 			else if ( this.fadeController != null && !needController )
@@ -331,38 +331,38 @@ namespace Axiom.Graphics
 
 		protected virtual void UpdateTrail( int index, Node node )
 		{
-			bool done = false;
+			var done = false;
 			// Repeat this entire process if chain is stretched beyond its natural length
 			while ( !done )
 			{
 				// Node has changed somehow, we're only interested in the derived position
-				ChainSegment segment = this.chainSegmentList[ index ];
-				Element headElement = this.chainElementList[ segment.start + segment.head ];
-				int nextElemIndex = segment.head + 1;
+				var segment = this.chainSegmentList[ index ];
+				var headElement = this.chainElementList[ segment.start + segment.head ];
+				var nextElemIndex = segment.head + 1;
 				//wrap
 				if ( nextElemIndex == this.maxElementsPerChain )
 				{
 					nextElemIndex = 0;
 				}
-				Element nextElement = this.chainElementList[ segment.start + nextElemIndex ];
+				var nextElement = this.chainElementList[ segment.start + nextElemIndex ];
 
 				// Vary the head elem, but bake new version if that exceeds element len
-				Vector3 newPos = node.DerivedPosition;
+				var newPos = node.DerivedPosition;
 				if ( this.ParentNode != null )
 				{
 					// Transform position to ourself space
 					newPos = this.ParentNode.DerivedOrientation.UnitInverse * ( newPos - this.ParentNode.DerivedPosition )
 							 / this.ParentNode.DerivedScale;
 				}
-				Vector3 diff = newPos - nextElement.Position;
+				var diff = newPos - nextElement.Position;
 				float sqlen = diff.LengthSquared;
 				if ( sqlen >= this.squaredElementLength )
 				{
 					// Move existing head to elemLength
-					Vector3 scaledDiff = diff * (float)( this.elementLength / Utility.Sqrt( sqlen ) );
+					var scaledDiff = diff * (float)( this.elementLength / Utility.Sqrt( sqlen ) );
 					headElement.Position = nextElement.Position + scaledDiff;
 					// Add a new element to be the new head
-					Element newElem = new Element( newPos, this.initialWidth[ index ], 0.0f, this.initialColor[ index ] );
+					var newElem = new Element( newPos, this.initialWidth[ index ], 0.0f, this.initialColor[ index ] );
 					this.AddChainElement( index, newElem );
 					// alter diff to represent new head size
 					diff = newPos - newElem.Position;
@@ -381,7 +381,7 @@ namespace Axiom.Graphics
 				if ( ( segment.tail + 1 ) % this.maxElementsPerChain == segment.head )
 				{
 					// If so, shrink tail gradually to match head extension
-					Element tailElement = this.chainElementList[ segment.start + segment.tail ];
+					var tailElement = this.chainElementList[ segment.start + segment.tail ];
 					int preTailIndex;
 					if ( segment.tail == 0 )
 					{
@@ -392,10 +392,10 @@ namespace Axiom.Graphics
 						preTailIndex = segment.tail - 1;
 					}
 
-					Element preTailElement = this.chainElementList[ segment.start + preTailIndex ];
+					var preTailElement = this.chainElementList[ segment.start + preTailIndex ];
 
 					// Measure tail diff from pretail to tail
-					Vector3 tailDiff = tailElement.Position - preTailElement.Position;
+					var tailDiff = tailElement.Position - preTailElement.Position;
 					float tailLength = tailDiff.Length;
 
 					if ( tailLength > 1e-06 )
@@ -424,7 +424,7 @@ namespace Axiom.Graphics
 
 		public void NodeUpdated( Node node )
 		{
-			for ( int i = 0; i < this.nodeList.Count; ++i )
+			for ( var i = 0; i < this.nodeList.Count; ++i )
 			{
 				if ( this.nodeList[ i ] == node )
 				{
@@ -473,7 +473,7 @@ namespace Axiom.Graphics
 				this.deltaWidth.Capacity = this.NumberOfChains;
 				if ( this.initialColor.Count < this.initialColor.Capacity )
 				{
-					for ( int i = this.initialColor.Count; i < this.initialColor.Capacity; ++i )
+					for ( var i = this.initialColor.Count; i < this.initialColor.Capacity; ++i )
 					{
 						this.initialColor.Add( ColorEx.White );
 						this.deltaColor.Add( ColorEx.White );
@@ -500,11 +500,11 @@ namespace Axiom.Graphics
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
-			int maxElements = 20;
-			int numberOfChains = 1;
-			bool useTextureCoords = true;
-			bool useVertexColors = true;
-			bool isDynamic = true;
+			var maxElements = 20;
+			var numberOfChains = 1;
+			var useTextureCoords = true;
+			var useVertexColors = true;
+			var isDynamic = true;
 
 			// optional parameters
 			if ( param != null )

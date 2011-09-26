@@ -254,7 +254,7 @@ namespace Axiom.Math
 			Vector3 vector;
 
 			// get the inverse of the scalar up front to avoid doing multiple divides later
-			Real inverse = 1.0f / scalar;
+			var inverse = 1.0f / scalar;
 
 			vector.x = left.x * inverse;
 			vector.y = left.y * inverse;
@@ -440,23 +440,42 @@ namespace Axiom.Math
 				Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
 
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+                }
+                return 0;
+#else
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						return *( pX + index );
 				}
-			}
+#endif
+            }
 			set
 			{
 				Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
 
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: x = value; break;
+                    case 1: y = value; break;
+                    case 2: z = value; break;
+                }
+#else
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						*( pX + index ) = value;
 				}
-			}
+#endif
+            }
 		}
 
 		#endregion
@@ -583,7 +602,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 Perpendicular()
 		{
-			Vector3 result = this.Cross( Vector3.UnitX );
+			var result = this.Cross( Vector3.UnitX );
 
 			// check length
 			if ( result.LengthSquared < Real.Epsilon )
@@ -626,10 +645,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 RandomDeviant( Real angle, Vector3 up )
 		{
-			Vector3 newUp = ( up == Vector3.Zero ) ? this.Perpendicular() : up;
+			var newUp = ( up == Vector3.Zero ) ? this.Perpendicular() : up;
 
 			// rotate up vector by random amount around this
-			Quaternion q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
+			var q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
 			newUp = q * newUp;
 
 			// finally, rotate this by given angle around randomized up vector
@@ -736,17 +755,17 @@ namespace Axiom.Math
 			Quaternion q;
 
 			// Copy, since cannot modify local
-			Vector3 v0 = new Vector3( this.x, this.y, this.z );
-			Vector3 v1 = destination;
+			var v0 = new Vector3( this.x, this.y, this.z );
+			var v1 = destination;
 
 			// normalize both vectors 
 			v0.Normalize();
 			v1.Normalize();
 
 			// get the cross product of the vectors
-			Vector3 c = v0.Cross( v1 );
+			var c = v0.Cross( v1 );
 
-			Real d = v0.Dot( v1 );
+			var d = v0.Dot( v1 );
 
 			// If dot == 1, vectors are the same
 			if ( d >= 1.0f )
@@ -764,7 +783,7 @@ namespace Axiom.Math
 				else
 				{
 					// Generate an axis
-					Vector3 axis = Vector3.UnitX.Cross( this );
+					var axis = Vector3.UnitX.Cross( this );
 					if ( axis.IsZeroLength ) // pick another if colinear
 						axis = Vector3.UnitY.Cross( this );
 					axis.Normalize();
@@ -774,8 +793,8 @@ namespace Axiom.Math
 			else
 			{
 
-				Real s = Utility.Sqrt( ( 1 + d ) * 2 );
-				Real inverse = 1 / s;
+				var s = Utility.Sqrt( ( 1 + d ) * 2 );
+				var inverse = 1 / s;
 
 				q.x = c.x * inverse;
 				q.y = c.y * inverse;
@@ -787,7 +806,7 @@ namespace Axiom.Math
 
 		public Vector3 ToNormalized()
 		{
-			Vector3 vec = this;
+			var vec = this;
 			vec.Normalize();
 			return vec;
 		}
@@ -805,12 +824,12 @@ namespace Axiom.Math
 		///	<returns>The previous length of the vector.</returns>
 		public Real Normalize()
 		{
-			Real length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+			var length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
-				Real inverseLength = 1.0f / length;
+				var inverseLength = 1.0f / length;
 
 				this.x *= inverseLength;
 				this.y *= inverseLength;
@@ -851,7 +870,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				Real sqlen = ( x * x ) + ( y * y ) + ( z * z );
+				var sqlen = ( x * x ) + ( y * y ) + ( z * z );
 				return ( sqlen < ( 1e-06f * 1e-06f ) );
 			}
 		}
@@ -1047,7 +1066,7 @@ namespace Axiom.Math
 			if ( !vector.StartsWith( "Vector3(" ) )
 				throw new FormatException();
 
-			string[] vals = vector.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
+			var vals = vector.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
 
 			return new Vector3( Real.Parse( vals[ 0 ].Trim(), CultureInfo.InvariantCulture ),
 								Real.Parse( vals[ 1 ].Trim(), CultureInfo.InvariantCulture ),

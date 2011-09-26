@@ -190,7 +190,7 @@ namespace Axiom.Core
 				window.IsActive = hasFocus;
 
 				// Notify listeners of focus change
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach ( var listener in _listeners[ window ] )
 				{
 					listener.WindowFocusChange( window );
 				}
@@ -213,7 +213,7 @@ namespace Axiom.Core
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach ( var listener in _listeners[ window ] )
 				{
 					listener.WindowMoved( window );
 				}
@@ -235,7 +235,7 @@ namespace Axiom.Core
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach ( var listener in _listeners[ window ] )
 				{
 					listener.WindowResized( window );
 				}
@@ -254,7 +254,7 @@ namespace Axiom.Core
 			if ( _windows.Contains( window ) )
 			{
 				// Notify listeners of close
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach ( var listener in _listeners[ window ] )
 				{
 					listener.WindowClosed( window );
 				}
@@ -276,7 +276,7 @@ namespace Axiom.Core
                 {
                     if (_listeners != null)
                     {
-                        foreach (List<IWindowEventListener> list in _listeners.Values)
+                        foreach (var list in _listeners.Values)
                         {
                             list.Clear();
                         }

@@ -44,6 +44,7 @@ using System.Diagnostics;
 
 using Axiom.Collections;
 using Axiom.Configuration;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
@@ -240,7 +241,7 @@ namespace Axiom.Core
             {
                 if (disposeManagedResources)
                 {
-                    foreach (ShadowRenderable current in shadowRenderables)
+                    foreach (var current in shadowRenderables)
                     {
                         if (!current.IsDisposed)
                             current.Dispose();
@@ -295,7 +296,7 @@ namespace Axiom.Core
 					newSize = (int)Utility.Max( (float)newSize, (float)this.tempVertexSize * 2.0f );
 				}
 				// copy old data
-				byte[] tmp = this.tempVertexBuffer;
+				var tmp = this.tempVertexBuffer;
 				this.tempVertexBuffer = new byte[ newSize ];
 				if ( tmp != null )
 				{
@@ -312,7 +313,7 @@ namespace Axiom.Core
 		/// <param name="numInds">Number of indices</param>
 		protected virtual void ResizeTempIndexBufferIfNeeded( int numInds )
 		{
-			int newSize = numInds * sizeof( UInt16 );
+			var newSize = numInds * sizeof( UInt16 );
 			if ( newSize > this.tempIndexSize || this.tempIndexBuffer == null )
 			{
 				if ( this.tempIndexBuffer == null )
@@ -326,7 +327,7 @@ namespace Axiom.Core
 					newSize = (int)Utility.Max( (float)newSize, (float)this.tempIndexSize * 2 );
 				}
 				numInds = newSize / sizeof( UInt16 );
-				UInt16[] tmp = this.tempIndexBuffer;
+				var tmp = this.tempIndexBuffer;
 				this.tempIndexBuffer = new UInt16[ numInds ];
 				if ( tmp != null )
 				{
@@ -340,95 +341,81 @@ namespace Axiom.Core
 		/// <summary>
 		/// Copies temporary vertex buffer to hardware buffer
 		/// </summary>
-		protected virtual void CopyTempVertexToBuffer()
+        protected virtual void CopyTempVertexToBuffer()
 		{
-			this.tempVertexPending = false;
-			RenderOperation rop = this.currentSection.RenderOperation;
+		    this.tempVertexPending = false;
+		    var rop = this.currentSection.RenderOperation;
 
-			if ( rop.vertexData.vertexCount == 0 && !this.currentUpdating )
-			{
-				// first vertex, autoorganise decl
-				VertexDeclaration oldDcl = rop.vertexData.vertexDeclaration;
-				rop.vertexData.vertexDeclaration =
-						oldDcl.GetAutoOrganizedDeclaration( false, false );
+		    if ( rop.vertexData.vertexCount == 0 && !this.currentUpdating )
+		    {
+		        // first vertex, autoorganise decl
+		        var oldDcl = rop.vertexData.vertexDeclaration;
+		        rop.vertexData.vertexDeclaration =
+		            oldDcl.GetAutoOrganizedDeclaration( false, false );
 
-				HardwareBufferManager.Instance.DestroyVertexDeclaration( oldDcl );
-			}
+		        HardwareBufferManager.Instance.DestroyVertexDeclaration( oldDcl );
+		    }
 
-			this.ResizeTempVertexBufferIfNeeded( ++rop.vertexData.vertexCount );
+		    this.ResizeTempVertexBufferIfNeeded( ++rop.vertexData.vertexCount );
 
-			List<VertexElement> elemList = rop.vertexData.vertexDeclaration.Elements;
+		    var elemList = rop.vertexData.vertexDeclaration.Elements;
 
-			unsafe
-			{
-				// get base pointer
-				fixed ( byte* pBase = &this.tempVertexBuffer[ this.declSize * ( rop.vertexData.vertexCount - 1 ) ] )
-				{
-					foreach ( VertexElement elem in elemList )
-					{
-						float* pFloat = null;
-						UInt32* pRGBA = null;
+#if !AXIOM_SAFE_ONLY
+		    unsafe
+#endif
+		    {
+		        // get base pointer
+		        var buf = BufferBase.Wrap( this.tempVertexBuffer );
+		        buf.Ptr = this.declSize*( rop.vertexData.vertexCount - 1 );
 
-						switch ( elem.Type )
-						{
-							case VertexElementType.Float1:
-							case VertexElementType.Float2:
-							case VertexElementType.Float3:
-								pFloat = (float*)( (byte*)pBase + elem.Offset );
-								break;
+		        var pFloat = buf.ToFloatPointer();
+		        var pRGBA = buf.ToUIntPointer();
 
-							case VertexElementType.Color:
-							case VertexElementType.Color_ABGR:
-							case VertexElementType.Color_ARGB:
-								pRGBA = (uint*)( (byte*)pBase + elem.Offset );
-								break;
-							default:
-								// nop ?
-								break;
-						}
+		        foreach ( var elem in elemList )
+		        {
+		            var idx = elem.Offset;
 
-						RenderSystem rs;
-						int dims;
-						switch ( elem.Semantic )
-						{
-							case VertexElementSemantic.Position:
-								*pFloat++ = this.tempVertex.position.x;
-								*pFloat++ = this.tempVertex.position.y;
-								*pFloat++ = this.tempVertex.position.z;
-								break;
-							case VertexElementSemantic.Normal:
-								*pFloat++ = this.tempVertex.normal.x;
-								*pFloat++ = this.tempVertex.normal.y;
-								*pFloat++ = this.tempVertex.normal.z;
-								break;
-							case VertexElementSemantic.TexCoords:
-								dims = VertexElement.GetTypeCount( elem.Type );
-								for ( int t = 0; t < dims; ++t )
-								{
-									*pFloat++ = this.tempVertex.texCoord[ elem.Index ][ t ];
-								}
-								break;
-							case VertexElementSemantic.Diffuse:
-								rs = Root.Instance.RenderSystem;
-								if ( rs != null )
-								{
-									*pRGBA++ = (uint)rs.ConvertColor( this.tempVertex.color );
-								}
-								else
-								{
-									*pRGBA++ = (uint)this.tempVertex.color.ToRGBA(); // pick one!
-								}
-								break;
-							default:
-								// nop ?
-								break;
-						}
-					}
-				}
-			}
+		            RenderSystem rs;
+		            int dims;
+		            switch ( elem.Semantic )
+		            {
+		                case VertexElementSemantic.Position:
+		                    pFloat[ idx++ ] = this.tempVertex.position.x;
+		                    pFloat[ idx++ ] = this.tempVertex.position.y;
+		                    pFloat[ idx ] = this.tempVertex.position.z;
+		                    break;
+		                case VertexElementSemantic.Normal:
+		                    pFloat[ idx++ ] = this.tempVertex.normal.x;
+		                    pFloat[ idx++ ] = this.tempVertex.normal.y;
+		                    pFloat[ idx ] = this.tempVertex.normal.z;
+		                    break;
+		                case VertexElementSemantic.TexCoords:
+		                    dims = VertexElement.GetTypeCount( elem.Type );
+		                    for ( var t = 0; t < dims; ++t )
+		                    {
+		                        pFloat[ idx++ ] = this.tempVertex.texCoord[ elem.Index ][ t ];
+		                    }
+		                    break;
+		                case VertexElementSemantic.Diffuse:
+		                    rs = Root.Instance.RenderSystem;
+		                    if ( rs != null )
+		                    {
+		                        pRGBA[ idx ] = (uint)rs.ConvertColor( this.tempVertex.color );
+		                    }
+		                    else
+		                    {
+		                        pRGBA[ idx ] = (uint)this.tempVertex.color.ToRGBA(); // pick one!
+		                    }
+		                    break;
+		                default:
+		                    // nop ?
+		                    break;
+		            }
+		        }
+		    }
 		}
 
-		#endregion Methods
+	    #endregion Methods
 
 		#endregion Protected
 
@@ -452,7 +439,7 @@ namespace Axiom.Core
 			set
 			{
 				// Set existing
-				foreach ( ManualObjectSection sec in this.sectionList )
+				foreach ( var sec in this.sectionList )
 				{
 					sec.UseIdentityProjection = value;
 				}
@@ -478,7 +465,7 @@ namespace Axiom.Core
 			set
 			{
 				// Set existing
-				foreach ( ManualObjectSection sec in this.sectionList )
+				foreach ( var sec in this.sectionList )
 				{
 					sec.UseIdentityView = value;
 				}
@@ -611,7 +598,7 @@ namespace Axiom.Core
 			this.firstVertex = true;
 			this.texCoordIndex = 0;
 			// reset vertex & index count
-			RenderOperation rop = this.currentSection.RenderOperation;
+			var rop = this.currentSection.RenderOperation;
 			rop.vertexData.vertexCount = 0;
 			if ( rop.indexData != null )
 			{
@@ -863,7 +850,7 @@ namespace Axiom.Core
 
 			this.anyIndexed = true;
 			// make sure we have index data
-			RenderOperation rop = this.currentSection.RenderOperation;
+			var rop = this.currentSection.RenderOperation;
 			if ( rop.indexData == null )
 			{
 				rop.indexData = new IndexData();
@@ -941,7 +928,7 @@ namespace Axiom.Core
 			// pointer that will be returned
 			ManualObjectSection result = null;
 
-			RenderOperation rop = this.currentSection.RenderOperation;
+			var rop = this.currentSection.RenderOperation;
 
 			// Check for empty content
 			if ( rop.vertexData.vertexCount == 0 || ( rop.useIndices && rop.indexData.indexCount == 0 ) )
@@ -970,8 +957,8 @@ namespace Axiom.Core
 				// Bake the real buffers
 				HardwareVertexBuffer vbuf = null;
 				// Check buffer sizes
-				bool vbufNeedsCreating = true;
-				bool ibufNeedsCreating = rop.useIndices;
+				var vbufNeedsCreating = true;
+				var ibufNeedsCreating = rop.useIndices;
 
 				if ( this.currentUpdating )
 				{
@@ -995,7 +982,7 @@ namespace Axiom.Core
 				{
 					// Make the vertex buffer larger if estimated vertex count higher
 					// to allow for user-configured growth area
-					int vertexCount = (int)Utility.Max( rop.vertexData.vertexCount, this.estVertexCount );
+					var vertexCount = (int)Utility.Max( rop.vertexData.vertexCount, this.estVertexCount );
 
                     vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 
@@ -1006,7 +993,7 @@ namespace Axiom.Core
 				{
 					// Make the index buffer larger if estimated index count higher
 					// to allow for user-configured growth area
-					int indexCount = (int)Utility.Max( rop.indexData.indexCount, this.estIndexCount );
+					var indexCount = (int)Utility.Max( rop.indexData.indexCount, this.estIndexCount );
 					rop.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, indexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 				}
 
@@ -1081,7 +1068,7 @@ namespace Axiom.Core
 				throw new AxiomException( "ManualObject.ConvertToMesh - No data defined to convert to a mesh." );
 			}
 
-			foreach ( ManualObjectSection sec in this.sectionList )
+			foreach ( var sec in this.sectionList )
 			{
 				if ( !sec.RenderOperation.useIndices )
 				{
@@ -1089,12 +1076,12 @@ namespace Axiom.Core
 				}
 			}
 
-			Mesh m = MeshManager.Instance.CreateManual( meshName, groupName, null );
+			var m = MeshManager.Instance.CreateManual( meshName, groupName, null );
 
-			foreach ( ManualObjectSection sec in this.sectionList )
+			foreach ( var sec in this.sectionList )
 			{
-				RenderOperation rop = sec.RenderOperation;
-				SubMesh sm = m.CreateSubMesh();
+				var rop = sec.RenderOperation;
+				var sm = m.CreateSubMesh();
 				sm.useSharedVertices = false;
 				sm.operationType = rop.operationType;
 				sm.MaterialName = sec.MaterialName;
@@ -1135,12 +1122,12 @@ namespace Axiom.Core
 			// Build on demand
 			if ( this.edgeList == null && this.anyIndexed )
 			{
-				EdgeListBuilder eb = new EdgeListBuilder();
-				int vertexSet = 0;
-				bool anyBuilt = false;
-				foreach ( ManualObjectSection sec in this.sectionList )
+				var eb = new EdgeListBuilder();
+				var vertexSet = 0;
+				var anyBuilt = false;
+				foreach ( var sec in this.sectionList )
 				{
-					RenderOperation rop = sec.RenderOperation;
+					var rop = sec.RenderOperation;
 					// Only indexed triangle geometry supported for stencil shadows
 					if ( rop.useIndices && rop.indexData.indexCount != 0 &&
 						 ( rop.operationType == OperationType.TriangleFan ||
@@ -1210,10 +1197,10 @@ namespace Axiom.Core
 		/// <param name="queue">Rendering queue to add this object</param>
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			foreach ( ManualObjectSection sec in this.sectionList )
+			foreach ( var sec in this.sectionList )
 			{
 				// Skip empty sections (only happens if non-empty first, then updated)
-				RenderOperation rop = sec.RenderOperation;
+				var rop = sec.RenderOperation;
 				if ( rop.vertexData.vertexCount == 0 ||
 					 ( rop.useIndices && rop.indexData.indexCount == 0 ) )
 				{
@@ -1246,7 +1233,7 @@ namespace Axiom.Core
 			Debug.Assert( indexBuffer != null, "Only external index buffers are supported right now" );
 			Debug.Assert( indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now" );
 
-			EdgeData edgeList = this.GetEdgeList();
+			var edgeList = this.GetEdgeList();
 
 			if ( edgeList == null )
 			{
@@ -1254,12 +1241,12 @@ namespace Axiom.Core
 			}
 
 			// Calculate the object space light details
-			Vector4 lightPos = light.GetAs4DVector();
-			Matrix4 world2Obj = this.ParentNode.FullTransform.Inverse();
+			var lightPos = light.GetAs4DVector();
+			var world2Obj = this.ParentNode.FullTransform.Inverse();
 			lightPos = world2Obj.TransformAffine( lightPos );
 
 			// Init shadow renderable list if required (only allow indexed)
-			bool init = ( this.shadowRenderables.Count == 0 && this.anyIndexed );
+			var init = ( this.shadowRenderables.Count == 0 && this.anyIndexed );
 
 			ManualObjectSectionShadowRenderable esr = null;
 			ManualObjectSection seci = null;
@@ -1271,7 +1258,7 @@ namespace Axiom.Core
 
 			EdgeData.EdgeGroup egi;
 
-			for ( int i = 0; i < this.shadowRenderables.Capacity; i++ )
+			for ( var i = 0; i < this.shadowRenderables.Capacity; i++ )
 			{
 				// Skip non-indexed geometry
 				egi = (EdgeData.EdgeGroup)edgeList.edgeGroups[ i ];
@@ -1288,13 +1275,13 @@ namespace Axiom.Core
 					// we're using a vertex program (either for this model, or
 					// for extruding the shadow volume) since otherwise we can
 					// get depth-fighting on the light cap
-					Material mat = seci.Material;
+					var mat = seci.Material;
 					mat.Load();
-					bool vertexProgram = false;
-					Technique t = mat.GetBestTechnique();
-					for ( int p = 0; p < t.PassCount; ++p )
+					var vertexProgram = false;
+					var t = mat.GetBestTechnique();
+					for ( var p = 0; p < t.PassCount; ++p )
 					{
-						Pass pass = t.GetPass( p );
+						var pass = t.GetPass( p );
 						if ( pass.HasVertexProgram )
 						{
 							vertexProgram = true;
@@ -1503,7 +1490,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					Material retMat = this.Material;
+					var retMat = this.Material;
 					if ( retMat != null )
 					{
 						return retMat.GetBestTechnique();
@@ -1682,7 +1669,7 @@ namespace Axiom.Core
 																	   0,
 																	   VertexElementType.Float3,
 																	   VertexElementSemantic.Position );
-				short origPosBind =
+				var origPosBind =
 						vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position ).Source;
 
 				this.positionBuffer = vertexData.vertexBufferBinding.GetBuffer( origPosBind );

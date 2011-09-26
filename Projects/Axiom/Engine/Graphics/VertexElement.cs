@@ -112,41 +112,40 @@ namespace Axiom.Graphics
 		/// </summary>
 		public static int GetTypeSize( VertexElementType type )
 		{
-
 			switch ( type )
 			{
-				case VertexElementType.Color_ABGR:
+                case VertexElementType.Color_ABGR:
 				case VertexElementType.Color_ARGB:
 				case VertexElementType.Color:
-					return Marshal.SizeOf( typeof( int ) );
+					return Memory.SizeOf( typeof( int ) );
 
 				case VertexElementType.Float1:
-					return Marshal.SizeOf( typeof( float ) );
+					return Memory.SizeOf( typeof( float ) );
 
 				case VertexElementType.Float2:
-					return Marshal.SizeOf( typeof( float ) ) * 2;
+					return Memory.SizeOf( typeof( float ) ) * 2;
 
 				case VertexElementType.Float3:
-					return Marshal.SizeOf( typeof( float ) ) * 3;
+					return Memory.SizeOf( typeof( float ) ) * 3;
 
 				case VertexElementType.Float4:
-					return Marshal.SizeOf( typeof( float ) ) * 4;
+					return Memory.SizeOf( typeof( float ) ) * 4;
 
 				case VertexElementType.Short1:
-					return Marshal.SizeOf( typeof( short ) );
+					return Memory.SizeOf( typeof( short ) );
 
 				case VertexElementType.Short2:
-					return Marshal.SizeOf( typeof( short ) ) * 2;
+					return Memory.SizeOf( typeof( short ) ) * 2;
 
 				case VertexElementType.Short3:
-					return Marshal.SizeOf( typeof( short ) ) * 3;
+					return Memory.SizeOf( typeof( short ) ) * 3;
 
 				case VertexElementType.Short4:
-					return Marshal.SizeOf( typeof( short ) ) * 4;
+					return Memory.SizeOf( typeof( short ) ) * 4;
 
 				case VertexElementType.UByte4:
-					return Marshal.SizeOf( typeof( byte ) ) * 4;
-			} // end switch
+					return Memory.SizeOf( typeof( byte ) ) * 4;
+            } // end switch
 
 			// keep the compiler happy
 			return 0;

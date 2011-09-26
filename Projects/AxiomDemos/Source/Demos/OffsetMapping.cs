@@ -1,6 +1,7 @@
 #region Namespace Declarations
 
 using System;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -21,7 +22,8 @@ namespace Axiom.Demos
 	///     PS.1.4 assembler shader put together by NFZ (nfuzz@hotmail.com)
 	///     Demo done by Randy Ridge http://www.randyridge.com
 	/// </remarks>
-	public class OffsetMapping : TechDemo
+    [Export(typeof(TechDemo))]
+    public class OffsetMapping : TechDemo
 	{
 		#region Fields
 

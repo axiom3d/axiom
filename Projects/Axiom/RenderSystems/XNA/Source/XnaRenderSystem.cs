@@ -30,61 +30,87 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using System.Windows;
+#if SILVERLIGHT
+using System.Windows.Controls;
+using System.Windows.Graphics;
+#else
+using System.Drawing;
+using System.Windows.Forms;
+#endif
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
-
-#if !(XBOX || XBOX360 || SILVERLIGHT )
-using System.Windows.Forms;
-#endif
-using Axiom.Core;
+using System.Text;
+using Axiom.Collections;
 using Axiom.Configuration;
+using Axiom.Core;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
-using Axiom.Collections;
-using Axiom.Core.Collections;
-using Axiom.Media;
 using Axiom.Math.Collections;
+using Axiom.Media;
+using Axiom.RenderSystems.Xna.HLSL;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Color = Microsoft.Xna.Framework.Color;
+using CompareFunction = Axiom.Graphics.CompareFunction;
+using Plane = Axiom.Math.Plane;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using StencilOperation = Axiom.Graphics.StencilOperation;
+using Texture = Axiom.Core.Texture;
+using Vector4 = Axiom.Math.Vector4;
+using VertexBufferBinding = Axiom.Graphics.VertexBufferBinding;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
+using VertexElement = Microsoft.Xna.Framework.Graphics.VertexElement;
+using Viewport = Axiom.Core.Viewport;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
-{
+{   
 	public partial class XnaRenderSystem : RenderSystem, IServiceProvider
 	{
 		#region Constants
 
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
-		   0.5f, 0, 0, -0.5f,
-		   0, -0.5f, 0, -0.5f,
-		   0, 0, 0, 1f,
-		   0, 0, 0, 1f );
+			0.5f, 0, 0, -0.5f,
+			0, -0.5f, 0, -0.5f,
+			0, 0, 0, 1f,
+			0, 0, 0, 1f);
 
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpaceOrtho = new Matrix4(
 			-0.5f, 0, 0, -0.5f,
 			0, 0.5f, 0, -0.5f,
 			0, 0, 0, 1f,
-			0, 0, 0, 1f );
+			0, 0, 0, 1f);
 
 		#endregion Constants
 
 		#region Inner Types
 
+		public DisplayMode DisplayMode
+		{
+			get
+			{
+				return _activeDriver.VideoModes[ConfigOptions["Video Mode"].Value].DisplayMode;
+			}
+		}
+
 		public struct ZBufferFormat
 		{
-			public ZBufferFormat( XFG.DepthFormat f )
+			public ZBufferFormat(DepthFormat f)
 			{
-				this.format = f;
+				format = f;
 			}
-			public XFG.DepthFormat format;
+
+			public DepthFormat format;
 		}
 
 		//public struct ZBufferFormat
@@ -107,33 +133,36 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Reference to the Xna device.
 		/// </summary>
-		private XFG.GraphicsDevice _device;
+		private GraphicsDevice _device;
 		private Driver _activeDriver;
 		
 		// Saved last view matrix
 		protected Matrix4 _viewMatrix = Matrix4.Identity;
 		bool _isFirstFrame = true;
 		private int _primCount;
-		private int _renderCount = 0;
-		XFG.BasicEffect basicEffect;
-		XFG.SkinnedEffect skinnedEffect;
-		XFG.Effect effect;
+		private int _renderCount;
+		private BasicEffect basicEffect;
+		private SkinnedEffect skinnedEffect;
+		private EnvironmentMapEffect envMapEffect;
+		private DualTextureEffect dualTexEffect;
+		private AlphaTestEffect alphaTestEffect;
+		private Effect effect;
 
 		/// <summary>
-		/// The one used to create the device.
+		///   The one used to create the device.
 		/// </summary>
 		private XnaRenderWindow _primaryWindow;
 
-		List<XnaRenderWindow> _secondaryWindows = new List<XnaRenderWindow>();
+		private readonly List<XnaRenderWindow> _secondaryWindows = new List<XnaRenderWindow>();
 
 		// stores texture stage info locally for convenience
-		internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
-		private XnaGpuProgramManager _gpuProgramMgr;
+		internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[Config.MaxTextureLayers];
+		protected XnaGpuProgramManager gpuProgramMgr;
 		private XnaHardwareBufferManager _hardwareBufferManager;
-		int numLastStreams = 0;
+		private int numLastStreams;
 
 		/// <summary>
-		///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
+		///   Number of streams used last frame, used to unbind any buffers not used during the current operation.
 		/// </summary>
 		private int _lastVertexSourceCount;
 
@@ -148,14 +177,36 @@ namespace Axiom.RenderSystems.Xna
 		private bool _useNVPerfHUD;
 		private bool _vSync;
 		//private XFG.MultiSampleType _fsaaType = XFG.MultiSampleType.None;
-		private int _fsaaQuality = 0;
-		private XFG.RasterizerState _rasterizerState = new XFG.RasterizerState();
+		private int _fsaaQuality;
+		private RasterizerState _rasterizerState = new RasterizerState();
 
 		protected int primCount;
 		// protected int renderCount = 0;
 
-		bool VertexShaderIsSet = false;
-		bool PixelShaderIsSet = false;
+		bool VertexShaderIsSet
+		{
+			get
+			{
+				return vertexProgramBound;
+			}
+			set
+			{
+				vertexProgramBound = value;
+			}
+		}
+
+		bool PixelShaderIsSet
+		{
+			get
+			{
+				return fragmentProgramBound;
+			}
+			set
+			{
+				fragmentProgramBound = value;
+			}
+		}
+
 		bool useSkinnedEffect = false;
 
 		bool needToUnmapVS = false;
@@ -163,19 +214,20 @@ namespace Axiom.RenderSystems.Xna
 
 		private bool lasta2c = false;
 
-		protected Dictionary<ZBufferFormat, XFG.RenderTarget2D> zBufferCache = new Dictionary<ZBufferFormat, XFG.RenderTarget2D>();
+		protected Dictionary<ZBufferFormat, RenderTarget2D> zBufferCache = new Dictionary<ZBufferFormat, RenderTarget2D>();
 		//protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
-		protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
+		protected Dictionary<SurfaceFormat, DepthFormat> depthStencilCache = new Dictionary<SurfaceFormat, DepthFormat>();
 
-		private static XFG.DepthFormat[] _preferredStencilFormats = {
-			//XFG.DepthFormat.Depth24Stencil8Single,
-			XFG.DepthFormat.Depth24Stencil8,
-			//XFG.DepthFormat.Depth24Stencil4,
-			XFG.DepthFormat.Depth24,
-			//XFG.DepthFormat.Depth15Stencil1,
-			XFG.DepthFormat.Depth16,
-			//XFG.DepthFormat.Depth32
-		};
+		private static readonly DepthFormat[] _preferredStencilFormats = {
+																			 //XFG.DepthFormat.Depth24Stencil8Single,
+																			 DepthFormat.Depth24Stencil8,
+																			 //XFG.DepthFormat.Depth24Stencil4,
+																			 DepthFormat.Depth24,
+																			 //XFG.DepthFormat.Depth15Stencil1,
+																			 DepthFormat.Depth16,
+																			 //XFG.DepthFormat.Depth32
+																		 };
+
 
 		private StateManagement StateManager;
 
@@ -186,14 +238,19 @@ namespace Axiom.RenderSystems.Xna
 		public XnaRenderSystem()
 			: base()
 		{
+#if SILVERLIGHT
+			if (XnaRenderWindow.DrawingSurface == null)
+				throw new AxiomException("Set XnaRenderWindow.DrawingSurface before Axiom initialization");
+#endif
+
 			_initConfigOptions();
 			// init the texture stage descriptions
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for (var i = 0; i < Config.MaxTextureLayers; i++)
 			{
-				texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
-				texStageDesc[ i ].coordIndex = 0;
-				texStageDesc[ i ].texType = TextureType.OneD;
-				texStageDesc[ i ].tex = null;
+				texStageDesc[i].autoTexCoordType = TexCoordCalcMethod.None;
+				texStageDesc[i].coordIndex = 0;
+				texStageDesc[i].texType = TextureType.OneD;
+				texStageDesc[i].tex = null;
 			}
 #if AXIOM_FF_EMULATION
 			_shaderManager.RegisterGenerator( _hlslShaderGenerator );
@@ -204,46 +261,51 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Helper Methods
 
-		private void _setVertexBufferBinding( VertexBufferBinding binding )
+		/// <summary>
+		/// </summary>
+		private void _setVertexBufferBinding(VertexBufferBinding binding)
 		{
-			Dictionary<short, HardwareVertexBuffer> bindings = binding.Bindings;
+			var bindings = binding.Bindings;
 
-			var xnaBindings = new XFG.VertexBufferBinding[ binding.BindingCount ];
-			int index = 0;
-			foreach ( short stream in bindings.Keys )
+			var xnaBindings = new Microsoft.Xna.Framework.Graphics.VertexBufferBinding[binding.BindingCount];
+			var index = 0;
+			foreach (var stream in bindings.Keys)
 			{
-				XnaHardwareVertexBuffer buffer = (XnaHardwareVertexBuffer)bindings[ stream ];
-				xnaBindings[ index++ ] = new XFG.VertexBufferBinding( buffer.XnaVertexBuffer );
+				var buffer = (XnaHardwareVertexBuffer)bindings[stream];
+				xnaBindings[index++] =
+					new Microsoft.Xna.Framework.Graphics.VertexBufferBinding(buffer.XnaVertexBuffer);
 			}
 
-			_device.SetVertexBuffers( xnaBindings );
+			_device.SetVertexBuffers(xnaBindings);
 		}
 
-		private void _configOptionChanged( string name, string value )
+		private void _configOptionChanged(string name, string value)
 		{
-			LogManager.Instance.Write( "XNA : RenderSystem Option: {0} = {1}", name, value );
+			LogManager.Instance.Write("XNA : RenderSystem Option: {0} = {1}", name, value);
 
-			bool viewModeChanged = false;
+			var viewModeChanged = false;
 
 			// Find option
-			ConfigOption opt = ConfigOptions[ name ];
+			var opt = ConfigOptions[name];
 
 			// Refresh other options if D3DDriver changed
-			if ( name == "Rendering Device" )
+			if (name == "Rendering Device")
+			{
 				_refreshXnaSettings();
+			}
 
-			if ( name == "Full Screen" )
+			if (name == "Full Screen")
 			{
 				// Video mode is applicable
-				opt = ConfigOptions[ "Video Mode" ];
-				if ( opt.Value == "" )
+				opt = ConfigOptions["Video Mode"];
+				if (opt.Value == "")
 				{
 					opt.Value = "800 x 600 @ 32-bit color";
 					viewModeChanged = true;
 				}
 			}
 
-			//if ( name == "Anti aliasing" )
+			//if (name == "Anti aliasing")
 			//{
 			//    if ( value == "None" )
 			//    {
@@ -267,25 +329,24 @@ namespace Axiom.RenderSystems.Xna
 
 			//        _setFSAA( fsaa, level );
 			//    }
-
 			//}
 
-			if ( name == "VSync" )
+			if (name == "VSync")
 			{
-				_vSync = ( value == "Yes" );
+				_vSync = (value == "Yes");
 			}
 
-			if ( name == "Allow NVPerfHUD" )
+			if (name == "Allow NVPerfHUD")
 			{
-				_useNVPerfHUD = ( value == "Yes" );
+				_useNVPerfHUD = (value == "Yes");
 			}
 
-			if ( viewModeChanged || name == "Video Mode" )
+			if (viewModeChanged || name == "Video Mode")
 			{
 				_refreshFSAAOptions();
 			}
-
 		}
+
 		/*
 				private void _setFSAA( XFG.MultiSampleType fsaa, int level )
 				{
@@ -296,98 +357,102 @@ namespace Axiom.RenderSystems.Xna
 					}
 				}
 		*/
+
 		private void _initConfigOptions()
 		{
-			ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
-			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit color", false );
-			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
-			ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
-			ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
-			ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
-			ConfigOption optNVPerfHUD = new ConfigOption( "Allow NVPerfHUD", "No", false );
-			ConfigOption optSaveShaders = new ConfigOption( "Save Generated Shaders", "No", false );
-			ConfigOption optUseCP = new ConfigOption( "Use Content Pipeline", "No", false );
+			var optDevice = new ConfigOption("Rendering Device", "", false);
+			var optVideoMode = new ConfigOption("Video Mode", "800 x 600 @ 32-bit color", false);
+			var optFullScreen = new ConfigOption("Full Screen", "No", false);
+			var optVSync = new ConfigOption("VSync", "No", false);
+			var optAA = new ConfigOption("Anti aliasing", "None", false);
+			var optFPUMode = new ConfigOption("Floating-point mode", "Fastest", false);
+			var optNVPerfHUD = new ConfigOption("Allow NVPerfHUD", "No", false);
+			var optSaveShaders = new ConfigOption("Save Generated Shaders", "No", false);
+			var optUseCP = new ConfigOption("Use Content Pipeline", "No", false);
 
 			optDevice.PossibleValues.Clear();
 
-			DriverCollection driverList = XnaHelper.GetDriverInfo();
-			foreach ( Driver driver in driverList )
+			var driverList = XnaHelper.GetDriverInfo();
+			foreach (var driver in driverList)
 			{
-				if ( !optDevice.PossibleValues.ContainsKey( driver.AdapterNumber ) )
+				if (!optDevice.PossibleValues.ContainsKey(driver.AdapterNumber))
 				{
-					optDevice.PossibleValues.Add( driver.AdapterNumber, driver.Description );
+					optDevice.PossibleValues.Add(driver.AdapterNumber, driver.Description);
 				}
 			}
-			optDevice.Value = driverList[ 0 ].Description;
+			if (driverList.Count > 0)
+				optDevice.Value = driverList[0].Description;
+			else
+				optDevice.Value = "No Device";
 
-			optFullScreen.PossibleValues.Add( 0, "Yes" );
-			optFullScreen.PossibleValues.Add( 1, "No" );
+			optFullScreen.PossibleValues.Add(0, "Yes");
+			optFullScreen.PossibleValues.Add(1, "No");
 
-			optVSync.PossibleValues.Add( 0, "Yes" );
-			optVSync.PossibleValues.Add( 1, "No" );
+			optVSync.PossibleValues.Add(0, "Yes");
+			optVSync.PossibleValues.Add(1, "No");
 
-			optAA.PossibleValues.Add( 0, "None" );
+			optAA.PossibleValues.Add(0, "None");
 
 			optFPUMode.PossibleValues.Clear();
-			optFPUMode.PossibleValues.Add( 0, "Fastest" );
-			optFPUMode.PossibleValues.Add( 1, "Consistent" );
+			optFPUMode.PossibleValues.Add(0, "Fastest");
+			optFPUMode.PossibleValues.Add(1, "Consistent");
 
-			optNVPerfHUD.PossibleValues.Add( 0, "Yes" );
-			optNVPerfHUD.PossibleValues.Add( 1, "No" );
+			optNVPerfHUD.PossibleValues.Add(0, "Yes");
+			optNVPerfHUD.PossibleValues.Add(1, "No");
 
-			optSaveShaders.PossibleValues.Add( 0, "Yes" );
-			optSaveShaders.PossibleValues.Add( 1, "No" );
+			optSaveShaders.PossibleValues.Add(0, "Yes");
+			optSaveShaders.PossibleValues.Add(1, "No");
 
-			optUseCP.PossibleValues.Add( 0, "Yes" );
-			optUseCP.PossibleValues.Add( 1, "No" );
+			optUseCP.PossibleValues.Add(0, "Yes");
+			optUseCP.PossibleValues.Add(1, "No");
 
-			optFPUMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optAA.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optVSync.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optFullScreen.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optVideoMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optDevice.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optNVPerfHUD.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optSaveShaders.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optUseCP.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+			optFPUMode.ConfigValueChanged += _configOptionChanged;
+			optAA.ConfigValueChanged += _configOptionChanged;
+			optVSync.ConfigValueChanged += _configOptionChanged;
+			optFullScreen.ConfigValueChanged += _configOptionChanged;
+			optVideoMode.ConfigValueChanged += _configOptionChanged;
+			optDevice.ConfigValueChanged += _configOptionChanged;
+			optNVPerfHUD.ConfigValueChanged += _configOptionChanged;
+			optSaveShaders.ConfigValueChanged += _configOptionChanged;
+			optUseCP.ConfigValueChanged += _configOptionChanged;
 
-			ConfigOptions.Add( optDevice );
-			ConfigOptions.Add( optVideoMode );
-			ConfigOptions.Add( optFullScreen );
-			ConfigOptions.Add( optVSync );
-			ConfigOptions.Add( optAA );
-			ConfigOptions.Add( optFPUMode );
-			ConfigOptions.Add( optNVPerfHUD );
-			ConfigOptions.Add( optSaveShaders );
-			ConfigOptions.Add( optUseCP );
+			ConfigOptions.Add(optDevice);
+			ConfigOptions.Add(optVideoMode);
+			ConfigOptions.Add(optFullScreen);
+			ConfigOptions.Add(optVSync);
+			ConfigOptions.Add(optAA);
+			ConfigOptions.Add(optFPUMode);
+			ConfigOptions.Add(optNVPerfHUD);
+			ConfigOptions.Add(optSaveShaders);
+			ConfigOptions.Add(optUseCP);
 
 			_refreshXnaSettings();
 		}
 
 		private void _refreshXnaSettings()
 		{
-			DriverCollection drivers = XnaHelper.GetDriverInfo();
+			var drivers = XnaHelper.GetDriverInfo();
 
-			ConfigOption optDevice = ConfigOptions[ "Rendering Device" ];
-			Driver driver = drivers[ optDevice.Value ];
-			if ( driver != null )
+			var optDevice = ConfigOptions["Rendering Device"];
+			var driver = drivers[optDevice.Value];
+			if (driver != null)
 			{
 				// Get Current Selection
-				ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
-				string curMode = optVideoMode.Value;
+				var optVideoMode = ConfigOptions["Video Mode"];
+				var curMode = optVideoMode.Value;
 
 				// Clear previous Modes
 				optVideoMode.PossibleValues.Clear();
 
 				// Get Video Modes for current device;
-				foreach ( VideoMode videoMode in driver.VideoModes )
+				foreach (var videoMode in driver.VideoModes)
 				{
-					optVideoMode.PossibleValues.Add( optVideoMode.PossibleValues.Count, videoMode.ToString() );
+					optVideoMode.PossibleValues.Add(optVideoMode.PossibleValues.Count, videoMode.ToString());
 				}
 
 				// Reset video mode to default if previous doesn't avail in new possible values
 
-				if ( optVideoMode.PossibleValues.Values.Contains( curMode ) == false )
+				if (optVideoMode.PossibleValues.Values.Contains(curMode) == false)
 				{
 					optVideoMode.Value = "800 x 600 @ 32-bit color";
 				}
@@ -450,29 +515,30 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-		/// <summary>
-		///		Creates a default form to use for a rendering target.
-		/// </summary>
-		/// <remarks>
-		///		This is used internally whenever <see cref="Initialize"/> is called and autoCreateWindow is set to true.
-		/// </remarks>
-		/// <param name="windowTitle">Title of the window.</param>
-		/// <param name="top">Top position of the window.</param>
-		/// <param name="left">Left position of the window.</param>
-		/// <param name="width">Width of the window.</param>
-		/// <param name="height">Height of the window</param>
-		/// <param name="fullScreen">Prepare the form for fullscreen mode?</param>
-		/// <returns>A form suitable for using as a rendering target.</returns>
-		private DefaultForm _createDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
+		///<summary>
+		///  Creates a default form to use for a rendering target.
+		///</summary>
+		///<remarks>
+		///  This is used internally whenever <see cref = "Initialize" /> is called and autoCreateWindow is set to true.
+		///</remarks>
+		///<param name = "windowTitle">Title of the window.</param>
+		///<param name = "top">Top position of the window.</param>
+		///<param name = "left">Left position of the window.</param>
+		///<param name = "width">Width of the window.</param>
+		///<param name = "height">Height of the window</param>
+		///<param name = "fullScreen">Prepare the form for fullscreen mode?</param>
+		///<returns>A form suitable for using as a rendering target.</returns>
+		private DefaultForm _createDefaultForm(string windowTitle, int top, int left, int width, int height,
+												bool fullScreen)
 		{
-			DefaultForm form = new DefaultForm();
+			var form = new DefaultForm();
 
-			form.ClientSize = new System.Drawing.Size( width, height );
+			form.ClientSize = new Size(width, height);
 			form.MaximizeBox = false;
 			form.MinimizeBox = false;
 			form.StartPosition = FormStartPosition.CenterScreen;
 
-			if ( fullScreen )
+			if (fullScreen)
 			{
 				form.Top = 0;
 				form.Left = 0;
@@ -601,9 +667,10 @@ namespace Axiom.RenderSystems.Xna
 			HardwareCapabilities.Log();
 		}
 		*/
-		private XNA.Matrix _makeXnaMatrix( Matrix4 matrix )
+
+		private Matrix _makeXnaMatrix(Matrix4 matrix)
 		{
-			XNA.Matrix xna = new XNA.Matrix();
+			var xna = new Matrix();
 
 			xna.M11 = matrix.m00;
 			xna.M12 = matrix.m01;
@@ -636,9 +703,12 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Set current render target to target, enabling its device context if needed
 		/// </summary>
-		public override RenderTarget RenderTarget
+        public override Graphics.RenderTarget RenderTarget
 		{
-			set { throw new NotImplementedException(); }
+			set
+			{
+				activeRenderTarget = value;
+			}
 		}
 
 		#endregion
@@ -653,8 +723,10 @@ namespace Axiom.RenderSystems.Xna
 		{
 			set
 			{
-				//if ( value )
-				//    throw new AxiomException( "XNA does not support PointSprites." );
+				if (value)
+				{
+					throw new AxiomException("XNA does not support PointSprites.");
+				}
 			}
 		}
 
@@ -669,20 +741,21 @@ namespace Axiom.RenderSystems.Xna
 		{
 			set
 			{
-                if ( value == null )
-                    return;
-
-				if ( activeViewport != value || value.IsUpdated )
+				if (activeViewport != value || value.IsUpdated)
 				{
 					// store this viewport and it's target
 					activeViewport = value;
+					if (activeViewport == null)
+					{
+						return;
+					}
 					activeRenderTarget = value.Target;
 
 					// get the back buffer surface for this viewport
-					XFG.RenderTarget2D[] back = (XFG.RenderTarget2D[])activeRenderTarget[ "XNABACKBUFFER" ];
-					if ( back == null )
+					var back = (RenderTarget2D[])activeRenderTarget["XNABACKBUFFER"];
+					if (back == null)
 					{
-						_device.SetRenderTarget( null );
+						_device.SetRenderTarget(null);
 						//the back buffer is null so it's not a render to texture,
 						//we render directly to the screen,
 						//set the original depth stencil buffer
@@ -691,7 +764,6 @@ namespace Axiom.RenderSystems.Xna
 					}
 					else
 					{
-
 					}
 					/*
 					XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget[ "XNAZBUFFER" ];
@@ -710,19 +782,20 @@ namespace Axiom.RenderSystems.Xna
 					}
 					*/
 
-					// Bind render targets
-					int count = back.Length;
 
-					for ( int i = 0; i < count && back[ i ] != null; ++i )
+					// Bind render targets
+					var count = back.Length;
+
+					for (var i = 0; i < count && back[i] != null; ++i)
 					{
-						_device.SetRenderTarget( back[ i ] );
+						_device.SetRenderTarget(back[i]);
 					}
 
 					// set the culling mode, to make adjustments required for viewports
 					// that may need inverted vertex winding or texture flipping
-					this.CullingMode = cullingMode;
+					CullingMode = cullingMode;
 
-					XFG.Viewport xnavp = new XFG.Viewport();
+					var xnavp = new Microsoft.Xna.Framework.Graphics.Viewport();
 
 					// set viewport dimensions
 					xnavp.X = value.ActualLeft;
@@ -770,8 +843,8 @@ namespace Axiom.RenderSystems.Xna
 			{
 				cullingMode = value;
 
-				bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
-				StateManager.RasterizerState.CullMode = XnaHelper.Convert( value, flip );
+				var flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
+				StateManager.RasterizerState.CullMode = XnaHelper.Convert(value, flip);
 			}
 		}
 
@@ -819,7 +892,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			set
 			{
-				StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( value );
+				StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert(value);
 			}
 		}
 
@@ -829,7 +902,10 @@ namespace Axiom.RenderSystems.Xna
 
 		public override VertexElementType ColorVertexElementType
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				return VertexElementType.Color_ABGR;
+			}
 		}
 
 		#endregion
@@ -865,7 +941,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override int DisplayMonitorCount
 		{
-			get { throw new NotImplementedException(); }
+			get { return 1; }
 		}
 
 		#endregion
@@ -879,10 +955,14 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override ColorEx AmbientLight
 		{
+			get
+			{
+				return _ambientLight;
+			}
 			set
 			{
 				_ambientLight = value;
-				basicEffect.AmbientLightColor = XnaHelper.Convert( _ambientLight ).ToVector3();
+				basicEffect.AmbientLightColor = XnaHelper.Convert(_ambientLight).ToVector3();
 				skinnedEffect.AmbientLightColor = basicEffect.AmbientLightColor;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.LightAmbient = value;
@@ -897,10 +977,8 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Sets the type of light shading required (default = Gouraud).
 		/// </summary>
-		public override ShadeOptions ShadingType
-		{
-			set { throw new NotImplementedException(); }
-		}
+		// TODO: Implement in shaders
+		public override ShadeOptions ShadingType { get; set; }
 
 		#endregion
 
@@ -924,7 +1002,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				return -0.5f;
 			}
-		}
+		}       
 
 		#endregion
 
@@ -940,6 +1018,10 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override bool LightingEnabled
 		{
+			get
+			{
+				return _lightingEnabled;
+			}
 			set
 			{
 				_lightingEnabled = value;
@@ -957,6 +1039,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Sets whether or not normals are to be automatically normalized.
 		/// </summary>
+		/// <value></value>
 		/// <remarks>
 		/// This is useful when, for example, you are scaling SceneNodes such that
 		/// normals may not be unit-length anymore. Note though that this has an
@@ -964,15 +1047,10 @@ namespace Axiom.RenderSystems.Xna
 		/// <p/>
 		/// You should not normally call this direct unless you are rendering
 		/// world geometry; set it on the Renderable because otherwise it will be
-		/// overridden by material settings. 
+		/// overridden by material settings.
 		/// </remarks>
-		public override bool NormalizeNormals
-		{
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
+		// TODO: Implement in shaders
+		public override bool NormalizeNormals { get; set; }
 
 		#endregion
 
@@ -985,16 +1063,19 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override Matrix4 ProjectionMatrix
 		{
+			get
+			{
+				return _projectionMatrix;
+			}
 			set
 			{
 				_projectionMatrix = value;
 
-				basicEffect.Projection = XnaHelper.Convert( _projectionMatrix );
+				basicEffect.Projection = XnaHelper.Convert(_projectionMatrix);
 				skinnedEffect.Projection = basicEffect.Projection;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
-
 			}
 		}
 
@@ -1007,20 +1088,27 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override PolygonMode PolygonMode
 		{
+			get
+			{
+				switch (StateManager.RasterizerState.FillMode)
+				{
+					case FillMode.WireFrame:
+						return PolygonMode.Wireframe;
+					case FillMode.Solid:
+					default:
+						return PolygonMode.Solid;
+				}
+			}
 			set
 			{
-				switch ( value )
+				switch (value)
 				{
 					case PolygonMode.Points:
-						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
-						break;
-
 					case PolygonMode.Wireframe:
-						StateManager.RasterizerState.FillMode = XFG.FillMode.WireFrame;
+						StateManager.RasterizerState.FillMode = FillMode.WireFrame;
 						break;
-
 					case PolygonMode.Solid:
-						StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
+						StateManager.RasterizerState.FillMode = FillMode.Solid;
 						break;
 				}
 			}
@@ -1040,6 +1128,10 @@ namespace Axiom.RenderSystems.Xna
 		/// </remarks>
 		public override bool StencilCheckEnabled
 		{
+			get
+			{
+				return StateManager.DepthStencilState.StencilEnable;
+			}
 			set
 			{
 				StateManager.DepthStencilState.StencilEnable = value;
@@ -1068,7 +1160,7 @@ namespace Axiom.RenderSystems.Xna
 				// Xna considers the origin to be in the center of a pixel ?
 				return -0.5f;
 			}
-		}
+		}       
 
 		#endregion
 
@@ -1079,6 +1171,10 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override Matrix4 ViewMatrix
 		{
+			get
+			{
+				return _viewMatrix;
+			}
 			set
 			{
 				// flip the transform portion of the matrix for DX and its left-handed coord system
@@ -1089,7 +1185,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
-				basicEffect.View = XnaHelper.Convert( _viewMatrix );
+				basicEffect.View = XnaHelper.Convert(_viewMatrix);
 				skinnedEffect.View = basicEffect.View;
 
 #if AXIOM_FF_EMULATION
@@ -1109,16 +1205,20 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override Matrix4 WorldMatrix
 		{
+			get
+			{
+				return _worldMatrix;
+			}
 			set
 			{
 				_worldMatrix = value;
-				basicEffect.World = XnaHelper.Convert( _worldMatrix );
-				basicEffect.World = basicEffect.World;
+				basicEffect.World = XnaHelper.Convert(_worldMatrix);
+				skinnedEffect.World = basicEffect.World;
 #if AXIOM_FF_EMULATION
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
 #endif
 			}
-		}
+		}       
 
 		#endregion
 
@@ -1168,6 +1268,44 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion
+
+#region REMOVED?
+		public bool DepthWrite
+		{
+			get
+			{
+				return StateManager.DepthStencilState.DepthBufferWriteEnable;
+			}
+			set
+			{
+				StateManager.DepthStencilState.DepthBufferWriteEnable = value;
+			}
+		}
+
+		public bool DepthCheck
+		{
+			get
+			{
+				return StateManager.DepthStencilState.DepthBufferEnable;
+			}
+			set
+			{
+				StateManager.DepthStencilState.DepthBufferEnable = value;
+			}
+		}
+
+		public CompareFunction DepthFunction
+		{
+			get
+			{
+				return XnaHelper.Convert(StateManager.DepthStencilState.DepthBufferFunction);
+			}
+			set
+			{
+				StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert(value);
+			}
+		}
+#endregion		
 
 		#endregion Properties
 
@@ -1257,11 +1395,12 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="constantBias"></param>
 		/// <param name="slopeScaleBias"></param>
-		public override void SetDepthBias( float constantBias, float slopeScaleBias )
+		public override void SetDepthBias(float constantBias, float slopeScaleBias)
 		{
-			//throw new Exception( "The method or operation is not implemented." );
-			//StateManager.DepthStencilState.DepthBias = (float)value;
+			StateManager.RasterizerState.DepthBias = constantBias;
+			StateManager.RasterizerState.SlopeScaleDepthBias = slopeScaleBias;
 		}
+
 
 		#endregion
 
@@ -1284,7 +1423,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Returns a description of an error code.
 		/// </summary>
-		public override string GetErrorDescription( int errorNumber )
+		public override string GetErrorDescription(int errorNumber)
 		{
 			throw new NotImplementedException();
 		}
@@ -1296,10 +1435,18 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Internal method used to set the underlying clip planes when needed
 		/// </summary>
-		protected override void SetClipPlanesImpl( PlaneList clipPlanes )
+		protected override void SetClipPlanesImpl(PlaneList clipPlanes)
 		{
-            //TODO
-			//throw new NotImplementedException();
+			Debug.WriteLine("In XNA4 SetClipPlanesImpl needs to be done with shaders");
+			// TODO: from http://forums.create.msdn.com/forums/p/56786/346433.aspx
+			// How to replace ClipPlanes[n].Plane in XNA 4.0
+			// In the vertex shader:
+			// Compute distance from vertex position to clip plane (assuming your plane and vertex are in the same coordinate system, just dot the float4 plane vector with the float4 extended (x,y,z,1) version of the position coordinate)
+			// Pack up to 4 such distances into a float4 vector
+			// Output as a texture coordinate interpolator
+			// If you need more than 4 clip planes, you will need two such interpolators
+			// In the pixel shader:
+			// Pass the interpolated distance-from-plane texcoord value to the clip() HLSL intrinsic
 		}
 
 		#endregion
@@ -1319,52 +1466,57 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="op">
 		/// A rendering operation instance, which contains details of the operation to be performed.
 		/// </param>
-		public override void Render( RenderOperation op )
+		public override void Render(RenderOperation op)
 		{
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
-			StateManager.CommitState( _device );
-			StateManager.ResetState( _device );
+			StateManager.CommitState(_device);
+			StateManager.ResetState(_device);
 
-			XFG.Effect effectToUse;
+			Effect effectToUse;
 
-			if ( useSkinnedEffect )
+			if (useSkinnedEffect)
 			{
-				XNA.Matrix[] boneMatrices = new XNA.Matrix[ Root.Instance.SceneManager.AutoParamData.WorldMatrixCount ];
-				for ( int i = 0; i < Root.Instance.SceneManager.AutoParamData.WorldMatrixCount; i++ )
+				var boneMatrices = new Matrix[Root.Instance.SceneManager.AutoParamData.WorldMatrixCount];
+				for (var i = 0; i < Root.Instance.SceneManager.AutoParamData.WorldMatrixCount; i++)
 				{
 #if!(XBOX || XBOX360)
-					boneMatrices[i] = XnaHelper.Convert(Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i]);
+					boneMatrices[i] =
+						XnaHelper.Convert(Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i]);
 #else
-					Matrix4 matrix = Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[ i ];
-					boneMatrices[ i ] = XnaHelper.Convert( matrix );
+					Axiom.Math.Matrix4 matrix = Root.Instance.SceneManager.AutoParamData.WorldMatrixArray[i];
+					boneMatrices[i] = XnaHelper.Convert( matrix  );
 #endif
 				}
-				skinnedEffect.SetBoneTransforms( boneMatrices );
+				skinnedEffect.SetBoneTransforms(boneMatrices);
 				effectToUse = skinnedEffect;
-
 			}
 			else
 			{
-				basicEffect.VertexColorEnabled = op.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Diffuse ) != null;
+				basicEffect.VertexColorEnabled =
+					op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Diffuse) != null;
+
+				basicEffect.TextureEnabled =
+					op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.TexCoords) != null;
+
 				effectToUse = basicEffect;
 			}
 
-			VertexElement ve = op.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			if ( ve != null ) //this operation has Normals
+			var ve = op.vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+			if (ve != null) //this operation has Normals
 			{
 				basicEffect.LightingEnabled = false; //turn off lighting
 			}
-			effectToUse.CurrentTechnique.Passes[ 0 ].Apply();
-			//XFG.DualTextureEffect dualTextureEffect;
+			effectToUse.CurrentTechnique.Passes[0].Apply();
+			//DualTextureEffect dualTextureEffect;
 
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
-			if ( op.vertexData.vertexCount == 0 )
+			if (op.vertexData.vertexCount == 0)
 			{
 				return;
 			}
 
 			// class base implementation first
-			base.Render( op );
+			base.Render(op);
 
 
 			/*---------------shaders generator part------*/
@@ -1489,69 +1641,65 @@ namespace Axiom.RenderSystems.Xna
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
-			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
+			var vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 			// set the vertex declaration and buffer binding 
 			//_device.VertexDeclaration = vertDecl.XnaVertexDecl;
-			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
+			_setVertexBufferBinding(op.vertexData.vertexBufferBinding);
 
-			XFG.PrimitiveType primType = 0;
-			switch ( op.operationType )
+			PrimitiveType primType = 0;
+			switch (op.operationType)
 			{
 				case OperationType.PointList:
-					primType = XFG.PrimitiveType.LineList; /* XNA 4.0 doesn't support PointList so using LineList instead */
+					primType = PrimitiveType.LineList; /* XNA 4.0 doesn't support PointList so using LineList instead */
 					primCount = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
 					break;
-
 				case OperationType.LineList:
-					primType = XFG.PrimitiveType.LineList;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 2;
+					primType = PrimitiveType.LineList;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) / 2;
 					break;
-
 				case OperationType.LineStrip:
-					primType = XFG.PrimitiveType.LineStrip;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 1;
+					primType = PrimitiveType.LineStrip;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 1;
 					break;
-
 				case OperationType.TriangleList:
-					primType = XFG.PrimitiveType.TriangleList;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 3;
+					primType = PrimitiveType.TriangleList;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) / 3;
 					break;
-
 				case OperationType.TriangleStrip:
-					primType = XFG.PrimitiveType.TriangleStrip;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
+					primType = PrimitiveType.TriangleStrip;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 2;
 					break;
-
 				case OperationType.TriangleFan:
-					throw new Exception( "XNA 4.0 doesn't support TriangleFan" );
+					throw new Exception("XNA 4.0 doesn't support TriangleFan");
 			} // switch(primType)
 
 			try
 			{
 				// are we gonna use indices?
-				if ( op.useIndices )
+				if (op.useIndices)
 				{
-					XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
+					var idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 					_device.Indices = idxBuffer.XnaIndexBuffer;
-					_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+					_device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount,
+												   op.indexData.indexStart, primCount);
 				}
 				else
 				{
 					// draw vertices without indices
-					_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+					_device.DrawPrimitives(primType, op.vertexData.vertexStart, primCount);
 				}
 			}
-			catch ( InvalidOperationException ioe )
+			catch (InvalidOperationException ioe)
 			{
-				LogManager.Instance.Write( "Failed to draw RenderOperation : ", LogManager.BuildExceptionString( ioe ) );
+				LogManager.Instance.Write("Failed to draw RenderOperation : ", LogManager.BuildExceptionString(ioe));
 			}
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
-			_device.SetVertexBuffer( null );
+			_device.SetVertexBuffer(null);
 			_device.Indices = null;
-			_device.Textures[ 0 ] = null;
+			_device.Textures[0] = null;
 
 #if AXIOM_FF_EMULATION
-			/*---------------shaders generator part------*/
+	/*---------------shaders generator part------*/
 			if ( needToUnmapVS )
 			{
 				UnbindGpuProgram( GpuProgramType.Vertex );
@@ -1577,20 +1725,22 @@ namespace Axiom.RenderSystems.Xna
 			_activeDriver = null;
 
 			// dispose of the device
-			if ( _device != null )
+			if (_device != null)
 			{
-				if ( !_device.IsDisposed )
+#if !SILVERLIGHT
+				if (!_device.IsDisposed)
 					_device.Dispose();
+#endif
 
 				_device = null;
 			}
 
-			if ( _gpuProgramMgr != null )
+			if (gpuProgramMgr != null)
 			{
-				if ( !_gpuProgramMgr.IsDisposed )
-					_gpuProgramMgr.Dispose();
+				if (!gpuProgramMgr.IsDisposed)
+					gpuProgramMgr.Dispose();
 
-				_gpuProgramMgr = null;
+				gpuProgramMgr = null;
 			}
 
 			if ( _hardwareBufferManager != null )
@@ -1601,9 +1751,9 @@ namespace Axiom.RenderSystems.Xna
 				_hardwareBufferManager = null;
 			}
 
-			if ( textureManager != null )
+			if (textureManager != null)
 			{
-				if ( !textureManager.IsDisposed )
+				if (!textureManager.IsDisposed)
 					textureManager.Dispose();
 
 				textureManager = null;
@@ -1611,7 +1761,7 @@ namespace Axiom.RenderSystems.Xna
 
 			base.Shutdown();
 
-			LogManager.Instance.Write( "[XNA] : " + Name + " shutdown." );
+			LogManager.Instance.Write("[XNA] : " + Name + " shutdown.");
 		}
 
 		#endregion
@@ -1640,7 +1790,7 @@ namespace Axiom.RenderSystems.Xna
 		/// plane must be in CAMERA (view) space.
 		/// </param>
 		/// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function transforms?</param>
-		public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
+		public override void ApplyObliqueDepthProjection(ref Matrix4 projMatrix, Plane plane, bool forGpuProgram)
 		{
 			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 			// Calculate the clip-space corner point opposite the clipping plane
@@ -1651,31 +1801,33 @@ namespace Axiom.RenderSystems.Xna
 			Vector4 q = matrix.inverse() * 
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
-			Vector4 q = new Vector4();
-			q.x = System.Math.Sign( plane.Normal.x ) / projMatrix.m00;
-			q.y = System.Math.Sign( plane.Normal.y ) / projMatrix.m11;
+			var q = new Vector4();
+			q.x = System.Math.Sign(plane.Normal.x) / projMatrix.m00;
+			q.y = System.Math.Sign(plane.Normal.y) / projMatrix.m11;
 			q.z = 1.0f;
 
 			// flip the next bit from Lengyel since we're right-handed
-			if ( forGpuProgram )
+			if (forGpuProgram)
 			{
-				q.w = ( 1.0f - projMatrix.m22 ) / projMatrix.m23;
+				q.w = (1.0f - projMatrix.m22) / projMatrix.m23;
 			}
 			else
 			{
-				q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
+				q.w = (1.0f + projMatrix.m22) / projMatrix.m23;
 			}
 
 			// Calculate the scaled plane vector
-			Vector4 clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
-			Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
+			var clipPlane4d =
+				new Vector4(plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D);
+
+			var c = clipPlane4d * (1.0f / (clipPlane4d.Dot(q)));
 
 			// Replace the third row of the projection matrix
 			projMatrix.m20 = c.x;
 			projMatrix.m21 = c.y;
 
 			// flip the next bit from Lengyel since we're right-handed
-			if ( forGpuProgram )
+			if (forGpuProgram)
 			{
 				projMatrix.m22 = c.z;
 			}
@@ -1697,25 +1849,25 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override void BeginFrame()
 		{
-			Debug.Assert( activeViewport != null, "BeingFrame cannot run without an active viewport." );
+			Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
 			// set initial render states if this is the first frame. we only want to do 
 			//	this once since renderstate changes are expensive
 
-			if ( _isFirstFrame )
+			if (_isFirstFrame)
 			{
 				// enable alpha blending and specular materials
 				var alphaBlend = new ManagedBlendState();
-				alphaBlend.Reset( XFG.BlendState.AlphaBlend );
+				alphaBlend.Reset(BlendState.AlphaBlend);
 				StateManager.BlendState = alphaBlend;
 				//_device.RenderState.SpecularEnable = true;
 				var depthRead = new ManagedDepthStencilState();
-				depthRead.Reset( XFG.DepthStencilState.DepthRead );
+				depthRead.Reset(DepthStencilState.DepthRead);
 				StateManager.DepthStencilState = depthRead;
 
 				var raster = new ManagedRasterizerState();
-				raster.Reset( XFG.RasterizerState.CullClockwise );
-				raster.FillMode = XFG.FillMode.Solid;
+				raster.Reset(RasterizerState.CullClockwise);
+				raster.FillMode = FillMode.Solid;
 				StateManager.RasterizerState = raster;
 
 				_isFirstFrame = false;
@@ -1724,7 +1876,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion
 
-		#region BindGpuProgram
+		#region BindGpuProgram       
 
 		/// <summary>
 		/// Binds a given GpuProgram (but not the parameters). 
@@ -1733,21 +1885,53 @@ namespace Axiom.RenderSystems.Xna
 		/// Only one GpuProgram of each type can be bound at once, binding another
 		/// one will simply replace the existing one.
 		/// </remarks>
-		public override void BindGpuProgram( GpuProgram program )
+		public override void BindGpuProgram(GpuProgram program)
 		{
-			switch ( program.Type )
+			if (program == null)
+				return;
+			// TODO: Set shaders
+			switch (program.Type)
 			{
 				case GpuProgramType.Vertex:
-
-					if ( program != null && program.IsSkeletalAnimationIncluded )
+					if (program.IsSkeletalAnimationIncluded)
 					{
 						useSkinnedEffect = true;
 						//LogManager.Instance.Write("Using Skinning Effect.");
+						var fx1 = ((XnaVertexProgram)program).Effect as SkinnedEffect;
+						if (fx1 == null)
+							LogManager.Instance.Write(LogMessageLevel.Normal, false, "Can't get a SkinnedEffect from XnaVertexProgram");
+						else
+							skinnedEffect = fx1;
 					}
-					else
+					else                       
+					{
 						useSkinnedEffect = false;
+						var fx2 = ((XnaVertexProgram)program).Effect as BasicEffect;
+						if (fx2 == null)
+							LogManager.Instance.Write(LogMessageLevel.Normal, false, "Can't get a BasicEffect from XnaVertexProgram");
+						else
+							basicEffect = fx2;
+					}
+#if SILVERLIGHT
+					_device.SetPixelShader(((XnaVertexProgram)program).Effect.PixelShader());
+#else
+#endif
 					break;
+				case GpuProgramType.Fragment:
+					var fx3 = ((XnaFragmentProgram)program).Effect as BasicEffect;
+					if (fx3 == null)
+						LogManager.Instance.Write(LogMessageLevel.Normal, false, "Can't get a BasicEffect from XnaFragmentProgram");
+					else
+						basicEffect = fx3;
+#if SILVERLIGHT
+					_device.SetVertexShader(((XnaFragmentProgram)program).Effect.VertexShader());
+#else
+#endif
+					break;
+				case GpuProgramType.Geometry:
+					throw new AxiomException("Geometry shaders not supported with XNA");
 			}
+
 			/*
 			switch ( program.Type )
 			{
@@ -1762,6 +1946,7 @@ namespace Axiom.RenderSystems.Xna
 					break;
 			}
 			 */
+			base.BindGpuProgram(program);
 		}
 
 		#endregion
@@ -1771,64 +1956,51 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Bind Gpu program parameters.
 		/// </summary>
-		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
+		public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms,
+													   GpuProgramParameters.GpuParamVariability mask)
 		{
-			//switch ( type )
-			//{
-			//    case GpuProgramType.Vertex:
-			//        if ( parms.HasIntConstants )
-			//        {
-			//            for ( int index = 0; index < parms.IntConstantCount; index++ )
-			//            {
-			//                GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
+			/* TODO: Find alternative to SetVertexShaderConstant *
+			switch ( type )
+			{
+				case GpuProgramType.Vertex:
+					if ( parms.HasIntConstants )
+					{
+						for ( int index = 0; index < parms.IntConstantCount; index++ )
+						{
+							var entry = parms.GetIntConstant( index );
+							_device.SetVertexShaderConstant( index, entry );
+						}
+					}
+					if ( parms.HasFloatConstants )
+					{
+						for ( int index = 0; index < parms.FloatConstantCount; index++ )
+						{
+							var entry = parms.GetFloatConstant(index);
+							_device.SetVertexShaderConstant( index, entry );
+						}
+					}
+					break;
+				case GpuProgramType.Fragment:
+					if ( parms.HasIntConstants )
+					{
+						for ( int index = 0; index < parms.IntConstantCount; index++ )
+						{
+							var entry = parms.GetIntConstant(index);
+							_device.SetPixelShaderConstant( index, entry );
+						}
+					}
 
-			//                if ( entry.isSet )
-			//                {
-			//                    _device.SetVertexShaderConstant( index, entry.val );
-			//                }
-			//            }
-			//        }
-			//        if ( parms.HasFloatConstants )
-			//        {
-			//            for ( int index = 0; index < parms.FloatConstantCount; index++ )
-			//            {
-			//                GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-			//                if ( entry.isSet )
-			//                {
-			//                    _device.SetVertexShaderConstant( index, entry.val );
-			//                }
-			//            }
-			//        }
-			//        break;
-			//    case GpuProgramType.Fragment:
-			//        if ( parms.HasIntConstants )
-			//        {
-			//            for ( int index = 0; index < parms.IntConstantCount; index++ )
-			//            {
-			//                GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
-
-			//                if ( entry.isSet )
-			//                {
-			//                    _device.SetPixelShaderConstant( index, entry.val );
-			//                }
-			//            }
-			//        }
-
-			//        if ( parms.HasFloatConstants )
-			//        {
-			//            for ( int index = 0; index < parms.FloatConstantCount; index++ )
-			//            {
-			//                GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-			//                if ( entry.isSet )
-			//                {
-			//                    _device.SetPixelShaderConstant( index, entry.val );
-			//                }
-			//            }
-			//        }
-			//        break;
-			//}
+					if ( parms.HasFloatConstants )
+					{
+						for ( int index = 0; index < parms.FloatConstantCount; index++ )
+						{
+							var entry = parms.GetFloatConstant(index);
+							_device.SetPixelShaderConstant( index, entry );
+						}
+					}
+					break;
+			}
+			/**/
 		}
 
 		#endregion
@@ -1839,7 +2011,7 @@ namespace Axiom.RenderSystems.Xna
 		/// Only binds Gpu program parameters used for passes that have more than one iteration rendering
 		/// </summary>
 		/// <param name="gptype"></param>
-		public override void BindGpuProgramPassIterationParameters( GpuProgramType gptype )
+		public override void BindGpuProgramPassIterationParameters(GpuProgramType gptype)
 		{
 			throw new NotImplementedException();
 		}
@@ -1858,27 +2030,28 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="color">The color to clear the color buffer with, if enabled.</param>
 		/// <param name="depth">The value to initialize the depth buffer with, if enabled.</param>
 		/// <param name="stencil">The value to initialize the stencil buffer with, if enabled.</param>
-		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
+		public override void ClearFrameBuffer(FrameBufferType buffers, ColorEx color, Real depth, ushort stencil)
 		{
-			XFG.ClearOptions flags = 0; //ClearFlags 
+			ClearOptions flags = 0; //ClearFlags 
 
-			if ( ( buffers & FrameBufferType.Color ) > 0 )
+			if ((buffers & FrameBufferType.Color) > 0)
 			{
-				flags |= XFG.ClearOptions.Target;
+				flags |= ClearOptions.Target;
 			}
-			if ( ( buffers & FrameBufferType.Depth ) > 0 )
+			if ((buffers & FrameBufferType.Depth) > 0)
 			{
-				flags |= XFG.ClearOptions.DepthBuffer;
+				flags |= ClearOptions.DepthBuffer;
 			}
 			// Only try to clear the stencil buffer if supported
-			if ( ( buffers & FrameBufferType.Stencil ) > 0 && Capabilities.HasCapability( Graphics.Capabilities.StencilBuffer ) )
+			if ((buffers & FrameBufferType.Stencil) > 0
+				 && Capabilities.HasCapability(Graphics.Capabilities.StencilBuffer))
 			{
-				flags |= XFG.ClearOptions.Stencil;
+				flags |= ClearOptions.Stencil;
 			}
-			XNA.Color col = XnaHelper.Convert( color );
+			var col = XnaHelper.Convert(color);
 
 			// clear the device using the specified params
-			_device.Clear( flags, col, depth, stencil );
+			_device.Clear(flags, col, depth, stencil);
 		}
 
 		#endregion
@@ -1891,20 +2064,20 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="color"></param>
 		/// <returns></returns>
-		public override int ConvertColor( ColorEx color )
+		public override int ConvertColor(ColorEx color)
 		{
-			return color.ToARGB();
+			return color.ToABGR();
 		}
 
-		//public override ColorEx ConvertColor( int color )
-		//{
-		//    ColorEx colorEx;
-		//    colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
-		//    colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
-		//    colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
-		//    colorEx.b = (float)( ( color ) % 256 ) / 255;
-		//    return colorEx;
-		//}
+		public ColorEx ConvertColor(int color)
+		{
+			ColorEx colorEx;
+			colorEx.a = (float)((color >> 24) % 256) / 255;
+			colorEx.b = (float)((color >> 16) % 256) / 255;
+			colorEx.g = (float)((color >> 8) % 256) / 255;
+			colorEx.r = (float)((color) % 256) / 255;
+			return colorEx;
+		}
 
 		#endregion
 
@@ -1930,67 +2103,80 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="miscParams">
 		/// A collection of addition rendersystem specific options.
 		/// </param>
-		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
+		public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen,
+														 NamedParameterList miscParams)
 		{
 			// Check we're not creating a secondary window when the primary
 			// was fullscreen
-			if ( _primaryWindow != null && _primaryWindow.IsFullScreen )
-				throw new Exception( "Cannot create secondary windows when the primary is full screen." );
+			if (_primaryWindow != null && _primaryWindow.IsFullScreen)
+				throw new Exception("Cannot create secondary windows when the primary is full screen.");
 
-			if ( _primaryWindow != null && isFullScreen )
-				throw new ArgumentException( "Cannot create full screen secondary windows." );
+			if (_primaryWindow != null && isFullScreen)
+				throw new ArgumentException("Cannot create full screen secondary windows.");
 
 			// Log a message
-			System.Text.StringBuilder strParams = new System.Text.StringBuilder();
-			if ( miscParams != null )
+			var strParams = new StringBuilder();
+			if (miscParams != null)
 			{
-				foreach ( KeyValuePair<string, object> entry in miscParams )
+				foreach (var entry in miscParams)
 				{
-					strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
+					strParams.AppendFormat("{0} = {1}; ", entry.Key, entry.Value);
 				}
 			}
-
-			LogManager.Instance.Write( "[XNA] : Creating RenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
-									   name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
+			LogManager.Instance.Write("[XNA] : Creating RenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
+									   name, width, height, isFullScreen ? "fullscreen" : "windowed",
+									   strParams.ToString());
 
 			// Make sure we don't already have a render target of the 
 			// same name as the one supplied
-			if ( renderTargets.ContainsKey( name ) )
+			if (renderTargets.ContainsKey(name))
 			{
-				throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +
-													"You cannot create a new window with this name.", name ) );
+				throw new Exception(String.Format("A render target of the same name '{0}' already exists." +
+													"You cannot create a new window with this name.", name));
 			}
 
-			var window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? _device : null );
+			RenderWindow window = new XnaRenderWindow(_activeDriver, _primaryWindow != null ? _device : null);
 
 			// create the window
-			window.Create( name, width, height, isFullScreen, miscParams );
+			window.Create(name, width, height, isFullScreen, miscParams);
 
 			// add the new render target
-			AttachRenderTarget( window );
-
+			AttachRenderTarget(window);
 			// If this is the first window, get the D3D device and create the texture manager
-			if ( _primaryWindow == null )
+			if (_primaryWindow == null)
 			{
 				_primaryWindow = (XnaRenderWindow)window;
-				_device = (XFG.GraphicsDevice)window[ "XNADEVICE" ];
+				_device = (GraphicsDevice)window["XNADEVICE"];
 
-				basicEffect = new XFG.BasicEffect( _device );
-				skinnedEffect = new XFG.SkinnedEffect( _device );
+				basicEffect = new BasicEffect(_device);
+				skinnedEffect = new SkinnedEffect(_device);
 				// Create the texture manager for use by others
-				textureManager = new XnaTextureManager( _device );
+				textureManager = new XnaTextureManager(_device);
 				// Also create hardware buffer manager
 				_hardwareBufferManager = new XnaHardwareBufferManager( _device );
 
 				// Create the GPU program manager
-				_gpuProgramMgr = new XnaGpuProgramManager( _device );
+				gpuProgramMgr = new XnaGpuProgramManager(_device);
+				// create & register HLSL factory
+				//gpuProgramMgr.PushSyntaxCode("hlsl"));
+
+				realCapabilities = new RenderSystemCapabilities();
+				// use real capabilities if custom capabilities are not available
+				if (!useCustomCapabilities)
+				{
+					currentCapabilities = realCapabilities;
+				}
+
+				FireEvent("RenderSystemCapabilitiesCreated");
+
+				InitializeFromRenderSystemCapabilities(currentCapabilities, window);
 
 				// Initialize the capabilities structures
-                _checkHardwareCapabilities( window );
+				_checkHardwareCapabilities( _primaryWindow );
 			}
 			else
 			{
-				_secondaryWindows.Add( (XnaRenderWindow)window );
+				_secondaryWindows.Add((XnaRenderWindow)window);
 			}
 
 			return window;
@@ -2007,7 +2193,7 @@ namespace Axiom.RenderSystems.Xna
 		/// Surfaces can be bound and unbound at will. This fails if Capabilities.MultiRenderTargetsCount is smaller than 2.
 		/// </Remarks>
 		/// <returns></returns>
-		public override MultiRenderTarget CreateMultiRenderTarget( string name )
+		public override MultiRenderTarget CreateMultiRenderTarget(string name)
 		{
 			throw new NotImplementedException();
 		}
@@ -2024,7 +2210,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns>An API specific implementation of an occlusion query.</returns>
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
-			return new XnaHardwareOcclusionQuery( _device );
+			return new XnaHardwareOcclusionQuery(_device);
 		}
 
 		#endregion
@@ -2050,57 +2236,62 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="windowTitle">Text to display on the window caption if not fullscreen.</param>
 		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
 		/// <remarks>All subclasses should call this method from within thier own intialize methods.</remarks>
-		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
+		public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle)
 		{
-			LogManager.Instance.Write( "[XNA] : Subsystem Initializing" );
+			LogManager.Instance.Write("[XNA] : Subsystem Initializing");
 
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || SILVERLIGHT)
 			WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 #endif
-			_activeDriver = XnaHelper.GetDriverInfo()[ ConfigOptions[ "Rendering Device" ].Value ];
-			if ( _activeDriver == null )
+			_activeDriver = XnaHelper.GetDriverInfo()[ConfigOptions["Rendering Device"].Value];
+			if (_activeDriver == null)
 			{
-				throw new ArgumentException( "Problems finding requested Xna driver!" );
+				throw new ArgumentException("Problems finding requested Xna driver!");
 			}
 
 			RenderWindow renderWindow = null;
 
 			// register the HLSL program manager
-			HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
+			HighLevelGpuProgramManager.Instance.AddFactory(new HLSLProgramFactory());
 
-			if ( autoCreateWindow )
+			if (autoCreateWindow)
 			{
-				int width = 800;
-				int height = 600;
-				int bpp = 32;
-				bool fullScreen = false;
+#if SILVERLIGHT
+				var width = (int)XnaRenderWindow.DrawingSurface.ActualWidth;
+				var height = (int)XnaRenderWindow.DrawingSurface.ActualHeight;
+#else
+				var width = 800;
+				var height = 600;
+#endif
+				var bpp = 32;
+				var fullScreen = false;
 
-				ConfigOption optVM = ConfigOptions[ "Video Mode" ];
-				string vm = optVM.Value;
-				width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
-				height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
-				bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
+				var optVM = ConfigOptions["Video Mode"];
+				var vm = optVM.Value;
+				width = int.Parse(vm.Substring(0, vm.IndexOf("x")));
+				height = int.Parse(vm.Substring(vm.IndexOf("x") + 1, vm.IndexOf("@") - (vm.IndexOf("x") + 1)));
+				bpp = int.Parse(vm.Substring(vm.IndexOf("@") + 1, vm.IndexOf("-") - (vm.IndexOf("@") + 1)));
 
-#if !(XBOX || XBOX360 || SILVERLIGHT ) //
-				fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+#if !(XBOX || XBOX360)
+				fullScreen = (ConfigOptions["Full Screen"].Value == "Yes");
 #endif
 
-				NamedParameterList miscParams = new NamedParameterList();
-				miscParams.Add( "title", windowTitle );
-				miscParams.Add( "colorDepth", bpp );
+				var miscParams = new NamedParameterList();
+				miscParams.Add("title", windowTitle);
+				miscParams.Add("colorDepth", bpp);
 				//miscParams.Add( "FSAA", this._fsaaType );
-				miscParams.Add( "FSAAQuality", _fsaaQuality );
-				miscParams.Add( "vsync", _vSync );
-				miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
+				miscParams.Add("FSAAQuality", _fsaaQuality);
+				miscParams.Add("vsync", _vSync);
+				miscParams.Add("useNVPerfHUD", _useNVPerfHUD);
 
 				// create the render window
-				renderWindow = CreateRenderWindow( "Main Window", width, height, fullScreen, miscParams );
+				renderWindow = CreateRenderWindow("Main Window", width, height, fullScreen, miscParams);
 			}
 
 			StateManager = new StateManagement();
 			new XnaMaterialManager();
 
-			LogManager.Instance.Write( "[XNA] : Subsystem Initialized successfully." );
+			LogManager.Instance.Write("[XNA] : Subsystem Initialized successfully.");
 			return renderWindow;
 		}
 
@@ -2146,32 +2337,33 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="far">Far clipping plane distance.</param>
 		/// <param name="dest"></param>
 		/// <param name="forGpuPrograms"></param>
-		public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms )
+		public override void MakeOrthoMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
+											  bool forGpuPrograms)
 		{
-			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
-			float tanThetaY = Utility.Tan( thetaY );
+			float thetaY = Utility.DegreesToRadians(fov / 2.0f);
+			float tanThetaY = Utility.Tan(thetaY);
 			float tanThetaX = tanThetaY * aspectRatio;
 
 			float halfW = tanThetaX * near;
 			float halfH = tanThetaY * near;
 
-			float w = 1.0f / ( halfW );
-			float h = 1.0f / ( halfH );
+			var w = 1.0f / (halfW);
+			var h = 1.0f / (halfH);
 			float q = 0;
 
-			if ( far != 0 )
-				q = 1.0f / ( far - near );
+			if (far != 0)
+				q = 1.0f / (far - near);
 
 			dest = Matrix4.Zero;
 			dest.m00 = w;
 			dest.m11 = h;
 			dest.m22 = q;
-			dest.m23 = -near / ( far - near );
+			dest.m23 = -near / (far - near);
 			dest.m33 = 1;
 
-			if ( forGpuPrograms )
+			if (forGpuPrograms)
 				dest.m22 = -dest.m22;
-		}
+			}
 
 		#endregion
 
@@ -2188,20 +2380,20 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="matrix"></param>
 		/// <param name="dest"></param>
 		/// <param name="forGpuProgram"></param>
-		public override void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram )
+		public override void ConvertProjectionMatrix(Matrix4 matrix, out Matrix4 dest, bool forGpuProgram)
 		{
-			dest = new Matrix4( matrix.m00, matrix.m01, matrix.m02, matrix.m03,
+			dest = new Matrix4(matrix.m00, matrix.m01, matrix.m02, matrix.m03,
 								matrix.m10, matrix.m11, matrix.m12, matrix.m13,
 								matrix.m20, matrix.m21, matrix.m22, matrix.m23,
-								matrix.m30, matrix.m31, matrix.m32, matrix.m33 );
+								matrix.m30, matrix.m31, matrix.m32, matrix.m33);
 
 			// Convert depth range from [-1,+1] to [0,1]
-			dest.m20 = ( dest.m20 + dest.m30 ) / 2.0f;
-			dest.m21 = ( dest.m21 + dest.m31 ) / 2.0f;
-			dest.m22 = ( dest.m22 + dest.m32 ) / 2.0f;
-			dest.m23 = ( dest.m23 + dest.m33 ) / 2.0f;
+			dest.m20 = (dest.m20 + dest.m30) / 2.0f;
+			dest.m21 = (dest.m21 + dest.m31) / 2.0f;
+			dest.m22 = (dest.m22 + dest.m32) / 2.0f;
+			dest.m23 = (dest.m23 + dest.m33) / 2.0f;
 
-			if ( !forGpuProgram )
+			if (!forGpuProgram)
 			{
 				// Convert right-handed to left-handed
 				dest.m02 = -dest.m02;
@@ -2229,22 +2421,22 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="far">Far clipping plane distance.</param>
 		/// <param name="dest"></param>
 		/// <param name="forGpuProgram"></param>
-		public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
+		public override void MakeProjectionMatrix(Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram)
 		{
-			Real theta = fov * 0.5;
-			float h = 1 / Utility.Tan( theta );
+			float theta = Utility.DegreesToRadians((float)fov * 0.5f);
+			float h = 1 / Utility.Tan(theta);
 			float w = h / aspectRatio;
 			float q = 0;
 			float qn = 0;
 
-			if ( far == 0 )
+			if (far == 0)
 			{
 				q = 1 - Frustum.InfiniteFarPlaneAdjust;
-				qn = near * ( Frustum.InfiniteFarPlaneAdjust - 1 );
+				qn = near * (Frustum.InfiniteFarPlaneAdjust - 1);
 			}
 			else
 			{
-				q = far / ( far - near );
+				q = far / (far - near);
 				qn = -q * near;
 			}
 
@@ -2253,7 +2445,7 @@ namespace Axiom.RenderSystems.Xna
 			dest.m00 = w;
 			dest.m11 = h;
 
-			if ( forGpuProgram )
+			if (forGpuProgram)
 			{
 				dest.m22 = -q;
 				dest.m32 = -1.0f;
@@ -2275,13 +2467,13 @@ namespace Axiom.RenderSystems.Xna
 		/// Viewport coordinates are in camera coordinate frame, i.e. camera is 
 		/// at the origin.
 		/// </remarks>
-		public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram )
+		public override void MakeProjectionMatrix(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram)
 		{
 			// Correct position for off-axis projection matrix
-			if ( !forGpuProgram )
+			if (!forGpuProgram)
 			{
-				Real offsetX = left + right;
-				Real offsetY = top + bottom;
+				var offsetX = left + right;
+				var offsetY = top + bottom;
 
 				left -= offsetX;
 				right -= offsetX;
@@ -2289,26 +2481,25 @@ namespace Axiom.RenderSystems.Xna
 				bottom -= offsetY;
 			}
 
-			Real width = right - left;
-			Real height = top - bottom;
+			var width = right - left;
+			var height = top - bottom;
 			Real q, qn;
-			if ( farPlane == 0 )
+			if (farPlane == 0)
 			{
 				q = 1 - Frustum.InfiniteFarPlaneAdjust;
-				qn = nearPlane * ( Frustum.InfiniteFarPlaneAdjust - 1 );
+				qn = nearPlane * (Frustum.InfiniteFarPlaneAdjust - 1);
 			}
 			else
 			{
-				q = farPlane / ( farPlane - nearPlane );
+				q = farPlane / (farPlane - nearPlane);
 				qn = -q * nearPlane;
 			}
-
 			dest = Matrix4.Zero;
 			dest.m00 = 2 * nearPlane / width;
-			dest.m02 = ( right + left ) / width;
+			dest.m02 = (right + left) / width;
 			dest.m11 = 2 * nearPlane / height;
-			dest.m12 = ( top + bottom ) / height;
-			if ( forGpuProgram )
+			dest.m12 = (top + bottom) / height;
+			if (forGpuProgram)
 			{
 				dest.m22 = -q;
 				dest.m32 = -1.0f;
@@ -2331,19 +2522,19 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="func">The comparison function which must pass for a pixel to be written.</param>
 		/// <param name="value">The value to compare each pixels alpha value to (0-255)</param>
 		/// <param name="alphaToCoverage">Whether to enable alpha to coverage, if supported</param>
-		public override void SetAlphaRejectSettings( CompareFunction func, byte value, bool alphaToCoverage )
+		public override void SetAlphaRejectSettings(CompareFunction func, byte value, bool alphaToCoverage)
 		{
-			bool a2c = false;
-			if ( func != Axiom.Graphics.CompareFunction.AlwaysPass )
+			var a2c = false;
+			if (func != CompareFunction.AlwaysPass)
 			{
 				a2c = alphaToCoverage;
 			}
 
-			StateManager.BlendState.AlphaBlendFunction = XFG.BlendFunction.Add /* XnaHelper.Convert( func )*/;
-			//StateManager.BlendState.ReferenceAlpha = value;
+			StateManager.BlendState.AlphaBlendFunction = BlendFunction.Add /* XnaHelper.Convert( func )*/;
+			//StateManager.BlendState.ReferenceAlpha = val;
 
 			// Alpha to coverage
-			if ( lasta2c != a2c && this.Capabilities.HasCapability( Graphics.Capabilities.AlphaToCoverage ) )
+			if (lasta2c != a2c && Capabilities.HasCapability(Graphics.Capabilities.AlphaToCoverage))
 			{
 				lasta2c = a2c;
 			}
@@ -2362,7 +2553,7 @@ namespace Axiom.RenderSystems.Xna
 		/// attaching, and deleting it. Here's where API-specific magic happens.
 		/// Don't call this directly unless you know what you're doing.
 		/// </remarks>
-		public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
+		public override DepthBuffer CreateDepthBufferFor(Graphics.RenderTarget renderTarget)
 		{
 			throw new NotImplementedException();
 		}
@@ -2382,10 +2573,10 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="name">the name of the option to alter</param>
 		/// <param name="value">the value to set the option to</param>
-		public override void SetConfigOption( string name, string value )
+		public override void SetConfigOption(string name, string value)
 		{
-			if ( ConfigOptions.ContainsKey( name ) )
-				ConfigOptions[ name ].Value = value;
+			if (ConfigOptions.ContainsKey(name))
+				ConfigOptions[name].Value = value;
 		}
 
 		#endregion
@@ -2405,21 +2596,21 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="green">Writing enabled for green channel.</param>
 		/// <param name="blue">Writing enabled for blue channel.</param>
 		/// <param name="alpha">Writing enabled for alpha channel.</param>
-		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
+		public override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha)
 		{
-			XFG.ColorWriteChannels val = 0;
+			ColorWriteChannels val = 0;
 
-			if ( red )
-				val |= XFG.ColorWriteChannels.Red;
+			if (red)
+				val |= ColorWriteChannels.Red;
 
-			if ( green )
-				val |= XFG.ColorWriteChannels.Green;
+			if (green)
+				val |= ColorWriteChannels.Green;
 
-			if ( blue )
-				val |= XFG.ColorWriteChannels.Blue;
+			if (blue)
+				val |= ColorWriteChannels.Blue;
 
-			if ( alpha )
-				val |= XFG.ColorWriteChannels.Alpha;
+			if (alpha)
+				val |= ColorWriteChannels.Alpha;
 
 			StateManager.BlendState.ColorWriteChannels = val;
 		}
@@ -2447,11 +2638,11 @@ namespace Axiom.RenderSystems.Xna
 		/// If false, the depth buffer is left unchanged even if a new pixel is written.
 		/// </param>
 		/// <param name="depthFunction">Sets the function required for the depth test.</param>
-		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
+		public override void SetDepthBufferParams(bool depthTest, bool depthWrite, CompareFunction depthFunction)
 		{
 			StateManager.DepthStencilState.DepthBufferEnable = depthTest;
 			StateManager.DepthStencilState.DepthBufferWriteEnable = depthWrite;
-			StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert( depthFunction );
+			StateManager.DepthStencilState.DepthBufferFunction = XnaHelper.Convert(depthFunction);
 		}
 
 		#endregion
@@ -2461,26 +2652,27 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Sets the fog with the given params.
 		/// </summary>
-		public override void SetFog( FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd )
+        public override void SetFog(Graphics.FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd)
 		{
-			basicEffect.FogEnabled = mode != FogMode.None;
-			basicEffect.FogColor = XnaHelper.Convert( color ).ToVector3();
+            basicEffect.FogEnabled = mode != Graphics.FogMode.None;
+			basicEffect.FogColor = XnaHelper.Convert(color).ToVector3();
 			basicEffect.FogStart = linearStart;
 			basicEffect.FogEnd = linearEnd;
 
-			skinnedEffect.FogEnabled = mode != FogMode.None;
-			skinnedEffect.FogColor = XnaHelper.Convert( color ).ToVector3();
+            skinnedEffect.FogEnabled = mode != Graphics.FogMode.None;
+			skinnedEffect.FogColor = XnaHelper.Convert(color).ToVector3();
 			skinnedEffect.FogStart = linearStart;
 			skinnedEffect.FogEnd = linearEnd;
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.FogColor = color;
 			_ffProgramParameters.FogDensity = density;
-			_ffProgramParameters.FogEnd = end;
-			_ffProgramParameters.FogStart = start;
+			_ffProgramParameters.FogEnd = linearEnd;
+			_ffProgramParameters.FogStart = linearStart;
 			_ffProgramParameters.FogMode = mode;
 #endif
 
 			#region fog fixed function implementation
+
 			// disable fog if set to none
 			/*if ( mode == Axiom.Graphics.FogMode.None )
 			{
@@ -2501,6 +2693,7 @@ namespace Axiom.RenderSystems.Xna
 				_device.RenderState.FogDensity= density;
 				_device.RenderState.RangeFogEnable= true; 
 			}*/
+
 			#endregion
 		}
 
@@ -2518,14 +2711,20 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
 		/// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
 		/// <param name="op">The blend operation mode for combining pixels</param>
-		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op )
+		public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest, SceneBlendOperation op)
 		{
-			StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert( src );
-			StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert( dest );
+			StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert(src);
+			StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert(dest);
+			StateManager.BlendState.AlphaBlendFunction = XnaHelper.Convert(op);
+			/**/
 			StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert( src );
 			StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert( dest );
-
+			/**/
+			StateManager.BlendState.ColorSourceBlend = StateManager.BlendState.AlphaSourceBlend;
+			StateManager.BlendState.ColorDestinationBlend = StateManager.BlendState.AlphaDestinationBlend;
+			/**/
 			//TODO use SceneBlendOperation
+			StateManager.BlendState.ColorBlendFunction = StateManager.BlendState.AlphaBlendFunction;
 		}
 
 		#endregion
@@ -2545,15 +2744,17 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
 		/// <param name="op">The blend operation mode for combining pixels</param>
 		/// <param name="alphaOp">The blend operation mode for combining pixel alpha values</param>
-		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha,
-			SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp )
+		public override void SetSeparateSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+													   SceneBlendFactor sourceFactorAlpha,
+													   SceneBlendFactor destFactorAlpha, SceneBlendOperation op,
+													   SceneBlendOperation alphaOp)
 		{
-			StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert( sourceFactor );
-			StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert( destFactor );
-			StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert( sourceFactorAlpha );
-			StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert( destFactorAlpha );
-
-			//TODO
+			StateManager.BlendState.ColorSourceBlend = XnaHelper.Convert(sourceFactor);
+			StateManager.BlendState.ColorDestinationBlend = XnaHelper.Convert(destFactor);
+			StateManager.BlendState.AlphaSourceBlend = XnaHelper.Convert(sourceFactorAlpha);
+			StateManager.BlendState.AlphaDestinationBlend = XnaHelper.Convert(destFactorAlpha);
+			StateManager.BlendState.ColorBlendFunction = XnaHelper.Convert(op);
+			StateManager.BlendState.AlphaBlendFunction = XnaHelper.Convert(alphaOp);
 		}
 
 		#endregion
@@ -2575,17 +2776,17 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="top">Top corner (in pixels).</param>
 		/// <param name="right">Right corner (in pixels).</param>
 		/// <param name="bottom">Bottom corner (in pixels).</param>
-		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
+		public override void SetScissorTest(bool enable, int left, int top, int right, int bottom)
 		{
-			//if ( enable )
-			//{
-			//    _device.ScissorRectangle = new XNA.Rectangle( left, top, right - left, bottom - top );
-			//    _device.RenderState.ScissorTestEnable = true;
-			//}
-			//else
-			//{
-			//    _device.RenderState.ScissorTestEnable = false;
-			//}
+			if (enable)
+			{
+				_device.ScissorRectangle = new Rectangle(left, top, right - left, bottom - top);
+				StateManager.RasterizerState.ScissorTestEnable = true;
+			}
+			else
+			{
+				StateManager.RasterizerState.ScissorTestEnable = false;
+			}
 		}
 
 		#endregion
@@ -2635,24 +2836,25 @@ namespace Axiom.RenderSystems.Xna
 		/// (you'll have to turn off culling) then these parameters will apply for front faces, 
 		/// and the inverse of them will happen for back faces (keep remains the same).
 		/// </param>
-		public override void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp,
-			StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation )
+		public override void SetStencilBufferParams(CompareFunction function, int refValue, int mask,
+													 StencilOperation stencilFailOp, StencilOperation depthFailOp,
+													 StencilOperation passOp, bool twoSidedOperation)
 		{
 			bool flip;
 			// 2 sided operation?
-			if ( twoSidedOperation )
+			if (twoSidedOperation)
 			{
-				if ( !Capabilities.HasCapability( Graphics.Capabilities.TwoSidedStencil ) )
-				{
-					throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
-				}
+				//if ( !HardwareCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
+				//{
+				//    throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
+				//}
 				StateManager.DepthStencilState.TwoSidedStencilMode = true;
-				flip = ( invertVertexWinding && activeRenderTarget.RequiresTextureFlipping ) ||
-						( !invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping );
+				flip = (invertVertexWinding && activeRenderTarget.RequiresTextureFlipping) ||
+					   (!invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping);
 
-				StateManager.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, !flip );
-				StateManager.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, !flip );
-				StateManager.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, !flip );
+				StateManager.DepthStencilState.StencilFail = XnaHelper.Convert(stencilFailOp, !flip);
+				StateManager.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp, !flip);
+				StateManager.DepthStencilState.StencilPass = XnaHelper.Convert(passOp, !flip);
 			}
 			else
 			{
@@ -2661,13 +2863,13 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// configure standard version of the stencil operations
-			StateManager.DepthStencilState.StencilFunction = XnaHelper.Convert( function );
+			StateManager.DepthStencilState.StencilFunction = XnaHelper.Convert(function);
 			StateManager.DepthStencilState.ReferenceStencil = refValue;
 			StateManager.DepthStencilState.StencilMask = mask;
-			StateManager.DepthStencilState.StencilFail = XnaHelper.Convert( stencilFailOp, flip );
-			StateManager.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp, flip );
-			StateManager.DepthStencilState.StencilPass = XnaHelper.Convert( passOp, flip );
-			StateManager.BlendState.ColorWriteChannels = XFG.ColorWriteChannels.None;
+			StateManager.DepthStencilState.StencilFail = XnaHelper.Convert(stencilFailOp, flip);
+			StateManager.DepthStencilState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp, flip);
+			StateManager.DepthStencilState.StencilPass = XnaHelper.Convert(passOp, flip);
+			StateManager.BlendState.ColorWriteChannels = ColorWriteChannels.None;
 		}
 
 		#endregion
@@ -2719,8 +2921,63 @@ namespace Axiom.RenderSystems.Xna
 		/// taken from shininess) and TVC_EMISSIVE. TVC_NONE means that there will be no material property
 		/// tracking the vertex colors.
 		/// </param>
-		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking )
+		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive,
+											   Real shininess, TrackVertexColor tracking)
 		{
+			/*/
+			//basicEffect.Alpha;
+			//basicEffect.AmbientLightColor;
+			//basicEffect.DiffuseColor;
+			basicEffect.DirectionalLight0;
+			basicEffect.DirectionalLight1;
+			basicEffect.DirectionalLight2;
+			//basicEffect.EmissiveColor;
+			basicEffect.EnableDefaultLighting();
+			//basicEffect.FogColor;
+			//basicEffect.FogEnabled;
+			//basicEffect.FogEnd;
+			//basicEffect.FogStart;
+			//basicEffect.LightingEnabled;
+			basicEffect.PreferPerPixelLighting;
+			//basicEffect.Projection;
+			//basicEffect.SpecularColor;
+			//basicEffect.SpecularPower;
+			//basicEffect.Texture;
+			//basicEffect.TextureEnabled;
+			//basicEffect.VertexColorEnabled;
+			//basicEffect.View;
+			//basicEffect.World;
+			/**/
+
+			//basicEffect.EnableDefaultLighting();
+			//basicEffect.PreferPerPixelLighting = true;
+
+			if (ambient == ColorEx.White &&
+				diffuse == ColorEx.Black &&
+				emissive == ColorEx.Black &&
+				specular == ColorEx.Black &&
+				shininess == 0
+				)
+			{
+				//_fixedFunctionState.MaterialEnabled = false;
+				basicEffect.AmbientLightColor = new Color(0, 1, 1, 1).ToVector3();
+				basicEffect.DiffuseColor = Color.White.ToVector3();
+			}
+			else
+			{
+				//_fixedFunctionState.MaterialEnabled = true;
+				basicEffect.AmbientLightColor = XnaHelper.Convert( ambient ).ToVector3();
+				basicEffect.DiffuseColor = XnaHelper.Convert( diffuse ).ToVector3();
+			}
+			basicEffect.SpecularColor = XnaHelper.Convert(specular).ToVector3();
+			basicEffect.EmissiveColor = XnaHelper.Convert(emissive).ToVector3();
+			basicEffect.SpecularPower = shininess;
+			skinnedEffect.AmbientLightColor = basicEffect.AmbientLightColor;
+			skinnedEffect.DiffuseColor = basicEffect.DiffuseColor;
+			skinnedEffect.SpecularColor = basicEffect.SpecularColor;
+			skinnedEffect.EmissiveColor = basicEffect.EmissiveColor;
+			skinnedEffect.SpecularPower = basicEffect.SpecularPower;
+
 #if AXIOM_FF_EMULATION
 			if (//ambient == ColorEx.White &&
 				diffuse == ColorEx.Black //&&
@@ -2758,9 +3015,10 @@ namespace Axiom.RenderSystems.Xna
 		/// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
 		/// </remarks>
 		/// </summary>
-		public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear, Real quadratic, Real minSize, Real maxSize )
+		public override void SetPointParameters(Real size, bool attenuationEnabled, Real constant, Real linear,
+												 Real quadratic, Real minSize, Real maxSize)
 		{
-			// throw new AxiomException( "XNA does not support PointSprites." );
+			throw new AxiomException("XNA does not support PointSprites.");
 		}
 
 		#endregion
@@ -2779,51 +3037,52 @@ namespace Axiom.RenderSystems.Xna
 		/// </param>
 		/// <param name="enabled"></param>
 		/// <param name="texture"></param>
-		public override void SetTexture( int stage, bool enabled, Texture texture )
+		public override void SetTexture(int stage, bool enabled, Texture texture)
 		{
-			XnaTexture xnaTexture = (XnaTexture)texture;
-			bool compensateNPOT = false;
+			var xnaTexture = (XnaTexture)texture;
+			var compensateNPOT = false;
 
-			if ( ( texture != null ) && ( !Bitwise.IsPow2( texture.Width ) || !Bitwise.IsPow2( texture.Height ) ) )
+			if ((texture != null) && (!Bitwise.IsPow2(texture.Width) || !Bitwise.IsPow2(texture.Height)))
 			{
-				if ( Capabilities.HasCapability( Graphics.Capabilities.NonPowerOf2Textures ) )
+				if (Capabilities.HasCapability(Graphics.Capabilities.NonPowerOf2Textures))
 				{
-					if ( Capabilities.NonPOW2TexturesLimited )
+					if (Capabilities.NonPOW2TexturesLimited)
 						compensateNPOT = true;
-				}
+					}
 				else
 					compensateNPOT = true;
 
-				if ( compensateNPOT )
+				if (compensateNPOT)
 				{
-					SetTextureAddressingMode( stage, new UVWAddressing( TextureAddressing.Clamp ) );
+					SetTextureAddressingMode(stage, new UVWAddressing(TextureAddressing.Clamp));
 				}
 			}
 
-			texStageDesc[ stage ].Enabled = enabled;
-			if ( enabled && xnaTexture != null )
+			texStageDesc[stage].Enabled = enabled;
+			if (enabled && xnaTexture != null)
 			{
-				_device.Textures[ stage ] = xnaTexture.DXTexture;
-				basicEffect.Texture = (XFG.Texture2D)xnaTexture.DXTexture;
-				basicEffect.TextureEnabled = enabled;
+				_device.Textures[stage] = xnaTexture.DXTexture;
+				// TODO: NRSC: Solve cast problem for non Texture2D 
+				basicEffect.Texture = xnaTexture.DXTexture as Texture2D;
+				basicEffect.TextureEnabled = basicEffect.Texture != null;
 
-				skinnedEffect.Texture = (XFG.Texture2D)xnaTexture.DXTexture;
+				skinnedEffect.Texture = basicEffect.Texture;
 
 				// set stage description
-				texStageDesc[ stage ].tex = xnaTexture.DXTexture;
-				texStageDesc[ stage ].texType = xnaTexture.TextureType;
+				texStageDesc[stage].tex = xnaTexture.DXTexture;
+				texStageDesc[stage].texType = xnaTexture.TextureType;
 			}
 			else
 			{
-				if ( texStageDesc[ stage ].tex != null )
+				if (texStageDesc[stage].tex != null)
 				{
-					_device.Textures[ stage ] = null;
+					_device.Textures[stage] = null;
 				}
 				// set stage description to defaults
-				texStageDesc[ stage ].tex = null;
-				texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
-				texStageDesc[ stage ].coordIndex = 0;
-				texStageDesc[ stage ].texType = TextureType.OneD;
+				texStageDesc[stage].tex = null;
+				texStageDesc[stage].autoTexCoordType = TexCoordCalcMethod.None;
+				texStageDesc[stage].coordIndex = 0;
+				texStageDesc[stage].texType = TextureType.OneD;
 			}
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.SetTextureEnabled( stage, enabled );
@@ -2837,33 +3096,36 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Tells the hardware how to treat texture coordinates.
 		/// </summary>
-		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
+		public override void SetTextureAddressingMode(int stage, UVWAddressing uvw)
 		{
-			if ( _device.GetVertexBuffers().Length == 0 )
+			if (_device.GetVertexBuffers().Length == 0)
 			{
 				return;
 			}
-			if ( !( from XFG.VertexElement vde in _device.GetVertexBuffers()[ 0 ].VertexBuffer.VertexDeclaration.GetVertexElements()
-					where vde.VertexElementUsage == XFG.VertexElementUsage.Normal
-					select vde ).Any() )
+			if (
+				!(from VertexElement vde in
+					  _device.GetVertexBuffers()[0].VertexBuffer.VertexDeclaration.GetVertexElements()
+				  where vde.VertexElementUsage == VertexElementUsage.Normal
+				  select vde).Any())
 			{
 				return;
 			}
 
-			XFG.Texture2D xnaTexture = (XFG.Texture2D)_device.Textures[ stage ];
-			bool compensateNPOT = false;
+			var xnaTexture = _device.Textures[stage] as Texture2D;
+			var compensateNPOT = false;
 
-			if ( ( xnaTexture != null ) && ( !Bitwise.IsPow2( xnaTexture.Width ) || !Bitwise.IsPow2( xnaTexture.Height ) ) )
+			if ((xnaTexture != null) &&
+				 (!Bitwise.IsPow2(xnaTexture.Width) || !Bitwise.IsPow2(xnaTexture.Height)))
 			{
-				if ( Capabilities.HasCapability( Graphics.Capabilities.NonPowerOf2Textures ) )
+				if (Capabilities.HasCapability(Graphics.Capabilities.NonPowerOf2Textures))
 				{
-					if ( Capabilities.NonPOW2TexturesLimited )
+					if (Capabilities.NonPOW2TexturesLimited)
 						compensateNPOT = true;
-				}
+					}
 				else
 					compensateNPOT = true;
 
-				if ( compensateNPOT )
+				if (compensateNPOT)
 				{
 					uvw = new UVWAddressing( TextureAddressing.Clamp );
 				}
@@ -2889,10 +3151,24 @@ namespace Axiom.RenderSystems.Xna
 		/// of levels, so +1 forces the mipmaps to one smaller level.
 		/// </remarks>
 		/// <note>Only does something if render system has capability RSC_MIPMAP_LOD_BIAS.</note>
-		public override void SetTextureMipmapBias( int unit, float bias )
+		public override void SetTextureMipmapBias(int unit, float bias)
 		{
-            //TODO
-			//throw new NotImplementedException();
+			if (currentCapabilities.HasCapability(Graphics.Capabilities.MipmapLODBias))
+			{
+				var ss = _device.SamplerStates[unit];
+				_device.SamplerStates[unit] = new SamplerState
+				{
+					MipMapLevelOfDetailBias = bias,
+					MaxMipLevel = ss.MaxMipLevel,
+					MaxAnisotropy = ss.MaxAnisotropy,
+#if ! SILVERLIGHT
+					AddressW = ss.AddressW,
+#endif
+					AddressV = ss.AddressV,
+					AddressU = ss.AddressU,
+					Filter = ss.Filter,
+				};
+			}
 		}
 
 		#endregion
@@ -2904,9 +3180,9 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="unit"></param>
 		/// <param name="borderColor"></param>
-		public override void SetTextureBorderColor( int unit, ColorEx borderColor )
+		public override void SetTextureBorderColor(int stage, ColorEx borderColor)
 		{
-			//texStageDesc[ unit ].borderColor = borderColor;
+			//texStageDesc[ stage ].borderColor = borderColor;
 		}
 
 		#endregion
@@ -2920,84 +3196,86 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="unit">Texture unit.</param>
 		/// <param name="bm">Details of the blending modes.</param>
-		public override void SetTextureBlendMode( int unit, LayerBlendModeEx bm )
+		public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
 		{
 			basicEffect.Alpha = 1.0f;
 			skinnedEffect.Alpha = 1.0f;
 
-			if ( bm.blendType == LayerBlendType.Color )
+			if (blendMode.blendType == LayerBlendType.Color)
 			{
-				texStageDesc[ unit ].layerBlendMode = bm;
+				texStageDesc[stage].layerBlendMode = blendMode;
 			}
 			/* TODO: use StateManager.BlendState */
 
-			if ( bm.operation == LayerBlendOperationEx.BlendManual )
+			if (blendMode.operation == LayerBlendOperationEx.BlendManual)
 			{
-				StateManager.BlendState.BlendFactor = new XNA.Color( bm.blendFactor, 0, 0, 0 );
+				StateManager.BlendState.BlendFactor = new Color(blendMode.blendFactor, 0, 0, 0);
 			}
-			if ( bm.blendType == LayerBlendType.Color )
+			if (blendMode.blendType == LayerBlendType.Color)
 			{
 				//_device.RenderState.AlphaBlendEnable = false;
 			}
-			else if ( bm.blendType == LayerBlendType.Alpha )
+			else if (blendMode.blendType == LayerBlendType.Alpha)
 			{
 				//_device.RenderState.AlphaBlendEnable = true;
 			}
 
-			ColorEx manualD3D = XnaHelper.Convert( StateManager.BlendState.BlendFactor );
-			if ( bm.blendType == LayerBlendType.Color )
+			var manualD3D = XnaHelper.Convert(StateManager.BlendState.BlendFactor);
+			if (blendMode.blendType == LayerBlendType.Color)
 			{
-				manualD3D = new ColorEx( bm.blendFactor, bm.colorArg1.r, bm.colorArg1.g, bm.colorArg1.b );
+				manualD3D = new ColorEx(blendMode.blendFactor, blendMode.colorArg1.r, blendMode.colorArg1.g,
+										 blendMode.colorArg1.b);
 			}
-			else if ( bm.blendType == LayerBlendType.Alpha )
+			else if (blendMode.blendType == LayerBlendType.Alpha)
 			{
-				manualD3D = new ColorEx( bm.alphaArg1, bm.blendFactor, bm.blendFactor, bm.blendFactor );
+				manualD3D = new ColorEx(blendMode.alphaArg1, blendMode.blendFactor, blendMode.blendFactor,
+										 blendMode.blendFactor);
 			}
 
-			LayerBlendSource blendSource = bm.source1;
-			for ( int i = 0; i < 2; i++ )
+			var blendSource = blendMode.source1;
+			for (var i = 0; i < 2; i++)
 			{
 				// set the texture blend factor if this is manual blending
-				if ( blendSource == LayerBlendSource.Manual )
+				if (blendSource == LayerBlendSource.Manual)
 				{
-					StateManager.BlendState.BlendFactor = XnaHelper.Convert( manualD3D );
+					StateManager.BlendState.BlendFactor = XnaHelper.Convert(manualD3D);
 				}
 				// pick proper argument settings
-				if ( bm.blendType == LayerBlendType.Color )
+				if (blendMode.blendType == LayerBlendType.Color)
 				{
-					if ( i == 0 )
+					if (i == 0)
 					{
-						texStageDesc[ unit ].layerBlendMode.colorArg1 = bm.colorArg1;
+						texStageDesc[stage].layerBlendMode.colorArg1 = blendMode.colorArg1;
 					}
-					else if ( i == 1 )
+					else if (i == 1)
 					{
-						texStageDesc[ unit ].layerBlendMode.colorArg2 = bm.colorArg2;
+						texStageDesc[stage].layerBlendMode.colorArg2 = blendMode.colorArg2;
 					}
 				}
-				else if ( bm.blendType == LayerBlendType.Alpha )
+				else if (blendMode.blendType == LayerBlendType.Alpha)
 				{
-					if ( i == 0 )
+					if (i == 0)
 					{
-						texStageDesc[ unit ].layerBlendMode.alphaArg1 = bm.alphaArg1;
-						basicEffect.Alpha = bm.alphaArg1;
+						texStageDesc[stage].layerBlendMode.alphaArg1 = blendMode.alphaArg1;
+						basicEffect.Alpha = blendMode.alphaArg1;
 					}
-					else if ( i == 1 )
+					else if (i == 1)
 					{
-						texStageDesc[ unit ].layerBlendMode.alphaArg2 = bm.alphaArg2;
-						//basicEffect.Alpha = blendMode.alphaArg2;
+						texStageDesc[stage].layerBlendMode.alphaArg2 = blendMode.alphaArg2;
+						basicEffect.Alpha = blendMode.alphaArg2;
 					}
 					skinnedEffect.Alpha = basicEffect.Alpha;
 				}
-
 				// Source2
-				blendSource = bm.source2;
-				if ( bm.blendType == LayerBlendType.Color )
+				blendSource = blendMode.source2;
+				if (blendMode.blendType == LayerBlendType.Color)
 				{
-					manualD3D = new ColorEx( manualD3D.a, bm.colorArg2.r, bm.colorArg2.g, bm.colorArg2.b );
+					manualD3D = new ColorEx(manualD3D.a, blendMode.colorArg2.r, blendMode.colorArg2.g,
+											 blendMode.colorArg2.b);
 				}
-				else if ( bm.blendType == LayerBlendType.Alpha )
+				else if (blendMode.blendType == LayerBlendType.Alpha)
 				{
-					manualD3D = new ColorEx( bm.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b );
+					manualD3D = new ColorEx(blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b);
 				}
 			}
 		}
@@ -3012,12 +3290,12 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="unit">Texture stage to modify.</param>
 		/// <param name="method">Calculation method to use</param>
 		/// <param name="frustum">Frustum, only used for projective effects</param>
-		public override void SetTextureCoordCalculation( int unit, TexCoordCalcMethod method, Frustum frustum )
+		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum)
 		{
-			texStageDesc[ unit ].autoTexCoordType = method;
-			texStageDesc[ unit ].frustum = frustum;
-			//texStageDesc[unit].Enabled = true;
-			//if (frustum != null) MessageBox.Show(texStageDesc[unit].Enabled.ToString());
+			texStageDesc[stage].autoTexCoordType = method;
+			texStageDesc[stage].frustum = frustum;
+			//texStageDesc[stage].Enabled = true;
+			//if (frustum != null) MessageBox.Show(texStageDesc[stage].Enabled.ToString());
 		}
 
 		#endregion
@@ -3027,9 +3305,9 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Sets the index into the set of tex coords that will be currently used by the render system.
 		/// </summary>
-		public override void SetTextureCoordSet( int stage, int index )
+		public override void SetTextureCoordSet(int stage, int index)
 		{
-			texStageDesc[ stage ].coordIndex = index;
+			texStageDesc[stage].coordIndex = index;
 		}
 
 		#endregion
@@ -3039,7 +3317,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Sets the maximal anisotropy for the specified texture unit.
 		/// </summary>
-		public override void SetTextureLayerAnisotropy( int unit, int maxAnisotropy )
+		public override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy)
 		{
 			//-if maxAnisotropy is higher than what the graphics device is capapble of
 			//Xna 4.0 should magically clamp the value for us.
@@ -3048,7 +3326,7 @@ namespace Axiom.RenderSystems.Xna
 			//    maxAnisotropy = _capabilities.MaxAnisotropy;
 			//}
 
-			StateManager.SamplerStates[ unit ].MaxAnisotropy = maxAnisotropy;
+			StateManager.SamplerStates[stage].MaxAnisotropy = maxAnisotropy;
 		}
 
 		#endregion
@@ -3059,11 +3337,10 @@ namespace Axiom.RenderSystems.Xna
 		/// Sets the texture matrix for the specified stage.  Used to apply rotations, translations,
 		/// and scaling to textures.
 		/// </summary>
-		public override void SetTextureMatrix( int stage, Matrix4 xform )
+		public override void SetTextureMatrix(int stage, Matrix4 xform)
 		{
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+			if (texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture)
 			{
-
 				//seems like we have to apply a specific transform when we have the frustum
 				//and a projective texture
 				//from directx rendersystem
@@ -3079,7 +3356,6 @@ namespace Axiom.RenderSystems.Xna
 				//newMat = texStageDesc[ stage ].frustum.ProjectionMatrix * newMat;
 				//newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
 				//xform = xform * newMat;
-
 			}
 #if AXIOM_FF_EMULATION
 			_ffProgramParameters.SetTextureMatrix( stage, xform.Transpose() );
@@ -3096,14 +3372,14 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="unit">The texture unit to set the filtering options for.</param>
 		/// <param name="type">The filter type.</param>
 		/// <param name="filter">The filter to be used.</param>
-		public override void SetTextureUnitFiltering( int unit, FilterType type, FilterOptions filter )
+        public override void SetTextureUnitFiltering(int stage, FilterType type, Graphics.FilterOptions filter)
 		{
 			/*
 			 * TextureFilter enumeration now combines FilterType and TextureType in 4.0, 
 			 */
-			XnaTextureType texType = XnaHelper.Convert( texStageDesc[ unit ].texType );
-			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, texType );
-			StateManager.SamplerStates[ unit ].Filter = texFilter;
+			var texType = XnaHelper.Convert(texStageDesc[stage].texType);
+			var texFilter = XnaHelper.Convert(type, filter, texType);
+			StateManager.SamplerStates[stage].Filter = texFilter;
 		}
 
 		#endregion
@@ -3117,11 +3393,11 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="lightList">List of lights.</param>
 		/// <param name="limit">Max number of lights that can be used from the list currently.</param>
-		public override void UseLights( LightList lights, int limit )
+		public override void UseLights(LightList lights, int limit)
 		{
-			int currentLightCount = lights.Count < limit ? lights.Count : limit;
+			var currentLightCount = lights.Count < limit ? lights.Count : limit;
 
-			List<Light> lightList = new List<Light>();
+			var lightList = new List<Light>();
 #if AXIOM_FF_EMULATION
 			_fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
 			for ( int index = 0; index < currentLightCount; index++ )
@@ -3141,29 +3417,33 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Initialize the render system from the capabilities
 		/// </summary>
-		public override void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary )
+        public override void InitializeFromRenderSystemCapabilities(RenderSystemCapabilities caps, Graphics.RenderTarget primary)
 		{
-			if ( caps.RendersystemName != Name )
-			{
-				throw new AxiomException(
-					"Trying to initialize XnaRenderSystem from RenderSystemCapabilities that do not support XNA" );
-			}
+			//TODO
+			//if (caps.RendersystemName != Name)
+			//{
+			//    throw new AxiomException(
+			//        "Trying to initialize XnaRenderSystem from RenderSystemCapabilities that do not support XNA");
+			//}
 
 			//TODO
 			//if ( caps.IsShaderProfileSupported( "hlsl" ) )
 			//    HighLevelGpuProgramManager.Instance.AddFactory( _hlslProgramFactory );
 
 			var defaultLog = LogManager.Instance.DefaultLog;
-			if ( defaultLog != null )
-				caps.Log( defaultLog );
+			if (defaultLog != null)
+				caps.Log(defaultLog);
+
+			//currentCapabilities = caps;
+			//activeRenderTarget = primary;
 		}
 
 		#endregion
 
-		public override void UnbindGpuProgram( GpuProgramType type )
+		public override void UnbindGpuProgram(GpuProgramType type)
 		{
 			useSkinnedEffect = false;
-			switch ( type )
+			switch (type)
 			{
 				case GpuProgramType.Vertex:
 					//_device.VertexShader = null;
@@ -3177,33 +3457,39 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		private XFG.DepthFormat _getDepthStencilFormatFor( XFG.SurfaceFormat fmt, int multiSampleCount )
+		private DepthFormat _getDepthStencilFormatFor(SurfaceFormat fmt, int multiSampleCount)
 		{
-			XFG.DepthFormat dsfmt;
+			DepthFormat dsfmt;
 
 			// Check if result is cached
-			if ( depthStencilCache.TryGetValue( fmt, out dsfmt ) )
+			if (depthStencilCache.TryGetValue(fmt, out dsfmt))
 				return dsfmt;
 
 			// If not, probe with CheckDepthStencilMatch
-			dsfmt = XFG.DepthFormat.None;
+			dsfmt = DepthFormat.None;
 
 			// Get description of primary render target
-			XFG.SurfaceFormat targetFormat = _primaryWindow.RenderSurfaceFormat;
+			var targetFormat = _primaryWindow.RenderSurfaceFormat;
 
 			// Probe all depth stencil formats
 			// Break on first one that matches
-			foreach ( XFG.DepthFormat df in _preferredStencilFormats )
+			foreach (var df in _preferredStencilFormats)
 			{
 				// Verify that the depth format exists
 				//if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat( XFG.DeviceType.Hardware, targetFormat, XFG.TextureUsage.None, XFG.QueryUsages.None, XFG.ResourceType.DepthStencilBuffer, df ) )
 				//    continue;
 
-				XFG.SurfaceFormat suggestedSurfaceFormat;
-				XFG.DepthFormat suggestedDepthFormat;
+				SurfaceFormat suggestedSurfaceFormat;
+				DepthFormat suggestedDepthFormat;
 				int suggestedNumMultiSamples;
 
-				XFG.GraphicsAdapter.DefaultAdapter.QueryRenderTargetFormat( _device.GraphicsProfile, targetFormat, df, multiSampleCount, out suggestedSurfaceFormat, out suggestedDepthFormat, out suggestedNumMultiSamples );
+#if SILVERLIGHT
+				_device.Adapter.QueryRenderTargetFormat( GraphicsProfile.Reach,
+#else
+				GraphicsAdapter.DefaultAdapter.QueryRenderTargetFormat(_device.GraphicsProfile,
+#endif
+														 targetFormat, df, multiSampleCount, out suggestedSurfaceFormat,
+														 out suggestedDepthFormat, out suggestedNumMultiSamples );
 				dsfmt = suggestedDepthFormat;
 				// Verify that the depth format is compatible
 				//if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch( XFG.DeviceType.Hardware, targetFormat, fmt, df ) )
@@ -3214,9 +3500,76 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// Cache result
-			depthStencilCache[ fmt ] = dsfmt;
+			depthStencilCache[fmt] = dsfmt;
 			return dsfmt;
 		}
+
+		//private XFG.DepthStencilBuffer _getDepthStencilFor( XFG.SurfaceFormat fmt, XFG.MultiSampleType multisample, int width, int height )
+		//{
+		//    XFG.DepthStencilBuffer zbuffer = null;
+
+		//    XFG.DepthFormat dsfmt = _getDepthStencilFormatFor( fmt );
+		//    if ( dsfmt == XFG.DepthFormat.Unknown )
+		//        return null;
+
+		//    /// Check if result is cached
+		//    ZBufferFormat zbfmt = new ZBufferFormat( dsfmt, multisample );
+		//    XFG.DepthStencilBuffer cachedzBuffer;
+		//    if ( zBufferCache.TryGetValue( zbfmt, out cachedzBuffer ) )
+		//    {
+		//        /// Check if size is larger or equal
+		//        if ( cachedzBuffer.Width >= width &&
+		//            cachedzBuffer.Height >= height )
+		//        {
+		//            zbuffer = cachedzBuffer;
+		//        }
+		//        else
+		//        {
+		//            zBufferCache.Remove( zbfmt );
+		//            cachedzBuffer.Dispose();
+		//        }
+		//    }
+
+		//    if ( zbuffer == null )
+		//    {
+		//        // If not, create the depthstencil surface
+		//        zbuffer = new XFG.DepthStencilBuffer( _device, width, height, dsfmt, multisample, 0 );
+		//        zBufferCache[ zbfmt ] = zbuffer;
+		//    }
+
+		//    return zbuffer;
+		//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//public struct ZBufferFormat
+		//{
+		//    public ZBufferFormat( XFG.DepthFormat f, XFG.MultiSampleType m )
+		//    {
+		//        this.format = f;
+		//        this.multisample = m;
+		//    }
+		//    public XFG.DepthFormat format;
+		//    public XFG.MultiSampleType multisample;
+		//}
+		//protected Dictionary<ZBufferFormat, XFG.DepthStencilBuffer> zBufferCache = new Dictionary<ZBufferFormat, XFG.DepthStencilBuffer>();
+		//protected Dictionary<XFG.SurfaceFormat, XFG.DepthFormat> depthStencilCache = new Dictionary<XFG.SurfaceFormat, XFG.DepthFormat>();
+
+
 
 		//private XFG.DepthStencilBuffer _getDepthStencilFor( XFG.SurfaceFormat fmt, XFG.MultiSampleType multisample, int width, int height )
 		//{
@@ -3260,22 +3613,23 @@ namespace Axiom.RenderSystems.Xna
 
 		#region IServiceProvider Members
 
-		public object GetService( Type serviceType )
+		public object GetService(Type serviceType)
 		{
-			if ( serviceType == typeof( Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService ) )
+			if (serviceType == typeof(IGraphicsDeviceService))
 			{
-				foreach ( var item in this.renderTargets )
+				foreach (var item in renderTargets)
 				{
-					var renderTarget = item.Value as RenderTarget;
-					XFG.IGraphicsDeviceService service = renderTarget as XFG.IGraphicsDeviceService;
-					if ( service != null )
+					var renderTarget = item.Value;
+					var service = renderTarget as IGraphicsDeviceService;
+					if (service != null)
 						return service;
+					}
 				}
-			}
 
 			return null;
 		}
 
 		#endregion
+		
 	}
 }

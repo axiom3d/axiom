@@ -31,6 +31,9 @@
     </UpgradeBackupLocation>
     <ProjectGuid>{BA9B1CA4-6329-4B02-AF47-B77749DFCBB7}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaUpgrade>
     </XnaUpgrade>
     <XnaOutputType>Library</XnaOutputType>
@@ -61,7 +64,7 @@
     <OutputPath>bin\Xbox\Debug\</OutputPath>
     <DocumentationFile>
     </DocumentationFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -78,7 +81,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release\</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.Plugins.ParticleFX.XML</DocumentationFile>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>

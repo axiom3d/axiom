@@ -1,6 +1,7 @@
 #region Namespace Declarations
 
 using System;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Collections;
 
@@ -21,7 +22,8 @@ using MouseButtons = Axiom.Input.MouseButtons;
 namespace Axiom.Demos
 {
 	/// <summary>Demonstrates simulation of Water mesh</summary>
-	public class Water : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Water : TechDemo
 	{ //najak: Change this back to TechDemo, if new controls are accepted by Axiom
 		#region Fields
 
@@ -109,10 +111,13 @@ namespace Axiom.Demos
 
 			// Create Rain Emitter, but default Rain to OFF
 			particleSystem = ParticleSystemManager.Instance.CreateSystem( "rain", "Examples/Water/Rain" );
-			particleEmitter = particleSystem.GetEmitter( 0 );
-			particleEmitter.EmissionRate = 0f;
+            if (particleSystem.Emitters.Count > 0)
+            {
+                particleEmitter = particleSystem.GetEmitter( 0 );
+                particleEmitter.EmissionRate = 0f;
+            }
 
-			// Attach Rain Emitter to SceneNode, and place it 3000f above the water surface
+		    // Attach Rain Emitter to SceneNode, and place it 3000f above the water surface
 			SceneNode rNode = scene.RootSceneNode.CreateChildSceneNode();
 			rNode.Translate( new Vector3( PLANE_SIZE / 2.0f, 3000, PLANE_SIZE / 2.0f ) );
 			rNode.AttachObject( particleSystem );
@@ -499,7 +504,7 @@ namespace Axiom.Demos
 				HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.ShowOverlays ) );
 			}
 
-#if !(XBOX || XBOX360 )
+#if !( SILVERLIGHT || XBOX || XBOX360 )
 			// 'P' Captures Screenshot (like 'Print' command)
 			if ( input.IsKeyPressed( KeyCodes.P ) )
 			{

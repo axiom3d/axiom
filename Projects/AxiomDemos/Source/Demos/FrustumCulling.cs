@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Core;
@@ -19,7 +19,8 @@ namespace Axiom.Demos
 	///     Demo allowing you to visualize a viewing frustom and bounding box culling.
 	/// </summary>
 	// TODO: Make sure recalculateView is being set properly for frustum updates.
-	public class FrustumCulling : TechDemo
+    [Export(typeof(TechDemo))]
+    public class FrustumCulling : TechDemo
 	{
 
 		EntityList entityList = new EntityList();

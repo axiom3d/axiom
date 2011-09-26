@@ -37,6 +37,7 @@ using System;
 using System.IO;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Math.Collections;
 using Axiom.Media;
 
@@ -85,8 +86,8 @@ namespace Axiom.Plugins.DevILCodecs
 
 			ImageData data = (ImageData)codecData;
 
-			GCHandle bufHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned );
-			PixelBox src = new PixelBox( data.width, data.height, data.depth, data.format, bufHandle.AddrOfPinnedObject() );
+            var bufHandle = BufferBase.Wrap(data);
+			PixelBox src = new PixelBox( data.width, data.height, data.depth, data.format, bufHandle );
 
 			try
 			{
@@ -103,9 +104,6 @@ namespace Axiom.Plugins.DevILCodecs
 
 			// save the image to file
 			Il.ilSaveImage( fileName );
-
-			if ( bufHandle.IsAllocated )
-				bufHandle.Free();
 
 			int error = Il.ilGetError();
 
@@ -204,7 +202,7 @@ namespace Axiom.Plugins.DevILCodecs
 			data.size = Image.CalculateSize( data.numMipMaps, numFaces, data.width, data.height, data.depth, data.format );
 
 			// get the decoded data
-			GCHandle BufferHandle;
+			BufferBase BufferHandle;
 			IntPtr pBuffer;
 
 			// Dimensions of current mipmap
@@ -234,9 +232,9 @@ namespace Axiom.Plugins.DevILCodecs
 						if ( imageSize == Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ) )
 						{
 							// Retrieve data from DevIL
-							BufferHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned );
-							Il.ilGetDXTCData( BufferHandle.AddrOfPinnedObject(), imageSize, dxtFormat );
-							BufferHandle.Free();
+                            BufferHandle = BufferBase.Wrap(buffer);
+							Il.ilGetDXTCData( BufferHandle.Pin(), imageSize, dxtFormat );
+							BufferHandle.UnPin();
 						}
 						else
 						{
@@ -246,10 +244,9 @@ namespace Axiom.Plugins.DevILCodecs
 					else
 					{
 						/// Retrieve data from DevIL
-						BufferHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned );
-						PixelBox dst = new PixelBox( width, height, depth, data.format, BufferHandle.AddrOfPinnedObject() );
+                        BufferHandle = BufferBase.Wrap(buffer);
+                        PixelBox dst = new PixelBox(width, height, depth, data.format, BufferHandle);
 						ILUtil.ConvertFromIL( dst );
-						BufferHandle.Free();
 					}
 
 					// write the decoded data to the output stream

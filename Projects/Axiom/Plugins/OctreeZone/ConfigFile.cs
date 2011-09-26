@@ -36,25 +36,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Collections;
+using System.Xml.Linq;
 
 #endregion Namespace Declarations
 
 namespace OctreeZone
 {
-	public class ConfigFile
-	{
-		private XmlDocument _doc = new XmlDocument();
-		private string baseSchema;
-		public ConfigFile( string baseSchemaName )
-		{
-			baseSchema = baseSchemaName;
-		}
+    public class ConfigFile
+    {
+        private string baseSchema;
+        public ConfigFile(string baseSchemaName)
+        {
+            baseSchema = baseSchemaName;
+        }
 
-		public bool Load( Stream stream )
-		{
-			_doc.Load( stream );
+#if SILVERLIGHT || WINDOWS_PHONE
+        private XDocument _doc = new XDocument();
+        
+        public bool Load(Stream stream)
+        {
+            var buf = new byte[stream.Length];
+            stream.Read(buf, 0, buf.Length);
+            var str = System.Text.Encoding.UTF8.GetString( buf, 0, buf.Length );
+            _doc = XDocument.Parse(str);
 			return true;
 		}
 
@@ -62,21 +69,46 @@ namespace OctreeZone
 		{
 			get
 			{
-				return _doc[ baseSchema ][ key ].InnerText;
+                return _doc.Element(XName.Get(key,baseSchema)).Value;
 			}
 		}
 
 		public IEnumerable GetEnumerator()
 		{
-			foreach ( XmlElement el in _doc[ baseSchema ] )
-			{
-				yield return new string[] { el.Name, el.InnerText };
-			}
+            foreach (XElement el in _doc.Elements())
+            {
+                yield return new [] { el.Name.LocalName, el.Value };
+            }
 		}
+#else
+        private XmlDocument _doc = new XmlDocument();
 
-		public string getSetting( string key )
-		{
-			return this[ key ];
-		}
-	}
+        public bool Load(Stream stream)
+        {
+            _doc.Load(stream);
+            return true;
+        }
+
+        public string this[string key]
+        {
+            get
+            {
+                return _doc[baseSchema][key].InnerText;
+            }
+        }
+
+        public IEnumerable GetEnumerator()
+        {
+            foreach (XmlElement el in _doc[baseSchema])
+            {
+                yield return new string[] { el.Name, el.InnerText };
+            }
+        }
+#endif
+
+        public string getSetting(string key)
+        {
+            return this[key];
+        }
+    }
 }

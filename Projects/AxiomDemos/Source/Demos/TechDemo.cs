@@ -73,7 +73,7 @@ namespace Axiom.Demos
 #endif
 		protected Vector3 cameraVector = Vector3.Zero;
 		protected float cameraScale;
-		protected bool showDebugOverlay = false;
+		protected bool showDebugOverlay = true;
 		protected float statDelay = 0.0f;
 		protected float debugTextDelay = 0.0f;
 		protected string debugText = "";
@@ -519,7 +519,7 @@ namespace Axiom.Demos
 				keypressDelay = .3f;
 			}
 
-#if !( XBOX || XBOX360 )
+#if !( SILVERLIGHT || XBOX || XBOX360 )
 			if ( input.IsKeyPressed( KeyCodes.P ) && keypressDelay < 0 )
 			{
 				string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );

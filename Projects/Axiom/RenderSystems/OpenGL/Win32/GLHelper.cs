@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using Tao.Platform.Windows;
 using SWF = System.Windows.Forms;
 
 using Axiom.Configuration;
@@ -451,7 +452,8 @@ namespace Axiom.RenderSystems.OpenGL
                 if (opt != null)
                 {
                     miscParams.Add("vsync", opt.Value);
-                    renderSystem.IsVSync = StringConverter.ParseBool(opt.Value);
+                    if (Wgl.IsExtensionSupported("wglSwapIntervalEXT"))
+                        Wgl.wglSwapIntervalEXT(StringConverter.ParseBool(opt.Value) ? 1 : 0);
                 }
 
                 opt = ConfigOptions["FSAA"];

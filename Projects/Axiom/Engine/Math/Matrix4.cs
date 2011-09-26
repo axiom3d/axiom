@@ -257,7 +257,7 @@ namespace Axiom.Math
 			get
 			{
 				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
-				Real result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
+				var result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
 					m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
 					m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
 					m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
@@ -314,9 +314,9 @@ namespace Axiom.Math
 		public static Matrix4 ComposeInverse( Vector3 translation, Vector3 scale, Quaternion orientation )
 		{
 			// Invert the parameters
-			Vector3 invTranslate = -translation;
-			Vector3 invScale = new Vector3( 1f / scale.x, 1f / scale.y, 1f / scale.z );
-			Quaternion invRot = orientation.Inverse();
+			var invTranslate = -translation;
+			var invScale = new Vector3( 1f / scale.x, 1f / scale.y, 1f / scale.z );
+			var invRot = orientation.Inverse();
 
 			// Because we're inverting, order is translation, rotation, scale
 			// So make translation relative to scale & rotation
@@ -372,11 +372,11 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			Real t00 = m22 * m11 - m21 * m12;
-			Real t10 = m20 * m12 - m22 * m10;
-			Real t20 = m21 * m10 - m20 * m11;
+			var t00 = m22 * m11 - m21 * m12;
+			var t10 = m20 * m12 - m22 * m10;
+			var t20 = m21 * m10 - m20 * m11;
 
-			Real invDet = 1 / ( m00 * t00 + m01 * t10 + m02 * t20 );
+			var invDet = 1 / ( m00 * t00 + m01 * t10 + m02 * t20 );
 
 			t00 *= invDet;
 			t10 *= invDet;
@@ -386,21 +386,21 @@ namespace Axiom.Math
 			m01 *= invDet;
 			m02 *= invDet;
 
-			Real r00 = t00;
-			Real r01 = m02 * m21 - m01 * m22;
-			Real r02 = m01 * m12 - m02 * m11;
+			var r00 = t00;
+			var r01 = m02 * m21 - m01 * m22;
+			var r02 = m01 * m12 - m02 * m11;
 
-			Real r10 = t10;
-			Real r11 = m00 * m22 - m02 * m20;
-			Real r12 = m02 * m10 - m00 * m12;
+			var r10 = t10;
+			var r11 = m00 * m22 - m02 * m20;
+			var r12 = m02 * m10 - m00 * m12;
 
-			Real r20 = t20;
-			Real r21 = m01 * m20 - m00 * m21;
-			Real r22 = m00 * m11 - m01 * m10;
+			var r20 = t20;
+			var r21 = m01 * m20 - m00 * m21;
+			var r22 = m00 * m11 - m01 * m10;
 
-			Real r03 = -( r00 * m03 + r01 * m13 + r02 * m23 );
-			Real r13 = -( r10 * m03 + r11 * m13 + r12 * m23 );
-			Real r23 = -( r20 * m03 + r21 * m13 + r22 * m23 );
+			var r03 = -( r00 * m03 + r01 * m13 + r02 * m23 );
+			var r13 = -( r10 * m03 + r11 * m13 + r12 * m23 );
+			var r23 = -( r20 * m03 + r21 * m13 + r22 * m23 );
 
 			return new Matrix4(
 				r00, r01, r02, r03,
@@ -530,8 +530,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Matrix3 ExtractRotation()
 		{
-			Vector3 axis = Vector3.Zero;
-			Matrix3 rotation = Matrix3.Identity;
+			var axis = Vector3.Zero;
+			var rotation = Matrix3.Identity;
 
 			axis.x = this.m00;
 			axis.y = this.m10;
@@ -566,8 +566,8 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 ExtractScale()
 		{
-			Vector3 scale = Vector3.UnitScale;
-			Vector3 axis = Vector3.Zero;
+			var scale = Vector3.UnitScale;
+			var axis = Vector3.Zero;
 
 			axis.x = this.m00;
 			axis.y = this.m10;
@@ -596,8 +596,8 @@ namespace Axiom.Math
 		public void Decompose( out Vector3 translation, out Vector3 scale, out Quaternion orientation )
 		{
 			scale = Vector3.UnitScale;
-			Matrix3 rotation = Matrix3.Identity;
-			Vector3 axis = Vector3.Zero;
+			var rotation = Matrix3.Identity;
+			var axis = Vector3.Zero;
 
 			axis.x = this.m00;
 			axis.y = this.m10;
@@ -638,22 +638,22 @@ namespace Axiom.Math
 		private Matrix4 Adjoint()
 		{
 			// note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-			Real val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
-			Real val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
-			Real val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
-			Real val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
-			Real val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
-			Real val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
-			Real val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
-			Real val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
-			Real val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
-			Real val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
-			Real val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
-			Real val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
-			Real val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
-			Real val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
-			Real val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
-			Real val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
+			var val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
+			var val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
+			var val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
+			var val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
+			var val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
+			var val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
+			var val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
+			var val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
+			var val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
+			var val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
+			var val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
+			var val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
+			var val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+			var val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
+			var val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
+			var val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
 
 			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
 		}
@@ -681,7 +681,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix4 operator *( Matrix4 left, Matrix4 right )
 		{
-			Matrix4 result = new Matrix4();
+			var result = new Matrix4();
 
 			result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20 + left.m03 * right.m30;
 			result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21 + left.m03 * right.m31;
@@ -746,9 +746,9 @@ namespace Axiom.Math
 		/// <returns>A new vector.</returns>
 		public static Vector3 operator *( Matrix4 matrix, Vector3 vector )
 		{
-			Vector3 result = new Vector3();
+			var result = new Vector3();
 
-			Real inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
+			var inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
 
 			result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
 			result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
@@ -763,7 +763,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix4 operator *( Matrix4 left, Real scalar )
 		{
-			Matrix4 result = new Matrix4();
+			var result = new Matrix4();
 
 			result.m00 = left.m00 * scalar;
 			result.m01 = left.m01 * scalar;
@@ -796,16 +796,16 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Plane operator *( Matrix4 left, Plane plane )
 		{
-			Plane result = new Plane();
+			var result = new Plane();
 
-			Vector3 planeNormal = plane.Normal;
+			var planeNormal = plane.Normal;
 
 			result.Normal = new Vector3(
 				left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
 				left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
 				left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
 
-			Vector3 pt = planeNormal * -plane.D;
+			var pt = planeNormal * -plane.D;
 			pt = left * pt;
 
 			result.D = -pt.Dot( result.Normal );
@@ -832,7 +832,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix4 operator +( Matrix4 left, Matrix4 right )
 		{
-			Matrix4 result = new Matrix4();
+			var result = new Matrix4();
 
 			result.m00 = left.m00 + right.m00;
 			result.m01 = left.m01 + right.m01;
@@ -876,7 +876,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix4 operator -( Matrix4 left, Matrix4 right )
 		{
-			Matrix4 result = new Matrix4();
+			var result = new Matrix4();
 
 			result.m00 = left.m00 - right.m00;
 			result.m01 = left.m01 - right.m01;
@@ -937,7 +937,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static implicit operator Matrix4( Matrix3 right )
 		{
-			Matrix4 result = Matrix4.Identity;
+			var result = Matrix4.Identity;
 
 			result.m00 = right.m00;
 			result.m01 = right.m01;
@@ -965,22 +965,107 @@ namespace Axiom.Math
 			{
 				//Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (row)
+                {
+                    case 0:
+                        switch (col)
+                        {
+                            case 0: return m00;
+                            case 1: return m01;
+                            case 2: return m02;
+                            case 3: return m03;
+                        }
+                        break;
+                    case 1:
+                        switch (col)
+                        {
+                            case 0: return m10;
+                            case 1: return m11;
+                            case 2: return m12;
+                            case 3: return m13;
+                        }
+                        break;
+                    case 2:
+                        switch (col)
+                        {
+                            case 0: return m20;
+                            case 1: return m21;
+                            case 2: return m22;
+                            case 3: return m23;
+                        }
+                        break;
+                    case 3:
+                        switch (col)
+                        {
+                            case 0: return m30;
+                            case 1: return m31;
+                            case 2: return m32;
+                            case 3: return m33;
+                        }
+                        break;
+                }
+			    throw new IndexOutOfRangeException("Attempt to access Matrix4 indexer out of bounds.");
+#else
 				unsafe
-				{
-					fixed ( Real* pM = &m00 )
-						return *( pM + ( ( 4 * row ) + col ) );
-				}
+                {
+                    fixed (Real* pM = &m00)
+                        return *(pM + ((4 * row) + col));
+                }
+#endif
 			}
 			set
 			{
 				//Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (row)
+                {
+                    case 0:
+                        switch (col)
+                        {
+                            case 0: m00 = value; break;
+                            case 1: m01 = value; break;
+                            case 2: m02 = value; break;
+                            case 3: m03 = value; break;
+                        }
+                        break;
+                    case 1:
+                        switch (col)
+                        {
+                            case 0: m10 = value; break;
+                            case 1: m11 = value; break;
+                            case 2: m12 = value; break;
+                            case 3: m13 = value; break;
+                        }
+                        break;
+                    case 2:
+                        switch (col)
+                        {
+                            case 0: m20 = value; break;
+                            case 1: m21 = value; break;
+                            case 2: m22 = value; break;
+                            case 3: m23 = value; break;
+                        }
+                        break;
+                    case 3:
+                        switch (col)
+                        {
+                            case 0: m30 = value; break;
+                            case 1: m31 = value; break;
+                            case 2: m32 = value; break;
+                            case 3: m33 = value; break;
+                        }
+                        break;
+                }
+#else
 				unsafe
 				{
 					fixed ( Real* pM = &m00 )
 						*( pM + ( ( 4 * row ) + col ) ) = value;
 				}
-			}
+#endif
+            }
 		}
 
 		/// <summary>
@@ -996,6 +1081,28 @@ namespace Axiom.Math
 			{
 				//Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: return m00;
+                    case 1: return m01;
+                    case 2: return m02;
+                    case 3: return m03;
+                    case 4: return m10;
+                    case 5: return m11;
+                    case 6: return m12;
+                    case 7: return m13;
+                    case 8: return m20;
+                    case 9: return m21;
+                    case 10: return m22;
+                    case 11: return m23;
+                    case 12: return m30;
+                    case 13: return m31;
+                    case 14: return m32;
+                    case 15: return m33;
+                }
+			    throw new IndexOutOfRangeException("Attempt to access Matrix4 indexer out of bounds.");
+#else
 				unsafe
 				{
 					fixed ( Real* pMatrix = &this.m00 )
@@ -1003,11 +1110,33 @@ namespace Axiom.Math
 						return *( pMatrix + index );
 					}
 				}
+#endif
 			}
 			set
 			{
 				//Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
 
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: m00 = value; break;
+                    case 1: m01 = value; break;
+                    case 2: m02 = value; break;
+                    case 3: m03 = value; break;
+                    case 4: m10 = value; break;
+                    case 5: m11 = value; break;
+                    case 6: m12 = value; break;
+                    case 7: m13 = value; break;
+                    case 8: m20 = value; break;
+                    case 9: m21 = value; break;
+                    case 10: m22 = value; break;
+                    case 11: m23 = value; break;
+                    case 12: m30 = value; break;
+                    case 13: m31 = value; break;
+                    case 14: m32 = value; break;
+                    case 15: m33 = value; break;
+                }
+#else
 				unsafe
 				{
 					fixed ( Real* pMatrix = &this.m00 )
@@ -1015,7 +1144,8 @@ namespace Axiom.Math
 						*( pMatrix + index ) = value;
 					}
 				}
-			}
+#endif
+            }
 		}
 
 		#endregion
@@ -1029,7 +1159,7 @@ namespace Axiom.Math
 		/// <returns>A string representation of a vector3.</returns>
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m00, this.m01, this.m02, this.m03 );
 			sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m10, this.m11, this.m12, this.m13 );
@@ -1050,18 +1180,23 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			int hashCode = 0;
-
+#if AXIOM_SAFE_ONLY
+		    return (int) (m00) ^ (int) (m01) ^ (int) (m02) ^ (int) (m03) ^
+		           (int) (m10) ^ (int) (m11) ^ (int) (m12) ^ (int) (m13) ^
+		           (int) (m20) ^ (int) (m21) ^ (int) (m22) ^ (int) (m23) ^
+		           (int) (m30) ^ (int) (m31) ^ (int) (m32) ^ (int) (m33);
+#else
+			var hashCode = 0;
 			unsafe
 			{
 				fixed ( Real* pM = &m00 )
 				{
-					for ( int i = 0; i < 16; i++ )
+					for ( var i = 0; i < 16; i++ )
 						hashCode ^= (int)( *( pM + i ) );
 				}
 			}
-
-			return hashCode;
+            return hashCode;
+#endif
 		}
 
 		/// <summary>

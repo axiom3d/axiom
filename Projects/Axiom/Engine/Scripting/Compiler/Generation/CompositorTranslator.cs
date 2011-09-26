@@ -62,7 +62,7 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
 				if ( obj != null )
 				{
@@ -81,7 +81,7 @@ namespace Axiom.Scripting.Compiler
 				// Create the compositor
 				object compObject;
 				ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-				bool processed = compiler._fireEvent( ref evt, out compObject );
+				var processed = compiler._fireEvent( ref evt, out compObject );
 
 				if ( !processed )
 				{
@@ -92,7 +92,7 @@ namespace Axiom.Scripting.Compiler
 					// In order to avoid the above mentioned exception, the implementation was changed, but
 					// it need to be checked when ResourceManager._add will be updated to the lastest version
 
-					Compositor checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
+					var checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
 
 					if ( checkForExistingComp == null )
 						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
@@ -113,7 +113,7 @@ namespace Axiom.Scripting.Compiler
 				_Compositor.Origin = obj.File;
 				obj.Context = _Compositor;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{

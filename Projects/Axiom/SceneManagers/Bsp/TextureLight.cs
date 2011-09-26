@@ -37,6 +37,7 @@ using System;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -372,4 +373,85 @@ namespace Axiom.SceneManagers.Bsp
 		// Bright as the texture with X4 modulated colors
 		ModulateX4
 	}
+
+    public static partial class BufferBaseExtensions
+    {
+#if AXIOM_SAFE_ONLY
+        public static ITypePointer<TextureLightMap> ToTextureLightMapPointer(this BufferBase buffer)
+        {
+            if (buffer is ITypePointer<TextureLightMap>)
+                return buffer as ITypePointer<TextureLightMap>;
+            return new ManagedBufferTextureLightMap(buffer as ManagedBuffer);
+        }
+#else
+        public static unsafe TextureLightMap* ToTextureLightMapPointer(this BufferBase buffer)
+        {
+            return (TextureLightMap*) buffer.Pin();
+        }
+#endif
+    }
+
+    public class ManagedBufferTextureLightMap : ManagedBuffer, ITypePointer<TextureLightMap>
+    {
+        public ManagedBufferTextureLightMap(ManagedBuffer buffer) : base(buffer) { }
+
+        internal static readonly int Size = typeof(TextureLightMap).Size(  );
+
+        TextureLightMap ITypePointer<TextureLightMap>.this[int index]
+        {
+            get
+            {
+                var buf = Buf;
+                index = index * Size + IdxPtr;
+                return new TextureLightMap
+                       {
+                           color = new FourByte
+                                   {
+                                       b0 = buf[ index++ ],
+                                       b1 = buf[ index++ ],
+                                       b2 = buf[ index++ ],
+                                       b3 = buf[ index++ ]
+                                   }.Int,
+                           textureLightMap = new Vector2
+                                             {
+                                                 x = new FourByte
+                                                     {
+                                                         b0 = buf[ index++ ],
+                                                         b1 = buf[ index++ ],
+                                                         b2 = buf[ index++ ],
+                                                         b3 = buf[ index++ ]
+                                                     }.Float,
+                                                 y = new FourByte
+                                                     {
+                                                         b0 = buf[ index++ ],
+                                                         b1 = buf[ index++ ],
+                                                         b2 = buf[ index++ ],
+                                                         b3 = buf[ index ]
+                                                     }.Float
+                                             },
+                       };
+            }
+            set
+            {
+                var f = new FourByte();
+                var buf = Buf;
+                index = index * Size + IdxPtr;
+                f.Int = value.color;
+                buf[index++] = f.b0;
+                buf[index++] = f.b1;
+                buf[index++] = f.b2;
+                buf[index++] = f.b3;
+                f.Float = value.textureLightMap.x;
+                buf[index++] = f.b0;
+                buf[index++] = f.b1;
+                buf[index++] = f.b2;
+                buf[index++] = f.b3;
+                f.Float = value.textureLightMap.y;
+                buf[index++] = f.b0;
+                buf[index++] = f.b1;
+                buf[index++] = f.b2;
+                buf[index] = f.b3;
+            }
+        }
+    }
 }

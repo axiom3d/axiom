@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Media;
 using Axiom.Graphics;
 using Axiom.Overlays;
@@ -11,6 +13,7 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Demos
 {
+	[Export(typeof(TechDemo))]
 	public class DynamicTextures : TechDemo
 	{
 		Texture ptex;
@@ -43,26 +46,30 @@ namespace Axiom.Demos
 
 		}
 
-		public override bool Setup()
+#if SILVERLIGHT
+        private const PixelFormat pixelFormat = PixelFormat.A8B8G8R8;
+#else
+        private readonly PixelFormat pixelFormat =
+            Root.Instance.RenderSystem.Name.ToUpper().Contains("XNA") ? PixelFormat.A8B8G8R8 : PixelFormat.A8R8G8B8;
+#endif
+
+        public override bool Setup()
 		{
 			if ( base.Setup() )
 			{
 				tim = 0;
 				rpressed = false;
 				// Create  colour lookup
-				for ( int col = 0; col < 1024; col++ )
-				{
-					ColorEx c;
-					c = HSVtoRGB( ( 1.0f - col / 1024.0f ) * 90.0f + 225.0f, 0.9f, 0.75f + 0.25f * ( 1.0f - col / 1024.0f ) );
-					c.a = 1.0f - col / 1024.0f;
-					unsafe
+				using(var dest = BufferBase.Wrap(clut))
+					for (int col = 0; col < 1024; col++)
 					{
-						fixed ( uint* dest = clut )
-						{
-							PixelConverter.PackColor( c, PixelFormat.A8R8G8B8, (IntPtr)( &dest[ col ] ) );
-						}
+						ColorEx c;
+						c = HSVtoRGB( ( 1.0f - col/1024.0f )*90.0f + 225.0f, 0.9f, 0.75f + 0.25f*( 1.0f - col/1024.0f ) );
+						c.a = 1.0f - col/1024.0f;
+
+						dest.Ptr = col*sizeof ( uint );
+                        PixelConverter.PackColor(c, pixelFormat, dest);
 					}
-				}
 				// Setup
 				LogManager.Instance.Write( "Creating chemical containment" );
 				mSize = reactorExtent * reactorExtent;
@@ -95,7 +102,7 @@ namespace Axiom.Demos
 		public override void CreateScene()
 		{
 			// Create dynamic texture
-			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, reactorExtent - 2, reactorExtent - 2, 0, PixelFormat.A8R8G8B8, TextureUsage.DynamicWriteOnly );
+            ptex = TextureManager.Instance.CreateManual("DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, reactorExtent - 2, reactorExtent - 2, 0, pixelFormat, TextureUsage.DynamicWriteOnly);
 			buffer = ptex.GetBuffer( 0, 0 );
 
 			// Set ambient light
@@ -257,20 +264,21 @@ namespace Axiom.Demos
 
 		void buildTexture()
 		{
-			buffer.Lock( BufferLocking.Discard );
+			buffer.Lock(BufferLocking.Discard);
 			PixelBox pb = buffer.CurrentLock;
 			int idx = reactorExtent + 1;
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				fixed ( int* chem_0 = chemical[ 0 ] )
+				var chem_0 = chemical[ 0 ];
 				{
-					for ( int y = 0; y < ( reactorExtent - 2 ); y++ )
+					for (int y = 0; y < (reactorExtent - 2); y++)
 					{
-						uint* data = ( (uint*)pb.Data ) + y * pb.RowPitch;
-						int* chem = &chem_0[ idx ];
-						for ( int x = 0; x < ( reactorExtent - 2 ); x++ )
+						var data = ( pb.Data + y*pb.RowPitch*sizeof ( uint )).ToUIntPointer();
+						for (int x = 0; x < (reactorExtent - 2); x++)
 						{
-							data[ x ] = clut[ ( chem[ x ] >> 6 ) & 1023 ];
+							data[x] = clut[(chem_0[idx+x] >> 6) & 1023];
 						}
 
 						idx += reactorExtent;

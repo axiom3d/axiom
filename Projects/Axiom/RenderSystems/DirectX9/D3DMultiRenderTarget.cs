@@ -121,13 +121,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( this._targets[ 0 ] != null )
 			{
-				this._width = this._targets[ 0 ].Width;
-				this._height = this._targets[ 0 ].Height;
+				this.width = this._targets[ 0 ].Width;
+				this.height = this._targets[ 0 ].Height;
 			}
 			else
 			{
-				this._width = 0;
-				this._height = 0;
+				this.width = 0;
+				this.height = 0;
 			}
 		}
 

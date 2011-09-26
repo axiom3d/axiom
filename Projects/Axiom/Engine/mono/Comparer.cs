@@ -41,10 +41,10 @@ namespace System.Collections
 	[Serializable]
 #endif
 	public sealed class Comparer : IComparer
-#if !( XBOX || XBOX360 )
+#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 )
 		, ISerializable 
 #endif
-	{
+    {
 
 		public static readonly Comparer Default = new Comparer ();
 #if NET_1_1
@@ -99,8 +99,8 @@ namespace System.Collections
 				return -(b as IComparable).CompareTo (a);
 
 			throw new ArgumentException (Locale.GetText ("Neither 'a' nor 'b' implements IComparable."));
-		}
-#if !( XBOX || XBOX360 )
+        }
+#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 )
 		// ISerializable
 		[SecurityPermission (SecurityAction.LinkDemand, SerializationFormatter = true)]
 		public void GetObjectData (SerializationInfo info, StreamingContext context)
@@ -111,5 +111,5 @@ namespace System.Collections
 			info.AddValue ("CompareInfo", m_compareInfo, typeof (CompareInfo));
 		}
 #endif
-	}
+    }
 }

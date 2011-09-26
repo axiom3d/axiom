@@ -34,13 +34,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
 {
+	[Export(typeof(IPlugin))]
 	public class BspPlugin : IPlugin
 	{
 		public void Initialize()

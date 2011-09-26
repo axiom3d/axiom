@@ -31,7 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#if NET_2_0
+//#if NET_2_0
 
 using System;
 using System.Collections;
@@ -44,11 +44,11 @@ namespace System.Collections.Generic {
 	///  Represents a collection of associated keys and values
 	///  that are sorted by the keys and are accessible by key
 	///  and by index.
-	/// </summary>
-#if !( XBOX || XBOX360 || SILVERLIGHT )
+    /// </summary>
+#if !( XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
     [Serializable]
 #endif
-	[ComVisible( false )]
+    [ComVisible( false )]
 	public class SortedList<TKey, TValue> : IDictionary<TKey, TValue>, 
 		IDictionary,
 		ICollection,
@@ -1077,4 +1077,4 @@ namespace System.Collections.Generic {
 
 } // System.Collections.Generic
 
-#endif
+//#endif

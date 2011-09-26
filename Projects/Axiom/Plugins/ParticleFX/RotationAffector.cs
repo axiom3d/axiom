@@ -107,7 +107,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "rotation_speed_range_start", "Start range of particle rotation speed.", typeof( ParticleAffector ) )]
-		class RotationSpeedRangeStartCommand : IPropertyCommand
+        public class RotationSpeedRangeStartCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -126,7 +126,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "rotation_speed_range_end", "End range of particle rotation speed.", typeof( ParticleAffector ) )]
-		class RotationSpeedRangeEndCommand : IPropertyCommand
+        public class RotationSpeedRangeEndCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -145,7 +145,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "rotation_range_start", "Start range of particle rotation.", typeof( ParticleAffector ) )]
-		class RotationRangeStartCommand : IPropertyCommand
+        public class RotationRangeStartCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -165,7 +165,7 @@ namespace Axiom.ParticleFX
 
 
 		[ScriptableProperty( "rotation_range_end", "End range of particle rotation.", typeof( ParticleAffector ) )]
-		class RotationRangeEndCommand : IPropertyCommand
+        public class RotationRangeEndCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 

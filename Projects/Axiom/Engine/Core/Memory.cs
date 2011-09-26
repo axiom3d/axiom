@@ -35,44 +35,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-    public static class IntPtrExtension
-    {
-        public static IntPtr Offset(this IntPtr p, int offset)
-        {
+	public static class IntPtrExtension
+	{
+		public static IntPtr Offset(this IntPtr p, int offset)
+		{
 #if !NET40
-            unsafe
-            {
-                var pb = (byte*)p.ToPointer();
-                return new IntPtr( pb + offset );
-            }
+			return new IntPtr(p.ToInt64() + offset);
 #else
-            return p + offset;
+			return p + offset;
 #endif
-        }
-    }
+		}
+	}
 
 	/// <summary>
 	///		Utility class for dealing with memory.
 	/// </summary>
-	public sealed class Memory
+	public static class Memory
 	{
-		#region Constructor
-
-		/// <summary>
-		///     Don't want instances of this created.
-		/// </summary>
-		private Memory()
-		{
-		}
-
-		#endregion Constructor
-
 		#region Copy Method
 		/// <summary>
 		///		Method for copying data from one IntPtr to another.
@@ -80,7 +68,7 @@ namespace Axiom.Core
 		/// <param name="src">Source pointer.</param>
 		/// <param name="dest">Destination pointer.</param>
 		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( IntPtr src, IntPtr dest, int length )
+		public static void Copy(BufferBase src, BufferBase dest, int length)
 		{
 			Copy( src, dest, 0, 0, length );
 		}
@@ -93,19 +81,23 @@ namespace Axiom.Core
 		/// <param name="srcOffset">Offset at which to copy from the source pointer.</param>
 		/// <param name="destOffset">Offset at which to begin copying to the destination pointer.</param>
 		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( IntPtr src, IntPtr dest, int srcOffset, int destOffset, int length )
+		public static void Copy(BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length)
 		{
 			// TODO: Block copy would be faster, find a cross platform way to do it
+#if AXIOM_SAFE_ONLY
+			dest.Copy(src, srcOffset, destOffset, length);
+#else
 			unsafe
 			{
-				byte* pSrc = (byte*)src.ToPointer();
-				byte* pDest = (byte*)dest.ToPointer();
+				var pSrc = src.ToBytePointer();
+				var pDest = dest.ToBytePointer();
 
-				for ( int i = 0; i < length; i++ )
+				for ( var i = 0; i < length; i++ )
 				{
 					pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
 				}
 			}
+#endif
 		}
 		#endregion Copy Method
 
@@ -115,28 +107,54 @@ namespace Axiom.Core
 		/// <param name="dest">Destination pointer.</param>
 		/// <param name="offset">Byte offset to start.</param>
 		/// <param name="length">Number of bytes to set.</param>
-		public static void Set( IntPtr dest, int offset, int length )
+		public static void Set( BufferBase dest, int offset, int length )
 		{
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				byte* ptr = (byte*)dest.ToPointer();
+				var ptr = dest.ToBytePointer();
 
-				for ( int i = 0; i < length; i++ )
+				for (var i = 0; i < length; i++)
 				{
-					ptr[ i + offset ] = 0;
+					ptr[i + offset] = 0;
 				}
 			}
 		}
 
-		public static int SizeOf( Type type )
+		public static int SizeOf(Type type)
 		{
-			return Marshal.SizeOf( type );
+			return type.Size();
+		}
+
+		public static int SizeOf(object obj)
+		{
+			return obj.GetType().Size();
 		}
 
 		#region Pinned Object Access
 
-		private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
-		public static IntPtr PinObject( object obj )
+#if AXIOM_SAFE_ONLY
+		private static readonly Dictionary<object, ManagedBuffer> _pinnedReferences = new Dictionary<object, ManagedBuffer>();
+
+		public static BufferBase PinObject(object obj)
+		{
+			ManagedBuffer handle;
+			if (_pinnedReferences.ContainsKey(obj))
+			{
+				handle = _pinnedReferences[obj];
+			}
+			else
+			{
+				handle = obj is byte[] ? new ManagedBuffer( obj as byte[] ) : new ManagedBuffer( obj );
+				_pinnedReferences.Add(obj, handle);
+			}
+			return handle;
+		}
+#else
+		private static readonly Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+
+		public static BufferBase PinObject(object obj)
 		{
 			GCHandle handle;
 			if ( _pinnedReferences.ContainsKey( obj ) )
@@ -148,20 +166,25 @@ namespace Axiom.Core
 				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
 				_pinnedReferences.Add( obj, handle );
 			}
-			return handle.AddrOfPinnedObject();
+			return new UnsafeBuffer(handle.AddrOfPinnedObject());
 		}
+#endif
 
 		public static void UnpinObject( object obj )
 		{
 			if ( _pinnedReferences.ContainsKey( obj ) )
 			{
-				GCHandle handle = _pinnedReferences[ obj ];
+				var handle = _pinnedReferences[ obj ];
+#if AXIOM_SAFE_ONLY
+				handle.Dispose();
+#else
 				handle.Free();
-				_pinnedReferences.Remove( obj );
+#endif
+				_pinnedReferences.Remove(obj);
 			}
 			else
 			{
-				LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
+				LogManager.Instance.Write("MemoryManager : Attempted to unpin memory that wasn't pinned.");
 			}
 		}
 

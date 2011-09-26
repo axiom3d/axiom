@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
 
 using Axiom.Animating;
@@ -10,7 +11,8 @@ using Axiom.Math;
 
 namespace Axiom.Demos
 {
-	class MultipleSceneManager : TechDemo
+    [Export(typeof(TechDemo))]
+    public class MultipleSceneManager : TechDemo
 	{
 		const string CAMERA_NAME = "Camera";
 

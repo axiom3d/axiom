@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Demos
 {
+	[Export(typeof(TechDemo))]
 	public class BezierPatch : TechDemo
 	{
 		#region Protected Fields

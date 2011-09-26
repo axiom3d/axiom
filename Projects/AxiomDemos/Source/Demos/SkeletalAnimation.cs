@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -14,7 +14,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for SkeletalAnimation.
 	/// </summary>
-	public class SkeletalAnimation : TechDemo
+    [Export(typeof(TechDemo))]
+    public class SkeletalAnimation : TechDemo
 	{
 		#region Fields
 

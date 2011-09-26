@@ -94,8 +94,8 @@ namespace Axiom.Core
 		/// </returns>
 		public virtual T CreateInstance( string name, NameValuePairList parms )
 		{
-			ObjectCreator creator = new ObjectCreator( typeof( T ) );
-			T instance = creator.CreateInstance<T>();
+			var creator = new ObjectCreator( typeof( T ) );
+			var instance = creator.CreateInstance<T>();
 			_instances.Add( instance );
 			return instance;
 		}

@@ -86,12 +86,12 @@ namespace Axiom.Core
 			{
 				_parent = parent;
 
-				string materialName = "Axiom/Debug/AxesMat";
+				var materialName = "Axiom/Debug/AxesMat";
 				_material = (Material)MaterialManager.Instance[ materialName ];
 				if ( _material == null )
 				{
 					_material = (Material)MaterialManager.Instance.Create( materialName, ResourceGroupManager.InternalResourceGroupName );
-					Pass p = _material.GetTechnique( 0 ).GetPass( 0 );
+					var p = _material.GetTechnique( 0 ).GetPass( 0 );
 					p.LightingEnabled = false;
 					//TODO: p.PolygonModeOverrideable = false;
 					p.VertexColorTracking = TrackVertexColor.Ambient;
@@ -100,11 +100,11 @@ namespace Axiom.Core
 					p.DepthWrite = false;
 				}
 
-				string meshName = "Axiom/Debug/AxesMesh";
+				var meshName = "Axiom/Debug/AxesMesh";
 				_mesh = MeshManager.Instance[ meshName ];
 				if ( _mesh == null )
 				{
-					ManualObject mo = new ManualObject( "tmp" );
+					var mo = new ManualObject( "tmp" );
 					mo.Begin( Material.Name, OperationType.TriangleList );
 					/* 3 axes, each made up of 2 of these (base plane = XY)
 					 *   .------------|\
@@ -112,8 +112,8 @@ namespace Axiom.Core
 					 */
 					mo.EstimateVertexCount( 7 * 2 * 3 );
 					mo.EstimateIndexCount( 3 * 2 * 3 );
-					Quaternion[] quat = new Quaternion[ 6 ];
-					ColorEx[] col = new ColorEx[ 3 ];
+					var quat = new Quaternion[ 6 ];
+					var col = new ColorEx[ 3 ];
 
 					// x-axis
 					quat[ 0 ] = Quaternion.Identity;
@@ -131,7 +131,7 @@ namespace Axiom.Core
 					col[ 2 ] = ColorEx.Blue;
 					col[ 2 ].a = 0.8f;
 
-					Vector3[] basepos = new Vector3[ 7 ]  
+					var basepos = new Vector3[ 7 ]  
 										{
 											// stalk
 											new Vector3(0f, 0.05f, 0f), 
@@ -147,12 +147,12 @@ namespace Axiom.Core
 
 					// vertices
 					// 6 arrows
-					for ( int i = 0; i < 6; ++i )
+					for ( var i = 0; i < 6; ++i )
 					{
 						// 7 points
-						for ( int p = 0; p < 7; ++p )
+						for ( var p = 0; p < 7; ++p )
 						{
-							Vector3 pos = quat[ i ] * basepos[ p ];
+							var pos = quat[ i ] * basepos[ p ];
 							mo.Position( pos );
 							mo.Color( col[ i / 2 ] );
 						}
@@ -160,9 +160,9 @@ namespace Axiom.Core
 
 					// indices
 					// 6 arrows
-					for ( int i = 0; i < 6; ++i )
+					for ( var i = 0; i < 6; ++i )
 					{
-						ushort baseIndex = (ushort)( i * 7 );
+						var baseIndex = (ushort)( i * 7 );
 						mo.Triangle( (ushort)( baseIndex + 0 ), (ushort)( baseIndex + 1 ), (ushort)( baseIndex + 2 ) );
 						mo.Triangle( (ushort)( baseIndex + 0 ), (ushort)( baseIndex + 2 ), (ushort)( baseIndex + 3 ) );
 						mo.Triangle( (ushort)( baseIndex + 4 ), (ushort)( baseIndex + 5 ), (ushort)( baseIndex + 6 ) );
@@ -324,8 +324,8 @@ namespace Axiom.Core
 				matrices[0] = _parent.cachedTransform;
 				if (!Utility.RealEqual(_scaling, 1.0))
 				{
-					Matrix4 m = Matrix4.Identity;
-					Vector3 s = new Vector3(_scaling, _scaling, _scaling);
+					var m = Matrix4.Identity;
+					var s = new Vector3(_scaling, _scaling, _scaling);
 					m.Scale = s;
 					matrices[0] = matrices[0] * m;
 				}
@@ -546,7 +546,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void AddChild( Node child )
 		{
-			string childName = child.Name;
+			var childName = child.Name;
 			if ( child == this )
 				throw new ArgumentException( string.Format( "Node '{0}' cannot be added as a child of itself.", childName ) );
 			if ( childNodes.ContainsKey( childName ) )
@@ -571,7 +571,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void RemoveAllChildren()
 		{
-			foreach ( Node child in Children )
+			foreach ( var child in Children )
 			{
 				child.NotifyOfNewParent( null );
 			}
@@ -735,7 +735,7 @@ namespace Axiom.Core
 		/// <param name="move">Vector relative to the supplied axes.</param>
 		public virtual void Translate( Matrix3 axes, Vector3 move )
 		{
-			Vector3 derived = axes * move;
+			var derived = axes * move;
 			Translate( derived, TransformSpace.Parent );
 		}
 
@@ -757,7 +757,7 @@ namespace Axiom.Core
 	    /// <param name="relativeTo"></param>
 	    public virtual void Translate( Matrix3 axes, Vector3 move, TransformSpace relativeTo )
 		{
-			Vector3 derived = axes * move;
+			var derived = axes * move;
 			Translate( derived, relativeTo );
 		}
 
@@ -817,7 +817,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
 		{
-			Quaternion q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( (Real)degrees ), axis );
+			var q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( (Real)degrees ), axis );
 			Rotate( q, relativeTo );
 		}
 
@@ -939,7 +939,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Node CreateChild( string name, Vector3 translate, Quaternion rotate )
 		{
-			Node newChild = CreateChildImpl( name );
+			var newChild = CreateChildImpl( name );
 			newChild.Translate( translate );
 			newChild.Rotate( rotate );
 			AddChild( newChild );
@@ -973,7 +973,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Node CreateChild( Vector3 translate, Quaternion rotate )
 		{
-			Node newChild = CreateChildImpl();
+			var newChild = CreateChildImpl();
 			newChild.Translate( translate );
 			newChild.Rotate( rotate );
 			AddChild( newChild );
@@ -1003,7 +1003,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public float GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 difference = this.DerivedPosition - camera.DerivedPosition;
+			var difference = this.DerivedPosition - camera.DerivedPosition;
 
 			// return squared length to avoid doing a square root when it is not imperative
 			return difference.LengthSquared;
@@ -1299,9 +1299,9 @@ namespace Axiom.Core
 			get
 			{
 				// get the 3 unit Vectors
-				Vector3 xAxis = Vector3.UnitX;
-				Vector3 yAxis = Vector3.UnitY;
-				Vector3 zAxis = Vector3.UnitZ;
+				var xAxis = Vector3.UnitX;
+				var yAxis = Vector3.UnitY;
+				var zAxis = Vector3.UnitZ;
 
 				// multpliy each times the current orientation
 				xAxis = orientation * xAxis;
@@ -1328,7 +1328,7 @@ namespace Axiom.Core
 			if ( parent != null )
 			{
 				// Update orientation
-				Quaternion parentOrientation = parent.DerivedOrientation;
+				var parentOrientation = parent.DerivedOrientation;
 				if ( inheritOrientation )
 				{
 					// combine local orientation with parents
@@ -1341,7 +1341,7 @@ namespace Axiom.Core
 				}
 
 				// update scale
-				Vector3 parentScale = parent.DerivedScale;
+				var parentScale = parent.DerivedScale;
 				if ( inheritScale )
 				{
 					// set own scale, just combine as equivalent axes, no shearing
@@ -1422,14 +1422,14 @@ namespace Axiom.Core
 		protected void MakeInverseTransform( Vector3 position, Vector3 scale, Quaternion orientation, ref Matrix4 destMatrix )
 		{
 			// Invert the parameters
-			Vector3 invTranslate = -position;
-			Vector3 invScale = Vector3.Zero;
+			var invTranslate = -position;
+			var invScale = Vector3.Zero;
 
 			invScale.x = 1.0f / scale.x;
 			invScale.y = 1.0f / scale.y;
 			invScale.z = 1.0f / scale.z;
 
-			Quaternion invRot = orientation.Inverse();
+			var invRot = orientation.Inverse();
 
 			// Because we're inverting, order is translation, rotation, scale
 			// So make translation relative to scale & rotation
@@ -1439,8 +1439,8 @@ namespace Axiom.Core
 			invTranslate = invRot * invTranslate; // rotate
 
 			// Next, make a 3x3 rotation matrix and apply inverse scale
-			Matrix3 rot3x3 = invRot.ToRotationMatrix();
-			Matrix3 scale3x3 = Matrix3.Zero;
+			var rot3x3 = invRot.ToRotationMatrix();
+			var scale3x3 = Matrix3.Zero;
 
 			scale3x3.m00 = invScale.x;
 			scale3x3.m11 = invScale.y;
@@ -1651,7 +1651,7 @@ namespace Axiom.Core
 			if ( needChildUpdate || hasParentChanged )
 			{
 				// update all children
-				foreach ( Node child in childNodes.Values )
+				foreach ( var child in childNodes.Values )
 				{
 					child.Update( true, true );
 				}
@@ -1661,7 +1661,7 @@ namespace Axiom.Core
 			else
 			{
 				// just update selected children
-				foreach ( Node child in childrenToUpdate.Values )
+				foreach ( var child in childrenToUpdate.Values )
 				{
 					child.Update( true, false );
 				}
@@ -1710,13 +1710,13 @@ namespace Axiom.Core
 			else
 			{
 				// Blend with existing
-				float factor = weight / ( accumAnimWeight + weight );
+				var factor = weight / ( accumAnimWeight + weight );
 
 				translationFromInitial += ( translate - translationFromInitial ) * factor;
 				rotationFromInitial = Quaternion.Slerp( factor, rotationFromInitial, rotate );
 
 				// For scale, find delta from 1.0, factor then add back before applying
-				Vector3 scaleDiff = ( scale - Vector3.UnitScale ) * factor;
+				var scaleDiff = ( scale - Vector3.UnitScale ) * factor;
 				scaleFromInitial = scaleFromInitial * ( scaleDiff + Vector3.UnitScale );
 				accumAnimWeight += weight;
 			}

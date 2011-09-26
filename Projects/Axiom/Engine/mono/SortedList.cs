@@ -39,21 +39,22 @@ namespace System.Collections {
 	///  Represents a collection of associated keys and values
 	///  that are sorted by the keys and are accessible by key
 	///  and by index.
-	/// </summary>
-#if !( XBOX || XBOX360 || SILVERLIGHT )
+    /// </summary>
+#if !( XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
     [Serializable]
 #endif
 #if NET_2_0
 	[ComVisible(true)]
 #endif
-	public class SortedList : IDictionary, ICollection,
-	                          IEnumerable, ICloneable {
+    public class SortedList : IDictionary, ICollection,
+	                          IEnumerable, ICloneable
+    {
 
 
-#if !( XBOX || XBOX360 || SILVERLIGHT )
+#if !( XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
     [Serializable]
 #endif
-		internal struct Slot
+        internal struct Slot
 		{
 			internal Object key;
 			internal Object value;

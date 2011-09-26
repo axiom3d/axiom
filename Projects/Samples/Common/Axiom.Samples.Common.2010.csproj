@@ -11,6 +11,10 @@
     <RootNamespace>Axiom.Samples.Common</RootNamespace>
     <AssemblyName>Axiom.Samples.Common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
@@ -39,7 +43,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\</OutputPath>
     <DocumentationFile>bin\x86\Debug\Axiom.Samples.Common.XML</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
@@ -51,7 +55,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\</OutputPath>
     <DocumentationFile>bin\x86\Release\Axiom.Samples.Common.XML</DocumentationFile>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -94,20 +98,22 @@
     <Compile Include="Tray\WidgetEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\..\..\SharpInput\bin\Release\DirectX\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpInputSystem, Version=0.3.0.17339, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\log4net\src\log4net.csproj">
+      <Project>{F6A02431-167E-4347-BC43-65532C31CDB7}</Project>
+      <Name>log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpInputSystem\src\Projects\SharpInputSystem\SharpInputSystem.DirectX.csproj">
+      <Project>{5AA7DDED-70FA-4014-A289-01BC2FAD5D4F}</Project>
+      <Name>SharpInputSystem.DirectX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.2010.csproj">
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework.2010</Name>

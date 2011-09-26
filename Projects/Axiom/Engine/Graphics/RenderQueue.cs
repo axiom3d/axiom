@@ -170,7 +170,7 @@ namespace Axiom.Graphics
 				splitPassesByLightingType = value;
 
 				// set the value for all render groups as well
-				for ( int i = 0; i < renderGroups.Count; i++ )
+				for ( var i = 0; i < renderGroups.Count; i++ )
 				{
 					GetQueueGroupByIndex( i ).SplitPassesByLightingType = splitPassesByLightingType;
 				}
@@ -193,7 +193,7 @@ namespace Axiom.Graphics
 				splitNoShadowPasses = value;
 
 				// set the value for all render groups as well
-				for ( int i = 0; i < renderGroups.Count; i++ )
+				for ( var i = 0; i < renderGroups.Count; i++ )
 				{
 					GetQueueGroupByIndex( i ).SplitNoShadowPasses = splitNoShadowPasses;
 				}
@@ -216,7 +216,7 @@ namespace Axiom.Graphics
 				shadowCastersCannotBeReceivers = value;
 
 				// set the value for all render groups as well
-				for ( int i = 0; i < renderGroups.Count; i++ )
+				for ( var i = 0; i < renderGroups.Count; i++ )
 				{
 					GetQueueGroupByIndex( i ).ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
 				}
@@ -235,7 +235,7 @@ namespace Axiom.Graphics
         /// <param name="priority"></param>
 		public void AddRenderable( IRenderable renderable, ushort priority, RenderQueueGroupID groupID )
 		{
-			RenderQueueGroup group = GetQueueGroup( groupID );
+			var group = GetQueueGroup( groupID );
 			Technique t;
 
 			// let the material know it has been used, which also forces a recompile if required
@@ -249,7 +249,7 @@ namespace Axiom.Graphics
 			if ( renderable.Material == null || renderable.Technique == null )
 			{
 				// Use default base white
-				Material baseWhite = (Material)MaterialManager.Instance[ "BaseWhite" ];
+				var baseWhite = (Material)MaterialManager.Instance[ "BaseWhite" ];
 				t = baseWhite.GetTechnique( 0 );
 			}
 			else
@@ -306,9 +306,9 @@ namespace Axiom.Graphics
 		{
 			// loop through each queue and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
-			for ( int i = 0; i < renderGroups.Count; i++ )
+			for ( var i = 0; i < renderGroups.Count; i++ )
 			{
-				RenderQueueGroup group = (RenderQueueGroup)renderGroups.GetByIndex( i );
+				var group = (RenderQueueGroup)renderGroups.GetByIndex( i );
 
 				// clear the RenderQueueGroup
 				group.Clear( dispose );
@@ -335,7 +335,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderQueueGroup GetQueueGroup( RenderQueueGroupID queueID )
 		{
-			RenderQueueGroup group = renderGroups[ queueID ] as RenderQueueGroup;
+			var group = renderGroups[ queueID ] as RenderQueueGroup;
 
 			// see if there is a current queue group for this group id
 			if ( group == null )

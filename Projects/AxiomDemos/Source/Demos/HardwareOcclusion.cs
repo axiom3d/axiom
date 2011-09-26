@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -20,7 +20,8 @@ namespace Axiom.Demos
 	///		visible, the number of visible fragments will be reported on screen.  If the head is
 	///		totally occluded, it will say "Object is occluded".
 	/// </remarks>
-	public class HardwareOcclusion : TechDemo
+    [Export(typeof(TechDemo))]
+    public class HardwareOcclusion : TechDemo
 	{
 		/// <summary>
 		///		An instance of a hardware occlusion query.

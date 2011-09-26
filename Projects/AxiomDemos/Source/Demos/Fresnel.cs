@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Core;
@@ -17,7 +17,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Fresnel.
 	/// </summary>
-	public class Fresnel : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Fresnel : TechDemo
 	{
 		#region Fields
 

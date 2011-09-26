@@ -64,23 +64,25 @@ namespace Axiom.RenderSystems.Xna.Content
 	[ContentProcessor( DisplayName = "Axiom HLSL Processor" )]
 	public class HlslProcessor : ContentProcessor<TInput, TOutput>
 	{
+#if !XNA4
 		private HlslIncludeHandler includeHandler = new HlslIncludeHandler();
 
-		[DisplayName( "Shader Profile" )]
-		[DefaultValue( ShaderProfile.PS_2_0 )]
-		[Description( "The profile to compile this shader with." )]
-		public ShaderProfile Profile
-		{
-			get
-			{
-				return shaderProfile;
-			}
-			set
-			{
-				shaderProfile = value;
-			}
-		}
-		private ShaderProfile shaderProfile = ShaderProfile.PS_2_0;
+        [DisplayName("Shader Profile")]
+        [DefaultValue(ShaderProfile.PS_2_0)]
+        [Description("The profile to compile this shader with.")]
+        public ShaderProfile Profile
+        {
+            get
+            {
+                return shaderProfile;
+            }
+            set
+            {
+                shaderProfile = value;
+            }
+        }
+        private ShaderProfile shaderProfile = ShaderProfile.PS_2_0;
+#endif
 
 		[DisplayName( "Entry Point" )]
 		[DefaultValue( "main" )]
@@ -116,6 +118,7 @@ namespace Axiom.RenderSystems.Xna.Content
 
 		public override TOutput Process( TInput input, ContentProcessorContext context )
 		{
+#if !XNA4
 			// Populate preprocessor defines
 			string stringBuffer = string.Empty;
 			List<CompilerMacro> defines = new List<CompilerMacro>();
@@ -147,9 +150,14 @@ namespace Axiom.RenderSystems.Xna.Content
 				throw new InvalidContentException( shader.ErrorsAndWarnings );
 			}
 
-			HlslCompiledShader compiledShader = new HlslCompiledShader( entryPoint, shader.GetShaderCode() );
+			HlslCompiledShader compiledShader = new HlslCompiledShader(entryPoint, shader.GetShaderCode());
+#else
+            throw new NotImplementedException();
+            //var shader = new EffectProcessor().Process(new EffectContent { EffectCode = input }, context);
+		    HlslCompiledShader compiledShader = new HlslCompiledShader( entryPoint,  /**/null/*/shader.GetEffectCode()/**/);
+#endif
 			HlslCompiledShaders compiledShaders = new HlslCompiledShaders();
-			compiledShaders.Add( compiledShader );
+			compiledShaders.Add(compiledShader);
 			return compiledShaders;
 		}
 	}

@@ -1,6 +1,7 @@
 #region Namespace Declarations
 
 using System;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -16,6 +17,7 @@ namespace Axiom.Demos
 	///     Demonstrates dotproduct blending operation and normalization cube map
 	///     usage for achieving bump mapping effect.
 	/// </summary>
+	[Export(typeof(TechDemo))]
 	public class Dot3Bump : TechDemo
 	{
 		#region Fields
@@ -32,32 +34,32 @@ namespace Axiom.Demos
 		BillboardSet[] lightFlareSets = new BillboardSet[ NUM_LIGHTS ];
 		Billboard[] lightFlares = new Billboard[ NUM_LIGHTS ];
 		Vector3[] lightPositions = new Vector3[] {
-                                                     new Vector3(300, 0, 0),
-                                                     new Vector3(-200, 50, 0),
-                                                     new Vector3(0, -300, -100)
-                                                 };
+													 new Vector3(300, 0, 0),
+													 new Vector3(-200, 50, 0),
+													 new Vector3(0, -300, -100)
+												 };
 
 		float[] lightRotationAngles = new float[] { 0, 30, 75 };
 
 		Vector3[] lightRotationAxes = new Vector3[] {
-                                                        Vector3.UnitX,
-                                                        Vector3.UnitZ,
-                                                        Vector3.UnitY
-                                                    };
+														Vector3.UnitX,
+														Vector3.UnitZ,
+														Vector3.UnitY
+													};
 
 		float[] lightSpeeds = new float[] { 30, 10, 50 };
 
 		ColorEx[] diffuseLightColors = new ColorEx[] {
-                                                         new ColorEx(1, 1, 1, 1),
-                                                         new ColorEx(1, 1, 0, 0),
-                                                         new ColorEx(1, 1, 1, 0.5f)
-                                                     };
+														 new ColorEx(1, 1, 1, 1),
+														 new ColorEx(1, 1, 0, 0),
+														 new ColorEx(1, 1, 1, 0.5f)
+													 };
 
 		ColorEx[] specularLightColors = new ColorEx[] {
-                                                          new ColorEx(1, 1, 1, 1),
-                                                          new ColorEx(1, 0, 0.8f, 0.8f),
-                                                          new ColorEx(1, 1, 1, 0.8f)
-                                                      };
+														  new ColorEx(1, 1, 1, 1),
+														  new ColorEx(1, 0, 0.8f, 0.8f),
+														  new ColorEx(1, 1, 1, 0.8f)
+													  };
 
 		bool[] lightState = new bool[] { true, true, false };
 

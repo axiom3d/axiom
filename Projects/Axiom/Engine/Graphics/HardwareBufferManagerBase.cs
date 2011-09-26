@@ -187,7 +187,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual VertexDeclaration CreateVertexDeclaration()
 		{
-			VertexDeclaration decl = new VertexDeclaration();
+			var decl = new VertexDeclaration();
 			vertexDeclarations.Add( decl );
 			return decl;
 		}
@@ -197,7 +197,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual VertexBufferBinding CreateVertexBufferBinding()
 		{
-			VertexBufferBinding binding = new VertexBufferBinding();
+			var binding = new VertexBufferBinding();
 			vertexBufferBindings.Add( binding );
 			return binding;
 		}
@@ -295,7 +295,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// grab the available buffer and remove it from the free list
-				int lastIndex = list.Count - 1;
+				var lastIndex = list.Count - 1;
 				vbuf = (HardwareVertexBuffer)list[ lastIndex ];
 				list.RemoveAt( lastIndex );
 			}
@@ -325,9 +325,9 @@ namespace Axiom.Graphics
 		/// </param>
 		public virtual void ReleaseVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
-			for ( int i = 0; i < tempVertexBufferLicenses.Count; i++ )
+			for ( var i = 0; i < tempVertexBufferLicenses.Count; i++ )
 			{
-				VertexBufferLicense vbl = (VertexBufferLicense)tempVertexBufferLicenses[ i ];
+				var vbl = (VertexBufferLicense)tempVertexBufferLicenses[ i ];
 				if ( vbl.buffer != bufferCopy )
 					continue;
 				vbl.licensee.LicenseExpired( bufferCopy );
@@ -350,9 +350,9 @@ namespace Axiom.Graphics
 		///     buffer copy for use.</param>
 		public void TouchVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
-			for ( int i = 0; i < tempVertexBufferLicenses.Count; i++ )
+			for ( var i = 0; i < tempVertexBufferLicenses.Count; i++ )
 			{
-				VertexBufferLicense vbl = (VertexBufferLicense)tempVertexBufferLicenses[ i ];
+				var vbl = (VertexBufferLicense)tempVertexBufferLicenses[ i ];
 				if ( vbl.buffer != bufferCopy )
 					continue;
 				Debug.Assert( vbl.licenseType == BufferLicenseRelease.Automatic );
@@ -374,14 +374,14 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public virtual void FreeUnusedBufferCopies()
 		{
-			int numFreed = 0;
+			var numFreed = 0;
 
 			// Free unused temporary buffers
 			foreach ( IList<HardwareVertexBuffer> list in freeTempVertexBufferMap.Values )
 			{
-				for ( int i = list.Count - 1; i > 0; i-- )
+				for ( var i = list.Count - 1; i > 0; i-- )
 				{
-					HardwareVertexBuffer vbuf = list[ i ];
+					var vbuf = list[ i ];
 					// Free the temporary buffer that referenced by ourself only.
 					// TODO: Some temporary buffers are bound to vertex buffer bindings
 					// but not checked out, need to sort out method to unbind them.
@@ -407,11 +407,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void ReleaseBufferCopies( bool forceFreeUnused )
 		{
-			int numUnused = freeTempVertexBufferMap.Count;
-			int numUsed = tempVertexBufferLicenses.Count;
-			for ( int i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
+			var numUnused = freeTempVertexBufferMap.Count;
+			var numUsed = tempVertexBufferLicenses.Count;
+			for ( var i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
 			{
-				VertexBufferLicense vbl =
+				var vbl =
 					(VertexBufferLicense)tempVertexBufferLicenses[ i ];
 
 				// only release licenses set to auto release
@@ -467,9 +467,9 @@ namespace Axiom.Graphics
 		public virtual void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer )
 		{
 			// erase the copies which are licensed out
-			for ( int i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
+			for ( var i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
 			{
-				VertexBufferLicense vbl =
+				var vbl =
 					(VertexBufferLicense)tempVertexBufferLicenses[ i ];
 
 				if ( vbl.originalBuffer == sourceBuffer )
@@ -481,11 +481,11 @@ namespace Axiom.Graphics
 			}
 
 			// TODO: Verify this works
-			foreach ( KeyValuePair<HardwareVertexBuffer, List<HardwareVertexBuffer>> entry in freeTempVertexBufferMap )
+			foreach ( var entry in freeTempVertexBufferMap )
 			{
 				if ( entry.Key == sourceBuffer )
 				{
-					List<HardwareVertexBuffer> list = entry.Value;
+					var list = entry.Value;
 					list.Clear();
 				}
 			}
@@ -517,7 +517,7 @@ namespace Axiom.Graphics
 				{
 					// Destroy all necessary objects
 
-					foreach ( VertexDeclaration buffer in vertexDeclarations )
+					foreach ( var buffer in vertexDeclarations )
 					{
 						buffer.Dispose();
 					}

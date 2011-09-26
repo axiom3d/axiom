@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
 using Axiom.Core;
 using Axiom.SceneManagers.PortalConnected;
@@ -45,6 +46,7 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace OctreeZone
 {
+    [Export(typeof(IPlugin))]
 	public class OctreeZonePlugin : IPlugin
 	{
 		public void Initialize()

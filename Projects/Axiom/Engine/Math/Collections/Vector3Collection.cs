@@ -88,7 +88,7 @@ namespace Axiom.Math.Collections
        } */
 
     
-#if !( XBOX || XBOX360 || SILVERLIGHT )
+#if !( XBOX || XBOX360 )
     /// <summary>
     ///		A strongly-typed collection of <see cref="Vector3"/> objects.
     /// </summary>
@@ -134,7 +134,7 @@ namespace Axiom.Math.Collections
         #region Implementation (data)
         private Vector3[] m_array;
         private int m_count; // defaults to 0
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360)
         [NonSerialized]
 #endif
         private int m_version; // defaults to 0
@@ -341,7 +341,7 @@ namespace Axiom.Math.Collections
         /// </summary>
         public virtual object Clone()
         {
-            Vector3List newColl = new Vector3List( m_count );
+            var newColl = new Vector3List( m_count );
             Array.Copy( m_array, 0, newColl.m_array, 0, m_count );
             newColl.m_count = m_count;
             newColl.m_version = m_version;
@@ -356,7 +356,7 @@ namespace Axiom.Math.Collections
         /// <returns><c>true</c> if <paramref name="item"/> is found in the <c>Vector3List</c>; otherwise, <c>false</c>.</returns>
         public virtual bool Contains( Vector3 item )
         {
-            for ( int i = 0; i != m_count; ++i )
+            for ( var i = 0; i != m_count; ++i )
                 if ( m_array[ i ].Equals( item ) )
                     return true;
             return false;
@@ -373,7 +373,7 @@ namespace Axiom.Math.Collections
         ///	</returns>
         public virtual int IndexOf( Vector3 item )
         {
-            for ( int i = 0; i != m_count; ++i )
+            for ( var i = 0; i != m_count; ++i )
                 if ( m_array[ i ].Equals( item ) )
                     return i;
             return -1;
@@ -415,7 +415,7 @@ namespace Axiom.Math.Collections
         /// </exception>
         public virtual void Remove( Vector3 item )
         {
-            int i = IndexOf( item );
+            var i = IndexOf( item );
             if ( i < 0 )
                 throw new System.ArgumentException( "Cannot remove the specified item because it was not found in the specified Collection." );
 
@@ -446,7 +446,7 @@ namespace Axiom.Math.Collections
             // We can't set the deleted entry equal to null, because it might be a value type.
             // Instead, we'll create an empty single-element array of the right type and copy it 
             // over the entry we want to erase.
-            Vector3[] temp = new Vector3[ 1 ];
+            var temp = new Vector3[ 1 ];
             Array.Copy( temp, 0, m_array, m_count, 1 );
             m_version++;
         }
@@ -509,7 +509,7 @@ namespace Axiom.Math.Collections
                 {
                     if ( value > 0 )
                     {
-                        Vector3[] temp = new Vector3[ value ];
+                        var temp = new Vector3[ value ];
                         Array.Copy( m_array, temp, m_count );
                         m_array = temp;
                     }
@@ -584,9 +584,9 @@ namespace Axiom.Math.Collections
         /// </exception>
         private void ValidateIndex( int i, bool allowEqualEnd )
         {
-            int max = ( allowEqualEnd ) ? ( m_count ) : ( m_count - 1 );
-            if ( i < 0 || i > max )
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+            var max = ( allowEqualEnd ) ? ( m_count ) : ( m_count - 1 );
+            if ( i < 0 || i > max)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
                 throw new System.ArgumentOutOfRangeException( "Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i, "Specified argument was out of the range of valid values." );
 #else
                 throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
@@ -595,7 +595,7 @@ namespace Axiom.Math.Collections
 
         private void EnsureCapacity( int min )
         {
-            int newCapacity = ( ( m_array.Length == 0 ) ? DEFAULT_CAPACITY : m_array.Length * 2 );
+            var newCapacity = ( ( m_array.Length == 0 ) ? DEFAULT_CAPACITY : m_array.Length * 2 );
             if ( newCapacity < min )
                 newCapacity = min;
 

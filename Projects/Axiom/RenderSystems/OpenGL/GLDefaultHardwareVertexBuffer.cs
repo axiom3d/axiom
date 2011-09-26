@@ -1,4 +1,5 @@
 ﻿using System;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
@@ -9,7 +10,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
         }
 
-        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking locking)
         {
             throw new NotImplementedException();
         }
@@ -19,12 +20,12 @@ namespace Axiom.RenderSystems.OpenGL
             throw new NotImplementedException();
         }
 
-        public override void ReadData( int offset, int length, IntPtr dest )
+        public override void ReadData(int offset, int length, BufferBase dest)
         {
             throw new NotImplementedException();
         }
 
-        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+        public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
         {
             throw new NotImplementedException();
         }

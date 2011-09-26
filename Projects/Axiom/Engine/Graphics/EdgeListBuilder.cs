@@ -185,8 +185,8 @@ namespace Axiom.Graphics
 				  completely smooth shading
 			*/
 
-			int technique = 1;
-			bool validHull = false;
+			var technique = 1;
+			var validHull = false;
 
 			while ( !validHull && technique <= 5 )
 			{
@@ -254,9 +254,9 @@ namespace Axiom.Graphics
 			edgeData.edgeGroups.Capacity = vertexDataList.Count;
 
 			// Initialize edge group data
-			for ( int i = 0; i < vertexDataList.Count; i++ )
+			for ( var i = 0; i < vertexDataList.Count; i++ )
 			{
-				EdgeData.EdgeGroup group = new EdgeData.EdgeGroup();
+				var group = new EdgeData.EdgeGroup();
 				group.vertexSet = i;
 				group.vertexData = (VertexData)vertexDataList[ i ];
 				edgeData.edgeGroups.Add( group );
@@ -265,7 +265,7 @@ namespace Axiom.Graphics
 			// Stage 1: Build triangles and initial edge list.
 			for ( int i = 0, indexSet = 0; i < indexDataList.Count; i++, indexSet++ )
 			{
-				int vertexSet = (int)indexDataVertexDataSetList[ i ];
+				var vertexSet = (int)indexDataVertexDataSetList[ i ];
 
 				BuildTrianglesEdges( indexSet, vertexSet );
 			}
@@ -284,10 +284,10 @@ namespace Axiom.Graphics
 		/// <param name="vertexSet"></param>
 		protected void BuildTrianglesEdges( int indexSet, int vertexSet )
 		{
-			IndexData indexData = (IndexData)indexDataList[ indexSet ];
-			OperationType opType = operationTypes[ indexSet ];
+			var indexData = (IndexData)indexDataList[ indexSet ];
+			var opType = operationTypes[ indexSet ];
 
-			int iterations = 0;
+			var iterations = 0;
 
 			switch ( opType )
 			{
@@ -302,51 +302,41 @@ namespace Axiom.Graphics
 			}
 
 			// locate postion element & the buffer to go with it
-			VertexData vertexData = (VertexData)vertexDataList[ vertexSet ];
-			VertexElement posElem =
-				vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			var vertexData = (VertexData)vertexDataList[ vertexSet ];
+			var posElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 
-			HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
-			IntPtr posPtr = posBuffer.Lock( BufferLocking.ReadOnly );
-			IntPtr idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
+			var posBuffer = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
+			var posPtr = posBuffer.Lock( BufferLocking.ReadOnly );
+			var idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
 
-			unsafe
-			{
-				byte* pBaseVertex = (byte*)posPtr.ToPointer();
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+		    {
+		        var pBaseVertex = posPtr;
 
-				short* p16Idx = null;
-				int* p32Idx = null;
+                var p16Idx = idxPtr.ToShortPointer();
+                var p32Idx = idxPtr.ToIntPointer();
 
 				// counters used for pointer indexing
-				int count16 = 0;
-				int count32 = 0;
+				var count16 = 0;
+				var count32 = 0;
 
-				if ( indexData.indexBuffer.Type == IndexType.Size16 )
-				{
-					p16Idx = (short*)idxPtr.ToPointer();
-				}
-				else
-				{
-					p32Idx = (int*)idxPtr.ToPointer();
-				}
-
-				float* pReal = null;
-
-				int triStart = edgeData.triangles.Count;
+				var triStart = edgeData.triangles.Count;
 
 				// iterate over all the groups of 3 indices
 				edgeData.triangles.Capacity = triStart + iterations;
 
-				for ( int t = 0; t < iterations; t++ )
+				for ( var t = 0; t < iterations; t++ )
 				{
-					EdgeData.Triangle tri = new EdgeData.Triangle();
+					var tri = new EdgeData.Triangle();
 					tri.indexSet = indexSet;
 					tri.vertexSet = vertexSet;
 
-					int[] index = new int[ 3 ];
-					Vector3[] v = new Vector3[ 3 ];
+					var index = new int[ 3 ];
+					var v = new Vector3[ 3 ];
 
-					for ( int i = 0; i < 3; i++ )
+					for ( var i = 0; i < 3; i++ )
 					{
 						// Standard 3-index read for tri list or first tri in strip / fan
 						if ( opType == OperationType.TriangleList || t == 0 )
@@ -391,11 +381,12 @@ namespace Axiom.Graphics
 						tri.vertIndex[ i ] = index[ i ];
 
 						// Retrieve the vertex position
-						byte* pVertex = pBaseVertex + ( index[ i ] * posBuffer.VertexSize );
-						pReal = (float*)( pVertex + posElem.Offset );
-						v[ i ].x = *pReal++;
-						v[ i ].y = *pReal++;
-						v[ i ].z = *pReal++;
+                        var pVertex = pBaseVertex + (index[i] * posBuffer.VertexSize);
+                        var pReal = (pVertex + posElem.Offset).ToFloatPointer();
+
+					    v[i].x = pReal[0];
+                        v[i].y = pReal[1];
+                        v[i].z = pReal[2];
 						// find this vertex in the existing vertex map, or create it
 						tri.sharedVertIndex[ i ] = FindOrCreateCommonVertex( v[ i ], vertexSet, indexSet, index[ i ] );
 					}
@@ -458,7 +449,7 @@ namespace Axiom.Graphics
 		/// <param name="sharedVertIndex1"></param>
 		protected void CreateEdge( int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0, int sharedVertIndex1 )
 		{
-			UniqueEdge vertPair = new UniqueEdge();
+			var vertPair = new UniqueEdge();
 			vertPair.vertexIndex1 = sharedVertIndex0;
 			vertPair.vertexIndex2 = sharedVertIndex1;
 
@@ -470,7 +461,7 @@ namespace Axiom.Graphics
 			uniqueEdges.Add( vertPair );
 
 			// create a new edge and initialize as degenerate
-			EdgeData.Edge e = new EdgeData.Edge();
+			var e = new EdgeData.Edge();
 			e.isDegenerate = true;
 
 			// set only first tri, the other will be completed in ConnectEdges
@@ -488,11 +479,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected void ConnectEdges()
 		{
-			int triIndex = 0;
+			var triIndex = 0;
 
-			for ( int i = 0; i < edgeData.triangles.Count; i++, triIndex++ )
+			for ( var i = 0; i < edgeData.triangles.Count; i++, triIndex++ )
 			{
-				EdgeData.Triangle tri = (EdgeData.Triangle)edgeData.triangles[ i ];
+				var tri = (EdgeData.Triangle)edgeData.triangles[ i ];
 				EdgeData.Edge e = null;
 
 				if ( tri.sharedVertIndex[ 0 ] > tri.sharedVertIndex[ 1 ] )
@@ -538,13 +529,13 @@ namespace Axiom.Graphics
 		protected EdgeData.Edge FindEdge( int sharedIndex1, int sharedIndex2 )
 		{
 			// Iterate over the existing edges
-			for ( int i = 0; i < edgeData.edgeGroups.Count; i++ )
+			for ( var i = 0; i < edgeData.edgeGroups.Count; i++ )
 			{
-				EdgeData.EdgeGroup edgeGroup = (EdgeData.EdgeGroup)edgeData.edgeGroups[ i ];
+				var edgeGroup = (EdgeData.EdgeGroup)edgeData.edgeGroups[ i ];
 
-				for ( int j = 0; j < edgeGroup.edges.Count; j++ )
+				for ( var j = 0; j < edgeGroup.edges.Count; j++ )
 				{
-					EdgeData.Edge edge = (EdgeData.Edge)edgeGroup.edges[ j ];
+					var edge = (EdgeData.Edge)edgeGroup.edges[ j ];
 
 					if ( edge.sharedVertIndex[ 0 ] == sharedIndex1 &&
 						edge.sharedVertIndex[ 1 ] == sharedIndex2 )
@@ -565,9 +556,9 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		protected int FindOrCreateCommonVertex( Vector3 vec, int vertexSet, int indexSet, int originalIndex )
 		{
-			for ( int index = 0; index < vertices.Count; index++ )
+			for ( var index = 0; index < vertices.Count; index++ )
 			{
-				CommonVertex commonVec = (CommonVertex)vertices[ index ];
+				var commonVec = (CommonVertex)vertices[ index ];
 
 				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
 					Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
@@ -582,7 +573,7 @@ namespace Axiom.Graphics
 			}
 
 			// Not found, insert
-			CommonVertex newCommon = new CommonVertex();
+			var newCommon = new CommonVertex();
 			newCommon.index = vertices.Count;
 			newCommon.position = vec;
 			newCommon.vertexSet = vertexSet;
@@ -593,7 +584,7 @@ namespace Axiom.Graphics
 			return newCommon.index;
 		}
 
-		public unsafe void DebugLog( Log log )
+		public void DebugLog( Log log )
 		{
 			log.Write( "EdgeListBuilder Log" );
 			log.Write( "-------------------" );
@@ -603,72 +594,70 @@ namespace Axiom.Graphics
 			int i, j;
 
 			// Log original vertex data
-			for ( i = 0; i < vertexDataList.Count; i++ )
-			{
-				VertexData vData = (VertexData)vertexDataList[ i ];
-				log.Write( "." );
-				log.Write( "Original vertex set {0} - vertex count {1}", i, vData.vertexCount );
+            for (i = 0; i < vertexDataList.Count; i++)
+            {
+                var vData = (VertexData) vertexDataList[i];
+                log.Write(".");
+                log.Write("Original vertex set {0} - vertex count {1}", i, vData.vertexCount);
 
-				VertexElement posElem =
-					vData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				HardwareVertexBuffer vbuf =
-					vData.vertexBufferBinding.GetBuffer( posElem.Source );
+                var posElem = vData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+                var vbuf = vData.vertexBufferBinding.GetBuffer(posElem.Source);
 
-				// lock the buffer for reading
-				IntPtr basePtr = vbuf.Lock( BufferLocking.ReadOnly );
+                // lock the buffer for reading
+                var basePtr = vbuf.Lock(BufferLocking.ReadOnly);
 
-				byte* pBaseVertex = (byte*)basePtr.ToPointer();
+                var pBaseVertex = basePtr;
 
-				float* pReal;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    for (j = 0; j < vData.vertexCount; j++)
+                    {
+                        var pReal = (pBaseVertex + posElem.Offset).ToFloatPointer();
 
-				for ( j = 0; j < vData.vertexCount; j++ )
-				{
-					pReal = (float*)( pBaseVertex + posElem.Offset );
+                        log.Write("Vertex {0}: ({1}, {2}, {3})", j, pReal[0], pReal[1], pReal[2]);
 
-					log.Write( "Vertex {0}: ({1}, {2}, {3})", j, pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] );
+                        pBaseVertex += vbuf.VertexSize;
+                    }
+                }
 
-					pBaseVertex += vbuf.VertexSize;
-				}
+                vbuf.Unlock();
+            }
 
-				vbuf.Unlock();
-			}
-
-			// Log original index data
+		    // Log original index data
 			for ( i = 0; i < indexDataList.Count; i += 3 )
 			{
-				IndexData iData = (IndexData)indexDataList[ i ];
+				var iData = (IndexData)indexDataList[ i ];
 				log.Write( "." );
 				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})",
 					i, iData.indexCount, indexDataVertexDataSetList[ i ] );
 
-				// Get the indexes ready for reading
-				short* p16Idx = null;
-				int* p32Idx = null;
+                var idxPtr = iData.indexBuffer.Lock(BufferLocking.ReadOnly);
+                
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+                    // Get the indexes ready for reading
+                    var idx = 0;
+                    var p32Idx = idxPtr.ToIntPointer();
+                    var p16Idx = idxPtr.ToShortPointer();
 
-				IntPtr idxPtr = iData.indexBuffer.Lock( BufferLocking.ReadOnly );
+                    for (j = 0; j < iData.indexCount/3; j++)
+                    {
+                        if (iData.indexBuffer.Type == IndexType.Size32)
+                        {
+                            log.Write("Triangle {0}: ({1}, {2}, {3})", j, p32Idx[idx++], p32Idx[idx++], p32Idx[idx++]);
+                        }
+                        else
+                        {
+                            log.Write("Triangle {0}: ({1}, {2}, {3})", j, p16Idx[idx++], p16Idx[idx++], p16Idx[idx++]);
+                        }
+                    }
+                }
 
-				if ( iData.indexBuffer.Type == IndexType.Size32 )
-				{
-					p32Idx = (int*)idxPtr.ToPointer();
-				}
-				else
-				{
-					p16Idx = (short*)idxPtr.ToPointer();
-				}
-
-				for ( j = 0; j < iData.indexCount / 3; j++ )
-				{
-					if ( iData.indexBuffer.Type == IndexType.Size32 )
-					{
-						log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++ );
-					}
-					else
-					{
-						log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p16Idx++, *p16Idx++, *p16Idx++ );
-					}
-				}
-
-				iData.indexBuffer.Unlock();
+			    iData.indexBuffer.Unlock();
 
 				// Log common vertex list
 				log.Write( "." );
@@ -676,7 +665,7 @@ namespace Axiom.Graphics
 
 				for ( i = 0; i < vertices.Count; i++ )
 				{
-					CommonVertex c = (CommonVertex)vertices[ i ];
+					var c = (CommonVertex)vertices[ i ];
 
 					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}",
 						i, c.vertexSet, c.index, c.position );

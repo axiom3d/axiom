@@ -60,7 +60,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual bool Fire( object sender, T arg, Predicate<T> compare )
 		{
-			bool continueChain = true;
+			var continueChain = true;
 
 			// Assuming the multicast delegate is not null...
 			if ( EventSinks != null )

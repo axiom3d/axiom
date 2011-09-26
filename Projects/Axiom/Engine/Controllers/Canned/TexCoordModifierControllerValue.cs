@@ -92,7 +92,7 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				Matrix4 trans = texUnit.TextureMatrix;
+				var trans = texUnit.TextureMatrix;
 
 				if ( transU )
 					return trans.m03;

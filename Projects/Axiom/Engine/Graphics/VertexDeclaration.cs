@@ -120,7 +120,7 @@ namespace Axiom.Graphics
 		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
 		public virtual VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
-			VertexElement element = new VertexElement( source, offset, type, semantic, index );
+			var element = new VertexElement( source, offset, type, semantic, index );
 			elements.Add( element );
 			return element;
 		}
@@ -146,9 +146,9 @@ namespace Axiom.Graphics
 		/// <returns>If the element is not found, this method returns null.</returns>
 		public virtual VertexElement FindElementBySemantic( VertexElementSemantic semantic, short index )
 		{
-			for ( int i = 0; i < elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = elements[ i ];
+				var element = elements[ i ];
 
 				// do they match?
 				if ( element.Semantic == semantic && element.Index == index )
@@ -164,11 +164,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual List<VertexElement> FindElementBySource( short source )
 		{
-			List<VertexElement> rv = new List<VertexElement>();
+			var rv = new List<VertexElement>();
 
-			for ( int i = 0; i < elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = elements[ i ];
+				var element = elements[ i ];
 
 				// do they match?
 				if ( element.Source == source )
@@ -251,37 +251,37 @@ namespace Axiom.Graphics
 
 		public void Sort()
 		{
-			VertexElementLess compareFunction = new VertexElementLess();
+			var compareFunction = new VertexElementLess();
 			elements.Sort( compareFunction );
 		}
 
 		public VertexDeclaration GetAutoOrganizedDeclaration( bool skeletalAnimation, bool vertexAnimation )
 		{
-			VertexDeclaration newDecl = (VertexDeclaration)this.Clone();
+			var newDecl = (VertexDeclaration)this.Clone();
 			// Set all sources to the same buffer (for now)
-			List<VertexElement> elems = newDecl.Elements;
+			var elems = newDecl.Elements;
 
-			int c = 0;
+			var c = 0;
 
-			for ( int i = 0; i < elems.Count; i++, ++c )
+			for ( var i = 0; i < elems.Count; i++, ++c )
 			{
-				VertexElement elem = elems[ i ];
+				var elem = elems[ i ];
 				newDecl.ModifyElement( c, 0, 0, elem.Type, elem.Semantic, elem.Index );
 			}
 
 			newDecl.Sort();
 
 			// Now sort out proper buffer assignments and offsets
-			int offset = 0;
+			var offset = 0;
 			c = 0;
 			short buffer = 0;
-			VertexElementSemantic prevSemantic = VertexElementSemantic.Position;
+			var prevSemantic = VertexElementSemantic.Position;
 
-			for ( int i = 0; i < elems.Count; i++, ++c )
+			for ( var i = 0; i < elems.Count; i++, ++c )
 			{
-				VertexElement elem = elems[ i ];
-				bool splitWithPrev = false;
-				bool splitWithNext = false;
+				var elem = elems[ i ];
+				var splitWithPrev = false;
+				var splitWithNext = false;
 				switch ( elem.Semantic )
 				{
 					case VertexElementSemantic.Position:
@@ -334,11 +334,11 @@ namespace Axiom.Graphics
 		/// </summary>
         public virtual int GetVertexSize()
         {
-            int size = 0;
+            var size = 0;
 
-            for (int i = 0; i < elements.Count; i++)
+            for (var i = 0; i < elements.Count; i++)
             {
-                VertexElement element = elements[i];
+                var element = elements[i];
                 size += element.Size;
             }
             return size;
@@ -350,11 +350,11 @@ namespace Axiom.Graphics
 		/// <param name="source">The buffer binding index for which to get the vertex size.</param>
 		public virtual int GetVertexSize( short source )
 		{
-			int size = 0;
+			var size = 0;
 
-			for ( int i = 0; i < elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = elements[ i ];
+				var element = elements[ i ];
 
 				// do they match?
 				if ( element.Source == source )
@@ -406,7 +406,7 @@ namespace Axiom.Graphics
 				return AddElement( source, offset, type, semantic, index );
 			}
 
-			VertexElement element = new VertexElement( source, offset, type, semantic, index );
+			var element = new VertexElement( source, offset, type, semantic, index );
 
 			elements.Insert( position, element );
 
@@ -480,9 +480,9 @@ namespace Axiom.Graphics
 		/// <param name="index">Usage index to remove, typically only applies to tex coords.</param>
 		public virtual void RemoveElement( VertexElementSemantic semantic, int index )
 		{
-			for ( int i = elements.Count - 1; i >= 0; i-- )
+			for ( var i = elements.Count - 1; i >= 0; i-- )
 			{
-				VertexElement element = elements[ i ];
+				var element = elements[ i ];
 
 				if ( element.Semantic == semantic && element.Index == index )
 				{
@@ -516,10 +516,10 @@ namespace Axiom.Graphics
 			if ( left.elements.Count != right.elements.Count )
 				return false;
 
-			for ( int i = 0; i < right.elements.Count; i++ )
+			for ( var i = 0; i < right.elements.Count; i++ )
 			{
-				VertexElement a = left.elements[ i ];
-				VertexElement b = right.elements[ i ];
+				var a = left.elements[ i ];
+				var b = right.elements[ i ];
 
 				// if they are not equal, this declaration differs
 				if ( !( a == b ) )
@@ -575,7 +575,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override bool Equals( object obj )
 		{
-			VertexDeclaration decl = obj as VertexDeclaration;
+			var decl = obj as VertexDeclaration;
 
 			return ( decl == this );
 		}
@@ -603,11 +603,11 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public object Clone()
 		{
-			VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			var clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
 
-			for ( int i = 0; i < elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = (VertexElement)elements[ i ];
+				var element = (VertexElement)elements[ i ];
 				clone.AddElement( element.Source, element.Offset, element.Type, element.Semantic, element.Index );
 			}
 
@@ -622,12 +622,12 @@ namespace Axiom.Graphics
         /// <remarks>all elements in the cloned <see cref="VertexDeclaration"/> will have a source of 0.</remarks>
         public VertexDeclaration Clone( short source )
         {
-            VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
-            List<VertexElement> sourceElements = FindElementBySource(source);
+            var clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            var sourceElements = FindElementBySource(source);
 
-            for (int i = 0; i < sourceElements.Count; i++)
+            for (var i = 0; i < sourceElements.Count; i++)
             {
-                VertexElement element = (VertexElement)sourceElements[i];
+                var element = (VertexElement)sourceElements[i];
                 clone.AddElement(0, element.Offset, element.Type, element.Semantic, element.Index);
             }
 

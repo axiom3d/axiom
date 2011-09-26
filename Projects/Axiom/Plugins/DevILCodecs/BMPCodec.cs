@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
-
+using Axiom.CrossPlatform;
 using Tao.DevIl;
 
 #endregion Namespace Declarations
@@ -96,12 +96,14 @@ namespace Axiom.Plugins.DevILCodecs
 
 			// get the decoded data
 			buffer = new byte[ data.size ];
-			IntPtr ptr = Il.ilGetData();
+		    var ptr = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) );
 
 			// copy the data into the byte array
-			unsafe
-			{
-				byte* pBuffer = (byte*)ptr;
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+				var pBuffer = ptr.ToBytePointer();
 				for ( int i = 0; i < buffer.Length; i++ )
 				{
 					buffer[ i ] = pBuffer[ i ];

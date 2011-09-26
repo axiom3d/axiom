@@ -146,7 +146,7 @@ namespace Axiom.Graphics
 			if ( obj == null )
 				throw new ArgumentNullException();
 
-			RenderOperation renderOp = obj.RenderOperation;
+			var renderOp = obj.RenderOperation;
 
 			IndexData indexData;
 			if ( renderOp.useIndices )
@@ -156,11 +156,11 @@ namespace Axiom.Graphics
 			else
 			{
 				//Create custom index buffer
-				int vertexCount = renderOp.vertexData.vertexCount;
-				IndexType itype = vertexCount > UInt16.MaxValue ?
+				var vertexCount = renderOp.vertexData.vertexCount;
+				var itype = vertexCount > UInt16.MaxValue ?
 				IndexType.Size32 : IndexType.Size16;
 
-				DefaultHardwareIndexBuffer ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
+				var ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
 				customIndexBufferList.Add( ibuf ); //to be disposed later
 
 				indexData = new IndexData();
@@ -169,15 +169,16 @@ namespace Axiom.Graphics
 				indexData.indexStart = 0;
 
 				//Fill buffer with indices
-				IntPtr ibuffer =
-				indexData.indexBuffer.Lock( BufferLocking.Normal );
+                var ibuffer = indexData.indexBuffer.Lock( BufferLocking.Normal );
 				try
 				{
-					unsafe
-					{
-						Int16* ibuf16 = (Int16*)ibuffer;
-						Int32* ibuf32 = (Int32*)ibuffer;
-						for ( int i = 0; i < indexData.indexCount; i++ )
+#if !AXIOM_SAFE_ONLY
+                    unsafe
+#endif
+                    {
+						var ibuf16 = ibuffer.ToShortPointer();
+						var ibuf32 = ibuffer.ToIntPointer();
+						for ( var i = 0; i < indexData.indexCount; i++ )
 						{
 							if ( itype == IndexType.Size16 )
 							{
@@ -222,8 +223,8 @@ namespace Axiom.Graphics
 			//TODO: find out whether custom index buffer needs to be created in cases (like in the AddObject(IRenderable)).
 			//Borrilis, do you know?
 
-			int vertexSetCount = vertexDataList.Count;
-			int indexOfSharedVertexSet = vertexSetCount;
+			var vertexSetCount = vertexDataList.Count;
+			var indexOfSharedVertexSet = vertexSetCount;
 
 			if ( mesh.SharedVertexData != null )
 			{
@@ -232,9 +233,9 @@ namespace Axiom.Graphics
 			}
 
 			// Prepare the builder using the submesh information
-			for ( int i = 0; i < mesh.SubMeshCount; i++ )
+			for ( var i = 0; i < mesh.SubMeshCount; i++ )
 			{
-				SubMesh sm = mesh.GetSubMesh( i );
+				var sm = mesh.GetSubMesh( i );
 
 				if ( sm.useSharedVertices )
 				{
@@ -284,7 +285,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( DefaultHardwareIndexBuffer buf in customIndexBufferList )
+					foreach ( var buf in customIndexBufferList )
 					{
 						DefaultHardwareBufferManager.Instance.DisposeIndexBuffer( buf );
 					}

@@ -36,10 +36,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using Axiom.CrossPlatform;
+
+//using System.Reflection.Emit;
 
 #endregion Namespace Declarations
 
@@ -110,11 +115,11 @@ namespace Axiom.Core
 		/// </summary>
 		public void LoadAll()
 		{
-			IList<ObjectCreator> newPlugins = ScanForPlugins();
+			var newPlugins = ScanForPlugins();
 
-			foreach ( ObjectCreator pluginCreator in newPlugins )
+			foreach ( var pluginCreator in newPlugins )
 			{
-				IPlugin plugin = LoadPlugin( pluginCreator );
+				var plugin = LoadPlugin( pluginCreator );
 				if ( plugin != null )
 				{
 					_plugins.Add( plugin );
@@ -124,11 +129,11 @@ namespace Axiom.Core
 
 		public void LoadDirectory( string path )
 		{
-			IList<ObjectCreator> newPlugins = ScanForPlugins( path );
+			var newPlugins = ScanForPlugins( path );
 
-			foreach ( ObjectCreator pluginCreator in newPlugins )
+			foreach ( var pluginCreator in newPlugins )
 			{
-				IPlugin plugin = LoadPlugin( pluginCreator );
+				var plugin = LoadPlugin( pluginCreator );
 				if ( plugin != null )
 				{
 					_plugins.Add( plugin );
@@ -143,7 +148,6 @@ namespace Axiom.Core
 		{
 			return ScanForPlugins( "." );
 		}
-
 
         /// <summary>
         /// Checks if the given Module contains managed code
@@ -172,52 +176,65 @@ namespace Axiom.Core
             }
         }
 
-	    /// <summary>
+#if NET_40 
+        [ImportMany(typeof(IPlugin))]
+        public IEnumerable<IPlugin> plugins { private get; set; }
+#endif
+
+        /// <summary>
 		///		Scans for plugin files in the current directory.
 		/// </summary>
 		///<param name="folder"></param>
 		///<returns></returns>
-		protected IList<ObjectCreator> ScanForPlugins( string folder )
-		{
-            var pluginFactories = new List<ObjectCreator>();
+        protected IList<ObjectCreator> ScanForPlugins(string folder)
+	    {
+	        var pluginFactories = new List<ObjectCreator>();
 
-            if (Directory.Exists(folder))
-			{
-                var files = Directory.GetFiles(folder);
-                var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
-
-                foreach (var file in files)
-				{
-                    var currentFile = Path.GetFileName(file);
-
-                    if (Path.GetExtension(file) != ".dll" || currentFile == assemblyName)
-                        continue;
-                    var fullPath = Path.GetFullPath(file);
-
-                    if (!IsValidModule(fullPath))
-                    {
-                        Debug.WriteLine(String.Format("Skipped {0} [Not managed]", fullPath));
-                        continue;
-                    }
-
-                    var loader = new DynamicLoader(fullPath);
-
-				    pluginFactories.AddRange( loader.Find( typeof ( IPlugin ) ) );
-				}
+#if NET_40 
+            this.SatisfyImports();
+            foreach (var plugin in plugins)
+            {
+                pluginFactories.Add( new ObjectCreator( plugin.GetType() ) );
+                Debug.WriteLine( String.Format( "MEF IPlugin: {0}.", plugin ) );
             }
+#else
+            if ( Directory.Exists( folder ) )
+	        {
+	            var files = Directory.GetFiles(folder);
+	            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
 
-			return pluginFactories;
-		}
+	            foreach ( var file in files )
+	            {
+	                var currentFile = Path.GetFileName( file );
 
-		/// <summary>
+	                if ( Path.GetExtension( file ) != ".dll" || currentFile == assemblyName )
+	                    continue;
+	                var fullPath = Path.GetFullPath( file );
+
+	                if ( !IsValidModule( fullPath ) )
+	                {
+	                    Debug.WriteLine( String.Format( "Skipped {0} [Not managed]", fullPath ) );
+	                    continue;
+	                }
+
+	                var loader = new DynamicLoader( fullPath );
+
+	                pluginFactories.AddRange( loader.Find( typeof ( IPlugin ) ) );
+	            }
+            }
+#endif
+            return pluginFactories;
+	    }
+
+	    /// <summary>
 		///		Unloads all currently loaded plugins.
 		/// </summary>
 		public void UnloadAll()
 		{
 			// loop through and stop all loaded plugins
-			for ( int i = _plugins.Count - 1; i >= 0; i-- )
+			for ( var i = _plugins.Count - 1; i >= 0; i-- )
 			{
-				IPlugin plugin = (IPlugin)_plugins[ i ];
+				var plugin = (IPlugin)_plugins[ i ];
 
 				LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
@@ -230,8 +247,8 @@ namespace Axiom.Core
 
 		public static string GetAssemblyTitle( Type type )
 		{
-			Assembly assembly = type.Assembly;
-			AssemblyTitleAttribute title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
+			var assembly = type.Assembly;
+			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
 											(Assembly)assembly, typeof( AssemblyTitleAttribute ) );
 			if ( title == null )
 				return assembly.GetName().Name;
@@ -249,7 +266,7 @@ namespace Axiom.Core
 			try
 			{
 				// create and start the plugin
-				IPlugin plugin = creator.CreateInstance<IPlugin>();
+				var plugin = creator.CreateInstance<IPlugin>();
 
                 if (plugin == null)
                 {

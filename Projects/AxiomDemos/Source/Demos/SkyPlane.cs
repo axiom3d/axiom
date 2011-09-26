@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -12,7 +12,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for SkyPlane.
 	/// </summary>
-	public class SkyPlane : TechDemo
+    [Export(typeof(TechDemo))]
+    public class SkyPlane : TechDemo
 	{
 		#region Methods
 

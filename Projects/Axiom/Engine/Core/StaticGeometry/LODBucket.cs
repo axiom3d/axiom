@@ -119,7 +119,7 @@ namespace Axiom.Core
 
 			public void Assign( QueuedSubMesh qsm, ushort atlod )
 			{
-				QueuedGeometry q = new QueuedGeometry();
+				var q = new QueuedGeometry();
 				queuedGeometryList.Add( q );
 				q.position = qsm.position;
 				q.orientation = qsm.orientation;
@@ -151,14 +151,14 @@ namespace Axiom.Core
 			public void Build( bool stencilShadows, int logLevel )
 			{
 				// Just pass this on to child buckets
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach ( var mbucket in materialBucketMap.Values )
 					mbucket.Build( stencilShadows, logLevel );
 			}
 
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camSquaredDistance )
 			{
 				// Just pass this on to child buckets
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach ( var mbucket in materialBucketMap.Values )
 					mbucket.AddRenderables( queue, group, camSquaredDistance );
 			}
 
@@ -168,7 +168,7 @@ namespace Axiom.Core
 				LogManager.Instance.Write( "------------------" );
 				LogManager.Instance.Write( "Distance: {0}", Utility.Sqrt( squaredDistance ) );
 				LogManager.Instance.Write( "Number of Materials: {0}", materialBucketMap.Count );
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach ( var mbucket in materialBucketMap.Values )
 					mbucket.Dump();
 				LogManager.Instance.Write( "------------------" );
 			}
@@ -184,7 +184,7 @@ namespace Axiom.Core
                     {
                         if (materialBucketMap != null)
                         {
-                            foreach (MaterialBucket mbucket in materialBucketMap.Values)
+                            foreach (var mbucket in materialBucketMap.Values)
                             {
                                 if (!mbucket.IsDisposed)
                                     mbucket.Dispose();

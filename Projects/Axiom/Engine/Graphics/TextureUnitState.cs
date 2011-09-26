@@ -97,7 +97,7 @@ namespace Axiom.Graphics
             if ( !( obj is UVWAddressing ) )
                 return false;
 
-            UVWAddressing a = (UVWAddressing)obj;
+            var a = (UVWAddressing)obj;
 
             return ( a.U == U ) && ( a.V == V ) && ( a.W == W );
         }
@@ -848,7 +848,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// TODO: Optimize this to hopefully eliminate the search every time
-				foreach ( TextureEffect effect in effectList )
+				foreach ( var effect in effectList )
 				{
 					if ( effect.subtype == (System.Enum)EnvironmentMap.Reflection )
 					{
@@ -1040,7 +1040,7 @@ namespace Axiom.Graphics
 		{
 			if ( enable )
 			{
-				TextureEffect effect = new TextureEffect();
+				var effect = new TextureEffect();
 				effect.type = TextureEffectType.ProjectiveTexture;
 				effect.frustum = projectionSettings;
 				AddEffect( effect );
@@ -1175,16 +1175,16 @@ namespace Axiom.Graphics
 				string[] postfixes = {
 				                     	"_fr", "_bk", "_lf", "_rt", "_up", "_dn"
 				                     };
-				string[] fullNames = new string[ 6 ];
+				var fullNames = new string[ 6 ];
 				string baseName;
 				string ext;
 
-				int pos = textureName.LastIndexOf( "." );
+				var pos = textureName.LastIndexOf( "." );
 
 				baseName = textureName.Substring( 0, pos );
 				ext = textureName.Substring( pos );
 
-				for ( int i = 0; i < 6; i++ )
+				for ( var i = 0; i < 6; i++ )
 				{
 					fullNames[ i ] = baseName + postfixes[ i ] + ext;
 				}
@@ -1249,7 +1249,7 @@ namespace Axiom.Graphics
 			isCubic = true;
 			textureType = forUVW ? TextureType.CubeMap : TextureType.TwoD;
 
-			for ( int i = 0; i < numFrames; i++ )
+			for ( var i = 0; i < numFrames; i++ )
 			{
 				frames[ i ] = textureNames[ i ];
 			}
@@ -1499,7 +1499,7 @@ namespace Axiom.Graphics
 			this.envMapEnabled = enable;
 			if ( enable )
 			{
-				TextureEffect effect = new TextureEffect();
+				var effect = new TextureEffect();
 				effect.type = TextureEffectType.EnvironmentMap;
 				effect.subtype = envMap;
 				AddEffect( effect );
@@ -1576,14 +1576,14 @@ namespace Axiom.Graphics
 			string ext, baseName;
 
 			// split up the base name and file extension
-			int pos = name.LastIndexOf( "." );
+			var pos = name.LastIndexOf( "." );
 			baseName = name.Substring( 0, pos );
 			ext = name.Substring( pos );
 
-			string[] names = new string[ numFrames ];
+			var names = new string[ numFrames ];
 
 			// loop through and create the real texture names from the base name
-			for ( int i = 0; i < numFrames; i++ )
+			for ( var i = 0; i < numFrames; i++ )
 			{
 				names[ i ] = string.Format( "{0}_{1}{2}", baseName, i, ext );
 			}
@@ -1739,7 +1739,7 @@ namespace Axiom.Graphics
 		public void SetRotateAnimation( float speed )
 		{
 			rotationSpeed = speed;
-			TextureEffect effect = new TextureEffect();
+			var effect = new TextureEffect();
 			effect.type = TextureEffectType.Rotate;
 			effect.arg1 = speed;
 
@@ -1763,7 +1763,7 @@ namespace Axiom.Graphics
 		/// <param name="amplitude">Scales the output so that instead of lying within [0..1] it lies within [0..(1 * amplitude)] for exaggerated effects.</param>
 		public void SetTransformAnimation( TextureTransform transType, WaveformType waveType, float baseVal, float frequency, float phase, float amplitude )
 		{
-			TextureEffect effect = new TextureEffect();
+			var effect = new TextureEffect();
 			effect.type = TextureEffectType.Transform;
 			effect.subtype = transType;
 			effect.waveType = waveType;
@@ -1998,7 +1998,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void RecalcTextureMatrix()
 		{
-			Matrix4 xform = Matrix4.Identity;
+			var xform = Matrix4.Identity;
 
 			// texture scaling
 			if ( scaleU != 1 || scaleV != 1 )
@@ -2015,7 +2015,7 @@ namespace Axiom.Graphics
 			// texture translation
 			if ( transU != 0 || transV != 0 )
 			{
-				Matrix4 xlate = Matrix4.Identity;
+				var xlate = Matrix4.Identity;
 
 				xlate.m03 = transU;
 				xlate.m13 = transV;
@@ -2026,7 +2026,7 @@ namespace Axiom.Graphics
 
 			if ( rotate != 0.0f )
 			{
-				Matrix4 rotation = Matrix4.Identity;
+				var rotation = Matrix4.Identity;
 
 				float theta = Utility.DegreesToRadians( rotate );
 				float cosTheta = Utility.Cos( theta );
@@ -2076,7 +2076,7 @@ namespace Axiom.Graphics
 				 effect.type == TextureEffectType.Rotate ||
 				 effect.type == TextureEffectType.ProjectiveTexture )
 			{
-				for ( int i = 0; i < effectList.Count; i++ )
+				for ( var i = 0; i < effectList.Count; i++ )
 				{
 					if ( ( (TextureEffect)effectList[ i ] ).type == effect.type )
 					{
@@ -2103,7 +2103,7 @@ namespace Axiom.Graphics
 		private void RemoveEffect( TextureEffectType type )
 		{
 			// TODO: Verify this works correctly since we are removing items during a loop
-			for ( int i = 0; i < effectList.Count; i++ )
+			for ( var i = 0; i < effectList.Count; i++ )
 			{
 				if ( ( (TextureEffect)effectList[ i ] ).type == type )
 				{
@@ -2128,7 +2128,7 @@ namespace Axiom.Graphics
 		private void CreateEffectController( TextureEffect effect )
 		{
 			// get a reference to the singleton controller manager
-			ControllerManager cMgr = ControllerManager.Instance;
+			var cMgr = ControllerManager.Instance;
 
 			// create an appropriate controller based on the specified animation
 			switch ( effect.type )
@@ -2175,7 +2175,7 @@ namespace Axiom.Graphics
 			Unload();
 
 			// load all textures
-			for ( int i = 0; i < numFrames; i++ )
+			for ( var i = 0; i < numFrames; i++ )
 			{
 				if ( frames[ i ].Length > 0 )
 				{
@@ -2202,7 +2202,7 @@ namespace Axiom.Graphics
 			}
 
 			// initialize texture effects
-			foreach ( TextureEffect effect in effectList )
+			foreach ( var effect in effectList )
 			{
 				CreateEffectController( effect );
 			}
@@ -2238,7 +2238,7 @@ namespace Axiom.Graphics
         /// <returns>True if matching texture aliases were found in the Texture Unit State.</returns>
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
-			bool testResult = false;
+			var testResult = false;
 			// if TUS has an alias, see if it's in the alias container
             if ( !string.IsNullOrEmpty( textureNameAlias ) )
 			{
@@ -2284,16 +2284,16 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public void CopyTo( TextureUnitState target )
 		{
-			FieldInfo[] props = target.GetType().GetFields( BindingFlags.NonPublic | BindingFlags.Instance );
+			var props = target.GetType().GetFields( BindingFlags.NonPublic | BindingFlags.Instance );
 
 			// save parent from target, since it will be overwritten by the following loop
-			Pass tmpParent = target.parent;
+			var tmpParent = target.parent;
 
-			for ( int i = 0; i < props.Length; i++ )
+			for ( var i = 0; i < props.Length; i++ )
 			{
-				FieldInfo prop = props[ i ];
+				var prop = props[ i ];
 
-				object srcVal = prop.GetValue( this );
+				var srcVal = prop.GetValue( this );
 				prop.SetValue( target, srcVal );
 			}
 
@@ -2303,7 +2303,7 @@ namespace Axiom.Graphics
 			target.frames = new string[ MaxAnimationFrames ];
 
 			// copy over animation frame texture names
-			for ( int i = 0; i < MaxAnimationFrames; i++ )
+			for ( var i = 0; i < MaxAnimationFrames; i++ )
 			{
 				target.frames[ i ] = frames[ i ];
 			}
@@ -2315,7 +2315,7 @@ namespace Axiom.Graphics
 			target.effectList = new TextureEffectList();
 
 			// copy effects
-			foreach ( TextureEffect effect in effectList )
+			foreach ( var effect in effectList )
 			{
 				target.effectList.Add( effect.Clone() );
 			}
@@ -2330,7 +2330,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public TextureUnitState Clone( Pass parent )
 		{
-			TextureUnitState newState = new TextureUnitState( parent );
+			var newState = new TextureUnitState( parent );
 
 			CopyTo( newState );
 
@@ -2450,7 +2450,7 @@ namespace Axiom.Graphics
 		public LayerBlendModeEx Clone()
 		{
 			// copy the basic members
-			LayerBlendModeEx blendMode = (LayerBlendModeEx)MemberwiseClone();
+			var blendMode = (LayerBlendModeEx)MemberwiseClone();
 
 			// clone the colors
 			blendMode.colorArg1 = colorArg1.Clone();
@@ -2468,7 +2468,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override bool Equals( object obj )
 		{
-			LayerBlendModeEx lbx = obj as LayerBlendModeEx;
+			var lbx = obj as LayerBlendModeEx;
 
 			return ( lbx == this );
 		}
@@ -2529,7 +2529,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public TextureEffect Clone()
 		{
-			TextureEffect clone = (TextureEffect)MemberwiseClone();
+			var clone = (TextureEffect)MemberwiseClone();
 
 			return clone;
 		}

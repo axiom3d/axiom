@@ -124,7 +124,7 @@ namespace Axiom.Controllers
 		public Controller<float> CreateController( IControllerValue<float> source, IControllerValue<float> destination, IControllerFunction<float> function )
 		{
 			// create a new controller object
-			Controller<float> controller = new Controller<float>( source, destination, function );
+			var controller = new Controller<float>( source, destination, function );
 
 			// add the new controller to our list
 			controllers.Add( controller );
@@ -357,11 +357,11 @@ namespace Axiom.Controllers
 		/// </summary>
 		public void UpdateAll()
 		{
-			ulong thisFrameNumber = Root.Instance.CurrentFrameCount;
+			var thisFrameNumber = Root.Instance.CurrentFrameCount;
 			if ( thisFrameNumber != lastFrameNumber )
 			{
 				// loop through each controller and tell it to update
-				foreach ( Controller<float> controller in controllers )
+				foreach ( var controller in controllers )
 				{
 					controller.Update();
 				}

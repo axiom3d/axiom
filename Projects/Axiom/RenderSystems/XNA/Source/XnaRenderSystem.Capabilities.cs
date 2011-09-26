@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
@@ -49,16 +50,22 @@ namespace Axiom.RenderSystems.Xna
         {
             //TODO Detect what graphics profile we should use, depending on current platform.
             //This information should be retrieved from _device.GraphicsProfile property
+#if SILVERLIGHT
+            XFG.GraphicsProfile profile = XFG.GraphicsProfile.Reach;
+#else
             XFG.GraphicsProfile profile = XFG.GraphicsProfile.HiDef;
+#endif
 
             var rsc = realCapabilities ?? new RenderSystemCapabilities();
 
             _setCapabilitiesForAllProfiles( ref rsc );
 
+#if !SILVERLIGHT
             if ( profile == XFG.GraphicsProfile.HiDef )
                 _setCapabilitiesForHiDefProfile( ref rsc );
-
-            else if ( profile == XFG.GraphicsProfile.Reach )
+            else 
+#endif
+            if ( profile == XFG.GraphicsProfile.Reach )
                 _setCapabilitiesForReachProfile( ref rsc );
 
             else
@@ -89,12 +96,17 @@ namespace Axiom.RenderSystems.Xna
             //TODO Should we add an XNA capabilities category?
             //rsc.SetCategoryRelevant( CapabilitiesCategory.D3D9, true );
             rsc.DriverVersion = driverVersion;
-            rsc.DeviceName = _device.Adapter.Description;
+            rsc.DeviceName = _activeDriver.Description;
             rsc.RendersystemName = Name;
 
             // determine vendor
             // Full list of vendors here: http://www.pcidatabase.com/vendors.php?sort=id
-            switch ( _device.Adapter.VendorId )
+#if SILVERLIGHT
+            var vendorId = 0x0000;
+#else
+            var vendorId = _device.Adapter.VendorId;
+#endif
+            switch (vendorId)
             {
                 case 0x10DE:
                     rsc.Vendor = GPUVendor.Nvidia;
@@ -137,6 +149,10 @@ namespace Axiom.RenderSystems.Xna
 
             // Xna uses vertex buffers for everything
             rsc.SetCapability( Graphics.Capabilities.VertexBuffer );
+
+            // blending between stages is definitely supported
+            rsc.SetCapability(Graphics.Capabilities.TextureBlending);
+            rsc.SetCapability(Graphics.Capabilities.MultiTexturing);
         }
 
         private void _setCapabilitiesForHiDefProfile( ref RenderSystemCapabilities rsc )
@@ -241,6 +257,7 @@ namespace Axiom.RenderSystems.Xna
             //MaxTextureAspectRatio = 2048;
             //MaxVertexSamplers = 0;
             //MaxRenderTargets = 1;
+            rsc.TextureUnitCount = 16;
             rsc.MultiRenderTargetCount = 1;
 
             //NonPow2Unconditional = false;

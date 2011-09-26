@@ -745,7 +745,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// only ever applies to one light at once
-				Light light = GetLight( 0 );
+				var light = GetLight( 0 );
 
 				if ( light.Type == LightType.Directional )
 				{

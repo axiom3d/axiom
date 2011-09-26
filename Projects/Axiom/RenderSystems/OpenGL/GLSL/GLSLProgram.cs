@@ -128,7 +128,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         #region Embedded Classes
 
         [ScriptableProperty("attach")]
-        private class CmdAttach : IPropertyCommand
+        public class CmdAttach : IPropertyCommand
         {
             public string Get(object target)
             {

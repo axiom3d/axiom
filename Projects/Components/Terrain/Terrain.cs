@@ -28,6 +28,7 @@ using System.Collections.Generic;
 
 using Axiom.Core;
 using Axiom.Core.Collections;
+using Axiom.CrossPlatform;
 using Axiom.Math;
 using Axiom.Media;
 using Axiom.Graphics;
@@ -446,7 +447,7 @@ namespace Axiom.Components.Terrain
     /// </tr>
     /// </table>
     /// </remarks>
-    public unsafe class Terrain : IDisposable
+    public class Terrain : IDisposable
     {
 
         #region - constants -
@@ -774,8 +775,8 @@ namespace Axiom.Components.Terrain
         /// 
         /// </summary>
         protected bool mIsLoaded;
-        IntPtr mHeightDataPtr;
-        IntPtr mDeltaDataPtr;
+        BufferBase mHeightDataPtr;
+        BufferBase mDeltaDataPtr;
 
         #endregion
 
@@ -1548,27 +1549,23 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
             else
             {
-                if (mLayerBlendMapSize != mLayerBlendSizeActual)
+                if ( mLayerBlendMapSize != mLayerBlendSizeActual )
                 {
-                    LogManager.Instance.Write("WARNING: blend maps were requested at a size larger than was supported " +
-                    "on this hardware, which means the quality has been degraded");
+                    LogManager.Instance.Write(
+                        "WARNING: blend maps were requested at a size larger than was supported " +
+                        "on this hardware, which means the quality has been degraded" );
                 }
-                stream.Write(mLayerBlendSizeActual);
-                unsafe
+                stream.Write( mLayerBlendSizeActual );
+                byte[] tmpData = new byte[mLayerBlendSizeActual*mLayerBlendSizeActual*4];
+                var pTmpDataF = BufferBase.Wrap( tmpData );
+                foreach ( Texture tex in mBlendTextureList )
                 {
-                    byte[] tmpData = new byte[mLayerBlendSizeActual * mLayerBlendSizeActual * 4];
-                    fixed (byte* pTmpDataF = tmpData)
-                    {
-                        foreach (Texture tex in mBlendTextureList)
-                        {
-                            PixelBox dst = new PixelBox(mLayerBlendSizeActual, mLayerBlendSizeActual, 1, tex.Format, (IntPtr)pTmpDataF);
-                            tex.GetBuffer().BlitToMemory(dst);
-                            int dataSz = PixelUtil.GetNumElemBytes(tex.Format)
-                            * mLayerBlendSizeActual * mLayerBlendSizeActual;
-                            stream.Write(tmpData);
-                            stream.Write(dataSz);
-                        }
-                    }
+                    PixelBox dst = new PixelBox( mLayerBlendSizeActual, mLayerBlendSizeActual, 1, tex.Format, pTmpDataF );
+                    tex.GetBuffer().BlitToMemory( dst );
+                    int dataSz = PixelUtil.GetNumElemBytes( tex.Format )
+                                 *mLayerBlendSizeActual*mLayerBlendSizeActual;
+                    stream.Write( tmpData );
+                    stream.Write( dataSz );
                 }
             }
 
@@ -1580,7 +1577,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             if (mCpuTerrainNormalMap != null)
             {
                 byte[] aData = new byte[mSize * mSize * 3];
-                IntPtrToArray(mCpuTerrainNormalMap.Data, ref aData);
+                Memory.Copy(mCpuTerrainNormalMap.Data, BufferBase.Wrap(aData), aData.Length);
                 // save from CPU data if it's there, it means GPU data was never created
                 stream.Write(aData);
 
@@ -1600,16 +1597,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-                    unsafe
-                    {
-                        byte[] aData = new byte[mGlobalColorMapSize * mGlobalColorMapSize * 3];
-                        fixed (byte* pDataF = aData)
-                        {
-                            PixelBox dst = new PixelBox(mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB, (IntPtr)pDataF);
-                            mColorMap.GetBuffer().BlitToMemory(dst);
-                            stream.Write(aData);
-                        }
-                    }
+                    byte[] aData = new byte[mGlobalColorMapSize*mGlobalColorMapSize*3];
+                    var pDataF = BufferBase.Wrap( aData );
+                    PixelBox dst = new PixelBox( mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB,
+                                                 pDataF );
+                    mColorMap.GetBuffer().BlitToMemory( dst );
+                    stream.Write( aData );
                 }
                 stream.WriteChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
             }
@@ -1627,16 +1620,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-                    unsafe
-                    {
-                        byte[] aData = new byte[mLightmapSize * mLightmapSize];
-                        fixed (byte* pDataF = aData)
-                        {
-                            PixelBox dst = new PixelBox(mLightmapSize, mLightmapSize, 1, PixelFormat.L8, (IntPtr)pDataF);
-                            mLightMap.GetBuffer().BlitToMemory(dst);
-                            stream.Write(aData);
-                        }
-                    }
+
+                    byte[] aData = new byte[mLightmapSize*mLightmapSize];
+                    var pDataF = BufferBase.Wrap( aData );
+                    PixelBox dst = new PixelBox( mLightmapSize, mLightmapSize, 1, PixelFormat.L8, pDataF );
+                    mLightMap.GetBuffer().BlitToMemory( dst );
+                    stream.Write( aData );
                 }
                 stream.WriteChunkEnd(TERRAIN_CHUNK_ID);
             }
@@ -1654,17 +1643,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-                    unsafe
-                    {
-                        // composite map is 4 channel, 3x diffuse, 1x specular mask
-                        byte[] aData = new byte[mCompositeMapSize * mCompositeMapSize * 4];
-                        fixed (byte* pDataF = aData)
-                        {
-                            PixelBox dst = new PixelBox(mCompositeMapSize, mCompositeMapSize, 1, PixelFormat.BYTE_RGB, (IntPtr)pDataF);
-                            mCompositeMap.GetBuffer().BlitToMemory(dst);
-                            stream.Write(aData);
-                        }
-                    }
+
+                    // composite map is 4 channel, 3x diffuse, 1x specular mask
+                    byte[] aData = new byte[mCompositeMapSize*mCompositeMapSize*4];
+                    var pDataF = BufferBase.Wrap( aData );
+                    PixelBox dst = new PixelBox( mCompositeMapSize, mCompositeMapSize, 1, PixelFormat.BYTE_RGB, pDataF );
+                    mCompositeMap.GetBuffer().BlitToMemory( dst );
+                    stream.Write( aData );
                 }
                 stream.WriteChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
             }
@@ -1847,15 +1832,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 stream.Read(out sz);
                 if (name == "normalmap")
                 {
-                    byte[] data = new byte[sz * sz * 3];
-                    stream.Read(out data);
-                    unsafe
-                    {
-                        fixed (byte* pDataF = data)
-                        {
-                            mCpuTerrainNormalMap = new PixelBox(sz, sz, 1, PixelFormat.BYTE_RGB, (IntPtr)pDataF);
-                        }
-                    }
+                    byte[] data = new byte[sz*sz*3];
+                    stream.Read( out data );
+                    var pDataF = BufferBase.Wrap( data );
+                    mCpuTerrainNormalMap = new PixelBox( sz, sz, 1, PixelFormat.BYTE_RGB, pDataF );
                 }
                 else if (name == "colormap")
                 {
@@ -1961,17 +1941,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 else
                 {
                     // scale & bias, lets do it unsafe, should be faster :)
-                    unsafe
-                    {
-                        fixed (float* srcF = importData.InputFloat, dstF = mHeightData)
-                        {
-                            float* src = srcF;
-                            float* dst = dstF;
-                            for (int i = 0; i < numVertices; ++i)
-                                *dst++ = (*src++ * importData.InputScale) + importData.InputBias;
-                        }
-                    }
-
+                    var src = importData.InputFloat;
+                    for (var i = 0; i < numVertices; ++i)
+                        mHeightData[i] = (src[i]*importData.InputScale) + importData.InputBias;
                 }
             }
             else if (importData.InputImage != null)
@@ -1983,21 +1955,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 // convert image data to floats
                 // Do this on a row-by-row basis, because we describe the terrain in
                 // a bottom-up fashion (ie ascending world coords), while Image is top-down
-                unsafe
+                var pSrcBaseF = BufferBase.Wrap(img.Data);
+                var pHeightDataF = BufferBase.Wrap(mHeightData);
+                for (int i = 0; i < mSize; ++i)
                 {
-                    fixed (byte* pSrcBaseF = img.Data)
-                    {
-                        fixed (float* pHeightDataF = mHeightData)
-                        {
-                            for (int i = 0; i < mSize; ++i)
-                            {
-                                int srcy = mSize - i - 1;
-                                byte* psrc = pSrcBaseF + srcy * img.RowSpan;
-                                float* pDest = pHeightDataF + i * mSize;
-                                PixelConverter.BulkPixelConversion((IntPtr)psrc, 0, img.Format, (IntPtr)pDest, 0, PixelFormat.FLOAT32_R, mSize);
-                            }
-                        }
-                    }
+                    int srcy = mSize - i - 1;
+                    var psrc = pSrcBaseF + srcy * img.RowSpan;
+                    var pDest = pHeightDataF + (i * mSize) * sizeof(float);
+                    PixelConverter.BulkPixelConversion(psrc, 0, img.Format, pDest, 0, PixelFormat.FLOAT32_R, mSize);
                 }
                 for (int i = 0; i < mHeightData.Length; i++)
                 {
@@ -2008,17 +1973,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 if (!Utility.RealEqual(importData.InputBias, 0.0f) || !Utility.RealEqual(importData.InputScale, 1.0f))
                 {
-                    unsafe
+                    for (int i = 0; i < numVertices; ++i)
                     {
-                        fixed (float* pAdjF = mHeightData)
-                        {
-                            float* pAdj = pAdjF;
-                            for (int i = 0; i < numVertices; ++i)
-                            {
-                                *pAdj = (*pAdj * importData.InputScale) + importData.InputBias;
-                                ++pAdj;
-                            }
-                        }
+                        mHeightData[i] = (mHeightData[i]*importData.InputScale) + importData.InputBias;
                     }
                 }
             }
@@ -2150,13 +2107,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             x = Utility.Max(x, 0L);
             y = Utility.Min(y, (long)mSize - 1L);
             y = Utility.Max(y, 0L);
-            float ret = 0;
-            unsafe
-            {
-                float* ptr = (float*)GetHeightData(x, y);
-                ret = *ptr;
-            }
-            return ret;
+            return mHeightData[y + mSize * x];
         }
         /// <summary>
         /// Set the height data for a given terrain point. 
@@ -2176,11 +2127,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             x = Utility.Max(x, 0L);
             y = Utility.Min(y, (long)mSize - 1L);
             y = Utility.Max(y, 0L);
-            unsafe
-            {
-                float* data = (float*)GetHeightData(x, y);
-                *data = heightVal;
-            }
+            mHeightData[y + mSize * x] = heightVal;
             Rectangle rec = new Rectangle();
             rec.Left = x;
             rec.Right = x + 1;
@@ -2291,15 +2238,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public IntPtr GetDeltaData(long x, long y)
+        public BufferBase GetDeltaData(long x, long y)
         {
             System.Diagnostics.Debug.Assert(x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds..");
+            return mDeltaDataPtr + (y * mSize + x) * sizeof(float);
             //return new IntPtr(mDeltaDataPtr.ToInt32() + (y * mSize + x));
-            unsafe
-            {
-                float* val = (float*)mDeltaDataPtr;
-                return (IntPtr)(float*)&val[y * mSize + x];
-            }
+            //unsafe
+            //{
+            //    float* val = (float*)mDeltaDataPtr;
+            //    return (IntPtr)(float*)&val[y * mSize + x];
+            //}
             //return Memory.PinObject(mDeltaData[y * mSize + x]);
         }
         /// <summary>
@@ -2308,14 +2256,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public IntPtr GetHeightData(long x, long y)
+        public BufferBase GetHeightData(long x, long y)
         {
             System.Diagnostics.Debug.Assert(x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds..");
-            unsafe
-            {
-                float* val = (float*)mHeightDataPtr;
-                return (IntPtr)(float*)&val[y * mSize + x];
-            }
+            return mHeightDataPtr + (y * mSize + x) * sizeof(float);
+            //unsafe
+            //{
+            //    float* val = (float*)mHeightDataPtr;
+            //    return (IntPtr)(float*)&val[y * mSize + x];
+            //}
             //return new IntPtr( (float*)mHeightDataPtr + (y * mSize + x));
             //return Memory.PinObject(mHeightData[y * mSize + x]);
         }
@@ -2343,13 +2292,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="outPos"></param>
         public void GetPointAlign(long x, long y, Alignment align, ref Vector3 outPos)
         {
-            float height = 0;
-            unsafe
-            {
-                float* ptr = (float*)GetHeightData(x, y);
-                height = *ptr;
-            }
-            float hg = mHeightData[y + mSize * x];
+            float height = mHeightData[y + mSize * x];
             GetPointAlign(x, y, height, align, ref outPos);
 
         }
@@ -3445,7 +3388,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
                     for (int i = 0; i < 8; ++i)
                     {
-                        plane.Redefine(centrePoint, adjacentPoints[i], adjacentPoints[(i + 1) % 8]);
+                        plane.Redefine(centrePoint, adjacentPoints[i], adjacentPoints[(i + 1)%8]);
                         cumulativeNormal += plane.Normal;
                     }
                     // normalise & store normal
@@ -3456,18 +3399,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     long storeX = x - widenedRect.Left;
                     long storeY = widenedRect.Bottom - y - 1;
 
-                    unsafe
-                    {
-                        fixed (byte* pStoreF = pData)
-                        {
-                            byte* pStore = pStoreF + ((storeY * widenedRect.Width) + storeX) * 3;
-                            *pStore++ = (byte)((cumulativeNormal.x + 1.0f) * 0.5f * 255.0f);
-                            *pStore++ = (byte)((cumulativeNormal.y + 1.0f) * 0.5f * 255.0f);
-                            *pStore++ = (byte)((cumulativeNormal.z + 1.0f) * 0.5f * 255.0f);
-
-                        }
-                    }
-                }//x
+                    var pStore = ((storeY*widenedRect.Width) + storeX)*3;
+                    pData[pStore++] = (byte) ((cumulativeNormal.x + 1.0f)*0.5f*255.0f);
+                    pData[pStore++] = (byte) ((cumulativeNormal.y + 1.0f)*0.5f*255.0f);
+                    pData[pStore] = (byte) ((cumulativeNormal.z + 1.0f)*0.5f*255.0f);
+                } //x
             }//y
 
             outFinalRect = widenedRect;
@@ -3506,7 +3442,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
 
             // delete memory
-            normalsBox.Data = IntPtr.Zero;
+            normalsBox.Data = null;
             normalsBox = null;
         }
         /// <summary>
@@ -3557,7 +3493,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             // allocate memory (L8)
             byte[] pData = new byte[widenedRect.Width * widenedRect.Height];
-            IntPtr pDataPtr = Memory.PinObject(pData);
+            var pDataPtr = Memory.PinObject(pData);
 
 
             float heightPad = (float)((MaxHeight - MinHeight) * 1e-3f);
@@ -3567,8 +3503,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 {
                     float litVal = 1.0f;
                     // convert to terrain space (not points, allow this to go between points)
-                    float Tx = (float)x / (float)(mLightmapSizeActual - 1);
-                    float Ty = (float)y / (float)(mLightmapSizeActual - 1);
+                    float Tx = (float) x/(float) (mLightmapSizeActual - 1);
+                    float Ty = (float) y/(float) (mLightmapSizeActual - 1);
 
                     // get world space point
                     // add a little height padding to stop shadowing self
@@ -3592,14 +3528,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     long storeX = x - widenedRect.Left;
                     long storeY = widenedRect.Bottom - y - 1;
 
+#if !AXIOM_SAFE_ONLY
                     unsafe
+#endif
                     {
-                        //  fixed (byte* pStoreF = pData)
-                        //   {
-                        byte* pStoreF = (byte*)pDataPtr;
-                        byte* pStore = pStoreF + ((storeY * widenedRect.Width) + storeX);
-                        *pStore = (byte)(litVal * 255.0f);
-                        //  }
+                        var pStoreF = pDataPtr.ToBytePointer();
+                        var pStore = ( pDataPtr + (int)( ( storeY*widenedRect.Width ) + storeX ) ).ToBytePointer();
+                        pStore[ 0 ] = (byte)( litVal*255.0f );
                     }
                 }
             }
@@ -4337,7 +4272,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             mQuadTree = null;
             if (mCpuTerrainNormalMap != null)
             {
-                mCpuTerrainNormalMap.Data = IntPtr.Zero;
+                mCpuTerrainNormalMap.Data = null;
                 mCpuTerrainNormalMap = null;
             }
 
@@ -4359,74 +4294,71 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         protected KeyValuePair<bool, Vector3> CheckQuadIntersection(int x, int z, Ray ray)
         {
             //build the two planes belonging to the quad's triangles
-            unsafe
+            //float* val = (float*)GetHeightData(x, z);
+            //v1F = *val;
+            //val = (float*)GetHeightData(x+1,z);
+            //v2F = *val;
+            //val = (float*)GetHeightData(x,z+1);
+            //v3F = *val;
+            //val = (float*)GetHeightData(x + 1, z + 1);
+            //v4F = *val;
+            //float vv = ;
+
+            Vector3 v1 = new Vector3(x, mHeightData[z + mSize*x], z),
+                    v2 = new Vector3(x + 1, mHeightData[z + mSize*(x + 1)], z),
+                    v3 = new Vector3(x, mHeightData[(z + 1) + mSize*x], z + 1),
+                    v4 = new Vector3(x + 1, mHeightData[(z + 1) + mSize*(x + 1)], z + 1);
+
+            Plane p1 = new Plane(),
+                  p2 = new Plane();
+            bool oddRow = false;
+            if (z%2 != 0)
             {
-                //float* val = (float*)GetHeightData(x, z);
-                //v1F = *val;
-                //val = (float*)GetHeightData(x+1,z);
-                //v2F = *val;
-                //val = (float*)GetHeightData(x,z+1);
-                //v3F = *val;
-                //val = (float*)GetHeightData(x + 1, z + 1);
-                //v4F = *val;
-                //float vv = ;
-
-
-                Vector3 v1 = new Vector3(x, *((float*)GetHeightData(x, z)), z),
-                        v2 = new Vector3(x + 1, *((float*)GetHeightData(x + 1, z)), z),
-                        v3 = new Vector3(x, *((float*)GetHeightData(x, z + 1)), z + 1),
-                        v4 = new Vector3(x + 1, *((float*)GetHeightData(x + 1, z + 1)), z + 1);
-
-                Plane p1 = new Plane(),
-                      p2 = new Plane();
-                bool oddRow = false;
-                if (z % 2 != 0)
-                {
-                    /* odd
+                /* odd
                     3---4
                     | \ |
                     1---2
                     */
-                    p1.Redefine(v2, v4, v3);
-                    p2.Redefine(v1, v2, v3);
-                    oddRow = true;
-                }
-                else
-                {
-                    /* even
+                p1.Redefine(v2, v4, v3);
+                p2.Redefine(v1, v2, v3);
+                oddRow = true;
+            }
+            else
+            {
+                /* even
                     3---4
                     | / |
                     1---2
                     */
-                    p1.Redefine(v1, v2, v4);
-                    p2.Redefine(v1, v4, v3);
-                }
-                // Test for intersection with the two planes. 
-                // Then test that the intersection points are actually
-                // still inside the triangle (with a small error margin)
-                // Also check which triangle it is in
-                IntersectResult planeInt = ray.Intersects(p1);
-                if (planeInt.Hit)
-                {
-                    Vector3 where = ray.GetPoint(planeInt.Distance);
-                    Vector3 rel = where - v1;
-                    if (rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
-                    && ((rel.x >= rel.z && !oddRow) || (rel.x >= (1 - rel.z) && oddRow))) // triangle bounds
-                        return new KeyValuePair<bool, Vector3>(true, where);
-                }
-                planeInt = ray.Intersects(p2);
-                if (planeInt.Hit)
-                {
-                    Vector3 where = ray.GetPoint(planeInt.Distance);
-                    Vector3 rel = where - v1;
-                    if (rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
-                    && ((rel.x <= rel.z && !oddRow) || (rel.x <= (1 - rel.z) && oddRow))) // triangle bounds
-                        return new KeyValuePair<bool, Vector3>(true, where);
-                }
-
-                return new KeyValuePair<bool, Vector3>(false, Vector3.Zero);
+                p1.Redefine(v1, v2, v4);
+                p2.Redefine(v1, v4, v3);
             }
+            // Test for intersection with the two planes. 
+            // Then test that the intersection points are actually
+            // still inside the triangle (with a small error margin)
+            // Also check which triangle it is in
+            IntersectResult planeInt = ray.Intersects(p1);
+            if (planeInt.Hit)
+            {
+                Vector3 where = ray.GetPoint(planeInt.Distance);
+                Vector3 rel = where - v1;
+                if (rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
+                    && ((rel.x >= rel.z && !oddRow) || (rel.x >= (1 - rel.z) && oddRow))) // triangle bounds
+                    return new KeyValuePair<bool, Vector3>(true, where);
+            }
+            planeInt = ray.Intersects(p2);
+            if (planeInt.Hit)
+            {
+                Vector3 where = ray.GetPoint(planeInt.Distance);
+                Vector3 rel = where - v1;
+                if (rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
+                    && ((rel.x <= rel.z && !oddRow) || (rel.x <= (1 - rel.z) && oddRow))) // triangle bounds
+                    return new KeyValuePair<bool, Vector3>(true, where);
+            }
+
+            return new KeyValuePair<bool, Vector3>(false, Vector3.Zero);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -4688,18 +4620,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 else
                 {
                     //initialse black
-                    BasicBox box = new BasicBox(0, 0, mLayerBlendMapSize, mLayerBlendMapSize);
-                    HardwarePixelBuffer buf = mBlendTextureList[i].GetBuffer();
-                    unsafe
-                    {
-                        IntPtr pInit = buf.Lock(box, BufferLocking.Discard).Data;
-                        byte[] aZero = new byte[PixelUtil.GetNumElemBytes(fmt) * mLayerBlendMapSize * mLayerBlendMapSize];
-                        fixed (byte* pZero = aZero)
-                        {
-                            Memory.Copy((IntPtr)pZero, pInit, aZero.Length);
-                        }
-                        buf.Unlock();
-                    }
+                    BasicBox box = new BasicBox( 0, 0, mLayerBlendMapSize, mLayerBlendMapSize );
+                    HardwarePixelBuffer buf = mBlendTextureList[ i ].GetBuffer();
+                    var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
+                    byte[] aZero = new byte[PixelUtil.GetNumElemBytes( fmt )*mLayerBlendMapSize*mLayerBlendMapSize];
+                    Memory.Copy(BufferBase.Wrap(aZero), pInit, aZero.Length);
+                    buf.Unlock();
                 }
             }//i
 
@@ -4738,7 +4664,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 if (mCpuTerrainNormalMap != null)
                 {
                     mTerrainNormalMap.GetBuffer().BlitFromMemory(mCpuTerrainNormalMap);
-                    mCpuTerrainNormalMap.Data = IntPtr.Zero;
+                    mCpuTerrainNormalMap.Data = null;
                     mCpuTerrainNormalMap = null;
                 }
             }
@@ -4897,14 +4823,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     for (int i = 0; i < aInit.Length; i++)
                         aInit[i] = 255;
                     HardwarePixelBuffer buf = mLightMap.GetBuffer();
-                    IntPtr pInit = buf.Lock(box, BufferLocking.Discard).Data;
-                    unsafe
-                    {
-                        fixed (byte* ptr = aInit)
-                        {
-                            Memory.Copy((IntPtr)ptr, pInit, aInit.Length);
-                        }
-                    }
+                    var pInit = buf.Lock(box, BufferLocking.Discard).Data;
+                    Memory.Copy(BufferBase.Wrap(aInit), pInit, aInit.Length);
                     buf.Unlock();
                 }
             }
@@ -4944,14 +4864,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     byte[] aInit = new byte[mCompositeMapSizeActual * mCompositeMapSizeActual];
 
                     HardwarePixelBuffer buf = mCompositeMap.GetBuffer();
-                    IntPtr pInit = buf.Lock(box, BufferLocking.Discard).Data;
-                    unsafe
-                    {
-                        fixed (byte* ptr = aInit)
-                        {
-                            Memory.Copy((IntPtr)ptr, pInit, aInit.Length);
-                        }
-                    }
+                    var pInit = buf.Lock(box, BufferLocking.Discard).Data;
+                    Memory.Copy(BufferBase.Wrap(aInit), pInit, aInit.Length);
                     buf.Unlock();
                 }
             }
@@ -5121,11 +5035,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="srcPtr"></param>
         /// <param name="dstArray"></param>
-        protected void IntPtrToArray(IntPtr srcPtr, ref byte[] dstArray)
+        protected void IntPtrToArray(BufferBase srcPtr, ref byte[] dstArray)
         {
-            System.Diagnostics.Debug.Assert(srcPtr != IntPtr.Zero);
+            System.Diagnostics.Debug.Assert(srcPtr != null);
             System.Diagnostics.Debug.Assert(dstArray.Length > 0);
-            IntPtr dst = Memory.PinObject(dstArray);
+            var dst = Memory.PinObject(dstArray);
             Memory.Copy(srcPtr, dst, dstArray.Length);
             Memory.UnpinObject(dstArray);
         }

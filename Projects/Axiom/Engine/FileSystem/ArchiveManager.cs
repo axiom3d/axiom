@@ -132,13 +132,13 @@ namespace Axiom.FileSystem
         /// <param name="filename">The Archive to unload</param>
 		public void Unload( string filename )
 		{
-			Archive arch = _archives[ filename ];
+			var arch = _archives[ filename ];
 
 			if ( arch != null )
 			{
 				arch.Unload();
 
-				ArchiveFactory fac = _factories[ arch.Type ];
+				var fac = _factories[ arch.Type ];
 				if ( fac == null )
 					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Type );
 				_archives.Remove( arch.Name );
@@ -178,19 +178,19 @@ namespace Axiom.FileSystem
 				if ( disposeManagedResources )
 				{
 					// Unload & delete resources in turn
-					foreach ( KeyValuePair<string, Archive> arch in _archives )
+					foreach ( var arch in _archives )
 					{
 						// Unload
 						arch.Value.Unload();
 
 						// Find factory to destroy
-						ArchiveFactory fac = _factories[ arch.Value.Type ];
+						var fac = _factories[ arch.Value.Type ];
 						if ( fac == null )
 						{
 							// Factory not found
 							throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Value.Type );
 						}
-						Archive tmp = arch.Value;
+						var tmp = arch.Value;
 						fac.DestroyInstance( ref tmp );
 
 					}

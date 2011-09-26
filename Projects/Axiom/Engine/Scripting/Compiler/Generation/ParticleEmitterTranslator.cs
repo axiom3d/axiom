@@ -63,7 +63,7 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
 				// Must have a type as the first value
 				if ( obj.Values.Count == 0 )
@@ -72,25 +72,25 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				string type = string.Empty;
+				var type = string.Empty;
 				if ( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
 					return;
 				}
 
-				ParticleSystem system = (ParticleSystem)obj.Parent.Context;
+				var system = (ParticleSystem)obj.Parent.Context;
 				_Emitter = system.AddEmitter( type );
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
-						string value = string.Empty;
+						var prop = (PropertyAbstractNode)i;
+						var value = string.Empty;
 
 						// Glob the values together
-						foreach ( AbstractNode it in prop.Values )
+						foreach ( var it in prop.Values )
 						{
 							if ( it is AtomAbstractNode )
 							{

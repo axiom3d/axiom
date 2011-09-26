@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Math;
@@ -15,6 +15,7 @@ namespace Axiom.Demos
 	/// <summary>
 	///     Spline pathed camera tracking sample.
 	/// </summary>
+	[Export(typeof(TechDemo))]
 	public class CameraTrack : TechDemo
 	{
 		#region Private Fields

@@ -1,6 +1,6 @@
 ﻿#region Namespace Declarations
 
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Input;
 
@@ -8,6 +8,7 @@ using Axiom.Input;
 
 namespace Axiom.Platforms.OpenTK
 {
+	[Export(typeof(IPlatformManager))]
 	public class OpenTKPlatformManager : IPlatformManager
 	{
 		#region Fields

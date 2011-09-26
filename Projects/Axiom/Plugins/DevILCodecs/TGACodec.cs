@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
-
+using Axiom.CrossPlatform;
 using Tao.DevIl;
 
 #endregion Namespace Declarations
@@ -114,11 +114,13 @@ namespace Axiom.Plugins.DevILCodecs
 			{
 				// if so (probably), reverse b and r.  this is slower, but it works.
 				int newFormat = ( format == Il.IL_BGR ) ? Il.IL_RGB : Il.IL_RGBA;
-				unsafe
-				{
-					fixed ( byte* bufferPtr = &buffer[ 0 ] )
-					{
-						Il.ilCopyPixels( 0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, (IntPtr)bufferPtr ); // TAO 2.0
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+			    {
+                    using(var bufferPtr = BufferBase.Wrap(buffer))
+                    {
+                        Il.ilCopyPixels(0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, (IntPtr)bufferPtr.Pin() ); // TAO 2.0
 					}
 				}
 				//Il.ilCopyPixels( 0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, buffer );
@@ -126,12 +128,14 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 			else
 			{
-				IntPtr ptr = Il.ilGetData();
+                var ptr = BufferBase.Wrap(Il.ilGetData(), Il.ilGetInteger(Il.IL_IMAGE_SIZE_OF_DATA));
 
 				// copy the data into the byte array
-				unsafe
-				{
-					byte* pBuffer = (byte*)ptr;
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+					var pBuffer = ptr.ToBytePointer();
 					for ( int i = 0; i < buffer.Length; i++ )
 					{
 						buffer[ i ] = pBuffer[ i ];

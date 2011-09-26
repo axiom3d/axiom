@@ -63,7 +63,7 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
 				// Find the name
 				if ( obj != null )
@@ -83,7 +83,7 @@ namespace Axiom.Scripting.Compiler
 				// Allocate the particle system
 				object sysObject;
 				ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-				bool processed = compiler._fireEvent( ref evt, out sysObject );
+				var processed = compiler._fireEvent( ref evt, out sysObject );
 
 				if ( !processed )
 				{
@@ -106,11 +106,11 @@ namespace Axiom.Scripting.Compiler
 
 				obj.Context = _System;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
 							case Keywords.ID_MATERIAL:
@@ -123,13 +123,13 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										string name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
+										var name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
 										ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent(
 											ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
 
 										compiler._fireEvent( ref locEvt );
-										string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
+										var locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
 										if ( !_System.SetParameter( "material", locEvtName ) )
 										{
@@ -157,7 +157,7 @@ namespace Axiom.Scripting.Compiler
 									string name = prop.Name, value = string.Empty;
 
 									// Glob the values together
-									foreach ( AbstractNode it in prop.Values )
+									foreach ( var it in prop.Values )
 									{
 										if ( it is AtomAbstractNode )
 										{

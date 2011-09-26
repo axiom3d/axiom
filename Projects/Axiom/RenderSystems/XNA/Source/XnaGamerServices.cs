@@ -38,67 +38,65 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Microsoft.Xna.Framework.GamerServices;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public sealed class XnaGamerServices
-	{
-		private Root _engine;
-		private XnaRenderSystem _renderSystem;
-		private RenderWindow _window;
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class XnaGamerServices
+    {
+        private Root _engine;
+        private XnaRenderSystem _renderSystem;
+        private RenderWindow _window;
 
-		/// <summary>
-		/// Creates a new instance of <see cref="XnaGamerServices"/>
-		/// </summary>
-		/// <param name="engine">The engine</param>
-		/// <param name="renderSystem">the rendersystem in use</param>
-		/// <param name="window">The primary window</param>
-		public XnaGamerServices( Root engine, XnaRenderSystem renderSystem, RenderWindow window )
-		{
-			this._engine = engine;
-			this._renderSystem = renderSystem;
-			this._window = window;
-		}
+        /// <summary>
+        /// Creates a new instance of <see cref="XnaGamerServices"/>
+        /// </summary>
+        /// <param name="engine">The engine</param>
+        /// <param name="renderSystem">the rendersystem in use</param>
+        /// <param name="window">The primary window</param>
+        public XnaGamerServices( Root engine, XnaRenderSystem renderSystem, RenderWindow window )
+        {
+            _engine = engine;
+            _renderSystem = renderSystem;
+            _window = window;
+        }
 
-		/// <summary>
-		/// Initializes the XNA GamerServicesDispatcher
-		/// </summary>
-		public void Initialize()
-		{
-			GamerServicesDispatcher.WindowHandle = (IntPtr)_window[ "WINDOW" ];
-			GamerServicesDispatcher.Initialize( this._renderSystem );
-			this._engine.FrameStarted += this.Update;
-		}
+        /// <summary>
+        /// Initializes the XNA GamerServicesDispatcher
+        /// </summary>
+        public void Initialize()
+        {
+            GamerServicesDispatcher.WindowHandle = (IntPtr)_window[ "WINDOW" ];
+            GamerServicesDispatcher.Initialize( _renderSystem );
+            _engine.FrameStarted += Update;
+        }
 
-		/// <summary>
-		/// Stops the gamer services component from updating
-		/// </summary>
-		public void Shutdown()
-		{
-			this._engine.FrameStarted -= this.Update;
-			this._engine = null;
-			this._renderSystem = null;
-			this._window = null;
-		}
+        /// <summary>
+        /// Stops the gamer services component from updating
+        /// </summary>
+        public void Shutdown()
+        {
+            _engine.FrameStarted -= Update;
+            _engine = null;
+            _renderSystem = null;
+            _window = null;
+        }
 
-		/// <summary>
-		/// Helper method to call <see cref="GamerServicesDispatcher.Update"/> every frame.
-		/// </summary>
-		/// <param name="sender">object that invoked the event</param>
-		/// <param name="e">per-frame specfic arguments</param>
-		private void Update( object sender, FrameEventArgs e )
-		{
-			GamerServicesDispatcher.Update();
-		}
-	}
+        /// <summary>
+        /// Helper method to call <see cref="GamerServicesDispatcher.Update"/> every frame.
+        /// </summary>
+        /// <param name="sender">object that invoked the event</param>
+        /// <param name="e">per-frame specfic arguments</param>
+        private void Update( object sender, FrameEventArgs e )
+        {
+            GamerServicesDispatcher.Update();
+        }
+    }
 }

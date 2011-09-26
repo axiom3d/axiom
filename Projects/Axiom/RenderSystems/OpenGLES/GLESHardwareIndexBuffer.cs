@@ -65,8 +65,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		public GLESHardwareIndexBuffer( HardwareBufferManagerBase mgr, IndexType idxType, int numIndexes, BufferUsage usage, bool useShadowBuffer )
-			: base( mgr, idxType, numIndexes, usage, false, useShadowBuffer )
+		public GLESHardwareIndexBuffer( HardwareBufferManager mgr, IndexType idxType, int numIndexes, BufferUsage usage, bool useShadowBuffer )
+			: base( idxType, numIndexes, usage, false, useShadowBuffer )
 		{
 			if ( idxType == IndexType.Size32 )
 			{

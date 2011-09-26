@@ -55,14 +55,14 @@ namespace Axiom.Scripting.Compiler.Parser
 
 		public IList<ConcreteNode> Parse( IList<ScriptToken> tokens )
 		{
-			List<ConcreteNode> nodes = new List<ConcreteNode>();
+			var nodes = new List<ConcreteNode>();
 
-			ParserState state = ParserState.Ready;
+			var state = ParserState.Ready;
 			ScriptToken token;
 			ConcreteNode parent = null, node = null;
 
-			int iter = 0;
-			int end = tokens.Count;
+			var iter = 0;
+			var end = tokens.Count;
 
 			while ( iter != end )
 			{
@@ -90,7 +90,7 @@ namespace Axiom.Scripting.Compiler.Parser
 										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
 											throw new Exception( String.Format( "Expected import target at line {0}", node.Line ) );
 
-										ConcreteNode temp = new ConcreteNode();
+										var temp = new ConcreteNode();
 										temp.Parent = node;
 										temp.File = tokens[ iter ].file;
 										temp.Line = tokens[ iter ].line;
@@ -272,7 +272,7 @@ namespace Axiom.Scripting.Compiler.Parser
 							#region Newline
 							case Tokens.Newline:
 								// Look ahead to the next non-newline token and if it isn't an {, this was a property
-								int next = SkipNewlines( tokens, iter, end );
+								var next = SkipNewlines( tokens, iter, end );
 								if ( next == end || tokens[ next ].type != Tokens.LeftBrace )
 								{
 									// Ended a property here
@@ -295,14 +295,14 @@ namespace Axiom.Scripting.Compiler.Parser
 								// The following token are the parent objects (base classes).
 								// Require at least one of them.
 
-								int j = iter + 1;
+								var j = iter + 1;
 								j = SkipNewlines( tokens, j, end );
 								if ( j == end || ( tokens[ j ].type != Tokens.Word && tokens[ j ].type != Tokens.Quote ) )
 									throw new Exception( String.Format( "Expected object identifier at line {0}", node.Line ) );
 
 								while ( j != end && ( tokens[ j ].type == Tokens.Word || tokens[ j ].type == Tokens.Quote ) )
 								{
-									ConcreteNode tempNode = new ConcreteNode();
+									var tempNode = new ConcreteNode();
 									tempNode.Token = tokens[ j ].lexeme;
 									tempNode.File = tokens[ j ].file;
 									tempNode.Line = tokens[ j ].line;
@@ -491,7 +491,7 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			IList<ConcreteNode> nodes = new List<ConcreteNode>();
 			ConcreteNode node = null;
-			foreach ( ScriptToken token in tokens )
+			foreach ( var token in tokens )
 			{
 				switch ( token.type )
 				{
@@ -534,7 +534,7 @@ namespace Axiom.Scripting.Compiler.Parser
 
 		private ScriptToken GetToken( IEnumerator<ScriptToken> iter, int offset )
 		{
-			ScriptToken token = new ScriptToken();
+			var token = new ScriptToken();
 			while ( --offset > 1 && iter.MoveNext() != false )
 				;
 

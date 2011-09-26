@@ -44,6 +44,7 @@ using System.IO;
 
 namespace Axiom.RenderSystems.Xna.Content
 {
+#if !XNA4
 	class HlslIncludeHandler : CompilerIncludeHandler
 	{
 		public override Stream Open( CompilerIncludeHandlerType includeType, string filename )
@@ -51,4 +52,5 @@ namespace Axiom.RenderSystems.Xna.Content
 			return File.Open( filename, FileMode.Open );
 		}
 	}
+#endif
 }

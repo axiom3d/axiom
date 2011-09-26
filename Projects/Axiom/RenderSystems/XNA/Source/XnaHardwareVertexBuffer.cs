@@ -37,163 +37,171 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+using System.Diagnostics;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
-
-using XFG = Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
+using BufferUsage = Axiom.Graphics.BufferUsage;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	/// <summary>
-	/// 	Summary description for XnaHardwareVertexBuffer.
-	/// </summary>
-	///
-	//there is no XNA buffer locking system, copy first into a byte array and when the unlock function is called, fill in memory with setdata<byte>(...)
-	unsafe public class XnaHardwareVertexBuffer : HardwareVertexBuffer
-	{
-		#region Member variables
+    /// <summary>
+    /// 	Summary description for XnaHardwareVertexBuffer.
+    /// </summary>
+    ///
+    //there is no XNA buffer locking system, copy first into a byte array and when the unlock function is called, fill in memory with setdata<byte>(...)
+    public class XnaHardwareVertexBuffer : HardwareVertexBuffer
+    {
+        #region Member variables
 
-		protected XFG.VertexBuffer _buffer;
-		protected XFG.GraphicsDevice _device;
+        protected VertexBuffer _buffer;
+        protected GraphicsDevice _device;
 
-		private byte[] _bufferBytes;
+        private readonly byte[] _bufferBytes;
 
-		private int _offset;
-		private int _length;
+        private int _offset;
+        private int _length;
 
-		#endregion Member variables
+        #endregion Member variables
 
-		#region Constructors
+        #region Constructors
 
-		public XnaHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
-			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
-		{
-			_device = dev;
-			if ( !( vertexDeclaration is XnaVertexDeclaration ) )
-			{
-				throw new AxiomException ("Invalid VertexDeclaration supplied, must be created by HardwareBufferManager.CreateVertexDeclaration()" );
-			}
-			if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
-			{
-				_buffer = new XFG.DynamicVertexBuffer(_device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration , numVertices, XnaHelper.Convert(usage));
-			}
-			else
-				_buffer = new XFG.VertexBuffer(_device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration, numVertices, XnaHelper.Convert(usage));
+        public XnaHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration,
+                                        int numVertices, BufferUsage usage, GraphicsDevice dev, bool useSystemMemory,
+                                        bool useShadowBuffer )
+            : base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
+        {
+            _device = dev;
+            if ( !( vertexDeclaration is XnaVertexDeclaration ) )
+            {
+                throw new AxiomException(
+                    "Invalid VertexDeclaration supplied, must be created by HardwareBufferManager.CreateVertexDeclaration()" );
+            }
+            if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
+            {
+                _buffer = new DynamicVertexBuffer( _device,
+                                                   ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration,
+                                                   numVertices, XnaHelper.Convert( usage ) );
+            }
+            else
+            {
+                _buffer = new VertexBuffer( _device, ( (XnaVertexDeclaration)vertexDeclaration ).XFGVertexDeclaration,
+                                            numVertices, XnaHelper.Convert( usage ) );
+            }
 
-			_bufferBytes = new byte[ vertexDeclaration.GetVertexSize() * numVertices];
-			_bufferBytes.Initialize();
-		}
+            _bufferBytes = new byte[vertexDeclaration.GetVertexSize()*numVertices];
+            _bufferBytes.Initialize();
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-		{
-			_offset = offset;
-			_length = length;
-			fixed ( byte* bytes = &_bufferBytes[ offset ] )
-			{
-				return new IntPtr( bytes );
-			}
-		}
+        private BufferLocking _locking;
 
-		/// <summary>
-		///
-		/// </summary>
-		protected override void UnlockImpl()
-		{
-			//there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
-			// _buffer.SetData<byte>(bufferBytes);
-			//this is faster :)
-			_buffer.SetData<byte>( _offset, _bufferBytes, _offset, _length, 0 );
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="locking"></param>
+        /// <returns></returns>
+        protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
+        {
+            _offset = offset;
+            _length = length;
+            _locking = locking;
+            return BufferBase.Wrap( _bufferBytes ).Offset( offset );
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="dest"></param>
-		public override void ReadData( int offset, int length, IntPtr dest )
-		{
-			// lock the buffer for reading
-			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+        /// <summary>
+        ///
+        /// </summary>
+        protected override void UnlockImpl()
+        {
+            //there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
+            // _buffer.SetData<byte>(bufferBytes);
+            //this is faster :)
+            if (_locking != BufferLocking.ReadOnly || _buffer != null)
+                _buffer.SetData(_offset, _bufferBytes, _offset, _length, 0);
+        }
 
-			// copy that data in there
-			Memory.Copy( src, dest, length );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="dest"></param>
+        public override void ReadData( int offset, int length, BufferBase dest )
+        {
+            // lock the buffer for reading
+            var src = Lock( offset, length, BufferLocking.ReadOnly );
 
-			// unlock the buffer
-			this.Unlock();
-		}
+            // copy that data in there
+            Memory.Copy( src, dest, length );
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="src"></param>
-		/// <param name="discardWholeBuffer"></param>
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-		{
-			// lock the buffer real quick
-			IntPtr dest = this.Lock( offset, length,
-				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+            // unlock the buffer
+            Unlock();
+        }
 
-			// copy that data in there
-			Memory.Copy( src, dest, length );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="src"></param>
+        /// <param name="discardWholeBuffer"></param>
+        public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
+        {
+            // lock the buffer real quick
+            var dest = Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
-			this.Unlock();
-		}
+            // copy that data in there
+            Memory.Copy( src, dest, length );
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-				}
+            Unlock();
+        }
 
-				if ( _buffer != null )
-				{
-					_buffer.Dispose();
-					_buffer = null;
-				}
-			}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+                //TODO: Temporary comment... Check why CubeMapping demo ends up using a disposed XnaHardwareVertexBuffer
+                //if ( _buffer != null )
+                //{
+                //    _buffer.Dispose();
+                //    _buffer = null;
+                //}
+            }
 
-		#endregion Methods
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-		#region Properties
+        #endregion Methods
 
-		/// <summary>
-		///		Gets the underlying Xna Vertex Buffer object.
-		/// </summary>
-		public XFG.VertexBuffer XnaVertexBuffer
-		{
-			get
-			{
-				return _buffer;
-			}
-		}
+        #region Properties
 
-		#endregion Properties
-	}
+        /// <summary>
+        ///		Gets the underlying Xna Vertex Buffer object.
+        /// </summary>
+        public VertexBuffer XnaVertexBuffer
+        {
+            get
+            {
+                return _buffer;
+            }
+        }
+
+        #endregion Properties
+    }
 }

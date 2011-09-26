@@ -81,7 +81,7 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 				if ( obj != null )
 				{
 					if ( string.IsNullOrEmpty( obj.Name ) )
@@ -130,13 +130,13 @@ namespace Axiom.Scripting.Compiler
 
 			public static void TranslateProgramParameters( ScriptCompiler compiler, /*it should be GpuProgramParametersShared*/ GpuProgramParameters parameters, ObjectAbstractNode obj )
 			{
-				int animParametricsCount = 0;
+				var animParametricsCount = 0;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
                         LogManager.Instance.Write("TranslateProgramParameters {0}", (Keywords)prop.Id);
 						switch ( (Keywords)prop.Id )
 						{
@@ -150,14 +150,14 @@ namespace Axiom.Scripting.Compiler
 						            continue;
 						        }
 
-						        AbstractNode i0 = getNodeAt( prop.Values, 0 );
+						        var i0 = getNodeAt( prop.Values, 0 );
 						        if ( !( i0 is AtomAbstractNode ) )
 						        {
 						            compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 						                               "shared parameter set name expected" );
 						            continue;
 						        }
-						        AtomAbstractNode atom0 = (AtomAbstractNode)i0;
+						        var atom0 = (AtomAbstractNode)i0;
 
 						        throw new NotImplementedException();
 #if UNREACHABLE_CODE
@@ -184,7 +184,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values.Count >= 3 )
 									{
-										bool named = ( prop.Id == (uint)Keywords.ID_PARAM_NAMED );
+										var named = ( prop.Id == (uint)Keywords.ID_PARAM_NAMED );
 										AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ),
 											k = getNodeAt( prop.Values, 2 );
 
@@ -203,8 +203,8 @@ namespace Axiom.Scripting.Compiler
 											return;
 										}
 
-										string name = string.Empty;
-										int index = 0;
+										var name = string.Empty;
+										var index = 0;
 										// Assign the name/index
 										if ( named )
 											name = atom0.Value;
@@ -240,8 +240,8 @@ namespace Axiom.Scripting.Compiler
 										{
 											// Find the number of parameters
 											var isValid = true;
-											GpuProgramParameters.ElementType type = GpuProgramParameters.ElementType.Real;
-											int count = 0;
+											var type = GpuProgramParameters.ElementType.Real;
+											var count = 0;
 											if ( atom1.Value.Contains( "float" ) )
 											{
 												type = GpuProgramParameters.ElementType.Real;
@@ -281,10 +281,10 @@ namespace Axiom.Scripting.Compiler
                                                     parameters.ClearAutoConstant(index);
 												}
 
-												int roundedCount = count % 4 != 0 ? count + 4 - ( count % 4 ) : count;
+												var roundedCount = count % 4 != 0 ? count + 4 - ( count % 4 ) : count;
 												if ( type == GpuProgramParameters.ElementType.Int )
 												{
-													int[] vals = new int[ roundedCount ];
+													var vals = new int[ roundedCount ];
 													if ( getInts( prop.Values, 2, out vals, roundedCount ) )
 													{
 														try
@@ -312,7 +312,7 @@ namespace Axiom.Scripting.Compiler
 												}
 												else
 												{
-													float[] vals = new float[ roundedCount ];
+													var vals = new float[ roundedCount ];
 													if ( getFloats( prop.Values, 2, out vals, roundedCount ) )
 													{
 														try
@@ -355,9 +355,9 @@ namespace Axiom.Scripting.Compiler
 							case Keywords.ID_PARAM_INDEXED_AUTO:
 							case Keywords.ID_PARAM_NAMED_AUTO:
 								{
-									bool named = ( prop.Id == (uint)Keywords.ID_PARAM_NAMED_AUTO );
-									string name = string.Empty;
-									int index = 0;
+									var named = ( prop.Id == (uint)Keywords.ID_PARAM_NAMED_AUTO );
+									var name = string.Empty;
+									var index = 0;
 
 									if ( prop.Values.Count >= 2 )
 									{
@@ -387,7 +387,7 @@ namespace Axiom.Scripting.Compiler
 										atom1.Value = atom1.Value.ToLower();
 
 										GpuProgramParameters.AutoConstantDefinition def;
-										bool defFound = GpuProgramParameters.GetAutoConstantDefinition( atom1.Value, out def );
+										var defFound = GpuProgramParameters.GetAutoConstantDefinition( atom1.Value, out def );
 
 										if ( defFound )
 										{
@@ -460,8 +460,8 @@ namespace Axiom.Scripting.Compiler
 														}
 														else
 														{
-															bool success = false;
-															int extraInfo = 0;
+															var success = false;
+															var extraInfo = 0;
 															if ( i3 == null )
 															{ // Handle only one extra value
 																if ( getInt( i2, out extraInfo ) )
@@ -590,15 +590,15 @@ namespace Axiom.Scripting.Compiler
 
 			protected void _translateGpuProgram( ScriptCompiler compiler, ObjectAbstractNode obj )
 			{
-				NameValuePairList customParameters = new NameValuePairList();
+				var customParameters = new NameValuePairList();
 				string syntax = string.Empty, source = string.Empty;
 				AbstractNode parameters = null;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						if ( prop.Id == (uint)Keywords.ID_SOURCE )
 						{
 							if ( prop.Values.Count != 0 )
@@ -634,8 +634,8 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							string name = prop.Name, value = string.Empty;
-							bool first = true;
-							foreach ( AbstractNode it in prop.Values )
+							var first = true;
+							foreach ( var it in prop.Values )
 							{
 								if ( it is AtomAbstractNode )
 								{
@@ -664,7 +664,7 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.UnsupportedByRenderSystem, obj.File, obj.Line );
 					//Register the unsupported program so that materials that use it know that
 					//it exists but is unsupported
-					GpuProgram unsupportedProg = GpuProgramManager.Instance.Create( obj.Name, compiler.ResourceGroup,
+					var unsupportedProg = GpuProgramManager.Instance.Create( obj.Name, compiler.ResourceGroup,
 						_translateIDToGpuProgramType( obj.Id ), syntax );
 
 					return;
@@ -677,7 +677,7 @@ namespace Axiom.Scripting.Compiler
 				ScriptCompilerEvent evt = new CreateGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, syntax,
 					_translateIDToGpuProgramType( obj.Id ) );
 
-				bool processed = compiler._fireEvent( ref evt, out progObj );
+				var processed = compiler._fireEvent( ref evt, out progObj );
 				if ( !processed )
 				{
 					prog = (GpuProgram)GpuProgramManager.Instance.CreateProgram( obj.Name, compiler.ResourceGroup, source,
@@ -706,7 +706,7 @@ namespace Axiom.Scripting.Compiler
 				prog.SetParameters( customParameters );
 
 				// Set up default parameters
-				if ( prog.IsSupported && customParameters != null )
+				if ( prog.IsSupported && parameters != null )// customParameters != null )
 				{
 					var ptr = prog.DefaultParameters;
 					GpuProgramTranslator.TranslateProgramParameters( compiler, ptr, (ObjectAbstractNode)parameters );
@@ -728,15 +728,15 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				NameValuePairList customParameters = new NameValuePairList();
-				string source = string.Empty;
+				var customParameters = new NameValuePairList();
+				var source = string.Empty;
 				AbstractNode parameters = null;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						if ( prop.Id == (uint)Keywords.ID_SOURCE )
 						{
 							if ( prop.Values.Count != 0 )
@@ -756,8 +756,8 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							string name = prop.Name, value = string.Empty;
-							bool first = true;
-							foreach ( AbstractNode it in prop.Values )
+							var first = true;
+							foreach ( var it in prop.Values )
 							{
 								if ( it is AtomAbstractNode )
 								{
@@ -799,7 +799,7 @@ namespace Axiom.Scripting.Compiler
 				ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, source, language,
 						_translateIDToGpuProgramType( obj.Id ) );
 
-				bool processed = compiler._fireEvent( ref evnt, out progObj );
+				var processed = compiler._fireEvent( ref evnt, out progObj );
 				if ( !processed )
 				{
 					prog = (HighLevelGpuProgram)(
@@ -827,10 +827,10 @@ namespace Axiom.Scripting.Compiler
 				prog.Origin = obj.File;
 
 				// Set the custom parameters
-				foreach ( KeyValuePair<string, string> currentParam in customParameters )
+				foreach ( var currentParam in customParameters )
 				{
-					string param = currentParam.Key;
-					string val = currentParam.Value;
+					var param = currentParam.Key;
+					var val = currentParam.Value;
 
 					if ( !prog.SetParam( param, val ) )
 					{
@@ -848,17 +848,17 @@ namespace Axiom.Scripting.Compiler
 
 			protected void _translateUnifiedGpuProgram( ScriptCompiler compiler, ObjectAbstractNode obj )
 			{
-				NameValuePairList customParameters = new NameValuePairList();
+				var customParameters = new NameValuePairList();
 				AbstractNode parameters = null;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						if ( prop.Name == "delegate" )
 						{
-							string value = string.Empty;
+							var value = string.Empty;
 							if ( prop.Values.Count != 0 && prop.Values[ 0 ] is AtomAbstractNode )
 								value = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
@@ -871,8 +871,8 @@ namespace Axiom.Scripting.Compiler
 						else
 						{
 							string name = prop.Name, value = string.Empty;
-							bool first = true;
-							foreach ( AbstractNode it in prop.Values )
+							var first = true;
+							foreach ( var it in prop.Values )
 							{
 								if ( it is AtomAbstractNode )
 								{
@@ -903,7 +903,7 @@ namespace Axiom.Scripting.Compiler
 				ScriptCompilerEvent evnt = new CreateHighLevelGpuProgramScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup, string.Empty, "unified",
 					_translateIDToGpuProgramType( obj.Id ) );
 
-				bool processed = compiler._fireEvent( ref evnt, out progObj );
+				var processed = compiler._fireEvent( ref evnt, out progObj );
 
 				if ( !processed )
 				{
@@ -930,10 +930,10 @@ namespace Axiom.Scripting.Compiler
 				prog.Origin = obj.File;
 
 				// Set the custom parameters
-				foreach ( KeyValuePair<string, string> currentParam in customParameters )
+				foreach ( var currentParam in customParameters )
 				{
-					string param = currentParam.Key;
-					string val = currentParam.Value;
+					var param = currentParam.Key;
+					var val = currentParam.Value;
 
 					if ( !prog.SetParam( param, val ) )
 					{

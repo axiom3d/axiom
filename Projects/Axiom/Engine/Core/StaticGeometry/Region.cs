@@ -201,7 +201,7 @@ namespace Axiom.Core
 				{
 					// Make sure we only update this once per frame no matter how many
 					// times we're asked
-					ulong frame = Root.Instance.CurrentFrameCount;
+					var frame = Root.Instance.CurrentFrameCount;
 					if ( frame > lightListUpdated )
 					{
 						lightList = node.FindLights( boundingRadius );
@@ -255,8 +255,8 @@ namespace Axiom.Core
 				queuedSubMeshes.Add( qsm );
 
 				// update lod distances
-				Mesh mesh = qsm.submesh.Parent;
-				LodStrategy lodStrategy = mesh.LodStrategy;
+				var mesh = qsm.submesh.Parent;
+				var lodStrategy = mesh.LodStrategy;
 				if ( this.lodStrategy == null )
 				{
 					this.lodStrategy = lodStrategy;
@@ -269,10 +269,10 @@ namespace Axiom.Core
 						throw new AxiomException( "Lod strategies do not match." );
 				}
 
-				int lodLevels = mesh.LodLevelCount;
+				var lodLevels = mesh.LodLevelCount;
 				if ( qsm.geometryLodList.Count != lodLevels )
 				{
-					string msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}", qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
+					var msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}", qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
 					throw new AxiomException( msg );
 				}
 
@@ -283,15 +283,15 @@ namespace Axiom.Core
 				// Make sure LOD levels are max of all at the requested level
 				for ( ushort lod = 1; lod < lodLevels; ++lod )
 				{
-					MeshLodUsage meshLod = qsm.submesh.Parent.GetLodLevel( lod );
+					var meshLod = qsm.submesh.Parent.GetLodLevel( lod );
 					lodValues[ lod ] = Utility.Max( (float)lodValues[ lod ], meshLod.Value );
 				}
 
 				// update bounds
 				// Transform world bounds relative to our center
-				AxisAlignedBox localBounds = new AxisAlignedBox( qsm.worldBounds.Minimum - center, qsm.worldBounds.Maximum - center );
+				var localBounds = new AxisAlignedBox( qsm.worldBounds.Minimum - center, qsm.worldBounds.Maximum - center );
 				aabb.Merge( localBounds );
-				foreach ( Vector3 corner in localBounds.Corners )
+				foreach ( var corner in localBounds.Corners )
 				{
 					boundingRadius = Utility.Max( boundingRadius, corner.Length );
 				}
@@ -306,14 +306,14 @@ namespace Axiom.Core
 				// we encountered in all the meshes queued
 				for ( ushort lod = 0; lod < lodValues.Count; ++lod )
 				{
-					LODBucket lodBucket = new LODBucket( this, lod, (float)lodValues[ lod ] );
+					var lodBucket = new LODBucket( this, lod, (float)lodValues[ lod ] );
 					lodBucketList.Add( lodBucket );
 					// Now iterate over the meshes and assign to LODs
 					// LOD bucket will pick the right LOD to use
 					IEnumerator iter = queuedSubMeshes.GetEnumerator();
 					while ( iter.MoveNext() )
 					{
-						QueuedSubMesh qsm = (QueuedSubMesh)iter.Current;
+						var qsm = (QueuedSubMesh)iter.Current;
 						lodBucket.Assign( qsm, lod );
 					}
 					// now build
@@ -323,17 +323,17 @@ namespace Axiom.Core
 				// Do we need to build an edge list?
 				if ( stencilShadows )
 				{
-					EdgeListBuilder eb = new EdgeListBuilder();
+					var eb = new EdgeListBuilder();
 					//int vertexSet = 0;
-					foreach ( LODBucket lod in lodBucketList )
+					foreach ( var lod in lodBucketList )
 					{
-						foreach ( MaterialBucket mat in lod.MaterialBucketMap.Values )
+						foreach ( var mat in lod.MaterialBucketMap.Values )
 						{
 							// Check if we have vertex programs here
-							Technique t = mat.Material.GetBestTechnique();
+							var t = mat.Material.GetBestTechnique();
 							if ( null != t )
 							{
-								Pass p = t.GetPass( 0 );
+								var p = t.GetPass( 0 );
 								if ( null != p )
 								{
 									if ( p.HasVertexProgram )
@@ -343,7 +343,7 @@ namespace Axiom.Core
 								}
 							}
 
-							foreach ( GeometryBucket geom in mat.GeometryBucketList )
+							foreach ( var geom in mat.GeometryBucketList )
 							{
 								// Check we're dealing with 16-bit indexes here
 								// Since stencil shadows can only deal with 16-bit
@@ -365,13 +365,13 @@ namespace Axiom.Core
 			public override void NotifyCurrentCamera( Camera cam )
 			{
 				// Determine active lod
-				Vector3 diff = cam.DerivedPosition - center;
+				var diff = cam.DerivedPosition - center;
 				// Distance from the edge of the bounding sphere
 				camDistanceSquared = diff.LengthSquared - boundingRadius * boundingRadius;
 				// Clamp to 0
 				camDistanceSquared = Utility.Max( 0.0f, camDistanceSquared );
 
-				float maxDist = parent.SquaredRenderingDistance;
+				var maxDist = parent.SquaredRenderingDistance;
 				if ( parent.RenderingDistance > 0 && camDistanceSquared > maxDist && cam.UseRenderingDistance )
 				{
 					beyondFarDistance = true;
@@ -394,7 +394,7 @@ namespace Axiom.Core
 
 			public override void UpdateRenderQueue( RenderQueue queue )
 			{
-				LODBucket lodBucket = lodBucketList[ currentLod ];
+				var lodBucket = lodBucketList[ currentLod ];
 				lodBucket.AddRenderables( queue, renderQueueID, camDistanceSquared );
 			}
 
@@ -413,8 +413,8 @@ namespace Axiom.Core
 				Debug.Assert( indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now" );
 
 				// Calculate the object space light details
-				Vector4 lightPos = light.GetAs4DVector();
-				Matrix4 world2Obj = parentNode.FullTransform.Inverse();
+				var lightPos = light.GetAs4DVector();
+				var world2Obj = parentNode.FullTransform.Inverse();
 				lightPos = world2Obj * lightPos;
 
 				// We need to search the edge list for silhouette edges
@@ -425,13 +425,13 @@ namespace Axiom.Core
 				}
 
 				// Init shadow renderable list if required
-				bool init = shadowRenderables.Count == 0;
+				var init = shadowRenderables.Count == 0;
 
 				RegionShadowRenderable esr = null;
 				//bool updatedSharedGeomNormals = false;
-				for ( int i = 0; i < edgeList.EdgeGroups.Count; i++ )
+				for ( var i = 0; i < edgeList.EdgeGroups.Count; i++ )
 				{
-					EdgeData.EdgeGroup group = (EdgeData.EdgeGroup)edgeList.EdgeGroups[ i ];
+					var group = (EdgeData.EdgeGroup)edgeList.EdgeGroups[ i ];
 					if ( init )
 					{
 						// Create a new renderable, create a separate light cap if
@@ -462,7 +462,7 @@ namespace Axiom.Core
 				LogManager.Instance.Write( "Local AABB: {0}", aabb );
 				LogManager.Instance.Write( "Bounding radius: {0}", boundingRadius );
 				LogManager.Instance.Write( "Number of LODs: {0}", lodBucketList.Count );
-				foreach ( LODBucket lodBucket in lodBucketList )
+				foreach ( var lodBucket in lodBucketList )
 				{
 					lodBucket.Dump();
 				}
@@ -487,7 +487,7 @@ namespace Axiom.Core
 							node = null;
 						}
 
-						foreach ( LODBucket lodBucket in lodBucketList )
+						foreach ( var lodBucket in lodBucketList )
 						{
 							lodBucket.Dispose();
 						}

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
@@ -46,6 +47,7 @@ namespace Axiom.Platforms.Win32
 	/// <summary>
 	///		Platform management specialization for Microsoft Windows (r) platform.
 	/// </summary>
+	[Export(typeof(IPlatformManager))]  
 	public class Win32PlatformManager : IPlatformManager
 	{
 		#region Fields

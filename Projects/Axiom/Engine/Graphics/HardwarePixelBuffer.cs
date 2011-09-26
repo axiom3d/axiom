@@ -39,6 +39,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -262,13 +263,13 @@ namespace Axiom.Graphics
 		///    Internal implementation of lock(), do not override or call this
 		///    for HardwarePixelBuffer implementations, but override the previous method
 		///</summary>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking options )
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking options)
 		{
 			Debug.Assert( !IsLocked, "Cannot lock this buffer, it is already locked!" );
 			Debug.Assert( offset == 0 && length == sizeInBytes, "Cannot lock memory region, must lock box or entire buffer" );
 
-			BasicBox myBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
-			PixelBox rv = Lock( myBox, options );
+			var myBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
+			var rv = Lock( myBox, options );
 			return rv.Data;
 		}
 
@@ -292,16 +293,16 @@ namespace Axiom.Graphics
 			if ( src == this )
 				throw new Exception( "Source must not be the same object." );
 
-			PixelBox srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
+			var srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
-			BufferLocking method = BufferLocking.Normal;
+			var method = BufferLocking.Normal;
 			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
 				 dstBox.Right == _width && dstBox.Bottom == _height &&
 				 dstBox.Back == _depth )
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
 
-			PixelBox dstlock = Lock( dstBox, method );
+			var dstlock = Lock( dstBox, method );
 			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
 				// Scaling desired
 				throw new Exception( "Image scaling not yet implemented." );
@@ -332,7 +333,7 @@ namespace Axiom.Graphics
 		///     The area of memory in which to place the data, must be large enough to 
 		///     accommodate the data!
 		/// </param>
-		public override void ReadData( int offset, int length, IntPtr dest )
+        public override void ReadData(int offset, int length, BufferBase dest)
 		{
 			throw new Exception( "Reading a byte range is not implemented. Use blitToMemory." );
 		}
@@ -348,7 +349,7 @@ namespace Axiom.Graphics
 		///     If true, this allows the driver to discard the entire buffer when writing,
 		///     such that DMA stalls can be avoided; use if you can.
 		/// </param>
-		public override void WriteData( int offset, int length, IntPtr source, bool discardWholeBuffer )
+        public override void WriteData(int offset, int length, BufferBase source, bool discardWholeBuffer)
 		{
 			throw new Exception( "Writing a byte range is not implemented. Use blitToMemory." );
 		}

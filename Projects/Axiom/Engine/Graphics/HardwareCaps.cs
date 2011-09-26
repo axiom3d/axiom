@@ -711,8 +711,8 @@ namespace Axiom.Graphics
         /// <returns></returns>
         internal static GPUVendor VendorFromString( string vendorString )
         {
-            GPUVendor ret = GPUVendor.Unknown;
-            object lookUpResult = ScriptEnumAttribute.Lookup( vendorString, typeof( GPUVendor ) );
+            var ret = GPUVendor.Unknown;
+            var lookUpResult = ScriptEnumAttribute.Lookup( vendorString, typeof( GPUVendor ) );
 
             if ( lookUpResult != null )
                 ret = (GPUVendor)lookUpResult;

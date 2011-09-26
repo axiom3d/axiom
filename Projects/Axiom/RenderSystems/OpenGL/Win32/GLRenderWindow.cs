@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Axiom.CrossPlatform;
 using SWF = System.Windows.Forms;
 
 using Axiom.Core;
@@ -126,17 +127,17 @@ namespace Axiom.RenderSystems.OpenGL
 				dispose( true );
 
 			_hWindow = IntPtr.Zero;
-			this.Name = name;
+			this.name = name;
 			this.IsFullScreen = isFullScreen;
 			this._isClosed = false;
 
 			// load window defaults
 			this.left = this.top = -1; // centered
-			this.Width = width;
-			this.Height = height;
+			this.width = width;
+			this.height = height;
 			this._displayFrequency = 0;
 			this.isDepthBuffered = true;
-			this.ColorDepth = IsFullScreen ? 32 : 16;
+			this.colorDepth = IsFullScreen ? 32 : 16;
 
 			IntPtr parentHwnd = IntPtr.Zero;
 			string title = name;
@@ -191,7 +192,7 @@ namespace Axiom.RenderSystems.OpenGL
 							break;
 						case "colorDepth":
 							if ( IsFullScreen )
-								ColorDepth = Int32.Parse( entry.Value.ToString() );
+								colorDepth = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "parentWindowHandle":
 							if ( !IsFullScreen )
@@ -282,8 +283,8 @@ namespace Axiom.RenderSystems.OpenGL
 			//Form frm = (Form)ctrl.TopLevelControl;
 			this.top = ctrl.Top;
 			this.left = ctrl.Left;
-			this.Width = ctrl.ClientRectangle.Width;
-			this.Height = ctrl.ClientRectangle.Height;
+			this.width = ctrl.ClientRectangle.Width;
+			this.height = ctrl.ClientRectangle.Height;
 
 			_hDeviceContext = User.GetDC( _hWindow );
 
@@ -345,7 +346,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+            if (!IsDisposed)
 			{
 				if ( disposeManagedResources )
 				{
@@ -404,12 +405,12 @@ namespace Axiom.RenderSystems.OpenGL
                 SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
                 this.top = ctrl.Top;
                 this.left = ctrl.Left;
-                this.Width = ctrl.ClientRectangle.Width;
-                this.Height = ctrl.ClientRectangle.Height;
+                this.width = ctrl.ClientRectangle.Width;
+                this.height = ctrl.ClientRectangle.Height;
             }
 
 			// Update dimensions incase changed
-            foreach ( Viewport entry in this.viewportList.Values )
+            foreach ( Viewport entry in this.ViewportList.Values )
 			{
                 entry.UpdateDimensions();
 			}
@@ -468,7 +469,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Switch context if different from current one
 			RenderSystem rsys = Root.Instance.RenderSystem;
-			rsys.SetViewport( this.GetViewport( 0 ) );
+			rsys.Viewport = this.GetViewport( 0 );
 
 			// Must change the packing to ensure no overruns!
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
@@ -487,7 +488,7 @@ namespace Axiom.RenderSystems.OpenGL
 				byte[] tmpData = new byte[ rowSpan * height ];
 				unsafe
 				{
-					byte* dataPtr = (byte*)dst.Data.ToPointer();
+					var dataPtr = dst.Data.ToBytePointer();
 					//int *srcRow = (uchar *)dst.data, *tmpRow = tmpData + (height - 1) * rowSpan;
 
 					for ( int row = height - 1, tmpRow = 0; row >= 0; row--, tmpRow++ )
@@ -499,14 +500,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 					}
 				}
-				GCHandle tmpDataHandle = GCHandle.Alloc( tmpData, GCHandleType.Pinned );
-				Memory.Copy( tmpDataHandle.AddrOfPinnedObject(), dst.Data, rowSpan * height );
-				tmpDataHandle.Free();
-
+                var tmpDataHandle = BufferBase.Wrap(tmpData);
+				Memory.Copy( tmpDataHandle, dst.Data, rowSpan * height );
 			}
 
 		}
 
 		#endregion
-	}
+
+        public override bool RequiresTextureFlipping
+        {
+            get { return false; }
+        }
+    }
 }

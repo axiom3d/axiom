@@ -56,10 +56,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <param name="vertexSize"></param>
 		/// <param name="numVertices"></param>
 		/// <param name="usage"></param>
-		public GLESDefaultHardwareVertexBuffer( VertexDeclaration declaration, int numVertices, BufferUsage usage )
-			: base( null, declaration, numVertices, usage, true, false )
+		public GLESDefaultHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
+			: base( vertexSize, numVertices, usage, true, false )
 		{
-			_data = new byte[ declaration.GetVertexSize() * numVertices ];
+			_data = new byte[ numVertices ];
 			_dataPtr = Memory.PinObject( _data );
 		}
 

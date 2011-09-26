@@ -10,6 +10,9 @@
     <RootNamespace>Axiom.RenderSystems.Xna</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.Xna</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>F67A5284-C92E-4af8-8932-984AD93F613B</XnaCrossPlatformGroupID>
@@ -43,7 +46,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xna\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XNA;WINDOWS;</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XNA;WINDOWS;;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -58,7 +61,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Xna\Release\</OutputPath>
-    <DefineConstants>TRACE;XNA;WINDOWS;</DefineConstants>
+    <DefineConstants>TRACE;XNA;WINDOWS;;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>

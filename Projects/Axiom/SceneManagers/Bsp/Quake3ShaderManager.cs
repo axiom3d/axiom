@@ -410,7 +410,7 @@ namespace Axiom.SceneManagers.Bsp
         /// <param name="fileName"></param>
         public override void ParseScript( Stream stream, string groupName, string fileName )
         {
-            StreamReader file = new StreamReader( stream, Encoding.ASCII );
+            StreamReader file = new StreamReader( stream, Encoding.UTF8 );
             string line;
             Quake3Shader shader = null;
 

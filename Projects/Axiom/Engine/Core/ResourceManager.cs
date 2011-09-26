@@ -339,7 +339,7 @@ namespace Axiom.Core
 	    public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
-			Resource ret = _create( name, nextHandle, group, isManual, loader, createParams );
+			var ret = _create( name, nextHandle, group, isManual, loader, createParams );
 			if ( createParams != null )
 			{
 				ret.SetParameters( createParams );
@@ -360,8 +360,8 @@ namespace Axiom.Core
 
 		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
 		{
-			Resource res = this[ name ];
-			bool created = false;
+			var res = this[ name ];
+			var created = false;
 			if ( res == null )
 			{
 				created = true;
@@ -420,7 +420,7 @@ namespace Axiom.Core
 		/// </param>
 		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			Resource ret = this[ name ];
+			var ret = this[ name ];
 			if ( ret == null )
 			{
 				ret = Create( name, group, isManual, loader, loadParams );
@@ -447,7 +447,7 @@ namespace Axiom.Core
 		/// <param name="name">Name of the resource.</param>
 		public virtual void Unload( string name )
 		{
-			Resource res = this[ name ];
+			var res = this[ name ];
 
 			if ( res != null )
 			{
@@ -459,7 +459,7 @@ namespace Axiom.Core
 		/// <param name="handle">Handle of the resource</param>
 		public virtual void Unload( ResourceHandle handle )
 		{
-			Resource res = this[ handle ];
+			var res = this[ handle ];
 
 			if ( res != null )
 			{
@@ -501,7 +501,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void UnloadAll()
 		{
-			foreach ( Resource res in _resources.Values )
+			foreach ( var res in _resources.Values )
 			{
 				res.Unload();
 			}
@@ -515,7 +515,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void ReloadAll()
 		{
-			foreach ( Resource res in _resources.Values )
+			foreach ( var res in _resources.Values )
 			{
 				res.Reload();
 			}
@@ -553,7 +553,7 @@ namespace Axiom.Core
 		/// <param name="name">The name of the resource to remove</param>
 		public virtual void Remove( string name )
 		{
-			Resource resource = this[ name ];
+			var resource = this[ name ];
 			if ( resource != null )
 			{
 				_remove( resource );
@@ -563,7 +563,7 @@ namespace Axiom.Core
 		/// <param name="handle">The Handle of the resource to remove</param>
 		public virtual void Remove( ResourceHandle handle )
 		{
-			Resource resource = this[ handle ];
+			var resource = this[ handle ];
 			if ( resource != null )
 			{
 				_remove( resource );
@@ -593,7 +593,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void RemoveAll()
 		{
-			foreach ( Resource resource in _resources.Values )
+			foreach ( var resource in _resources.Values )
 			{
                 if (!resource.IsDisposed)
 				    resource.Dispose();

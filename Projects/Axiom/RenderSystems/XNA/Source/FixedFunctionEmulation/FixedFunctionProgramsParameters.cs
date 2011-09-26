@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,283 +46,300 @@ using Axiom.Math;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	partial class FixedFunctionPrograms
-	{
-		public class FixedFunctionProgramsParameters
-		{
+    internal partial class FixedFunctionPrograms
+    {
+        public class FixedFunctionProgramsParameters
+        {
+            #region Fields and Properties
 
-			#region Fields and Properties
+            protected ColorEx materialAmbient;
 
-			protected ColorEx materialAmbient;
-			public ColorEx MaterialAmbient
-			{
-				get
-				{
-					return materialAmbient;
-				}
-				set
-				{
-					materialAmbient = value;
-				}
-			}
+            public ColorEx MaterialAmbient
+            {
+                get
+                {
+                    return materialAmbient;
+                }
+                set
+                {
+                    materialAmbient = value;
+                }
+            }
 
-			protected ColorEx materialDiffuse;
-			public ColorEx MaterialDiffuse
-			{
-				get
-				{
-					return materialDiffuse;
-				}
-				set
-				{
-					materialDiffuse = value;
-				}
-			}
+            protected ColorEx materialDiffuse;
 
-			protected ColorEx materialSpecular;
-			public ColorEx MaterialSpecular
-			{
-				get
-				{
-					return materialSpecular;
-				}
-				set
-				{
-					materialSpecular = value;
-				}
-			}
+            public ColorEx MaterialDiffuse
+            {
+                get
+                {
+                    return materialDiffuse;
+                }
+                set
+                {
+                    materialDiffuse = value;
+                }
+            }
 
-			protected ColorEx materialEmissive;
-			public ColorEx MaterialEmissive
-			{
-				get
-				{
-					return materialEmissive;
-				}
-				set
-				{
-					materialEmissive = value;
-				}
-			}
+            protected ColorEx materialSpecular;
 
-			protected float materialShininess;
-			public float MaterialShininess
-			{
-				get
-				{
-					return materialShininess;
-				}
-				set
-				{
-					materialShininess = value;
-				}
-			}
+            public ColorEx MaterialSpecular
+            {
+                get
+                {
+                    return materialSpecular;
+                }
+                set
+                {
+                    materialSpecular = value;
+                }
+            }
 
-			protected Matrix4 worldMatrix;
-			public Matrix4 WorldMatrix
-			{
-				get
-				{
-					return worldMatrix;
-				}
-				set
-				{
-					worldMatrix = value;
-				}
-			}
+            protected ColorEx materialEmissive;
 
-			protected Matrix4 projectionMatrix;
-			public Matrix4 ProjectionMatrix
-			{
-				get
-				{
-					return projectionMatrix;
-				}
-				set
-				{
-					projectionMatrix = value;
-				}
-			}
+            public ColorEx MaterialEmissive
+            {
+                get
+                {
+                    return materialEmissive;
+                }
+                set
+                {
+                    materialEmissive = value;
+                }
+            }
 
-			protected Matrix4 viewMatrix;
-			public Matrix4 ViewMatrix
-			{
-				get
-				{
-					return viewMatrix;
-				}
-				set
-				{
-					viewMatrix = value;
-				}
-			}
+            protected float materialShininess;
 
+            public float MaterialShininess
+            {
+                get
+                {
+                    return materialShininess;
+                }
+                set
+                {
+                    materialShininess = value;
+                }
+            }
 
-			protected bool lightingEnabled = false;
-			public bool LightingEnabled
-			{
-				get
-				{
-					return lightingEnabled;
-				}
-				set
-				{
-					lightingEnabled = value;
-				}
-			}
+            protected Matrix4 worldMatrix;
+
+            public Matrix4 WorldMatrix
+            {
+                get
+                {
+                    return worldMatrix;
+                }
+                set
+                {
+                    worldMatrix = value;
+                }
+            }
+
+            protected Matrix4 projectionMatrix;
+
+            public Matrix4 ProjectionMatrix
+            {
+                get
+                {
+                    return projectionMatrix;
+                }
+                set
+                {
+                    projectionMatrix = value;
+                }
+            }
+
+            protected Matrix4 viewMatrix;
+
+            public Matrix4 ViewMatrix
+            {
+                get
+                {
+                    return viewMatrix;
+                }
+                set
+                {
+                    viewMatrix = value;
+                }
+            }
 
 
-			protected List<Light> lights = new List<Light>();
-			public List<Light> Lights
-			{
-				get
-				{
-					return lights;
-				}
-				set
-				{
-					lights = value;
-				}
-			}
+            protected bool lightingEnabled;
 
-			protected ColorEx lightAmbient;
-			public ColorEx LightAmbient
-			{
-				get
-				{
-					return lightAmbient;
-				}
-				set
-				{
-					lightAmbient = value;
-				}
-			}
+            public bool LightingEnabled
+            {
+                get
+                {
+                    return lightingEnabled;
+                }
+                set
+                {
+                    lightingEnabled = value;
+                }
+            }
 
-			protected FogMode fogMode;
-			public FogMode FogMode
-			{
-				get
-				{
-					return fogMode;
-				}
-				set
-				{
-					fogMode = value;
-				}
-			}
 
-			protected ColorEx fogColor;
-			public ColorEx FogColor
-			{
-				get
-				{
-					return fogColor;
-				}
-				set
-				{
-					fogColor = value;
-				}
-			}
+            protected List<Light> lights = new List<Light>();
 
-			protected Real fogDensity;
-			public Real FogDensity
-			{
-				get
-				{
-					return fogDensity;
-				}
-				set
-				{
-					fogDensity = value;
-				}
-			}
+            public List<Light> Lights
+            {
+                get
+                {
+                    return lights;
+                }
+                set
+                {
+                    lights = value;
+                }
+            }
 
-			protected Real fogStart;
-			public Real FogStart
-			{
-				get
-				{
-					return fogStart;
-				}
-				set
-				{
-					fogStart = value;
-				}
-			}
+            protected ColorEx lightAmbient;
 
-			protected Real fogEnd;
-			public Real FogEnd
-			{
-				get
-				{
-					return fogEnd;
-				}
-				set
-				{
-					fogEnd = value;
-				}
-			}
+            public ColorEx LightAmbient
+            {
+                get
+                {
+                    return lightAmbient;
+                }
+                set
+                {
+                    lightAmbient = value;
+                }
+            }
 
-			protected List<Matrix4> textureMatricies = new List<Matrix4>();
-			public List<Matrix4> TextureMatricies
-			{
-				get
-				{
-					return textureMatricies;
-				}
-			}
+            protected FogMode fogMode;
 
-			protected List<bool> textureEnabled = new List<bool>();
-			public List<bool> TextureEnabled
-			{
-				get
-				{
-					return textureEnabled;
-				}
-			}
+            public FogMode FogMode
+            {
+                get
+                {
+                    return fogMode;
+                }
+                set
+                {
+                    fogMode = value;
+                }
+            }
 
-			#endregion Fields and Properties
+            protected ColorEx fogColor;
 
-			#region Construction and Destruction
+            public ColorEx FogColor
+            {
+                get
+                {
+                    return fogColor;
+                }
+                set
+                {
+                    fogColor = value;
+                }
+            }
 
-			public FixedFunctionProgramsParameters()
-			{
-				fogMode = FogMode.None;
-				fogColor = ColorEx.Black;
-				fogDensity = 0.0f;
-				fogStart = 0.0f;
-				fogEnd = 0.0f;
-			}
+            protected Real fogDensity;
 
-			#endregion Construction and Destruction
+            public Real FogDensity
+            {
+                get
+                {
+                    return fogDensity;
+                }
+                set
+                {
+                    fogDensity = value;
+                }
+            }
 
-			#region Methods
+            protected Real fogStart;
 
-			public void SetTextureMatrix( int index, Matrix4 matrix )
-			{
-				while ( index >= textureMatricies.Count )
-					textureMatricies.Add( Matrix4.Identity );
+            public Real FogStart
+            {
+                get
+                {
+                    return fogStart;
+                }
+                set
+                {
+                    fogStart = value;
+                }
+            }
 
-				textureMatricies[ index ] = matrix;
-			}
+            protected Real fogEnd;
 
-			public void SetTextureEnabled( int index, bool value )
-			{
-				while ( index >= textureEnabled.Count )
-					textureEnabled.Add( false );
+            public Real FogEnd
+            {
+                get
+                {
+                    return fogEnd;
+                }
+                set
+                {
+                    fogEnd = value;
+                }
+            }
 
-				textureEnabled[ index ] = value;
-			}
+            protected List<Matrix4> textureMatricies = new List<Matrix4>();
 
-			public bool IsTextureEnabled( int index )
-			{
-				if ( index > textureEnabled.Count )
-					return false;
+            public List<Matrix4> TextureMatricies
+            {
+                get
+                {
+                    return textureMatricies;
+                }
+            }
 
-				return textureEnabled[ index ];
-			}
+            protected List<bool> textureEnabled = new List<bool>();
 
-			#endregion Methods
-		}
-	}
+            public List<bool> TextureEnabled
+            {
+                get
+                {
+                    return textureEnabled;
+                }
+            }
+
+            #endregion Fields and Properties
+
+            #region Construction and Destruction
+
+            public FixedFunctionProgramsParameters()
+            {
+                fogMode = FogMode.None;
+                fogColor = ColorEx.Black;
+                fogDensity = 0.0f;
+                fogStart = 0.0f;
+                fogEnd = 0.0f;
+            }
+
+            #endregion Construction and Destruction
+
+            #region Methods
+
+            public void SetTextureMatrix( int index, Matrix4 matrix )
+            {
+                while ( index >= textureMatricies.Count )
+                    textureMatricies.Add( Matrix4.Identity );
+
+                textureMatricies[ index ] = matrix;
+            }
+
+            public void SetTextureEnabled( int index, bool value )
+            {
+                while ( index >= textureEnabled.Count )
+                    textureEnabled.Add( false );
+
+                textureEnabled[ index ] = value;
+            }
+
+            public bool IsTextureEnabled( int index )
+            {
+                if ( index > textureEnabled.Count )
+                    return false;
+
+                return textureEnabled[ index ];
+            }
+
+            #endregion Methods
+        }
+    }
 }

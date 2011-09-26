@@ -11,6 +11,10 @@
     <RootNamespace>Axiom.Plugins.SystemDrawingCodecs</RootNamespace>
     <AssemblyName>Axiom.Plugins.SystemDrawingCodecs</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -38,7 +42,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DocumentationFile>bin\x86\Debug\Axiom.Plugins.SystemDrawingCodecs.XML</DocumentationFile>
     <OutputPath>bin\x86\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -49,7 +53,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <Optimize>true</Optimize>
     <DocumentationFile>bin\x86\Release\Axiom.Plugins.SystemDrawingCodecs.XML</DocumentationFile>
     <DebugType>pdbonly</DebugType>
@@ -62,6 +66,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
     </Reference>

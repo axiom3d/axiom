@@ -65,8 +65,8 @@ namespace Axiom.Utilities
 		/// <param name="vars"></param>
 		public static void NotNull( params object[] vars )
 		{
-			bool result = true;
-			foreach ( object obj in vars )
+			var result = true;
+			foreach ( var obj in vars )
 			{
 				result &= ( obj != null );
 			}

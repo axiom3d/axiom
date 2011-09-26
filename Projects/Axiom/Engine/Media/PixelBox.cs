@@ -39,6 +39,7 @@ using System.IO;
 using System.Diagnostics;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -274,7 +275,7 @@ namespace Axiom.Media
 		///<summary>
 		///    The data pointer.  We do not own this.
 		///</summary>
-		protected IntPtr data;
+        protected BufferBase data;
 		///<summary>
 		///    A byte offset into the data
 		///</summary>
@@ -316,7 +317,7 @@ namespace Axiom.Media
 		///<param name="extents">Extents of the region defined by data</param>
 		///<param name="format">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-		internal PixelBox( BasicBox extents, PixelFormat format, IntPtr data )
+        internal PixelBox(BasicBox extents, PixelFormat format, BufferBase data)
 		{
 			CopyFromBasicBox( extents );
 			this.format = format;
@@ -343,7 +344,7 @@ namespace Axiom.Media
 		///<param name="depth">Depth of the region</param>
 		///<param name="format">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-		public PixelBox( int width, int height, int depth, PixelFormat format, IntPtr data )
+        public PixelBox(int width, int height, int depth, PixelFormat format, BufferBase data)
 			: base( 0, 0, 0, width, height, depth )
 		{
 			this.format = format;
@@ -366,7 +367,7 @@ namespace Axiom.Media
 		///<summary>
 		///    Get/set the data array
 		///</summary>
-		public IntPtr Data
+        public BufferBase Data
 		{
 			get
 			{
@@ -535,9 +536,9 @@ namespace Axiom.Media
 			if ( !Contains( def ) )
 				throw new Exception( "Bounds out of range, in PixelBox.GetSubVolume" );
 
-			int elemSize = PixelUtil.GetNumElemBytes( format );
+			var elemSize = PixelUtil.GetNumElemBytes( format );
 			// Calculate new data origin
-			PixelBox rval = new PixelBox( def, format, data );
+			var rval = new PixelBox( def, format, data );
 			rval.offset = ( ( ( def.Left - left ) * elemSize ) +
 							( ( def.Top - top ) * rowPitch * elemSize ) +
 							( ( def.Front - front ) * slicePitch * elemSize ) );

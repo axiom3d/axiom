@@ -168,9 +168,9 @@ namespace Axiom.Graphics
 				passMap = solidPasses;
 			}
 
-			for ( int i = 0; i < technique.PassCount; i++ )
+			for ( var i = 0; i < technique.PassCount; i++ )
 			{
-				Pass pass = technique.GetPass( i );
+				var pass = technique.GetPass( i );
 
 				if ( passMap[ pass ] == null )
 				{
@@ -179,7 +179,7 @@ namespace Axiom.Graphics
 				}
 
 				// add to solid list for this pass
-				RenderableList solidList = (RenderableList)passMap[ pass ];
+				var solidList = (RenderableList)passMap[ pass ];
 
 				solidList.Add( renderable );
 			}
@@ -193,10 +193,10 @@ namespace Axiom.Graphics
 		protected void AddSolidRenderableSplitByLightType( Technique technique, IRenderable renderable )
 		{
 			// Divide the passes into the 3 categories
-			for ( int i = 0; i < technique.IlluminationPassCount; i++ )
+			for ( var i = 0; i < technique.IlluminationPassCount; i++ )
 			{
 				// Insert into solid list
-				IlluminationPass illpass = technique.GetIlluminationPass( i );
+				var illpass = technique.GetIlluminationPass( i );
 				SortedList passMap = null;
 
 				switch ( illpass.Stage )
@@ -212,7 +212,7 @@ namespace Axiom.Graphics
 						break;
 				}
 
-				RenderableList solidList = (RenderableList)passMap[ illpass.Pass ];
+				var solidList = (RenderableList)passMap[ illpass.Pass ];
 
 				if ( solidList == null )
 				{
@@ -232,7 +232,7 @@ namespace Axiom.Graphics
 		/// <param name="renderable">Renderable to add to the queue.</param>
 		protected void AddTransparentRenderable( Technique technique, IRenderable renderable )
 		{
-			for ( int i = 0; i < technique.PassCount; i++ )
+			for ( var i = 0; i < technique.PassCount; i++ )
 			{
 				// add to transparent list
 				transparentPasses.Add( new RenderablePass( renderable, technique.GetPass( i ) ) );
@@ -244,12 +244,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Clear()
 		{
-			PassList graveyardList = Pass.GraveyardList;
+			var graveyardList = Pass.GraveyardList;
 
 			// Delete queue groups which are using passes which are to be
 			// deleted, we won't need these any more and they clutter up 
 			// the list and can cause problems with future clones
-			for ( int i = 0; i < graveyardList.Count; i++ )
+			for ( var i = 0; i < graveyardList.Count; i++ )
 			{
 				RemoveSolidPassEntry( (Pass)graveyardList[ i ] );
 			}
@@ -257,12 +257,12 @@ namespace Axiom.Graphics
 			// Now remove any dirty passes, these will have their hashes recalculated
 			// by the parent queue after all groups have been processed
 			// If we don't do this, the std::map will become inconsistent for new insterts
-			PassList dirtyList = Pass.DirtyList;
+			var dirtyList = Pass.DirtyList;
 
 			// Delete queue groups which are using passes which are to be
 			// deleted, we won't need these any more and they clutter up 
 			// the list and can cause problems with future clones
-			for ( int i = 0; i < dirtyList.Count; i++ )
+			for ( var i = 0; i < dirtyList.Count; i++ )
 			{
 				RemoveSolidPassEntry( (Pass)dirtyList[ i ] );
 			}
@@ -285,7 +285,7 @@ namespace Axiom.Graphics
 		public void ClearSolidPassMap( SortedList list )
 		{
 			// loop through and clear the renderable containers for the stored passes
-			for ( int i = 0; i < list.Count; i++ )
+			for ( var i = 0; i < list.Count; i++ )
 			{
 				( (RenderableList)list.GetByIndex( i ) ).Clear();
 			}
@@ -461,8 +461,8 @@ namespace Axiom.Graphics
 				if ( x == y )
 					return 0;
 
-				Pass a = x as Pass;
-				Pass b = y as Pass;
+				var a = x as Pass;
+				var b = y as Pass;
 
 				if ( a == null || b == null )
 					return 0;
@@ -501,8 +501,8 @@ namespace Axiom.Graphics
 				if ( x == y )
 					return 0;
 
-				float adepth = x.renderable.GetSquaredViewDepth( camera );
-				float bdepth = y.renderable.GetSquaredViewDepth( camera );
+				var adepth = x.renderable.GetSquaredViewDepth( camera );
+				var bdepth = y.renderable.GetSquaredViewDepth( camera );
 
 				if ( adepth == bdepth )
 				{

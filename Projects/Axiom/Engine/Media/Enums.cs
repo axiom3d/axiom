@@ -107,7 +107,7 @@ namespace Axiom.Media
 		/// <summary>
 		///    16-bit pixel format, 4 bits for blue, green, red and alpha.
 		/// </summary>
-		B4G4R4A4,
+        B4G4R4A4 = 8,
 
 		/// <summary>
 		///    16-bit pixel format, 8 bits for alpha, 8 bits for luminance.
@@ -130,13 +130,13 @@ namespace Axiom.Media
 		///    24-bit pixel format, 8 bits for red, green and blue.
 		/// </summary>
 		R8G8B8 = 10,
-		BYTE_BGR = R8G8B8,
+        BYTE_BGR = R8G8B8, 
 
 		/// <summary>
 		///    24-bit pixel format, 8 bits for blue, green and red.
 		/// </summary>
 		B8G8R8 = 11,
-		BYTE_RGB = B8G8R8,
+        BYTE_RGB = B8G8R8,
 
 		// <summary>
 		//    24-bit pixel format, all bits luminance.

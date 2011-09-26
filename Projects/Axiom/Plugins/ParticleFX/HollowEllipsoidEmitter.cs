@@ -159,7 +159,7 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "width", "Width of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		class WidthCommand : IPropertyCommand
+        public class WidthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -177,7 +177,7 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "height", "Height of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		class HeightCommand : IPropertyCommand
+        public class HeightCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -195,7 +195,7 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "depth", "Depth of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		class DepthCommand : IPropertyCommand
+        public class DepthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -213,7 +213,7 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		class InnerWidthCommand : IPropertyCommand
+        public class InnerWidthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -231,7 +231,7 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		class InnerHeightCommand : IPropertyCommand
+        public class InnerHeightCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -249,7 +249,7 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "inner_depth", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		class InnerDepthCommand : IPropertyCommand
+        public class InnerDepthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -262,6 +262,7 @@ namespace Axiom.ParticleFX
 				return StringConverter.ToString( emitter.InnerZ );
 			}
 		}
+
 		#endregion Command definition classes
 	}
 }

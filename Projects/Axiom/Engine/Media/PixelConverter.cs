@@ -39,6 +39,7 @@ using System.IO;
 using System.Diagnostics;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -722,7 +723,7 @@ namespace Axiom.Media
 			if ( IndexedPixelFormats != null )
 				return;
 			IndexedPixelFormats = new PixelFormatDescription[ (int)PixelFormat.Count ];
-			foreach ( PixelFormatDescription d in UnindexedPixelFormats )
+			foreach ( var d in UnindexedPixelFormats )
 			{
 				IndexedPixelFormats[ (int)d.format ] = d;
 			}
@@ -750,7 +751,7 @@ namespace Axiom.Media
         ///<param name="color">The color</param>
         ///<param name="format">Pixel format in which to write the color</param>
         ///<param name="dest">Destination memory location</param>
-        public static void PackColor(ColorEx color, PixelFormat format, IntPtr dest)
+        public static void PackColor(ColorEx color, PixelFormat format, BufferBase dest)
         {
             PixelConverter.PackColor(color.r, color.g, color.b, color.a, format, dest);
         }
@@ -764,13 +765,13 @@ namespace Axiom.Media
         ///<param name="a">Alpha component, range 0x00 to 0xFF</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
-		public static void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, IntPtr dest )
+        public static void PackColor(uint r, uint g, uint b, uint a, PixelFormat format, BufferBase dest)
 		{
-			PixelFormatDescription des = GetDescriptionFor( format );
+			var des = GetDescriptionFor( format );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
 				// Shortcut for integer formats packing
-				uint value = ( ( ( Bitwise.FixedToFixed( r, 8, des.rbits ) << des.rshift ) & des.rmask ) |
+				var value = ( ( ( Bitwise.FixedToFixed( r, 8, des.rbits ) << des.rshift ) & des.rmask ) |
 							  ( ( Bitwise.FixedToFixed( g, 8, des.gbits ) << des.gshift ) & des.gmask ) |
 							  ( ( Bitwise.FixedToFixed( b, 8, des.bbits ) << des.bshift ) & des.bmask ) |
 							  ( ( Bitwise.FixedToFixed( a, 8, des.abits ) << des.ashift ) & des.amask ) );
@@ -809,14 +810,14 @@ namespace Axiom.Media
         ///</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
-		public static void PackColor( float r, float g, float b, float a, PixelFormat format, IntPtr dest )
+        public static void PackColor(float r, float g, float b, float a, PixelFormat format, BufferBase dest)
 		{
 			// Catch-it-all here
-			PixelFormatDescription des = GetDescriptionFor( format );
+			var des = GetDescriptionFor( format );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
 				// Do the packing
-				uint value = ( ( Bitwise.FloatToFixed( r, des.rbits ) << des.rshift ) & des.rmask ) |
+				var value = ( ( Bitwise.FloatToFixed( r, des.rbits ) << des.rshift ) & des.rmask ) |
 					( ( Bitwise.FloatToFixed( g, des.gbits ) << des.gshift ) & des.gmask ) |
 					( ( Bitwise.FloatToFixed( b, des.bbits ) << des.bshift ) & des.bmask ) |
 					( ( Bitwise.FloatToFixed( a, des.abits ) << des.ashift ) & des.amask );
@@ -825,47 +826,57 @@ namespace Axiom.Media
 			}
 			else
 			{
+#if !AXIOM_SAFE_ONLY
                 unsafe
+#endif
                 {
                     switch (format)
                     {
                         case PixelFormat.FLOAT32_R:
-                            ((float*)dest)[0] = r;
+                            var floatdest = (ITypePointer<float>)dest;
+                            floatdest[0] = r;
                             break;
                         case PixelFormat.FLOAT32_RGB:
-                            ((float*)dest)[0] = r;
-                            ((float*)dest)[1] = g;
-                            ((float*)dest)[2] = b;
+                            floatdest = (ITypePointer<float>)dest;
+                            floatdest[0] = r;
+                            floatdest[1] = g;
+                            floatdest[2] = b;
                             break;
                         case PixelFormat.FLOAT32_RGBA:
-                            ((float*)dest)[0] = r;
-                            ((float*)dest)[1] = g;
-                            ((float*)dest)[2] = b;
-                            ((float*)dest)[3] = a;
+                            floatdest = (ITypePointer<float>)dest;
+                            floatdest[0] = r;
+                            floatdest[1] = g;
+                            floatdest[2] = b;
+                            floatdest[3] = a;
                             break;
                         case PixelFormat.FLOAT16_R:
-                            ((ushort*)dest)[0] = Bitwise.FloatToHalf(r);
+                            var ushortdest = (ITypePointer<ushort>)dest;
+                            ushortdest[0] = Bitwise.FloatToHalf(r);
                             break;
                         case PixelFormat.FLOAT16_RGB:
-                            ((ushort*)dest)[0] = Bitwise.FloatToHalf(r);
-                            ((ushort*)dest)[1] = Bitwise.FloatToHalf(g);
-                            ((ushort*)dest)[2] = Bitwise.FloatToHalf(b);
+                            ushortdest = (ITypePointer<ushort>)dest;
+                            ushortdest[0] = Bitwise.FloatToHalf(r);
+                            ushortdest[1] = Bitwise.FloatToHalf(g);
+                            ushortdest[2] = Bitwise.FloatToHalf(b);
                             break;
                         case PixelFormat.FLOAT16_RGBA:
-                            ((ushort*)dest)[0] = Bitwise.FloatToHalf(r);
-                            ((ushort*)dest)[1] = Bitwise.FloatToHalf(g);
-                            ((ushort*)dest)[2] = Bitwise.FloatToHalf(b);
-                            ((ushort*)dest)[3] = Bitwise.FloatToHalf(a);
+                            ushortdest = (ITypePointer<ushort>)dest;
+                            ushortdest[0] = Bitwise.FloatToHalf(r);
+                            ushortdest[1] = Bitwise.FloatToHalf(g);
+                            ushortdest[2] = Bitwise.FloatToHalf(b);
+                            ushortdest[3] = Bitwise.FloatToHalf(a);
                             break;
                         case PixelFormat.SHORT_RGBA:
-                            ((ushort*)dest)[0] = (ushort)Bitwise.FloatToFixed(r, 16);
-                            ((ushort*)dest)[1] = (ushort)Bitwise.FloatToFixed(g, 16);
-                            ((ushort*)dest)[2] = (ushort)Bitwise.FloatToFixed(b, 16);
-                            ((ushort*)dest)[3] = (ushort)Bitwise.FloatToFixed(a, 16);
+                            ushortdest = (ITypePointer<ushort>)dest;
+                            ushortdest[0] = (ushort)Bitwise.FloatToFixed(r, 16);
+                            ushortdest[1] = (ushort)Bitwise.FloatToFixed(g, 16);
+                            ushortdest[2] = (ushort)Bitwise.FloatToFixed(b, 16);
+                            ushortdest[3] = (ushort)Bitwise.FloatToFixed(a, 16);
                             break;
                         case PixelFormat.BYTE_LA:
-                            ((byte*)dest)[0] = (byte)Bitwise.FloatToFixed(r, 8);
-                            ((byte*)dest)[1] = (byte)Bitwise.FloatToFixed(a, 8);
+                            var bytedest = (ITypePointer<byte>)dest;
+                            bytedest[0] = (byte)Bitwise.FloatToFixed(r, 8);
+                            bytedest[1] = (byte)Bitwise.FloatToFixed(a, 8);
                             break;
                         default:
                             // Not yet supported
@@ -880,7 +891,7 @@ namespace Axiom.Media
         /// <param name="pf">Pixelformat in which to read the color</param>
         /// <param name="src">Source memory location</param>
         /// <returns>The color is returned here</returns>
-		public static ColorEx UnpackColor( PixelFormat pf, IntPtr src )
+        public static ColorEx UnpackColor(PixelFormat pf, BufferBase src)
 		{
 			ColorEx val;
 
@@ -903,13 +914,13 @@ namespace Axiom.Media
 		/// this will lose precision when coming from A2R10G10B10 or floating
 		/// point formats.
 		/// </remarks>
-		public static void UnpackColor( ref byte r, ref byte g, ref byte b, ref byte a, PixelFormat pf, IntPtr src )
+        public static void UnpackColor(ref byte r, ref byte g, ref byte b, ref byte a, PixelFormat pf, BufferBase src)
 		{
-			PixelFormatDescription des = GetDescriptionFor( pf );
+			var des = GetDescriptionFor( pf );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
 				// Shortcut for integer formats unpacking
-				uint value = Bitwise.IntRead( src, des.elemBytes );
+				var value = Bitwise.IntRead( src, des.elemBytes );
 				if ( ( des.flags & PixelFormatFlags.Luminance ) != 0 )
 					// Luminance format -- only rbits used
 					r = g = b = (byte)Bitwise.FixedToFixed( ( value & des.rmask ) >> des.rshift, des.rbits, 8 );
@@ -946,13 +957,13 @@ namespace Axiom.Media
         /// <param name="a">The color is returned here (as float)</param>
         /// <param name="pf">Pixelformat in which to read the color</param>
         /// <param name="src">Source memory location</param>
-		public static void UnpackColor( out float r, out float g, out float b, out float a, PixelFormat pf, IntPtr src )
+        public static void UnpackColor(out float r, out float g, out float b, out float a, PixelFormat pf, BufferBase src)
 		{
-			PixelFormatDescription des = GetDescriptionFor( pf );
+			var des = GetDescriptionFor( pf );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
 				// Shortcut for integer formats unpacking
-				uint value = Bitwise.IntRead( src, des.elemBytes );
+				var value = Bitwise.IntRead( src, des.elemBytes );
 				if ( ( des.flags & PixelFormatFlags.Luminance ) != 0 )
 				{
 					// Luminance format -- only rbits used
@@ -972,50 +983,61 @@ namespace Axiom.Media
 			}
 			else
 			{
-                unsafe{
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
                     switch (pf)
                     {
                         case PixelFormat.FLOAT32_R:
-                            r = g = b = ((float*)src)[0];
+                            var floatsrc = (ITypePointer<float>)src;
+                            r = g = b = floatsrc[0];
                             a = 1.0f;
                             break;
                         case PixelFormat.FLOAT32_RGB:
-                            r = ((float*)src)[0];
-                            g = ((float*)src)[1];
-                            b = ((float*)src)[2];
+                            floatsrc = (ITypePointer<float>)src;
+                            r = floatsrc[0];
+                            g = floatsrc[1];
+                            b = floatsrc[2];
                             a = 1.0f;
                             break;
                         case PixelFormat.FLOAT32_RGBA:
-                            r = ((float*)src)[0];
-                            g = ((float*)src)[1];
-                            b = ((float*)src)[2];
-                            a = ((float*)src)[3];
+                            floatsrc = (ITypePointer<float>)src;
+                            r = floatsrc[0];
+                            g = floatsrc[1];
+                            b = floatsrc[2];
+                            a = floatsrc[3];
                             break;
                         case PixelFormat.FLOAT16_R:
-                            r = g = b = Bitwise.HalfToFloat(((ushort*)src)[0]);
+                            var ushortsrc = (ITypePointer<ushort>)src;
+                            r = g = b = Bitwise.HalfToFloat(ushortsrc[0]);
                             a = 1.0f;
                             break;
                         case PixelFormat.FLOAT16_RGB:
-                            r = Bitwise.HalfToFloat(((ushort*)src)[0]);
-                            g = Bitwise.HalfToFloat(((ushort*)src)[1]);
-                            b = Bitwise.HalfToFloat(((ushort*)src)[2]);
+                            ushortsrc = (ITypePointer<ushort>)src;
+                            r = Bitwise.HalfToFloat(ushortsrc[0]);
+                            g = Bitwise.HalfToFloat(ushortsrc[1]);
+                            b = Bitwise.HalfToFloat(ushortsrc[2]);
                             a = 1.0f;
                             break;
                         case PixelFormat.FLOAT16_RGBA:
-                            r = Bitwise.HalfToFloat(((ushort*)src)[0]);
-                            g = Bitwise.HalfToFloat(((ushort*)src)[1]);
-                            b = Bitwise.HalfToFloat(((ushort*)src)[2]);
-                            a = Bitwise.HalfToFloat(((ushort*)src)[3]);
+                            ushortsrc = (ITypePointer<ushort>)src;
+                            r = Bitwise.HalfToFloat(ushortsrc[0]);
+                            g = Bitwise.HalfToFloat(ushortsrc[1]);
+                            b = Bitwise.HalfToFloat(ushortsrc[2]);
+                            a = Bitwise.HalfToFloat(ushortsrc[3]);
                             break;
                         case PixelFormat.SHORT_RGBA:
-                            r = Bitwise.FixedToFloat(((ushort*)src)[0], 16);
-                            g = Bitwise.FixedToFloat(((ushort*)src)[1], 16);
-                            b = Bitwise.FixedToFloat(((ushort*)src)[2], 16);
-                            a = Bitwise.FixedToFloat(((ushort*)src)[3], 16);
+                            ushortsrc = (ITypePointer<ushort>)src;
+                            r = Bitwise.FixedToFloat(ushortsrc[0], 16);
+                            g = Bitwise.FixedToFloat(ushortsrc[1], 16);
+                            b = Bitwise.FixedToFloat(ushortsrc[2], 16);
+                            a = Bitwise.FixedToFloat(ushortsrc[3], 16);
                             break;
                         case PixelFormat.BYTE_LA:
-                            r = g = b = Bitwise.FixedToFloat(((byte*)src)[0], 8);
-                            a = Bitwise.FixedToFloat(((byte*)src)[1], 8);
+                            var bytesrc = (ITypePointer<byte>)src;
+                            r = g = b = Bitwise.FixedToFloat(bytesrc[0], 8);
+                            a = Bitwise.FixedToFloat(bytesrc[1], 8);
                             break;
                         default:
                             // Not yet supported
@@ -1037,13 +1059,13 @@ namespace Axiom.Media
 	    ///<param name="dstOffset"></param>
 	    ///<param name="dstFormat">Pixel format of destination region</param>
 	    ///<param name="count"></param>
-	    public static void BulkPixelConversion( IntPtr srcBytes, int srcOffset, PixelFormat srcFormat,
-											   IntPtr dstBytes, int dstOffset, PixelFormat dstFormat,
+        public static void BulkPixelConversion(BufferBase srcBytes, int srcOffset, PixelFormat srcFormat,
+                                               BufferBase dstBytes, int dstOffset, PixelFormat dstFormat,
 											   int count )
 		{
-			PixelBox src = new PixelBox( count, 1, 1, srcFormat, srcBytes );
+			var src = new PixelBox( count, 1, 1, srcFormat, srcBytes );
 			src.Offset = srcOffset;
-			PixelBox dst = new PixelBox( count, 1, 1, dstFormat, dstBytes );
+			var dst = new PixelBox( count, 1, 1, dstFormat, dstBytes );
 			dst.Offset = dstOffset;
 			BulkPixelConversion( src, dst );
 		}
@@ -1064,7 +1086,7 @@ namespace Axiom.Media
 
 			LogManager.Instance.Write( "Converting image from {0} to {1}", PixelUtil.GetFormatName( src.Format ), PixelUtil.GetFormatName( dst.Format ) );
 
-			// Check for compressed formats, we don't support decompression, compression or recoding
+            // Check for compressed formats, we don't support decompression, compression or recoding
 			if ( PixelBox.Compressed( src.Format ) || PixelBox.Compressed( dst.Format ) )
 			{
 				if ( src.Format == dst.Format )
@@ -1077,7 +1099,7 @@ namespace Axiom.Media
 			}
 
 			// The easy case
-			if ( src.Format == dst.Format )
+            if (src.Format == dst.Format)
 			{
 				// Everything consecutive?
 				if ( src.IsConsecutive && dst.IsConsecutive )
@@ -1087,39 +1109,41 @@ namespace Axiom.Media
 				}
 
 				// TODO : Use OptimizedPixelConversion to elminate this duplicate code.
+#if !AXIOM_SAFE_ONLY
 				unsafe
+#endif
 				{
-					byte* srcBytes = (byte*)src.Data.ToPointer();
-					byte* dstBytes = (byte*)dst.Data.ToPointer();
-					byte* srcptr = srcBytes + src.Offset;
-					byte* dstptr = dstBytes + dst.Offset;
-					int srcPixelSize = PixelUtil.GetNumElemBytes( src.Format );
-					int dstPixelSize = PixelUtil.GetNumElemBytes( dst.Format );
+					var srcBytes = src.Data;
+					var dstBytes = dst.Data;
+					var srcptr = srcBytes + src.Offset;
+					var dstptr = dstBytes + dst.Offset;
+					var srcPixelSize = PixelUtil.GetNumElemBytes( src.Format );
+					var dstPixelSize = PixelUtil.GetNumElemBytes( dst.Format );
 
 					// Calculate pitches+skips in bytes
-					int srcRowPitchBytes = src.RowPitch * srcPixelSize;
+					var srcRowPitchBytes = src.RowPitch * srcPixelSize;
 					//int srcRowSkipBytes = src.RowSkip * srcPixelSize;
-					int srcSliceSkipBytes = src.SliceSkip * srcPixelSize;
+					var srcSliceSkipBytes = src.SliceSkip * srcPixelSize;
 
-					int dstRowPitchBytes = dst.RowPitch * dstPixelSize;
+					var dstRowPitchBytes = dst.RowPitch * dstPixelSize;
 					//int dstRowSkipBytes = dst.RowSkip * dstPixelSize;
-					int dstSliceSkipBytes = dst.SliceSkip * dstPixelSize;
+					var dstSliceSkipBytes = dst.SliceSkip * dstPixelSize;
 
 					// Otherwise, copy per row
-					int rowSize = src.Width * srcPixelSize;
-					for ( int z = src.Front; z < src.Back; z++ )
+					var rowSize = src.Width * srcPixelSize;
+					for ( var z = src.Front; z < src.Back; z++ )
 					{
-						for ( int y = src.Top; y < src.Bottom; y++ )
+						for ( var y = src.Top; y < src.Bottom; y++ )
 						{
-							byte* s = srcptr;
-							byte* d = dstptr;
-							for ( int i = 0; i < rowSize; i++ )
-								*d++ = *s++;
+                            var s = srcptr.ToBytePointer();
+                            var d = dstptr.ToBytePointer();
+                            for (var i = 0; i < rowSize; i++)
+                                d[i] = s[i];
 							srcptr += srcRowPitchBytes;
 							dstptr += dstRowPitchBytes;
 						}
-						srcptr += srcSliceSkipBytes;
-						dstptr += dstSliceSkipBytes;
+						srcptr.Ptr += srcSliceSkipBytes;
+                        dstptr.Ptr += dstSliceSkipBytes;
 					}
 				}
 				return;
@@ -1132,8 +1156,8 @@ namespace Axiom.Media
 			{
 				// Do the same conversion, with A8R8G8B8, which has a lot of 
 				// optimized conversions
-				PixelFormat dstFormat = dst.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
-				PixelBox tempdst = new PixelBox( dst, dstFormat, dst.Data );
+				var dstFormat = dst.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
+				var tempdst = new PixelBox( dst, dstFormat, dst.Data );
 				BulkPixelConversion( src, tempdst );
 				return;
 			}
@@ -1144,8 +1168,8 @@ namespace Axiom.Media
 			{
 				// Do the same conversion, with A8R8G8B8, which has a lot of 
 				// optimized conversions
-				PixelFormat srcFormat = src.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
-				PixelBox tempsrc = new PixelBox( src, srcFormat, src.Data );
+				var srcFormat = src.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
+				var tempsrc = new PixelBox( src, srcFormat, src.Data );
 				BulkPixelConversion( tempsrc, dst );
 				return;
 			}
@@ -1156,31 +1180,33 @@ namespace Axiom.Media
 
 
 			// TODO : Use OptimizedPixelConversion to elminate this duplicate code.
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-				byte* srcBytes = (byte*)src.Data.ToPointer();
-				byte* dstBytes = (byte*)dst.Data.ToPointer();
-				byte* srcptr = srcBytes + src.Offset;
-				byte* dstptr = dstBytes + dst.Offset;
-				int srcPixelSize = PixelUtil.GetNumElemBytes( src.Format );
-				int dstPixelSize = PixelUtil.GetNumElemBytes( dst.Format );
+				var srcBytes = src.Data;
+				var dstBytes = dst.Data;
+				var srcptr = srcBytes + src.Offset;
+				var dstptr = dstBytes + dst.Offset;
+				var srcPixelSize = PixelUtil.GetNumElemBytes( src.Format );
+				var dstPixelSize = PixelUtil.GetNumElemBytes( dst.Format );
 
 				// Calculate pitches+skips in bytes
-				int srcRowSkipBytes = src.RowSkip * srcPixelSize;
-				int srcSliceSkipBytes = src.SliceSkip * srcPixelSize;
-				int dstRowSkipBytes = dst.RowSkip * dstPixelSize;
-				int dstSliceSkipBytes = dst.SliceSkip * dstPixelSize;
+				var srcRowSkipBytes = src.RowSkip * srcPixelSize;
+				var srcSliceSkipBytes = src.SliceSkip * srcPixelSize;
+				var dstRowSkipBytes = dst.RowSkip * dstPixelSize;
+				var dstSliceSkipBytes = dst.SliceSkip * dstPixelSize;
 
 				// The brute force fallback
 				float r, g, b, a;
-				for ( int z = src.Front; z < src.Back; z++ )
+				for ( var z = src.Front; z < src.Back; z++ )
 				{
-					for ( int y = src.Top; y < src.Bottom; y++ )
+					for ( var y = src.Top; y < src.Bottom; y++ )
 					{
-						for ( int x = src.Left; x < src.Right; x++ )
+						for ( var x = src.Left; x < src.Right; x++ )
 						{
-							UnpackColor( out r, out g, out b, out a, src.Format, (IntPtr)srcptr );
-							PackColor( r, g, b, a, dst.Format, (IntPtr)dstptr );
+							UnpackColor( out r, out g, out b, out a, src.Format, srcptr );
+							PackColor( r, g, b, a, dst.Format, dstptr );
 							srcptr += srcPixelSize;
 							dstptr += dstPixelSize;
 						}

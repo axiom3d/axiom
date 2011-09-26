@@ -38,11 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using Axiom.Core;
-using Axiom.RenderSystems.Xna.Content;
-using XFG = Microsoft.Xna.Framework.Graphics;
-using Axiom.Media;
 using System.IO;
+using Axiom.Core;
+using Axiom.Media;
+using System.Windows.Media.Imaging;
+using Axiom.RenderSystems.Xna.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -67,9 +68,10 @@ namespace Axiom.RenderSystems.Xna
             return true;
         }
 
-        public override System.IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
+        public override Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound,
+                                             Resource resourceBeingLoaded )
         {
-            string extension = System.IO.Path.GetExtension( resourceName ).Substring( 1 );
+            var extension = Path.GetExtension( resourceName ).Substring( 1 );
             if ( extension == "xnb" )
             {
                 return base.OpenResource( resourceName, groupName, searchGroupsIfNotFound, resourceBeingLoaded );
@@ -79,8 +81,12 @@ namespace Axiom.RenderSystems.Xna
             {
                 if ( CodecManager.Instance.GetCodec( extension ).GetType().Name != "NullCodec" )
                 {
-                    AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
-                    XFG.Texture2D texture = acm.Load<XFG.Texture2D>( resourceName );
+                    var acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
+#if SILVERLIGHT
+                    var texture = acm.Load<WriteableBitmap>(resourceName);
+#else
+                    var texture = acm.Load<Texture2D>( resourceName );
+#endif
                     return new XnaImageCodecStream( texture );
                 }
                 return base.OpenResource( resourceName, groupName, searchGroupsIfNotFound, resourceBeingLoaded );
@@ -92,18 +98,27 @@ namespace Axiom.RenderSystems.Xna
 
     internal class XnaImageCodecStream : Stream
     {
-        private MemoryStream _stream;
+        private readonly MemoryStream _stream;
         internal ImageCodec.ImageData ImageData = new ImageCodec.ImageData();
 
-        public XnaImageCodecStream( XFG.Texture2D texture )
+#if SILVERLIGHT
+        public XnaImageCodecStream( WriteableBitmap texture )
         {
-            //texture = texture;
-            byte[] buffer = new byte[ texture.Width * texture.Height * PixelUtil.GetNumElemBytes( XnaHelper.Convert( texture.Format ) ) ];
-            texture.GetData( buffer );
-            this._stream = new MemoryStream( buffer );
+            ImageData.width = texture.PixelWidth;
+            ImageData.height = texture.PixelHeight;
+            ImageData.format = PixelFormat.A8B8G8R8;
+            var buffer = new byte[ImageData.width*ImageData.height*PixelUtil.GetNumElemBytes( ImageData.format )];
+            Buffer.BlockCopy( texture.Pixels, 0, buffer, 0, buffer.Length );
+#else
+        public XnaImageCodecStream( Texture2D texture )
+        {
             ImageData.width = texture.Width;
             ImageData.height = texture.Height;
             ImageData.format = XnaHelper.Convert( texture.Format );
+            var buffer = new byte[ImageData.width*ImageData.height*PixelUtil.GetNumElemBytes( ImageData.format )];
+            texture.GetData( buffer );
+#endif
+            _stream = new MemoryStream( buffer );
             ImageData.numMipMaps = 1;
             ImageData.size = buffer.Length;
         }
@@ -135,28 +150,46 @@ namespace Axiom.RenderSystems.Xna
 
         public override bool CanRead
         {
-            get { return _stream.CanRead; }
+            get
+            {
+                return _stream.CanRead;
+            }
         }
 
         public override bool CanSeek
         {
-            get { return _stream.CanSeek; }
+            get
+            {
+                return _stream.CanSeek;
+            }
         }
 
         public override bool CanWrite
         {
-            get { return _stream.CanWrite; }
+            get
+            {
+                return _stream.CanWrite;
+            }
         }
 
         public override long Length
         {
-            get { return _stream.Length; }
+            get
+            {
+                return _stream.Length;
+            }
         }
 
         public override long Position
         {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
+            get
+            {
+                return _stream.Position;
+            }
+            set
+            {
+                _stream.Position = value;
+            }
         }
     }
 }

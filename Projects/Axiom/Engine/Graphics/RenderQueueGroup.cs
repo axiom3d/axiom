@@ -148,7 +148,7 @@ namespace Axiom.Graphics
 		{
 			// loop through each priority group and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
-			foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+			foreach ( var group in PriorityGroups.Values )
 			{
 				// clear the RenderPriorityGroup
 				group.Clear();
@@ -223,7 +223,7 @@ namespace Axiom.Graphics
 				splitPassesByLightingType = value;
 
 				// set the value for all priority groups as well
-				foreach ( KeyValuePair<ushort, RenderPriorityGroup> item in PriorityGroups )
+				foreach ( var item in PriorityGroups )
 				{
 					item.Value.SplitPassesByLightingType = splitPassesByLightingType;
 				}
@@ -246,7 +246,7 @@ namespace Axiom.Graphics
 				splitNoShadowPasses = value;
 
 				// set the value for all priority groups as well
-				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+				foreach ( var group in PriorityGroups.Values )
 				{
 					group.SplitNoShadowPasses = splitNoShadowPasses;
 				}
@@ -268,7 +268,7 @@ namespace Axiom.Graphics
 				shadowCastersCannotBeReceivers = value;
 
 				// set the value for all priority groups as well
-				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+				foreach ( var group in PriorityGroups.Values )
 				{
 					group.ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
 				}

@@ -346,7 +346,7 @@ namespace Axiom.Graphics
 		/// <returns>pointer to a texture definition</returns>
 		public virtual TextureDefinition CreateTextureDefinition( string name )
 		{
-			TextureDefinition t = new TextureDefinition();
+			var t = new TextureDefinition();
 			t.Name = name;
 			this.textureDefinitions.Add( t );
 			return t;
@@ -380,7 +380,7 @@ namespace Axiom.Graphics
 		/// <returns>texture definition for the given name.if noone exists, null</returns>
 		public virtual TextureDefinition GetTextureDefinition( string name )
 		{
-			foreach ( TextureDefinition t in this.textureDefinitions )
+			foreach ( var t in this.textureDefinitions )
 			{
 				if ( t.Name == name )
 				{
@@ -409,7 +409,7 @@ namespace Axiom.Graphics
 		/// <returns>pointer to a new target pass</returns>
 		public virtual CompositionTargetPass CreateTargetPass()
 		{
-			CompositionTargetPass t = new CompositionTargetPass( this );
+			var t = new CompositionTargetPass( this );
 			this.targetPasses.Add( t );
 			return t;
 		}
@@ -465,7 +465,7 @@ namespace Axiom.Graphics
 				return false;
 			}
 			// Check all target passes is supported
-			foreach ( CompositionTargetPass targetPass in this.targetPasses )
+			foreach ( var targetPass in this.targetPasses )
 			{
 				if ( !targetPass.IsSupported )
 				{
@@ -473,9 +473,9 @@ namespace Axiom.Graphics
 				}
 			}
 
-			TextureManager texMgr = TextureManager.Instance;
+			var texMgr = TextureManager.Instance;
 			// Check all Texture Definitions is supported
-			foreach ( TextureDefinition td in this.textureDefinitions )
+			foreach ( var td in this.textureDefinitions )
 			{
 				// Firstly check MRTs
 				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.Capabilities.MultiRenderTargetCount )
@@ -483,7 +483,7 @@ namespace Axiom.Graphics
 					return false;
 				}
 
-				foreach ( PixelFormat pf in td.PixelFormats )
+				foreach ( var pf in td.PixelFormats )
 				{
 					// Check whether equivalent supported
 					if ( allowTextureDegradation )

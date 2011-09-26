@@ -63,9 +63,9 @@ namespace Axiom.Scripting.Compiler
 			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
+				var obj = (ObjectAbstractNode)node;
 
-				CompositionTechnique technique = (CompositionTechnique)obj.Parent.Context;
+				var technique = (CompositionTechnique)obj.Parent.Context;
 				if ( obj.Id == (uint)Keywords.ID_TARGET )
 				{
 					_Target = technique.CreateTargetPass();
@@ -78,7 +78,7 @@ namespace Axiom.Scripting.Compiler
 				}
 				obj.Context = _Target;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -86,7 +86,7 @@ namespace Axiom.Scripting.Compiler
 					}
 					else if ( i is PropertyAbstractNode )
 					{
-						PropertyAbstractNode prop = (PropertyAbstractNode)i;
+						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_INPUT
@@ -105,7 +105,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
+										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
@@ -143,7 +143,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										_Target.OnlyInitial = val;

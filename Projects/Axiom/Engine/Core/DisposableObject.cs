@@ -68,7 +68,7 @@ namespace Axiom.Core
 	    /// <param name="stackTrace"></param>
 	    public void Add( DisposableObject instance, string stackTrace )
 		{
-			List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
+			var objectList = GetOrCreateObjectList( instance.GetType() );
 
 			objectList.Add( new ObjectEntry
 			{
@@ -105,18 +105,18 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					long objectCount = 0;
-					Dictionary<string, int> perTypeCount = new Dictionary<string, int>();
+					var perTypeCount = new Dictionary<string, int>();
 
 #if !(XBOX || XBOX360 || WINDOWS_PHONE)
-					StringBuilder msg = new StringBuilder();
+					var msg = new StringBuilder();
 #endif
 
                     // Dispose managed resources.
-					foreach ( KeyValuePair<Type, List<ObjectEntry>> item in this._objects )
+					foreach ( var item in this._objects )
 					{
-                        string typeName = item.Key.Name;
-                        List<ObjectEntry> objectList = item.Value;
-                        foreach (ObjectEntry objectEntry in objectList)
+                        var typeName = item.Key.Name;
+                        var objectList = item.Value;
+                        foreach (var objectEntry in objectList)
                         {
                             if (objectEntry.Instance.IsAlive && !((DisposableObject)objectEntry.Instance.Target).IsDisposed)
                             {
@@ -141,7 +141,7 @@ namespace Axiom.Core
                         LogManager.Instance.Write("Total of {0} objects still alive.", objectCount);
                         LogManager.Instance.Write("Types of not disposed objects count: " + perTypeCount.Count);
 
-                        foreach (KeyValuePair<string, int> currentPair in perTypeCount)
+                        foreach (var currentPair in perTypeCount)
                             LogManager.Instance.Write("{0} occurrence of type {1}", currentPair.Value, currentPair.Key);
 
 #if !(XBOX || XBOX360 || WINDOWS_PHONE)
@@ -170,7 +170,7 @@ namespace Axiom.Core
 		{
 			IsDisposed = false;
 #if DEBUG
-#if !(XBOX || XBOX360 || WINDOWS_PHONE || ANDROID)
+#if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID)
 			ObjectManager.Instance.Add( this, Environment.StackTrace );
 #else
 			ObjectManager.Instance.Add( this, String.Empty );

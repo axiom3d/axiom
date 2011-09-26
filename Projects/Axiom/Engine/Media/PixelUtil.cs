@@ -64,7 +64,7 @@ namespace Axiom.Media
 
 		public static int[] GetBitDepths( PixelFormat format )
 		{
-			int[] rgba = new int[ 4 ];
+			var rgba = new int[ 4 ];
 			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rbits;
 			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gbits;
 			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bbits;
@@ -74,7 +74,7 @@ namespace Axiom.Media
 
 		public static uint[] GetBitMasks( PixelFormat format )
 		{
-			uint[] rgba = new uint[ 4 ];
+			var rgba = new uint[ 4 ];
 			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rmask;
 			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gmask;
 			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bmask;
@@ -123,7 +123,7 @@ namespace Axiom.Media
 		{
 			if ( format == PixelFormat.Unknown )
 				return false;
-			PixelFormatFlags flags = PixelConverter.GetDescriptionFor( format ).flags;
+			var flags = PixelConverter.GetDescriptionFor( format ).flags;
 			return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
 		}
 
@@ -184,11 +184,11 @@ namespace Axiom.Media
 		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly, bool caseSensitive )
 		{
 			// We are storing upper-case format names.
-			String tmp = caseSensitive ? name : name.ToUpper();
+			var tmp = caseSensitive ? name : name.ToUpper();
 
-			for ( int i = 0; i < (int)PixelFormat.Count; ++i )
+			for ( var i = 0; i < (int)PixelFormat.Count; ++i )
 			{
-				PixelFormat pf = (PixelFormat)i;
+				var pf = (PixelFormat)i;
 				if ( !accessibleOnly || IsAccessible( pf ) )
 				{
 					if ( tmp == GetFormatName( pf ) )

@@ -148,7 +148,7 @@ namespace Axiom.Core
 			{
 				_currentRenderSystem = value;
 
-				foreach ( SceneManager instance in _instances.Values )
+				foreach ( var instance in _instances.Values )
 					instance.TargetRenderSystem = value;
 			}
 		}
@@ -201,9 +201,9 @@ namespace Axiom.Core
 		public void RemoveFactory( SceneManagerFactory fact )
 		{
 			// destroy all instances for this factory
-			SceneManagerCollection tempList = new SceneManagerCollection();
+			var tempList = new SceneManagerCollection();
 			tempList.AddRange( _instances );
-			foreach ( SceneManager sm in tempList.Values )
+			foreach ( var sm in tempList.Values )
 			{
 				if ( sm.TypeName == fact.MetaData.typeName )
 				{
@@ -213,7 +213,7 @@ namespace Axiom.Core
 			}
 
 			// remove from metadata
-			for ( int i = 0; i < _metaDataList.Count; i++ )
+			for ( var i = 0; i < _metaDataList.Count; i++ )
 			{
 				if ( _metaDataList[ i ].Equals( fact.MetaData ) )
 				{
@@ -258,7 +258,7 @@ namespace Axiom.Core
 			}
 
 			// iterate backwards to find the matching factory registered last
-			for ( int i = _factories.Count - 1; i > -1; i-- )
+			for ( var i = _factories.Count - 1; i > -1; i-- )
 			{
 				if ( ( _factories[ i ].MetaData.sceneTypeMask & sceneType ) > 0 )
 				{
@@ -306,7 +306,7 @@ namespace Axiom.Core
 
 			SceneManager instance = null;
 
-			foreach ( SceneManagerFactory factory in _factories )
+			foreach ( var factory in _factories )
 			{
 				if ( factory.MetaData.typeName == typeName )
 				{
@@ -346,7 +346,7 @@ namespace Axiom.Core
 			// erase instance from list
 			_instances.Remove( sm.Name );
 
-			foreach ( SceneManagerFactory factory in _factories )
+			foreach ( var factory in _factories )
 			{
 				if ( factory.MetaData.typeName == sm.TypeName )
 				{
@@ -370,7 +370,7 @@ namespace Axiom.Core
 				throw new AxiomException( "SceneManager instance with name '{0}' not found", instanceName );
 			}
 
-			SceneManager sceneManager = _instances[ instanceName ];
+			var sceneManager = _instances[ instanceName ];
 
 			return sceneManager;
 		}
@@ -391,7 +391,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManagerMetaData GetMetaData( string typeName )
 		{
-			foreach ( SceneManagerMetaData metaData in _metaDataList )
+			foreach ( var metaData in _metaDataList )
 			{
 				if ( typeName == metaData.typeName )
 				{
@@ -407,7 +407,7 @@ namespace Axiom.Core
 		///</summary>
 		public void ShutdownAll()
 		{
-            foreach (SceneManager instance in _instances.Values)
+            foreach (var instance in _instances.Values)
 				instance.ClearScene();
 		}
 

@@ -75,7 +75,7 @@ namespace Axiom.Core
 		public MemoryBuffer<T> Allocate<T>( long size )
 			where T : struct
 		{
-			MemoryBuffer<T> buffer = new MemoryBuffer<T>( this, size );
+			var buffer = new MemoryBuffer<T>( this, size );
 			this._memoryPool.Add( buffer );
 			return buffer;
 		}
@@ -99,9 +99,9 @@ namespace Axiom.Core
 			public Array Convert( Array buffer, int startIndex )
 			{
 				int[] retVal;
-				int size = buffer.Length / 4;
+				var size = buffer.Length / 4;
 				retVal = new int[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
+				for ( var index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
 				}
@@ -114,9 +114,9 @@ namespace Axiom.Core
 			public Array Convert( Array buffer, int startIndex )
 			{
 				float[] retVal;
-				int size = buffer.Length / 4;
+				var size = buffer.Length / 4;
 				retVal = new float[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
+				for ( var index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
 				}

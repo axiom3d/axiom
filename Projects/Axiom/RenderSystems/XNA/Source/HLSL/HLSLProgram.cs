@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,87 +23,109 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-
+using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
+using Microsoft.Xna.Framework.Content.Pipeline;
+using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.HLSL
 {
-	/// <summary>
-	/// Summary description for HLSLProgram.
-	/// </summary>
-	public class HLSLProgram : HighLevelGpuProgram
-	{
-		/// <summary>
-		///     Shader profile to target for the compile (i.e. vs1.1, etc).
-		/// </summary>
-		protected string target;
-		/// <summary>
-		///     Entry point to compile from the program.
-		/// </summary>
-		protected string entry;
-		/// <summary>
-		/// preprocessor defines used to compile the program.
-		/// </summary>
-		protected string preprocessorDefines;
-
-		public HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-			preprocessorDefines = string.Empty;
-		}
-
-		/// <summary>
-		///     Creates a low level implementation based on the results of the
-		///     high level shader compilation.
-		/// </summary>
-		protected override void CreateLowLevelImpl()
-		{
-            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString(Name, Group, "", type, target);
-            assemblerProgram.IsSkeletalAnimationIncluded = this.IsSkeletalAnimationIncluded;
-        }
-
-		public override GpuProgramParameters CreateParameters()
-		{
-			GpuProgramParameters parms = base.CreateParameters();
-
-			return parms;
-		}
-
-		/// <summary>
-		///     Compiles the high level shader source to low level microcode.
-		/// </summary>
-		protected override void LoadFromSource()
-		{
-		}
-
-		protected override void LoadHighLevelImpl()
-		{
-			highLevelLoaded = true;
-		}
+    /// <summary>
+    /// Summary description for HLSLProgram.
+    /// </summary>
+    public class HLSLProgram : HighLevelGpuProgram
+    {
+        /// <summary>
+        ///     Shader profile to target for the compile (i.e. vs1.1, etc).
+        /// </summary>
+        protected string target;
 
         /// <summary>
-        ///     Unloads data that is no longer needed.
+        ///     Entry point to compile from the program.
         /// </summary>
+        protected string entry;
 
-        protected override void UnloadHighLevelImpl()
+        /// <summary>
+        /// preprocessor defines used to compile the program.
+        /// </summary>
+        protected string preprocessorDefines;
+
+        public HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+                            IManualResourceLoader loader )
+            : base( parent, name, handle, group, isManual, loader )
         {
-            throw new NotImplementedException();
+            //var device = ( (XnaRenderWindow)Root.Instance.AutoWindow ).Driver.XnaDevice;
+            //switch(type)
+            //{
+            //    case GpuProgramType.Fragment:
+            //        assemblerProgram = new XnaFragmentProgram(parent, name, handle, group, isManual, loader, device);
+            //        break;
+            //    case GpuProgramType.Vertex:
+            //        assemblerProgram = new XnaVertexProgram( parent, name, handle, group, isManual, loader, device );
+            //        break;
+            //    case GpuProgramType.Geometry:
+            //        break;
+            //}
+
+            preprocessorDefines = string.Empty;
+        }
+
+        /// <summary>
+        ///     Creates a low level implementation based on the results of the
+        ///     high level shader compilation.
+        /// </summary>
+        protected override void CreateLowLevelImpl()
+        {
+            if (!highLevelLoaded)
+                LoadHighLevelImpl();
+            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, source, type, target );
+            assemblerProgram.IsSkeletalAnimationIncluded = IsSkeletalAnimationIncluded;
+        }
+
+        public override GpuProgramParameters CreateParameters()
+        {
+            var parms = base.CreateParameters();
+
+            return parms;
+        }
+
+        /// <summary>
+        ///     Compiles the high level shader source to low level microcode.
+        /// </summary>
+        protected override void LoadFromSource()
+        {
+        //    if ( !highLevelLoaded )
+        //        LoadHighLevel();
+        //    assemblerProgram.Source = source;
+        //    assemblerProgram.Load();
+        }
+
+        protected override void LoadHighLevelImpl()
+        {
+            using (var stream = ResourceGroupManager.Instance.OpenResource(fileName, Group, true, this))
+            using (var reader = new StreamReader(stream, System.Text.Encoding.UTF8))
+                source = reader.ReadToEnd();
+            highLevelLoaded = true;
         }
 
         /// <summary>
@@ -113,84 +136,91 @@ namespace Axiom.RenderSystems.Xna.HLSL
         {
         }
 
-        protected override void BuildConstantDefinitions()
-        {
-            throw new NotImplementedException();
+        /// <summary>
+        ///     Unloads data that is no longer needed.
+        /// </summary>
+        protected override void UnloadHighLevelImpl()
+        {           
         }
 
-		public override bool IsSupported
-		{
+        public override bool IsSupported
+        {
             get
             {
                 return false;
             }
-		}
+        }
 
-		public override int SamplerCount
-		{
-			get
-			{
-				switch ( target )
-				{
-					case "ps_1_1":
-					case "ps_1_2":
-					case "ps_1_3":
-						return 4;
-					
+        public override int SamplerCount
+        {
+            get
+            {
+                switch ( target )
+                {
+                    case "ps_1_1":
+                    case "ps_1_2":
+                    case "ps_1_3":
+                        return 4;
                     case "ps_1_4":
-						return 6;
-					
+                        return 6;
                     case "ps_2_0":
-					case "ps_2_x":
-					case "ps_3_0":
-					case "ps_3_x":
-						return 16;
-					
+                    case "ps_2_x":
+                    case "ps_3_0":
+                    case "ps_3_x":
+                        return 16;
                     default:
-						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", target );
-				}
-			}
-		}
+                        throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).",
+                                                  target );
+                }
 
-		#region IConfigurable Members
+                // return 0;
+            }
+        }
 
-		/// <summary>
-		///     Sets a param for this HLSL program.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="val"></param>
-		/// <returns></returns>
-		public override bool SetParam( string name, string val )
-		{
-			bool handled = true;
+        #region IConfigurable Members
 
-			switch ( name )
-			{
-				case "entry_point":
-					entry = val;
-					break;
+        /// <summary>
+        ///     Sets a param for this HLSL program.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public override bool SetParam( string name, string val )
+        {
+            var handled = true;
 
-				case "target":
-					target = val.Split( ' ' )[ 0 ];
-					break;
-
-				case "preprocessor_defines":
-					preprocessorDefines = val;
-					break;
-
-                case "includes_skeletal_animation":
-                    this.IsSkeletalAnimationIncluded = true;
+            switch ( name )
+            {
+                case "entry_point":
+                    entry = val;
                     break;
 
-				default:
-					LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
-					handled = false;
-					break;
-			}
+                case "target":
+                    target = val.Split( ' ' )[ 0 ];
+                    break;
 
-			return handled;
-		}
+                case "preprocessor_defines":
+                    preprocessorDefines = val;
+                    break;
 
-		#endregion IConfigurable Members
+                case "includes_skeletal_animation":
+                    IsSkeletalAnimationIncluded = true;
+                    break;
+
+                default:
+                    LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
+                    handled = false;
+                    break;
+            }
+
+            return handled;
+        }
+
+        #endregion IConfigurable Members
+
+        protected override void BuildConstantDefinitions()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -725,7 +725,6 @@ namespace Axiom.Core
 				Camera.OrientationMode = OrientationMode;
 			}
 
-
 			LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}",
 				Camera.Name, ActualLeft, ActualTop, ActualWidth, ActualHeight, Camera.AspectRatio );
 
@@ -980,11 +979,15 @@ namespace Axiom.Core
 		{
 			if ( !IsDisposed )
 			{
-				var rs = Root.Instance.RenderSystem;
-				if ( rs != null && rs.Viewport == this )
-				{
-					rs.Viewport = null;
-				}
+			    var ri = Root.Instance;
+                if (ri != null)
+                {
+                    var rs = ri.RenderSystem;
+                    if (rs != null && rs.Viewport == this)
+                    {
+                        rs.Viewport = null;
+                    }
+                }
 			}
 
 			base.dispose( disposeManagedResources );

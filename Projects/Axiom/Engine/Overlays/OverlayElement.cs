@@ -141,7 +141,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		/// <param name="name"></param>
 		protected internal OverlayElement( string name )
-            : base()
+			: base()
 		{
 			this.name = name;
 			isVisible = true;
@@ -187,16 +187,16 @@ namespace Axiom.Overlays
 
 		public void CopyParametersTo( OverlayElement instance )
 		{
-			foreach ( IPropertyCommand command in Commands )
+			foreach ( var command in Commands )
 			{
-				string srcValue = command.Get( this );
+				var srcValue = command.Get( this );
 				command.Set( instance, srcValue );
 			}
 		}
 
 		public virtual OverlayElement Clone( string instanceName )
 		{
-			OverlayElement newElement = OverlayElementManager.Instance.CreateElement( this.GetType().Name, instanceName + "/" + name );
+			var newElement = OverlayElementManager.Instance.CreateElement( this.GetType().Name, instanceName + "/" + name );
 			CopyParametersTo( newElement );
 
 			return newElement;
@@ -274,7 +274,7 @@ namespace Axiom.Overlays
 			{
 				case MetricsMode.Pixels:
 					{
-						OverlayManager oMgr = OverlayManager.Instance;
+						var oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -289,7 +289,7 @@ namespace Axiom.Overlays
 
 				case MetricsMode.Relative_Aspect_Adjusted:
 					{
-						OverlayManager oMgr = OverlayManager.Instance;
+						var oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -403,7 +403,7 @@ namespace Axiom.Overlays
 				case MetricsMode.Pixels:
 					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
 					{
-						OverlayManager oMgr = OverlayManager.Instance;
+						var oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -424,7 +424,7 @@ namespace Axiom.Overlays
 				case MetricsMode.Relative_Aspect_Adjusted:
 					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
 					{
-						OverlayManager oMgr = OverlayManager.Instance;
+						var oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -520,8 +520,8 @@ namespace Axiom.Overlays
 				//                parentLeft = parentTop = 0.0f;
 				//                parentRight = parentBottom = 1.0f;
 
-				RenderSystem rSys = Root.Instance.RenderSystem;
-				OverlayManager oMgr = OverlayManager.Instance;
+				var rSys = Root.Instance.RenderSystem;
+				var oMgr = OverlayManager.Instance;
 
 				// Calculate offsets required for mapping texel origins to pixel origins in the
 				// current rendersystem
@@ -575,7 +575,7 @@ namespace Axiom.Overlays
 
 				parentRect = parent.ClippingRegion;
 
-				Rectangle childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
+				var childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
 
 				this.clippingRegion = Rectangle.Intersect( parentRect, childRect );
 			}
@@ -940,8 +940,8 @@ namespace Axiom.Overlays
 					throw new Exception( string.Format( "Could not find material '{0}'.", materialName ) );
 				}
 
-                if (!material.IsLoaded)
-				    material.Load();
+				if (!material.IsLoaded)
+					material.Load();
 
 
 				// Set some prerequisites to be sure
@@ -970,13 +970,13 @@ namespace Axiom.Overlays
 			}
 			set
 			{
-				MetricsMode localMetricsMode = value;
+				var localMetricsMode = value;
 				switch ( localMetricsMode )
 				{
 					case MetricsMode.Pixels:
 						{
 							float vpWidth, vpHeight;
-							OverlayManager oMgr = OverlayManager.Instance;
+							var oMgr = OverlayManager.Instance;
 							vpWidth = oMgr.ViewportWidth;
 							vpHeight = oMgr.ViewportHeight;
 
@@ -1000,7 +1000,7 @@ namespace Axiom.Overlays
 					case MetricsMode.Relative_Aspect_Adjusted:
 						{
 							float vpWidth, vpHeight;
-							OverlayManager oMgr = OverlayManager.Instance;
+							var oMgr = OverlayManager.Instance;
 							vpWidth = oMgr.ViewportWidth;
 							vpHeight = oMgr.ViewportHeight;
 
@@ -1423,8 +1423,8 @@ namespace Axiom.Overlays
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-                        if (!renderOperation.IsDisposed)
-                            renderOperation.Dispose();
+						if (!renderOperation.IsDisposed)
+							renderOperation.Dispose();
 
 						renderOperation = null;
 					}
@@ -1434,7 +1434,7 @@ namespace Axiom.Overlays
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose(disposeManagedResources);
 		}
 
 		#endregion IDisposable Implementation
@@ -1442,7 +1442,7 @@ namespace Axiom.Overlays
 		#region ScriptableObject Interface Command Classes
 
 		[ScriptableProperty( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof( OverlayElement ) )]
-		private class MetricsModeAttributeCommand : IPropertyCommand
+		public class MetricsModeAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1482,7 +1482,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( OverlayElement ) )]
-		private class HorizontalAlignmentAttributeCommand : IPropertyCommand
+		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1522,7 +1522,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof( OverlayElement ) )]
-		private class VerticalAlignmentAttributeCommand : IPropertyCommand
+		public class VerticalAlignmentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1562,7 +1562,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "top", "The position of the top border of the gui element.", typeof( OverlayElement ) )]
-		private class TopAttributeCommand : IPropertyCommand
+		public class TopAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1602,7 +1602,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "left", "The position of the left border of the gui element.", typeof( OverlayElement ) )]
-		private class LeftAttributeCommand : IPropertyCommand
+		public class LeftAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1642,7 +1642,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "width", "The width of the gui element.", typeof( OverlayElement ) )]
-		private class WidthAttributeCommand : IPropertyCommand
+		public class WidthAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1682,7 +1682,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "height", "The height of the gui element.", typeof( OverlayElement ) )]
-		private class HeightAttributeCommand : IPropertyCommand
+		public class HeightAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1722,7 +1722,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof( OverlayElement ) )]
-		private class VisibleAttributeCommand : IPropertyCommand
+		public class VisibleAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1762,7 +1762,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "caption", "The element caption, if supported.", typeof( OverlayElement ) )]
-		private class CaptionAttributeCommand : IPropertyCommand
+		public class CaptionAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1802,7 +1802,7 @@ namespace Axiom.Overlays
 		}
 
 		[ScriptableProperty( "material", "The name of the material to use.", typeof( OverlayElement ) )]
-		private class MaterialAttributeCommand : IPropertyCommand
+		public class MaterialAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 

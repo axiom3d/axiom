@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -61,7 +62,7 @@ namespace Axiom.Graphics
 			_mpData = new byte[ sizeInBytes ];
 		}
 
-        public override void ReadData(int offset, int length, IntPtr dest)
+        public override void ReadData(int offset, int length, BufferBase dest)
         {
             var data = Memory.PinObject(_mpData);
             Memory.Copy(dest, data, length);
@@ -77,38 +78,28 @@ namespace Axiom.Graphics
             Memory.UnpinObject(_mpData);
         }
 
-        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
+        public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
         {
             var pIntData = Memory.PinObject(_mpData);
             Memory.Copy(src, pIntData, length);
             Memory.UnpinObject(_mpData);
         }
 
-        public override IntPtr Lock(int offset, int length, BufferLocking locking)
+        public override BufferBase Lock(int offset, int length, BufferLocking locking)
         {
             Debug.Assert(!isLocked);
             isLocked = true;
             var ret = Memory.PinObject(_mpData);
-            unsafe
-            {
-                var v = (byte*)ret.ToPointer();
-                v += offset;
-                ret = new IntPtr(v);
-            }
+            ret.Ptr = offset;
             return ret;
         }
 
-        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking locking)
         {
             Debug.Assert(!isLocked);
             isLocked = true;
             var ret = Memory.PinObject(_mpData);
-            unsafe
-            {
-                var v = (byte*)ret.ToPointer();
-                v += offset;
-                ret = new IntPtr(v);
-            }
+            ret.Ptr = offset;
             return ret;
         }
 

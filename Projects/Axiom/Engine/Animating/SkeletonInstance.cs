@@ -171,7 +171,7 @@ namespace Axiom.Animating
 
 		public TagPoint CreateTagPointOnBone( Bone bone, Quaternion offsetOrientation, Vector3 offsetPosition )
 		{
-			TagPoint tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
+			var tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
 			tagPointList[ nextTagPointAutoHandle ] = tagPoint;
 
 			tagPoint.Translate( offsetPosition );
@@ -245,9 +245,9 @@ namespace Axiom.Animating
 			this.BlendMode = skeleton.BlendMode;
 
 			// copy bones starting at the roots
-			for ( int i = 0; i < skeleton.RootBoneCount; i++ )
+			for ( var i = 0; i < skeleton.RootBoneCount; i++ )
 			{
-				Bone rootBone = skeleton.GetRootBone( i );
+				var rootBone = skeleton.GetRootBone( i );
 				CloneBoneAndChildren( rootBone, null );
 				rootBone.Update( true, false );
 			}
@@ -255,10 +255,10 @@ namespace Axiom.Animating
 			SetBindingPose();
 
 			// Clone the attachment points
-			for ( int i = 0; i < skeleton.AttachmentPoints.Count; i++ )
+			for ( var i = 0; i < skeleton.AttachmentPoints.Count; i++ )
 			{
-				AttachmentPoint ap = skeleton.AttachmentPoints[ i ];
-				Bone parentBone = this.GetBone( ap.ParentBone );
+				var ap = skeleton.AttachmentPoints[ i ];
+				var parentBone = this.GetBone( ap.ParentBone );
 				this.CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
 			}
 		}

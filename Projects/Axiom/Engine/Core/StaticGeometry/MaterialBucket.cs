@@ -133,11 +133,11 @@ namespace Axiom.Core
 				//   source
 				//   semantic
 				//   type
-				string str = string.Format( "{0}|", geom.indexData.indexBuffer.Type );
+				var str = string.Format( "{0}|", geom.indexData.indexBuffer.Type );
 
-				for ( int i = 0; i < geom.vertexData.vertexDeclaration.ElementCount; ++i )
+				for ( var i = 0; i < geom.vertexData.vertexDeclaration.ElementCount; ++i )
 				{
-					VertexElement elem = geom.vertexData.vertexDeclaration.GetElement( i );
+					var elem = geom.vertexData.vertexDeclaration.GetElement( i );
 					str += string.Format( "{0}|{0}|{1}|{2}|", elem.Source, elem.Semantic, elem.Type );
 				}
 				return str;
@@ -149,11 +149,11 @@ namespace Axiom.Core
 			public void Assign( QueuedGeometry qgeom )
 			{
 				// Look up any current geometry
-				string formatString = GetGeometryFormatString( qgeom.geometry );
-				bool newBucket = true;
+				var formatString = GetGeometryFormatString( qgeom.geometry );
+				var newBucket = true;
 				if ( currentGeometryMap.ContainsKey( formatString ) )
 				{
-					GeometryBucket gbucket = currentGeometryMap[ formatString ];
+					var gbucket = currentGeometryMap[ formatString ];
 					// Found existing geometry, try to assign
 					newBucket = !gbucket.Assign( qgeom );
 					// Note that this bucket will be replaced as the 'current'
@@ -162,7 +162,7 @@ namespace Axiom.Core
 				// Do we need to create a new one?
 				if ( newBucket )
 				{
-					GeometryBucket gbucket = new GeometryBucket( this, formatString, qgeom.geometry.vertexData, qgeom.geometry.indexData );
+					var gbucket = new GeometryBucket( this, formatString, qgeom.geometry.vertexData, qgeom.geometry.indexData );
 					// Add to main list
 					geometryBucketList.Add( gbucket );
 					// Also index in 'current' list
@@ -184,7 +184,7 @@ namespace Axiom.Core
 					throw new AxiomException( "Material '{0}' not found.", materialName );
 				material.Load();
 				// tell the geometry buckets to build
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach ( var gbucket in geometryBucketList )
 					gbucket.Build( stencilShadows, logLevel );
 			}
 
@@ -195,7 +195,7 @@ namespace Axiom.Core
 				//BatchInstance batchInstance = Parent.Parent;
 
 				// Get material lod strategy
-				LodStrategy materialLodStrategy = Material.LodStrategy;
+				var materialLodStrategy = Material.LodStrategy;
 
 				// If material strategy doesn't match, recompute lod value with correct strategy
 #warning OGRE-1.6 BatchInstance Implementation needed
@@ -204,7 +204,7 @@ namespace Axiom.Core
 
 				// determine the current material technique
 				technique = material.GetBestTechnique( material.GetLodIndex( lodValue ) );
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach ( var gbucket in geometryBucketList )
 					queue.AddRenderable( gbucket, RenderQueue.DEFAULT_PRIORITY, group );
 			}
 
@@ -213,7 +213,7 @@ namespace Axiom.Core
 				LogManager.Instance.Write( "Material Bucket {0}", materialName );
 				LogManager.Instance.Write( "--------------------------------------------------" );
 				LogManager.Instance.Write( "Geometry buckets: {0}", geometryBucketList.Count );
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach ( var gbucket in geometryBucketList )
 					gbucket.Dump();
 				LogManager.Instance.Write( "--------------------------------------------------" );
 			}
@@ -229,7 +229,7 @@ namespace Axiom.Core
                     {
                         if (geometryBucketList != null)
                         {
-                            foreach (GeometryBucket gbucket in geometryBucketList)
+                            foreach (var gbucket in geometryBucketList)
                             {
                                 if (!gbucket.IsDisposed)
                                     gbucket.Dispose();

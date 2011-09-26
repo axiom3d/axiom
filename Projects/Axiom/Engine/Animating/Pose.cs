@@ -168,25 +168,27 @@ namespace Axiom.Animating
 			if ( vertexBuffer == null )
 			{
 				// Create buffer
-                VertexDeclaration decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
+                var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
                 decl.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
 
 				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, numVertices, BufferUsage.StaticWriteOnly, false );
 
 				// lock the vertex buffer
-				IntPtr ipBuf = vertexBuffer.Lock( BufferLocking.Discard );
+				var ipBuf = vertexBuffer.Lock( BufferLocking.Discard );
 
-				unsafe
-				{
-					float* buffer = (float*)ipBuf.ToPointer();
-					for ( int i = 0; i < numVertices * 3; i++ )
+#if !AXIOM_SAFE_ONLY
+                unsafe
+#endif
+                {
+					var buffer = ipBuf.ToFloatPointer();
+					for ( var i = 0; i < numVertices * 3; i++ )
 						buffer[ i ] = 0f;
 
 					// Set each vertex
-					foreach ( KeyValuePair<int, Vector3> pair in vertexOffsetMap )
+					foreach ( var pair in vertexOffsetMap )
 					{
-						int offset = 3 * pair.Key;
-						Vector3 v = pair.Value;
+						var offset = 3 * pair.Key;
+						var v = pair.Value;
 						buffer[ offset++ ] = v.x;
 						buffer[ offset++ ] = v.y;
 						buffer[ offset ] = v.z;

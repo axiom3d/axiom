@@ -86,7 +86,7 @@ namespace Axiom.Graphics
             if ( !( obj is DriverVersion ) )
                 return false;
 
-            DriverVersion v = (DriverVersion)obj;
+            var v = (DriverVersion)obj;
 
             return ( v.Major == Major ) && ( v.Minor == Minor ) && ( v.Release == Release ) && ( v.Build == Build );
         }
@@ -107,7 +107,7 @@ namespace Axiom.Graphics
         /// <param name="versionString"></param>
         public void FromString( string versionString )
         {
-            string[] tokens = versionString.Split( '.' );
+            var tokens = versionString.Split( '.' );
             if ( tokens.Length > 0 )
             {
                 try
@@ -147,9 +147,9 @@ namespace Axiom.Graphics
 
         public static bool operator >( DriverVersion a, DriverVersion b )
         {
-            bool majorCmp = a.Major == b.Major;
-            bool minorCmp = a.Minor == b.Minor;
-            bool releaseCmp = a.Release == b.Release;
+            var majorCmp = a.Major == b.Major;
+            var minorCmp = a.Minor == b.Minor;
+            var releaseCmp = a.Release == b.Release;
 
             if ( a.Major > b.Major )
                 return true;
@@ -168,9 +168,9 @@ namespace Axiom.Graphics
 
         public static bool operator <( DriverVersion a, DriverVersion b )
         {
-            bool majorCmp = a.Major == b.Major;
-            bool minorCmp = a.Minor == b.Minor;
-            bool releaseCmp = a.Release == b.Release;
+            var majorCmp = a.Major == b.Major;
+            var minorCmp = a.Minor == b.Minor;
+            var releaseCmp = a.Release == b.Release;
 
             if ( a.Major < b.Major )
                 return true;

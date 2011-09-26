@@ -57,7 +57,7 @@ namespace Axiom.Animating.Collections
 		/// <returns></returns>
 		public AnimationStateCollection Clone()
 		{
-			AnimationStateCollection newCol = new AnimationStateCollection();
+			var newCol = new AnimationStateCollection();
 
 			foreach ( KeyValuePair<string, AnimationState> entry in this )
 			{

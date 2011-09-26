@@ -44,6 +44,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Axiom.Core;
+using Axiom.CrossPlatform;
 using SlimDX.Direct3D9;
 using Root = Axiom.Core.Root;
 using Axiom.Graphics;
@@ -204,7 +206,7 @@ namespace Axiom.RenderSystems.DirectX9
 			rval.RowPitch = rectangle.Pitch / PixelUtil.GetNumElemBytes( rval.Format );
 			rval.SlicePitch = rval.RowPitch * rval.Height;
 			Debug.Assert( ( rectangle.Pitch % PixelUtil.GetNumElemBytes( rval.Format ) ) == 0 );
-			rval.Data = rectangle.Data.DataPointer;
+            rval.Data = BufferBase.Wrap(rectangle.Data.DataPointer, rectangle.Pitch * rval.Height);
 		}
 
 		///<summary>
@@ -216,7 +218,7 @@ namespace Axiom.RenderSystems.DirectX9
 			rval.SlicePitch = stream.SlicePitch / PixelUtil.GetNumElemBytes( rval.Format );
 			Debug.Assert( ( stream.RowPitch % PixelUtil.GetNumElemBytes( rval.Format ) ) == 0 );
 			Debug.Assert( ( stream.SlicePitch % PixelUtil.GetNumElemBytes( rval.Format ) ) == 0 );
-			rval.Data = stream.Data.DataPointer;
+            rval.Data = BufferBase.Wrap(stream.Data.DataPointer, stream.RowPitch * rval.Height);
 		}
 
 		///<summary>
@@ -467,8 +469,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
 				byte[] newBuffer = new byte[ bufSize ];
-				bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
-				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
+                converted = new PixelBox(src.Width, src.Height, src.Depth, Format, BufferBase.Wrap(newBuffer));
 				PixelConverter.BulkPixelConversion( src, converted );
 			}
 
@@ -482,7 +483,7 @@ namespace Axiom.RenderSystems.DirectX9
 					buf.Data.Position = 0; // Ensure starting Position
 					bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
 					byte[] ugh = new byte[ bufSize ];
-					Marshal.Copy( converted.Data, ugh, 0, bufSize );
+					Memory.Copy( converted.Data, BufferBase.Wrap(ugh), bufSize );
 					buf.Data.Write( ugh, 0, bufSize );
 				}
 				tmpSurface.UnlockRectangle();

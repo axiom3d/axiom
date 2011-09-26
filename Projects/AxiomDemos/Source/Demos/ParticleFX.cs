@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.ParticleSystems;
@@ -13,7 +13,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Particles.
 	/// </summary>
-	public class ParticleFX : TechDemo
+    [Export(typeof(TechDemo))]
+    public class ParticleFX : TechDemo
 	{
 		#region Member variables
 

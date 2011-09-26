@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-
+using System.ComponentModel.Composition;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -10,12 +10,12 @@ using Axiom.Math;
 
 #endregion Namespace Declarations
 
-
 namespace Axiom.Demos
 {
 	/// <summary>
 	/// Summary description for CelShading.
 	/// </summary>
+	[Export(typeof(TechDemo))]
 	public class CelShading : TechDemo
 	{
 		#region Constants

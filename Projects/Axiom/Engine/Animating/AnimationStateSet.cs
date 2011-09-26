@@ -139,13 +139,13 @@ namespace Axiom.Animating
 		/// </summary>
 		public AnimationStateSet Clone()
 		{
-			AnimationStateSet newSet = new AnimationStateSet();
+			var newSet = new AnimationStateSet();
 
-			foreach ( AnimationState animationState in stateSet.Values )
+			foreach ( var animationState in stateSet.Values )
 				new AnimationState( newSet, animationState );
 
 			// Clone enabled animation state list
-			foreach ( AnimationState animationState in enabledAnimationStates )
+			foreach ( var animationState in enabledAnimationStates )
 				newSet.EnabledAnimationStates.Add( newSet.GetAnimationState( animationState.Name ) );
 			return newSet;
 		}
@@ -175,7 +175,7 @@ namespace Axiom.Animating
 			if ( stateSet.ContainsKey( name ) )
 				throw new Exception( "State for animation named '" + name + "' already exists, " +
 									"in AnimationStateSet.CreateAnimationState" );
-			AnimationState newState = new AnimationState( name, this, time,
+			var newState = new AnimationState( name, this, time,
 														 length, weight, enabled );
 			stateSet[ name ] = newState;
 			return newState;
@@ -226,7 +226,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public void CopyMatchingState( AnimationStateSet target )
 		{
-			foreach ( KeyValuePair<string, AnimationState> pair in target.AllAnimationStates )
+			foreach ( var pair in target.AllAnimationStates )
 			{
 				AnimationState result;
 				if ( !stateSet.TryGetValue( pair.Key, out result ) )
@@ -238,7 +238,7 @@ namespace Axiom.Animating
 
 			// Copy matching enabled animation state list
 			target.EnabledAnimationStates.Clear();
-			foreach ( AnimationState state in enabledAnimationStates )
+			foreach ( var state in enabledAnimationStates )
 				target.EnabledAnimationStates.Add( target.AllAnimationStates[ state.Name ] );
 
 			target.DirtyFrameNumber = dirtyFrameNumber;

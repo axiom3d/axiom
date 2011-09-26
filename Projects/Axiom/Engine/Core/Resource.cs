@@ -148,7 +148,7 @@ namespace Axiom.Core
 			{
 				if ( _group != value )
 				{
-					String oldGroup = _group;
+					var oldGroup = _group;
 					_group = value;
 					ResourceGroupManager.Instance.notifyResourceGroupChanged( oldGroup, this );
 				}

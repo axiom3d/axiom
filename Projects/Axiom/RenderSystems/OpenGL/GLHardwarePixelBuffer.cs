@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
-
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Media;
 
@@ -125,14 +125,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected void allocateBuffer()
 		{
-			if ( buffer.Data != IntPtr.Zero )
+			if ( buffer.Data != null )
 				// Already allocated
 				return;
 
 			// Allocate storage
 			_data = new byte[ this.sizeInBytes ];
-			_bufferPinndedHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
-			buffer.Data = _bufferPinndedHandle.AddrOfPinnedObject();
+            buffer.Data = BufferBase.Wrap(_data);
 			// TODO: use PBO if we're HBU_DYNAMIC
 		}
 
@@ -142,7 +141,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( _bufferPinndedHandle.IsAllocated )
 				{
-					buffer.Data = IntPtr.Zero;
+					buffer.Data = null;
 					_bufferPinndedHandle.Free();
 					_data = null;
 				}
@@ -285,7 +284,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					_bufferPinndedHandle.Free();
 				}
-				buffer.Data = IntPtr.Zero;
+				buffer.Data = null;
 				buffer = null;
 			}
 

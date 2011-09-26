@@ -151,7 +151,7 @@ namespace Axiom.Graphics
 	    public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
 		{
 			// lookup the factory for the requested program language
-			HighLevelGpuProgramFactory factory = GetFactory( language );
+			var factory = GetFactory( language );
 
 			if ( factory == null )
 			{
@@ -160,7 +160,7 @@ namespace Axiom.Graphics
 			}
 
 			// create the high level program using the factory
-			HighLevelGpuProgram program = factory.CreateInstance( this, name, nextHandle, group, false, null );
+			var program = factory.CreateInstance( this, name, nextHandle, group, false, null );
 			program.Type = type;
 			program.SyntaxCode = language;
 
@@ -197,9 +197,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				string[] sl = new string[ resources.Count ];
-				int count = 0;
-				foreach ( string s in resources.Keys )
+				var sl = new string[ resources.Count ];
+				var count = 0;
+				foreach ( var s in resources.Keys )
 				{
 					sl[ count++ ] = s;
 				}

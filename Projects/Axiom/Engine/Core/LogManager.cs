@@ -46,18 +46,18 @@ namespace Axiom.Core
 	/// <summary>
 	/// Summary description for LogManager.
 	/// </summary>
-	public class LogManager : DisposableObject, ISingleton<LogManager>
+	public sealed class LogManager : Singleton<LogManager>
 	{
 		#region Fields and Properties
 
 		/// <summary>
 		///     List of logs created by the log manager.
 		/// </summary>
-		protected AxiomCollection<Log> logList = new AxiomCollection<Log>();
+		private AxiomCollection<Log> logList = new AxiomCollection<Log>();
 		/// <summary>
 		///     The default log to which output is done.
 		/// </summary>
-		protected Log defaultLog;
+		private Log defaultLog;
 
 		/// <summary>
 		///     Gets/Sets the default log to use for writing.
@@ -69,7 +69,7 @@ namespace Axiom.Core
 			{
 				if ( defaultLog == null )
 				{
-					throw new AxiomException( "No logs have been created yet." );
+                    throw new AxiomException( "No logs have been created yet." );
 				}
 
 				return defaultLog;
@@ -97,14 +97,6 @@ namespace Axiom.Core
 
 		#endregion Fields and Properties
 
-		public LogManager()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
-		}
-
 		#region Methods
 
 		/// <summary>
@@ -121,7 +113,7 @@ namespace Axiom.Core
 		///     Creates a new log with the given name.
 		/// </summary>
 		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
-		/// <param name="isDefaultLog">
+        /// <param name="isDefaultLog">
 		///     If true, this is the default log output will be
 		///     sent to if the generic logging methods on this class are
 		///     used. The first log created is always the default log unless
@@ -137,7 +129,7 @@ namespace Axiom.Core
 		///     Creates a new log with the given name.
 		/// </summary>
 		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
-		/// <param name="isDefaultLog">
+        /// <param name="isDefaultLog">
 		///     If true, this is the default log output will be
 		///     sent to if the generic logging methods on this class are
 		///     used. The first log created is always the default log unless
@@ -149,9 +141,9 @@ namespace Axiom.Core
 		///     it using a custom TraceListener to receive message notification wherever you want.
 		/// </param>
 		/// <returns>A newly created Log object, opened and ready to go.</returns>
-		public virtual Log CreateLog( string name, bool isDefaultLog, bool debuggerOutput )
+		public Log CreateLog( string name, bool isDefaultLog, bool debuggerOutput )
 		{
-			Log newLog = new Log( name, debuggerOutput );
+			var newLog = new Log( name, debuggerOutput );
 
 			// set as the default log if need be
 			if ( defaultLog == null || isDefaultLog )
@@ -231,7 +223,7 @@ namespace Axiom.Core
 
 		public static string BuildExceptionString( Exception exception )
 		{
-			StringBuilder errMessage = new StringBuilder();
+			var errMessage = new StringBuilder();
 
 			errMessage.Append( exception.Message + Environment.NewLine + exception.StackTrace );
 
@@ -246,7 +238,7 @@ namespace Axiom.Core
 
 		private static string BuildInnerExceptionString( Exception innerException )
 		{
-			string errMessage = string.Empty;
+			var errMessage = string.Empty;
 
 			errMessage += "\n" + " InnerException ";
 			errMessage += "\n" + innerException.Message + "\n" + innerException.StackTrace;
@@ -256,38 +248,13 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-		#region ISingleton<LogManager> implementation
-
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		protected static LogManager instance;
-
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static LogManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
-
-		public virtual bool Initialize( params object[] args )
-		{
-			return true;
-		}
-
-		#endregion ISingleton<LogManager> implementation
-
-		#region IDisposable Implementation
+		#region Singleton implementation
 
 		protected override void dispose( bool disposeManagedResources )
 		{
 			Write( "*-*-* Axiom Shutdown Complete." );
 
-			if ( !IsDisposed )
+			if ( !isDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -312,7 +279,7 @@ namespace Axiom.Core
 		}
 
 
-		#endregion IDisposable Implementation
+		#endregion Singleton implementation
 
 	}
 }

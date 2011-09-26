@@ -105,7 +105,7 @@ namespace Axiom.Scripting.Compiler
 			// Start looking from the back
 			if ( _translatorManagers.Count > 0 )
 			{
-				for ( int i = _translatorManagers.Count - 1; i >= 0; i-- )
+				for ( var i = _translatorManagers.Count - 1; i >= 0; i-- )
 				{
 					translator = _translatorManagers[ i ].GetTranslator( node );
 					if ( translator != null )
@@ -137,8 +137,8 @@ namespace Axiom.Scripting.Compiler
 			_unsetCompilerEvents(); // Double tap
 			_setCompilerEvents();
 
-			System.IO.StreamReader rdr = new System.IO.StreamReader( stream );
-			String script = rdr.ReadToEnd();
+			var rdr = new System.IO.StreamReader( stream );
+			var script = rdr.ReadToEnd();
 			_compiler.Compile( script, fileName, groupName );
 
 			// Unset events in order to avoid that compiler's events will be called twice next time
@@ -234,11 +234,11 @@ namespace Axiom.Scripting.Compiler
 		{
 			if ( node is ObjectAbstractNode )
 			{
-				ObjectAbstractNode obj = (ObjectAbstractNode)node;
-				ObjectAbstractNode parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
-				Keywords parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
+				var obj = (ObjectAbstractNode)node;
+				var parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
+				var parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
 
-				foreach ( ScriptCompiler.Translator currentTranslator in _translators )
+				foreach ( var currentTranslator in _translators )
 				{
 					if ( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
 						return currentTranslator;

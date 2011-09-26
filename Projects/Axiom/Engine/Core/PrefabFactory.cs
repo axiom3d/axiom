@@ -79,8 +79,8 @@ namespace Axiom.Core
 		/// </summary>
 		private static void _createPlane( Mesh mesh )
 		{
-			SubMesh sub = mesh.CreateSubMesh();
-			float[] vertices = new float[ 32 ] {
+			var sub = mesh.CreateSubMesh();
+			var vertices = new float[ 32 ] {
 				-100, -100, 0,	// pos
 				0,0,1,			// normal
 				0,1,			// texcoord
@@ -97,10 +97,10 @@ namespace Axiom.Core
 
 			mesh.SharedVertexData = new VertexData();
 			mesh.SharedVertexData.vertexCount = 4;
-			VertexDeclaration decl = mesh.SharedVertexData.vertexDeclaration;
-			VertexBufferBinding binding = mesh.SharedVertexData.vertexBufferBinding;
+			var decl = mesh.SharedVertexData.vertexDeclaration;
+			var binding = mesh.SharedVertexData.vertexBufferBinding;
 
-			int offset = 0;
+			var offset = 0;
 			decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 			decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Normal );
@@ -108,15 +108,15 @@ namespace Axiom.Core
 			decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, 4, BufferUsage.StaticWriteOnly );
+			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, 4, BufferUsage.StaticWriteOnly );
 			binding.SetBinding( 0, vbuf );
 
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
 
 			sub.useSharedVertices = true;
-			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6, BufferUsage.StaticWriteOnly );
+			var ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6, BufferUsage.StaticWriteOnly );
 
-			short[] faces = new short[ 6 ] { 0, 1, 2, 0, 2, 3 };
+			var faces = new short[ 6 ] { 0, 1, 2, 0, 2, 3 };
 			sub.IndexData.indexBuffer = ibuf;
 			sub.IndexData.indexCount = 6;
 			sub.IndexData.indexStart = 0;
@@ -131,7 +131,7 @@ namespace Axiom.Core
 		/// </summary>
 		private static void _createCube( Mesh mesh )
 		{
-			SubMesh sub = mesh.CreateSubMesh();
+			var sub = mesh.CreateSubMesh();
 
 			const int NUM_VERTICES = 4 * 6; // 4 vertices per side * 6 sides
 			const int NUM_ENTRIES_PER_VERTEX = 8;
@@ -144,7 +144,7 @@ namespace Axiom.Core
 			// Create 4 vertices per side instead of 6 that are shared for the whole cube.
 			// The reason for this is with only 6 vertices the normals will look bad
 			// since each vertex can "point" in a different direction depending on the face it is included in.
-			float[] vertices = new float[ NUM_VERTEX_ENTRIES ] {
+			var vertices = new float[ NUM_VERTEX_ENTRIES ] {
 				// front side
 				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,	// pos
 				0,0,1,	// normal
@@ -232,10 +232,10 @@ namespace Axiom.Core
 
 			mesh.SharedVertexData = new VertexData();
 			mesh.SharedVertexData.vertexCount = NUM_VERTICES;
-			VertexDeclaration decl = mesh.SharedVertexData.vertexDeclaration;
-			VertexBufferBinding bind = mesh.SharedVertexData.vertexBufferBinding;
+			var decl = mesh.SharedVertexData.vertexDeclaration;
+			var bind = mesh.SharedVertexData.vertexBufferBinding;
 
-			int offset = 0;
+			var offset = 0;
 			decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 			decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Normal );
@@ -243,15 +243,15 @@ namespace Axiom.Core
 			decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
-			HardwareVertexBuffer vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( decl, NUM_VERTICES, BufferUsage.StaticWriteOnly );
+			var vbuf =	HardwareBufferManager.Instance.CreateVertexBuffer( decl, NUM_VERTICES, BufferUsage.StaticWriteOnly );
 			bind.SetBinding( 0, vbuf );
 
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
 
 			sub.useSharedVertices = true;
-			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES,	BufferUsage.StaticWriteOnly );
+			var ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES,	BufferUsage.StaticWriteOnly );
 
-			short[] faces = new short[ NUM_INDICES ] {
+			var faces = new short[ NUM_INDICES ] {
 				// front
 				0,1,2,
 				0,2,3,
@@ -295,18 +295,18 @@ namespace Axiom.Core
 		private static void _createSphere( Mesh mesh )
 		{
 			// sphere creation code taken from the DeferredShading sample, originally from the [Ogre] wiki
-			SubMesh pSphereVertex = mesh.CreateSubMesh();
+			var pSphereVertex = mesh.CreateSubMesh();
 
 			const int NUM_SEGMENTS = 16;
 			const int NUM_RINGS = 16;
 			const float SPHERE_RADIUS = 50.0f;
 
 			mesh.SharedVertexData = new VertexData();
-			VertexData vertexData = mesh.SharedVertexData;
+			var vertexData = mesh.SharedVertexData;
 
 			// define the vertex format
-			VertexDeclaration vertexDecl = vertexData.vertexDeclaration;
-			int offset = 0;
+			var vertexDecl = vertexData.vertexDeclaration;
+			var offset = 0;
 			// positions
 			vertexDecl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 			offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
@@ -320,64 +320,66 @@ namespace Axiom.Core
 			// allocate the vertex buffer
 			vertexData.vertexCount = ( NUM_RINGS + 1 ) * ( NUM_SEGMENTS + 1 );
 
-			HardwareVertexBuffer vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.Clone( 0 ), vertexData.vertexCount, BufferUsage.StaticWriteOnly, false );
+			var vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.Clone( 0 ), vertexData.vertexCount, BufferUsage.StaticWriteOnly, false );
 
-			VertexBufferBinding binding = vertexData.vertexBufferBinding;
+			var binding = vertexData.vertexBufferBinding;
 			binding.SetBinding( 0, vBuf );
 
 			// allocate index buffer
 			pSphereVertex.IndexData.indexCount = 6 * NUM_RINGS * ( NUM_SEGMENTS + 1 );
 
 			pSphereVertex.IndexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, pSphereVertex.IndexData.indexCount, BufferUsage.StaticWriteOnly, false );
-			HardwareIndexBuffer iBuf = pSphereVertex.IndexData.indexBuffer;
+			var iBuf = pSphereVertex.IndexData.indexBuffer;
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
+#endif
 			{
-
-				float* pVertex = (float*)vBuf.Lock( BufferLocking.Discard );
-
-				ushort* pIndices =(ushort*)iBuf.Lock( BufferLocking.Discard );
+			    var iVertex = 0;                
+			    var pVertex = vBuf.Lock(BufferLocking.Discard).ToFloatPointer();
+			    var iIndices = 0;
+			    var pIndices = iBuf.Lock(BufferLocking.Discard).ToUShortPointer();
 
 				float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
 				float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );
 				ushort wVerticeIndex = 0;
 
 				// Generate the group of rings for the sphere
-				for ( int ring = 0; ring <= NUM_RINGS; ring++ )
+				for ( var ring = 0; ring <= NUM_RINGS; ring++ )
 				{
 					float r0 = SPHERE_RADIUS * Utility.Sin( ring * fDeltaRingAngle );
 					float y0 = SPHERE_RADIUS * Utility.Cos( ring * fDeltaRingAngle );
 
 					// Generate the group of segments for the current ring
-					for ( int seg = 0; seg <= NUM_SEGMENTS; seg++ )
+					for ( var seg = 0; seg <= NUM_SEGMENTS; seg++ )
 					{
 						float x0 = r0 * Utility.Sin( seg * fDeltaSegAngle );
 						float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
 
 						// Add one vertex to the strip which makes up the sphere
-						*pVertex++ = x0;
-						*pVertex++ = y0;
-						*pVertex++ = z0;
+                        pVertex[iVertex++] = x0;
+                        pVertex[iVertex++] = y0;
+                        pVertex[iVertex++] = z0;
 
-						Vector3 vNormal = new Vector3( x0, y0, z0 );
+						var vNormal = new Vector3( x0, y0, z0 );
 						vNormal.Normalize();
 
-						*pVertex++ = vNormal.x;
-						*pVertex++ = vNormal.y;
-						*pVertex++ = vNormal.z;
+                        pVertex[iVertex++] = vNormal.x;
+                        pVertex[iVertex++] = vNormal.y;
+                        pVertex[iVertex++] = vNormal.z;
 
-						*pVertex++ = (float)seg / (float)NUM_SEGMENTS;
-						*pVertex++ = (float)ring / (float)NUM_RINGS;
+                        pVertex[iVertex++] = (float)seg / (float)NUM_SEGMENTS;
+                        pVertex[iVertex++] = (float)ring / (float)NUM_RINGS;
 
 						if ( ring != NUM_RINGS )
 						{
 							// each vertex (except the last) has six indicies pointing to it
-							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
-							*pIndices++ = (ushort)( wVerticeIndex );
-							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS );
-							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
-							*pIndices++ = (ushort)( wVerticeIndex + 1 );
-							*pIndices++ = (ushort)( wVerticeIndex );
+                            pIndices[iIndices++] = (ushort)(wVerticeIndex + NUM_SEGMENTS + 1);
+                            pIndices[iIndices++] = (ushort)(wVerticeIndex);
+                            pIndices[iIndices++] = (ushort)(wVerticeIndex + NUM_SEGMENTS);
+                            pIndices[iIndices++] = (ushort)(wVerticeIndex + NUM_SEGMENTS + 1);
+                            pIndices[iIndices++] = (ushort)(wVerticeIndex + 1);
+                            pIndices[iIndices++] = (ushort)(wVerticeIndex);
 							wVerticeIndex++;
 						}
 					}; // end for seg

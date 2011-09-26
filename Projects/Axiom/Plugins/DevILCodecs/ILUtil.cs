@@ -37,6 +37,7 @@ using System;
 using System.IO;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Math.Collections;
 using Axiom.Media;
 
@@ -304,7 +305,8 @@ namespace Axiom.Plugins.DevILCodecs
 			ILFormat ifmt = Convert( dst.Format );
 			if ( ifmt.Format == ilfmt && ILabs( ifmt.Type ) == ILabs( iltp ) )
 			{
-				Memory.Copy( Il.ilGetData(), dst.Data, Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) );
+			    var size = Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA );
+                Memory.Copy(BufferBase.Wrap(Il.ilGetData(), size), dst.Data, size);
 				return;
 			}
 
@@ -313,14 +315,15 @@ namespace Axiom.Plugins.DevILCodecs
 			ifmt = Convert( bufFmt );
 
 			if ( ifmt.Format == ilfmt && ILabs( ifmt.Type ) == ILabs( iltp ) )
-			{
-				// IL format matches another Axiom format
-				PixelBox src = new PixelBox( dst.Width, dst.Height, dst.Depth, bufFmt, Il.ilGetData() );
-				PixelConverter.BulkPixelConversion( src, dst );
-				return;
-			}
+                using (var dstbuf = BufferBase.Wrap(Il.ilGetData(), Il.ilGetInteger(Il.IL_IMAGE_SIZE_OF_DATA)))
+                {
+                    // IL format matches another Axiom format
+                    PixelBox src = new PixelBox( dst.Width, dst.Height, dst.Depth, bufFmt, dstbuf );
+                    PixelConverter.BulkPixelConversion( src, dst );
+                    return;
+                }
 
-			// Thee extremely slow method
+		    // Thee extremely slow method
 			if ( iltp == Il.IL_UNSIGNED_BYTE || iltp == Il.IL_BYTE )
 			{
 				throw new NotImplementedException( "Cannot convert this DevIL type." );
@@ -351,58 +354,65 @@ namespace Axiom.Plugins.DevILCodecs
 				// The easy case, the buffer is laid out in memory just like 
 				// we want it to be and is in a format DevIL can understand directly
 				// We could even save the copy if DevIL would let us
-				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, src.Data );
+				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, src.Data.Pin() );
+			    src.Data.UnPin();
 			}
-			else if ( ifmt.IsValid )
-			{
-				// The format can be understood directly by DevIL. The only 
-				// problem is that ilTexImage expects our image data consecutively 
-				// so we cannot use that directly.
+            else if (ifmt.IsValid)
+            {
+                // The format can be understood directly by DevIL. The only 
+                // problem is that ilTexImage expects our image data consecutively 
+                // so we cannot use that directly.
 
-				// Let DevIL allocate the memory for us, and copy the data consecutively
-				// to its memory
-				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero );
-				PixelBox dst = new PixelBox( src.Width, src.Height, src.Depth, src.Format, Il.ilGetData() );
-				PixelConverter.BulkPixelConversion( src, dst );
-			}
-			else
-			{
-				// Here it gets ugly. We're stuck with a pixel format that DevIL
-				// can't do anything with. We will do a bulk pixel conversion and
-				// then feed it to DevIL anyway. The problem is finding the best
-				// format to convert to.
+                // Let DevIL allocate the memory for us, and copy the data consecutively
+                // to its memory
+                Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type,
+                               IntPtr.Zero );
+                using (var dstbuf = BufferBase.Wrap(Il.ilGetData(), Il.ilGetInteger(Il.IL_IMAGE_SIZE_OF_DATA)))
+                {
+                    PixelBox dst = new PixelBox( src.Width, src.Height, src.Depth, src.Format, dstbuf );
+                    PixelConverter.BulkPixelConversion( src, dst );
+                }
+            }
+            else
+            {
+                // Here it gets ugly. We're stuck with a pixel format that DevIL
+                // can't do anything with. We will do a bulk pixel conversion and
+                // then feed it to DevIL anyway. The problem is finding the best
+                // format to convert to.
 
-				// most general format supported by Axiom and DevIL
-				PixelFormat fmt = PixelUtil.HasAlpha( src.Format ) ? PixelFormat.FLOAT32_RGBA : PixelFormat.FLOAT32_RGB;
+                // most general format supported by Axiom and DevIL
+                PixelFormat fmt = PixelUtil.HasAlpha(src.Format) ? PixelFormat.FLOAT32_RGBA : PixelFormat.FLOAT32_RGB;
 
-				// Make up a pixel format
-				// We don't have to consider luminance formats as they have
-				// straight conversions to DevIL, just weird permutations of RGBA an LA
-				int[] depths = PixelUtil.GetBitDepths( src.Format );
+                // Make up a pixel format
+                // We don't have to consider luminance formats as they have
+                // straight conversions to DevIL, just weird permutations of RGBA an LA
+                int[] depths = PixelUtil.GetBitDepths(src.Format);
 
-				// Native endian format with all bit depths<8 can safely and quickly be 
-				// converted to 24/32 bit
-				if ( PixelUtil.IsNativeEndian( src.Format ) &&
-					depths[ 0 ] <= 8 && depths[ 1 ] <= 8 && depths[ 2 ] <= 8 && depths[ 3 ] <= 8 )
-				{
-					if ( PixelUtil.HasAlpha( src.Format ) )
-					{
-						fmt = PixelFormat.A8R8G8B8;
-					}
-					else
-					{
-						fmt = PixelFormat.R8G8B8;
-					}
-				}
+                // Native endian format with all bit depths<8 can safely and quickly be 
+                // converted to 24/32 bit
+                if (PixelUtil.IsNativeEndian(src.Format) &&
+                    depths[0] <= 8 && depths[1] <= 8 && depths[2] <= 8 && depths[3] <= 8)
+                {
+                    if (PixelUtil.HasAlpha(src.Format))
+                    {
+                        fmt = PixelFormat.A8R8G8B8;
+                    }
+                    else
+                    {
+                        fmt = PixelFormat.R8G8B8;
+                    }
+                }
 
-				// Let DevIL allocate the memory for us, then do the conversion ourselves
-				ifmt = Convert( fmt );
-				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero ); // TAO 2.0
-				//Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
-				IntPtr data = Il.ilGetData();
-				PixelBox dst = new PixelBox( src.Width, src.Height, src.Depth, fmt, data );
-				PixelConverter.BulkPixelConversion( src, dst );
-			}
+                // Let DevIL allocate the memory for us, then do the conversion ourselves
+                ifmt = Convert(fmt);
+                Il.ilTexImage(src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero); // TAO 2.0
+                //Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
+                using (var dstbuf = BufferBase.Wrap(Il.ilGetData(), Il.ilGetInteger(Il.IL_IMAGE_SIZE_OF_DATA)))
+                {
+                    PixelBox dst = new PixelBox( src.Width, src.Height, src.Depth, fmt, dstbuf );
+                    PixelConverter.BulkPixelConversion( src, dst );
+                }
+            }
 		}
 
 		/// Utility function to convert IL data types to UNSIGNED_

@@ -109,18 +109,18 @@ namespace Axiom.Math
 			}
 
 			// Get centre of the box
-			Vector3 center = box.Center;
+			var center = box.Center;
 			// Get the half-size of the box
-			Vector3 halfSize = box.HalfSize;
+			var halfSize = box.HalfSize;
 
 			// If all points are on outside of any plane, we fail
-			Vector3[] points = box.Corners;
+			var points = box.Corners;
 
-			for ( int i = 0; i < planes.Count; i++ )
+			for ( var i = 0; i < planes.Count; i++ )
 			{
-				Plane plane = (Plane)planes[ i ];
+				var plane = (Plane)planes[ i ];
 
-				PlaneSide side = plane.GetSide( center, halfSize );
+				var side = plane.GetSide( center, halfSize );
 				if ( side == outside )
 				{
 					// Found a splitting plane therefore return not intersecting
@@ -139,12 +139,12 @@ namespace Axiom.Math
 		/// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			for ( int i = 0; i < planes.Count; i++ )
+			for ( var i = 0; i < planes.Count; i++ )
 			{
-				Plane plane = (Plane)planes[ i ];
+				var plane = (Plane)planes[ i ];
 
 				// Test which side of the plane the sphere is
-				Real d = plane.GetDistance( sphere.Center );
+				var d = plane.GetDistance( sphere.Center );
 
 				// Negate d if planes point inwards
 				if ( outside == PlaneSide.Negative )

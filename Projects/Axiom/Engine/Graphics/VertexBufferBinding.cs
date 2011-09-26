@@ -177,7 +177,7 @@ namespace Axiom.Graphics
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
 
-			HardwareVertexBuffer buf = bindingMap[ index ];
+			var buf = bindingMap[ index ];
 
 			return buf;
 		}
@@ -205,7 +205,7 @@ namespace Axiom.Graphics
 					// Dispose managed resources.
 					if ( this.bindingMap != null )
 					{
-						foreach ( HardwareVertexBuffer item in bindingMap.Values )
+						foreach ( var item in bindingMap.Values )
 						{
                             if (!item.IsDisposed)
 							    item.Dispose();

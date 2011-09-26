@@ -89,10 +89,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real BoundingRadiusFromAABB( AxisAlignedBox aabb )
 		{
-			Vector3 max = aabb.Maximum;
-			Vector3 min = aabb.Minimum;
+			var max = aabb.Maximum;
+			var min = aabb.Minimum;
 
-			Vector3 magnitude = max;
+			var magnitude = max;
 			magnitude.Ceil( -max );
 			magnitude.Ceil( min );
 			magnitude.Ceil( -min );
@@ -323,9 +323,9 @@ namespace Axiom.Math
 		{
 			Debug.Assert( values != null && values.Length > 0 );
 
-			int maxIndex = 0;
-			Real max = values[ 0 ];
-			for ( int i = 1; i < values.Length; i++ )
+			var maxIndex = 0;
+			var max = values[ 0 ];
+			for ( var i = 1; i < values.Length; i++ )
 				if ( values[ i ] > max )
 				{
 					max = values[ i ];
@@ -366,9 +366,9 @@ namespace Axiom.Math
 		{
 			Debug.Assert( values != null && values.Length > 0 );
 
-			int minIndex = 0;
-			Real min = values[ 0 ];
-			for ( int i = 1; i < values.Length; i++ )
+			var minIndex = 0;
+			var min = values[ 0 ];
+			for ( var i = 1; i < values.Length; i++ )
 				if ( values[ i ] < min )
 				{
 					min = values[ i ];
@@ -424,7 +424,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix4 BuildReflectionMatrix( Plane plane )
 		{
-			Vector3 normal = plane.Normal;
+			var normal = plane.Normal;
 
 			return new Matrix4(
 				-2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.D,
@@ -442,7 +442,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector4 CalculateFaceNormal( Vector3 v1, Vector3 v2, Vector3 v3 )
 		{
-			Vector3 normal = CalculateBasicFaceNormal( v1, v2, v3 );
+			var normal = CalculateBasicFaceNormal( v1, v2, v3 );
 
 			// Now set up the w (distance of tri from origin
 			return new Vector4( normal.x, normal.y, normal.z, -( normal.Dot( v1 ) ) );
@@ -457,7 +457,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 CalculateBasicFaceNormal( Vector3 v1, Vector3 v2, Vector3 v3 )
 		{
-			Vector3 normal = ( v2 - v1 ).Cross( v3 - v1 );
+			var normal = ( v2 - v1 ).Cross( v3 - v1 );
 			normal.Normalize();
 
 			return normal;
@@ -471,7 +471,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 CalculateBasicFaceNormalWithoutNormalize( Vector3 v1, Vector3 v2, Vector3 v3 )
 		{
-			Vector3 normal = ( v2 - v1 ).Cross( v3 - v1 );
+			var normal = ( v2 - v1 ).Cross( v3 - v1 );
 			return normal;
 		}
 		/// <summary>
@@ -498,22 +498,22 @@ namespace Axiom.Math
 
 			// side0 is the vector along one side of the triangle of vertices passed in, 
 			// and side1 is the vector along another side. Taking the cross product of these returns the normal.
-			Vector3 side0 = position1 - position2;
-			Vector3 side1 = position3 - position1;
+			var side0 = position1 - position2;
+			var side1 = position3 - position1;
 			// Calculate face normal
-			Vector3 normal = side1.Cross( side0 );
+			var normal = side1.Cross( side0 );
 			normal.Normalize();
 
 			// Now we use a formula to calculate the tangent. 
-			Real deltaV0 = v1 - v2;
-			Real deltaV1 = v3 - v1;
-			Vector3 tangent = deltaV1 * side0 - deltaV0 * side1;
+			var deltaV0 = v1 - v2;
+			var deltaV1 = v3 - v1;
+			var tangent = deltaV1 * side0 - deltaV0 * side1;
 			tangent.Normalize();
 
 			// Calculate binormal
-			Real deltaU0 = u1 - u2;
-			Real deltaU1 = u3 - u1;
-			Vector3 binormal = deltaU1 * side0 - deltaU0 * side1;
+			var deltaU0 = u1 - u2;
+			var deltaU1 = u3 - u1;
+			var binormal = deltaU1 * side0 - deltaU0 * side1;
 			binormal.Normalize();
 
 			// Now, we take the cross product of the tangents to get a vector which 
@@ -522,7 +522,7 @@ namespace Axiom.Math
 			// then we need to reverse the s and t tangents. 
 			// This is because the triangle has been mirrored when going from tangent space to object space.
 			// reverse tangents if necessary.
-			Vector3 tangentCross = tangent.Cross( binormal );
+			var tangentCross = tangent.Cross( binormal );
 			if ( tangentCross.Dot( normal ) < 0.0f )
 			{
 				tangent = -tangent;
@@ -621,12 +621,12 @@ namespace Axiom.Math
 		/// <returns>The elapsed time in seconds.</returns>
 		public static Real Measure( SimpleMethodDelegate method )
 		{
-			long start = System.Diagnostics.Stopwatch.GetTimestamp();
+			var start = System.Diagnostics.Stopwatch.GetTimestamp();
 
 			method();
 
-			double elapsed = (double)( System.Diagnostics.Stopwatch.GetTimestamp() - start );
-			double freq = (double)System.Diagnostics.Stopwatch.Frequency;
+			var elapsed = (double)( System.Diagnostics.Stopwatch.GetTimestamp() - start );
+			var freq = (double)System.Diagnostics.Stopwatch.Frequency;
 
 			return (Real)( elapsed / freq );
 		}
@@ -657,10 +657,10 @@ namespace Axiom.Math
 
 			Real lowt = 0.0f;
 			Real t;
-			bool hit = false;
+			var hit = false;
 			Vector3 hitPoint;
-			Vector3 min = box.Minimum;
-			Vector3 max = box.Maximum;
+			var min = box.Minimum;
+			var max = box.Maximum;
 
 			// check origin inside first
 			if ( ray.origin > min && ray.origin < max )
@@ -805,7 +805,7 @@ namespace Axiom.Math
 			// Calculate intersection with plane.
 			Real t;
 			{
-				Real denom = normal.Dot( ray.Direction );
+				var denom = normal.Dot( ray.Direction );
 				// Check intersect side
 				if ( denom > +Real.Epsilon )
 				{
@@ -834,9 +834,9 @@ namespace Axiom.Math
 			// Calculate the largest area projection plane in X, Y or Z.
 			int i0, i1;
 			{
-				Real n0 = Math.Utility.Abs( normal[ 0 ] );
-				Real n1 = Math.Utility.Abs( normal[ 1 ] );
-				Real n2 = Math.Utility.Abs( normal[ 2 ] );
+				var n0 = Math.Utility.Abs( normal[ 0 ] );
+				var n1 = Math.Utility.Abs( normal[ 1 ] );
+				var n2 = Math.Utility.Abs( normal[ 2 ] );
 
 				i0 = 1;
 				i1 = 2;
@@ -855,21 +855,21 @@ namespace Axiom.Math
 
 			// Check the intersection point is inside the triangle.
 			{
-				Real u1 = b[ i0 ] - a[ i0 ];
-				Real v1 = b[ i1 ] - a[ i1 ];
-				Real u2 = c[ i0 ] - a[ i0 ];
-				Real v2 = c[ i1 ] - a[ i1 ];
-				Real u0 = t * ray.Direction[ i0 ] + ray.Origin[ i0 ] - a[ i0 ];
-				Real v0 = t * ray.Direction[ i1 ] + ray.Origin[ i1 ] - a[ i1 ];
+				var u1 = b[ i0 ] - a[ i0 ];
+				var v1 = b[ i1 ] - a[ i1 ];
+				var u2 = c[ i0 ] - a[ i0 ];
+				var v2 = c[ i1 ] - a[ i1 ];
+				var u0 = t * ray.Direction[ i0 ] + ray.Origin[ i0 ] - a[ i0 ];
+				var v0 = t * ray.Direction[ i1 ] + ray.Origin[ i1 ] - a[ i1 ];
 
-				Real alpha = u0 * v2 - u2 * v0;
-				Real beta = u1 * v0 - u0 * v1;
-				Real area = u1 * v2 - u2 * v1;
+				var alpha = u0 * v2 - u2 * v0;
+				var beta = u1 * v0 - u0 * v1;
+				var area = u1 * v2 - u2 * v1;
 
 				// epsilon to avoid Real precision error
 				Real EPSILON = 1e-3f;
 
-				Real tolerance = -EPSILON * area;
+				var tolerance = -EPSILON * area;
 
 				if ( area > 0 )
 				{
@@ -890,7 +890,7 @@ namespace Axiom.Math
 		public static IntersectResult Intersects( Ray ray, Vector3 a,
 			Vector3 b, Vector3 c, bool positiveSide, bool negativeSide )
 		{
-			Vector3 normal = CalculateBasicFaceNormalWithoutNormalize( a, b, c );
+			var normal = CalculateBasicFaceNormalWithoutNormalize( a, b, c );
 			return Intersects( ray, a, b, c, normal, positiveSide, negativeSide );
 		}
 
@@ -926,10 +926,10 @@ namespace Axiom.Math
 			Contract.RequiresNotNull( boxB, "boxB" );
 
 			// grab the max and mix vectors for both boxes for comparison
-			Vector3 minA = boxA.Minimum;
-			Vector3 maxA = boxA.Maximum;
-			Vector3 minB = boxB.Minimum;
-			Vector3 maxB = boxB.Maximum;
+			var minA = boxA.Minimum;
+			var maxA = boxA.Maximum;
+			var minB = boxB.Minimum;
+			var maxB = boxB.Maximum;
 
 			if ( ( minB.x < minA.x ) &&
 				( maxB.x > maxA.x ) &&
@@ -989,10 +989,10 @@ namespace Axiom.Math
 			Contract.RequiresNotNull( ray, "ray" );
 			Contract.RequiresNotNull( sphere, "sphere" );
 
-			Vector3 rayDir = ray.Direction;
+			var rayDir = ray.Direction;
 			//Adjust ray origin relative to sphere center
-			Vector3 rayOrig = ray.Origin - sphere.Center;
-			Real radius = sphere.Radius;
+			var rayOrig = ray.Origin - sphere.Center;
+			var radius = sphere.Radius;
 
 			// check origin inside first
 			if ( ( rayOrig.LengthSquared <= radius * radius ) && discardInside )
@@ -1003,12 +1003,12 @@ namespace Axiom.Math
 			// mmm...sweet quadratics
 			// Build coeffs which can be used with std quadratic solver
 			// ie t = (-b +/- sqrt(b*b* + 4ac)) / 2a
-			Real a = rayDir.Dot( rayDir );
-			Real b = 2 * rayOrig.Dot( rayDir );
-			Real c = rayOrig.Dot( rayOrig ) - ( radius * radius );
+			var a = rayDir.Dot( rayDir );
+			var b = 2 * rayOrig.Dot( rayDir );
+			var c = rayOrig.Dot( rayOrig ) - ( radius * radius );
 
 			// calc determinant
-			Real d = ( b * b ) - ( 4 * a * c );
+			var d = ( b * b ) - ( 4 * a * c );
 
 			if ( d < 0 )
 			{
@@ -1020,7 +1020,7 @@ namespace Axiom.Math
 				// BTW, if d=0 there is one intersection, if d > 0 there are 2
 				// But we only want the closest one, so that's ok, just use the 
 				// '-' version of the solver
-				Real t = ( -b - Utility.Sqrt( d ) ) / ( 2 * a );
+				var t = ( -b - Utility.Sqrt( d ) ) / ( 2 * a );
 
 				if ( t < 0 )
 				{
@@ -1041,7 +1041,7 @@ namespace Axiom.Math
 		{
 			Contract.RequiresNotNull( ray, "ray" );
 
-			Real denom = plane.Normal.Dot( ray.Direction );
+			var denom = plane.Normal.Dot( ray.Direction );
 
 			if ( Utility.Abs( denom ) < Real.Epsilon )
 			{
@@ -1050,8 +1050,8 @@ namespace Axiom.Math
 			}
 			else
 			{
-				Real nom = plane.Normal.Dot( ray.Origin ) + plane.D;
-				Real t = -( nom / denom );
+				var nom = plane.Normal.Dot( ray.Origin ) + plane.D;
+				var t = -( nom / denom );
 				return new IntersectResult( t >= 0, t );
 			}
 		}
@@ -1071,10 +1071,10 @@ namespace Axiom.Math
 				return false;
 
 			// Use splitting planes
-			Vector3 center = sphere.Center;
-			Real radius = sphere.Radius;
-			Vector3 min = box.Minimum;
-			Vector3 max = box.Maximum;
+			var center = sphere.Center;
+			var radius = sphere.Radius;
+			var min = box.Minimum;
+			var max = box.Maximum;
 
 			// just test facing planes, early fail if sphere is totally outside
 			if ( center.x < min.x &&
@@ -1128,14 +1128,14 @@ namespace Axiom.Math
 				return false;
 
 			// Get corners of the box
-			Vector3[] corners = box.Corners;
+			var corners = box.Corners;
 
 			// Test which side of the plane the corners are
 			// Intersection occurs when at least one corner is on the 
 			// opposite side to another
-			PlaneSide lastSide = plane.GetSide( corners[ 0 ] );
+			var lastSide = plane.GetSide( corners[ 0 ] );
 
-			for ( int corner = 1; corner < 8; corner++ )
+			for ( var corner = 1; corner < 8; corner++ )
 			{
 				if ( plane.GetSide( corners[ corner ] ) != lastSide )
 				{
@@ -1171,12 +1171,12 @@ namespace Axiom.Math
 				return new Tuple<bool, Real, Real>( true, Real.NaN, Real.PositiveInfinity );
 			}
 
-			Vector3 min = box.Minimum;
-			Vector3 max = box.Maximum;
-			Vector3 rayorig = ray.origin;
-			Vector3 rayDir = ray.Direction;
+			var min = box.Minimum;
+			var max = box.Maximum;
+			var rayorig = ray.origin;
+			var rayDir = ray.Direction;
 
-			Vector3 absDir = Vector3.Zero;
+			var absDir = Vector3.Zero;
 			absDir[ 0 ] = Abs( rayDir[ 0 ] );
 			absDir[ 1 ] = Abs( rayDir[ 1 ] );
 			absDir[ 2 ] = Abs( rayDir[ 2 ] );
@@ -1234,9 +1234,9 @@ namespace Axiom.Math
 
 		private static bool CalcAxis( int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max, ref Real end, ref Real start )
 		{
-			Real denom = 1 / raydir[ i ];
-			Real newstart = ( min[ i ] - rayorig[ i ] ) * denom;
-			Real newend = ( max[ i ] - rayorig[ i ] ) * denom;
+			var denom = 1 / raydir[ i ];
+			var newstart = ( min[ i ] - rayorig[ i ] ) * denom;
+			var newend = ( max[ i ] - rayorig[ i ] ) * denom;
 			if ( newstart > newend )
 				Swap<Real>( ref newstart, ref newend );
 			if ( newstart > end || newend < start )
@@ -1260,16 +1260,16 @@ namespace Axiom.Math
 			Contract.RequiresNotNull( ray, "ray" );
 			Contract.RequiresNotNull( volume, "volume" );
 
-			PlaneList planes = volume.planes;
+			var planes = volume.planes;
 
 			Real maxExtDist = 0.0f;
-			Real minIntDist = Real.PositiveInfinity;
+			var minIntDist = Real.PositiveInfinity;
 
 			Real dist, denom, nom;
 
-			for ( int i = 0; i < planes.Count; i++ )
+			for ( var i = 0; i < planes.Count; i++ )
 			{
-				Plane plane = (Plane)planes[ i ];
+				var plane = (Plane)planes[ i ];
 
 				denom = plane.Normal.Dot( ray.Direction );
 				if ( Utility.Abs( denom ) < Real.Epsilon )
@@ -1327,7 +1327,7 @@ namespace Axiom.Math
 		/// <param name="v2"></param>
 		public static void Swap<T>( ref T v1, ref T v2 )
 		{
-			T temp = v1;
+			var temp = v1;
 			v1 = v2;
 			v2 = temp;
 		}
@@ -1343,7 +1343,7 @@ namespace Axiom.Math
 		public static T Clamp<T>( T value, T max, T min )
 				 where T : System.IComparable<T>
 		{
-			T result = value;
+			var result = value;
 			if ( value.CompareTo( max ) > 0 )
 				result = max;
 			if ( value.CompareTo( min ) < 0 )
@@ -1354,7 +1354,7 @@ namespace Axiom.Math
 		public static T Max<T>( T value, T max )
 		 where T : System.IComparable<T>
 		{
-			T result = value;
+			var result = value;
 			if ( value.CompareTo( max ) < 0 )
 				result = max;
 			return result;
@@ -1363,7 +1363,7 @@ namespace Axiom.Math
 		public static T Min<T>( T value, T min )
 				 where T : System.IComparable<T>
 		{
-			T result = value;
+			var result = value;
 			if ( value.CompareTo( min ) > 0 )
 				result = min;
 			return result;
@@ -1487,7 +1487,7 @@ namespace Axiom.Math
 		public static float GaussianDistribution( Real x, Real offset, Real scale )
 		{
 			Real nom = System.Math.Exp( -Utility.Sqr( x - offset ) / ( 2 * Utility.Sqr( scale ) ) );
-			Real denom = scale * Utility.Sqrt( 2 * Utility.PI );
+			var denom = scale * Utility.Sqrt( 2 * Utility.PI );
 
 			return nom / denom;
 		}

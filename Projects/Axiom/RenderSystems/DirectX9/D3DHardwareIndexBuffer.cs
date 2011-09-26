@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Threading;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 
 using DX = SlimDX;
@@ -105,11 +106,11 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="length"></param>
 		/// <param name="locking"></param>
 		/// <returns></returns>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );
 			DX.DataStream s = d3dBuffer.Lock( offset, length, d3dLocking );
-			return s.DataPointer;
+			return BufferBase.Wrap(s.DataPointer, length);
 		}
 
 		/// <summary>
@@ -127,10 +128,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
 		/// <param name="dest"></param>
-		public override void ReadData( int offset, int length, IntPtr dest )
+		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			// lock the buffer for reading
-			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+			var src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
@@ -146,10 +147,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="length"></param>
 		/// <param name="src"></param>
 		/// <param name="discardWholeBuffer"></param>
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
 			// lock the buffer real quick
-			IntPtr dest = this.Lock( offset, length,
+			var dest = this.Lock( offset, length,
 				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
 			// copy that data in there

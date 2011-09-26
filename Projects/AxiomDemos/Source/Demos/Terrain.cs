@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -13,7 +13,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Terrain.
 	/// </summary>
-	public class Terrain : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Terrain : TechDemo
 	{
 		SceneNode waterNode;
 		float flowAmount;

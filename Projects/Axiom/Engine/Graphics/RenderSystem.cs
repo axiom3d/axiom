@@ -212,8 +212,7 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool texProjRelative;
-		
-        [OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 2790 )]
 		protected Vector3 texProjRelativeOrigin;
 
 		#endregion Fields
@@ -224,7 +223,7 @@ namespace Axiom.Graphics
 		/// Base constructor.
 		/// </summary>
 		protected RenderSystem()
-            : base()
+			: base()
 		{
 			// This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
 			// This makes it the same as OpenGL and other right-handed systems
@@ -440,7 +439,7 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				throw new MethodAccessException( "Abstract call" );
+				throw new NotImplementedException("Abstract call: Viewport set");
 			}
 		}
 
@@ -870,29 +869,24 @@ namespace Axiom.Graphics
 		/// Sets the color &amp; strength of the ambient (global directionless) light in the world.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Axiom interface uses ColorEx while Ogre uses a ternary (r,g,b) setter" )]
-		public abstract ColorEx AmbientLight
+		public abstract ColorEx AmbientLight 
 		{
+			get;
+			set;
+		}
+
+		[OgreVersion( 1, 7, 2790 )]
+		public abstract ShadeOptions ShadingType
+		{ 
+			get;
 			set;
 		}
 
 		#endregion
 
-        #region ShadingType
+		#region HorizontalTexelOffset
 
-        /// <summary>
-        /// Sets the type of light shading required (default = Gouraud).
-        /// </summary>
-        [OgreVersion( 1, 7, 2790 )]
-        public abstract ShadeOptions ShadingType
-        {
-            set;
-        }
-
-        #endregion
-
-        #region HorizontalTexelOffset
-
-        /// <summary>
+		/// <summary>
 		/// Returns the horizontal texel offset value required for mapping 
 		/// texel origins to pixel origins in this rendersystem.
 		/// </summary>
@@ -914,7 +908,7 @@ namespace Axiom.Graphics
 		#region LightingEnabled
 
 		/// <summary>
-		/// Sets whether or not dynamic lighting is enabled.
+		/// Gets/Sets whether or not dynamic lighting is enabled.
 		/// <p/>
 		/// If true, dynamic lighting is performed on geometry with normals supplied, geometry without
 		/// normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
@@ -922,6 +916,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract bool LightingEnabled
 		{
+			get;
 			set;
 		}
 
@@ -930,7 +925,7 @@ namespace Axiom.Graphics
 		#region NormalizeNormals
 
 		/// <summary>
-		/// Sets whether or not normals are to be automatically normalized.
+		/// Get/Sets whether or not normals are to be automatically normalized.
 		/// </summary>
 		/// <remarks>
 		/// This is useful when, for example, you are scaling SceneNodes such that
@@ -944,6 +939,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract bool NormalizeNormals
 		{
+			get;
 			set;
 		}
 
@@ -952,11 +948,12 @@ namespace Axiom.Graphics
 		#region ProjectionMatrix
 
 		/// <summary>
-		/// Sets the current projection matrix.
+		/// Gets/Sets the current projection matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract Matrix4 ProjectionMatrix
 		{
+			get;
 			set;
 		}
 
@@ -965,11 +962,12 @@ namespace Axiom.Graphics
 		#region PolygonMode
 
 		/// <summary>
-		/// Sets how to rasterise triangles, as points, wireframe or solid polys.
+		/// Gets/Sets how to rasterise triangles, as points, wireframe or solid polys.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract PolygonMode PolygonMode
 		{
+			get;
 			set;
 		}
 
@@ -988,6 +986,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract bool StencilCheckEnabled
 		{
+			get;
 			set;
 		}
 
@@ -1017,11 +1016,12 @@ namespace Axiom.Graphics
 		#region ViewMatrix
 
 		/// <summary>
-		/// Sets the current view matrix.
+		/// Gets/Sets the current view matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract Matrix4 ViewMatrix
 		{
+			get;
 			set;
 		}
 
@@ -1035,6 +1035,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract Matrix4 WorldMatrix
 		{
+			get;
 			set;
 		}
 
@@ -1410,7 +1411,7 @@ it says it's incompatible with that RT" );
 		#region GetErrorDescription
 
 		/// <summary>
-        /// Returns a description of an error code.
+		/// Returns a description of an error code.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract string GetErrorDescription( int errorNumber );
@@ -1459,7 +1460,7 @@ it says it's incompatible with that RT" );
 		public virtual void InitRenderTargets()
 		{
 			// init stats for each render target
-			foreach ( KeyValuePair<string, RenderTarget> item in renderTargets )
+			foreach ( var item in renderTargets )
 			{
 				item.Value.ResetStatistics();
 			}
@@ -2190,9 +2191,9 @@ it says it's incompatible with that RT" );
 
 		#endregion
 
-        #region CreateHardwareOcclusionQuery
+		#region CreateHardwareOcclusionQuery
 
-        /// <summary>
+		/// <summary>
 		/// Requests an API implementation of a hardware occlusion query used to test for the number
 		/// of fragments rendered between calls to <see cref="HardwareOcclusionQuery.Begin"/> and 
 		/// <see cref="HardwareOcclusionQuery.End"/> that pass the depth buffer test.
@@ -2581,8 +2582,7 @@ it says it's incompatible with that RT" );
 		/// Sets the fog with the given params.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void SetFog( FogMode mode, ColorEx color, Real density,
-			Real linearStart, Real linearEnd );
+		public abstract void SetFog( FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd );
 
 		[AxiomHelper( 0, 8, CommentDefOverride )]
 		public void SetFog()
@@ -3255,11 +3255,11 @@ it says it's incompatible with that RT" );
 			return false;
 		}
 
-        #endregion
+		#endregion
 
-        #region UseLights
+		#region UseLights
 
-        /// <summary>
+		/// <summary>
 		/// Tells the rendersystem to use the attached set of lights (and no others) 
 		/// up to the number specified (this allows the same list to be used with different
 		/// count limits).

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Rendering Engine Project Team
@@ -22,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 using System;
@@ -37,14 +39,17 @@ using System.Runtime.InteropServices;
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-[assembly: ComVisibleAttribute(false)]
-[assembly: CLSCompliantAttribute(false)]
-[assembly: AssemblyConfiguration("https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug")]
+
+[assembly: ComVisible( false )]
+[assembly: CLSCompliant( false )]
+[assembly:
+    AssemblyConfiguration(
+        "https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
 [assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyProductAttribute("Axiom Rendering Engine")]
-[assembly: AssemblyCopyrightAttribute("Copyright © 2003-2011 Axiom Rendering Engine Project Team.")]
-[assembly: AssemblyTrademarkAttribute("")]
-[assembly: AssemblyCultureAttribute("")]
+[assembly: AssemblyProductAttribute( "Axiom Rendering Engine" )]
+[assembly: AssemblyCopyrightAttribute( "Copyright © 2003-2011 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyTrademarkAttribute( "" )]
+[assembly: AssemblyCultureAttribute( "" )]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -53,9 +58,11 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion(              /*  Major.Minor.Build */ "0.8.0.0")]
-#if !( XBOX || XBOX360 )
-[assembly: AssemblyFileVersion(          /*  Major.Minor.Build */ "0.8.0.0")]
-#endif
-[assembly: AssemblyInformationalVersion( /*  Major.Minor.Build */ "0.8.0.0")]
 
+[assembly: AssemblyVersion( /*  Major.Minor.Build */ "0.8.0.0" )]
+#if !( XBOX || XBOX360 )
+
+[assembly: AssemblyFileVersion( /*  Major.Minor.Build */ "0.8.0.0" )]
+#endif
+
+[assembly: AssemblyInformationalVersion( /*  Major.Minor.Build */ "0.8.0.0" )]

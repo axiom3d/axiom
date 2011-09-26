@@ -15,6 +15,9 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -46,7 +49,7 @@
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xbox\Debug</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XNA</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XNA;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -61,7 +64,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\x86\</OutputPath>
     <DocumentationFile>bin\x86\Axiom.XML</DocumentationFile>
-    <DefineConstants>TRACE;XNA</DefineConstants>
+    <DefineConstants>TRACE;XNA;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -201,7 +204,6 @@
     <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\ITimer.cs" />
     <Compile Include="Core\Light.cs" />
-    <Compile Include="Core\List~1Extensions.cs" />
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\Log.cs" />
@@ -235,6 +237,7 @@
     <Compile Include="Core\SceneManagerEnumerator.cs" />
     <Compile Include="Core\SceneNode.cs" />
     <Compile Include="Core\SceneQuery.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />

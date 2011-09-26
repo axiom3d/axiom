@@ -127,7 +127,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector4 operator *( Matrix4 matrix, Vector4 vector )
 		{
-			Vector4 result = new Vector4();
+			var result = new Vector4();
 
 			result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
 			result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
@@ -140,7 +140,7 @@ namespace Axiom.Math
 		// TODO: Find the signifance of having 2 overloads with opposite param lists that do transposed operations
 		public static Vector4 operator *( Vector4 vector, Matrix4 matrix )
 		{
-			Vector4 result = new Vector4();
+			var result = new Vector4();
 
 			result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
 			result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
@@ -158,7 +158,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector4 operator *( Vector4 vector, Real scalar )
 		{
-			Vector4 result = new Vector4();
+			var result = new Vector4();
 
 			result.x = vector.x * scalar;
 			result.y = vector.y * scalar;
@@ -238,25 +238,45 @@ namespace Axiom.Math
 			get
 			{
 				Debug.Assert( index >= 0 && index < 4, "Indexer boundaries overrun in Vector4." );
-
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+#if AXIOM_SAFE_ONLY
+                switch(index)
+                {
+                    case 0: return x; 
+                    case 1: return y;
+                    case 2: return z; 
+                    case 3: return w;
+                }
+			    return 0;
+#else
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						return *( pX + index );
 				}
+#endif
 			}
 			set
 			{
 				Debug.Assert( index >= 0 && index < 4, "Indexer boundaries overrun in Vector4." );
 
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+#if AXIOM_SAFE_ONLY
+                switch (index)
+                {
+                    case 0: x = value; break;
+                    case 1: y = value; break;
+                    case 2: z = value; break;
+                    case 3: w = value; break;
+                }
+#else
 				unsafe
 				{
 					fixed ( Real* pX = &x )
 						*( pX + index ) = value;
 				}
-			}
+#endif
+            }
 		}
 
 		#endregion
@@ -313,7 +333,7 @@ namespace Axiom.Math
 		/// </returns>
 		public static Vector4 Parse( string vector )
 		{
-			string[] vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
+			var vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
 
 			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
 		}

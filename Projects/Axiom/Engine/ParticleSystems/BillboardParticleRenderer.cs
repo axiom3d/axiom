@@ -111,9 +111,9 @@ namespace Axiom.ParticleSystems
 			}
 
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardType ) );
+			var val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardType ) );
 
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			// if a value was found, assign it
 			if ( val != null )
 				renderer.BillboardType = (BillboardType)val;
@@ -131,9 +131,9 @@ namespace Axiom.ParticleSystems
 			}
 
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardOrigin ) );
+			var val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardOrigin ) );
 
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			// if a value was found, assign it
 			if ( val != null )
 				renderer.BillboardOrigin = (BillboardOrigin)val;
@@ -151,9 +151,9 @@ namespace Axiom.ParticleSystems
 			}
 
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardRotationType ) );
+			var val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardRotationType ) );
 
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			// if a value was found, assign it
 			if ( val != null )
 				renderer.BillboardRotationType = (BillboardRotationType)val;
@@ -169,7 +169,7 @@ namespace Axiom.ParticleSystems
 				ParseHelper.LogParserError( "common_direction", _renderer.Type, "Wrong number of parameters." );
 				return;
 			}
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			renderer.CommonDirection = StringConverter.ParseVector3( values );
 		}
 
@@ -181,7 +181,7 @@ namespace Axiom.ParticleSystems
 				ParseHelper.LogParserError( "common_up_vector", _renderer.Type, "Wrong number of parameters." );
 				return;
 			}
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			renderer.CommonUpVector = StringConverter.ParseVector3( values );
 		}
 
@@ -194,7 +194,7 @@ namespace Axiom.ParticleSystems
 				return;
 			}
 
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			renderer.PointRenderingEnabled = StringConverter.ParseBool( values[ 0 ] );
 		}
 
@@ -207,7 +207,7 @@ namespace Axiom.ParticleSystems
 				return;
 			}
 
-			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
+			var renderer = (BillboardParticleRenderer)_renderer;
 			renderer.UseAccurateFacing = StringConverter.ParseBool( values[ 0 ] );
 		}
 
@@ -219,22 +219,22 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		private void RegisterParsers()
 		{
-			MethodInfo[] methods = this.GetType().GetMethods();
+			var methods = this.GetType().GetMethods();
 
 			// loop through all methods and look for ones marked with attributes
-			for ( int i = 0; i < methods.Length; i++ )
+			for ( var i = 0; i < methods.Length; i++ )
 			{
 				// get the current method in the loop
-				MethodInfo method = methods[ i ];
+				var method = methods[ i ];
 
 				// see if the method should be used to parse one or more material attributes
-				ParserCommandAttribute[] parserAtts =
+				var parserAtts =
 					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
 				// loop through each one we found and register its parser
-				for ( int j = 0; j < parserAtts.Length; j++ )
+				for ( var j = 0; j < parserAtts.Length; j++ )
 				{
-					ParserCommandAttribute parserAtt = parserAtts[ j ];
+					var parserAtt = parserAtts[ j ];
 
 					switch ( parserAtt.ParserType )
 					{
@@ -251,7 +251,7 @@ namespace Axiom.ParticleSystems
 
 		public override void CopyParametersTo( ParticleSystemRenderer other )
 		{
-			BillboardParticleRenderer otherBpr = (BillboardParticleRenderer)other;
+			var otherBpr = (BillboardParticleRenderer)other;
 			Debug.Assert( otherBpr != null );
 			otherBpr.BillboardType = this.BillboardType;
 			otherBpr.CommonUpVector = this.CommonUpVector;
@@ -266,7 +266,7 @@ namespace Axiom.ParticleSystems
 		{
 			if ( attribParsers.ContainsKey( attr ) )
 			{
-				object[] args = new object[ 2 ];
+				var args = new object[ 2 ];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
 				attribParsers[ attr ].Invoke( null, args );
@@ -288,8 +288,8 @@ namespace Axiom.ParticleSystems
 
 			// Update billboard set geometry
 			billboardSet.BeginBillboards();
-			Billboard bb = new Billboard();
-			foreach ( Particle p in currentParticles )
+			var bb = new Billboard();
+			foreach ( var p in currentParticles )
 			{
 				bb.Position = p.Position;
 				if ( billboardSet.BillboardType == BillboardType.OrientedSelf ||

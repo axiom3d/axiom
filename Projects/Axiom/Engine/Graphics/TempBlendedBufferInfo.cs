@@ -127,7 +127,7 @@ namespace Axiom.Graphics
 		public void ExtractFrom( VertexData sourceData )
 		{
 			// Release old buffer copies first
-			HardwareBufferManager mgr = HardwareBufferManager.Instance;
+			var mgr = HardwareBufferManager.Instance;
 			if ( destPositionBuffer != null )
 			{
 				mgr.ReleaseVertexBufferCopy( destPositionBuffer );
@@ -139,12 +139,12 @@ namespace Axiom.Graphics
 				Debug.Assert( destNormalBuffer == null );
 			}
 
-			VertexDeclaration decl = sourceData.vertexDeclaration;
-			VertexBufferBinding bind = sourceData.vertexBufferBinding;
-			VertexElement posElem = decl.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement normElem = decl.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement tanElem = decl.FindElementBySemantic( VertexElementSemantic.Tangent );
-			VertexElement binormElem = decl.FindElementBySemantic( VertexElementSemantic.Binormal );
+			var decl = sourceData.vertexDeclaration;
+			var bind = sourceData.vertexBufferBinding;
+			var posElem = decl.FindElementBySemantic( VertexElementSemantic.Position );
+			var normElem = decl.FindElementBySemantic( VertexElementSemantic.Normal );
+			var tanElem = decl.FindElementBySemantic( VertexElementSemantic.Tangent );
+			var binormElem = decl.FindElementBySemantic( VertexElementSemantic.Binormal );
 
 			Debug.Assert( posElem != null, "Positions are required" );
 

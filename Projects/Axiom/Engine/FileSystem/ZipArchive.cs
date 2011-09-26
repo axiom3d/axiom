@@ -36,10 +36,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
-
+#if SILVERLIGHT
+using System.Windows;
+#endif
+using Axiom.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
 #endregion Namespace Declarations
@@ -87,27 +92,27 @@ namespace Axiom.FileSystem
 			findFiles( pattern, recursive, simpleList, detailList, "" );
 		}
 
-	    /// <param name="detailList"></param>
-	    /// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
-	    /// <param name="pattern"></param>
-	    /// <param name="recursive"></param>
-	    /// <param name="simpleList"></param>
-	    protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
+		/// <param name="detailList"></param>
+		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <param name="simpleList"></param>
+		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
 			if ( currentDir == "" )
 				currentDir = _zipDir;
 
 			Load();
 
-			ZipEntry entry = _zipStream.GetNextEntry();
-			if ( pattern[ 0 ] == '*' )
-				pattern = pattern.Substring( 1 );
-			Regex ex = new Regex( pattern );
+			var entry = _zipStream.GetNextEntry();
+			if (pattern.Contains("*"))
+				pattern = pattern.Replace( ".", "\\." ).Replace( "*", ".*" );
+			var ex = new Regex(pattern);
 
 			while ( entry != null )
 			{
 				// get the full path for the output file
-				string file = entry.Name;
+				var file = entry.Name;
 				if ( ex.IsMatch( file ) )
 				{
 					if ( simpleList != null )
@@ -123,7 +128,7 @@ namespace Axiom.FileSystem
 						fileInfo.Path = Path.GetDirectoryName( entry.Name ) + Path.DirectorySeparatorChar;
 						fileInfo.CompressedSize = entry.CompressedSize;
 						fileInfo.UncompressedSize = entry.Size;
-                        fileInfo.ModifiedTime = entry.DateTime;
+						fileInfo.ModifiedTime = entry.DateTime;
 						detailList.Add( fileInfo );
 					}
 
@@ -151,9 +156,9 @@ namespace Axiom.FileSystem
 
 		#region Archive Implementation
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		public override bool IsCaseSensitive
 		{
 			get
@@ -162,17 +167,36 @@ namespace Axiom.FileSystem
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		public override void Load()
 		{
 			if ( _zipFile == null || _zipFile.Length == 0 || _zipStream.Available == 0)
 			{
-				_zipFile = Path.GetFullPath( Name );
-
 				// read the open the zip archive
-				FileStream fs = File.OpenRead( _zipFile );
+				Stream fs = null;
+#if SILVERLIGHT
+				_zipFile = Name;
+				var res = Application.GetResourceStream( new Uri( _zipFile, UriKind.RelativeOrAbsolute ) );
+				if (res != null)
+					fs = res.Stream;
+				else
+				{
+					var isf = IsolatedStorageFile.GetUserStoreForApplication();
+					fs = isf.OpenFile(_zipFile, FileMode.Open);
+				}
+				if(fs == null)
+#if !WINDOWS_PHONE
+                    if (!Application.Current.HasElevatedPermissions)
+						throw new AxiomException("Zip not found in Xap or IsolatedStorage and FileSystem Access needs ElevatedPermissions!");
+					else
+#endif
+#endif
+					{
+						_zipFile = Path.GetFullPath( Name );
+						fs = File.OpenRead( _zipFile );
+					}
 				fs.Position = 0;
 
 				// get a input stream from the zip file
@@ -202,9 +226,9 @@ namespace Axiom.FileSystem
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		public override void Unload()
 		{
 			if ( _zipStream != null )
@@ -215,18 +239,18 @@ namespace Axiom.FileSystem
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="readOnly"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="readOnly"></param>
+		/// <returns></returns>
 		public override Stream Open( string filename, bool readOnly )
 		{
 			ZipEntry entry;
 
 			// we will put the decompressed data into a memory stream
-			MemoryStream output = new MemoryStream();
+			var output = new MemoryStream();
 
 			Load();
 
@@ -251,8 +275,8 @@ namespace Axiom.FileSystem
 			}
 
 			// write the data to the output stream
-			int size = 2048;
-			byte[] data = new byte[ 2048 ];
+			var size = 2048;
+			var data = new byte[ 2048 ];
 			while ( true )
 			{
 				size = _zipStream.Read( data, 0, data.Length );
@@ -271,64 +295,64 @@ namespace Axiom.FileSystem
 			return output;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override List<string> List( bool recursive )
 		{
 			return Find( "*", recursive );
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override FileInfoList ListFileInfo( bool recursive )
 		{
 			return FindFileInfo( "*", recursive );
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pattern"></param>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override List<string> Find( string pattern, bool recursive )
 		{
-			List<string> ret = new List<string>();
+			var ret = new List<string>();
 
 			findFiles( pattern, recursive, ret, null );
 
 			return ret;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pattern"></param>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override FileInfoList FindFileInfo( string pattern, bool recursive )
 		{
-			FileInfoList ret = new FileInfoList();
+			var ret = new FileInfoList();
 
 			findFiles( pattern, recursive, null, ret );
 
 			return ret;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		public override bool Exists( string fileName )
 		{
-			List<string> ret = new List<string>();
+			var ret = new List<string>();
 
 			findFiles( fileName, false, ret, null );
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 
 namespace Axiom.Graphics
 {
@@ -22,7 +23,7 @@ namespace Axiom.Graphics
 
             public struct FixedPointer : IDisposable
             {
-                public IntPtr Pointer;
+                public BufferBase Pointer;
                 internal T[] Owner;
 
                 public void Dispose()
@@ -33,7 +34,7 @@ namespace Axiom.Graphics
 
             private FixedPointer _ptr;
 
-            private readonly int _size = Marshal.SizeOf(typeof(T));
+            private readonly int _size = Memory.SizeOf(typeof(T));
 
             public FixedPointer Fix(int offset)
             {

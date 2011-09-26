@@ -150,17 +150,19 @@ namespace Axiom.SceneManagers.Octree
 
 			// TODO: name buffers different so we can unlock
 			HardwareVertexBuffer posBuffer = binding.GetBuffer( POSITION );
-			IntPtr pos = posBuffer.Lock( BufferLocking.Discard );
+			var pos = posBuffer.Lock( BufferLocking.Discard );
 
 			HardwareVertexBuffer texBuffer = binding.GetBuffer( TEXCOORD );
-			IntPtr tex = texBuffer.Lock( BufferLocking.Discard );
+			var tex = texBuffer.Lock( BufferLocking.Discard );
 
 			float min = 99999999, max = 0;
 
+#if !AXIOM_SAFE_ONLY
 			unsafe
-			{
-				float* posPtr = (float*)pos.ToPointer();
-				float* texPtr = (float*)tex.ToPointer();
+#endif
+            {
+				var posPtr = pos.ToFloatPointer();
+                var texPtr = tex.ToFloatPointer();
 
 				int posCount = 0;
 				int texCount = 0;
@@ -327,7 +329,7 @@ namespace Axiom.SceneManagers.Octree
 
 			float[] vertex = new float[ 1 ];
 
-			IntPtr ptr = Memory.PinObject( vertex );
+			var ptr = Memory.PinObject( vertex );
 
 			int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
 
@@ -425,32 +427,37 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		public unsafe void CalculateNormals()
-		{
-			Vector3 normal;
+		public void CalculateNormals()
+        {
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                Vector3 normal;
 
-			HardwareVertexBuffer buffer =
-				terrain.vertexBufferBinding.GetBuffer( NORMAL );
+                HardwareVertexBuffer buffer =
+                    terrain.vertexBufferBinding.GetBuffer( NORMAL );
 
-			IntPtr norm = buffer.Lock( BufferLocking.Discard );
+                var norm = buffer.Lock( BufferLocking.Discard );
 
-			float* normPtr = (float*)norm.ToPointer();
-			int count = 0;
+                var normPtr = norm.ToFloatPointer();
+                int count = 0;
 
-			for ( int j = 0; j < size; j++ )
-			{
-				for ( int i = 0; i < size; i++ )
-				{
-					GetNormalAt( GetVertex( i, j, 0 ), GetVertex( i, j, 2 ), out normal );
+                for ( int j = 0; j < size; j++ )
+                {
+                    for ( int i = 0; i < size; i++ )
+                    {
+                        GetNormalAt( GetVertex( i, j, 0 ), GetVertex( i, j, 2 ), out normal );
 
-					normPtr[ count++ ] = normal.x;
-					normPtr[ count++ ] = normal.y;
-					normPtr[ count++ ] = normal.z;
-				}
-			}
+                        normPtr[ count++ ] = normal.x;
+                        normPtr[ count++ ] = normal.y;
+                        normPtr[ count++ ] = normal.z;
+                    }
+                }
 
-			buffer.Unlock();
-		}
+                buffer.Unlock();
+            }
+        }
 
 		public void GetNormalAt( float x, float z, out Vector3 result )
 		{
@@ -724,10 +731,12 @@ namespace Axiom.SceneManagers.Octree
 
 				numIndexes = 0;
 
-				IntPtr idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
-				unsafe
-				{
-					short* idxPtr = (short*)idx.ToPointer();
+				var idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
+#if !AXIOM_SAFE_ONLY
+			    unsafe
+#endif
+                {
+					var idxPtr = idx.ToShortPointer();
 					int count = 0;
 
 					for ( int j = north; j < this.size - 1 - south; j += step )

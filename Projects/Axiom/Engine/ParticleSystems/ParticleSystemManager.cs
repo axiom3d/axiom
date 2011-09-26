@@ -269,7 +269,7 @@ namespace Axiom.ParticleSystems
 			{
 				throw new Exception( "ParticleSystem template with name '" + name + "' already exists." );
 			}
-			ParticleSystem system = new ParticleSystem( name, resourceGroup );
+			var system = new ParticleSystem( name, resourceGroup );
 			AddTemplate( name, system );
 
 			return system;
@@ -309,7 +309,7 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		public ParticleSystem CreateSystem( string name, int quota )
 		{
-			ParticleSystem system = new ParticleSystem( name );
+			var system = new ParticleSystem( name );
 			system.ParticleQuota = quota;
 			systemList.Add( name, system );
 
@@ -349,9 +349,9 @@ namespace Axiom.ParticleSystems
 				return CreateSystem( name, "NullParticleSystem" );
 			}
 
-			ParticleSystem templateSystem = systemTemplateList[ templateName ];
+			var templateSystem = systemTemplateList[ templateName ];
 
-			ParticleSystem system = CreateSystem( name, quota );
+			var system = CreateSystem( name, quota );
 
 			// copy template settings to the new system (do not return the template itself)
 			templateSystem.CopyTo( system );
@@ -371,7 +371,7 @@ namespace Axiom.ParticleSystems
 	    /// <param name="ps"></param>
 	    internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
 		{
-			ParticleEmitterFactory factory = emitterFactoryList[ emitterType ];
+			var factory = emitterFactoryList[ emitterType ];
 
 			if ( factory == null )
 			{
@@ -392,7 +392,7 @@ namespace Axiom.ParticleSystems
         /// <param name="affectorType">string name of the affector type to be created. A factory of this type must have been registered.</param>
 		internal ParticleAffector CreateAffector( string affectorType )
 		{
-			ParticleAffectorFactory factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType ];
+			var factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType ];
 
 			if ( factory == null )
 			{
@@ -429,12 +429,12 @@ namespace Axiom.ParticleSystems
 		{
 			// Split params on space or tab
 			char[] delims = { '\t', ' ' };
-			string[] values = StringConverter.Split( line, delims, 2 );
+			var values = StringConverter.Split( line, delims, 2 );
 			// Look up first param (command setting)
 			if ( !system.SetParameter( values[ 0 ], values[ 1 ] ) )
 			{
 				// Attribute not supported by particle system, try the renderer
-				ParticleSystemRenderer renderer = system.Renderer;
+				var renderer = system.Renderer;
 				if ( renderer != null )
 				{
 					if ( !renderer.SetParameter( values[ 0 ], values[ 1 ] ) )
@@ -456,9 +456,9 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		private void ParseEmitter( string type, TextReader script, ParticleSystem system )
 		{
-			ParticleEmitter emitter = system.AddEmitter( type );
+			var emitter = system.AddEmitter( type );
 
-			string line = "";
+			var line = "";
 
 			while ( line != null )
 			{
@@ -483,9 +483,9 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		private void ParseAffector( string type, TextReader script, ParticleSystem system )
 		{
-			ParticleAffector affector = system.AddAffector( type );
+			var affector = system.AddAffector( type );
 
-			string line = "";
+			var line = "";
 
 			while ( line != null )
 			{
@@ -513,7 +513,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="emitter"></param>
 		private void ParseEmitterAttrib( string line, ParticleEmitter emitter )
 		{
-			string[] values = StringConverter.Split( line, new char[] { ' ' }, 2 );
+			var values = StringConverter.Split( line, new char[] { ' ' }, 2 );
 
 			if ( !( emitter.SetParam( values[ 0 ], values[ 1 ] ) ) )
 			{
@@ -529,7 +529,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="affector"></param>
 		private void ParseAffectorAttrib( string line, ParticleAffector affector )
 		{
-			string[] values = StringConverter.Split( line, new char[] { ' ' }, 2 );
+			var values = StringConverter.Split( line, new char[] { ' ' }, 2 );
 
 			if ( !( affector.SetParam( values[ 0 ], values[ 1 ] ) ) )
 			{
@@ -543,7 +543,7 @@ namespace Axiom.ParticleSystems
 			emitterFactoryList.Clear();
 			affectorFactoryList.Clear();
 
-            foreach (ParticleSystem system in this.systemList.Values)
+            foreach (var system in this.systemList.Values)
             {
                 if (!system.IsDisposed)
                     system.Dispose();
@@ -551,7 +551,7 @@ namespace Axiom.ParticleSystems
 			systemList.Clear();
             systemList = null;
 
-            foreach (ParticleSystem system in this.systemTemplateList.Values)
+            foreach (var system in this.systemTemplateList.Values)
             {
                 if (!system.IsDisposed)
                     system.Dispose();
@@ -631,10 +631,10 @@ namespace Axiom.ParticleSystems
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
 			// Apply time factor
-			float timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
+			var timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
 
 			// loop through and update each particle system
-			foreach ( ParticleSystem system in systemList.Values )
+			foreach ( var system in systemList.Values )
 			{
 				// ask the particle system to update itself based on the frame time
 				system.Update( timeSinceLastFrame );

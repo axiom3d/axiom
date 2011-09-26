@@ -116,7 +116,7 @@ namespace Axiom.Collections
 		/// </summary>
 		public virtual void AddRange( IDictionary<string, T> source )
 		{
-			foreach ( KeyValuePair<string, T> entry in source )
+			foreach ( var entry in source )
 			{
 				this.Add( entry.Key, entry.Value );
 			}
@@ -135,7 +135,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				foreach ( T item in Values )
+				foreach ( var item in Values )
 				{
 					if ( index == 0 )
 					{

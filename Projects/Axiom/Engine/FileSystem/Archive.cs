@@ -352,9 +352,9 @@ namespace Axiom.FileSystem
         /// <returns></returns>
         public virtual DateTime GetModifiedTime(string fileName)
         {
-            FileInfoList list = this.ListFileInfo();
+            var list = this.ListFileInfo();
 
-            foreach (FileInfo currentInfo in list)
+            foreach (var currentInfo in list)
             {
                 if (currentInfo.Basename.ToLower() != fileName.ToLower())
                     continue;

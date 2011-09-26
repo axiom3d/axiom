@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using System;
-
+using System.ComponentModel.Composition;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
@@ -15,7 +15,8 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Sample class which shows the classic spinning triangle, done in the Axiom engine.
 	/// </summary>
-	public class Tutorial1 : TechDemo
+    [Export(typeof(TechDemo))]
+    public class Tutorial1 : TechDemo
 	{
 		#region Methods
 
@@ -53,21 +54,16 @@ namespace Axiom.Demos
 				ColorEx.Blue,
 				ColorEx.Green );
 
-			Entity cube = scene.CreateEntity( "cube", PrefabEntity.Cube );
 			// create a node for the line
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
 
 			SceneNode lineNode = node.CreateChildSceneNode();
 			SceneNode triNode = node.CreateChildSceneNode();
-			SceneNode cubeNode = node.CreateChildSceneNode();
-
 			triNode.Position = new Vector3( 50, 0, 0 );
-			cubeNode.Position = new Vector3( 50, 50, 0 );
 
 			// add the line and triangle to the scene
 			lineNode.AttachObject( line );
 			triNode.AttachObject( tri );
-			cubeNode.AttachObject( cube );
 
 			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
 			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
