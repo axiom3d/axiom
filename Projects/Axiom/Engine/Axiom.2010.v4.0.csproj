@@ -97,6 +97,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
+    <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />

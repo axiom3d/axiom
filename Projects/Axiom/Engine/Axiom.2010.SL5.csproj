@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
+    <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs">
       <SubType>Code</SubType>

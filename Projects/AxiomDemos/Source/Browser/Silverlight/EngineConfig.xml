@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-  <FilePath type="ZipFile" src="Media/Archives/AxiomCore.zip" group="bootstrap"/>
-  <FilePath type="ZipFile" src="Media/Configuration.zip"/>
-	<FilePath type="ZipFile" src="Media/Textures.zip"/>
-	<FilePath type="ZipFile" src="Media/BrowserImages.zip"/>
-	<FilePath type="ZipFile" src="Media/Icons.zip"/>
-	<FilePath type="ZipFile" src="Media/Fonts.zip"/>
-	<FilePath type="ZipFile" src="Media/Meshes.zip"/>
-	<FilePath type="ZipFile" src="Media/PCZAppMedia.zip"/>
-	<FilePath type="ZipFile" src="Media/Skeletons.zip"/>
-	<FilePath type="ZipFile" src="Media/Materials.zip"/>
-	<FilePath type="ZipFile" src="Media/Overlays.zip"/>
-	<FilePath type="ZipFile" src="Media/GpuPrograms.zip"/>	
-	<FilePath type="ZipFile" src="Media/Archives/Fresnel.zip"/>
-	<FilePath type="ZipFile" src="Media/Textures/SkyBoxes.zip"/>
-	<FilePath type="ZipFile" src="Media/Archives/Water.zip"/>
-  <FilePath type="ZipFile" src="Media/Fallback.zip"/>
+  <FilePath type="ZipFile" src="Axiom.Content/Media/Archives/AxiomCore.zip" group="bootstrap"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Configuration"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Textures"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/BrowserImages"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Icons"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Fonts"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Meshes"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/PCZAppMedia"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Skeletons"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Materials"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/Overlays"/>
+  <FilePath type="Embedded" src="Axiom.Content/Media/GpuPrograms"/>
+  <FilePath type="ZipFile" src="Axiom.Content/Media/Archives/Fresnel.zip"/>
+  <FilePath type="ZipFile" src="Axiom.Content/Media/Textures/SkyBoxes.zip"/>
+  <FilePath type="ZipFile" src="Axiom.Content/Media/Archives/Water.zip"/>
   <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Video Mode" Value="800 x 600 @ 32-bit color" />
 	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Full Screen" Value="No" />
 	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="VSync" Value="No" />

@@ -60,7 +60,7 @@ namespace Axiom.FileSystem
 		/// <summary>Base path; actually the same as Name, but for clarity </summary>
 		protected string _basePath;
 
-        protected virtual string CurrentDirectory { get; set; }
+		protected virtual string CurrentDirectory { get; set; }
 
 		/// <summary>Directory stack of previous directories </summary>
 		private readonly Stack<string> _directoryStack = new Stack<string>();
@@ -82,12 +82,12 @@ namespace Axiom.FileSystem
 
 		protected delegate void Action();
 
-        protected virtual bool DirectoryExists(string directory)
-        {
-            return Directory.Exists( directory );
-        }
+		protected virtual bool DirectoryExists(string directory)
+		{
+			return Directory.Exists( directory );
+		}
 
-	    protected void SafeDirectoryChange( string directory, Action action )
+		protected void SafeDirectoryChange( string directory, Action action )
 		{
 			if ( DirectoryExists( directory ) )
 			{
@@ -129,17 +129,17 @@ namespace Axiom.FileSystem
 		/// <param name="pattern"></param>
 		/// <param name="recursive"></param>
 		/// <param name="simpleList"></param>
-		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
+		protected virtual void findFiles(string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir)
 		{
 			if ( pattern == "" )
 				pattern = "*";
 			if ( currentDir == "" )
 				currentDir = _basePath;
 
-		    var files = getFilesRecursively( currentDir, pattern,
-		                                     recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly );
+			var files = getFilesRecursively( currentDir, pattern,
+											 recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly );
 
-            foreach ( var file in files )
+			foreach ( var file in files )
 			{
 				var fi = new System.IO.FileInfo( file );
 				if ( simpleList != null )
@@ -161,45 +161,45 @@ namespace Axiom.FileSystem
 			}
 		}
 
-        /// <summary>
-        /// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
-        /// </summary>
-        /// <param name="dir">The directory to search.</param>
-        /// <param name="pattern">The search string to match against the names of files in path.</param>
-        /// <param name="searchOption">The search option.</param>
-        /// <returns></returns>
-        protected virtual IEnumerable<string> getFilesRecursively(string dir, string pattern, SearchOption searchOption)
+		/// <summary>
+		/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+		/// </summary>
+		/// <param name="dir">The directory to search.</param>
+		/// <param name="pattern">The search string to match against the names of files in path.</param>
+		/// <param name="searchOption">The search option.</param>
+		/// <returns></returns>
+		protected virtual IEnumerable<string> getFilesRecursively(string dir, string pattern, SearchOption searchOption)
 		{
 			var searchResults = new List<string>();
 
 #if WINDOWS_PHONE 
-            var files = Directory.GetFiles(dir, pattern);
+			var files = Directory.GetFiles(dir, pattern);
 #elif SILVERLIGHT
-            var files = Directory.EnumerateFiles(dir, pattern, searchOption);
+			var files = Directory.EnumerateFiles(dir, pattern, searchOption);
 #elif !( XBOX || XBOX360 || ANDROID )
-            var files = Directory.GetFiles(dir, pattern, searchOption);
+			var files = Directory.GetFiles(dir, pattern, searchOption);
 #else
 			var folders = Directory.EnumerateDirectories(dir);
 			var files = Directory.EnumerateFiles( dir );
-            if (searchOption == SearchOption.AllDirectories)
-            {
-                foreach (var folder in folders)
-                {
-                    searchResults.AddRange(
-                        getFilesRecursively( dir + Path.GetFileName( folder ) + Path.DirectorySeparatorChar, pattern,
-                                             option ) );
-                }
-            }
+			if (searchOption == SearchOption.AllDirectories)
+			{
+				foreach (var folder in folders)
+				{
+					searchResults.AddRange(
+						getFilesRecursively( dir + Path.GetFileName( folder ) + Path.DirectorySeparatorChar, pattern,
+											 option ) );
+				}
+			}
 #endif
-            foreach (string file in files)
-            {
-                var ext = Path.GetExtension(file);
+			foreach (string file in files)
+			{
+				var ext = Path.GetExtension(file);
 
-                if (pattern == "*" || pattern.Contains(ext))
-                    searchResults.Add(file);
-            }
+				if (pattern == "*" || pattern.Contains(ext))
+					searchResults.Add(file);
+			}
 
-            return searchResults;
+			return searchResults;
 		}
 
 		/// <summary>Utility method to change directory and push the current directory onto a stack </summary>
@@ -207,9 +207,9 @@ namespace Axiom.FileSystem
 		{
 			// get current directory and push it onto the stack
 #if !( XBOX || XBOX360 )
-		    _directoryStack.Push( CurrentDirectory );
+			_directoryStack.Push( CurrentDirectory );
 #endif
-            CurrentDirectory = dir;
+			CurrentDirectory = dir;
 		}
 
 		/// <summary>Utility method to pop a previous directory off the stack and change to it </summary>
@@ -223,7 +223,7 @@ namespace Axiom.FileSystem
 				return;
 #endif
 			}
-            CurrentDirectory = _directoryStack.Pop();
+			CurrentDirectory = _directoryStack.Pop();
 		}
 
 		#endregion Utility Methods
@@ -255,8 +255,8 @@ namespace Axiom.FileSystem
 		public override void Load()
 		{
 #if SILVERLIGHT && !WINDOWS_PHONE
-            if(!Application.Current.HasElevatedPermissions)
-                throw new AxiomException( "FileSystem Access needs ElevatedPermissions!" );
+			if(!Application.Current.HasElevatedPermissions)
+				throw new AxiomException( "FileSystem Access needs ElevatedPermissions!" );
 #endif
 			_basePath = Path.GetFullPath(Name) + Path.DirectorySeparatorChar;
 			IsReadOnly = false;
@@ -269,8 +269,8 @@ namespace Axiom.FileSystem
 #if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID )
 													File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
 #else
-												    File.Create( _basePath + @"__testWrite.Axiom", 1 );
-												    File.Delete( _basePath + @"__testWrite.Axiom" );
+													File.Create( _basePath + @"__testWrite.Axiom", 1 );
+													File.Delete( _basePath + @"__testWrite.Axiom" );
 #endif
 												}
 												catch ( Exception )
@@ -294,11 +294,11 @@ namespace Axiom.FileSystem
 			if ( !exists || overwrite )
 			{
 				try
-                {
+				{
 #if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID )
 					stream = File.Create( fullPath, 1, FileOptions.RandomAccess );
 #else
-                    stream = File.Create( fullPath, 1 );
+					stream = File.Create( fullPath, 1 );
 #endif
 				}
 				catch ( Exception ex )

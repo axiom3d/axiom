@@ -14,29 +14,53 @@ using Expression = System.Linq.Expressions.Expression;
 
 namespace Axiom.Core
 {
+    public static class AssemblyEx
+    {
+#if !SILVERLIGHT || WINDOWS_PHONE
+        public static IEnumerable<Assembly> Neighbors(IEnumerable<string> names)
+        {
+            Assembly assembly = null;
+            foreach (var name in names)
+            {
+                try
+                {
+                    assembly = Assembly.LoadFrom(name);
+                }
+                catch (BadImageFormatException e)
+                {
+                }
+                if (assembly != null)
+                    yield return assembly;
+            }
+            yield break;
+        }
+#endif
+
+        public static IEnumerable<Assembly> Neighbors()
+        {
+#if WINDOWS_PHONE && SILVERLIGHT
+            return Neighbors(from part in Deployment.Current.Parts select part.Source);
+#elif SILVERLIGHT
+            return AppDomain.CurrentDomain.GetAssemblies();
+#elif WINDOWS_PHONE
+            return Neighbors(from file in Directory.GetFiles(".", "*.dll") select file);
+#else
+            var loc = Assembly.GetExecutingAssembly().Location;
+            loc = loc.Substring(0, loc.LastIndexOf('\\'));
+            return Neighbors(from file in Directory.GetFiles(loc, "*.dll") select file);
+#endif
+        }
+    }
+
     public static class ExtensionMethods
     {
 #if NET_40
         public static void SatisfyImports<T>(this T obj)
         {
-#if SILVERLIGHT && !WINDOWS_PHONE
-            CompositionInitializer.SatisfyImports( obj );
-#else
-
-#if WINDOWS_PHONE && SILVERLIGHT
-            var assemblies = ( from part in Deployment.Current.Parts
-                               select new AssemblyCatalog( Assembly.LoadFrom( part.Source ) ) ).ToArray();
-#elif WINDOWS_PHONE
-            var assemblies = ( from file in Directory.GetFiles( ".", "*.dll" )
-                               select new AssemblyCatalog( Assembly.LoadFrom( file ) ) ).ToArray();
-#else
-            var assemblies = new DirectoryCatalog( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) );
-#endif
-            var catalog = new AggregateCatalog( assemblies );
-            var container = new CompositionContainer( catalog );
-            container.ComposeParts( obj );
-
-#endif
+            var assemblies = from assembly in AssemblyEx.Neighbors() select new AssemblyCatalog(assembly);
+            var catalog = new AggregateCatalog(assemblies.ToArray());
+            var container = new CompositionContainer(catalog);
+            container.ComposeParts(obj);
         }
 #endif
 
