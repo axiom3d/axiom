@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Axiom.Configuration;
 using Axiom.Core;
+using Axiom.FileSystem;
 using Axiom.Graphics;
 using Axiom.RenderSystems.Xna;
 
@@ -219,54 +220,6 @@ namespace Axiom.Demos.Browser.Silverlight
             }
         }
 
-        private void StreamCopy(Stream dst, Stream src)
-        {
-            int read;
-            var buffer = new byte[4096];
-            while ( ( read = src.Read( buffer, 0, buffer.Length ) ) > 0 )
-                dst.Write( buffer, 0, read );
-        }
-
-        private void Debug()
-        {
-            var isolatedStorage = IsolatedStorageFile.GetUserStoreForApplication();            
-            var xapName = Application.Current.Host.Source.AbsolutePath;
-            xapName = xapName.Substring( xapName.LastIndexOf( "/" ) + 1 );
-            var xapCopy = isolatedStorage.CreateFile(xapName);
-
-            if (App.Current.IsRunningOutOfBrowser)
-            {
-                Stream xapOriginal;
-                if ( App.Current.HasElevatedPermissions )
-                    xapOriginal = File.OpenRead( Application.Current.Host.Source.AbsolutePath );
-                else
-                    xapOriginal = File.OpenRead( Application.Current.Host.Source.AbsolutePath );
-                var excess = xapOriginal.Length - isolatedStorage.Quota;
-                if (excess > 0)
-                    isolatedStorage.IncreaseQuotaTo( isolatedStorage.Quota + excess + 4096 );
-                StreamCopy( xapCopy, xapOriginal );
-            }
-            else
-            {
-                xapName = Application.Current.Host.Source.AbsoluteUri.Replace(xapName, "OutXap.txt");
-                var wait = new AutoResetEvent(false);
-                var wc = new WebClient();
-                wc.OpenReadCompleted += (s, o) =>
-                {
-                    int read;
-                    var buffer = new byte[4096];
-                    while ((read = o.Result.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        xapCopy.Write(buffer, 0, read);
-                    }
-                    wait.Set();
-                };
-                var uri = new Uri(xapName);
-                wc.OpenReadAsync(uri);
-                wait.WaitOne();
-            }
-        }
-
         public MainPage()
         {
             InitializeComponent();
@@ -318,7 +271,6 @@ namespace Axiom.Demos.Browser.Silverlight
 
         private void DrawSurface_Loaded(object sender, RoutedEventArgs e)
         {
-            //Debug();
             XnaRenderWindow.DrawingSurface = DrawSurface;
 
             var options = new Options();

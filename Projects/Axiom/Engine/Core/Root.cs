@@ -124,10 +124,11 @@ namespace Axiom.Core
 				this.logMgr.Write( "*-*-* Axiom Initializing" );
 
 				ArchiveManager.Instance.Initialize();
-				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
+                ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
 				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
-				ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
-				ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
+                ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
+                ArchiveManager.Instance.AddArchiveFactory( new EmbeddedArchiveFactory() );
+                ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
 #if SILVERLIGHT
 				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
 #endif

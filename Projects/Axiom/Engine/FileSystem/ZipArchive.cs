@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -51,7 +52,6 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace Axiom.FileSystem
 {
-
 	/// <summary>
 	/// Specialization of the Archive class to allow reading of files from from a zip format source archive.
 	/// </summary>
@@ -176,28 +176,45 @@ namespace Axiom.FileSystem
 			{
 				// read the open the zip archive
 				Stream fs = null;
+
+#if SILVERLIGHT && !WINDOWS_PHONE
+                if (Application.Current.HasElevatedPermissions)
+#endif
+                {
+                    _zipFile = Path.GetFullPath(Name);
+                    if (File.Exists(_zipFile))
+                        fs = File.OpenRead(_zipFile);
+                }
+
+			    if (fs == null)
+                {
+                    _zipFile = Name.Replace('/', '.');
+
+                    var assemblyContent = (from assembly in AssemblyEx.Neighbors()
+                                           where _zipFile.StartsWith(assembly.FullName.Split(',')[0])
+                                           select assembly).FirstOrDefault();
+                    if (assemblyContent != null)
+                        fs = assemblyContent.GetManifestResourceStream(_zipFile);
+                }  
+              
+                if (fs == null)
+                {
+                    _zipFile = Name;
+                    var isf = IsolatedStorageFile.GetUserStoreForApplication();
+                    fs = isf.OpenFile(_zipFile, FileMode.Open);
+                }
 #if SILVERLIGHT
-				_zipFile = Name;
-				var res = Application.GetResourceStream( new Uri( _zipFile, UriKind.RelativeOrAbsolute ) );
-				if (res != null)
-					fs = res.Stream;
-				else
-				{
-					var isf = IsolatedStorageFile.GetUserStoreForApplication();
-					fs = isf.OpenFile(_zipFile, FileMode.Open);
-				}
-				if(fs == null)
-#if !WINDOWS_PHONE
-                    if (!Application.Current.HasElevatedPermissions)
-						throw new AxiomException("Zip not found in Xap or IsolatedStorage and FileSystem Access needs ElevatedPermissions!");
-					else
+                if (fs == null)
+                {
+                    var res = Application.GetResourceStream(new Uri(_zipFile, UriKind.RelativeOrAbsolute));
+                    if (res != null)
+                        fs = res.Stream;
+                }
 #endif
-#endif
-					{
-						_zipFile = Path.GetFullPath( Name );
-						fs = File.OpenRead( _zipFile );
-					}
-				fs.Position = 0;
+                if (fs == null)
+                    throw new FileNotFoundException(Name);
+
+                fs.Position = 0;
 
 				// get a input stream from the zip file
 				_zipStream = new ZipInputStream( fs );
@@ -360,7 +377,6 @@ namespace Axiom.FileSystem
 		}
 
 		#endregion Archive Implementation
-
 	}
 
 	/// <summary>

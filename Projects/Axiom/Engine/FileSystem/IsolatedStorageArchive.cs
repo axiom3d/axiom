@@ -49,12 +49,7 @@ using Axiom.Core;
 namespace Axiom.FileSystem
 {
     /// <summary>
-    /// Specialization of the Archive class to allow reading of files from filesystem folders / directories.
     /// </summary>
-    /// <ogre name="IsolatedStorageArchive">
-    ///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre>
     public class IsolatedStorageArchive : FileSystemArchive
     {
         #region Fields and Properties
@@ -233,12 +228,8 @@ namespace Axiom.FileSystem
     }
 
     /// <summary>
-    /// Specialization of IArchiveFactory for FileSystem files.
+    /// Specialization of IArchiveFactory for IsolatedStorage files.
     /// </summary>
-    /// <ogre name="IsolatedStorageArchiveFactory">
-    ///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre>
     public class IsolatedStorageArchiveFactory : ArchiveFactory
     {
         private const string _type = "Isolated";

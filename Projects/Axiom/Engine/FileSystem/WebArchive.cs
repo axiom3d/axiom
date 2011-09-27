@@ -50,12 +50,7 @@ using Axiom.Core;
 namespace Axiom.FileSystem
 {
     /// <summary>
-    /// Specialization of the Archive class to allow reading of files from filesystem folders / directories.
     /// </summary>
-    /// <ogre name="WebArchive">
-    ///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre>
     public class WebArchive : FileSystemArchive
     {
         #region Fields and Properties
@@ -168,12 +163,8 @@ namespace Axiom.FileSystem
     }
 
     /// <summary>
-    /// Specialization of IArchiveFactory for FileSystem files.
+    /// Specialization of IArchiveFactory for Web files.
     /// </summary>
-    /// <ogre name="WebArchiveFactory">
-    ///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre>
     public class WebArchiveFactory : ArchiveFactory
     {
         private const string _type = "Web";
