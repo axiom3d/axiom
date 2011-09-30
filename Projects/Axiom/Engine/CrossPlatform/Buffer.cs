@@ -397,31 +397,31 @@ namespace Axiom.CrossPlatform
 			Buf = buffer;
 		}
 
-        public ManagedBuffer(object buffer)
-        {
-            obj = buffer;
-            int size;
-            var t = obj.GetType();
-            if ( t.IsArray )
-            {
-                var buf = (Array)obj;
-                var te = t.GetElementType();
-                size = buf.Length*te.Size();
-                Buf = new byte[size];
-                if ( te.IsPrimitive )
-                {
-                    Buffer.BlockCopy( buf, 0, Buf, 0, size );
-                    return;
-                }
-                Buf.CopyFrom( buf );
-                return;
-            }
-            size = t.Size();
-            Buf = new byte[size];
-            Buf.CopyFrom( obj );
-        }
+		public ManagedBuffer(object buffer)
+		{
+			obj = buffer;
+			int size;
+			var t = obj.GetType();
+			if ( t.IsArray )
+			{
+				var buf = (Array)obj;
+				var te = t.GetElementType();
+				size = buf.Length*te.Size();
+				Buf = new byte[size];
+				if ( te.IsPrimitive )
+				{
+					Buffer.BlockCopy( buf, 0, Buf, 0, size );
+					return;
+				}
+				Buf.CopyFrom( buf );
+				return;
+			}
+			size = t.Size();
+			Buf = new byte[size];
+			Buf.CopyFrom( obj );
+		}
 
-	    public ManagedBuffer(IntPtr buffer, int size)
+		public ManagedBuffer(IntPtr buffer, int size)
 		{
 			obj = buffer;
 			Buf = new byte[size];
@@ -447,16 +447,16 @@ namespace Axiom.CrossPlatform
 					else
 					{
 						var t = obj.GetType();
-                        if (t.IsArray)
-                        {
-                            if (t.GetElementType().IsPrimitive)
-                                Buffer.BlockCopy(Buf, 0, (Array)obj, 0, Buf.Length);
-                            else
-                                Buf.CopyTo((Array)obj);
-                        }
-                        else
+						if (t.IsArray)
 						{
-                            Buf.CopyTo(ref obj);
+							if (t.GetElementType().IsPrimitive)
+								Buffer.BlockCopy(Buf, 0, (Array)obj, 0, Buf.Length);
+							else
+								Buf.CopyTo((Array)obj);
+						}
+						else
+						{
+							Buf.CopyTo(ref obj);
 						}
 					}
 					obj = null;

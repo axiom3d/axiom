@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,7 +20,7 @@ namespace Axiom.Core
 #if !SILVERLIGHT || WINDOWS_PHONE
         public static IEnumerable<Assembly> Neighbors(IEnumerable<string> names)
         {
-            Assembly assembly = null;
+            Assembly assembly;
             foreach (var name in names)
             {
                 try
@@ -28,6 +29,7 @@ namespace Axiom.Core
                 }
                 catch (BadImageFormatException e)
                 {
+                    continue;
                 }
                 if (assembly != null)
                     yield return assembly;
@@ -50,6 +52,27 @@ namespace Axiom.Core
             return Neighbors(from file in Directory.GetFiles(loc, "*.dll") select file);
 #endif
         }
+
+#if NET_40
+        public static IEnumerable<AssemblyCatalog> NeighborsCatalog()
+        {
+            var assemblies = Neighbors();
+            AssemblyCatalog catalog;
+            foreach (var assembly in assemblies)
+            {
+                try
+                {
+                    catalog = new AssemblyCatalog(assembly);
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    continue;
+                }
+                yield return catalog;
+            }
+            yield break;
+        }
+#endif
     }
 
     public static class ExtensionMethods
@@ -57,9 +80,8 @@ namespace Axiom.Core
 #if NET_40
         public static void SatisfyImports<T>(this T obj)
         {
-            var assemblies = from assembly in AssemblyEx.Neighbors() select new AssemblyCatalog(assembly);
-            var catalog = new AggregateCatalog(assemblies.ToArray());
-            var container = new CompositionContainer(catalog);
+            var catalogs = new AggregateCatalog(AssemblyEx.NeighborsCatalog().ToArray());
+            var container = new CompositionContainer(catalogs);
             container.ComposeParts(obj);
         }
 #endif

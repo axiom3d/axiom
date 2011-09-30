@@ -113,7 +113,7 @@ namespace Axiom.Core
 		#region Fields
 
 #if SILVERLIGHT
-	    private IsolatedStorageFile file;
+		private IsolatedStorageFile file;
 #endif
 		/// <summary>
 		///     File stream used for kepping the log file open.
@@ -176,12 +176,12 @@ namespace Axiom.Core
 				{
 #if !( ANDROID )
 
-                    // create the log file, or open
+					// create the log file, or open
 #if SILVERLIGHT
-                    file = IsolatedStorageFile.GetUserStoreForApplication();
-                    log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+					file = IsolatedStorageFile.GetUserStoreForApplication();
+					log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
 #else
-                    log = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+					log = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
 #endif
 
 					// get a stream writer using the file stream
@@ -198,7 +198,7 @@ namespace Axiom.Core
 
 		~Log()
 		{
-			Dispose();
+			Dispose(false);
 		}
 
 		#endregion Constructors
@@ -324,26 +324,42 @@ namespace Axiom.Core
 		/// <remarks>
 		///     For the log, closes any open file streams and file writers.
 		/// </remarks>
-		public void Dispose()
-		{
-			try
-			{
-				if ( writer != null )
-					writer.Close();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-				if ( log != null )
-					log.Close();
+        protected void Dispose(bool disposeManagedResources)
+        {
+            if (!_isDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    try
+                    {
+                        if (writer != null)
+                            writer.Close();
+
+                        if (log != null)
+                            log.Close();
 
 #if SILVERLIGHT
-                if (file != null)
-                    file.Dispose();
+				if (file != null)
+					file.Dispose();
 #endif
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
             }
-			catch
-			{
-			}
-			_isDisposed = true;
-		}
+            _isDisposed = true;
+        }
 
 		#endregion IDisposable Members
 	}

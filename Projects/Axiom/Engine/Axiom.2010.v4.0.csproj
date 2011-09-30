@@ -4,7 +4,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{48421E95-6739-4295-9F9A-7DD75B653C31}</ProjectGuid>
+    <ProjectGuid>{BAA6AE8A-B259-4883-9805-CE538660A59A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <AssemblyKeyContainerName>
@@ -53,7 +53,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_ONLY;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;NET_40</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86v4.0Debug\Axiom.XML</DocumentationFile>
