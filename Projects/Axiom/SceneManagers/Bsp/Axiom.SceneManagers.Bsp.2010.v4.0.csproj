@@ -49,7 +49,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
 	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_ONLY;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_MIX;NET_40</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86v4.0Debug\Axiom.SceneManagers.Bsp.XML</DocumentationFile>

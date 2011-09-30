@@ -48,6 +48,34 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem
 {
+    public static class IsolatedStorageExtensionMethods
+    {
+#if !NET_40
+        public static bool DirectoryExists(this IsolatedStorageFile isolatedStorage, string directory)
+        {
+            return isolatedStorage.GetDirectoryNames(directory).Length != 0;
+        }
+
+        public static bool FileExists(this IsolatedStorageFile isolatedStorage, string fileName)
+        {
+            return File.Exists(RootDirectoryGet(isolatedStorage) + fileName);
+        }
+
+        public static FileStream CreateFile(this IsolatedStorageFile isolatedStorage, string fileName)
+        {
+            return File.Create(RootDirectoryGet(isolatedStorage) + fileName);
+        }
+
+        public static FileStream OpenFile(this IsolatedStorageFile isolatedStorage, string fileName, FileMode mode, FileAccess access)
+        {
+            return File.Open(RootDirectoryGet(isolatedStorage) + fileName, mode, access);
+        }
+
+        private static readonly Class<IsolatedStorage>.Getter<String> RootDirectoryGet =
+            Class<IsolatedStorage>.FieldGet<String>("m_RootDir");
+#endif
+    }
+
     /// <summary>
     /// </summary>
     public class IsolatedStorageArchive : FileSystemArchive
@@ -60,60 +88,10 @@ namespace Axiom.FileSystem
 
         #region Utility Methods
 
-#if NET_40
-        protected override bool DirectoryExists( string directory )
-        {
-            return isolatedStorage.DirectoryExists( directory );
-        }
-
-        private bool FileExists(string fileName)
-        {
-            return isolatedStorage.FileExists( _basePath + fileName );
-        }
-
-        private FileStream CreateFile( string fileName)
-        {
-            return isolatedStorage.CreateFile( _basePath + fileName );
-        }
-
-        private FileStream OpenFile(string fileName, bool readOnly)
-        {
-            return isolatedStorage.OpenFile( _basePath + fileName, FileMode.Open,
-                                             readOnly ? FileAccess.Read : FileAccess.ReadWrite );
-        }
-#else
         protected override bool DirectoryExists(string directory)
         {
-            return isolatedStorage.GetDirectoryNames(directory).Length != 0;
+            return isolatedStorage.DirectoryExists(directory);
         }
-
-        private bool FileExists(string fileName)
-        {
-            return File.Exists(RootDirectory + _basePath + fileName);
-        }
-
-        private FileStream CreateFile(string fileName)
-        {
-            return File.Create(RootDirectory + _basePath + fileName);
-        }
-
-        private FileStream OpenFile(string fileName, bool readOnly)
-        {
-            return File.Open(RootDirectory + _basePath + fileName, FileMode.Open,
-                              readOnly ? FileAccess.Read : FileAccess.ReadWrite);
-        }
-
-        public static readonly Class<IsolatedStorage>.Getter<String> RootDirectoryGet =
-            Class<IsolatedStorage>.FieldGet<String>( "m_RootDir" );
-
-        private string RootDirectory
-        {
-            get
-            {
-                return RootDirectoryGet(isolatedStorage);
-            }
-        }
-#endif
 
         protected override IEnumerable<string> getFilesRecursively( string dir, string pattern,
                                                                     SearchOption searchOption )
@@ -170,8 +148,8 @@ namespace Axiom.FileSystem
                 {
                     try
                     {
-                        CreateFile(_basePath + @"__testWrite.Axiom");
-                        isolatedStorage.DeleteFile( _basePath + @"__testWrite.Axiom" );
+                        isolatedStorage.CreateFile(_basePath + @"__testWrite.Axiom");
+                        isolatedStorage.DeleteFile(_basePath + @"__testWrite.Axiom");
                     }
                     catch ( Exception )
                     {
@@ -188,12 +166,12 @@ namespace Axiom.FileSystem
             }
 
             var fullPath = _basePath + Path.DirectorySeparatorChar + filename;
-            var exists = FileExists( fullPath );
+            var exists = isolatedStorage.FileExists(fullPath);
             if ( !exists || overwrite )
             {
                 try
                 {
-                    return CreateFile( fullPath );
+                    return isolatedStorage.CreateFile(fullPath);
                 }
                 catch ( Exception ex )
                 {
@@ -211,9 +189,10 @@ namespace Axiom.FileSystem
                 _basePath,
                 () =>
                 {
-                    if ( FileExists( _basePath + filename ) )
+                    if (isolatedStorage.FileExists(_basePath + filename))
                     {
-                        strm = OpenFile( _basePath + filename, readOnly );
+                        strm = isolatedStorage.OpenFile(_basePath + filename, FileMode.Open,
+                                                        readOnly ? FileAccess.Read : FileAccess.ReadWrite);
                     }
                 } );
             return strm;
@@ -221,7 +200,7 @@ namespace Axiom.FileSystem
 
         public override bool Exists( string fileName )
         {
-            return FileExists( _basePath + fileName );
+            return isolatedStorage.FileExists(_basePath + fileName);
         }
 
         #endregion Archive Implementation

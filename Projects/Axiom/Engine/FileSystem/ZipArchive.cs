@@ -201,7 +201,7 @@ namespace Axiom.FileSystem
                 {
                     _zipFile = Name;
                     var isf = IsolatedStorageFile.GetUserStoreForApplication();
-                    fs = isf.OpenFile(_zipFile, FileMode.Open);
+                    fs = isf.OpenFile(_zipFile, FileMode.Open, FileAccess.Read);
                 }
 #if SILVERLIGHT
                 if (fs == null)
