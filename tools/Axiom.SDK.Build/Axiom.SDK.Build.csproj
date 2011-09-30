@@ -144,14 +144,14 @@
     <None Include="..\..\Projects\Axiom.msbuild">
       <Link>Axiom.msbuild</Link>
     </None>
-    <None Include="..\..\Projects\AxiomDemos\axiom.samples.module">
-      <Link>Samples\axiom.samples.module</Link>
-    </None>
     <None Include="..\..\Projects\axiom.sdk.module">
       <Link>SDK\axiom.sdk.module</Link>
     </None>
     <None Include="..\..\Projects\Axiom\Tools\Axiom.RenderSystems.Xna.Content\axiom.tool.xna.content.module">
       <Link>Core\Render Systems\axiom.tool.xna.content.module</Link>
+    </None>
+    <None Include="..\..\Projects\Samples\axiom.samples.module">
+      <Link>Samples\axiom.samples.module</Link>
     </None>
     <None Include="..\..\Projects\Tests\axiom.tests.module">
       <Link>Tests\axiom.tests.module</Link>
