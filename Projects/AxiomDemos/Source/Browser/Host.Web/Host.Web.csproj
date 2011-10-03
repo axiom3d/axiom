@@ -55,10 +55,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Axiom.Demos.Browser.2010.SL5TestPage.aspx" />
-    <Content Include="Axiom.Demos.Browser.2010.SL5TestPage.html" />
-    <Content Include="Axiom.Demos.Browser.Silverlight.2010TestPage.aspx" />
-    <Content Include="Axiom.Demos.Browser.Silverlight.2010TestPage.html" />
     <Content Include="ClientBin\Debug\Axiom.Demos.Browser.Silverlight.xap" />
     <Content Include="ClientBin\Release\Axiom.Demos.Browser.Silverlight.xap" />
     <Content Include="Debug.html" />
@@ -84,7 +80,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>46886</DevelopmentServerPort>
+          <DevelopmentServerPort>9655</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
