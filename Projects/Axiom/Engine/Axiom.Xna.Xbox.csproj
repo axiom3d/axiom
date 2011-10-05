@@ -15,9 +15,9 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -161,7 +161,11 @@
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\StringInterface.cs" />
+    <Compile Include="CrossPlatform\Buffer.cs" />
+    <Compile Include="CrossPlatform\ExtensionMethods.cs" />
     <Compile Include="EventHandler.cs" />
+    <Compile Include="FileSystem\EmbeddedArchive.cs" />
+    <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
     <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />

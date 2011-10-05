@@ -27,11 +27,14 @@ using System.Linq;
 using System.Globalization;
 using System.Security.Permissions;
 using System.Threading;
+#if WINDOWS || XBOX
 using Axiom.Core;
 using Axiom.Framework.Exceptions;
+#endif
 
 namespace Axiom.Samples
 {
+#if WINDOWS || XBOX
 	static class Program
 	{
 		/// <summary>
@@ -66,4 +69,5 @@ namespace Axiom.Samples
 
 		}
 	}
+#endif
 }

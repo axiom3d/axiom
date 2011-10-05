@@ -10,14 +10,14 @@
     <RootNamespace>Axiom.Samples.Browser</RootNamespace>
     <AssemblyName>Samples.Browser</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCrossPlatformGroupID>67DAA731-AD4F-4A1B-B6F4-5AED79221328</XnaCrossPlatformGroupID>
     <ApplicationIcon>Resources\AxiomIcon.ico</ApplicationIcon>
-    <Thumbnail>..\..\AxiomDemos\Source\Browser\Xbox\Common\GameThumbnail.png</Thumbnail>
+    <Thumbnail>Resources\GameThumbnail.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <XnaUpgrade>
     </XnaUpgrade>
@@ -81,10 +81,8 @@
     <Compile Include="SampleBrowser.XBox.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\AxiomDemos\Source\Browser\Xbox\Common\GameThumbnail.png">
-      <Link>Resources\GameThumbnail.png</Link>
-    </Content>
     <Content Include="Resources\AxiomIcon.ico" />
+    <Content Include="Resources\GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.Xna.Xbox.csproj">

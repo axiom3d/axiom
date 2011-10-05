@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+
 #if SILVERLIGHT
 using System.Windows;
 #endif
@@ -136,8 +138,7 @@ namespace Axiom.FileSystem
 			if ( currentDir == "" )
 				currentDir = _basePath;
 
-			var files = getFilesRecursively( currentDir, pattern,
-											 recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly );
+			var files = this.getFiles( currentDir, pattern, recursive );
 
 			foreach ( var file in files )
 			{
@@ -166,50 +167,76 @@ namespace Axiom.FileSystem
 		/// </summary>
 		/// <param name="dir">The directory to search.</param>
 		/// <param name="pattern">The search string to match against the names of files in path.</param>
-		/// <param name="searchOption">The search option.</param>
-		/// <returns></returns>
-		protected virtual IEnumerable<string> getFilesRecursively(string dir, string pattern, SearchOption searchOption)
+		protected virtual string[] getFiles( string dir, string pattern, bool recurse )
 		{
-			var searchResults = new List<string>();
-
-#if WINDOWS_PHONE 
-			var files = Directory.GetFiles(dir, pattern);
-#elif SILVERLIGHT
-			var files = Directory.EnumerateFiles(dir, pattern, searchOption);
-#elif !( XBOX || XBOX360 || ANDROID )
-			var files = Directory.GetFiles(dir, pattern, searchOption);
-#else
-			var folders = Directory.EnumerateDirectories(dir);
-			var files = Directory.EnumerateFiles( dir );
-			if (searchOption == SearchOption.AllDirectories)
+			string[] files;
+#if ( XBOX || XBOX360 || ANDROID || WINDOWS_PHONE )
+			if ( !recurse )
 			{
-				foreach (var folder in folders)
-				{
-					searchResults.AddRange(
-						getFilesRecursively( dir + Path.GetFileName( folder ) + Path.DirectorySeparatorChar, pattern,
-											 option ) );
-				}
+				files = Directory.GetFiles( dir, pattern );
+			}
+			else
+			{
+				files = getFilesRecursively( dir, pattern );
+			}
+#elif SILVERLIGHT
+			files = Directory.EnumerateFiles( dir, pattern, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly ).ToArray<string>();
+#else
+			files = Directory.GetFiles( dir, pattern, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly );
+#endif
+			return files;
+		}
+
+		/// <summary>
+		/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+		/// </summary>
+		/// <param name="dir">The directory to search.</param>
+		/// <param name="pattern">The search string to match against the names of files in path.</param>
+		protected virtual string[] getFilesRecursively( string dir, string pattern )
+		{
+			List<string> searchResults = new List<string>();
+#if !SILVERLIGHT
+			string[] folders = Directory.GetDirectories( dir );
+			string[] files = Directory.GetFiles( dir );
+
+			foreach ( string folder in folders )
+			{
+				searchResults.AddRange( this.getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
+			}
+
+			foreach ( string file in files )
+			{
+				string ext = Path.GetExtension( file );
+
+				if ( pattern == "*" || pattern.Contains( ext ) )
+					searchResults.Add( file );
 			}
 #endif
-			foreach (string file in files)
-			{
-				var ext = Path.GetExtension(file);
 
-				if (pattern == "*" || pattern.Contains(ext))
-					searchResults.Add(file);
-			}
+			return searchResults.ToArray();
+		}
 
-			return searchResults;
+		/// <summary>Utility method to change the current directory </summary>
+		protected void changeDirectory( string dir )
+		{
+#if !SILVERLIGHT
+			Directory.SetCurrentDirectory( dir );
+#else
+			CurrentDirectory = dir;
+#endif
 		}
 
 		/// <summary>Utility method to change directory and push the current directory onto a stack </summary>
 		void pushDirectory( string dir )
 		{
 			// get current directory and push it onto the stack
-#if !( XBOX || XBOX360 )
+#if SILVERLIGHT
 			_directoryStack.Push( CurrentDirectory );
+#elif !( XBOX || XBOX360 )
+			string cwd = Directory.GetCurrentDirectory();
+			_directoryStack.Push( cwd );
 #endif
-			CurrentDirectory = dir;
+			changeDirectory( dir );
 		}
 
 		/// <summary>Utility method to pop a previous directory off the stack and change to it </summary>
@@ -223,7 +250,8 @@ namespace Axiom.FileSystem
 				return;
 #endif
 			}
-			CurrentDirectory = _directoryStack.Pop();
+			string cwd = _directoryStack.Pop();
+			changeDirectory( cwd );
 		}
 
 		#endregion Utility Methods

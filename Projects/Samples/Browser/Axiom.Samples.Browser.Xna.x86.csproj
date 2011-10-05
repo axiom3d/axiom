@@ -10,14 +10,14 @@
     <RootNamespace>Axiom.Samples.Browser</RootNamespace>
     <AssemblyName>Samples.Browser</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>67DAA731-AD4F-4A1B-B6F4-5AED79221328</XnaCrossPlatformGroupID>
     <ApplicationIcon>Resources\AxiomIcon.ico</ApplicationIcon>
-    <Thumbnail>..\..\AxiomDemos\Source\Browser\Xbox\Common\GameThumbnail.png</Thumbnail>
+    <Thumbnail>Resources\GameThumbnail.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <XnaUpgrade>
     </XnaUpgrade>
@@ -77,10 +77,8 @@
     <Compile Include="SampleBrowser.XBox.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\AxiomDemos\Source\Browser\Xbox\Common\GameThumbnail.png">
-      <Link>Resources\GameThumbnail.png</Link>
-    </Content>
     <Content Include="Resources\AxiomIcon.ico" />
+    <Content Include="Resources\GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -116,9 +114,11 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharpInputSystem, Version=0.3.0.24720, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\x86\SharpInputSystem.dll</HintPath>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.Xna">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\x86\SharpInputSystem.Xna.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>

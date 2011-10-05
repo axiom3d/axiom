@@ -33,16 +33,19 @@ namespace Axiom.Framework.Configuration
 			{
 				case PlatformID.Xbox:
 					return new XBoxConfigurationManager();
-#if !(XBOX || XBOX360)
+#if !(XBOX || XBOX360 || WINDOWS_PHONE)
 				case PlatformID.MacOSX:
 #endif
 				case PlatformID.Unix:
+#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+				case PlatformID.NokiaS60:
+#endif
 				case PlatformID.Win32NT:
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
 				case PlatformID.WinCE:
 				default:
-#if !(XBOX || XBOX360)
+#if !(XBOX || XBOX360 || WINDOWS_PHONE)
 					return new DefaultConfigurationManager();
 #else
 					return null;

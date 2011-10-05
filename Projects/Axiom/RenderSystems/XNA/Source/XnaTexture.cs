@@ -45,9 +45,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using System.Windows.Media.Imaging;
-#if !WINDOWS_PHONE
 using Axiom.RenderSystems.Xna.Content;
-#endif
 using Microsoft.Xna.Framework.Graphics;
 using BufferUsage = Axiom.Graphics.BufferUsage;
 using ResourceHandle = System.UInt64;
@@ -112,7 +110,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Array to hold texture names used for loading cube textures.
 		/// </summary>
-		private readonly string[] cubeFaceNames = new string[6];
+		private readonly string[] cubeFaceNames = new string[ 6 ];
 
 		/// <summary>
 		///     Dynamic textures?
@@ -291,12 +289,12 @@ namespace Axiom.RenderSystems.Xna
 			// Make sure number of mips is right
 			if ( Usage != TextureUsage.RenderTarget )
 			{
-                _mipmapCount = _texture.LevelCount - 1;
-            }
-//#if SILVERLIGHT
-			if (_mipmapCount < 0)
+				_mipmapCount = _texture.LevelCount - 1;
+			}
+			//#if SILVERLIGHT
+			if ( _mipmapCount < 0 )
 				_mipmapCount = 0;
-//#endif
+			//#endif
 
 			// Need to know static / dynamic
 			BufferUsage bufusage;
@@ -315,7 +313,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// If we already have the right number of surfaces, just update the old list
-			var updateOldList = ( _surfaceList.Count == ( faceCount*( MipmapCount + 1 ) ) );
+			var updateOldList = ( _surfaceList.Count == ( faceCount * ( MipmapCount + 1 ) ) );
 			if ( !updateOldList )
 			{
 				// Create new list of surfaces
@@ -407,7 +405,7 @@ namespace Axiom.RenderSystems.Xna
 
 		private XnaHardwarePixelBuffer GetSurfaceAtLevel( int face, int mip )
 		{
-			return _surfaceList[ ( face*( MipmapCount + 1 ) ) + mip ];
+			return _surfaceList[ ( face * ( MipmapCount + 1 ) ) + mip ];
 		}
 
 		protected override void createInternalResources()
@@ -554,13 +552,13 @@ namespace Axiom.RenderSystems.Xna
 					// find & load resource data intro stream to allow resource group changes if required
 					stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 #if SILVERLIGHT
-                    if (stream == null)
-                    {
-                        Name += ".png";
-                        stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
-                    }
+					if (stream == null)
+					{
+						Name += ".png";
+						stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+					}
 #endif
-                    var pos = Name.LastIndexOf( "." );
+					var pos = Name.LastIndexOf( "." );
 					var ext = Name.Substring( pos + 1 );
 
 					// Call internal LoadImages, not LoadImage since that's external and
@@ -768,28 +766,28 @@ namespace Axiom.RenderSystems.Xna
 			//    numMips = 1;
 			//}
 
-            if (Usage == TextureUsage.RenderTarget)
-            {
-                renderTarget = new RenderTarget2D(_device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false,
-                                                   xnaPixelFormat, DepthFormat.Depth24Stencil8);
-                _normTexture = renderTarget;
-                CreateDepthStencil();
-            }
-            else
-            {
+			if ( Usage == TextureUsage.RenderTarget )
+			{
+				renderTarget = new RenderTarget2D( _device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false,
+												   xnaPixelFormat, DepthFormat.Depth24Stencil8 );
+				_normTexture = renderTarget;
+				CreateDepthStencil();
+			}
+			else
+			{
 #if SILVERLIGHT
-                if ((SrcWidth & (SrcWidth - 1)) != 0 || (SrcHeight & (SrcHeight - 1)) != 0) // Powers of 2
-                    _normTexture = new Texture2D( _device, SrcWidth, SrcHeight, false, xnaPixelFormat );
-                else
+				if ((SrcWidth & (SrcWidth - 1)) != 0 || (SrcHeight & (SrcHeight - 1)) != 0) // Powers of 2
+					_normTexture = new Texture2D( _device, SrcWidth, SrcHeight, false, xnaPixelFormat );
+				else
 #endif
-                    _normTexture = new Texture2D( _device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false,
-                                                  xnaPixelFormat );
-            }
-		    _texture = _normTexture;
-//#if SILVERLIGHT
-//            if (_texture.LevelCount == 0)
-//                MipmapCount = 0;
-//#endif
+				_normTexture = new Texture2D( _device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false,
+											  xnaPixelFormat );
+			}
+			_texture = _normTexture;
+			//#if SILVERLIGHT
+			//            if (_texture.LevelCount == 0)
+			//                MipmapCount = 0;
+			//#endif
 
 			SetFinalAttributes( SrcWidth, SrcHeight, 1, XnaHelper.Convert( xnaPixelFormat ) );
 
@@ -988,7 +986,7 @@ namespace Axiom.RenderSystems.Xna
 				bytesPerPixel--;
 			}
 
-			Size = width*height*depth*bytesPerPixel*( ( TextureType == TextureType.CubeMap ) ? 6 : 1 );
+			Size = width * height * depth * bytesPerPixel * ( ( TextureType == TextureType.CubeMap ) ? 6 : 1 );
 			CreateSurfaceList();
 		}
 

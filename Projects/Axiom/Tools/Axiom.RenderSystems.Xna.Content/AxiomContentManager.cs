@@ -59,7 +59,7 @@ namespace Axiom.RenderSystems.Xna.Content
 			if ( Path.GetExtension( assetName ) != ".xnb" )
 				assetName = Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
 			
-            return ResourceGroupManager.Instance.OpenResource( assetName );
+			return ResourceGroupManager.Instance.OpenResource( assetName );
 		}
 	}
 }
