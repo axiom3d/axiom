@@ -33,7 +33,8 @@
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>http://localhost/Axiom/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -90,7 +91,6 @@
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
-    <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuLogicalIndexUse.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstantSerializer.cs" />

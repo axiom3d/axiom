@@ -53,7 +53,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NET_40</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -72,7 +72,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE;NET_40</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -1161,52 +1161,6 @@
       <Link>Media\Textures\ribbonband.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.2010.v4.0.csproj">
-      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
-      <Name>Axiom.Platforms.OpenTK.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.v4.0.csproj">
-      <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
-      <Name>Axiom.Plugins.CgProgramManager.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.v4.0.csproj">
-      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.v4.0.csproj">
-      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>Axiom.Plugins.OctreeZone.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.v4.0.csproj">
-      <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
-      <Name>Axiom.Plugins.ParticleFX.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.2010.v4.0.csproj">
-      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.OpenTK.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.v4.0.csproj">
-      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
-      <Name>Axiom.SceneManagers.Bsp.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.v4.0.csproj">
-      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.v4.0.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Demos\Axiom.Demos.2010.v4.0.csproj">
-      <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
-      <Name>Axiom.Demos.2010.v4.0</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
   <PropertyGroup>

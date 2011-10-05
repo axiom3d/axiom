@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NET_40</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -90,7 +90,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE;NET_40</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -110,7 +110,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NET_40</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -127,7 +127,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE;NET_40</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -155,10 +155,6 @@
     <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpInputSystem\src\Projects\SharpInputSystem\SharpInputSystem.DirectX.2010.v4.0.csproj">
       <Project>{2CBDB2D9-F549-47E5-9BDB-CB2CBA0C9FAE}</Project>
       <Name>SharpInputSystem.DirectX.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.v4.0.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
