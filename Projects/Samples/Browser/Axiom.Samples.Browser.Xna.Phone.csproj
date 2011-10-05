@@ -97,6 +97,8 @@
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </None>
     <Compile Include="Program.cs" />
+    <Compile Include="SampleBrowser.cs" />
+    <Compile Include="SampleBrowser.Xna.cs" />
     <Compile Include="SampleBrowserHost.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +107,22 @@
     <Content Include="Resources\GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.Xna.Phone.csproj">
+      <Project>{1322BDDF-1627-4F3C-98F6-B3121C326F3C}</Project>
+      <Name>Axiom.Framework.Xna.Phone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xna.Phone.csproj">
+      <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
+      <Name>Axiom.Xna.Phone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.Phone.csproj">
+      <Project>{A1909A31-E4E3-46EF-98AA-A407F0DE301F}</Project>
+      <Name>Axiom.RenderSystems.Xna.Phone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Axiom.Samples.Common.Xna.Phone.csproj">
+      <Project>{1AF381FE-64CF-45E5-BC1F-72F4D7D45820}</Project>
+      <Name>Axiom.Samples.Common.Xna.Phone</Name>
+    </ProjectReference>
     <ProjectReference Include="Content\Axiom.Samples.Content.Reach.contentproj">
       <Project>{3F4C676B-FE02-4A55-9AFA-60DCE03512C6}</Project>
       <Name>Axiom.Samples.Content.Reach %28Content%29</Name>

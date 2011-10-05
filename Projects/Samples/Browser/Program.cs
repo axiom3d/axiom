@@ -51,7 +51,7 @@ namespace Axiom.Samples
 				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
 				using ( SampleBrowser sb = new SampleBrowser() )
 #else
-				using (SampleBrowser sb = new XBox.SampleBrowser())
+				using (SampleBrowser sb = new Xna.SampleBrowser())
 #endif
 				{
 					sb.Go();

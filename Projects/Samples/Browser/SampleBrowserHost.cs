@@ -20,6 +20,8 @@ namespace Axiom.Samples.Browser.Phone
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
+		SampleBrowser SampleBrowser;
+
 		public SampleBrowserHost()
 		{
 			graphics = new GraphicsDeviceManager( this );
@@ -39,6 +41,7 @@ namespace Axiom.Samples.Browser.Phone
 		{
 			// TODO: Add your initialization logic here
 
+			SampleBrowser = new Xna.SampleBrowser();
 			base.Initialize();
 		}
 
@@ -71,7 +74,7 @@ namespace Axiom.Samples.Browser.Phone
 		protected override void Update( GameTime gameTime )
 		{
 			// Allows the game to exit
-			if ( GamePad.GetState( PlayerIndex.One ).Buttons.Back == ButtonState.Pressed )
+			if ( GamePad.GetState( PlayerIndex.One ).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed )
 				this.Exit();
 
 			// TODO: Add your update logic here
@@ -88,6 +91,7 @@ namespace Axiom.Samples.Browser.Phone
 			//GraphicsDevice.Clear( Color.CornflowerBlue );
 
 			// TODO: Add your drawing code here
+			SampleBrowser.Go();
 
 			base.Draw( gameTime );
 		}

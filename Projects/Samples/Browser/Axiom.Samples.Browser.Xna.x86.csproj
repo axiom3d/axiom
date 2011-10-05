@@ -75,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleBrowser.cs" />
     <Compile Include="SampleBrowser.XBox.cs" />
+    <Compile Include="SampleBrowser.Xna.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AxiomIcon.ico" />
