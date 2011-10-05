@@ -11,9 +11,9 @@
     <RootNamespace>Axiom.Samples.Browser</RootNamespace>
     <AssemblyName>Axiom.Samples.Browser</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <FileAlignment>512</FileAlignment>
     <StartupObject>Axiom.Samples.Program</StartupObject>
     <ApplicationIcon>Resources\AxiomIcon.ico</ApplicationIcon>
@@ -88,10 +88,6 @@
     <None Include="axiom.samples.browser.module" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpInputSystem\src\Projects\SharpInputSystem\SharpInputSystem.DirectX.csproj">
-      <Project>{5AA7DDED-70FA-4014-A289-01BC2FAD5D4F}</Project>
-      <Name>SharpInputSystem.DirectX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.2010.csproj">
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework.2010</Name>
