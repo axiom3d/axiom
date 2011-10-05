@@ -147,7 +147,7 @@ namespace Axiom.Core
 				var mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
-#if !(XNA || ANDROID || IPHONE)
+#if !(XNA || ANDROID || IPHONE || WINDOWS_PHONE )
 				new PlatformManager();
 #endif
 
