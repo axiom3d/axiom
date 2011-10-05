@@ -81,12 +81,12 @@ namespace Axiom.Core
 		/// </summary>
 		private static IPlatformManager instance;
 
-#if NET_40 
+#if NET_40  && !( XBOX || XBOX360 || WINDOWS_PHONE )
         [ImportMany(typeof(IPlatformManager))]
         public IEnumerable<IPlatformManager> platforms { private get; set; }
 #endif
 
-        /// <summary>
+		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal PlatformManager()
@@ -102,7 +102,7 @@ namespace Axiom.Core
 				}
 			}
 
-#if NET_40
+#if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
             if (instance == null)
             {
                 this.SatisfyImports();
@@ -186,7 +186,7 @@ namespace Axiom.Core
             }
 #endif
 
-            // All else fails, yell loudly
+			// All else fails, yell loudly
 			if ( instance == null )
 				throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
 		}

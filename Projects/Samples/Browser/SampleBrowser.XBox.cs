@@ -41,7 +41,7 @@ namespace Axiom.Samples.XBox
 
         protected override bool OneTimeConfig()
         {
-            (new Axiom.RenderSystems.Xna.Plugin()).Initialize();
+            //(new Axiom.RenderSystems.Xna.Plugin()).Initialize();
 
 
             Root.Instance.RenderSystem = Root.Instance.RenderSystems["Xna"];

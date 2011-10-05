@@ -178,43 +178,46 @@ namespace Axiom.FileSystem
 				Stream fs = null;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
-                if (Application.Current.HasElevatedPermissions)
+				if (Application.Current.HasElevatedPermissions)
 #endif
-                {
-                    _zipFile = Path.GetFullPath(Name);
-                    if (File.Exists(_zipFile))
-                        fs = File.OpenRead(_zipFile);
-                }
+				{
+					_zipFile = Path.GetFullPath(Name);
+					if (File.Exists(_zipFile))
+						fs = File.OpenRead(_zipFile);
+				}
 
-			    if (fs == null)
-                {
-                    _zipFile = Name.Replace('/', '.');
+				if (fs == null)
+				{
+					_zipFile = Name.Replace('/', '.');
 
-                    var assemblyContent = (from assembly in AssemblyEx.Neighbors()
-                                           where _zipFile.StartsWith(assembly.FullName.Split(',')[0])
-                                           select assembly).FirstOrDefault();
-                    if (assemblyContent != null)
-                        fs = assemblyContent.GetManifestResourceStream(_zipFile);
-                }  
-              
-                if (fs == null)
-                {
-                    _zipFile = Name;
-                    var isf = IsolatedStorageFile.GetUserStoreForApplication();
+					var assemblyContent = (from assembly in AssemblyEx.Neighbors()
+										   where _zipFile.StartsWith(assembly.FullName.Split(',')[0])
+										   select assembly).FirstOrDefault();
+					if (assemblyContent != null)
+						fs = assemblyContent.GetManifestResourceStream(_zipFile);
+				}  
+			  
+#if (SILVERLIGHT && WINDOWS_PHONE) || ( XBOX || XBOX360)
+				if (fs == null)
+				{
+					_zipFile = Name;
+					var isf = IsolatedStorageFile.GetUserStoreForApplication();
                     fs = isf.OpenFile(_zipFile, FileMode.Open, FileAccess.Read);
-                }
-#if SILVERLIGHT
-                if (fs == null)
-                {
-                    var res = Application.GetResourceStream(new Uri(_zipFile, UriKind.RelativeOrAbsolute));
-                    if (res != null)
-                        fs = res.Stream;
-                }
+				}
 #endif
-                if (fs == null)
-                    throw new FileNotFoundException(Name);
 
-                fs.Position = 0;
+#if SILVERLIGHT
+				if (fs == null)
+				{
+					var res = Application.GetResourceStream(new Uri(_zipFile, UriKind.RelativeOrAbsolute));
+					if (res != null)
+						fs = res.Stream;
+				}
+#endif
+				if (fs == null)
+					throw new FileNotFoundException(Name);
+
+				fs.Position = 0;
 
 				// get a input stream from the zip file
 				_zipStream = new ZipInputStream( fs );

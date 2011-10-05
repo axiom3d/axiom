@@ -176,12 +176,12 @@ namespace Axiom.Core
             }
         }
 
-#if NET_40 
+#if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
         [ImportMany(typeof(IPlugin))]
         public IEnumerable<IPlugin> plugins { private get; set; }
 #endif
 
-        /// <summary>
+		/// <summary>
 		///		Scans for plugin files in the current directory.
 		/// </summary>
 		///<param name="folder"></param>
@@ -190,7 +190,7 @@ namespace Axiom.Core
 	    {
 	        var pluginFactories = new List<ObjectCreator>();
 
-#if NET_40 
+#if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
             this.SatisfyImports();
             foreach (var plugin in plugins)
             {
@@ -198,7 +198,7 @@ namespace Axiom.Core
                 Debug.WriteLine( String.Format( "MEF IPlugin: {0}.", plugin ) );
             }
 #else
-            if ( Directory.Exists( folder ) )
+			if ( Directory.Exists( folder ) )
 	        {
 	            var files = Directory.GetFiles(folder);
 	            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";

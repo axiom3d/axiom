@@ -514,7 +514,7 @@ namespace Axiom.RenderSystems.Xna
 			//}
 		}
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
 		///<summary>
 		///  Creates a default form to use for a rendering target.
 		///</summary>
@@ -703,7 +703,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Set current render target to target, enabling its device context if needed
 		/// </summary>
-        public override Graphics.RenderTarget RenderTarget
+		public override Graphics.RenderTarget RenderTarget
 		{
 			set
 			{
@@ -2240,7 +2240,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			LogManager.Instance.Write("[XNA] : Subsystem Initializing");
 
-#if !( XBOX || XBOX360 || SILVERLIGHT)
+#if !( XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 			WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 #endif
 			_activeDriver = XnaHelper.GetDriverInfo()[ConfigOptions["Rendering Device"].Value];
@@ -2652,14 +2652,14 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Sets the fog with the given params.
 		/// </summary>
-        public override void SetFog(Graphics.FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd)
+		public override void SetFog(Graphics.FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd)
 		{
-            basicEffect.FogEnabled = mode != Graphics.FogMode.None;
+			basicEffect.FogEnabled = mode != Graphics.FogMode.None;
 			basicEffect.FogColor = XnaHelper.Convert(color).ToVector3();
 			basicEffect.FogStart = linearStart;
 			basicEffect.FogEnd = linearEnd;
 
-            skinnedEffect.FogEnabled = mode != Graphics.FogMode.None;
+			skinnedEffect.FogEnabled = mode != Graphics.FogMode.None;
 			skinnedEffect.FogColor = XnaHelper.Convert(color).ToVector3();
 			skinnedEffect.FogStart = linearStart;
 			skinnedEffect.FogEnd = linearEnd;
@@ -3372,7 +3372,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="unit">The texture unit to set the filtering options for.</param>
 		/// <param name="type">The filter type.</param>
 		/// <param name="filter">The filter to be used.</param>
-        public override void SetTextureUnitFiltering(int stage, FilterType type, Graphics.FilterOptions filter)
+		public override void SetTextureUnitFiltering(int stage, FilterType type, Graphics.FilterOptions filter)
 		{
 			/*
 			 * TextureFilter enumeration now combines FilterType and TextureType in 4.0, 
@@ -3417,7 +3417,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// Initialize the render system from the capabilities
 		/// </summary>
-        public override void InitializeFromRenderSystemCapabilities(RenderSystemCapabilities caps, Graphics.RenderTarget primary)
+		public override void InitializeFromRenderSystemCapabilities(RenderSystemCapabilities caps, Graphics.RenderTarget primary)
 		{
 			//TODO
 			//if (caps.RendersystemName != Name)

@@ -81,8 +81,7 @@ namespace Axiom.FileSystem
             if (currentDir == "")
                 currentDir = _basePath;
 
-            var files = getFilesRecursively(currentDir, pattern,
-                                             recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            var files = getFilesRecursively(currentDir, pattern );
 
             foreach (var file in files)
             {
@@ -103,18 +102,18 @@ namespace Axiom.FileSystem
             }
         }
 
-        protected override IEnumerable<string> getFilesRecursively(string dir, string pattern, SearchOption searchOption)
+        protected override string[] getFiles(string dir, string pattern, bool recurse )
         {
             var files = !pattern.Contains("*") && Exists(dir + pattern)
                             ? new[] {pattern}
                             : from res in resources where res.StartsWith(dir) select res;
 
             if (pattern == "*")
-                return files;
+                return files.ToArray<string>();
 
             pattern = pattern.Substring(pattern.LastIndexOf('*') + 1);
 
-            return from file in files where file.EndsWith(pattern) select file;
+            return (from file in files where file.EndsWith(pattern) select file).ToArray<string>();
         }
 
         #endregion Utility Methods

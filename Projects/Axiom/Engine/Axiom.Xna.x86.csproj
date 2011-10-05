@@ -15,9 +15,9 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -114,6 +114,7 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
@@ -255,11 +256,16 @@
     <Compile Include="Core\Viewport.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="Core\WireBoundingBox.cs" />
+    <Compile Include="CrossPlatform\Buffer.cs" />
+    <Compile Include="CrossPlatform\ExtensionMethods.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="FileSystem\Archive.cs" />
     <Compile Include="FileSystem\ArchiveManager.cs" />
+    <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
+    <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
     <Compile Include="FileSystem\Watcher.cs" />
+    <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\Font.cs" />
     <Compile Include="Fonts\FontManager.cs" />

@@ -42,10 +42,6 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Utilities;
-using Microsoft.Xna.Framework.Content.Pipeline;
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using Microsoft.Xna.Framework.Graphics;
 using ResourceHandle = System.UInt64;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -64,7 +60,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///    Reference to the current XNA device object.
         /// </summary>
-        protected GraphicsDevice device;
+        protected XFG.GraphicsDevice device;
 
         #region ShaderCode Property
 
@@ -97,9 +93,9 @@ namespace Axiom.RenderSystems.Xna
 
         #endregion ShaderCode Property
 
-        protected Effect effect;
+		protected XFG.Effect effect;
 
-        internal Effect Effect
+		internal XFG.Effect Effect
         {
             get
             {
@@ -113,7 +109,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructor
 
-        public XnaGpuProgram(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GraphicsDevice device)
+		public XnaGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
             : base(parent, name, handle, group, isManual, loader)
         {
             this.device = device;
@@ -162,32 +158,6 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         protected override void LoadFromSource()
         {
-            //we should never get here
-            var effectSource = new EffectContent
-                               {
-                                   Identity = new ContentIdentity
-                                              {
-                                                  SourceFilename = ( string.IsNullOrEmpty( fileName )
-                                                                         ? ((uint)source.GetHashCode()).ToString()
-                                                                         : fileName ) + ".fx"
-                                              },
-                                   EffectCode = source
-                               };
-
-            var processor = new EffectProcessor
-                                {                                       
-                                    //Defines = "ENABLE_FOG;NUM_LIGHTS=3",
-                                    DebugMode = EffectProcessorDebugMode.Debug
-                                };
-            try
-            {
-                var compiledEffect = processor.Process(effectSource, new XnaProcessorContext());
-                shaderCode = compiledEffect.GetEffectCode();
-            }
-            catch (InvalidContentException exception)
-            {
-                LogManager.Instance.Write(LogMessageLevel.Normal, false, exception.ToString());
-            }
         }
 
         #endregion GpuProgram Members
@@ -226,7 +196,7 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     public class XnaVertexProgram : XnaGpuProgram
     {
-        internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GraphicsDevice device )
+		internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
             : base( parent, name, handle, group, isManual, loader, device )
         {
         }
@@ -240,11 +210,11 @@ namespace Axiom.RenderSystems.Xna
             using (var shaderStream = new MemoryStream())
             {
                 shaderStream.Write( shaderCode, 0, shaderCode.Length );
-                effect = new Effect();
-                effect.PixelShader( PixelShader.FromStream( device, shaderStream ) );
+                effect = new XFG.Effect();
+                effect.PixelShader( XFG.PixelShader.FromStream( device, shaderStream ) );
             }
 #else
-            effect = new Effect(device, shaderCode);
+			effect = new XFG.Effect( device, shaderCode );
 #endif
         }
 
@@ -262,7 +232,7 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     public class XnaFragmentProgram : XnaGpuProgram
     {
-        internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GraphicsDevice device )
+		internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
             : base( parent, name, handle, group, isManual, loader, device )
         {
         }
@@ -275,12 +245,12 @@ namespace Axiom.RenderSystems.Xna
 #if SILVERLIGHT
             using (var shaderStream = new MemoryStream())
             {
-                shaderStream.Write(shaderCode, 0, shaderCode.Length);   
-                effect = new Effect();
-                effect.VertexShader( VertexShader.FromStream( device, shaderStream ) );
+                shaderStream.Write(shaderCode, 0, shaderCode.Length);
+				effect = new XFG.Effect();
+                effect.VertexShader( XFG.VertexShader.FromStream( device, shaderStream ) );
             }
 #else
-            effect = new Effect(device, shaderCode);
+			effect = new XFG.Effect( device, shaderCode );
 #endif
         }
 

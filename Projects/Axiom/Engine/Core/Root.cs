@@ -128,7 +128,9 @@ namespace Axiom.Core
 				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
                 ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
                 ArchiveManager.Instance.AddArchiveFactory( new EmbeddedArchiveFactory() );
+#if !(XBOX || XBOX360 )
                 ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
+#endif
 #if SILVERLIGHT
 				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
 #endif

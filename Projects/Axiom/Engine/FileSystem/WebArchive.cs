@@ -75,8 +75,7 @@ namespace Axiom.FileSystem
             return true;
         }
 
-        protected override IEnumerable<string> getFilesRecursively( string dir, string pattern,
-                                                                    SearchOption searchOption )
+        protected override string[] getFiles( string dir, string pattern, bool recurse )
         {
             var searchResults = new List<string>();
             var files = !pattern.Contains( "*" ) && Exists( dir + "/" + pattern )
@@ -96,7 +95,7 @@ namespace Axiom.FileSystem
                 }
             }
 
-            return searchResults;
+            return searchResults.ToArray();
         }
 
         #endregion Utility Methods

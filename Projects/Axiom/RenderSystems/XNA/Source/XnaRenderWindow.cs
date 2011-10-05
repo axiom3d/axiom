@@ -70,10 +70,10 @@ namespace Axiom.RenderSystems.Xna
 		#region Fields and Properties
 
 #if SILVERLIGHT
-        public static DrawingSurface DrawingSurface { get; set; }
+		public static DrawingSurface DrawingSurface { get; set; }
 #endif
 
-        private IntPtr _windowHandle; // Win32 Window handle
+		private IntPtr _windowHandle; // Win32 Window handle
 		private bool _isExternal; // window not created by Axiom
 		private bool _sizing;
 		private readonly bool _isSwapChain; // Is this a secondary window?
@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
 				if ( _windowHandle != null )
 				{
 					var control = Control.FromHandle( _windowHandle );
@@ -195,12 +195,12 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion PresentationParameters Property
 
-        #region RequiresTextureFlipping Property
+		#region RequiresTextureFlipping Property
 
-        /// <summary>
-        /// Signals whether textures should be flipping before this target
-        /// is updated.  Required for render textures in some API's.
-        /// </summary>
+		/// <summary>
+		/// Signals whether textures should be flipping before this target
+		/// is updated.  Required for render textures in some API's.
+		/// </summary>
 		public override bool RequiresTextureFlipping
 		{
 			get
@@ -210,7 +210,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-        #endregion RequiresTextureFlipping Property
+		#endregion RequiresTextureFlipping Property
 
 		#endregion Fields and Properties
 
@@ -289,11 +289,11 @@ namespace Axiom.RenderSystems.Xna
 				if ( miscParams.ContainsKey( "parentWindowHandle" ) )
 				{
 					var handle = miscParams[ "parentWindowHandle" ];
-					if ( handle.GetType() == typeof ( IntPtr ) )
+					if ( handle.GetType() == typeof( IntPtr ) )
 					{
 						parentHWnd = (IntPtr)handle;
 					}
-					else if ( handle.GetType() == typeof ( Int32 ) )
+					else if ( handle.GetType() == typeof( Int32 ) )
 					{
 						parentHWnd = new IntPtr( (int)handle );
 					}
@@ -303,11 +303,11 @@ namespace Axiom.RenderSystems.Xna
 				if ( miscParams.ContainsKey( "externalWindowHandle" ) )
 				{
 					var handle = miscParams[ "externalWindowHandle" ];
-					if ( handle.GetType() == typeof ( IntPtr ) )
+					if ( handle.GetType() == typeof( IntPtr ) )
 					{
 						externalHWnd = (IntPtr)handle;
 					}
-					else if ( handle.GetType() == typeof ( Int32 ) )
+					else if ( handle.GetType() == typeof( Int32 ) )
 					{
 						externalHWnd = new IntPtr( (int)handle );
 					}
@@ -368,7 +368,7 @@ namespace Axiom.RenderSystems.Xna
 					_useNVPerfHUD = bool.Parse( miscParams[ "useNVPerfHUD" ].ToString() );
 				}
 			}
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 			if ( _windowHandle != IntPtr.Zero )
 			{
 				Dispose();
@@ -421,11 +421,11 @@ namespace Axiom.RenderSystems.Xna
 
 					if ( top < 0 )
 					{
-						top = ( Screen.PrimaryScreen.Bounds.Height - Height )/2;
+						top = ( Screen.PrimaryScreen.Bounds.Height - Height ) / 2;
 					}
 					if ( left < 0 )
 					{
-						left = ( Screen.PrimaryScreen.Bounds.Width - Width )/2;
+						left = ( Screen.PrimaryScreen.Bounds.Width - Width ) / 2;
 					}
 				}
 				else
@@ -462,7 +462,7 @@ namespace Axiom.RenderSystems.Xna
 
 			CreateXnaResources();
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 			( Control.FromHandle( _windowHandle ) ).Show();
 #endif
 
@@ -497,9 +497,9 @@ namespace Axiom.RenderSystems.Xna
 				GraphicsAdapter.UseReferenceDevice = true;
 			}
 
-            _xnapp = new PresentationParameters();
+			_xnapp = new PresentationParameters();
 
-            _xnapp.IsFullScreen = IsFullScreen;
+			_xnapp.IsFullScreen = IsFullScreen;
 			_xnapp.RenderTargetUsage = RenderTargetUsage.DiscardContents;
 			//this._xnapp.BackBufferCount = _vSync ? 2 : 1;
 			//this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
@@ -525,14 +525,14 @@ namespace Axiom.RenderSystems.Xna
 				}
 				_xnapp.PresentationInterval = PresentInterval.Immediate;
 			}
-            _xnapp.BackBufferFormat = SurfaceFormat.Bgr565;
+			_xnapp.BackBufferFormat = SurfaceFormat.Bgr565;
 			if ( ColorDepth > 16 )
 			{
 				_xnapp.BackBufferFormat = SurfaceFormat.Color;
-            }
+			}
 #endif
 
-            var currentAdapter = _driver.Adapter;
+			var currentAdapter = _driver.Adapter;
 			if ( ColorDepth > 16 )
 			{
 				SurfaceFormat bestSurfaceFormat;
@@ -586,8 +586,8 @@ namespace Axiom.RenderSystems.Xna
 				{
 					//if ( device == null ) // We haven't created the device yet, this must be the first time
 					{
-                        var configOptions = Root.Instance.RenderSystem.ConfigOptions;
-                        var FPUMode = configOptions["Floating-point mode"];
+						var configOptions = Root.Instance.RenderSystem.ConfigOptions;
+						var FPUMode = configOptions[ "Floating-point mode" ];
 #if SILVERLIGHT
 						device = GraphicsDeviceManager.Current.GraphicsDevice;
 #else
@@ -674,17 +674,17 @@ namespace Axiom.RenderSystems.Xna
 				{
 					return Driver.XnaDevice;
 				}
-                if (string.Equals(attribute, "WINDOW", StringComparison.CurrentCultureIgnoreCase))
+				if ( string.Equals( attribute, "WINDOW", StringComparison.CurrentCultureIgnoreCase ) )
 				{
 					return _windowHandle;
 				}
 #if SILVERLIGHT
-                if (string.Equals(attribute, "DRAWINGSURFACE", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return DrawingSurface;
-                }
+				if (string.Equals(attribute, "DRAWINGSURFACE", StringComparison.CurrentCultureIgnoreCase))
+				{
+					return DrawingSurface;
+				}
 #endif
-                if (string.Equals(attribute, "XNAZBUFFER", StringComparison.CurrentCultureIgnoreCase))
+				if ( string.Equals( attribute, "XNAZBUFFER", StringComparison.CurrentCultureIgnoreCase ) )
 				{
 					return _renderSurface.DepthStencilFormat;
 				}
@@ -717,7 +717,7 @@ namespace Axiom.RenderSystems.Xna
 					//    this._stencilBuffer = null;
 					//}
 
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 					WindowEventMonitor.Instance.UnregisterWindow( this );
 					var winForm = (DefaultForm)Control.FromHandle( _windowHandle );
 
@@ -728,14 +728,14 @@ namespace Axiom.RenderSystems.Xna
 					_windowHandle = IntPtr.Zero;
 
 					// Dispose Other resources
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 					if ( _windowHandle != IntPtr.Zero && !_isExternal && Control.FromHandle( _windowHandle ) != null )
 #else
 					if (_windowHandle != IntPtr.Zero && !_isExternal )
 #endif
 					{
 						WindowEventMonitor.Instance.UnregisterWindow( this );
-#if !(XBOX || XBOX360 || SILVERLIGHT )
+#if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE )
 						Control.FromHandle( _windowHandle ).Dispose();
 #endif
 					}
@@ -791,7 +791,7 @@ namespace Axiom.RenderSystems.Xna
 
 				// customAttributes[ "SwapChain" ] = _swapChain;
 #endif
-            }
+			}
 			// CMH - End
 		}
 
@@ -806,11 +806,11 @@ namespace Axiom.RenderSystems.Xna
 #if !SILVERLIGHT
 				_driver.XnaDevice.Present();
 #endif
-            }
-			catch (Exception e)
+			}
+			catch ( Exception e )
 			{
 				//TODO: Solve exception on Fresnel and Render ToTexture demos
-				Debug.WriteLine("XnaRenderWindow.SwapBuffers: " + e.ToString());
+				Debug.WriteLine( "XnaRenderWindow.SwapBuffers: " + e.ToString() );
 			}
 		}
 
@@ -828,7 +828,7 @@ namespace Axiom.RenderSystems.Xna
 			//functionality, especially seeing as RenderTarget2D is a texture now.
 			//the difference is surface is actually set on the device -DoubleA
 			RenderTarget2D surface;
-			var data = new byte[dst.ConsecutiveSize];
+			var data = new byte[ dst.ConsecutiveSize ];
 			var pitch = 0;
 
 			if ( buffer == FrameBuffer.Auto )
@@ -865,10 +865,10 @@ namespace Axiom.RenderSystems.Xna
 						rect.Top = dst.Top;
 						rect.Bottom = dst.Bottom;
 
-					   surface.GetData( 0, XnaHelper.ToRectangle( rect ), data, 0, 255 );
+						surface.GetData( 0, XnaHelper.ToRectangle( rect ), data, 0, 255 );
 					}
 				}
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || WINDOWS_PHONE )
 				else
 				{
 					var srcRect = new Rectangle();
@@ -921,8 +921,8 @@ namespace Axiom.RenderSystems.Xna
 
 			var dataPtr = Memory.PinObject( data );
 			var src = new PixelBox( dst.Width, dst.Height, 1, format, dataPtr );
-			src.RowPitch = pitch/PixelUtil.GetNumElemBytes( format );
-			src.SlicePitch = surface.Height*src.RowPitch;
+			src.RowPitch = pitch / PixelUtil.GetNumElemBytes( format );
+			src.SlicePitch = surface.Height * src.RowPitch;
 
 			PixelConverter.BulkPixelConversion( src, dst );
 
@@ -941,18 +941,18 @@ namespace Axiom.RenderSystems.Xna
 			//resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
 		}
 
-        public override void Update(bool swapBuffers)
-        {
-            var rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+		public override void Update( bool swapBuffers )
+		{
+			var rs = (XnaRenderSystem)Root.Instance.RenderSystem;
 
-            // access device through driver
-            var device = _driver.XnaDevice;
+			// access device through driver
+			var device = _driver.XnaDevice;
 
 #if SILVERLIGHT
-            if ( Root.InDrawCallback )
-                base.Update( swapBuffers );
-            else
-                DrawingSurface.Invalidate();
+			if ( Root.InDrawCallback )
+				base.Update( swapBuffers );
+			else
+				DrawingSurface.Invalidate();
 #else
 			switch ( device.GraphicsDeviceStatus )
 			{
@@ -965,9 +965,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 			base.Update( swapBuffers );
 #endif
-        }
+		}
 
-	    #endregion RenderWindow implementation
+		#endregion RenderWindow implementation
 
 		#region IGraphicsDeviceService Members
 

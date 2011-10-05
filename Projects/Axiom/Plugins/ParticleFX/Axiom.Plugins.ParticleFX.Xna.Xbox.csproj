@@ -36,6 +36,7 @@
 	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaUpgrade>
     </XnaUpgrade>
+	<XnaCrossPlatformGroupID>c49fe649-14ec-4c61-929c-a612eb738214</XnaCrossPlatformGroupID>
     <XnaOutputType>Library</XnaOutputType>
     <XnaProfile>HiDef</XnaProfile>
     <TargetFrameworkProfile></TargetFrameworkProfile>

@@ -41,9 +41,6 @@ using System;
 using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
-using Microsoft.Xna.Framework.Content.Pipeline;
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations

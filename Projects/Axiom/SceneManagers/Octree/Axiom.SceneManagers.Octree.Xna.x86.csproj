@@ -31,9 +31,9 @@
     </UpgradeBackupLocation>
     <ProjectGuid>{4247D01F-380B-4261-B3E6-36D0B28B8EC6}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaUpgrade>
     </XnaUpgrade>
     <XnaOutputType>Library</XnaOutputType>
@@ -118,6 +118,7 @@
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Xml">
       <Name>System.Xml</Name>
       <HintPath>\System.Xml.dll</HintPath>
