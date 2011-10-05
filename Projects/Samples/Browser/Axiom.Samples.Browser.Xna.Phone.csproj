@@ -72,6 +72,12 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\Phone\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.Xna">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\Phone\SharpInputSystem.Xna.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>

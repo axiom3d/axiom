@@ -464,7 +464,11 @@ namespace Axiom.Samples
 			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
 			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
 #endif
+#if !( WINDOWS_PHONE )
 			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
+#else
+			this.InputManager = SIS.InputManager.CreateInputSystem( typeof(SIS.Xna.XnaInputManagerFactory), pl );
+#endif
 
 			CreateInputDevices();      // create the specific input devices
 
