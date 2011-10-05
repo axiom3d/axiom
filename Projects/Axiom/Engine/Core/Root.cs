@@ -440,7 +440,7 @@ namespace Axiom.Core
 			get
 			{
 				// returns the file version of this assembly
-#if SILVERLIGHT
+#if SILVERLIGHT || WINDOWS_PHONE
 				var fullName = Assembly.GetExecutingAssembly().ToString();
 				var a = fullName.IndexOf( "Version=" ) + 8;
 				var b = fullName.IndexOf( ",", a );
