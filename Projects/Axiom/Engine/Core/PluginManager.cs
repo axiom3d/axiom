@@ -197,17 +197,17 @@ namespace Axiom.Core
                 pluginFactories.Add( new ObjectCreator( plugin.GetType() ) );
                 Debug.WriteLine( String.Format( "MEF IPlugin: {0}.", plugin ) );
             }
-#else
+#elif !( WINDOWS_PHONE )
 			if ( Directory.Exists( folder ) )
 	        {
 	            var files = Directory.GetFiles(folder);
-	            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
+	            //var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
 
 	            foreach ( var file in files )
 	            {
 	                var currentFile = Path.GetFileName( file );
 
-	                if ( Path.GetExtension( file ) != ".dll" || currentFile == assemblyName )
+	                if ( Path.GetExtension( file ) != ".dll" /*|| currentFile == assemblyName */)
 	                    continue;
 	                var fullPath = Path.GetFullPath( file );
 

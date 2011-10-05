@@ -41,7 +41,10 @@ namespace Axiom.Samples.Xna
 
 		protected override bool OneTimeConfig()
 		{
-			//(new Axiom.RenderSystems.Xna.Plugin()).Initialize();
+#if WINDOWS_PHONE
+			( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
+#endif
+			
 
 
 			Root.Instance.RenderSystem = Root.Instance.RenderSystems["Xna"];
