@@ -68,8 +68,7 @@ namespace Axiom.RenderSystems.Xna
 			return true;
 		}
 
-		public override Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound,
-											 Resource resourceBeingLoaded )
+		public override Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
 		{
 			var extension = Path.GetExtension( resourceName ).Substring( 1 );
 			if ( extension == "xnb" )

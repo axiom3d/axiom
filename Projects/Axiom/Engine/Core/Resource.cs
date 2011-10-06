@@ -641,6 +641,7 @@ namespace Axiom.Core
 				{
 					_loadingState = LoadingState.Unloaded;
 					// Re-throw
+					LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 					throw;
 				}
 			}

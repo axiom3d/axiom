@@ -183,6 +183,16 @@
       <Name>SdkTrays</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="SdkTrays\Materials\Textures\Value.png">
+      <Name>Value</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="SdkTrays\Materials\Textures\Caption.png">
+      <Name>Caption</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Content Include="SdkTrays\Overlays\SdkTrays.overlay">
       <Name>SdkTrays</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
