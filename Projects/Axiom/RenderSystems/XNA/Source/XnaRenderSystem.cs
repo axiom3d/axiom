@@ -2921,8 +2921,7 @@ namespace Axiom.RenderSystems.Xna
 		/// taken from shininess) and TVC_EMISSIVE. TVC_NONE means that there will be no material property
 		/// tracking the vertex colors.
 		/// </param>
-		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive,
-											   Real shininess, TrackVertexColor tracking)
+		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking)
 		{
 			/*/
 			//basicEffect.Alpha;
@@ -2972,12 +2971,18 @@ namespace Axiom.RenderSystems.Xna
 			basicEffect.SpecularColor = XnaHelper.Convert(specular).ToVector3();
 			basicEffect.EmissiveColor = XnaHelper.Convert(emissive).ToVector3();
 			basicEffect.SpecularPower = shininess;
-			skinnedEffect.AmbientLightColor = basicEffect.AmbientLightColor;
-			skinnedEffect.DiffuseColor = basicEffect.DiffuseColor;
-			skinnedEffect.SpecularColor = basicEffect.SpecularColor;
-			skinnedEffect.EmissiveColor = basicEffect.EmissiveColor;
-			skinnedEffect.SpecularPower = basicEffect.SpecularPower;
+			try
+			{
 
+				skinnedEffect.AmbientLightColor = basicEffect.AmbientLightColor;
+				skinnedEffect.DiffuseColor = basicEffect.DiffuseColor;
+				skinnedEffect.SpecularColor = basicEffect.SpecularColor;
+				skinnedEffect.EmissiveColor = basicEffect.EmissiveColor;
+				skinnedEffect.SpecularPower = basicEffect.SpecularPower;
+			}
+			catch ( Exception ex )
+			{
+			}
 #if AXIOM_FF_EMULATION
 			if (//ambient == ColorEx.White &&
 				diffuse == ColorEx.Black //&&
@@ -3048,7 +3053,7 @@ namespace Axiom.RenderSystems.Xna
 				{
 					if (Capabilities.NonPOW2TexturesLimited)
 						compensateNPOT = true;
-					}
+				}
 				else
 					compensateNPOT = true;
 
@@ -3064,7 +3069,19 @@ namespace Axiom.RenderSystems.Xna
 				_device.Textures[stage] = xnaTexture.DXTexture;
 				// TODO: NRSC: Solve cast problem for non Texture2D 
 				basicEffect.Texture = xnaTexture.DXTexture as Texture2D;
-				basicEffect.TextureEnabled = basicEffect.Texture != null;
+				try
+				{
+
+					basicEffect.TextureEnabled = basicEffect.Texture != null;
+				}
+				catch ( Exception ex )
+				{
+					SetTextureAddressingMode( stage, new UVWAddressing( TextureAddressing.Clamp ) );
+				}
+				finally
+				{
+					basicEffect.TextureEnabled = basicEffect.Texture != null;
+				}
 
 				skinnedEffect.Texture = basicEffect.Texture;
 

@@ -499,7 +499,7 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" )
 			{
-				var acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
+				var acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "Content" );
 				_normTexture = acm.Load<Texture2D>( Name );
 				_texture = _normTexture;
 				internalResourcesCreated = true;

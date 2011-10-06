@@ -42,7 +42,7 @@ namespace Axiom.Samples.Xna
 			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_over.png", "Texture", "Essential" );
 			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_up.png", "Texture", "Essential" );
 			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_up.xnb", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_cursor.png", "Texture", "Essential" );
+			ResourceGroupManager.Instance.DeclareResource( "sdk_cursor.png", "Texture", "Essential" );
 			ResourceGroupManager.Instance.DeclareResource( "sdk_cursor.xnb", "Texture", "Essential" );
 			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_frame.png", "Texture", "Essential" );
 			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_handle.png", "Texture", "Essential" );

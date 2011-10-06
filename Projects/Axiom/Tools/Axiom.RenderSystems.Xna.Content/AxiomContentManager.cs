@@ -56,10 +56,14 @@ namespace Axiom.RenderSystems.Xna.Content
 
 		protected override Stream OpenStream( string assetName )
 		{
+#if !( WINDOWS_PHONE )
 			if ( Path.GetExtension( assetName ) != ".xnb" )
 				assetName = Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
 			
 			return ResourceGroupManager.Instance.OpenResource( assetName );
+#else
+			return base.OpenStream( "SdkTrays/Materials/Textures/" + Path.GetFileNameWithoutExtension( assetName ) );
+#endif
 		}
 	}
 }
