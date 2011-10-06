@@ -634,7 +634,7 @@ namespace Axiom.Core
 					postLoad();
 				}
 			}
-			catch ( Exception )
+			catch ( Exception ex )
 			{
 				// Reset loading in-progress flag in case failed for some reason
 				lock ( _loadingStatusMutex )

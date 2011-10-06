@@ -59,6 +59,7 @@ using Axiom.Media;
 using Axiom.RenderSystems.Xna.HLSL;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XInput = Microsoft.Xna.Framework.Input;
 using Color = Microsoft.Xna.Framework.Color;
 using CompareFunction = Axiom.Graphics.CompareFunction;
 using Plane = Axiom.Math.Plane;
@@ -2103,8 +2104,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="miscParams">
 		/// A collection of addition rendersystem specific options.
 		/// </param>
-		public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen,
-														 NamedParameterList miscParams)
+		public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen, NamedParameterList miscParams)
 		{
 			// Check we're not creating a secondary window when the primary
 			// was fullscreen
