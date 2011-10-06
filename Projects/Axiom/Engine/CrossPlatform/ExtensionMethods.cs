@@ -100,7 +100,7 @@ namespace Axiom.Core
 
 		public static int Size(this Type type, FieldInfo field)
 		{
-#if SILVERLIGHT
+#if SILVERLIGHT || WINDOWS_PHONE
 			if ( type == typeof ( byte ) )
 				return 1;
 			if ( type == typeof ( short ) || type == typeof ( ushort ) )

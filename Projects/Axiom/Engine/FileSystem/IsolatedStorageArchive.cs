@@ -233,7 +233,7 @@ namespace Axiom.FileSystem
 	/// </summary>
 	public class IsolatedStorageArchiveFactory : ArchiveFactory
 	{
-		private const string _type = "Isolated";
+		private const string _type = "IsolatedStorage";
 
 		#region ArchiveFactory Implementation
 

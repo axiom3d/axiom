@@ -76,6 +76,8 @@ namespace Axiom.Core
 				instance = this;
 				ResourceType = "Texture";
 				LoadingOrder = 75.0f;
+
+				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
 			}
 			else
 				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );

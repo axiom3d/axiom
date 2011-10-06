@@ -172,7 +172,7 @@ namespace Axiom.FileSystem
 			string[] files;
 #if ( XBOX || XBOX360 || ANDROID || WINDOWS_PHONE )
 			if ( !recurse )
-			{
+			{				
 				files = Directory.GetFiles( dir, pattern );
 			}
 			else

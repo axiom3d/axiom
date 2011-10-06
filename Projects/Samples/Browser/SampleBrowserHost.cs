@@ -41,7 +41,7 @@ namespace Axiom.Samples.Browser.Phone
 		{
 			// TODO: Add your initialization logic here
 
-			SampleBrowser = new Xna.SampleBrowser();
+			SampleBrowser = new Xna.SampleBrowser( GraphicsDevice );
 			base.Initialize();
 		}
 
