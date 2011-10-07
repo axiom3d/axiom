@@ -128,6 +128,9 @@ namespace Axiom.Core
 				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
                 ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
                 ArchiveManager.Instance.AddArchiveFactory( new EmbeddedArchiveFactory() );
+#if WINDOWS_PHONE
+				ArchiveManager.Instance.AddArchiveFactory( new TitleContainerArchiveFactory() );
+#endif
 #if !(XBOX || XBOX360 )
                 ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
 #endif

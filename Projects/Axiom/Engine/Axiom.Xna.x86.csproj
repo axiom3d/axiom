@@ -264,6 +264,7 @@
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
+    <Compile Include="FileSystem\TitleContainerArchive.cs" />
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />

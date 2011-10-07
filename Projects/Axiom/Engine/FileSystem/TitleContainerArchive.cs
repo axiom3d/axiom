@@ -43,7 +43,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Linq;
+
 using Axiom.Core;
+
+using XNA = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
@@ -51,9 +55,11 @@ namespace Axiom.FileSystem
 {
 	/// <summary>
 	/// </summary>
-	public class WebArchive : FileSystemArchive
+	public class TitleContainerArchive : FileSystemArchive
 	{
 		#region Fields and Properties
+
+		List<string> _files = new List<string>();
 
 		/// <summary>
 		/// Is this archive capable of being monitored for additions, changes and deletions
@@ -75,17 +81,12 @@ namespace Axiom.FileSystem
 			return true;
 		}
 
-		protected override string[] getFiles( string dir, string pattern, bool recurse )
+		public override List<string> Find(string pattern, bool recursive)
+		//protected override string[] getFiles( string dir, string pattern, bool recurse )
 		{
 			var searchResults = new List<string>();
-			var files = !pattern.Contains( "*" ) && Exists( dir + "/" + pattern )
-							? new[]
-							  {
-								  pattern
-							  }
-							: new string[ 0 ]; //Directory.EnumerateFiles( dir );
 
-			foreach ( var file in files )
+			foreach ( var file in _files )
 			{
 				var ext = Path.GetExtension( file );
 
@@ -95,16 +96,50 @@ namespace Axiom.FileSystem
 				}
 			}
 
-			return searchResults.ToArray();
+			return searchResults;
 		}
 
+		public override FileInfoList FindFileInfo( string pattern, bool recursive )
+		{
+			var fil = new FileInfoList();
+			_files.ForEach( ( file ) =>
+			{
+				var ext = Path.GetExtension( file );
+
+				if ( pattern == "*" || pattern.Contains( ext ) )
+				{
+					fil.Add( new FileInfo
+					{
+						Archive = this,
+						CompressedSize = 0,
+						Basename = file,
+						Filename = file,
+						ModifiedTime = DateTime.Now,
+						Path = _basePath,
+						UncompressedSize = 0
+					} );
+				}
+			} );
+
+			return fil;
+			//return base.FindFileInfo( pattern, recursive );
+		}
 		#endregion Utility Methods
 
 		#region Constructors and Destructors
 
-		public WebArchive( string name, string archType )
+		public TitleContainerArchive( string name, string archType )
 			: base( name, archType )
 		{
+			// Cache manifest file contents
+			var manifestStream = XNA.TitleContainer.OpenStream(  name + @"\files.manifest" );
+			var reader = new StreamReader( manifestStream );
+
+			while ( !reader.EndOfStream )
+			{
+				var file = reader.ReadLine();
+				_files.Add( file );
+			}
 		}
 
 		#endregion Constructors and Destructors
@@ -137,20 +172,11 @@ namespace Axiom.FileSystem
 			{
 				throw new AxiomException( "Cannot create a file in a read-only archive." );
 			}
-			Stream result = null;
-			var wait = new AutoResetEvent( false );
-			var wc = new WebClient();
-			wc.OpenReadCompleted += ( s, o ) =>
+			if ( _files.Contains( filename ) )
 			{
-				if ( o.Error == null )
-				{
-					result = o.Result;
-				}
-				wait.Set();
-			};
-			wc.OpenReadAsync( new Uri( _basePath + filename, UriKind.RelativeOrAbsolute ) );
-			wait.WaitOne();
-			return result;
+				return XNA.TitleContainer.OpenStream( _basePath + filename );
+			}
+			return null;
 		}
 
 		public override bool Exists( string fileName )
@@ -164,9 +190,9 @@ namespace Axiom.FileSystem
 	/// <summary>
 	/// Specialization of IArchiveFactory for Web files.
 	/// </summary>
-	public class WebArchiveFactory : ArchiveFactory
+	public class TitleContainerArchiveFactory : ArchiveFactory
 	{
-		private const string _type = "Web";
+		private const string _type = "TitleContainer";
 
 		#region ArchiveFactory Implementation
 
@@ -180,7 +206,7 @@ namespace Axiom.FileSystem
 
 		public override Archive CreateInstance( string name )
 		{
-			return new WebArchive( name, _type );
+			return new TitleContainerArchive( name, _type );
 		}
 
 		public override void DestroyInstance( ref Archive obj )
