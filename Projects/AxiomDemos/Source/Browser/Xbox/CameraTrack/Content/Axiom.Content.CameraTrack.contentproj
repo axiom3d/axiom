@@ -73,6 +73,30 @@
       <Name>Textured1Light</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="Fonts\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+    <Content Include="Materials\Programs\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+    <Content Include="Materials\Scripts\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+    <Content Include="Materials\Textures\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+    <Content Include="Models\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+    <Content Include="Overlays\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\..\..\..\..\Media\Textures\dirt01.jpg">
@@ -173,9 +197,7 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=None" />
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.XImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=None" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Materials\Programs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
