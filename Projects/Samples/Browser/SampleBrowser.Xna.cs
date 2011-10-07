@@ -57,11 +57,11 @@ namespace Axiom.Samples.Xna
 			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
 
 #if WINDOWS_PHONE
-			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Programs", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Scripts", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Textures", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content/Models", "Folder", "Popular" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content/Particles", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Programs", "TitleContainer", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Scripts", "TitleContainer", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Textures", "TitleContainer", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Models", "TitleContainer", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Particles", "TitleContainer", "Popular" );
 #else
 			ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Programs", "Folder", "Popular");
 			ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Scripts", "Folder", "Popular");
