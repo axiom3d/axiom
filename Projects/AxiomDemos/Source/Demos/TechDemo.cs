@@ -168,11 +168,13 @@ namespace Axiom.Demos
 			engine.FrameRenderingQueued += OnFrameRenderingQueued;
 			engine.FrameEnded += OnFrameEnded;
 
+#if !WINDOWS_PHONE
 			window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
-			TechDemoListener rwl = new TechDemoListener( window );
-			WindowEventMonitor.Instance.RegisterListener( window, rwl );
+            TechDemoListener rwl = new TechDemoListener( window );
+            WindowEventMonitor.Instance.RegisterListener( window, rwl );
+#endif
 
-			ChooseSceneManager();
+            ChooseSceneManager();
 
 			CreateCamera();
 

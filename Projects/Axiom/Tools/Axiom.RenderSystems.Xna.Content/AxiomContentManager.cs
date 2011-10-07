@@ -42,28 +42,42 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Axiom.RenderSystems.Xna.Content
 {
-	public class AxiomContentManager : ContentManager
-	{
-		public AxiomContentManager( IServiceProvider serviceProvider )
-			: base( serviceProvider )
-		{
-		}
+    public class AxiomContentManager : ContentManager
+    {
+        public AxiomContentManager( IServiceProvider serviceProvider )
+            : base( serviceProvider )
+        {
+        }
 
-		public AxiomContentManager( IServiceProvider serviceProvider, string rootDirectory )
-			: base( serviceProvider, rootDirectory )
-		{
-		}
+        public AxiomContentManager( IServiceProvider serviceProvider, string rootDirectory )
+            : base( serviceProvider, rootDirectory )
+        {
+        }
 
-		protected override Stream OpenStream( string assetName )
-		{
+        protected override Stream OpenStream( string assetName )
+        {
 #if !( WINDOWS_PHONE )
 			if ( Path.GetExtension( assetName ) != ".xnb" )
 				assetName = Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
 			
 			return ResourceGroupManager.Instance.OpenResource( assetName );
 #else
-			return base.OpenStream( "SdkTrays/Materials/Textures/" + Path.GetFileNameWithoutExtension( assetName ) );
+            foreach ( string currentGroup in ResourceGroupManager.Instance.GetResourceGroups() )
+            {
+                foreach ( var decl in ResourceGroupManager.Instance.getResourceDeclarationList( currentGroup ) )
+                {
+                    string resName = decl.ResourceName;
+
+                    if ( Path.GetFileName( resName ) != assetName )
+                        continue;
+
+                    resName = resName.Replace( Path.GetExtension( resName ), string.Empty );
+                    return base.OpenStream( resName );
+                }
+            }
+
+            return null;
 #endif
-		}
-	}
+        }
+    }
 }

@@ -20,7 +20,9 @@ namespace Axiom.Demos
 	///		visible, the number of visible fragments will be reported on screen.  If the head is
 	///		totally occluded, it will say "Object is occluded".
 	/// </remarks>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class HardwareOcclusion : TechDemo
 	{
 		/// <summary>

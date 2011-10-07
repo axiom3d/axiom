@@ -2248,7 +2248,8 @@ namespace Axiom.Core
 		public string FindGroupContainingResource( string filename )
 		{
 			var grp = _findGroupContainingResourceImpl( filename );
-			if ( grp == null )
+
+            if ( grp == null )
 			{
 				throw new Exception( "Unable to derive resource group for " + filename +
 									 " automatically since the resource was not found." );
@@ -2503,19 +2504,6 @@ namespace Axiom.Core
 			{
 				_scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
 			}
-		}
-
-		/// <summary>
-		/// Internal method for getting a registered ResourceManager.
-		/// </summary>
-		/// <param name="resourceType">String identifying the resource type.</param>
-		internal ResourceManager GetResourceManager( string resourceType )
-		{
-			if ( _resourceManagers.ContainsKey( resourceType ) == true )
-			{
-				return _resourceManagers[ resourceType ];
-			}
-			throw new AxiomException( "Cannot locate resource manager for resource type '{0}'", resourceType );
 		}
 
 		/// <summary>Internal method called by ResourceManager when a resource is created.</summary>

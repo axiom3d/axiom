@@ -14,7 +14,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Transparency.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Transparency : TechDemo
 	{
 		#region Methods

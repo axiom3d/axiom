@@ -22,7 +22,9 @@ namespace Axiom.Demos
 	///     PS.1.4 assembler shader put together by NFZ (nfuzz@hotmail.com)
 	///     Demo done by Randy Ridge http://www.randyridge.com
 	/// </remarks>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class OffsetMapping : TechDemo
 	{
 		#region Fields

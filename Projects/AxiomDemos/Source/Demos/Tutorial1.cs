@@ -15,7 +15,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Sample class which shows the classic spinning triangle, done in the Axiom engine.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Tutorial1 : TechDemo
 	{
 		#region Methods

@@ -17,7 +17,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Controllers.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Lights : TechDemo
 	{
 		#region Member variables

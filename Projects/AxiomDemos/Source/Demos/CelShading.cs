@@ -15,7 +15,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for CelShading.
 	/// </summary>
+#if !WINDOWS_PHONE
 	[Export(typeof(TechDemo))]
+#endif
 	public class CelShading : TechDemo
 	{
 		#region Constants

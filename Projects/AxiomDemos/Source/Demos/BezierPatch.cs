@@ -11,7 +11,9 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Demos
 {
+#if !WINDOWS_PHONE
 	[Export(typeof(TechDemo))]
+#endif
 	public class BezierPatch : TechDemo
 	{
 		#region Protected Fields

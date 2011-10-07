@@ -13,7 +13,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Particles.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class ParticleFX : TechDemo
 	{
 		#region Member variables
