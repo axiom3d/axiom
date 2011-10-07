@@ -17,7 +17,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Fresnel.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Fresnel : TechDemo
 	{
 		#region Fields

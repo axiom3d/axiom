@@ -15,7 +15,9 @@ namespace Axiom.Demos
 	/// <summary>
 	///     Spline pathed camera tracking sample.
 	/// </summary>
+#if !WINDOWS_PHONE
 	[Export(typeof(TechDemo))]
+#endif
 	public class CameraTrack : TechDemo
 	{
 		#region Private Fields

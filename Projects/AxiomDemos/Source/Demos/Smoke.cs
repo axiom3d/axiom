@@ -12,7 +12,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Smoke.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Smoke : TechDemo
 	{
 		public override void CreateScene()

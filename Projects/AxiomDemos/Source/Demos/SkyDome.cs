@@ -11,7 +11,9 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.Demos
 {
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class SkyDome : TechDemo
 	{
 		#region Fields

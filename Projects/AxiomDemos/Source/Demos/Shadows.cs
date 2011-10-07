@@ -19,7 +19,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for Shadows.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Shadows : TechDemo
 	{
 		Entity athene;

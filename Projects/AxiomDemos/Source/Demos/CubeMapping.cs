@@ -20,7 +20,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for EnvMapping.
 	/// </summary>
+#if !WINDOWS_PHONE
 	[Export(typeof(TechDemo))]
+#endif
 	public class CubeMapping : TechDemo
 	{
 		#region Perlin noise data and algorithms

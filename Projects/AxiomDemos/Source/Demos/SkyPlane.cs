@@ -12,7 +12,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for SkyPlane.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class SkyPlane : TechDemo
 	{
 		#region Methods

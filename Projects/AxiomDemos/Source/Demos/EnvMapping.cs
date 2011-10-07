@@ -12,7 +12,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for EnvMapping.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class EnvMapping : TechDemo
 	{
 		#region Methods

@@ -13,7 +13,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for RenderToTexture.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class RenderToTexture : TechDemo
 	{
 

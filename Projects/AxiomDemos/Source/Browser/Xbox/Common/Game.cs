@@ -4,10 +4,8 @@ using System;
 using System.Reflection;
 using Axiom.Core;
 using Axiom.Input;
-using Axiom.Demos;
 using Axiom.RenderSystems.Xna;
 using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 
 #endregion Namespace Declarations
@@ -27,6 +25,45 @@ namespace Axiom.Demos.Browser.Xna
         string nextGame = String.Empty;
         private InputReader _input;
 
+#if WINDOWS_PHONE
+        private Axiom.Graphics.RenderWindow _window;
+        private Microsoft.Xna.Framework.Graphics.GraphicsDevice _xnaDevice;
+
+        public Game( Microsoft.Xna.Framework.Graphics.GraphicsDevice device )
+        {
+            _xnaDevice = device;
+        }
+
+        private void _parseScript( string script, string groupName, string type )
+        {
+            Axiom.Scripting.IScriptLoader mgr;
+
+            switch ( type )
+            {
+                case "Font":
+                    mgr = Axiom.Fonts.FontManager.Instance;
+                    break;
+
+                case "Material":
+                    mgr = Axiom.Graphics.MaterialManager.Instance;
+                    break;
+
+                case "Overlay":
+                    mgr = Overlays.OverlayManager.Instance;
+                    break;
+
+                default:
+                    throw new System.NotImplementedException();
+            };
+
+            mgr.ParseScript(
+                Microsoft.Xna.Framework.TitleContainer.OpenStream( script ),
+                groupName,
+                script
+                );
+        }
+#endif
+
         partial void _setDefaultNextGame();
 
         partial void _setupResources();
@@ -38,21 +75,28 @@ namespace Axiom.Demos.Browser.Xna
             new XnaResourceGroupManager();
 
             // instantiate the Root singleton
+
             engine = new Root( "AxiomDemos.log" );
 
-#if (XBOX || XBOX360)
-//            ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
+#if (XBOX || XBOX360) || WINDOWS_PHONE
+            ( new Axiom.RenderSystems.Xna.Plugin() ).Initialize();
 #endif
-
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ "Xna" ];
 
             Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value = "Yes";
             Root.Instance.RenderSystem.ConfigOptions[ "Video Mode" ].Value = "1280 x 720 @ 32-bit color";
 
+#if WINDOWS_PHONE
+            engine.Initialize( false, "Axiom Demos" );
+            var parms = new Collections.NamedParameterList();
+            parms.Add( "xnaGraphicsDevice", _xnaDevice );
+            _window = engine.CreateRenderWindow( "Axiom Demos", 480, 800, true, parms );
+#endif
+
             _setupResources();
 
             engine.FrameStarted += engine_FrameStarted;
-			
+
             return true;
         }
 
@@ -62,10 +106,10 @@ namespace Axiom.Demos.Browser.Xna
             {
                 Guide.ShowSignIn( 1, false );
             }
-			if ( GamePad.GetState( 0 ).IsButtonDown( Buttons.Back ) )
-			{
-				e.StopRendering = true;
-			}
+            if ( GamePad.GetState( 0 ).IsButtonDown( Buttons.Back ) )
+            {
+                e.StopRendering = true;
+            }
         }
 
         public void Run()
@@ -74,23 +118,32 @@ namespace Axiom.Demos.Browser.Xna
             {
                 if ( _configure() )
                 {
-                    Assembly demos = Assembly.LoadFrom("Axiom.Demos.dll");
-
+#if !WINDOWS_PHONE
+                    Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
+#endif
                     _setDefaultNextGame();
 
                     Type type;
 
-                    type = Assembly.GetExecutingAssembly().GetType("Axiom.Demos.Browser.Xna." + nextGame);
+                    type = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos.Browser.Xna." + nextGame );
 
-                    if (type == null)
+                    if ( type == null )
                     {
-                        type = demos.GetType("Axiom.Demos." + nextGame);
+#if !WINDOWS_PHONE
+                        type = demos.GetType( "Axiom.Demos." + nextGame );
+#else
+                        //TODO
+                        type = typeof( Axiom.Demos.CameraTrack );
+#endif
                     }
 
-                    if (type != null)
+                    if ( type != null )
                     {
                         using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
                         {
+#if WINDOWS_PHONE
+                            demo.Window = _window;
+#endif
                             demo.SetupInput = new TechDemo.ConfigureInput( _setupInput );
                             demo.Start();//show and start rendering
                         }//dispose of it when done
@@ -100,6 +153,7 @@ namespace Axiom.Demos.Browser.Xna
             catch ( Exception caughtException )
             {
                 LogManager.Instance.Write( BuildExceptionString( caughtException ) );
+                throw;
             }
         }
 
@@ -111,11 +165,11 @@ namespace Axiom.Demos.Browser.Xna
 
         #region Main
 
-#if !(XBOX || XBOX360)
+#if !WINDOWS_PHONE
 
+#if !(XBOX || XBOX360)
         [STAThread]
 #endif
-
         private static void Main( string[] args )
         {
             try
@@ -132,6 +186,7 @@ namespace Axiom.Demos.Browser.Xna
                 Console.ReadLine();
             }
         }
+#endif
 
         private static string BuildExceptionString( Exception exception )
         {

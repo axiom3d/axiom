@@ -22,7 +22,9 @@ using MouseButtons = Axiom.Input.MouseButtons;
 namespace Axiom.Demos
 {
 	/// <summary>Demonstrates simulation of Water mesh</summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class Water : TechDemo
 	{ //najak: Change this back to TechDemo, if new controls are accepted by Axiom
 		#region Fields

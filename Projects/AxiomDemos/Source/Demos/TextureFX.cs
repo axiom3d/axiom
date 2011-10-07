@@ -15,7 +15,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for TextureBlending.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class TextureFX : TechDemo
 	{
 		public override void CreateScene()

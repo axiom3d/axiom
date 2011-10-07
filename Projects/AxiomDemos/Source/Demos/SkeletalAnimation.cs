@@ -14,7 +14,9 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for SkeletalAnimation.
 	/// </summary>
+#if !WINDOWS_PHONE
     [Export(typeof(TechDemo))]
+#endif
     public class SkeletalAnimation : TechDemo
 	{
 		#region Fields
