@@ -219,7 +219,7 @@ namespace Axiom.FileSystem
 		/// <summary>Utility method to change the current directory </summary>
 		protected void changeDirectory( string dir )
 		{
-#if !SILVERLIGHT
+#if !(SILVERLIGHT || WINDOWS_PHONE )
 			Directory.SetCurrentDirectory( dir );
 #else
 			CurrentDirectory = dir;
@@ -230,7 +230,7 @@ namespace Axiom.FileSystem
 		void pushDirectory( string dir )
 		{
 			// get current directory and push it onto the stack
-#if SILVERLIGHT
+#if SILVERLIGHT || WINDOWS_PHONE
 			_directoryStack.Push( CurrentDirectory );
 #elif !( XBOX || XBOX360 )
 			string cwd = Directory.GetCurrentDirectory();

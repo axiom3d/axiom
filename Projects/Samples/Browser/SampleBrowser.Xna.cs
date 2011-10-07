@@ -37,26 +37,13 @@ namespace Axiom.Samples.Xna
 			ResourceGroupManager.Instance.CreateResourceGroup( "Essential" );
 
 #if WINDOWS_PHONE
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_bands.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_down.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_over.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_up.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_button_up.xnb", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "sdk_cursor.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "sdk_cursor.xnb", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_frame.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_handle.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_label.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Materials/Textures/sdk_logo.png", "Texture", "Essential" );
-
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Fonts/Caption.png", "Texture", "Essential" );
-			ResourceGroupManager.Instance.DeclareResource( "Content/SdkTrays/Fonts/Value.png", "Texture", "Essential" );
-
-			ResourceGroupManager.Instance.InitializeResourceGroup( "Essential" );
-
-			Axiom.Graphics.MaterialManager.Instance.ParseScript( Microsoft.Xna.Framework.TitleContainer.OpenStream( "Content/SdkTrays/Materials/Scripts/SdkTrays.material" ), "Essential", "Content/SdkTrays/Materials/Scripts/SdkTrays.material" );
-			Axiom.Fonts.FontManager.Instance.ParseScript( Microsoft.Xna.Framework.TitleContainer.OpenStream( "Content/SdkTrays/Fonts/SdkTrays.fontdef" ), "Essential", "Content/SdkTrays/Fonts/SdkTrays.fontdef" );
-			Overlays.OverlayManager.Instance.ParseScript( Microsoft.Xna.Framework.TitleContainer.OpenStream( "Content/SdkTrays/Overlays/SdkTrays.overlay" ), "Essential", "Content/SdkTrays/Overlays/SdkTrays.overlay" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Programs", "TitleContainer", "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Scripts", "TitleContainer", "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Textures", "TitleContainer", "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Fonts", "TitleContainer", "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Overlays", "TitleContainer", "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Thumbnails", "TitleContainer", "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Icons", "TitleContainer", "Essential" );
 #else
 
 			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Programs", "Folder", "Essential" );
@@ -68,7 +55,13 @@ namespace Axiom.Samples.Xna
 			ResourceGroupManager.Instance.AddResourceLocation( "Content/Icons", "Folder", "Essential" );
 #endif
 			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
+
 #if WINDOWS_PHONE
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Programs", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Scripts", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Textures", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Models", "Folder", "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Particles", "Folder", "Popular" );
 #else
 			ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Programs", "Folder", "Popular");
 			ResourceGroupManager.Instance.AddResourceLocation("Content/Materials/Scripts", "Folder", "Popular");
