@@ -33,35 +33,6 @@ namespace Axiom.Demos.Browser.Xna
         {
             _xnaDevice = device;
         }
-
-        private void _parseScript( string script, string groupName, string type )
-        {
-            Axiom.Scripting.IScriptLoader mgr;
-
-            switch ( type )
-            {
-                case "Font":
-                    mgr = Axiom.Fonts.FontManager.Instance;
-                    break;
-
-                case "Material":
-                    mgr = Axiom.Graphics.MaterialManager.Instance;
-                    break;
-
-                case "Overlay":
-                    mgr = Overlays.OverlayManager.Instance;
-                    break;
-
-                default:
-                    throw new System.NotImplementedException();
-            };
-
-            mgr.ParseScript(
-                Microsoft.Xna.Framework.TitleContainer.OpenStream( script ),
-                groupName,
-                script
-                );
-        }
 #endif
 
         partial void _setDefaultNextGame();

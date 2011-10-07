@@ -14,21 +14,18 @@ namespace Axiom.Demos.Browser.Xna
 		/// </summary>
 		partial void _setupResources()
 		{
-#if !WINDOWS_PHONE
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Fonts", "Folder" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Programs", "Folder" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Scripts", "Folder" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Textures", "Folder" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Models", "Folder" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Overlays", "Folder" );
-#else
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Fonts", "TitleContainer" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Programs", "TitleContainer" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Scripts", "TitleContainer" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Textures", "TitleContainer" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Models", "TitleContainer" );
-			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Overlays", "TitleContainer" );
+			string archType = "Folder";
+
+#if WINDOWS_PHONE
+			archType = "TitleContainer";
 #endif
+
+			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Fonts", archType );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Programs", archType );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Scripts", archType );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Materials\\Textures", archType );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Models", archType );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content\\Overlays", archType );
 		}
 	}
 }
