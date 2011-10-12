@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 #endregion Namespace Declarations
@@ -74,6 +75,19 @@ namespace Axiom.Core
 									Instance = new WeakReference( instance ),
 									ConstructionStack = stackTrace
 								} );
+		}
+
+		/// <summary>
+		///  Remove an object from monitoring
+		/// </summary>
+		/// <param name="instance"></param>
+		public void Remove( DisposableObject instance )
+		{
+			var objectList = GetOrCreateObjectList( instance.GetType() );
+			var objectEntry = from entry in objectList
+							  where entry.Instance.IsAlive && entry.Instance.Target == instance
+							  select entry;
+			objectList.Remove( objectEntry.First() );
 		}
 
 		private List<ObjectEntry> GetOrCreateObjectList( Type type )
@@ -157,8 +171,17 @@ namespace Axiom.Core
 		#endregion IDisposable Implementation
 	}
 
+	/// <summary>
+	/// Base class for all resource classes that require deterministic finalization and resource cleanup
+	/// </summary>
 	public abstract class DisposableObject : IDisposable
 	{
+		/// <summary>
+		/// default parameterless constructor
+		/// </summary>
+		/// <remarks>
+		/// Provides tracking information when subclasses are instantiated
+		/// </remarks>
 		protected DisposableObject()
 		{
 			IsDisposed = false;
@@ -169,6 +192,9 @@ namespace Axiom.Core
 #endif
 		}
 
+		/// <summary>
+		/// Base object destructor
+		/// </summary>
 		~DisposableObject()
 		{
 			if ( !IsDisposed )
@@ -217,6 +243,9 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
+#if DEBUG
+					ObjectManager.Instance.Remove( this );
+#endif
 				}
 
 				// There are no unmanaged resources to release, but
@@ -225,11 +254,14 @@ namespace Axiom.Core
 			IsDisposed = true;
 		}
 
-        public void Dispose()
-        {
-            dispose( true );
-            GC.SuppressFinalize( this );
-        }
+		/// <summary>
+		/// Used to destroy the object and release any managed or unmanaged resources
+		/// </summary>
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
 
 		#endregion IDisposable Implementation
 	}
