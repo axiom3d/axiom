@@ -213,6 +213,13 @@ namespace Axiom.Samples.MousePicking
 			base.SetupContent();
 		}
 
+		protected override void CleanupContent()
+		{
+			MeshManager.Instance.Remove( "FloorPlane" );
+
+			base.CleanupContent();
+		}
+
 		/// <summary>
 		/// Creates and initializes all the scene's GUI elements not defined in SdkSample
 		/// </summary>
