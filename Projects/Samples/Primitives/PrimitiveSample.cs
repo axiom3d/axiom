@@ -33,6 +33,9 @@ namespace Axiom.Samples.Primitives
 	public class PrimitivesSample : SdkSample
 	{
 		private Vector4 color = new Vector4( 1, 0, 0, 1 );
+		private Line3d line;
+		private Triangle tri;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -74,9 +77,9 @@ namespace Axiom.Samples.Primitives
 		protected override void SetupContent()
 		{
 			// create a 3d line
-			Line3d line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
+			line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
 
-			Triangle tri = new Triangle(
+			tri = new Triangle(
 				new Vector3( -25, 0, 0 ),
 				new Vector3( 0, 50, 0 ),
 				new Vector3( 25, 0, 0 ),
@@ -114,6 +117,13 @@ namespace Axiom.Samples.Primitives
 			// place the camera in an optimal position
 			base.Camera.Position = new Vector3( 30, 30, 220 );
 		}
+
+		protected override void CleanupContent()
+		{
+			line.Dispose();
+			tri.Dispose();
+			base.CleanupContent();
+		}
 	}
 
 	/// <summary>
@@ -124,6 +134,7 @@ namespace Axiom.Samples.Primitives
 		// constants for buffer source bindings
 		const int POSITION = 0;
 		const int COLOR = 1;
+		HardwareVertexBuffer posBuffer, colorBuffer;
 
 		/// <summary>
 		///
@@ -156,35 +167,28 @@ namespace Axiom.Samples.Primitives
 			decl.AddElement( COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
 			// create a vertex buffer for the position
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			posBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			Vector3[] pos = new Vector3[] { startPoint, endPoint };
 
 			// write the data to the position buffer
-			buffer.WriteData( 0, buffer.Size, pos, true );
+			posBuffer.WriteData( 0, posBuffer.Size, pos, true );
 
 			// bind the position buffer
-			binding.SetBinding( POSITION, buffer );
+			binding.SetBinding( POSITION, posBuffer );
 
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			colorBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
 			int[] colors = new int[] { colorValue, colorValue };
 
 			// write the data to the position buffer
-			buffer.WriteData( 0, buffer.Size, colors, true );
+			colorBuffer.WriteData( 0, colorBuffer.Size, colors, true );
 
 			// bind the color buffer
-			binding.SetBinding( COLOR, buffer );
+			binding.SetBinding( COLOR, colorBuffer );
 
 			// MATERIAL
 			// grab a copy of the BaseWhite material for our use
@@ -225,6 +229,19 @@ namespace Axiom.Samples.Primitives
 			}
 		}
 
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					MaterialManager.Instance.Remove( "LineMat" );
+					colorBuffer.Dispose();
+					posBuffer.Dispose();
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
 	}
 
 
@@ -236,6 +253,7 @@ namespace Axiom.Samples.Primitives
 		// constants for buffer source bindings
 		const int POSITION = 0;
 		const int COLOR = 1;
+		HardwareVertexBuffer posBuffer, colorBuffer;
 
 		/// <summary>
 		///
@@ -262,26 +280,19 @@ namespace Axiom.Samples.Primitives
 
 			// POSITIONS
 			// create a vertex buffer for the position
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			posBuffer =	HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			Vector3[] positions = new Vector3[] { v1, v2, v3 };
 
 			// write the positions to the buffer
-			buffer.WriteData( 0, buffer.Size, positions, true );
+			posBuffer.WriteData( 0, posBuffer.Size, positions, true );
 
 			// bind the position buffer
-			binding.SetBinding( POSITION, buffer );
+			binding.SetBinding( POSITION, posBuffer );
 
 			// COLORS
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			colorBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's
@@ -293,10 +304,10 @@ namespace Axiom.Samples.Primitives
 			};
 
 			// write the colors to the color buffer
-			buffer.WriteData( 0, buffer.Size, colors, true );
+			colorBuffer.WriteData( 0, colorBuffer.Size, colors, true );
 
 			// bind the color buffer
-			binding.SetBinding( COLOR, buffer );
+			binding.SetBinding( COLOR, colorBuffer );
 
 			// MATERIAL
 			// grab a copy of the BaseWhite material for our use
@@ -340,5 +351,20 @@ namespace Axiom.Samples.Primitives
 				return 0;
 			}
 		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					MaterialManager.Instance.Remove( "TriMat" );
+					colorBuffer.Dispose();
+					posBuffer.Dispose();
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+
 	}
 }
