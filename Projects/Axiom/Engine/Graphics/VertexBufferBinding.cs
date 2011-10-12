@@ -184,10 +184,6 @@ namespace Axiom.Graphics
 					// Dispose managed resources.
 					if ( this.bindingMap != null )
 					{
-						foreach ( KeyValuePair<short, HardwareVertexBuffer> item in bindingMap )
-						{
-							item.Value.Dispose();
-						}
 						bindingMap.Clear();
 					}
 					bindingMap = null;

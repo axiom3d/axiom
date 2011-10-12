@@ -208,8 +208,8 @@ namespace Axiom.Graphics
 		/// <param name="binding"></param>
 		public virtual void DestroyVertexBufferBinding( VertexBufferBinding binding )
 		{
-            if ( !binding.IsDisposed )
-                binding.Dispose();
+			if ( !binding.IsDisposed )
+				binding.Dispose();
 
 			vertexBufferBindings.Remove( binding );
 		}
@@ -224,7 +224,7 @@ namespace Axiom.Graphics
 		/// <param name="decl">VertexDeclaration object to destroy.</param>
 		public virtual void DestroyVertexDeclaration( VertexDeclaration decl )
 		{
-            decl.Dispose();
+			decl.Dispose();
 			vertexDeclarations.Remove( decl );
 		}
 
@@ -519,31 +519,29 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Destroy all necessary objects
-
-					foreach ( VertexDeclaration buffer in vertexDeclarations )
+					while ( vertexDeclarations.Count > 0 )
 					{
-						buffer.Dispose();
+						vertexDeclarations[ 0 ].Dispose();
 					}
 					vertexDeclarations.Clear();
 
-                    foreach ( VertexBufferBinding binding in vertexBufferBindings )
-                    {
-                        if ( !binding.IsDisposed )
-                            binding.Dispose();
-                    }
+					while ( vertexBufferBindings.Count > 0 )
+					{
+						vertexBufferBindings[ 0 ].Dispose();
+					}
 					vertexBufferBindings.Clear();
 
 					// destroy all vertex buffers
-					foreach ( HardwareBuffer buffer in vertexBuffers )
+					while ( vertexBuffers.Count > 0 )
 					{
-						buffer.Dispose();
+						vertexBuffers[ 0 ].Dispose();
 					}
 					vertexBuffers.Clear();
 
 					// destroy all index buffers
-					foreach ( HardwareBuffer buffer in indexBuffers )
+					while ( indexBuffers.Count > 0 )
 					{
-						buffer.Dispose();
+						indexBuffers[ 0 ].Dispose();
 					}
 					indexBuffers.Clear();
 				}
@@ -556,15 +554,15 @@ namespace Axiom.Graphics
 		public void DisposeVertexBuffer( HardwareVertexBuffer buffer )
 		{
 			vertexBuffers.Remove( buffer );
-            if (!buffer.IsDisposed)
-			    buffer.Dispose();
+			if ( !buffer.IsDisposed )
+				buffer.Dispose();
 		}
 
 		public void DisposeIndexBuffer( HardwareIndexBuffer buffer )
 		{
 			indexBuffers.Remove( buffer );
-            if ( !buffer.IsDisposed )
-			    buffer.Dispose();
+			if ( !buffer.IsDisposed )
+				buffer.Dispose();
 		}
 
 		/// Notification that a hardware vertex buffer has been destroyed

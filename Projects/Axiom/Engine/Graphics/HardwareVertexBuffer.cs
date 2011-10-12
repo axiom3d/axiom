@@ -112,5 +112,21 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
+
+		#region IDisposable Implementation
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					Manager.NotifyVertexBufferDestroyed( this );
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion IDisposable Implementation
 	}
 }
