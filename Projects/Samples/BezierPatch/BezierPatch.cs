@@ -226,6 +226,7 @@ namespace Axiom.Samples.BezierPatch
 		{
 			patchPass.PolygonMode = PolygonMode.Solid;
 			MeshManager.Instance.Remove( patch.Handle );
+			MaterialManager.Instance.Remove( "TextMat" );
 		}
 	}
 }
