@@ -503,6 +503,7 @@ namespace Axiom.SceneManagers.Bsp
                 if ( disposeManagedResources )
                 {
                     // Dispose managed resources.
+					instance = null;
                     ResourceGroupManager.Instance.UnregisterScriptLoader( this );
                 }
 

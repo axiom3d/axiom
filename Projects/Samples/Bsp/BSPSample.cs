@@ -71,6 +71,7 @@ namespace Axiom.Samples
 			// unload the map so we don't interfere with subsequent samples
 			ResourceGroupManager.Instance.UnloadResourceGroup( "BSPSAMPLE" );
 			ResourceGroupManager.Instance.RemoveResourceLocation( "Media/Archives/chiropteraDM.zip", ResourceGroupManager.Instance.WorldResourceGroupName );
+			ResourceGroupManager.Instance.DestroyResourceGroup( "BSPSAMPLE" );
 		}
 
 		protected override void SetupView()
