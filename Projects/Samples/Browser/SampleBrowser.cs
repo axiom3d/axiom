@@ -36,7 +36,7 @@ namespace Axiom.Samples
 {
 	/// <summary>
 	/// The Axiom Sample Browser. Features a menu accessible from all samples,
-	/// dynamic configuration, resource reloading, node labelling, and more.
+	/// dynamic configuration, resource reloading, node labeling, and more.
 	/// </summary>
 	public class SampleBrowser : SampleContext, ISdkTrayListener
 	{

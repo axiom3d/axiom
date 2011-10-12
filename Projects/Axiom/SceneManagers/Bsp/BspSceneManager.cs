@@ -1282,6 +1282,18 @@ namespace Axiom.SceneManagers.Bsp
 		}
 
 		#endregion Protected methods
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					BspResourceManager.Instance.Dispose();
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
 	}
 
 	/// <summary>
@@ -1665,6 +1677,8 @@ namespace Axiom.SceneManagers.Bsp
 		public override void DestroyInstance( SceneManager instance )
 		{
 			instance.ClearScene();
+			if( !instance.IsDisposed )
+				instance.Dispose();
 		}
 
 		#endregion Methods
