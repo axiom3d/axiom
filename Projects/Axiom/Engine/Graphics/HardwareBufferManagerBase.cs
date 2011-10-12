@@ -208,10 +208,9 @@ namespace Axiom.Graphics
 		/// <param name="binding"></param>
 		public virtual void DestroyVertexBufferBinding( VertexBufferBinding binding )
 		{
+			vertexBufferBindings.Remove( binding );
 			if ( !binding.IsDisposed )
 				binding.Dispose();
-
-			vertexBufferBindings.Remove( binding );
 		}
 
 		/// <summary>
@@ -224,8 +223,8 @@ namespace Axiom.Graphics
 		/// <param name="decl">VertexDeclaration object to destroy.</param>
 		public virtual void DestroyVertexDeclaration( VertexDeclaration decl )
 		{
-			decl.Dispose();
 			vertexDeclarations.Remove( decl );
+			decl.Dispose();
 		}
 
 		/// <summary>
