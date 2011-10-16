@@ -450,9 +450,9 @@ namespace Axiom.RenderSystems.Xna
             if ( !( state is BlendState ) )
                 throw new ArgumentException( "Expected BlendState." );
 #if !SILVERLIGHT
-            if ( _internalState.GraphicsDevice != null )
+			if ( _internalState.GraphicsDevice != null )
 #endif
-                _internalState = new BlendState();
+				_internalState = new BlendState();
             var blendState = (BlendState)state;
             AlphaBlendFunction = blendState.AlphaBlendFunction;
             AlphaDestinationBlend = blendState.AlphaDestinationBlend;
@@ -477,8 +477,12 @@ namespace Axiom.RenderSystems.Xna
 
         public void Commit( GraphicsDevice device, int index )
         {
-            if ( IsDirty )
-                device.BlendState = _internalState;
+			if ( IsDirty )
+			{
+				device.BlendState.Dispose();
+				device.BlendState = _internalState;
+				IsDirty = false;
+			}
         }
 
         #endregion IManagedState Implementation
@@ -782,9 +786,9 @@ namespace Axiom.RenderSystems.Xna
             if ( !( state is DepthStencilState ) )
                 throw new ArgumentException( "Expected DepthStencilState." );
 #if !SILVERLIGHT
-            if (_internalState.GraphicsDevice != null)
+			if ( _internalState.GraphicsDevice != null )
 #endif
-                _internalState = new DepthStencilState();
+				_internalState = new DepthStencilState();
             var depthStencilState = (DepthStencilState)state;
             CounterClockwiseStencilDepthBufferFail = depthStencilState.CounterClockwiseStencilDepthBufferFail;
             CounterClockwiseStencilFail = depthStencilState.CounterClockwiseStencilFail;
@@ -814,6 +818,7 @@ namespace Axiom.RenderSystems.Xna
         {
             if ( IsDirty )
             {
+				device.DepthStencilState.Dispose();
                 device.DepthStencilState = _internalState;
                 IsDirty = false;
             }
@@ -954,9 +959,9 @@ namespace Axiom.RenderSystems.Xna
             if ( !( state is RasterizerState ) )
                 throw new ArgumentException( "Expected RasterizerState." );
 #if !SILVERLIGHT
-            if (_internalState.GraphicsDevice != null)
+			if ( _internalState.GraphicsDevice != null )
 #endif
-                _internalState = new RasterizerState();
+				_internalState = new RasterizerState();
             var rasterizerState = (RasterizerState)state;
             CullMode = rasterizerState.CullMode;
             DepthBias = rasterizerState.DepthBias;
@@ -976,6 +981,7 @@ namespace Axiom.RenderSystems.Xna
         {
             if ( IsDirty )
             {
+				device.RasterizerState.Dispose();
                 device.RasterizerState = _internalState;
                 IsDirty = false;
             }
@@ -1129,9 +1135,9 @@ namespace Axiom.RenderSystems.Xna
             if ( !( state is SamplerState ) )
                 throw new ArgumentException( "Expected SamplerState." );
 #if !SILVERLIGHT
-            if (_internalState.GraphicsDevice != null)
+			if ( _internalState.GraphicsDevice != null )
 #endif
-                _internalState = new SamplerState();
+				_internalState = new SamplerState();
             var samplerState = (SamplerState)state;
             AddressU = samplerState.AddressU;
             AddressV = samplerState.AddressV;
@@ -1154,6 +1160,7 @@ namespace Axiom.RenderSystems.Xna
         {
             if ( IsDirty )
             {
+				device.SamplerStates[ index ].Dispose();
                 device.SamplerStates[ index ] = _internalState;
                 IsDirty = false;
             }
