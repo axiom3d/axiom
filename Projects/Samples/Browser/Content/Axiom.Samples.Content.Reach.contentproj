@@ -488,7 +488,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Materials\Programs\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Materials\Programs\AmbientOneTexture.glsl">
       <Name>AmbientOneTexture</Name>
@@ -1072,6 +1077,30 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icons\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Materials\Scripts\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Materials\Textures\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\files.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>files</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Particles\files.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>files</Name>
     </Content>
