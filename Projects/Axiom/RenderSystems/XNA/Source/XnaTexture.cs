@@ -502,6 +502,8 @@ namespace Axiom.RenderSystems.Xna
 				var acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "Content" );
 				_normTexture = acm.Load<Texture2D>( Name );
 				_texture = _normTexture;
+				Width = _normTexture.Width;
+				Height = _normTexture.Height;
 				internalResourcesCreated = true;
 			}
 #if !( XBOX || XBOX360 )
