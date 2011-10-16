@@ -563,7 +563,7 @@ namespace Axiom.Fonts
 		#endregion Implementation of Resource
 
 		#region Implementation of IManualResourceLoader
-		public void LoadResource(Resource resource)
+		public void LoadResource( Resource resource )
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
 #if !(XBOX || XBOX360 || ANDROID || IPHONE)
@@ -582,7 +582,7 @@ namespace Axiom.Fonts
 			// original DataStream in a MemoryDataStream
 			var fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group );
 
-			var data = new byte[fileStream.Length];
+			var data = new byte[ fileStream.Length ];
 			fileStream.Read( data, 0, data.Length );
 			//Load font
 			var success = FT.FT_New_Memory_Face( ftLibrary, data, data.Length, 0, out face );
@@ -592,7 +592,7 @@ namespace Axiom.Fonts
 			}
 
 			// Convert our point size to freetype 26.6 fixed point format
-			var ttfSize = _ttfSize*( 1 << 6 );
+			var ttfSize = _ttfSize * ( 1 << 6 );
 
 			success = FT.FT_Set_Char_Size( face, ttfSize, 0, (uint)_ttfResolution, (uint)_ttfResolution );
 			if ( success != 0 )
@@ -617,10 +617,12 @@ namespace Axiom.Fonts
 				for ( var cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
 				{
 					FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
-                    var rec = face.PtrToStructure<FT_FaceRec>();
-                    var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
-					if ( ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
-						max_height = ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
+					FT_FaceRec rec = (FT_FaceRec)Marshal.PtrToStructure( face, typeof( FT_FaceRec ) );
+					FT_GlyphSlotRec glyp = (FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( FT_GlyphSlotRec ) );
+					//var rec = face.PtrToStructure<FT_FaceRec>();
+					//var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
+					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
 					if ( glyp.metrics.horiBearingY > maxBearingY )
 						maxBearingY = glyp.metrics.horiBearingY;
 
@@ -631,8 +633,8 @@ namespace Axiom.Fonts
 			}
 
 			// Now work out how big our texture needs to be
-			var rawSize = ( max_width + char_space )*
-						  ( ( max_height >> 6 ) + char_space )*glyphCount;
+			var rawSize = ( max_width + char_space ) *
+						  ( ( max_height >> 6 ) + char_space ) * glyphCount;
 
 			var tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
@@ -642,9 +644,9 @@ namespace Axiom.Fonts
 			var roundUpSize = (int)Bitwise.FirstPO2From( (uint)tex_side );
 			// Would we benefit from using a non-square texture (2X width(
 			int finalWidth = 0, finalHeight = 0;
-			if ( roundUpSize*roundUpSize*0.5 >= rawSize )
+			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
 			{
-				finalHeight = (int)( roundUpSize*0.5 );
+				finalHeight = (int)( roundUpSize * 0.5 );
 			}
 			else
 			{
@@ -652,15 +654,15 @@ namespace Axiom.Fonts
 			}
 			finalWidth = roundUpSize;
 
-			var textureAspec = (Real)finalWidth/(Real)finalHeight;
+			var textureAspec = (Real)finalWidth / (Real)finalHeight;
 			var pixelBytes = 2;
-			var dataWidth = finalWidth*pixelBytes;
-			var data_size = finalWidth*finalHeight*pixelBytes;
+			var dataWidth = finalWidth * pixelBytes;
+			var data_size = finalWidth * finalHeight * pixelBytes;
 
 			LogManager.Instance.Write( "Font " + _name + " using texture size " + finalWidth.ToString() + "x" +
 									   finalHeight.ToString() );
 
-			var imageData = new byte[data_size];
+			var imageData = new byte[ data_size ];
 			for ( var i = 0; i < data_size; i += pixelBytes )
 			{
 				imageData[ i + 0 ] = 0xff; // luminance
@@ -682,14 +684,14 @@ namespace Axiom.Fonts
 #if (SILVERLIGHT || WINDOWS_PHONE)
 												   cp
 #else
-												   char.ConvertFromUtf32( cp )
+ char.ConvertFromUtf32( cp )
 #endif
-												   + "' in font " + _name + "." );
+ + "' in font " + _name + "." );
 						continue;
 					}
 
-                    var rec = face.PtrToStructure<FT_FaceRec>();
-                    var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
+					var rec = face.PtrToStructure<FT_FaceRec>();
+					var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
 					var advance = glyp.advance.x >> 6;
 #if !AXIOM_SAFE_ONLY
 					unsafe
@@ -701,9 +703,9 @@ namespace Axiom.Fonts
 #if (SILVERLIGHT || WINDOWS_PHONE)
 													   cp
 #else
-													   char.ConvertFromUtf32( cp )
-#endif                                                 
-													   + "' in font " + _name + "." );
+ char.ConvertFromUtf32( cp )
+#endif
+ + "' in font " + _name + "." );
 							continue;
 						}
 						var buffer = glyp.bitmap.buffer.ToBytePointer();
@@ -715,7 +717,7 @@ namespace Axiom.Fonts
 						for ( var j = 0; j < glyp.bitmap.rows; j++ )
 						{
 							var row = j + m + y_bearing;
-							var pDest = ( row*dataWidth ) + ( l + x_bearing )*pixelBytes;
+							var pDest = ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes;
 							for ( var k = 0; k < glyp.bitmap.width; k++ )
 							{
 								if ( AntialiasColor )
@@ -734,10 +736,10 @@ namespace Axiom.Fonts
 							} //end k
 						} //end j
 						//
-						this.SetGlyphTexCoords( (uint)cp, (Real)l/(Real)finalWidth, //u1
-												(Real)m/(Real)finalHeight, //v1
-												(Real)( l + ( glyp.advance.x >> 6 ) )/(Real)finalWidth, //u2
-												( m + ( max_height >> 6 ) )/(Real)finalHeight, textureAspec ); //v2
+						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth, //u1
+												(Real)m / (Real)finalHeight, //v1
+												(Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+												( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
 						//    textureAspec );
 						//SetGlyphTexCoords( c, u1, v1, u2, v2 );
 						//Glyphs.Add( new KeyValuePair<CodePoint, GlyphInfo>( (uint)cp,
@@ -766,7 +768,7 @@ namespace Axiom.Fonts
 			var img = Image.FromRawStream( memStream, finalWidth, finalHeight, PixelFormat.BYTE_LA );
 
 			var tex = (Texture)resource;
-			var images = new Image[1];
+			var images = new Image[ 1 ];
 			images[ 0 ] = img;
 			tex.LoadImages( images );
 			FT.FT_Done_FreeType( ftLibrary );
