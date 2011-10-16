@@ -27,14 +27,14 @@ using System.Linq;
 using System.Globalization;
 using System.Security.Permissions;
 using System.Threading;
-#if WINDOWS || XBOX
+#if (XBOX || XBOX360) || !( WINDOWS_PHONE || SILVERLIGHT || ANDROID || IOS )
 using Axiom.Core;
 using Axiom.Framework.Exceptions;
 #endif
 
 namespace Axiom.Samples
 {
-#if WINDOWS || XBOX
+#if (XBOX || XBOX360) || !( WINDOWS_PHONE || SILVERLIGHT || ANDROID || IOS )
 	static class Program
 	{
 		/// <summary>
