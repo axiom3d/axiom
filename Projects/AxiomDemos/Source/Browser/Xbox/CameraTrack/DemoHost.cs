@@ -10,6 +10,7 @@ namespace Axiom.Demos.Browser.Xna
         public DemoHost()
         {
             _graphicsMgr = new GraphicsDeviceManager( this );
+            _graphicsMgr.IsFullScreen = true;
         }
 
         protected override void Initialize()
