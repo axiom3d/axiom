@@ -79,7 +79,6 @@
     <None Include="App.config">
     </None>
     <Compile Include="SampleBrowser.cs" />
-    <Compile Include="SampleBrowser.XBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AxiomIcon.ico" />
