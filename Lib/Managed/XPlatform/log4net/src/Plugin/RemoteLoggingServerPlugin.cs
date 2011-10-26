@@ -21,7 +21,7 @@
 
 using System;
 using System.Runtime.Remoting;
-
+using System.Security;
 using log4net.Util;
 using log4net.Repository;
 using log4net.Core;
@@ -220,7 +220,6 @@ namespace log4net.Plugin
 			#endregion Implementation of IRemoteLoggingSink
 
 			#region Override implementation of MarshalByRefObject
-
 			/// <summary>
 			/// Obtains a lifetime service object to control the lifetime 
 			/// policy for this instance.
@@ -233,6 +232,7 @@ namespace log4net.Plugin
 			/// therefore this implementation returns <c>null</c>.
 			/// </para>
 			/// </remarks>
+			[SecurityCritical]
 			public override object InitializeLifetimeService()
 			{
 				return null;

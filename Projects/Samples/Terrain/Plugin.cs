@@ -1,6 +1,9 @@
-﻿
+﻿using System.ComponentModel.Composition;
+using Axiom.Core;
+
 namespace Axiom.Samples.Terrain
 {
+	[Export(typeof(IPlugin))]
 	public class Plugin : SamplePlugin
 	{
 		private TerrainSample sample;

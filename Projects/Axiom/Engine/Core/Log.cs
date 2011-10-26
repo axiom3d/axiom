@@ -287,7 +287,12 @@ namespace Axiom.Core
 			// write the the debug output if requested
 			if ( debugOutput && !maskDebug )
 			{
-				System.Diagnostics.Debug.WriteLine( message );
+#if MONO
+				if(System.Diagnostics.Debugger.IsAttached)
+					System.Console.WriteLine( message );
+				else
+#endif
+					System.Diagnostics.Debug.WriteLine( message );
 			}
 
 			if ( writer != null && writer.BaseStream != null )

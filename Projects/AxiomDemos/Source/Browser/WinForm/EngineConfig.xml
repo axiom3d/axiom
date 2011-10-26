@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-  <FilePath type="ZipFile" src="Media/Archives/AxiomCore.zip" group="bootstrap"/>
-  <FilePath type="Folder" src="Media/Configuration"/>
-  <FilePath type="Folder" src="Media/Textures"/>
-  <FilePath type="Folder" src="Media/BrowserImages"/>
-  <FilePath type="Folder" src="Media/Icons"/>
+	<FilePath type="ZipFile" src="Media/Archives/AxiomCore.zip" group="bootstrap"/>
+	<FilePath type="Folder" src="Media/Configuration"/>
+	<FilePath type="Folder" src="Media/Textures"/>
+	<FilePath type="Folder" src="Media/BrowserImages"/>
+	<FilePath type="Folder" src="Media/Icons"/>
 	<FilePath type="Folder" src="Media/Fonts"/>
 	<FilePath type="Folder" src="Media/Meshes"/>
-  <FilePath type="Folder" src="Media/PCZAppMedia"/>
+	<FilePath type="Folder" src="Media/PCZAppMedia"/>
 	<FilePath type="Folder" src="Media/Skeletons"/>
 	<FilePath type="Folder" src="Media/Materials"/>
 	<FilePath type="Folder" src="Media/Overlays"/>
 	<FilePath type="Folder" src="Media/GpuPrograms"/>
 	<FilePath type="ZipFile" src="Media/Archives/Fresnel.zip"/>
 	<FilePath type="ZipFile" src="Media/Textures/SkyBoxes.zip"/>
-  <FilePath type="ZipFile" src="Media/Archives/Water.zip"/>
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Video Mode" Value="1280 x 720" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Color Depth" Value="32" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Display Frequency" Value="N/A" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Full Screen" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="FSAA" Value="0" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="VSync" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="RTT Preferred Mode" Value="FBO" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Video Mode" Value="1280 x 720 @ 32-bit color" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Full Screen" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="VSync" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Anti aliasing" Value="None" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Floating-point mode" Value="Fastest" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Allow NVPerfHUD" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Video Mode" Value="1280 x 720 @ 32-bit color" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Full Screen" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="VSync" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Anti aliasing" Value="None" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Floating-point mode" Value="Fastest" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Allow NVPerfHUD" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Save Generated Shaders" Value="No" />
-  <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Use Content Pipeline" Value="No" />
+	<FilePath type="ZipFile" src="Media/Archives/Water.zip"/>
+	<FilePath type="ZipFile" src="Media/Archives/chiropteraDM.zip"/>
+	<FilePath type="ZipFile" src="Media/Archives/cubemapsJS.zip"/>
+	<FilePath type="ZipFile" src="Media/Archives/RZR-002.zip"/>
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Video Mode" Value="1280 x 720" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Color Depth" Value="32" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Display Frequency" Value="N/A" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="Full Screen" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="FSAA" Value="0" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="VSync" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.OpenGL.GLRenderSystem" Name="RTT Preferred Mode" Value="FBO" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Video Mode" Value="1280 x 720 @ 32-bit color" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Full Screen" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="VSync" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Anti aliasing" Value="None" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Floating-point mode" Value="Fastest" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.DirectX9.D3DRenderSystem" Name="Allow NVPerfHUD" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Video Mode" Value="1280 x 720 @ 32-bit color" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Full Screen" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="VSync" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Anti aliasing" Value="None" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Floating-point mode" Value="Fastest" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Allow NVPerfHUD" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Save Generated Shaders" Value="No" />
+	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Use Content Pipeline" Value="No" />
 </EngineConfig>

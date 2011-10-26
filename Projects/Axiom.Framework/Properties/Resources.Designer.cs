@@ -90,7 +90,7 @@ namespace Axiom.Framework.Properties {
 			}
 		}
 		
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
 		public static System.Drawing.Icon AxiomIcon {
 			get {
 				object obj = ResourceManager.GetObject("AxiomIcon", resourceCulture);

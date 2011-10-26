@@ -49,7 +49,7 @@ using System.Runtime.CompilerServices;
 //       relative to the project output directory which is
 //       %Project Directory%\obj\<configuration>. For example, if your KeyFile is
 //       located in the project directory, you would specify the AssemblyKeyFile 
-//       attribute as [assembly: AssemblyKeyFile("..\\..\\mykey.snk")]
+//       attribute as [assembly: AssemblyKeyFile("../../mykey.snk")]
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
 //

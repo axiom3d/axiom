@@ -28,7 +28,7 @@
     <TestPageFileName>Axiom.Demos.Browser.SilverlightTestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
-    <EnableOutOfBrowser>true</EnableOutOfBrowser>
+    <EnableOutOfBrowser>false</EnableOutOfBrowser>
     <UsePlatformExtensions>false</UsePlatformExtensions>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <LinkedServerProject>
@@ -119,14 +119,45 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\..\..\media\archives\AxiomCore.zip">
+      <Link>Media\Archives\AxiomCore.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\archives\chiropteraDM.zip">
+      <Link>Media\Archives\chiropteraDM.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\archives\cubemapsJS.zip">
+      <Link>Media\Archives\cubemapsJS.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\archives\Fresnel.zip">
+      <Link>Media\Archives\Fresnel.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\archives\RZR-002.zip">
+      <Link>Media\Archives\RZR-002.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\archives\Water.zip">
+      <Link>Media\Archives\Water.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\textures\SkyBoxes.zip">
+      <Link>Media\Textures\SkyBoxes.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\OutOfBrowserSettings.xml" />
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Debug.html" />
     <Content Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Release.html" />
+    <Content Include="TestPage.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.2010.SL5.csproj">

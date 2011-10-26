@@ -168,14 +168,14 @@ namespace Axiom.RenderSystems.Xna
 				{
 					switch ( options )
 					{
-                        case Graphics.FilterOptions.Anisotropic:
+						case Graphics.FilterOptions.Anisotropic:
 							return TextureFilter.Anisotropic;
 
-                        case Graphics.FilterOptions.Linear:
+						case Graphics.FilterOptions.None:
+						case Graphics.FilterOptions.Linear:
 							return TextureFilter.Linear;
 
-                        case Graphics.FilterOptions.Point:
-                        case Graphics.FilterOptions.None:
+						case Graphics.FilterOptions.Point:
 							return TextureFilter.Point;
 					}
 					break;
@@ -184,14 +184,12 @@ namespace Axiom.RenderSystems.Xna
 				{
 					switch ( options )
 					{
-                        case Graphics.FilterOptions.Anisotropic:
-                        case Graphics.FilterOptions.Linear:
+						case Graphics.FilterOptions.Anisotropic:
+						case Graphics.FilterOptions.None:
+						case Graphics.FilterOptions.Linear:
 							return TextureFilter.Linear;
 
-                        case Graphics.FilterOptions.Point:
-							return TextureFilter.Point;
-
-                        case Graphics.FilterOptions.None:
+						case Graphics.FilterOptions.Point:
 							return TextureFilter.Point;
 					}
 					break;

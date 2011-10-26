@@ -45,10 +45,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\archives\AxiomCore.zip">
-      <Link>Media\Archives\AxiomCore.zip</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\media\configuration\Terrain.xml">
       <Link>Media\Configuration\Terrain.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -503,36 +499,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\media\browserimages\BezierPatch.jpg">
       <Link>Media\BrowserImages\BezierPatch.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\archives\chiropteraDM.zip">
-      <Link>Media\Archives\chiropteraDM.zip</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\archives\cubemapsJS.zip">
-      <Link>Media\Archives\cubemapsJS.zip</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\archives\Fresnel.zip">
-      <Link>Media\Archives\Fresnel.zip</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\archives\RZR-002.zip">
-      <Link>Media\Archives\RZR-002.zip</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\archives\Water.zip">
-      <Link>Media\Archives\Water.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -1403,12 +1369,6 @@
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\..\media\textures\Random3D.dds">
       <Link>Media\Textures\Random3D.dds</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\..\..\..\media\textures\SkyBoxes.zip">
-      <Link>Media\Textures\SkyBoxes.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

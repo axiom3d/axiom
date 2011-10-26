@@ -54,8 +54,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Graphics.Collections;
 using Axiom.Media;
-
-using XFG = Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 
 using Rectangle = Axiom.Core.Rectangle;
 
@@ -66,7 +65,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// The Xna implementation of the RenderWindow class.
 	/// </summary>
-	public class XnaRenderWindow : RenderWindow, XFG.IGraphicsDeviceService
+	public class XnaRenderWindow : RenderWindow, IGraphicsDeviceService
 	{
 		#region Fields and Properties
 
@@ -80,11 +79,11 @@ namespace Axiom.RenderSystems.Xna
 		private readonly bool _isSwapChain; // Is this a secondary window?
 
 		/// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-		private XFG.RenderTarget2D _renderSurface;
+		private RenderTarget2D _renderSurface;
 
-		//private XFG.DepthStencilBuffer _stencilBuffer;
+		//private DepthStencilBuffer _stencilBuffer;
 
-		//private XFG.MultiSampleType _fsaaType;
+		//private MultiSampleType _fsaaType;
 		private int _fsaaQuality;
 		private int _displayFrequency;
 		private bool _vSync;
@@ -172,7 +171,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region RenderSurface Property
 
-		public XFG.SurfaceFormat RenderSurfaceFormat
+		public SurfaceFormat RenderSurfaceFormat
 		{
 			get
 			{
@@ -184,9 +183,9 @@ namespace Axiom.RenderSystems.Xna
 
 		#region PresentationParameters Property
 
-		private XFG.PresentationParameters _xnapp;
+		private PresentationParameters _xnapp;
 
-		public XFG.PresentationParameters PresentationParameters
+		public PresentationParameters PresentationParameters
 		{
 			get
 			{
@@ -231,7 +230,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="driver">The root driver</param>
 		/// <param name="deviceIfSwapChain"></param>
-		public XnaRenderWindow( Driver driver, XFG.GraphicsDevice deviceIfSwapChain )
+		public XnaRenderWindow( Driver driver, GraphicsDevice deviceIfSwapChain )
 			: this( driver )
 		{
 			_isSwapChain = ( deviceIfSwapChain != null );
@@ -287,7 +286,7 @@ namespace Axiom.RenderSystems.Xna
 
 				if ( miscParams.ContainsKey( "xnaGraphicsDevice" ) )
 				{
-					var graphics = miscParams[ "xnaGraphicsDevice" ] as XFG.GraphicsDevice;
+					var graphics = miscParams[ "xnaGraphicsDevice" ] as GraphicsDevice;
 					this.Driver.XnaDevice = graphics;
 				}
 
@@ -348,7 +347,7 @@ namespace Axiom.RenderSystems.Xna
 				//// FSAA type
 				//if ( miscParams.ContainsKey( "FSAA" ) )
 				//{   
-				//    //_fsaaType = (XFG.MultiSampleType)miscParams[ "FSAA" ];
+				//    //_fsaaType = (MultiSampleType)miscParams[ "FSAA" ];
 				//}
 
 				// FSAA quality
@@ -498,18 +497,18 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 #if !( SILVERLIGHT || WINDOWS_PHONE )
-			XFG.GraphicsAdapter.UseReferenceDevice = false;
+			GraphicsAdapter.UseReferenceDevice = false;
 
 			if ( _driver.Description.ToLower().Contains( "nvperfhud" ) )
 			{
 				_useNVPerfHUD = true;
-				XFG.GraphicsAdapter.UseReferenceDevice = true;
+				GraphicsAdapter.UseReferenceDevice = true;
 			}
 
-			_xnapp = new XFG.PresentationParameters();
+			_xnapp = new PresentationParameters();
 
 			_xnapp.IsFullScreen = IsFullScreen;
-			_xnapp.RenderTargetUsage = XFG.RenderTargetUsage.DiscardContents;
+			_xnapp.RenderTargetUsage = RenderTargetUsage.DiscardContents;
 			//this._xnapp.BackBufferCount = _vSync ? 2 : 1;
 			//this._xnapp.EnableAutoDepthStencil = isDepthBuffered;
 			_xnapp.DeviceWindowHandle = _windowHandle;
@@ -519,7 +518,7 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( _vSync )
 			{
-				_xnapp.PresentationInterval = XFG.PresentInterval.One;
+				_xnapp.PresentationInterval = PresentInterval.One;
 			}
 			else
 			{
@@ -532,20 +531,20 @@ namespace Axiom.RenderSystems.Xna
 					LogManager.Instance.Write(
 						"[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
 				}
-				_xnapp.PresentationInterval = XFG.PresentInterval.Immediate;
+				_xnapp.PresentationInterval = PresentInterval.Immediate;
 			}
-			_xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
+			_xnapp.BackBufferFormat = SurfaceFormat.Bgr565;
 			if ( ColorDepth > 16 )
 			{
-				_xnapp.BackBufferFormat = XFG.SurfaceFormat.Color;
+				_xnapp.BackBufferFormat = SurfaceFormat.Color;
 			}
 #endif
 
 			var currentAdapter = _driver.Adapter;
 			if ( ColorDepth > 16 )
 			{
-				XFG.SurfaceFormat bestSurfaceFormat;
-				XFG.DepthFormat bestDepthStencilFormat;
+				SurfaceFormat bestSurfaceFormat;
+				DepthFormat bestDepthStencilFormat;
 				int bestMultiSampleCount;
 
 
@@ -555,7 +554,7 @@ namespace Axiom.RenderSystems.Xna
 					// Create swap chain
 					try
 					{
-						_swapChain = new XFG.SwapChain( device, this._xnapp );
+						_swapChain = new SwapChain( device, this._xnapp );
 					}
 					catch ( Exception )
 					{
@@ -563,7 +562,7 @@ namespace Axiom.RenderSystems.Xna
 						// which will be corrected by the runtime
 						try
 						{
-							_swapChain = new XFG.SwapChain( device, this._xnapp );
+							_swapChain = new SwapChain( device, this._xnapp );
 						}
 						catch ( Exception ex )
 						{
@@ -572,13 +571,13 @@ namespace Axiom.RenderSystems.Xna
 					}
 
 					// Store references to buffers for convenience
-					_renderSurface = _swapChain.GetBackBuffer( 0, XFG.BackBufferType.Mono );
+					_renderSurface = _swapChain.GetBackBuffer( 0, BackBufferType.Mono );
 
 					// Additional swap chains need their own depth buffer
 					// to support resizing them
 					if ( isDepthBuffered )
 					{
-						bool discard = ( this._xnapp.PresentationFlag & XFG.PresentFlag.DiscardDepthStencil ) == 0;
+						bool discard = ( this._xnapp.PresentationFlag & PresentFlag.DiscardDepthStencil ) == 0;
 
 						try
 						{
@@ -598,7 +597,7 @@ namespace Axiom.RenderSystems.Xna
 						var configOptions = Root.Instance.RenderSystem.ConfigOptions;
 						var FPUMode = configOptions[ "Floating-point mode" ];
 #if SILVERLIGHT 
-						device = XFG.GraphicsDeviceManager.Current.GraphicsDevice;
+						device = GraphicsDeviceManager.Current.GraphicsDevice;
 #else
 						// Set default settings (use the one Axiom discovered as a default)
 						var adapterToUse = Driver.Adapter;
@@ -607,7 +606,7 @@ namespace Axiom.RenderSystems.Xna
 						{
 							// Look for 'NVIDIA NVPerfHUD' adapter
 							// If it is present, override default settings
-							foreach ( var adapter in XFG.GraphicsAdapter.Adapters )
+							foreach ( var adapter in GraphicsAdapter.Adapters )
 							{
 								LogManager.Instance.Write(
 									"[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName,
@@ -618,17 +617,17 @@ namespace Axiom.RenderSystems.Xna
 										"[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName,
 										adapter.Description );
 									adapterToUse = adapter;
-									XFG.GraphicsAdapter.UseReferenceDevice = true;
+									GraphicsAdapter.UseReferenceDevice = true;
 									break;
 								}
 							}
 						}
 
-						var _profile = adapterToUse.IsProfileSupported( XFG.GraphicsProfile.HiDef )
-										   ? XFG.GraphicsProfile.HiDef
-										   : XFG.GraphicsProfile.Reach;
+						var _profile = adapterToUse.IsProfileSupported( GraphicsProfile.HiDef )
+										   ? GraphicsProfile.HiDef
+										   : GraphicsProfile.Reach;
 						currentAdapter.QueryBackBufferFormat( _profile, _xnapp.BackBufferFormat,
-															  XFG.DepthFormat.Depth24Stencil8, _fsaaQuality,
+															  DepthFormat.Depth24Stencil8, _fsaaQuality,
 															  out bestSurfaceFormat, out bestDepthStencilFormat,
 															  out bestMultiSampleCount );
 
@@ -644,7 +643,7 @@ namespace Axiom.RenderSystems.Xna
 						{
 							// hardware vertex processing
 							_xnapp.DeviceWindowHandle = _windowHandle;
-							device = new XFG.GraphicsDevice( adapterToUse, _profile, _xnapp );
+							device = new GraphicsDevice( adapterToUse, _profile, _xnapp );
 						}
 						catch ( Exception )
 						{
@@ -652,7 +651,7 @@ namespace Axiom.RenderSystems.Xna
 							{
 								// Try a second time, may fail the first time due to back buffer count,
 								// which will be corrected down to 1 by the runtime
-								device = new XFG.GraphicsDevice( adapterToUse, _profile, _xnapp );
+								device = new GraphicsDevice( adapterToUse, _profile, _xnapp );
 							}
 							catch ( Exception ex )
 							{
@@ -784,13 +783,13 @@ namespace Axiom.RenderSystems.Xna
 			if ( !IsFullScreen )
 			{
 #if !SILVERLIGHT
-				var p = new XFG.PresentationParameters(); // (_device.PresentationParameters);//swapchain
+				var p = new PresentationParameters(); // (_device.PresentationParameters);//swapchain
 				p.BackBufferHeight = height;
 				p.BackBufferWidth = width;
 				//_swapChain.Dispose();
-				//_swapChain = new XFG.SwapChain( _device, p );
+				//_swapChain = new SwapChain( _device, p );
 				/*_stencilBuffer.Dispose();
-				_stencilBuffer = new XFG.DepthStencilBuffer(
+				_stencilBuffer = new DepthStencilBuffer(
 					_device,
 					width, height,
 					_device.PresentationParameters.AutoDepthStencilFormat,
@@ -833,10 +832,10 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			var device = Driver.XnaDevice;
-			//in 3.1, this was XFG.ResolveTexture2D, an actual RenderTarget provides the exact same
+			//in 3.1, this was ResolveTexture2D, an actual RenderTarget provides the exact same
 			//functionality, especially seeing as RenderTarget2D is a texture now.
 			//the difference is surface is actually set on the device -DoubleA
-			XFG.RenderTarget2D surface;
+			RenderTarget2D surface;
 			var data = new byte[ dst.ConsecutiveSize ];
 			var pitch = 0;
 
@@ -850,9 +849,9 @@ namespace Axiom.RenderSystems.Xna
 			surface = new RenderTarget2D(device, mode.Width, mode.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
 #else
 			var mode = device.DisplayMode;
-			surface = new XFG.RenderTarget2D( device, mode.Width, mode.Height, false, XFG.SurfaceFormat.Rgba64, XFG.DepthFormat.Depth24Stencil8 );
+			surface = new RenderTarget2D( device, mode.Width, mode.Height, false, SurfaceFormat.Rgba64, DepthFormat.Depth24Stencil8 );
 #endif
-			//XFG.ResolveTexture2D( device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32 );
+			//ResolveTexture2D( device, mode.Width, mode.Height, 0, SurfaceFormat.Rgba32 );
 
 #if !SILVERLIGHT
 			if ( buffer == FrameBuffer.Front )
@@ -941,10 +940,10 @@ namespace Axiom.RenderSystems.Xna
 
 		private void OnResetDevice( object sender, EventArgs e )
 		{
-			var resetDevice = (XFG.GraphicsDevice)sender;
+			var resetDevice = (GraphicsDevice)sender;
 
 			// Turn off culling, so we see the front and back of the triangle
-			resetDevice.RasterizerState.CullMode = XFG.CullMode.None;
+			resetDevice.RasterizerState.CullMode = CullMode.None;
 			// Turn on the ZBuffer
 			//resetDevice.RenderState.ZBufferEnable = true;
 			//resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
@@ -965,11 +964,11 @@ namespace Axiom.RenderSystems.Xna
 #else
 			switch ( device.GraphicsDeviceStatus )
 			{
-				case XFG.GraphicsDeviceStatus.Lost:
+				case GraphicsDeviceStatus.Lost:
 					Thread.Sleep( 50 );
 					return;
 
-				case XFG.GraphicsDeviceStatus.NotReset:
+				case GraphicsDeviceStatus.NotReset:
 					break;
 			}
 			base.Update( swapBuffers );
@@ -1020,7 +1019,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public event EventHandler<EventArgs> DeviceResetting;
 
-		public XFG.GraphicsDevice GraphicsDevice
+		public GraphicsDevice GraphicsDevice
 		{
 			get
 			{

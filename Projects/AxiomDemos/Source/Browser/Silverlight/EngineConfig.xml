@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-  <FilePath type="ZipFile" src="Axiom.Content/Media/Archives/AxiomCore.zip" group="bootstrap"/>
+  <FilePath type="ZipFile" src="Media/Archives/AxiomCore.zip" group="bootstrap"/>
   <FilePath type="Embedded" src="Axiom.Content/Media/Configuration"/>
   <FilePath type="Embedded" src="Axiom.Content/Media/Textures"/>
   <FilePath type="Embedded" src="Axiom.Content/Media/BrowserImages"/>
@@ -12,9 +12,12 @@
   <FilePath type="Embedded" src="Axiom.Content/Media/Materials"/>
   <FilePath type="Embedded" src="Axiom.Content/Media/Overlays"/>
   <FilePath type="Embedded" src="Axiom.Content/Media/GpuPrograms"/>
-  <FilePath type="ZipFile" src="Axiom.Content/Media/Archives/Fresnel.zip"/>
-  <FilePath type="ZipFile" src="Axiom.Content/Media/Textures/SkyBoxes.zip"/>
-  <FilePath type="ZipFile" src="Axiom.Content/Media/Archives/Water.zip"/>
+  <FilePath type="ZipFile" src="Media/Archives/Fresnel.zip"/>
+  <FilePath type="ZipFile" src="Media/Textures/SkyBoxes.zip"/>
+  <FilePath type="ZipFile" src="Media/Archives/chiropteraDM.zip"/>
+  <FilePath type="ZipFile" src="Media/Archives/cubemapsJS.zip"/>
+  <FilePath type="ZipFile" src="Media/Archives/RZR-002.zip"/>
+  <FilePath type="ZipFile" src="Media/Archives/Water.zip"/>
   <ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Video Mode" Value="800 x 600 @ 32-bit color" />
 	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="Full Screen" Value="No" />
 	<ConfigOption RenderSystem="Axiom.RenderSystems.Xna.XnaRenderSystem" Name="VSync" Value="No" />

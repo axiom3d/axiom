@@ -106,7 +106,7 @@ namespace Axiom.FileSystem
 
 			var entry = _zipStream.GetNextEntry();
 			if (pattern.Contains("*"))
-				pattern = pattern.Replace( ".", "\\." ).Replace( "*", ".*" );
+				pattern = pattern.Replace( ".", Path.DirectorySeparatorChar + "." ).Replace( "*", ".*" );
 			var ex = new Regex(pattern);
 
 			while ( entry != null )
@@ -202,13 +202,14 @@ namespace Axiom.FileSystem
 				{
 					_zipFile = Name;
 					var isf = IsolatedStorageFile.GetUserStoreForApplication();
-                    fs = isf.OpenFile(_zipFile, FileMode.Open, FileAccess.Read);
+					fs = isf.OpenFile(_zipFile, FileMode.Open, FileAccess.Read);
 				}
 #endif
 
 #if SILVERLIGHT
 				if (fs == null)
 				{
+					_zipFile = Name;
 					var res = Application.GetResourceStream(new Uri(_zipFile, UriKind.RelativeOrAbsolute));
 					if (res != null)
 						fs = res.Stream;

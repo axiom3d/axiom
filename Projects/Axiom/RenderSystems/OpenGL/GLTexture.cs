@@ -199,6 +199,9 @@ namespace Axiom.RenderSystems.OpenGL
 				stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 				image = Image.FromStream( stream, ext );
 
+				if (image == null)
+					return;
+
 				// If this is a cube map, set the texture type flag accordingly.
 				if ( image.HasFlag( ImageFlags.CubeMap ) )
 					TextureType = TextureType.CubeMap;

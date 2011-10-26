@@ -23,11 +23,9 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -43,7 +41,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +62,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
@@ -84,13 +83,19 @@
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System">
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition">
+    </Reference>
+    <Reference Include="System.Data">
+    </Reference>
+    <Reference Include="System.Drawing">
+    </Reference>
+    <Reference Include="System.Xml">
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -128,9 +133,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BezierPatch.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="bsp.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CameraTrack.cs">
@@ -186,6 +188,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Water.cs" />
+    <Compile Include="BSP.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Configuration\EngineConfig.xsc">
@@ -198,11 +203,39 @@
       <DependentUpon>EngineConfig.xsd</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.v4.0.csproj">
+      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
+      <Name>Axiom.Plugins.OctreeZone.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.v4.0.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
+      <Name>Axiom.SceneManagers.Octree.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.v4.0.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected.2010.v4.0</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <WarningLevel>0</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>

@@ -47,6 +47,12 @@ namespace Axiom.RenderSystems.Xna
 {
     public class XnaMaterialManager : MaterialManager
     {
+        public XnaMaterialManager() : base()
+        {
+            //TODO: Temporary hack to prevent a bug from setting 2D filtering to Point (from the mip filter) when Bilinear is used
+            SetDefaultTextureFiltering(TextureFiltering.Trilinear);            
+        }
+
         protected override Resource _create( string name, ulong handle, string group, bool isManual,
                                              IManualResourceLoader loader, NameValuePairList createParams )
         {

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8BEFBF14-F299-4713-B220-01E355E35E08}</ProjectGuid>
+    <ProjectGuid>{AA45BCE9-8C12-4A1E-98E7-E6EDDD85044D}</ProjectGuid>
     <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -16,7 +16,7 @@
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
-    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
@@ -47,6 +47,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Phone.Reactive" />
+    <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="System.ComponentModel.Composition">
       <HintPath>..\..\..\Lib\Managed\XPlatform\MEF-WP7\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
@@ -60,6 +61,7 @@
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
+    <Compile Include="FileSystem\TitleContainerArchive.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="FileSystem\XapArchive.cs" />
     <Compile Include="mono\Comparer.cs" />
@@ -838,12 +840,12 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpZipLib.Silverlight\SharpZipLib.2010.SLWP7.csproj">
-      <Project>{7B257BE0-BAA4-4877-800C-05DDDAFB6443}</Project>
-      <Name>SharpZipLib.2010.SLWP7</Name>
-    </ProjectReference>
+    <Content Include="mono\ExpressionCompiler\ExpressionCompiler.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mono\ExpressionCompiler\ExpressionCompiler.csproj" />
+    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpZipLib.Silverlight\SharpZipLib.Silverlight.Phone.csproj">
+      <Project>{59D34490-5305-4671-BC45-CE29DC3713FD}</Project>
+      <Name>SharpZipLib.Silverlight.Phone</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -18,12 +18,12 @@ namespace Bind.Glx
         public Generator()
             : base()
         {
-            glTypemap = "Glx\\glx.tm";
+            glTypemap = "Glx/glx.tm";
             csTypemap = "csharp.tm";
-            enumSpec = "Glx\\glxenum.spec";
-            enumSpecExt = "Glx\\glxenumext.spec";
-            glSpec = "Glx\\glx.spec";
-            glSpecExt = "Glx\\glxext.spec";
+            enumSpec = "Glx/glxenum.spec";
+            enumSpecExt = "Glx/glxenumext.spec";
+            glSpec = "Glx/glx.spec";
+            glSpecExt = "Glx/glxext.spec";
 
             importsFile = "GlxCore.cs";
             delegatesFile = "GlxDelegates.cs";

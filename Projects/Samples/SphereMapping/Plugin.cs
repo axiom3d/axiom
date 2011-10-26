@@ -1,6 +1,9 @@
-﻿
+﻿using System.ComponentModel.Composition;
+using Axiom.Core;
+
 namespace Axiom.Samples.SphereMapping
 {
+	[Export(typeof(IPlugin))]
 	public class Plugin : SamplePlugin
 	{
 		private SphereMappingSample sample;

@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Demos
 {
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
 	[Export(typeof(TechDemo))]
 #endif
 	public class BezierPatch : TechDemo

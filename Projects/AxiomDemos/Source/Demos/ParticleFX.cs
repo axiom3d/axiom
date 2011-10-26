@@ -13,7 +13,7 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Particles.
 	/// </summary>
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
     [Export(typeof(TechDemo))]
 #endif
     public class ParticleFX : TechDemo

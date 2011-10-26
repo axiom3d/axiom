@@ -19,7 +19,7 @@ namespace Axiom.Demos
 	///     Demo allowing you to visualize a viewing frustom and bounding box culling.
 	/// </summary>
 	// TODO: Make sure recalculateView is being set properly for frustum updates.
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
     [Export(typeof(TechDemo))]
 #endif
     public class FrustumCulling : TechDemo

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Axiom.RenderSystems.OpenGL.OpenTK</AssemblyName>
@@ -24,12 +24,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <TargetFrameworkProfile />
     <PublishUrl>http://localhost/Axiom.RenderSystems.OpenGL/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -44,10 +41,11 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(TargetFrameworkVersion)Debug\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;NET_40</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
@@ -56,7 +54,6 @@
     <FileAlignment>4096</FileAlignment>
     <NoWarn>1591 1030 1570</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\x86v4.0Debug\Axiom.RenderSystems.OpenGL.OpenTK.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
@@ -65,9 +62,11 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(TargetFrameworkVersion)Release\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;NET_40</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
@@ -76,7 +75,6 @@
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\x86v4.0Release\Axiom.RenderSystems.OpenGL.OpenTK.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
@@ -86,23 +84,30 @@
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK">
+    <Reference Include="System">
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition">
+    </Reference>
+    <Reference Include="System.Data">
+    </Reference>
+    <Reference Include="System.Drawing">
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+    </Reference>
+    <Reference Include="System.Xml">
+    </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.Compatibility">
+    <Reference Include="OpenTK.Compatibility, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.Compatibility.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.GLControl">
+    <Reference Include="OpenTK.GLControl, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.GLControl.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
@@ -270,5 +275,14 @@
     </PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(TargetFrameworkVersion)Mono-Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>

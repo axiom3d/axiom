@@ -39,6 +39,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
@@ -506,7 +507,8 @@ namespace Axiom.Fonts
 				{
 					// load this texture
 					// TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-					_texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
+
+					_texture = TextureManager.Instance.Load(Source, Group, TextureType.TwoD, 0);
 
 					blendByAlpha = texture.HasAlpha;
 					// pre-created font images
@@ -566,7 +568,7 @@ namespace Axiom.Fonts
 		public void LoadResource( Resource resource )
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
-#if !(XBOX || XBOX360 || ANDROID || IPHONE)
+#if !(XBOX || XBOX360 || ANDROID || IPHONE || SILVERLIGHT)
 			var current = Environment.CurrentDirectory;
 
 			var ftLibrary = IntPtr.Zero;
@@ -617,10 +619,10 @@ namespace Axiom.Fonts
 				for ( var cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
 				{
 					FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
-					FT_FaceRec rec = (FT_FaceRec)Marshal.PtrToStructure( face, typeof( FT_FaceRec ) );
-					FT_GlyphSlotRec glyp = (FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( FT_GlyphSlotRec ) );
-					//var rec = face.PtrToStructure<FT_FaceRec>();
-					//var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
+
+					var rec = face.PtrToStructure<FT_FaceRec>();
+					var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
+
 					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
 						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
 					if ( glyp.metrics.horiBearingY > maxBearingY )
@@ -684,9 +686,9 @@ namespace Axiom.Fonts
 #if (SILVERLIGHT || WINDOWS_PHONE)
 												   cp
 #else
- char.ConvertFromUtf32( cp )
+												   char.ConvertFromUtf32( cp )
 #endif
- + "' in font " + _name + "." );
+												   + "' in font " + _name + "." );
 						continue;
 					}
 
@@ -697,18 +699,19 @@ namespace Axiom.Fonts
 					unsafe
 #endif
 					{
-						if ( glyp.bitmap.buffer == null )
+						if ( glyp.bitmap.buffer == IntPtr.Zero )
 						{
 							LogManager.Instance.Write( "Info: Freetype returned null for character '" +
 #if (SILVERLIGHT || WINDOWS_PHONE)
 													   cp
 #else
- char.ConvertFromUtf32( cp )
+													   char.ConvertFromUtf32( cp )
 #endif
- + "' in font " + _name + "." );
+													   + "' in font " + _name + "." );
 							continue;
 						}
-						var buffer = glyp.bitmap.buffer.ToBytePointer();
+
+						var buffer = BufferBase.Wrap(glyp.bitmap.buffer, glyp.bitmap.rows * glyp.bitmap.pitch).ToBytePointer();
 						var idx = 0;
 						var imageDataPtr = Memory.PinObject( imageData ).ToBytePointer();
 						var y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
@@ -773,8 +776,8 @@ namespace Axiom.Fonts
 			tex.LoadImages( images );
 			FT.FT_Done_FreeType( ftLibrary );
 
-			//img.Save( "C:\\" + Name + ".png" );
-			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
+			//img.Save( "C:" + Path.DirectorySeparatorChar + Name + ".png" );
+			//FileStream file = new FileStream( "C:" + Path.DirectorySeparatorChar + Name + ".fontdef", FileMode.Create );
 			//StreamWriter str = new StreamWriter( file );
 			//str.WriteLine( Name );
 			//str.WriteLine( "{" );

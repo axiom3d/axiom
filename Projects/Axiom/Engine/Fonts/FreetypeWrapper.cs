@@ -231,7 +231,7 @@ namespace Axiom.Fonts
         /// <summary>
         /// 
         /// </summary>
-        public BufferBase /*byte*/ buffer;
+        public IntPtr /* byte* */ buffer;
         /// <summary>
         /// 
         /// </summary>
@@ -247,7 +247,7 @@ namespace Axiom.Fonts
         /// <summary>
         /// 
         /// </summary>
-        public IntPtr /*void*/ palette;
+        public IntPtr /* void* */ palette;
     }
 
     /// <summary>

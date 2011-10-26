@@ -18,11 +18,11 @@ namespace Bind.GL2
     {
         #region --- Fields ---
 
-        protected static string glTypemap = "GL2\\gl.tm";
+        protected static string glTypemap = "GL2/gl.tm";
         protected static string csTypemap = "csharp.tm";
-        protected static string enumSpec = "GL2\\enum.spec";
-        protected static string enumSpecExt = "GL2\\enumext.spec";
-        protected static string glSpec = "GL2\\gl.spec";
+        protected static string enumSpec = "GL2/enum.spec";
+        protected static string enumSpecExt = "GL2/enumext.spec";
+        protected static string glSpec = "GL2/gl.spec";
         protected static string glSpecExt = "";
         
         protected static string importsFile = "GLCore.cs";

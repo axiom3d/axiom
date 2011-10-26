@@ -14,18 +14,18 @@ namespace Bind.Glu
 {
     class Generator : Bind.GL2.Generator
     {
-        string enumSpecAux = "GL2\\enum.spec";
+        string enumSpecAux = "GL2/enum.spec";
 
         #region --- Constructors ---
 
         public Generator()
             : base()
         {
-            glTypemap = "Glu\\glu.tm";
+            glTypemap = "Glu/glu.tm";
             csTypemap = "csharp.tm";
-            enumSpec = "Glu\\enumglu.spec";
+            enumSpec = "Glu/enumglu.spec";
             enumSpecExt = "";
-            glSpec = "Glu\\glu.spec";
+            glSpec = "Glu/glu.spec";
             glSpecExt = "";
 
             importsFile = "GluCore.cs";

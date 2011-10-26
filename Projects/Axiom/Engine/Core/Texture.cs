@@ -1006,6 +1006,14 @@ namespace Axiom.Core
 		}
 		protected abstract void freeInternalResources();
 
+		public bool IsPowerOfTwo
+		{
+			get
+			{
+				return (_width & (_width - 1)) == 0 && (_height & (_height - 1)) == 0;
+			}
+		}
+
 		#endregion Methods
 
 		#region Implementation of Resource
