@@ -1,33 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
-    <ProjectGuid>{5F3D5223-F557-4F4B-B4AA-B27B4C482097}</ProjectGuid>
+    <ProjectGuid>{FBB4DCA2-56AE-4BE9-BF78-0AFED33C3778}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Windows Phone</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Axiom.Demos.Browser.Xna</RootNamespace>
-    <AssemblyName>Axiom.Demos.Xbox.CameraTrack</AssemblyName>
+    <RootNamespace>Axiom.Demos</RootNamespace>
+    <AssemblyName>Axiom.Demos</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows Phone</XnaPlatform>
-    <ApplicationIcon>..\Common\Game.ico</ApplicationIcon>
-    <Thumbnail>..\Common\GameThumbnail.png</Thumbnail>
+    <XnaCrossPlatformGroupID>0f1966b0-0549-4167-862e-64b69265f100</XnaCrossPlatformGroupID>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <Thumbnail>
+    </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <XnaCrossPlatformGroupID>0BB792C7-B8BE-4f95-98C4-81767070654D</XnaCrossPlatformGroupID>
+    <StartupObject>
+    </StartupObject>
     <XnaUpgrade>
     </XnaUpgrade>
-    <XnaOutputType>Game</XnaOutputType>
+    <XnaOutputType>Library</XnaOutputType>
     <XnaProfile>Reach</XnaProfile>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>4.0</OldToolsVersion>
-    <UpgradeBackupLocation />
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -46,9 +51,8 @@
     <SilverlightManifestTemplate Condition="$(XnaOutputType)=='Game'">Properties\AppManifest.xml</SilverlightManifestTemplate>
     <XnaWindowsPhoneManifestTemplate Condition="$(XnaOutputType)=='Game'">Properties\WMAppManifest.xml</XnaWindowsPhoneManifestTemplate>
     <TileImage Condition="$(XnaOutputType)=='Game'">Background.png</TileImage>
-    <TileTitle Condition="$(XnaOutputType)=='Game'">Axiom.Demos.Xbox.CameraTrack</TileTitle>
+    <TileTitle Condition="$(XnaOutputType)=='Game'">$(AssemblyName)</TileTitle>
     <SupportedCultures />
-    <GameStartupType>Axiom.Demos.Browser.Xna.DemoHost</GameStartupType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Windows Phone' ">
     <OutputPath>bin\Windows Phone\Debug</OutputPath>
@@ -59,7 +63,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;WINDOWS_PHONE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS_PHONE;AXIOM_SAFE_ONLY</DefineConstants>
     <XnaCompressContent>false</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Windows Phone' ">
@@ -70,12 +74,42 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE;WINDOWS_PHONE</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS_PHONE;AXIOM_SAFE_ONLY</DefineConstants>
     <XnaCompressContent>false</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DemoHost.cs" />
+    <ProjectReference Include="..\..\..\Axiom\Engine\Axiom.Xna.Phone.csproj">
+      <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
+      <Name>Axiom.Xna.Phone</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BezierPatch.cs" />
+    <Compile Include="CameraTrack.cs" />
+    <Compile Include="CelShading.cs" />
+    <Compile Include="CubeMapping.cs" />
+    <Compile Include="Dot3Bump.cs" />
+    <Compile Include="EnvMapping.cs" />
+    <Compile Include="Fresnel.cs" />
+    <Compile Include="FrustumCulling.cs" />
+    <Compile Include="HardwareOcclusion.cs" />
+    <Compile Include="Lights.cs" />
+    <Compile Include="OffsetMapping.cs" />
+    <Compile Include="ParticleFX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderToTexture.cs" />
+    <Compile Include="Shadows.cs" />
+    <Compile Include="SkeletalAnimation.cs" />
+    <Compile Include="SkyBox.cs" />
+    <Compile Include="SkyDome.cs" />
+    <Compile Include="SkyPlane.cs" />
+    <Compile Include="Smoke.cs" />
+    <Compile Include="TechDemo.cs" />
+    <Compile Include="Terrain.cs" />
+    <Compile Include="TextureFX.cs" />
+    <Compile Include="Transparency.cs" />
+    <Compile Include="Tutorial1.cs" />
+    <Compile Include="Water.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -108,9 +142,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Xna.Framework.3.1">
+    <BootstrapperPackage Include="Microsoft.Xna.Framework.3.0">
       <Visible>False</Visible>
-      <ProductName>Microsoft XNA Framework Redistributable 3.1</ProductName>
+      <ProductName>Microsoft XNA Framework Redistributable 3.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Xna.Framework.4.0">
@@ -129,59 +163,6 @@
     <None Include="Properties\WMAppManifest.xml">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Axiom\Engine\Axiom.Xna.Phone.csproj">
-      <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
-      <Name>Axiom.Xna.Phone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.Phone.csproj">
-      <Project>{A1909A31-E4E3-46EF-98AA-A407F0DE301F}</Project>
-      <Name>Axiom.RenderSystems.Xna.Phone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Phone.csproj">
-      <Project>{950BCDB5-594A-45E6-8789-2DC27A282419}</Project>
-      <Name>Axiom.RenderSystems.Xna.Content.Phone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Demos\Axiom.Demos.Xna.WP7.csproj">
-      <Project>{ea713414-88b7-4ebc-8645-e168ed7d65c0}</Project>
-      <Name>Axiom.Demos.Xna.WP7</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
-    <ProjectReference Include="Content\Axiom.Content.CameraTrack.contentproj">
-      <Project>{875935E2-A4BC-4AD9-9CF9-95A8EBC519A9}</Project>
-      <Name>Axiom.Content.CameraTrack %28Content%29</Name>
-      <XnaReferenceType>Content</XnaReferenceType>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Common\Game.cs">
-      <Link>Game.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\Properties\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\XnaInput.cs">
-      <Link>XnaInput.cs</Link>
-    </Compile>
-    <Compile Include="..\Common\XnaInput.XBox.cs">
-      <Link>XnaInput.XBox.cs</Link>
-    </Compile>
-    <Compile Include="Game.Xbox.CameraTrack.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <NestedContentProject Include="Content\Axiom.Content.CameraTrack.contentproj">
-      <Project>ec8c6d1f-65fd-4368-9ab6-25aaa71f1326</Project>
-      <Visible>false</Visible>
-    </NestedContentProject>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\Common\Game.ico">
-      <Link>Game.ico</Link>
-    </Content>
-    <Content Include="..\Common\GameThumbnail.png">
-      <Link>GameThumbnail.png</Link>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework">
@@ -215,7 +196,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -82,8 +82,8 @@ namespace Axiom.Core
 		private static IPlatformManager instance;
 
 #if NET_40  && !( XBOX || XBOX360 || WINDOWS_PHONE )
-        [ImportMany(typeof(IPlatformManager))]
-        public IEnumerable<IPlatformManager> platforms { private get; set; }
+		[ImportMany(typeof(IPlatformManager))]
+		public IEnumerable<IPlatformManager> platforms { private get; set; }
 #endif
 
 		/// <summary>
@@ -91,7 +91,7 @@ namespace Axiom.Core
 		/// </summary>
 		internal PlatformManager()
 		{
-            // First look in current Executing assembly for a PlatformManager
+			// First look in current Executing assembly for a PlatformManager
 			if ( instance == null )
 			{
 				var platformMgr = new DynamicLoader();
@@ -103,48 +103,48 @@ namespace Axiom.Core
 			}
 
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
-            if (instance == null)
-            {
-                this.SatisfyImports();
-                if (platforms.Count() != 0)
-                {
-                    instance = platforms.First();
-                    System.Diagnostics.Debug.WriteLine(String.Format("MEF IPlatformManager: {0}.", instance));
-                }
-            }
+			if (instance == null)
+			{
+				this.SatisfyImports(".");
+				if (platforms != null && platforms.Count() != 0)
+				{
+					instance = platforms.First();
+					System.Diagnostics.Debug.WriteLine(String.Format("MEF IPlatformManager: {0}.", instance));
+				}
+			}
 #endif
 
 #if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 )
 			// Then look in loaded assemblies
 			if ( instance == null )
 			{
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                for (var index = 0; index < assemblies.Length && instance == null; index++)
-                {
-                    //TODO: NRSC Added: Deal with Dynamic Assemblies not having a Location
-                    //if (assemblies[index].IsDynamic)
-                    //    continue;
-                    try
-                    {
-                        var platformMgr = new DynamicLoader(assemblies[index].Location);
-                        var platforms = platformMgr.Find(typeof (IPlatformManager));
-                        if (platforms.Count != 0)
-                        {
-                            instance = platformMgr.Find(typeof (IPlatformManager))[0].CreateInstance<IPlatformManager>();
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        System.Diagnostics.Debug.WriteLine(String.Format("Failed to load assembly: {0}.", assemblies[index].FullName));
-                    }
-                }
+				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				for (var index = 0; index < assemblies.Length && instance == null; index++)
+				{
+					//TODO: NRSC Added: Deal with Dynamic Assemblies not having a Location
+					//if (assemblies[index].IsDynamic)
+					//    continue;
+					try
+					{
+						var platformMgr = new DynamicLoader(assemblies[index].Location);
+						var platforms = platformMgr.Find(typeof (IPlatformManager));
+						if (platforms.Count != 0)
+						{
+							instance = platformMgr.Find(typeof (IPlatformManager))[0].CreateInstance<IPlatformManager>();
+						}
+						}
+					catch (Exception)
+					{
+						System.Diagnostics.Debug.WriteLine(String.Format("Failed to load assembly: {0}.", assemblies[index].FullName));
+					}
+				}
 			}
 
-            // Then look in external assemblies
+			// Then look in external assemblies
 			if ( instance == null )
 			{
 				// find and load a platform manager assembly
-                var files = Directory.GetFiles(".", "Axiom.Platforms.*.dll").ToArray();
+				var files = Directory.GetFiles(".", "Axiom.Platforms.*.dll").ToArray();
 				var file = "";
 
 				// make sure there is 1 platform manager available
@@ -183,7 +183,7 @@ namespace Axiom.Core
 				{
 					instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 				}
-            }
+			}
 #endif
 
 			// All else fails, yell loudly

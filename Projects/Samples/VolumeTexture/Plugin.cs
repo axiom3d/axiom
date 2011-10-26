@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using Axiom.Core;
 
 namespace Axiom.Samples.VolumeTexture
 {
-	public class Plugin :SamplePlugin
+	[Export(typeof(IPlugin))]
+	public class Plugin : SamplePlugin
 	{
 		private VolumeTextureSample sample;
 		public override void Initialize()

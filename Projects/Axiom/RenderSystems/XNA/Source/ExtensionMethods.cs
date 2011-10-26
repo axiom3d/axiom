@@ -1,5 +1,4 @@
-﻿using Axiom.Core;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.Core
 {

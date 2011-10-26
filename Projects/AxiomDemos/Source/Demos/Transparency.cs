@@ -14,7 +14,7 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Transparency.
 	/// </summary>
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
     [Export(typeof(TechDemo))]
 #endif
     public class Transparency : TechDemo

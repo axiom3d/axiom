@@ -1414,7 +1414,33 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns>Error message is configuration is invalid <see cref="String.Empty"/> if valid.</returns>
 		public override string ValidateConfigOptions()
 		{
-			throw new NotImplementedException();
+			var mOptions = configOptions;
+			ConfigOption it;
+
+			// check if video mode is selected
+			if (!mOptions.TryGetValue("Video Mode", out it))
+				return "A video mode must be selected.";
+
+			var driverList = XnaHelper.GetDriverInfo();
+			var foundDriver = false;
+			if (mOptions.TryGetValue("Rendering Device", out it))
+			{
+				var name = it.Value;
+				foundDriver = driverList.Any(d => d.Description == name);
+			}
+
+			if (!foundDriver)
+			{
+				// Just pick the first driver
+				SetConfigOption("Rendering Device", driverList.First().Description);
+				return "Your XNA driver name has changed since the last time you ran Axiom; " +
+					   "the 'Rendering Device' has been changed.";
+			}
+
+			it = mOptions["VSync"];
+			vSync = it.Value == "Yes";
+
+			return "";
 		}
 
 		#endregion
@@ -1507,10 +1533,20 @@ namespace Axiom.RenderSystems.Xna
 			{
 				basicEffect.LightingEnabled = false; //turn off lighting
 			}
-			effectToUse.CurrentTechnique.Passes[0].Apply();
+
+			basicEffect.LightingEnabled = (ve != null);
+
+			//Debug.WriteLine(" Vertices=" + op.vertexData.vertexCount +
+			//                " Normals=" + (ve != null) +
+			//                " Lighting=" + basicEffect.LightingEnabled +
+			//                " DL0=" + basicEffect.DirectionalLight0.Enabled +
+			//                " Fog=" + basicEffect.FogEnabled +
+			//                " " + effectToUse);
+
+		   // effectToUse.CurrentTechnique.Passes[0].Apply();
 			//DualTextureEffect dualTextureEffect;
 
-			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
+			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800));)
 			if (op.vertexData.vertexCount == 0)
 			{
 				return;
@@ -1681,13 +1717,21 @@ namespace Axiom.RenderSystems.Xna
 				{
 					var idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 					_device.Indices = idxBuffer.XnaIndexBuffer;
-					_device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount,
-												   op.indexData.indexStart, primCount);
+					foreach (var pass in effectToUse.CurrentTechnique.Passes)
+					{
+						pass.Apply();
+						_device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount,
+													   op.indexData.indexStart, primCount);
+					}
 				}
 				else
 				{
 					// draw vertices without indices
-					_device.DrawPrimitives(primType, op.vertexData.vertexStart, primCount);
+					foreach (var pass in effectToUse.CurrentTechnique.Passes)
+					{
+						pass.Apply();
+						_device.DrawPrimitives(primType, op.vertexData.vertexStart, primCount);
+					}
 				}
 			}
 			catch (InvalidOperationException ioe)
@@ -2959,7 +3003,7 @@ namespace Axiom.RenderSystems.Xna
 				)
 			{
 				//_fixedFunctionState.MaterialEnabled = false;
-				basicEffect.AmbientLightColor = new Color(0, 1, 1, 1).ToVector3();
+				basicEffect.AmbientLightColor = Color.White.ToVector3();
 				basicEffect.DiffuseColor = Color.White.ToVector3();
 			}
 			else
@@ -3088,6 +3132,24 @@ namespace Axiom.RenderSystems.Xna
 				// set stage description
 				texStageDesc[stage].tex = xnaTexture.DXTexture;
 				texStageDesc[stage].texType = xnaTexture.TextureType;
+
+				var state = StateManager.SamplerStates[stage];
+				if (
+#if !SILVERLIGHT
+					_device.GraphicsProfile == GraphicsProfile.Reach && 
+#endif
+					!texture.IsPowerOfTwo)
+				{
+					state.AddressU = TextureAddressMode.Clamp;
+					state.AddressV = TextureAddressMode.Clamp;
+					state.AddressW = TextureAddressMode.Clamp;
+				}
+				else
+				{
+					state.AddressU = TextureAddressMode.Wrap;
+					state.AddressV = TextureAddressMode.Wrap;
+					state.AddressW = TextureAddressMode.Wrap;
+				}
 			}
 			else
 			{

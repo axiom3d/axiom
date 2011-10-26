@@ -116,6 +116,11 @@ namespace Axiom.FileSystem
             return (from file in files where file.EndsWith(pattern) select file).ToArray<string>();
         }
 
+        protected override string[] getFilesRecursively(string dir, string pattern)
+        {
+            return getFiles(dir, pattern, true);
+        }
+
         #endregion Utility Methods
 
         #region Constructors and Destructors

@@ -81,7 +81,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region PresentationParameters Property
 
-		private D3D.PresentParameters _d3dpp;
+		private D3D.PresentParameters _d3dpp = new PresentParameters();
 
 		public D3D.PresentParameters PresentationParameters
 		{

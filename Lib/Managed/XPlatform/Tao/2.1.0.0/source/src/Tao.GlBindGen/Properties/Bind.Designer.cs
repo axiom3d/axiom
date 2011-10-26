@@ -49,7 +49,7 @@ namespace Tao.GlBindGen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\Source\\OpenGL\\OpenGL\\Bindings")]
+        [global::System.Configuration.DefaultSettingValueAttribute("../../Source/OpenGL/OpenGL/Bindings")]
         public string OutputPath {
             get {
                 return ((string)(this["OutputPath"]));
@@ -61,7 +61,7 @@ namespace Tao.GlBindGen.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\Specifications")]
+        [global::System.Configuration.DefaultSettingValueAttribute("../../Specifications")]
         public string InputPath {
             get {
                 return ((string)(this["InputPath"]));

@@ -7,12 +7,6 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Axiom.Content.2010")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("YDreams Informática S.A.")]
-[assembly: AssemblyProduct("Axiom.Content.2010")]
-[assembly: AssemblyCopyright("Copyright © YDreams Informática S.A. 2011")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Version information for an assembly consists of the following four values:
 //

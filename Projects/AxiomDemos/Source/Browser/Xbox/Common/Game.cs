@@ -33,6 +33,10 @@ namespace Axiom.Demos.Browser.Xna
         {
             _xnaDevice = device;
         }
+#else
+        public Game(Microsoft.Xna.Framework.Graphics.GraphicsDevice device = null)
+        {
+        }
 #endif
 
         partial void _setDefaultNextGame();

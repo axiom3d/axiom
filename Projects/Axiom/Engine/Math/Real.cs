@@ -391,6 +391,8 @@ namespace Axiom.Math
 		#endregion Conversion Operators
 
 		#region Operator Overrides
+
+#if !MONO
 		#region Logical Operators
 
 		#region Equality Operators
@@ -419,7 +421,7 @@ namespace Axiom.Math
 			return ( Utility.Abs( right._value - left._value ) >= Tolerance );
 		}
 		#endregion Equality Operators
-
+		
 		/// <summary>
 		/// 
 		/// </summary>
@@ -464,9 +466,10 @@ namespace Axiom.Math
 			return ( left._value <= right._value );
 		}
 
-
 		#endregion Logical Operators
 
+#endif
+		
 		#region Arithmatic Operators
 
 		/// <summary>

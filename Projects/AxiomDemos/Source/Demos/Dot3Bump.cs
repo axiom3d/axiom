@@ -17,10 +17,10 @@ namespace Axiom.Demos
 	///     Demonstrates dotproduct blending operation and normalization cube map
 	///     usage for achieving bump mapping effect.
 	/// </summary>
-#if !WINDOWS_PHONE
-	[Export(typeof(TechDemo))]
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
+    [Export(typeof(TechDemo))]
 #endif
-	public class Dot3Bump : TechDemo
+    public class Dot3Bump : TechDemo
 	{
 		#region Fields
 

@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows;
 using Axiom.CrossPlatform;
+#if !(XBOX || XBOX360)
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Windows;
+using System.Linq.Expressions;
 using Expression = System.Linq.Expressions.Expression;
+#endif
 
 namespace Axiom.Core
 {
-	public static class AssemblyEx
+    public static class AssemblyEx
 	{
+		public static string SafePath(this string path)
+		{
+			return path.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
+		}
+		
 #if !SILVERLIGHT || WINDOWS_PHONE
 		public static IEnumerable<Assembly> Neighbors(IEnumerable<string> names)
 		{
@@ -38,25 +45,30 @@ namespace Axiom.Core
 		}
 #endif
 
-		public static IEnumerable<Assembly> Neighbors()
+	    public static IEnumerable<Assembly> Neighbors(string folder)
 		{
 #if WINDOWS_PHONE && SILVERLIGHT
 			return Neighbors(from part in Deployment.Current.Parts select part.Source);
 #elif SILVERLIGHT
 			return AppDomain.CurrentDomain.GetAssemblies();
-#elif WINDOWS_PHONE
-			return Neighbors(from file in Directory.GetFiles(".", "*.dll") select file);
+#elif (WINDOWS_PHONE || XBOX || XBOX360)
+			return Neighbors(from file in Directory.GetFiles(folder??".", "*.dll") select file);
 #else
-			var loc = Assembly.GetExecutingAssembly().Location;
-			loc = loc.Substring(0, loc.LastIndexOf('\\'));
+			var loc = folder??Assembly.GetExecutingAssembly().Location;
+			loc = loc.Substring(0, loc.LastIndexOf(Path.DirectorySeparatorChar));
 			return Neighbors(from file in Directory.GetFiles(loc, "*.dll") select file);
 #endif
 		}
 
+        public static IEnumerable<Assembly> Neighbors()
+        {
+            return Neighbors(null as string);
+        }
+
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE)
-		public static IEnumerable<AssemblyCatalog> NeighborsCatalog()
+		public static IEnumerable<AssemblyCatalog> NeighborsCatalog(string folder = null)
 		{
-			var assemblies = Neighbors();
+			var assemblies = Neighbors(folder);
 			AssemblyCatalog catalog;
 			foreach (var assembly in assemblies)
 			{
@@ -76,13 +88,36 @@ namespace Axiom.Core
 	}
 
 	public static class ExtensionMethods
-	{
+    {
+#if XBOX || XBOX360
+        public static int RemoveAll<T>(this List<T> list, Predicate<T> match)
+        {
+            var count = list.Count;
+            var currentIdx = 0;
+            var i = 0;
+            while (i++ < count)
+                if (match(list[currentIdx])) list.RemoveAt(currentIdx);
+                else currentIdx++;
+            return currentIdx;
+        }
+#endif
+
 #if NET_40  && !( XBOX || XBOX360 || WINDOWS_PHONE )
-		public static void SatisfyImports<T>(this T obj)
+		public static void SatisfyImports<T>(this T obj, string folder = null)
 		{
-			var catalogs = new AggregateCatalog(AssemblyEx.NeighborsCatalog().ToArray());
-			var container = new CompositionContainer(catalogs);
-			container.ComposeParts(obj);
+			try
+			{
+#if WINDOWS_PHONE || SILVERLIGHT
+				var catalogs = new AggregateCatalog(AssemblyEx.NeighborsCatalog(folder).ToArray());
+#else
+				var catalogs = new DirectoryCatalog(folder ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+#endif
+				var container = new CompositionContainer(catalogs);
+				container.ComposeParts(obj);
+			}
+			catch (ReflectionTypeLoadException e)
+			{
+			}
 		}
 #endif
 
@@ -134,12 +169,29 @@ namespace Axiom.Core
 
 		private static readonly Dictionary<Type, Field[]> fastFields = new Dictionary<Type, Field[]>();
 
+#if (XBOX || XBOX360)        
+        public static Func<object, object> FieldGet(this Type type, string fieldName)
+        {
+            var fieldInfo = type.GetField(fieldName);
+            return obj => fieldInfo.GetValue(obj);
+		}
+
+	    public static Func<object, object, object> FieldSet(this Type type, string fieldName)
+		{
+            var fieldInfo = type.GetField(fieldName);
+            return (obj, value) =>
+            {
+                fieldInfo.SetValue(obj, value);
+                return value;
+            };
+        }
+#else
 		public static Func<T, TR> FieldGet<T, TR>(this Type type, string fieldName)
 		{
 			var param = Expression.Parameter(type, "arg");
 			var member = Expression.Field(param, fieldName);
 			var lambda = Expression.Lambda(member, param);
-			return (Func<T, TR>)lambda.Compile();            
+			return (Func<T, TR>)lambda.Compile();
 		}
 
 		public static Func<object, object> FieldGet(this Type type, string fieldName)
@@ -171,6 +223,7 @@ namespace Axiom.Core
 #endif
 			return (Func<object, object, object>)lambda.Compile();
 		}
+#endif
 
 		public static Field[] Fields<T>(this T obj)
 		{
@@ -412,6 +465,8 @@ namespace Axiom.Core
 
 		internal static T Assign(ref T target, T value) { return target = value; }
 #endif
+
+#if !(XBOX || XBOX360)
 		public static Getter<TG> FieldGet<TG>(string fieldName)
 		{
 			var type = Expression.Parameter(typeof(T), "type");
@@ -433,9 +488,10 @@ namespace Axiom.Core
 			var lambda = Expression.Lambda(assign, type, value);
 			return (Setter<TS>)lambda.Compile();
 		}
-	}
+#endif
+    }
 
-#if !NET_40 || WINDOWS_PHONE
+#if !NET_40 || WINDOWS_PHONE || XBOX || XBOX360
 	public class Lazy<T>
 		where T : class, new()
 	{

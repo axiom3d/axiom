@@ -7,12 +7,6 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Axiom.Demos.Browser.Silverlight")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("YDreams Informática S.A.")]
-[assembly: AssemblyProduct("Axiom.Demos.Browser.Silverlight")]
-[assembly: AssemblyCopyright("Copyright © YDreams Informática S.A. 2011")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

@@ -6,12 +6,9 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EE5785DC-D49E-44DD-BFDA-DD776C012704}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Axiom.Demos.Browser.WinForm</AssemblyName>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -27,11 +24,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>http://localhost/Axiom.Demos.Browser.WinForm/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -46,8 +41,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +56,9 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <AssemblyName>Axiom.Demos.Browser.WinForm</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
@@ -76,6 +73,8 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugType>none</DebugType>
+    <AssemblyName>Axiom.Demos.Browser.WinForm</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +94,9 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <AssemblyName>Axiom.Demos.Browser.WinForm</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
@@ -114,32 +116,33 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <DebugType>none</DebugType>
+    <AssemblyName>Axiom.Demos.Browser.WinForm</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>Axiom.Demos.Browser.WinForm</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
-      <HintPath>\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.Composition">
+    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
-      <HintPath>\System.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
-      <HintPath>\System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
-      <HintPath>\System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.Xml</Name>
-      <HintPath>\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine, Version=1.8.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\CommandLine\CommandLine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +244,10 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\smoke.particle">
       <Link>Media\Materials\smoke.particle</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Materials\StatsBlock.material">
+      <Link>Media\Materials\StatsBlock.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\freetype6.dll">
@@ -375,6 +382,7 @@
     <None Include="axiom.demos.browser.winform.module" />
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <Content Include="..\..\..\..\..\Media\Configuration\Terrain.xml">
       <Link>Media\Configuration\Terrain.xml</Link>
@@ -1032,10 +1040,10 @@
       <Link>Media\Textures\GreenSkin.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Media\Textures\head4.jpg">
+    <SplashScreen Include="..\..\..\..\..\Media\Textures\head4.jpg">
       <Link>Media\Textures\head4.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </SplashScreen>
     <None Include="..\..\..\..\..\Media\Textures\HeatLookup.tga">
       <Link>Media\Textures\HeatLookup.tga</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1282,6 +1290,58 @@
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.2010.v4.0.csproj">
+      <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
+      <Name>Axiom.Platforms.Win32.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.2010.v4.0.csproj">
+      <Project>{3FA3E842-91DE-4A78-99A8-DE3546763136}</Project>
+      <Name>Axiom.Plugins.FreeImageCodecs.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.2010.v4.0.csproj">
+      <Project>{7440613A-4487-46BE-998E-25F554ACE980}</Project>
+      <Name>Axiom.Plugins.SystemDrawingCodecs.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.v4.0.csproj">
+      <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
+      <Name>Axiom.Plugins.CgProgramManager.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.v4.0.csproj">
+      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
+      <Name>Axiom.Plugins.DevILCodecs.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.v4.0.csproj">
+      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
+      <Name>Axiom.Plugins.OctreeZone.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.v4.0.csproj">
+      <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
+      <Name>Axiom.Plugins.ParticleFX.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.2010.v4.0.csproj">
+      <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
+      <Name>Axiom.RenderSystems.DirectX9.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.2010.v4.0.csproj">
+      <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
+      <Name>Axiom.RenderSystems.OpenGL.Win32.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.v4.0.csproj">
+      <Project>{935BCD08-8B02-44A7-B07A-615960D7CCDD}</Project>
+      <Name>Axiom.RenderSystems.Xna.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.v4.0.csproj">
+      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
+      <Name>Axiom.SceneManagers.Bsp.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.v4.0.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
+      <Name>Axiom.SceneManagers.Octree.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.v4.0.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected.2010.v4.0</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.2010.v4.0.csproj">
       <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
       <Name>Axiom.Demos.2010.v4.0</Name>
@@ -1293,5 +1353,40 @@
     </PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mono-Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>Axiom.Demos.Browser.WinForm.2010.v4.0</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mono-Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>Axiom.Demos.Browser.WinForm.2010.v4.0</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|x64' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mono-Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>Axiom.Demos.Browser.WinForm.2010.v4.0</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>Axiom.Demos.Browser.WinForm.2010.v4.0</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>Axiom.Demos.Browser.WinForm.2010.v4.0</AssemblyName>
   </PropertyGroup>
 </Project>

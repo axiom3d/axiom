@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{ADFA3FCF-EBEC-4794-9369-AB0EF71205F1}</ProjectGuid>
+    <ProjectGuid>{C3FF01E4-61B1-4114-9B9C-87AE2A800741}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Windows Phone</Platform>
@@ -181,7 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.Xna.Phone.csproj">
-      <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
+      <Project>{78836526-6139-41E4-B034-8189F602712B}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
   </ItemGroup>

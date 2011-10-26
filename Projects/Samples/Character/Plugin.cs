@@ -20,8 +20,12 @@
 //THE SOFTWARE.
 #endregion License
 
+using System.ComponentModel.Composition;
+using Axiom.Core;
+
 namespace Axiom.Samples.CharacterSample
 {
+	[Export(typeof(IPlugin))]
 	public class Plugin : SamplePlugin
 	{
 		private CharacterSample sample;

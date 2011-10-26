@@ -550,15 +550,19 @@ namespace Axiom.Media
 
 			var data = (ImageCodec.ImageData)codec.Decode( stream, decoded );
 
-			var image = new Image();
+			if (data == null)
+				return null;
 
 			// copy the image data
-			image.height = data.height;
-			image.width = data.width;
-			image.depth = data.depth;
-			image.format = data.format;
-			image.flags = data.flags;
-			image.numMipMaps = data.numMipMaps;
+			var image = new Image
+							{
+								height = data.height,
+								width = data.width,
+								depth = data.depth,
+								format = data.format,
+								flags = data.flags,
+								numMipMaps = data.numMipMaps,
+							};
 
 			// stuff the image data into an array
 			var buffer = new byte[ decoded.Length ];

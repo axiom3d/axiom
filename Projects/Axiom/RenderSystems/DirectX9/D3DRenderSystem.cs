@@ -815,7 +815,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			LogManager.Instance.Write( "D3D9 : {0} destroyed.", Name );
 
-			_D3D9RenderSystem = null;
+			if (_D3D9RenderSystem == this)
+				_D3D9RenderSystem = null;
 
 			base.dispose( disposeManagedResources );
 		}

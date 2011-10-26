@@ -12,12 +12,12 @@ namespace Bind
 {
     static class Settings
     {
-        public static string InputPath = "..\\..\\..\\Source\\Bind\\Specifications";
-        public static string OutputPath = "..\\..\\..\\Source\\OpenTK\\OpenGL\\Bindings";
+        public static string InputPath = "../../../Source/Bind/Specifications";
+        public static string OutputPath = "../../../Source/OpenTK/OpenGL/Bindings";
         public static string OutputNamespace = "OpenTK.OpenGL";
 
-        public const string DefaultInputPath = "..\\..\\..\\Source\\Bind\\Specifications";
-        public const string DefaultOutputPath = "..\\..\\..\\Source\\OpenTK\\OpenGL\\Bindings";
+        public const string DefaultInputPath = "../../../Source/Bind/Specifications";
+        public const string DefaultOutputPath = "../../../Source/OpenTK/OpenGL/Bindings";
         public const string DefaultOutputNamespace = "OpenTK.OpenGL";
 
         public static string GLClass = "GL";        // Needed by Glu for the AuxEnumsClass. Can be set through -gl:"xxx".

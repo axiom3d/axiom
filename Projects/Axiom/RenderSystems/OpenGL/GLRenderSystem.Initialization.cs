@@ -72,7 +72,8 @@ namespace Axiom.RenderSystems.OpenGL
             {
                 InitializeContext(window);
 
-                var tokens = _glSupport.Version.Split(new[] { '.' });
+				var _glSupportVersion = _glSupport.Version.Split(new[] { ' ' })[0];
+				var tokens = _glSupportVersion.Split(new[] { '.' });
 
                 if (tokens.Length != 0)
                 {

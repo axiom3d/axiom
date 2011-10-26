@@ -14,7 +14,7 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for SkeletalAnimation.
 	/// </summary>
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
     [Export(typeof(TechDemo))]
 #endif
     public class SkeletalAnimation : TechDemo

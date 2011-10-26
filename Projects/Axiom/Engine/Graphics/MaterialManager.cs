@@ -174,7 +174,7 @@ namespace Axiom.Graphics
 				instance = this;
 			}
 
-			this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
+			this.SetDefaultTextureFiltering(TextureFiltering.Bilinear);
 			_defaultMaxAniso = 1;
 
 			// Loading order

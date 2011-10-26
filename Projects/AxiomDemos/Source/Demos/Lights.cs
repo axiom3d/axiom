@@ -17,7 +17,7 @@ namespace Axiom.Demos
 	/// <summary>
 	/// 	Summary description for Controllers.
 	/// </summary>
-#if !WINDOWS_PHONE
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
     [Export(typeof(TechDemo))]
 #endif
     public class Lights : TechDemo

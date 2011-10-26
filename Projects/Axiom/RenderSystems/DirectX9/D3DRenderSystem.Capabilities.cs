@@ -614,7 +614,6 @@ namespace Axiom.RenderSystems.DirectX9
             if (_activeD3DDriver == null)
                 throw new ArgumentException("Problems finding requested Direct3D driver!");
 
-
             driverVersion.Major = _activeD3DDriver.AdapterIdentifier.DriverVersion.Major;
             driverVersion.Minor = _activeD3DDriver.AdapterIdentifier.DriverVersion.Minor;
             driverVersion.Release = _activeD3DDriver.AdapterIdentifier.DriverVersion.MajorRevision;
