@@ -1,0 +1,26 @@
+material Core/StatsBlockCenter
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Border.png
+			}
+		}
+	}
+}
+material Core/StatsBlockBorder
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Border_Center.png
+			}
+		}
+	}
+}
