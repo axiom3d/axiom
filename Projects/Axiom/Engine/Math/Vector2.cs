@@ -344,7 +344,7 @@ namespace Axiom.Math
 
 		#region Parse from string
 
-		public Vector2 Parse( string s )
+		public static Vector2 Parse( string s )
 		{
 			// the format is "Vector2(x, y)"
 			if ( !s.StartsWith( "Vector2(" ) )
