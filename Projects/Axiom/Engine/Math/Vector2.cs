@@ -350,7 +350,7 @@ namespace Axiom.Math
 			if ( !s.StartsWith( "Vector2(" ) )
 				throw new FormatException();
 
-			var values = s.Substring( 8 ).TrimEnd( '}' ).Split( ',' );
+			var values = s.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
 
 			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
 							   Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
