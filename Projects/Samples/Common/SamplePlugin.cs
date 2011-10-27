@@ -28,7 +28,7 @@ namespace Axiom.Samples
 	/// <summary>
 	/// Utility class used to hold a set of samples in an Axiom plugin.
 	/// </summary>
-#if ( !WINDOWS_PHONE )
+#if !(WINDOWS_PHONE || XBOX || XBOX360)
 	[Export( typeof( IPlugin ) )]
 #endif
 	public class SamplePlugin : IPlugin
