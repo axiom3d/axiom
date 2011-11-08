@@ -6,17 +6,15 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{025A989E-5D73-4AD4-9E3A-DB1DF33C6878}</ProjectGuid>
-    <ProjectTypeGuids>{E613F3A2-FE9C-494F-B74E-F63BCB86FEA6};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>Axiom.Platform.IPhone</RootNamespace>
-    <AssemblyName>AxiomPlatformIPhone</AssemblyName>
-    <MtouchSdkVersion>3.2</MtouchSdkVersion>
-    <MtouchMinimumOS>3.0</MtouchMinimumOS>
+    <RootNamespace>Axiom.Platform.iOS</RootNamespace>
+    <AssemblyName>Axiom.Platform.iOS</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,7 +24,7 @@
     <DefineConstants>DEBUG;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchDebug>True</MtouchDebug>
+    <MtouchDebug>true</MtouchDebug>
     <ConsolePause>false</ConsolePause>
     <MtouchLink>None</MtouchLink>
   </PropertyGroup>
@@ -36,7 +34,6 @@
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchDebug>False</MtouchDebug>
     <ConsolePause>false</ConsolePause>
     <MtouchLink>None</MtouchLink>
   </PropertyGroup>
@@ -48,7 +45,7 @@
     <DefineConstants>DEBUG;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchDebug>True</MtouchDebug>
+    <MtouchDebug>true</MtouchDebug>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
@@ -58,7 +55,6 @@
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchDebug>False</MtouchDebug>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
@@ -69,20 +65,15 @@
     <Reference Include="monotouch" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="IPhone" />
-    </MonoDevelop>
-  </ProjectExtensions>
   <ItemGroup>
     <Compile Include="IPhoneImageCodec.cs" />
     <Compile Include="IPhoneResourceArchive.cs" />
     <Compile Include="Plugin.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.IPhone.csproj">
-      <Project>{8448598B-85B1-4397-980A-7ED7659B304A}</Project>
-      <Name>Axiom.IPhone</Name>
+    <ProjectReference Include="..\..\Engine\Axiom.iOS.csproj">
+      <Project>{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}</Project>
+      <Name>Axiom.iOS</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

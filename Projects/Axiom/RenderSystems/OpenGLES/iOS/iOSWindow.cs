@@ -47,9 +47,9 @@ using OpenTK.Platform.iPhoneOS;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.IPhone
+namespace Axiom.RenderSystems.OpenGLES.iOS
 {
-	class IPhoneWindow : RenderWindow
+	class iOSWindow : RenderWindow
 	{
 		private bool _isClosed;
 		private bool _isVisible;
@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGLES.IPhone
 			throw new NotImplementedException();
 		}
 		*/
-		public IPhoneWindow()
+		public iOSWindow()
 		{
 			//OpenTK.Platform.Utilities.CreateGraphicsContext(new OpenTK.Graphics.GraphicsMode(), null, 1, 1, OpenTK.Graphics.GraphicsContextFlags.Default);
 		}
