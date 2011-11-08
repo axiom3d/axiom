@@ -45,12 +45,12 @@ using OpenTK.Platform.iPhoneOS;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.IPhone
+namespace Axiom.RenderSystems.OpenGLES.iOS
 {
 	/// <summary>
 	/// 
 	/// </summary>
-	public class IPhoneContext : GLESContext
+	public class iOSContext : GLESContext
 	{		
 		//protected EGLConfig _config;
 		protected GLESSupport _glSupport;
@@ -83,8 +83,7 @@ namespace Axiom.RenderSystems.OpenGLES.IPhone
 		/// <param name="support"></param>
 		/// <param name="fbconfig"></param>
 		/// <param name="drawable"></param>
-		public IPhoneContext( IGraphicsContext glContext, 
-		                         GLESSupport support )
+		public iOSContext( IGraphicsContext glContext, GLESSupport support )
 		{
 			_glSupport = support;
 			//_drawable = drawable;

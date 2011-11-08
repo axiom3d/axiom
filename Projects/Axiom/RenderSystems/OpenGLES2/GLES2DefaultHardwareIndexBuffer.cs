@@ -39,6 +39,7 @@ using Axiom.Graphics;
 using Axiom.Core;
 using Axiom.Utilities;
 using System.Runtime.InteropServices;
+using Axiom.CrossPlatform;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES2
@@ -84,7 +85,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// <param name="length"></param>
 		/// <param name="locking"></param>
 		/// <returns></returns>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			// Only for use internally, no 'locking' as such
 			return GetData( offset );
@@ -103,7 +104,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// <param name="length"></param>
 		/// <param name="locking"></param>
 		/// <returns></returns>
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			isLocked = true;
 			return GetData( offset );
@@ -122,7 +123,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
 		/// <param name="dest"></param>
-		public override void ReadData( int offset, int length, IntPtr dest )
+		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
 			Memory.Copy( GetData( offset ), dest, length );
@@ -134,7 +135,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// <param name="length"></param>
 		/// <param name="src"></param>
 		/// <param name="discardWholeBuffer"></param>
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
 			// ignore discard, memory is not guaranteed to be zeroised

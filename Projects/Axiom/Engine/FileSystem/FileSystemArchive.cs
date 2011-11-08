@@ -294,7 +294,7 @@ namespace Axiom.FileSystem
 												try
 												{
 
-#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID )
+#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
 													File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
 #else
 													File.Create( _basePath + @"__testWrite.Axiom", 1 );
@@ -323,7 +323,7 @@ namespace Axiom.FileSystem
 			{
 				try
 				{
-#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID )
+#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
 					stream = File.Create( fullPath, 1, FileOptions.RandomAccess );
 #else
 					stream = File.Create( fullPath, 1 );

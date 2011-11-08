@@ -831,26 +831,18 @@ namespace Axiom.Core
 			// Firstly we need to scan to see how many vertices are being used
 			// and while we're at it, build the remap we can use later
 			bool use32bitIndexes = id.indexBuffer.Type == IndexType.Size32;
-			ushort* p16;
-			uint* p32;
 
 			Dictionary<int, int> indexRemap = new Dictionary<int, int>();
 
 			if ( use32bitIndexes )
 			{
-				p32 = (uint*)id.indexBuffer.Lock(
-					id.indexStart,
-					id.indexCount * id.indexBuffer.IndexSize,
-					BufferLocking.ReadOnly );
+				var p32 = id.indexBuffer.Lock( id.indexStart, id.indexCount * id.indexBuffer.IndexSize,	BufferLocking.ReadOnly );
 				BuildIndexRemap( p32, id.indexCount, ref indexRemap );
 				id.indexBuffer.Unlock();
 			}
 			else
 			{
-				p16 = (ushort*)id.indexBuffer.Lock(
-					id.indexStart,
-					id.indexCount * id.indexBuffer.IndexSize,
-					BufferLocking.ReadOnly );
+				var p16 = (ushort*)id.indexBuffer.Lock(	id.indexStart, id.indexCount * id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
 				BuildIndexRemap( p16, id.indexCount, ref indexRemap );
 				id.indexBuffer.Unlock();
 			}
@@ -964,13 +956,13 @@ namespace Axiom.Core
 			}
 		}
 
-		internal unsafe void BuildIndexRemap( ushort* pBuffer, int numIndexes, ref Dictionary<int, int> remap )
+		internal unsafe void BuildIndexRemap( BufferBase pBuffer, int numIndexes, ref Dictionary<int, int> remap )
 		{
 			remap.Clear();
 			for ( int i = 0; i < numIndexes; ++i )
 			{
 				// use insert since duplicates are silently discarded
-				remap.Add( (int)*pBuffer++, remap.Count );
+				remap.Add( pBuffer++, remap.Count );
 				// this will have mapped oldindex -> new index IF oldindex
 				// wasn't already there
 			}

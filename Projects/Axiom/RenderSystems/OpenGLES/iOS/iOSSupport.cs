@@ -54,9 +54,9 @@ using EGLCONTEXT = MonoTouch.OpenGLES.EAGLContext;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES.IPhone
+namespace Axiom.RenderSystems.OpenGLES.iOS
 {
-	public class IPhoneSupport : GLESSupport
+	public class iOSSupport : GLESSupport
 	{
 		//protected EGLDisplay _glDisplay;
 		protected NativeDisplayType _nativeDislpay;
@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.OpenGLES.IPhone
 		/// <summary>
 		/// 
 		/// </summary>
-		public IPhoneSupport()
+		public iOSSupport()
 			: base()
 		{
 			_videoModes = new List<KeyValuePair<Size, short>>();
