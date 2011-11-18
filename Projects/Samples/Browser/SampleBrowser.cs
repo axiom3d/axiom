@@ -815,6 +815,7 @@ namespace Axiom.Samples
 			{
 				SampleCategories.Add( "All" );
 			}
+			LoadedSamples.Sort( new SampleComparer() );
 			return null;
 		}
 

@@ -38,50 +38,6 @@ namespace Axiom.Samples
 	public class Sample
 	{
 
-		/// <summary>
-		/// Utility comparison structure for sorting samples using SampleSet.
-		/// </summary>
-		class SampleComparer : IComparer
-		{
-			public int Compare( Sample x, Sample y )
-			{
-				string titleX;
-				string titleY;
-
-				x.Metadata.TryGetValue( "Title", out titleX );
-				y.Metadata.TryGetValue( "Title", out titleY );
-				/*
-				Ogre::NameValuePairList::iterator aTitle = a->getInfo().find("Title");
-				Ogre::NameValuePairList::iterator bTitle = b->getInfo().find("Title");
-				
-				if (aTitle != a->getInfo().end() && bTitle != b->getInfo().end())
-					return aTitle->second.compare(bTitle->second) < 0;
-				else return false;
-				*/
-				return 0;
-			}
-
-			#region IComparer Members
-
-			public int Compare( object x, object y )
-			{
-				if ( x == null && y == null )
-					return 0;
-				if ( x == null )
-					return -1;
-				if ( y == null )
-					return 1;
-
-				if ( x is Sample && y is Sample )
-				{
-					return Compare( x as Sample, y as Sample );
-				}
-				return 0;
-			}
-
-			#endregion
-		}
-
 		#region Fields and Properties
 
 		/// <summary>
@@ -398,4 +354,35 @@ namespace Axiom.Samples
 	public class SampleSet : List<Sample>
 	{
 	}
+
+	/// <summary>
+	/// Utility comparison structure for sorting samples using SampleSet.
+	/// </summary>
+	public class SampleComparer : IComparer<Sample>
+	{
+
+		#region IComparer<Sample> Members
+
+		public int Compare( Sample x, Sample y )
+		{
+			if ( x == null && y == null )
+				return 0;
+			if ( x == null )
+				return -1;
+			if ( y == null )
+				return 1;
+
+			string titleX;
+			string titleY;
+
+			x.Metadata.TryGetValue( "Title", out titleX );
+			y.Metadata.TryGetValue( "Title", out titleY );
+
+			return ( ( new CaseInsensitiveComparer() ).Compare( titleX, titleY ) );
+		}
+
+		#endregion IComparer<Sample> Members
+	}
+
+
 }

@@ -68,16 +68,23 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				if ( mStyle == CameraStyle.Orbit )
+				if ( value != mTarget )
 				{
-					mTarget = value ?? mCamera.SceneManager.RootSceneNode;
-					SetYawPitchDist( new Degree( Real.Zero ), new Degree( new Real( 15f ) ), 150 );
-					mCamera.SetAutoTracking( true, mTarget );
+					mTarget = value;
+					if ( value != null )
+					{
+						SetYawPitchDist( new Degree( Real.Zero ), new Degree( new Real( 15f ) ), 150 );
+						mCamera.SetAutoTracking( true, mTarget );
+					}
+					else
+					{
+						mCamera.SetAutoTracking( false, (SceneNode)null );
+					}
 				}
 			}
 			get
 			{
-				return mTarget ?? mCamera.SceneManager.RootSceneNode;
+				return mTarget;
 			}
 		}
 
@@ -100,6 +107,8 @@ namespace Axiom.Samples
 		protected bool mGoingUp;
 		protected bool mGoingDown;
 
+		protected bool mFastMove;
+
 		public SdkCameraManager( Camera cam )
 		{
 			mTarget = null;
@@ -114,6 +123,7 @@ namespace Axiom.Samples
 			mGoingUp = false;
 			mGoingDown = false;
 			mVelocity = Vector3.Zero;
+			mFastMove = false;
 
 			Camera = cam;
 			setStyle( CameraStyle.FreeLook );
@@ -127,14 +137,11 @@ namespace Axiom.Samples
 		/// <param name="dist"></param>
 		public virtual void SetYawPitchDist( Radian yaw, Radian pitch, Real dist )
 		{
-			if ( mStyle == CameraStyle.Orbit )
-			{
-				mCamera.Position = mTarget.DerivedPosition;
-				mCamera.Orientation = mTarget.DerivedOrientation;
-				mCamera.Yaw( (Real)yaw );
-				mCamera.Pitch( (Real)( -pitch ) );
-				mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
-			}
+			mCamera.Position = mTarget.DerivedPosition;
+			mCamera.Orientation = mTarget.DerivedOrientation;
+			mCamera.Yaw( (Real)yaw );
+			mCamera.Pitch( (Real)( -pitch ) );
+			mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
 		}
 
 
@@ -145,22 +152,22 @@ namespace Axiom.Samples
 		{
 			if ( mStyle != CameraStyle.Orbit && style == CameraStyle.Orbit )
 			{
-				mStyle = CameraStyle.Orbit;
-				Target = Target;
+				Target = mTarget ?? mCamera.SceneManager.RootSceneNode;
 				mCamera.FixedYawAxis = Vector3.UnitY;
+				manualStop();
+				SetYawPitchDist( 0, 15, 150 );
 			}
 			else if ( mStyle != CameraStyle.FreeLook && style == CameraStyle.FreeLook )
 			{
-				mStyle = CameraStyle.FreeLook;
-				mCamera.AutoTrackingTarget = null;
+				mCamera.SetAutoTracking( false, (SceneNode)null );
 				mCamera.FixedYawAxis = Vector3.UnitY;
 			}
 			else if ( mStyle != CameraStyle.Manual && style == CameraStyle.Manual )
 			{
-				mStyle = CameraStyle.Manual;
-				mCamera.AutoTrackingTarget = null;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				mCamera.SetAutoTracking( false, (SceneNode)null );
+				manualStop();
 			}
+			mStyle = style;
 		}
 
 		public virtual CameraStyle getStyle()
@@ -205,22 +212,24 @@ namespace Axiom.Samples
 					accel -= mCamera.Up;
 
 				// if accelerating, try to reach top speed in a certain time
+				Real topSpeed = mFastMove ? TopSpeed * 20 : TopSpeed;
 				if ( accel.LengthSquared != 0 )
 				{
 					accel.Normalize();
-					mVelocity += accel * TopSpeed * evt.TimeSinceLastFrame * 10;
+					mVelocity += accel * topSpeed * evt.TimeSinceLastFrame * 10;
 				}
 				// if not accelerating, try to stop in a certain time
 				else
 					mVelocity -= mVelocity * evt.TimeSinceLastFrame * 10;
 
+				Real tooSmall = Real.Epsilon;
 				// keep camera velocity below top speed and above zero
 				if ( mVelocity.LengthSquared > TopSpeed * TopSpeed )
 				{
 					mVelocity.Normalize();
-					mVelocity *= TopSpeed;
+					mVelocity *= topSpeed;
 				}
-				else if ( mVelocity.LengthSquared < 0.1 )
+				else if ( mVelocity.LengthSquared < tooSmall * tooSmall )
 					mVelocity = Vector3.Zero;
 
 				if ( mVelocity != Vector3.Zero )
@@ -249,6 +258,8 @@ namespace Axiom.Samples
 					mGoingUp = true;
 				else if ( evt.Key == SIS.KeyCode.Key_PGDOWN )
 					mGoingDown = true;
+				else if ( evt.Key == SIS.KeyCode.Key_LSHIFT )
+					mFastMove = true;
 			}
 		}
 
@@ -271,6 +282,8 @@ namespace Axiom.Samples
 					mGoingUp = false;
 				else if ( evt.Key == SIS.KeyCode.Key_PGDOWN )
 					mGoingDown = false;
+				else if ( evt.Key == SIS.KeyCode.Key_LSHIFT )
+					mFastMove = false;
 			}
 		}
 
