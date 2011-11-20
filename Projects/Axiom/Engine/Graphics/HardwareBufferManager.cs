@@ -160,6 +160,14 @@ namespace Axiom.Graphics
 			_baseInstance.NotifyIndexBufferDestroyed( buffer );
 		}
 
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
+			{
+				instance = null;
+			}
+			base.dispose( disposeManagedResources );
+		}
 
 	}
 }
