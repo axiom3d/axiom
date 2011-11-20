@@ -237,8 +237,9 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( glContext == null )
 			{
 				// create window
-				_window = new NativeWindow( width, height, title, WindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
-				glContext = new OpenTKGLContext( _window.WindowInfo );
+				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer, GraphicsMode.Default.Stencil, FSAA );
+				_window = new NativeWindow( width, height, title, WindowFlags.Default, graphicsMode, displayDevice );
+				glContext = new OpenTKGLContext( graphicsMode, _window.WindowInfo );
 
 				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
 				if ( ico.Count != 0 )
