@@ -61,6 +61,13 @@ namespace Axiom.RenderSystems.OpenGL
 			Initialized = true;
 		}
 
+		public OpenTKGLContext( OpenTK.Graphics.GraphicsMode mode, OpenTK.Platform.IWindowInfo windowInfo )
+		{
+			this.windowInfo = windowInfo;
+			graphicsContext = new GraphicsContext( mode, this.windowInfo );
+			Initialized = true;
+		}
+
 		public OpenTKGLContext( Control control, Control parent )
 		{
 			// replaces form's (parent) picturebox (control) by glControl
