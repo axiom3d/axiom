@@ -1535,7 +1535,17 @@ namespace Axiom.Core
 			}
 
 			// Save
-			this.movableObjectFactoryMap.Add( fact.Type, fact );
+            if ( this.movableObjectFactoryMap.ContainsKey( fact.Type ) )
+            {
+                LogManager.Instance.Write( "Factory {0} has been replaced by {1}.",
+                    this.movableObjectFactoryMap[ fact.Type ].GetType().Name,
+                    fact.GetType().Name
+                    );
+
+                this.movableObjectFactoryMap[ fact.Type ] = fact;
+            }
+            else
+                this.movableObjectFactoryMap.Add( fact.Type, fact );
 
 			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type + "'." );
 		}
