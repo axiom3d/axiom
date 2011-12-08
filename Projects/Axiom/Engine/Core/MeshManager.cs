@@ -248,7 +248,7 @@ namespace Axiom.Core
 			Mesh mesh = null;
 
 			// if the resource isn't cached, create it
-			if ( !resources.ContainsKey( name ) )
+			if ( !resourceHandleMap.ContainsKey( (ResourceHandle)name.GetHashCode() ) )
 			{
 				mesh = (Mesh)Create( name, group );
 				mesh.SetVertexBufferPolicy( vertexBufferUsage, vertexBufferShadowed );
@@ -257,7 +257,7 @@ namespace Axiom.Core
 			else
 			{
 				// get the cached version
-				mesh = (Mesh)resources[ name ];
+				mesh = (Mesh)resourceHandleMap[ (ResourceHandle)name.GetHashCode() ];
 			}
 			mesh.Load();
 
@@ -466,7 +466,7 @@ namespace Axiom.Core
 				throw new AxiomException( "A mesh with the name {0} already exists!", name );
 			}
 
-			mesh = new PatchMesh( this, name, nextHandle, group );
+			mesh = new PatchMesh( this, name, (ResourceHandle)name.GetHashCode(), group );
 
 			mesh.Define( controlPointBuffer, declaration, width, height, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide, vbUsage, ibUsage, vbUseShadow, ibUseShadow );
 

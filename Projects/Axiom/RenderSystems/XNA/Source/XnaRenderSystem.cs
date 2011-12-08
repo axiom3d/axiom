@@ -1497,7 +1497,6 @@ namespace Axiom.RenderSystems.Xna
 		{
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState(_device);
-			StateManager.ResetState(_device);
 
 			Effect effectToUse;
 
@@ -1772,11 +1771,6 @@ namespace Axiom.RenderSystems.Xna
 			// dispose of the device
 			if (_device != null)
 			{
-#if !SILVERLIGHT
-				if (!_device.IsDisposed)
-					_device.Dispose();
-#endif
-
 				_device = null;
 			}
 
@@ -1902,18 +1896,12 @@ namespace Axiom.RenderSystems.Xna
 			if (_isFirstFrame)
 			{
 				// enable alpha blending and specular materials
-				var alphaBlend = new ManagedBlendState();
-				alphaBlend.Reset(BlendState.AlphaBlend);
-				StateManager.BlendState = alphaBlend;
+				StateManager.BlendState.Reset(BlendState.AlphaBlend, false);
 				//_device.RenderState.SpecularEnable = true;
-				var depthRead = new ManagedDepthStencilState();
-				depthRead.Reset(DepthStencilState.DepthRead);
-				StateManager.DepthStencilState = depthRead;
+				StateManager.DepthStencilState.Reset(DepthStencilState.DepthRead, false);
 
-				var raster = new ManagedRasterizerState();
-				raster.Reset(RasterizerState.CullClockwise);
-				raster.FillMode = FillMode.Solid;
-				StateManager.RasterizerState = raster;
+				StateManager.RasterizerState.Reset(RasterizerState.CullClockwise, false);
+				StateManager.RasterizerState.FillMode = FillMode.Solid;
 
 				_isFirstFrame = false;
 			}
@@ -2223,6 +2211,7 @@ namespace Axiom.RenderSystems.Xna
 				_secondaryWindows.Add((XnaRenderWindow)window);
 			}
 
+			StateManager.ResetState( _device );
 			return window;
 		}
 
@@ -2298,6 +2287,8 @@ namespace Axiom.RenderSystems.Xna
 			// register the HLSL program manager
 			HighLevelGpuProgramManager.Instance.AddFactory(new HLSLProgramFactory());
 
+			StateManager = new StateManagement();
+
 			if (autoCreateWindow)
 			{
 #if SILVERLIGHT
@@ -2332,7 +2323,6 @@ namespace Axiom.RenderSystems.Xna
 				renderWindow = CreateRenderWindow("Main Window", width, height, fullScreen, miscParams);
 			}
 
-			StateManager = new StateManagement();
 			new XnaMaterialManager();
 
 			LogManager.Instance.Write("[XNA] : Subsystem Initialized successfully.");

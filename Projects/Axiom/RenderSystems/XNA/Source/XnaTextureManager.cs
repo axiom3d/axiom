@@ -98,7 +98,7 @@ namespace Axiom.RenderSystems.Xna
         public void ReleaseDefaultPoolResources()
         {
             var count = 0;
-            foreach ( XnaTexture tex in resources.Values )
+            foreach ( XnaTexture tex in Resources )
             {
                 //TODO : Implement XnaTexture.ReleaseIfDefaultPool()
                 //if ( tex.ReleaseIfDefaultPool() )
@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.Xna
         public void RecreateDefaultPoolResources()
         {
             var count = 0;
-            foreach ( XnaTexture tex in resources.Values )
+            foreach ( XnaTexture tex in Resources )
             {
                 //TODO : Implement XnaTexture.RecreateIfDefaultPool()
                 //if ( tex.RecreateIfDefaultPool( device ) )
