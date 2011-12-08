@@ -87,6 +87,24 @@ namespace Axiom.Graphics
 
 		#endregion Singleton implementation
 
+		#region IDisposable Implementation
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			base.dispose( disposeManagedResources );
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Destroy all necessary objects
+					instance = null;
+				}
+			}
+
+		}
+		#endregion IDisposable Implementation
 		protected HardwareBufferManagerBase _baseInstance;
 
 		public override HardwareVertexBuffer CreateVertexBuffer(  VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )

@@ -111,13 +111,13 @@ namespace Axiom.ParticleSystems
 			The emitters in this pool are cloned using emitters that are kept in the main emitter list
 			of the ParticleSystem.
 		*/
-		protected Dictionary<string, List<ParticleEmitter>> emittedEmitterPool = new Dictionary<string, List<ParticleEmitter>>();
+		protected Dictionary<int, List<ParticleEmitter>> emittedEmitterPool = new Dictionary<int, List<ParticleEmitter>>();
 
 		/** Free emitted emitter list.
 			@remarks
 				This contains a list of the emitters free for use as new instances as required by the set.
 		*/
-		protected Dictionary<string, List<ParticleEmitter>> freeEmittedEmitters = new Dictionary<string, List<ParticleEmitter>>();
+		protected Dictionary<int, List<ParticleEmitter>> freeEmittedEmitters = new Dictionary<int, List<ParticleEmitter>>();
 
 		/** Active emitted emitter list.
 			@remarks
@@ -197,7 +197,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     List of available attibute parsers for script attributes.
 		/// </summary>
-		private Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
+		private Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
 
 		#endregion
 
@@ -387,7 +387,7 @@ namespace Axiom.ParticleSystems
 					{
 						// For now, it can only be an emitted emitter
 						var pParticleEmitter = (ParticleEmitter)particle;
-						var fee = findFreeEmittedEmitter( pParticleEmitter.Name );
+						var fee = findFreeEmittedEmitter( pParticleEmitter.Name.GetHashCode() );
 						fee.Add( pParticleEmitter );
 
 						// Also erase from activeEmittedEmitters
@@ -515,7 +515,7 @@ namespace Axiom.ParticleSystems
 				}
 				else
 				{
-					p = CreateEmitterParticle( emitterName );
+					p = CreateEmitterParticle( emitterName.GetHashCode() );
 				}
 
 				if ( p == null )
@@ -631,11 +631,11 @@ namespace Axiom.ParticleSystems
 			return newParticle;
 		}
 
-		private Particle CreateEmitterParticle( string emitterName )
+		private Particle CreateEmitterParticle( int emitterId )
 		{
 			// Get the appropriate list and retrieve an emitter	
 			Particle p = null;
-			var fee = findFreeEmittedEmitter( emitterName );
+			var fee = findFreeEmittedEmitter( emitterId );
 			if ( fee != null && fee.Count != 0 )
 			{
 				p = fee[ 0 ];
@@ -654,11 +654,11 @@ namespace Axiom.ParticleSystems
 			return p;
 		}
 
-		private List<ParticleEmitter> findFreeEmittedEmitter( string name )
+		private List<ParticleEmitter> findFreeEmittedEmitter( int id )
 		{
-			if ( freeEmittedEmitters.ContainsKey( name ) )
+			if ( freeEmittedEmitters.ContainsKey( id ) )
 			{
-				return freeEmittedEmitters[ name ];
+				return freeEmittedEmitters[ id ];
 			}
 
 			return null;
@@ -951,12 +951,13 @@ namespace Axiom.ParticleSystems
 
 		public bool SetParameter( string attr, string val )
 		{
-			if ( attribParsers.ContainsKey( attr ) )
+			var id = attr.GetHashCode();
+			if ( attribParsers.ContainsKey( id ) )
 			{
 				var args = new object[ 2 ];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
-				attribParsers[ attr ].Invoke( null, args );
+				attribParsers[ id ].Invoke( null, args );
 				// attribParsers[attr].Invoke(this, val.Split(' '));
 				//ParticleSystemAttributeParser parser =
 				//        (ParticleSystemAttributeParser)attribParsers[attr];
@@ -1001,7 +1002,7 @@ namespace Axiom.ParticleSystems
 					{
 						// this method should parse a material attribute
 						case PARTICLE:
-							attribParsers.Add( parserAtt.Name, method );
+							attribParsers.Add( parserAtt.Name.GetHashCode(), method );
 							break;
 
 					} // switch
@@ -1537,7 +1538,7 @@ namespace Axiom.ParticleSystems
 				if ( emitter != null && emitter.EmittedEmitter != string.Empty )
 				{
 					// This one will be emitted, register its name and leave the vector empty!
-					emittedEmitterPool.Add( emitter.EmittedEmitter, new List<ParticleEmitter>() );
+					emittedEmitterPool.Add( emitter.EmittedEmitter.GetHashCode(), new List<ParticleEmitter>() );
 				}
 
 				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
@@ -1569,7 +1570,6 @@ namespace Axiom.ParticleSystems
 				return;
 
 			ParticleEmitter clonedEmitter = null;
-			var name = string.Empty;
 			List<ParticleEmitter> e = null;
 			var maxNumberOfEmitters = size / emittedEmitterPool.Count; // equally distribute the number for each emitted emitter list
 			var oldSize = 0;
@@ -1577,15 +1577,12 @@ namespace Axiom.ParticleSystems
 			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters
 			foreach ( var poolEntry in emittedEmitterPool )
 			{
-				name = poolEntry.Key;
 				e = poolEntry.Value;
 
 				// Search the correct emitter in the mEmitters vector
 				foreach ( var emitter in emitterList )
 				{
-					if ( emitter != null &&
-						name != string.Empty &&
-						name == emitter.Name )
+					if ( emitter != null && poolEntry.Key == emitter.Name.GetHashCode() )
 					{
 						// Found the right emitter, clone each emitter a number of times
 						oldSize = e.Count;
@@ -1622,15 +1619,14 @@ namespace Axiom.ParticleSystems
 			// Run through the emittedEmitterPool map
 			foreach ( var poolEntry in emittedEmitterPool )
 			{
-				name = poolEntry.Key;
 				emittedEmitters = poolEntry.Value;
-				fee = findFreeEmittedEmitter( name );
+				fee = findFreeEmittedEmitter( poolEntry.Key );
 
 				// If it´s not in the map, create an empty one
 				if ( fee == null )
 				{
-					freeEmittedEmitters.Add( name, new List<ParticleEmitter>() );
-					fee = findFreeEmittedEmitter( name );
+					freeEmittedEmitters.Add( poolEntry.Key, new List<ParticleEmitter>() );
+					fee = findFreeEmittedEmitter( poolEntry.Key );
 				}
 
 				// Check anyway if it´s ok now

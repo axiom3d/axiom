@@ -95,18 +95,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _resources.Values;
-			}
-		}
-
-		/// <summary>
-		///		A cached list of all resources and keys in memory.
-		///	</summary>
-		protected IDictionary<string, Resource> resources
-		{
-			get
-			{
-				return _resources;
+				return resourceHandleMap.Values;
 			}
 		}
 
@@ -172,22 +161,6 @@ namespace Axiom.Core
 
 		#endregion memoryUsage Property
 
-		#region nextHandle Property
-
-		static private ResourceHandle _nextHandle = 1;
-		/// <summary>
-		///     Gets the next available unique resource handle.
-		/// </summary>
-		static protected ResourceHandle nextHandle
-		{
-			get
-			{
-				return _nextHandle++;
-			}
-		}
-
-		#endregion nextHandle Property
-
 		#region ResourceType Property
 
 		private string _resourceType;
@@ -230,15 +203,8 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Debug.Assert( _resources != null, "A resource was being retrieved, but the list of Resources is null.", "" );
-
-				Resource resource;
-
-				// try to obtain the resource
-				_resources.TryGetValue( name, out resource );
-
 				// return the resource or null
-				return resource;
+				return this[ (ResourceHandle)name.GetHashCode() ];
 			}
 		}
 
@@ -339,7 +305,7 @@ namespace Axiom.Core
 	    public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
-			var ret = _create( name, nextHandle, group, isManual, loader, createParams );
+			var ret = _create( name, (ResourceHandle)name.GetHashCode(), group, isManual, loader, createParams );
 			if ( createParams != null )
 			{
 				ret.SetParameters( createParams );
@@ -677,22 +643,13 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _add( Resource res )
 		{
-			if ( !_resources.ContainsKey( res.Name ) )
-			{
-				_resources.Add( res.Name, res );
-			}
-			else
-			{
-				throw new AxiomException( String.Format( "Resource with the name {0} already exists.", res.Name ) );
-			}
-
 			if ( !_resourceHandleMap.ContainsKey( res.Handle ) )
 			{
 				_resourceHandleMap.Add( res.Handle, res );
 			}
 			else
 			{
-				throw new AxiomException( String.Format( "Resource with the handle {0} already exists.", res.Handle ) );
+				throw new AxiomException( String.Format( "Resource '{0}' with the handle {1} already exists.", res.Name, res.Handle ) );
 			}
 		}
 

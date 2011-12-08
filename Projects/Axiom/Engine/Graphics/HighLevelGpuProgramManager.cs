@@ -160,7 +160,7 @@ namespace Axiom.Graphics
 			}
 
 			// create the high level program using the factory
-			var program = factory.CreateInstance( this, name, nextHandle, group, false, null );
+			var program = factory.CreateInstance( this, name, (ResourceHandle)name.GetHashCode(), group, false, null );
 			program.Type = type;
 			program.SyntaxCode = language;
 
@@ -193,20 +193,6 @@ namespace Axiom.Graphics
 
 		#region Properties
 
-		public string[] ProgramNames
-		{
-			get
-			{
-				var sl = new string[ resources.Count ];
-				var count = 0;
-				foreach ( var s in resources.Keys )
-				{
-					sl[ count++ ] = s;
-				}
-				return sl;
-			}
-		}
-
 		public bool IsLanguageSupported( string language )
 		{
 			return factories.ContainsKey( language );
@@ -223,7 +209,7 @@ namespace Axiom.Graphics
 			{
 				throw new Exception( "You must supply a 'language' parameter" );
 			}
-			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, nextHandle, group, isManual, loader );
+			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, (ResourceHandle)name.GetHashCode(), group, isManual, loader );
 		}
 
 		/// <summary>
