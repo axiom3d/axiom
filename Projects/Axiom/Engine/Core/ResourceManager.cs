@@ -204,7 +204,7 @@ namespace Axiom.Core
 			get
 			{
 				// return the resource or null
-				return this[ (ResourceHandle)name.GetHashCode() ];
+				return this[ (ResourceHandle)name.ToLower().GetHashCode() ];
 			}
 		}
 
@@ -275,7 +275,7 @@ namespace Axiom.Core
 		/// </overloads>
 		public Resource Create( string name, string group )
 		{
-			return Create( name, group, null );
+			return Create( name, group, false, null, null );
 		}
 
 	    /// <param name="group"></param>
@@ -305,7 +305,7 @@ namespace Axiom.Core
 	    public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
-			var ret = _create( name, (ResourceHandle)name.GetHashCode(), group, isManual, loader, createParams );
+			var ret = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, createParams );
 			if ( createParams != null )
 			{
 				ret.SetParameters( createParams );
