@@ -57,6 +57,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
+	<NoStdLib>true</NoStdLib>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <DebugSymbols>true</DebugSymbols>
@@ -65,7 +66,7 @@
     <OutputPath>bin\Xbox\Debug\</OutputPath>
     <DocumentationFile>
     </DocumentationFile>
-    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -76,13 +77,14 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
+	<NoStdLib>true</NoStdLib>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release\</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.Plugins.ParticleFX.XML</DocumentationFile>
-    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>

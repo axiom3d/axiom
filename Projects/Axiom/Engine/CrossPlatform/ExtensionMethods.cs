@@ -52,7 +52,7 @@ namespace Axiom.Core
 #elif SILVERLIGHT
 			return AppDomain.CurrentDomain.GetAssemblies();
 #elif (WINDOWS_PHONE || XBOX || XBOX360)
-			return Neighbors(from file in Directory.GetFiles(folder??".", "*.dll") select file);
+            return Neighbors( from file in Directory.GetFiles( folder ?? ".", "*.dll" ) select file );
 #else
             var loc = folder ?? Assembly.GetExecutingAssembly().Location;
             loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
@@ -90,13 +90,13 @@ namespace Axiom.Core
     public static class ExtensionMethods
     {
 #if XBOX || XBOX360
-        public static int RemoveAll<T>(this List<T> list, Predicate<T> match)
+        public static int RemoveAll<T>( this List<T> list, Predicate<T> match )
         {
             var count = list.Count;
             var currentIdx = 0;
             var i = 0;
-            while (i++ < count)
-                if (match(list[currentIdx])) list.RemoveAt(currentIdx);
+            while ( i++ < count )
+                if ( match( list[ currentIdx ] ) ) list.RemoveAt( currentIdx );
                 else currentIdx++;
             return currentIdx;
         }
@@ -169,19 +169,19 @@ namespace Axiom.Core
 
         private static readonly Dictionary<Type, Field[]> fastFields = new Dictionary<Type, Field[]>();
 
-#if (XBOX || XBOX360)        
-        public static Func<object, object> FieldGet(this Type type, string fieldName)
+#if (XBOX || XBOX360)
+        public static Func<object, object> FieldGet( this Type type, string fieldName )
         {
-            var fieldInfo = type.GetField(fieldName);
-            return obj => fieldInfo.GetValue(obj);
-		}
+            var fieldInfo = type.GetField( fieldName );
+            return obj => fieldInfo.GetValue( obj );
+        }
 
-	    public static Func<object, object, object> FieldSet(this Type type, string fieldName)
-		{
-            var fieldInfo = type.GetField(fieldName);
-            return (obj, value) =>
+        public static Func<object, object, object> FieldSet( this Type type, string fieldName )
+        {
+            var fieldInfo = type.GetField( fieldName );
+            return ( obj, value ) =>
             {
-                fieldInfo.SetValue(obj, value);
+                fieldInfo.SetValue( obj, value );
                 return value;
             };
         }
@@ -529,7 +529,7 @@ namespace System
 {
     namespace ComponentModel.Composition
     {
-#if !NET_40
+#if !NET_40 || (XBOX || XBOX360)
         [AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = true, Inherited = false )]
         public class ExportAttribute : Attribute
         {
