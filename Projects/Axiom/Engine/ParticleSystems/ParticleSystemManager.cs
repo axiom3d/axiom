@@ -127,23 +127,23 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     List of template particle systems.
 		/// </summary>
-		private Dictionary<string, ParticleSystem> systemTemplateList = new Dictionary<string, ParticleSystem>();
+		private Dictionary<int, ParticleSystem> systemTemplateList = new Dictionary<int, ParticleSystem>();
 		/// <summary>
 		///     Actual instantiated particle systems (may be based on template, may be manual).
 		/// </summary>
-		private Dictionary<string, ParticleSystem> systemList = new Dictionary<string, ParticleSystem>();
+		private Dictionary<int, ParticleSystem> systemList = new Dictionary<int, ParticleSystem>();
 		/// <summary>
 		///     Factories for named emitter type (can be extended using plugins).
 		/// </summary>
-		private Dictionary<string, ParticleEmitterFactory> emitterFactoryList = new Dictionary<string, ParticleEmitterFactory>();
+		private Dictionary<int, ParticleEmitterFactory> emitterFactoryList = new Dictionary<int, ParticleEmitterFactory>();
 		/// <summary>
 		///     Factories for named affector types (can be extended using plugins).
 		/// </summary>
-		private Dictionary<string, ParticleAffectorFactory> affectorFactoryList = new Dictionary<string, ParticleAffectorFactory>();
+		private Dictionary<int, ParticleAffectorFactory> affectorFactoryList = new Dictionary<int, ParticleAffectorFactory>();
 		/// <summary>
 		///     Factories for named renderer types (can be extended using plugins).
 		/// </summary>
-		private Dictionary<string, ParticleSystemRendererFactory> rendererFactoryList = new Dictionary<string, ParticleSystemRendererFactory>();
+		private Dictionary<int, ParticleSystemRendererFactory> rendererFactoryList = new Dictionary<int, ParticleSystemRendererFactory>();
 
 
 		/// <summary>
@@ -181,7 +181,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="factory"></param>
 		public void AddEmitterFactory( ParticleEmitterFactory factory )
 		{
-			emitterFactoryList.Add( factory.Name, factory );
+			emitterFactoryList.Add( factory.Name.GetHashCode(), factory );
 
 			LogManager.Instance.Write( "Particle Emitter type '{0}' registered.", factory.Name );
 		}
@@ -202,7 +202,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="factory"></param>
 		public void AddAffectorFactory( ParticleAffectorFactory factory )
 		{
-			affectorFactoryList.Add( factory.Name, factory );
+			affectorFactoryList.Add( factory.Name.GetHashCode(), factory );
 
 			LogManager.Instance.Write( "Particle Affector type '{0}' registered.", factory.Name );
 		}
@@ -220,7 +220,7 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		public void AddRendererFactory( ParticleSystemRendererFactory factory )
 		{
-			rendererFactoryList.Add( factory.Type, factory );
+			rendererFactoryList.Add( factory.Type.GetHashCode(), factory );
 
 			LogManager.Instance.Write( "Particle Renderer type '{0}' registered.", factory.Type );
 		}
@@ -228,7 +228,7 @@ namespace Axiom.ParticleSystems
 		public ParticleSystemRenderer CreateRenderer( string rendererType )
 		{
 			ParticleSystemRendererFactory factory;
-			if ( rendererFactoryList.TryGetValue( rendererType, out factory ) )
+			if ( rendererFactoryList.TryGetValue( rendererType.GetHashCode(), out factory ) )
 				return factory.CreateInstance( rendererType );
 			throw new Exception( "Cannot find requested renderer type." );
 		}
@@ -249,7 +249,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="system">A reference to a particle system to be used as a template.</param>
 		public void AddTemplate( string name, ParticleSystem system )
 		{
-			systemTemplateList.Add( name, system );
+			systemTemplateList.Add( name.GetHashCode(), system );
 		}
 
 		/// <summary>
@@ -265,7 +265,7 @@ namespace Axiom.ParticleSystems
 		/// <returns>returns a reference to a ParticleSystem template to be populated</returns>
 		public ParticleSystem CreateTemplate( string name, string resourceGroup )
 		{
-			if ( systemTemplateList.ContainsKey( name ) )
+			if ( systemTemplateList.ContainsKey( name.GetHashCode() ) )
 			{
 				throw new Exception( "ParticleSystem template with name '" + name + "' already exists." );
 			}
@@ -311,14 +311,14 @@ namespace Axiom.ParticleSystems
 		{
 			var system = new ParticleSystem( name );
 			system.ParticleQuota = quota;
-			systemList.Add( name, system );
+			systemList.Add( name.GetHashCode(), system );
 
 			return system;
 		}
 
 		public void RemoveSystem( string name )
 		{
-			systemList.Remove( name );
+			systemList.Remove( name.GetHashCode() );
 		}
 
 		/// <summary>
@@ -343,13 +343,13 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		public ParticleSystem CreateSystem( string name, string templateName, int quota )
 		{
-			if ( !systemTemplateList.ContainsKey( templateName ) )
+			if ( !systemTemplateList.ContainsKey( templateName.GetHashCode() ) )
 			{
 				LogManager.Instance.Write( "Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.", templateName );
 				return CreateSystem( name, "NullParticleSystem" );
 			}
 
-			var templateSystem = systemTemplateList[ templateName ];
+			var templateSystem = systemTemplateList[ templateName.GetHashCode() ];
 
 			var system = CreateSystem( name, quota );
 
@@ -371,7 +371,7 @@ namespace Axiom.ParticleSystems
 	    /// <param name="ps"></param>
 	    internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
 		{
-			var factory = emitterFactoryList[ emitterType ];
+			var factory = emitterFactoryList[ emitterType.GetHashCode() ];
 
 			if ( factory == null )
 			{
@@ -392,7 +392,7 @@ namespace Axiom.ParticleSystems
         /// <param name="affectorType">string name of the affector type to be created. A factory of this type must have been registered.</param>
 		internal ParticleAffector CreateAffector( string affectorType )
 		{
-			var factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType ];
+			var factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType.GetHashCode() ];
 
 			if ( factory == null )
 			{
@@ -588,7 +588,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		List of available particle systems.
 		/// </summary>
-		public Dictionary<string, ParticleSystem> ParticleSystems
+		public Dictionary<int, ParticleSystem> ParticleSystems
 		{
 			get
 			{
@@ -599,7 +599,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     List of available affector factories.
 		/// </summary>
-		public Dictionary<string, ParticleAffectorFactory> Affectors
+		public Dictionary<int, ParticleAffectorFactory> Affectors
 		{
 			get
 			{
@@ -610,7 +610,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     List of available emitter factories.
 		/// </summary>
-		public Dictionary<string, ParticleEmitterFactory> Emitters
+		public Dictionary<int, ParticleEmitterFactory> Emitters
 		{
 			get
 			{
