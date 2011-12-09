@@ -326,12 +326,25 @@ namespace Axiom.Core
 
 		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
 		{
-			var res = this[ name ];
+			ResourceHandle hashCode = (ResourceHandle)name.ToLower().GetHashCode();
+
+			var res = this[ hashCode ];
 			var created = false;
+
 			if ( res == null )
 			{
+				res = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, paramaters );
+				if ( paramaters != null )
+				{
+					res.SetParameters( paramaters );
+				}
+
+				_add( res );
+
+				// Tell resource group manager
+				ResourceGroupManager.Instance.notifyResourceCreated( res );
+
 				created = true;
-				res = Create( name, group, isManual, loader, paramaters );
 			}
 
 			return new Axiom.Math.Tuple<Resource, bool>( res, created );
