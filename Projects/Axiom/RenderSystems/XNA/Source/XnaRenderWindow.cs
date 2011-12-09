@@ -812,7 +812,7 @@ namespace Axiom.RenderSystems.Xna
 			try
 			{
 #if !SILVERLIGHT
-				//_driver.XnaDevice.Present();
+				_driver.XnaDevice.Present();
 #endif
 			}
 			catch ( Exception e )
