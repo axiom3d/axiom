@@ -41,6 +41,8 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
@@ -397,7 +399,7 @@ namespace Axiom.SceneManagers.Bsp
         /// <returns></returns>
         protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
-            Quake3Shader s = new Quake3Shader( this, name, nextHandle, ResourceGroupManager.Instance.WorldResourceGroupName );
+            Quake3Shader s = new Quake3Shader( this, name, (ResourceHandle)name.GetHashCode(), ResourceGroupManager.Instance.WorldResourceGroupName );
 
             return s;
         }
