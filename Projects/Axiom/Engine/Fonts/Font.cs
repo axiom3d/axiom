@@ -584,6 +584,7 @@ namespace Axiom.Fonts
 			{
 				TextureManager.Instance.Remove( _texture );
 				_texture.Unload();
+				_texture.Dispose();
 				_texture = null;
 			}
 		}
