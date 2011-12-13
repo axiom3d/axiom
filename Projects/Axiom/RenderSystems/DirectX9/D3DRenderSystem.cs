@@ -68,6 +68,7 @@ using Vector3 = Axiom.Math.Vector3;
 using Vector4 = Axiom.Math.Vector4;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using Viewport = Axiom.Core.Viewport;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -744,11 +745,6 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion(1, 7, 2790)]
 		public override void Shutdown()
 		{
-			base.Shutdown();
-
-			_activeD3DDriver = null;
-
-
 			if (_deviceManager != null)
 			{
 				_deviceManager.Dispose();
@@ -760,10 +756,6 @@ namespace Axiom.RenderSystems.DirectX9
 				_driverList.Dispose();
 				_driverList = null;
 			}
-
-			_activeD3DDriver = null;
-
-			LogManager.Instance.Write( "D3D9 : Shutting down cleanly." );
 
 			if (textureManager != null)
 			{
@@ -777,11 +769,17 @@ namespace Axiom.RenderSystems.DirectX9
 				_hardwareBufferManager = null;
 			}
 
-			if ( _gpuProgramManager == null )
-				return;
- 
-			_gpuProgramManager.Dispose();
-			_gpuProgramManager = null;
+			if ( _gpuProgramManager != null )
+			{
+				_gpuProgramManager.Dispose();
+				_gpuProgramManager = null;
+			}
+			_activeD3DDriver = null;
+
+			base.Shutdown();
+
+			LogManager.Instance.Write( "D3D9 : Shutting down cleanly." );
+		
 		}
 
 		#endregion
@@ -3182,7 +3180,9 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="creator">Device to compare against. Shouldn't be null</param>
 		public void CleanupDepthBuffers(Device creator)
 		{
-			throw new NotImplementedException();
+			Contract.RequiresNotNull( creator, "creator" );
+			//TODO : Complete CleanupDepthuffers Implementation
+
 		}
 
 		public void NotifyOnDeviceReset( D3D9Device device )
