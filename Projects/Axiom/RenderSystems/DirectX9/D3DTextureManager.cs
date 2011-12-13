@@ -59,19 +59,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private D3D.Direct3D manager;
 
-        /*
+		/*
 		public D3DTextureManager(D3D.Direct3D manager, D3D.Device device)
 		{
-           
+		   
 		}
-         */
-         
+		 */
+		 
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-            // temporary hack
-            manager = D3DRenderSystem.Direct3D9;
-            device = D3DRenderSystem.ActiveD3D9Device;
+			// temporary hack
+			manager = D3DRenderSystem.Direct3D9;
+			device = D3DRenderSystem.ActiveD3D9Device;
 			return new D3DTexture( this, name, handle, group, isManual, loader, this.device, this.manager );
 		}
 
@@ -120,7 +120,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public void ReleaseDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( D3DTexture tex in resources.Values )
+			foreach ( D3DTexture tex in Resources )
 			{
 				if ( tex.ReleaseIfDefaultPool() )
 					count++;
@@ -131,7 +131,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public void RecreateDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( D3DTexture tex in resources.Values )
+			foreach ( D3DTexture tex in Resources )
 			{
 				if ( tex.RecreateIfDefaultPool( device ) )
 					count++;
