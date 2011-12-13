@@ -10,60 +10,59 @@ using Axiom.CrossPlatform;
 #if !(XBOX || XBOX360)
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Windows;
 using System.Linq.Expressions;
 using Expression = System.Linq.Expressions.Expression;
 #endif
 
 namespace Axiom.Core
 {
-    public static class AssemblyEx
-    {
-        public static string SafePath( this string path )
-        {
-            return path.Replace( '\\', Path.DirectorySeparatorChar ).Replace( '/', Path.DirectorySeparatorChar );
-        }
+	public static class AssemblyEx
+	{
+		public static string SafePath( this string path )
+		{
+			return path.Replace( '\\', Path.DirectorySeparatorChar ).Replace( '/', Path.DirectorySeparatorChar );
+		}
 
 #if !SILVERLIGHT || WINDOWS_PHONE
-        public static IEnumerable<Assembly> Neighbors( IEnumerable<string> names )
-        {
-            Assembly assembly;
-            foreach ( var name in names )
-            {
-                try
-                {
-                    assembly = Assembly.LoadFrom( name );
-                }
-                catch ( BadImageFormatException e )
-                {
-                    continue;
-                }
-                if ( assembly != null )
-                    yield return assembly;
-            }
-            yield break;
-        }
+		public static IEnumerable<Assembly> Neighbors( IEnumerable<string> names )
+		{
+			Assembly assembly;
+			foreach ( var name in names )
+			{
+				try
+				{
+					assembly = Assembly.LoadFrom( name );
+				}
+				catch ( BadImageFormatException e )
+				{
+					continue;
+				}
+				if ( assembly != null )
+					yield return assembly;
+			}
+			yield break;
+		}
 #endif
 
-        public static IEnumerable<Assembly> Neighbors( string folder )
-        {
+		public static IEnumerable<Assembly> Neighbors( string folder )
+		{
 #if WINDOWS_PHONE && SILVERLIGHT
 			return Neighbors(from part in Deployment.Current.Parts select part.Source);
 #elif SILVERLIGHT
 			return AppDomain.CurrentDomain.GetAssemblies();
 #elif (WINDOWS_PHONE || XBOX || XBOX360)
-            return Neighbors( from file in Directory.GetFiles( folder ?? ".", "*.dll" ) select file );
+			return Neighbors( from file in Directory.GetFiles( folder ?? ".", "*.dll" ) select file );
 #else
-            var loc = folder ?? Assembly.GetExecutingAssembly().Location;
-            loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
-            return Neighbors( from file in Directory.GetFiles( loc, "*.dll" ) select file );
+			var loc = folder ?? Assembly.GetExecutingAssembly().Location;
+			loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
+			return Neighbors( from file in Directory.GetFiles( loc, "*.dll" ) select file );
 #endif
-        }
+		}
 
-        public static IEnumerable<Assembly> Neighbors()
-        {
-            return Neighbors( null as string );
-        }
+		public static IEnumerable<Assembly> Neighbors()
+		{
+			return Neighbors( null as string );
+		}
 
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE)
 		public static IEnumerable<AssemblyCatalog> NeighborsCatalog(string folder = null)
@@ -85,21 +84,21 @@ namespace Axiom.Core
 			yield break;
 		}
 #endif
-    }
+	}
 
-    public static class ExtensionMethods
-    {
+	public static class ExtensionMethods
+	{
 #if XBOX || XBOX360
-        public static int RemoveAll<T>( this List<T> list, Predicate<T> match )
-        {
-            var count = list.Count;
-            var currentIdx = 0;
-            var i = 0;
-            while ( i++ < count )
-                if ( match( list[ currentIdx ] ) ) list.RemoveAt( currentIdx );
-                else currentIdx++;
-            return currentIdx;
-        }
+		public static int RemoveAll<T>( this List<T> list, Predicate<T> match )
+		{
+			var count = list.Count;
+			var currentIdx = 0;
+			var i = 0;
+			while ( i++ < count )
+				if ( match( list[ currentIdx ] ) ) list.RemoveAt( currentIdx );
+				else currentIdx++;
+			return currentIdx;
+		}
 #endif
 
 #if NET_40  && !( XBOX || XBOX360 || WINDOWS_PHONE )
@@ -128,13 +127,13 @@ namespace Axiom.Core
 		}
 #endif
 
-        public static int Size( this Type type )
-        {
-            return Size( type, null );
-        }
+		public static int Size( this Type type )
+		{
+			return Size( type, null );
+		}
 
-        public static int Size( this Type type, FieldInfo field )
-        {
+		public static int Size( this Type type, FieldInfo field )
+		{
 #if SILVERLIGHT || WINDOWS_PHONE
 			if ( type == typeof ( byte ) )
 				return 1;
@@ -158,94 +157,94 @@ namespace Axiom.Core
 					return marshal.SizeConst;
 			}
 #endif
-            return Marshal.SizeOf( type );
-        }
+			return Marshal.SizeOf( type );
+		}
 
-        public struct Field
-        {
-            public Func<object, object> Get;
-            public Func<object, object, object> Set;
-        }
+		public struct Field
+		{
+			public Func<object, object> Get;
+			public Func<object, object, object> Set;
+		}
 
-        private static readonly Dictionary<Type, Field[]> fastFields = new Dictionary<Type, Field[]>();
+		private static readonly Dictionary<Type, Field[]> fastFields = new Dictionary<Type, Field[]>();
 
 #if (XBOX || XBOX360)
-        public static Func<object, object> FieldGet( this Type type, string fieldName )
-        {
-            var fieldInfo = type.GetField( fieldName );
-            return obj => fieldInfo.GetValue( obj );
-        }
+		public static Func<object, object> FieldGet( this Type type, string fieldName )
+		{
+			var fieldInfo = type.GetField( fieldName );
+			return obj => fieldInfo.GetValue( obj );
+		}
 
-        public static Func<object, object, object> FieldSet( this Type type, string fieldName )
-        {
-            var fieldInfo = type.GetField( fieldName );
-            return ( obj, value ) =>
-            {
-                fieldInfo.SetValue( obj, value );
-                return value;
-            };
-        }
+		public static Func<object, object, object> FieldSet( this Type type, string fieldName )
+		{
+			var fieldInfo = type.GetField( fieldName );
+			return ( obj, value ) =>
+			{
+				fieldInfo.SetValue( obj, value );
+				return value;
+			};
+		}
 #else
-        public static Func<T, TR> FieldGet<T, TR>( this Type type, string fieldName )
-        {
-            var param = Expression.Parameter( type, "arg" );
-            var member = Expression.Field( param, fieldName );
-            var lambda = Expression.Lambda( member, param );
-            return (Func<T, TR>)lambda.Compile();
-        }
+		public static Func<T, TR> FieldGet<T, TR>( this Type type, string fieldName )
+		{
+			var param = Expression.Parameter( type, "arg" );
+			var member = Expression.Field( param, fieldName );
+			var lambda = Expression.Lambda( member, param );
+			return (Func<T, TR>)lambda.Compile();
+		}
 
-        public static Func<object, object> FieldGet( this Type type, string fieldName )
-        {
-            var param = Expression.Parameter( typeof( object ), "arg" );
-            var paramCast = Expression.Convert( param, type );
-            var member = Expression.Field( paramCast, fieldName );
-            var memberCast = Expression.Convert( member, typeof( object ) );
-            var lambda = Expression.Lambda( memberCast, param );
-            return (Func<object, object>)lambda.Compile();
-        }
+		public static Func<object, object> FieldGet( this Type type, string fieldName )
+		{
+			var param = Expression.Parameter( typeof( object ), "arg" );
+			var paramCast = Expression.Convert( param, type );
+			var member = Expression.Field( paramCast, fieldName );
+			var memberCast = Expression.Convert( member, typeof( object ) );
+			var lambda = Expression.Lambda( memberCast, param );
+			return (Func<object, object>)lambda.Compile();
+		}
 
-        public static Func<object, object, object> FieldSet( this Type type, string fieldName )
-        {
-            var param = Expression.Parameter( typeof( object ), "arg" );
-            var paramCast = Expression.Convert( param, type );
-            var member = Expression.Field( paramCast, fieldName );
-            var value = Expression.Parameter( typeof( object ), "value" );
+		public static Func<object, object, object> FieldSet( this Type type, string fieldName )
+		{
+			var param = Expression.Parameter( typeof( object ), "arg" );
+			var paramCast = Expression.Convert( param, type );
+			var member = Expression.Field( paramCast, fieldName );
+			var value = Expression.Parameter( typeof( object ), "value" );
 #if NET_40 && !WINDOWS_PHONE
 			var valueCast = Expression.Convert(value, member.Type);
 			var assign = Expression.Assign( member, valueCast );
 			var memberCast = Expression.Convert(assign, typeof(object));
 			var lambda = Expression.Lambda(memberCast, param, value);
 #else
-            // TODO: Check this alternative
-            var memberCast = Expression.Convert( member, typeof( object ) );
-            var assign = Expression.Call( Class<object>.MethodInfoAssign, memberCast, value );
-            var lambda = Expression.Lambda( assign, param, value );
+			// TODO: Check this alternative
+			var memberCast = Expression.Convert( member, typeof( object ) );
+			var assign = Expression.Call( Class<object>.MethodInfoAssign, memberCast, value );
+			var lambda = Expression.Lambda( assign, param, value );
 #endif
-            return (Func<object, object, object>)lambda.Compile();
-        }
+			return (Func<object, object, object>)lambda.Compile();
+		}
 #endif
 
-        public static Field[] Fields<T>( this T obj )
-        {
-            Field[] reflectors;
-            var type = obj.GetType();
-            if ( !fastFields.TryGetValue( type, out reflectors ) )
-            {
-                var fields = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
-                var delegates = new List<Field>();
-                for ( var i = 0; i < fields.Length; ++i )
-                {
-                    var name = fields[ i ].Name;
-                    delegates.Add( new Field
-                                   {
-                                       Get = type.FieldGet( name ),
-                                       Set = type.FieldSet( name )
-                                   } );
-                }
-                fastFields.Add( type, reflectors = delegates.ToArray() );
-            }
-            return reflectors;
-        }
+		public static Field[] Fields<T>( this T obj )
+		{
+			Field[] reflectors;
+			var type = obj.GetType();
+			if ( !fastFields.TryGetValue( type, out reflectors ) )
+			{
+				var fields = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
+				var delegates = new List<Field>();
+				for ( var i = 0; i < fields.Length; ++i )
+				{
+					var name = fields[ i ].Name;
+					delegates.Add( new Field
+								   {
+									   Get = type.FieldGet( name ),
+									   Set = type.FieldSet( name )
+								   } );
+				}
+				fastFields.Add( type, reflectors = delegates.ToArray() );
+			}
+			return reflectors;
+		}
 
 #if SILVERLIGHT
 		public static int CopyFrom<T>(this byte[] dst, T obj, int ofs = 0)
@@ -393,59 +392,59 @@ namespace Axiom.Core
 			}
 		}
 #else
-        public static int CopyFrom<T>( this byte[] dst, T obj )
-        {
-            return CopyFrom( dst, obj, 0 );
-        }
+		public static int CopyFrom<T>( this byte[] dst, T obj )
+		{
+			return CopyFrom( dst, obj, 0 );
+		}
 
-        public static int CopyFrom<T>( this byte[] dst, T obj, int ofs )
-        {
-            var size = Marshal.SizeOf( obj );
-            var handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
-            Marshal.Copy( handle.AddrOfPinnedObject(), dst, 0, size );
-            handle.Free();
-            return ofs + size;
-        }
+		public static int CopyFrom<T>( this byte[] dst, T obj, int ofs )
+		{
+			var size = Marshal.SizeOf( obj );
+			var handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+			Marshal.Copy( handle.AddrOfPinnedObject(), dst, 0, size );
+			handle.Free();
+			return ofs + size;
+		}
 
-        public static int CopyTo<T>( this byte[] src, ref T obj )
-        {
-            return CopyTo( src, ref obj, 0 );
-        }
+		public static int CopyTo<T>( this byte[] src, ref T obj )
+		{
+			return CopyTo( src, ref obj, 0 );
+		}
 
-        public static int CopyTo<T>( this byte[] src, ref T obj, int ofs )
-        {
-            var size = Marshal.SizeOf( obj );
-            var handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
-            Marshal.Copy( src, 0, handle.AddrOfPinnedObject(), size );
-            handle.Free();
-            return ofs + size;
-        }
+		public static int CopyTo<T>( this byte[] src, ref T obj, int ofs )
+		{
+			var size = Marshal.SizeOf( obj );
+			var handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+			Marshal.Copy( src, 0, handle.AddrOfPinnedObject(), size );
+			handle.Free();
+			return ofs + size;
+		}
 
-        public static void CopyFrom( this byte[] dst, Array src )
-        {
-            var handle = GCHandle.Alloc( src, GCHandleType.Pinned );
-            Marshal.Copy( handle.AddrOfPinnedObject(), dst, 0, dst.Length );
-            handle.Free();
-        }
+		public static void CopyFrom( this byte[] dst, Array src )
+		{
+			var handle = GCHandle.Alloc( src, GCHandleType.Pinned );
+			Marshal.Copy( handle.AddrOfPinnedObject(), dst, 0, dst.Length );
+			handle.Free();
+		}
 
-        public static void CopyTo( this byte[] src, Array dst )
-        {
-            var handle = GCHandle.Alloc( dst, GCHandleType.Pinned );
-            Marshal.Copy( src, 0, handle.AddrOfPinnedObject(), src.Length );
-            handle.Free();
-        }
+		public static void CopyTo( this byte[] src, Array dst )
+		{
+			var handle = GCHandle.Alloc( dst, GCHandleType.Pinned );
+			Marshal.Copy( src, 0, handle.AddrOfPinnedObject(), src.Length );
+			handle.Free();
+		}
 #endif
 
-        public static T PtrToStructure<T>( this IntPtr ptr )
-        {
+		public static T PtrToStructure<T>( this IntPtr ptr )
+		{
 #if SILVERLIGHT //5 RC
 			var obj = Activator.CreateInstance(typeof(T));
 			Marshal.PtrToStructure(ptr, obj);
 			return (T)obj;
 #else
-            return (T)Marshal.PtrToStructure( ptr, typeof( T ) );
+			return (T)Marshal.PtrToStructure( ptr, typeof( T ) );
 #endif
-        }
+		}
 
 #if SILVERLIGHT //5 RC
 		public static AssemblyName GetName(this Assembly assembly)
@@ -453,134 +452,134 @@ namespace Axiom.Core
 			return new AssemblyName(assembly.FullName);
 		}
 #endif
-    }
+	}
 
-    public static class Class<T>
-    {
-        public delegate TG Getter<TG>( T type );
-        public delegate void Setter<TS>( T type, TS value );
+	public static class Class<T>
+	{
+		public delegate TG Getter<TG>( T type );
+		public delegate void Setter<TS>( T type, TS value );
 
 #if !NET_40 || WINDOWS_PHONE
-        internal static readonly MethodInfo MethodInfoAssign = typeof( Class<T> ).GetMethod( "Assign", BindingFlags.NonPublic | BindingFlags.Static );
+		internal static readonly MethodInfo MethodInfoAssign = typeof( Class<T> ).GetMethod( "Assign", BindingFlags.NonPublic | BindingFlags.Static );
 
-        internal static T Assign( ref T target, T value ) { return target = value; }
+		internal static T Assign( ref T target, T value ) { return target = value; }
 #endif
 
 #if !(XBOX || XBOX360)
-        public static Getter<TG> FieldGet<TG>( string fieldName )
-        {
-            var type = Expression.Parameter( typeof( T ), "type" );
-            var field = Expression.Field( type, fieldName );
-            var lambda = Expression.Lambda( field, type );
-            return (Getter<TG>)lambda.Compile();
-        }
+		public static Getter<TG> FieldGet<TG>( string fieldName )
+		{
+			var type = Expression.Parameter( typeof( T ), "type" );
+			var field = Expression.Field( type, fieldName );
+			var lambda = Expression.Lambda( field, type );
+			return (Getter<TG>)lambda.Compile();
+		}
 
-        public static Setter<TS> FieldSet<TS>( string fieldName )
-        {
-            var type = Expression.Parameter( typeof( T ), "type" );
-            var value = Expression.Parameter( typeof( TS ), "value" );
-            var field = Expression.Field( type, fieldName );
+		public static Setter<TS> FieldSet<TS>( string fieldName )
+		{
+			var type = Expression.Parameter( typeof( T ), "type" );
+			var value = Expression.Parameter( typeof( TS ), "value" );
+			var field = Expression.Field( type, fieldName );
 #if NET_40 && !WINDOWS_PHONE
 			var assign = Expression.Assign(field, value);
 #else
-            var assign = Expression.Call( MethodInfoAssign, field, value );
+			var assign = Expression.Call( MethodInfoAssign, field, value );
 #endif
-            var lambda = Expression.Lambda( assign, type, value );
-            return (Setter<TS>)lambda.Compile();
-        }
+			var lambda = Expression.Lambda( assign, type, value );
+			return (Setter<TS>)lambda.Compile();
+		}
 #endif
-    }
+	}
 
 #if !NET_40 || WINDOWS_PHONE || XBOX || XBOX360
-    public class Lazy<T>
-        where T : class, new()
-    {
-        private T instance;
+	public class Lazy<T>
+		where T : class, new()
+	{
+		private T instance;
 
-        private Func<T> newT;
+		private Func<T> newT;
 
-        private T New()
-        {
-            return new T();
-        }
+		private T New()
+		{
+			return new T();
+		}
 
-        public Lazy()
-        {
-            newT = New;
-        }
+		public Lazy()
+		{
+			newT = New;
+		}
 
-        public Lazy( Func<T> newFunc )
-        {
-            newT = newFunc;
-        }
+		public Lazy( Func<T> newFunc )
+		{
+			newT = newFunc;
+		}
 
-        public T Value
-        {
-            get
-            {
-                return Interlocked.CompareExchange( ref instance, newT(), null );
-            }
-        }
-    }
+		public T Value
+		{
+			get
+			{
+				return Interlocked.CompareExchange( ref instance, newT(), null );
+			}
+		}
+	}
 #endif
 }
 
 namespace System
 {
-    namespace ComponentModel.Composition
-    {
+	namespace ComponentModel.Composition
+	{
 #if !NET_40 || (XBOX || XBOX360)
-        [AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = true, Inherited = false )]
-        public class ExportAttribute : Attribute
-        {
-            public ExportAttribute( Type contractType )
-            {
-            }
-        }
+		[AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = true, Inherited = false )]
+		public class ExportAttribute : Attribute
+		{
+			public ExportAttribute( Type contractType )
+			{
+			}
+		}
 
-        [AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = false )]
-        public class ImportManyAttribute : Attribute
-        {
-            public ImportManyAttribute( Type contractType )
-            {
-            }
-        }
+		[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = false )]
+		public class ImportManyAttribute : Attribute
+		{
+			public ImportManyAttribute( Type contractType )
+			{
+			}
+		}
 #endif
 
-        namespace Hosting
-        {
-            public class _dummy { public byte dummy; }
-        }
-    }
+		namespace Hosting
+		{
+			public class _dummy { public byte dummy; }
+		}
+	}
 
-    namespace Drawing
-    {
-        public class _dummy { public byte dummy; }
-    }
+	namespace Drawing
+	{
+		public class _dummy { public byte dummy; }
+	}
 
-    namespace Windows
-    {
-        namespace Forms
-        {
-            public class _dummy { public byte dummy; }
-        }
+	namespace Windows
+	{
+		namespace Forms
+		{
+			public class _dummy { public byte dummy; }
+		}
 
-        namespace Controls
-        {
-            public class _dummy { public byte dummy; }
-        }
+		namespace Controls
+		{
+			public class _dummy { public byte dummy; }
+		}
 
-        namespace Graphics
-        {
-            public class _dummy { public byte dummy; }
-        }
+		namespace Graphics
+		{
+			public class _dummy { public byte dummy; }
+		}
 
-        namespace Media
-        {
-            namespace Imaging
-            {
-                public class _dummy { public byte dummy; }
-            }
-        }
-    }
+		namespace Media
+		{
+			namespace Imaging
+			{
+				public class _dummy { public byte dummy; }
+			}
+		}
+	}
 }

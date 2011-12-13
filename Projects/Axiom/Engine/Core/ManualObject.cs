@@ -83,7 +83,7 @@ namespace Axiom.Core
 	///         memory reallocations.
 	///      -# Call <see cref="Begin"/> to begin entering data
 	///      -# For each vertex, call <see cref="Position(Vector3)"/>, 
-    ///      <see cref="Normal(Vector3)"/>, <see cref="TextureCoord(Vector3)"/>, <see cref="Color(ColorEx)"/>
+	///      <see cref="Normal(Vector3)"/>, <see cref="TextureCoord(Vector3)"/>, <see cref="Color(ColorEx)"/>
 	///         to define your vertex data. Note that each time you call Position()
 	///         you start a new vertex. Note that the first vertex defines the
 	///         components of the vertex - you can't add more after that. For example
@@ -231,28 +231,28 @@ namespace Axiom.Core
 
 		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    foreach (var current in shadowRenderables)
-                    {
-                        if (!current.IsDisposed)
-                            current.Dispose();
-                    }
-                    shadowRenderables.Clear();
-                    shadowRenderables = null;
-                }
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					foreach ( var current in shadowRenderables )
+					{
+						if ( !current.IsDisposed )
+							current.Dispose();
+					}
+					shadowRenderables.Clear();
+					shadowRenderables = null;
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		/// <summary>
 		/// Delete temp buffers and reset init counts
@@ -341,81 +341,81 @@ namespace Axiom.Core
 		/// <summary>
 		/// Copies temporary vertex buffer to hardware buffer
 		/// </summary>
-        protected virtual void CopyTempVertexToBuffer()
+		protected virtual void CopyTempVertexToBuffer()
 		{
-		    this.tempVertexPending = false;
-		    var rop = this.currentSection.RenderOperation;
+			this.tempVertexPending = false;
+			var rop = this.currentSection.RenderOperation;
 
-		    if ( rop.vertexData.vertexCount == 0 && !this.currentUpdating )
-		    {
-		        // first vertex, autoorganise decl
-		        var oldDcl = rop.vertexData.vertexDeclaration;
-		        rop.vertexData.vertexDeclaration =
-		            oldDcl.GetAutoOrganizedDeclaration( false, false );
+			if ( rop.vertexData.vertexCount == 0 && !this.currentUpdating )
+			{
+				// first vertex, autoorganise decl
+				var oldDcl = rop.vertexData.vertexDeclaration;
+				rop.vertexData.vertexDeclaration =
+					oldDcl.GetAutoOrganizedDeclaration( false, false );
 
-		        HardwareBufferManager.Instance.DestroyVertexDeclaration( oldDcl );
-		    }
+				HardwareBufferManager.Instance.DestroyVertexDeclaration( oldDcl );
+			}
 
-		    this.ResizeTempVertexBufferIfNeeded( ++rop.vertexData.vertexCount );
+			this.ResizeTempVertexBufferIfNeeded( ++rop.vertexData.vertexCount );
 
-		    var elemList = rop.vertexData.vertexDeclaration.Elements;
+			var elemList = rop.vertexData.vertexDeclaration.Elements;
 
 #if !AXIOM_SAFE_ONLY
-		    unsafe
+			unsafe
 #endif
-		    {
-		        // get base pointer
-		        var buf = BufferBase.Wrap( this.tempVertexBuffer );
-		        buf.Ptr = this.declSize*( rop.vertexData.vertexCount - 1 );
+			{
+				// get base pointer
+				var buf = BufferBase.Wrap( this.tempVertexBuffer );
+				buf.Ptr = this.declSize * ( rop.vertexData.vertexCount - 1 );
 
-		        var pFloat = buf.ToFloatPointer();
-		        var pRGBA = buf.ToUIntPointer();
+				var pFloat = buf.ToFloatPointer();
+				var pRGBA = buf.ToUIntPointer();
 
-		        foreach ( var elem in elemList )
-		        {
-		            var idx = elem.Offset;
+				foreach ( var elem in elemList )
+				{
+					var idx = elem.Offset;
 
-		            RenderSystem rs;
-		            int dims;
-		            switch ( elem.Semantic )
-		            {
-		                case VertexElementSemantic.Position:
-		                    pFloat[ idx++ ] = this.tempVertex.position.x;
-		                    pFloat[ idx++ ] = this.tempVertex.position.y;
-		                    pFloat[ idx ] = this.tempVertex.position.z;
-		                    break;
-		                case VertexElementSemantic.Normal:
-		                    pFloat[ idx++ ] = this.tempVertex.normal.x;
-		                    pFloat[ idx++ ] = this.tempVertex.normal.y;
-		                    pFloat[ idx ] = this.tempVertex.normal.z;
-		                    break;
-		                case VertexElementSemantic.TexCoords:
-		                    dims = VertexElement.GetTypeCount( elem.Type );
-		                    for ( var t = 0; t < dims; ++t )
-		                    {
-		                        pFloat[ idx++ ] = this.tempVertex.texCoord[ elem.Index ][ t ];
-		                    }
-		                    break;
-		                case VertexElementSemantic.Diffuse:
-		                    rs = Root.Instance.RenderSystem;
-		                    if ( rs != null )
-		                    {
-		                        pRGBA[ idx ] = (uint)rs.ConvertColor( this.tempVertex.color );
-		                    }
-		                    else
-		                    {
-		                        pRGBA[ idx ] = (uint)this.tempVertex.color.ToRGBA(); // pick one!
-		                    }
-		                    break;
-		                default:
-		                    // nop ?
-		                    break;
-		            }
-		        }
-		    }
+					RenderSystem rs;
+					int dims;
+					switch ( elem.Semantic )
+					{
+						case VertexElementSemantic.Position:
+							pFloat[ idx++ ] = this.tempVertex.position.x;
+							pFloat[ idx++ ] = this.tempVertex.position.y;
+							pFloat[ idx ] = this.tempVertex.position.z;
+							break;
+						case VertexElementSemantic.Normal:
+							pFloat[ idx++ ] = this.tempVertex.normal.x;
+							pFloat[ idx++ ] = this.tempVertex.normal.y;
+							pFloat[ idx ] = this.tempVertex.normal.z;
+							break;
+						case VertexElementSemantic.TexCoords:
+							dims = VertexElement.GetTypeCount( elem.Type );
+							for ( var t = 0; t < dims; ++t )
+							{
+								pFloat[ idx++ ] = this.tempVertex.texCoord[ elem.Index ][ t ];
+							}
+							break;
+						case VertexElementSemantic.Diffuse:
+							rs = Root.Instance.RenderSystem;
+							if ( rs != null )
+							{
+								pRGBA[ idx ] = (uint)rs.ConvertColor( this.tempVertex.color );
+							}
+							else
+							{
+								pRGBA[ idx ] = (uint)this.tempVertex.color.ToRGBA(); // pick one!
+							}
+							break;
+						default:
+							// nop ?
+							break;
+					}
+				}
+			}
 		}
 
-	    #endregion Methods
+		#endregion Methods
 
 		#endregion Protected
 
@@ -610,11 +610,11 @@ namespace Axiom.Core
 
 		///<summary>
 		/// A vertex position is slightly special among the other vertex data
-        /// methods like <see cref="Normal(Vector3)"/> and <see cref="TextureCoord(Vector3)"/>, 
-        /// since calling it indicates
+		/// methods like <see cref="Normal(Vector3)"/> and <see cref="TextureCoord(Vector3)"/>, 
+		/// since calling it indicates
 		/// the start of a new vertex. All other vertex data methods you call
 		/// after this are assumed to be adding more information (like normals or
-        /// texture coordinates) to the last vertex started with <see cref="Position(Vector3)"/>.
+		/// texture coordinates) to the last vertex started with <see cref="Position(Vector3)"/>.
 		/// </summary>
 		/// <param name="pos">Position as a <see cref="Vector3"/></param>
 		public virtual void Position( Vector3 pos )
@@ -984,7 +984,7 @@ namespace Axiom.Core
 					// to allow for user-configured growth area
 					var vertexCount = (int)Utility.Max( rop.vertexData.vertexCount, this.estVertexCount );
 
-                    vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
+					vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( rop.vertexData.vertexDeclaration, vertexCount, this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 
 					rop.vertexData.vertexBufferBinding.SetBinding( 0, vbuf );
 				}
@@ -1352,7 +1352,7 @@ namespace Axiom.Core
 			public ManualObjectSection( ManualObject parent,
 										string materialName,
 										OperationType opType )
-                : base()
+				: base()
 			{
 				this.parent = parent;
 				this.materialName = materialName;
@@ -1610,8 +1610,8 @@ namespace Axiom.Core
 						// Dispose managed resources.
 						if ( renderOperation != null )
 						{
-                            if (!renderOperation.IsDisposed)
-                                renderOperation.Dispose();
+							if ( !renderOperation.IsDisposed )
+								renderOperation.Dispose();
 
 							renderOperation = null;
 						}
@@ -1621,7 +1621,7 @@ namespace Axiom.Core
 					// if we add them, they need to be released here.
 				}
 
-                base.dispose(disposeManagedResources);
+				base.dispose( disposeManagedResources );
 			}
 
 			#endregion IDisposable Implementation
@@ -1653,7 +1653,7 @@ namespace Axiom.Core
 														VertexData vertexData,
 														bool createSeparateLightCap,
 														bool isLightCap )
-                : base()
+				: base()
 			{
 				this.parent = parent;
 				// Initialize render op
@@ -1768,29 +1768,29 @@ namespace Axiom.Core
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
-                        if (this.lightCap != null)
-                        {
-                            if (!this.lightCap.IsDisposed)
-                                this.lightCap.Dispose();
+						if ( this.lightCap != null )
+						{
+							if ( !this.lightCap.IsDisposed )
+								this.lightCap.Dispose();
 
-                            this.lightCap = null;
-                        }
+							this.lightCap = null;
+						}
 
-                        if (this.positionBuffer != null)
-                        {
-                            if (!this.positionBuffer.IsDisposed)
-                                this.positionBuffer.Dispose();
+						if ( this.positionBuffer != null )
+						{
+							if ( !this.positionBuffer.IsDisposed )
+								this.positionBuffer.Dispose();
 
-                            this.positionBuffer = null;
-                        }
+							this.positionBuffer = null;
+						}
 
-                        if (this.wBuffer != null)
-                        {
-                            if (!this.wBuffer.IsDisposed)
-                                this.wBuffer.Dispose();
+						if ( this.wBuffer != null )
+						{
+							if ( !this.wBuffer.IsDisposed )
+								this.wBuffer.Dispose();
 
-                            this.wBuffer = null;
-                        }
+							this.wBuffer = null;
+						}
 					}
 
 					// There are no unmanaged resources to release, but
@@ -1825,7 +1825,7 @@ namespace Axiom.Core
 		public new const string TypeName = "ManualObject";
 
 		public ManualObjectFactory()
-            : base()
+			: base()
 		{
 			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
