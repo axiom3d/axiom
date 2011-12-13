@@ -44,7 +44,7 @@
     <Optimize>false</Optimize>
     <DocumentationFile>bin\x86\Debug\Axiom.Plugins.OctreeZone.XML</DocumentationFile>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_20</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
