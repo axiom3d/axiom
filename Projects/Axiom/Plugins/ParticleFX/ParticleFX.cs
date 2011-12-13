@@ -48,7 +48,9 @@ namespace Axiom.ParticleFX
 	/// <summary>
 	/// Summary description for ParticleFX.
 	/// </summary>
+#if ( WINDOWS_PHONE || SILVERLIGHT )
 	[Export(typeof(IPlugin))]
+#endif
 	public class ParticleFX : IPlugin
 	{
 		#region IPlugin Members
