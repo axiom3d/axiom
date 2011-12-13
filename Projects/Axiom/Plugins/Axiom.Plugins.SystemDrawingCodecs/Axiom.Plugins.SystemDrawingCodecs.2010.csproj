@@ -42,7 +42,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DocumentationFile>bin\x86\Debug\Axiom.Plugins.SystemDrawingCodecs.XML</DocumentationFile>
     <OutputPath>bin\x86\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_20</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
