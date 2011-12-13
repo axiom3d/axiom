@@ -42,12 +42,10 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible( false )]
 [assembly: CLSCompliant( false )]
-[assembly:
-    AssemblyConfiguration(
-        "https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
+[assembly: AssemblyConfiguration( "https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
 [assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
 [assembly: AssemblyProductAttribute( "Axiom Rendering Engine" )]
-[assembly: AssemblyCopyrightAttribute( "Copyright © 2003-2011 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyCopyrightAttribute( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademarkAttribute( "" )]
 [assembly: AssemblyCultureAttribute( "" )]
 
@@ -59,10 +57,8 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 
-[assembly: AssemblyVersion( /*  Major.Minor.Build */ "0.8.0.0" )]
+[assembly: AssemblyVersion( /*  Major.Minor.Build */ "0.9.0.0" )]
 #if !( XBOX || XBOX360 )
-
-[assembly: AssemblyFileVersion( /*  Major.Minor.Build */ "0.8.0.0" )]
+[assembly: AssemblyFileVersion( /*  Major.Minor.Build */ "0.9.0.0" )]
 #endif
-
-[assembly: AssemblyInformationalVersion( /*  Major.Minor.Build */ "0.8.0.0" )]
+[assembly: AssemblyInformationalVersion( /*  Major.Minor.Build */ "0.9.0.0" )]
