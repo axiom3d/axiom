@@ -62,7 +62,7 @@ namespace Axiom.Graphics
         ///    This method is simply to allow some subclasses of GpuProgram to delegate
         ///    the program which is bound to the pipeline to a delegate, if required.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual GpuProgram BindingDelegate
         {
             get
@@ -83,7 +83,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    The name of the file to load from source (may be blank).
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected string fileName;
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///    Setting this will have no effect until you (re)load the program.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual string SourceFile
         {
             get
@@ -115,7 +115,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    The assembler source of this program.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
 
         protected string source;
 
@@ -125,7 +125,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///    Setting this will have no effect until you (re)load the program.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual string Source
         {
             get
@@ -145,13 +145,13 @@ namespace Axiom.Graphics
 
         #region SyntaxCode Property
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected string syntaxCode;
 
         /// <summary>
         ///   Syntax code (i.e. arbvp1, vs_2_0, etc.)
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual string SyntaxCode
         {
             get
@@ -171,20 +171,20 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Gets the language of this program
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual string Language { get { return "asm"; } }
 
         #endregion SyntaxCode Property
 
         #region Type Property
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected GpuProgramType type;
 
         /// <summary>
         ///   Type of program this represents (vertex or fragment).
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual GpuProgramType Type
         {
             get
@@ -201,13 +201,13 @@ namespace Axiom.Graphics
 
         #region IsSkeletalAnimationIncluded Property
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected bool isSkeletalAnimationIncluded;
 
         /// <summary>
         ///        Flag indicating whether this program is being used for hardware skinning.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool IsSkeletalAnimationIncluded
         {
             get
@@ -227,13 +227,13 @@ namespace Axiom.Graphics
         /// <summary>
         ///        Does this (vertex) program include morph animation?
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected bool morphAnimation;
         /// <summary>
         ///        Gets/Sets whether a vertex program includes the required instructions
         ///        to perform morph animation. 
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool IsMorphAnimationIncluded
         {
             get
@@ -253,14 +253,14 @@ namespace Axiom.Graphics
         /// <summary>
         ///        Does this (vertex) program require vertex texture fetch?
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected bool vertexTextureFetchRequired;
-        
+
         /// <summary>
         ///        Gets/Sets whether this vertex program requires support for vertex 
         ///        texture fetch from the hardware. 
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool IsVertexTextureFetchRequired
         {
             get
@@ -280,14 +280,14 @@ namespace Axiom.Graphics
         /// <summary>
         ///        Does this (vertex) program require vertex texture fetch?
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected bool needsAdjacencyInfo;
 
         /// <summary>
         ///        Gets/Sets whether this vertex program requires support for vertex 
         ///        texture fetch from the hardware. 
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool IsAdjacencyInfoRequired
         {
             get
@@ -307,14 +307,14 @@ namespace Axiom.Graphics
         /// <summary>
         ///        Does this (vertex) program include morph animation?
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected ushort poseAnimation;
 
         /// <summary>
         ///        Gets/Sets whether a vertex program includes the required instructions
         ///        to perform pose animation. 
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual ushort PoseAnimationCount
         {
             get
@@ -334,7 +334,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// 
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool IsPoseAnimationIncluded
         {
             get
@@ -350,7 +350,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    List of default parameters, as gathered from the program definition.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected GpuProgramParameters defaultParams;
         /// <summary>
         ///    Get a reference to the default parameters which are to be used for all uses of this program.
@@ -375,7 +375,7 @@ namespace Axiom.Graphics
 
         #region HasDefaultParameters Property
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool HasDefaultParameters
         {
             get
@@ -398,7 +398,7 @@ namespace Axiom.Graphics
         ///        light and material states.  This way the user does not have to use autoparameters to 
         ///        pass light position, color etc.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool PassSurfaceAndLightStates
         {
             get
@@ -421,7 +421,7 @@ namespace Axiom.Graphics
         ///        fog states.  This way the user does not have to use autoparameters to 
         ///        pass fog color etc.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool PassFogStates
         {
             get
@@ -444,7 +444,7 @@ namespace Axiom.Graphics
         ///        transform states.  This way the user does not have to use autoparameters to 
         ///        pass position etc.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool PassTransformStates
         {
             get
@@ -460,7 +460,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Returns whether this program can be supported on the current renderer and hardware.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool IsSupported
         {
             get
@@ -482,7 +482,7 @@ namespace Axiom.Graphics
         /// Returns the maximum number of samplers that this fragment program has access
         /// to, based on the fragment program profile it uses.
         /// </summary>
-        [Obsolete("Not existing in ogre anymore?")]
+        [Obsolete( "Not existing in ogre anymore?" )]
         public abstract int SamplerCount
         {
             get;
@@ -500,7 +500,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Did this program encounter a compile error when loading?
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual bool HasCompileError
         {
             get
@@ -523,7 +523,7 @@ namespace Axiom.Graphics
         /// Record of logical to physical buffer maps. Mandatory for low-level
         /// programs or high-level programs which set their params the same way.
         /// </summary>
-        protected GpuProgramParameters.GpuLogicalBufferStruct floatLogicalToPhysical ;
+        protected GpuProgramParameters.GpuLogicalBufferStruct floatLogicalToPhysical;
 
         /// <summary>
         /// Record of logical to physical buffer maps. Mandatory for low-level
@@ -536,7 +536,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected GpuProgramParameters.GpuNamedConstants constantDefs;
 
         /// <summary>
@@ -547,7 +547,7 @@ namespace Axiom.Graphics
         /// a high-level program which loads them, or a low-level program which has them
         /// specified manually.
         /// </note>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual GpuProgramParameters.GpuNamedConstants ConstantDefinitions
         {
             get
@@ -570,7 +570,7 @@ namespace Axiom.Graphics
         /// to use the named parameters from the original high-level source.
         /// <seealso cref="ManualNamedConstantsFile"/>
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual GpuProgramParameters.GpuNamedConstants ManualNamedConstants
         {
             set
@@ -620,7 +620,7 @@ namespace Axiom.Graphics
         /// <summary>   
         /// File from which to load named constants manually
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected string manualNamedConstantsFile;
 
         /// <summary>
@@ -635,7 +635,7 @@ namespace Axiom.Graphics
         /// program for the named file from which to load parameter names from. 
         /// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
         /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual string ManualNamedConstantsFile
         {
             get
@@ -651,7 +651,7 @@ namespace Axiom.Graphics
 
         #endregion ManualNamedConstantsFile Property
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         private bool _loadedManualNamedConstants;
 
         #endregion Fields and Properties
@@ -661,7 +661,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Constructor for creating
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
             : base( parent, name, handle, group, isManual, loader )
         {
@@ -674,7 +674,7 @@ namespace Axiom.Graphics
             needsAdjacencyInfo = false;
             compileError = false;
             _loadedManualNamedConstants = false;
-            
+
             CreateParameterMappingStructures();
         }
 
@@ -694,7 +694,7 @@ namespace Axiom.Graphics
         ///    they are appropriate.
         /// </remarks>
         /// <returns></returns>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public virtual GpuProgramParameters CreateParameters()
         {
             var newParams = GpuProgramManager.Instance.CreateParameters();
@@ -716,7 +716,7 @@ namespace Axiom.Graphics
                 _loadedManualNamedConstants = true;
             }
 
-            
+
             // set up named parameters, if any
             if ( constantDefs.Map.Count != 0 )
             {
@@ -724,7 +724,7 @@ namespace Axiom.Graphics
             }
             // link shared logical / physical map for low-level use
             newParams.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
-            
+
 
             // Copy in default parameters if present
             if ( defaultParams != null )
@@ -740,7 +740,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Loads this Gpu Program.
         /// </summary>
-        [OgreVersion(1, 7, 2790, "original name loadImpl")]
+        [OgreVersion( 1, 7, 2790, "original name loadImpl" )]
         protected override void load()
         {
             // load from file and get the source string from it
@@ -768,20 +768,20 @@ namespace Axiom.Graphics
 
                     // Copy old (matching) values across
                     // Don't use copyConstantsFrom since program may be different
-                    defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
+                    defaultParams.CopyMatchingNamedConstantsFrom( savedParams );
                 }
 
             }
             catch ( Exception ex )
             {
-                LogManager.Instance.Write("Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message);
+                LogManager.Instance.Write( "Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message );
                 compileError = true;
             }
         }
 
         #endregion
 
-        [OgreVersion(0, 0, 0, "not overriden in 1.7.2790")]
+        [OgreVersion( 0, 0, 0, "not overriden in 1.7.2790" )]
         protected override void unload()
         {
         }
@@ -789,12 +789,12 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Method which must be implemented by subclasses, loads the program from source.
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected abstract void LoadFromSource();
 
         #region IsRequiredCapabilitiesSupported
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected bool IsRequiredCapabilitiesSupported()
         {
             var caps = Root.Instance.RenderSystem.Capabilities;
@@ -816,20 +816,20 @@ namespace Axiom.Graphics
         /// <summary>
         /// Create the internal params logical &amp; named mapping structures
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         protected void CreateParameterMappingStructures()
-		{
-			CreateParameterMappingStructures( true );
-		}
+        {
+            CreateParameterMappingStructures( true );
+        }
 
         /// <summary>
         /// Create the internal params logical &amp; named mapping structures
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        protected void CreateParameterMappingStructures(bool recreateIfExists )
+        [OgreVersion( 1, 7, 2790 )]
+        protected void CreateParameterMappingStructures( bool recreateIfExists )
         {
-            CreateLogicalParameterMappingStructures(recreateIfExists);
-            CreateNamedParameterMappingStructures(recreateIfExists);
+            CreateLogicalParameterMappingStructures( recreateIfExists );
+            CreateNamedParameterMappingStructures( recreateIfExists );
         }
 
         #endregion
@@ -839,12 +839,12 @@ namespace Axiom.Graphics
         /// <summary>
         /// Create the internal params logical mapping structures
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        protected void CreateLogicalParameterMappingStructures(bool recreateIfExists)
+        [OgreVersion( 1, 7, 2790 )]
+        protected void CreateLogicalParameterMappingStructures( bool recreateIfExists )
         {
-            if (recreateIfExists || floatLogicalToPhysical == null)
+            if ( recreateIfExists || floatLogicalToPhysical == null )
                 floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
-            if (recreateIfExists || intLogicalToPhysical == null)
+            if ( recreateIfExists || intLogicalToPhysical == null )
                 intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
         }
 
@@ -855,10 +855,10 @@ namespace Axiom.Graphics
         /// <summary>
         /// Create the internal params named mapping structures
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
-        private void CreateNamedParameterMappingStructures(bool recreateIfExists)
+        [OgreVersion( 1, 7, 2790 )]
+        private void CreateNamedParameterMappingStructures( bool recreateIfExists )
         {
-            if (recreateIfExists || constantDefs == null)
+            if ( recreateIfExists || constantDefs == null )
                 constantDefs = new GpuProgramParameters.GpuNamedConstants();
         }
 
@@ -870,16 +870,16 @@ namespace Axiom.Graphics
 
         #region TypePropertyCommand
 
-        [ScriptableProperty("type", "'vertex_program', 'geometry_program' or 'fragment_program'")]
-        [OgreVersion(1, 7, 2790)]
-        public class TypePropertyCommand : IPropertyCommand<GpuProgram>
+        [ScriptableProperty( "type", "'vertex_program', 'geometry_program' or 'fragment_program'" )]
+        [OgreVersion( 1, 7, 2790 )]
+        public class TypePropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get( GpuProgram t )
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object t )
             {
-                switch (t.Type)
+                switch ( ( (GpuProgram)t ).Type )
                 {
                     case GpuProgramType.Vertex:
                         return "vertex_program";
@@ -890,19 +890,21 @@ namespace Axiom.Graphics
                 }
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set( GpuProgram target, string val )
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object target, string val )
             {
-                switch (val)
+                switch ( val )
                 {
                     case "vertex_program":
-                        target.Type = GpuProgramType.Vertex;
+                        ( (GpuProgram)target ).Type = GpuProgramType.Vertex;
                         break;
+
                     case "geometry_program":
-                        target.Type = GpuProgramType.Geometry;
+                        ( (GpuProgram)target ).Type = GpuProgramType.Geometry;
                         break;
+
                     default:
-                        target.Type = GpuProgramType.Fragment;
+                        ( (GpuProgram)target ).Type = GpuProgramType.Fragment;
                         break;
                 }
             }
@@ -914,22 +916,22 @@ namespace Axiom.Graphics
 
         #region SyntaxPropertyCommand
 
-        [ScriptableProperty("syntax", "Syntax code, e.g. vs_1_1")]
-        [OgreVersion(1, 7, 2790)]
-        public class SyntaxPropertyCommand : IPropertyCommand<GpuProgram>
+        [ScriptableProperty( "syntax", "Syntax code, e.g. vs_1_1" )]
+        [OgreVersion( 1, 7, 2790 )]
+        public class SyntaxPropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram t)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object t )
             {
-                return t.SyntaxCode;
+                return ( (GpuProgram)t ).SyntaxCode;
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram t, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object t, string val )
             {
-                t.SyntaxCode = val;
+                ( (GpuProgram)t ).SyntaxCode = val;
             }
 
             #endregion
@@ -939,22 +941,22 @@ namespace Axiom.Graphics
 
         #region IncludesSkeletalAnimationPropertyCommand
 
-        [OgreVersion(1, 7, 2790)]
-        [ScriptableProperty("includes_skeletal_animation", "Whether this vertex program includes skeletal animation")]
-        public class IncludesSkeletalAnimationPropertyCommand : IPropertyCommand<GpuProgram>
+        [OgreVersion( 1, 7, 2790 )]
+        [ScriptableProperty( "includes_skeletal_animation", "Whether this vertex program includes skeletal animation", typeof( GpuProgram ) )]
+        public class IncludesSkeletalAnimationPropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram target)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object target )
             {
-                return target.IsSkeletalAnimationIncluded.ToString();
+                return ( (GpuProgram)target ).IsSkeletalAnimationIncluded.ToString();
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram target, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object target, string val )
             {
-                target.IsSkeletalAnimationIncluded = bool.Parse(val);
+                ( (GpuProgram)target ).IsSkeletalAnimationIncluded = bool.Parse( val );
             }
 
             #endregion IPropertyCommand Members
@@ -964,22 +966,22 @@ namespace Axiom.Graphics
 
         #region IncludesMorphAnimationPropertyCommand
 
-        [OgreVersion(1, 7, 2790)]
-        [ScriptableProperty("includes_morph_animation", "Whether this vertex program includes morph animation")]
-        public class IncludesMorphAnimationPropertyCommand : IPropertyCommand<GpuProgram>
+        [OgreVersion( 1, 7, 2790 )]
+        [ScriptableProperty( "includes_morph_animation", "Whether this vertex program includes morph animation" )]
+        public class IncludesMorphAnimationPropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram target)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object target )
             {
-                return target.IsMorphAnimationIncluded.ToString();
+                return ( (GpuProgram)target ).IsMorphAnimationIncluded.ToString();
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram target, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object target, string val )
             {
-                target.IsMorphAnimationIncluded = bool.Parse( val );
+                ( (GpuProgram)target ).IsMorphAnimationIncluded = bool.Parse( val );
             }
 
             #endregion IPropertyCommand Members
@@ -989,22 +991,22 @@ namespace Axiom.Graphics
 
         #region IncludesPoseAnimationPropertyCommand
 
-        [OgreVersion(1, 7, 2790)]
-        [ScriptableProperty("includes_pose_animation", "The number of poses this vertex program supports for pose animation")]
-        public class IncludesPoseAnimationPropertyCommand : IPropertyCommand<GpuProgram>
+        [OgreVersion( 1, 7, 2790 )]
+        [ScriptableProperty( "includes_pose_animation", "The number of poses this vertex program supports for pose animation" )]
+        public class IncludesPoseAnimationPropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram target)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object target )
             {
-                return target.poseAnimation.ToString();
+                return ( (GpuProgram)target ).poseAnimation.ToString();
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram target, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object target, string val )
             {
-                target.poseAnimation = ushort.Parse( val );
+                ( (GpuProgram)target ).poseAnimation = ushort.Parse( val );
             }
 
             #endregion IPropertyCommand Members
@@ -1014,22 +1016,22 @@ namespace Axiom.Graphics
 
         #region IsVertexTextureFetchRequiredPropertyCommand
 
-        [OgreVersion(1, 7, 2790)]
-        [ScriptableProperty("uses_vertex_texture_fetch", "Whether this vertex program requires vertex texture fetch support.")]
-        public class IsVertexTextureFetchRequiredPropertyCommand : IPropertyCommand<GpuProgram>
+        [OgreVersion( 1, 7, 2790 )]
+        [ScriptableProperty( "uses_vertex_texture_fetch", "Whether this vertex program requires vertex texture fetch support." )]
+        public class IsVertexTextureFetchRequiredPropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram target)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object target )
             {
-                return target.IsVertexTextureFetchRequired.ToString();
+                return ( (GpuProgram)target ).IsVertexTextureFetchRequired.ToString();
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram target, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object target, string val )
             {
-                target.IsVertexTextureFetchRequired = bool.Parse(val);
+                ( (GpuProgram)target ).IsVertexTextureFetchRequired = bool.Parse( val );
             }
 
             #endregion IPropertyCommand Members
@@ -1039,22 +1041,22 @@ namespace Axiom.Graphics
 
         #region ManualNamedConstantsFilePropertyCommand
 
-        [OgreVersion(1, 7, 2790)]
-        [ScriptableProperty("manual_named_constants", "File containing named parameter mappings for low-level programs.")]
-        public class ManualNamedConstantsFilePropertyCommand : IPropertyCommand<GpuProgram>
+        [OgreVersion( 1, 7, 2790 )]
+        [ScriptableProperty( "manual_named_constants", "File containing named parameter mappings for low-level programs." )]
+        public class ManualNamedConstantsFilePropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram target)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object target )
             {
-                return target.ManualNamedConstantsFile;
+                return ( (GpuProgram)target ).ManualNamedConstantsFile;
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram target, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object target, string val )
             {
-                target.ManualNamedConstantsFile = val;
+                ( (GpuProgram)target ).ManualNamedConstantsFile = val;
             }
 
             #endregion IPropertyCommand Members
@@ -1064,29 +1066,29 @@ namespace Axiom.Graphics
 
         #region IsAdjacencyInfoRequiredPropertyCommand
 
-        [OgreVersion(1, 7, 2790)]
-        [ScriptableProperty("uses_adjacency_information", "Whether this geometry program requires adjacency information from the input primitives.")]
-        public class IsAdjacencyInfoRequiredPropertyCommand : IPropertyCommand<GpuProgram>
+        [OgreVersion( 1, 7, 2790 )]
+        [ScriptableProperty( "uses_adjacency_information", "Whether this geometry program requires adjacency information from the input primitives." )]
+        public class IsAdjacencyInfoRequiredPropertyCommand : IPropertyCommand
         {
             #region IPropertyCommand Members
 
-            [OgreVersion(1, 7, 2790)]
-            public string Get(GpuProgram t)
+            [OgreVersion( 1, 7, 2790 )]
+            public string Get( object t )
             {
-                return t.IsAdjacencyInfoRequired.ToString();
+                return ( (GpuProgram)t ).IsAdjacencyInfoRequired.ToString();
             }
 
-            [OgreVersion(1, 7, 2790)]
-            public void Set(GpuProgram t, string val)
+            [OgreVersion( 1, 7, 2790 )]
+            public void Set( object t, string val )
             {
-                t.IsAdjacencyInfoRequired = bool.Parse(val);
+                ( (GpuProgram)t ).IsAdjacencyInfoRequired = bool.Parse( val );
             }
 
             #endregion IPropertyCommand Members
         }
 
         #endregion
-            
+
         #endregion Custom Parameters
     }
 }

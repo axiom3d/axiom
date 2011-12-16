@@ -50,43 +50,147 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleSystems
 {
-	public class BillboardParticleRenderer : ParticleSystemRenderer
-	{
+    public class BillboardParticleRenderer : ParticleSystemRenderer
+    {
+        #region Fields and Properties
 
-		static string rendererTypeName = "billboard";
-		const string PARTICLE = "Particle";
-
-		/// <summary>
-		///     List of available attibute parsers for script attributes.
-		/// </summary>
-		private Dictionary<string, MethodInfo> attribParsers =
-			new Dictionary<string, MethodInfo>();
-
-		BillboardSet billboardSet;
-
-		public BillboardParticleRenderer()
-            : base()
-		{
-			billboardSet = new BillboardSet( string.Empty, 0, true );
-			billboardSet.SetBillboardsInWorldSpace( true );
-
-			// TODO: Is this the right way to do this?
-			RegisterParsers();
-		}
+        static string rendererTypeName = "billboard";
+        const string PARTICLE = "Particle";
 
         /// <summary>
-        /// 
+        ///     List of available attibute parsers for script attributes.
         /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
+        private Dictionary<string, MethodInfo> attribParsers =
+            new Dictionary<string, MethodInfo>();
+
+        BillboardSet billboardSet;
+
+        public BillboardType BillboardType
         {
-            if (!this.IsDisposed)
+            get
             {
-                if (disposeManagedResources)
+                return billboardSet.BillboardType;
+            }
+            set
+            {
+                billboardSet.BillboardType = value;
+            }
+        }
+
+        public BillboardOrigin BillboardOrigin
+        {
+            get
+            {
+                return billboardSet.BillboardOrigin;
+            }
+            set
+            {
+                billboardSet.BillboardOrigin = value;
+            }
+        }
+
+        public bool UseAccurateFacing
+        {
+            get
+            {
+                return billboardSet.UseAccurateFacing;
+            }
+            set
+            {
+                billboardSet.UseAccurateFacing = value;
+            }
+        }
+
+        public BillboardRotationType BillboardRotationType
+        {
+            get
+            {
+                return billboardSet.BillboardRotationType;
+            }
+            set
+            {
+                billboardSet.BillboardRotationType = value;
+            }
+        }
+
+        public Vector3 CommonDirection
+        {
+            get
+            {
+                return billboardSet.CommonDirection;
+            }
+            set
+            {
+                billboardSet.CommonDirection = value;
+            }
+        }
+
+        public Vector3 CommonUpVector
+        {
+            get
+            {
+                return billboardSet.CommonUpVector;
+            }
+            set
+            {
+                billboardSet.CommonUpVector = value;
+            }
+        }
+
+        //-----------------------------------------------------------------------
+        //SortMode BillboardParticleRenderer::_getSortMode(void) const
+        //{
+        //    return mBillboardSet->_getSortMode();
+        //}
+        //-----------------------------------------------------------------------
+        public bool PointRenderingEnabled
+        {
+            get
+            {
+                return billboardSet.PointRenderingEnabled;
+            }
+            set
+            {
+                billboardSet.PointRenderingEnabled = value;
+            }
+        }
+
+        public override string Type
+        {
+            get
+            {
+                return rendererTypeName;
+            }
+        }
+
+        public override Material Material
+        {
+            set
+            {
+                billboardSet.MaterialName = value.Name;
+            }
+        }
+
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        public BillboardParticleRenderer()
+            : base()
+        {
+            billboardSet = new BillboardSet( string.Empty, 0, true );
+            billboardSet.SetBillboardsInWorldSpace( true );
+        }
+
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
                 {
-                    if (this.billboardSet != null)
+                    if ( this.billboardSet != null )
                     {
-                        if (!this.billboardSet.IsDisposed)
+                        if ( !this.billboardSet.IsDisposed )
                             this.billboardSet.Dispose();
 
                         this.billboardSet = null;
@@ -97,403 +201,342 @@ namespace Axiom.ParticleSystems
                 }
             }
 
-            base.dispose(disposeManagedResources);
+            base.dispose( disposeManagedResources );
         }
 
-		#region Attribute Parsers
-		[ParserCommand( "billboard_type", PARTICLE )]
-		public static void ParseBillboardType( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 1 )
-			{
-				ParseHelper.LogParserError( "billboard_type", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
+        #endregion Construction and Destruction
 
-			// lookup the real enum equivalent to the script value
-			var val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardType ) );
+        #region Methods
 
-			var renderer = (BillboardParticleRenderer)_renderer;
-			// if a value was found, assign it
-			if ( val != null )
-				renderer.BillboardType = (BillboardType)val;
-			else
-				ParseHelper.LogParserError( "billboard_type", _renderer.Type, "Invalid enum value" );
-		}
+        public override void CopyParametersTo( ParticleSystemRenderer other )
+        {
+            var otherBpr = (BillboardParticleRenderer)other;
+            Debug.Assert( otherBpr != null );
+            otherBpr.BillboardType = this.BillboardType;
+            otherBpr.CommonUpVector = this.CommonUpVector;
+            otherBpr.CommonDirection = this.CommonDirection;
+        }
 
-		[ParserCommand( "billboard_origin", PARTICLE )]
-		public static void ParseBillboardOrigin( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 1 )
-			{
-				ParseHelper.LogParserError( "billboard_origin", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
+        /// <summary>
+        ///		Parses an attribute intended for the particle system itself.
+        /// </summary>
+        public override bool SetParameter( string attr, string val )
+        {
+            if ( attribParsers.ContainsKey( attr ) )
+            {
+                var args = new object[ 2 ];
+                args[ 0 ] = val.Split( ' ' );
+                args[ 1 ] = this;
+                attribParsers[ attr ].Invoke( null, args );
+                //ParticleSystemRendererAttributeParser parser =
+                //        (ParticleSystemRendererAttributeParser)attribParsers[attr];
 
-			// lookup the real enum equivalent to the script value
-			var val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardOrigin ) );
+                //// call the parser method
+                //parser(val.Split(' '), this);
+                return true;
+            }
+            return false;
+        }
 
-			var renderer = (BillboardParticleRenderer)_renderer;
-			// if a value was found, assign it
-			if ( val != null )
-				renderer.BillboardOrigin = (BillboardOrigin)val;
-			else
-				ParseHelper.LogParserError( "billboard_origin", _renderer.Type, "Invalid enum value" );
-		}
+        public override void UpdateRenderQueue( RenderQueue queue,
+                                               List<Particle> currentParticles,
+                                               bool cullIndividually )
+        {
+            billboardSet.CullIndividual = cullIndividually;
 
-		[ParserCommand( "billboard_rotation_type", PARTICLE )]
-		public static void ParseBillboardRotationType( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 1 )
-			{
-				ParseHelper.LogParserError( "billboard_rotation_type", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
+            // Update billboard set geometry
+            billboardSet.BeginBillboards();
+            var bb = new Billboard();
+            foreach ( var p in currentParticles )
+            {
+                bb.Position = p.Position;
+                if ( billboardSet.BillboardType == BillboardType.OrientedSelf ||
+                    billboardSet.BillboardType == BillboardType.PerpendicularSelf )
+                {
+                    // Normalise direction vector
+                    bb.Direction = p.Direction;
+                    bb.Direction.Normalize();
+                }
+                bb.Color = p.Color;
+                bb.rotationInRadians = p.rotationInRadians;
+                bb.HasOwnDimensions = p.HasOwnDimensions;
+                if ( bb.HasOwnDimensions )
+                {
+                    bb.width = p.Width;
+                    bb.height = p.Height;
+                }
+                billboardSet.InjectBillboard( bb );
+            }
 
-			// lookup the real enum equivalent to the script value
-			var val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardRotationType ) );
+            billboardSet.EndBillboards();
 
-			var renderer = (BillboardParticleRenderer)_renderer;
-			// if a value was found, assign it
-			if ( val != null )
-				renderer.BillboardRotationType = (BillboardRotationType)val;
-			else
-				ParseHelper.LogParserError( "billboard_rotation_type", _renderer.Type, "Invalid enum value" );
-		}
+            // Update the queue
+            billboardSet.UpdateRenderQueue( queue );
+        }
 
-		[ParserCommand( "common_direction", PARTICLE )]
-		public static void ParseCommonDirection( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 3 )
-			{
-				ParseHelper.LogParserError( "common_direction", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
-			var renderer = (BillboardParticleRenderer)_renderer;
-			renderer.CommonDirection = StringConverter.ParseVector3( values );
-		}
+        public override void NotifyCurrentCamera( Camera cam )
+        {
+            billboardSet.NotifyCurrentCamera( cam );
+        }
 
-		[ParserCommand( "common_up_vector", PARTICLE )]
-		public static void ParseCommonUpDirection( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 3 )
-			{
-				ParseHelper.LogParserError( "common_up_vector", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
-			var renderer = (BillboardParticleRenderer)_renderer;
-			renderer.CommonUpVector = StringConverter.ParseVector3( values );
-		}
+        public override void NotifyParticleRotated()
+        {
+            billboardSet.NotifyBillboardRotated();
+        }
 
-		[ParserCommand( "point_rendering", PARTICLE )]
-		public static void ParsePointRendering( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 1 )
-			{
-				ParseHelper.LogParserError( "point_rendering", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
+        public override void NotifyDefaultDimensions( float width, float height )
+        {
+            billboardSet.SetDefaultDimensions( width, height );
+        }
 
-			var renderer = (BillboardParticleRenderer)_renderer;
-			renderer.PointRenderingEnabled = StringConverter.ParseBool( values[ 0 ] );
-		}
+        public override void NotifyParticleResized()
+        {
+            billboardSet.NotifyBillboardResized();
+        }
 
-		[ParserCommand( "accurate_facing", PARTICLE )]
-		public static void ParseAccurateFacing( string[] values, ParticleSystemRenderer _renderer )
-		{
-			if ( values.Length != 1 )
-			{
-				ParseHelper.LogParserError( "accurate_facing", _renderer.Type, "Wrong number of parameters." );
-				return;
-			}
+        public override void NotifyParticleQuota( int quota )
+        {
+            billboardSet.PoolSize = quota;
+        }
 
-			var renderer = (BillboardParticleRenderer)_renderer;
-			renderer.UseAccurateFacing = StringConverter.ParseBool( values[ 0 ] );
-		}
+        public override void NotifyAttached( Node parent, bool isTagPoint )
+        {
+            billboardSet.NotifyAttached( parent, isTagPoint );
+        }
 
-		/// <summary>
-		///		Registers all attribute names with their respective parser.
-		/// </summary>
-		/// <remarks>
-		///		Methods meant to serve as attribute parsers should use a method attribute to 
-		/// </remarks>
-		private void RegisterParsers()
-		{
-			var methods = this.GetType().GetMethods();
+        public override RenderQueueGroupID RenderQueueGroup
+        {
+            set
+            {
+                billboardSet.RenderQueueGroup = value;
+            }
+        }
 
-			// loop through all methods and look for ones marked with attributes
-			for ( var i = 0; i < methods.Length; i++ )
-			{
-				// get the current method in the loop
-				var method = methods[ i ];
+        public override void SetKeepParticlesInLocalSpace( bool keepLocal )
+        {
+            billboardSet.SetBillboardsInWorldSpace( !keepLocal );
+        }
 
-				// see if the method should be used to parse one or more material attributes
-				var parserAtts =
-					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
+        #endregion Methods
 
-				// loop through each one we found and register its parser
-				for ( var j = 0; j < parserAtts.Length; j++ )
-				{
-					var parserAtt = parserAtts[ j ];
+        #region Command objects
 
-					switch ( parserAtt.ParserType )
-					{
-						// this method should parse a material attribute
-						case PARTICLE:
-							// attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(ParticleSystemRendererAttributeParser), method));
-							attribParsers[ parserAtt.Name ] = method;
-							break;
+        #region BillboardTypeCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "billboard_type",
+                @"The type of billboard to use. 'point' means a simulated spherical particle,
+                'oriented_common' means all particles in the set are oriented around common_direction,
+                'oriented_self' means particles are oriented around their own direction,
+                'perpendicular_common' means all particles are perpendicular to common_direction, 
+                and 'perpendicular_self' means particles are perpendicular to their own direction." )]
+        public class BillboardTypeCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-					} // switch
-				} // for
-			} // for
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                BillboardType t = ( (BillboardParticleRenderer)target ).BillboardType;
+                return ScriptEnumAttribute.GetScriptAttribute( (int)t, typeof( BillboardType ) );
+            }
 
-		public override void CopyParametersTo( ParticleSystemRenderer other )
-		{
-			var otherBpr = (BillboardParticleRenderer)other;
-			Debug.Assert( otherBpr != null );
-			otherBpr.BillboardType = this.BillboardType;
-			otherBpr.CommonUpVector = this.CommonUpVector;
-			otherBpr.CommonDirection = this.CommonDirection;
-		}
-		#endregion
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).BillboardType = (BillboardType)ScriptEnumAttribute.Lookup( val, typeof( BillboardType ) );
+            }
 
-		/// <summary>
-		///		Parses an attribute intended for the particle system itself.
-		/// </summary>
-		public override bool SetParameter( string attr, string val )
-		{
-			if ( attribParsers.ContainsKey( attr ) )
-			{
-				var args = new object[ 2 ];
-				args[ 0 ] = val.Split( ' ' );
-				args[ 1 ] = this;
-				attribParsers[ attr ].Invoke( null, args );
-				//ParticleSystemRendererAttributeParser parser =
-				//        (ParticleSystemRendererAttributeParser)attribParsers[attr];
+            #endregion IPropertyCommand Members
+        }
+        #endregion BillboardTypeCommand
 
-				//// call the parser method
-				//parser(val.Split(' '), this);
-				return true;
-			}
-			return false;
-		}
+        #region BillboardOriginCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "billboard_origin",
+                @"This setting controls the fine tuning of where a billboard appears in relation to it's position.
+                Possible value are: 'top_left', 'top_center', 'top_right', 'center_left', 'center', 'center_right',
+                'bottom_left', 'bottom_center' and 'bottom_right'. Default value is 'center'." )]
+        public class BillboardOriginCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-		public override void UpdateRenderQueue( RenderQueue queue,
-											   List<Particle> currentParticles,
-											   bool cullIndividually )
-		{
-			billboardSet.CullIndividual = cullIndividually;
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                BillboardOrigin o = ( (BillboardParticleRenderer)target ).BillboardOrigin;
+                return ScriptEnumAttribute.GetScriptAttribute( (int)o, typeof( BillboardOrigin ) );
+            }
 
-			// Update billboard set geometry
-			billboardSet.BeginBillboards();
-			var bb = new Billboard();
-			foreach ( var p in currentParticles )
-			{
-				bb.Position = p.Position;
-				if ( billboardSet.BillboardType == BillboardType.OrientedSelf ||
-					billboardSet.BillboardType == BillboardType.PerpendicularSelf )
-				{
-					// Normalise direction vector
-					bb.Direction = p.Direction;
-					bb.Direction.Normalize();
-				}
-				bb.Color = p.Color;
-				bb.rotationInRadians = p.rotationInRadians;
-				bb.HasOwnDimensions = p.HasOwnDimensions;
-				if ( bb.HasOwnDimensions )
-				{
-					bb.width = p.Width;
-					bb.height = p.Height;
-				}
-				billboardSet.InjectBillboard( bb );
-			}
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).BillboardOrigin = (BillboardOrigin)ScriptEnumAttribute.Lookup( val, typeof( BillboardOrigin ) );
+            }
 
-			billboardSet.EndBillboards();
+            #endregion IPropertyCommand Members
+        }
+        #endregion BillboardOriginCommand
 
-			// Update the queue
-			billboardSet.UpdateRenderQueue( queue );
-		}
+        #region BillboardRotationTypeCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "billboard_rotation_type",
+                @"This setting controls the billboard rotation type.
+				'vertex' means rotate the billboard's vertices around their facing direction.
+                'texcoord' means rotate the billboard's texture coordinates. Default value is 'texcoord'." )]
+        public class BillboardRotationTypeCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-		//-----------------------------------------------------------------------
-		public override Material Material
-		{
-			set
-			{
-				billboardSet.MaterialName = value.Name;
-			}
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                BillboardRotationType r = ( (BillboardParticleRenderer)target ).BillboardRotationType;
+                return ScriptEnumAttribute.GetScriptAttribute( (int)r, typeof( BillboardRotationType ) );
+            }
 
-		//-----------------------------------------------------------------------
-		public override void NotifyCurrentCamera( Camera cam )
-		{
-			billboardSet.NotifyCurrentCamera( cam );
-		}
-		//-----------------------------------------------------------------------
-		public override void NotifyParticleRotated()
-		{
-			billboardSet.NotifyBillboardRotated();
-		}
-		//-----------------------------------------------------------------------
-		public override void NotifyDefaultDimensions( float width, float height )
-		{
-			billboardSet.SetDefaultDimensions( width, height );
-		}
-		//-----------------------------------------------------------------------
-		public override void NotifyParticleResized()
-		{
-			billboardSet.NotifyBillboardResized();
-		}
-		//-----------------------------------------------------------------------
-		public override void NotifyParticleQuota( int quota )
-		{
-			billboardSet.PoolSize = quota;
-		}
-		//-----------------------------------------------------------------------
-		public override void NotifyAttached( Node parent, bool isTagPoint )
-		{
-			billboardSet.NotifyAttached( parent, isTagPoint );
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).BillboardRotationType = (BillboardRotationType)ScriptEnumAttribute.Lookup( val, typeof( BillboardRotationType ) );
+            }
 
-		//-----------------------------------------------------------------------
-		public override RenderQueueGroupID RenderQueueGroup
-		{
-			set
-			{
-				billboardSet.RenderQueueGroup = value;
-			}
-		}
-		//-----------------------------------------------------------------------
-		public override void SetKeepParticlesInLocalSpace( bool keepLocal )
-		{
-			billboardSet.SetBillboardsInWorldSpace( !keepLocal );
-		}
+            #endregion IPropertyCommand Members
+        }
+        #endregion BillboardRotationTypeCommand
 
-		//-----------------------------------------------------------------------
-		public BillboardType BillboardType
-		{
-			get
-			{
-				return billboardSet.BillboardType;
-			}
-			set
-			{
-				billboardSet.BillboardType = value;
-			}
-		}
+        #region CommonDirectionCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "common_direction",
+                @"Only useful when billboard_type is oriented_common or perpendicular_common.
+				When billboard_type is oriented_common, this parameter sets the common orientation for
+				all particles in the set (e.g. raindrops may all be oriented downwards).
+				When billboard_type is perpendicular_common, this parameter sets the perpendicular vector for
+				all particles in the set (e.g. an aureola around the player and parallel to the ground)." )]
+        public class CommonDirectionCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-		public BillboardOrigin BillboardOrigin
-		{
-			get
-			{
-				return billboardSet.BillboardOrigin;
-			}
-			set
-			{
-				billboardSet.BillboardOrigin = value;
-			}
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return ( (BillboardParticleRenderer)target ).CommonDirection.ToString();
+            }
 
-		//-----------------------------------------------------------------------
-		public bool UseAccurateFacing
-		{
-			get
-			{
-				return billboardSet.UseAccurateFacing;
-			}
-			set
-			{
-				billboardSet.UseAccurateFacing = value;
-			}
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).CommonDirection = StringConverter.ParseVector3( val );
+            }
 
-		public BillboardRotationType BillboardRotationType
-		{
-			get
-			{
-				return billboardSet.BillboardRotationType;
-			}
-			set
-			{
-				billboardSet.BillboardRotationType = value;
-			}
-		}
+            #endregion IPropertyCommand Members
+        }
+        #endregion CommonDirectionCommand
 
-		public Vector3 CommonDirection
-		{
-			get
-			{
-				return billboardSet.CommonDirection;
-			}
-			set
-			{
-				billboardSet.CommonDirection = value;
-			}
-		}
+        #region CommonUpVectorCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "common_up_vector",
+                @"Only useful when billboard_type is perpendicular_self or perpendicular_common. This
+				parameter sets the common up-vector for all particles in the set (e.g. an aureola around
+				the player and parallel to the ground)." )]
+        public class CommonUpVectorCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-		public Vector3 CommonUpVector
-		{
-			get
-			{
-				return billboardSet.CommonUpVector;
-			}
-			set
-			{
-				billboardSet.CommonUpVector = value;
-			}
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return ( (BillboardParticleRenderer)target ).CommonUpVector.ToString();
+            }
 
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).CommonUpVector = StringConverter.ParseVector3( val );
+            }
 
+            #endregion IPropertyCommand Members
+        }
+        #endregion CommonUpVectorCommand
 
-		//-----------------------------------------------------------------------
-		//SortMode BillboardParticleRenderer::_getSortMode(void) const
-		//{
-		//    return mBillboardSet->_getSortMode();
-		//}
-		//-----------------------------------------------------------------------
-		public bool PointRenderingEnabled
-		{
-			get
-			{
-				return billboardSet.PointRenderingEnabled;
-			}
-			set
-			{
-				billboardSet.PointRenderingEnabled = value;
-			}
-		}
+        #region PointRenderingCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "point_rendering",
+                @"Set whether or not particles will use point rendering
+				rather than manually generated quads. This allows for faster
+				rendering of point-oriented particles although introduces some
+				limitations too such as requiring a common particle size.
+				Possible values are 'true' or 'false'." )]
+        public class PointRenderingCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-		public override string Type
-		{
-			get
-			{
-				return rendererTypeName;
-			}
-		}
-	}
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return ( (BillboardParticleRenderer)target ).PointRenderingEnabled.ToString();
+            }
 
-	/** Factory class for BillboardParticleRenderer */
-	public class BillboardParticleRendererFactory : ParticleSystemRendererFactory
-	{
-		private const string rendererTypeName = "billboard";
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).PointRenderingEnabled = StringConverter.ParseBool( val );
+            }
 
-		#region IParticleSystemRendererFactory Members
+            #endregion IPropertyCommand Members
+        }
+        #endregion PointRenderingCommand
 
-		public override string Type
-		{
-			get
-			{
-				return rendererTypeName;
-			}
-		}
+        #region AccurateFacingCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "accurate_facing",
+                @"Set whether or not particles will be oriented to the camera
+				based on the relative position to the camera rather than just
+				the camera direction. This is more accurate but less optimal.
+				Cannot be combined with point rendering." )]
+        public class AccurateFacingCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-		/// @copydoc FactoryObj::createInstance
-		public override ParticleSystemRenderer CreateInstance( string name )
-		{
-			return new BillboardParticleRenderer();
-		}
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return ( (BillboardParticleRenderer)target ).UseAccurateFacing.ToString();
+            }
 
-		#endregion IParticleSystemRendererFactory Members
-	};
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (BillboardParticleRenderer)target ).UseAccurateFacing = StringConverter.ParseBool( val );
+            }
+
+            #endregion IPropertyCommand Members
+        }
+        #endregion AccurateFacingCommand
+
+        #endregion Command objects
+    }
+
+    /** Factory class for BillboardParticleRenderer */
+    public class BillboardParticleRendererFactory : ParticleSystemRendererFactory
+    {
+        private const string rendererTypeName = "billboard";
+
+        #region IParticleSystemRendererFactory Members
+
+        public override string Type
+        {
+            get
+            {
+                return rendererTypeName;
+            }
+        }
+
+        /// @copydoc FactoryObj::createInstance
+        public override ParticleSystemRenderer CreateInstance( string name )
+        {
+            return new BillboardParticleRenderer();
+        }
+
+        #endregion IParticleSystemRendererFactory Members
+    };
 }

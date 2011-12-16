@@ -827,16 +827,7 @@ namespace Axiom.Scripting.Compiler
 				prog.Origin = obj.File;
 
 				// Set the custom parameters
-				foreach ( var currentParam in customParameters )
-				{
-					var param = currentParam.Key;
-					var val = currentParam.Value;
-
-					if ( !prog.SetParam( param, val ) )
-					{
-						LogManager.Instance.Write( "Error in program {0} parameter {1} is not valid.", source, param );
-					}
-				}
+                prog.SetParameters( customParameters );
 
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
@@ -930,16 +921,7 @@ namespace Axiom.Scripting.Compiler
 				prog.Origin = obj.File;
 
 				// Set the custom parameters
-				foreach ( var currentParam in customParameters )
-				{
-					var param = currentParam.Key;
-					var val = currentParam.Value;
-
-					if ( !prog.SetParam( param, val ) )
-					{
-						LogManager.Instance.Write( "Error in program {0} parameter {1} is not valid.", string.Empty, param );
-					}
-				}
+                prog.SetParameters( customParameters );
 
 				// Set up default parameters
 				if ( prog.IsSupported && parameters != null )
