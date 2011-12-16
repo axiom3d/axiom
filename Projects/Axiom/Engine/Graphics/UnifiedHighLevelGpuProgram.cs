@@ -36,10 +36,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 using Axiom.Core;
-
+using Axiom.Scripting;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -144,6 +142,34 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Methods
+
+        #region Command objects
+
+        #region DelegateCommand
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "delegate", "Additional delegate programs containing implementations." )]
+        public class DelegateCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
+
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                // Can't do this (not one delegate), shouldn't matter
+                return string.Empty;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (UnifiedHighLevelGpuProgram)target ).AddDelegateProgram( val );
+            }
+
+            #endregion IPropertyCommand Members
+        }
+        #endregion DelegateCommand
+
+        #endregion Command objects
 
 		#region HighLevelGpuProgram Implementation
 

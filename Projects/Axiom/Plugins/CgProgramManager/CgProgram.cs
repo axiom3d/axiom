@@ -34,11 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -211,8 +207,10 @@ namespace Axiom.CgPrograms
 		                _name, _group, "hlsl", type );
 		        vp.Source = programString;
 
-		        vp.SetParam("target", selectedProfile);
-		        vp.SetParam("entry_point", "main");
+                //vp.SetParam( "target", selectedProfile );
+                //vp.SetParam( "entry_point", "main" );
+                vp.Properties[ "target" ] = selectedProfile;
+                vp.Properties[ "entry_point" ] = "main";
 
 		        vp.Load();
 

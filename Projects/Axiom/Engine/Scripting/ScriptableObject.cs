@@ -176,18 +176,18 @@ namespace Axiom.Scripting
 			foreach ( var nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
             {
 #if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360)
-				if ( nestType.FindInterfaces( ( typeObj, criteriaObj ) => typeObj.ToString() == criteriaObj.ToString(),
-											  typeof ( IPropertyCommand ).FullName ).Length != 0 )
+				if ( nestType.FindInterfaces( ( typeObj, criteriaObj ) => typeObj.Name == criteriaObj.ToString(),
+											  typeof ( IPropertyCommand ).Name ).Length > 0 )
 #else
                 foreach ( Type iface in nestType.GetInterfaces() )
-					if ( iface.FullName == typeof ( IPropertyCommand ).FullName )
+					if ( iface.Name == typeof ( IPropertyCommand ).Name )
 #endif
 				{
 					foreach (
 						ScriptablePropertyAttribute attr in
 							nestType.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true ) )
 					{
-						var propertyCommand = (IPropertyCommand)Activator.CreateInstance( nestType );
+                        var propertyCommand = (IPropertyCommand)Activator.CreateInstance( nestType );
 						list.Add( attr.ScriptPropertyName, propertyCommand );
 					}
 				}

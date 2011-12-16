@@ -127,7 +127,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
         #region Embedded Classes
 
-        [ScriptableProperty("attach")]
+        [ScriptableProperty( "attach", "name of another GLSL program needed by this program" )]
         public class CmdAttach : IPropertyCommand
         {
             public string Get(object target)
@@ -149,7 +149,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         }
 
 
-        [ScriptableProperty("preprocessor_defines")]
+        [ScriptableProperty( "preprocessor_defines", "Preprocessor defines use to compile the program." )]
         public class CmdPreprocessorDefines : IPropertyCommand
         {
             public string Get(object target)
@@ -163,7 +163,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-        [ScriptableProperty("input_operation_type")]
+        [ScriptableProperty("input_operation_type",
+                @"The input operation type for this geometry program.
+				Can be 'point_list', 'line_list', 'line_strip', 'triangle_list',
+				'triangle_strip' or 'triangle_fan'" )]
         public class CmdInputOperationType : IPropertyCommand
         {
             public string Get( object target )
@@ -177,7 +180,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-        [ScriptableProperty("output_operation_type")]
+        [ScriptableProperty( "output_operation_type",
+                @"The input operation type for this geometry program.
+				Can be 'point_list', 'line_strip' or 'triangle_strip'" )]
         public class CmdOutputOperationType : IPropertyCommand
         {
             public string Get(object target)
@@ -191,7 +196,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             }
         }
 
-        [ScriptableProperty("max_output_vertices")]
+        [ScriptableProperty( "max_output_vertices", "The maximum number of vertices a single run of this geometry program can output" )]
         public class CmdMaxOutputVertices : IPropertyCommand
         {
             public string Get( object target )
