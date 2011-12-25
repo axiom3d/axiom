@@ -132,10 +132,12 @@ namespace Axiom.Samples.Terrain
 		private Image GetTerrainImage( bool flipX, bool flipY )
 		{
 			Image img = Image.FromFile( "terrain.png" );
-			if ( flipX )
-				img.FlipAroundX();
-			//if ( flipY )
-			//    img.FlipAroundX();
+
+            //if ( flipX )
+            //    img.FlipAroundY();
+
+            if ( flipY )
+                img.FlipAroundX();
 
 			return img;
 		}
@@ -276,7 +278,7 @@ namespace Axiom.Samples.Terrain
 			SceneManager.AmbientLight = new ColorEx( 0.8f, 0.8f, 0.8f );
 
 			terrainGroup = new TerrainGroup( SceneManager, Alignment.Align_X_Z, (ushort)TerrainSize, TerrainWorldSize );
-			terrainGroup.SetFilenamConvention( TerrainFilePrefix, TerrainFileSuffix );
+			terrainGroup.SetFilenameConvention( TerrainFilePrefix, TerrainFileSuffix );
 			terrainGroup.Origin = Vector3.Zero;
 			
 			Axiom.Components.Terrain.Terrain terrain = new Components.Terrain.Terrain( SceneManager );

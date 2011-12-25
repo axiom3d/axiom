@@ -155,12 +155,11 @@ namespace Axiom.Graphics
 
 			if ( factory == null )
 			{
-				throw new Exception(
-					string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
+				throw new AxiomException( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language );
 			}
 
 			// create the high level program using the factory
-			var program = factory.CreateInstance( this, name, (ResourceHandle)name.GetHashCode(), group, false, null );
+			var program = factory.CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, false, null );
 			program.Type = type;
 			program.SyntaxCode = language;
 
@@ -209,7 +208,7 @@ namespace Axiom.Graphics
 			{
 				throw new Exception( "You must supply a 'language' parameter" );
 			}
-			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, (ResourceHandle)name.GetHashCode(), group, isManual, loader );
+			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader );
 		}
 
 		/// <summary>

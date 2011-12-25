@@ -288,7 +288,7 @@ namespace Axiom.Components.Terrain
             get { return _sceneManager; }
         }
         /// <summary>
-        /// <see cref="SetFilenamConvention"/>
+        /// <see cref="SetFilenameConvention"/>
         /// </summary>
         public string FilenamePrefix
         {
@@ -296,7 +296,7 @@ namespace Axiom.Components.Terrain
             set { _filenamePrefix = value; }
         }
         /// <summary>
-        /// <see cref="SetFilenamConvention"/>
+        /// <see cref="SetFilenameConvention"/>
         /// </summary>
         public string FilenameExtension
         {
@@ -366,7 +366,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         /// <param name="prefix"></param>
         /// <param name="extension"></param>
-        public void SetFilenamConvention(string prefix, string extension)
+        public void SetFilenameConvention(string prefix, string extension)
         {
             _filenamePrefix = prefix;
             _filenameExtension = extension;
