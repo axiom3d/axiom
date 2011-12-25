@@ -134,7 +134,7 @@ namespace Axiom.Graphics
 	    public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
 		{
 			// Call creation implementation
-			var ret = (GpuProgram)_create( name, (ResourceHandle)name.GetHashCode(), group, isManual, loader, type, syntaxCode );
+			var ret = (GpuProgram)_create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, type, syntaxCode );
 
 			_add( ret );
 			// Tell resource group manager
