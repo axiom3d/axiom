@@ -35,9 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Scripting;
 using Axiom.Utilities;
 using Tao.Cg;
 
@@ -207,8 +207,6 @@ namespace Axiom.CgPrograms
 		                _name, _group, "hlsl", type );
 		        vp.Source = programString;
 
-                //vp.SetParam( "target", selectedProfile );
-                //vp.SetParam( "entry_point", "main" );
                 vp.Properties[ "target" ] = selectedProfile;
                 vp.Properties[ "entry_point" ] = "main";
 
@@ -778,8 +776,10 @@ namespace Axiom.CgPrograms
 					case "ps_1_3":
 					case "fp20":
 						return 4;
-					case "ps_1_4":
+					
+                    case "ps_1_4":
 						return 6;
+
 					case "ps_2_0":
 					case "ps_2_x":
 					case "ps_3_0":
@@ -788,11 +788,10 @@ namespace Axiom.CgPrograms
 					case "fp30":
 					case "fp40":
 						return 16;
+
 					default:
 						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", selectedProfile );
 				}
-
-				return 0;
 			}
 		}
 
@@ -800,9 +799,88 @@ namespace Axiom.CgPrograms
 
 		#endregion Properties
 
-		#region IConfigurable Members
+        #region Custom Parameters
 
-		/// <summary>
+        #region EntryPointCommand
+
+        [ScriptableProperty( "entry_point", "The entry point for the Cg program." )]
+        [OgreVersion( 1, 7, 2 )]
+        public class EntryPointCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
+
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return ( (CgProgram)target ).entry;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (CgProgram)target ).entry = val;
+            }
+
+            #endregion IPropertyCommand Members
+        }
+
+        #endregion EntryPointCommand
+
+        #region ProfilesCommand
+
+        [ScriptableProperty( "profiles", "Space-separated list of Cg profiles supported by this profile." )]
+        [OgreVersion( 1, 7, 2 )]
+        public class ProfilesCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
+
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return string.Join( " ", ( (CgProgram)target ).profiles );
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (CgProgram)target ).profiles = val.Split( ' ' );
+            }
+
+            #endregion IPropertyCommand Members
+        }
+
+        #endregion ProfilesCommand
+
+        #region CompileArgumentsCommand
+
+        [OgreVersion( 1, 7, 2 )]
+        [ScriptableProperty( "compile_arguments", "A string of compilation arguments to pass to the Cg compiler." )]
+        public class CompileArgumentsCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
+
+            [OgreVersion( 1, 7, 2 )]
+            public string Get( object target )
+            {
+                return ( (CgProgram)target ).CompileArguments;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            public void Set( object target, string val )
+            {
+                ( (CgProgram)target ).CompileArguments = val;
+            }
+
+            #endregion IPropertyCommand Members
+        }
+
+        #endregion CompileArgumentsCommand
+
+        #endregion Custom Parameters
+
+        #region IConfigurable Members
+
+        /// <summary>
 		///    Method for passing parameters into the CgProgram.
 		/// </summary>
 		/// <param name="name">
@@ -813,29 +891,7 @@ namespace Axiom.CgPrograms
 		/// </param>
 		public override bool SetParam( string name, string val )
 		{
-			bool handled = true;
-
-			switch ( name )
-			{
-				case "entry_point":
-					entry = val;
-					break;
-
-				case "profiles":
-					profiles = val.Split( ' ' );
-					break;
-
-                case "compile_arguments":
-                    CompileArguments = val;
-                    break;
-
-				default:
-					LogManager.Instance.Write( "CgProgram: Unrecognized parameter '{0}'", name );
-					handled = false;
-					break;
-			}
-
-			return handled;
+            return true;
 		}
 
 		#endregion IConfigurable Members
