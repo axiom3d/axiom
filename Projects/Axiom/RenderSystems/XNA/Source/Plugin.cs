@@ -49,7 +49,7 @@ namespace Axiom.RenderSystems.Xna
     /// Summary description for Plugin.
     /// </summary>
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
-    [Export(typeof(IPlugin))]
+    [ Export( typeof( IPlugin ) )]
 #endif
     public sealed class Plugin : IPlugin
     {
