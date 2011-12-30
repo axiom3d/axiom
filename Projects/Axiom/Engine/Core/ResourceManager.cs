@@ -333,7 +333,7 @@ namespace Axiom.Core
 
 			if ( res == null )
 			{
-				res = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, paramaters );
+				res = _create( name, hashCode, group, isManual, loader, paramaters );
 				if ( paramaters != null )
 				{
 					res.SetParameters( paramaters );
