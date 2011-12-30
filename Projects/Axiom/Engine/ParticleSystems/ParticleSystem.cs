@@ -387,7 +387,7 @@ namespace Axiom.ParticleSystems
 					{
 						// For now, it can only be an emitted emitter
 						var pParticleEmitter = (ParticleEmitter)particle;
-						var fee = findFreeEmittedEmitter( pParticleEmitter.Name.GetHashCode() );
+						var fee = findFreeEmittedEmitter( pParticleEmitter.Name.ToLower().GetHashCode() );
 						fee.Add( pParticleEmitter );
 
 						// Also erase from activeEmittedEmitters
@@ -515,7 +515,7 @@ namespace Axiom.ParticleSystems
 				}
 				else
 				{
-					p = CreateEmitterParticle( emitterName.GetHashCode() );
+					p = CreateEmitterParticle( emitterName.ToLower().GetHashCode() );
 				}
 
 				if ( p == null )
@@ -1002,7 +1002,7 @@ namespace Axiom.ParticleSystems
 					{
 						// this method should parse a material attribute
 						case PARTICLE:
-							attribParsers.Add( parserAtt.Name.GetHashCode(), method );
+							attribParsers.Add( parserAtt.Name.ToLower().GetHashCode(), method );
 							break;
 
 					} // switch
@@ -1538,7 +1538,7 @@ namespace Axiom.ParticleSystems
 				if ( emitter != null && emitter.EmittedEmitter != string.Empty )
 				{
 					// This one will be emitted, register its name and leave the vector empty!
-					emittedEmitterPool.Add( emitter.EmittedEmitter.GetHashCode(), new List<ParticleEmitter>() );
+                    emittedEmitterPool.Add( emitter.EmittedEmitter.ToLower().GetHashCode(), new List<ParticleEmitter>() );
 				}
 
 				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
@@ -1582,7 +1582,7 @@ namespace Axiom.ParticleSystems
 				// Search the correct emitter in the mEmitters vector
 				foreach ( var emitter in emitterList )
 				{
-					if ( emitter != null && poolEntry.Key == emitter.Name.GetHashCode() )
+					if ( emitter != null && poolEntry.Key == emitter.Name.ToLower().GetHashCode() )
 					{
 						// Found the right emitter, clone each emitter a number of times
 						oldSize = e.Count;
