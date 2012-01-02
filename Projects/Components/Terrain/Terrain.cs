@@ -452,7 +452,7 @@ namespace Axiom.Components.Terrain
     /// </tr>
     /// </table>
     /// </remarks>
-    public class Terrain : IDisposable
+    public class Terrain : DisposableObject
     {
         #region - constants -
 
@@ -493,9 +493,8 @@ namespace Axiom.Components.Terrain
         protected ushort mSize;
         protected ushort mMaxBatchSize;
         protected ushort mMinBatchSize;
-        protected Vector3 mPos;
-        protected TerrainQuadTreeNode mQuadTree;
-        protected ushort mTreeDepth;
+        protected Vector3 mPos = Vector3.Zero;
+        protected ushort mTreeDepth = 0;
 
         /// <summary>
         /// Base position in world space, relative to mPos
@@ -510,59 +509,51 @@ namespace Axiom.Components.Terrain
         protected TerrainLayerDeclaration mLayerDecl;
         protected List<LayerInstance> mLayers = new List<LayerInstance>();
         protected FloatList mLayerUVMultiplier = new FloatList();
-        protected Rectangle mDirtyGeometryRect;
-        protected Rectangle mDirtyDerivedDataRect;
+        protected Rectangle mDirtyGeometryRect = new Rectangle( 0, 0, 0, 0 );
+        protected Rectangle mDirtyDerivedDataRect = new Rectangle( 0, 0, 0, 0 );
 
         /// <summary>
         /// if another update is requested while one is already running
         /// </summary>
-        protected byte mDerivedUpdatePendingMask;
+        protected byte mDerivedUpdatePendingMask = 0;
 
         protected string mMaterialName;
         protected Material mMaterial;
         protected TerrainMaterialGenerator mMaterialGenerator;
-        protected long mMaterialGenerationCount;
-        protected bool mMaterialDirty;
-        protected bool mMaterialParamsDirty;
+        protected long mMaterialGenerationCount = 0;
+        protected bool mMaterialDirty = false;
+        protected bool mMaterialParamsDirty = false;
         protected ushort mLayerBlendMapSize;
         protected ushort mLayerBlendSizeActual;
         protected List<byte> mCpuBlendMapStorage = new List<byte>();
         protected List<Texture> mBlendTextureList = new List<Texture>();
         protected List<TerrainLayerBlendMap> mLayerBlendMapList = new List<TerrainLayerBlendMap>();
-        protected ushort mGlobalColorMapSize;
-        protected bool mGlobalColorMapEnabled;
-        protected Texture mColorMap;
         protected byte[] mCpuColorMapStorage;
-        protected ushort mLightmapSize;
         protected ushort mLightmapSizeActual;
         protected byte[] mCpuLightmapStorage;
         protected ushort mCompositeMapSize;
         protected ushort mCompositeMapSizeActual;
-        protected Texture mCompositeMap;
         protected byte[] mCpuCompositeMapStorage;
-        protected Rectangle mCompositeMapDirtyRect;
-        protected long mCompositeMapUpdateCountdown;
-        protected long mLastMillis;
+        protected Rectangle mCompositeMapDirtyRect = new Rectangle( 0, 0, 0, 0 );
+        protected long mCompositeMapUpdateCountdown = 0;
+        protected long mLastMillis = 0;
+
+        protected int mLastViewportHeight = 0;
 
         /// <summary>
         /// true if the updates included lightmap changes (widen)
         /// </summary>
-        protected bool mCompositeMapDirtyRectLightmapUpdate;
+        protected bool mCompositeMapDirtyRectLightmapUpdate = false;
 
         protected Material mCompositeMapMaterial;
         protected static NameGenerator<Texture> msBlendTextureGenerator;
         protected static NameGenerator<Texture> msNormalMapNameGenerator;
         protected static NameGenerator<Texture> msLightmapNameGenerator;
         protected static NameGenerator<Texture> msCompositeMapNameGenerator;
-        protected bool mNormalMapRequired;
-        protected bool mLightMapRequired;
-        protected bool mLightMapShadowsOnly;
-        protected bool mCompositeMapRequired;
-
-        /// <summary>
-        /// texture storing normals for the whole terrain
-        /// </summary>
-        protected Texture mTerrainNormalMap;
+        protected bool mNormalMapRequired = false;
+        protected bool mLightMapRequired = false;
+        protected bool mLightMapShadowsOnly = true;
+        protected bool mCompositeMapRequired = false;
 
         /// <summary>
         /// pending data
@@ -570,11 +561,11 @@ namespace Axiom.Components.Terrain
         protected PixelBox mCpuTerrainNormalMap;
 
         protected Camera mLastLODCamera;
-        protected ulong mLastLODFrame;
+        protected ulong mLastLODFrame = 0;
         protected Rectangle mLightmapExtraDirtyRect;
         protected Terrain[] mNeighbours = new Terrain[ (int)NeighbourIndex.Count ];
-        protected Rectangle mDirtyGeometryRectForNeighbours;
-        protected Rectangle mDirtyLightmapFromNeighboursRect;
+        protected Rectangle mDirtyGeometryRectForNeighbours = new Rectangle( 0, 0, 0, 0 );
+        protected Rectangle mDirtyLightmapFromNeighboursRect = new Rectangle( 0, 0, 0, 0 );
         BufferBase mHeightDataPtr;
         BufferBase mDeltaDataPtr;
 
@@ -688,10 +679,12 @@ namespace Axiom.Components.Terrain
         ///	a vertex will have to move to reach the point at which it will be
         ///	removed in the next lower LOD.
         /// </remarks>
-        public float[] DeltaData
+        public BufferBase DeltaData
         {
-            get;
-            protected set;
+            get
+            {
+                return mDeltaDataPtr;
+            }
         }
 
         /// <summary>
@@ -713,10 +706,10 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if ( mQuadTree == null )
+                if ( this.QuadTree == null )
                     return null;
                 else
-                    return mQuadTree.AABB;
+                    return this.QuadTree.AABB;
             }
         }
 
@@ -817,10 +810,10 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if ( mQuadTree == null )
+                if ( this.QuadTree == null )
                     return 0;
                 else
-                    return mQuadTree.MinHeight;
+                    return this.QuadTree.MinHeight;
             }
         }
 
@@ -831,10 +824,10 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if ( mQuadTree == null )
+                if ( this.QuadTree == null )
                     return 0;
                 else
-                    return mQuadTree.MaxHeight;
+                    return this.QuadTree.MaxHeight;
             }
         }
 
@@ -845,10 +838,10 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if ( mQuadTree == null )
+                if ( this.QuadTree == null )
                     return 0;
                 else
-                    return mQuadTree.BoundingRadius;
+                    return this.QuadTree.BoundingRadius;
             }
         }
 
@@ -1055,7 +1048,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public bool GlobalColorMapEnabled
         {
-            get { return mGlobalColorMapEnabled; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1075,7 +1069,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public ushort LightMapSize
         {
-            get { return mLightmapSize; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1083,7 +1078,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public Texture GlobalColorMap
         {
-            get { return mColorMap; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1091,7 +1087,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public ushort GlobalColorMapSize
         {
-            get { return mGlobalColorMapSize; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1107,7 +1104,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public Texture TerrainNormalMap
         {
-            get { return mTerrainNormalMap; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1115,7 +1113,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public Texture CompositeMap
         {
-            get { return mCompositeMap; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1123,7 +1122,8 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public TerrainQuadTreeNode QuadTree
         {
-            get { return mQuadTree; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1157,7 +1157,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get the number of LOD levels in a leaf of the terrain quadtree
         /// </summary>
-        public ushort LodLevelsPerLeafCount
+        public ushort NumLodLevelsPerLeaf
         {
             get;
             protected set;
@@ -1188,7 +1188,43 @@ namespace Axiom.Components.Terrain
         /// </summary>
         /// <param name="sm">The SceneManager to use.</param>
         public Terrain( SceneManager sm )
+            : base()
         {
+            this.SceneManager = sm;
+            this.ResourceGroup = string.Empty;
+            this.IsLoaded = false;
+            this.IsModified = false;
+            this.IsHeightDataModified = false;
+            this.QuadTree = null;
+            this.NumLodLevels = 0;
+            this.NumLodLevelsPerLeaf = 0;
+            this.IsDerivedDataUpdateInProgress = false;
+            this.GlobalColorMapSize = 0;
+            this.GlobalColorMapEnabled = false;
+            //TODO
+            //mLodMorphRequired(false)
+            //mCustomGpuBufferAllocator = null
+
+            this.RootSceneNode = sm.RootSceneNode.CreateChildSceneNode();
+#warning add SceneManager.AddListerner - or simmilar event approach
+            //sm->addListener( this );
+
+#warning implement workerqueue here
+#if false
+        WorkQueue* wq = Root::getSingleton().getWorkQueue();
+		mWorkQueueChannel = wq->getChannel("AxiomTerrain");
+		wq->addRequestHandler(mWorkQueueChannel, this);
+		wq->addResponseHandler(mWorkQueueChannel, this);
+#endif
+
+            // generate a material name, it's important for the terrain material
+            // name to be consistent & unique no matter what generator is being used
+            // so use our own pointer as identifier, use FashHash rather than just casting
+            // the pointer to a long so we support 64-bit pointers
+            mMaterialName = "AxiomTerrain/" + this.GetHashCode();
+
+            this.SceneManager.PreFindVisibleObjects += new FindVisibleObjectsEvent( _preFindVisibleObjects );
+
             TerrainGlobalOptions.SkirtSize = 30;
             Vector3 normalized = new Vector3( 1, -1, 0 );
             normalized.Normalize();
@@ -1211,52 +1247,35 @@ namespace Axiom.Components.Terrain
             mLightMapShadowsOnly = true;
             msBlendTextureGenerator = new NameGenerator<Texture>( "TerrBlend" );
             TerrainGlobalOptions.DefaultMaterialGenerator.DebugLevel = 0;
-            this.SceneManager = sm;
-            this.IsModified = false;
-            this.IsHeightDataModified = false;
-            mPos = Vector3.Zero;
-
-            this.RootSceneNode = sm.RootSceneNode.CreateChildSceneNode();
-            mDirtyGeometryRect = new Rectangle( 0, 0, 0, 0 );
-            mDirtyDerivedDataRect = new Rectangle( 0, 0, 0, 0 );
-            mDirtyGeometryRectForNeighbours = new Rectangle( 0, 0, 0, 0 );
-            mDirtyLightmapFromNeighboursRect = new Rectangle( 0, 0, 0, 0 );
-            this.IsDerivedDataUpdateInProgress = false;
-            this.SceneManager.PreFindVisibleObjects += new FindVisibleObjectsEvent( _preFindVisibleObjects );
-            this.SceneManager.PostFindVisibleObjects += new FindVisibleObjectsEvent( mSceneMgr_PostFindVisibleObjects );
-            this.ResourceGroup = string.Empty;
-#warning add SceneManager.AddListerner - or simmilar event approach
-#warning implement workerqueue here
-#if false
-            WorkQueue* wq = Root::getSingleton().getWorkQueue();
-		    wq->addRequestHandler(WORKQUEUE_CHANNEL, this);
-		    wq->addResponseHandler(WORKQUEUE_CHANNEL, this);
-#endif
-            // generate a material name, it's important for the terrain material
-            // name to be consistent & unique no matter what generator is being used
-            // so use our own pointer as identifier, use FashHash rather than just casting
-            // the pointer to a long so we support 64-bit pointers
-            mMaterialName = "AxiomTerrain/" + this.GetHashCode();
         }
 
-        public void Dispose()
+        protected override void dispose( bool disposeManagedResources )
         {
-            this.IsDerivedDataUpdateInProgress = false;
-            WaitForDerivedProcesses();
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    mDerivedUpdatePendingMask = 0;
+                    WaitForDerivedProcesses();
 #warning delete workerqueue
 #if false
 WorkQueue* wq = Root::getSingleton().getWorkQueue();
 		wq->removeRequestHandler(WORKQUEUE_CHANNEL, this);
 		wq->removeResponseHandler(WORKQUEUE_CHANNEL, this);	
 #endif
-            FreeTemporaryResources();
-            FreeGPUResources();
-            FreeCPUResources();
-            if ( this.SceneManager != null )
-            {
-                this.SceneManager.DestroySceneNode( this.RootSceneNode.Name );
+                    FreeTemporaryResources();
+                    FreeGPUResources();
+                    FreeCPUResources();
+                    if ( this.SceneManager != null )
+                    {
+                        this.SceneManager.PreFindVisibleObjects -= _preFindVisibleObjects;
+                        this.SceneManager.DestroySceneNode( this.RootSceneNode );
 #warning implement scenemanager.removelistener - or simmilar approach
+                    }
+                }
             }
+
+            base.dispose( disposeManagedResources );
         }
 
         #region - public functions -
@@ -1267,6 +1286,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inPos">The incoming position</param>
         /// <param name="outSpace">The space which outPos should be expressed as</param>
         /// <param name="outPos"> The output position to be populated</param>
+        [OgreVersion( 1, 7, 2 )]
         public void ConvertPosition( Space inSpace, Vector3 inPos, Space outSpace, ref Vector3 outPos )
         {
             ConvertSpace( inSpace, inPos, outSpace, ref outPos, true );
@@ -1290,6 +1310,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inDir">The incoming direction</param>
         /// <param name="outSpace">The space which outDir should be expressed as</param>
         /// <param name="outDir">The output direction to be populated</param>
+        [OgreVersion( 1, 7, 2 )]
         public void ConvertDirection( Space inSpace, Vector3 inDir, Space outSpace, ref Vector3 outDir )
         {
             ConvertSpace( inSpace, inDir, outSpace, ref outDir, false );
@@ -1323,7 +1344,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             {
                 fs = new FileStream( filename, FileMode.OpenOrCreate, FileAccess.ReadWrite );
             }
-            catch ( FileNotFoundException f )
+            catch ( FileNotFoundException )
             {
                 throw new FileNotFoundException( string.Format( "Can't open {0} for writing. Terrain.Save()", filename ) );
             }
@@ -1435,7 +1456,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             {
                 byte[] tmpData = new byte[ mSize * mSize * 3 ];
                 PixelBox dst = new PixelBox( mSize, mSize, 1, PixelFormat.BYTE_RGB, Memory.PinObject( tmpData ) );
-                mTerrainNormalMap.GetBuffer().BlitToMemory( dst );
+                this.TerrainNormalMap.GetBuffer().BlitToMemory( dst );
                 stream.Write( tmpData );
                 Memory.UnpinObject( tmpData );
                 tmpData = null;
@@ -1443,11 +1464,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
 
             //color map
-            if ( mGlobalColorMapEnabled )
+            if ( this.GlobalColorMapEnabled )
             {
                 stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
                 stream.Write( "colormap" );
-                stream.Write( mGlobalColorMapSize );
+                stream.Write( this.GlobalColorMapSize );
                 if ( mCpuColorMapStorage != null )
                 {
                     // save from CPU data if it's there, it means GPU data was never created
@@ -1455,11 +1476,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-                    byte[] aData = new byte[ mGlobalColorMapSize * mGlobalColorMapSize * 3 ];
+                    byte[] aData = new byte[ this.GlobalColorMapSize * this.GlobalColorMapSize * 3 ];
                     var pDataF = BufferBase.Wrap( aData );
-                    PixelBox dst = new PixelBox( mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB,
+                    PixelBox dst = new PixelBox( this.GlobalColorMapSize, this.GlobalColorMapSize, 1, PixelFormat.BYTE_RGB,
                                                  pDataF );
-                    mColorMap.GetBuffer().BlitToMemory( dst );
+                    this.GlobalColorMap.GetBuffer().BlitToMemory( dst );
                     stream.Write( aData );
                 }
                 stream.WriteChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
@@ -1470,7 +1491,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             {
                 stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
                 stream.Write( "lightmap" );
-                stream.Write( mLightmapSize );
+                stream.Write( this.LightMapSize );
                 if ( mCpuLightmapStorage != null )
                 {
                     // save from CPU data if it's there, it means GPU data was never created
@@ -1478,9 +1499,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-                    byte[] aData = new byte[ mLightmapSize * mLightmapSize ];
+                    byte[] aData = new byte[ this.LightMapSize * this.LightMapSize ];
                     var pDataF = BufferBase.Wrap( aData );
-                    PixelBox dst = new PixelBox( mLightmapSize, mLightmapSize, 1, PixelFormat.L8, pDataF );
+                    PixelBox dst = new PixelBox( this.LightMapSize, this.LightMapSize, 1, PixelFormat.L8, pDataF );
                     this.LightMap.GetBuffer().BlitToMemory( dst );
                     stream.Write( aData );
                 }
@@ -1505,13 +1526,17 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     byte[] aData = new byte[ mCompositeMapSize * mCompositeMapSize * 4 ];
                     var pDataF = BufferBase.Wrap( aData );
                     PixelBox dst = new PixelBox( mCompositeMapSize, mCompositeMapSize, 1, PixelFormat.BYTE_RGB, pDataF );
-                    mCompositeMap.GetBuffer().BlitToMemory( dst );
+                    this.CompositeMap.GetBuffer().BlitToMemory( dst );
                     stream.Write( aData );
                 }
                 stream.WriteChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
             }
 
-            //TODO - write deltas
+            //write deltas
+            stream.Write( mDeltaDataPtr );
+
+            //write the quadtree
+            this.QuadTree.Save( stream );
 
             stream.WriteChunkEnd( TERRAIN_CHUNK_ID );
 
@@ -1527,29 +1552,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// It reads data from a native terrain data chunk. For more advanced uses, 
         /// such as loading from a shared file, use the StreamSerialiser form.
         /// </note>
+        [OgreVersion( 1, 7, 2 )]
         public bool Prepare( string fileName )
         {
-            FileStream stream = null;
-            if ( ResourceGroupManager.Instance.ResourceExists(
-                ResourceGroupManager.DefaultResourceGroupName, fileName ) )
-            {
-#warning check me!
-                stream = (FileStream)ResourceGroupManager.Instance.OpenResource(
-                    fileName, ResourceGroupManager.DefaultResourceGroupName );
-            }
-            else
-            {
-                // try direct
-                if ( File.Exists( fileName ) )
-                {
-                    stream = File.Open( fileName, FileMode.Open );
-                }
-                else
-                {
-                    throw new FileNotFoundException( string.Format( "'{0}' not found!", fileName ) );
-                }
-            }
-
+            FileStream stream = (FileStream)ResourceGroupManager.Instance.OpenResource(
+                    fileName, this.DerivedResourceGroup );
             StreamSerializer ser = new StreamSerializer( stream );
             return Prepare( ser );
         }
@@ -1562,6 +1569,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         ///	It reads data from a native terrain data chunk. 
         /// </remarks>
         /// <returns>true if the preparation was successful</returns>
+        [OgreVersion( 1, 7, 2 )]
         public bool Prepare( StreamSerializer stream )
         {
             FreeTemporaryResources();
@@ -1577,10 +1585,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             this.Alignment = (Alignment)align;
             stream.Read( out mSize );
             stream.Read( out mWorldSize );
+
             stream.Read( out mMaxBatchSize );
             stream.Read( out mMinBatchSize );
             stream.Read( out mPos );
-
+            this.RootSceneNode.Position = mPos;
             UpdateBaseScale();
             DetermineLodLevels();
 
@@ -1589,83 +1598,19 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             stream.Read( out mHeightData );
 
             // layer declaration
-            if ( stream.ReadChunkBegin( TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION ) == null )
+            if ( !ReadLayerDeclaration( ref stream, ref mLayerDecl ) )
                 return false;
 
-            //samplers 
-            if ( mLayerDecl == null )
-                mLayerDecl = new TerrainLayerDeclaration();
+            this.CheckDeclaration();
 
-            byte numSamplers;
-            stream.Read( out numSamplers );
-            mLayerDecl.Samplers = new List<TerrainLayerSampler>();
-            for ( byte s = 0; s < numSamplers; ++s )
-            {
-                if ( stream.ReadChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION ) == null )
-                    return false;
+            // Layers
+            if ( !ReadLayerInstanceList( ref stream, mLayerDecl.Elements.Count, ref mLayers ) )
+                return false;
 
-                string alias = string.Empty;
-                PixelFormat fmt;
-                byte pxFmt;
-                stream.Read( out alias );
-                stream.Read( out pxFmt );
-                fmt = (PixelFormat)pxFmt;
-                mLayerDecl.Samplers.Add( new TerrainLayerSampler( alias, fmt ) );
-                stream.ReadChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
-            }
-
-            //elements
-            byte numElems;
-            stream.Read( out numElems );
-            mLayerDecl.Elements = new List<TerrainLayerSamplerElement>();
-            for ( byte e = 0; e < numElems; ++e )
-            {
-                if ( stream.ReadChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION ) == null )
-                    return false;
-                byte rSource;
-                byte sem;
-                byte elemS;
-                byte elemC;
-                stream.Read( out rSource );
-                stream.Read( out sem );
-                stream.Read( out elemS );
-                stream.Read( out elemC );
-                mLayerDecl.Elements.Add( new TerrainLayerSamplerElement( rSource, (TerrainLayerSamplerSemantic)sem, elemS, elemC ) );
-                stream.ReadChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
-            }
-            stream.ReadChunkEnd( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID );
-            CheckDeclaration();
-
-
-            //layers
-            byte numLayers;
-            stream.Read( out numLayers );
-            if ( mLayers == null )
-                mLayers = new List<LayerInstance>();
-
-            for ( byte l = 0; l < numLayers; l++ )
-            {
-                if ( stream.ReadChunkBegin( TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION ) == null )
-                    return false;
-
-                float worldSize;
-                stream.Read( out worldSize );
-                LayerInstance li = new LayerInstance();
-                li.WorldSize = worldSize;
-                li.TextureNames = new List<string>();
-                for ( int t = 0; t < mLayerDecl.Samplers.Count; ++t )
-                {
-                    string texName;
-                    stream.Read( out texName );
-                    li.TextureNames.Add( texName );
-                }
-                mLayers.Add( li );
-                stream.ReadChunkEnd( TERRAINLAYERINSTANCE_CHUNK_ID );
-            }
             DeriveUVMultipliers();
 
-            //packed lacer blend data
-
+            // Packed layer blend data
+            byte numLayers = (byte)mLayers.Count;
             stream.Read( out mLayerBlendMapSize );
             mLayerBlendSizeActual = mLayerBlendMapSize;// for now, until we check
             //load packed CPU data
@@ -1688,10 +1633,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 //name
                 string name = string.Empty;
                 stream.Read( out name );
-                byte sz;
+                ushort sz;
                 stream.Read( out sz );
                 if ( name == "normalmap" )
                 {
+                    mNormalMapRequired = true;
                     byte[] data = new byte[ sz * sz * 3 ];
                     stream.Read( out data );
                     var pDataF = BufferBase.Wrap( data );
@@ -1699,15 +1645,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else if ( name == "colormap" )
                 {
-                    mGlobalColorMapEnabled = true;
-                    mGlobalColorMapSize = sz;
+                    this.GlobalColorMapEnabled = true;
+                    this.GlobalColorMapSize = sz;
                     mCpuColorMapStorage = new byte[ sz * sz * 3 ];
                     stream.Read( out mCpuColorMapStorage );
                 }
                 else if ( name == "lightmap" )
                 {
                     mLightMapRequired = true;
-                    mLightmapSize = sz;
+                    this.LightMapSize = sz;
                     mCpuLightmapStorage = new byte[ sz * sz ];
                     stream.Read( out mCpuLightmapStorage );
                 }
@@ -1715,24 +1661,24 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 {
                     mCompositeMapRequired = true;
                     mCompositeMapSize = sz;
-                    mCpuCompositeMapStorage = new byte[ sz * sz ];
+                    mCpuCompositeMapStorage = new byte[ sz * sz * 4 ];
                     stream.Read( out mCpuCompositeMapStorage );
                 }
 
                 stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
             }
 
-            stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
+            //Load delta data
+            float[] deltaData = new float[ sizeof( float ) * numVertices ];
+            stream.Read( out deltaData );
+            mDeltaDataPtr = BufferBase.Wrap( deltaData );
 
-            mQuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
-            mQuadTree.Prepare();
-            this.DeltaData = new float[ sizeof( float ) * numVertices ];
-            //calculate the entire terrain
-            Rectangle rect = new Rectangle();
-            rect.Top = 0; rect.Bottom = mSize;
-            rect.Left = 0; rect.Right = mSize;
-            CalculateHeightDeltas( rect );
-            FinalizeHeightDeltas( rect, true );
+            //Create and load quadtree
+            this.QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
+            this.QuadTree.Prepare();
+
+            stream.ReadChunkEnd( TERRAIN_CHUNK_ID );
+
             DistributeVertexData();
 
             this.IsModified = false;
@@ -1749,6 +1695,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <remarks>
         /// This method may be called in a background thread.
         /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
         public bool Prepare( ImportData importData )
         {
             FreeTemporaryResources();
@@ -1826,13 +1773,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     var pDest = pHeightDataF + ( i * mSize ) * sizeof( float );
                     PixelConverter.BulkPixelConversion( psrc, 0, img.Format, pDest, 0, PixelFormat.FLOAT32_R, mSize );
                 }
-                for ( int i = 0; i < mHeightData.Length; i++ )
-                {
-                    if ( mHeightData[ i ] != 0 )
-                    {
-                        float mm = mHeightData[ i ];
-                    }
-                }
+
                 if ( !Utility.RealEqual( importData.InputBias, 0.0f ) || !Utility.RealEqual( importData.InputScale, 1.0f ) )
                 {
                     for ( int i = 0; i < numVertices; ++i )
@@ -1847,14 +1788,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 mHeightData = new float[ mSize * mSize ];
             }
 
-            this.DeltaData = new float[ numVertices ];
+            float[] deltaData = new float[ numVertices ];
 
             mHeightDataPtr = Memory.PinObject( mHeightData );
-            mDeltaDataPtr = Memory.PinObject( this.DeltaData );
+            mDeltaDataPtr = Memory.PinObject( deltaData );
 
             ushort numLevel = (ushort)(int)( this.NumLodLevels - 1 );
-            mQuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
-            mQuadTree.Prepare();
+            this.QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
+            this.QuadTree.Prepare();
 
             //calculate entire terrain
             Rectangle rect = new Rectangle();
@@ -1894,6 +1835,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// This method must be called from the primary render thread. To load data
         ///	in a background thread, use the prepare() method.
         /// </note>
+        [OgreVersion( 1, 7, 2 )]
         public void Load( StreamSerializer stream )
         {
             if ( Prepare( stream ) )
@@ -1908,13 +1850,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <remarks>
         /// This method must be called in the main render thread. 
         /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
         public void Load()
         {
             if ( this.IsLoaded )
                 return;
 
-            if ( mQuadTree != null )
-                mQuadTree.Load();
+            if ( this.QuadTree != null )
+                this.QuadTree.Load();
 
             CheckLayers( true );
             CreateOrDestroyGPUColorMap();
@@ -1938,8 +1881,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             if ( !this.IsLoaded )
                 return;
 
-            if ( mQuadTree != null )
-                mQuadTree.Unload();
+            if ( this.QuadTree != null )
+                this.QuadTree.Unload();
 
             this.IsLoaded = false;
             this.IsModified = false;
@@ -1954,8 +1897,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </remarks>
         public void Unprepare()
         {
-            if ( mQuadTree != null )
-                mQuadTree.Unprepare();
+            if ( this.QuadTree != null )
+                this.QuadTree.Unprepare();
         }
         /// <summary>
         /// Get the height data for a given terrain point. 
@@ -2730,7 +2673,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         {
             if ( !mDirtyGeometryRect.IsNull )
             {
-                mQuadTree.UpdateVertexData( true, false, mDirtyGeometryRect, false );
+                this.QuadTree.UpdateVertexData( true, false, mDirtyGeometryRect, false );
                 mDirtyGeometryRect.IsNull = true;
             }
 
@@ -2896,7 +2839,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             clampedRect.Bottom = Utility.Min( (long)mSize, clampedRect.Bottom );
 
             Rectangle finalRect = new Rectangle( clampedRect );
-            mQuadTree.PreDeltaCalculation( clampedRect );
+            this.QuadTree.PreDeltaCalculation( clampedRect );
 
             // Iterate over target levels, 
             for ( int targetLevel = 1; targetLevel < this.NumLodLevels; ++targetLevel )
@@ -3016,7 +2959,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                 {
                                 }
                                 // tell the quadtree about this 
-                                mQuadTree.NotifyDelta( (ushort)fulldetailx, (ushort)fulldetaily, (ushort)sourceLevel, delta );
+                                this.QuadTree.NotifyDelta( (ushort)fulldetailx, (ushort)fulldetaily, (ushort)sourceLevel, delta );
 
 
                                 // If this vertex is being removed at this LOD, 
@@ -3029,8 +2972,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                     ( ( fulldetailx % step ) == halfStep && ( fulldetaily % halfStep ) == 0 ) ||
                                     ( ( fulldetaily % step ) == halfStep && ( fulldetailx % halfStep ) == 0 ) )
                                 {
-                                    // Save height difference 
-                                    this.DeltaData[ fulldetailx + ( fulldetaily * mSize ) ] = delta;
+#if !AXIOM_SAFE_ONLY
+                                    unsafe
+#endif
+                                    {
+                                        // Save height difference 
+                                        var pDest = this.GetDeltaData( fulldetailx, fulldetaily ).ToFloatPointer();
+                                        pDest[ 0 ] = delta;
+                                    }
+
                                 }
                             }//x
                         }//y
@@ -3038,7 +2988,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }//j
             }//targetlevel
 
-            mQuadTree.PostDeltaCalculation( clampedRect );
+            this.QuadTree.PostDeltaCalculation( clampedRect );
 
             return finalRect;
         }
@@ -3059,9 +3009,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             clampedRect.Bottom = Utility.Min( (long)mSize, clampedRect.Bottom );
 
             // min/max information
-            mQuadTree.FinaliseDeltaValues( clampedRect );
+            this.QuadTree.FinaliseDeltaValues( clampedRect );
             // dekta vertex data
-            mQuadTree.UpdateVertexData( false, true, clampedRect, cpuData );
+            this.QuadTree.UpdateVertexData( false, true, clampedRect, cpuData );
         }
 
         public void GetPointFromSelfOrNeighbour( long x, long y, ref Vector3 outpos )
@@ -3175,12 +3125,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         {
             CreateOrDestroyGPUNormalMap();
             // deal with race condition where nm has been disabled while we were working!
-            if ( mTerrainNormalMap != null )
+            if ( this.TerrainNormalMap != null )
             {
                 // blit the normals into the texture
                 if ( rect.Left == 0 && rect.Top == 0 && rect.Bottom == mSize && rect.Right == mSize )
                 {
-                    mTerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox );
+                    this.TerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox );
                 }
                 else
                 {
@@ -3191,7 +3141,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     dstBox.Right = (int)rect.Bottom;
                     dstBox.Top = (int)( mSize - rect.Bottom );
                     dstBox.Bottom = (int)( mSize - rect.Top );
-                    mTerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox, dstBox );
+                    this.TerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox, dstBox );
                 }
             }
 
@@ -3627,7 +3577,6 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
             return new KeyValuePair<bool, Vector3>( Result.Key, resVec );
         }
-        int mLastViewportHeight = 0;
 
 #warning implement void sceneManagerDestroyed(SceneManager* source);
 
@@ -3745,11 +3694,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             if ( sz == 0 )
                 sz = TerrainGlobalOptions.DefaultGlobalColorMapSize;
 
-            if ( enabled != mGlobalColorMapEnabled ||
-                ( enabled && mGlobalColorMapSize != sz ) )
+            if ( enabled != this.GlobalColorMapEnabled ||
+                ( enabled && this.GlobalColorMapSize != sz ) )
             {
-                mGlobalColorMapEnabled = enabled;
-                mGlobalColorMapSize = sz;
+                this.GlobalColorMapEnabled = enabled;
+                this.GlobalColorMapSize = sz;
 
                 CreateOrDestroyGPUColorMap();
 
@@ -4179,8 +4128,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         protected void FreeCPUResources()
         {
             mHeightData = null;
-            this.DeltaData = null;
-            mQuadTree = null;
+            mDeltaDataPtr = null;
+            this.QuadTree = null;
             if ( mCpuTerrainNormalMap != null )
             {
                 mCpuTerrainNormalMap.Data = null;
@@ -4273,16 +4222,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 mBlendTextureList.Clear();
 
-                if ( mTerrainNormalMap != null )
+                if ( this.TerrainNormalMap != null )
                 {
-                    tmgr.Remove( mTerrainNormalMap );
-                    mTerrainNormalMap = null;
+                    tmgr.Remove( this.TerrainNormalMap );
+                    this.TerrainNormalMap = null;
                 }
 
-                if ( mColorMap != null )
+                if ( this.GlobalColorMap != null )
                 {
-                    tmgr.Remove( mColorMap );
-                    mColorMap = null;
+                    tmgr.Remove( this.GlobalColorMap );
+                    this.GlobalColorMap = null;
                 }
 
                 if ( this.LightMap != null )
@@ -4291,10 +4240,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     this.LightMap = null;
                 }
 
-                if ( mCompositeMap != null )
+                if ( this.CompositeMap != null )
                 {
-                    tmgr.Remove( mCompositeMap );
-                    mCompositeMap = null;
+                    tmgr.Remove( this.CompositeMap );
+                    this.CompositeMap = null;
                 }
 
                 if ( mMaterial != null )
@@ -4348,14 +4297,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         mTreeDepth = mNumLodLevels - mNumLodLevelsPerLeafNode + 1;
          */
 
-            this.LodLevelsPerLeafCount = (ushort)( Utility.Log2( mMaxBatchSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
+            this.NumLodLevelsPerLeaf = (ushort)( Utility.Log2( mMaxBatchSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
             this.NumLodLevels = (ushort)( Utility.Log2( mSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
-            mTreeDepth = (ushort)( this.NumLodLevels - this.LodLevelsPerLeafCount + 1 );
+            mTreeDepth = (ushort)( this.NumLodLevels - this.NumLodLevelsPerLeaf + 1 );
 
             LogManager.Instance.Write( string.Format( "Terrain created; size={0}, minBatch={1}, maxBatch={2}, treedepth={3}, lodLevels={4}, leafNodes={5}",
-                mSize, mMinBatchSize, mMaxBatchSize, mTreeDepth, this.NumLodLevels, this.LodLevelsPerLeafCount ), null );
+                mSize, mMinBatchSize, mMaxBatchSize, mTreeDepth, this.NumLodLevels, this.NumLodLevelsPerLeaf ), null );
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void DistributeVertexData()
         {
             /* Now we need to figure out how to distribute vertex data. We want to 
@@ -4426,8 +4376,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
         */
             LogManager logMgr = LogManager.Instance;
-            logMgr.Write( LogMessageLevel.Trivial, false, "Terrain.DistributeVertexData processing source " +
-                "terrain size of " + mSize, null );
+            logMgr.Write( LogMessageLevel.Trivial, false, @"Terrain.DistributeVertexData processing source 
+                terrain size of " + mSize, null );
 
             ushort depth = mTreeDepth;
             ushort prevDepth = depth;
@@ -4439,13 +4389,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 ushort splits = (ushort)( 1 << depth );
                 if ( splits == targetsplits )
                 {
-                    logMgr.Write( LogMessageLevel.Trivial, false, string.Format( "Assigning vertex data, resolution={0}, startDepth={1}, endDepth={2}, splits={3}",
-                        bakedresolution, depth, prevDepth, splits ), null );
+                    logMgr.Write( LogMessageLevel.Trivial, false, "Assigning vertex data, resolution={0}, startDepth={1}, endDepth={2}, splits={3}",
+                        bakedresolution, depth, prevDepth, splits );
                     // vertex data goes at this level, at bakedresolution
                     // applies to all lower levels (except those with a closer vertex data)
                     // determine physical size (as opposed to resolution)
                     int sz = ( ( bakedresolution - 1 ) / splits ) + 1;
-                    mQuadTree.AssignVertexData( depth, prevDepth, bakedresolution, (ushort)sz );
+                    this.QuadTree.AssignVertexData( depth, prevDepth, bakedresolution, (ushort)sz );
 
                     // next set to look for
                     bakedresolution = (ushort)( ( ( currentresolution - 1 ) >> 1 ) + 1 );
@@ -4459,13 +4409,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             // Always assign vertex data to the top of the tree
             if ( prevDepth > 0 )
             {
-                mQuadTree.AssignVertexData( 0, 1, bakedresolution, bakedresolution );
-                logMgr.Write( LogMessageLevel.Trivial, false, string.Format( "Assigning vertex data, resolution: {0}, startDepth=0, endDepth=1, splits=1",
-                    bakedresolution ), null );
+                this.QuadTree.AssignVertexData( 0, 1, bakedresolution, bakedresolution );
+                logMgr.Write( LogMessageLevel.Trivial, false, "Assigning vertex data, resolution: {0}, startDepth=0, endDepth=1, splits=1",
+                    bakedresolution );
             }
 
             logMgr.Write( LogMessageLevel.Trivial, false, "Terrain.DistributeVertexdata finished", null );
-
         }
 
         [OgreVersion( 1, 7, 2 )]
@@ -4547,29 +4496,30 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUNormalMap()
         {
-            if ( mNormalMapRequired && mTerrainNormalMap == null )
+            if ( mNormalMapRequired && this.TerrainNormalMap == null )
             {
                 //create 
-                mTerrainNormalMap = TextureManager.Instance.CreateManual(
+                this.TerrainNormalMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/nm", this.DerivedResourceGroup,
                      TextureType.TwoD, mSize, mSize, 1, 0, PixelFormat.BYTE_RGB, TextureUsage.Static, null );
 
                 //upload loaded normal data if present
                 if ( mCpuTerrainNormalMap != null )
                 {
-                    mTerrainNormalMap.GetBuffer().BlitFromMemory( mCpuTerrainNormalMap );
+                    this.TerrainNormalMap.GetBuffer().BlitFromMemory( mCpuTerrainNormalMap );
                     mCpuTerrainNormalMap.Data = null;
                     mCpuTerrainNormalMap = null;
                 }
             }
-            else if ( !mNormalMapRequired && mTerrainNormalMap != null )
+            else if ( !mNormalMapRequired && this.TerrainNormalMap != null )
             {
                 //destroy 
-                TextureManager.Instance.Remove( mTerrainNormalMap );
-                mTerrainNormalMap = null;
+                TextureManager.Instance.Remove( this.TerrainNormalMap );
+                this.TerrainNormalMap = null;
             }
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void ConvertSpace( Space inSpace, Vector3 inVec, Space outSpace, ref Vector3 outVec, bool translation )
         {
             Space currSpace = inSpace;
@@ -4581,7 +4531,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     case Space.WorldSpace:
                         {
                             // In all cases, transition to local space
-                            outVec = outVec - mPos;
+                            outVec -= mPos;
                             currSpace = Space.LocalSpace;
                         }
                         break;
@@ -4602,9 +4552,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                         // go via terrain space
                                         outVec = convertWorldToTerrainAxes( outVec );
                                         if ( translation )
+                                        {
                                             outVec.x -= mBase; outVec.y -= mBase;
-
-                                        outVec.x /= ( mSize - 1 ) * mScale; outVec.y /= ( mSize - 1 ) * mScale;
+                                            outVec.x /= ( mSize - 1 ) * mScale; outVec.y /= ( mSize - 1 ) * mScale;
+                                        }
                                         currSpace = Space.TerrainSpace;
                                     }
                                     break;
@@ -4619,9 +4570,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                 case Space.LocalSpace:
                                     {
                                         // go via local space
-                                        outVec.x *= ( mSize - 1 ) * mScale; outVec.y *= ( mSize - 1 ) * mScale;
                                         if ( translation )
+                                        {
+                                            outVec.x *= ( mSize - 1 ) * mScale; outVec.y *= ( mSize - 1 ) * mScale;
                                             outVec.x += mBase; outVec.y += mBase;
+                                        }
                                         outVec = convertTerrainToWorldAxes( outVec );
                                         currSpace = Space.LocalSpace;
                                     }
@@ -4631,8 +4584,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                         outVec.x *= ( mSize - 1 ); outVec.y *= ( mSize - 1 );
                                         // rounding up/down
                                         // this is why POINT_SPACE is the last on the list, because it loses data
-                                        outVec.x = (float)( (int)( outVec.x + 0.5 ) );
-                                        outVec.y = (float)( (int)( outVec.y + 0.5 ) );
+                                        outVec.x = (Real)( (int)( outVec.x + 0.5 ) );
+                                        outVec.y = (Real)( (int)( outVec.y + 0.5 ) );
                                         currSpace = Space.PointSpace;
                                     }
                                     break;
@@ -4642,9 +4595,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     case Space.PointSpace:
                         {
                             // always go via terrain space
-                            outVec.x /= ( mSize - 1 ); outVec.y /= ( mSize - 1 );
-                            currSpace = Space.TerrainSpace;
+                            if ( translation )
+                                outVec.x /= ( mSize - 1 ); outVec.y /= ( mSize - 1 );
 
+                            currSpace = Space.TerrainSpace;
                         }
                         break;
                 }//end main switch
@@ -4654,29 +4608,29 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUColorMap()
         {
-            if ( mGlobalColorMapEnabled && mColorMap == null )
+            if ( this.GlobalColorMapEnabled && this.GlobalColorMap == null )
             {
 #warning Check MIP_DEFAULT
                 // create
-                mColorMap = TextureManager.Instance.CreateManual(
+                this.GlobalColorMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/cm", this.DerivedResourceGroup,
-                     TextureType.TwoD, mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB, TextureUsage.Static );
+                     TextureType.TwoD, this.GlobalColorMapSize, this.GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, TextureUsage.Static );
 
                 if ( mCpuColorMapStorage != null )
                 {
                     // Load cached data
-                    PixelBox src = new PixelBox( (int)mGlobalColorMapSize, (int)mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB, Memory.PinObject( mCpuColorMapStorage ) );
-                    mColorMap.GetBuffer().BlitFromMemory( src );
+                    PixelBox src = new PixelBox( (int)this.GlobalColorMapSize, (int)this.GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, Memory.PinObject( mCpuColorMapStorage ) );
+                    this.GlobalColorMap.GetBuffer().BlitFromMemory( src );
                     // release CPU copy, don't need it anymore
                     Memory.UnpinObject( mCpuColorMapStorage );
                     mCpuColorMapStorage = null;
                 }
             }
-            else if ( !mGlobalColorMapEnabled && mColorMap != null )
+            else if ( !this.GlobalColorMapEnabled && this.GlobalColorMap != null )
             {
                 // destroy
-                TextureManager.Instance.Remove( mColorMap );
-                mColorMap = null;
+                TextureManager.Instance.Remove( this.GlobalColorMap );
+                this.GlobalColorMap = null;
             }
         }
 
@@ -4688,14 +4642,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 //create
                 this.LightMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/lm", this.DerivedResourceGroup,
-                     TextureType.TwoD, mLightmapSize, mLightmapSize, 0, PixelFormat.L8, TextureUsage.Static );
+                     TextureType.TwoD, this.LightMapSize, this.LightMapSize, 0, PixelFormat.L8, TextureUsage.Static );
 
                 mLightmapSizeActual = (ushort)this.LightMap.Width;
 
                 if ( mCpuLightmapStorage != null )
                 {
                     // Load cached data
-                    PixelBox src = new PixelBox( (int)mLightmapSize, (int)mLightmapSize, 1, PixelFormat.L8, Memory.PinObject( mCpuLightmapStorage ) );
+                    PixelBox src = new PixelBox( (int)this.LightMapSize, (int)this.LightMapSize, 1, PixelFormat.L8, Memory.PinObject( mCpuLightmapStorage ) );
                     this.LightMap.GetBuffer().BlitFromMemory( src );
                     Memory.UnpinObject( mCpuLightmapStorage );
                     mCpuLightmapStorage = null;
@@ -4724,20 +4678,20 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUCompositeMap()
         {
-            if ( mCompositeMapRequired && mCompositeMap == null )
+            if ( mCompositeMapRequired && this.CompositeMap == null )
             {
                 //create
-                mCompositeMap = TextureManager.Instance.CreateManual(
+                this.CompositeMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/comp", this.DerivedResourceGroup,
                     TextureType.TwoD, mCompositeMapSize, mCompositeMapSize, 0, PixelFormat.BYTE_RGBA, TextureUsage.Static );
 
-                mCompositeMapSizeActual = (ushort)mCompositeMap.Width;
+                mCompositeMapSizeActual = (ushort)this.CompositeMap.Width;
 
                 if ( mCpuCompositeMapStorage != null )
                 {
                     // Load cached data
                     PixelBox src = new PixelBox( (int)mCompositeMapSize, (int)mCompositeMapSize, 1, PixelFormat.BYTE_RGBA, Memory.PinObject( mCpuCompositeMapStorage ) );
-                    mCompositeMap.GetBuffer().BlitFromMemory( src );
+                    this.CompositeMap.GetBuffer().BlitFromMemory( src );
                     // release CPU copy, don't need it anymore
                     Memory.UnpinObject( mCpuCompositeMapStorage );
                     mCpuCompositeMapStorage = null;
@@ -4748,16 +4702,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     BasicBox box = new BasicBox( 0, 0, (int)mCompositeMapSizeActual, (int)mCompositeMapSizeActual );
                     byte[] aInit = new byte[ mCompositeMapSizeActual * mCompositeMapSizeActual ];
 
-                    HardwarePixelBuffer buf = mCompositeMap.GetBuffer();
+                    HardwarePixelBuffer buf = this.CompositeMap.GetBuffer();
                     var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
                     Memory.Copy( BufferBase.Wrap( aInit ), pInit, aInit.Length );
                     buf.Unlock();
                 }
             }
-            else if ( !mCompositeMapRequired && mCompositeMap != null )
+            else if ( !mCompositeMapRequired && this.CompositeMap != null )
             {
-                TextureManager.Instance.Remove( mCompositeMap );
-                mCompositeMap = null;
+                TextureManager.Instance.Remove( this.CompositeMap );
+                this.CompositeMap = null;
             }
         }
 
@@ -4774,6 +4728,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected Vector3 convertWorldToTerrainAxes( Vector3 inVec )
         {
             Vector3 ret = Vector3.Zero;
@@ -4803,6 +4758,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return ret;
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected Vector3 convertTerrainToWorldAxes( Vector3 inVec )
         {
             Vector3 ret = Vector3.Zero;
@@ -4825,6 +4781,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return ret;
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CheckLayers( bool includeGpuResources )
         {
             foreach ( LayerInstance inst in mLayers )
@@ -4849,6 +4806,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CheckDeclaration()
         {
             if ( mMaterialGenerator == null )
@@ -4862,6 +4820,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected PixelFormat GetBlendTextureFormat( byte textureIndex, byte numLayers )
         {
             // Always create RGBA; no point trying to create RGB since all cards pad to 32-bit (XRGB)
@@ -4869,18 +4828,22 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return PixelFormat.BYTE_RGBA;
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CopyGlobalOptions()
         {
             this.SkirtSize = TerrainGlobalOptions.SkirtSize;
             this.RenderQueueGroupID = TerrainGlobalOptions.RenderQueueGroupID;
+            VisibilityFlags = TerrainGlobalOptions.VisibilityFlags;
+            QueryFlags = TerrainGlobalOptions.QueryFlags;
             mLayerBlendMapSize = TerrainGlobalOptions.LayerBlendMapSize;
             mLayerBlendSizeActual = mLayerBlendMapSize; // for now, until we check
-            mLightmapSize = TerrainGlobalOptions.LightMapSize;
-            mLightmapSizeActual = mLightmapSize;// for now, until we check
+            this.LightMapSize = TerrainGlobalOptions.LightMapSize;
+            mLightmapSizeActual = this.LightMapSize;// for now, until we check
             mCompositeMapSize = TerrainGlobalOptions.CompositeMapSize;
             mCompositeMapSizeActual = mCompositeMapSize; // for now, until we check
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void DeriveUVMultipliers()
         {
             mLayerUVMultiplier.Capacity = mLayers.Count;
@@ -4932,7 +4895,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
         protected void CalculateCurrentLod( Viewport vp )
         {
-            if ( mQuadTree != null )
+            if ( this.QuadTree != null )
             {
                 // calculate error terms
 #warning implement Camera.LodCamera;
@@ -4948,7 +4911,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
                 // CFactor = A / T
                 float cFactor = A / T;
-                mQuadTree.CalculateCurrentLod( cam, cFactor );
+                this.QuadTree.CalculateCurrentLod( cam, cFactor );
             }
         }
 
@@ -5463,13 +5426,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        private void mSceneMgr_PostFindVisibleObjects( SceneManager manager, IlluminationRenderStage stage, Viewport view )
-        {
-
-        }
-
+        [OgreVersion( 1, 7, 2 )]
         private void _preFindVisibleObjects( SceneManager source, IlluminationRenderStage irs, Viewport v )
         {
+            //Early-out
             if ( !this.IsLoaded )
                 return;
 
@@ -5487,12 +5447,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     UpdateCompositeMap();
             }
             mLastMillis = currMillis;
-            // only calculate LOD once per LOD camera, per frame
-            // shadow renders will pick up LOD camera from main viewport and so LOD will only
-            // be calculated once for that case
+            // only calculate LOD once per LOD camera, per frame, per viewport height
 #warning implement LodCamera
             Camera lodCamera = v.Camera.LodCamera;
-            ulong frameNum = Root.Instance.CurrentFrameCount;
+            ulong frameNum = (ulong)Root.Instance.NextFrameNumber;
             int vpHeight = v.ActualHeight;
             if ( mLastLODCamera != lodCamera || frameNum != mLastLODFrame ||
                 mLastViewportHeight != vpHeight )

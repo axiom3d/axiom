@@ -23,14 +23,13 @@
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Collections;
-using Axiom.Utilities;
+using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
@@ -538,7 +537,7 @@ namespace Axiom.Components.Terrain
                 //no children
                 Array.Clear(mChildren, 0, mChildren.Length);
                 // this is a leaf node and may have internal LODs of its own
-                ushort ownLod = mTerrain.LodLevelsPerLeafCount;
+                ushort ownLod = mTerrain.NumLodLevelsPerLeaf;
 
                 Debug.Assert(lod == (ownLod - 1),
                     "The lod passed in should reflect the number of lods in a leaf");
@@ -637,6 +636,24 @@ namespace Axiom.Components.Terrain
             for (int i = 0; i < mChildren.Length; i++)
                 mChildren[i].Prepare();
         }
+
+        /// <summary>
+        /// Save node to a stream
+        /// </summary>
+        /// <param name="stream"></param>
+        public void Save( StreamSerializer stream )
+        {
+            // save LOD data we need
+            foreach ( var ll in mLodLevels )
+                stream.Write( ll.MaxHeightDelta );
+
+            if ( !IsLeaf )
+            {
+                for ( int i = 0; i < 4; ++i )
+                    mChildren[ i ].Save( stream );
+            }
+        }
+
         /// <summary>
         ///  Load node and children (perform GPU tasks, will be render thread)
         /// </summary>
@@ -2483,9 +2500,6 @@ namespace Axiom.Components.Terrain
                 }
             }
 
-            /// <summary>
-            /// 
-            /// </summary>
             public override Material Material
             {
                 get

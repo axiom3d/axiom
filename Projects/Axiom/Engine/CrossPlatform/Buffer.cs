@@ -148,17 +148,17 @@ namespace Axiom.CrossPlatform
 
 		protected bool Disposed;
 
-		public static BufferBase operator +(BufferBase buffer, int ofset)
+		public static BufferBase operator +(BufferBase buffer, int offset)
 		{
 			var buf = (BufferBase)buffer.Clone();
-			buf.Ptr += ofset;
+			buf.Ptr += offset;
 			return buf;
 		}
 
-		public static BufferBase operator +(BufferBase buffer, long ofset)
+		public static BufferBase operator +(BufferBase buffer, long offset)
 		{
 			var buf = (BufferBase)buffer.Clone();
-			buf.Ptr += (int)ofset;
+			buf.Ptr += (int)offset;
 			return buf;
 		}
 
