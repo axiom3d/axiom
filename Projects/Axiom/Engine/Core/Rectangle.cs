@@ -35,12 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Math;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -112,7 +106,8 @@ namespace Axiom.Core
 				_left = value - _right;
 			}
 		}
-		public long Height
+		
+        public long Height
 		{
 			get
 			{
@@ -123,6 +118,19 @@ namespace Axiom.Core
 				_bottom = value - _top;
 			}
 		}
+
+        public bool IsNull
+        {
+            get
+            {
+                return this.Width == 0 || this.Height == 0;
+            }
+            set
+            {
+                if ( value )
+                    _left = _right = _top = _bottom = 0;
+            }
+        }
 
 		#endregion Fields and Properties
 
@@ -158,13 +166,15 @@ namespace Axiom.Core
 			return Intersect( this, rhs );
 		}
 
+        [OgreVersion( 1, 7, 2 )]
 		public Rectangle Merge( Rectangle rhs )
 		{
-			if ( Width == 0 )
+			if ( this.IsNull )
 			{
 				this = rhs;
 			}
-			else
+			
+            else if ( !rhs.IsNull )
 			{
 				Left = System.Math.Min( Left, rhs.Left );
 				Right = System.Math.Max( Right, rhs.Right );
@@ -177,17 +187,43 @@ namespace Axiom.Core
 
 		#endregion Methods
 
+        [OgreVersion( 1, 7, 2 )]
 		internal static Rectangle Intersect( Rectangle lhs, Rectangle rhs )
 		{
-			Rectangle r;
+			Rectangle ret = new Rectangle();
 
-			r._left = lhs._left > rhs._left ? lhs._left : rhs._left;
-			r._top = lhs._top > rhs._top ? lhs._top : rhs._top;
-			r._right = lhs._right < rhs._right ? lhs._right : rhs._right;
-			r._bottom = lhs._bottom < rhs._bottom ? lhs._bottom : rhs._bottom;
+            if ( lhs.IsNull || rhs.IsNull )
+            {
+                //empty
+                return ret;
+            }
+            else
+            {
+                ret.Left = System.Math.Min( lhs.Left, rhs.Left );
+                ret.Right = System.Math.Max( lhs.Right, rhs.Right );
+                ret.Top = System.Math.Min( lhs.Top, rhs.Top );
+                ret.Bottom = System.Math.Max( lhs.Bottom, rhs.Bottom );
+            }
 
-			return r;
+            if ( ret.Left > ret.Right || ret.Top > ret.Bottom )
+            {
+                // no intersection, return empty
+                ret.IsNull = true;
+            }
+
+			return ret;
 		}
+
+        public override string ToString()
+        {
+            return string.Format(
+                "Rectangle<>(l:{0}, t:{1}, r:{2}, b:{3})",
+                _left,
+                _top,
+                _right,
+                _bottom
+                );
+        }
 	}
 
 	public struct RectangleF

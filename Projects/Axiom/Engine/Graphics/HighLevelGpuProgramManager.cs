@@ -208,7 +208,7 @@ namespace Axiom.Graphics
 			{
 				throw new Exception( "You must supply a 'language' parameter" );
 			}
-			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader );
+			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, handle, group, isManual, loader );
 		}
 
 		/// <summary>
