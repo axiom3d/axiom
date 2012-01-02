@@ -510,7 +510,6 @@ namespace Axiom.Components.Terrain
         protected TerrainLayerDeclaration mLayerDecl;
         protected List<LayerInstance> mLayers = new List<LayerInstance>();
         protected FloatList mLayerUVMultiplier = new FloatList();
-        protected RenderQueueGroupID mRenderQueueGroup;
         protected Rectangle mDirtyGeometryRect;
         protected Rectangle mDirtyDerivedDataRect;
 
@@ -956,6 +955,7 @@ namespace Axiom.Components.Terrain
         /// all the features that are requested will be referenceable by materials, the
         /// data may just take a few frames to be fully populated.
         /// </summary>
+        [OgreVersion( 1, 7, 2, "Original: name _setNormalMapRquired" )]
         public bool NormalMapRequired
         {
             set
@@ -1029,9 +1029,9 @@ namespace Axiom.Components.Terrain
         /// usually on the GPU. It is expected that if this option is requested, 
         /// the material generator will use it to construct distant LOD techniques.
         /// </summary>
+        [OgreVersion( 1, 7, 2, "Original: name _setCompositeMapRequired" )]
         public bool CompositeMapRequired
         {
-            get { throw new NotImplementedException(); }
             set
             {
                 if ( mCompositeMapRequired != value )
@@ -1169,8 +1169,8 @@ namespace Axiom.Components.Terrain
         /// <remarks>The default is specified in TerrainGlobalOptions</remarks>
         public RenderQueueGroupID RenderQueueGroupID
         {
-            get { return mRenderQueueGroup; }
-            set { mRenderQueueGroup = value; }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -1340,6 +1340,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// Save terrain data in native form to a serializing stream
         /// </summary>
         /// <param name="stream"></param>
+        [OgreVersion( 1, 7, 2 )]
         public void Save( StreamSerializer stream )
         {
             // wait for any queued processes to finish
@@ -1371,45 +1372,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             for ( int i = 0; i < mHeightData.Length; i++ )
                 stream.Write( mHeightData[ i ] );
 
-            //layer declatation
-            stream.WriteChunkBegin( TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION );
-            //samplers
-            byte numSamplers = (byte)mLayerDecl.Samplers.Count;
-            stream.Write( numSamplers );
-            foreach ( TerrainLayerSampler sampler in mLayerDecl.Samplers )
-            {
-                stream.WriteChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION );
-                stream.Write( sampler.Alias );
-                byte pixFmt = (byte)sampler.Format;
-                stream.Write( pixFmt );
-                stream.WriteChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
-            }
-            //elements
-            byte numElems = (byte)mLayerDecl.Elements.Count;
-            stream.Write( numElems );
-            foreach ( TerrainLayerSamplerElement elem in mLayerDecl.Elements )
-            {
-                stream.WriteChunkBegin( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID, TERRAINLAYERSAMPLERELEMENT_CHUNK_VERSION );
-                stream.Write( elem.Source );
-                byte sem = (byte)elem.Semantic;
-                stream.Write( sem );
-                stream.Write( elem.ElementStart );
-                stream.Write( elem.ElementCount );
-                stream.WriteChunkEnd( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID );
-            }
-            stream.WriteChunkEnd( TERRAINLAYERDECLARATION_CHUNK_ID );
-            //layers
+            WriteLayerDeclaration( mLayerDecl, ref stream );
+
+            //Layers
             CheckLayers( false );
             byte numLayers = (byte)mLayers.Count;
-            stream.Write( numLayers );
-            foreach ( LayerInstance inst in mLayers )
-            {
-                stream.WriteChunkBegin( TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION );
-                stream.Write( inst.WorldSize );
-                foreach ( string t in inst.TextureNames )
-                    stream.Write( t );
-                stream.WriteChunkEnd( TERRAINLAYERINSTANCE_CHUNK_ID );
-            }
+            WriteLayerInstanceList( mLayers, ref stream );
 
             //packed layer blend data
             if ( mCpuBlendMapStorage.Count > 0 )
@@ -1434,8 +1402,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 if ( mLayerBlendMapSize != mLayerBlendSizeActual )
                 {
                     LogManager.Instance.Write(
-                        "WARNING: blend maps were requested at a size larger than was supported " +
-                        "on this hardware, which means the quality has been degraded" );
+                        @"WARNING: blend maps were requested at a size larger than was supported
+                        on this hardware, which means the quality has been degraded" );
                 }
                 stream.Write( mLayerBlendSizeActual );
                 byte[] tmpData = new byte[ mLayerBlendSizeActual * mLayerBlendSizeActual * 4 ];
@@ -1462,7 +1430,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 Memory.Copy( mCpuTerrainNormalMap.Data, BufferBase.Wrap( aData ), aData.Length );
                 // save from CPU data if it's there, it means GPU data was never created
                 stream.Write( aData );
-
+            }
+            else
+            {
+                byte[] tmpData = new byte[ mSize * mSize * 3 ];
+                PixelBox dst = new PixelBox( mSize, mSize, 1, PixelFormat.BYTE_RGB, Memory.PinObject( tmpData ) );
+                mTerrainNormalMap.GetBuffer().BlitToMemory( dst );
+                stream.Write( tmpData );
+                Memory.UnpinObject( tmpData );
+                tmpData = null;
             }
             stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
 
@@ -1471,8 +1447,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             {
                 stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
                 stream.Write( "colormap" );
-                stream.Write( mSize );
-                if ( mCpuBlendMapStorage != null )
+                stream.Write( mGlobalColorMapSize );
+                if ( mCpuColorMapStorage != null )
                 {
                     // save from CPU data if it's there, it means GPU data was never created
                     stream.Write( mCpuColorMapStorage );
@@ -1502,7 +1478,6 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-
                     byte[] aData = new byte[ mLightmapSize * mLightmapSize ];
                     var pDataF = BufferBase.Wrap( aData );
                     PixelBox dst = new PixelBox( mLightmapSize, mLightmapSize, 1, PixelFormat.L8, pDataF );
@@ -1990,6 +1965,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="y">x, y Discrete coordinates in terrain vertices, values from 0 to size-1,
         ///	left/right bottom/top</param>
         /// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
         public float GetHeightAtPoint( long x, long y )
         {
             //clamp
@@ -1997,6 +1973,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             x = Utility.Max( x, 0L );
             y = Utility.Min( y, (long)mSize - 1L );
             y = Utility.Max( y, 0L );
+
             return mHeightData[ y + mSize * x ];
         }
         /// <summary>
@@ -2010,6 +1987,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="y"> x, y Discrete coordinates in terrain vertices, values from 0 to size-1,
         /// left/right bottom/top</param>
         /// <param name="heightVal">The new height</param>
+        [OgreVersion( 1, 7, 2 )]
         public void SetHeightAtPoint( long x, long y, float heightVal )
         {
             //clamp
@@ -3921,12 +3899,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         ///	lighting is required (light direction in TerrainGlobalOptions)</param>
         /// <param name="shadowsOnly">If true, the lightmap contains only shadows, 
         ///	no directional lighting intensity</param>
+        [OgreVersion( 1, 7, 2 )]
         public void SetLightMapRequired( bool lightMap, bool shadowsOnly )
         {
             if ( lightMap != mLightMapRequired || shadowsOnly != mLightMapShadowsOnly )
             {
                 mLightMapRequired = lightMap;
-                mLightMapShadowsOnly = mLightMapShadowsOnly;
+                mLightMapShadowsOnly = shadowsOnly;
 
                 CreateOrDestroyGPULightmap();
 
@@ -4052,30 +4031,151 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return NeighbourIndex.North;
         }
 
+        /// <summary>
+        /// Utility method to write a layer declaration to a stream
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
         public static void WriteLayerDeclaration( TerrainLayerDeclaration decl, ref StreamSerializer stream )
         {
-            throw new NotImplementedException();
+            // Layer declaration
+            stream.WriteChunkBegin( TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION );
+
+            //  samplers
+            byte numSamplers = (byte)decl.Samplers.Count;
+            stream.Write( numSamplers );
+            foreach ( var sampler in decl.Samplers )
+            {
+                stream.WriteChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION );
+                stream.Write( sampler.Alias );
+                byte pixFmt = (byte)sampler.Format;
+                stream.Write( pixFmt );
+                stream.WriteChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
+            }
+
+            //  elements
+            byte numElems = (byte)decl.Elements.Count;
+            stream.Write( numElems );
+            foreach ( var elem in decl.Elements )
+            {
+                stream.WriteChunkBegin( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID, TERRAINLAYERSAMPLERELEMENT_CHUNK_VERSION );
+                stream.Write( elem.Source );
+                byte sem = (byte)elem.Semantic;
+                stream.Write( sem );
+                stream.Write( elem.ElementStart );
+                stream.Write( elem.ElementCount );
+                stream.WriteChunkEnd( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID );
+            }
+            stream.WriteChunkEnd( TERRAINLAYERDECLARATION_CHUNK_ID );
         }
 
-        public static void WriteLayerInstanceList( List<LayerInstance> list, ref StreamSerializer stream )
+        /// <summary>
+        /// Utility method to write a layer instance list to a stream
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static void WriteLayerInstanceList( List<LayerInstance> layers, ref StreamSerializer stream )
         {
-            throw new NotImplementedException();
+            byte numLayers = (byte)layers.Count;
+            stream.Write( numLayers );
+            foreach ( var inst in layers )
+            {
+                stream.WriteChunkBegin( TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION );
+                stream.Write( inst.WorldSize );
+                foreach ( var t in inst.TextureNames )
+                    stream.Write( t );
+
+                stream.WriteChunkEnd( TERRAINLAYERINSTANCE_CHUNK_ID );
+            }
         }
 
-        public static void ReadLayerDeclaration( ref StreamSerializer stream, ref TerrainLayerDeclaration targetDecl )
+        /// <summary>
+        /// Utility method to read a layer declaration from a stream
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static bool ReadLayerDeclaration( ref StreamSerializer stream, ref TerrainLayerDeclaration targetDecl )
         {
-            throw new NotImplementedException();
+            if ( stream.ReadChunkBegin( TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION ) == null )
+                return false;
+
+            //  samplers
+            byte numSamplers;
+            stream.Read( out numSamplers );
+            targetDecl.Samplers = new List<TerrainLayerSampler>( numSamplers );
+            for ( byte s = 0; s < numSamplers; ++s )
+            {
+                if ( stream.ReadChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION ) == null )
+                    return false;
+
+                TerrainLayerSampler sampler = new TerrainLayerSampler();
+                stream.Read( out sampler.Alias );
+                byte pixFmt;
+                stream.Read( out pixFmt );
+                sampler.Format = (PixelFormat)pixFmt;
+                stream.ReadChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
+                targetDecl.Samplers.Add( sampler );
+            }
+
+            //  elements
+            byte numElems;
+            stream.Read( out numElems );
+            targetDecl.Elements = new List<TerrainLayerSamplerElement>( numElems );
+            for ( byte e = 0; e < numElems; ++e )
+            {
+                if ( stream.ReadChunkBegin( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID, TERRAINLAYERSAMPLERELEMENT_CHUNK_VERSION ) == null )
+                    return false;
+
+                TerrainLayerSamplerElement samplerElem = new TerrainLayerSamplerElement();
+
+                stream.Read( out samplerElem.Source );
+                byte sem;
+                stream.Read( out sem );
+                samplerElem.Semantic = (TerrainLayerSamplerSemantic)sem;
+                stream.Read( out samplerElem.ElementStart );
+                stream.Read( out samplerElem.ElementCount );
+                stream.ReadChunkEnd( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID );
+                targetDecl.Elements.Add( samplerElem );
+            }
+            stream.ReadChunkEnd( TERRAINLAYERDECLARATION_CHUNK_ID );
+
+            return true;
         }
 
-        public static void ReadLayerInstanceList( ref StreamSerializer stream, int numSamplers, ref List<LayerInstance> targetList )
+        /// <summary>
+        /// Utility method to read a layer instance list from a stream
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static bool ReadLayerInstanceList( ref StreamSerializer stream, int numSamplers, ref List<LayerInstance> targetLayers )
         {
-            throw new NotImplementedException();
+            byte numLayers;
+            stream.Read( out numLayers );
+            targetLayers = new List<LayerInstance>( numLayers );
+            for ( byte l = 0; l < numLayers; ++l )
+            {
+                if ( stream.ReadChunkBegin( TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION ) == null )
+                    return false;
+
+                LayerInstance inst = new LayerInstance();
+
+                stream.Read( out inst.WorldSize );
+                inst.TextureNames = new List<string>( numSamplers );
+                for ( int t = 0; t < numSamplers; ++t )
+                {
+                    string texName;
+                    stream.Read( out texName );
+                    inst.TextureNames.Add( texName );
+                }
+
+                stream.ReadChunkEnd( TERRAINLAYERINSTANCE_CHUNK_ID );
+                targetLayers.Add( inst );
+            }
+
+            return true;
         }
 
         #endregion - public functions -
 
         #region - protected functions -
 
+        [OgreVersion( 1, 7, 2 )]
         protected void FreeCPUResources()
         {
             mHeightData = null;
@@ -4090,11 +4190,6 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             mCpuColorMapStorage = null;
             mCpuLightmapStorage = null;
             mCpuCompositeMapStorage = null;
-        }
-
-        public float height( long x, long y )
-        {
-            return mHeightData[ y * mSize + x ];
         }
 
         protected KeyValuePair<bool, Vector3> CheckQuadIntersection( int x, int z, Ray ray )
@@ -4165,6 +4260,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return new KeyValuePair<bool, Vector3>( false, Vector3.Zero );
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void FreeGPUResources()
         {
             //remove textures
@@ -4182,26 +4278,31 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     tmgr.Remove( mTerrainNormalMap );
                     mTerrainNormalMap = null;
                 }
+
                 if ( mColorMap != null )
                 {
                     tmgr.Remove( mColorMap );
                     mColorMap = null;
                 }
+
                 if ( this.LightMap != null )
                 {
                     tmgr.Remove( this.LightMap );
                     this.LightMap = null;
                 }
+
                 if ( mCompositeMap != null )
                 {
                     tmgr.Remove( mCompositeMap );
                     mCompositeMap = null;
                 }
+
                 if ( mMaterial != null )
                 {
                     MaterialManager.Instance.Remove( mMaterial );
                     mMaterial = null;
                 }
+
                 if ( mCompositeMapMaterial != null )
                 {
                     MaterialManager.Instance.Remove( mCompositeMapMaterial );
@@ -4367,12 +4468,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void UpdateBaseScale()
         {
             //centre the terrain on local origin
             mBase = -mWorldSize * 0.5f;
             // scale determines what 1 unit on the grid becomes in world space
-            mScale = mWorldSize / (float)( mSize - 1 );
+            mScale = mWorldSize / (Real)( mSize - 1 );
         }
 
         protected void CreateGPUBlendTextures()
@@ -4442,13 +4544,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 mLayerBlendMapList.Add( (TerrainLayerBlendMap)o );
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUNormalMap()
         {
             if ( mNormalMapRequired && mTerrainNormalMap == null )
             {
                 //create 
                 mTerrainNormalMap = TextureManager.Instance.CreateManual(
-                    mMaterialName + "/nm", ResourceGroupManager.DefaultResourceGroupName,
+                    mMaterialName + "/nm", this.DerivedResourceGroup,
                      TextureType.TwoD, mSize, mSize, 1, 0, PixelFormat.BYTE_RGB, TextureUsage.Static, null );
 
                 //upload loaded normal data if present
@@ -4548,6 +4651,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }//end while
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUColorMap()
         {
             if ( mGlobalColorMapEnabled && mColorMap == null )
@@ -4555,8 +4659,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 #warning Check MIP_DEFAULT
                 // create
                 mColorMap = TextureManager.Instance.CreateManual(
-                    mMaterialName + "/cm", ResourceGroupManager.DefaultResourceGroupName,
-                     TextureType.TwoD, mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB );
+                    mMaterialName + "/cm", this.DerivedResourceGroup,
+                     TextureType.TwoD, mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB, TextureUsage.Static );
 
                 if ( mCpuColorMapStorage != null )
                 {
@@ -4576,13 +4680,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPULightmap()
         {
             if ( mLightMapRequired && this.LightMap == null )
             {
                 //create
                 this.LightMap = TextureManager.Instance.CreateManual(
-                    mMaterialName + "/lm", ResourceGroupManager.DefaultResourceGroupName,
+                    mMaterialName + "/lm", this.DerivedResourceGroup,
                      TextureType.TwoD, mLightmapSize, mLightmapSize, 0, PixelFormat.L8, TextureUsage.Static );
 
                 mLightmapSizeActual = (ushort)this.LightMap.Width;
@@ -4616,16 +4721,18 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
+        [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUCompositeMap()
         {
             if ( mCompositeMapRequired && mCompositeMap == null )
             {
                 //create
                 mCompositeMap = TextureManager.Instance.CreateManual(
-                    mMaterialName + "/comp", ResourceGroupManager.DefaultResourceGroupName,
+                    mMaterialName + "/comp", this.DerivedResourceGroup,
                     TextureType.TwoD, mCompositeMapSize, mCompositeMapSize, 0, PixelFormat.BYTE_RGBA, TextureUsage.Static );
 
                 mCompositeMapSizeActual = (ushort)mCompositeMap.Width;
+
                 if ( mCpuCompositeMapStorage != null )
                 {
                     // Load cached data
@@ -4765,7 +4872,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         protected void CopyGlobalOptions()
         {
             this.SkirtSize = TerrainGlobalOptions.SkirtSize;
-            mRenderQueueGroup = TerrainGlobalOptions.RenderQueueGroupID;
+            this.RenderQueueGroupID = TerrainGlobalOptions.RenderQueueGroupID;
             mLayerBlendMapSize = TerrainGlobalOptions.LayerBlendMapSize;
             mLayerBlendSizeActual = mLayerBlendMapSize; // for now, until we check
             mLightmapSize = TerrainGlobalOptions.LightMapSize;
