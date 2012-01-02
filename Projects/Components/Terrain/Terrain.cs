@@ -47,7 +47,7 @@ namespace Axiom.Components.Terrain
         public Rectangle DirtyRect;
         public Rectangle LightmapExtraDirtyRect;
     }
-    
+
     /// <summary>
     ///  A data holder for communicating with the background derived data update
     /// </summary>
@@ -139,7 +139,7 @@ namespace Axiom.Components.Terrain
         SouthEast = 7,
         Count = 8
     }
-    
+
     /// <summary>
     /// Structure encapsulating import data that you may use to bootstrap 
     /// the terrain without loading from a native data stream. 
@@ -488,7 +488,7 @@ namespace Axiom.Components.Terrain
         /// The height data (world coords relative to mPos)
         /// </summary>
         protected float[] mHeightData;
-        
+
         protected Real mWorldSize;
         protected ushort mSize;
         protected ushort mMaxBatchSize;
@@ -501,7 +501,7 @@ namespace Axiom.Components.Terrain
         /// Base position in world space, relative to mPos
         /// </summary>
         protected Real mBase;
-        
+
         /// <summary>
         /// Relationship between one point on the terrain and world size
         /// </summary>
@@ -564,7 +564,7 @@ namespace Axiom.Components.Terrain
         /// texture storing normals for the whole terrain
         /// </summary>
         protected Texture mTerrainNormalMap;
-        
+
         /// <summary>
         /// pending data
         /// </summary>
@@ -573,7 +573,7 @@ namespace Axiom.Components.Terrain
         protected Camera mLastLODCamera;
         protected ulong mLastLODFrame;
         protected Rectangle mLightmapExtraDirtyRect;
-        protected Terrain[] mNeighbours = new Terrain[(int)NeighbourIndex.Count];
+        protected Terrain[] mNeighbours = new Terrain[ (int)NeighbourIndex.Count ];
         protected Rectangle mDirtyGeometryRectForNeighbours;
         protected Rectangle mDirtyLightmapFromNeighboursRect;
         BufferBase mHeightDataPtr;
@@ -596,20 +596,20 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public AxisAlignedBox WorldAABB
         {
-            get 
+            get
             {
                 Matrix4 m = Matrix4.Identity;
                 AxisAlignedBox ret = AABB;
-                ret.Transform(m);
+                ret.Transform( m );
                 return ret;
             }
         }
-        
+
         public string DerivedResourceGroup
         {
             get
             {
-                if (string.IsNullOrEmpty(this.ResourceGroup))
+                if ( string.IsNullOrEmpty( this.ResourceGroup ) )
                     return TerrainGlobalOptions.ResourceGroup;
                 else
                     return this.ResourceGroup;
@@ -644,7 +644,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Return whether the terrain is loaded. 
         /// </summary>
@@ -653,7 +653,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get's or set's the visbility flags that terrains will be rendered with
         /// </summary>
@@ -671,7 +671,7 @@ namespace Axiom.Components.Terrain
             get;
             set;
         }
-        
+
         /// <summary>
         /// Get's the scenemanager of the terrain
         /// </summary>
@@ -680,7 +680,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get a pointer to all the delta data for this terrain.
         /// </summary>
@@ -694,7 +694,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get the requested size of the blend maps used to blend between layers
         ///	for this terrain. 
@@ -706,7 +706,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mLayerBlendMapSize; }
         }
-        
+
         /// <summary>
         /// Get'S the AABB (local coords) of the entire terrain
         /// </summary>
@@ -714,13 +714,13 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if (mQuadTree == null)
+                if ( mQuadTree == null )
                     return null;
                 else
                     return mQuadTree.AABB;
             }
         }
-        
+
         /// <summary>
         /// Get the size of the terrain in vertices along one side
         /// </summary>
@@ -729,16 +729,16 @@ namespace Axiom.Components.Terrain
             get { return mSize; }
             set
             {
-                if (mSize != value)
+                if ( mSize != value )
                 {
                     WaitForDerivedProcesses();
                     int numVertices = value * value;
-                    PixelBox src = new PixelBox(mSize, mSize, 1, PixelFormat.FLOAT32_R, GetHeightData(0, 0));
+                    PixelBox src = new PixelBox( mSize, mSize, 1, PixelFormat.FLOAT32_R, GetHeightData( 0, 0 ) );
                     throw new NotImplementedException();
                 }
             }
         }
-        
+
         /// <summary>
         /// Get the root scene node for the terrain (internal use only)
         /// </summary>
@@ -781,7 +781,7 @@ namespace Axiom.Components.Terrain
             get { return mWorldSize; }
             set
             {
-                if (mWorldSize != value)
+                if ( mWorldSize != value )
                 {
                     WaitForDerivedProcesses();
                     mWorldSize = value;
@@ -789,18 +789,18 @@ namespace Axiom.Components.Terrain
 
                     mMaterialParamsDirty = true;
 
-                    if (this.IsLoaded)
+                    if ( this.IsLoaded )
                     {
-                        Rectangle dRect = new Rectangle(0, 0, mSize, mSize);
-                        DirtyRect(dRect);
+                        Rectangle dRect = new Rectangle( 0, 0, mSize, mSize );
+                        DirtyRect( dRect );
                         Update();
                     }
                     throw new NotImplementedException();
-                    
+
                 }
             }
         }
-        
+
         /// <summary>
         /// The default size of 'skirts' used to hide terrain cracks
         ///	(default 10, set for new Terrain using TerrainGlobalOptions)
@@ -810,7 +810,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get's the minimum height of the terrain
         /// </summary>
@@ -818,13 +818,13 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if (mQuadTree == null)
+                if ( mQuadTree == null )
                     return 0;
                 else
                     return mQuadTree.MinHeight;
             }
         }
-        
+
         /// <summary>
         /// Get's the maximum height of the terrain.
         /// </summary>
@@ -832,13 +832,13 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if (mQuadTree == null)
+                if ( mQuadTree == null )
                     return 0;
                 else
                     return mQuadTree.MaxHeight;
             }
         }
-        
+
         /// <summary>
         /// Get's the bounding radius of the entire terrain
         /// </summary>
@@ -846,7 +846,7 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if (mQuadTree == null)
+                if ( mQuadTree == null )
                     return 0;
                 else
                     return mQuadTree.BoundingRadius;
@@ -860,25 +860,25 @@ namespace Axiom.Components.Terrain
         {
             get
             {
-                if (mMaterial == null ||
+                if ( mMaterial == null ||
                     mMaterialGenerator.ChangeCount != mMaterialGenerationCount ||
-                    mMaterialDirty)
+                    mMaterialDirty )
                 {
-                    mMaterial = mMaterialGenerator.Generate(this);
+                    mMaterial = mMaterialGenerator.Generate( this );
                     mMaterial.Load();
-                    if (mCompositeMapRequired)
+                    if ( mCompositeMapRequired )
                     {
-                        mCompositeMapMaterial = mMaterialGenerator.GenerateForCompositeMap(this);
+                        mCompositeMapMaterial = mMaterialGenerator.GenerateForCompositeMap( this );
                         mCompositeMapMaterial.Load();
                     }
                     mMaterialGenerationCount = mMaterialGenerator.ChangeCount;
                     mMaterialDirty = false;
                 }
-                if (mMaterialParamsDirty)
+                if ( mMaterialParamsDirty )
                 {
-                    mMaterialGenerator.UpdateParams(mMaterial, this);
-                    if (mCompositeMapRequired)
-                        mMaterialGenerator.UpdateParamsForCompositeMap(mCompositeMapMaterial, this);
+                    mMaterialGenerator.UpdateParams( mMaterial, this );
+                    if ( mCompositeMapRequired )
+                        mMaterialGenerator.UpdateParamsForCompositeMap( mCompositeMapMaterial, this );
                 }
 
                 return mMaterial;
@@ -895,7 +895,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mCompositeMapMaterial; }
         }
-        
+
         /// <summary>
         /// Get's the material being used for the terrain composite map
         /// </summary>
@@ -908,7 +908,7 @@ namespace Axiom.Components.Terrain
                 return mCompositeMapMaterial;
             }
         }
-        
+
         /// <summary>
         /// Get's the name of the material being used for the terrain
         /// </summary>
@@ -916,7 +916,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mMaterialName; }
         }
-        
+
         /// <summary>
         /// Get a pointer to all the height data for this terrain.
         /// </summary>
@@ -929,7 +929,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mHeightData; }
         }
-        
+
         /// <summary>
         /// Request internal implementation options for the terrain material to use, 
         ///	in this case vertex morphing information. 
@@ -945,7 +945,7 @@ namespace Axiom.Components.Terrain
             get;
             set;
         }
-        
+
         /// <summary>
         /// Request internal implementation options for the terrain material to use, 
         /// in this case a terrain-wide normal map. 
@@ -960,30 +960,30 @@ namespace Axiom.Components.Terrain
         {
             set
             {
-                if (mNormalMapRequired != value)
+                if ( mNormalMapRequired != value )
                 {
                     mNormalMapRequired = value;
                     // Check NPOT textures supported. We have to use NPOT textures to map
                     // texels to vertices directly!
-                    if (!mNormalMapRequired && Root.Instance.RenderSystem
-                        .Capabilities.HasCapability(Capabilities.NonPowerOf2Textures))
+                    if ( !mNormalMapRequired && Root.Instance.RenderSystem
+                        .Capabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
                     {
                         mNormalMapRequired = false;
-                        LogManager.Instance.Write(LogMessageLevel.Critical, false,
+                        LogManager.Instance.Write( LogMessageLevel.Critical, false,
                             "Terrain: Ignoring request for normal map generation since " +
-                            "non-power-of-two texture support is required.", null);
+                            "non-power-of-two texture support is required.", null );
                     }
 
                     CreateOrDestroyGPUNormalMap();
 
                     // if we enabled, generate normal maps
-                    if (mNormalMapRequired)
+                    if ( mNormalMapRequired )
                     {
                         // update derived data for whole terrain, but just normals
                         mDirtyDerivedDataRect = new Rectangle();
                         mDirtyDerivedDataRect.Left = mDirtyDerivedDataRect.Top = 0;
                         mDirtyDerivedDataRect.Right = mDirtyDerivedDataRect.Bottom = mSize;
-                        UpdateDerivedData(false, DERIVED_DATA_NORMALS);
+                        UpdateDerivedData( false, DERIVED_DATA_NORMALS );
                     }
                 }
             }
@@ -1008,7 +1008,7 @@ namespace Axiom.Components.Terrain
                 }
             }
         }
-        
+
         /// <summary>
         /// Request internal implementation options for the terrain material to use, 
         /// in this case a terrain-wide composite map. 
@@ -1034,13 +1034,13 @@ namespace Axiom.Components.Terrain
             get { throw new NotImplementedException(); }
             set
             {
-                if (mCompositeMapRequired != value)
+                if ( mCompositeMapRequired != value )
                 {
                     mCompositeMapRequired = value;
                     CreateOrDestroyGPUCompositeMap();
 
                     // if we enabled, generate normal maps
-                    if (mCompositeMapRequired)
+                    if ( mCompositeMapRequired )
                     {
                         mCompositeMapDirtyRect.Left = mCompositeMapDirtyRect.Top = 0;
                         mCompositeMapDirtyRect.Right = mCompositeMapDirtyRect.Bottom = mSize;
@@ -1049,7 +1049,7 @@ namespace Axiom.Components.Terrain
                 }
             }
         }
-        
+
         /// <summary>
         /// Get's whether a global color map is enabled on this terrain
         /// </summary>
@@ -1057,7 +1057,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mGlobalColorMapEnabled; }
         }
-        
+
         /// <summary>
         /// Get access to the lightmap, if enabled (as requested by the material generator)
         /// </summary>
@@ -1066,7 +1066,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get the requested size of lightmap for this terrain. 
         /// Note that where hardware limits this, the actual lightmap may be lower
@@ -1077,7 +1077,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mLightmapSize; }
         }
-        
+
         /// <summary>
         /// Get's access to the global colour map, if enabled
         /// </summary>
@@ -1085,7 +1085,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mColorMap; }
         }
-        
+
         /// <summary>
         ///  Get's the size of the global colour map (if used)
         /// </summary>
@@ -1093,7 +1093,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mGlobalColorMapSize; }
         }
-        
+
         /// <summary>
         /// Get's the declaration which describes the layers in this terrain.
         /// </summary>
@@ -1101,7 +1101,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mLayerDecl; }
         }
-        
+
         /// <summary>
         /// Get's the (global) normal map texture
         /// </summary>
@@ -1109,7 +1109,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mTerrainNormalMap; }
         }
-        
+
         /// <summary>
         /// Get access to the composite map, if enabled (as requested by the material generator)
         /// </summary>
@@ -1117,7 +1117,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mCompositeMap; }
         }
-        
+
         /// <summary>
         /// Get's the top level of the quad tree which is used to divide up the terrain
         /// </summary>
@@ -1125,7 +1125,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mQuadTree; }
         }
-        
+
         /// <summary>
         /// Get the requested size of composite map for this terrain. 
         /// Note that where hardware limits this, the actual texture may be lower
@@ -1136,7 +1136,7 @@ namespace Axiom.Components.Terrain
         {
             get { return mCompositeMapSize; }
         }
-        
+
         /// <summary>
         /// Get's the number of layers in this terrain.
         /// </summary>
@@ -1144,7 +1144,7 @@ namespace Axiom.Components.Terrain
         {
             get { return (byte)mLayers.Count; }
         }
-        
+
         /// <summary>
         /// Get the total number of LOD levels in the terrain
         /// </summary>
@@ -1153,7 +1153,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get the number of LOD levels in a leaf of the terrain quadtree
         /// </summary>
@@ -1162,7 +1162,7 @@ namespace Axiom.Components.Terrain
             get;
             protected set;
         }
-        
+
         /// <summary>
         /// Get's or set's the render queue group that this terrain will be rendered into
         /// </summary>
@@ -1179,7 +1179,7 @@ namespace Axiom.Components.Terrain
         /// <note>When you change the options requested, this value can change. </note>
         public byte MaxLayers
         {
-            get { return mMaterialGenerator.GetMaxLayers(this); }
+            get { return mMaterialGenerator.GetMaxLayers( this ); }
         }
         #endregion properties
 
@@ -1190,7 +1190,7 @@ namespace Axiom.Components.Terrain
         public Terrain( SceneManager sm )
         {
             TerrainGlobalOptions.SkirtSize = 30;
-            Vector3 normalized = new Vector3(1, -1, 0);
+            Vector3 normalized = new Vector3( 1, -1, 0 );
             normalized.Normalize();
             //TerrainGlobalOptions.LightMapDirection = normalized;
             TerrainGlobalOptions.CastsDynamicShadows = false;
@@ -1209,7 +1209,7 @@ namespace Axiom.Components.Terrain
             TerrainGlobalOptions.CompositeMapDiffuse = ColorEx.White;
             TerrainGlobalOptions.CompositeMapDistance = 3000;
             mLightMapShadowsOnly = true;
-            msBlendTextureGenerator = new NameGenerator<Texture>("TerrBlend");
+            msBlendTextureGenerator = new NameGenerator<Texture>( "TerrBlend" );
             TerrainGlobalOptions.DefaultMaterialGenerator.DebugLevel = 0;
             this.SceneManager = sm;
             this.IsModified = false;
@@ -1217,13 +1217,13 @@ namespace Axiom.Components.Terrain
             mPos = Vector3.Zero;
 
             this.RootSceneNode = sm.RootSceneNode.CreateChildSceneNode();
-            mDirtyGeometryRect = new Rectangle(0, 0, 0, 0);
-            mDirtyDerivedDataRect = new Rectangle(0, 0, 0, 0);
-            mDirtyGeometryRectForNeighbours = new Rectangle(0, 0, 0, 0);
-            mDirtyLightmapFromNeighboursRect = new Rectangle(0, 0, 0, 0);
+            mDirtyGeometryRect = new Rectangle( 0, 0, 0, 0 );
+            mDirtyDerivedDataRect = new Rectangle( 0, 0, 0, 0 );
+            mDirtyGeometryRectForNeighbours = new Rectangle( 0, 0, 0, 0 );
+            mDirtyLightmapFromNeighboursRect = new Rectangle( 0, 0, 0, 0 );
             this.IsDerivedDataUpdateInProgress = false;
-            this.SceneManager.PreFindVisibleObjects += new FindVisibleObjectsEvent(_preFindVisibleObjects);
-            this.SceneManager.PostFindVisibleObjects += new FindVisibleObjectsEvent(mSceneMgr_PostFindVisibleObjects);
+            this.SceneManager.PreFindVisibleObjects += new FindVisibleObjectsEvent( _preFindVisibleObjects );
+            this.SceneManager.PostFindVisibleObjects += new FindVisibleObjectsEvent( mSceneMgr_PostFindVisibleObjects );
             this.ResourceGroup = string.Empty;
 #warning add SceneManager.AddListerner - or simmilar event approach
 #warning implement workerqueue here
@@ -1252,9 +1252,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             FreeTemporaryResources();
             FreeGPUResources();
             FreeCPUResources();
-            if (this.SceneManager != null)
+            if ( this.SceneManager != null )
             {
-                this.SceneManager.DestroySceneNode(this.RootSceneNode.Name);
+                this.SceneManager.DestroySceneNode( this.RootSceneNode.Name );
 #warning implement scenemanager.removelistener - or simmilar approach
             }
         }
@@ -1267,9 +1267,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inPos">The incoming position</param>
         /// <param name="outSpace">The space which outPos should be expressed as</param>
         /// <param name="outPos"> The output position to be populated</param>
-        public void ConvertPosition(Space inSpace, Vector3 inPos, Space outSpace, ref Vector3 outPos)
+        public void ConvertPosition( Space inSpace, Vector3 inPos, Space outSpace, ref Vector3 outPos )
         {
-            ConvertSpace(inSpace, inPos, outSpace, ref outPos, true);
+            ConvertSpace( inSpace, inPos, outSpace, ref outPos, true );
         }
         /// <summary>
         /// Convert a position from one space to another with respect to this terrain.
@@ -1277,10 +1277,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inSpace"> The space that inPos is expressed as</param>
         /// <param name="inPos">The incoming position</param>
         /// <param name="outSpace">The space which outPos should be expressed as</param>
-        public Vector3 ConvertPosition(Space inSpace, Vector3 inPos, Space outSpace)
+        public Vector3 ConvertPosition( Space inSpace, Vector3 inPos, Space outSpace )
         {
             Vector3 ret = Vector3.Zero;
-            ConvertPosition(inSpace, inPos, outSpace, ref ret);
+            ConvertPosition( inSpace, inPos, outSpace, ref ret );
             return ret;
         }
         /// <summary>
@@ -1290,9 +1290,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inDir">The incoming direction</param>
         /// <param name="outSpace">The space which outDir should be expressed as</param>
         /// <param name="outDir">The output direction to be populated</param>
-        public void ConvertDirection(Space inSpace, Vector3 inDir, Space outSpace, ref Vector3 outDir)
+        public void ConvertDirection( Space inSpace, Vector3 inDir, Space outSpace, ref Vector3 outDir )
         {
-            ConvertSpace(inSpace, inDir, outSpace, ref outDir, false);
+            ConvertSpace( inSpace, inDir, outSpace, ref outDir, false );
         }
         /// <summary>
         /// Convert a direction from one space to another with respect to this terrain.
@@ -1301,10 +1301,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inDir">The incoming direction</param>
         /// <param name="outSpace">The space which outDir should be expressed as</param>
         /// <returns>The output direction </returns>
-        public Vector3 ConvertDirection(Space inSpace, Vector3 inDir, Space outSpace)
+        public Vector3 ConvertDirection( Space inSpace, Vector3 inDir, Space outSpace )
         {
             Vector3 ret = Vector3.Zero;
-            ConvertDirection(inSpace, inDir, outSpace, ref ret);
+            ConvertDirection( inSpace, inDir, outSpace, ref ret );
             return ret;
         }
         /// <summary>
@@ -1316,23 +1316,23 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         ///	file in the resource system, or to insert the terrain data into a
         ///	shared file, use the StreamSerialiser form.
         /// </note>
-        public void Save(string filename)
+        public void Save( string filename )
         {
             FileStream fs = null;
             try
             {
-                fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                fs = new FileStream( filename, FileMode.OpenOrCreate, FileAccess.ReadWrite );
             }
-            catch (FileNotFoundException f)
+            catch ( FileNotFoundException f )
             {
-                throw new FileNotFoundException(string.Format("Can't open {0} for writing. Terrain.Save()", filename));
+                throw new FileNotFoundException( string.Format( "Can't open {0} for writing. Terrain.Save()", filename ) );
             }
             finally
             {
-                if (fs != null)
+                if ( fs != null )
                 {
-                    StreamSerializer sr = new StreamSerializer(fs);
-                    Save(sr);
+                    StreamSerializer sr = new StreamSerializer( fs );
+                    Save( sr );
                 }
             }
         }
@@ -1361,72 +1361,72 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             stream.WriteChunkBegin( TERRAIN_CHUNK_ID, TERRAIN_CHUNK_VERSION );
 
             byte align = (byte)this.Alignment;
-            stream.Write(align);
+            stream.Write( align );
 
             stream.Write( mSize );
             stream.Write( mWorldSize );
             stream.Write( mMaxBatchSize );
             stream.Write( mMinBatchSize );
             stream.Write( mPos );
-            for (int i = 0; i < mHeightData.Length; i++)
+            for ( int i = 0; i < mHeightData.Length; i++ )
                 stream.Write( mHeightData[ i ] );
 
             //layer declatation
-            stream.WriteChunkBegin(TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION);
+            stream.WriteChunkBegin( TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION );
             //samplers
             byte numSamplers = (byte)mLayerDecl.Samplers.Count;
-            stream.Write(numSamplers);
-            foreach (TerrainLayerSampler sampler in mLayerDecl.Samplers)
+            stream.Write( numSamplers );
+            foreach ( TerrainLayerSampler sampler in mLayerDecl.Samplers )
             {
-                stream.WriteChunkBegin(TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION);
-                stream.Write(sampler.Alias);
+                stream.WriteChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION );
+                stream.Write( sampler.Alias );
                 byte pixFmt = (byte)sampler.Format;
-                stream.Write(pixFmt);
-                stream.WriteChunkEnd(TERRAINLAYERSAMPLER_CHUNK_ID);
+                stream.Write( pixFmt );
+                stream.WriteChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
             }
             //elements
             byte numElems = (byte)mLayerDecl.Elements.Count;
-            stream.Write(numElems);
-            foreach (TerrainLayerSamplerElement elem in mLayerDecl.Elements)
+            stream.Write( numElems );
+            foreach ( TerrainLayerSamplerElement elem in mLayerDecl.Elements )
             {
-                stream.WriteChunkBegin(TERRAINLAYERSAMPLERELEMENT_CHUNK_ID, TERRAINLAYERSAMPLERELEMENT_CHUNK_VERSION);
-                stream.Write(elem.Source);
+                stream.WriteChunkBegin( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID, TERRAINLAYERSAMPLERELEMENT_CHUNK_VERSION );
+                stream.Write( elem.Source );
                 byte sem = (byte)elem.Semantic;
-                stream.Write(sem);
-                stream.Write(elem.ElementStart);
-                stream.Write(elem.ElementCount);
-                stream.WriteChunkEnd(TERRAINLAYERSAMPLERELEMENT_CHUNK_ID);
+                stream.Write( sem );
+                stream.Write( elem.ElementStart );
+                stream.Write( elem.ElementCount );
+                stream.WriteChunkEnd( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID );
             }
-            stream.WriteChunkEnd(TERRAINLAYERDECLARATION_CHUNK_ID);
+            stream.WriteChunkEnd( TERRAINLAYERDECLARATION_CHUNK_ID );
             //layers
-            CheckLayers(false);
+            CheckLayers( false );
             byte numLayers = (byte)mLayers.Count;
-            stream.Write(numLayers);
-            foreach (LayerInstance inst in mLayers)
+            stream.Write( numLayers );
+            foreach ( LayerInstance inst in mLayers )
             {
-                stream.WriteChunkBegin(TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION);
-                stream.Write(inst.WorldSize);
-                foreach (string t in inst.TextureNames)
-                    stream.Write(t);
-                stream.WriteChunkEnd(TERRAINLAYERINSTANCE_CHUNK_ID);
+                stream.WriteChunkBegin( TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION );
+                stream.Write( inst.WorldSize );
+                foreach ( string t in inst.TextureNames )
+                    stream.Write( t );
+                stream.WriteChunkEnd( TERRAINLAYERINSTANCE_CHUNK_ID );
             }
 
             //packed layer blend data
-            if (mCpuBlendMapStorage.Count > 0)
+            if ( mCpuBlendMapStorage.Count > 0 )
             {
                 // save from CPU data if it's there, it means GPU data was never created
-                stream.Write(mLayerBlendMapSize);
+                stream.Write( mLayerBlendMapSize );
 
                 // load packed cpu data
-                int numBlendTex = (byte)GetBlendTextureCount(numLayers);
-                for (int i = 0; i < numBlendTex; ++i)
+                int numBlendTex = (byte)GetBlendTextureCount( numLayers );
+                for ( int i = 0; i < numBlendTex; ++i )
                 {
-                    PixelFormat fmt = GetBlendTextureFormat((byte)i, numLayers);
-                    int channels = PixelUtil.GetNumElemBytes(fmt);
+                    PixelFormat fmt = GetBlendTextureFormat( (byte)i, numLayers );
+                    int channels = PixelUtil.GetNumElemBytes( fmt );
                     int dataSz = channels * mLayerBlendMapSize * mLayerBlendMapSize;
-                    byte pData = mCpuBlendMapStorage[i];
-                    stream.Write(pData);
-                    stream.Write(dataSz);
+                    byte pData = mCpuBlendMapStorage[ i ];
+                    stream.Write( pData );
+                    stream.Write( dataSz );
                 }
             }
             else
@@ -1438,14 +1438,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                         "on this hardware, which means the quality has been degraded" );
                 }
                 stream.Write( mLayerBlendSizeActual );
-                byte[] tmpData = new byte[mLayerBlendSizeActual*mLayerBlendSizeActual*4];
+                byte[] tmpData = new byte[ mLayerBlendSizeActual * mLayerBlendSizeActual * 4 ];
                 var pTmpDataF = BufferBase.Wrap( tmpData );
                 foreach ( Texture tex in mBlendTextureList )
                 {
                     PixelBox dst = new PixelBox( mLayerBlendSizeActual, mLayerBlendSizeActual, 1, tex.Format, pTmpDataF );
                     tex.GetBuffer().BlitToMemory( dst );
                     int dataSz = PixelUtil.GetNumElemBytes( tex.Format )
-                                 *mLayerBlendSizeActual*mLayerBlendSizeActual;
+                                 * mLayerBlendSizeActual * mLayerBlendSizeActual;
                     stream.Write( tmpData );
                     stream.Write( dataSz );
                 }
@@ -1453,87 +1453,87 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             //other data
             //normals
-            stream.ReadChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
-            stream.Write("normalmap");
-            stream.Write(mSize);
-            if (mCpuTerrainNormalMap != null)
+            stream.ReadChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
+            stream.Write( "normalmap" );
+            stream.Write( mSize );
+            if ( mCpuTerrainNormalMap != null )
             {
-                byte[] aData = new byte[mSize * mSize * 3];
-                Memory.Copy(mCpuTerrainNormalMap.Data, BufferBase.Wrap(aData), aData.Length);
+                byte[] aData = new byte[ mSize * mSize * 3 ];
+                Memory.Copy( mCpuTerrainNormalMap.Data, BufferBase.Wrap( aData ), aData.Length );
                 // save from CPU data if it's there, it means GPU data was never created
-                stream.Write(aData);
+                stream.Write( aData );
 
             }
-            stream.ReadChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
+            stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
 
             //color map
-            if (mGlobalColorMapEnabled)
+            if ( mGlobalColorMapEnabled )
             {
-                stream.WriteChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
-                stream.Write("colormap");
-                stream.Write(mSize);
-                if (mCpuBlendMapStorage != null)
+                stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
+                stream.Write( "colormap" );
+                stream.Write( mSize );
+                if ( mCpuBlendMapStorage != null )
                 {
                     // save from CPU data if it's there, it means GPU data was never created
-                    stream.Write(mCpuColorMapStorage);
+                    stream.Write( mCpuColorMapStorage );
                 }
                 else
                 {
-                    byte[] aData = new byte[mGlobalColorMapSize*mGlobalColorMapSize*3];
+                    byte[] aData = new byte[ mGlobalColorMapSize * mGlobalColorMapSize * 3 ];
                     var pDataF = BufferBase.Wrap( aData );
                     PixelBox dst = new PixelBox( mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB,
                                                  pDataF );
                     mColorMap.GetBuffer().BlitToMemory( dst );
                     stream.Write( aData );
                 }
-                stream.WriteChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
+                stream.WriteChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
             }
 
             //ligthmap
-            if (mLightMapRequired)
+            if ( mLightMapRequired )
             {
-                stream.WriteChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
-                stream.Write("lightmap");
-                stream.Write(mLightmapSize);
-                if (mCpuLightmapStorage != null)
+                stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
+                stream.Write( "lightmap" );
+                stream.Write( mLightmapSize );
+                if ( mCpuLightmapStorage != null )
                 {
                     // save from CPU data if it's there, it means GPU data was never created
-                    stream.Write(mCpuLightmapStorage);
+                    stream.Write( mCpuLightmapStorage );
                 }
                 else
                 {
 
-                    byte[] aData = new byte[mLightmapSize*mLightmapSize];
+                    byte[] aData = new byte[ mLightmapSize * mLightmapSize ];
                     var pDataF = BufferBase.Wrap( aData );
                     PixelBox dst = new PixelBox( mLightmapSize, mLightmapSize, 1, PixelFormat.L8, pDataF );
                     this.LightMap.GetBuffer().BlitToMemory( dst );
                     stream.Write( aData );
                 }
-                stream.WriteChunkEnd(TERRAIN_CHUNK_ID);
+                stream.WriteChunkEnd( TERRAIN_CHUNK_ID );
             }
 
             // composite map
-            if (mCompositeMapRequired)
+            if ( mCompositeMapRequired )
             {
-                stream.WriteChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
-                stream.Write("compositemap");
-                stream.Write(mCompositeMapSize);
-                if (mCpuCompositeMapStorage != null)
+                stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
+                stream.Write( "compositemap" );
+                stream.Write( mCompositeMapSize );
+                if ( mCpuCompositeMapStorage != null )
                 {
                     // save from CPU data if it's there, it means GPU data was never created
-                    stream.Write(mCpuCompositeMapStorage);
+                    stream.Write( mCpuCompositeMapStorage );
                 }
                 else
                 {
 
                     // composite map is 4 channel, 3x diffuse, 1x specular mask
-                    byte[] aData = new byte[mCompositeMapSize*mCompositeMapSize*4];
+                    byte[] aData = new byte[ mCompositeMapSize * mCompositeMapSize * 4 ];
                     var pDataF = BufferBase.Wrap( aData );
                     PixelBox dst = new PixelBox( mCompositeMapSize, mCompositeMapSize, 1, PixelFormat.BYTE_RGB, pDataF );
                     mCompositeMap.GetBuffer().BlitToMemory( dst );
                     stream.Write( aData );
                 }
-                stream.WriteChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
+                stream.WriteChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
             }
 
             //TODO - write deltas
@@ -1552,31 +1552,31 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// It reads data from a native terrain data chunk. For more advanced uses, 
         /// such as loading from a shared file, use the StreamSerialiser form.
         /// </note>
-        public bool Prepare(string fileName)
+        public bool Prepare( string fileName )
         {
             FileStream stream = null;
-            if (ResourceGroupManager.Instance.ResourceExists(
-                ResourceGroupManager.DefaultResourceGroupName, fileName))
+            if ( ResourceGroupManager.Instance.ResourceExists(
+                ResourceGroupManager.DefaultResourceGroupName, fileName ) )
             {
 #warning check me!
                 stream = (FileStream)ResourceGroupManager.Instance.OpenResource(
-                    fileName, ResourceGroupManager.DefaultResourceGroupName);
+                    fileName, ResourceGroupManager.DefaultResourceGroupName );
             }
             else
             {
                 // try direct
-                if (File.Exists(fileName))
+                if ( File.Exists( fileName ) )
                 {
-                    stream = File.Open(fileName, FileMode.Open);
+                    stream = File.Open( fileName, FileMode.Open );
                 }
                 else
                 {
-                    throw new FileNotFoundException(string.Format("'{0}' not found!", fileName));
+                    throw new FileNotFoundException( string.Format( "'{0}' not found!", fileName ) );
                 }
             }
 
-            StreamSerializer ser = new StreamSerializer(stream);
-            return Prepare(ser);
+            StreamSerializer ser = new StreamSerializer( stream );
+            return Prepare( ser );
         }
         /// <summary>
         /// Prepare terrain data from saved data.
@@ -1594,157 +1594,157 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             CopyGlobalOptions();
 
-            if (stream.ReadChunkBegin(TERRAIN_CHUNK_ID, TERRAIN_CHUNK_VERSION) == null)
+            if ( stream.ReadChunkBegin( TERRAIN_CHUNK_ID, TERRAIN_CHUNK_VERSION ) == null )
                 return false;
 
             byte align;
-            stream.Read(out align);
+            stream.Read( out align );
             this.Alignment = (Alignment)align;
-            stream.Read(out mSize);
-            stream.Read(out mWorldSize);
-            stream.Read(out mMaxBatchSize);
-            stream.Read(out mMinBatchSize);
-            stream.Read(out mPos);
+            stream.Read( out mSize );
+            stream.Read( out mWorldSize );
+            stream.Read( out mMaxBatchSize );
+            stream.Read( out mMinBatchSize );
+            stream.Read( out mPos );
 
             UpdateBaseScale();
             DetermineLodLevels();
 
             int numVertices = mSize * mSize;
-            mHeightData = new float[numVertices];
-            stream.Read(out mHeightData);
+            mHeightData = new float[ numVertices ];
+            stream.Read( out mHeightData );
 
             // layer declaration
-            if (stream.ReadChunkBegin(TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION) == null)
+            if ( stream.ReadChunkBegin( TERRAINLAYERDECLARATION_CHUNK_ID, TERRAINLAYERDECLARATION_CHUNK_VERSION ) == null )
                 return false;
 
             //samplers 
-            if (mLayerDecl == null)
+            if ( mLayerDecl == null )
                 mLayerDecl = new TerrainLayerDeclaration();
 
             byte numSamplers;
-            stream.Read(out numSamplers);
+            stream.Read( out numSamplers );
             mLayerDecl.Samplers = new List<TerrainLayerSampler>();
-            for (byte s = 0; s < numSamplers; ++s)
+            for ( byte s = 0; s < numSamplers; ++s )
             {
-                if (stream.ReadChunkBegin(TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION) == null)
+                if ( stream.ReadChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION ) == null )
                     return false;
 
                 string alias = string.Empty;
                 PixelFormat fmt;
                 byte pxFmt;
-                stream.Read(out alias);
-                stream.Read(out pxFmt);
+                stream.Read( out alias );
+                stream.Read( out pxFmt );
                 fmt = (PixelFormat)pxFmt;
-                mLayerDecl.Samplers.Add(new TerrainLayerSampler(alias, fmt));
-                stream.ReadChunkEnd(TERRAINLAYERSAMPLER_CHUNK_ID);
+                mLayerDecl.Samplers.Add( new TerrainLayerSampler( alias, fmt ) );
+                stream.ReadChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
             }
 
             //elements
             byte numElems;
-            stream.Read(out numElems);
+            stream.Read( out numElems );
             mLayerDecl.Elements = new List<TerrainLayerSamplerElement>();
-            for (byte e = 0; e < numElems; ++e)
+            for ( byte e = 0; e < numElems; ++e )
             {
-                if (stream.ReadChunkBegin(TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION) == null)
+                if ( stream.ReadChunkBegin( TERRAINLAYERSAMPLER_CHUNK_ID, TERRAINLAYERSAMPLER_CHUNK_VERSION ) == null )
                     return false;
                 byte rSource;
                 byte sem;
                 byte elemS;
                 byte elemC;
-                stream.Read(out rSource);
-                stream.Read(out sem);
-                stream.Read(out elemS);
-                stream.Read(out elemC);
-                mLayerDecl.Elements.Add(new TerrainLayerSamplerElement(rSource, (TerrainLayerSamplerSemantic)sem, elemS, elemC));
-                stream.ReadChunkEnd(TERRAINLAYERSAMPLER_CHUNK_ID);
+                stream.Read( out rSource );
+                stream.Read( out sem );
+                stream.Read( out elemS );
+                stream.Read( out elemC );
+                mLayerDecl.Elements.Add( new TerrainLayerSamplerElement( rSource, (TerrainLayerSamplerSemantic)sem, elemS, elemC ) );
+                stream.ReadChunkEnd( TERRAINLAYERSAMPLER_CHUNK_ID );
             }
-            stream.ReadChunkEnd(TERRAINLAYERSAMPLERELEMENT_CHUNK_ID);
+            stream.ReadChunkEnd( TERRAINLAYERSAMPLERELEMENT_CHUNK_ID );
             CheckDeclaration();
 
 
             //layers
             byte numLayers;
-            stream.Read(out numLayers);
-            if (mLayers == null)
+            stream.Read( out numLayers );
+            if ( mLayers == null )
                 mLayers = new List<LayerInstance>();
 
-            for (byte l = 0; l < numLayers; l++)
+            for ( byte l = 0; l < numLayers; l++ )
             {
-                if (stream.ReadChunkBegin(TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION) == null)
+                if ( stream.ReadChunkBegin( TERRAINLAYERINSTANCE_CHUNK_ID, TERRAINLAYERINSTANCE_CHUNK_VERSION ) == null )
                     return false;
 
                 float worldSize;
-                stream.Read(out worldSize);
+                stream.Read( out worldSize );
                 LayerInstance li = new LayerInstance();
                 li.WorldSize = worldSize;
                 li.TextureNames = new List<string>();
-                for (int t = 0; t < mLayerDecl.Samplers.Count; ++t)
+                for ( int t = 0; t < mLayerDecl.Samplers.Count; ++t )
                 {
                     string texName;
-                    stream.Read(out texName);
-                    li.TextureNames.Add(texName);
+                    stream.Read( out texName );
+                    li.TextureNames.Add( texName );
                 }
-                mLayers.Add(li);
-                stream.ReadChunkEnd(TERRAINLAYERINSTANCE_CHUNK_ID);
+                mLayers.Add( li );
+                stream.ReadChunkEnd( TERRAINLAYERINSTANCE_CHUNK_ID );
             }
             DeriveUVMultipliers();
 
             //packed lacer blend data
 
-            stream.Read(out mLayerBlendMapSize);
+            stream.Read( out mLayerBlendMapSize );
             mLayerBlendSizeActual = mLayerBlendMapSize;// for now, until we check
             //load packed CPU data
-            int numBlendTex = GetBlendTextureCount(numLayers);
-            for (int i = 0; i < numBlendTex; ++i)
+            int numBlendTex = GetBlendTextureCount( numLayers );
+            for ( int i = 0; i < numBlendTex; ++i )
             {
-                PixelFormat fmt = GetBlendTextureFormat((byte)i, numLayers);
-                int channels = PixelUtil.GetNumElemBytes(fmt);
+                PixelFormat fmt = GetBlendTextureFormat( (byte)i, numLayers );
+                int channels = PixelUtil.GetNumElemBytes( fmt );
                 int dataSz = channels * mLayerBlendMapSize * mLayerBlendMapSize;
-                byte[] data = new byte[dataSz];
-                stream.Read(out data);
-                mCpuBlendMapStorage.AddRange(data);
+                byte[] data = new byte[ dataSz ];
+                stream.Read( out data );
+                mCpuBlendMapStorage.AddRange( data );
             }
 
             //derived data
-            while (!stream.IsEndOfChunk(TERRAIN_CHUNK_ID) &&
-                stream.NextChunkId == TERRAINDERIVEDDATA_CHUNK_ID)
+            while ( !stream.IsEndOfChunk( TERRAIN_CHUNK_ID ) &&
+                stream.NextChunkId == TERRAINDERIVEDDATA_CHUNK_ID )
             {
-                stream.ReadChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
+                stream.ReadChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
                 //name
                 string name = string.Empty;
-                stream.Read(out name);
+                stream.Read( out name );
                 byte sz;
-                stream.Read(out sz);
-                if (name == "normalmap")
+                stream.Read( out sz );
+                if ( name == "normalmap" )
                 {
-                    byte[] data = new byte[sz*sz*3];
+                    byte[] data = new byte[ sz * sz * 3 ];
                     stream.Read( out data );
                     var pDataF = BufferBase.Wrap( data );
                     mCpuTerrainNormalMap = new PixelBox( sz, sz, 1, PixelFormat.BYTE_RGB, pDataF );
                 }
-                else if (name == "colormap")
+                else if ( name == "colormap" )
                 {
                     mGlobalColorMapEnabled = true;
                     mGlobalColorMapSize = sz;
-                    mCpuColorMapStorage = new byte[sz * sz * 3];
-                    stream.Read(out mCpuColorMapStorage);
+                    mCpuColorMapStorage = new byte[ sz * sz * 3 ];
+                    stream.Read( out mCpuColorMapStorage );
                 }
-                else if (name == "lightmap")
+                else if ( name == "lightmap" )
                 {
                     mLightMapRequired = true;
                     mLightmapSize = sz;
-                    mCpuLightmapStorage = new byte[sz * sz];
-                    stream.Read(out mCpuLightmapStorage);
+                    mCpuLightmapStorage = new byte[ sz * sz ];
+                    stream.Read( out mCpuLightmapStorage );
                 }
-                else if (name == "compositemape")
+                else if ( name == "compositemape" )
                 {
                     mCompositeMapRequired = true;
                     mCompositeMapSize = sz;
-                    mCpuCompositeMapStorage = new byte[sz * sz];
-                    stream.Read(out mCpuCompositeMapStorage);
+                    mCpuCompositeMapStorage = new byte[ sz * sz ];
+                    stream.Read( out mCpuCompositeMapStorage );
                 }
 
-                stream.ReadChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
+                stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
             }
 
             stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
@@ -1756,8 +1756,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             Rectangle rect = new Rectangle();
             rect.Top = 0; rect.Bottom = mSize;
             rect.Left = 0; rect.Right = mSize;
-            CalculateHeightDeltas(rect);
-            FinalizeHeightDeltas(rect, true);
+            CalculateHeightDeltas( rect );
+            FinalizeHeightDeltas( rect, true );
             DistributeVertexData();
 
             this.IsModified = false;
@@ -1782,18 +1782,18 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             CopyGlobalOptions();
 
             //validate
-            if (!(IsPowerOfTwo((ulong)(importData.TerrainSize - 1)) && IsPowerOfTwo((ulong)(importData.MinBatchSize - 1))
-                && IsPowerOfTwo((ulong)(importData.MaxBatchSize - 1))))
+            if ( !( IsPowerOfTwo( (ulong)( importData.TerrainSize - 1 ) ) && IsPowerOfTwo( (ulong)( importData.MinBatchSize - 1 ) )
+                && IsPowerOfTwo( (ulong)( importData.MaxBatchSize - 1 ) ) ) )
             {
                 throw new AxiomException( "terrainSize, minBatchSize and maxBatchSize must all be n^2 + 1. Terrain.Prepare" );
             }
 
-            if (importData.MinBatchSize > importData.MaxBatchSize)
+            if ( importData.MinBatchSize > importData.MaxBatchSize )
             {
                 throw new AxiomException( "MinBatchSize must be less then or equal to MaxBatchSize. Terrain.Prepare" );
             }
 
-            if (importData.MaxBatchSize > TERRAIN_MAX_BATCH_SIZE)
+            if ( importData.MaxBatchSize > TERRAIN_MAX_BATCH_SIZE )
             {
                 throw new AxiomException( "MaxBatchSize must be not larger then {0} . Terrain.Prepare", TERRAIN_MAX_BATCH_SIZE );
             }
@@ -1804,7 +1804,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             mLayerDecl = importData.LayerDeclaration;
             CheckDeclaration();
             mLayers = importData.LayerList;
-            CheckLayers(false);
+            CheckLayers( false );
             DeriveUVMultipliers();
             mMaxBatchSize = importData.MaxBatchSize;
             mMinBatchSize = importData.MinBatchSize;
@@ -1814,79 +1814,79 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             int numVertices = mSize * mSize;
 
-            mHeightData = new float[numVertices];
+            mHeightData = new float[ numVertices ];
 
-            if (importData.InputFloat != null)
+            if ( importData.InputFloat != null )
             {
-                
-                if (Utility.RealEqual(importData.InputBias, 0.0f) && Utility.RealEqual(importData.InputScale, 1.0f))
+
+                if ( Utility.RealEqual( importData.InputBias, 0.0f ) && Utility.RealEqual( importData.InputScale, 1.0f ) )
                 {
                     //straigt copy
-                    mHeightData = new float[numVertices];
-                    Array.Copy(importData.InputFloat, mHeightData, mHeightData.Length);
+                    mHeightData = new float[ numVertices ];
+                    Array.Copy( importData.InputFloat, mHeightData, mHeightData.Length );
                 }
                 else
                 {
                     // scale & bias, lets do it unsafe, should be faster :)
                     var src = importData.InputFloat;
-                    for (var i = 0; i < numVertices; ++i)
-                        mHeightData[i] = (src[i]*importData.InputScale) + importData.InputBias;
+                    for ( var i = 0; i < numVertices; ++i )
+                        mHeightData[ i ] = ( src[ i ] * importData.InputScale ) + importData.InputBias;
                 }
             }
-            else if (importData.InputImage != null)
+            else if ( importData.InputImage != null )
             {
                 Image img = importData.InputImage;
-                if (img.Width != mSize || img.Height != mSize)
-                    img.Resize(mSize, mSize);
+                if ( img.Width != mSize || img.Height != mSize )
+                    img.Resize( mSize, mSize );
 
                 // convert image data to floats
                 // Do this on a row-by-row basis, because we describe the terrain in
                 // a bottom-up fashion (ie ascending world coords), while Image is top-down
-                var pSrcBaseF = BufferBase.Wrap(img.Data);
-                var pHeightDataF = BufferBase.Wrap(mHeightData);
-                for (int i = 0; i < mSize; ++i)
+                var pSrcBaseF = BufferBase.Wrap( img.Data );
+                var pHeightDataF = BufferBase.Wrap( mHeightData );
+                for ( int i = 0; i < mSize; ++i )
                 {
                     int srcy = mSize - i - 1;
                     var psrc = pSrcBaseF + srcy * img.RowSpan;
-                    var pDest = pHeightDataF + (i * mSize) * sizeof(float);
-                    PixelConverter.BulkPixelConversion(psrc, 0, img.Format, pDest, 0, PixelFormat.FLOAT32_R, mSize);
+                    var pDest = pHeightDataF + ( i * mSize ) * sizeof( float );
+                    PixelConverter.BulkPixelConversion( psrc, 0, img.Format, pDest, 0, PixelFormat.FLOAT32_R, mSize );
                 }
-                for (int i = 0; i < mHeightData.Length; i++)
+                for ( int i = 0; i < mHeightData.Length; i++ )
                 {
-                    if (mHeightData[i] != 0)
+                    if ( mHeightData[ i ] != 0 )
                     {
-                        float mm = mHeightData[i];
+                        float mm = mHeightData[ i ];
                     }
                 }
-                if (!Utility.RealEqual(importData.InputBias, 0.0f) || !Utility.RealEqual(importData.InputScale, 1.0f))
+                if ( !Utility.RealEqual( importData.InputBias, 0.0f ) || !Utility.RealEqual( importData.InputScale, 1.0f ) )
                 {
-                    for (int i = 0; i < numVertices; ++i)
+                    for ( int i = 0; i < numVertices; ++i )
                     {
-                        mHeightData[i] = (mHeightData[i]*importData.InputScale) + importData.InputBias;
+                        mHeightData[ i ] = ( mHeightData[ i ] * importData.InputScale ) + importData.InputBias;
                     }
                 }
             }
             else
             {
                 // start with flat terrain
-                mHeightData = new float[mSize * mSize];
+                mHeightData = new float[ mSize * mSize ];
             }
 
-            this.DeltaData = new float[numVertices];
+            this.DeltaData = new float[ numVertices ];
 
-            mHeightDataPtr = Memory.PinObject(mHeightData);
-            mDeltaDataPtr = Memory.PinObject(this.DeltaData);
+            mHeightDataPtr = Memory.PinObject( mHeightData );
+            mDeltaDataPtr = Memory.PinObject( this.DeltaData );
 
-            ushort numLevel = (ushort)(int)(this.NumLodLevels - 1);
-            mQuadTree = new TerrainQuadTreeNode(this, null, 0, 0, mSize, (ushort)(this.NumLodLevels - 1), 0, 0);
+            ushort numLevel = (ushort)(int)( this.NumLodLevels - 1 );
+            mQuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
             mQuadTree.Prepare();
 
             //calculate entire terrain
             Rectangle rect = new Rectangle();
             rect.Top = 0; rect.Bottom = mSize;
             rect.Left = 0; rect.Right = mSize;
-            CalculateHeightDeltas(rect);
-            FinalizeHeightDeltas(rect, true);
+            CalculateHeightDeltas( rect );
+            FinalizeHeightDeltas( rect, true );
 
             DistributeVertexData();
 
@@ -1904,12 +1904,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// This method must be called from the primary render thread. To load data
         ///	in a background thread, use the prepare() method.
         /// </note>
-        public void Load(string fileName)
+        public void Load( string fileName )
         {
-            if (Prepare(fileName))
+            if ( Prepare( fileName ) )
                 Load();
             else
-                throw new AxiomException("Error while preparing {0}, see log for details. Terrain.Load", fileName);
+                throw new AxiomException( "Error while preparing {0}, see log for details. Terrain.Load", fileName );
         }
         /// <summary>
         ///  Prepare and load the terrain in one simple call from a standalone file.
@@ -1919,12 +1919,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// This method must be called from the primary render thread. To load data
         ///	in a background thread, use the prepare() method.
         /// </note>
-        public void Load(StreamSerializer stream)
+        public void Load( StreamSerializer stream )
         {
-            if (Prepare(stream))
+            if ( Prepare( stream ) )
                 Load();
             else
-                throw new AxiomException("Error while preparing from stream, see log for details. Terrain.Load");
+                throw new AxiomException( "Error while preparing from stream, see log for details. Terrain.Load" );
         }
 
         /// <summary>
@@ -1935,19 +1935,19 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </remarks>
         public void Load()
         {
-            if (this.IsLoaded)
+            if ( this.IsLoaded )
                 return;
 
-            if (mQuadTree != null)
+            if ( mQuadTree != null )
                 mQuadTree.Load();
 
-            CheckLayers(true);
+            CheckLayers( true );
             CreateOrDestroyGPUColorMap();
             CreateOrDestroyGPUNormalMap();
             CreateOrDestroyGPULightmap();
             CreateOrDestroyGPUCompositeMap();
 
-            mMaterialGenerator.RequestOption(this);
+            mMaterialGenerator.RequestOption( this );
 
             this.IsLoaded = true;
         }
@@ -1960,10 +1960,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </remarks>
         public void Unload()
         {
-            if (!this.IsLoaded)
+            if ( !this.IsLoaded )
                 return;
 
-            if (mQuadTree != null)
+            if ( mQuadTree != null )
                 mQuadTree.Unload();
 
             this.IsLoaded = false;
@@ -1979,7 +1979,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </remarks>
         public void Unprepare()
         {
-            if (mQuadTree != null)
+            if ( mQuadTree != null )
                 mQuadTree.Unprepare();
         }
         /// <summary>
@@ -1990,14 +1990,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="y">x, y Discrete coordinates in terrain vertices, values from 0 to size-1,
         ///	left/right bottom/top</param>
         /// <returns></returns>
-        public float GetHeightAtPoint(long x, long y)
+        public float GetHeightAtPoint( long x, long y )
         {
             //clamp
-            x = Utility.Min(x, (long)mSize - 1L);
-            x = Utility.Max(x, 0L);
-            y = Utility.Min(y, (long)mSize - 1L);
-            y = Utility.Max(y, 0L);
-            return mHeightData[y + mSize * x];
+            x = Utility.Min( x, (long)mSize - 1L );
+            x = Utility.Max( x, 0L );
+            y = Utility.Min( y, (long)mSize - 1L );
+            y = Utility.Max( y, 0L );
+            return mHeightData[ y + mSize * x ];
         }
         /// <summary>
         /// Set the height data for a given terrain point. 
@@ -2010,34 +2010,34 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="y"> x, y Discrete coordinates in terrain vertices, values from 0 to size-1,
         /// left/right bottom/top</param>
         /// <param name="heightVal">The new height</param>
-        public void SetHeightAtPoint(long x, long y, float heightVal)
+        public void SetHeightAtPoint( long x, long y, float heightVal )
         {
             //clamp
-            x = Utility.Min(x, (long)mSize - 1L);
-            x = Utility.Max(x, 0L);
-            y = Utility.Min(y, (long)mSize - 1L);
-            y = Utility.Max(y, 0L);
-            mHeightData[y + mSize * x] = heightVal;
+            x = Utility.Min( x, (long)mSize - 1L );
+            x = Utility.Max( x, 0L );
+            y = Utility.Min( y, (long)mSize - 1L );
+            y = Utility.Max( y, 0L );
+            mHeightData[ y + mSize * x ] = heightVal;
             Rectangle rec = new Rectangle();
             rec.Left = x;
             rec.Right = x + 1;
             rec.Top = y;
             rec.Bottom = y + 1;
-            DirtyRect(rec);
+            DirtyRect( rec );
         }
         /// <summary>
         /// Get the height data for a given terrain position. 
         /// </summary>
         /// <param name="x">x, y Position in terrain space, values from 0 to 1 left/right bottom/top</param>
         /// <param name="y">x, y Position in terrain space, values from 0 to 1 left/right bottom/top</param>
-        public float GetHeightAtTerrainPosition(float x, float y)
+        public float GetHeightAtTerrainPosition( float x, float y )
         {
             // get left / bottom points (rounded down)
             float factor = mSize - 1;
             float invFactor = 1.0f / factor;
 
-            long startX = (long)(x * factor);
-            long startY = (long)(y * factor);
+            long startX = (long)( x * factor );
+            long startY = (long)( y * factor );
             long endX = startX + 1;
             long endY = startY + 1;
 
@@ -2049,50 +2049,50 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             float endYTS = endY * invFactor;
 
             //now clamp
-            endX = Utility.Min(endX, (long)mSize - 1);
-            endY = Utility.Min(endY, (long)mSize - 1);
+            endX = Utility.Min( endX, (long)mSize - 1 );
+            endY = Utility.Min( endY, (long)mSize - 1 );
 
             // get parametric from start coord to next point
-            float xParam = (x - startXTS) / invFactor;
-            float yParam = (y - startYTS) / invFactor;
+            float xParam = ( x - startXTS ) / invFactor;
+            float yParam = ( y - startYTS ) / invFactor;
 
             /* For even / odd tri strip rows, triangles are this shape:
-		        even     odd
-		        3---2   3---2
-		        | / |   | \ |
-		        0---1   0---1
-		        */
+                even     odd
+                3---2   3---2
+                | / |   | \ |
+                0---1   0---1
+                */
 
             // Build all 4 positions in terrain space, using point-sampled height
-            Vector3 v0 = new Vector3(startXTS, startYTS, GetHeightAtPoint(startX, startY));
-            Vector3 v1 = new Vector3(endXTS, startYTS, GetHeightAtPoint(endX, startY));
-            Vector3 v2 = new Vector3(endXTS, endYTS, GetHeightAtPoint(endX, endY));
-            Vector3 v3 = new Vector3(startXTS, endYTS, GetHeightAtPoint(startX, endY));
+            Vector3 v0 = new Vector3( startXTS, startYTS, GetHeightAtPoint( startX, startY ) );
+            Vector3 v1 = new Vector3( endXTS, startYTS, GetHeightAtPoint( endX, startY ) );
+            Vector3 v2 = new Vector3( endXTS, endYTS, GetHeightAtPoint( endX, endY ) );
+            Vector3 v3 = new Vector3( startXTS, endYTS, GetHeightAtPoint( startX, endY ) );
             //define this plane in terrain space
             Plane plane = new Plane();
-            if (startY % 2 != 0)
+            if ( startY % 2 != 0 )
             {
                 //odd row
-                bool secondTri = ((1.0f - yParam) > xParam);
-                if (secondTri)
-                    plane.Redefine(v0, v1, v3);
+                bool secondTri = ( ( 1.0f - yParam ) > xParam );
+                if ( secondTri )
+                    plane.Redefine( v0, v1, v3 );
                 else
-                    plane.Redefine(v1, v2, v3);
+                    plane.Redefine( v1, v2, v3 );
             }
             else
             {
                 //even row
-                bool secondtri = (yParam > xParam);
-                if (secondtri)
-                    plane.Redefine(v0, v2, v3);
+                bool secondtri = ( yParam > xParam );
+                if ( secondtri )
+                    plane.Redefine( v0, v2, v3 );
                 else
-                    plane.Redefine(v0, v1, v2);
+                    plane.Redefine( v0, v1, v2 );
             }
 
             //solve plane quation for z
-            return (-plane.Normal.x * x
+            return ( -plane.Normal.x * x
                     - plane.Normal.y * y
-                    - plane.D) / plane.Normal.z;
+                    - plane.D ) / plane.Normal.z;
         }
         /// <summary>
         /// Get the height data for a given world position (projecting the point
@@ -2105,11 +2105,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="z">x, y,z Position in world space. Positions will be clamped to the edge
         ///	of the terrain</param>
         /// <returns></returns>
-        public float GetHeightAtWorldPosition(float x, float y, float z)
+        public float GetHeightAtWorldPosition( float x, float y, float z )
         {
             Vector3 terrPos = Vector3.Zero;
-            GetTerrainPosition(x, y, z, ref terrPos);
-            return GetHeightAtTerrainPosition(terrPos.x, terrPos.y);
+            GetTerrainPosition( x, y, z, ref terrPos );
+            return GetHeightAtTerrainPosition( terrPos.x, terrPos.y );
         }
         /// <summary>
         /// Get the height data for a given world position (projecting the point
@@ -2118,9 +2118,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="pos">Position in world space. Positions will be clamped to the edge
         /// of the terrain</param>
         /// <returns></returns>
-        public float GetHeightAtWorldPosition(Vector3 pos)
+        public float GetHeightAtWorldPosition( Vector3 pos )
         {
-            return GetHeightAtWorldPosition(pos.x, pos.y, pos.z);
+            return GetHeightAtWorldPosition( pos.x, pos.y, pos.z );
         }
         /// <summary>
         /// Get a pointer to the delta data for a given point. 
@@ -2128,10 +2128,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public BufferBase GetDeltaData(long x, long y)
+        public BufferBase GetDeltaData( long x, long y )
         {
-            System.Diagnostics.Debug.Assert(x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds..");
-            return mDeltaDataPtr + (y * mSize + x) * sizeof(float);
+            System.Diagnostics.Debug.Assert( x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds.." );
+            return mDeltaDataPtr + ( y * mSize + x ) * sizeof( float );
             //return new IntPtr(mDeltaDataPtr.ToInt32() + (y * mSize + x));
             //unsafe
             //{
@@ -2146,10 +2146,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public BufferBase GetHeightData(long x, long y)
+        public BufferBase GetHeightData( long x, long y )
         {
-            System.Diagnostics.Debug.Assert(x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds..");
-            return mHeightDataPtr + (y * mSize + x) * sizeof(float);
+            System.Diagnostics.Debug.Assert( x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds.." );
+            return mHeightDataPtr + ( y * mSize + x ) * sizeof( float );
             //unsafe
             //{
             //    float* val = (float*)mHeightDataPtr;
@@ -2169,21 +2169,21 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <note>
         /// This point is relative to Terrain.Position
         /// </note>
-        public void GetPoint(long x, long y, ref Vector3 outpos)
+        public void GetPoint( long x, long y, ref Vector3 outpos )
         {
-            GetPointAlign(x, y, this.Alignment, ref outpos);
+            GetPointAlign( x, y, this.Alignment, ref outpos );
         }
 
-        public void GetPointAlign(long x, long y, Alignment align, ref Vector3 outPos)
+        public void GetPointAlign( long x, long y, Alignment align, ref Vector3 outPos )
         {
-            float height = mHeightData[y + mSize * x];
-            GetPointAlign(x, y, height, align, ref outPos);
+            float height = mHeightData[ y + mSize * x ];
+            GetPointAlign( x, y, height, align, ref outPos );
 
         }
 
-        public void GetPointAlign(long x, long y, float height, Alignment align, ref Vector3 outPos)
+        public void GetPointAlign( long x, long y, float height, Alignment align, ref Vector3 outPos )
         {
-            switch (align)
+            switch ( align )
             {
                 case Alignment.Align_X_Z:
                     outPos.y = height;
@@ -2213,9 +2213,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <note>
         /// This point is relative to Terrain.Position
         /// </note>
-        public void GetPoint(long midpointx, long midpointy, float height, ref Vector3 localCentre)
+        public void GetPoint( long midpointx, long midpointy, float height, ref Vector3 localCentre )
         {
-            GetPointAlign(midpointx, midpointy, height, this.Alignment, ref localCentre);
+            GetPointAlign( midpointx, midpointy, height, this.Alignment, ref localCentre );
         }
 
         /// <summary>
@@ -2224,19 +2224,19 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="inVec">The vector in basis space, where x/y represents the 
         /// terrain plane and z represents the up vector</param>
         /// <param name="outVec"></param>
-        public void GetTerrainVector(Vector3 inVec, ref Vector3 outVec)
+        public void GetTerrainVector( Vector3 inVec, ref Vector3 outVec )
         {
-            GetTerrainVectorAlign(inVec.x, inVec.y, inVec.z, this.Alignment, ref outVec);
+            GetTerrainVectorAlign( inVec.x, inVec.y, inVec.z, this.Alignment, ref outVec );
         }
 
-        public void GetVectorAlign(Vector3 invec, Alignment align, ref Vector3 outVec)
+        public void GetVectorAlign( Vector3 invec, Alignment align, ref Vector3 outVec )
         {
-            GetVectorAlign(invec.x, invec.y, invec.z, align, ref outVec);
+            GetVectorAlign( invec.x, invec.y, invec.z, align, ref outVec );
         }
 
-        public void GetVectorAlign(float x, float y, float z, Alignment align, ref Vector3 outVec)
+        public void GetVectorAlign( float x, float y, float z, Alignment align, ref Vector3 outVec )
         {
-            switch (align)
+            switch ( align )
             {
                 case Alignment.Align_X_Z:
                     outVec.y = z;
@@ -2262,9 +2262,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// terrain plane and z represents the up vector</param>
         /// <param name="align"></param>
         /// <param name="outVec"></param>
-        public void GetTerrainVectorAlign(Vector3 inVec, Alignment align, ref Vector3 outVec)
+        public void GetTerrainVectorAlign( Vector3 inVec, Alignment align, ref Vector3 outVec )
         {
-            GetTerrainVectorAlign(inVec.x, inVec.y, inVec.z, align, ref outVec);
+            GetTerrainVectorAlign( inVec.x, inVec.y, inVec.z, align, ref outVec );
         }
 
         /// <summary>
@@ -2277,9 +2277,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="z">x, y, z The vector in basis space, where x/y represents the 
         /// terrain plane and z represents the up vector</param>
         /// <param name="outVec"></param>
-        public void GetTerrainVector(float x, float y, float z, ref Vector3 outVec)
+        public void GetTerrainVector( float x, float y, float z, ref Vector3 outVec )
         {
-            GetTerrainVectorAlign(x, y, z, this.Alignment, ref outVec);
+            GetTerrainVectorAlign( x, y, z, this.Alignment, ref outVec );
         }
         /// <summary>
         /// Translate a vector from world space to local terrain space based on a specified alignment.
@@ -2292,9 +2292,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// terrain plane and z represents the up vector</param>
         /// <param name="aling"></param>
         /// <param name="outVec"></param>
-        public void GetTerrainVectorAlign(float x, float y, float z, Alignment align, ref Vector3 outVec)
+        public void GetTerrainVectorAlign( float x, float y, float z, Alignment align, ref Vector3 outVec )
         {
-            switch (align)
+            switch ( align )
             {
                 case Alignment.Align_X_Z:
                     outVec.z = y;
@@ -2324,23 +2324,23 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="z">x, y, z The vector in basis space, where x/y represents the 
         /// terrain plane and z represents the up vector</param>
         /// <param name="outVec"></param>
-        public void GetVector(float x, float y, float z, ref Vector3 outVec)
+        public void GetVector( float x, float y, float z, ref Vector3 outVec )
         {
-            GetVectorAlign(x, y, z, this.Alignment, ref outVec);
+            GetVectorAlign( x, y, z, this.Alignment, ref outVec );
         }
         /// <summary>
         /// Translate a vector into world space based on the alignment options.
         /// </summary>
         /// <param name="invec"></param>
         /// <param name="outVec"></param>
-        public void GetVector(Vector3 invec, ref Vector3 outVec)
+        public void GetVector( Vector3 invec, ref Vector3 outVec )
         {
-            GetVectorAlign(invec.x, invec.y, invec.z, this.Alignment, ref outVec);
+            GetVectorAlign( invec.x, invec.y, invec.z, this.Alignment, ref outVec );
         }
 
-        public void GetPosition(Vector3 TSPos, ref Vector3 outWSpos)
+        public void GetPosition( Vector3 TSPos, ref Vector3 outWSpos )
         {
-            GetPositionAlign(TSPos, this.Alignment, ref outWSpos);
+            GetPositionAlign( TSPos, this.Alignment, ref outWSpos );
         }
 
         /// <summary>
@@ -2356,9 +2356,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// terrain, and (1,1) is the top-right. The Z coordinate is in absolute
         /// height units.</param>
         /// <param name="outWSpos"></param>
-        public void GetPosition(float x, float y, float z, ref Vector3 outWSpos)
+        public void GetPosition( float x, float y, float z, ref Vector3 outWSpos )
         {
-            GetPositionAlign(x, y, z, this.Alignment, ref outWSpos);
+            GetPositionAlign( x, y, z, this.Alignment, ref outWSpos );
         }
         /// <summary>
         /// Convert a position from world space to terrain basis space. 
@@ -2367,9 +2367,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="outTSpos">Terrain space output position, where (0,0) is the bottom-left of the
         /// terrain, and (1,1) is the top-right. The Z coordinate is in absolute
         /// height units.</param>
-        public void GetTerrainPosition(Vector3 WSpos, ref Vector3 outTSpos)
+        public void GetTerrainPosition( Vector3 WSpos, ref Vector3 outTSpos )
         {
-            GetTerrainPositionAlign(WSpos, this.Alignment, ref outTSpos);
+            GetTerrainPositionAlign( WSpos, this.Alignment, ref outTSpos );
         }
         /// <summary>
         /// Convert a position from world space to terrain basis space. 
@@ -2380,9 +2380,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="outTSpos">Terrain space output position, where (0,0) is the bottom-left of the
         /// terrain, and (1,1) is the top-right. The Z coordinate is in absolute
         /// height units.</param>
-        public void GetTerrainPosition(float x, float y, float z, ref Vector3 outTSpos)
+        public void GetTerrainPosition( float x, float y, float z, ref Vector3 outTSpos )
         {
-            GetTerrainPositionAlign(x, y, z, this.Alignment, ref outTSpos);
+            GetTerrainPositionAlign( x, y, z, this.Alignment, ref outTSpos );
         }
         /// <summary>
         /// Convert a position from terrain basis space to world space based on a specified alignment. 
@@ -2392,9 +2392,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         ///	height units.</param>
         /// <param name="align"></param>
         /// <param name="outWSpos">World space output position (setup according to alignment). </param>
-        public void GetPositionAlign(Vector3 TSpos, Alignment align, ref Vector3 outWSpos)
+        public void GetPositionAlign( Vector3 TSpos, Alignment align, ref Vector3 outWSpos )
         {
-            GetPositionAlign(TSpos.x, TSpos.y, TSpos.z, align, ref outWSpos);
+            GetPositionAlign( TSpos.x, TSpos.y, TSpos.z, align, ref outWSpos );
         }
         /// <summary>
         /// Convert a position from terrain basis space to world space based on a specified alignment. 
@@ -2410,24 +2410,24 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// height units.</param>
         /// <param name="align"></param>
         /// <param name="outWSpos">World space output position (setup according to alignment). </param>
-        public void GetPositionAlign(float x, float y, float z, Alignment align, ref Vector3 outWSpos)
+        public void GetPositionAlign( float x, float y, float z, Alignment align, ref Vector3 outWSpos )
         {
-            switch (align)
+            switch ( align )
             {
                 case Alignment.Align_X_Z:
                     outWSpos.y = z;
-                    outWSpos.x = x * (mSize - 1) * mScale + mBase;
-                    outWSpos.z = y * (mSize - 1) * -mScale - mBase;
+                    outWSpos.x = x * ( mSize - 1 ) * mScale + mBase;
+                    outWSpos.z = y * ( mSize - 1 ) * -mScale - mBase;
                     break;
                 case Alignment.Align_Y_Z:
                     outWSpos.x = z;
-                    outWSpos.y = y * (mSize - 1) * mScale + mBase;
-                    outWSpos.z = x * (mSize - 1) * -mScale - mBase;
+                    outWSpos.y = y * ( mSize - 1 ) * mScale + mBase;
+                    outWSpos.z = x * ( mSize - 1 ) * -mScale - mBase;
                     break;
                 case Alignment.Align_X_Y:
                     outWSpos.z = z;
-                    outWSpos.x = x * (mSize - 1) * mScale + mBase;
-                    outWSpos.y = y * (mSize - 1) * mScale + mBase;
+                    outWSpos.x = x * ( mSize - 1 ) * mScale + mBase;
+                    outWSpos.y = y * ( mSize - 1 ) * mScale + mBase;
                     break;
             }
         }
@@ -2439,9 +2439,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="outTSpos"> Terrain space output position, where (0,0) is the bottom-left of the
         /// terrain, and (1,1) is the top-right. The Z coordinate is in absolute
         /// height units.</param>
-        public void GetTerrainPositionAlign(Vector3 WSpos, Alignment align, ref Vector3 outTSpos)
+        public void GetTerrainPositionAlign( Vector3 WSpos, Alignment align, ref Vector3 outTSpos )
         {
-            GetTerrainPositionAlign(WSpos.x, WSpos.y, WSpos.z, align, ref outTSpos);
+            GetTerrainPositionAlign( WSpos.x, WSpos.y, WSpos.z, align, ref outTSpos );
         }
         /// <summary>
         /// Convert a position from world space to terrain basis space based on a specified alignment. 
@@ -2453,23 +2453,23 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="outTSpos">Terrain space output position, where (0,0) is the bottom-left of the
         /// terrain, and (1,1) is the top-right. The Z coordinate is in absolute
         /// height units.</param>
-        public void GetTerrainPositionAlign(float x, float y, float z, Alignment align, ref Vector3 outTSpos)
+        public void GetTerrainPositionAlign( float x, float y, float z, Alignment align, ref Vector3 outTSpos )
         {
-            switch (align)
+            switch ( align )
             {
                 case Alignment.Align_X_Z:
-                    outTSpos.x = (x - mBase - mPos.x) / ((mSize - 1) * mScale);
-                    outTSpos.y = (z + mBase - mPos.z) / ((mSize - 1) * -mScale);
+                    outTSpos.x = ( x - mBase - mPos.x ) / ( ( mSize - 1 ) * mScale );
+                    outTSpos.y = ( z + mBase - mPos.z ) / ( ( mSize - 1 ) * -mScale );
                     outTSpos.z = y;
                     break;
                 case Alignment.Align_Y_Z:
-                    outTSpos.x = (z - mBase - mPos.z) / ((mSize - 1) * -mScale);
-                    outTSpos.y = (y + mBase - mPos.y) / ((mSize - 1) * mScale);
+                    outTSpos.x = ( z - mBase - mPos.z ) / ( ( mSize - 1 ) * -mScale );
+                    outTSpos.y = ( y + mBase - mPos.y ) / ( ( mSize - 1 ) * mScale );
                     outTSpos.z = x;
                     break;
                 case Alignment.Align_X_Y:
-                    outTSpos.x = (x - mBase - mPos.x) / ((mSize - 1) * mScale);
-                    outTSpos.y = (y - mBase - mPos.y) / ((mSize - 1) * mScale);
+                    outTSpos.x = ( x - mBase - mPos.x ) / ( ( mSize - 1 ) * mScale );
+                    outTSpos.y = ( y - mBase - mPos.y ) / ( ( mSize - 1 ) * mScale );
                     outTSpos.z = z;
                     break;
             }
@@ -2499,17 +2499,17 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         ///	layer. Leave blank to provide these later. </param>
         public void AddLayer( Real worldSize, List<string> textureNames )
         {
-            if (worldSize == 0)
+            if ( worldSize == 0 )
                 worldSize = TerrainGlobalOptions.DefaultLayerTextureWorldSize;
-            mLayers.Add(new LayerInstance());
-            if (textureNames != null)
+            mLayers.Add( new LayerInstance() );
+            if ( textureNames != null )
             {
-                LayerInstance inst = mLayers[mLayers.Count - 1];
+                LayerInstance inst = mLayers[ mLayers.Count - 1 ];
                 inst.TextureNames = textureNames;
             }
             // use utility method to update UV scaling
-            SetLayerWorldSize((byte)(mLayers.Count - 1), worldSize);
-            CheckLayers(true);
+            SetLayerWorldSize( (byte)( mLayers.Count - 1 ), worldSize );
+            CheckLayers( true );
             mMaterialDirty = true;
             mMaterialParamsDirty = true;
             this.IsModified = true;
@@ -2520,10 +2520,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="index"></param>
         public void RemoveLayer( byte index )
         {
-            if (index < mLayers.Count)
+            if ( index < mLayers.Count )
             {
-                LayerInstance ins = mLayers[index];
-                mLayers.Remove(ins);
+                LayerInstance ins = mLayers[ index ];
+                mLayers.Remove( ins );
                 mMaterialDirty = true;
                 mMaterialParamsDirty = true;
                 this.IsModified = true;
@@ -2535,15 +2535,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="index">The layer index.</param>
         /// <returns></returns>
-        public float GetLayerWorldSize(byte index)
+        public float GetLayerWorldSize( byte index )
         {
-            if (index < mLayers.Count)
+            if ( index < mLayers.Count )
             {
-                return mLayers[index].WorldSize;
+                return mLayers[ index ].WorldSize;
             }
-            else if (mLayers.Count > 0)
+            else if ( mLayers.Count > 0 )
             {
-                return mLayers[0].WorldSize;
+                return mLayers[ 0 ].WorldSize;
             }
             else
             {
@@ -2560,8 +2560,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         {
             if ( index < mLayers.Count )
             {
-                if (index >= mLayerUVMultiplier.Count)
-                    mLayerUVMultiplier.Add(mWorldSize / size);
+                if ( index >= mLayerUVMultiplier.Count )
+                    mLayerUVMultiplier.Add( mWorldSize / size );
                 else
                     mLayerUVMultiplier[ index ] = mWorldSize / size;
 
@@ -2582,15 +2582,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </remarks>
         /// <param name="index">The layer index.</param>
         /// <returns></returns>
-        public float GetLayerUVMultiplier(byte index)
+        public float GetLayerUVMultiplier( byte index )
         {
-            if (index < mLayerUVMultiplier.Count)
+            if ( index < mLayerUVMultiplier.Count )
             {
-                return mLayerUVMultiplier[index];
+                return mLayerUVMultiplier[ index ];
             }
-            else if (mLayerUVMultiplier.Count > 0)
+            else if ( mLayerUVMultiplier.Count > 0 )
             {
-                return mLayerUVMultiplier[0];
+                return mLayerUVMultiplier[ 0 ];
             }
             else
             {
@@ -2605,11 +2605,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="layerIndex">The layer index.</param>
         /// <param name="samplerIndex"> The sampler index within a layer</param>
         /// <returns></returns>
-        public string GetLayerTextureName(byte layerIndex, byte samplerIndex)
+        public string GetLayerTextureName( byte layerIndex, byte samplerIndex )
         {
-            if (layerIndex < mLayers.Count && samplerIndex < mLayerDecl.Samplers.Count)
+            if ( layerIndex < mLayers.Count && samplerIndex < mLayerDecl.Samplers.Count )
             {
-                return mLayers[layerIndex].TextureNames[samplerIndex];
+                return mLayers[ layerIndex ].TextureNames[ samplerIndex ];
             }
             else
             {
@@ -2649,7 +2649,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             Rectangle rect = new Rectangle();
             rect.Top = 0; rect.Bottom = mSize;
             rect.Left = 0; rect.Right = mSize;
-            DirtyRect(rect);
+            DirtyRect( rect );
         }
         /// <summary>
         /// Mark a region of the terrain as dirty. 
@@ -2682,7 +2682,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         public void DirtyCompositeMapRect( Rectangle rect )
         {
-            mCompositeMapDirtyRect.Merge(rect);
+            mCompositeMapDirtyRect.Merge( rect );
             this.IsModified = true;
         }
         /// <summary>
@@ -2795,10 +2795,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         public void UpdateDerivedData( bool synchrounus, byte typeMask )
         {
-            if ( !mDirtyDerivedDataRect.IsNull && ! mDirtyLightmapFromNeighboursRect.IsNull )
+            if ( !mDirtyDerivedDataRect.IsNull && !mDirtyLightmapFromNeighboursRect.IsNull )
             {
                 this.IsModified = true;
-                if (this.IsDerivedDataUpdateInProgress)
+                if ( this.IsDerivedDataUpdateInProgress )
                 {
                     // Don't launch many updates, instead wait for the other one 
                     // to finish and issue another afterwards.
@@ -2806,8 +2806,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else
                 {
-                    UpdateDerivedDataImpl(mDirtyDerivedDataRect, mDirtyLightmapFromNeighboursRect,
-                        synchrounus, typeMask);
+                    UpdateDerivedDataImpl( mDirtyDerivedDataRect, mDirtyLightmapFromNeighboursRect,
+                        synchrounus, typeMask );
                     mDirtyDerivedDataRect.IsNull = true;
                     mDirtyLightmapFromNeighboursRect.IsNull = true;
                 }
@@ -2838,21 +2838,21 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             {
                 this.IsModified = true;
                 CreateOrDestroyGPUCompositeMap();
-                if (mCompositeMapDirtyRectLightmapUpdate &&
-                    (mCompositeMapDirtyRect.Width < mSize || mCompositeMapDirtyRect.Height < mSize))
+                if ( mCompositeMapDirtyRectLightmapUpdate &&
+                    ( mCompositeMapDirtyRect.Width < mSize || mCompositeMapDirtyRect.Height < mSize ) )
                 {
                     // widen the dirty rectangle since lighting makes it wider
                     Rectangle widenedRect = new Rectangle();
-                    WidenRectByVector(TerrainGlobalOptions.LightMapDirection, mCompositeMapDirtyRect, ref widenedRect);
+                    WidenRectByVector( TerrainGlobalOptions.LightMapDirection, mCompositeMapDirtyRect, ref widenedRect );
                     // clamp
-                    widenedRect.Left = Utility.Max(widenedRect.Left, 0L);
-                    widenedRect.Top = Utility.Max(widenedRect.Top, 0L);
-                    widenedRect.Right = Utility.Min(widenedRect.Right, (long)mSize);
-                    widenedRect.Bottom = Utility.Min(widenedRect.Bottom, (long)mSize);
-                    mMaterialGenerator.UpdateCompositeMap(this, widenedRect);
+                    widenedRect.Left = Utility.Max( widenedRect.Left, 0L );
+                    widenedRect.Top = Utility.Max( widenedRect.Top, 0L );
+                    widenedRect.Right = Utility.Min( widenedRect.Right, (long)mSize );
+                    widenedRect.Bottom = Utility.Min( widenedRect.Bottom, (long)mSize );
+                    mMaterialGenerator.UpdateCompositeMap( this, widenedRect );
                 }
                 else
-                    mMaterialGenerator.UpdateCompositeMap(this, mCompositeMapDirtyRect);
+                    mMaterialGenerator.UpdateCompositeMap( this, mCompositeMapDirtyRect );
 
                 mCompositeMapDirtyRectLightmapUpdate = false;
                 mCompositeMapDirtyRect.IsNull = true;
@@ -2908,14 +2908,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <returns>A Rectangle describing the area which was updated (may be wider
         ///	than the input rectangle)</returns>
         [OgreVersion( 1, 7, 2 )]
-        public Rectangle CalculateHeightDeltas(Rectangle rect)
+        public Rectangle CalculateHeightDeltas( Rectangle rect )
         {
             Rectangle clampedRect = new Rectangle( rect );
 
-            clampedRect.Left = Utility.Max(0L, clampedRect.Left);
-            clampedRect.Top = Utility.Max(0L, clampedRect.Top);
-            clampedRect.Right = Utility.Min((long)mSize, clampedRect.Right);
-            clampedRect.Bottom = Utility.Min((long)mSize, clampedRect.Bottom);
+            clampedRect.Left = Utility.Max( 0L, clampedRect.Left );
+            clampedRect.Top = Utility.Max( 0L, clampedRect.Top );
+            clampedRect.Right = Utility.Min( (long)mSize, clampedRect.Right );
+            clampedRect.Bottom = Utility.Min( (long)mSize, clampedRect.Bottom );
 
             Rectangle finalRect = new Rectangle( clampedRect );
             mQuadTree.PreDeltaCalculation( clampedRect );
@@ -2929,10 +2929,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 // need to widen the dirty rectangle since change will affect surrounding
                 // vertices at lower LOD
                 Rectangle widendRect = rect;
-                widendRect.Left = Utility.Max(0L, widendRect.Left - step);
-                widendRect.Top = Utility.Max(0L, widendRect.Top - step);
-                widendRect.Right = Utility.Min((long)mSize, widendRect.Right + step);
-                widendRect.Bottom = Utility.Min((long)mSize, widendRect.Bottom + step);
+                widendRect.Left = Utility.Max( 0L, widendRect.Left - step );
+                widendRect.Top = Utility.Max( 0L, widendRect.Top - step );
+                widendRect.Right = Utility.Min( (long)mSize, widendRect.Right + step );
+                widendRect.Bottom = Utility.Min( (long)mSize, widendRect.Bottom + step );
 
                 // keep a merge of the widest
                 finalRect = finalRect.Merge( widendRect );
@@ -2943,14 +2943,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 Rectangle lodRect = new Rectangle( widendRect );
                 lodRect.Left -= lodRect.Left % step;
                 lodRect.Top -= lodRect.Top % step;
-                if (lodRect.Right % step != 0)
-                    lodRect.Right += step - (lodRect.Right % step);
-                if (lodRect.Bottom % step != 0)
-                    lodRect.Bottom += step - (lodRect.Bottom % step);
+                if ( lodRect.Right % step != 0 )
+                    lodRect.Right += step - ( lodRect.Right % step );
+                if ( lodRect.Bottom % step != 0 )
+                    lodRect.Bottom += step - ( lodRect.Bottom % step );
 
-                for (int j = (int)lodRect.Top; j < lodRect.Bottom - step; j += step)
+                for ( int j = (int)lodRect.Top; j < lodRect.Bottom - step; j += step )
                 {
-                    for (int i = (int)lodRect.Left; i < lodRect.Right - step; i += step)
+                    for ( int i = (int)lodRect.Left; i < lodRect.Right - step; i += step )
                     {
                         // Form planes relating to the lower detail tris to be produced
                         // For even tri strip rows, they are this shape:
@@ -2966,39 +2966,39 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                 v2 = Vector3.Zero,
                                 v3 = Vector3.Zero;
 
-                        GetPointAlign(i, j, Alignment.Align_X_Y, ref v0);
-                        GetPointAlign(i + step, j, Alignment.Align_X_Y, ref v1);
-                        GetPointAlign(i, j + step, Alignment.Align_X_Y, ref v2);
-                        GetPointAlign(i + step, j + step, Alignment.Align_X_Y, ref v3);
+                        GetPointAlign( i, j, Alignment.Align_X_Y, ref v0 );
+                        GetPointAlign( i + step, j, Alignment.Align_X_Y, ref v1 );
+                        GetPointAlign( i, j + step, Alignment.Align_X_Y, ref v2 );
+                        GetPointAlign( i + step, j + step, Alignment.Align_X_Y, ref v3 );
 
                         Plane t1 = new Plane(),
                               t2 = new Plane();
                         bool backwardTri = false;
                         // Odd or even in terms of target level
-                        if ((j / step) % 2 == 0)
+                        if ( ( j / step ) % 2 == 0 )
                         {
-                            t1.Redefine(v0, v1, v3);
-                            t2.Redefine(v0, v3, v2);
+                            t1.Redefine( v0, v1, v3 );
+                            t2.Redefine( v0, v3, v2 );
                         }
                         else
                         {
-                            t1.Redefine(v1, v3, v2);
-                            t2.Redefine(v0, v1, v2);
+                            t1.Redefine( v1, v3, v2 );
+                            t2.Redefine( v0, v1, v2 );
                             backwardTri = true;
                         }
 
                         //include the bottommost row of vertices if this is the last row
-                        int yubound = (j == (mSize - step) ? step : step - 1);
-                        for (int y = 0; y <= yubound; y++)
+                        int yubound = ( j == ( mSize - step ) ? step : step - 1 );
+                        for ( int y = 0; y <= yubound; y++ )
                         {
                             // include the rightmost col of vertices if this is the last col
-                            int xubound = (i == (mSize - step) ? step : step - 1);
-                            for (int x = 0; x <= xubound; x++)
+                            int xubound = ( i == ( mSize - step ) ? step : step - 1 );
+                            for ( int x = 0; x <= xubound; x++ )
                             {
                                 int fulldetailx = i + x;
                                 int fulldetaily = j + y;
-                                if (fulldetailx % step == 0 &&
-                                    fulldetaily % step == 0)
+                                if ( fulldetailx % step == 0 &&
+                                    fulldetaily % step == 0 )
                                 {
                                     // Skip, this one is a vertex at this level
                                     continue;
@@ -3011,22 +3011,22 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                 GetPointAlign( fulldetailx, fulldetaily, Alignment.Align_X_Y, ref actualPos );
                                 Real interp_h = 0;
                                 // Determine which tri we're on 
-                                if ((xpct > ypct && !backwardTri) ||
-                                   (xpct > (1 - ypct) && backwardTri))
+                                if ( ( xpct > ypct && !backwardTri ) ||
+                                   ( xpct > ( 1 - ypct ) && backwardTri ) )
                                 {
                                     // Solve for x/z
                                     interp_h =
-                                        (-t1.Normal.x * actualPos.x
+                                        ( -t1.Normal.x * actualPos.x
                                          - t1.Normal.y * actualPos.y
-                                         - t1.D) / t1.Normal.z;
+                                         - t1.D ) / t1.Normal.z;
                                 }
                                 else
                                 {
                                     // Second tri
                                     interp_h =
-                                        (-t2.Normal.x * actualPos.x
+                                        ( -t2.Normal.x * actualPos.x
                                          - t2.Normal.y * actualPos.y
-                                         - t2.D) / t2.Normal.z;
+                                         - t2.D ) / t2.Normal.z;
                                 }
 
                                 Real actual_h = actualPos.z;
@@ -3034,7 +3034,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
                                 // max(delta) is the worst case scenario at this LOD
                                 // compared to the original heightmap
-                                if (delta == float.NaN)
+                                if ( delta == float.NaN )
                                 {
                                 }
                                 // tell the quadtree about this 
@@ -3048,11 +3048,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                 // would have been eliminated at earlier levels
                                 int halfStep = step / 2;
                                 if (
-                                    ((fulldetailx % step) == halfStep && (fulldetaily % halfStep) == 0) ||
-                                    ((fulldetaily % step) == halfStep && (fulldetailx % halfStep) == 0))
+                                    ( ( fulldetailx % step ) == halfStep && ( fulldetaily % halfStep ) == 0 ) ||
+                                    ( ( fulldetaily % step ) == halfStep && ( fulldetailx % halfStep ) == 0 ) )
                                 {
                                     // Save height difference 
-                                    this.DeltaData[fulldetailx + (fulldetaily * mSize)] = delta;
+                                    this.DeltaData[ fulldetailx + ( fulldetaily * mSize ) ] = delta;
                                 }
                             }//x
                         }//y
@@ -3072,45 +3072,45 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="rect">Rectangle describing the area to finalise </param>
         /// <param name="cpuData">When updating vertex data, update the CPU copy (background)</param>
-        public void FinalizeHeightDeltas(Rectangle rect, bool cpuData)
+        public void FinalizeHeightDeltas( Rectangle rect, bool cpuData )
         {
-            Rectangle clampedRect = new Rectangle(rect);
-            clampedRect.Left = Utility.Max(0L, clampedRect.Left);
-            clampedRect.Top = Utility.Max(0L, clampedRect.Top);
-            clampedRect.Right = Utility.Min((long)mSize, clampedRect.Right);
-            clampedRect.Bottom = Utility.Min((long)mSize, clampedRect.Bottom);
+            Rectangle clampedRect = new Rectangle( rect );
+            clampedRect.Left = Utility.Max( 0L, clampedRect.Left );
+            clampedRect.Top = Utility.Max( 0L, clampedRect.Top );
+            clampedRect.Right = Utility.Min( (long)mSize, clampedRect.Right );
+            clampedRect.Bottom = Utility.Min( (long)mSize, clampedRect.Bottom );
 
             // min/max information
-            mQuadTree.FinaliseDeltaValues(clampedRect);
+            mQuadTree.FinaliseDeltaValues( clampedRect );
             // dekta vertex data
-            mQuadTree.UpdateVertexData(false, true, clampedRect, cpuData);
+            mQuadTree.UpdateVertexData( false, true, clampedRect, cpuData );
         }
 
-        public void GetPointFromSelfOrNeighbour(long x, long y, ref Vector3 outpos)
+        public void GetPointFromSelfOrNeighbour( long x, long y, ref Vector3 outpos )
         {
-            if (x >= 0 && y >= 0 && x < mSize && y < mSize)
-                GetPoint(x, y, ref outpos);
+            if ( x >= 0 && y >= 0 && x < mSize && y < mSize )
+                GetPoint( x, y, ref outpos );
             else
             {
                 long nx, ny;
                 NeighbourIndex ni;
-                GetNeighbourPointOverflow(x, y, out ni, out nx, out ny);
-                Terrain neighbour = GetNeighbour(ni);
-                if (neighbour != null)
+                GetNeighbourPointOverflow( x, y, out ni, out nx, out ny );
+                Terrain neighbour = GetNeighbour( ni );
+                if ( neighbour != null )
                 {
                     Vector3 neighbourPos = Vector3.Zero;
-                    neighbour.GetPoint(nx, ny, ref neighbourPos);
+                    neighbour.GetPoint( nx, ny, ref neighbourPos );
                     // adjust to make it relative to our position
                     outpos = neighbourPos + neighbour.Position - Position;
                 }
                 else
                 {
                     // use our getPoint() after all, just clamp
-                    x = Utility.Min(x, mSize - 1L);
-                    y = Utility.Min(y, mSize - 1L);
-                    x = Utility.Max(x, 0L);
-                    y = Utility.Max(y, 0L);
-                    GetPoint(x, y, ref outpos);
+                    x = Utility.Min( x, mSize - 1L );
+                    y = Utility.Min( y, mSize - 1L );
+                    x = Utility.Max( x, 0L );
+                    y = Utility.Max( y, 0L );
+                    GetPoint( x, y, ref outpos );
                 }
 
             }
@@ -3121,19 +3121,19 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="rect">Rectangle describing the area of heights that were changed</param>
         /// <param name="outFinalRect"> Output rectangle describing the area updated</param>
         /// <returns>PixelBox full of normals (caller responsible for deletion)</returns>
-        public PixelBox CalculateNormals(Rectangle rect, ref Rectangle outFinalRect)
+        public PixelBox CalculateNormals( Rectangle rect, ref Rectangle outFinalRect )
         {
             // Widen the rectangle by 1 element in all directions since height
             // changes affect neighbours normals
             Rectangle widenedRect = new Rectangle(
-                Utility.Max(0L, rect.Left - 1L),
-                Utility.Max(0L, rect.Top - 1L),
-                Utility.Min((long)mSize, rect.Right + 1L),
-                Utility.Min((long)mSize, rect.Bottom + 1L));
+                Utility.Max( 0L, rect.Left - 1L ),
+                Utility.Max( 0L, rect.Top - 1L ),
+                Utility.Min( (long)mSize, rect.Right + 1L ),
+                Utility.Min( (long)mSize, rect.Bottom + 1L ) );
 
             // allocate memory for RGB
-            byte[] pData = new byte[widenedRect.Width * widenedRect.Height * 3];
-            PixelBox pixbox = new PixelBox((int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.BYTE_RGB, Memory.PinObject(pData));
+            byte[] pData = new byte[ widenedRect.Width * widenedRect.Height * 3 ];
+            PixelBox pixbox = new PixelBox( (int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.BYTE_RGB, Memory.PinObject( pData ) );
 
             // Evaluate normal like this
             //  3---2---1
@@ -3143,28 +3143,28 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             //	5---6---7
 
             Plane plane = new Plane();
-            for (long y = widenedRect.Top; y < widenedRect.Bottom; ++y)
+            for ( long y = widenedRect.Top; y < widenedRect.Bottom; ++y )
             {
-                for (long x = widenedRect.Left; x < widenedRect.Right; ++x)
+                for ( long x = widenedRect.Left; x < widenedRect.Right; ++x )
                 {
                     Vector3 cumulativeNormal = Vector3.Zero;
 
                     // Build points to sample
                     Vector3 centrePoint = Vector3.Zero;
-                    Vector3[] adjacentPoints = new Vector3[8];
-                    GetPointFromSelfOrNeighbour(x, y, ref centrePoint);
-                    GetPointFromSelfOrNeighbour(x + 1, y, ref adjacentPoints[0]);
-                    GetPointFromSelfOrNeighbour(x + 1, y + 1, ref adjacentPoints[1]);
-                    GetPointFromSelfOrNeighbour(x, y + 1, ref adjacentPoints[2]);
-                    GetPointFromSelfOrNeighbour(x - 1, y + 1, ref adjacentPoints[3]);
-                    GetPointFromSelfOrNeighbour(x - 1, y, ref adjacentPoints[4]);
-                    GetPointFromSelfOrNeighbour(x - 1, y - 1, ref adjacentPoints[5]);
-                    GetPointFromSelfOrNeighbour(x, y - 1, ref adjacentPoints[6]);
-                    GetPointFromSelfOrNeighbour(x + 1, y - 1, ref adjacentPoints[7]);
+                    Vector3[] adjacentPoints = new Vector3[ 8 ];
+                    GetPointFromSelfOrNeighbour( x, y, ref centrePoint );
+                    GetPointFromSelfOrNeighbour( x + 1, y, ref adjacentPoints[ 0 ] );
+                    GetPointFromSelfOrNeighbour( x + 1, y + 1, ref adjacentPoints[ 1 ] );
+                    GetPointFromSelfOrNeighbour( x, y + 1, ref adjacentPoints[ 2 ] );
+                    GetPointFromSelfOrNeighbour( x - 1, y + 1, ref adjacentPoints[ 3 ] );
+                    GetPointFromSelfOrNeighbour( x - 1, y, ref adjacentPoints[ 4 ] );
+                    GetPointFromSelfOrNeighbour( x - 1, y - 1, ref adjacentPoints[ 5 ] );
+                    GetPointFromSelfOrNeighbour( x, y - 1, ref adjacentPoints[ 6 ] );
+                    GetPointFromSelfOrNeighbour( x + 1, y - 1, ref adjacentPoints[ 7 ] );
 
-                    for (int i = 0; i < 8; ++i)
+                    for ( int i = 0; i < 8; ++i )
                     {
-                        plane.Redefine(centrePoint, adjacentPoints[i], adjacentPoints[(i + 1)%8]);
+                        plane.Redefine( centrePoint, adjacentPoints[ i ], adjacentPoints[ ( i + 1 ) % 8 ] );
                         cumulativeNormal += plane.Normal;
                     }
                     // normalise & store normal
@@ -3175,10 +3175,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     long storeX = x - widenedRect.Left;
                     long storeY = widenedRect.Bottom - y - 1;
 
-                    var pStore = ((storeY*widenedRect.Width) + storeX)*3;
-                    pData[pStore++] = (byte) ((cumulativeNormal.x + 1.0f)*0.5f*255.0f);
-                    pData[pStore++] = (byte) ((cumulativeNormal.y + 1.0f)*0.5f*255.0f);
-                    pData[pStore] = (byte) ((cumulativeNormal.z + 1.0f)*0.5f*255.0f);
+                    var pStore = ( ( storeY * widenedRect.Width ) + storeX ) * 3;
+                    pData[ pStore++ ] = (byte)( ( cumulativeNormal.x + 1.0f ) * 0.5f * 255.0f );
+                    pData[ pStore++ ] = (byte)( ( cumulativeNormal.y + 1.0f ) * 0.5f * 255.0f );
+                    pData[ pStore ] = (byte)( ( cumulativeNormal.z + 1.0f ) * 0.5f * 255.0f );
                 } //x
             }//y
 
@@ -3193,16 +3193,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="rect">Rectangle describing the area to finalize </param>
         /// <param name="normalsBox">PixelBox full of normals</param>
-        public void FinalizeNormals(Rectangle rect, PixelBox normalsBox)
+        public void FinalizeNormals( Rectangle rect, PixelBox normalsBox )
         {
             CreateOrDestroyGPUNormalMap();
             // deal with race condition where nm has been disabled while we were working!
-            if (mTerrainNormalMap != null)
+            if ( mTerrainNormalMap != null )
             {
                 // blit the normals into the texture
-                if (rect.Left == 0 && rect.Top == 0 && rect.Bottom == mSize && rect.Right == mSize)
+                if ( rect.Left == 0 && rect.Top == 0 && rect.Bottom == mSize && rect.Right == mSize )
                 {
-                    mTerrainNormalMap.GetBuffer().BlitFromMemory(normalsBox);
+                    mTerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox );
                 }
                 else
                 {
@@ -3211,9 +3211,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     BasicBox dstBox = new BasicBox();
                     dstBox.Left = (int)rect.Left;
                     dstBox.Right = (int)rect.Bottom;
-                    dstBox.Top = (int)(mSize - rect.Bottom);
-                    dstBox.Bottom = (int)(mSize - rect.Top);
-                    mTerrainNormalMap.GetBuffer().BlitFromMemory(normalsBox, dstBox);
+                    dstBox.Top = (int)( mSize - rect.Bottom );
+                    dstBox.Bottom = (int)( mSize - rect.Top );
+                    mTerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox, dstBox );
                 }
             }
 
@@ -3230,7 +3230,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </param>
         /// <param name="outFinalRect">Output rectangle describing the area updated in the lightmap</param>
         /// <returns> PixelBox full of lighting data (caller responsible for deletion)</returns>
-        public PixelBox CalculateLightMap(Rectangle rect, Rectangle extraTargetRect, ref Rectangle outFinalRect)
+        public PixelBox CalculateLightMap( Rectangle rect, Rectangle extraTargetRect, ref Rectangle outFinalRect )
         {
             // TODO - allow calculation of all lighting, not just shadows
             // TODO - handle neighbour page casting
@@ -3242,10 +3242,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             Vector3 lightVec = TerrainGlobalOptions.LightMapDirection;
             Rectangle widenedRect = new Rectangle();
-            WidenRectByVector(lightVec, rect, ref widenedRect);
+            WidenRectByVector( lightVec, rect, ref widenedRect );
 
             //merge in the extra area (e.g. from neighbours)
-            widenedRect.Merge(extraTargetRect);
+            widenedRect.Merge( extraTargetRect );
 
             // widenedRect now contains terrain point space version of the area we
             // need to calculate. However, we need to calculate in lightmap image space
@@ -3258,45 +3258,45 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             right *= terrainToLightmapScale;
             top *= terrainToLightmapScale;
             bottom *= terrainToLightmapScale;
-            widenedRect = new Rectangle((long)left, (long)top, (long)right, (long)bottom);
+            widenedRect = new Rectangle( (long)left, (long)top, (long)right, (long)bottom );
             //clamp
-            widenedRect.Left = Utility.Max(0L, widenedRect.Left);
-            widenedRect.Top = Utility.Max(0L, widenedRect.Top);
-            widenedRect.Right = Utility.Min((long)mLightmapSizeActual, widenedRect.Right);
-            widenedRect.Bottom = Utility.Min((long)mLightmapSizeActual, widenedRect.Bottom);
+            widenedRect.Left = Utility.Max( 0L, widenedRect.Left );
+            widenedRect.Top = Utility.Max( 0L, widenedRect.Top );
+            widenedRect.Right = Utility.Min( (long)mLightmapSizeActual, widenedRect.Right );
+            widenedRect.Bottom = Utility.Min( (long)mLightmapSizeActual, widenedRect.Bottom );
 
             outFinalRect = widenedRect;
 
             // allocate memory (L8)
-            byte[] pData = new byte[widenedRect.Width * widenedRect.Height];
-            var pDataPtr = Memory.PinObject(pData);
+            byte[] pData = new byte[ widenedRect.Width * widenedRect.Height ];
+            var pDataPtr = Memory.PinObject( pData );
 
 
-            float heightPad = (float)((MaxHeight - MinHeight) * 1e-3f);
-            for (long y = widenedRect.Top; y < widenedRect.Bottom; ++y)
+            float heightPad = (float)( ( MaxHeight - MinHeight ) * 1e-3f );
+            for ( long y = widenedRect.Top; y < widenedRect.Bottom; ++y )
             {
-                for (long x = widenedRect.Left; x < widenedRect.Right; ++x)
+                for ( long x = widenedRect.Left; x < widenedRect.Right; ++x )
                 {
                     float litVal = 1.0f;
                     // convert to terrain space (not points, allow this to go between points)
-                    float Tx = (float) x/(float) (mLightmapSizeActual - 1);
-                    float Ty = (float) y/(float) (mLightmapSizeActual - 1);
+                    float Tx = (float)x / (float)( mLightmapSizeActual - 1 );
+                    float Ty = (float)y / (float)( mLightmapSizeActual - 1 );
 
                     // get world space point
                     // add a little height padding to stop shadowing self
                     Vector3 wpos = Vector3.Zero;
-                    GetPosition(Tx, Ty, GetHeightAtTerrainPosition(Tx, Ty) + heightPad, ref wpos);
+                    GetPosition( Tx, Ty, GetHeightAtTerrainPosition( Tx, Ty ) + heightPad, ref wpos );
                     wpos += Position;
                     // build ray, cast backwards along light direction
-                    Ray ray = new Ray(wpos, -lightVec);
+                    Ray ray = new Ray( wpos, -lightVec );
                     //cascade int neighbours when casting, but don't travel further
                     //than world size
-                    KeyValuePair<bool, Vector3> rayHit = RayIntersects(ray, true, mWorldSize);
+                    KeyValuePair<bool, Vector3> rayHit = RayIntersects( ray, true, mWorldSize );
 
                     // TODO - cast multiple rays to antialias?
                     // TODO - fade by distance?
 
-                    if (rayHit.Key)
+                    if ( rayHit.Key )
                         litVal = 0.0f;
 
                     // encode as L8
@@ -3309,13 +3309,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 #endif
                     {
                         var pStoreF = pDataPtr.ToBytePointer();
-                        var pStore = ( pDataPtr + (int)( ( storeY*widenedRect.Width ) + storeX ) ).ToBytePointer();
-                        pStore[ 0 ] = (byte)( litVal*255.0f );
+                        var pStore = ( pDataPtr + (int)( ( storeY * widenedRect.Width ) + storeX ) ).ToBytePointer();
+                        pStore[ 0 ] = (byte)( litVal * 255.0f );
                     }
                 }
             }
 
-            return new PixelBox((int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.L8, pDataPtr);
+            return new PixelBox( (int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.L8, pDataPtr );
         }
         /// <summary>
         /// Finalise the lightmap. 
@@ -3325,16 +3325,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="rect">Rectangle describing the area to finalize </param>
         /// <param name="lightmapBox">PixelBox full of normals</param>
-        public void FinalizeLightMap(Rectangle rect, PixelBox lightmapBox)
+        public void FinalizeLightMap( Rectangle rect, PixelBox lightmapBox )
         {
             CreateOrDestroyGPULightmap();
             // deal with race condition where lm has been disabled while we were working!
-            if (this.LightMap != null)
+            if ( this.LightMap != null )
             {
                 // blit the normals into the texture
-                if (rect.Left == 0 && rect.Top == 0 && rect.Bottom == mLightmapSizeActual && rect.Right == mLightmapSizeActual)
+                if ( rect.Left == 0 && rect.Top == 0 && rect.Bottom == mLightmapSizeActual && rect.Right == mLightmapSizeActual )
                 {
-                    this.LightMap.GetBuffer().BlitFromMemory(lightmapBox);
+                    this.LightMap.GetBuffer().BlitFromMemory( lightmapBox );
                 }
                 else
                 {
@@ -3343,9 +3343,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     BasicBox dstBox = new BasicBox();
                     dstBox.Left = (int)rect.Left;
                     dstBox.Right = (int)rect.Right;
-                    dstBox.Top = (int)(mLightmapSizeActual - rect.Bottom);
-                    dstBox.Bottom = (int)(mLightmapSizeActual - rect.Top);
-                    this.LightMap.GetBuffer().BlitFromMemory(lightmapBox, dstBox);
+                    dstBox.Top = (int)( mLightmapSizeActual - rect.Bottom );
+                    dstBox.Bottom = (int)( mLightmapSizeActual - rect.Top );
+                    this.LightMap.GetBuffer().BlitFromMemory( lightmapBox, dstBox );
                 }
             }
         }
@@ -3355,9 +3355,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="lodLevel"></param>
         /// <returns></returns>
-        public ushort GetResolutionAtLod(ushort lodLevel)
+        public ushort GetResolutionAtLod( ushort lodLevel )
         {
-            return (ushort)(((mSize - 1) >> lodLevel) + 1);
+            return (ushort)( ( ( mSize - 1 ) >> lodLevel ) + 1 );
         }
         /// <summary>
         /// Test for intersection of a given ray with the terrain. If the ray hits
@@ -3369,7 +3369,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// This can be called from any thread as long as no parallel write to
         /// the heightmap data occurs.
         /// </remarks>
-        public KeyValuePair<bool, Vector3> RRayIntersects(Ray ray)
+        public KeyValuePair<bool, Vector3> RRayIntersects( Ray ray )
         {
             KeyValuePair<bool, Vector3> result = new KeyValuePair<bool, Vector3>();
             // first step: convert the ray to a local vertex space
@@ -3380,12 +3380,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             Vector3 rayDirection = ray.Direction;
             //change alignment
             Vector3 tmp = Vector3.Zero;
-            switch (Alignment)
+            switch ( Alignment )
             {
                 case Alignment.Align_X_Y:
                     {
-                        Axiom.Math.Utility.Swap(ref rayOrigin.y, ref rayOrigin.z);
-                        Axiom.Math.Utility.Swap(ref rayDirection.y, ref rayDirection.z);
+                        Axiom.Math.Utility.Swap( ref rayOrigin.y, ref rayOrigin.z );
+                        Axiom.Math.Utility.Swap( ref rayDirection.y, ref rayDirection.z );
                     }
                     break;
                 case Alignment.Align_Y_Z:
@@ -3418,48 +3418,48 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             rayDirection.x /= mScale;
             rayDirection.z /= mScale;
             rayDirection.Normalize();
-            Ray localRay = new Ray(rayOrigin, rayDirection);
+            Ray localRay = new Ray( rayOrigin, rayDirection );
 
             // test if the ray actually hits the terrain's bounds
             float maxHeight = MaxHeight;
             float minHeight = MinHeight;
-            AxisAlignedBox aabb = new AxisAlignedBox(new Vector3(0, minHeight, 0), new Vector3(mSize, maxHeight, mSize));
-            IntersectResult aabbTest = localRay.Intersects(aabb);
-            if (!aabbTest.Hit)
+            AxisAlignedBox aabb = new AxisAlignedBox( new Vector3( 0, minHeight, 0 ), new Vector3( mSize, maxHeight, mSize ) );
+            IntersectResult aabbTest = localRay.Intersects( aabb );
+            if ( !aabbTest.Hit )
             {
-                result = new KeyValuePair<bool, Vector3>(false, Vector3.Zero);
+                result = new KeyValuePair<bool, Vector3>( false, Vector3.Zero );
                 return result;
             }
 
             //get intersection point and move inside
-            Vector3 cur = localRay.GetPoint(aabbTest.Distance);
+            Vector3 cur = localRay.GetPoint( aabbTest.Distance );
 
             // now check every quad the ray touches
-            int quadX = Utility.Min(Utility.Max((int)cur.x, 0), (int)mSize - 2);
-            int quadZ = Utility.Min(Utility.Max((int)cur.z, 0), (int)mSize - 2);
-            int flipX = (rayDirection.x < 0 ? 0 : 1);
-            int flipZ = (rayDirection.z < 0 ? 0 : 1);
-            int xDir = (rayDirection.x < 0 ? -1 : 1);
-            int zDir = (rayDirection.z < 0 ? -1 : 1);
+            int quadX = Utility.Min( Utility.Max( (int)cur.x, 0 ), (int)mSize - 2 );
+            int quadZ = Utility.Min( Utility.Max( (int)cur.z, 0 ), (int)mSize - 2 );
+            int flipX = ( rayDirection.x < 0 ? 0 : 1 );
+            int flipZ = ( rayDirection.z < 0 ? 0 : 1 );
+            int xDir = ( rayDirection.x < 0 ? -1 : 1 );
+            int zDir = ( rayDirection.z < 0 ? -1 : 1 );
 
-            result = new KeyValuePair<bool, Vector3>(true, Vector3.Zero);
+            result = new KeyValuePair<bool, Vector3>( true, Vector3.Zero );
             float dummyHighValue = mSize * 10000;
-            while (cur.y >= (minHeight - 1e-3) && cur.y <= (maxHeight + 1e-3))
+            while ( cur.y >= ( minHeight - 1e-3 ) && cur.y <= ( maxHeight + 1e-3 ) )
             {
-                if (quadX < 0 || quadX >= (int)mSize - 1 || quadZ < 0 || quadZ >= (int)mSize - 1)
+                if ( quadX < 0 || quadX >= (int)mSize - 1 || quadZ < 0 || quadZ >= (int)mSize - 1 )
                     break;
 
-                result = CheckQuadIntersection(quadX, quadZ, localRay);
-                if (result.Key)
+                result = CheckQuadIntersection( quadX, quadZ, localRay );
+                if ( result.Key )
                     break;
 
                 // determine next quad to test
 
-                float xDist = Utility.RealEqual(ray.Direction.x, 0.0f) ? (Real)dummyHighValue :
-                    (quadX - cur.x + flipX) / rayDirection.x;
-                float zDist = Utility.RealEqual(ray.Direction.z, 0.0f) ? (Real)dummyHighValue :
-                    (quadZ - cur.z + flipZ) / rayDirection.z;
-                if (xDist < zDist)
+                float xDist = Utility.RealEqual( ray.Direction.x, 0.0f ) ? (Real)dummyHighValue :
+                    ( quadX - cur.x + flipX ) / rayDirection.x;
+                float zDist = Utility.RealEqual( ray.Direction.z, 0.0f ) ? (Real)dummyHighValue :
+                    ( quadZ - cur.z + flipZ ) / rayDirection.z;
+                if ( xDist < zDist )
                 {
                     quadX += xDir;
                     cur += rayDirection * xDist;
@@ -3471,7 +3471,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
             }
 
-            if (result.Key)
+            if ( result.Key )
             {
                 // transform the point of intersection back to world space
                 Vector3 val = result.Value;
@@ -3479,11 +3479,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 val.z *= mScale;
                 val.x -= mWorldSize / 2;
                 val.z -= mWorldSize / 2;
-                switch (Alignment)
+                switch ( Alignment )
                 {
                     case Alignment.Align_X_Y:
                         {
-                            Axiom.Math.Utility.Swap(ref val.y, ref val.z);
+                            Axiom.Math.Utility.Swap( ref val.y, ref val.z );
                         }
                         break;
                     case Alignment.Align_Y_Z:
@@ -3502,17 +3502,17 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                         break;
                 }
                 val += Position;
-                result = new KeyValuePair<bool, Vector3>(true, val);
+                result = new KeyValuePair<bool, Vector3>( true, val );
             }
             return result;
         }
 
-        public KeyValuePair<bool, Vector3> RayIntersects(Ray ray)
+        public KeyValuePair<bool, Vector3> RayIntersects( Ray ray )
         {
-            return RayIntersects(ray, false, 0);
+            return RayIntersects( ray, false, 0 );
         }
 
-        public KeyValuePair<bool, Vector3> RayIntersects(Ray ray, bool cascadeToNeighbours, float distanceLimit)
+        public KeyValuePair<bool, Vector3> RayIntersects( Ray ray, bool cascadeToNeighbours, float distanceLimit )
         {
             KeyValuePair<bool, Vector3> Result;
             // first step: convert the ray to a local vertex space
@@ -3523,11 +3523,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             Vector3 rayDirection = ray.Direction;
             // change alignment
             Vector3 tmp;
-            switch (Alignment)
+            switch ( Alignment )
             {
                 case Alignment.Align_X_Y:
-                    Utility.Swap<Real>(ref rayOrigin.y, ref rayOrigin.z);
-                    Utility.Swap<Real>(ref rayDirection.y, ref rayDirection.z);
+                    Utility.Swap<Real>( ref rayOrigin.y, ref rayOrigin.z );
+                    Utility.Swap<Real>( ref rayDirection.y, ref rayDirection.z );
                     break;
                 case Alignment.Align_Y_Z:
                     // x = z, z = y, y = -x
@@ -3555,54 +3555,54 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             rayDirection.x /= mScale;
             rayDirection.z /= mScale;
             rayDirection.Normalize();
-            Ray localRay = new Ray(rayOrigin, rayDirection);
+            Ray localRay = new Ray( rayOrigin, rayDirection );
 
             // test if the ray actually hits the terrain's bounds
             Real maxHeight = MaxHeight;
             Real minHeight = MinHeight;
 
-            AxisAlignedBox aabb = new AxisAlignedBox(new Vector3(0, minHeight, 0), new Vector3(mSize, maxHeight, mSize));
-            IntersectResult aabbTest = localRay.Intersects(aabb);
-            if (!aabbTest.Hit)
+            AxisAlignedBox aabb = new AxisAlignedBox( new Vector3( 0, minHeight, 0 ), new Vector3( mSize, maxHeight, mSize ) );
+            IntersectResult aabbTest = localRay.Intersects( aabb );
+            if ( !aabbTest.Hit )
             {
-                if (cascadeToNeighbours)
+                if ( cascadeToNeighbours )
                 {
-                    Terrain neighbour = RaySelectNeighbour(ray, distanceLimit);
-                    if (neighbour != null)
-                        return neighbour.RayIntersects(ray, cascadeToNeighbours, distanceLimit);
+                    Terrain neighbour = RaySelectNeighbour( ray, distanceLimit );
+                    if ( neighbour != null )
+                        return neighbour.RayIntersects( ray, cascadeToNeighbours, distanceLimit );
                 }
-                return new KeyValuePair<bool, Vector3>(false, new Vector3());
+                return new KeyValuePair<bool, Vector3>( false, new Vector3() );
             }
             // get intersection point and move inside
-            Vector3 cur = localRay.GetPoint(aabbTest.Distance);
+            Vector3 cur = localRay.GetPoint( aabbTest.Distance );
 
             // now check every quad the ray touches
-            int quadX = Utility.Min(Utility.Max((int)(cur.x), 0), (int)mSize - 2);
-            int quadZ = Utility.Min(Utility.Max((int)(cur.z), 0), (int)mSize - 2);
-            int flipX = (rayDirection.x < 0 ? 0 : 1);
-            int flipZ = (rayDirection.z < 0 ? 0 : 1);
-            int xDir = (rayDirection.x < 0 ? -1 : 1);
-            int zDir = (rayDirection.z < 0 ? -1 : 1);
+            int quadX = Utility.Min( Utility.Max( (int)( cur.x ), 0 ), (int)mSize - 2 );
+            int quadZ = Utility.Min( Utility.Max( (int)( cur.z ), 0 ), (int)mSize - 2 );
+            int flipX = ( rayDirection.x < 0 ? 0 : 1 );
+            int flipZ = ( rayDirection.z < 0 ? 0 : 1 );
+            int xDir = ( rayDirection.x < 0 ? -1 : 1 );
+            int zDir = ( rayDirection.z < 0 ? -1 : 1 );
 
-            Result = new KeyValuePair<bool, Vector3>(true, Vector3.Zero);
+            Result = new KeyValuePair<bool, Vector3>( true, Vector3.Zero );
             float dummyHighValue = mSize * 10000;
 
 
-            while (cur.y >= (minHeight - 1e-3) && cur.y <= (maxHeight + 1e-3))
+            while ( cur.y >= ( minHeight - 1e-3 ) && cur.y <= ( maxHeight + 1e-3 ) )
             {
-                if (quadX < 0 || quadX >= (int)mSize - 1 || quadZ < 0 || quadZ >= (int)mSize - 1)
+                if ( quadX < 0 || quadX >= (int)mSize - 1 || quadZ < 0 || quadZ >= (int)mSize - 1 )
                     break;
 
-                Result = CheckQuadIntersection(quadX, quadZ, localRay);
-                if (Result.Key)
+                Result = CheckQuadIntersection( quadX, quadZ, localRay );
+                if ( Result.Key )
                     break;
 
                 // determine next quad to test
-                Real xDist = Utility.RealEqual(rayDirection.x, 0.0f) ? (Real)dummyHighValue :
-                    (quadX - cur.x + flipX) / rayDirection.x;
-                Real zDist = Utility.RealEqual(rayDirection.z, 0.0f) ? (Real)dummyHighValue :
-                    (quadZ - cur.z + flipZ) / rayDirection.z;
-                if (xDist < zDist)
+                Real xDist = Utility.RealEqual( rayDirection.x, 0.0f ) ? (Real)dummyHighValue :
+                    ( quadX - cur.x + flipX ) / rayDirection.x;
+                Real zDist = Utility.RealEqual( rayDirection.z, 0.0f ) ? (Real)dummyHighValue :
+                    ( quadZ - cur.z + flipZ ) / rayDirection.z;
+                if ( xDist < zDist )
                 {
                     quadX += xDir;
                     cur += rayDirection * xDist;
@@ -3615,7 +3615,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             }
             Vector3 resVec = Vector3.Zero;
-            if (Result.Key)
+            if ( Result.Key )
             {
                 // transform the point of intersection back to world space
                 resVec = Result.Value;
@@ -3623,10 +3623,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 resVec.z *= mScale;
                 resVec.x -= mWorldSize / 2;
                 resVec.z -= mWorldSize / 2;
-                switch (Alignment)
+                switch ( Alignment )
                 {
                     case Alignment.Align_X_Y:
-                        Utility.Swap<Real>(ref resVec.y, ref resVec.z);
+                        Utility.Swap<Real>( ref resVec.y, ref resVec.z );
                         break;
                     case Alignment.Align_Y_Z:
                         // z = x, y = z, x = -y
@@ -3641,16 +3641,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 resVec += Position;
             }
-            else if (cascadeToNeighbours)
+            else if ( cascadeToNeighbours )
             {
-                Terrain neighbour = RaySelectNeighbour(ray, distanceLimit);
-                if (neighbour != null)
-                    Result = neighbour.RayIntersects(ray, cascadeToNeighbours, distanceLimit);
+                Terrain neighbour = RaySelectNeighbour( ray, distanceLimit );
+                if ( neighbour != null )
+                    Result = neighbour.RayIntersects( ray, cascadeToNeighbours, distanceLimit );
             }
-            return new KeyValuePair<bool, Vector3>(Result.Key, resVec);
+            return new KeyValuePair<bool, Vector3>( Result.Key, resVec );
         }
         int mLastViewportHeight = 0;
-        
+
 #warning implement void sceneManagerDestroyed(SceneManager* source);
 
         /// <summary>
@@ -3667,22 +3667,22 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <returns>Pointer to the TerrainLayerBlendMap requested. The caller must
         ///	not delete this instance, use freeTemporaryResources if you want
         ///	to save the memory after completing your editing.</returns>
-        public TerrainLayerBlendMap GetLayerBlendMap(byte layerIndex)
+        public TerrainLayerBlendMap GetLayerBlendMap( byte layerIndex )
         {
-            if (layerIndex == 0 || layerIndex - 1 >= (byte)mLayerBlendMapList.Count)
-                throw new Exception("Invalid layer index. Terrain.GetLayerBlendMap");
+            if ( layerIndex == 0 || layerIndex - 1 >= (byte)mLayerBlendMapList.Count )
+                throw new Exception( "Invalid layer index. Terrain.GetLayerBlendMap" );
 
-            byte idx = (byte)(layerIndex - 1);
-            if (mLayerBlendMapList[idx] == null)
+            byte idx = (byte)( layerIndex - 1 );
+            if ( mLayerBlendMapList[ idx ] == null )
             {
-                if (mBlendTextureList.Count < (int)(idx / 4))
-                    CheckLayers(true);
+                if ( mBlendTextureList.Count < (int)( idx / 4 ) )
+                    CheckLayers( true );
 
-                Texture tex = mBlendTextureList[idx / 4];
-                mLayerBlendMapList[idx] = new TerrainLayerBlendMap(this, layerIndex, tex.GetBuffer());
+                Texture tex = mBlendTextureList[ idx / 4 ];
+                mLayerBlendMapList[ idx ] = new TerrainLayerBlendMap( this, layerIndex, tex.GetBuffer() );
             }
 
-            return mLayerBlendMapList[idx];
+            return mLayerBlendMapList[ idx ];
         }
         /// <summary>
         ///  Get the index of the blend texture that a given layer uses.
@@ -3690,12 +3690,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="layerIndex">The layer index, must be >= 1 and less than the number
         ///	of layers</param>
         /// <returns>The index of the shared blend texture</returns>
-        public byte GetBlendTextureIndex(byte layerIndex)
+        public byte GetBlendTextureIndex( byte layerIndex )
         {
-            if (layerIndex == 0 || layerIndex - 1 >= (byte)mLayerBlendMapList.Count)
-                throw new Exception("Invalid layer index, Terrain.GetBlendTextureIndex");
+            if ( layerIndex == 0 || layerIndex - 1 >= (byte)mLayerBlendMapList.Count )
+                throw new Exception( "Invalid layer index, Terrain.GetBlendTextureIndex" );
 
-            return (byte)(layerIndex - 1 % 4);
+            return (byte)( layerIndex - 1 % 4 );
         }
         /// <summary>
         /// Get the number of blend textures in use
@@ -3710,9 +3710,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="numLayers"></param>
         /// <returns></returns>
-        public byte GetBlendTextureCount(byte numLayers)
+        public byte GetBlendTextureCount( byte numLayers )
         {
-            return (byte)(((numLayers - 1) / 4) + 1);
+            return (byte)( ( ( numLayers - 1 ) / 4 ) + 1 );
         }
         /// <summary>
         /// Get the name of the packed blend texture at a specific index.
@@ -3720,12 +3720,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="textureIndex">This is the blend texture index, not the layer index
         ///	(multiple layers will share a blend texture)</param>
         /// <returns></returns>
-        public string GetBlendTextureName(byte textureIndex)
+        public string GetBlendTextureName( byte textureIndex )
         {
-            if (textureIndex >= (byte)mBlendTextureList.Count)
-                throw new Exception("Invalid texture index, Terrain.GetBlendTextureName");
+            if ( textureIndex >= (byte)mBlendTextureList.Count )
+                throw new Exception( "Invalid texture index, Terrain.GetBlendTextureName" );
 
-            return mBlendTextureList[textureIndex].Name;
+            return mBlendTextureList[ textureIndex ].Name;
         }
         /// <summary>
         ///  Set whether a global colour map is enabled. 
@@ -3764,11 +3764,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         public void SetGlobalColorMapEnabled( bool enabled, ushort sz )
         {
-            if (sz == 0)
+            if ( sz == 0 )
                 sz = TerrainGlobalOptions.DefaultGlobalColorMapSize;
 
-            if (enabled != mGlobalColorMapEnabled ||
-                (enabled && mGlobalColorMapSize != sz))
+            if ( enabled != mGlobalColorMapEnabled ||
+                ( enabled && mGlobalColorMapSize != sz ) )
             {
                 mGlobalColorMapEnabled = enabled;
                 mGlobalColorMapSize = sz;
@@ -3781,59 +3781,59 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        public void WidenRectByVector(Vector3 vec, Rectangle inRect, float minHeight, float maxHeight, ref Rectangle outRect)
+        public void WidenRectByVector( Vector3 vec, Rectangle inRect, float minHeight, float maxHeight, ref Rectangle outRect )
         {
             outRect = inRect;
 
             Plane p = new Plane();
 
-            switch (Alignment)
+            switch ( Alignment )
             {
                 case Alignment.Align_X_Y:
                     {
-                        p.Redefine(Vector3.UnitZ, new Vector3(0, 0, vec.z < 0.0f ? minHeight : maxHeight));
+                        p.Redefine( Vector3.UnitZ, new Vector3( 0, 0, vec.z < 0.0f ? minHeight : maxHeight ) );
                     }
                     break;
                 case Alignment.Align_X_Z:
                     {
-                        p.Redefine(Vector3.UnitY, new Vector3(0, vec.y < 0.0f ? minHeight : maxHeight, 0));
+                        p.Redefine( Vector3.UnitY, new Vector3( 0, vec.y < 0.0f ? minHeight : maxHeight, 0 ) );
                     }
                     break;
                 case Alignment.Align_Y_Z:
                     {
-                        p.Redefine(Vector3.UnitX, new Vector3(vec.x < 0.0f ? minHeight : maxHeight, 0, 0));
+                        p.Redefine( Vector3.UnitX, new Vector3( vec.x < 0.0f ? minHeight : maxHeight, 0, 0 ) );
                     }
                     break;
             }
-            float verticalVal = vec.Dot(p.Normal);
+            float verticalVal = vec.Dot( p.Normal );
 
-            if (Utility.RealEqual(verticalVal, 0.0f))
+            if ( Utility.RealEqual( verticalVal, 0.0f ) )
                 return;
 
-            Vector3[] corners = new Vector3[4];
+            Vector3[] corners = new Vector3[ 4 ];
             float startHeight = verticalVal < 0.0f ? maxHeight : minHeight;
-            GetPoint(inRect.Left, inRect.Top, startHeight, ref corners[0]);
-            GetPoint(inRect.Right - 1, inRect.Top, startHeight, ref corners[1]);
-            GetPoint(inRect.Left, inRect.Bottom - 1, startHeight, ref corners[2]);
-            GetPoint(inRect.Right - 1, inRect.Bottom - 1, startHeight, ref corners[3]);
+            GetPoint( inRect.Left, inRect.Top, startHeight, ref corners[ 0 ] );
+            GetPoint( inRect.Right - 1, inRect.Top, startHeight, ref corners[ 1 ] );
+            GetPoint( inRect.Left, inRect.Bottom - 1, startHeight, ref corners[ 2 ] );
+            GetPoint( inRect.Right - 1, inRect.Bottom - 1, startHeight, ref corners[ 3 ] );
 
-            for (int i = 0; i < 4; ++i)
+            for ( int i = 0; i < 4; ++i )
             {
-                Ray ray = new Ray(corners[i] + mPos, vec);
-                IntersectResult rayHit = ray.Intersects(p);
-                if (rayHit.Hit)
+                Ray ray = new Ray( corners[ i ] + mPos, vec );
+                IntersectResult rayHit = ray.Intersects( p );
+                if ( rayHit.Hit )
                 {
-                    Vector3 pt = ray.GetPoint(rayHit.Distance);
+                    Vector3 pt = ray.GetPoint( rayHit.Distance );
                     // convert back to terrain point
                     Vector3 terrainHitPos = Vector3.Zero;
-                    GetTerrainPosition(pt, ref terrainHitPos);
+                    GetTerrainPosition( pt, ref terrainHitPos );
                     // build rectangle which has rounded down & rounded up values
                     // remember right & bottom are exclusive
                     Rectangle mergeRect = new Rectangle(
-                        (long)terrainHitPos.x * (mSize - 1),
-                        (long)terrainHitPos.y * (mSize - 1),
-                        (long)(terrainHitPos.x * (float)(mSize - 1) + 0.5f) + 1,
-                        (long)(terrainHitPos.x * (float)(mSize - 1) + 0.5f) + 1
+                        (long)terrainHitPos.x * ( mSize - 1 ),
+                        (long)terrainHitPos.y * ( mSize - 1 ),
+                        (long)( terrainHitPos.x * (float)( mSize - 1 ) + 0.5f ) + 1,
+                        (long)( terrainHitPos.x * (float)( mSize - 1 ) + 0.5f ) + 1
                         );
                 }
             }
@@ -3844,9 +3844,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="vec"> A vector in world space</param>
         /// <param name="inRec">Input rectangle</param>
         /// <param name="outRect">Output rectangle</param>
-        public void WidenRectByVector(Vector3 vec, Rectangle inRect, ref Rectangle outRect)
+        public void WidenRectByVector( Vector3 vec, Rectangle inRect, ref Rectangle outRect )
         {
-            WidenRectByVector(vec, inRect, MinHeight, MaxHeight, ref outRect);
+            WidenRectByVector( vec, inRect, MinHeight, MaxHeight, ref outRect );
         }
         /// <summary>
         /// Free as many resources as possible for optimal run-time memory use.
@@ -3872,11 +3872,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="index">The blend texture index (note: not layer index; derive
         /// the texture index from getLayerBlendTextureIndex)</param>
-        public Texture GetLayerBlendTexture(byte index)
+        public Texture GetLayerBlendTexture( byte index )
         {
-            System.Diagnostics.Debug.Assert(index < mBlendTextureList.Count, "Given index is out of Bound!");
+            System.Diagnostics.Debug.Assert( index < mBlendTextureList.Count, "Given index is out of Bound!" );
 
-            return mBlendTextureList[index];
+            return mBlendTextureList[ index ];
         }
         /// <summary>
         /// Get the texture index and colour channel of the blend information for 
@@ -3885,11 +3885,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="layerIndex">The index of the layer (1 or higher, layer 0 has no blend data)</param>
         /// <returns>A pair in which the first value is the texture index, and the 
         ///	second value is the colour channel (RGBA)</returns>
-        public KeyValuePair<byte, byte> GetLayerBlendTextureIndex(byte layerIndex)
+        public KeyValuePair<byte, byte> GetLayerBlendTextureIndex( byte layerIndex )
         {
-            System.Diagnostics.Debug.Assert(layerIndex > 0 && layerIndex < mLayers.Count, "Given index is out of Bound!");
-            byte idx = (byte)(layerIndex - 1);
-            return new KeyValuePair<byte, byte>((byte)(idx / 4), (byte)(idx % 4));
+            System.Diagnostics.Debug.Assert( layerIndex > 0 && layerIndex < mLayers.Count, "Given index is out of Bound!" );
+            byte idx = (byte)( layerIndex - 1 );
+            return new KeyValuePair<byte, byte>( (byte)( idx / 4 ), (byte)( idx % 4 ) );
         }
         /// <summary>
         /// Request internal implementation options for the terrain material to use, 
@@ -3903,9 +3903,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="lightMap">Whether a terrain-wide lightmap including precalculated 
         ///	lighting is required (light direction in TerrainGlobalOptions)</param>
-        public void SetLightMapRequired(bool lightMap)
+        public void SetLightMapRequired( bool lightMap )
         {
-            SetLightMapRequired(lightMap, false);
+            SetLightMapRequired( lightMap, false );
         }
         /// <summary>
         /// Request internal implementation options for the terrain material to use, 
@@ -3921,9 +3921,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         ///	lighting is required (light direction in TerrainGlobalOptions)</param>
         /// <param name="shadowsOnly">If true, the lightmap contains only shadows, 
         ///	no directional lighting intensity</param>
-        public void SetLightMapRequired(bool lightMap, bool shadowsOnly)
+        public void SetLightMapRequired( bool lightMap, bool shadowsOnly )
         {
-            if (lightMap != mLightMapRequired || shadowsOnly != mLightMapShadowsOnly)
+            if ( lightMap != mLightMapRequired || shadowsOnly != mLightMapShadowsOnly )
             {
                 mLightMapRequired = lightMap;
                 mLightMapShadowsOnly = mLightMapShadowsOnly;
@@ -3931,13 +3931,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 CreateOrDestroyGPULightmap();
 
                 // if we enabled, generate light maps
-                if (mLightMapRequired)
+                if ( mLightMapRequired )
                 {
                     // update derived data for whole terrain, but just lightmap
                     mDirtyDerivedDataRect = new Rectangle();
                     mDirtyDerivedDataRect.Left = mDirtyDerivedDataRect.Top = 0;
                     mDirtyDerivedDataRect.Right = mDirtyDerivedDataRect.Bottom = mSize;
-                    UpdateDerivedData(false, DERIVED_DATA_LIGHTMAP);
+                    UpdateDerivedData( false, DERIVED_DATA_LIGHTMAP );
                 }
             }
         }
@@ -3958,29 +3958,29 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public ushort GetLODLevelWhenVertexEliminated(long x, long y)
+        public ushort GetLODLevelWhenVertexEliminated( long x, long y )
         {
             // gets eliminated by either row or column first
-            return Utility.Min(GetLODLevelWhenVertexEliminated(x), GetLODLevelWhenVertexEliminated(y));
+            return Utility.Min( GetLODLevelWhenVertexEliminated( x ), GetLODLevelWhenVertexEliminated( y ) );
         }
         /// <summary>
         /// Utility method, get the first LOD Level at which this vertex is no longer included
         /// </summary>
         /// <param name="rowOrColulmn"></param>
         /// <returns></returns>
-        public ushort GetLODLevelWhenVertexEliminated(long rowOrColulmn)
+        public ushort GetLODLevelWhenVertexEliminated( long rowOrColulmn )
         {
             // LOD levels bisect the domain.
             // start at the lowest detail
-            ushort currentElim = (ushort)((mSize - 1) / (mMinBatchSize - 1));
+            ushort currentElim = (ushort)( ( mSize - 1 ) / ( mMinBatchSize - 1 ) );
             // start at a non-exitant LOD index, this applies to the min batch vertices
             // which are never eliminated
             ushort currentLod = this.NumLodLevels;
 
-            while (rowOrColulmn % currentElim != 0)
+            while ( rowOrColulmn % currentElim != 0 )
             {
                 // not on this boundary, look finer
-                currentElim = (ushort)(currentElim / 2);
+                currentElim = (ushort)( currentElim / 2 );
                 --currentLod;
                 // This will always terminate since (anything % 1 == 0)
             }
@@ -4081,7 +4081,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             mHeightData = null;
             this.DeltaData = null;
             mQuadTree = null;
-            if (mCpuTerrainNormalMap != null)
+            if ( mCpuTerrainNormalMap != null )
             {
                 mCpuTerrainNormalMap.Data = null;
                 mCpuTerrainNormalMap = null;
@@ -4092,12 +4092,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             mCpuCompositeMapStorage = null;
         }
 
-        public float height(long x, long y)
+        public float height( long x, long y )
         {
-            return mHeightData[y * mSize + x];
+            return mHeightData[ y * mSize + x ];
         }
 
-        protected KeyValuePair<bool, Vector3> CheckQuadIntersection(int x, int z, Ray ray)
+        protected KeyValuePair<bool, Vector3> CheckQuadIntersection( int x, int z, Ray ray )
         {
             //build the two planes belonging to the quad's triangles
             //float* val = (float*)GetHeightData(x, z);
@@ -4110,23 +4110,23 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             //v4F = *val;
             //float vv = ;
 
-            Vector3 v1 = new Vector3(x, mHeightData[z + mSize*x], z),
-                    v2 = new Vector3(x + 1, mHeightData[z + mSize*(x + 1)], z),
-                    v3 = new Vector3(x, mHeightData[(z + 1) + mSize*x], z + 1),
-                    v4 = new Vector3(x + 1, mHeightData[(z + 1) + mSize*(x + 1)], z + 1);
+            Vector3 v1 = new Vector3( x, mHeightData[ z + mSize * x ], z ),
+                    v2 = new Vector3( x + 1, mHeightData[ z + mSize * ( x + 1 ) ], z ),
+                    v3 = new Vector3( x, mHeightData[ ( z + 1 ) + mSize * x ], z + 1 ),
+                    v4 = new Vector3( x + 1, mHeightData[ ( z + 1 ) + mSize * ( x + 1 ) ], z + 1 );
 
             Plane p1 = new Plane(),
                   p2 = new Plane();
             bool oddRow = false;
-            if (z%2 != 0)
+            if ( z % 2 != 0 )
             {
                 /* odd
                     3---4
                     | \ |
                     1---2
                     */
-                p1.Redefine(v2, v4, v3);
-                p2.Redefine(v1, v2, v3);
+                p1.Redefine( v2, v4, v3 );
+                p2.Redefine( v1, v2, v3 );
                 oddRow = true;
             }
             else
@@ -4136,75 +4136,75 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     | / |
                     1---2
                     */
-                p1.Redefine(v1, v2, v4);
-                p2.Redefine(v1, v4, v3);
+                p1.Redefine( v1, v2, v4 );
+                p2.Redefine( v1, v4, v3 );
             }
             // Test for intersection with the two planes. 
             // Then test that the intersection points are actually
             // still inside the triangle (with a small error margin)
             // Also check which triangle it is in
-            IntersectResult planeInt = ray.Intersects(p1);
-            if (planeInt.Hit)
+            IntersectResult planeInt = ray.Intersects( p1 );
+            if ( planeInt.Hit )
             {
-                Vector3 where = ray.GetPoint(planeInt.Distance);
+                Vector3 where = ray.GetPoint( planeInt.Distance );
                 Vector3 rel = where - v1;
-                if (rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
-                    && ((rel.x >= rel.z && !oddRow) || (rel.x >= (1 - rel.z) && oddRow))) // triangle bounds
-                    return new KeyValuePair<bool, Vector3>(true, where);
+                if ( rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
+                    && ( ( rel.x >= rel.z && !oddRow ) || ( rel.x >= ( 1 - rel.z ) && oddRow ) ) ) // triangle bounds
+                    return new KeyValuePair<bool, Vector3>( true, where );
             }
-            planeInt = ray.Intersects(p2);
-            if (planeInt.Hit)
+            planeInt = ray.Intersects( p2 );
+            if ( planeInt.Hit )
             {
-                Vector3 where = ray.GetPoint(planeInt.Distance);
+                Vector3 where = ray.GetPoint( planeInt.Distance );
                 Vector3 rel = where - v1;
-                if (rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
-                    && ((rel.x <= rel.z && !oddRow) || (rel.x <= (1 - rel.z) && oddRow))) // triangle bounds
-                    return new KeyValuePair<bool, Vector3>(true, where);
+                if ( rel.x >= -0.01 && rel.x <= 1.01 && rel.z >= -0.01 && rel.z <= 1.01 // quad bounds
+                    && ( ( rel.x <= rel.z && !oddRow ) || ( rel.x <= ( 1 - rel.z ) && oddRow ) ) ) // triangle bounds
+                    return new KeyValuePair<bool, Vector3>( true, where );
             }
 
-            return new KeyValuePair<bool, Vector3>(false, Vector3.Zero);
+            return new KeyValuePair<bool, Vector3>( false, Vector3.Zero );
         }
 
         protected void FreeGPUResources()
         {
             //remove textures
             TextureManager tmgr = TextureManager.Instance;
-            if (tmgr != null)
+            if ( tmgr != null )
             {
-                foreach (Texture tex in mBlendTextureList)
+                foreach ( Texture tex in mBlendTextureList )
                 {
-                    tmgr.Remove(tex);
+                    tmgr.Remove( tex );
                 }
                 mBlendTextureList.Clear();
 
-                if (mTerrainNormalMap != null)
+                if ( mTerrainNormalMap != null )
                 {
-                    tmgr.Remove(mTerrainNormalMap);
+                    tmgr.Remove( mTerrainNormalMap );
                     mTerrainNormalMap = null;
                 }
-                if (mColorMap != null)
+                if ( mColorMap != null )
                 {
-                    tmgr.Remove(mColorMap);
+                    tmgr.Remove( mColorMap );
                     mColorMap = null;
                 }
-                if (this.LightMap != null)
+                if ( this.LightMap != null )
                 {
-                    tmgr.Remove(this.LightMap);
+                    tmgr.Remove( this.LightMap );
                     this.LightMap = null;
                 }
-                if (mCompositeMap != null)
+                if ( mCompositeMap != null )
                 {
-                    tmgr.Remove(mCompositeMap);
+                    tmgr.Remove( mCompositeMap );
                     mCompositeMap = null;
                 }
-                if (mMaterial != null)
+                if ( mMaterial != null )
                 {
-                    MaterialManager.Instance.Remove(mMaterial);
+                    MaterialManager.Instance.Remove( mMaterial );
                     mMaterial = null;
                 }
-                if (mCompositeMapMaterial != null)
+                if ( mCompositeMapMaterial != null )
                 {
-                    MaterialManager.Instance.Remove(mCompositeMapMaterial);
+                    MaterialManager.Instance.Remove( mCompositeMapMaterial );
                     mCompositeMapMaterial = null;
                 }
             }
@@ -4242,128 +4242,128 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
              17 vertices (per side) or 33. This makes buffer re-use much easier while
              still giving the full range of LODs.
              * mNumLodLevelsPerLeafNode = Math::Log2(mMaxBatchSize - 1) - Math::Log2(mMinBatchSize - 1) + 1;
-		mNumLodLevels = Math::Log2(mSize - 1) - Math::Log2(mMinBatchSize - 1) + 1;
-		//mTreeDepth = Math::Log2(mMaxBatchSize - 1) - Math::Log2(mMinBatchSize - 1) + 2;
-		mTreeDepth = mNumLodLevels - mNumLodLevelsPerLeafNode + 1;
+        mNumLodLevels = Math::Log2(mSize - 1) - Math::Log2(mMinBatchSize - 1) + 1;
+        //mTreeDepth = Math::Log2(mMaxBatchSize - 1) - Math::Log2(mMinBatchSize - 1) + 2;
+        mTreeDepth = mNumLodLevels - mNumLodLevelsPerLeafNode + 1;
          */
-            
-            this.LodLevelsPerLeafCount = (ushort)(Utility.Log2(mMaxBatchSize - 1) - Utility.Log2(mMinBatchSize - 1) + 1);
-            this.NumLodLevels = (ushort)(Utility.Log2(mSize - 1) - Utility.Log2(mMinBatchSize - 1) + 1);
-            mTreeDepth = (ushort)(this.NumLodLevels - this.LodLevelsPerLeafCount + 1);
 
-            LogManager.Instance.Write(string.Format("Terrain created; size={0}, minBatch={1}, maxBatch={2}, treedepth={3}, lodLevels={4}, leafNodes={5}",
-                mSize, mMinBatchSize, mMaxBatchSize, mTreeDepth, this.NumLodLevels, this.LodLevelsPerLeafCount), null);
+            this.LodLevelsPerLeafCount = (ushort)( Utility.Log2( mMaxBatchSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
+            this.NumLodLevels = (ushort)( Utility.Log2( mSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
+            mTreeDepth = (ushort)( this.NumLodLevels - this.LodLevelsPerLeafCount + 1 );
+
+            LogManager.Instance.Write( string.Format( "Terrain created; size={0}, minBatch={1}, maxBatch={2}, treedepth={3}, lodLevels={4}, leafNodes={5}",
+                mSize, mMinBatchSize, mMaxBatchSize, mTreeDepth, this.NumLodLevels, this.LodLevelsPerLeafCount ), null );
         }
 
         protected void DistributeVertexData()
         {
             /* Now we need to figure out how to distribute vertex data. We want to 
-		    use 16-bit indexes for compatibility, which means that the maximum patch
-		    size that we can address (even sparsely for lower LODs) is 129x129 
-		    (the next one up, 257x257 is too big). 
+            use 16-bit indexes for compatibility, which means that the maximum patch
+            size that we can address (even sparsely for lower LODs) is 129x129 
+            (the next one up, 257x257 is too big). 
 
-		    So we need to split the vertex data into chunks of 129. The number of 
-		    primary tiles this creates also indicates the point above which in
-		    the node tree that we can no longer merge tiles at lower LODs without
-		    using different vertex data. For example, using the 257x257 input example
-		    above, the vertex data would have to be split in 2 (in each dimension)
-		    in order to fit within the 129x129 range. This data could be shared by
-		    all tree depths from 1 onwards, it's just that LODs 3-1 would sample 
-		    the 129x129 data sparsely. LOD 0 would sample all of the vertices.
+            So we need to split the vertex data into chunks of 129. The number of 
+            primary tiles this creates also indicates the point above which in
+            the node tree that we can no longer merge tiles at lower LODs without
+            using different vertex data. For example, using the 257x257 input example
+            above, the vertex data would have to be split in 2 (in each dimension)
+            in order to fit within the 129x129 range. This data could be shared by
+            all tree depths from 1 onwards, it's just that LODs 3-1 would sample 
+            the 129x129 data sparsely. LOD 0 would sample all of the vertices.
 
-		    LOD 4 however, the lowest LOD, could not work with the same vertex data
-		    because it needs to cover the entire terrain. There are 2 choices here:
-		    create another set of vertex data at 17x17 which is only used by LOD 4, 
-		    or make LOD 4 occur at tree depth 1 instead (ie still split up, and 
-		    rendered as 2x9 along each edge instead. 
+            LOD 4 however, the lowest LOD, could not work with the same vertex data
+            because it needs to cover the entire terrain. There are 2 choices here:
+            create another set of vertex data at 17x17 which is only used by LOD 4, 
+            or make LOD 4 occur at tree depth 1 instead (ie still split up, and 
+            rendered as 2x9 along each edge instead. 
 
-		    Since rendering very small batches is not desirable, and the vertex counts
-		    are inherently not going to be large, creating a separate vertex set is
-		    preferable. This will also be more efficient on the vertex cache with
-		    distant terrains. 
+            Since rendering very small batches is not desirable, and the vertex counts
+            are inherently not going to be large, creating a separate vertex set is
+            preferable. This will also be more efficient on the vertex cache with
+            distant terrains. 
 
-		    We probably need a larger example, because in this case only 1 level (LOD 0)
-		    needs to use this separate vertex data. Higher detail terrains will need
-		    it for multiple levels, here's a 2049x2049 example with 65 / 33 batch settings:
+            We probably need a larger example, because in this case only 1 level (LOD 0)
+            needs to use this separate vertex data. Higher detail terrains will need
+            it for multiple levels, here's a 2049x2049 example with 65 / 33 batch settings:
 
-		    LODlevels = log2(2049 - 1) - log2(33 - 1) + 1 = 11 - 5 + 1 = 7
-		    TreeDepth = log2((2049 - 1) / (65 - 1)) + 1 = 6
-		    Number of vertex data splits at most detailed level: 
-		    (size - 1) / (TERRAIN_MAX_BATCH_SIZE - 1) = 2048 / 128 = 16
+            LODlevels = log2(2049 - 1) - log2(33 - 1) + 1 = 11 - 5 + 1 = 7
+            TreeDepth = log2((2049 - 1) / (65 - 1)) + 1 = 6
+            Number of vertex data splits at most detailed level: 
+            (size - 1) / (TERRAIN_MAX_BATCH_SIZE - 1) = 2048 / 128 = 16
 
-		    LOD 0: 2049 vertices, 32 x 65 vertex tiles (tree depth 5) vdata 0-15  [129x16]
-		    LOD 1: 1025 vertices, 32 x 33 vertex tiles (tree depth 5) vdata 0-15  [129x16]
-		    LOD 2: 513  vertices, 16 x 33 vertex tiles (tree depth 4) vdata 0-15  [129x16]
-		    LOD 3: 257  vertices, 8  x 33 vertex tiles (tree depth 3) vdata 16-17 [129x2] 
-		    LOD 4: 129  vertices, 4  x 33 vertex tiles (tree depth 2) vdata 16-17 [129x2]
-		    LOD 5: 65   vertices, 2  x 33 vertex tiles (tree depth 1) vdata 16-17 [129x2]
-		    LOD 6: 33   vertices, 1  x 33 vertex tiles (tree depth 0) vdata 18    [33]
+            LOD 0: 2049 vertices, 32 x 65 vertex tiles (tree depth 5) vdata 0-15  [129x16]
+            LOD 1: 1025 vertices, 32 x 33 vertex tiles (tree depth 5) vdata 0-15  [129x16]
+            LOD 2: 513  vertices, 16 x 33 vertex tiles (tree depth 4) vdata 0-15  [129x16]
+            LOD 3: 257  vertices, 8  x 33 vertex tiles (tree depth 3) vdata 16-17 [129x2] 
+            LOD 4: 129  vertices, 4  x 33 vertex tiles (tree depth 2) vdata 16-17 [129x2]
+            LOD 5: 65   vertices, 2  x 33 vertex tiles (tree depth 1) vdata 16-17 [129x2]
+            LOD 6: 33   vertices, 1  x 33 vertex tiles (tree depth 0) vdata 18    [33]
 
-		    All the vertex counts are to be squared, they are just along one edge. 
-		    So as you can see, we need to have 3 levels of vertex data to satisy this
-		    (admittedly quite extreme) case, and a total of 19 sets of vertex data. 
-		    The full detail geometry, which is  16(x16) sets of 129(x129), used by 
-		    LODs 0-2. LOD 3 can't use this set because it needs to group across them, 
-		    because it has only 8 tiles, so we make another set which satisfies this 
-		    at a maximum of 129 vertices per vertex data section. In this case LOD 
-		    3 needs 257(x257) total vertices so we still split into 2(x2) sets of 129. 
-		    This set is good up to and including LOD 5, but LOD 6 needs a single 
-		    contiguous set of vertices, so we make a 33x33 vertex set for it. 
+            All the vertex counts are to be squared, they are just along one edge. 
+            So as you can see, we need to have 3 levels of vertex data to satisy this
+            (admittedly quite extreme) case, and a total of 19 sets of vertex data. 
+            The full detail geometry, which is  16(x16) sets of 129(x129), used by 
+            LODs 0-2. LOD 3 can't use this set because it needs to group across them, 
+            because it has only 8 tiles, so we make another set which satisfies this 
+            at a maximum of 129 vertices per vertex data section. In this case LOD 
+            3 needs 257(x257) total vertices so we still split into 2(x2) sets of 129. 
+            This set is good up to and including LOD 5, but LOD 6 needs a single 
+            contiguous set of vertices, so we make a 33x33 vertex set for it. 
 
-		    In terms of vertex data stored, this means that while our primary data is:
-		    2049^2 = 4198401 vertices
-		    our final stored vertex data is 
-		    (16 * 129)^2 + (2 * 129)^2 + 33^2 = 4327749 vertices
+            In terms of vertex data stored, this means that while our primary data is:
+            2049^2 = 4198401 vertices
+            our final stored vertex data is 
+            (16 * 129)^2 + (2 * 129)^2 + 33^2 = 4327749 vertices
 
-		    That equals a 3% premium, but it's both necessary and worth it for the
-		    reduction in batch count resulting from the grouping. In addition, at
-		    LODs 3 and 6 (or rather tree depth 3 and 0) there is the opportunity 
-		    to free up the vertex data used by more detailed LODs, which is
-		    important when dealing with large terrains. For example, if we
-		    freed the (GPU) vertex data for LOD 0-2 in the medium distance, 
-		    we would save 98% of the memory overhead for this terrain. 
+            That equals a 3% premium, but it's both necessary and worth it for the
+            reduction in batch count resulting from the grouping. In addition, at
+            LODs 3 and 6 (or rather tree depth 3 and 0) there is the opportunity 
+            to free up the vertex data used by more detailed LODs, which is
+            important when dealing with large terrains. For example, if we
+            freed the (GPU) vertex data for LOD 0-2 in the medium distance, 
+            we would save 98% of the memory overhead for this terrain. 
 
-		*/
+        */
             LogManager logMgr = LogManager.Instance;
-            logMgr.Write(LogMessageLevel.Trivial, false, "Terrain.DistributeVertexData processing source " +
-                "terrain size of " + mSize, null);
+            logMgr.Write( LogMessageLevel.Trivial, false, "Terrain.DistributeVertexData processing source " +
+                "terrain size of " + mSize, null );
 
             ushort depth = mTreeDepth;
             ushort prevDepth = depth;
             ushort currentresolution = mSize;
             ushort bakedresolution = mSize;
-            ushort targetsplits = (ushort)((bakedresolution - 1) / (TERRAIN_MAX_BATCH_SIZE - 1));
-            while (depth-- != 0 && targetsplits != 0)
+            ushort targetsplits = (ushort)( ( bakedresolution - 1 ) / ( TERRAIN_MAX_BATCH_SIZE - 1 ) );
+            while ( depth-- != 0 && targetsplits != 0 )
             {
-                ushort splits = (ushort)(1 << depth);
-                if (splits == targetsplits)
+                ushort splits = (ushort)( 1 << depth );
+                if ( splits == targetsplits )
                 {
-                    logMgr.Write(LogMessageLevel.Trivial, false, string.Format("Assigning vertex data, resolution={0}, startDepth={1}, endDepth={2}, splits={3}",
-                        bakedresolution, depth, prevDepth, splits), null);
+                    logMgr.Write( LogMessageLevel.Trivial, false, string.Format( "Assigning vertex data, resolution={0}, startDepth={1}, endDepth={2}, splits={3}",
+                        bakedresolution, depth, prevDepth, splits ), null );
                     // vertex data goes at this level, at bakedresolution
                     // applies to all lower levels (except those with a closer vertex data)
                     // determine physical size (as opposed to resolution)
-                    int sz = ((bakedresolution - 1) / splits) + 1;
-                    mQuadTree.AssignVertexData(depth, prevDepth, bakedresolution, (ushort)sz);
+                    int sz = ( ( bakedresolution - 1 ) / splits ) + 1;
+                    mQuadTree.AssignVertexData( depth, prevDepth, bakedresolution, (ushort)sz );
 
                     // next set to look for
-                    bakedresolution = (ushort)(((currentresolution - 1) >> 1) + 1);
-                    targetsplits = (ushort)((bakedresolution - 1) / (TERRAIN_MAX_BATCH_SIZE - 1));
+                    bakedresolution = (ushort)( ( ( currentresolution - 1 ) >> 1 ) + 1 );
+                    targetsplits = (ushort)( ( bakedresolution - 1 ) / ( TERRAIN_MAX_BATCH_SIZE - 1 ) );
                     prevDepth = depth;
                 }
 
-                currentresolution = (ushort)(((currentresolution - 1) >> 1) + 1);
+                currentresolution = (ushort)( ( ( currentresolution - 1 ) >> 1 ) + 1 );
             }
 
             // Always assign vertex data to the top of the tree
-            if (prevDepth > 0)
+            if ( prevDepth > 0 )
             {
-                mQuadTree.AssignVertexData(0, 1, bakedresolution, bakedresolution);
-                logMgr.Write(LogMessageLevel.Trivial, false, string.Format("Assigning vertex data, resolution: {0}, startDepth=0, endDepth=1, splits=1",
-                    bakedresolution), null);
+                mQuadTree.AssignVertexData( 0, 1, bakedresolution, bakedresolution );
+                logMgr.Write( LogMessageLevel.Trivial, false, string.Format( "Assigning vertex data, resolution: {0}, startDepth=0, endDepth=1, splits=1",
+                    bakedresolution ), null );
             }
 
-            logMgr.Write(LogMessageLevel.Trivial, false, "Terrain.DistributeVertexdata finished", null);
+            logMgr.Write( LogMessageLevel.Trivial, false, "Terrain.DistributeVertexdata finished", null );
 
         }
 
@@ -4372,45 +4372,45 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             //centre the terrain on local origin
             mBase = -mWorldSize * 0.5f;
             // scale determines what 1 unit on the grid becomes in world space
-            mScale = mWorldSize / (float)(mSize - 1);
+            mScale = mWorldSize / (float)( mSize - 1 );
         }
 
         protected void CreateGPUBlendTextures()
         {
             // Create enough RGBA/RGB textures to cope with blend layers
-            byte numTex = GetBlendTextureCount(LayerCount);
+            byte numTex = GetBlendTextureCount( LayerCount );
             //delete extras
             TextureManager tmgr = TextureManager.Instance;
-            if (tmgr == null)
+            if ( tmgr == null )
                 return;
 
-            while (mBlendTextureList.Count > numTex)
+            while ( mBlendTextureList.Count > numTex )
             {
-                tmgr.Remove(mBlendTextureList[mBlendTextureList.Count - 1]);
-                mBlendTextureList.Remove(mBlendTextureList[mBlendTextureList.Count - 1]);
+                tmgr.Remove( mBlendTextureList[ mBlendTextureList.Count - 1 ] );
+                mBlendTextureList.Remove( mBlendTextureList[ mBlendTextureList.Count - 1 ] );
             }
 
             byte currentTex = (byte)mBlendTextureList.Count;
             mBlendTextureList.Capacity = numTex;
             //create new textures
-            for (byte i = currentTex; i < numTex; ++i)
+            for ( byte i = currentTex; i < numTex; ++i )
             {
-                PixelFormat fmt = GetBlendTextureFormat(i, LayerCount);
+                PixelFormat fmt = GetBlendTextureFormat( i, LayerCount );
                 // Use TU_STATIC because although we will update this, we won't do it every frame
                 // in normal circumstances, so we don't want TU_DYNAMIC. Also we will 
                 // read it (if we've cleared local temp areas) so no WRITE_ONLY
-                mBlendTextureList.Add((Texture)tmgr.CreateManual(
+                mBlendTextureList.Add( (Texture)tmgr.CreateManual(
                     msBlendTextureGenerator.GetNextUniqueName(), ResourceGroupManager.DefaultResourceGroupName,
-                     TextureType.TwoD, mLayerBlendMapSize, mLayerBlendMapSize, 1, 0, fmt, TextureUsage.Static, null));
+                     TextureType.TwoD, mLayerBlendMapSize, mLayerBlendMapSize, 1, 0, fmt, TextureUsage.Static, null ) );
 
-                mLayerBlendSizeActual = (ushort)mBlendTextureList[i].Width;
-                if (mCpuBlendMapStorage.Count > i)
+                mLayerBlendSizeActual = (ushort)mBlendTextureList[ i ].Width;
+                if ( mCpuBlendMapStorage.Count > i )
                 {
                     //load blend data
-                    PixelBox src = new PixelBox(mLayerBlendMapSize, mLayerBlendMapSize, 1, fmt, Memory.PinObject(mCpuBlendMapStorage[i]));
-                    mBlendTextureList[i].GetBuffer().BlitFromMemory(src);
+                    PixelBox src = new PixelBox( mLayerBlendMapSize, mLayerBlendMapSize, 1, fmt, Memory.PinObject( mCpuBlendMapStorage[ i ] ) );
+                    mBlendTextureList[ i ].GetBuffer().BlitFromMemory( src );
                     //realease cpu copy, dont need it anymore
-                    Memory.UnpinObject(mCpuBlendMapStorage[i]);
+                    Memory.UnpinObject( mCpuBlendMapStorage[ i ] );
                 }
                 else
                 {
@@ -4418,8 +4418,8 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     BasicBox box = new BasicBox( 0, 0, mLayerBlendMapSize, mLayerBlendMapSize );
                     HardwarePixelBuffer buf = mBlendTextureList[ i ].GetBuffer();
                     var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
-                    byte[] aZero = new byte[PixelUtil.GetNumElemBytes( fmt )*mLayerBlendMapSize*mLayerBlendMapSize];
-                    Memory.Copy(BufferBase.Wrap(aZero), pInit, aZero.Length);
+                    byte[] aZero = new byte[ PixelUtil.GetNumElemBytes( fmt ) * mLayerBlendMapSize * mLayerBlendMapSize ];
+                    Memory.Copy( BufferBase.Wrap( aZero ), pInit, aZero.Length );
                     buf.Unlock();
                 }
             }//i
@@ -4430,50 +4430,50 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         protected void CreateLayerBlendMaps()
         {
             // delete extra blend layers (affects GPU)
-            while (mLayerBlendMapList.Count > mLayers.Count - 1)
+            while ( mLayerBlendMapList.Count > mLayers.Count - 1 )
             {
-                mLayerBlendMapList.Remove(mLayerBlendMapList[mLayerBlendMapList.Count - 1]);
+                mLayerBlendMapList.Remove( mLayerBlendMapList[ mLayerBlendMapList.Count - 1 ] );
             }
 
             // resize up or down (up initialises to 0, populate as necessary)
             object o = null;
             mLayerBlendMapList.Capacity = mLayers.Count;
-            for (int i = 0; i < mLayers.Count - 1; i++)
-                mLayerBlendMapList.Add((TerrainLayerBlendMap)o);
+            for ( int i = 0; i < mLayers.Count - 1; i++ )
+                mLayerBlendMapList.Add( (TerrainLayerBlendMap)o );
         }
 
         protected void CreateOrDestroyGPUNormalMap()
         {
-            if (mNormalMapRequired && mTerrainNormalMap == null)
+            if ( mNormalMapRequired && mTerrainNormalMap == null )
             {
                 //create 
                 mTerrainNormalMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/nm", ResourceGroupManager.DefaultResourceGroupName,
-                     TextureType.TwoD, mSize, mSize, 1, 0, PixelFormat.BYTE_RGB, TextureUsage.Static, null);
+                     TextureType.TwoD, mSize, mSize, 1, 0, PixelFormat.BYTE_RGB, TextureUsage.Static, null );
 
                 //upload loaded normal data if present
-                if (mCpuTerrainNormalMap != null)
+                if ( mCpuTerrainNormalMap != null )
                 {
-                    mTerrainNormalMap.GetBuffer().BlitFromMemory(mCpuTerrainNormalMap);
+                    mTerrainNormalMap.GetBuffer().BlitFromMemory( mCpuTerrainNormalMap );
                     mCpuTerrainNormalMap.Data = null;
                     mCpuTerrainNormalMap = null;
                 }
             }
-            else if (!mNormalMapRequired && mTerrainNormalMap != null)
+            else if ( !mNormalMapRequired && mTerrainNormalMap != null )
             {
                 //destroy 
-                TextureManager.Instance.Remove(mTerrainNormalMap);
+                TextureManager.Instance.Remove( mTerrainNormalMap );
                 mTerrainNormalMap = null;
             }
         }
 
-        protected void ConvertSpace(Space inSpace, Vector3 inVec, Space outSpace, ref Vector3 outVec, bool translation)
+        protected void ConvertSpace( Space inSpace, Vector3 inVec, Space outSpace, ref Vector3 outVec, bool translation )
         {
             Space currSpace = inSpace;
             outVec = inVec;
-            while (currSpace != outSpace)
+            while ( currSpace != outSpace )
             {
-                switch (currSpace)
+                switch ( currSpace )
                 {
                     case Space.WorldSpace:
                         {
@@ -4484,11 +4484,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                         break;
                     case Space.LocalSpace:
                         {
-                            switch (outSpace)
+                            switch ( outSpace )
                             {
                                 case Space.WorldSpace:
                                     {
-                                        if (translation)
+                                        if ( translation )
                                             outVec += mPos;
                                         currSpace = Space.WorldSpace;
                                     }
@@ -4497,11 +4497,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                                 case Space.TerrainSpace:
                                     {
                                         // go via terrain space
-                                        outVec = convertWorldToTerrainAxes(outVec);
-                                        if (translation)
+                                        outVec = convertWorldToTerrainAxes( outVec );
+                                        if ( translation )
                                             outVec.x -= mBase; outVec.y -= mBase;
 
-                                        outVec.x /= (mSize - 1) * mScale; outVec.y /= (mSize - 1) * mScale;
+                                        outVec.x /= ( mSize - 1 ) * mScale; outVec.y /= ( mSize - 1 ) * mScale;
                                         currSpace = Space.TerrainSpace;
                                     }
                                     break;
@@ -4510,26 +4510,26 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                         break;
                     case Space.TerrainSpace:
                         {
-                            switch (outSpace)
+                            switch ( outSpace )
                             {
                                 case Space.WorldSpace:
                                 case Space.LocalSpace:
                                     {
                                         // go via local space
-                                        outVec.x *= (mSize - 1) * mScale; outVec.y *= (mSize - 1) * mScale;
-                                        if (translation)
+                                        outVec.x *= ( mSize - 1 ) * mScale; outVec.y *= ( mSize - 1 ) * mScale;
+                                        if ( translation )
                                             outVec.x += mBase; outVec.y += mBase;
-                                        outVec = convertTerrainToWorldAxes(outVec);
+                                        outVec = convertTerrainToWorldAxes( outVec );
                                         currSpace = Space.LocalSpace;
                                     }
                                     break;
                                 case Space.PointSpace:
                                     {
-                                        outVec.x *= (mSize - 1); outVec.y *= (mSize - 1);
+                                        outVec.x *= ( mSize - 1 ); outVec.y *= ( mSize - 1 );
                                         // rounding up/down
                                         // this is why POINT_SPACE is the last on the list, because it loses data
-                                        outVec.x = (float)((int)(outVec.x + 0.5));
-                                        outVec.y = (float)((int)(outVec.y + 0.5));
+                                        outVec.x = (float)( (int)( outVec.x + 0.5 ) );
+                                        outVec.y = (float)( (int)( outVec.y + 0.5 ) );
                                         currSpace = Space.PointSpace;
                                     }
                                     break;
@@ -4539,7 +4539,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     case Space.PointSpace:
                         {
                             // always go via terrain space
-                            outVec.x /= (mSize - 1); outVec.y /= (mSize - 1);
+                            outVec.x /= ( mSize - 1 ); outVec.y /= ( mSize - 1 );
                             currSpace = Space.TerrainSpace;
 
                         }
@@ -4550,116 +4550,116 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
         protected void CreateOrDestroyGPUColorMap()
         {
-            if (mGlobalColorMapEnabled && mColorMap == null)
+            if ( mGlobalColorMapEnabled && mColorMap == null )
             {
 #warning Check MIP_DEFAULT
                 // create
                 mColorMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/cm", ResourceGroupManager.DefaultResourceGroupName,
-                     TextureType.TwoD, mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB);
+                     TextureType.TwoD, mGlobalColorMapSize, mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB );
 
-                if (mCpuColorMapStorage != null)
+                if ( mCpuColorMapStorage != null )
                 {
                     // Load cached data
-                    PixelBox src = new PixelBox((int)mGlobalColorMapSize, (int)mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB, Memory.PinObject(mCpuColorMapStorage));
-                    mColorMap.GetBuffer().BlitFromMemory(src);
+                    PixelBox src = new PixelBox( (int)mGlobalColorMapSize, (int)mGlobalColorMapSize, 1, PixelFormat.BYTE_RGB, Memory.PinObject( mCpuColorMapStorage ) );
+                    mColorMap.GetBuffer().BlitFromMemory( src );
                     // release CPU copy, don't need it anymore
-                    Memory.UnpinObject(mCpuColorMapStorage);
+                    Memory.UnpinObject( mCpuColorMapStorage );
                     mCpuColorMapStorage = null;
                 }
             }
-            else if (!mGlobalColorMapEnabled && mColorMap != null)
+            else if ( !mGlobalColorMapEnabled && mColorMap != null )
             {
                 // destroy
-                TextureManager.Instance.Remove(mColorMap);
+                TextureManager.Instance.Remove( mColorMap );
                 mColorMap = null;
             }
         }
 
         protected void CreateOrDestroyGPULightmap()
         {
-            if (mLightMapRequired && this.LightMap == null)
+            if ( mLightMapRequired && this.LightMap == null )
             {
                 //create
                 this.LightMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/lm", ResourceGroupManager.DefaultResourceGroupName,
-                     TextureType.TwoD, mLightmapSize, mLightmapSize, 0, PixelFormat.L8, TextureUsage.Static);
+                     TextureType.TwoD, mLightmapSize, mLightmapSize, 0, PixelFormat.L8, TextureUsage.Static );
 
                 mLightmapSizeActual = (ushort)this.LightMap.Width;
 
-                if (mCpuLightmapStorage != null)
+                if ( mCpuLightmapStorage != null )
                 {
                     // Load cached data
-                    PixelBox src = new PixelBox((int)mLightmapSize, (int)mLightmapSize, 1, PixelFormat.L8, Memory.PinObject(mCpuLightmapStorage));
-                    this.LightMap.GetBuffer().BlitFromMemory(src);
-                    Memory.UnpinObject(mCpuLightmapStorage);
+                    PixelBox src = new PixelBox( (int)mLightmapSize, (int)mLightmapSize, 1, PixelFormat.L8, Memory.PinObject( mCpuLightmapStorage ) );
+                    this.LightMap.GetBuffer().BlitFromMemory( src );
+                    Memory.UnpinObject( mCpuLightmapStorage );
                     mCpuLightmapStorage = null;
                 }
                 else
                 {
                     // initialise to full-bright
-                    BasicBox box = new BasicBox(0, 0, (int)mLightmapSizeActual, (int)mLightmapSizeActual);
-                    byte[] aInit = new byte[mLightmapSizeActual * mLightmapSizeActual];
-                    for (int i = 0; i < aInit.Length; i++)
-                        aInit[i] = 255;
+                    BasicBox box = new BasicBox( 0, 0, (int)mLightmapSizeActual, (int)mLightmapSizeActual );
+                    byte[] aInit = new byte[ mLightmapSizeActual * mLightmapSizeActual ];
+                    for ( int i = 0; i < aInit.Length; i++ )
+                        aInit[ i ] = 255;
                     HardwarePixelBuffer buf = this.LightMap.GetBuffer();
-                    var pInit = buf.Lock(box, BufferLocking.Discard).Data;
-                    Memory.Copy(BufferBase.Wrap(aInit), pInit, aInit.Length);
+                    var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
+                    Memory.Copy( BufferBase.Wrap( aInit ), pInit, aInit.Length );
                     buf.Unlock();
                 }
             }
-            else if (!mLightMapRequired && this.LightMap != null)
+            else if ( !mLightMapRequired && this.LightMap != null )
             {
                 // destroy
-                TextureManager.Instance.Remove(this.LightMap);
+                TextureManager.Instance.Remove( this.LightMap );
                 this.LightMap = null;
             }
         }
 
         protected void CreateOrDestroyGPUCompositeMap()
         {
-            if (mCompositeMapRequired && mCompositeMap == null)
+            if ( mCompositeMapRequired && mCompositeMap == null )
             {
                 //create
                 mCompositeMap = TextureManager.Instance.CreateManual(
                     mMaterialName + "/comp", ResourceGroupManager.DefaultResourceGroupName,
-                    TextureType.TwoD, mCompositeMapSize, mCompositeMapSize, 0, PixelFormat.BYTE_RGBA, TextureUsage.Static);
+                    TextureType.TwoD, mCompositeMapSize, mCompositeMapSize, 0, PixelFormat.BYTE_RGBA, TextureUsage.Static );
 
                 mCompositeMapSizeActual = (ushort)mCompositeMap.Width;
-                if (mCpuCompositeMapStorage != null)
+                if ( mCpuCompositeMapStorage != null )
                 {
                     // Load cached data
-                    PixelBox src = new PixelBox((int)mCompositeMapSize, (int)mCompositeMapSize, 1, PixelFormat.BYTE_RGBA, Memory.PinObject(mCpuCompositeMapStorage));
-                    mCompositeMap.GetBuffer().BlitFromMemory(src);
+                    PixelBox src = new PixelBox( (int)mCompositeMapSize, (int)mCompositeMapSize, 1, PixelFormat.BYTE_RGBA, Memory.PinObject( mCpuCompositeMapStorage ) );
+                    mCompositeMap.GetBuffer().BlitFromMemory( src );
                     // release CPU copy, don't need it anymore
-                    Memory.UnpinObject(mCpuCompositeMapStorage);
+                    Memory.UnpinObject( mCpuCompositeMapStorage );
                     mCpuCompositeMapStorage = null;
                 }
                 else
                 {
                     // initialise to black
-                    BasicBox box = new BasicBox(0, 0, (int)mCompositeMapSizeActual, (int)mCompositeMapSizeActual);
-                    byte[] aInit = new byte[mCompositeMapSizeActual * mCompositeMapSizeActual];
+                    BasicBox box = new BasicBox( 0, 0, (int)mCompositeMapSizeActual, (int)mCompositeMapSizeActual );
+                    byte[] aInit = new byte[ mCompositeMapSizeActual * mCompositeMapSizeActual ];
 
                     HardwarePixelBuffer buf = mCompositeMap.GetBuffer();
-                    var pInit = buf.Lock(box, BufferLocking.Discard).Data;
-                    Memory.Copy(BufferBase.Wrap(aInit), pInit, aInit.Length);
+                    var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
+                    Memory.Copy( BufferBase.Wrap( aInit ), pInit, aInit.Length );
                     buf.Unlock();
                 }
             }
-            else if (!mCompositeMapRequired && mCompositeMap != null)
+            else if ( !mCompositeMapRequired && mCompositeMap != null )
             {
-                TextureManager.Instance.Remove(mCompositeMap);
+                TextureManager.Instance.Remove( mCompositeMap );
                 mCompositeMap = null;
             }
         }
 
         protected void WaitForDerivedProcesses()
         {
-            while (this.IsDerivedDataUpdateInProgress)
+            while ( this.IsDerivedDataUpdateInProgress )
             {
                 //we need to wait for this to finish
-                System.Threading.Thread.Sleep(50);
+                System.Threading.Thread.Sleep( 50 );
 #warning implement WorkQueue
 #if false
                 Root::getSingleton().getWorkQueue()->processResponses();
@@ -4667,10 +4667,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        protected Vector3 convertWorldToTerrainAxes(Vector3 inVec)
+        protected Vector3 convertWorldToTerrainAxes( Vector3 inVec )
         {
             Vector3 ret = Vector3.Zero;
-            switch (this.Alignment)
+            switch ( this.Alignment )
             {
                 case Alignment.Align_X_Z:
                     {
@@ -4696,10 +4696,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return ret;
         }
 
-        protected Vector3 convertTerrainToWorldAxes(Vector3 inVec)
+        protected Vector3 convertTerrainToWorldAxes( Vector3 inVec )
         {
             Vector3 ret = Vector3.Zero;
-            switch (this.Alignment)
+            switch ( this.Alignment )
             {
                 case Alignment.Align_X_Z:
                     ret.x = inVec.x;
@@ -4718,24 +4718,24 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             return ret;
         }
 
-        protected void CheckLayers(bool includeGpuResources)
+        protected void CheckLayers( bool includeGpuResources )
         {
-            foreach (LayerInstance inst in mLayers)
+            foreach ( LayerInstance inst in mLayers )
             {
                 LayerInstance layer = inst;
                 // If we're missing sampler entries compared to the declaration, initialise them
-                for (int i = layer.TextureNames.Count; i < mLayerDecl.Samplers.Count; ++i)
+                for ( int i = layer.TextureNames.Count; i < mLayerDecl.Samplers.Count; ++i )
                 {
-                    layer.TextureNames.Add(string.Empty);
+                    layer.TextureNames.Add( string.Empty );
                 }
                 // if we have too many layers for the declaration, trim them
-                if (layer.TextureNames.Count > mLayerDecl.Samplers.Count)
+                if ( layer.TextureNames.Count > mLayerDecl.Samplers.Count )
                 {
                     layer.TextureNames.Capacity = mLayerDecl.Samplers.Count;
                 }
             }
 
-            if (includeGpuResources)
+            if ( includeGpuResources )
             {
                 CreateGPUBlendTextures();
                 CreateLayerBlendMaps();
@@ -4744,18 +4744,18 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
         protected void CheckDeclaration()
         {
-            if (mMaterialGenerator == null)
+            if ( mMaterialGenerator == null )
             {
                 mMaterialGenerator = TerrainGlobalOptions.DefaultMaterialGenerator;
             }
-            if (mLayerDecl.Elements == null || mLayerDecl.Elements.Count == 0)
+            if ( mLayerDecl.Elements == null || mLayerDecl.Elements.Count == 0 )
             {
                 //default the declaration
                 mLayerDecl = mMaterialGenerator.LayerDeclaration;
             }
         }
 
-        protected PixelFormat GetBlendTextureFormat(byte textureIndex, byte numLayers)
+        protected PixelFormat GetBlendTextureFormat( byte textureIndex, byte numLayers )
         {
             // Always create RGBA; no point trying to create RGB since all cards pad to 32-bit (XRGB)
             // and it makes it harder to expand layer count dynamically if format has to change
@@ -4778,10 +4778,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         {
             mLayerUVMultiplier.Capacity = mLayers.Count;
             mLayerUVMultiplier.Clear();
-            for (int i = 0; i < mLayers.Count; ++i)
+            for ( int i = 0; i < mLayers.Count; ++i )
             {
-                LayerInstance inst = mLayers[i];
-                mLayerUVMultiplier.Add(mWorldSize / inst.WorldSize);
+                LayerInstance inst = mLayers[ i ];
+                mLayerUVMultiplier.Add( mWorldSize / inst.WorldSize );
             }
         }
         /// <summary>
@@ -4789,16 +4789,16 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// </summary>
         /// <param name="srcPtr"></param>
         /// <param name="dstArray"></param>
-        protected void IntPtrToArray(BufferBase srcPtr, ref byte[] dstArray)
+        protected void IntPtrToArray( BufferBase srcPtr, ref byte[] dstArray )
         {
-            System.Diagnostics.Debug.Assert(srcPtr != null);
-            System.Diagnostics.Debug.Assert(dstArray.Length > 0);
-            var dst = Memory.PinObject(dstArray);
-            Memory.Copy(srcPtr, dst, dstArray.Length);
-            Memory.UnpinObject(dstArray);
+            System.Diagnostics.Debug.Assert( srcPtr != null );
+            System.Diagnostics.Debug.Assert( dstArray.Length > 0 );
+            var dst = Memory.PinObject( dstArray );
+            Memory.Copy( srcPtr, dst, dstArray.Length );
+            Memory.UnpinObject( dstArray );
         }
 
-        protected void UpdateDerivedDataImpl(Rectangle rect, Rectangle lightmapExtraRect, bool synchronous, byte typeMask)
+        protected void UpdateDerivedDataImpl( Rectangle rect, Rectangle lightmapExtraRect, bool synchronous, byte typeMask )
         {
             this.IsDerivedDataUpdateInProgress = true;
             mDerivedUpdatePendingMask = 0;
@@ -4808,12 +4808,12 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             req.DirtyRect = rect;
             req.LightmapExtraDirtyRect = lightmapExtraRect;
             req.TypeMask = typeMask;
-            if (!mNormalMapRequired)
-                req.TypeMask = (byte)(req.TypeMask & ~DERIVED_DATA_NORMALS);
-            if (!mLightMapRequired)
-                req.TypeMask = (byte)(req.TypeMask & ~DERIVED_DATA_LIGHTMAP);
+            if ( !mNormalMapRequired )
+                req.TypeMask = (byte)( req.TypeMask & ~DERIVED_DATA_NORMALS );
+            if ( !mLightMapRequired )
+                req.TypeMask = (byte)( req.TypeMask & ~DERIVED_DATA_LIGHTMAP );
 
-            _handleRequest(req);
+            _handleRequest( req );
 
 #warning implement workqueue
 #if false
@@ -4823,9 +4823,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 #endif
         }
 
-        protected void CalculateCurrentLod(Viewport vp)
+        protected void CalculateCurrentLod( Viewport vp )
         {
-            if (mQuadTree != null)
+            if ( mQuadTree != null )
             {
                 // calculate error terms
 #warning implement Camera.LodCamera;
@@ -4834,63 +4834,63 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 // W. de Boer 2000 calculation
                 // A = vp_near / abs(vp_top)
                 // A = 1 / tan(fovy*0.5)    (== 1 for fovy=45*2)
-                float A = (float)(1.0f / Utility.Tan((Radian)((cam.FieldOfView * 0.5))));
+                float A = (float)( 1.0f / Utility.Tan( (Radian)( ( cam.FieldOfView * 0.5 ) ) ) );
                 // T = 2 * maxPixelError / vertRes
                 float maxPixelError = 8 * cam.InverseLodBias;//TerrainGlobalOptions.MaxPixelError * cam.InverseLodBias;
                 float T = 2.0f * maxPixelError / (float)vp.ActualHeight;
 
                 // CFactor = A / T
                 float cFactor = A / T;
-                mQuadTree.CalculateCurrentLod(cam, cFactor);
+                mQuadTree.CalculateCurrentLod( cam, cFactor );
             }
         }
 
-        public static void AddQueryFlag(uint flags)
+        public static void AddQueryFlag( uint flags )
         {
             QueryFlags |= flags;
         }
 
-        public static void RemoveQueryFlags(uint flags)
+        public static void RemoveQueryFlags( uint flags )
         {
             QueryFlags &= ~flags;
         }
 
-        public Terrain GetNeighbour(NeighbourIndex index)
+        public Terrain GetNeighbour( NeighbourIndex index )
         {
-            return mNeighbours[(int)index];
+            return mNeighbours[ (int)index ];
         }
 
-        public void SetNeighbour(NeighbourIndex index, Terrain neighbour)
+        public void SetNeighbour( NeighbourIndex index, Terrain neighbour )
         {
-            SetNeighbour(index, neighbour, false, true);
+            SetNeighbour( index, neighbour, false, true );
         }
 
-        public void SetNeighbour(NeighbourIndex index, Terrain neighbour, bool recalculate, bool notifyOther)
+        public void SetNeighbour( NeighbourIndex index, Terrain neighbour, bool recalculate, bool notifyOther )
         {
-            if (mNeighbours[(int)index] != neighbour)
+            if ( mNeighbours[ (int)index ] != neighbour )
             {
                 // detach existing
-                if (mNeighbours[(int)index] != null && notifyOther)
-                    mNeighbours[(int)index].SetNeighbour(GetOppositeNeighbour(index), null, false, false);
+                if ( mNeighbours[ (int)index ] != null && notifyOther )
+                    mNeighbours[ (int)index ].SetNeighbour( GetOppositeNeighbour( index ), null, false, false );
 
-                mNeighbours[(int)index] = neighbour;
-                if (mNeighbours[(int)index] != null && notifyOther)
-                    mNeighbours[(int)index].SetNeighbour(GetOppositeNeighbour(index), this, recalculate, false);
+                mNeighbours[ (int)index ] = neighbour;
+                if ( mNeighbours[ (int)index ] != null && notifyOther )
+                    mNeighbours[ (int)index ].SetNeighbour( GetOppositeNeighbour( index ), this, recalculate, false );
 
-                if (recalculate)
+                if ( recalculate )
                 {
                     //recalculate, pass OUR edge rect
                     Rectangle edgerect = new Rectangle();
-                    GetEdgeRect(index, 2, ref edgerect);
-                    NeighbourModified(index, edgerect, edgerect);
+                    GetEdgeRect( index, 2, ref edgerect );
+                    NeighbourModified( index, edgerect, edgerect );
                 }
             }
         }
 
-        public NeighbourIndex GetOppositeNeighbour(NeighbourIndex index)
+        public NeighbourIndex GetOppositeNeighbour( NeighbourIndex index )
         {
             int intindex = (int)index;
-            intindex += (int)(NeighbourIndex.Count) / 2;
+            intindex += (int)( NeighbourIndex.Count ) / 2;
             intindex = intindex % (int)NeighbourIndex.Count;
             return (NeighbourIndex)intindex;
         }
@@ -4908,50 +4908,50 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             // neighbour AABB along the light direction (worst case scenario)
             if ( !mDirtyGeometryRectForNeighbours.IsNull )
             {
-                Rectangle dirtyRect = new Rectangle(mDirtyGeometryRectForNeighbours);
+                Rectangle dirtyRect = new Rectangle( mDirtyGeometryRectForNeighbours );
                 mDirtyGeometryRectForNeighbours = new Rectangle();
                 // calculate light update rectangle
                 Vector3 lightVec = TerrainGlobalOptions.LightMapDirection;
                 Rectangle lightmapRect = new Rectangle();
-                WidenRectByVector(lightVec, dirtyRect, MinHeight, MaxHeight, ref lightmapRect);
+                WidenRectByVector( lightVec, dirtyRect, MinHeight, MaxHeight, ref lightmapRect );
 
-                for (int i = 0; i < (int)NeighbourIndex.Count; ++i)
+                for ( int i = 0; i < (int)NeighbourIndex.Count; ++i )
                 {
-                    NeighbourIndex ni = (NeighbourIndex)(i);
-                    Terrain neighbour = GetNeighbour(ni);
-                    if (neighbour == null)
+                    NeighbourIndex ni = (NeighbourIndex)( i );
+                    Terrain neighbour = GetNeighbour( ni );
+                    if ( neighbour == null )
                         continue;
 
                     // Intersect the incoming rectangles with the edge regions related to this neighbour
                     Rectangle edgeRect = new Rectangle();
-                    GetEdgeRect(ni, 2, ref edgeRect);
-                    Rectangle heightEdgeRect = edgeRect.Intersect(dirtyRect);
-                    Rectangle lightmapEdgeRect = edgeRect.Intersect(lightmapRect);
+                    GetEdgeRect( ni, 2, ref edgeRect );
+                    Rectangle heightEdgeRect = edgeRect.Intersect( dirtyRect );
+                    Rectangle lightmapEdgeRect = edgeRect.Intersect( lightmapRect );
 
                     if ( !heightEdgeRect.IsNull || !lightmapRect.IsNull )
                     {
                         // ok, we have something valid to pass on
                         Rectangle neighbourHeightEdgeRect = new Rectangle(), neighbourLightmapEdgeRect = new Rectangle();
                         if ( !heightEdgeRect.IsNull )
-                            GetNeighbourEdgeRect(ni, heightEdgeRect, ref neighbourHeightEdgeRect);
+                            GetNeighbourEdgeRect( ni, heightEdgeRect, ref neighbourHeightEdgeRect );
 
                         if ( !lightmapRect.IsNull )
-                            GetNeighbourEdgeRect(ni, lightmapEdgeRect, ref neighbourLightmapEdgeRect);
+                            GetNeighbourEdgeRect( ni, lightmapEdgeRect, ref neighbourLightmapEdgeRect );
 
-                        neighbour.NeighbourModified(GetOppositeNeighbour(ni),
-                            neighbourHeightEdgeRect, neighbourLightmapEdgeRect);
+                        neighbour.NeighbourModified( GetOppositeNeighbour( ni ),
+                            neighbourHeightEdgeRect, neighbourLightmapEdgeRect );
 
                     }
                 }
             }
         }
-        
-        public void NeighbourModified(NeighbourIndex index, Rectangle edgerect, Rectangle shadowrect)
+
+        public void NeighbourModified( NeighbourIndex index, Rectangle edgerect, Rectangle shadowrect )
         {
             // We can safely assume that we would not have been contacted if it wasn't 
             // important
-            Terrain neighbour = GetNeighbour(index);
-            if (neighbour == null)
+            Terrain neighbour = GetNeighbour( index );
+            if ( neighbour == null )
                 return; // bogus request
 
             bool updateGeom = false;
@@ -4963,20 +4963,20 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 // update edges; match heights first, then recalculate normals
                 // reduce to just single line / corner
                 Rectangle heightMatchRect = new Rectangle();
-                GetEdgeRect(index, 1, ref heightMatchRect);
-                heightMatchRect = heightMatchRect.Intersect(edgerect);
+                GetEdgeRect( index, 1, ref heightMatchRect );
+                heightMatchRect = heightMatchRect.Intersect( edgerect );
 
-                for (long y = heightMatchRect.Top; y < heightMatchRect.Bottom; ++y)
+                for ( long y = heightMatchRect.Top; y < heightMatchRect.Bottom; ++y )
                 {
-                    for (long x = heightMatchRect.Left; x < heightMatchRect.Right; ++x)
+                    for ( long x = heightMatchRect.Left; x < heightMatchRect.Right; ++x )
                     {
                         long nx = 0, ny = 0;
-                        GetNeighbourPoint(index, x, y, ref nx, ref ny);
-                        float neighbourHeight = neighbour.GetHeightAtPoint(nx, ny);
-                        if (!Utility.RealEqual(neighbourHeight, GetHeightAtPoint(x, y), 1e-3f))
+                        GetNeighbourPoint( index, x, y, ref nx, ref ny );
+                        float neighbourHeight = neighbour.GetHeightAtPoint( nx, ny );
+                        if ( !Utility.RealEqual( neighbourHeight, GetHeightAtPoint( x, y ), 1e-3f ) )
                         {
-                            SetHeightAtPoint(x, y, neighbourHeight);
-                            if (!updateGeom)
+                            SetHeightAtPoint( x, y, neighbourHeight );
+                            if ( !updateGeom )
                             {
                                 updateGeom = true;
                                 updateDerived |= DERIVED_DATA_ALL;
@@ -4987,13 +4987,13 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 // if we didn't need to update heights, we still need to update normals
                 // because this was called only if neighbor changed
-                if (!updateGeom)
+                if ( !updateGeom )
                 {
                     // ideally we would deal with normal dirty rect separately (as we do with
                     // lightmaps) because a dirty geom rectangle will actually grow by one 
                     // element in each direction for normals recalculation. However for
                     // the sake of one row/column it's really not worth it.
-                    mDirtyDerivedDataRect.Merge(edgerect);
+                    mDirtyDerivedDataRect.Merge( edgerect );
                     updateDerived |= DERIVED_DATA_NORMALS;
                 }
             }
@@ -5005,84 +5005,84 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 // of the *neighbour*
                 Vector3 lightVec = TerrainGlobalOptions.LightMapDirection;
                 Rectangle widenedRect = new Rectangle();
-                WidenRectByVector(lightVec, shadowrect, neighbour.MinHeight, neighbour.MaxHeight, ref widenedRect);
+                WidenRectByVector( lightVec, shadowrect, neighbour.MinHeight, neighbour.MaxHeight, ref widenedRect );
 
                 // set the special-case lightmap dirty rectangle
-                mDirtyLightmapFromNeighboursRect.Merge(widenedRect);
+                mDirtyLightmapFromNeighboursRect.Merge( widenedRect );
                 updateDerived |= DERIVED_DATA_LIGHTMAP;
             }
 
-            if (updateGeom)
+            if ( updateGeom )
                 UpdateGeometry();
-            if (updateDerived != 0)
-                UpdateDerivedData(true, updateDerived);
+            if ( updateDerived != 0 )
+                UpdateDerivedData( true, updateDerived );
         }
 
-        public Terrain RaySelectNeighbour(Ray ray)
+        public Terrain RaySelectNeighbour( Ray ray )
         {
-            return RaySelectNeighbour(ray, 0);
+            return RaySelectNeighbour( ray, 0 );
         }
 
-        public Terrain RaySelectNeighbour(Ray ray, float distanceLimit)
+        public Terrain RaySelectNeighbour( Ray ray, float distanceLimit )
         {
             Real dNear = 0, dFar = 0;
-            Ray localRay = new Ray(ray.Origin - Position, ray.Direction);
+            Ray localRay = new Ray( ray.Origin - Position, ray.Direction );
             // Move back half a square - if we're on the edge of the AABB we might
             // miss the intersection otherwise; it's ok for everywhere else since
             // we want the far intersection anyway
-            localRay.Origin = localRay.GetPoint(-mWorldSize / mSize * 0.5f);
+            localRay.Origin = localRay.GetPoint( -mWorldSize / mSize * 0.5f );
             IntersectResult res = new IntersectResult();
-         //   Tuple<bool, Real, Real> intersects = Utility.Intersects(localRay, AABB);
-            IntersectResult intersects = Utility.Intersects(localRay, AABB);
-            if (intersects.Hit)
+            //   Tuple<bool, Real, Real> intersects = Utility.Intersects(localRay, AABB);
+            IntersectResult intersects = Utility.Intersects( localRay, AABB );
+            if ( intersects.Hit )
             {
                 dNear = intersects.Distance;
                 dFar = intersects.Distance;
                 // discard out of range
-                if (dFar <= 0 || (distanceLimit != 0 && dFar > distanceLimit))
+                if ( dFar <= 0 || ( distanceLimit != 0 && dFar > distanceLimit ) )
                     return null;
 
                 // we're interested in the exit point
                 // convert to standard form so we can use x/y always
-                Ray terrainRay = new Ray(convertWorldToTerrainAxes(localRay.Origin),
-                    convertWorldToTerrainAxes(localRay.Direction));
+                Ray terrainRay = new Ray( convertWorldToTerrainAxes( localRay.Origin ),
+                    convertWorldToTerrainAxes( localRay.Direction ) );
 
-                Vector3 terrainIntersectPos = terrainRay.GetPoint(dFar);
+                Vector3 terrainIntersectPos = terrainRay.GetPoint( dFar );
                 Real x = terrainIntersectPos.x;
                 Real y = terrainIntersectPos.y;
                 Real dx = terrainRay.Direction.x;
                 Real dy = terrainRay.Direction.y;
 
-                if (Utility.RealEqual(Utility.Abs(x), Utility.Abs(y)))
+                if ( Utility.RealEqual( Utility.Abs( x ), Utility.Abs( y ) ) )
                 {
-                    if (x > 0 && y > 0 && dx > 0 && dy > 0)
-                        return GetNeighbour(NeighbourIndex.NorthEast);
-                    if (x > 0 && y < 0 && dx > 0 && dy < 0)
-                        return GetNeighbour(NeighbourIndex.SouthEast);
-                    if (x < 0 && y > 0 && dx < 0 && dy > 0)
-                        return GetNeighbour(NeighbourIndex.NorthWest);
-                    if (x < 0 && y < 0 && dx < 0 && dy < 0)
-                        return GetNeighbour(NeighbourIndex.SouthWest);
+                    if ( x > 0 && y > 0 && dx > 0 && dy > 0 )
+                        return GetNeighbour( NeighbourIndex.NorthEast );
+                    if ( x > 0 && y < 0 && dx > 0 && dy < 0 )
+                        return GetNeighbour( NeighbourIndex.SouthEast );
+                    if ( x < 0 && y > 0 && dx < 0 && dy > 0 )
+                        return GetNeighbour( NeighbourIndex.NorthWest );
+                    if ( x < 0 && y < 0 && dx < 0 && dy < 0 )
+                        return GetNeighbour( NeighbourIndex.SouthWest );
                 }
-                if (x > 0 && x > y && dx > 0)
-                    return GetNeighbour(NeighbourIndex.East);
-                if (x < 0 && x < y && dx < 0)
-                    return GetNeighbour(NeighbourIndex.West);
-                if (y > 0 && y > x && dy > 0)
-                    return GetNeighbour(NeighbourIndex.North);
-                if (y < 0 && y < x && dy < 0)
-                    return GetNeighbour(NeighbourIndex.South);
+                if ( x > 0 && x > y && dx > 0 )
+                    return GetNeighbour( NeighbourIndex.East );
+                if ( x < 0 && x < y && dx < 0 )
+                    return GetNeighbour( NeighbourIndex.West );
+                if ( y > 0 && y > x && dy > 0 )
+                    return GetNeighbour( NeighbourIndex.North );
+                if ( y < 0 && y < x && dy < 0 )
+                    return GetNeighbour( NeighbourIndex.South );
 
             }
             return null;
         }
 
-        public void DumpTextures(string prefix, string suffix)
+        public void DumpTextures( string prefix, string suffix )
         {
             throw new NotImplementedException();
         }
 
-        public void GetEdgeRect(NeighbourIndex index, long range, ref Rectangle outRect)
+        public void GetEdgeRect( NeighbourIndex index, long range, ref Rectangle outRect )
         {
             // We make the edge rectangle 2 rows / columns at the edge of the tile
             // 2 because this copes with normal changes and potentially filtered
@@ -5091,7 +5091,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             // terrain origin is bottom-left remember so north is highest value
 
             // set left/right
-            switch (index)
+            switch ( index )
             {
                 case NeighbourIndex.East:
                 case NeighbourIndex.NorthEast:
@@ -5113,7 +5113,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
 
             // set top / bottom
-            switch (index)
+            switch ( index )
             {
                 case NeighbourIndex.North:
                 case NeighbourIndex.NorthEast:
@@ -5135,15 +5135,15 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        public void GetNeighbourEdgeRect(NeighbourIndex index, Rectangle inRect, ref Rectangle outRect)
+        public void GetNeighbourEdgeRect( NeighbourIndex index, Rectangle inRect, ref Rectangle outRect )
         {
-            System.Diagnostics.Debug.Assert(mSize == GetNeighbour(index).Size, "Neighbour has not the same size as this instance");
+            System.Diagnostics.Debug.Assert( mSize == GetNeighbour( index ).Size, "Neighbour has not the same size as this instance" );
             // Basically just reflect the rect 
             // remember index is neighbour relationship from OUR perspective so
             // arrangement is backwards to getEdgeRect
 
             // left/right
-            switch (index)
+            switch ( index )
             {
                 case NeighbourIndex.East:
                 case NeighbourIndex.NorthEast:
@@ -5161,7 +5161,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             };
 
             // top / bottom
-            switch (index)
+            switch ( index )
             {
                 case NeighbourIndex.North:
                 case NeighbourIndex.NorthEast:
@@ -5179,14 +5179,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        public void GetNeighbourPoint(NeighbourIndex index, long x, long y, ref long outx, ref long outy)
+        public void GetNeighbourPoint( NeighbourIndex index, long x, long y, ref long outx, ref long outy )
         {
             // Get the index of the point we should be looking at on a neighbour
             // in order to match up points
-            System.Diagnostics.Debug.Assert(mSize == GetNeighbour(index).Size, "Neighbour has not the same size as this instance");
+            System.Diagnostics.Debug.Assert( mSize == GetNeighbour( index ).Size, "Neighbour has not the same size as this instance" );
 
             // left/right
-            switch (index)
+            switch ( index )
             {
                 case NeighbourIndex.East:
                 case NeighbourIndex.NorthEast:
@@ -5202,7 +5202,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
 
             // top / bottom
-            switch (index)
+            switch ( index )
             {
                 case NeighbourIndex.North:
                 case NeighbourIndex.NorthEast:
@@ -5218,25 +5218,25 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        public void GetNeighbourPointOverflow(long x, long y, out NeighbourIndex outindex, out long outx, out long outy)
+        public void GetNeighbourPointOverflow( long x, long y, out NeighbourIndex outindex, out long outx, out long outy )
         {
             outindex = NeighbourIndex.Count;
-            if (x < 0)
+            if ( x < 0 )
             {
                 outx = x + mSize - 1;
-                if (y < 0)
+                if ( y < 0 )
                     outindex = NeighbourIndex.SouthWest;
-                else if (y >= mSize)
+                else if ( y >= mSize )
                     outindex = NeighbourIndex.NorthWest;
                 else
                     outindex = NeighbourIndex.West;
             }
-            else if (x >= mSize)
+            else if ( x >= mSize )
             {
                 outx = x - mSize + 1;
-                if (y < 0)
+                if ( y < 0 )
                     outindex = NeighbourIndex.SouthEast;
-                else if (y >= mSize)
+                else if ( y >= mSize )
                     outindex = NeighbourIndex.NorthEast;
                 else
                     outindex = NeighbourIndex.East;
@@ -5244,31 +5244,31 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             else
                 outx = x;
 
-            if (y < 0)
+            if ( y < 0 )
             {
                 outy = y + mSize - 1;
-                if (x >= 0 && x < mSize)
+                if ( x >= 0 && x < mSize )
                     outindex = NeighbourIndex.South;
             }
-            else if (y >= mSize)
+            else if ( y >= mSize )
             {
                 outy = y - mSize + 1;
-                if (x >= 0 && x < mSize)
+                if ( x >= 0 && x < mSize )
                     outindex = NeighbourIndex.North;
             }
             else
                 outy = y;
 
-            System.Diagnostics.Debug.Assert(outindex != NeighbourIndex.Count);
+            System.Diagnostics.Debug.Assert( outindex != NeighbourIndex.Count );
         }
         /// <summary>
         /// checks if the given value is power of two.
         /// </summary>
         /// <param name="x">the value to check</param>
         /// <returns>true if the given value is power of two</returns>
-        protected bool IsPowerOfTwo(ulong x)
+        protected bool IsPowerOfTwo( ulong x )
         {
-            return (x & (x - 1)) == 0;
+            return ( x & ( x - 1 ) ) == 0;
         }
         #endregion
 
