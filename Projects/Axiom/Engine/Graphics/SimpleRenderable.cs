@@ -245,7 +245,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public abstract float GetSquaredViewDepth( Camera camera );
+		public abstract Real GetSquaredViewDepth( Camera camera );
 
 		/// <summary>
 		///

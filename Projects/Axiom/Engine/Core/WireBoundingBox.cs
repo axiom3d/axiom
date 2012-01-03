@@ -59,7 +59,7 @@ namespace Axiom.Core
 
 		#region Field and Properties
 
-		protected float Radius;
+		protected Real Radius;
 
 		public new AxisAlignedBox BoundingBox
 		{
@@ -260,7 +260,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 min = box.Minimum,
 					max = box.Maximum,
@@ -273,7 +273,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Get the local bounding radius of the wire bounding box.
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{

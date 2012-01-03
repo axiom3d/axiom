@@ -208,11 +208,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
-				return float.PositiveInfinity;
+				return Real.PositiveInfinity;
 			}
 		}
 

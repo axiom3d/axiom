@@ -20,12 +20,20 @@
 //THE SOFTWARE.
 #endregion License
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Axiom.Core;
+using Axiom.Core.Collections;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -35,6 +43,7 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Terrain
 {
+    [OgreVersion( 1, 7, 2 )]
     public struct LodLevel
     {
         /// <summary>
@@ -42,40 +51,31 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public ushort BatchSize;
         /// <summary>
-        /// index data referencing the main vertex data but in CPU buffers (built in background)
-        /// </summary>
-        public IndexData CpuIndexData;
-        /// <summary>
-        /// "Real" index data on the gpu
+        /// Index data on the gpu
         /// </summary>
         public IndexData GpuIndexData;
         /// <summary>
         /// Maximum delta height between this and the next lower lod
         /// </summary>
-        public float MaxHeightDelta;
+        public Real MaxHeightDelta;
         /// <summary>
         /// Temp calc area for max height delta
         /// </summary>
-        public float CalcMaxHeightDelta;
+        public Real CalcMaxHeightDelta;
         /// <summary>
         /// The most recently calculated transition distance
         /// </summary>
-        public float LastTranistionDist;
+        public Real LastTransitionDist;
         /// <summary>
         /// The cFactor value used to calculate transitionDist
         /// </summary>
-        public float LastCFactor;
+        public Real LastCFactor;
     }
 
+    [OgreVersion( 1, 7, 2 )]
     public class VertexDataRecord
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public VertexData CpuVertexData;
-        /// <summary>
-        /// 
-        /// </summary>
         public VertexData GpuVertexData;
         /// <summary>
         /// resolution of the data compared to the base terrain data (NOT number of vertices!)
@@ -105,13 +105,9 @@ namespace Axiom.Components.Terrain
         public VertexDataRecord()
         {
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="res"></param>
-        /// <param name="sz"></param>
-        /// <param name="lvls"></param>
-        public VertexDataRecord(ushort res, ushort sz, ushort lvls)
+
+        [OgreVersion( 1, 7, 2 )]
+        public VertexDataRecord( ushort res, ushort sz, ushort lvls )
         {
             CpuVertexData = null;
             GpuVertexData = null;
@@ -158,7 +154,6 @@ namespace Axiom.Components.Terrain
     /// </remarks>
     public class TerrainQuadTreeNode : DisposableObject
     {
-        protected TerrainRendable mRend;
         /// <summary>
         /// Buffer binding used for holding positions.
         /// </summary>
@@ -192,7 +187,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// relative to mLocalCentre
         /// </summary>
-        protected float mBoundingRadius;
+        protected Real mBoundingRadius;
         /// <summary>
         /// -1 = none (do not render)
         /// </summary>
@@ -210,8 +205,9 @@ namespace Axiom.Components.Terrain
         protected ushort mMaterialLodIndex;
         protected TerrainQuadTreeNode mNodeWithVertexData;
         protected VertexDataRecord mVertexDataRecord;
-    //    protected Movable mMovable;
-    //    protected Rend mRend;
+        protected Rend mRend = null;
+        protected Movable mMovable = null;
+        protected SceneNode mLocalNode;
 
         public VertexDataRecord VertextDataRecord
         {
@@ -310,7 +306,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get the bounding radius of this node
         /// </summary>
-        public float BoundingRadius
+        public Real BoundingRadius
         {
             get
             {
@@ -431,8 +427,19 @@ namespace Axiom.Components.Terrain
 
         public Technique Technique
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return mTerrain.Material.GetBestTechnique( mMaterialLodIndex, mRend ); }
         }
+
+        public LightList Lights
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return mMovable.QueryLights();
+            }
+        }
+
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -444,6 +451,7 @@ namespace Axiom.Components.Terrain
         /// <param name="lod">The base LOD level</param>
         /// <param name="depth">The depth that this node is at in the tree (or convenience)</param>
         /// <param name="quadrant">The index of the quadrant (0, 1, 2, 3)</param>
+        [OgreVersion( 1, 7, 2 )]
         public TerrainQuadTreeNode(Terrain terrain, TerrainQuadTreeNode parent, ushort xOff, ushort yOff,
             ushort size, ushort lod, ushort depth, ushort quadrant)
             : base()
@@ -465,16 +473,14 @@ namespace Axiom.Components.Terrain
             mChildWithMaxHeightDelta = null;
             mSelfOrChildRendered = false;
             mNodeWithVertexData = null;
-           // mMovable = null;
-            mRend = null;
             mAABB = new AxisAlignedBox();
-            if (mTerrain.MaxBatchSize < size)
+            if ( mTerrain.MaxBatchSize < size )
             {
-                ushort childSize = (ushort)(((size - 1) * 0.5f) + 1);
-                ushort childOff = (ushort)(childSize - 1);
-                ushort childLod = (ushort)(lod - 1);
-                ushort childDepth = (ushort)(depth + 1);
-
+                ushort childSize = (ushort)( ( ( size - 1 ) * 0.5f ) + 1 );
+                ushort childOff = (ushort)( childSize - 1 );
+                ushort childLod = (ushort)( lod - 1 ); // LOD levels decrease down the tree (higher detail)
+                ushort childDepth = (ushort)( depth + 1 );
+                // create children
                 mChildren[0] = new TerrainQuadTreeNode(mTerrain, this, xOff, yOff, childSize, childLod, childDepth, 0);
                 mChildren[1] = new TerrainQuadTreeNode(mTerrain, this, (ushort)(xOff + childOff), yOff, childSize, childLod, childDepth, 1);
                 mChildren[2] = new TerrainQuadTreeNode(mTerrain, this, xOff, (ushort)(yOff + childOff), childSize, childLod, childDepth, 2);
@@ -485,7 +491,7 @@ namespace Axiom.Components.Terrain
                 ll.BatchSize = mTerrain.MinBatchSize;
                 ll.MaxHeightDelta = 0;
                 ll.CalcMaxHeightDelta = 0;
-                mLodLevels.Add(ll);
+                mLodLevels.Add( ll );
             }
             else
             {
@@ -507,9 +513,9 @@ namespace Axiom.Components.Terrain
                     ll.BatchSize = sz;
                     ll.MaxHeightDelta = 0;
                     ll.CalcMaxHeightDelta = 0;
-                    mLodLevels.Add(ll);
-                    if(ownLod != 0)
-                        sz = (ushort)(((sz - 1) * 0.5) + 1);
+                    mLodLevels.Add( ll );
+                    if ( ownLod != 0 )
+                        sz = (ushort)( ( ( sz - 1 ) * 0.5 ) + 1 );
 
                 }
                 Debug.Assert(sz == mTerrain.MinBatchSize);
@@ -525,31 +531,34 @@ namespace Axiom.Components.Terrain
             //TODO: - what if we actually centred this at the terrain height at this point?
             //would this be better?
             mTerrain.GetPoint(midpointX, midpointY, 0, ref mLocalCentre);
-            /*mRend = new Rend(this);
-            mMovable = new Movable(this,mRend);*/
-            mRend= new TerrainRendable(this);
-            SceneNode sn = mTerrain.RootSceneNode.CreateChildSceneNode(mLocalCentre);
-            sn.AttachObject(mRend);
-           // sn.AttachObject(mRend);
-
+            mMovable = new Movable( this );
+            mRend = new Rend( this );
         }
 
+        [OgreVersion( 1, 7, 2, "~TerrainQuadTreeNode" )]
         protected override void dispose( bool disposeManagedResources )
         {
             if ( !this.IsDisposed )
             {
                 if ( disposeManagedResources )
                 {
-                    /* if (mMovable != null)
-                     {
-                         mMovable.Dispose();
-                         mMovable = null;
-                     }
-                     if (mRend != null)
-                     {
-                         mRend.Dispose();
-                         mRend = null;
-                     }*/
+                    if ( mMovable != null )
+                    {
+                        if ( !mMovable.IsDisposed )
+                            mMovable.Dispose();
+
+                        mMovable = null;
+                    }
+
+                    if ( mRend != null )
+                        mRend = null;
+
+                    if ( mLocalNode != null )
+                    {
+                        mTerrain.RootSceneNode.RemoveAndDestroyChild( mLocalNode.Name );
+                        mLocalNode = null;
+                    }
+
                     for ( int i = 0; i < mChildren.Length; i++ )
                     {
                         if ( mChildren[ i ] != null )
@@ -655,6 +664,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         ///  Load node and children (perform GPU tasks, will be render thread)
         /// </summary>
+        [OgreVersion( 1, 7, 2 )]
         public void Load()
         {
             CreateGpuVertexData();
@@ -664,26 +674,25 @@ namespace Axiom.Components.Terrain
                 for ( int i = 0; i < 4; i++ )
                     mChildren[ i ].Load();
 
-            //TODO romeoxbm
-            //if ( !mLocalNode )
-            //    mLocalNode = mTerrain->_getRootSceneNode()->createChildSceneNode( mLocalCentre );
+            if ( mLocalNode == null )
+                mLocalNode = mTerrain.RootSceneNode.CreateChildSceneNode( mLocalCentre );
 
-            //mLocalNode->attachObject( mMovable );
+            mLocalNode.AttachObject( mMovable );
         }
         /// <summary>
         /// Unload node and children (perform GPU tasks, will be render thread)
         /// </summary>
+        [OgreVersion( 1, 7, 2 )]
         public void Unload()
         {
-            if (!IsLeaf)
-                for (int i = 0; i < 4; i++)
-                    mChildren[i].Unload();
+            if ( !IsLeaf )
+                for ( int i = 0; i < 4; i++ )
+                    mChildren[ i ].Unload();
 
             DestroyGpuVertexData();
 
-            //TODO romeoxbm
-            //if ( mMovable->isAttached() )
-            //    mLocalNode->detachObject( mMovable );
+            if ( mMovable.IsAttached )
+                mLocalNode.DetachObject( mMovable );
         }
         /// <summary>
         /// Unprepare node and children (perform CPU tasks, may be background thread)
@@ -931,6 +940,7 @@ namespace Axiom.Components.Terrain
         /// <param name="deltas"></param>
         /// <param name="rect"></param>
         /// <param name="cpuData"></param>
+        [OgreVersion( 1, 7, 2 )]
         public void UpdateVertexData( bool positions, bool deltas, Rectangle rect, bool cpuData )
         {
             if ( rect.Left <= mBoundaryX || rect.Right > mOffsetX
@@ -981,10 +991,9 @@ namespace Axiom.Components.Terrain
                     }
                 }
 
-                //TODO romeoxbm
                 // Make sure node knows to update
-                //if ( mMovable && mMovable->isAttached() )
-                //    mMovable->getParentSceneNode()->needUpdate();
+                if ( mMovable != null && mMovable.IsAttached )
+                    mMovable.ParentSceneNode.NeedUpdate();
             }
         }
         /// <summary>
@@ -1123,7 +1132,7 @@ namespace Axiom.Components.Terrain
                 // Do material LOD
                 Material material = this.Material;
                 LodStrategy str = material.LodStrategy;
-                Real lodValue = str.GetValue( mRend, cam );
+                Real lodValue = str.GetValue( mMovable, cam );
                 // Get the index at this biased depth
                 mMaterialLodIndex = (ushort)material.GetLodIndex( lodValue );
                 
@@ -1150,12 +1159,12 @@ namespace Axiom.Components.Terrain
                         // Calculate or reuse transition distance
                         Real distTransition;
                         if ( Utility.RealEqual( cFactor, ll.LastCFactor ) )
-                            distTransition = ll.LastTranistionDist;
+                            distTransition = ll.LastTransitionDist;
                         else
                         {
                             distTransition = ll.MaxHeightDelta * cFactor;
                             ll.LastCFactor = cFactor;
-                            ll.LastTranistionDist = distTransition;
+                            ll.LastTransitionDist = distTransition;
                         }
 
                         if ( dist < distTransition )
@@ -1182,7 +1191,7 @@ namespace Axiom.Components.Terrain
                                     if ( !i.Equals( mLodLevels[ 0 ] ) )
                                     {
                                         int prev = lodLvl - 1;
-                                        distTotal -= mLodLevels[ prev ].LastTranistionDist;
+                                        distTotal -= mLodLevels[ prev ].LastTransitionDist;
                                     }
                                 }
                                 else
@@ -1190,7 +1199,7 @@ namespace Axiom.Components.Terrain
                                     // Take the distance of the lowest LOD of child
                                     LodLevel childLod = mChildWithMaxHeightDelta.GetLodLevel(
                                         (ushort)( mChildWithMaxHeightDelta.LodCount - 1 ) );
-                                    distTotal -= childLod.LastTranistionDist;
+                                    distTotal -= childLod.LastTransitionDist;
                                 }
                                 // fade from 0 to 1 in the last 25% of the distance
                                 Real distMorphRegion = distTotal * 0.25f;
@@ -1804,7 +1813,7 @@ namespace Axiom.Components.Terrain
 
                 // Calculate number of vertices
                 // Base geometry size * size
-                int baseNumVerts = (int)( mVertexDataRecord.Size * mVertexDataRecord.Size );
+                int baseNumVerts = (int)Utility.Sqr( mVertexDataRecord.Size );
                 int numVerts = baseNumVerts;
                 // Now add space for skirts
                 // Skirts will be rendered as copies of the edge vertices translated downwards
@@ -2135,14 +2144,11 @@ namespace Axiom.Components.Terrain
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queue"></param>
-        public void UpdateRenderQueue(RenderQueue queue)
+        [OgreVersion( 1, 7, 2 )]
+        public void UpdateRenderQueue( RenderQueue queue )
         {
-            if (IsRenderedAtCurrentLod)
-                queue.AddRenderable(mRend, mTerrain.RenderQueueGroupID);
+            if ( IsRenderedAtCurrentLod )
+                queue.AddRenderable( mRend, mTerrain.RenderQueueGroupID );
         }
         
         /// <summary>
@@ -2153,6 +2159,7 @@ namespace Axiom.Components.Terrain
         {
 #warning: implement VisitRenderables
             throw new NotImplementedException();
+            //visitor->visit( mRend, 0, false );
         }
         
         public RenderOperation RenderOperation
@@ -2171,13 +2178,11 @@ namespace Axiom.Components.Terrain
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="xform"></param>
-        public void GetWorldTransforms(Matrix4[] xform)
+        [OgreVersion( 1, 7, 2 )]
+        public void GetWorldTransforms( Matrix4[] xform )
         {
-            xform[0] = mNodeWithVertexData.mRend.ParentNodeFullTransform;
+            // the vertex data is relative to the node that owns the vertex data
+            xform[ 0 ] = mNodeWithVertexData.mMovable.ParentNodeFullTransform;
         }
 
         /// <summary>
@@ -2185,73 +2190,82 @@ namespace Axiom.Components.Terrain
         /// </summary>
         /// <param name="cam"></param>
         /// <returns></returns>
-        public float GetSquaredViewDepth(Camera cam)
+        [OgreVersion( 1, 7, 2 )]
+        public Real GetSquaredViewDepth( Camera cam )
         {
-            return mRend.ParentSceneNode.GetSquaredViewDepth(cam);//mMovable.ParentSceneNode.GetSquaredViewDepth(cam);
+            return mMovable.ParentSceneNode.GetSquaredViewDepth( cam );
         }
-        /// <summary>
-        /// 
-        /// </summary>
+
         public bool CastsShadows
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
-                
                 return TerrainGlobalOptions.CastsDynamicShadows;
             }
         }
 
-#if false
-        #region - implementation of movable -
+        #region - implementation of Movable -
         /// <summary>
-        /// 
+        /// MovableObject implementation to provide the hook to the scene.
         /// </summary>
-        protected class Movable : SimpleRenderable,IDisposable
+        /// <remarks>
+        /// In one sense, it would be most convenient to have a single MovableObject
+		///	to represent the whole Terrain object, and then internally perform
+		///	some quadtree frustum culling to narrow down which specific tiles are rendered.
+		///	However, the one major flaw with that is that exposing the bounds to 
+		///	the SceneManager at that level prevents it from doing anything smarter
+		///	in terms of culling - for example a portal or occlusion culling SceneManager
+		///	would have no opportunity to process the leaf nodes in those terms, and
+		///	a simple frustum cull may give significantly poorer results. 
+        ///
+        /// @par
+        /// Therefore, we in fact register a MovableObject at every node, and 
+		///	use the LOD factor to determine which one is currently active. LODs
+		///	must be mutually exclusive and to deal with precision errors, we really
+		///	need to evaluate them all at once, rather than as part of the 
+		///	_notifyCurrentCamera function. Therefore the root Terrain registers
+		///	a SceneManager::Listener to precalculate which nodes will be displayed 
+		///	when it comes to purely a LOD basis.
+        /// </remarks>
+        protected class Movable : MovableObject
         {
-            #region - fields -
-            /// <summary>
-            /// 
-            /// </summary>
             protected TerrainQuadTreeNode mParent;
-            #endregion
 
             #region - properties -
-            /// <summary>
-            /// 
-            /// </summary>
-            public override AxisAlignedBox BoundingBox
+
+            public new string MovableType
             {
-                get { return mParent.AABB; }
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            public override string MovableType
-            {
+                [OgreVersion( 1, 7, 2 )]
                 get
                 {
                     return "AxiomTerrainNodeMovable";
                 }
+
                 set
                 {
                     base.MovableType = value;
                 }
             }
-            /// <summary>
-            /// 
-            /// </summary>
-            public override float BoundingRadius
+
+            public override AxisAlignedBox BoundingBox
             {
+                [OgreVersion( 1, 7, 2 )]
+                get { return mParent.AABB; }
+            }
+
+            public override Real BoundingRadius
+            {
+                [OgreVersion( 1, 7, 2 )]
                 get { return mParent.BoundingRadius; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
+
             public override bool IsVisible
             {
+                [OgreVersion( 1, 7, 2 )]
                 get
                 {
-                    if (mParent.CurentLod == -1)
+                    if ( mParent.CurrentLod == -1 )
                         return false;
                     else
                         return base.IsVisible;
@@ -2261,96 +2275,80 @@ namespace Axiom.Components.Terrain
                     base.IsVisible = value;
                 }
             }
-            #endregion
-            protected Rend mRend;
-            #region - constructor -
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="parent"></param>
-            public Movable(TerrainQuadTreeNode parent, Rend renderable)
+
+            public new uint VisibilityFlags
+            {
+                [OgreVersion( 1, 7, 2 )]
+                get
+                {
+                    // Combine own vis (in case anyone sets this) and terrain overall
+                    return base.visibilityFlags & mParent.Terrain.VisibilityFlags;
+                }
+            }
+
+            public override uint QueryFlags
+            {
+                [OgreVersion( 1, 7, 2 )]
+                get
+                {
+                    // Combine own vis (in case anyone sets this) and terrain overall
+                    return base.queryFlags & mParent.Terrain.QueryFlags;
+                }
+            }
+
+            public override bool CastShadows
+            {
+                [OgreVersion( 1, 7, 2 )]
+                get
+                {
+                    return mParent.CastsShadows;
+                }
+                set
+                {
+                    //DO NOTHING
+                }
+            }
+
+            #endregion - properties -
+
+            [OgreVersion( 1, 7, 2 )]
+            public Movable( TerrainQuadTreeNode parent )
+                : base()
             {
                 mParent = parent;
-                mRend = renderable;
             }
-            #endregion
+            
+            public override void UpdateRenderQueue( RenderQueue queue )
+            {
+                mParent.UpdateRenderQueue( queue );
+            }
 
-            public override void GetRenderOperation(RenderOperation op)
-            {
-                mRend.GetRenderOperation(op);
-            }
-            public override void GetRenderOperation(ref RenderOperation op)
-            {
-                mRend.GetRenderOperation(op);
-            }
-            public override float GetSquaredViewDepth(Camera camera)
-            {
-                return mRend.GetSquaredViewDepth(camera);
-            }
-            #region - functions -
-            public void Dispose()
-            {
-            }
-#if true
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="camera"></param>
-            public override void NotifyCurrentCamera(Camera camera)
-            {
-
-            }
-#endif
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="queue"></param>
-            public override void UpdateRenderQueue(RenderQueue queue)
-            {
-                mParent.UpdateRenderQueue(queue);
-            }
-            #endregion
+            //TODO
+            //void TerrainQuadTreeNode::Movable::visitRenderables(Renderable::Visitor* visitor,  bool debugRenderables)
+            //{
+            //    mParent->visitRenderables(visitor, debugRenderables);	
+            //}
         }
-        #endregion
+        #endregion - implementation of Movable -
 
         #region - Renderable -
         /// <summary>
-        /// 
+        /// Hook to the render queue
         /// </summary>
-        protected class Rend : IRenderable, IDisposable
+        protected class Rend : IRenderable
         {
-            /// <summary>
-            /// 
-            /// </summary>
             protected Dictionary<int, Vector4> mCustomParameters = new Dictionary<int, Vector4>();
-            /// <summary>
-            /// 
-            /// </summary>
             protected TerrainQuadTreeNode mParent;
-            /// <summary>
-            /// 
-            /// </summary>
             protected bool mPolygoneModeOverridable = true;
-            /// <summary>
-            /// 
-            /// </summary>
             protected bool mUseIdentityProjection;
-            /// <summary>
-            /// 
-            /// </summary>
             protected bool mUseIdentityView;
-            /// <summary>
-            /// 
-            /// </summary>
-            public bool CastsShadows
-            {
-                get { return mParent.CastsShadows; }
-            }
+            
             /// <summary>
             /// Retrieves a weak reference to the material this renderable object uses.
             /// </summary>
             public Material Material
             {
+                [OgreVersion( 1, 7, 2 )]
                 get { return mParent.Material; }
             }
             /// <summary>
@@ -2358,22 +2356,51 @@ namespace Axiom.Components.Terrain
             /// </summary>
             public Technique Technique
             {
+                [OgreVersion( 1, 7, 2 )]
                 get { return mParent.Technique; }
             }
+
+            public RenderOperation RenderOperation
+            {
+                [OgreVersion( 1, 7, 2 )]
+                get
+                {
+                    return mParent.RenderOperation;
+                }
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            public void GetWorldTransforms( Matrix4[] transforms )
+            {
+                mParent.GetWorldTransforms( transforms );
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            public Real GetSquaredViewDepth( Camera cam )
+            {
+                return mParent.GetSquaredViewDepth( cam );
+            }
+
             /// <summary>
             /// Gets a list of lights, ordered relative to how close they are to this renderable.
             /// </summary>
             public LightList Lights
             {
+                [OgreVersion( 1, 7, 2 )]
                 get { return mParent.Lights; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
+
+            public bool CastsShadows
+            {
+                [OgreVersion( 1, 7, 2 )]
+                get { return mParent.CastsShadows; }
+            }
+
             public bool NormalizeNormals
             {
                 get { return false; }
             }
+
             /// <summary>
             /// Returns the number of world transform matrices this renderable requires.
             /// </summary>
@@ -2381,13 +2408,12 @@ namespace Axiom.Components.Terrain
             {
                 get { return 1; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
+
             public bool UseIdentityProjection
             {
                 get { return mUseIdentityProjection; }
             }
+
             /// <summary>
             /// Get's whether or not to use an 'identity' view.
             /// </summary>
@@ -2395,190 +2421,56 @@ namespace Axiom.Components.Terrain
             {
                 get { return mUseIdentityView; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
+
             public bool PolygonModeOverrideable
             {
                 get { return mPolygoneModeOverridable; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
+
             public Quaternion WorldOrientation
             {
                 get { return mParent.mMovable.ParentNode.DerivedOrientation; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
+
             public Vector3 WorldPosition
             {
                 get { return mParent.mMovable.ParentNode.DerivedPosition; }
             }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="parent"></param>
-            public Rend(TerrainQuadTreeNode parent)
+
+            public Rend( TerrainQuadTreeNode parent )
             {
                 mParent = parent;
-                
             }
-            public void Dispose()
-            {
-                //
-            }
-         
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="transforms"></param>
-            public void GetWorldTransforms(Matrix4[] transforms)
-            {
-                mParent.GetWorldTransforms(transforms);
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="op"></param>
-            public void GetRenderOperation(RenderOperation op)
-            {
-                mParent.GetRenderOperation(op);
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="camera"></param>
-            public float GetSquaredViewDepth(Camera camera)
-            {
-                return mParent.GetSquaredViewDepth(camera);
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="parameter"></param>
-            public Vector4 GetCustomParameter(int parameter)
+
+            public Vector4 GetCustomParameter( int parameter )
             {
                 Vector4 retVal;
-                if (mCustomParameters.TryGetValue(parameter, out retVal))
+                if ( mCustomParameters.TryGetValue( parameter, out retVal ) )
                     return retVal;
                 else
                 {
-                    throw new Exception("Parameter at the given index was not found!\n" +
-                        "Renderable.GetCustomParameter");
+                    throw new AxiomException( "Parameter at the given index was not found!\n" +
+                        "Renderable.GetCustomParameter" );
                 }
             }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="parameter"></param>
-            /// <param name="value"></param>
-            public void SetCustomParameter(int parameter, Vector4 value)
+
+            public void SetCustomParameter( int parameter, Vector4 value )
             {
-                mCustomParameters[parameter] = value;
+                mCustomParameters[ parameter ] = value;
             }
+
             /// <summary>
             /// Update a custom GpuProgramParameters constant which is derived from
             /// information only this Renderable knows.
             /// </summary>
             /// <param name="entry"></param>
             /// <param name="parameters"></param>
-            public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry,
-                GpuProgramParameters parameters)
+            public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry,
+                GpuProgramParameters parameters )
             {
-               //not implement now
+                //not implement now
             }
         }
         #endregion
-
-#endif
-        public class TerrainRendable : SimpleRenderable
-        {
-            TerrainQuadTreeNode mParent;
-
-            public TerrainRendable(TerrainQuadTreeNode parent)
-            {
-                mParent = parent;
-                this.MovableType = "AxiomTerrainNodeMovable";
-            }
-            public override Technique Technique
-            {
-                get
-                {
-                    return mParent.Technique;
-                }
-            }
-            public override AxisAlignedBox BoundingBox
-            {
-                get
-                {
-                    return mParent.AABB;
-                }
-            }
-
-            public override Material Material
-            {
-                get
-                {
-                    return mParent.Material;
-                }
-                set
-                {
-                    base.Material = value;
-                }
-            }
-            
-            public override float BoundingRadius
-            {
-                get { return mParent.BoundingRadius; }
-            }
-            public override bool IsVisible
-            {
-                get
-                {
-                    if (mParent.CurrentLod == -1)
-                        return false;
-
-                    return base.IsVisible;
-                }
-                set
-                {
-                    base.IsVisible = value;
-                }
-            }
-            public override bool CastShadows
-            {
-                get
-                {
-                    return mParent.CastsShadows;
-                }
-                set
-                {
-                    base.CastShadows = value;
-                }
-            }
-            public override void GetWorldTransforms(Matrix4[] matrices)
-            {
-                mParent.GetWorldTransforms(matrices);
-            }
-            public override void UpdateRenderQueue(RenderQueue queue)
-            {
-                mParent.UpdateRenderQueue(queue);
-            }
-            public override float GetSquaredViewDepth(Camera camera)
-            {
-                return mParent.GetSquaredViewDepth(camera);
-            }
-
-            public override RenderOperation RenderOperation
-            {
-                get
-                {
-                    return mParent.RenderOperation;
-                }
-            }
-
-        }
     }
 }

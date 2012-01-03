@@ -227,7 +227,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		float GetSquaredViewDepth( Camera camera );
+		Real GetSquaredViewDepth( Camera camera );
 
 		/// <summary>
 		///		Gets the custom value associated with this Renderable at the given index.

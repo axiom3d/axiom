@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-
-using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
+
 namespace Axiom.Samples.VolumeTexture
 {
 	/// <summary>
@@ -12,16 +12,13 @@ namespace Axiom.Samples.VolumeTexture
 	public class ThingRendable : SimpleRenderable
 	{
 		protected HardwareVertexBuffer vertexBuffer;
-		protected float radius;
+		protected Real radius;
 		protected int count;
 		protected float qSize;
 		protected List<Quaternion> things = new List<Quaternion>();
 		protected List<Quaternion> orbits = new List<Quaternion>();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get { return radius; }
 		}
@@ -77,7 +74,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 min, max, mid, dist;
 

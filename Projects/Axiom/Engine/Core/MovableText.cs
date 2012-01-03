@@ -74,7 +74,7 @@ namespace Axiom.Core
 		private bool _updateColor;
 
 		//private float _timeUntilNextToggle;
-		private float _radius;
+		private Real _radius;
 
 		private Font _font;
 		private string _fontName;
@@ -604,12 +604,12 @@ namespace Axiom.Core
 			}
 		}
 
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			return ( this.ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{

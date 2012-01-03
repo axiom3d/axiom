@@ -10,7 +10,7 @@ namespace Axiom.Samples.VolumeTexture
 	{
 		protected int slices;
 		protected float size;
-		protected float radius;
+		protected Real radius;
 		protected Matrix3 fakeOrientation;
 		protected string texture;
 		protected TextureUnitState unit;
@@ -18,7 +18,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// <summary>
 		/// 
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get { return radius; }
 		}
@@ -122,7 +122,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 min, max, mid, dist;
 

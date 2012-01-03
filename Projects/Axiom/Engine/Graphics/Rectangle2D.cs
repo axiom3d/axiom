@@ -133,7 +133,7 @@ namespace Axiom.Graphics
 
 		#region SimpleRenderable Members
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -141,7 +141,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			return 0;
 		}

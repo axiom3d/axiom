@@ -199,7 +199,7 @@ namespace Axiom.Samples.Primitives
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 min, max, mid, dist;
 			min = box.Minimum;
@@ -210,7 +210,7 @@ namespace Axiom.Samples.Primitives
 			return dist.LengthSquared;
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -309,7 +309,7 @@ namespace Axiom.Samples.Primitives
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 min, max, mid, dist;
 			min = box.Minimum;
@@ -320,7 +320,7 @@ namespace Axiom.Samples.Primitives
 			return dist.LengthSquared;
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{

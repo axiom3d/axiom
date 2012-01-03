@@ -164,7 +164,7 @@ namespace Axiom.Core
 		protected bool boundsDirty;
 		protected bool indexContentDirty;
 		protected AxisAlignedBox aabb = new AxisAlignedBox();
-		protected float radius;
+		protected Real radius;
 		protected string materialName;
 		protected Material material;
 		protected TexCoordDirection texCoordDirection;
@@ -849,7 +849,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -999,7 +999,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public virtual float GetSquaredViewDepth( Camera camera )
+		public virtual Real GetSquaredViewDepth( Camera camera )
 		{
 			Debug.Assert( parentNode != null, "BillboardSet must have a parent scene node to get the squared view depth." );
 
@@ -1010,7 +1010,7 @@ namespace Axiom.Core
 		{
 			if ( this.customParams[ index ] == null )
 			{
-				throw new Exception( "A parameter was not found at the given index" );
+				throw new AxiomException( "A parameter was not found at the given index" );
 			}
 			else
 			{

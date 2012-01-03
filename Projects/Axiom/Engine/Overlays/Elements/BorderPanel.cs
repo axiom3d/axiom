@@ -1344,7 +1344,7 @@ namespace Axiom.Overlays.Elements
 				}
 			}
 
-			public float GetSquaredViewDepth( Camera camera )
+			public Real GetSquaredViewDepth( Camera camera )
 			{
 				return parent.GetSquaredViewDepth( camera );
 			}

@@ -1324,7 +1324,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public float GetSquaredViewDepth( Camera camera )
+		public Real GetSquaredViewDepth( Camera camera )
 		{
 			return 10000 - this.ZOrder;
 		}

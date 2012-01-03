@@ -155,7 +155,7 @@ namespace OctreeZone
 		/// <summary>
 		///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -1817,7 +1817,7 @@ namespace OctreeZone
 		/// </remarks>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public override float GetSquaredViewDepth( Camera camera )
+		public override Real GetSquaredViewDepth( Camera camera )
 		{
 			var diff = mCenter - camera.DerivedPosition;
 			// Use squared length to avoid square root

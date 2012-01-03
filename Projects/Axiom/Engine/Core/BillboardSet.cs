@@ -125,7 +125,7 @@ namespace Axiom.Core
 		protected Vector3 commonUpVector = Vector3.UnitY;
 
 		/// <summary>The local bounding radius of this object.</summary>
-		protected float boundingRadius;
+		protected Real boundingRadius;
 
 		protected int numVisibleBillboards;
 
@@ -1623,7 +1623,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Local bounding radius of this billboard set.
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -1750,7 +1750,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public virtual float GetSquaredViewDepth( Camera camera )
+		public virtual Real GetSquaredViewDepth( Camera camera )
 		{
 			Debug.Assert( this.parentNode != null,
 						  "BillboardSet must have a parent scene node to get the squared view depth." );
