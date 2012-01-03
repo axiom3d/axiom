@@ -85,6 +85,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ICopyable.cs" />
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
     <Compile Include="FileSystem\TitleContainerArchive.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />

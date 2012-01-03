@@ -359,7 +359,7 @@ namespace Axiom.Demos
 						HardwareBufferManager.Instance.CreateVertexBuffer( orgBuffer.VertexDeclaration, orgBuffer.VertexCount, BufferUsage.DynamicWriteOnly, true );
 
 					// copy and bind the new dynamic buffer
-					newBuffer.CopyData( orgBuffer, 0, 0, orgBuffer.Size, true );
+					newBuffer.CopyTo( orgBuffer, 0, 0, orgBuffer.Size, true );
 					if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
 					{
 						source = (short)newBinding.BindingCount;
