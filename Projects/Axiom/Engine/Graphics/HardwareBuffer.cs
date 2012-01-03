@@ -80,7 +80,7 @@ namespace Axiom.Graphics
 	///     the buffer of the type you require (see <see cref="HardwareBufferManager"/>) to enable this feature.
 	///     <seealso cref="HardwareBufferManager"/>
 	/// </remarks>
-	public abstract class HardwareBuffer : DisposableObject
+	public abstract class HardwareBuffer : DisposableObject, ICopyable<HardwareBuffer>
 	{
 		#region Fields
 
@@ -141,6 +141,7 @@ namespace Axiom.Graphics
 		/// <param name="useSystemMemory"></param>
 		/// <param name="useShadowBuffer">Use a software shadow buffer?</param>
 		internal HardwareBuffer( BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+            : base()
 		{
 			this.usage = usage;
 			this.useSystemMemory = useSystemMemory;
@@ -159,10 +160,6 @@ namespace Axiom.Graphics
 
 		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
         protected override void dispose(bool disposeManagedResources)
         {
             if (!this.IsDisposed)
@@ -375,10 +372,10 @@ namespace Axiom.Graphics
 		/// <param name="srcOffset">Offset in the source buffer at which to start reading.</param>
 		/// <param name="destOffset">Offset in the destination buffer to start writing.</param>
 		/// <param name="length">Length of the data to copy, in bytes.</param>
-		public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length )
+		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length )
 		{
 			// call the overloaded method
-			CopyData( srcBuffer, srcOffset, destOffset, length, false );
+			CopyTo( srcBuffer, srcOffset, destOffset, length, false );
 		}
 
 		/// <summary>
@@ -389,7 +386,7 @@ namespace Axiom.Graphics
 		/// <param name="destOffset">Offset in the destination buffer to start writing.</param>
 		/// <param name="length">Length of the data to copy, in bytes.</param>
 		/// <param name="discardWholeBuffer">If true, will discard the entire contents of this buffer before copying.</param>
-		public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
+		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
 		{
 			// lock the source buffer
 			var srcData = srcBuffer.Lock( srcOffset, length, BufferLocking.ReadOnly );
@@ -408,11 +405,11 @@ namespace Axiom.Graphics
         /// Normally these buffers should be of identical size, but if they're
         /// not, the routine will use the smallest of the two sizes.
         /// </remarks>
-        [OgreVersion( 1, 7, 2 )]
-        public void CopyData( HardwareBuffer srcBuffer )
+        [OgreVersion( 1, 7, 2, "Original name was CopyData" )]
+        public void CopyTo( HardwareBuffer dest )
         {
-            int sz = System.Math.Min( this.sizeInBytes, srcBuffer.sizeInBytes );
-            CopyData( srcBuffer, 0, 0, sz, true );
+            int sz = System.Math.Min( this.sizeInBytes, dest.sizeInBytes );
+            CopyTo( dest, 0, 0, sz, true );
         }
 
 		/// <summary>
@@ -518,5 +515,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
-	}
+    }
 }

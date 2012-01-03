@@ -1919,10 +1919,10 @@ namespace Axiom.Components.Terrain
             if ( mVertexDataRecord != null && mVertexDataRecord.IsGpuVertexDataDirty )
             {
                 mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER )
-                    .CopyData( mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ) );
+                    .CopyTo( mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ) );
 
                 mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER )
-                    .CopyData( mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ) );
+                    .CopyTo( mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ) );
 
                 mVertexDataRecord.IsGpuVertexDataDirty = false;
             }

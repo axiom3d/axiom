@@ -221,7 +221,7 @@ namespace Axiom.Graphics
 						HardwareBufferManager.Instance.CreateVertexBuffer( srcbuf.VertexDeclaration, srcbuf.VertexCount, srcbuf.Usage,	srcbuf.HasShadowBuffer );
 
 					// copy data
-					dstBuf.CopyData( srcbuf, 0, 0, srcbuf.Size, true );
+					dstBuf.CopyTo( srcbuf, 0, 0, srcbuf.Size, true );
 				}
 				else
 				{
@@ -252,7 +252,7 @@ namespace Axiom.Graphics
 					HardwareBufferManager.Instance.CreateVertexBuffer( hardwareShadowVolWBuffer.VertexDeclaration, hardwareShadowVolWBuffer.VertexCount, hardwareShadowVolWBuffer.Usage, hardwareShadowVolWBuffer.HasShadowBuffer );
 
 				// copy data
-				dest.hardwareShadowVolWBuffer.CopyData( hardwareShadowVolWBuffer, 0, 0, hardwareShadowVolWBuffer.Size,true );
+				dest.hardwareShadowVolWBuffer.CopyTo( hardwareShadowVolWBuffer, 0, 0, hardwareShadowVolWBuffer.Size,true );
 			}
 
 			// copy anim data
@@ -638,7 +638,7 @@ namespace Axiom.Graphics
 							indexBuffer.HasShadowBuffer );
 
 					// copy all the existing buffer data
-					clone.indexBuffer.CopyData( indexBuffer, 0, 0, indexBuffer.Size, true );
+					clone.indexBuffer.CopyTo( indexBuffer, 0, 0, indexBuffer.Size, true );
 				}
 				else
 				{

@@ -85,6 +85,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="axiom.module" />
+    <Compile Include="Core\ICopyable.cs" />
     <Compile Include="CrossPlatform\Buffer.cs">
       <SubType>Code</SubType>
     </Compile>

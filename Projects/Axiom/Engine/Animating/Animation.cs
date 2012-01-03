@@ -462,7 +462,7 @@ namespace Axiom.Animating
 							swVertexData.vertexBufferBinding.GetBuffer( destelem.Source );
 						// 						Debug.Assert(!EqualityComparer<HardwareVertexBuffer>.ReferenceEquals(origBuffer, destBuffer));
 						if ( !EqualityComparer<HardwareVertexBuffer>.ReferenceEquals( origBuffer, destBuffer ) )
-							destBuffer.CopyData( origBuffer, 0, 0, destBuffer.Size, true );
+							destBuffer.CopyTo( origBuffer, 0, 0, destBuffer.Size, true );
 					}
 					track.TargetMode = VertexAnimationTargetMode.Software;
 					track.ApplyToVertexData( swVertexData, time, weight, entity.Mesh.PoseList );
