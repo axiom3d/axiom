@@ -143,7 +143,7 @@ namespace Axiom.Core
 			// more computation (including a sqrt) so we approximate
 			// it with d^2 - r^2, which is good enough for determining
 			// lod.
-			float squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
+			Real squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Check if reference view needs to be taken into account
 			if ( _referenceViewEnabled )
@@ -155,13 +155,13 @@ namespace Axiom.Core
 				var viewport = cam.Viewport;
 
 				// Get viewport area
-				float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
+				Real viewportArea = viewport.ActualWidth * viewport.ActualHeight;
 
 				// Get projection matrix (this is done to avoid computation of tan(fov / 2))
 				var projectionMatrix = cam.ProjectionMatrix;
 
 				// Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
-				float biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
+				Real biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
 
 				// Scale squared depth appropriately
 				squaredDepth *= ( ReferenceViewValue / biasValue );

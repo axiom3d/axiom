@@ -441,7 +441,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Local bounding radius of this light.
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{

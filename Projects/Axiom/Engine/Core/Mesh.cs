@@ -178,11 +178,11 @@ namespace Axiom.Core
 		/// <summary>
 		///		Radius of this mesh's bounding sphere.
 		/// </summary>
-		private float _boundingSphereRadius;
+		private Real _boundingSphereRadius;
 		/// <summary>
 		///    Bounding spehere radius from this mesh in local coordinates.
 		/// </summary>
-		public float BoundingSphereRadius
+		public Real BoundingSphereRadius
 		{
 			get
 			{

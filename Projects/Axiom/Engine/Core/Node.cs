@@ -331,7 +331,7 @@ namespace Axiom.Core
 				}
 			}
 
-			public float GetSquaredViewDepth( Camera camera )
+			public Real GetSquaredViewDepth( Camera camera )
 			{
 				return _parent.GetSquaredViewDepth( camera );
 			}

@@ -276,7 +276,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </remarks>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public float GetSquaredViewDepth( Camera camera )
+		public Real GetSquaredViewDepth( Camera camera )
 		{
 			return 0;
 		}

@@ -63,7 +63,7 @@ namespace Axiom.Core
 
 			protected Region parent;
 			protected ushort lod;
-			protected float squaredDistance;
+			protected Real squaredDistance;
 			protected Dictionary<string, MaterialBucket> materialBucketMap;
 			protected List<QueuedGeometry> queuedGeometryList;
 
@@ -83,7 +83,7 @@ namespace Axiom.Core
 				}
 			}
 
-			public float SquaredDistance
+			public Real SquaredDistance
 			{
 				get
 				{

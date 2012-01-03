@@ -248,7 +248,7 @@ namespace Axiom.Graphics
 			get;
 		}
 
-		public virtual float GetSquaredViewDepth( Camera camera )
+		public virtual Real GetSquaredViewDepth( Camera camera )
 		{
 			return 0;
 		}

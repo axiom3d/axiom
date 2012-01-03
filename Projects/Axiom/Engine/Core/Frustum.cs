@@ -60,12 +60,12 @@ namespace Axiom.Core
 		/// <summary>
 		///		Small constant used to reduce far plane projection to avoid inaccuracies.
 		/// </summary>
-		public const float InfiniteFarPlaneAdjust = 0.00001f;
+		public static readonly Real InfiniteFarPlaneAdjust = 0.00001f;
 
 		/// <summary>
 		///		Arbitrary large distance to use for the far plane when set to 0 (infinite far plane).
 		/// </summary>
-		public const float InfiniteFarPlaneDistance = 100000.0f;
+		public static readonly Real InfiniteFarPlaneDistance = 100000.0f;
 
 		#endregion Constants
 
@@ -134,7 +134,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Far clip distance - default 10000.
 		/// </summary>
-		protected float _farDistance;
+		protected Real _farDistance;
 		/// <summary>
 		///		Gets/Sets the distance to the far clipping plane.
 		///	 </summary>
@@ -157,7 +157,7 @@ namespace Axiom.Core
 		///		distance which is useful especially when projecting shadows; but
 		///		be careful not to use a near distance too close.
 		/// </value>
-		public virtual float Far
+		public virtual Real Far
 		{
 			get
 			{
@@ -178,7 +178,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Near clip distance - default 100.
 		/// </summary>
-		private float _nearDistance;
+		private Real _nearDistance;
 		/// <summary>
 		///		Gets/Sets the position of the near clipping plane.
 		///	</summary>
@@ -190,7 +190,7 @@ namespace Axiom.Core
 		///		dimensions expressed in pixels. The cameras viewport should have the same aspect ratio as the
 		///		screen viewport it renders into to avoid distortion.
 		/// </remarks>
-		public virtual float Near
+		public virtual Real Near
 		{
 			get
 			{
@@ -1278,8 +1278,8 @@ namespace Axiom.Core
 				// Doesn't optimise manually except division operator, so the
 				// code more self-explaining.
 
-				float inv_w = 1.0f / ( vpRight - vpLeft );
-				float inv_h = 1.0f / ( vpTop - vpBottom );
+				Real inv_w = 1.0f / ( vpRight - vpLeft );
+				Real inv_h = 1.0f / ( vpTop - vpBottom );
 				var inv_d = 1.0f / ( _farDistance - _nearDistance );
 
 				// Recalc if frustum params changed
@@ -1288,9 +1288,9 @@ namespace Axiom.Core
 					// Calc matrix elements
 					var A = 2.0f * _nearDistance * inv_w;
 					var B = 2.0f * _nearDistance * inv_h;
-					float C = ( vpRight + vpLeft ) * inv_w;
-					float D = ( vpTop + vpBottom ) * inv_h;
-					float q, qn;
+					Real C = ( vpRight + vpLeft ) * inv_w;
+					Real D = ( vpTop + vpBottom ) * inv_h;
+					Real q, qn;
 					if ( _farDistance == 0.0f )
 					{
 						// Infinite far plane
@@ -1372,9 +1372,9 @@ namespace Axiom.Core
 				{
 					var A = 2.0f * inv_w;
 					var B = 2.0f * inv_h;
-					float C = -( vpRight + vpLeft ) * inv_w;
-					float D = -( vpTop + vpBottom ) * inv_h;
-					float q, qn;
+					Real C = -( vpRight + vpLeft ) * inv_w;
+					Real D = -( vpTop + vpBottom ) * inv_h;
+					Real q, qn;
 					if ( _farDistance == 0.0f )
 					{
 						// Can not do infinite far plane here, avoid divided zero only
@@ -1423,7 +1423,7 @@ namespace Axiom.Core
 			// Calculate bounding box (local)
 			// Box is from 0, down -Z, max dimensions as determined from far plane
 			// If infinite view frustum just pick a far value
-			var farDist = ( _farDistance == 0.0f ) ? 100000.0f : _farDistance;
+            var farDist = ( _farDistance == 0.0f ) ? InfiniteFarPlaneDistance : _farDistance;
 
 			// Near plane bounds
 			var min = new Vector3( vpLeft, vpBottom, -farDist );
@@ -1859,7 +1859,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Local bounding radius of this camera.
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -2059,7 +2059,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public float GetSquaredViewDepth( Camera camera )
+		public Real GetSquaredViewDepth( Camera camera )
 		{
 			if ( parentNode != null )
 			{

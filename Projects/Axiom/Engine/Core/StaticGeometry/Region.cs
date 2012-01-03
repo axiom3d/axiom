@@ -138,7 +138,7 @@ namespace Axiom.Core
 			protected LodValueList lodValues;
 			protected LodStrategy lodStrategy;
 			protected AxisAlignedBox aabb;
-			protected float boundingRadius;
+			protected Real boundingRadius;
 			protected ushort currentLod;
 			protected float camDistanceSquared;
 			protected List<LODBucket> lodBucketList;
@@ -187,7 +187,7 @@ namespace Axiom.Core
 				}
 			}
 
-			public override float BoundingRadius
+			public override Real BoundingRadius
 			{
 				get
 				{

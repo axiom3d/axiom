@@ -20,6 +20,13 @@
 //THE SOFTWARE.
 #endregion License
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -647,7 +654,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get's or set's the visbility flags that terrains will be rendered with
         /// </summary>
-        public static uint VisibilityFlags
+        public uint VisibilityFlags
         {
             get;
             set;
@@ -656,7 +663,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get or set the query flags for this terrain.
         /// </summary>
-        public static uint QueryFlags
+        public uint QueryFlags
         {
             get;
             set;
@@ -4915,14 +4922,14 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             }
         }
 
-        public static void AddQueryFlag( uint flags )
+        public void AddQueryFlag( uint flags )
         {
-            QueryFlags |= flags;
+            this.QueryFlags |= flags;
         }
 
-        public static void RemoveQueryFlags( uint flags )
+        public void RemoveQueryFlags( uint flags )
         {
-            QueryFlags &= ~flags;
+            this.QueryFlags &= ~flags;
         }
 
         public Terrain GetNeighbour( NeighbourIndex index )

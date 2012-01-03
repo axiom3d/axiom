@@ -208,7 +208,7 @@ namespace Axiom.Core
 
 			#region Public Methods
 
-			public float GetSquaredViewDepth( Camera cam )
+			public Real GetSquaredViewDepth( Camera cam )
 			{
 				return parent.Parent.SquaredDistance;
 			}

@@ -131,7 +131,7 @@ namespace Axiom.ParticleSystems
 
 		/// World AABB, only used to compare world-space positions to calc bounds
 		protected AxisAlignedBox aab;
-		protected float boundingRadius;
+		protected Real boundingRadius;
 		protected bool boundsAutoUpdate = true;
 		protected float boundsUpdateTime = 10.0f;
 		protected float updateRemainTime = 0.0f;
@@ -1649,7 +1649,7 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{

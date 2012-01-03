@@ -554,7 +554,7 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -625,7 +625,7 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		public float GetSquaredViewDepth( Camera camera )
+		public Real GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 diff = center - camera.DerivedPosition;
 

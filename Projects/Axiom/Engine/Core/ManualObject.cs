@@ -192,7 +192,7 @@ namespace Axiom.Core
 		protected bool firstVertex;
 
 		/// Bounding sphere
-		protected float radius;
+		protected Real radius;
 
 		/// List of subsections
 		protected SectionList sectionList = new SectionList();
@@ -1178,7 +1178,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Local bounding radius of this object.
 		/// </summary>
-		public override float BoundingRadius
+		public override Real BoundingRadius
 		{
 			get
 			{
@@ -1414,7 +1414,7 @@ namespace Axiom.Core
 				matrices[ 0 ] = this.parent.ParentNode.FullTransform;
 			}
 
-			public float GetSquaredViewDepth( Camera camera )
+			public Real GetSquaredViewDepth( Camera camera )
 			{
 				if ( this.parent.ParentNode != null )
 				{

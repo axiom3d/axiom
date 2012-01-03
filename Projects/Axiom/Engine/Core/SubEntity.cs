@@ -567,7 +567,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public float GetSquaredViewDepth( Camera camera )
+		public Real GetSquaredViewDepth( Camera camera )
 		{
 			// First of all, check the cached value
 			// NB this is manually invalidated by parent each _notifyCurrentCamera call

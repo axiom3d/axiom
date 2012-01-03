@@ -166,28 +166,33 @@ namespace Axiom.Core
 
 		#region Constructors
 
+        /// <summary>
+        /// Named constructor
+        /// </summary>
+        /// <param name="name"></param>
 		protected MovableObject( string name )
-			: this()
+			: base()
 		{
 			if ( string.IsNullOrEmpty( name ) )
 				this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
 			else
-			this.name = name;
+			    this.name = name;
+
+            this.isVisible = true;
+            // set default RenderQueueGroupID for this movable object
+            this.renderQueueID = RenderQueueGroupID.Main;
+            this.queryFlags = DefaultQueryFlags;
+            this.visibilityFlags = DefaultVisibilityFlags;
+            this.worldAABB = AxisAlignedBox.Null;
+            this.castShadows = true;
 		}
 
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
 		protected MovableObject()
-			: base()
+            : this( string.Empty )
 		{
-			this.isVisible = true;
-			// set default RenderQueueGroupID for this movable object
-			this.renderQueueID = RenderQueueGroupID.Main;
-			this.queryFlags = DefaultQueryFlags;
-			this.visibilityFlags = DefaultVisibilityFlags;
-			this.worldAABB = AxisAlignedBox.Null;
-			this.castShadows = true;
 		}
 
 		#endregion Constructors
@@ -205,7 +210,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
 		/// </summary>
-		public abstract float BoundingRadius
+		public abstract Real BoundingRadius
 		{
 			get;
 		}

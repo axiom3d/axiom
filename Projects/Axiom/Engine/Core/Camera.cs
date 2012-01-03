@@ -1125,7 +1125,7 @@ namespace Axiom.Core
             }
         }
 
-        public override float Near
+        public override Real Near
         {
             get
             {
@@ -1151,13 +1151,13 @@ namespace Axiom.Core
             }
         }
 
-        public override float Far
+        public override Real Far
         {
             get
             {
                 if (null != CullFrustum)
                 {
-                    return CullFrustum.Near;
+                    return CullFrustum.Far;
                 }
                 else
                 {
@@ -1238,7 +1238,7 @@ namespace Axiom.Core
         ///		Overridden to return a proper bounding radius for the camera.
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {
