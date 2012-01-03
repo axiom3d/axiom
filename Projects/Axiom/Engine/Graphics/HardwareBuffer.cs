@@ -401,6 +401,20 @@ namespace Axiom.Graphics
 			srcBuffer.Unlock();
 		}
 
+        /// <summary>
+        /// Copy all data from another buffer into this one.
+        /// </summary>
+        /// <remarks>
+        /// Normally these buffers should be of identical size, but if they're
+        /// not, the routine will use the smallest of the two sizes.
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
+        public void CopyData( HardwareBuffer srcBuffer )
+        {
+            int sz = System.Math.Min( this.sizeInBytes, srcBuffer.sizeInBytes );
+            CopyData( srcBuffer, 0, 0, sz, true );
+        }
+
 		/// <summary>
 		///     Updates the real buffer from the shadow buffer, if required.
 		/// </summary>
