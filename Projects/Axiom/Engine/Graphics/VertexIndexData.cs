@@ -100,11 +100,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		The base vertex index to start from, if using unindexed geometry.
 		/// </summary>
-		public int vertexStart;
+		public int vertexStart = 0;
 		/// <summary>
 		///		The number of vertices used in this operation.
 		/// </summary>
-		public int vertexCount;
+		public int vertexCount = 0;
 		/// <summary>
 		///     VertexElements used for hardware morph / pose animation
 		/// </summary>
@@ -131,6 +131,17 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public HardwareVertexBuffer hardwareShadowVolWBuffer;
 
+        /// <summary>
+        /// Whether this class should delete the declaration and binding
+        /// </summary>
+        public bool DeleteDclBinding
+        {
+            get;
+            set;
+        }
+
+        private HardwareBufferManagerBase _mgr;
+
 		#endregion Fields
 
 		#region Constructor
@@ -139,11 +150,37 @@ namespace Axiom.Graphics
 		///		Default constructor.  Calls on the current buffer manager to initialize the bindings and declarations.
 		/// </summary>
 		public VertexData()
+            : this( null )
 		{
-			vertexDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			vertexBufferBinding = HardwareBufferManager.Instance.CreateVertexBufferBinding();
 		}
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <remarks>This constructor creates the VertexDeclaration and VertexBufferBinding
+        /// automatically, and arranges for their deletion afterwards.</remarks>
+        /// <param name="mgr">Optional HardwareBufferManager from which to create resources</param>
+        [OgreVersion( 1, 7, 2 )]
+        public VertexData( HardwareBufferManagerBase mgr )
+            : base()
+        {
+            _mgr = mgr != null ? mgr : HardwareBufferManager.Instance;
+            vertexBufferBinding = HardwareBufferManager.Instance.CreateVertexBufferBinding();
+            vertexDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            this.DeleteDclBinding = true;
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public VertexData( VertexDeclaration dcl, VertexBufferBinding bind )
+            : base()
+        {
+            // this is a fallback rather than actively used
+            _mgr = HardwareBufferManager.Instance;
+            vertexDeclaration = dcl;
+            vertexBufferBinding = bind;
+            this.DeleteDclBinding = false;
+        }
+        
 		#endregion Constructor
 
 		#region Methods
@@ -525,16 +562,12 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					// Dispose managed resources.
-					if ( vertexDeclaration != null )
-					{
-						vertexDeclaration.Dispose();
-					}
-
-					if ( vertexBufferBinding != null )
-					{
-						vertexBufferBinding.Dispose();
-					}
+                    // Dispose managed resources.
+                    if ( this.DeleteDclBinding )
+                    {
+                        _mgr.DestroyVertexBufferBinding( vertexBufferBinding );
+                        _mgr.DestroyVertexDeclaration( vertexDeclaration );
+                    }
 				}
 
 				// There are no unmanaged resources to release, but
