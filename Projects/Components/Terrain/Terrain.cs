@@ -735,8 +735,8 @@ namespace Axiom.Components.Terrain
                 if ( _posDecl == null )
                 {
                     _posDecl = new VertexDeclaration();
-                    _posDecl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-                    _posDecl.AddElement( 0, VertexElement.GetTypeSize( VertexElementType.Float3 ), VertexElementType.Float2, VertexElementSemantic.TexCoords );
+                    _posDecl.AddElement( TerrainQuadTreeNode.POSITION_BUFFER, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+                    _posDecl.AddElement( TerrainQuadTreeNode.POSITION_BUFFER, VertexElement.GetTypeSize( VertexElementType.Float3 ), VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
                 }
 
                 return _posDecl;
@@ -760,7 +760,7 @@ namespace Axiom.Components.Terrain
                 if ( _deltaDecl == null )
                 {
                     _deltaDecl = new VertexDeclaration();
-                    _deltaDecl.AddElement( 1, 0, VertexElementType.Float2, VertexElementSemantic.Position );
+                    _deltaDecl.AddElement( TerrainQuadTreeNode.DELTA_BUFFER, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1 );
                 }
 
                 return _deltaDecl;

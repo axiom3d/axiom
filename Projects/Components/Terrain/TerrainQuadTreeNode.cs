@@ -277,6 +277,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public Terrain Terrain
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mTerrain;
@@ -312,6 +313,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public AxisAlignedBox AABB
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mAABB;
@@ -323,6 +325,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public Real BoundingRadius
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mBoundingRadius;
@@ -396,6 +399,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public bool IsRenderedAtCurrentLod
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mCurrentLod != -1;
@@ -407,6 +411,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public bool IsSelfOrChildrenRenderedAtCurrentLod
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mSelfOrChildRendered;
@@ -992,6 +997,7 @@ namespace Axiom.Components.Terrain
                     mChildren[ i ].UseAncestorVertexData( owner, treeDepthEnd, resolution );
             }
         }
+        
         /// <summary>
         /// Tell the node to update its vertex data for a given region. 
         /// </summary>
@@ -1055,6 +1061,7 @@ namespace Axiom.Components.Terrain
                     mMovable.ParentSceneNode.NeedUpdate();
             }
         }
+        
         /// <summary>
         /// Merge a point (relative to terrain node) into the local bounds, 
         ///	and that of children if applicable.
@@ -1125,6 +1132,7 @@ namespace Axiom.Components.Terrain
             return ( rect.Right >= mOffsetX && rect.Left <= mBoundaryX &&
                 rect.Bottom >= mOffsetY && rect.Top <= mBoundaryY );
         }
+        
         /// <summary>
         /// Returns true if the given point is in the terrain area that
         /// this node references.
