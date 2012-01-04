@@ -1,10 +1,43 @@
-﻿using System;
-using System.Collections;
+﻿#region MIT/X11 License
+//Copyright © 2003-2011 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
+using System;
 using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Media;
 using Axiom.Serialization;
+
+#endregion Namespace Declarations
+
 namespace Axiom.Components.Terrain
 {
     /// <summary>
@@ -55,7 +88,7 @@ namespace Axiom.Components.Terrain
     /// <summary>
     /// Slot for a terrain instance, together with its definition.
     /// </summary>
-    public class TerrainSlot : IDisposable
+    public class TerrainSlot : DisposableObject
     {
         /// <summary>
         /// The coordinates of the terrain slot relative to the centre slot (signed).
@@ -79,6 +112,7 @@ namespace Axiom.Components.Terrain
         /// <param name="x"></param>
         /// <param name="y"></param>
         public TerrainSlot(long x, long y)
+            : base()
         {
             X = x;
             Y = y;
@@ -93,9 +127,17 @@ namespace Axiom.Components.Terrain
             Instance = null;
         }
 
-        public void Dispose()
+        protected override void dispose( bool disposeManagedResources )
         {
-            FreeInstance();
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    FreeInstance();
+                }
+            }
+
+            base.dispose( disposeManagedResources );
         }
     }
     /// <summary>
@@ -186,6 +228,8 @@ namespace Axiom.Components.Terrain
         /// 
         /// </summary>
         private string _resourceGroup;
+
+        protected DefaultGpuBufferAllocator BufferAllocator = new DefaultGpuBufferAllocator();
 
         /// <summary>
         /// 
@@ -586,12 +630,18 @@ namespace Axiom.Components.Terrain
                 _terrainSlots.Remove(key);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
+
+        [OgreVersion( 1, 7, 2 )]
         public void RemoveAllTerrains()
         {
+            foreach ( var i in _terrainSlots.Values )
+            {
+                if ( !i.IsDisposed )
+                    i.Dispose();
+            }
             _terrainSlots.Clear();
+            // Also clear buffer pools, if we're clearing completely may not be representative
+            BufferAllocator.FreeAllBuffers();
         }
         /// <summary>
         /// 
@@ -1223,29 +1273,42 @@ namespace Axiom.Components.Terrain
         {
             LoadTerrainImpl(slot, true);
         }
-        protected void LoadTerrainImpl(TerrainSlot slot, bool synchronous)
-        {
-            if (!synchronous)
-                throw new NotSupportedException("Loading terrain asynchronous is not yet supported!");
 
-            if (slot.Instance == null &&
-                (string.IsNullOrEmpty(slot.Def.FileName) || slot.Def.ImportData != null))
+        protected void LoadTerrainImpl( TerrainSlot slot, bool synchronous )
+        {
+            if ( !synchronous )
+                throw new NotSupportedException( "Loading terrain asynchronous is not yet supported!" );
+
+            if ( slot.Instance == null &&
+                ( string.IsNullOrEmpty( slot.Def.FileName ) || slot.Def.ImportData != null ) )
             {
-                slot.Instance = new Terrain(_sceneManager);
+                // Allocate in main thread so no race conditions
+                slot.Instance = new Terrain( _sceneManager );
                 slot.Instance.ResourceGroup = _resourceGroup;
-                slot.Instance.Prepare(_defaultImportData);
-                slot.Instance.Position = GetTerrainSlotPosition(slot.X, slot.Y);
+                slot.Instance.GpuBufferAllocator = BufferAllocator;
+
+#if WORKQUEUE_IMPLEMENTED
+                LoadRequest req;
+			    req.slot = slot;
+			    req.origin = this;
+			    Root::getSingleton().getWorkQueue()->addRequest(
+				    mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST, 
+				    Any(req), 0, synchronous);
+#else
+                slot.Instance.Prepare( _defaultImportData );
+                slot.Instance.Position = GetTerrainSlotPosition( slot.X, slot.Y );
                 slot.Instance.Load();
                 // hook up with neighbours
-                for (int i = -1; i <= 1; ++i)
+                for ( int i = -1; i <= 1; ++i )
                 {
-                    for (int j = -1; j <= 1; ++j)
+                    for ( int j = -1; j <= 1; ++j )
                     {
-                        if (i != 0 || j != 0)
-                            ConnectNeighbour(slot, i, j);
+                        if ( i != 0 || j != 0 )
+                            ConnectNeighbour( slot, i, j );
                     }
 
                 }
+#endif
             }
         }
     }
