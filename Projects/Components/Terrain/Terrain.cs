@@ -573,8 +573,10 @@ namespace Axiom.Components.Terrain
         protected Terrain[] mNeighbours = new Terrain[ (int)NeighbourIndex.Count ];
         protected Rectangle mDirtyGeometryRectForNeighbours = new Rectangle( 0, 0, 0, 0 );
         protected Rectangle mDirtyLightmapFromNeighboursRect = new Rectangle( 0, 0, 0, 0 );
-        BufferBase mHeightDataPtr;
-        BufferBase mDeltaDataPtr;
+        private BufferBase mHeightDataPtr;
+        private BufferBase mDeltaDataPtr;
+        protected GpuBufferAllocator mCustomGpuBufferAllocator;
+        protected DefaultGpuBufferAllocator mDefaultGpuBufferAllocator;
 
         #endregion
 
@@ -676,6 +678,93 @@ namespace Axiom.Components.Terrain
         {
             get;
             protected set;
+        }
+
+        /// <summary>
+        /// Get/Set the current buffer allocator
+        /// </summary>
+        /// <remarks>
+        /// Setter may only be called when the terrain is not loaded.
+        /// </remarks>
+        public GpuBufferAllocator GpuBufferAllocator
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                if ( mCustomGpuBufferAllocator != null )
+                    return mCustomGpuBufferAllocator;
+                else
+                    return mDefaultGpuBufferAllocator;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                if ( this.GpuBufferAllocator != value )
+                {
+                    if ( IsLoaded )
+                        throw new AxiomException( "Cannot alter the allocator when loaded!" );
+
+                    mCustomGpuBufferAllocator = value;
+                }
+            }
+        }
+
+        //public int PositionBufVertexSize
+        //{
+        //    [OgreVersion( 1, 7, 2 )]
+        //    get
+        //    {
+        //        int sz = 0;
+        //        // float3 position
+        //        // TODO we can compress this when shaders in use if we use parametric positioning
+        //        sz += sizeof( float ) * 3;
+        //        // float2 uv
+        //        // TODO we can omit these where shaders are being used & calculate
+        //        sz += sizeof( float ) * 2;
+
+        //        return sz;
+        //    }
+        //}
+
+        private VertexDeclaration _posDecl;
+        public VertexDeclaration PositionVertexDecl
+        {
+            get
+            {
+                if ( _posDecl == null )
+                {
+                    _posDecl = new VertexDeclaration();
+                    _posDecl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+                    _posDecl.AddElement( 0, VertexElement.GetTypeSize( VertexElementType.Float3 ), VertexElementType.Float2, VertexElementSemantic.TexCoords );
+                }
+
+                return _posDecl;
+            }
+        }
+
+        //public int DeltaBufVertexSize
+        //{
+        //    [OgreVersion( 1, 7, 2 )]
+        //    get
+        //    {
+        //        return sizeof( float ) * 2;
+        //    }
+        //}
+
+        private VertexDeclaration _deltaDecl;
+        public VertexDeclaration DeltaVertexDecl
+        {
+            get
+            {
+                if ( _deltaDecl == null )
+                {
+                    _deltaDecl = new VertexDeclaration();
+                    _deltaDecl.AddElement( 1, 0, VertexElementType.Float2, VertexElementSemantic.Position );
+                }
+
+                return _deltaDecl;
+            }
         }
 
         /// <summary>
@@ -841,7 +930,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get's the bounding radius of the entire terrain
         /// </summary>
-        public float BoundingRadius
+        public Real BoundingRadius
         {
             get
             {
@@ -1286,6 +1375,183 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         }
 
         #region - public functions -
+
+        /// <summary>
+        /// Utility method to get the number of indexes required to render a given batch
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static int GetNumIndexesForBatchSize( ushort batchSize )
+        {
+            int mainIndexesPerRow = batchSize * 2 + 1;
+            int numRows = batchSize - 1;
+            int mainIndexCount = mainIndexesPerRow * numRows;
+            // skirts share edges, so they take 1 less row per side than batchSize, 
+            // but with 2 extra at the end (repeated) to finish the strip
+            // * 2 for the vertical line, * 4 for the sides, +2 to finish
+            int skirtIndexCount = ( batchSize - 1 ) * 2 * 4 + 2;
+            return mainIndexCount + skirtIndexCount;
+        }
+
+        /// <summary>
+        /// Utility method to populate a (locked) index buffer.
+        /// </summary>
+        /// <param name="pIndexes">Pointer to an index buffer to populate</param>
+        /// <param name="batchSize">The number of vertices down one side of the batch</param>
+        /// <param name="vdatasize">The number of vertices down one side of the vertex data being referenced</param>
+        /// <param name="vertexIncrement">The number of vertices to increment for each new indexed row / column</param>
+        /// <param name="xoffset">The x offset from the start of the vertex data being referenced</param>
+        /// <param name="yoffset">The y offset from the start of the vertex data being referenced</param>
+        /// <param name="numSkirtRowsCols">Number of rows and columns of skirts</param>
+        /// <param name="skirtRowColSkip">The number of rows / cols to skip in between skirts</param>
+        [OgreVersion( 1, 7, 2 )]
+        public static void PopulateIndexBuffer( BufferBase pIndexes, ushort batchSize,
+            ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset, ushort numSkirtRowsCols,
+            ushort skirtRowColSkip )
+        {
+            /* For even / odd tri strip rows, triangles are this shape:
+            6---7---8
+            | \ | \ |
+            3---4---5
+            | / | / |
+            0---1---2
+            Note how vertex rows count upwards. In order to match up the anti-clockwise
+            winding and this upward transitioning list, we need to start from the
+            right hand side. So we get (2,5,1,4,0,3) etc on even lines (right-left)
+            and (3,6,4,7,5,8) etc on odd lines (left-right). At the turn, we emit the end index 
+            twice, this forms a degenerate triangle, which lets us turn without any artefacts. 
+            So the full list in this simple case is (2,5,1,4,0,3,3,6,4,7,5,8)
+
+            Skirts are part of the same strip, so after finishing on 8, where sX is
+            the skirt vertex corresponding to main vertex X, we go
+            anticlockwise around the edge, (s8,7,s7,6,s6) to do the top skirt, 
+            then (3,s3,0,s0),(1,s1,2,s2),(5,s5,8,s8) to finish the left, bottom, and
+            right skirts respectively.
+            */
+
+            // to issue a complete row, it takes issuing the upper and lower row
+            // and one extra index, which is the degenerate triangle and also turning
+            // around the winding
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
+            {
+                int rowSize = vdatasize * vertexIncrement;
+                int numRows = batchSize - 1;
+                var pI = pIndexes.ToUShortPointer();
+                int offset = 0;
+
+                // Start on the right
+                ushort currentVertex = (ushort)( ( batchSize - 1 ) * vertexIncrement );
+                // but, our quad area might not start at 0 in this vertex data
+                // offsets are at main terrain resolution, remember
+                ushort columnStart = xoffset;
+                ushort rowStart = yoffset;
+                currentVertex += (ushort)( rowStart * vdatasize + columnStart );
+                bool rightToLeft = true;
+                for ( ushort r = 0; r < numRows; ++r )
+                {
+                    for ( ushort c = 0; c < batchSize; ++c )
+                    {
+                        pI[ offset++ ] = currentVertex;
+                        pI[ offset++ ] = (ushort)( currentVertex + rowSize );
+
+                        // don't increment / decrement at a border, keep this vertex for next
+                        // row as we 'snake' across the tile
+                        if ( c + 1 < batchSize )
+                            currentVertex = rightToLeft ? (ushort)( currentVertex - vertexIncrement ) : (ushort)( currentVertex + vertexIncrement );
+                    }
+                    rightToLeft = !rightToLeft;
+                    currentVertex += (ushort)rowSize;
+                    // issue one extra index to turn winding around
+                    pI[ offset++ ] = currentVertex;
+                }
+
+                // Skirts
+                for ( ushort s = 0; s < 4; ++s )
+                {
+                    // edgeIncrement is the index offset from one original edge vertex to the next
+                    // in this row or column. Columns skip based on a row size here
+                    // skirtIncrement is the index offset from one skirt vertex to the next, 
+                    // because skirts are packed in rows/cols then there is no row multiplier for
+                    // processing columns
+                    int edgeIncrement = 0, skirtIncrement = 0;
+                    switch ( s )
+                    {
+                        case 0: // top
+                            edgeIncrement = -(int)vertexIncrement;
+                            skirtIncrement = -(int)vertexIncrement;
+                            break;
+
+                        case 1: // left
+                            edgeIncrement = -(int)rowSize;
+                            skirtIncrement = -(int)vertexIncrement;
+                            break;
+
+                        case 2: // bottom
+                            edgeIncrement = (int)vertexIncrement;
+                            skirtIncrement = (int)vertexIncrement;
+                            break;
+
+                        case 3: // right
+                            edgeIncrement = (int)rowSize;
+                            skirtIncrement = (int)vertexIncrement;
+                            break;
+                    }
+                    // Skirts are stored in contiguous rows / columns (rows 0/2, cols 1/3)
+                    ushort skirtIndex = CalcSkirtVertexIndex( currentVertex, vdatasize, ( s % 2 ) != 0, numSkirtRowsCols, skirtRowColSkip );
+
+                    for ( ushort c = 0; c < batchSize - 1; ++c )
+                    {
+                        pI[ offset++ ] = currentVertex;
+                        pI[ offset++ ] = skirtIndex;
+                        currentVertex += (ushort)edgeIncrement;
+                        skirtIndex += (ushort)skirtIncrement;
+                    }
+
+                    if ( s == 3 )
+                    {
+                        // we issue an extra 2 indices to finish the skirt off
+                        pI[ offset++ ] = currentVertex;
+                        pI[ offset++ ] = skirtIndex;
+                        currentVertex += (ushort)edgeIncrement;
+                        skirtIndex += (ushort)skirtIncrement;
+                    }
+                }
+            }
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public static ushort CalcSkirtVertexIndex( ushort mainIndex, ushort vdatasize, bool isCol,
+            ushort numSkirtRowsCols, ushort skirtRowColSkip )
+        {
+            // row / col in main vertex resolution
+            ushort row = (ushort)( mainIndex / vdatasize );
+            ushort col = (ushort)( mainIndex % vdatasize );
+
+            // skrits are after main vertices, so skip them
+            ushort b = (ushort)( vdatasize * vdatasize );
+
+            // The layout in vertex data is:
+            // 1. row skirts
+            //    numSkirtRowsCols rows of resolution vertices each
+            // 2. column skirts
+            //    numSkirtRowsCols cols of resolution vertices each
+
+            // No offsets used here, this is an index into the current vertex data, 
+            // which is already relative
+            if ( isCol )
+            {
+                ushort skirtNum = (ushort)( col / skirtRowColSkip );
+                ushort colbase = (ushort)( numSkirtRowsCols * vdatasize );
+                return (ushort)( b + colbase + vdatasize * skirtNum + row );
+            }
+            else
+            {
+                ushort skirtNum = (ushort)( row / skirtRowColSkip );
+                return (ushort)( b + vdatasize * skirtNum + col );
+            }
+        }
+
         /// <summary>
         /// Convert a position from one space to another with respect to this terrain.
         /// </summary>
@@ -1883,6 +2149,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         /// <remarks>
         /// This method must be called in the main render thread.
         /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
         public void Unload()
         {
             if ( !this.IsLoaded )
@@ -1890,6 +2157,9 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
 
             if ( this.QuadTree != null )
                 this.QuadTree.Unload();
+
+            // free own buffers if used, but not custom
+            mDefaultGpuBufferAllocator.FreeAllBuffers();
 
             this.IsLoaded = false;
             this.IsModified = false;

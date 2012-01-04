@@ -458,7 +458,7 @@ namespace Axiom.Core
 		{
 			if ( width < 3 || height < 3 )
 			{
-				throw new Exception( "Bezier patch requires at least 3x3 control points." );
+				throw new AxiomException( "Bezier patch requires at least 3x3 control points." );
 			}
 			var mesh = (PatchMesh)this[ name ];
 
