@@ -128,28 +128,32 @@ namespace Axiom.Core
                                 objectCount++;
 
 #if !(XBOX || XBOX360 || WINDOWS_PHONE)
-                                msg.AppendFormat("\nAn instance of {0} was not disposed properly, creation stacktrace :\n{1}", typeName, objectEntry.ConstructionStack);
+                                msg.AppendLine( string.Format( "An instance of {0} was not disposed properly, creation stacktrace:", typeName ) );
+                                msg.AppendLine( objectEntry.ConstructionStack );
+                                msg.AppendLine();
 #endif
                             }
                         }
                     }
 
-                    LogManager.Instance.Write("[ObjectManager] Disposal Report:");
+                    Log report = LogManager.Instance.CreateLog( "AxiomDisposalReport.log" );
+                    report.Write( "[ObjectManager] Axiom Disposal Report:" );
 
-                    if (objectCount > 0)
+                    if ( objectCount > 0 )
                     {
-                        LogManager.Instance.Write("Total of {0} objects still alive.", objectCount);
-                        LogManager.Instance.Write("Types of not disposed objects count: " + perTypeCount.Count);
+                        report.Write( "Total of {0} objects still alive.", objectCount );
+                        report.Write( "Types of not disposed objects count: " + perTypeCount.Count );
 
-                        foreach (var currentPair in perTypeCount)
-                            LogManager.Instance.Write("{0} occurrence of type {1}", currentPair.Value, currentPair.Key);
+                        foreach ( var currentPair in perTypeCount )
+                            report.Write( "{0} occurrence of type {1}", currentPair.Value, currentPair.Key );
 
 #if !(XBOX || XBOX360 || WINDOWS_PHONE)
-                        LogManager.Instance.Write("Creation Stacktraces:\n" + msg.ToString());
+                        report.Write( "Creation Stacktraces:" );
+                        report.Write( msg.ToString() );
 #endif
                     }
                     else
-                        LogManager.Instance.Write("Everything went right! Congratulations!!");
+                        report.Write( "Everything went right! Congratulations!!" );
 				}
 
 				// There are no unmanaged resources to release, but
